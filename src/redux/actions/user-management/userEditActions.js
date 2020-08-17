@@ -3,4 +3,4 @@ export const setEditUser = (user) => {
         type: "SET_EDIT_USER",
         payload: { ...user }
     }
-}
+};
