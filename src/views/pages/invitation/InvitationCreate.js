@@ -28,8 +28,8 @@ class InvitationCreate extends React.Component {
         const nav = store.getState().user.list.nav;
         const response = await UserService.getByEmail(nav.searchVal, nav.currPage);
         const users = response.data.data;
-        this.props.setUserList(users, nav); 
-    }
+        this.props.setUserList(users, nav);
+    };
 
     dispatchEditUser = async () => {
         const userId = store.getState().userManagement.userEditing.id;
@@ -37,33 +37,33 @@ class InvitationCreate extends React.Component {
             const response = await UserService.getUserById(userId);
             const user = response.data.data;
             store.dispatch(setEditUser(user));
-        }        
-    }
+        }
+    };
 
     dispatchInvitationList = async () => {
         let response = await InvitationService.getAll();
         let rowData = response.data.data;
         this.props.setInvitationsList(rowData);
-    }
+    };
 
     formSubmit = async (event) => {
         event.preventDefault();
         try {
-            await InvitationService.createInvitation(this.props.user.id);
+            await InvitationService.createInvitation(this.props.user.id, this.props.resend);
             this.dispatchUserList();
             this.dispatchInvitationList();
             this.dispatchEditUser();
-            toast.success('success')
+            toast.success('success');
             this.setState({ ...this.state, errors: {} })
         } catch (responseError) {
             if('response' in responseError) {
                 // const errorStatus = responseError.response.status;
                 const error = responseError.response.data.error;
-                toast.error(error.message)
+                toast.error(error.message);
                 this.setState({ ...this.state, errors: { ...error.errors } })
             } else {
                 console.log(responseError);
-            }     
+            }
         }
     }
 
@@ -78,7 +78,7 @@ class InvitationCreate extends React.Component {
                 size="sm"
                 style={{ 'font-size': '14px'}}
             >
-                Send invitation
+              { !this.props.invitationText ? 'Send invitation' : this.props.invitationText }
             </Button.Ripple>
         )
     }

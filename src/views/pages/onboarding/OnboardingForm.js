@@ -96,6 +96,6 @@ const mapStateToProps = state => {
   return {
     user: state.user.profile
   }
-}
+};
 
 export default connect(mapStateToProps)(OnboardingForm)

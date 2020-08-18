@@ -534,7 +534,7 @@ class UserEdit extends React.Component {
         // const errorStatus = responseError.response.status;
         const error = responseError.response.data.error;
         this.getUser();
-        toast.error(error.message)
+        toast.error(error.message);
         this.setState({...this.state, errors: {...error.errors}})
       } else {
         console.log(responseError);
@@ -986,7 +986,8 @@ class UserEdit extends React.Component {
                           <div className="font-weight-bold-lighter column-sizing-user-info">Portal access</div>
                           <div>
                             {
-                              this.props.user.invited && !this.props.user.invited.accepted_at ? 'invitation not accepted' :
+                              this.props.user.invited && !this.props.user.invited.revoked_at ? 'invitation not accepted' :
+                              this.props.user.invited && !this.props.user.invited.accepted_at ? <InvitationCreate user={this.props.user} resend={true} invitationText="Resend invitation" /> :
                                 this.props.user.invited && this.props.user.invited.accepted_at ? 'Invitation accepted' :
                                   this.props.user.roles.indexOf('prospect') === -1 && this.props.user.roles.length && this.props.user.groups.length ?
                                     'Allowed'

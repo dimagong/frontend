@@ -393,12 +393,12 @@ class FormCreate extends React.Component {
     const isSectionHidden = (section, effect) => {
       return section in this.state.uiSchema.sectionStates && 'ui:hidden' in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section]['ui:hidden']
         ? {display: 'none'} : {}
-    }
+    };
 
     const isSectionDisabled = (section) => {
       return section in this.state.uiSchema.sectionStates && 'ui:disabled' in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section]['ui:disabled']
         ? {disabled: 'disabled'} : {};
-    }
+    };
 
     const renderObject = () => {
       return (<div>
@@ -1471,6 +1471,22 @@ class FormCreate extends React.Component {
     return 'default';
   }
 
+  getLabelShowingCheckbox(objKey) {
+
+    console.log(this.state.uiSchemaPropertyEdit, objKey);
+    if (this.state.uiSchemaPropertyEdit["label"]) {
+      return true
+    }
+
+    return false;
+  }
+
+  setLabelShowingCheckbox(objKey) {
+    let uiSchemaPropertyEdit = clone(this.state.uiSchemaPropertyEdit);
+    uiSchemaPropertyEdit['label'] = !uiSchemaPropertyEdit['label'];
+    this.setState({uiSchemaPropertyEdit})
+  }
+
   getListControls(properties) {
     let keys = Object.keys(properties);
     let schemaPropertyEdit = this.state.schemaPropertyEdit;
@@ -1564,6 +1580,19 @@ class FormCreate extends React.Component {
         );
       };
 
+      const renderLabelShowing = (column) => {
+        return <div className="w-100">
+          <Checkbox
+            color="primary"
+            icon={<Check className="vx-icon" size={16}/>}
+            label="Label showing"
+            id={`${index}-${column}`}
+            onChange={event => this.setLabelShowingCheckbox(column)}
+            checked={this.getLabelShowingCheckbox(column)}
+          />
+        </div>
+      };
+
       const renderLabel = (column, text) => {
         return (<label htmlFor={`${index}-${column}`}>{text}</label>)
       };
@@ -1594,6 +1623,11 @@ class FormCreate extends React.Component {
                     {renderRequiredColumn(objKey, 'Required?')}
                   </FormGroup>
                 </Col>
+                <Col md="12">
+                  <FormGroup>
+                    {renderLabelShowing(objKey, 'Required?')}
+                  </FormGroup>
+                </Col>
               </Row>
             );
           }
@@ -1618,6 +1652,11 @@ class FormCreate extends React.Component {
                     {renderRequiredColumn(objKey, 'Required?')}
                   </FormGroup>
                 </Col>
+                <Col md="12">
+                  <FormGroup>
+                    {renderLabelShowing(objKey, 'Required?')}
+                  </FormGroup>
+                </Col>
               </Row>
             );
           }
@@ -1627,6 +1666,11 @@ class FormCreate extends React.Component {
                 <Col md="12">
                   <FormGroup>
                     {renderRequiredColumn(objKey, 'Required?')}
+                  </FormGroup>
+                </Col>
+                <Col md="12">
+                  <FormGroup>
+                    {renderLabelShowing(objKey, 'Required?')}
                   </FormGroup>
                 </Col>
               </Row>
@@ -1640,6 +1684,11 @@ class FormCreate extends React.Component {
                     {renderRequiredColumn(objKey, 'Required?')}
                   </FormGroup>
                 </Col>
+                <Col md="12">
+                  <FormGroup>
+                    {renderLabelShowing(objKey, 'Required?')}
+                  </FormGroup>
+                </Col>
               </Row>
             );
           }
@@ -1649,6 +1698,11 @@ class FormCreate extends React.Component {
                 <Col md="12">
                   <FormGroup>
                     {renderRequiredColumn(objKey, 'Required?')}
+                  </FormGroup>
+                </Col>
+                <Col md="12">
+                  <FormGroup>
+                    {renderLabelShowing(objKey, 'Required?')}
                   </FormGroup>
                 </Col>
               </Row>
@@ -1675,6 +1729,11 @@ class FormCreate extends React.Component {
                     {renderRequiredColumn(objKey, 'Required?')}
                   </FormGroup>
                 </Col>
+                <Col md="12">
+                  <FormGroup>
+                    {renderLabelShowing(objKey, 'Required?')}
+                  </FormGroup>
+                </Col>
               </Row>
             );
           }
@@ -1685,6 +1744,11 @@ class FormCreate extends React.Component {
               <div>
                 {renderRequiredColumn(objKey, 'Required?')}
               </div>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabelShowing(objKey, 'Required?')}
+                </FormGroup>
+              </Col>
             </div>)
           }
           case 'select': {
@@ -1719,6 +1783,11 @@ class FormCreate extends React.Component {
               <div>
                 {renderRequiredColumn(objKey, 'Required?')}
               </div>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabelShowing(objKey, 'Required?')}
+                </FormGroup>
+              </Col>
             </div>)
           }
           case 'multiSelect': {
@@ -1774,6 +1843,11 @@ class FormCreate extends React.Component {
               <div>
                 {renderRequiredColumn(objKey, 'Required?')}
               </div>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabelShowing(objKey, 'Required?')}
+                </FormGroup>
+              </Col>
             </div>)
           }
           default:
@@ -2190,7 +2264,7 @@ class FormCreate extends React.Component {
 
   addNewSection() {
     let state = clone(this.state);
-    const sectionName = 'Tab ' + (Object.keys(this.state.uiSchema.onlySections).length + 1);
+    let sectionName = 'Tab ' + (Object.keys(this.state.uiSchema.onlySections).length + 1);
     if (sectionName in state.uiSchema.onlySections) {
       sectionName += this.makeid(9);
     }
@@ -2201,7 +2275,7 @@ class FormCreate extends React.Component {
 
   addNewGroup(section) {
     let state = clone(this.state);
-    const groupName = 'Group ' + (Object.keys(this.state.uiSchema.sectionGroups).length + 1);
+    let groupName = 'Group ' + (Object.keys(this.state.uiSchema.sectionGroups).length + 1);
     if (groupName in state.uiSchema.sectionGroups) {
       groupName += this.makeid(9);
     }
@@ -2213,7 +2287,7 @@ class FormCreate extends React.Component {
     let state = clone(this.state);
     state.uiSettings.dependencies.conditions[indexCondition][conditionFieldType][indexField][operatorKey] = event.target.value;
     this.setState(state);
-  }
+  };
 
   removeUiEffects = (state, dependencyType, objKey) => {
 
@@ -2231,19 +2305,19 @@ class FormCreate extends React.Component {
     state.uiSettings.dependencies.effect = event.target.value;
 
     this.setState(state);
-  }
+  };
 
   removeConditionalField = (event, conditionFieldType, indexCondition, indexField) => {
     let state = clone(this.state);
     state.uiSettings.dependencies.conditions[indexCondition][conditionFieldType].splice(indexField, 1);
     this.setState(state);
-  }
+  };
 
   removeConditional = (event, indexCondition) => {
     let state = clone(this.state);
     state.uiSettings.dependencies.conditions.splice(indexCondition, 1);
     this.setState(state);
-  }
+  };
 
   addConditional = (objKey) => {
     let state = clone(this.state);
@@ -2272,7 +2346,7 @@ class FormCreate extends React.Component {
     }
 
     this.setState(state);
-  }
+  };
 
   dependecyModalSave = (dependencyType, objKey) => {
     let state = clone(this.state);
@@ -2281,7 +2355,7 @@ class FormCreate extends React.Component {
     state.uiSchema.dependencies[dependencyType][objKey] = clone(state.uiSettings.dependencies);
     this.dependencyChecker(state);
     this.setState(state);
-  }
+  };
 
   dependencyModalOpen = (dependencyType, objKey) => {
     let dependencies = objKey in this.state.uiSchema.dependencies[dependencyType] ? this.state.uiSchema.dependencies[dependencyType][objKey] : {}
@@ -2294,7 +2368,7 @@ class FormCreate extends React.Component {
         dependencies: dependencies
       }
     });
-  }
+  };
 
   uiSettingsSave = (dependencyType, objKey) => {
     let state = clone(this.state);
@@ -2321,7 +2395,7 @@ class FormCreate extends React.Component {
     this.dependencyChecker(state);
 
     this.setState(state);
-  }
+  };
 
   uiSettingsOpen = (objKey) => {
     let classes = objKey in this.state.uiSchema.columnsClasses ? this.state.uiSchema.columnsClasses[objKey] : ''
@@ -2336,7 +2410,7 @@ class FormCreate extends React.Component {
         dependencies: dependencies
       }
     });
-  }
+  };
 
   changeClasses = (event, objKey) => {
     let state = clone(this.state);
@@ -2383,7 +2457,7 @@ class FormCreate extends React.Component {
       //     columnsClasses: this.state.uiSchema.columnsClasses,
       // },
       uiSchema: this.state.uiSchema
-    }
+    };
     let dForm = clone(this.state.dFormTemplate);
     dForm.schema = schema;
     this.props.submitDForm(dForm, this.state.additionalData);
@@ -2452,7 +2526,7 @@ class FormCreate extends React.Component {
             })
           }
         });
-      })
+      });
 
       this.setState(state);
     }
@@ -2983,8 +3057,8 @@ class FormCreate extends React.Component {
                 <div className="form-create__dform_actions pr-1">
                   {
                     this.state.onSaveButtonHidden ? null : <Button type="button" color="primary" onClick={() => {
-                        this.onSave()
-                      }}>Save</Button>
+                      this.onSave()
+                    }}>Save</Button>
                   }
                   {
                     this.props.statusChanged ?

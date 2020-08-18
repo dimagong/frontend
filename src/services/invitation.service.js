@@ -1,9 +1,10 @@
 import axios from '../overrides/axios';
 
 class InvitationService {
-    createInvitation(id) {
+    createInvitation(id, resend = false) {
         return axios.post("/api/invitation", {
-            user_id: id
+            user_id: id,
+            resend: resend
         });
     }
 
