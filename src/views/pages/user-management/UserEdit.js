@@ -986,13 +986,13 @@ class UserEdit extends React.Component {
                           <div className="font-weight-bold-lighter column-sizing-user-info">Portal access</div>
                           <div>
                             {
-                              this.props.user.invited && !this.props.user.invited.revoked_at ? 'invitation not accepted' :
-                              this.props.user.invited && !this.props.user.invited.accepted_at ? <InvitationCreate user={this.props.user} resend={true} invitationText="Resend invitation" /> :
+                              this.props.user.invited && !this.props.user.invited.revoked_at ? <InvitationCreate user={this.props.user} send={false} resend={true} trash={true} invitationText="Resend invitation" />  :
+                              this.props.user.invited && !this.props.user.invited.accepted_at ? <InvitationCreate user={this.props.user} send={false} resend={true} trash={true} invitationText="Resend invitation" /> :
                                 this.props.user.invited && this.props.user.invited.accepted_at ? 'Invitation accepted' :
                                   this.props.user.roles.indexOf('prospect') === -1 && this.props.user.roles.length && this.props.user.groups.length ?
                                     'Allowed'
                                     : this.props.user.roles.indexOf('prospect') !== -1 && !this.props.user.groups.length ?
-                                    <InvitationCreate user={this.props.user}/>
+                                    <InvitationCreate send={true} resend={false} trash={false} user={this.props.user}/>
                                     : 'User cannot be invited'
                             }
 

@@ -58,48 +58,6 @@ function ErrorListTemplate(props) {
     </div>
   );
 }
-
-const CustomCheckbox = function (props) {
-
-  return (
-    <Checkbox
-      color="primary"
-      icon={<Check className="vx-icon" size={16}/>}
-      onChange={event => props.onChange(!props.value)}
-      label={props.label}
-      checked={props.value}
-    />
-  );
-};
-const CustomCheckboxes = function (props) {
-  let onChange = (option) => {
-    let values = clone(props.value);
-
-    let indexCheckbox = values.indexOf(option.value);
-    if (indexCheckbox !== -1) {
-      values.splice(indexCheckbox, 1)
-    } else {
-      values.push(option.value);
-    }
-    return values;
-  }
-  return (
-    props.options.enumOptions.map((option, key) => {
-      return <Checkbox
-        color="primary"
-        icon={<Check className="vx-icon" size={16}/>}
-        onChange={event => props.onChange(onChange(option))}
-        label={option.label}
-        checked={props.value.indexOf(option.value) !== -1}
-      />
-    })
-  );
-};
-const widgets = {
-  CheckboxWidget: CustomCheckbox,
-  CheckboxesWidget: CustomCheckboxes
-};
-
 class FormCreate extends React.Component {
 
   state = {};
@@ -158,6 +116,11 @@ class FormCreate extends React.Component {
         group: '',
         classes: '',
         dependencies: {}
+      },
+      uiSchemaPropertyEdit: {
+        'ui:options': {
+          label: true
+        }
       },
       formData: {},
       sumbitFormData: {},
@@ -248,6 +211,46 @@ class FormCreate extends React.Component {
     };
   }
 
+
+  CustomCheckbox = (props) => {
+    return (
+      <div>
+        {props.options.label ? <label>{props.label}</label> : null}
+        <Checkbox
+          color="primary"
+          icon={<Check className="vx-icon" size={16}/>}
+          onChange={event => props.onChange(!props.value)}
+          label={props.label}
+          checked={props.value}
+        />
+      </div>
+    );
+  };
+  CustomCheckboxes = (props) => {
+    let onChange = (option) => {
+      let values = clone(props.value);
+
+      let indexCheckbox = values.indexOf(option.value);
+      if (indexCheckbox !== -1) {
+        values.splice(indexCheckbox, 1)
+      } else {
+        values.push(option.value);
+      }
+      return values;
+    };
+    return (
+      props.options.enumOptions.map((option, key) => {
+        return <Checkbox
+          color="primary"
+          icon={<Check className="vx-icon" size={16}/>}
+          onChange={event => props.onChange(onChange(option))}
+          label={option.label}
+          checked={props.value.indexOf(option.value) !== -1}
+        />
+      })
+    );
+  };
+
   getSelectedDFormAction(action) {
     return {
       value: action,
@@ -262,8 +265,13 @@ class FormCreate extends React.Component {
 
   ObjectFieldTemplate = (props) => {
 
-    const getColumnClass = (key) => {
-      return key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12'
+    const getColumnClass = (key, element) => {
+      let classes = [];
+      classes.push(key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12');
+      if(!this.checkUiOptionField(element.name, 'label')) {
+        classes.push('label-hide');
+      }
+      return classes.join(' ');
     };
 
     const elementsByGroups = () => {
@@ -318,7 +326,7 @@ class FormCreate extends React.Component {
               return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
                 ? {display: 'none'} : {}
             }
-            return (<div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key)}
+            return (<div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key, element)}
                          key={element.content.key}>
               {element.content}
             </div>)
@@ -370,7 +378,7 @@ class FormCreate extends React.Component {
               return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
                 ? {display: 'none'} : {}
             }
-            return (<div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key)}
+            return (<div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key, element)}
                          key={element.content.key}>
               {element.content}
             </div>)
@@ -1471,19 +1479,32 @@ class FormCreate extends React.Component {
     return 'default';
   }
 
-  getLabelShowingCheckbox(objKey) {
+  checkUiOptionField(objKey, option) {
+    if (!this.state.uiSchema[objKey] || !this.state.uiSchema[objKey]["ui:options"]) return true;
 
-    console.log(this.state.uiSchemaPropertyEdit, objKey);
-    if (this.state.uiSchemaPropertyEdit["label"]) {
+    if (this.state.uiSchema[objKey]["ui:options"] && this.state.uiSchema[objKey]["ui:options"][option]) {
       return true
     }
-
     return false;
   }
 
-  setLabelShowingCheckbox(objKey) {
+  getLabelShowingCheckbox() {
+    if (!this.state.uiSchemaPropertyEdit["ui:options"]) return true;
+
+    if (this.state.uiSchemaPropertyEdit["ui:options"] && this.state.uiSchemaPropertyEdit["ui:options"]['label']) {
+      return true
+    }
+    return false;
+  }
+
+  setLabelShowingCheckbox() {
     let uiSchemaPropertyEdit = clone(this.state.uiSchemaPropertyEdit);
-    uiSchemaPropertyEdit['label'] = !uiSchemaPropertyEdit['label'];
+    if (!('ui:options' in uiSchemaPropertyEdit)) {
+      uiSchemaPropertyEdit['ui:options'] = {}
+    }
+    uiSchemaPropertyEdit['ui:options']['label'] = !this.getLabelShowingCheckbox();
+    uiSchemaPropertyEdit['ui:options']['title'] = !this.getLabelShowingCheckbox();
+    console.log(uiSchemaPropertyEdit);
     this.setState({uiSchemaPropertyEdit})
   }
 
@@ -1587,8 +1608,8 @@ class FormCreate extends React.Component {
             icon={<Check className="vx-icon" size={16}/>}
             label="Label showing"
             id={`${index}-${column}`}
-            onChange={event => this.setLabelShowingCheckbox(column)}
-            checked={this.getLabelShowingCheckbox(column)}
+            onChange={event => this.setLabelShowingCheckbox()}
+            checked={this.getLabelShowingCheckbox()}
           />
         </div>
       };
@@ -1802,52 +1823,54 @@ class FormCreate extends React.Component {
                     <option>checkboxes</option>
                   </select>
                 </div>
-              </div>
-              {schemaPropertyEdit.items.anyOf.map((multiSelectObj, index) => {
-                return (
-                  <div className="row" key={index}>
-                    <div className="col-md-5 form-group">
-                      <input
-                        id={`${index}-`}
-                        value={multiSelectObj.title}
-                        type="text"
-                        onChange={event => this.setMultiSelectTitle(event, objKey, index)}
-                        className="form-control"/>
-                    </div>
-                    <div className="col-md-5 form-group">
-                      <input
-                        key={index}
-                        id={`${index}-`}
-                        value={multiSelectObj.enum[0]}
-                        type="text"
-                        onChange={event => this.setMultiSelectValues(event, objKey, index)}
-                        className="form-control"/>
-                    </div>
+                <div className="col-md-12">
+                  {schemaPropertyEdit.items.anyOf.map((multiSelectObj, index) => {
+                    return (
+                      <div className="row" key={index}>
+                        <div className="col-md-5 form-group">
+                          <input
+                            id={`${index}-`}
+                            value={multiSelectObj.title}
+                            type="text"
+                            onChange={event => this.setMultiSelectTitle(event, objKey, index)}
+                            className="form-control"/>
+                        </div>
+                        <div className="col-md-5 form-group">
+                          <input
+                            key={index}
+                            id={`${index}-`}
+                            value={multiSelectObj.enum[0]}
+                            type="text"
+                            onChange={event => this.setMultiSelectValues(event, objKey, index)}
+                            className="form-control"/>
+                        </div>
 
-                    <div className="col-md-2 form-group">
-                      <button type="submit"
-                              onClick={event => this.removeMultiSelectValues(event, objKey, index)}
-                              className="btn btn-danger">X
-                      </button>
-                    </div>
+                        <div className="col-md-2 form-group">
+                          <button type="submit"
+                                  onClick={event => this.removeMultiSelectValues(event, objKey, index)}
+                                  className="btn btn-danger">X
+                          </button>
+                        </div>
 
+                      </div>
+                    );
+                  })}
+                  <div className="text-center">
+                    <button type="submit"
+                            onClick={event => this.addMultiSelectValues(event, objKey, index)}
+                            className="btn btn-primary">Add
+                    </button>
                   </div>
-                );
-              })}
-              <div className="text-center">
-                <button type="submit"
-                        onClick={event => this.addMultiSelectValues(event, objKey, index)}
-                        className="btn btn-primary">Add
-                </button>
+                </div>
+                <div className="col-md-12">
+                  {renderRequiredColumn(objKey, 'Required?')}
+                </div>
+                <div className="col-md-12">
+                  <FormGroup>
+                    {renderLabelShowing(objKey, 'Required?')}
+                  </FormGroup>
+                </div>
               </div>
-              <div>
-                {renderRequiredColumn(objKey, 'Required?')}
-              </div>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
             </div>)
           }
           default:
@@ -1955,8 +1978,14 @@ class FormCreate extends React.Component {
       )
     });
 
-    const getColumnClass = (key) => {
-      return key in properties.uiSchema.columnsClasses ? properties.uiSchema.columnsClasses[key] : 'col-md-12'
+    const getColumnClass = (key, element) => {
+      let classes = [];
+      classes.push(key in properties.uiSchema.columnsClasses ? properties.uiSchema.columnsClasses[key] : 'col-md-12');
+      // classes.push(key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12');
+      if(this.checkUiOptionField(element.name, 'label')) {
+        classes.push('label-hide');
+      }
+      return classes.join(' ');
     };
 
     const elementsByGroups = () => {
@@ -3049,7 +3078,10 @@ class FormCreate extends React.Component {
                 schema={this.state.schema}
                 ObjectFieldTemplate={this.ObjectFieldTemplate}
                 uiSchema={this.state.uiSchema}
-                widgets={widgets}
+                widgets={{
+                  CheckboxWidget: this.CustomCheckbox,
+                  CheckboxesWidget: this.CustomCheckboxes
+                }}
                 onChange={(event) => {
                   this.onChangeForm(event)
                 }}

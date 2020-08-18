@@ -15,6 +15,9 @@ class InvitationService {
     revoke(id) {
         return axios.put('/api/invitation/' + id + '/revoke');
     }
+    delete(id) {
+      return axios.delete('/api/invitation/' + id);
+    }
 
     getInvitationByToken(id) {
         return axios.get('/api/invitation/' + id);
