@@ -24,6 +24,8 @@ import {
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy"
 import {X, Check, Plus} from "react-feather"
 import Select from "react-select"
+import {dataURItoBlob, getFile, addNameToDataURL, processFile, processFiles, extractFileInfo} from "./utils";
+import {isEqual, debounce, concat} from 'lodash';
 
 const WITHOUT_GROUP = 'WITHOUT_GROUP_';
 const EFFECT_DISABLED = 'disabled';
@@ -58,6 +60,7 @@ function ErrorListTemplate(props) {
     </div>
   );
 }
+
 class FormCreate extends React.Component {
 
   state = {};
@@ -211,6 +214,106 @@ class FormCreate extends React.Component {
     };
   }
 
+  FileWidget = (props) => {
+
+    const [contextFiles, setContextFile] = useState(transformFiles(props.value));
+
+    function transformFiles(value) {
+      if (!value) return null;
+      return extractFileInfo(Array.isArray(value) ? value : [value]);
+    }
+
+    let inputFileRef = React.createRef();
+
+    const onChangeSingle = (event) => {
+      let eventTarget = event.target;
+      processFiles(event.target.files).then((files) => {
+        if (files[0].dataURL === 'data:') {
+          eventTarget.value = null;
+          return;
+        }
+        setContextFile(transformFiles(files[0].dataURL));
+        props.onChange(files[0].dataURL);
+        setTimeout(() => {
+          eventTarget.value = null;
+        })
+      });
+    };
+    const onChangeMultiple = (event) => {
+      let eventTarget = event.target;
+      let oldFiles = clone(props.value);
+      processFiles(event.target.files).then((files) => {
+        let filesDataUrl = files.filter(file => typeof file.dataURL !== "undefined" && file.dataURL !== 'data:').map(file => file.dataURL);
+
+        let concatedFiles = concat(filesDataUrl, oldFiles);
+
+        setContextFile(transformFiles(concatedFiles));
+        props.onChange(concatedFiles);
+        setTimeout(() => {
+          eventTarget.value = null;
+        })
+      });
+    };
+
+    const onChange = (event) => {
+      if (props.multiple) {
+        onChangeMultiple(event);
+      } else {
+        onChangeSingle(event);
+      }
+    };
+
+    const saveDebounce = debounce(props.onChange, 400);
+
+    const removeFile = (event, file, index) => {
+      if(!window.confirm(`Are you sure you want to delete the file: ${file.name}`)) {
+        return;
+      }
+
+      if (props.multiple) {
+        props.value.splice(index, 1);
+        saveDebounce(props.value);
+        setContextFile(transformFiles(props.value));
+      } else {
+        props.onChange(null);
+        setContextFile(null);
+      }
+
+    };
+
+    return <div>
+      <input type="file"
+             ref={inputFileRef}
+             multiple={props.multiple}
+             required={props.required}
+             onChange={(event) => onChange(event)}/>
+      <div className="mt-1">
+        {
+          Array.isArray(contextFiles) ? contextFiles.map((file, index) => {
+            let fileUrl = '';
+            if(props.multiple) {
+              fileUrl = window.URL.createObjectURL(
+                new Blob([dataURItoBlob(props.value[index]).blob], {type: file.type})
+              )
+            } else {
+              fileUrl = window.URL.createObjectURL(
+                new Blob([dataURItoBlob(props.value).blob], {type: file.type})
+              );
+            }
+
+            return <div className="d-flex">
+              <div>
+                <a target="_blank" href={fileUrl}>{decodeURIComponent(file.name)}</a>
+              </div>
+              <div className="ml-1">
+                <X size={15} className="cursor-pointer" onClick={event => removeFile(event, file, index)}/>
+              </div>
+            </div>
+          }) : null
+        }
+      </div>
+    </div>
+  };
 
   CustomCheckbox = (props) => {
     return (
@@ -268,7 +371,7 @@ class FormCreate extends React.Component {
     const getColumnClass = (key, element) => {
       let classes = [];
       classes.push(key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12');
-      if(!this.checkUiOptionField(element.name, 'label')) {
+      if (!this.checkUiOptionField(element.name, 'label')) {
         classes.push('label-hide');
       }
       return classes.join(' ');
@@ -326,10 +429,11 @@ class FormCreate extends React.Component {
               return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
                 ? {display: 'none'} : {}
             }
-            return (<div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key, element)}
-                         key={element.content.key}>
-              {element.content}
-            </div>)
+            return (
+              <div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key, element)}
+                   key={element.content.key}>
+                {element.content}
+              </div>)
           }
           return null;
         });
@@ -378,10 +482,11 @@ class FormCreate extends React.Component {
               return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
                 ? {display: 'none'} : {}
             }
-            return (<div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key, element)}
-                         key={element.content.key}>
-              {element.content}
-            </div>)
+            return (
+              <div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key, element)}
+                   key={element.content.key}>
+                {element.content}
+              </div>)
           }
           return null;
         });
@@ -485,7 +590,6 @@ class FormCreate extends React.Component {
     if (this.props.onSubmit) {
       this.props.onSubmit(formData);
     }
-    console.log(formData);
     return true;
   }
 
@@ -1041,15 +1145,30 @@ class FormCreate extends React.Component {
 
       state.uiSchema.sectionStates[section] = {};
     })
+  };
+
+  compareKeys(a, b) {
+    var aKeys = Object.keys(a).sort();
+    var bKeys = Object.keys(b).sort();
+    return JSON.stringify(aKeys) === JSON.stringify(bKeys);
   }
 
   onChangeForm = (event) => {
+
     let state = clone(this.state);
     state.formData = event.formData;
     this.dependencyChecker(state);
 
     this.setState(state);
-  }
+
+    if (this.props.onChange) {
+      if (!isEqual(this.props.dForm.submit_data, event.formData) || !this.compareKeys(this.props.dForm.submit_data, event.formData)) {
+        this.props.onChange(event.formData)
+      }
+    }
+
+
+  };
 
   submit = (event) => {
     this.setState((state) => {
@@ -1504,7 +1623,6 @@ class FormCreate extends React.Component {
     }
     uiSchemaPropertyEdit['ui:options']['label'] = !this.getLabelShowingCheckbox();
     uiSchemaPropertyEdit['ui:options']['title'] = !this.getLabelShowingCheckbox();
-    console.log(uiSchemaPropertyEdit);
     this.setState({uiSchemaPropertyEdit})
   }
 
@@ -1982,7 +2100,7 @@ class FormCreate extends React.Component {
       let classes = [];
       classes.push(key in properties.uiSchema.columnsClasses ? properties.uiSchema.columnsClasses[key] : 'col-md-12');
       // classes.push(key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12');
-      if(this.checkUiOptionField(element.name, 'label')) {
+      if (this.checkUiOptionField(element.name, 'label')) {
         classes.push('label-hide');
       }
       return classes.join(' ');
@@ -3080,7 +3198,8 @@ class FormCreate extends React.Component {
                 uiSchema={this.state.uiSchema}
                 widgets={{
                   CheckboxWidget: this.CustomCheckbox,
-                  CheckboxesWidget: this.CustomCheckboxes
+                  CheckboxesWidget: this.CustomCheckboxes,
+                  FileWidget: this.FileWidget
                 }}
                 onChange={(event) => {
                   this.onChangeForm(event)
@@ -3092,6 +3211,14 @@ class FormCreate extends React.Component {
                       this.onSave()
                     }}>Save</Button>
                   }
+                  {
+                    this.props.updatedAtText ?
+                      <div style={{'line-height': '38px'}}>
+                        {this.props.updatedAtText}
+                      </div>
+                      : null
+                  }
+
                   {
                     this.props.statusChanged ?
 
@@ -3109,7 +3236,8 @@ class FormCreate extends React.Component {
                       : null
                   }
                   {
-                    this.props.onSubmit ? <Button type="submit" color="primary">Submit</Button> : null
+                    this.props.onSubmit ?
+                      <Button type="submit" className="ml-auto" color="primary">Submit</Button> : null
                   }
                 </div>
               </Form>

@@ -17,7 +17,7 @@ import {
   NavLink,
   TabContent,
   TabPane,
-  Media
+  Media, Spinner
 } from "reactstrap"
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/light.css";
@@ -42,7 +42,7 @@ import {bindActionCreators} from "redux"
 import userImg from "../../../assets/img/portrait/small/avatar-s-18.jpg"
 import workflowService from "../../../services/workflow.service";
 import FormCreate from "../onboarding/FormCreate/FormCreate";
-
+import {debounce} from 'lodash';
 const clone = rfdc();
 
 const colorMultiSelect = '#007bff'; //#7367f0
@@ -170,7 +170,8 @@ class UserEdit extends React.Component {
     }],
     dForms: [],
     editField: null,
-    errors: {}
+    errors: {},
+    updatedAtText: ''
   };
 
   constructor() {
@@ -184,6 +185,9 @@ class UserEdit extends React.Component {
       workflow: {},
       reviewers: []
     };
+    this.debounceOnSave = debounce(async (formData) => {
+      this.submitOnboardingForm(formData)
+    }, 1500);
   }
 
   toggle = tab => {
@@ -543,9 +547,22 @@ class UserEdit extends React.Component {
   }
 
   async submitOnboardingForm(formData) {
-    await workflowService.submitData(this.props.user.onboarding.d_form, formData);
+    this.setState({
+      updatedAtText: (
+        <div className="d-flex">
+          <div>Saving progress..</div>
+          {<Spinner className="ml-1" color="success" />}
+        </div>
+      )
+    });
+    const response = await workflowService.submitData(this.props.user.onboarding.d_form, formData);
     await this.dispatchUserList();
+    this.setState({updatedAtText: `Progress saved: ${moment(response.data.updated_at).format('YYYY-MM-DD HH:mm:ss')}`});
     toast.success('success')
+  }
+
+  getDefaultUpdatedAtText() {
+    return `Progress saved: ${moment(this.props.user.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`;
   }
 
   async statusChanged(status) {
@@ -765,13 +782,14 @@ class UserEdit extends React.Component {
                                       liveValidate={false}
                                       inputDisabled={false}
                                       fill={true}
-                                      onSaveButtonHidden={false}
+                                      onSaveButtonHidden={true}
                                       statusChanged={(value) => {
                                         this.statusChanged(value)
                                       }}
-                                      onSave={(formData) => this.submitOnboardingForm(formData)}
+                                      onChange={(formData) => this.debounceOnSave(formData)}
                                       dForm={this.props.user.onboarding.d_form}
                                       isStateConfig={false}
+                                      updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
                                     ></FormCreate>
                                   </CardBody>
                                 </Card>

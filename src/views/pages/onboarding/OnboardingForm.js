@@ -2,20 +2,25 @@ import React from 'react'
 import workflowService from '../../../services/workflow.service'
 import {connect} from "react-redux"
 import FormCreate from './FormCreate/FormCreate'
-import {CardHeader, CardBody, Card, CardTitle, Row, Col} from 'reactstrap';
+import {CardHeader, CardBody, Card, CardTitle, Row, Col, Spinner} from 'reactstrap';
 import {toast, ToastContainer} from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css"
 import "../../../assets/scss/plugins/extensions/toastr.scss"
 import Form from "@rjsf/core";
+import {debounce} from 'lodash';
+import moment from "moment";
 
 class OnboardingForm extends React.Component {
 
-  state = {}
+  state = {
+    updatedAtText: ''
+  };
 
   constructor(props) {
     super();
-
-
+    this.debounceOnSave = debounce((formData) => {
+      this.onSave(formData)
+    }, 1500);
   }
 
   componentWillMount() {
@@ -30,15 +35,35 @@ class OnboardingForm extends React.Component {
     return false;
   }
 
+  componentDidMount() {
+
+  }
+
   async onSave(formData) {
-    await workflowService.submitData(this.props.user.onboarding.d_form, formData);
+    console.log('!!');
+    this.setState({
+      updatedAtText: (
+        <div className="d-flex">
+          <div>Saving progress..</div>
+          {<Spinner className="ml-1" color="success" />}
+        </div>
+      )
+    });
+    const response = await workflowService.submitData(this.props.user.onboarding.d_form, formData);
+    this.setState({updatedAtText: `Progress saved: ${moment(response.data.updated_at).format('YYYY-MM-DD HH:mm:ss')}`});
     toast.success('Success');
   }
 
   async submitOnboardingForm(formData) {
-    await workflowService.dFormSubmit(this.props.user.onboarding.d_form, formData);
+    this.setState({updatedAtText: "Saving progress"});
+    const response = await workflowService.dFormSubmit(this.props.user.onboarding.d_form, formData);
+    this.setState({updatedAtText: `Progress saved: ${moment(response.data.updated_at).format('YYYY-MM-DD HH:mm:ss')}`});
     toast.success('Success');
     window.location.reload();
+  }
+
+  getDefaultUpdatedAtText() {
+    return `Progress saved: ${moment(this.props.user.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`;
   }
 
   onboardingProcess() {
@@ -58,7 +83,9 @@ class OnboardingForm extends React.Component {
         fill={true}
         dForm={this.props.user.onboarding.d_form}
         isStateConfig={false}
-        onSave={(formData) => this.onSave(formData)}
+        onSaveButtonHidden={true}
+        onChange={(formData) => this.debounceOnSave(formData)}
+        updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
       ></FormCreate>
     }
   }
