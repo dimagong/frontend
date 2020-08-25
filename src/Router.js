@@ -7,7 +7,9 @@ import Spinner from "./components/@vuexy/spinner/Loading-spinner"
 import { ContextLayout } from "./utility/context/Layout"
 
 const home = lazy(() => import("./views/pages/home/Home"));
-
+const forgotPassword = lazy(() =>
+  import("./views/pages/authentication/ForgotPassword")
+)
 // User
 const userManagement = lazy(() => import("./views/pages/user-management/UserManagement"));
 const userCreate = lazy(() => import("./views/pages/user-management/UserCreate"));
@@ -20,7 +22,7 @@ const invitationList = lazy(() => import("./views/pages/invitation/InvitationLis
 const invitationAccept = lazy(() => import("./views/pages/invitation/InvitationAccept"));
 
 
-// onboarding 
+// onboarding
 const workflow = lazy(() => import("./views/pages/onboarding/Workflow"));
 const notification = lazy(() => import("./views/pages/onboarding/Notification"));
 const dForm = lazy(() => import("./views/pages/onboarding/DForm"));
@@ -201,7 +203,11 @@ class AppRouter extends React.Component {
             exact
             component={onboardingForm} />
 
-
+          <AppRoute
+            path="/forgot-password"
+            component={forgotPassword}
+            fullLayout
+          />
 
           <AppRoute path="/misc/error/404" component={error404} fullLayout />
           <AppRoute path="/login" component={Login} fullLayout />

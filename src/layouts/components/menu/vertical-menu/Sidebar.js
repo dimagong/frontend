@@ -171,6 +171,7 @@ class Sidebar extends Component {
                   activePath={activePath}
                   sidebarState={sidebarState}
                 />
+                <h2 className="bottom-logo">NMP</h2>
                 <ScrollbarTag
                   className={classnames("main-menu-content", {
                     "overflow-hidden": ScrollbarTag !== "div",

@@ -82,18 +82,20 @@
     width: $menu-expanded-width;
     height: $navbar-height;
     position: relative;
-    padding: 0.35rem 1rem 0.3rem 1.64rem;
+    //padding: 0.35rem 1rem 0.3rem 1.64rem;
     transition: 300ms ease all;
     .navbar-brand {
       // padding: 15px 0px;
       display: flex;
       align-items: center;
-      margin-top: 1.35rem;
+      //margin-top: 1.35rem;
       .brand-logo {
-        background: url("../../../img/logo/vuesax-logo.png") no-repeat;
-        background-position: -65px -54px;
-        height: 24px;
-        width: 35px;
+        background: url("../../../img/logo/logo_vp.jpg") no-repeat;
+        margin: 15px 0 0 15px;
+        //background-image: ;
+        height: 89px;
+        width: 140px;
+        background-size:contain;
       }
 
       .brand-text {
@@ -280,7 +282,7 @@
     .navbar-container,
     .navbar-header {
       .brand-logo {
-        background-position: -65px -54px !important;
+        //background-position: -65px -54px !important;
       }
     }
   }

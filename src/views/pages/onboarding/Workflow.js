@@ -161,10 +161,6 @@ class Workflow extends React.Component {
             resizable: true,
         },
         rowData: [],
-        dform: {
-            triggers: [],
-            actions: []
-        },
         notification: {
             actions: []
         },

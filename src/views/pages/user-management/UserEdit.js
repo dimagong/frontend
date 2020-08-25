@@ -32,7 +32,7 @@ import moment from 'moment';
 import {toast} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import "../../../assets/scss/plugins/extensions/toastr.scss"
-import {User, X, Check, Plus, Edit2} from "react-feather"
+import {User, X, Check, Plus, Edit2, RefreshCw} from "react-feather"
 import {store} from '../../../redux/storeConfig/store'
 import {setEditUser} from '../../../redux/actions/user-management/userEditActions'
 import InvitationCreate from '../invitation/InvitationCreate'
@@ -43,6 +43,7 @@ import userImg from "../../../assets/img/portrait/small/avatar-s-18.jpg"
 import workflowService from "../../../services/workflow.service";
 import FormCreate from "../onboarding/FormCreate/FormCreate";
 import {debounce} from 'lodash';
+
 const clone = rfdc();
 
 const colorMultiSelect = '#007bff'; //#7367f0
@@ -171,7 +172,8 @@ class UserEdit extends React.Component {
     dForms: [],
     editField: null,
     errors: {},
-    updatedAtText: ''
+    updatedAtText: '',
+    refreshOnboarding: false
   };
 
   constructor() {
@@ -387,7 +389,8 @@ class UserEdit extends React.Component {
           group_id: admin.id,
           type: 'admin'
         },
-        label: `Admin(${admin.id})`,
+        label: `${admin.name}`,
+        // label: `${admin.name}(${admin.id})`,
         color: colorMultiSelect
       });
       admin.corporations.forEach(corporation => {
@@ -396,7 +399,8 @@ class UserEdit extends React.Component {
             group_id: corporation.id,
             type: 'corporation'
           },
-          label: `Admin(${admin.id})->Corporation(${corporation.id})`,
+          // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`,
+          label: `${corporation.name}`,
           color: colorMultiSelect
         });
         corporation.networks.forEach(network => {
@@ -405,7 +409,8 @@ class UserEdit extends React.Component {
               group_id: network.id,
               type: 'network'
             },
-            label: `Admin(${admin.id})->Corporation(${corporation.id})->Network(${network.id})`,
+            // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`,
+            label: `${network.name}`,
             color: colorMultiSelect
           });
           network.member_firms.forEach(memberFirm => {
@@ -414,7 +419,8 @@ class UserEdit extends React.Component {
                 group_id: memberFirm.id,
                 type: 'member_firm'
               },
-              label: `Admin(${admin.id})->Corporation(${corporation.id})->Network(${network.id})->MemberFirm(${memberFirm.id})`,
+              // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`,
+              label: `${memberFirm.name}`,
               color: colorMultiSelect
             });
           });
@@ -429,22 +435,26 @@ class UserEdit extends React.Component {
 
     for (let admin of groups) {
       if (groupType === 'admin' && groupId === admin.id) {
-        return `Admin(${admin.id})`
+        return `${admin.name}`
+        // return `${admin.name}(${admin.id})`
       }
 
       for (let corporation of admin.corporations) {
         if (groupType === 'corporation' && groupId === corporation.id) {
-          return `Admin(${admin.id})->Corporation(${corporation.id})`
+          return `${corporation.name}`
+          // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`
         }
 
         for (let network of corporation.networks) {
           if (groupType === 'network' && groupId === network.id) {
-            return `Admin(${admin.id})->Corporation(${corporation.id})->Network(${network.id})`
+            return `${network.name}`
+            // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`
           }
 
           for (let memberFirm of network.member_firms) {
             if (groupType === 'member_firm' && groupId === memberFirm.id) {
-              return `Admin(${admin.id})->Corporation(${corporation.id})->Network(${network.id})->MemberFirm(${memberFirm.id})`
+              return `${memberFirm.name}`
+              // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`
             }
           }
           ;
@@ -551,7 +561,7 @@ class UserEdit extends React.Component {
       updatedAtText: (
         <div className="d-flex">
           <div>Saving progress..</div>
-          {<Spinner className="ml-1" color="success" />}
+          {<Spinner className="ml-1" color="success"/>}
         </div>
       )
     });
@@ -615,6 +625,14 @@ class UserEdit extends React.Component {
     })
   }
 
+  refreshOnboarding() {
+    this.setState({refreshOnboarding: true}, async () => {
+      await this.dispatchUserList();
+      await this.dispatchEditUser();
+      this.setState({refreshOnboarding: false})
+    });
+  }
+
   onSelectGroupsChange = (values) => {
 
     this.setState({groups: values}, () => {
@@ -646,7 +664,7 @@ class UserEdit extends React.Component {
   }
 
   modulesRender() {
-    if(this.state.id !== this.props.user.id) return null;
+    if (this.state.id !== this.props.user.id) return null;
 
     return (
       this.props.user && this.props.user.modules.length && this.props.user.modules.find((module) => module.name === 'Onboarding') ?
@@ -773,24 +791,31 @@ class UserEdit extends React.Component {
                                   <CardHeader className="m-0">
                                     <CardTitle>
                                       Onboarding dForm
-
                                     </CardTitle>
+                                    <RefreshCw className={`bg-hover-icon${this.state.refreshOnboarding ? ' rotating' : ''}`} size={15} onClick={(event) => {
+                                      this.refreshOnboarding();
+                                    }}/>
                                   </CardHeader>
                                   <CardBody className="pt-0">
                                     <hr/>
-                                    <FormCreate
-                                      liveValidate={false}
-                                      inputDisabled={false}
-                                      fill={true}
-                                      onSaveButtonHidden={true}
-                                      statusChanged={(value) => {
-                                        this.statusChanged(value)
-                                      }}
-                                      onChange={(formData) => this.debounceOnSave(formData)}
-                                      dForm={this.props.user.onboarding.d_form}
-                                      isStateConfig={false}
-                                      updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
-                                    ></FormCreate>
+                                    {
+                                      this.state.refreshOnboarding ?
+                                        null :
+                                        <FormCreate
+                                          liveValidate={false}
+                                          inputDisabled={false}
+                                          fill={true}
+                                          onSaveButtonHidden={true}
+                                          statusChanged={(value) => {
+                                            this.statusChanged(value)
+                                          }}
+                                          onChange={(formData) => this.debounceOnSave(formData)}
+                                          dForm={this.props.user.onboarding.d_form}
+                                          isStateConfig={false}
+                                          updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
+                                        ></FormCreate>
+                                    }
+
                                   </CardBody>
                                 </Card>
                               </Col>
@@ -1004,14 +1029,19 @@ class UserEdit extends React.Component {
                           <div className="font-weight-bold-lighter column-sizing-user-info">Portal access</div>
                           <div>
                             {
-                              this.props.user.invited && !this.props.user.invited.revoked_at ? <InvitationCreate user={this.props.user} send={false} resend={true} trash={true} invitationText="Resend invitation" />  :
-                              this.props.user.invited && !this.props.user.invited.accepted_at ? <InvitationCreate user={this.props.user} send={false} resend={true} trash={true} invitationText="Resend invitation" /> :
-                                this.props.user.invited && this.props.user.invited.accepted_at ? 'Invitation accepted' :
-                                  this.props.user.roles.indexOf('prospect') === -1 && this.props.user.roles.length && this.props.user.groups.length ?
-                                    'Allowed'
-                                    : this.props.user.roles.indexOf('prospect') !== -1 && !this.props.user.groups.length ?
-                                    <InvitationCreate send={true} resend={false} trash={false} user={this.props.user}/>
-                                    : 'User cannot be invited'
+                              this.props.user.invited && !this.props.user.invited.revoked_at ?
+                                <InvitationCreate user={this.props.user} send={false} resend={true} trash={true}
+                                                  invitationText="Resend invitation"/> :
+                                this.props.user.invited && !this.props.user.invited.accepted_at ?
+                                  <InvitationCreate user={this.props.user} send={false} resend={true} trash={true}
+                                                    invitationText="Resend invitation"/> :
+                                  this.props.user.invited && this.props.user.invited.accepted_at ? 'Invitation accepted' :
+                                    this.props.user.roles.indexOf('prospect') === -1 && this.props.user.roles.length && this.props.user.groups.length ?
+                                      'Allowed'
+                                      : this.props.user.roles.indexOf('prospect') !== -1 && !this.props.user.groups.length ?
+                                      <InvitationCreate send={true} resend={false} trash={false}
+                                                        user={this.props.user}/>
+                                      : 'User cannot be invited'
                             }
 
                           </div>

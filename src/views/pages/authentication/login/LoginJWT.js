@@ -1,18 +1,18 @@
 import React from "react"
-import { Link } from "react-router-dom"
-import { CardBody, FormGroup, Form, Input, Button, Label, FormFeedback } from "reactstrap"
+import {Link} from "react-router-dom"
+import {CardBody, FormGroup, Form, Input, Button, Label, FormFeedback} from "reactstrap"
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy"
-import { Mail, Lock, Check } from "react-feather"
-import { loginWithJWT } from "../../../../redux/actions/auth/loginActions"
-import { connect } from "react-redux"
-import { history } from "../../../../history"
-import { toast } from "react-toastify"
+import {Mail, Lock, Check} from "react-feather"
+import {loginWithJWT} from "../../../../redux/actions/auth/loginActions"
+import {connect} from "react-redux"
+import {history} from "../../../../history"
+import {toast} from "react-toastify"
 import SweetAlert from 'react-bootstrap-sweetalert';
-import { bindActionCreators } from "redux"
+import {bindActionCreators} from "redux"
 import AuthService from '../../../../services/auth.service';
 import UserService from '../../../../services/user.service';
-import { store } from '../../../../redux/storeConfig/store'
-import { setUserProfile } from '../../../../redux/actions/user/userActions'
+import {store} from '../../../../redux/storeConfig/store'
+import {setUserProfile} from '../../../../redux/actions/user/userActions'
 
 class LoginJWT extends React.Component {
   state = {
@@ -23,10 +23,10 @@ class LoginJWT extends React.Component {
     code: '',
     codeInputAlert: false,
     errors: {}
-  }
+  };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.responseStatuses = {
       mismatch: "Mismatch the code",
       codeSent: "Verification code sent to your email"
@@ -34,9 +34,9 @@ class LoginJWT extends React.Component {
   }
 
   handleLogin = async (event) => {
-    event && event.preventDefault()
+    event && event.preventDefault();
     this.login();
-  }
+  };
 
   login = async (triggeredByVerification = false) => {
     let isSuccess = false;
@@ -55,7 +55,7 @@ class LoginJWT extends React.Component {
     }
 
     return isSuccess;
-  }
+  };
 
   getToken = async (triggeredByVerification = false) => {
 
@@ -71,7 +71,7 @@ class LoginJWT extends React.Component {
         if (triggeredByVerification) {
           toast.error(error.response.data.error.message)
           throw new Error();
-        };
+        }
 
         if (error.response.data.error.message === this.responseStatuses.mismatch) {
           this.login();
@@ -84,11 +84,11 @@ class LoginJWT extends React.Component {
         }
 
 
-        this.setState({ ...this.state, errors: { ...error.errors }, code: '' })
+        this.setState({...this.state, errors: {...error.errors}, code: ''})
         throw new Error();
       }
     }
-  }
+  };
 
   getProfile = async () => {
     try {
@@ -97,18 +97,18 @@ class LoginJWT extends React.Component {
     } catch (exception) {
       throw new Error();
     }
-  }
+  };
 
   confirmCode = async (value) => {
-    this.setState((state, props) => ({ code: value }), () => {
+    this.setState((state, props) => ({code: value}), () => {
       this.codeInputAlert(false);
       this.login(true);
     });
   }
 
   codeInputAlert = (value) => {
-    this.setState({ 'codeInputAlert': value })
-  }
+    this.setState({'codeInputAlert': value})
+  };
 
   render() {
 
@@ -121,12 +121,12 @@ class LoginJWT extends React.Component {
                 type="email"
                 placeholder="Email"
                 value={this.state.email}
-                onChange={event => this.setState({ email: event.target.value })}
+                onChange={event => this.setState({email: event.target.value})}
                 required
-                {...{ invalid: 'email' in this.state.errors }}
+                {...{invalid: 'email' in this.state.errors}}
               />
               <div className="form-control-position">
-                <Mail size={15} />
+                <Mail size={15}/>
               </div>
               <Label>Email</Label>
               <FormFeedback>Oh noes! that name is already taken</FormFeedback>
@@ -136,24 +136,24 @@ class LoginJWT extends React.Component {
                 type="password"
                 placeholder="Password"
                 value={this.state.password}
-                onChange={e => this.setState({ password: e.target.value })}
+                onChange={e => this.setState({password: e.target.value})}
                 required
               />
               <div className="form-control-position">
-                <Lock size={15} />
+                <Lock size={15}/>
               </div>
               <Label>Password</Label>
             </FormGroup>
             <FormGroup className="d-flex justify-content-between align-items-center">
               <Checkbox
                 color="primary"
-                icon={<Check className="vx-icon" size={16} />}
+                icon={<Check className="vx-icon" size={16}/>}
                 label="Remember me"
                 defaultChecked={false}
                 onChange={this.handleRemember}
               />
-              <div className="float-right" style={{ display: 'none' }}>
-                <Link to="/pages/forgot-password">Forgot Password?</Link>
+              <div className="float-right">
+                <Link to="/forgot-password">Forgot Password?</Link>
               </div>
             </FormGroup>
             <div className="d-flex justify-content-end">
@@ -164,30 +164,29 @@ class LoginJWT extends React.Component {
           </Form>
         </CardBody>
         <SweetAlert title="Code Verification"
-          input
-          show={this.state.codeInputAlert}
-          placeHolder="Your code"
-          onConfirm={(response) => this.confirmCode(response)}
+                    input
+                    show={this.state.codeInputAlert}
+                    placeHolder="Your code"
+                    onConfirm={(response) => this.confirmCode(response)}
         >
           <p className="sweet-alert-text">
             Please check your email address and enter the code
-            </p>
+          </p>
         </SweetAlert>
       </React.Fragment>
     )
   }
 }
-const mapStateToProps = state => {
-  return {
 
-  }
-}
+const mapStateToProps = state => {
+  return {}
+};
 
 const mapActionsToProps = dispatch => {
   return {
     loginWithJWT: bindActionCreators(loginWithJWT, dispatch),
   }
-}
+};
 
 
 export default connect(mapStateToProps, mapActionsToProps)(LoginJWT)

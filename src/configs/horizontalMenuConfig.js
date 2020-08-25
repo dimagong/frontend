@@ -865,7 +865,7 @@ const horizontalMenuConfig = [
             title: "Forgot Password",
             type: "item",
             icon: <Icon.Circle size={10} />,
-            navLink: "/pages/forgot-password",
+            navLink: "/forgot-password",
             permissions: ["admin", "editor"]
           },
           {

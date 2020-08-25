@@ -94,7 +94,7 @@ class OnboardingForm extends React.Component {
 
     return (
       <Row>
-        <Col md="7">
+        <Col sm="12" md={{ size: 10, offset: 1 }}>
           <Card>
             <CardHeader>
               <CardTitle>Onboarding</CardTitle>

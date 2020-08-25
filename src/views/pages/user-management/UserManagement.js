@@ -47,7 +47,7 @@ class UserManagement extends React.Component {
     render() {
         return (
             <Row>
-                <Col sm="12" md="12" lg="12" xl="6">
+                <Col sm="12" md="12" lg="12" xl="5">
                     <Card>
                         <CardBody className="pt-2">
                             <Nav tabs>
@@ -105,7 +105,7 @@ class UserManagement extends React.Component {
                         </CardBody>
                     </Card>
                 </Col>
-                <Col sm="12" md="12" lg="12" xl="6">
+                <Col sm="12" md="12" lg="12" xl="7">
                     {this.props.userEditing.id > 0 ? <UserEdit /> : null}
                 </Col>
                 <ToastContainer />

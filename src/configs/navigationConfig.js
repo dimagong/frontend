@@ -1,13 +1,13 @@
 import React from "react"
 import * as Icon from "react-feather"
 const navigationConfig = [
-  {
-    id: "Home",
-    title: "Home",
-    type: "item",
-    icon: <Icon.Home size={20} />,
-    navLink: "/"
-  },
+  // {
+  //   id: "Home",
+  //   title: "Home",
+  //   type: "item",
+  //   icon: <Icon.Home size={20} />,
+  //   navLink: "/"
+  // },
   {
     id: "User_management",
     title: "User management",
