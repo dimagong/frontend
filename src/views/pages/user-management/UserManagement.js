@@ -117,6 +117,6 @@ const mapStateToProps = state => {
     return {
         userEditing: state.userManagement.userEditing
     }
-}
+};
 
 export default connect(mapStateToProps)(UserManagement)

@@ -26,7 +26,7 @@ import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy"
 import {X, Check, Plus} from "react-feather"
 import Select from "react-select"
 import {dataURItoBlob, getFile, addNameToDataURL, processFile, processFiles, extractFileInfo} from "./utils";
-import {isEqual, debounce, concat} from 'lodash';
+import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 
 const WITHOUT_GROUP = 'WITHOUT_GROUP_';
 const EFFECT_DISABLED = 'disabled';
@@ -73,9 +73,6 @@ class FormCreate extends React.Component {
     this.state = this.initState(props);
     //this.state.uiSchema.
     this.refTitles = React.createRef();
-    setTimeout(() => {
-      this.onChangeSaving(this.state.formData);
-    }, 5000);
 
     this.props.reInit && this.props.reInit(this.reInit, this);
   }
@@ -221,47 +218,33 @@ class FormCreate extends React.Component {
   }
 
   FileWidget = (props) => {
-
-    const [contextFiles, setContextFile] = useState(true);
-
-    function transformFiles(value) {
-      if (!value) return null;
-      return extractFileInfo(Array.isArray(value) ? value : [value]);
-    }
-
     let inputFileRef = React.createRef();
 
     const onChangeSingle = (event) => {
       let eventTarget = event.target;
-      setContextFile(false);
       processFiles(event.target.files).then((files) => {
         if (files[0].dataURL === 'data:') {
           eventTarget.value = null;
           return;
         }
-        //setContextFile(transformFiles(files[0].dataURL));
         props.onChange(files[0].dataURL);
         setTimeout(() => {
           eventTarget.value = null;
-          setContextFile(true);
         })
       });
     };
     const onChangeMultiple = (event) => {
       let eventTarget = event.target;
       let oldFiles = clone(props.value);
-      setContextFile(false);
       processFiles(event.target.files).then((files) => {
         let filesDataUrl = files.filter(file => typeof file.dataURL !== "undefined" && file.dataURL !== 'data:').map(file => file.dataURL);
 
         let concatedFiles = concat(filesDataUrl, oldFiles);
         props.value.splice(0, props.value.length);
         props.value.push.apply(props.value, concatedFiles)
-        //setContextFile(transformFiles(concatedFiles));
         props.onChange(props.value);
         setTimeout(() => {
           eventTarget.value = null;
-          setContextFile(true);
         })
       });
     };
@@ -278,9 +261,8 @@ class FormCreate extends React.Component {
       if (!window.confirm(`Are you sure you want to delete the file: ${file.name}`)) {
         return;
       }
-      setContextFile(false);
       if (props.multiple) {
-        if(props.value.length === 1) {
+        if (props.value.length === 1) {
           props.value.splice(0, props.value.length)
           props.onChange(props.value);
         } else {
@@ -288,17 +270,8 @@ class FormCreate extends React.Component {
           values.splice(index, 1);
           props.onChange(values);
         }
-
-        //setContextFile(transformFiles(props.value));
-        setTimeout(() => {
-          setContextFile(true);
-        }, 5)
       } else {
         props.onChange(null);
-        //setContextFile(null);
-        setTimeout(() => {
-          setContextFile(true);
-        }, 5)
       }
 
     };
@@ -311,7 +284,7 @@ class FormCreate extends React.Component {
              onChange={(event) => onChange(event)}/>
       <div className="mt-1">
         {
-          contextFiles && Array.isArray(props.value) ? extractFileInfo(props.value).map((file, index) => {
+          Array.isArray(props.value) ? extractFileInfo(props.value).map((file, index) => {
             let fileUrl = '';
             if (props.multiple && props.value[index]) {
               fileUrl = window.URL.createObjectURL(
@@ -339,22 +312,16 @@ class FormCreate extends React.Component {
 
 
   componentDidUpdate = debounce((prevProps, prevState) => {
-    // if(!equal(this.state, prevState))
-    // {
-    //   let state = clone(this.state);
-    //   // state.formData = this.state.formData;
-    //   this.dependencyChecker(state);
-    //   this.setState(state);
-    //   console.log('newState', state);
-    // }
-  }, 100);
+    // this.onChangeSaving(prevState.formData, this.state.formData);
+  }, 200);
 
-
-  reInit() {
+  reInit = debounce(() => {
+    this.forceUpdate();
     let state = this.initState(this.props);
+    state.formData = this.props.dForm.submit_data;
     this.dependencyChecker(state);
     this.setState(state);
-  }
+  }, 100);
 
   CustomCheckbox = (props) => {
     const onChange = (event) => {
@@ -428,18 +395,18 @@ class FormCreate extends React.Component {
 
       const groupedFields = Object.keys(this.state.uiSchema.groups);
       props.properties.forEach(element => {
-        console.log('Refactor content key', element);
-        if (groupedFields.indexOf(element.content.key) !== -1) {
-          const groupName = props.uiSchema.groups[element.content.key];
+        // console.log('Refactor content key - 0', element);
+        if (groupedFields.indexOf(element.name) !== -1) {
+          const groupName = props.uiSchema.groups[element.name];
           if (!Array.isArray(groups[groupName])) {
             groups[groupName] = [];
           }
           groups[groupName].push(element);
         } else {
-          if (!Array.isArray(groups[WITHOUT_GROUP + element.content.key])) {
-            groups[WITHOUT_GROUP + element.content.key] = [];
+          if (!Array.isArray(groups[WITHOUT_GROUP + element.name])) {
+            groups[WITHOUT_GROUP + element.name] = [];
           }
-          groups[WITHOUT_GROUP + element.content.key].push(element);
+          groups[WITHOUT_GROUP + element.name].push(element);
         }
       });
       return groups;
@@ -458,7 +425,8 @@ class FormCreate extends React.Component {
       return elementContentKey in this.state.uiSchema.sections && this.state.uiSchema.sections[elementContentKey] === sectionName;
     };
     const isSectionHaveOneElement = (elements, sectionName) => {
-      const fieldsNames = elements.map(element => element.content.key);
+      // console.log('Refactor content key - 1', elements);
+      const fieldsNames = elements.map(element => element.name);
       const found = fieldsNames.some(fieldName => isElementInSection(fieldName, sectionName));
       return !!found;
     };
@@ -471,14 +439,15 @@ class FormCreate extends React.Component {
         }
 
         const elementContent = groupedElements[groupName].map(element => {
-          if (isElementInSection(element.content.key, sectionName)) {
+          // console.log('Refactor content key - 2', element);
+          if (isElementInSection(element.name, sectionName)) {
             const isElementHidden = (elementKey) => {
               return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
                 ? {display: 'none'} : {}
             }
             return (
-              <div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key, element)}
-                   key={element.content.key}>
+              <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
+                   key={element.name}>
                 {element.content}
               </div>)
           }
@@ -524,14 +493,15 @@ class FormCreate extends React.Component {
           return null
         }
         let elementContent = groupedElements[groupName].map(element => {
-          if (isElementInSection(element.content.key, sectionName)) {
+          // console.log('Refactor content key - 3', element);
+          if (isElementInSection(element.name, sectionName)) {
             const isElementHidden = (elementKey) => {
               return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
                 ? {display: 'none'} : {}
             }
             return (
-              <div style={isElementHidden(element.content.key)} className={getColumnClass(element.content.key, element)}
-                   key={element.content.key}>
+              <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
+                   key={element.name}>
                 {element.content}
               </div>)
           }
@@ -1313,26 +1283,26 @@ class FormCreate extends React.Component {
     return true;
   }
 
-  onChangeSaving =(formData) => {
+  onChangeSaving = debounce((previousFormData, formData) => {
+    if (
+      (!previousFormData || !formData) ||
+      (isEmpty(previousFormData) || isEmpty(formData))
+    ) return;
+
     if (this.props.onChange) {
-      console.log(123123123, this.props.dForm.submit_data, formData);
-      if (!this.deepCompare(this.props.dForm.submit_data, formData)) {
+      if (!this.deepCompare(previousFormData, formData)) {
         this.props.onChange(formData)
       }
     }
-  }
+  }, 300);
 
   onChangeForm = (event) => {
-
     let state = clone(this.state);
+    let oldState = clone(this.state);
     state.formData = event.formData;
     this.dependencyChecker(state);
-    this.setState(state, () => {
-      console.log('formData', state.formData);
-      console.log('state', state);
-    });
-
-    this.onChangeSaving(state.formData);
+    this.setState(state);
+    this.onChangeSaving(oldState.formData, state.formData);
   };
 
   submit = (event) => {
@@ -2273,22 +2243,19 @@ class FormCreate extends React.Component {
 
       const groupedFields = Object.keys(this.state.uiSchema.groups);
       keys.forEach(elementKey => {
-        properties[elementKey].content = {
-          key: elementKey
-        }
         if (groupedFields.indexOf(elementKey) !== -1) {
           const groupName = this.state.uiSchema.groups[elementKey];
-          if (!Array.isArray(groups[groupName])) {
-            groups[groupName] = [];
+          if (isEmpty(groups[groupName])) {
+            groups[groupName] = {};
           }
 
-          groups[groupName].push(properties[elementKey]);
+          groups[groupName][elementKey] = properties[elementKey];
         } else {
-          if (!Array.isArray(groups[WITHOUT_GROUP + elementKey])) {
-            groups[WITHOUT_GROUP + elementKey] = [];
+          if (isEmpty(groups[WITHOUT_GROUP + elementKey])) {
+            groups[WITHOUT_GROUP + elementKey] = {};
           }
 
-          groups[WITHOUT_GROUP + elementKey].push(properties[elementKey]);
+          groups[WITHOUT_GROUP + elementKey][elementKey] = properties[elementKey];
         }
       });
 
@@ -2308,7 +2275,8 @@ class FormCreate extends React.Component {
       return elementContentKey in this.state.uiSchema.sections && this.state.uiSchema.sections[elementContentKey] === sectionName;
     };
     const isSectionHaveOneElement = (elements, sectionName) => {
-      const fieldsNames = elements.map(element => element.content.key);
+      // console.log('Refactor content key - 4', elements);
+      const fieldsNames = Object.keys(elements);
       const found = fieldsNames.some(fieldName => isElementInSection(fieldName, sectionName));
       return !!found;
     };
@@ -2324,14 +2292,14 @@ class FormCreate extends React.Component {
             return renderConfigFields(element.content.key, index);
           });
         } else {
-          return groupedElements[groupName].map(element => {
-            if (element.content.key in this.state.uiSchema.sections) {
+          return Object.keys(groupedElements[groupName]).map(key => {
+            if (key in this.state.uiSchema.sections) {
               return null;
             }
             return <Card key={groupName}>
               <CardHeader>{groupName}</CardHeader>
               <CardBody>
-                {renderConfigFields(element.content.key, index)}
+                {renderConfigFields(key, index)}
               </CardBody>
             </Card>;
           });
@@ -2349,10 +2317,10 @@ class FormCreate extends React.Component {
             return null;
           }
 
-          const elementContent = groupedElements[groupName].map(element => {
+          const elementContent = Object.keys(groupedElements[groupName]).map(key => {
 
-            if (isElementInSection(element.content.key, sectionName)) {
-              return renderConfigFields(element.content.key, index);
+            if (isElementInSection(key, sectionName)) {
+              return renderConfigFields(key, index);
               // return (<div className={getColumnClass(element.content.key)} key={element.content.key}>
               //     {element.content}
               // </div>)
@@ -2456,10 +2424,10 @@ class FormCreate extends React.Component {
           // </div>;
           return null;
         }
-        const elementContent = groupedElements[groupName].map(element => {
+        const elementContent = Object.keys(groupedElements[groupName]).map(key => {
 
-          if (isElementInSection(element.content.key, sectionName)) {
-            return renderConfigFields(element.content.key, index);
+          if (isElementInSection(key, sectionName)) {
+            return renderConfigFields(key, index);
             // return (<div className={getColumnClass(element.content.key)} key={element.content.key}>
             //     {element.content}
             // </div>)
