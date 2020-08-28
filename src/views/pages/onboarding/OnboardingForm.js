@@ -40,7 +40,6 @@ class OnboardingForm extends React.Component {
   }
 
   async onSave(formData) {
-    console.log('!!');
     this.setState({
       updatedAtText: (
         <div className="d-flex">

@@ -15,6 +15,8 @@ import {
   hideScrollToTop
 } from "../redux/actions/customizer/index";
 
+import UserService from '../services/user.service';
+
 class VerticalLayout extends PureComponent {
   state = {
     width: window.innerWidth,
@@ -269,7 +271,8 @@ class VerticalLayout extends PureComponent {
         <Sidebar {...sidebarProps} />
         <div
           className={classnames("app-content content", {
-            "show-overlay": this.state.appOverlay === true
+            "show-overlay": this.state.appOverlay === true,
+            "is-onboarding": UserService.isOnboarding(this.props.userProfile)
           })}
           onClick={this.handleAppOverlayClick}
         >

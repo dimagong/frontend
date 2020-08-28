@@ -118,6 +118,10 @@
   }
 
   &.floating-nav {
+    &.is-onboarding {
+      width: calc(100% - calc(#{$content-padding} * 2));
+      transition: none !important;
+    }
     margin: 1.3rem #{$content-padding} 0;
     border-radius: 0.5rem;
     position: fixed;

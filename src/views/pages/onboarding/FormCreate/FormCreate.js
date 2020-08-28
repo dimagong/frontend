@@ -5,6 +5,7 @@ import DependencyEditModal from "./DependencyEditModal";
 // import { Tabs, Tab, Card, FormGroup } from "react-bootstrap";
 import classnames from "classnames"
 import rfdc from 'rfdc';
+import equal from 'fast-deep-equal'
 import {
   Nav,
   NavItem,
@@ -72,7 +73,11 @@ class FormCreate extends React.Component {
     this.state = this.initState(props);
     //this.state.uiSchema.
     this.refTitles = React.createRef();
+    setTimeout(() => {
+      this.onChangeSaving(this.state.formData);
+    }, 5000);
 
+    this.props.reInit && this.props.reInit(this.reInit, this);
   }
 
   initState(props) {
@@ -213,13 +218,11 @@ class FormCreate extends React.Component {
       section: '',
       uiSchema: propsDFormUiSchema
     };
-
-
   }
 
   FileWidget = (props) => {
 
-    const [contextFiles, setContextFile] = useState(transformFiles(props.value));
+    const [contextFiles, setContextFile] = useState(true);
 
     function transformFiles(value) {
       if (!value) return null;
@@ -230,30 +233,35 @@ class FormCreate extends React.Component {
 
     const onChangeSingle = (event) => {
       let eventTarget = event.target;
+      setContextFile(false);
       processFiles(event.target.files).then((files) => {
         if (files[0].dataURL === 'data:') {
           eventTarget.value = null;
           return;
         }
-        setContextFile(transformFiles(files[0].dataURL));
+        //setContextFile(transformFiles(files[0].dataURL));
         props.onChange(files[0].dataURL);
         setTimeout(() => {
           eventTarget.value = null;
+          setContextFile(true);
         })
       });
     };
     const onChangeMultiple = (event) => {
       let eventTarget = event.target;
       let oldFiles = clone(props.value);
+      setContextFile(false);
       processFiles(event.target.files).then((files) => {
         let filesDataUrl = files.filter(file => typeof file.dataURL !== "undefined" && file.dataURL !== 'data:').map(file => file.dataURL);
 
         let concatedFiles = concat(filesDataUrl, oldFiles);
-
-        setContextFile(transformFiles(concatedFiles));
-        props.onChange(concatedFiles);
+        props.value.splice(0, props.value.length);
+        props.value.push.apply(props.value, concatedFiles)
+        //setContextFile(transformFiles(concatedFiles));
+        props.onChange(props.value);
         setTimeout(() => {
           eventTarget.value = null;
+          setContextFile(true);
         })
       });
     };
@@ -266,21 +274,31 @@ class FormCreate extends React.Component {
       }
     };
 
-    const saveDebounce = debounce(props.onChange, 400);
-
     const removeFile = (event, file, index) => {
-      if(!window.confirm(`Are you sure you want to delete the file: ${file.name}`)) {
+      if (!window.confirm(`Are you sure you want to delete the file: ${file.name}`)) {
         return;
       }
-
+      setContextFile(false);
       if (props.multiple) {
-        props.value.splice(index, 1);
-        saveDebounce(props.value);
-        setContextFile(transformFiles(props.value));
+        if(props.value.length === 1) {
+          props.value.splice(0, props.value.length)
+          props.onChange(props.value);
+        } else {
+          let values = clone(props.value);
+          values.splice(index, 1);
+          props.onChange(values);
+        }
 
+        //setContextFile(transformFiles(props.value));
+        setTimeout(() => {
+          setContextFile(true);
+        }, 5)
       } else {
         props.onChange(null);
-        setContextFile(null);
+        //setContextFile(null);
+        setTimeout(() => {
+          setContextFile(true);
+        }, 5)
       }
 
     };
@@ -293,13 +311,13 @@ class FormCreate extends React.Component {
              onChange={(event) => onChange(event)}/>
       <div className="mt-1">
         {
-          Array.isArray(contextFiles) ? contextFiles.map((file, index) => {
+          contextFiles && Array.isArray(props.value) ? extractFileInfo(props.value).map((file, index) => {
             let fileUrl = '';
-            if(props.multiple && props.value[index]) {
+            if (props.multiple && props.value[index]) {
               fileUrl = window.URL.createObjectURL(
                 new Blob([dataURItoBlob(props.value[index]).blob], {type: file.type})
               )
-            } else if(!props.multiple && props.value) {
+            } else if (!props.multiple && props.value) {
               fileUrl = window.URL.createObjectURL(
                 new Blob([dataURItoBlob(props.value).blob], {type: file.type})
               );
@@ -319,16 +337,40 @@ class FormCreate extends React.Component {
     </div>
   };
 
+
+  componentDidUpdate = debounce((prevProps, prevState) => {
+    // if(!equal(this.state, prevState))
+    // {
+    //   let state = clone(this.state);
+    //   // state.formData = this.state.formData;
+    //   this.dependencyChecker(state);
+    //   this.setState(state);
+    //   console.log('newState', state);
+    // }
+  }, 100);
+
+
+  reInit() {
+    let state = this.initState(this.props);
+    this.dependencyChecker(state);
+    this.setState(state);
+  }
+
   CustomCheckbox = (props) => {
+    const onChange = (event) => {
+      return props.onChange(event.target.checked);
+    };
+
     return (
       <div>
         {props.options.label ? <label>{props.label}</label> : null}
         <Checkbox
+          id={props.id}
           color="primary"
           icon={<Check className="vx-icon" size={16}/>}
-          onChange={event => props.onChange(!props.value)}
+          onChange={event => onChange(event)}
           label={props.label}
-          checked={props.value}
+          checked={props.value ? true : false}
         />
       </div>
     );
@@ -386,6 +428,7 @@ class FormCreate extends React.Component {
 
       const groupedFields = Object.keys(this.state.uiSchema.groups);
       props.properties.forEach(element => {
+        console.log('Refactor content key', element);
         if (groupedFields.indexOf(element.content.key) !== -1) {
           const groupName = props.uiSchema.groups[element.content.key];
           if (!Array.isArray(groups[groupName])) {
@@ -480,7 +523,7 @@ class FormCreate extends React.Component {
         if (groupName.indexOf('WITHOUT_GROUP') === -1) {
           return null
         }
-        const elementContent = groupedElements[groupName].map(element => {
+        let elementContent = groupedElements[groupName].map(element => {
           if (isElementInSection(element.content.key, sectionName)) {
             const isElementHidden = (elementKey) => {
               return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
@@ -1157,10 +1200,10 @@ class FormCreate extends React.Component {
     return JSON.stringify(aKeys) === JSON.stringify(bKeys);
   }
 
-  deepCompare () {
+  deepCompare() {
     var i, l, leftChain, rightChain;
 
-    function compare2Objects (x, y) {
+    function compare2Objects(x, y) {
       var p;
 
       // remember that NaN === NaN returns false
@@ -1214,8 +1257,7 @@ class FormCreate extends React.Component {
       for (p in y) {
         if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
           return false;
-        }
-        else if (typeof y[p] !== typeof x[p]) {
+        } else if (typeof y[p] !== typeof x[p]) {
           return false;
         }
       }
@@ -1223,8 +1265,7 @@ class FormCreate extends React.Component {
       for (p in x) {
         if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
           return false;
-        }
-        else if (typeof y[p] !== typeof x[p]) {
+        } else if (typeof y[p] !== typeof x[p]) {
           return false;
         }
 
@@ -1235,7 +1276,7 @@ class FormCreate extends React.Component {
             leftChain.push(x);
             rightChain.push(y);
 
-            if (!compare2Objects (x[p], y[p])) {
+            if (!compare2Objects(x[p], y[p])) {
               return false;
             }
 
@@ -1272,22 +1313,26 @@ class FormCreate extends React.Component {
     return true;
   }
 
-  onChangeSaving = debounce((formData) => {
-      if (this.props.onChange) {
+  onChangeSaving =(formData) => {
+    if (this.props.onChange) {
+      console.log(123123123, this.props.dForm.submit_data, formData);
       if (!this.deepCompare(this.props.dForm.submit_data, formData)) {
         this.props.onChange(formData)
       }
     }
-  }, 1000);
+  }
 
   onChangeForm = (event) => {
 
     let state = clone(this.state);
     state.formData = event.formData;
     this.dependencyChecker(state);
-    this.setState(state);
+    this.setState(state, () => {
+      console.log('formData', state.formData);
+      console.log('state', state);
+    });
 
-    this.onChangeSaving(event.formData);
+    this.onChangeSaving(state.formData);
   };
 
   submit = (event) => {
@@ -1581,9 +1626,6 @@ class FormCreate extends React.Component {
       }
     });
   };
-
-  componentDidUpdate() {
-  }
 
   componentDidMount() {
 

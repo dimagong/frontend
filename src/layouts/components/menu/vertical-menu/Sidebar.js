@@ -1,12 +1,22 @@
-import React, { Component } from "react"
+import React, {Component} from "react"
 import classnames from "classnames"
-import { ContextLayout } from "../../../../utility/context/Layout"
-import { connect } from "react-redux"
+import {ContextLayout} from "../../../../utility/context/Layout"
+import {connect} from "react-redux"
 import SidebarHeader from "./SidebarHeader"
 import Hammer from "react-hammerjs"
 import SideMenuContent from "./sidemenu/SideMenuContent"
 import PerfectScrollbar from "react-perfect-scrollbar"
+import UserService from '../../../../services/user.service'
+import {User} from "react-feather";
+
 class Sidebar extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.navBarRef = React.createRef();
+  }
+
   static getDerivedStateFromProps(props, state) {
     if (props.activePath !== state.activeItem) {
       return {
@@ -16,6 +26,7 @@ class Sidebar extends Component {
     // Return null if the state hasn't changed
     return null
   }
+
   state = {
     width: window.innerWidth,
     activeIndex: null,
@@ -52,7 +63,7 @@ class Sidebar extends Component {
 
   checkDevice = () => {
     var prefixes = " -webkit- -moz- -o- -ms- ".split(" ")
-    var mq = function(query) {
+    var mq = function (query) {
       return window.matchMedia(query).matches
     }
 
@@ -126,17 +137,23 @@ class Sidebar extends Component {
     } = this.state
     let scrollShadow = (container, dir) => {
       if (container && dir === "up" && container.scrollTop >= 100) {
-        this.setState({ menuShadow: true })
+        this.setState({menuShadow: true})
       } else if (container && dir === "down" && container.scrollTop < 100) {
-        this.setState({ menuShadow: false })
+        this.setState({menuShadow: false})
       } else {
         return
       }
     }
+
+    if (UserService.isOnboarding(this.props.userProfile)) {
+      return null;
+    }
+    //UserService.isOnboarding(this.props.userProfile, true)
     return (
       <ContextLayout.Consumer>
         {context => {
-          let dir = context.state.direction
+          let dir = context.state.direction;
+
           return (
             <React.Fragment>
               <Hammer
@@ -150,13 +167,14 @@ class Sidebar extends Component {
               </Hammer>
 
               <div
+                ref={this.navBarRef}
                 className={classnames(
                   `main-menu menu-fixed menu-light menu-accordion menu-shadow theme-${activeTheme}`,
                   {
                     collapsed: sidebarState === true,
-                    "hide-sidebar":
-                      this.state.width < 1200 && visibilityState === false
-                  }
+                    "hide-sidebar": this.state.width < 1200 && visibilityState === false,
+                    'd-none': UserService.isOnboarding(this.props.userProfile, true),
+                  },
                 )}
                 onMouseEnter={() => sidebarHover(false)}
                 onMouseLeave={() => sidebarHover(true)}>
@@ -178,12 +196,12 @@ class Sidebar extends Component {
                     "overflow-scroll": ScrollbarTag === "div"
                   })}
                   {...(ScrollbarTag !== "div" && {
-                    options: { wheelPropagation: false },
+                    options: {wheelPropagation: false},
                     onScrollDown: container => scrollShadow(container, "down"),
                     onScrollUp: container => scrollShadow(container, "up"),
                     onYReachStart: () =>
                       menuShadow === true &&
-                      this.setState({ menuShadow: false })
+                      this.setState({menuShadow: false})
                   })}>
                   <Hammer
                     onSwipe={() => {
@@ -226,6 +244,6 @@ const mapStateToProps = state => {
     currentUser: state.auth.login.userRole,
     userProfile: state.user.profile
   }
-}
+};
 
 export default connect(mapStateToProps)(Sidebar)

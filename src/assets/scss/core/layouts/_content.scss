@@ -14,10 +14,12 @@ html {
   font-size: $base-font-size;
   height: 100%;
   letter-spacing: 0.01rem;
+
   body {
     height: 100%;
     background-color: $body-bg;
     direction: $body-direction;
+
     .content {
       padding: 0;
       position: relative;
@@ -25,22 +27,31 @@ html {
       backface-visibility: hidden;
       min-height: calc(100% - 4rem);
       margin-left: $menu-expanded-width;
+
+      &.is-onboarding {
+        margin-left: 0!important;
+        transition: none !important;
+      }
+
       &.app-content {
         overflow: hidden;
+
         &.show-overlay {
           .content-overlay {
             z-index: 10;
             opacity: 1;
+
             ~ .header-navbar-shadow {
               background: linear-gradient(
-                180deg,
-                rgba(44, 48, 60, 0.9) 44%,
-                rgba(44, 48, 60, 0.43) 73%,
-                rgba(44, 48, 60, 0)
+                  180deg,
+                  rgba(44, 48, 60, 0.9) 44%,
+                  rgba(44, 48, 60, 0.43) 73%,
+                  rgba(44, 48, 60, 0)
               );
             }
           }
         }
+
         .content-overlay {
           position: fixed;
           opacity: 0;
@@ -54,54 +65,64 @@ html {
           cursor: pointer;
           transition: all 0.7s;
           z-index: -1;
+
           &.show {
             z-index: 12;
           }
         }
+
         .content-area-wrapper {
           height: calc(100% - #{$navbar-height});
           margin: calc(#{$navbar-height} + 2.7rem) #{$content-padding} 0;
           // padding: calc(#{$content-padding} - 0.4rem) #{$content-padding};
           display: flex;
           position: relative;
+
           .content-wrapper {
             margin-top: 0;
             height: calc(100vh - 13rem);
           }
         }
       }
+
       .content-wrapper {
         padding: calc(#{$content-padding} - 0.4rem) #{$content-padding} 0;
         margin-top: $navbar-height + 1;
         min-height: calc(100vh - 9.75rem);
+
         .content-header-title {
           font-weight: 500;
           color: $gray-400;
           margin-right: $spacer;
         }
+
         .content-header-right {
           .dropdown-toggle {
             &::after {
               display: none;
             }
           }
+
           .btn-icon {
             padding: 0.8rem;
           }
         }
       }
     }
+
     //for navbar hidden
     .vertical-layout.navbar-hidden {
       .app-content {
         .header-navbar-shadow {
           display: none;
         }
+
         .content-wrapper {
           padding: 2.2rem;
           margin-top: 0;
           min-height: calc(100vh - 4rem);
         }
+
         .content-area-wrapper {
           padding: 0;
           margin-top: 2.5rem;
@@ -115,15 +136,18 @@ html {
         .header-navbar-shadow {
           display: none;
         }
+
         .navbar-container {
           padding-left: 2.2rem;
           padding-right: 1.2rem;
         }
+
         .content-wrapper {
           padding: 2.2rem;
           margin-top: 0;
           padding-top: 1rem;
         }
+
         .content-area-wrapper {
           margin-top: 1rem;
         }
@@ -138,15 +162,18 @@ html {
           width: auto;
         }
       }
+
       &.navbar-sticky {
         .app-content {
           .header-navbar-shadow {
             display: none;
           }
+
           .navbar-container {
             padding-left: 2.2rem;
             padding-right: 1rem;
           }
+
           .content-wrapper {
             padding: 2.2rem;
             margin-top: 4.65rem;
@@ -170,6 +197,7 @@ html {
       .app-content {
         margin-bottom: 3rem;
       }
+
       .footer {
         position: fixed;
         z-index: 1030;
@@ -196,8 +224,7 @@ html {
     }
 
     .bg-full-screen-image {
-      background: url("../../../img/pages/vuesax-login-bg.jpg") no-repeat center
-        center;
+      background: url("../../../img/pages/vuesax-login-bg.jpg") no-repeat center center;
       background-size: cover;
     }
 
@@ -214,6 +241,7 @@ html {
           overflow-x: hidden;
         }
       }
+
       // blank page content-wrapper
       .content-wrapper {
         padding: 0 !important;
@@ -228,6 +256,7 @@ html {
         }
       }
     }
+
     //Remove left margin for 1 column layout
     &[data-col="1-column"] {
       .content,
@@ -236,6 +265,7 @@ html {
       }
     }
   }
+
   .pace {
     .pace-progress {
       background: $primary;
@@ -258,23 +288,29 @@ html {
       width: calc(100% - #{$sidebar-width});
       float: right;
     }
+
     .content-left {
       width: calc(100% - #{$sidebar-width});
       float: left;
     }
+
     // Detached sidebar
     .content-detached {
       width: 100%;
+
       &.content-right {
         float: right;
         margin-left: -$sidebar-width;
+
         .content-body {
           margin-left: calc(#{$sidebar-width} + #{$content-padding});
         }
       }
+
       &.content-left {
         float: left;
         margin-right: -$sidebar-width;
+
         .content-body {
           margin-right: calc(#{$sidebar-width} + #{$content-padding});
         }
@@ -303,8 +339,7 @@ html {
 
 @include media-breakpoint-down(xs) {
   html body .content .content-wrapper {
-    padding: calc(#{$content-padding} - 0.4rem) calc(#{$content-padding} - 1rem)
-      0;
+    padding: calc(#{$content-padding} - 0.4rem) calc(#{$content-padding} - 1rem) 0;
   }
 }
 
@@ -328,6 +363,7 @@ html {
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   html.full-screen {
     width: 100%;
+
     .content.app-content {
       height: 100%;
       overflow: scroll;
@@ -337,24 +373,27 @@ html {
 }
 
 .vertical-layout {
-  .main-menu{
-    .navigation{
-      .menu-content{
-        li a{
-          svg:first-child{
+  .main-menu {
+    .navigation {
+      .menu-content {
+        li a {
+          svg:first-child {
             margin-right: 1.38rem !important;
           }
-          .menu-toggle-icon{
+
+          .menu-toggle-icon {
             right: 9px;
           }
         }
       }
     }
   }
+
   &.menu-collapsed {
     .main-menu.collapsed {
       width: 80px;
       transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
       .badge,
       svg.menu-toggle-icon,
       .brand-text,
@@ -363,12 +402,15 @@ html {
         display: none;
       }
     }
+
     .app-content {
       margin-left: 80px;
+
       .header-navbar {
         width: calc(100% - 4.4rem - 80px);
       }
     }
+
     .footer {
       margin-left: 80px;
     }
@@ -379,13 +421,16 @@ html {
   .vertical-layout {
     .app-content {
       margin-left: 0;
+
       .header-navbar.floating-nav {
         width: calc(100% - 4.4rem) !important;
       }
     }
+
     .footer {
       margin-left: 0;
     }
+
     .main-menu:not(.hide-sidebar) {
       & ~ .sidenav-overlay {
         display: block;

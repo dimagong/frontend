@@ -264,7 +264,6 @@ class UserEdit extends React.Component {
     }
 
     this.setState({onboarding: {...this.state.onboarding, d_form: values}}, () => {
-      console.log(this.state.onboarding)
     })
   }
 
@@ -600,7 +599,6 @@ class UserEdit extends React.Component {
   }
 
   editField = (fieldName) => {
-    console.log(fieldName);
     this.setState({editField: fieldName});
   }
 
@@ -626,10 +624,12 @@ class UserEdit extends React.Component {
   }
 
   refreshOnboarding() {
+
     this.setState({refreshOnboarding: true}, async () => {
       await this.dispatchUserList();
       await this.dispatchEditUser();
-      this.setState({refreshOnboarding: false})
+      this.setState({refreshOnboarding: false});
+      this.reInitForm();
     });
   }
 
@@ -638,7 +638,7 @@ class UserEdit extends React.Component {
     this.setState({groups: values}, () => {
       this.formGroupsSubmit();
     })
-  }
+  };
 
   selectNoRepeat(options, values) {
     return options.filter(select => !values.find((selectValue) => {
@@ -647,6 +647,8 @@ class UserEdit extends React.Component {
   }
 
   cardClicked(event) {
+    if(!this.state.editField) return;
+
     const editClicked = document.querySelectorAll('.edit-clicked');
     let isClose = true;
     for (let key in Object.keys(editClicked)) {
@@ -785,7 +787,7 @@ class UserEdit extends React.Component {
                           </Col>
 
                           {
-                            this.props.user.onboarding ?
+                            this.props.user.onboarding && this.props.user.onboarding.d_form ?
                               <Col md="12" className="mt-2 mb-4">
                                 <Card className="border">
                                   <CardHeader className="m-0">
@@ -799,9 +801,10 @@ class UserEdit extends React.Component {
                                   <CardBody className="pt-0">
                                     <hr/>
                                     {
-                                      this.state.refreshOnboarding ?
-                                        null :
+                                      // this.state.refreshOnboarding ?
+                                      //   null :
                                         <FormCreate
+                                          reInit={(reInit, context) => { this.reInitForm = reInit.bind(context) }}
                                           liveValidate={false}
                                           inputDisabled={false}
                                           fill={true}
@@ -813,7 +816,7 @@ class UserEdit extends React.Component {
                                           dForm={this.props.user.onboarding.d_form}
                                           isStateConfig={false}
                                           updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
-                                        ></FormCreate>
+                                        />
                                     }
 
                                   </CardBody>

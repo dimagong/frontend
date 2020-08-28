@@ -35,7 +35,6 @@ class UserManagement extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.userEditing);
     }
 
     componentWillReceiveProps(nextProps) {

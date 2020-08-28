@@ -25,11 +25,11 @@ class WorkflowService {
     deleteDForm(dForm) {
         return axios.delete("/api/dform/" + dForm.id);
     }
-   
+
     onboardingDelete(onboarding) {
         return axios.delete("api/onboarding/" + onboarding.id)
     }
-    
+
     getDFormTemplateAll() {
         return axios.get("/api/dform-template");
     }
@@ -44,7 +44,6 @@ class WorkflowService {
     }
 
     changeStatus(dForm, status) {
-        console.log(status);
         return axios.put("/api/dform/" + dForm.id + '/change-status', {
             status: status
         });

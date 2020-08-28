@@ -11,6 +11,7 @@ import userImg from "../../../assets/img/portrait/small/avatar-s-11.jpg"
 import { bindActionCreators } from "redux"
 import AuthService from '../../../services/auth.service'
 import { history } from "../../../history";
+import userService from "../../../services/user.service";
 
 const UserName = props => {
   if (Object.keys(props.user.profile).length && props.user.profile.constructor === Object) {
@@ -20,7 +21,7 @@ const UserName = props => {
 }
 
 const ThemeNavbar = props => {
-  
+
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"]
   const navbarTypes = ["floating", "static", "sticky", "hidden"]
 
@@ -58,8 +59,8 @@ const ThemeNavbar = props => {
             "navbar-static-top":
               props.navbarType === "static" && !props.horizontal,
             "fixed-top": props.navbarType === "sticky" || props.horizontal,
-            "scrolling": props.horizontal && props.scrolling
-
+            "scrolling": props.horizontal && props.scrolling,
+            "is-onboarding": userService.isOnboarding(props.userProfile)
           }
         )}
       >
@@ -100,7 +101,8 @@ const ThemeNavbar = props => {
 
 const mapStateToProps = state => {
   return {
-    user: state.user
+    user: state.user,
+    userProfile: state.user.profile
   }
 }
 

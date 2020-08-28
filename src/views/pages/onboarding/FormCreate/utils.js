@@ -35,7 +35,6 @@ export function dataURItoBlob(dataURI) {
     });
 
   } catch (e) {
-    console.log('empty file', dataURI);
     throw new Error("Empty file")
   }
 
@@ -77,7 +76,6 @@ export function processFiles(files) {
 export function getFile(file, callback) {
   var reader  = new FileReader();
   reader.onloadend = (...args) => {
-    console.log(111, args);
     callback && callback(reader);
   };
   if (file) {
