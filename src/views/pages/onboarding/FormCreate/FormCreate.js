@@ -25,7 +25,10 @@ import {
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy"
 import {X, Check, Plus} from "react-feather"
 import Select from "react-select"
-import {dataURItoBlob, getFile, addNameToDataURL, processFile, processFiles, extractFileInfo} from "./utils";
+import { deepCompare} from "./utils";
+import {FileWidget} from "./Custom/FileWidget";
+import { CheckboxesWidget} from "./Custom/CheckboxesWidget";
+import { CheckboxWidget} from "./Custom/CheckboxWidget";
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 
 const WITHOUT_GROUP = 'WITHOUT_GROUP_';
@@ -217,103 +220,9 @@ class FormCreate extends React.Component {
     };
   }
 
-  FileWidget = (props) => {
-    let inputFileRef = React.createRef();
+  componentDidUpdate = (prevProps, prevState) => {
 
-    const onChangeSingle = (event) => {
-      let eventTarget = event.target;
-      processFiles(event.target.files).then((files) => {
-        if (files[0].dataURL === 'data:') {
-          eventTarget.value = null;
-          return;
-        }
-        props.onChange(files[0].dataURL);
-        setTimeout(() => {
-          eventTarget.value = null;
-        })
-      });
-    };
-    const onChangeMultiple = (event) => {
-      let eventTarget = event.target;
-      let oldFiles = clone(props.value);
-      processFiles(event.target.files).then((files) => {
-        let filesDataUrl = files.filter(file => typeof file.dataURL !== "undefined" && file.dataURL !== 'data:').map(file => file.dataURL);
-
-        let concatedFiles = concat(filesDataUrl, oldFiles);
-        props.value.splice(0, props.value.length);
-        props.value.push.apply(props.value, concatedFiles)
-        props.onChange(props.value);
-        setTimeout(() => {
-          eventTarget.value = null;
-        })
-      });
-    };
-
-    const onChange = (event) => {
-      if (props.multiple) {
-        onChangeMultiple(event);
-      } else {
-        onChangeSingle(event);
-      }
-    };
-
-    const removeFile = (event, file, index) => {
-      if (!window.confirm(`Are you sure you want to delete the file: ${file.name}`)) {
-        return;
-      }
-      if (props.multiple) {
-        if (props.value.length === 1) {
-          props.value.splice(0, props.value.length)
-          props.onChange(props.value);
-        } else {
-          let values = clone(props.value);
-          values.splice(index, 1);
-          props.onChange(values);
-        }
-      } else {
-        props.onChange(null);
-      }
-
-    };
-
-    return <div>
-      <input type="file"
-             ref={inputFileRef}
-             multiple={props.multiple}
-             required={props.required}
-             onChange={(event) => onChange(event)}/>
-      <div className="mt-1">
-        {
-          Array.isArray(props.value) ? extractFileInfo(props.value).map((file, index) => {
-            let fileUrl = '';
-            if (props.multiple && props.value[index]) {
-              fileUrl = window.URL.createObjectURL(
-                new Blob([dataURItoBlob(props.value[index]).blob], {type: file.type})
-              )
-            } else if (!props.multiple && props.value) {
-              fileUrl = window.URL.createObjectURL(
-                new Blob([dataURItoBlob(props.value).blob], {type: file.type})
-              );
-            }
-
-            return <div className="d-flex">
-              <div>
-                <a target="_blank" href={fileUrl}>{decodeURIComponent(file.name)}</a>
-              </div>
-              <div className="ml-1">
-                <X size={15} className="cursor-pointer" onClick={event => removeFile(event, file, index)}/>
-              </div>
-            </div>
-          }) : null
-        }
-      </div>
-    </div>
   };
-
-
-  componentDidUpdate = debounce((prevProps, prevState) => {
-    // this.onChangeSaving(prevState.formData, this.state.formData);
-  }, 200);
 
   reInit = debounce(() => {
     this.forceUpdate();
@@ -322,50 +231,6 @@ class FormCreate extends React.Component {
     this.dependencyChecker(state);
     this.setState(state);
   }, 100);
-
-  CustomCheckbox = (props) => {
-    const onChange = (event) => {
-      return props.onChange(event.target.checked);
-    };
-
-    return (
-      <div>
-        {props.options.label ? <label>{props.label}</label> : null}
-        <Checkbox
-          id={props.id}
-          color="primary"
-          icon={<Check className="vx-icon" size={16}/>}
-          onChange={event => onChange(event)}
-          label={props.label}
-          checked={props.value ? true : false}
-        />
-      </div>
-    );
-  };
-  CustomCheckboxes = (props) => {
-    let onChange = (option) => {
-      let values = clone(props.value);
-
-      let indexCheckbox = values.indexOf(option.value);
-      if (indexCheckbox !== -1) {
-        values.splice(indexCheckbox, 1)
-      } else {
-        values.push(option.value);
-      }
-      return values;
-    };
-    return (
-      props.options.enumOptions.map((option, key) => {
-        return <Checkbox
-          color="primary"
-          icon={<Check className="vx-icon" size={16}/>}
-          onChange={event => props.onChange(onChange(option))}
-          label={option.label}
-          checked={props.value.indexOf(option.value) !== -1}
-        />
-      })
-    );
-  };
 
   getSelectedDFormAction(action) {
     return {
@@ -1164,125 +1029,6 @@ class FormCreate extends React.Component {
     })
   };
 
-  compareKeys(a, b) {
-    var aKeys = Object.keys(a).sort();
-    var bKeys = Object.keys(b).sort();
-    return JSON.stringify(aKeys) === JSON.stringify(bKeys);
-  }
-
-  deepCompare() {
-    var i, l, leftChain, rightChain;
-
-    function compare2Objects(x, y) {
-      var p;
-
-      // remember that NaN === NaN returns false
-      // and isNaN(undefined) returns true
-      if (isNaN(x) && isNaN(y) && typeof x === 'number' && typeof y === 'number') {
-        return true;
-      }
-
-      // Compare primitives and functions.
-      // Check if both arguments link to the same object.
-      // Especially useful on the step where we compare prototypes
-      if (x === y) {
-        return true;
-      }
-
-      // Works in case when functions are created in constructor.
-      // Comparing dates is a common scenario. Another built-ins?
-      // We can even handle functions passed across iframes
-      if ((typeof x === 'function' && typeof y === 'function') ||
-        (x instanceof Date && y instanceof Date) ||
-        (x instanceof RegExp && y instanceof RegExp) ||
-        (x instanceof String && y instanceof String) ||
-        (x instanceof Number && y instanceof Number)) {
-        return x.toString() === y.toString();
-      }
-
-      // At last checking prototypes as good as we can
-      if (!(x instanceof Object && y instanceof Object)) {
-        return false;
-      }
-
-      if (x.isPrototypeOf(y) || y.isPrototypeOf(x)) {
-        return false;
-      }
-
-      if (x.constructor !== y.constructor) {
-        return false;
-      }
-
-      if (x.prototype !== y.prototype) {
-        return false;
-      }
-
-      // Check for infinitive linking loops
-      if (leftChain.indexOf(x) > -1 || rightChain.indexOf(y) > -1) {
-        return false;
-      }
-
-      // Quick checking of one object being a subset of another.
-      // todo: cache the structure of arguments[0] for performance
-      for (p in y) {
-        if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
-          return false;
-        } else if (typeof y[p] !== typeof x[p]) {
-          return false;
-        }
-      }
-
-      for (p in x) {
-        if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
-          return false;
-        } else if (typeof y[p] !== typeof x[p]) {
-          return false;
-        }
-
-        switch (typeof (x[p])) {
-          case 'object':
-          case 'function':
-
-            leftChain.push(x);
-            rightChain.push(y);
-
-            if (!compare2Objects(x[p], y[p])) {
-              return false;
-            }
-
-            leftChain.pop();
-            rightChain.pop();
-            break;
-
-          default:
-            if (x[p] !== y[p]) {
-              return false;
-            }
-            break;
-        }
-      }
-
-      return true;
-    }
-
-    if (arguments.length < 1) {
-      return true; //Die silently? Don't know how to handle such case, please help...
-      // throw "Need two or more arguments to compare";
-    }
-
-    for (i = 1, l = arguments.length; i < l; i++) {
-
-      leftChain = []; //Todo: this can be cached
-      rightChain = [];
-
-      if (!compare2Objects(arguments[0], arguments[i])) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   onChangeSaving = debounce((previousFormData, formData) => {
     if (
       (!previousFormData || !formData) ||
@@ -1290,7 +1036,7 @@ class FormCreate extends React.Component {
     ) return;
 
     if (this.props.onChange) {
-      if (!this.deepCompare(previousFormData, formData)) {
+      if (!deepCompare(previousFormData, formData)) {
         this.props.onChange(formData)
       }
     }
@@ -3327,9 +3073,9 @@ class FormCreate extends React.Component {
                 ObjectFieldTemplate={this.ObjectFieldTemplate}
                 uiSchema={this.state.uiSchema}
                 widgets={{
-                  CheckboxWidget: this.CustomCheckbox,
-                  CheckboxesWidget: this.CustomCheckboxes,
-                  FileWidget: this.FileWidget
+                  CheckboxWidget: CheckboxWidget,
+                  CheckboxesWidget: CheckboxesWidget,
+                  FileWidget: FileWidget
                 }}
                 onChange={(event) => {
                   this.onChangeForm(event)
