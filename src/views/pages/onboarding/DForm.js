@@ -480,7 +480,7 @@ class DForm extends React.Component {
 
                     </CardHeader>
                     <CardBody className="card-top-padding">
-                      <FormCreate submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
+                      <FormCreate fileLoader={false} submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
                                   liveValidate={false}
                                   dForm={this.state.dFormTemplate} isStateConfig={this.state.isStateConfig}
                       ></FormCreate>

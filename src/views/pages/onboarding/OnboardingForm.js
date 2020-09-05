@@ -17,7 +17,7 @@ class OnboardingForm extends React.Component {
   };
 
   constructor(props) {
-    super();
+    super(props);
     this.debounceOnSave = debounce((formData) => {
       this.onSave(formData)
     }, 1500);
@@ -68,7 +68,7 @@ class OnboardingForm extends React.Component {
   onboardingProcess() {
     if (this.props.user.onboarding.d_form.access_type === 'user-lock') {
       return <FormCreate
-        liveValidate={false}
+        fileLoader={true}
         inputDisabled={true}
         fill={true}
         onSaveButtonHidden={this.isDisabledSubmit()}
@@ -77,8 +77,8 @@ class OnboardingForm extends React.Component {
       ></FormCreate>
     } else {
       return <FormCreate
+        fileLoader={true}
         onSubmit={(formData) => this.submitOnboardingForm(formData)}
-        liveValidate={false}
         fill={true}
         dForm={this.props.user.onboarding.d_form}
         isStateConfig={false}

@@ -104,6 +104,7 @@ class Workflow extends React.Component {
         }],
         userTypeOptions: [
             { value: "managers", label: "Users" },
+            { value: "reviewer", label: "Reviewer" },
             { value: "subject", label: "Subject" }
         ],
         managers: [],

@@ -1,28 +1,34 @@
 import React from 'react'
 import userService from "../../../services/user.service";
-import { history } from "../../../history"
+import {history} from "../../../history"
 import {connect} from "react-redux";
+import {isEmpty} from "lodash"
 
-class Home extends React.Component{
+class Home extends React.Component {
 
-    componentDidMount() {
+  componentDidMount() {
+    this.redirectingByUserRoles();
+  }
 
+  componentDidUpdate() {
+    this.redirectingByUserRoles();
+  }
+
+  redirectingByUserRoles() {
+    if (isEmpty(this.props.userProfile)) return false;
+
+    if (userService.isOnboarding(this.props.userProfile)) {
+      history.push('/onboarding-process')
+    } else {
+      history.push('/user-management')
     }
-
-    componentDidUpdate() {
-      if(!this.props.userProfile) return false;
-
-      if(userService.isOnboarding(this.props.userProfile)) {
-        history.push('/onboarding-process')
-      } else if(true){
-        history.push('/user-management')
-      }
-    }
+  }
 
   render() {
-        return <div></div>
-    }
+    return <div></div>
+  }
 }
+
 const mapStateToProps = state => {
   return {
     userProfile: state.user.profile

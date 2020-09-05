@@ -1,5 +1,5 @@
 import axios from '../overrides/axios';
-
+import {isEmpty} from 'lodash'
 class UserService {
   getProfile() {
     return axios.get("/api/user/profile");
@@ -47,21 +47,15 @@ class UserService {
   }
 
   isOnboarding(userProfile) {
+    if(isEmpty(userProfile)) return true;
 
-    if(!('onboarding' in userProfile)) return true;
-
-    if (
-      userProfile &&
-      (Array.isArray(userProfile.roles) &&
-      userProfile.roles.indexOf('prospect') !== -1)
-    ) {
+    if (userProfile.roles.indexOf('prospect') !== -1) {
       return true;
     }
     return false;
   }
 
   isManager(userProfile) {
-    console.log('userProfile', userProfile);
     if(!('onboarding' in userProfile)) return true;
     if (
       userProfile &&

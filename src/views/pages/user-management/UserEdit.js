@@ -42,7 +42,7 @@ import {bindActionCreators} from "redux"
 import userImg from "../../../assets/img/portrait/small/avatar-s-18.jpg"
 import workflowService from "../../../services/workflow.service";
 import FormCreate from "../onboarding/FormCreate/FormCreate";
-import {debounce} from 'lodash';
+import {debounce, isEmpty} from 'lodash';
 
 const clone = rfdc();
 
@@ -556,6 +556,11 @@ class UserEdit extends React.Component {
   }
 
   async submitOnboardingForm(formData) {
+
+    if(isEmpty(this.props.user.onboarding)) {
+      return;
+    }
+
     this.setState({
       updatedAtText: (
         <div className="d-flex">
@@ -804,6 +809,7 @@ class UserEdit extends React.Component {
                                       // this.state.refreshOnboarding ?
                                       //   null :
                                         <FormCreate
+                                          fileLoader={true}
                                           reInit={(reInit, context) => { this.reInitForm = reInit.bind(context) }}
                                           liveValidate={false}
                                           inputDisabled={false}
@@ -1078,7 +1084,7 @@ class UserEdit extends React.Component {
                           </div>
                         </div>
                         <div className="d-flex mb-1">
-                          <div className="font-weight-bold column-sizing">Groups</div>
+                          <div className="font-weight-bold column-sizing">Organisations</div>
                           <div className="full-width">
                             {/* <Form onSubmit={(event) => this.formGroupsSubmit(event)}>
                                                             <FormGroup> */}

@@ -23,6 +23,8 @@ export function CheckboxesWidget(props) {
         icon={<Check className="vx-icon" size={16}/>}
         onChange={event => props.onChange(onChange(option))}
         label={option.label}
+        disabled={props.disabled}
+        required={props.required}
         checked={props.value.indexOf(option.value) !== -1}
       />
     })

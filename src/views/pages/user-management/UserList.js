@@ -134,7 +134,7 @@ class UsersList extends React.Component {
     window.addEventListener('resize', () => {
       this.gridApi.sizeColumnsToFit();
     });
-  }
+  };
 
   async getUserByEmail() {
     const response = await UserService.getByEmail(null, 1)
@@ -145,17 +145,23 @@ class UsersList extends React.Component {
 
   filterSize = val => {
     if (this.gridApi) {
-      this.gridApi.paginationSetPageSize(Number(val))
+      this.gridApi.paginationSetPageSize(Number(val));
       this.setState({
         pageSize: val
       })
     }
+  };
+
+  async getUserById(id) {
+    const response = await UserService.getUserById(id);
+    return response.data.data;
   }
 
-  onSelectionChanged = (params) => {
+  onSelectionChanged = async (params) => {
     var selectedRows = params.api.getSelectedRows();
     const user = selectedRows[0];
-    this.props.setEditUser(user);
+    const refreshUser = await this.getUserById(user.id);
+    this.props.setEditUser(refreshUser);
   };
 
   render() {

@@ -339,7 +339,7 @@ class UserCreate extends React.Component {
               <span className="text-bold-500 font-medium-2 ml-50">Permissions</span>
               <hr/>
               <FormGroup>
-                <Label for="">Groups</Label>
+                <Label for="">Organisations</Label>
                 <Select
                   value={
                     this.state.default.groups

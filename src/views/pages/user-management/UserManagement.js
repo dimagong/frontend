@@ -26,21 +26,18 @@ import "../../../assets/scss/plugins/extensions/toastr.scss"
 class UserManagement extends React.Component {
     state = {
         activeTab: "1"
-    }
+    };
 
     toggle = tab => {
         this.setState({
             activeTab: tab
         })
-    }
+    };
 
     componentDidMount() {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.userEditing.id === this.props.userEditing.id && this.props.userEditing.id > 0) {
-            // console.log('componentWillReceiveProps', this.props.userEditing);
-        }
     }
 
     render() {

@@ -13,10 +13,12 @@ export function CheckboxWidget(props) {
       <Checkbox
         id={props.id}
         color="primary"
+        disabled={props.disabled}
+        required={props.required}
         icon={<Check className="vx-icon" size={16}/>}
         onChange={event => onChange(event)}
         label={props.label}
-        checked={props.value ? true : false}
+        checked={typeof props.value === "undefined" ? false : props.value}
       />
     </div>
   );

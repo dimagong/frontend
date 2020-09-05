@@ -25,11 +25,12 @@ import {
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy"
 import {X, Check, Plus} from "react-feather"
 import Select from "react-select"
-import { deepCompare} from "./utils";
+import {deepCompare} from "./utils";
 import {FileWidget} from "./Custom/FileWidget";
-import { CheckboxesWidget} from "./Custom/CheckboxesWidget";
-import { CheckboxWidget} from "./Custom/CheckboxWidget";
+import {CheckboxesWidget} from "./Custom/CheckboxesWidget";
+import {CheckboxWidget} from "./Custom/CheckboxWidget";
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
+import fileService from "../../../../services/file.service";
 
 const WITHOUT_GROUP = 'WITHOUT_GROUP_';
 const EFFECT_DISABLED = 'disabled';
@@ -74,7 +75,6 @@ class FormCreate extends React.Component {
     super(props);
 
     this.state = this.initState(props);
-    //this.state.uiSchema.
     this.refTitles = React.createRef();
 
     this.props.reInit && this.props.reInit(this.reInit, this);
@@ -83,6 +83,8 @@ class FormCreate extends React.Component {
   initState(props) {
     const propsDFormSchema = clone(props.dForm.schema.schema);
     const propsDFormUiSchema = clone(props.dForm.schema.uiSchema);
+
+    let fileLoading = false;
 
     if (
       props.fill &&
@@ -93,14 +95,20 @@ class FormCreate extends React.Component {
         if (key in propsDFormSchema.properties) {
           propsDFormSchema.properties[key].default = props.dForm.submit_data[key];
 
+          if(!(key in propsDFormUiSchema)) {
+            propsDFormUiSchema[key] = {};
+          }
+          //propsDFormUiSchema[key]['ui:emptyValue'] = null;
+
           if (this.props.inputDisabled) {
-            propsDFormUiSchema[key] = {
-              'ui:disabled': true
-            };
+            propsDFormUiSchema[key]['ui:disabled'] = true;
           }
         }
       }))
     }
+
+
+
     return {
       additionalData: {
         name: props.dForm.name,
@@ -119,6 +127,7 @@ class FormCreate extends React.Component {
         {value: "rejected", label: "Rejected"},
         {value: "unsubmitted", label: "Unsubmitted"},
       ],
+      fileLoading: fileLoading,
       dFormSelectedAction: this.getSelectedDFormAction(props.dForm.status),
       uiSettings: {
         section: '',
@@ -131,6 +140,7 @@ class FormCreate extends React.Component {
           label: true
         }
       },
+      loadingFiles: [],
       formData: {},
       sumbitFormData: {},
       dFormTemplate: props.dForm,
@@ -221,15 +231,23 @@ class FormCreate extends React.Component {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-
+    console.log('componentDidUpdate', this.state);
   };
 
+  refreshDependencies() {
+    let state = clone(this.state);
+    this.dependencyChecker(state);
+    this.setState(state)
+  }
+
   reInit = debounce(() => {
-    this.forceUpdate();
+    // this.forceUpdate();
     let state = this.initState(this.props);
     state.formData = this.props.dForm.submit_data;
     this.dependencyChecker(state);
-    this.setState(state);
+    this.setState(state, async () => {
+      this.groupedFiles()
+    });
   }, 100);
 
   getSelectedDFormAction(action) {
@@ -240,8 +258,25 @@ class FormCreate extends React.Component {
   }
 
   setSelectedDFormAction(action) {
-    this.setState({dFormSelectedAction: action})
+    this.setState({dFormSelectedAction: action});
     this.props.statusChanged && this.props.statusChanged(action.value);
+  }
+
+  changeFilesState(state) {
+    let uiSchema = clone(this.state.uiSchema);
+    Object.keys(this.state.schema.properties).forEach(key => {
+      const propType = this.getSpecificType(this.state.schema.properties[key]);
+      if (propType === 'file' || propType === 'fileList') {
+        if (key in this.state.uiSchema) {
+          uiSchema[key]['ui:disabled'] = state;
+        } else {
+          uiSchema[key] = {};
+          uiSchema[key]['ui:disabled'] = state;
+        }
+      }
+    });
+    this.setState({uiSchema});
+    console.log('uiSchema', uiSchema);
   }
 
   ObjectFieldTemplate = (props) => {
@@ -445,7 +480,7 @@ class FormCreate extends React.Component {
         {renderObject()}
       </div>
     );
-  }
+  };
 
   formSubmit = (event) => {
 
@@ -461,11 +496,11 @@ class FormCreate extends React.Component {
       ) {
         delete formData[key];
       }
-    })
+    });
 
     document.querySelectorAll('.error-detail').forEach(nextElement => {
       nextElement.parentNode.removeChild(nextElement);
-    })
+    });
 
     this.setState({sumbitFormData: formData});
 
@@ -506,14 +541,15 @@ class FormCreate extends React.Component {
         return 'ui:no-effect';
       }
     }
-  }
+  };
 
   getEffects = () => {
     return ['', EFFECT_DISABLED, EFFECT_HIDDEN];
-  }
+  };
 
   operatorResult = (operator, fieldValue, value, field = null) => {
-    if (!fieldValue || !value) return true;
+    // todo bug
+    // if (!fieldValue || !value) return true;
     const typeField = this.getSpecificType(this.state.schema.properties[field]);
     switch (operator) {
       case '=': {
@@ -522,11 +558,19 @@ class FormCreate extends React.Component {
           if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
             return true;
           }
-
           return false;
         }
+
         if (typeField === 'number') {
           if (parseFloat(fieldValue) === parseFloat(value)) {
+            return true;
+          }
+          return false;
+        }
+        console.log('test boolean');
+        if (typeField === 'boolean') {
+          console.log('boolean', fieldValue, value);
+          if (Boolean(fieldValue) === Boolean(value)) {
             return true;
           }
           return false;
@@ -542,6 +586,13 @@ class FormCreate extends React.Component {
         if (Array.isArray(fieldValue)) {
           if (fieldValue.some(nextFieldValue => nextFieldValue !== value)) {
             return true;
+          }
+
+          if (typeField === 'boolean') {
+            if (Boolean(fieldValue) !== Boolean(value)) {
+              return true;
+            }
+            return false;
           }
 
           return false;
@@ -624,10 +675,10 @@ class FormCreate extends React.Component {
     }
 
     return true;
-  }
+  };
 
   dependencyChecker = (state) => {
-
+    console.log('dependencyChecker');
     let fieldsStates = {};
     let groupsStates = {};
     let sectionsStates = {};
@@ -668,8 +719,9 @@ class FormCreate extends React.Component {
             state.uiSchema[field] = {};
           }
 
-          if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
-            setField(field, true, effect);
+          // todo 04.09.2020 bug  if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
+          if (!(fieldOperator.field in state.formData)) {
+            setField(field, false, effect);
             continue;
           }
 
@@ -976,7 +1028,7 @@ class FormCreate extends React.Component {
       }
 
       state.uiSchema[field] = {};
-    })
+    });
 
 
     Object.keys(groupsStates).forEach(group => {
@@ -1001,7 +1053,7 @@ class FormCreate extends React.Component {
       }
 
       state.uiSchema.groupStates[group] = {};
-    })
+    });
 
 
     Object.keys(sectionsStates).forEach(section => {
@@ -1029,15 +1081,33 @@ class FormCreate extends React.Component {
     })
   };
 
+  withoutFiles(formData) {
+    let formDataFormatted = clone(formData);
+    Object.keys(this.state.schema.properties).forEach(key => {
+      const propType = this.getSpecificType(this.state.schema.properties[key]);
+      if (propType === 'file' || propType === 'fileList') {
+        if(key in formDataFormatted) {
+          delete formDataFormatted[key];
+        }
+      }
+    });
+    console.log('formDataFormatted', formDataFormatted);
+    return formDataFormatted;
+  }
+
   onChangeSaving = debounce((previousFormData, formData) => {
-    if (
-      (!previousFormData || !formData) ||
-      (isEmpty(previousFormData) || isEmpty(formData))
-    ) return;
+    if((!previousFormData || !formData)) {
+      return;
+    }
+
+    let previousFormDataFormatted = this.withoutFiles(previousFormData);
+    let formDataFormatted = this.withoutFiles(formData);
+
+    if (isEmpty(previousFormDataFormatted) || isEmpty(formDataFormatted)) return;
 
     if (this.props.onChange) {
-      if (!deepCompare(previousFormData, formData)) {
-        this.props.onChange(formData)
+      if (!deepCompare(previousFormDataFormatted, formDataFormatted)) {
+        this.props.onChange(formDataFormatted)
       }
     }
   }, 300);
@@ -1174,7 +1244,7 @@ class FormCreate extends React.Component {
           })
         }
       });
-    })
+    });
 
 
     this.setState(state);
@@ -1182,7 +1252,7 @@ class FormCreate extends React.Component {
 
   // rename object key
   inputKeyObjectHandler = (previousFieldKey) => {
-    const newFieldKey = this.state.fieldEdit.propertyKey
+    const newFieldKey = this.state.fieldEdit.propertyKey;
     if (newFieldKey === previousFieldKey) return;
 
     let state = clone(this.state);
@@ -1293,15 +1363,6 @@ class FormCreate extends React.Component {
   };
 
   inputNumberChangeHandler = (event, index, prop) => {
-    // const { target: { value } } = event;
-    // let schema = clone(this.state.schema);
-    // if (!value) {
-    //     delete schema.properties[index][prop];
-    // } else {
-    //     schema.properties[index][prop] = parseInt(value, 10);
-    // }
-
-    // this.setState({ schema: schema });
     const {target: {value}} = event;
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     if (!value) {
@@ -1343,8 +1404,37 @@ class FormCreate extends React.Component {
     });
   };
 
-  componentDidMount() {
+  setLoadingFiles() {
+    let loadingFiles = this.state.dFormTemplate.files.map((file) => {
+      return {
+        file,
+        property_value: null
+      }
+    });
+    this.setState({loadingFiles})
+  }
 
+  async groupedFiles() {
+
+    if(!this.props.fileLoader) {
+        return;
+    }
+
+    this.changeFilesState(true);
+    this.setLoadingFiles();
+    const response = await fileService.getDFormFiles(this.state.dFormTemplate.id);
+    let groupedFiles = response.data.data;
+
+    this.setState({formData: {...this.state.formData, ...groupedFiles}}, () => {
+      this.changeFilesState(false);
+      this.setState({loadingFiles: []}, () => {
+        this.refreshDependencies();
+      })
+    })
+  }
+
+  async componentDidMount() {
+    this.groupedFiles();
   }
 
   getSpecificType(property) {
@@ -1383,9 +1473,6 @@ class FormCreate extends React.Component {
   };
 
   removeSelectValues = (event, objKey, index) => {
-    // let schema = clone(this.state.schema);
-    // schema.properties[objKey]['enum'].splice(index, 1);
-    // this.setState({ schema })
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit['enum'].splice(index, 1);
     this.setState({schemaPropertyEdit})
@@ -1405,15 +1492,6 @@ class FormCreate extends React.Component {
   };
 
   addMultiSelectValues = (event, objKey, index) => {
-    // let schema = clone(this.state.schema);
-    // schema.properties[objKey]['items']['anyOf'].push({
-    //     "type": "string",
-    //     "enum": [
-    //         ""
-    //     ],
-    //     "title": ""
-    // });
-    // this.setState({ schema })
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit['items']['anyOf'].push({
       "type": "string",
@@ -1426,9 +1504,6 @@ class FormCreate extends React.Component {
   };
 
   removeMultiSelectValues = (event, objKey, index) => {
-    // let schema = clone(this.state.schema);
-    // schema.properties[objKey]['items']['anyOf'].splice(index, 1);
-    // this.setState({ schema })
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit['items']['anyOf'].splice(index, 1);
     this.setState({schemaPropertyEdit})
@@ -1542,10 +1617,6 @@ class FormCreate extends React.Component {
                        onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
                        className="form-control"
                        placeholder={placeholder}/>
-                {/* <Button disabled={this.state.fieldEdit.propertyKey === objKey ? true : false}
-                                    onClick={this.inputKeyObjectHandler.bind(this, objKey)}
-                                    type="submit"
-                                    color={(this.state.fieldEdit.propertyKey === objKey ? 'light' : 'primary')}>Save</Button> */}
               </div>
             </div>
 
@@ -1578,13 +1649,6 @@ class FormCreate extends React.Component {
       const renderRequiredColumn = (column, text) => {
         return (
           <div className="w-100">
-            {/* <input type="checkbox"
-                            className=""
-                            id={`${index}-${column}`}
-                            onChange={event => this.inputHandlerRequired(event, objKey)}
-                            checked={this.state.schema.required.indexOf(objKey) !== -1}
-                        /> */}
-            {/* <label htmlFor={`${index}-${column}`}>{text}</label> */}
             <Checkbox
               color="primary"
               icon={<Check className="vx-icon" size={16}/>}
@@ -1957,9 +2021,6 @@ class FormCreate extends React.Component {
                   <div className="border-top">
                     <div className="row"><h4 style={{margin: "15px auto"}}>Conditions</h4></div>
                     {dependencyFields}
-                    {/* <div className="row m-2 float-right">
-                                        <button type="submit" onClick={this.addConditional.bind(this, objKey)} className="btn btn-primary mt-2">Add condition</button>
-                                    </div> */}
                     <div className="row m-2 mb-1">
                       <div className="form-create__add-new-group" onClick={this.addConditional.bind(this, objKey)}>
                         Add condition
@@ -2021,7 +2082,6 @@ class FormCreate extends React.Component {
       return elementContentKey in this.state.uiSchema.sections && this.state.uiSchema.sections[elementContentKey] === sectionName;
     };
     const isSectionHaveOneElement = (elements, sectionName) => {
-      // console.log('Refactor content key - 4', elements);
       const fieldsNames = Object.keys(elements);
       const found = fieldsNames.some(fieldName => isElementInSection(fieldName, sectionName));
       return !!found;
@@ -2067,18 +2127,11 @@ class FormCreate extends React.Component {
 
             if (isElementInSection(key, sectionName)) {
               return renderConfigFields(key, index);
-              // return (<div className={getColumnClass(element.content.key)} key={element.content.key}>
-              //     {element.content}
-              // </div>)
             }
             return null;
           });
 
           if (groupName.indexOf('WITHOUT_GROUP') !== -1) {
-            // todo
-            // return <div key={`${sectionName}_${groupName}_${index}`} className="row ml-1 mt-2 mb-2">
-            //     {elementContent}
-            // </div>;
             return null;
           }
 
@@ -2164,19 +2217,12 @@ class FormCreate extends React.Component {
         }
 
         if (groupName.indexOf('WITHOUT_GROUP') === -1) {
-          // todo
-          // return <div key={`${sectionName}_${groupName}_${index}`} className="row ml-1 mt-2 mb-2">
-          //     {elementContent}
-          // </div>;
           return null;
         }
         const elementContent = Object.keys(groupedElements[groupName]).map(key => {
 
           if (isElementInSection(key, sectionName)) {
             return renderConfigFields(key, index);
-            // return (<div className={getColumnClass(element.content.key)} key={element.content.key}>
-            //     {element.content}
-            // </div>)
           }
           return null;
         });
@@ -2312,15 +2358,16 @@ class FormCreate extends React.Component {
     this.setState(state);
   };
 
+  // todo maybe this function not need, in future only using for dependencyChecker
   removeUiEffects = (state, dependencyType, objKey) => {
 
     state.uiSchema.sectionStates = {};
 
     state.uiSchema.groupStates = {};
-
-    Object.keys(state.schema.properties).forEach(field => {
-      delete state.uiSchema[field];
-    });
+    // todo bug https://app.asana.com/0/1187636553843237/1191964394328141
+    // Object.keys(state.schema.properties).forEach(field => {
+    //   delete state.uiSchema[field];
+    // });
   };
 
   setConditionalEffect = (event) => {
@@ -2421,10 +2468,10 @@ class FormCreate extends React.Component {
   };
 
   uiSettingsOpen = (objKey) => {
-    let classes = objKey in this.state.uiSchema.columnsClasses ? this.state.uiSchema.columnsClasses[objKey] : ''
-    let section = objKey in this.state.uiSchema.sections ? this.state.uiSchema.sections[objKey] : ''
-    let group = objKey in this.state.uiSchema.groups ? this.state.uiSchema.groups[objKey] : ''
-    let dependencies = objKey in this.state.uiSchema.dependencies.fields ? this.state.uiSchema.dependencies.fields[objKey] : {}
+    let classes = objKey in this.state.uiSchema.columnsClasses ? this.state.uiSchema.columnsClasses[objKey] : '';
+    let section = objKey in this.state.uiSchema.sections ? this.state.uiSchema.sections[objKey] : '';
+    let group = objKey in this.state.uiSchema.groups ? this.state.uiSchema.groups[objKey] : '';
+    let dependencies = objKey in this.state.uiSchema.dependencies.fields ? this.state.uiSchema.dependencies.fields[objKey] : {};
     this.setState({
       uiSettings: {
         classes: classes,
@@ -2467,8 +2514,19 @@ class FormCreate extends React.Component {
   };
 
   submitDForm() {
-    let schema = {
-      schema: this.state.schema,
+
+    let schema = clone(this.state.schema);
+    let uiSchema = clone(this.state.uiSchema);
+
+    const propertyKeys = Object.keys(schema.properties);
+    propertyKeys.forEach((objKey) => {
+      if (objKey in uiSchema && isEmpty(uiSchema[objKey])) {
+        delete uiSchema[objKey]
+      }
+    });
+
+    let backendSchema = {
+      schema: schema,
       // uiSchema: {
       //     sections: this.state.uiSchema.sections,
       //     groups: this.state.uiSchema.groups,
@@ -2479,10 +2537,10 @@ class FormCreate extends React.Component {
       //     dependencies: this.state.uiSchema.dependencies,
       //     columnsClasses: this.state.uiSchema.columnsClasses,
       // },
-      uiSchema: this.state.uiSchema
+      uiSchema: uiSchema
     };
     let dForm = clone(this.state.dFormTemplate);
-    dForm.schema = schema;
+    dForm.schema = backendSchema;
     this.props.submitDForm(dForm, this.state.additionalData);
   }
 
@@ -2606,7 +2664,7 @@ class FormCreate extends React.Component {
             })
           }
         });
-      })
+      });
 
       this.setState(state);
     }
@@ -2674,7 +2732,7 @@ class FormCreate extends React.Component {
             })
           }
         });
-      })
+      });
 
       this.setState(state);
     }
@@ -2732,7 +2790,7 @@ class FormCreate extends React.Component {
             })
           }
         });
-      })
+      });
 
       this.setState(state);
     }
@@ -2750,8 +2808,6 @@ class FormCreate extends React.Component {
               <CardTitle>
                 Condition
               </CardTitle>
-
-              {/* <button onClick={event => this.removeConditional(event, index)} type="submit" className="btn btn-danger float-right">Remove</button> */}
               <X size={15} className="cursor-pointer mr-1" onClick={event => this.removeConditional(event, index)}/>
             </CardHeader>
             <CardBody>
@@ -2917,23 +2973,7 @@ class FormCreate extends React.Component {
                   {this.getEffects().map((type, indexType) => <option
                     key={indexType}>{type}</option>)}
                 </select>
-
               </div>
-
-              {/* <div className="row">
-                                <div className="col-md-12">
-                                    {
-                                        dependencyType === 'sections' ?
-                                            <button type="submit" onClick={this.addConditionField.bind(this, 'sections', index)} className="btn btn-primary mt-3 ml-3 float-right">Add section</button>
-                                            : null
-                                    }
-                                    <button type="submit" onClick={this.addConditionField.bind(this, 'groups', index)} className="btn btn-primary mt-3 ml-3 float-right">Add group</button>
-                                    <button type="submit" onClick={this.addConditionField.bind(this, 'fields', index)} className="btn btn-primary mt-3 ml-3 float-right">Add field</button>
-                                </div>
-                                <div className="col-md-12">
-                                    <button type="submit" onClick={this.addOperatorField.bind(this, 'fieldOperators', index)} className="btn btn-primary mt-3 ml-3 float-right">Add operator</button>
-                                </div>
-                            </div> */}
             </CardBody>
           </Card>
         );
@@ -2957,23 +2997,16 @@ class FormCreate extends React.Component {
             <input id={`${objKey}`}
                    value={this.state.fieldEdit.propertyKey}
                    type="text"
-              // ref={this.refTitles}
                    data-id={objKey}
                    onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
                    className="form-control"
                    placeholder="Name"/>
-            {/* <Button disabled={this.state.fieldEdit.propertyKey === objKey ? true : false}
-                            // onClick={this.inputKeyObjectHandler.bind(this, objKey)}
-                            onClick={() => this.changeNameByDependencyType(objKey, dependencyType)}
-                            type="submit"
-                            color={(this.state.fieldEdit.propertyKey === objKey ? 'light' : 'primary')}>Save</Button> */}
           </div>
         </div>
         <div className="border-top">
           <div className="row"><h4 style={{margin: "15px auto"}}>Conditions</h4></div>
           {dependencyFields}
           <div className="row m-2">
-            {/* <button type="submit" onClick={this.addConditional.bind(this, dependencyType, objKey)} className="btn btn-primary mt-2">Add condition</button> */}
             <div className="form-create__add-new-group"
                  onClick={this.addConditional.bind(this, dependencyType, objKey)}>
               Add condition
@@ -3014,17 +3047,6 @@ class FormCreate extends React.Component {
         {
           this.props.isStateConfig ?
             <Col>
-              {/*
-                            <div className="form-group border-bottom">
-                                <label>Head title</label>
-                                <input value={this.state.schema.title} onChange={this.handleTitleChange.bind(this)} type="text"
-                                    className="form-control" />
-                            </div>
-                            <div className="form-group border-bottom">
-                                <label>Head title</label>
-                                <input value={this.state.schema.title} onChange={this.handleTitleChange.bind(this)} type="text"
-                                    className="form-control" />
-                            </div> */}
               <div className="form-group border-bottom">
                 <label>Name</label>
                 <input value={this.state.additionalData.name} onChange={(event) => {
@@ -3043,18 +3065,6 @@ class FormCreate extends React.Component {
                 {controls}
               </div>
               <Row>
-                {/* <Col md="6">
-                                    <select
-                                        className="form-control"
-                                        value={this.state.type}
-                                        onChange={(event) => this.setState({ type: event.target.value })}>
-                                        {this.state.controlTypes.map((type, indexType) => <option
-                                            key={indexType}>{type}</option>)}
-                                    </select>
-                                </Col>
-                                <Col md="6">
-                                    <button type="submit" onClick={this.addControl} className="btn btn-primary">Add field</button>
-                                </Col> */}
                 <Col md="12">
                   <div className="d-flex justify-content-center flex-wrap mt-2">
                     <Button color="primary d-flex-left" onClick={() => this.submitDForm()}>Save</Button>
@@ -3067,6 +3077,7 @@ class FormCreate extends React.Component {
               <Form
                 showErrorList={false}
                 liveValidate={false}
+                noValidate={true}
                 formData={this.state.formData}
                 onSubmit={this.formSubmit}
                 schema={this.state.schema}
@@ -3075,7 +3086,7 @@ class FormCreate extends React.Component {
                 widgets={{
                   CheckboxWidget: CheckboxWidget,
                   CheckboxesWidget: CheckboxesWidget,
-                  FileWidget: FileWidget
+                  FileWidget: FileWidget.bind(this)
                 }}
                 onChange={(event) => {
                   this.onChangeForm(event)
@@ -3113,14 +3124,13 @@ class FormCreate extends React.Component {
                   }
                   {
                     this.props.onSubmit ?
-                      <Button type="submit" className="ml-auto" color="primary">Submit</Button> : null
+                      <Button onClick={() => console.log(this.state.formData)} type="submit" className="ml-auto" color="primary">Submit</Button> : null
                   }
                 </div>
               </Form>
 
             </Col>
         }
-        {/* <div className="col-md-6 overflow-auto border-bottom" style={{ height: '600px' }}> </div> */}
       </Row>
     )
   }
