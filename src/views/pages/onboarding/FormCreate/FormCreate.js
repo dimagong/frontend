@@ -2,10 +2,8 @@ import React, {useState} from 'react';
 import Form from "@rjsf/core";
 import ElementEditModal from "./ElementEditModal";
 import DependencyEditModal from "./DependencyEditModal";
-// import { Tabs, Tab, Card, FormGroup } from "react-bootstrap";
 import classnames from "classnames"
 import rfdc from 'rfdc';
-import equal from 'fast-deep-equal'
 import {
   Nav,
   NavItem,
@@ -25,94 +23,21 @@ import {
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy"
 import {X, Check, Plus} from "react-feather"
 import Select from "react-select"
-import {deepCompare} from "./utils";
+import {deepCompare, makeid, IsJsonString} from "./utils";
+
+import {ObjectFieldTemplate} from './Custom/ObjectFieldTemplate'
 import {FileWidget} from "./Custom/FileWidget";
 import {CheckboxesWidget} from "./Custom/CheckboxesWidget";
 import {CheckboxWidget} from "./Custom/CheckboxWidget";
+
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "../../../../services/file.service";
+import Constants from './Parts/Constants'
 
-const WITHOUT_GROUP = 'WITHOUT_GROUP_';
-
-const EFFECT_DISABLED = 'disabled',
-      EFFECT_HIDDEN = 'hidden';
-
-const UI_HIDDEN = 'ui:hidden',
-  UI_DISABLED = 'ui:disabled',
-  UI_NO_EFFECT = 'ui:no-effect',
-  UI_OPTIONS = 'ui:options';
-
-const DEPENDENCY_LOGIC_OPERATOR_EQUAL = '=',
-      DEPENDENCY_LOGIC_OPERATOR_MORE = '>',
-      DEPENDENCY_LOGIC_OPERATOR_LESS = '<',
-      DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL = '!=';
-
-const DEPENDENCY_LOGIC_OPERATOR_ARR = [
-  DEPENDENCY_LOGIC_OPERATOR_EQUAL,
-  DEPENDENCY_LOGIC_OPERATOR_MORE,
-  DEPENDENCY_LOGIC_OPERATOR_LESS,
-  DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL
-];
-
-const FIELD_TYPE_TEXT = 'text',
-      FIELD_TYPE_TEXT_AREA = 'textarea',
-      FIELD_TYPE_NUMBER = 'number',
-      FIELD_TYPE_BOOLEAN = 'boolean',
-      FIELD_TYPE_DATE = 'date',
-      FIELD_TYPE_SELECT = 'select',
-      FIELD_TYPE_MULTI_SELECT = 'multiSelect',
-      FIELD_TYPE_FILE = 'file',
-      FIELD_TYPE_FILE_LIST = 'fileList';
-
-const FIELD_TYPES = [
-  FIELD_TYPE_TEXT,
-  FIELD_TYPE_TEXT_AREA,
-  FIELD_TYPE_NUMBER,
-  FIELD_TYPE_BOOLEAN,
-  FIELD_TYPE_DATE,
-  FIELD_TYPE_SELECT,
-  FIELD_TYPE_MULTI_SELECT,
-  FIELD_TYPE_FILE,
-  FIELD_TYPE_FILE_LIST
-];
-
-const RJSF_FIELD_TYPE_STRING = 'string',
-      RJSF_FIELD_TYPE_NUMBER = 'number',
-      RJSF_FIELD_TYPE_BOOLEAN = 'boolean',
-      RJSF_FIELD_TYPE_INTEGER = 'integer',
-      RJSF_FIELD_TYPE_ARRAY = 'array';
+import { dependencyChecker } from './Parts/DependencyChecker'
+import { listControls } from './Parts/ListControls'
 
 const clone = rfdc();
-
-/**
- * @return {boolean}
- */
-function IsJsonString(str) {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-  return true;
-}
-
-function ErrorListTemplate(props) {
-  const {errors} = props;
-  return (
-    <div>
-      <h2>Custom error list</h2>
-      <ul>
-        {errors.map(error => (
-          <li key={error.stack}>
-            {error.stack}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-
 
 class FormCreate extends React.Component {
 
@@ -127,6 +52,14 @@ class FormCreate extends React.Component {
     this.refTitles = React.createRef();
 
     this.props.reInit && this.props.reInit(this.reInit, this);
+
+    // customization
+    this.objectFieldTemplate = ObjectFieldTemplate.bind(this);
+    this.fileWidget = FileWidget.bind(this);
+
+    // parts
+    this.getListControls = listControls.bind(this);
+    this.dependencyChecker = dependencyChecker.bind(this);
   }
 
   initState(props) {
@@ -150,7 +83,7 @@ class FormCreate extends React.Component {
           //propsDFormUiSchema[key]['ui:emptyValue'] = null;
 
           if (this.props.inputDisabled) {
-            propsDFormUiSchema[key][UI_DISABLED] = true;
+            propsDFormUiSchema[key][Constants.UI_DISABLED] = true;
           }
         }
       }))
@@ -272,8 +205,8 @@ class FormCreate extends React.Component {
           }
         }
       },
-      controlTypes: FIELD_TYPES,
-      type: FIELD_TYPE_TEXT,
+      controlTypes: Constants.FIELD_TYPES,
+      type: Constants.FIELD_TYPE_TEXT,
       section: '',
       uiSchema: propsDFormUiSchema
     };
@@ -314,216 +247,17 @@ class FormCreate extends React.Component {
     let uiSchema = clone(this.state.uiSchema);
     Object.keys(this.state.schema.properties).forEach(key => {
       const propType = this.getSpecificType(this.state.schema.properties[key]);
-      if (propType === FIELD_TYPE_FILE || propType === FIELD_TYPE_FILE_LIST) {
+      if (propType === Constants.FIELD_TYPE_FILE || propType === Constants.FIELD_TYPE_FILE_LIST) {
         if (key in this.state.uiSchema) {
-          uiSchema[key][UI_DISABLED] = state;
+          uiSchema[key][Constants.UI_DISABLED] = state;
         } else {
           uiSchema[key] = {};
-          uiSchema[key][UI_DISABLED] = state;
+          uiSchema[key][Constants.UI_DISABLED] = state;
         }
       }
     });
     this.setState({uiSchema});
   }
-
-  ObjectFieldTemplate = (props) => {
-
-    const getColumnClass = (key, element) => {
-      let classes = [];
-      classes.push(key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12');
-      if (!this.checkUiOptionField(element.name, 'label')) {
-        classes.push('label-hide');
-      }
-      return classes.join(' ');
-    };
-
-    const elementsByGroups = () => {
-      const groups = {};
-
-      const groupedFields = Object.keys(this.state.uiSchema.groups);
-      props.properties.forEach(element => {
-        if (groupedFields.indexOf(element.name) !== -1) {
-          const groupName = props.uiSchema.groups[element.name];
-          if (!Array.isArray(groups[groupName])) {
-            groups[groupName] = [];
-          }
-          groups[groupName].push(element);
-        } else {
-          if (!Array.isArray(groups[WITHOUT_GROUP + element.name])) {
-            groups[WITHOUT_GROUP + element.name] = [];
-          }
-          groups[WITHOUT_GROUP + element.name].push(element);
-        }
-      });
-      return groups;
-    };
-
-    const getUniqueValues = (notUniqArray) => {
-      return notUniqArray.filter((value, index, arr) => arr.indexOf(value) === index);
-    };
-
-    const getSections = () => {
-      const sections = Object.values(this.state.uiSchema.sections);
-      return getUniqueValues(sections);
-    };
-
-    const isElementInSection = (elementContentKey, sectionName) => {
-      return elementContentKey in this.state.uiSchema.sections && this.state.uiSchema.sections[elementContentKey] === sectionName;
-    };
-    const isSectionHaveOneElement = (elements, sectionName) => {
-      const fieldsNames = elements.map(element => element.name);
-      const found = fieldsNames.some(fieldName => isElementInSection(fieldName, sectionName));
-      return !!found;
-    };
-
-    const renderElementsByGroupsAndSections = (sectionName) => {
-      return Object.keys(groupedElements).map((groupName, index) => {
-
-        if (!isSectionHaveOneElement(groupedElements[groupName], sectionName)) {
-          return null;
-        }
-
-        const elementContent = groupedElements[groupName].map(element => {
-          if (isElementInSection(element.name, sectionName)) {
-            const isElementHidden = (elementKey) => {
-              return elementKey in this.state.uiSchema && UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][UI_HIDDEN]
-                ? {display: 'none'} : {}
-            }
-            return (
-              <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
-                   key={element.name}>
-                {element.content}
-              </div>)
-          }
-          return null;
-        });
-
-        if (groupName.indexOf('WITHOUT_GROUP') !== -1) {
-          // todo
-          // return <div key={`${sectionName}-${groupName}-${index}`} className="row mt-2 mb-2">
-
-          //     {elementContent}
-
-          // </div>;
-
-          return null;
-        }
-
-        let isHidden = groupName in this.state.uiSchema.groupStates && UI_HIDDEN in this.state.uiSchema.groupStates[groupName] && this.state.uiSchema.groupStates[groupName][UI_HIDDEN]
-          ? {display: 'none'} : {}
-
-        return (
-          <div className="border px-2" key={sectionName + '_' + groupName} style={isHidden}>
-            <div className="title pt-2 pb-0">
-              <span className="text-bold-500 font-medium-2 ml-50">{groupName}</span>
-              <hr/>
-            </div>
-            <Row>
-              {elementContent}
-            </Row>
-          </div>
-        )
-      })
-    };
-
-    const renderElementsWithNoGroupsAndSections = (sectionName) => {
-      return Object.keys(groupedElements).map((groupName, index) => {
-
-        if (!isSectionHaveOneElement(groupedElements[groupName], sectionName)) {
-          return null;
-        }
-
-        if (groupName.indexOf('WITHOUT_GROUP') === -1) {
-          return null
-        }
-        let elementContent = groupedElements[groupName].map(element => {
-          if (isElementInSection(element.name, sectionName)) {
-            const isElementHidden = (elementKey) => {
-              return elementKey in this.state.uiSchema && UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][UI_HIDDEN]
-                ? {display: 'none'} : {}
-            }
-            return (
-              <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
-                   key={element.name}>
-                {element.content}
-              </div>)
-          }
-          return null;
-        });
-
-        return elementContent
-      })
-    };
-
-    const sections = getSections();
-    const groupedElements = elementsByGroups();
-
-    const defaultTab = sections.length ? 0 : -1;
-
-    const [keyTab, setKeyTab] = useState(defaultTab);
-
-
-    const isSectionHidden = (section, effect) => {
-      return section in this.state.uiSchema.sectionStates && UI_HIDDEN in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][UI_HIDDEN]
-        ? {display: 'none'} : {}
-    };
-
-    const isSectionDisabled = (section) => {
-      return section in this.state.uiSchema.sectionStates && UI_DISABLED in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][UI_DISABLED]
-        ? {disabled: 'disabled'} : {};
-    };
-
-    const renderObject = () => {
-      return (<div>
-        {props.title}
-        {props.description}
-
-        <Nav tabs className="mt-1">
-          {
-            sections.map((section, index) =>
-              <NavItem style={isSectionHidden(section)} key={`tab-display-${section}`} {...isSectionDisabled(section)}>
-                <NavLink
-                  className={classnames({
-                    active: keyTab == index
-                  })}
-                  onClick={() => {
-                    setKeyTab(index)
-                  }}
-                >
-                  <span className="align-middle ml-50">{section}</span>
-                </NavLink>
-              </NavItem>
-            )
-          }
-        </Nav>
-        <TabContent activeTab={keyTab}>
-          {
-            sections.map((section, index) =>
-              <TabPane tabId={index} key={section}>
-                <Row className="mx-0" col="12">
-                  <Col className="pl-0" sm="12">
-                    {
-                      renderElementsByGroupsAndSections(section)
-                    }
-                    <Row className="mt-1 mb-1">
-                      {renderElementsWithNoGroupsAndSections(section)}
-                    </Row>
-                  </Col>
-                </Row>
-              </TabPane>
-            )
-          }
-        </TabContent>
-
-      </div>);
-    };
-
-    return (
-      <div>
-        {renderObject()}
-      </div>
-    );
-  };
 
   formSubmit = (event) => {
 
@@ -532,9 +266,9 @@ class FormCreate extends React.Component {
     Object.keys(formData).forEach(key => {
       if (key in this.state.uiSchema &&
         (
-          (UI_DISABLED in this.state.uiSchema[key] && this.state.uiSchema[key][UI_DISABLED])
+          (Constants.UI_DISABLED in this.state.uiSchema[key] && this.state.uiSchema[key][Constants.UI_DISABLED])
           ||
-          (UI_HIDDEN in this.state.uiSchema[key] && this.state.uiSchema[key][UI_HIDDEN])
+          (Constants.UI_HIDDEN in this.state.uiSchema[key] && this.state.uiSchema[key][Constants.UI_HIDDEN])
         )
       ) {
         delete formData[key];
@@ -562,7 +296,6 @@ class FormCreate extends React.Component {
     return fields;
   }
 
-
   getFieldsBySection = (state, sectionName) => {
     let fields = [];
     for (let fieldInGroup in state.uiSchema.sections) {
@@ -574,28 +307,28 @@ class FormCreate extends React.Component {
 
   getEffectByType = (type) => {
     switch (type) {
-      case EFFECT_DISABLED: {
-        return UI_DISABLED;
+      case Constants.EFFECT_DISABLED: {
+        return Constants.UI_DISABLED;
       }
-      case EFFECT_HIDDEN: {
-        return UI_HIDDEN;
+      case Constants.EFFECT_HIDDEN: {
+        return Constants.UI_HIDDEN;
       }
       default: {
-        return UI_NO_EFFECT;
+        return Constants.UI_NO_EFFECT;
       }
     }
   };
 
   getEffects = () => {
-    return ['', EFFECT_DISABLED, EFFECT_HIDDEN];
+    return ['', Constants.EFFECT_DISABLED, Constants.EFFECT_HIDDEN];
   };
 
   operatorResult = (operator, fieldValue, value, field = null) => {
-    // todo bug
+    // todo bug resolved
     // if (!fieldValue || !value) return true;
     const typeField = this.getSpecificType(this.state.schema.properties[field]);
     switch (operator) {
-      case DEPENDENCY_LOGIC_OPERATOR_EQUAL: {
+      case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL: {
 
         if (Array.isArray(fieldValue)) {
           if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
@@ -604,13 +337,13 @@ class FormCreate extends React.Component {
           return false;
         }
 
-        if (typeField === FIELD_TYPE_NUMBER) {
+        if (typeField === Constants.FIELD_TYPE_NUMBER) {
           if (parseFloat(fieldValue) === parseFloat(value)) {
             return true;
           }
           return false;
         }
-        if (typeField === FIELD_TYPE_BOOLEAN) {
+        if (typeField === Constants.FIELD_TYPE_BOOLEAN) {
           if (Boolean(fieldValue) === Boolean(value)) {
             return true;
           }
@@ -622,7 +355,7 @@ class FormCreate extends React.Component {
         }
         return false;
       }
-      case DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL: {
+      case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL: {
 
         if (Array.isArray(fieldValue)) {
           if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
@@ -631,14 +364,14 @@ class FormCreate extends React.Component {
           return true;
         }
 
-        if (typeField === FIELD_TYPE_BOOLEAN) {
+        if (typeField === Constants.FIELD_TYPE_BOOLEAN) {
           if (Boolean(fieldValue) !== Boolean(value)) {
             return true;
           }
           return false;
         }
 
-        if (typeField === FIELD_TYPE_NUMBER) {
+        if (typeField === Constants.FIELD_TYPE_NUMBER) {
           if (parseFloat(fieldValue) !== parseFloat(value)) {
             return true;
           }
@@ -651,7 +384,7 @@ class FormCreate extends React.Component {
 
         return false;
       }
-      case DEPENDENCY_LOGIC_OPERATOR_MORE: {
+      case Constants.DEPENDENCY_LOGIC_OPERATOR_MORE: {
 
         if (Array.isArray(fieldValue)) {
           if (fieldValue.some(nextFieldValue => nextFieldValue > value)) {
@@ -660,7 +393,7 @@ class FormCreate extends React.Component {
 
           return false;
         }
-        if (typeField === FIELD_TYPE_NUMBER) {
+        if (typeField === Constants.FIELD_TYPE_NUMBER) {
           if (parseFloat(fieldValue) > parseFloat(value)) {
             return true;
           }
@@ -673,7 +406,7 @@ class FormCreate extends React.Component {
 
         return false;
       }
-      case DEPENDENCY_LOGIC_OPERATOR_LESS: {
+      case Constants.DEPENDENCY_LOGIC_OPERATOR_LESS: {
 
         if (Array.isArray(fieldValue)) {
           if (fieldValue.some(nextFieldValue => nextFieldValue < value)) {
@@ -682,7 +415,7 @@ class FormCreate extends React.Component {
 
           return false;
         }
-        if (typeField === FIELD_TYPE_NUMBER) {
+        if (typeField === Constants.FIELD_TYPE_NUMBER) {
           if (parseFloat(fieldValue) < parseFloat(value)) {
             return true;
           }
@@ -719,10 +452,10 @@ class FormCreate extends React.Component {
 
   isFieldHasDefaultEffectByOperator(operator) {
     switch(operator) {
-      case DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
+      case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
         return false;
       }
-      case DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
+      case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
         return true;
       }
       default : {
@@ -731,414 +464,11 @@ class FormCreate extends React.Component {
     }
   }
 
-  dependencyChecker = (state) => {
-    let fieldsStates = {};
-    let groupsStates = {};
-    let sectionsStates = {};
-
-    const setField = (field, value, effect) => {
-      if (!Array.isArray(fieldsStates[field])) {
-        fieldsStates[field] = [];
-      }
-      fieldsStates[field].push({value: value, effect: effect})
-    };
-
-    const setGroup = (field, value, effect) => {
-      if (!Array.isArray(groupsStates[field])) {
-        groupsStates[field] = [];
-      }
-      groupsStates[field].push({value: value, effect: effect})
-    };
-
-    const setSection = (field, value, effect) => {
-      if (!Array.isArray(sectionsStates[field])) {
-        sectionsStates[field] = [];
-      }
-      sectionsStates[field].push({value: value, effect: effect})
-    };
-
-    Object.keys(state.uiSchema.dependencies.fields).forEach((field) => {
-      if (!state.uiSchema.dependencies.fields[field] || !('conditions' in state.uiSchema.dependencies.fields[field])) return;
-
-      const effect = this.getEffectByType(state.uiSchema.dependencies.fields[field].effect);
-
-      state.uiSchema.dependencies.fields[field].conditions.forEach(condition => {
-
-        // todo add function universal
-        for (let fieldOperator of condition.fieldOperators) {
-          // check required
-
-          if (!(field in state.uiSchema)) {
-            state.uiSchema[field] = {};
-          }
-
-          // todo 04.09.2020 bug  if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
-          if (!(fieldOperator.field in state.formData)) {
-            setField(field, this.isFieldHasDefaultEffectByOperator(fieldOperator.operator), effect);
-            continue;
-          }
-
-          const fieldValue = state.formData[fieldOperator.field];
-
-          if (this.operatorResult(fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field)) {
-            setField(field, true, effect);
-            continue;
-          }
-
-          setField(field, false, effect);
-        }
-
-        for (let conditionField of condition.fields) {
-          // check required
-          if (!(field in state.uiSchema)) {
-            state.uiSchema[field] = {};
-          }
-          if (!state.formData[conditionField] || !this.isValidationFieldPassed(state, conditionField)) {
-            setField(field, true, effect);
-          } else {
-            setField(field, false, effect);
-          }
-        }
-
-        for (let conditionGroup of condition.groups) {
-          if (!(field in state.uiSchema)) {
-            state.uiSchema[field] = {};
-          }
-          let isDisabled = this.getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
-            return !(fieldInGroup in state.formData) ||
-              (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-              !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
-          });
-
-          if (isDisabled) {
-            setField(field, true, effect);
-          } else {
-            setField(field, false, effect);
-          }
-        }
-      });
-    });
-
-    Object.keys(state.uiSchema.dependencies.groups).forEach((settingGroup) => {
-      if (!('conditions' in state.uiSchema.dependencies.groups[settingGroup])) return;
-      let isGroupDisabled = false;
-
-      const effect = this.getEffectByType(state.uiSchema.dependencies.groups[settingGroup].effect);
-
-      state.uiSchema.dependencies.groups[settingGroup].conditions.forEach(condition => {
-
-        for (let fieldOperator of condition.fieldOperators) {
-          // check required
-
-          if (!(settingGroup in state.uiSchema.groupStates)) {
-            state.uiSchema.groupStates[settingGroup] = {};
-          }
-
-          const fieldValue = state.formData[fieldOperator.field];
-          const isDisabled = this.operatorResult(fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
-
-          const setStateForFieldsCurrGroup = () => {
-
-            this.getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
-              if (!(fieldInGroup in state.uiSchema)) {
-                state.uiSchema[fieldInGroup] = {};
-              }
-              if (isDisabled) {
-                setField(fieldInGroup, true, effect);
-              } else {
-                setField(fieldInGroup, false, effect);
-              }
-            });
-          }
-
-          if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
-            state.uiSchema.groupStates[settingGroup][effect] = true;
-            setStateForFieldsCurrGroup();
-            continue;
-          }
-
-          if (isDisabled) {
-            setGroup(settingGroup, true, effect);
-          } else {
-            setGroup(settingGroup, false, effect);
-          }
-          setStateForFieldsCurrGroup();
-        }
-
-        if (condition.fields.length) {
-          // check required
-          if (!(settingGroup in state.uiSchema.groupStates)) {
-            state.uiSchema.groupStates[settingGroup] = {};
-          }
-          let isDisabled = condition.fields.some((fieldInGroup) => {
-            return !(fieldInGroup in state.formData) ||
-              (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-              !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
-          });
-
-          if (isDisabled) {
-            setGroup(settingGroup, true, effect);
-          } else {
-            setGroup(settingGroup, false, effect);
-          }
-
-          this.getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
-            if (!(fieldInGroup in state.uiSchema)) {
-              state.uiSchema[fieldInGroup] = {};
-            }
-            if (isDisabled) {
-              setField(fieldInGroup, true, effect);
-            } else {
-              setField(fieldInGroup, false, effect);
-            }
-          });
-        }
-
-        for (let conditionGroup of condition.groups) {
-
-          // check required
-          if (!(settingGroup in state.uiSchema.groupStates)) {
-            state.uiSchema.groupStates[settingGroup] = {};
-          }
-
-          let isDisabled = this.getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
-            return !(fieldInGroup in state.formData) ||
-              (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-              !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
-          });
-          if (isDisabled) {
-            setGroup(settingGroup, true, effect);
-          } else {
-            setGroup(settingGroup, false, effect);
-          }
-          this.getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
-            if (!(fieldInGroup in state.uiSchema)) {
-              state.uiSchema[fieldInGroup] = {};
-            }
-            if (isDisabled) {
-              setField(fieldInGroup, true, effect);
-            } else {
-              setField(fieldInGroup, false, effect);
-            }
-          });
-        }
-      })
-    });
-
-    Object.keys(state.uiSchema.dependencies.sections).forEach((settingSection) => {
-      if (!('conditions' in state.uiSchema.dependencies.sections[settingSection])) return;
-
-      const effect = this.getEffectByType(state.uiSchema.dependencies.sections[settingSection].effect);
-
-      state.uiSchema.dependencies.sections[settingSection].conditions.forEach(condition => {
-
-        for (let fieldOperator of condition.fieldOperators) {
-          // check required
-
-          if (!(settingSection in state.uiSchema.sectionStates)) {
-            state.uiSchema.sectionStates[settingSection] = {};
-          }
-
-          const fieldValue = state.formData[fieldOperator.field];
-          const isDisabled = this.operatorResult(fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
-
-          const setStateForFieldsCurrSection = () => {
-
-            this.getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
-              if (!(fieldInSection in state.uiSchema)) {
-                state.uiSchema[fieldInSection] = {};
-              }
-              if (isDisabled) {
-                setField(fieldInSection, true, effect);
-              } else {
-                setField(fieldInSection, false, effect);
-              }
-            });
-          }
-
-          if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
-            setSection(settingSection, true, effect);
-            setStateForFieldsCurrSection();
-            continue;
-          }
-
-          if (isDisabled) {
-            setSection(settingSection, true, effect);
-          } else {
-            setSection(settingSection, false, effect);
-          }
-          setStateForFieldsCurrSection();
-        }
-
-        if (condition.fields.length) {
-          // check required
-          if (!(settingSection in state.uiSchema.sectionStates)) {
-            state.uiSchema.sectionStates[settingSection] = {};
-          }
-          let isDisabled = condition.fields.some((fieldInGroup) => {
-            return !(fieldInGroup in state.formData) ||
-              (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-              !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
-          });
-
-          if (isDisabled) {
-            setSection(settingSection, true, effect);
-          } else {
-            setSection(settingSection, false, effect);
-          }
-
-          this.getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
-            if (!(fieldInSection in state.uiSchema)) {
-              state.uiSchema[fieldInSection] = {};
-            }
-            if (isDisabled) {
-              setField(fieldInSection, true, effect);
-            } else {
-              setField(fieldInSection, false, effect);
-            }
-          });
-        }
-
-        for (let conditionGroup of condition.groups) {
-
-          // check required
-          if (!(settingSection in state.uiSchema.sectionStates)) {
-            state.uiSchema.sectionStates[settingSection] = {};
-          }
-
-          let isDisabled = this.getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
-            return !(fieldInGroup in state.formData) ||
-              (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-              !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
-          });
-          if (isDisabled) {
-            setSection(settingSection, true, effect);
-          } else {
-            setSection(settingSection, false, effect);
-          }
-          this.getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
-            if (!(fieldInSection in state.uiSchema)) {
-              state.uiSchema[fieldInSection] = {};
-            }
-            if (isDisabled) {
-              setField(fieldInSection, true, effect);
-            } else {
-              setField(fieldInSection, false, effect);
-            }
-          });
-        }
-
-        for (let conditionSection of condition.sections) {
-
-          // check required
-          if (!(settingSection in state.uiSchema.sectionStates)) {
-            state.uiSchema.sectionStates[settingSection] = {};
-          }
-
-          let isDisabled = this.getFieldsBySection(state, conditionSection).some((fieldInGroup) => {
-            return !(fieldInGroup in state.formData) ||
-              (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-              !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
-          });
-          if (isDisabled) {
-            setSection(settingSection, true, effect);
-          } else {
-            setSection(settingSection, false, effect);
-          }
-          this.getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
-            if (!(fieldInSection in state.uiSchema)) {
-              state.uiSchema[fieldInSection] = {};
-            }
-            if (isDisabled) {
-              setField(fieldInSection, true, effect);
-            } else {
-              setField(fieldInSection, false, effect);
-            }
-          });
-        }
-      })
-    });
-
-    Object.keys(fieldsStates).forEach(field => {
-      if (!(field in state.uiSchema)) {
-        state.uiSchema[field] = {};
-      }
-
-      let hidden = fieldsStates[field].find(fieldObj => {
-        return fieldObj.value && fieldObj.effect === UI_HIDDEN;
-      });
-      let disabled = fieldsStates[field].find(fieldObj => {
-        return fieldObj.value && fieldObj.effect === UI_DISABLED;
-      });
-
-      if (hidden) {
-        state.uiSchema[field][hidden.effect] = true;
-        return;
-      }
-      if (disabled) {
-        state.uiSchema[field][disabled.effect] = true;
-        return;
-      }
-
-      state.uiSchema[field] = {};
-    });
-
-
-    Object.keys(groupsStates).forEach(group => {
-      if (!(group in state.uiSchema.groupStates)) {
-        state.uiSchema.groupStates[group] = {};
-      }
-
-      let hidden = groupsStates[group].find(groupObj => {
-        return groupObj.value && groupObj.effect === UI_HIDDEN;
-      });
-      let disabled = groupsStates[group].find(groupObj => {
-        return groupObj.value && groupObj.effect === UI_DISABLED;
-      });
-
-      if (hidden) {
-        state.uiSchema.groupStates[group][hidden.effect] = true;
-        return;
-      }
-      if (disabled) {
-        state.uiSchema.groupStates[group][disabled.effect] = true;
-        return;
-      }
-
-      state.uiSchema.groupStates[group] = {};
-    });
-
-
-    Object.keys(sectionsStates).forEach(section => {
-      if (!(section in state.uiSchema.sectionStates)) {
-        state.uiSchema.sectionStates[section] = {};
-      }
-
-      let hidden = sectionsStates[section].find(sectionObj => {
-        return sectionObj.value && sectionObj.effect === UI_HIDDEN;
-      });
-      let disabled = sectionsStates[section].find(sectionObj => {
-        return sectionObj.value && sectionObj.effect === UI_DISABLED;
-      });
-
-      if (hidden) {
-        state.uiSchema.sectionStates[section][hidden.effect] = true;
-        return;
-      }
-      if (disabled) {
-        state.uiSchema.sectionStates[section][disabled.effect] = true;
-        return;
-      }
-
-      state.uiSchema.sectionStates[section] = {};
-    })
-  };
-
   withoutFiles(formData) {
     let formDataFormatted = clone(formData);
     Object.keys(this.state.schema.properties).forEach(key => {
       const propType = this.getSpecificType(this.state.schema.properties[key]);
-      if (propType === FIELD_TYPE_FILE || propType === FIELD_TYPE_FILE_LIST) {
+      if (propType === Constants.FIELD_TYPE_FILE || propType === Constants.FIELD_TYPE_FILE_LIST) {
         if(key in formDataFormatted) {
           delete formDataFormatted[key];
         }
@@ -1216,16 +546,16 @@ class FormCreate extends React.Component {
 
   getDefaultValueByType(type) {
     switch (type) {
-      case RJSF_FIELD_TYPE_STRING: {
+      case Constants.RJSF_FIELD_TYPE_STRING: {
         return '';
       }
-      case RJSF_FIELD_TYPE_INTEGER: {
+      case Constants.RJSF_FIELD_TYPE_INTEGER: {
         return 0;
       }
-      case RJSF_FIELD_TYPE_NUMBER: {
+      case Constants.RJSF_FIELD_TYPE_NUMBER: {
         return 0;
       }
-      case RJSF_FIELD_TYPE_BOOLEAN: {
+      case Constants.RJSF_FIELD_TYPE_BOOLEAN: {
         return false;
       }
       default: {
@@ -1375,28 +705,13 @@ class FormCreate extends React.Component {
           })
         }
       });
-    })
+    });
 
 
     this.setState(state);
   };
 
   inputChangeHandler = (event, index, prop) => {
-    // const { target: { value } } = event;
-
-    // let schema = clone(this.state.schema);
-    // if (prop === 'type') {
-    //     delete schema.properties[index]['minimum'];
-    //     delete schema.properties[index]['maximum'];
-    //     delete schema.properties[index]['maxLength'];
-    //     delete schema.properties[index]['minLength'];
-    //     //schema.properties[index].default = this.getDefaultValueByType(value);
-    //     schema.properties[index] = this.state.controls[value];
-    // } else {
-    //     schema.properties[index][prop] = value;
-    // }
-
-    // this.setState({ schema: schema });
     const {target: {value}} = event;
 
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
@@ -1426,25 +741,13 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit});
   };
 
-  // todo
-  makeid(length) {
-    let result = '';
-    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  }
-
-
   addControl = (sectionName, groupName) => {
     this.setState(state => {
       let schema = clone(this.state.schema);
       let uiSchema = clone(this.state.uiSchema);
       let propertyName = "property_default " + (Object.keys(schema.properties).length + 1);
       if (propertyName in schema.properties) {
-        propertyName += this.makeid(9);
+        propertyName += makeid(9);
       }
       schema.properties[propertyName] = this.state.controls[this.state.type];
       uiSchema.sections[propertyName] = sectionName;
@@ -1492,35 +795,35 @@ class FormCreate extends React.Component {
 
   getSpecificType(property) {
     if (
-      property.type === RJSF_FIELD_TYPE_STRING && 'format' in property &&
+      property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
       (property.format === 'date' || property.format === 'date-time')
     ) {
-      return FIELD_TYPE_DATE;
-    } else if (property.type === RJSF_FIELD_TYPE_STRING && 'enum' in property) {
-      return FIELD_TYPE_SELECT;
+      return Constants.FIELD_TYPE_DATE;
+    } else if (property.type === Constants.RJSF_FIELD_TYPE_STRING && 'enum' in property) {
+      return Constants.FIELD_TYPE_SELECT;
     } else if (
-      property.type === RJSF_FIELD_TYPE_ARRAY && 'items' in property &&
+      property.type === Constants.RJSF_FIELD_TYPE_ARRAY && 'items' in property &&
       'format' in property.items &&
       (property.items.format === 'data-url' || property.items.format === 'file')
     ) {
-      return FIELD_TYPE_FILE_LIST;
-    } else if (property.type === RJSF_FIELD_TYPE_ARRAY && 'items' in property) {
-      return FIELD_TYPE_MULTI_SELECT;
+      return Constants.FIELD_TYPE_FILE_LIST;
+    } else if (property.type === Constants.RJSF_FIELD_TYPE_ARRAY && 'items' in property) {
+      return Constants.FIELD_TYPE_MULTI_SELECT;
     } else if (
-      property.type === RJSF_FIELD_TYPE_STRING && 'format' in property &&
+      property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
       property.format === 'textarea') {
-      return FIELD_TYPE_TEXT_AREA;
+      return Constants.FIELD_TYPE_TEXT_AREA;
     } else if (
-      property.type === RJSF_FIELD_TYPE_STRING && 'format' in property &&
+      property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
       (property.format === 'data-url' || property.format === 'file')
     ) {
-      return FIELD_TYPE_FILE;
-    } else if (property.type === RJSF_FIELD_TYPE_STRING) {
-      return FIELD_TYPE_TEXT;
-    } else if (property.type === RJSF_FIELD_TYPE_NUMBER) {
-      return FIELD_TYPE_NUMBER;
-    } else if (property.type === RJSF_FIELD_TYPE_BOOLEAN) {
-      return FIELD_TYPE_BOOLEAN;
+      return Constants.FIELD_TYPE_FILE;
+    } else if (property.type === Constants.RJSF_FIELD_TYPE_STRING) {
+      return Constants.FIELD_TYPE_TEXT;
+    } else if (property.type === Constants.RJSF_FIELD_TYPE_NUMBER) {
+      return Constants.FIELD_TYPE_NUMBER;
+    } else if (property.type === Constants.RJSF_FIELD_TYPE_BOOLEAN) {
+      return Constants.FIELD_TYPE_BOOLEAN;
     }
   }
 
@@ -1617,18 +920,18 @@ class FormCreate extends React.Component {
   }
 
   checkUiOptionField(objKey, option) {
-    if (!this.state.uiSchema[objKey] || !this.state.uiSchema[objKey][UI_OPTIONS]) return true;
+    if (!this.state.uiSchema[objKey] || !this.state.uiSchema[objKey][Constants.UI_OPTIONS]) return true;
 
-    if (this.state.uiSchema[objKey][UI_OPTIONS] && this.state.uiSchema[objKey][UI_OPTIONS][option]) {
+    if (this.state.uiSchema[objKey][Constants.UI_OPTIONS] && this.state.uiSchema[objKey][Constants.UI_OPTIONS][option]) {
       return true
     }
     return false;
   }
 
   getLabelShowingCheckbox() {
-    if (!this.state.uiSchemaPropertyEdit[UI_OPTIONS]) return true;
+    if (!this.state.uiSchemaPropertyEdit[Constants.UI_OPTIONS]) return true;
 
-    if (this.state.uiSchemaPropertyEdit[UI_OPTIONS] && this.state.uiSchemaPropertyEdit[UI_OPTIONS]['label']) {
+    if (this.state.uiSchemaPropertyEdit[Constants.UI_OPTIONS] && this.state.uiSchemaPropertyEdit[Constants.UI_OPTIONS]['label']) {
       return true
     }
     return false;
@@ -1636,743 +939,13 @@ class FormCreate extends React.Component {
 
   setLabelShowingCheckbox() {
     let uiSchemaPropertyEdit = clone(this.state.uiSchemaPropertyEdit);
-    if (!(UI_OPTIONS in uiSchemaPropertyEdit)) {
-      uiSchemaPropertyEdit[UI_OPTIONS] = {}
+    if (!(Constants.UI_OPTIONS in uiSchemaPropertyEdit)) {
+      uiSchemaPropertyEdit[Constants.UI_OPTIONS] = {}
     }
-    uiSchemaPropertyEdit[UI_OPTIONS]['label'] = !this.getLabelShowingCheckbox();
-    uiSchemaPropertyEdit[UI_OPTIONS]['title'] = !this.getLabelShowingCheckbox();
+    uiSchemaPropertyEdit[Constants.UI_OPTIONS]['label'] = !this.getLabelShowingCheckbox();
+    uiSchemaPropertyEdit[Constants.UI_OPTIONS]['title'] = !this.getLabelShowingCheckbox();
     this.setState({uiSchemaPropertyEdit})
   }
-
-  getListControls(properties) {
-    let keys = Object.keys(properties);
-    let schemaPropertyEdit = this.state.schemaPropertyEdit;
-    const renderConfigFields = ((objKey, index) => {
-
-      // add collback for inputHandlerRequired and custom changes
-      const renderInputNumberColumn = (column, placeholder, defaultValue = 0) => {
-        return (<input
-            id={`${index}-${column}`}
-            value={column in schemaPropertyEdit ? schemaPropertyEdit[column] : defaultValue}
-            type="number"
-            onChange={event => this.inputNumberChangeHandler(event, objKey, column)}
-            className="form-control" placeholder={placeholder}/>
-        );
-      };
-
-      const renderKeyObjectColumn = (column, placeholder) => {
-        return (<input readOnly={true} id={`${index}-${column}`}
-                       value={objKey} type="text"
-                       ref={this.refTitles}
-                       data-id={objKey}
-                       onChange={event => this.inputKeyObjectHandler(event, objKey)}
-                       className="form-control"
-                       placeholder={placeholder}/>)
-      };
-
-      const renderKeyObjectEditColumn = (column, placeholder) => {
-        return (
-          <div>
-            <div className="row" key={index}>
-              <div className="col-md-12 form-group">
-                <input id={`${index}-${column}`}
-                       value={this.state.fieldEdit.propertyKey} type="text"
-                       ref={this.refTitles}
-                       data-id={objKey}
-                       onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
-                       className="form-control"
-                       placeholder={placeholder}/>
-              </div>
-            </div>
-
-          </div>)
-      };
-
-      const renderInputColumn = (column, placeholder, inputType = "text", defaultValue = '') => {
-        return (<input
-            id={`${index}-${column}`}
-            value={column in schemaPropertyEdit ? schemaPropertyEdit[column] : defaultValue}
-            type={inputType}
-            onChange={event => this.inputChangeHandler(event, objKey, column)}
-            className="form-control" placeholder={placeholder}/>
-        );
-      };
-
-      const renderSelectColumn = (column, values) => {
-        return (<select
-            id={`${index}-${column}`}
-            className="form-control"
-            value={schemaPropertyEdit[column]}
-            onChange={event => this.inputChangeHandler(event, objKey, column)}
-          >
-            {values.map((type, indexType) => <option
-              key={indexType}>{type}</option>)}
-          </select>
-        );
-      };
-
-      const renderRequiredColumn = (column, text) => {
-        return (
-          <div className="w-100">
-            <Checkbox
-              color="primary"
-              icon={<Check className="vx-icon" size={16}/>}
-              label="Is required"
-              id={`${index}-${column}`}
-              onChange={event => this.inputHandlerRequired(event, objKey)}
-              checked={this.state.schemaRequiredFields.indexOf(objKey) !== -1}
-            />
-          </div>
-        );
-      };
-
-      const renderLabelShowing = (column) => {
-        return <div className="w-100">
-          <Checkbox
-            color="primary"
-            icon={<Check className="vx-icon" size={16}/>}
-            label="Label showing"
-            id={`${index}-${column}`}
-            onChange={event => this.setLabelShowingCheckbox()}
-            checked={this.getLabelShowingCheckbox()}
-          />
-        </div>
-      };
-
-      const renderLabel = (column, text) => {
-        return (<label htmlFor={`${index}-${column}`}>{text}</label>)
-      };
-
-      const specificType = this.getSpecificType(schemaPropertyEdit);
-
-      const renderSpecificType = () => {
-
-        switch (specificType) {
-          case FIELD_TYPE_TEXT: {
-            return (
-              <Row>
-                <Col md="6">
-                  <FormGroup>
-                    {renderLabel('minLength', 'Min length')}
-                    {renderInputNumberColumn('minLength', 'Min length')}
-                  </FormGroup>
-                </Col>
-
-                <Col md="6">
-                  <FormGroup>
-                    {renderLabel('maxLength', 'Max length')}
-                    {renderInputNumberColumn('maxLength', 'Max length')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderRequiredColumn(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderLabelShowing(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-              </Row>
-            );
-          }
-          case FIELD_TYPE_NUMBER: {
-            return (
-              <Row>
-                <Col md="6">
-                  <FormGroup>
-                    {renderLabel('minimum', 'Min length')}
-                    {renderInputNumberColumn('minimum', 'Min length')}
-                  </FormGroup>
-                </Col>
-
-                <Col md="6">
-                  <FormGroup>
-                    {renderLabel('maximum', 'Max length')}
-                    {renderInputNumberColumn('maximum', 'Max length')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderRequiredColumn(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderLabelShowing(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-              </Row>
-            );
-          }
-          case FIELD_TYPE_FILE: {
-            return (
-              <Row>
-                <Col md="12">
-                  <FormGroup>
-                    {renderRequiredColumn(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderLabelShowing(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-              </Row>
-            );
-          }
-          case FIELD_TYPE_FILE_LIST: {
-            return (
-              <Row>
-                <Col md="12">
-                  <FormGroup>
-                    {renderRequiredColumn(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderLabelShowing(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-              </Row>
-            );
-          }
-          case FIELD_TYPE_BOOLEAN: {
-            return (
-              <Row>
-                <Col md="12">
-                  <FormGroup>
-                    {renderRequiredColumn(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderLabelShowing(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-              </Row>
-            );
-          }
-          case FIELD_TYPE_TEXT_AREA: {
-            return (
-              <Row>
-                <Col md="6">
-                  <FormGroup>
-                    {renderLabel('minLength', 'Min length')}
-                    {renderInputNumberColumn('minLength', 'Min length')}
-                  </FormGroup>
-                </Col>
-
-                <Col md="6">
-                  <FormGroup>
-                    {renderLabel('maxLength', 'Max length')}
-                    {renderInputNumberColumn('maxLength', 'Max length')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderRequiredColumn(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderLabelShowing(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-              </Row>
-            );
-          }
-          case FIELD_TYPE_DATE: {
-            return (<div>
-              {renderLabel('format', 'Format')}
-              {renderSelectColumn('format', ['date', 'date-time'])}
-              <div>
-                {renderRequiredColumn(objKey, 'Required?')}
-              </div>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
-            </div>)
-          }
-          case FIELD_TYPE_SELECT: {
-            return (<div>
-              {schemaPropertyEdit.enum.map((enumInput, index) => {
-                return (
-                  <div className="row" key={index}>
-                    <div className="col-md-10 form-group">
-                      <input
-                        id={`${index}-`}
-                        value={enumInput}
-                        type="text"
-                        onChange={event => this.setSelectValues(event, objKey, index)}
-                        className="form-control"/>
-                    </div>
-
-                    <div className="col-md-2 form-group">
-                      <button type="submit"
-                              onClick={event => this.removeSelectValues(event, objKey, index)}
-                              className="btn btn-danger">X
-                      </button>
-                    </div>
-
-                  </div>
-                );
-              })}
-              <div className="text-center">
-                <button type="submit" onClick={event => this.addSelectValues(event, objKey, index)}
-                        className="btn btn-primary">Add
-                </button>
-              </div>
-              <div>
-                {renderRequiredColumn(objKey, 'Required?')}
-              </div>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
-            </div>)
-          }
-          case FIELD_TYPE_MULTI_SELECT: {
-            return (<div>
-              <div className="row" key={index}>
-                <div className="col-md-12 form-group">
-                  {renderLabel('uischema-multiselect-checkboxes', 'UI style')}
-                  <select id="uischema-multiselect-checkboxes" className="form-control"
-                          value={this.getUiSchemaTemplateMultiselect(objKey)}
-                          onChange={(event) => this.changeUiSchemaTemplateMultiselect(event)}>
-                    <option>default</option>
-                    <option>checkboxes</option>
-                  </select>
-                </div>
-                <div className="col-md-12">
-                  {schemaPropertyEdit.items.anyOf.map((multiSelectObj, index) => {
-                    return (
-                      <div className="row" key={index}>
-                        <div className="col-md-5 form-group">
-                          <input
-                            id={`${index}-`}
-                            value={multiSelectObj.title}
-                            type="text"
-                            onChange={event => this.setMultiSelectTitle(event, objKey, index)}
-                            className="form-control"/>
-                        </div>
-                        <div className="col-md-5 form-group">
-                          <input
-                            key={index}
-                            id={`${index}-`}
-                            value={multiSelectObj.enum[0]}
-                            type="text"
-                            onChange={event => this.setMultiSelectValues(event, objKey, index)}
-                            className="form-control"/>
-                        </div>
-
-                        <div className="col-md-2 form-group">
-                          <button type="submit"
-                                  onClick={event => this.removeMultiSelectValues(event, objKey, index)}
-                                  className="btn btn-danger">X
-                          </button>
-                        </div>
-
-                      </div>
-                    );
-                  })}
-                  <div className="text-center">
-                    <button type="submit"
-                            onClick={event => this.addMultiSelectValues(event, objKey, index)}
-                            className="btn btn-primary">Add
-                    </button>
-                  </div>
-                </div>
-                <div className="col-md-12">
-                  {renderRequiredColumn(objKey, 'Required?')}
-                </div>
-                <div className="col-md-12">
-                  <FormGroup>
-                    {renderLabelShowing(objKey, 'Required?')}
-                  </FormGroup>
-                </div>
-              </div>
-            </div>)
-          }
-          default:
-            return (<div></div>)
-        }
-      };
-
-      let dependencyFields = this.renderDependencyPart('fields', objKey);
-
-      return (
-        <div
-          className={objKey in this.state.uiSchema.columnsClasses ? this.state.uiSchema.columnsClasses[objKey] : 'col-md-12'}
-          key={'control-edit-' + objKey + '-' + index}>
-          {this.state.schema.properties[objKey].title ? renderLabel('property-' + objKey, this.state.schema.properties[objKey].title) : 'Empty title'}
-          <div className="form-group position-relative">
-            <div className="pull-right-icons position-relative">
-              {renderKeyObjectColumn('property-' + objKey, 'Property')}
-              <Badge
-                color="primary position-absolute dform-type-badget">{this.getSpecificType(this.state.schema.properties[objKey])}</Badge>
-            </div>
-
-            <div className="d-flex dform-input-setting">
-              <div className="vertical-center dform-input">
-                <ElementEditModal onOpen={() => this.elementEditModalOpened(objKey)}
-                                  onSave={() => this.elementEditModalSave(objKey)}>
-                  {renderLabel('property-' + objKey, 'Property')}
-                  <div className="form-group">
-                    {renderKeyObjectEditColumn('property-' + objKey, 'Property')}
-                  </div>
-                  {renderLabel('title', 'Title')}
-                  <div className="form-group">
-                    {renderInputColumn('title', 'Title')}
-                  </div>
-                  <div className="form-group">
-                    {renderLabel('type', 'Type')}
-                    <select
-                      id={`${index}-type`}
-                      className="form-control"
-                      value={specificType}
-                      onChange={event => this.inputChangeHandler(event, objKey, 'type')}
-                    >
-                      {this.state.controlTypes.map((type, indexType) => <option
-                        key={indexType}>{type}</option>)}
-                    </select>
-                  </div>
-                  {renderSpecificType()}
-                </ElementEditModal>
-              </div>
-              <div className="vertical-center dform-input mr-0">
-                <DependencyEditModal onOpen={this.uiSettingsOpen.bind(this, objKey)}
-                                     onSave={this.uiSettingsSave.bind(this, 'fields', objKey)} onDelete={() => {
-                  this.removePropertyField(objKey)
-                }}>
-                  <div className="">
-                    <div className="col-md-12 form-group">
-                      <label>Section</label>
-                      <select
-                        className="form-control"
-                        value={this.state.uiSettings.section}
-                        onChange={event => this.changeSection(event, objKey)}>
-                        {Object.keys(this.state.uiSchema.onlySections).map((menuName, index) => <option
-                          key={index}>{menuName}</option>)}
-                      </select>
-                    </div>
-                    <div className="col-md-12 form-group">
-                      <label>Group</label>
-                      <select
-                        className="form-control"
-                        value={this.state.uiSettings.group}
-                        onChange={event => this.changeGroup(event, objKey)}>
-                        {Object.keys(this.state.uiSchema.sectionGroups)
-                          .filter(group => this.state.uiSchema.sectionGroups[group] === this.state.uiSettings.section)
-                          .map((group, index) => <option
-                            key={index}>{group}</option>)}
-                      </select>
-                    </div>
-                    <div className="col-md-12 form-group">
-                      <label>Classes</label>
-                      <select
-                        className="form-control"
-                        value={this.state.uiSettings.classes}
-                        onChange={event => this.changeClasses(event, objKey)}>
-                        {['', 'col-md-6', 'col-md-12'].map((col, index) => <option
-                          key={index}>{col}</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="border-top">
-                    <div className="row"><h4 style={{margin: "15px auto"}}>Conditions</h4></div>
-                    {dependencyFields}
-                    <div className="row m-2 mb-1">
-                      <div className="form-create__add-new-group" onClick={this.addConditional.bind(this, objKey)}>
-                        Add condition
-                      </div>
-                    </div>
-                  </div>
-                </DependencyEditModal>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    });
-
-    const getColumnClass = (key, element) => {
-      let classes = [];
-      classes.push(key in properties.uiSchema.columnsClasses ? properties.uiSchema.columnsClasses[key] : 'col-md-12');
-      // classes.push(key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12');
-      if (this.checkUiOptionField(element.name, 'label')) {
-        classes.push('label-hide');
-      }
-      return classes.join(' ');
-    };
-
-    const elementsByGroups = () => {
-      const groups = {};
-
-      const groupedFields = Object.keys(this.state.uiSchema.groups);
-      keys.forEach(elementKey => {
-        if (groupedFields.indexOf(elementKey) !== -1) {
-          const groupName = this.state.uiSchema.groups[elementKey];
-          if (isEmpty(groups[groupName])) {
-            groups[groupName] = {};
-          }
-
-          groups[groupName][elementKey] = properties[elementKey];
-        } else {
-          if (isEmpty(groups[WITHOUT_GROUP + elementKey])) {
-            groups[WITHOUT_GROUP + elementKey] = {};
-          }
-
-          groups[WITHOUT_GROUP + elementKey][elementKey] = properties[elementKey];
-        }
-      });
-
-      return groups;
-    };
-
-    const getUniqueValues = (notUniqArray) => {
-      return notUniqArray.filter((value, index, arr) => arr.indexOf(value) === index);
-    };
-
-    const getSections = () => {
-      const sections = Object.values(this.state.uiSchema.sections);
-      return getUniqueValues(sections);
-    };
-
-    const isElementInSection = (elementContentKey, sectionName) => {
-      return elementContentKey in this.state.uiSchema.sections && this.state.uiSchema.sections[elementContentKey] === sectionName;
-    };
-    const isSectionHaveOneElement = (elements, sectionName) => {
-      const fieldsNames = Object.keys(elements);
-      const found = fieldsNames.some(fieldName => isElementInSection(fieldName, sectionName));
-      return !!found;
-    };
-
-    const renderElementsWithoutGroupsAndSections = () => {
-      return Object.keys(groupedElements).map((groupName, index) => {
-
-        if (groupName.indexOf('WITHOUT_GROUP') !== -1) {
-          return groupedElements[groupName].map(element => {
-            if (element.content.key in this.state.uiSchema.sections) {
-              return null;
-            }
-            return renderConfigFields(element.content.key, index);
-          });
-        } else {
-          return Object.keys(groupedElements[groupName]).map(key => {
-            if (key in this.state.uiSchema.sections) {
-              return null;
-            }
-            return <Card key={groupName}>
-              <CardHeader>{groupName}</CardHeader>
-              <CardBody>
-                {renderConfigFields(key, index)}
-              </CardBody>
-            </Card>;
-          });
-        }
-      })
-    }
-
-    const renderElementsByGroupsAndSections = (sectionName) => {
-
-      let groupedElementsKeys = Object.keys(groupedElements);
-
-      return Object.keys(this.state.uiSchema.sectionGroups).map((groupName, index) => {
-        if (groupedElementsKeys.indexOf(groupName) !== -1) {
-          if (!isSectionHaveOneElement(groupedElements[groupName], sectionName)) {
-            return null;
-          }
-
-          const elementContent = Object.keys(groupedElements[groupName]).map(key => {
-
-            if (isElementInSection(key, sectionName)) {
-              return renderConfigFields(key, index);
-            }
-            return null;
-          });
-
-          if (groupName.indexOf('WITHOUT_GROUP') !== -1) {
-            return null;
-          }
-
-          return (
-            <div className="border px-2" key={sectionName + '_' + groupName}>
-              <div className="title pt-2 pb-0">
-                                <span className="text-bold-500 font-medium-2 ml-50">
-                                    {groupName}
-                                  <div className="float-right">
-                                        {this.modalEditDependencies('groups', groupName)}
-                                    </div>
-                                </span>
-                <hr/>
-              </div>
-              <Row>
-                {elementContent}
-              </Row>
-              <Row>
-                <Col md="12">
-                  <div className="form-group pull-right-icons">
-                    <select
-                      className="form-control"
-                      value={this.state.type}
-                      onChange={(event) => this.setState({type: event.target.value})}>
-                      {this.state.controlTypes.map((type, indexType) => <option
-                        key={indexType}>{type}</option>)}
-                    </select>
-                  </div>
-                  <div className="d-flex dform-input-setting">
-                    <div className="vertical-center dform-input">
-                      <Plus size={20} onClick={() => this.addControl(sectionName, groupName)}
-                            className="cursor-pointer"/>
-                    </div>
-                  </div>
-                </Col>
-              </Row>
-            </div>
-          )
-        }
-
-        if (this.state.uiSchema.sectionGroups[groupName] !== sectionName) return null;
-
-        return <div className="border px-2 form-create__group-min-height " key={sectionName + '_' + groupName}>
-          <div className="title pt-2 pb-0">
-                        <span className="text-bold-500 font-medium-2 ml-50">
-                            {groupName}
-                          <div className="float-right">
-                                {this.modalEditDependencies('groups', groupName)}
-                            </div>
-                        </span>
-            <hr/>
-          </div>
-          <Row>
-
-            <Col md="12">
-              <div className="form-group pull-right-icons">
-                <select
-                  className="form-control"
-                  value={this.state.type}
-                  onChange={(event) => this.setState({type: event.target.value})}>
-                  {this.state.controlTypes.map((type, indexType) => <option
-                    key={indexType}>{type}</option>)}
-                </select>
-              </div>
-              <div className="d-flex dform-input-setting">
-                <div className="vertical-center dform-input">
-                  <Plus size={20} onClick={() => this.addControl(sectionName, groupName)} className="cursor-pointer"/>
-                </div>
-              </div>
-            </Col>
-
-          </Row>
-        </div>
-      });
-    };
-
-    const renderElementsWithNoGroupsAndSections = (sectionName) => {
-
-      return Object.keys(groupedElements).map((groupName, index) => {
-
-        if (!isSectionHaveOneElement(groupedElements[groupName], sectionName)) {
-          return null;
-        }
-
-        if (groupName.indexOf('WITHOUT_GROUP') === -1) {
-          return null;
-        }
-        const elementContent = Object.keys(groupedElements[groupName]).map(key => {
-
-          if (isElementInSection(key, sectionName)) {
-            return renderConfigFields(key, index);
-          }
-          return null;
-        });
-
-
-        return elementContent
-      })
-    };
-
-    const sections = getSections();
-    const onlySections = Object.keys(this.state.uiSchema.onlySections)
-    const groupedElements = elementsByGroups();
-
-
-    const defaultTab = sections.length && this.state.tabConfig === -1 ? 1 : this.state.tabConfig;
-
-    const renderObject = () => {
-      return (<div>
-        <Row>
-          {renderElementsWithoutGroupsAndSections()}
-        </Row>
-
-        <Nav tabs className="mt-1 border mb-0">
-          {
-            onlySections.map((section, index) =>
-              <NavItem key={section}>
-                <NavLink
-                  className={classnames({
-                    active: this.state.tabConfig == index
-                  })}
-                  onClick={() => {
-                    this.setState({tabConfig: index})
-                  }}
-                >
-                  <span className="align-middle ml-50">{section}</span>
-                  <div className="ml-1 float-right">
-                    {this.modalEditDependencies('sections', section)}
-                  </div>
-                </NavLink>
-              </NavItem>
-            )
-          }
-          <NavItem className="border">
-            <NavLink
-              onClick={() => {
-                this.addNewSection()
-              }}
-            >
-              <span className="align-middle ml-50 primary">Add tab</span>
-              <div className="ml-1 float-right">
-                <Plus size={20} className="cursor-pointer primary"/>
-              </div>
-            </NavLink>
-          </NavItem>
-        </Nav>
-        <TabContent activeTab={this.state.tabConfig} className="border form-create__tab-min-height">
-          {
-            onlySections.map((section, index) =>
-              <TabPane tabId={index} key={section}>
-                <Row className="mx-0" col="12">
-                  <Col className="p-0" sm="12">
-                    {
-                      renderElementsByGroupsAndSections(section)
-                    }
-                    <div className="form-create__add-new-group" onClick={() => this.addNewGroup(section)}>
-                      Add group
-                    </div>
-                  </Col>
-                </Row>
-                <Row className="mt-1 mb-1">
-                  {renderElementsWithNoGroupsAndSections(section)}
-                </Row>
-              </TabPane>
-            )
-          }
-        </TabContent>
-      </div>);
-    };
-    return (
-      <div>
-        {renderObject()}
-      </div>
-    );
-  }
-
 
   addOperatorField = (conditionFieldType, index) => {
     let state = clone(this.state);
@@ -2400,7 +973,7 @@ class FormCreate extends React.Component {
     let state = clone(this.state);
     let sectionName = 'Tab ' + (Object.keys(this.state.uiSchema.onlySections).length + 1);
     if (sectionName in state.uiSchema.onlySections) {
-      sectionName += this.makeid(9);
+      sectionName += makeid(9);
     }
     state.uiSchema.onlySections[sectionName] = true;
 
@@ -2411,7 +984,7 @@ class FormCreate extends React.Component {
     let state = clone(this.state);
     let groupName = 'Group ' + (Object.keys(this.state.uiSchema.sectionGroups).length + 1);
     if (groupName in state.uiSchema.sectionGroups) {
-      groupName += this.makeid(9);
+      groupName += makeid(9);
     }
     state.uiSchema.sectionGroups[groupName] = section;
     this.setState(state);
@@ -2592,16 +1165,6 @@ class FormCreate extends React.Component {
 
     let backendSchema = {
       schema: schema,
-      // uiSchema: {
-      //     sections: this.state.uiSchema.sections,
-      //     groups: this.state.uiSchema.groups,
-      //     onlySections: this.state.uiSchema.onlySections,
-      //     groupStates: {},
-      //     sectionStates: {},
-      //     sectionGroups: this.state.uiSchema.sectionGroups,
-      //     dependencies: this.state.uiSchema.dependencies,
-      //     columnsClasses: this.state.uiSchema.columnsClasses,
-      // },
       uiSchema: uiSchema
     };
     let dForm = clone(this.state.dFormTemplate);
@@ -2619,11 +1182,6 @@ class FormCreate extends React.Component {
           this.deleteGroupOrSection('groups', groupInSection, state);
         }
       });
-
-      //onlySections
-      //sections
-
-      // dependencies for fields
 
       let onlySectionTemp = {};
       Object.keys(state.uiSchema.onlySections).forEach((sectionName) => {
@@ -2686,8 +1244,6 @@ class FormCreate extends React.Component {
         }
       });
 
-      // dependencies for fields
-
       Object.keys(state.uiSchema.groups).forEach((fieldName) => {
         if (state.uiSchema.groups[fieldName] === previousFieldKey) {
           delete state.uiSchema.groups[fieldName];
@@ -2742,10 +1298,6 @@ class FormCreate extends React.Component {
       if (newFieldKey === previousFieldKey) return;
 
       let state = stateOut || clone(this.state);
-      //onlySections
-      //sections
-
-      // dependencies for fields
 
       let onlySectionTemp = {};
       Object.keys(state.uiSchema.onlySections).forEach((sectionName) => {
@@ -2791,8 +1343,6 @@ class FormCreate extends React.Component {
                 condition.sections.splice(previousIndexFieldKey, 1);
                 condition.sections.push(newFieldKey)
               }
-              // groups
-              // sections
               return condition;
             })
           }
@@ -2807,8 +1357,6 @@ class FormCreate extends React.Component {
       if (newFieldKey === previousFieldKey) return;
 
       let state = stateOut || clone(this.state);
-
-      // dependencies for fields
 
       Object.keys(state.uiSchema.groups).forEach((fieldName) => {
         if (state.uiSchema.groups[fieldName] === previousFieldKey) {
@@ -2849,8 +1397,6 @@ class FormCreate extends React.Component {
                 condition.groups.splice(previousIndexFieldKey, 1);
                 condition.groups.push(newFieldKey)
               }
-              // groups
-              // sections
               return condition;
             })
           }
@@ -3001,7 +1547,7 @@ class FormCreate extends React.Component {
                           value={fieldOperator.operator}
                         >
                           <option key="-1"></option>
-                          {DEPENDENCY_LOGIC_OPERATOR_ARR.map((type, indexType) => <option
+                          {Constants.DEPENDENCY_LOGIC_OPERATOR_ARR.map((type, indexType) => <option
                             key={indexType}>{type}</option>)}
                         </select>
                       </div>
@@ -3146,12 +1692,12 @@ class FormCreate extends React.Component {
                 formData={this.state.formData}
                 onSubmit={this.formSubmit}
                 schema={this.state.schema}
-                ObjectFieldTemplate={this.ObjectFieldTemplate}
+                ObjectFieldTemplate={this.objectFieldTemplate}
                 uiSchema={this.state.uiSchema}
                 widgets={{
                   CheckboxWidget: CheckboxWidget,
                   CheckboxesWidget: CheckboxesWidget,
-                  FileWidget: FileWidget.bind(this)
+                  FileWidget: this.fileWidget
                 }}
                 onChange={(event) => {
                   this.onChangeForm(event)
