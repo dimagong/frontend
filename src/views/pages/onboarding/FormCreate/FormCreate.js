@@ -33,8 +33,54 @@ import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "../../../../services/file.service";
 
 const WITHOUT_GROUP = 'WITHOUT_GROUP_';
-const EFFECT_DISABLED = 'disabled';
-const EFFECT_HIDDEN = 'hidden';
+
+const EFFECT_DISABLED = 'disabled',
+      EFFECT_HIDDEN = 'hidden';
+
+const UI_HIDDEN = 'ui:hidden',
+  UI_DISABLED = 'ui:disabled',
+  UI_NO_EFFECT = 'ui:no-effect',
+  UI_OPTIONS = 'ui:options';
+
+const DEPENDENCY_LOGIC_OPERATOR_EQUAL = '=',
+      DEPENDENCY_LOGIC_OPERATOR_MORE = '>',
+      DEPENDENCY_LOGIC_OPERATOR_LESS = '<',
+      DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL = '!=';
+
+const DEPENDENCY_LOGIC_OPERATOR_ARR = [
+  DEPENDENCY_LOGIC_OPERATOR_EQUAL,
+  DEPENDENCY_LOGIC_OPERATOR_MORE,
+  DEPENDENCY_LOGIC_OPERATOR_LESS,
+  DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL
+];
+
+const FIELD_TYPE_TEXT = 'text',
+      FIELD_TYPE_TEXT_AREA = 'textarea',
+      FIELD_TYPE_NUMBER = 'number',
+      FIELD_TYPE_BOOLEAN = 'boolean',
+      FIELD_TYPE_DATE = 'date',
+      FIELD_TYPE_SELECT = 'select',
+      FIELD_TYPE_MULTI_SELECT = 'multiSelect',
+      FIELD_TYPE_FILE = 'file',
+      FIELD_TYPE_FILE_LIST = 'fileList';
+
+const FIELD_TYPES = [
+  FIELD_TYPE_TEXT,
+  FIELD_TYPE_TEXT_AREA,
+  FIELD_TYPE_NUMBER,
+  FIELD_TYPE_BOOLEAN,
+  FIELD_TYPE_DATE,
+  FIELD_TYPE_SELECT,
+  FIELD_TYPE_MULTI_SELECT,
+  FIELD_TYPE_FILE,
+  FIELD_TYPE_FILE_LIST
+];
+
+const RJSF_FIELD_TYPE_STRING = 'string',
+      RJSF_FIELD_TYPE_NUMBER = 'number',
+      RJSF_FIELD_TYPE_BOOLEAN = 'boolean',
+      RJSF_FIELD_TYPE_INTEGER = 'integer',
+      RJSF_FIELD_TYPE_ARRAY = 'array';
 
 const clone = rfdc();
 
@@ -66,6 +112,8 @@ function ErrorListTemplate(props) {
   );
 }
 
+
+
 class FormCreate extends React.Component {
 
   state = {};
@@ -75,6 +123,7 @@ class FormCreate extends React.Component {
     super(props);
 
     this.state = this.initState(props);
+
     this.refTitles = React.createRef();
 
     this.props.reInit && this.props.reInit(this.reInit, this);
@@ -101,7 +150,7 @@ class FormCreate extends React.Component {
           //propsDFormUiSchema[key]['ui:emptyValue'] = null;
 
           if (this.props.inputDisabled) {
-            propsDFormUiSchema[key]['ui:disabled'] = true;
+            propsDFormUiSchema[key][UI_DISABLED] = true;
           }
         }
       }))
@@ -136,7 +185,7 @@ class FormCreate extends React.Component {
         dependencies: {}
       },
       uiSchemaPropertyEdit: {
-        'ui:options': {
+        UI_OPTIONS: {
           label: true
         }
       },
@@ -223,8 +272,8 @@ class FormCreate extends React.Component {
           }
         }
       },
-      controlTypes: ['text', 'textarea', 'number', 'boolean', 'date', 'select', 'multiSelect', 'file', 'fileList'],
-      type: 'text',
+      controlTypes: FIELD_TYPES,
+      type: FIELD_TYPE_TEXT,
       section: '',
       uiSchema: propsDFormUiSchema
     };
@@ -241,7 +290,6 @@ class FormCreate extends React.Component {
   }
 
   reInit = debounce(() => {
-    // this.forceUpdate();
     let state = this.initState(this.props);
     state.formData = this.props.dForm.submit_data;
     this.dependencyChecker(state);
@@ -266,12 +314,12 @@ class FormCreate extends React.Component {
     let uiSchema = clone(this.state.uiSchema);
     Object.keys(this.state.schema.properties).forEach(key => {
       const propType = this.getSpecificType(this.state.schema.properties[key]);
-      if (propType === 'file' || propType === 'fileList') {
+      if (propType === FIELD_TYPE_FILE || propType === FIELD_TYPE_FILE_LIST) {
         if (key in this.state.uiSchema) {
-          uiSchema[key]['ui:disabled'] = state;
+          uiSchema[key][UI_DISABLED] = state;
         } else {
           uiSchema[key] = {};
-          uiSchema[key]['ui:disabled'] = state;
+          uiSchema[key][UI_DISABLED] = state;
         }
       }
     });
@@ -338,7 +386,7 @@ class FormCreate extends React.Component {
         const elementContent = groupedElements[groupName].map(element => {
           if (isElementInSection(element.name, sectionName)) {
             const isElementHidden = (elementKey) => {
-              return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
+              return elementKey in this.state.uiSchema && UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][UI_HIDDEN]
                 ? {display: 'none'} : {}
             }
             return (
@@ -361,7 +409,7 @@ class FormCreate extends React.Component {
           return null;
         }
 
-        let isHidden = groupName in this.state.uiSchema.groupStates && 'ui:hidden' in this.state.uiSchema.groupStates[groupName] && this.state.uiSchema.groupStates[groupName]['ui:hidden']
+        let isHidden = groupName in this.state.uiSchema.groupStates && UI_HIDDEN in this.state.uiSchema.groupStates[groupName] && this.state.uiSchema.groupStates[groupName][UI_HIDDEN]
           ? {display: 'none'} : {}
 
         return (
@@ -391,7 +439,7 @@ class FormCreate extends React.Component {
         let elementContent = groupedElements[groupName].map(element => {
           if (isElementInSection(element.name, sectionName)) {
             const isElementHidden = (elementKey) => {
-              return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
+              return elementKey in this.state.uiSchema && UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][UI_HIDDEN]
                 ? {display: 'none'} : {}
             }
             return (
@@ -416,12 +464,12 @@ class FormCreate extends React.Component {
 
 
     const isSectionHidden = (section, effect) => {
-      return section in this.state.uiSchema.sectionStates && 'ui:hidden' in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section]['ui:hidden']
+      return section in this.state.uiSchema.sectionStates && UI_HIDDEN in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][UI_HIDDEN]
         ? {display: 'none'} : {}
     };
 
     const isSectionDisabled = (section) => {
-      return section in this.state.uiSchema.sectionStates && 'ui:disabled' in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section]['ui:disabled']
+      return section in this.state.uiSchema.sectionStates && UI_DISABLED in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][UI_DISABLED]
         ? {disabled: 'disabled'} : {};
     };
 
@@ -484,9 +532,9 @@ class FormCreate extends React.Component {
     Object.keys(formData).forEach(key => {
       if (key in this.state.uiSchema &&
         (
-          ('ui:disabled' in this.state.uiSchema[key] && this.state.uiSchema[key]['ui:disabled'])
+          (UI_DISABLED in this.state.uiSchema[key] && this.state.uiSchema[key][UI_DISABLED])
           ||
-          ('ui:hidden' in this.state.uiSchema[key] && this.state.uiSchema[key]['ui:hidden'])
+          (UI_HIDDEN in this.state.uiSchema[key] && this.state.uiSchema[key][UI_HIDDEN])
         )
       ) {
         delete formData[key];
@@ -526,14 +574,14 @@ class FormCreate extends React.Component {
 
   getEffectByType = (type) => {
     switch (type) {
-      case 'disabled': {
-        return 'ui:disabled';
+      case EFFECT_DISABLED: {
+        return UI_DISABLED;
       }
-      case 'hidden': {
-        return 'ui:hidden';
+      case EFFECT_HIDDEN: {
+        return UI_HIDDEN;
       }
       default: {
-        return 'ui:no-effect';
+        return UI_NO_EFFECT;
       }
     }
   };
@@ -547,7 +595,7 @@ class FormCreate extends React.Component {
     // if (!fieldValue || !value) return true;
     const typeField = this.getSpecificType(this.state.schema.properties[field]);
     switch (operator) {
-      case '=': {
+      case DEPENDENCY_LOGIC_OPERATOR_EQUAL: {
 
         if (Array.isArray(fieldValue)) {
           if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
@@ -556,13 +604,13 @@ class FormCreate extends React.Component {
           return false;
         }
 
-        if (typeField === 'number') {
+        if (typeField === FIELD_TYPE_NUMBER) {
           if (parseFloat(fieldValue) === parseFloat(value)) {
             return true;
           }
           return false;
         }
-        if (typeField === 'boolean') {
+        if (typeField === FIELD_TYPE_BOOLEAN) {
           if (Boolean(fieldValue) === Boolean(value)) {
             return true;
           }
@@ -574,24 +622,23 @@ class FormCreate extends React.Component {
         }
         return false;
       }
-      case '!=': {
+      case DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL: {
 
         if (Array.isArray(fieldValue)) {
-          if (fieldValue.some(nextFieldValue => nextFieldValue !== value)) {
-            return true;
-          }
-
-          if (typeField === 'boolean') {
-            if (Boolean(fieldValue) !== Boolean(value)) {
-              return true;
-            }
+          if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
             return false;
           }
+          return true;
+        }
 
+        if (typeField === FIELD_TYPE_BOOLEAN) {
+          if (Boolean(fieldValue) !== Boolean(value)) {
+            return true;
+          }
           return false;
         }
 
-        if (typeField === 'number') {
+        if (typeField === FIELD_TYPE_NUMBER) {
           if (parseFloat(fieldValue) !== parseFloat(value)) {
             return true;
           }
@@ -604,7 +651,7 @@ class FormCreate extends React.Component {
 
         return false;
       }
-      case '>': {
+      case DEPENDENCY_LOGIC_OPERATOR_MORE: {
 
         if (Array.isArray(fieldValue)) {
           if (fieldValue.some(nextFieldValue => nextFieldValue > value)) {
@@ -613,7 +660,7 @@ class FormCreate extends React.Component {
 
           return false;
         }
-        if (typeField === 'number') {
+        if (typeField === FIELD_TYPE_NUMBER) {
           if (parseFloat(fieldValue) > parseFloat(value)) {
             return true;
           }
@@ -626,7 +673,7 @@ class FormCreate extends React.Component {
 
         return false;
       }
-      case '<': {
+      case DEPENDENCY_LOGIC_OPERATOR_LESS: {
 
         if (Array.isArray(fieldValue)) {
           if (fieldValue.some(nextFieldValue => nextFieldValue < value)) {
@@ -635,7 +682,7 @@ class FormCreate extends React.Component {
 
           return false;
         }
-        if (typeField === 'number') {
+        if (typeField === FIELD_TYPE_NUMBER) {
           if (parseFloat(fieldValue) < parseFloat(value)) {
             return true;
           }
@@ -670,6 +717,20 @@ class FormCreate extends React.Component {
     return true;
   };
 
+  isFieldHasDefaultEffectByOperator(operator) {
+    switch(operator) {
+      case DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
+        return false;
+      }
+      case DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
+        return true;
+      }
+      default : {
+        return false
+      }
+    }
+  }
+
   dependencyChecker = (state) => {
     let fieldsStates = {};
     let groupsStates = {};
@@ -697,7 +758,7 @@ class FormCreate extends React.Component {
     };
 
     Object.keys(state.uiSchema.dependencies.fields).forEach((field) => {
-      if (!('conditions' in state.uiSchema.dependencies.fields[field])) return;
+      if (!state.uiSchema.dependencies.fields[field] || !('conditions' in state.uiSchema.dependencies.fields[field])) return;
 
       const effect = this.getEffectByType(state.uiSchema.dependencies.fields[field].effect);
 
@@ -713,7 +774,7 @@ class FormCreate extends React.Component {
 
           // todo 04.09.2020 bug  if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
           if (!(fieldOperator.field in state.formData)) {
-            setField(field, false, effect);
+            setField(field, this.isFieldHasDefaultEffectByOperator(fieldOperator.operator), effect);
             continue;
           }
 
@@ -1004,10 +1065,10 @@ class FormCreate extends React.Component {
       }
 
       let hidden = fieldsStates[field].find(fieldObj => {
-        return fieldObj.value && fieldObj.effect === 'ui:hidden';
+        return fieldObj.value && fieldObj.effect === UI_HIDDEN;
       });
       let disabled = fieldsStates[field].find(fieldObj => {
-        return fieldObj.value && fieldObj.effect === 'ui:disabled';
+        return fieldObj.value && fieldObj.effect === UI_DISABLED;
       });
 
       if (hidden) {
@@ -1029,10 +1090,10 @@ class FormCreate extends React.Component {
       }
 
       let hidden = groupsStates[group].find(groupObj => {
-        return groupObj.value && groupObj.effect === 'ui:hidden';
+        return groupObj.value && groupObj.effect === UI_HIDDEN;
       });
       let disabled = groupsStates[group].find(groupObj => {
-        return groupObj.value && groupObj.effect === 'ui:disabled';
+        return groupObj.value && groupObj.effect === UI_DISABLED;
       });
 
       if (hidden) {
@@ -1054,10 +1115,10 @@ class FormCreate extends React.Component {
       }
 
       let hidden = sectionsStates[section].find(sectionObj => {
-        return sectionObj.value && sectionObj.effect === 'ui:hidden';
+        return sectionObj.value && sectionObj.effect === UI_HIDDEN;
       });
       let disabled = sectionsStates[section].find(sectionObj => {
-        return sectionObj.value && sectionObj.effect === 'ui:disabled';
+        return sectionObj.value && sectionObj.effect === UI_DISABLED;
       });
 
       if (hidden) {
@@ -1077,7 +1138,7 @@ class FormCreate extends React.Component {
     let formDataFormatted = clone(formData);
     Object.keys(this.state.schema.properties).forEach(key => {
       const propType = this.getSpecificType(this.state.schema.properties[key]);
-      if (propType === 'file' || propType === 'fileList') {
+      if (propType === FIELD_TYPE_FILE || propType === FIELD_TYPE_FILE_LIST) {
         if(key in formDataFormatted) {
           delete formDataFormatted[key];
         }
@@ -1155,16 +1216,16 @@ class FormCreate extends React.Component {
 
   getDefaultValueByType(type) {
     switch (type) {
-      case 'string': {
+      case RJSF_FIELD_TYPE_STRING: {
         return '';
       }
-      case 'integer': {
+      case RJSF_FIELD_TYPE_INTEGER: {
         return 0;
       }
-      case 'number': {
+      case RJSF_FIELD_TYPE_NUMBER: {
         return 0;
       }
-      case 'boolean': {
+      case RJSF_FIELD_TYPE_BOOLEAN: {
         return false;
       }
       default: {
@@ -1365,6 +1426,7 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit});
   };
 
+  // todo
   makeid(length) {
     let result = '';
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -1429,24 +1491,36 @@ class FormCreate extends React.Component {
   }
 
   getSpecificType(property) {
-    if (property.type === 'string' && 'format' in property && (property.format === 'date' || property.format === 'date-time')) {
-      return 'date';
-    } else if (property.type === 'string' && 'enum' in property) {
-      return 'select';
-    } else if (property.type === 'array' && 'items' in property && 'format' in property.items && (property.items.format === 'data-url' || property.items.format === 'file')) {
-      return 'fileList';
-    } else if (property.type === 'array' && 'items' in property) {
-      return 'multiSelect';
-    } else if (property.type === 'string' && 'format' in property && property.format === 'textarea') {
-      return 'textarea';
-    } else if (property.type === 'string' && 'format' in property && (property.format === 'data-url' || property.format === 'file')) {
-      return 'file';
-    } else if (property.type === 'string') {
-      return 'text';
-    } else if (property.type === 'number') {
-      return 'number';
-    } else if (property.type === 'boolean') {
-      return 'boolean';
+    if (
+      property.type === RJSF_FIELD_TYPE_STRING && 'format' in property &&
+      (property.format === 'date' || property.format === 'date-time')
+    ) {
+      return FIELD_TYPE_DATE;
+    } else if (property.type === RJSF_FIELD_TYPE_STRING && 'enum' in property) {
+      return FIELD_TYPE_SELECT;
+    } else if (
+      property.type === RJSF_FIELD_TYPE_ARRAY && 'items' in property &&
+      'format' in property.items &&
+      (property.items.format === 'data-url' || property.items.format === 'file')
+    ) {
+      return FIELD_TYPE_FILE_LIST;
+    } else if (property.type === RJSF_FIELD_TYPE_ARRAY && 'items' in property) {
+      return FIELD_TYPE_MULTI_SELECT;
+    } else if (
+      property.type === RJSF_FIELD_TYPE_STRING && 'format' in property &&
+      property.format === 'textarea') {
+      return FIELD_TYPE_TEXT_AREA;
+    } else if (
+      property.type === RJSF_FIELD_TYPE_STRING && 'format' in property &&
+      (property.format === 'data-url' || property.format === 'file')
+    ) {
+      return FIELD_TYPE_FILE;
+    } else if (property.type === RJSF_FIELD_TYPE_STRING) {
+      return FIELD_TYPE_TEXT;
+    } else if (property.type === RJSF_FIELD_TYPE_NUMBER) {
+      return FIELD_TYPE_NUMBER;
+    } else if (property.type === RJSF_FIELD_TYPE_BOOLEAN) {
+      return FIELD_TYPE_BOOLEAN;
     }
   }
 
@@ -1543,18 +1617,18 @@ class FormCreate extends React.Component {
   }
 
   checkUiOptionField(objKey, option) {
-    if (!this.state.uiSchema[objKey] || !this.state.uiSchema[objKey]["ui:options"]) return true;
+    if (!this.state.uiSchema[objKey] || !this.state.uiSchema[objKey][UI_OPTIONS]) return true;
 
-    if (this.state.uiSchema[objKey]["ui:options"] && this.state.uiSchema[objKey]["ui:options"][option]) {
+    if (this.state.uiSchema[objKey][UI_OPTIONS] && this.state.uiSchema[objKey][UI_OPTIONS][option]) {
       return true
     }
     return false;
   }
 
   getLabelShowingCheckbox() {
-    if (!this.state.uiSchemaPropertyEdit["ui:options"]) return true;
+    if (!this.state.uiSchemaPropertyEdit[UI_OPTIONS]) return true;
 
-    if (this.state.uiSchemaPropertyEdit["ui:options"] && this.state.uiSchemaPropertyEdit["ui:options"]['label']) {
+    if (this.state.uiSchemaPropertyEdit[UI_OPTIONS] && this.state.uiSchemaPropertyEdit[UI_OPTIONS]['label']) {
       return true
     }
     return false;
@@ -1562,11 +1636,11 @@ class FormCreate extends React.Component {
 
   setLabelShowingCheckbox() {
     let uiSchemaPropertyEdit = clone(this.state.uiSchemaPropertyEdit);
-    if (!('ui:options' in uiSchemaPropertyEdit)) {
-      uiSchemaPropertyEdit['ui:options'] = {}
+    if (!(UI_OPTIONS in uiSchemaPropertyEdit)) {
+      uiSchemaPropertyEdit[UI_OPTIONS] = {}
     }
-    uiSchemaPropertyEdit['ui:options']['label'] = !this.getLabelShowingCheckbox();
-    uiSchemaPropertyEdit['ui:options']['title'] = !this.getLabelShowingCheckbox();
+    uiSchemaPropertyEdit[UI_OPTIONS]['label'] = !this.getLabelShowingCheckbox();
+    uiSchemaPropertyEdit[UI_OPTIONS]['title'] = !this.getLabelShowingCheckbox();
     this.setState({uiSchemaPropertyEdit})
   }
 
@@ -1674,7 +1748,7 @@ class FormCreate extends React.Component {
       const renderSpecificType = () => {
 
         switch (specificType) {
-          case 'text': {
+          case FIELD_TYPE_TEXT: {
             return (
               <Row>
                 <Col md="6">
@@ -1703,7 +1777,7 @@ class FormCreate extends React.Component {
               </Row>
             );
           }
-          case 'number': {
+          case FIELD_TYPE_NUMBER: {
             return (
               <Row>
                 <Col md="6">
@@ -1732,7 +1806,7 @@ class FormCreate extends React.Component {
               </Row>
             );
           }
-          case 'file': {
+          case FIELD_TYPE_FILE: {
             return (
               <Row>
                 <Col md="12">
@@ -1748,7 +1822,7 @@ class FormCreate extends React.Component {
               </Row>
             );
           }
-          case 'fileList': {
+          case FIELD_TYPE_FILE_LIST: {
             return (
               <Row>
                 <Col md="12">
@@ -1764,7 +1838,7 @@ class FormCreate extends React.Component {
               </Row>
             );
           }
-          case 'boolean': {
+          case FIELD_TYPE_BOOLEAN: {
             return (
               <Row>
                 <Col md="12">
@@ -1780,7 +1854,7 @@ class FormCreate extends React.Component {
               </Row>
             );
           }
-          case 'textarea': {
+          case FIELD_TYPE_TEXT_AREA: {
             return (
               <Row>
                 <Col md="6">
@@ -1809,7 +1883,7 @@ class FormCreate extends React.Component {
               </Row>
             );
           }
-          case 'date': {
+          case FIELD_TYPE_DATE: {
             return (<div>
               {renderLabel('format', 'Format')}
               {renderSelectColumn('format', ['date', 'date-time'])}
@@ -1823,7 +1897,7 @@ class FormCreate extends React.Component {
               </Col>
             </div>)
           }
-          case 'select': {
+          case FIELD_TYPE_SELECT: {
             return (<div>
               {schemaPropertyEdit.enum.map((enumInput, index) => {
                 return (
@@ -1862,7 +1936,7 @@ class FormCreate extends React.Component {
               </Col>
             </div>)
           }
-          case 'multiSelect': {
+          case FIELD_TYPE_MULTI_SELECT: {
             return (<div>
               <div className="row" key={index}>
                 <div className="col-md-12 form-group">
@@ -2308,19 +2382,19 @@ class FormCreate extends React.Component {
       "value": ""
     });
     this.setState(state);
-  }
+  };
 
   addConditionField = (conditionFieldType, index) => {
     let state = clone(this.state);
     state.uiSettings.dependencies.conditions[index][conditionFieldType].push('');
     this.setState(state);
-  }
+  };
 
   setConditionalField = (event, conditionFieldType, indexCondition, indexField) => {
     let state = clone(this.state);
     state.uiSettings.dependencies.conditions[indexCondition][conditionFieldType][indexField] = event.target.value;
     this.setState(state);
-  }
+  };
 
   addNewSection() {
     let state = clone(this.state);
@@ -2927,7 +3001,7 @@ class FormCreate extends React.Component {
                           value={fieldOperator.operator}
                         >
                           <option key="-1"></option>
-                          {['>', '<', '=', '!='].map((type, indexType) => <option
+                          {DEPENDENCY_LOGIC_OPERATOR_ARR.map((type, indexType) => <option
                             key={indexType}>{type}</option>)}
                         </select>
                       </div>

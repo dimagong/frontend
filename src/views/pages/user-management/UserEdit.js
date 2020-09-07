@@ -32,7 +32,7 @@ import moment from 'moment';
 import {toast} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import "../../../assets/scss/plugins/extensions/toastr.scss"
-import {User, X, Check, Plus, Edit2, RefreshCw} from "react-feather"
+import {User, X, Check, Plus, Edit2, RefreshCw, EyeOff, Eye} from "react-feather"
 import {store} from '../../../redux/storeConfig/store'
 import {setEditUser} from '../../../redux/actions/user-management/userEditActions'
 import InvitationCreate from '../invitation/InvitationCreate'
@@ -120,7 +120,7 @@ const colourStyles = {
     'margin-left': '-2px'
   }),
   indicatorSeparator: (styles) => ({display: 'none'})
-}
+};
 
 const groupTypes = {
   'App\\Admin': 'admin',
@@ -173,11 +173,12 @@ class UserEdit extends React.Component {
     editField: null,
     errors: {},
     updatedAtText: '',
-    refreshOnboarding: false
+    refreshOnboarding: false,
+    isStateConfig: false
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.rfdc = new rfdc();
     this.groups = [];
@@ -196,7 +197,7 @@ class UserEdit extends React.Component {
     this.setState({
       activeTab: tab
     })
-  }
+  };
 
   removeCard = () => {
     const emptyUser = {id: -1};
@@ -557,7 +558,7 @@ class UserEdit extends React.Component {
 
   async submitOnboardingForm(formData) {
 
-    if(isEmpty(this.props.user.onboarding)) {
+    if (isEmpty(this.props.user.onboarding)) {
       return;
     }
 
@@ -573,6 +574,10 @@ class UserEdit extends React.Component {
     await this.dispatchUserList();
     this.setState({updatedAtText: `Progress saved: ${moment(response.data.updated_at).format('YYYY-MM-DD HH:mm:ss')}`});
     toast.success('success')
+  }
+
+  changeStateConfig(toggle) {
+    this.setState({isStateConfig: toggle})
   }
 
   getDefaultUpdatedAtText() {
@@ -652,7 +657,7 @@ class UserEdit extends React.Component {
   }
 
   cardClicked(event) {
-    if(!this.state.editField) return;
+    if (!this.state.editField) return;
 
     const editClicked = document.querySelectorAll('.edit-clicked');
     let isClose = true;
@@ -668,6 +673,25 @@ class UserEdit extends React.Component {
 
       this.setState({editField: null});
     }
+  }
+
+  async submitDForm(dForm, {name, description}) {
+
+    const dFormChanges = clone(dForm);
+    dFormChanges.name = name;
+    dFormChanges.description = description;
+
+    try {
+      await workflowService.updateDForm(dFormChanges);
+      toast.success('Success')
+    } catch (error) {
+      if ('response' in error) {
+        if ('error' in error.response.data) {
+          toast.error(error.response.data.error.message)
+        }
+      }
+    }
+
   }
 
   modulesRender() {
@@ -799,30 +823,45 @@ class UserEdit extends React.Component {
                                     <CardTitle>
                                       Onboarding dForm
                                     </CardTitle>
-                                    <RefreshCw className={`bg-hover-icon${this.state.refreshOnboarding ? ' rotating' : ''}`} size={15} onClick={(event) => {
-                                      this.refreshOnboarding();
-                                    }}/>
+                                    <div>
+                                      {
+                                        this.state.isStateConfig ?
+                                          <EyeOff size={15} className="cursor-pointer mr-1"
+                                                  onClick={() => this.changeStateConfig(false)}/>
+                                          :
+                                          <Eye size={15} className="cursor-pointer mr-1"
+                                               onClick={() => this.changeStateConfig(true)}/>
+                                      }
+                                      <RefreshCw
+                                        className={`bg-hover-icon${this.state.refreshOnboarding ? ' rotating' : ''}`}
+                                        size={15} onClick={(event) => {
+                                        this.refreshOnboarding();
+                                      }}/>
+                                    </div>
                                   </CardHeader>
                                   <CardBody className="pt-0">
                                     <hr/>
                                     {
                                       // this.state.refreshOnboarding ?
                                       //   null :
-                                        <FormCreate
-                                          fileLoader={true}
-                                          reInit={(reInit, context) => { this.reInitForm = reInit.bind(context) }}
-                                          liveValidate={false}
-                                          inputDisabled={false}
-                                          fill={true}
-                                          onSaveButtonHidden={true}
-                                          statusChanged={(value) => {
-                                            this.statusChanged(value)
-                                          }}
-                                          onChange={(formData) => this.debounceOnSave(formData)}
-                                          dForm={this.props.user.onboarding.d_form}
-                                          isStateConfig={false}
-                                          updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
-                                        />
+                                      <FormCreate
+                                        fileLoader={true}
+                                        reInit={(reInit, context) => {
+                                          this.reInitForm = reInit.bind(context)
+                                        }}
+                                        submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
+                                        liveValidate={false}
+                                        inputDisabled={false}
+                                        fill={true}
+                                        onSaveButtonHidden={true}
+                                        statusChanged={(value) => {
+                                          this.statusChanged(value)
+                                        }}
+                                        onChange={(formData) => this.debounceOnSave(formData)}
+                                        dForm={this.props.user.onboarding.d_form}
+                                        isStateConfig={this.state.isStateConfig}
+                                        updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
+                                      />
                                     }
 
                                   </CardBody>

@@ -348,7 +348,7 @@ class DForm extends React.Component {
         this.setState({dFormTypeModal: type})
         break;
       }
-        defaut: {
+        default: {
           break;
         }
     }
@@ -415,8 +415,6 @@ class DForm extends React.Component {
         }
       }
     }
-
-
   }
 
   render() {
