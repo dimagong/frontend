@@ -276,7 +276,6 @@ class FormCreate extends React.Component {
       }
     });
     this.setState({uiSchema});
-    console.log('uiSchema', uiSchema);
   }
 
   ObjectFieldTemplate = (props) => {
@@ -295,7 +294,6 @@ class FormCreate extends React.Component {
 
       const groupedFields = Object.keys(this.state.uiSchema.groups);
       props.properties.forEach(element => {
-        // console.log('Refactor content key - 0', element);
         if (groupedFields.indexOf(element.name) !== -1) {
           const groupName = props.uiSchema.groups[element.name];
           if (!Array.isArray(groups[groupName])) {
@@ -325,7 +323,6 @@ class FormCreate extends React.Component {
       return elementContentKey in this.state.uiSchema.sections && this.state.uiSchema.sections[elementContentKey] === sectionName;
     };
     const isSectionHaveOneElement = (elements, sectionName) => {
-      // console.log('Refactor content key - 1', elements);
       const fieldsNames = elements.map(element => element.name);
       const found = fieldsNames.some(fieldName => isElementInSection(fieldName, sectionName));
       return !!found;
@@ -339,7 +336,6 @@ class FormCreate extends React.Component {
         }
 
         const elementContent = groupedElements[groupName].map(element => {
-          // console.log('Refactor content key - 2', element);
           if (isElementInSection(element.name, sectionName)) {
             const isElementHidden = (elementKey) => {
               return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
@@ -393,7 +389,6 @@ class FormCreate extends React.Component {
           return null
         }
         let elementContent = groupedElements[groupName].map(element => {
-          // console.log('Refactor content key - 3', element);
           if (isElementInSection(element.name, sectionName)) {
             const isElementHidden = (elementKey) => {
               return elementKey in this.state.uiSchema && 'ui:hidden' in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey]['ui:hidden']
@@ -567,9 +562,7 @@ class FormCreate extends React.Component {
           }
           return false;
         }
-        console.log('test boolean');
         if (typeField === 'boolean') {
-          console.log('boolean', fieldValue, value);
           if (Boolean(fieldValue) === Boolean(value)) {
             return true;
           }
@@ -678,7 +671,6 @@ class FormCreate extends React.Component {
   };
 
   dependencyChecker = (state) => {
-    console.log('dependencyChecker');
     let fieldsStates = {};
     let groupsStates = {};
     let sectionsStates = {};
@@ -1091,7 +1083,6 @@ class FormCreate extends React.Component {
         }
       }
     });
-    console.log('formDataFormatted', formDataFormatted);
     return formDataFormatted;
   }
 
@@ -3124,7 +3115,7 @@ class FormCreate extends React.Component {
                   }
                   {
                     this.props.onSubmit ?
-                      <Button onClick={() => console.log(this.state.formData)} type="submit" className="ml-auto" color="primary">Submit</Button> : null
+                      <Button type="submit" className="ml-auto" color="primary">Submit</Button> : null
                   }
                 </div>
               </Form>

@@ -366,7 +366,6 @@ class UserCreate extends React.Component {
                   value={
                     this.state.default.roles
                       .filter(role => {
-                          console.log(role, this.state.roles);
                           return this.state.roles.indexOf(role.value) !== -1;
                         }
                       ).map(role => this.getCustomSelect(role.value, role.label))
