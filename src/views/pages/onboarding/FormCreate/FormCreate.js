@@ -36,6 +36,7 @@ import Constants from './Parts/Constants'
 
 import { dependencyChecker } from './Parts/DependencyChecker'
 import { listControls } from './Parts/ListControls'
+import { getSpecificType } from "./helper";
 
 const clone = rfdc();
 
@@ -62,6 +63,16 @@ class FormCreate extends React.Component {
     this.dependencyChecker = dependencyChecker.bind(this);
   }
 
+  // hooks
+  componentDidUpdate = (prevProps, prevState) => {
+    console.log('componentDidUpdate', this.state);
+  };
+
+  async componentDidMount() {
+    this.groupedFiles();
+  }
+
+  // initial state by props
   initState(props) {
     const propsDFormSchema = clone(props.dForm.schema.schema);
     const propsDFormUiSchema = clone(props.dForm.schema.uiSchema);
@@ -212,53 +223,9 @@ class FormCreate extends React.Component {
     };
   }
 
-  componentDidUpdate = (prevProps, prevState) => {
-    console.log('componentDidUpdate', this.state);
-  };
 
-  refreshDependencies() {
-    let state = clone(this.state);
-    this.dependencyChecker(state);
-    this.setState(state)
-  }
 
-  reInit = debounce(() => {
-    let state = this.initState(this.props);
-    state.formData = this.props.dForm.submit_data;
-    this.dependencyChecker(state);
-    this.setState(state, async () => {
-      this.groupedFiles()
-    });
-  }, 100);
-
-  getSelectedDFormAction(action) {
-    return {
-      value: action,
-      label: action
-    }
-  }
-
-  setSelectedDFormAction(action) {
-    this.setState({dFormSelectedAction: action});
-    this.props.statusChanged && this.props.statusChanged(action.value);
-  }
-
-  changeFilesState(state) {
-    let uiSchema = clone(this.state.uiSchema);
-    Object.keys(this.state.schema.properties).forEach(key => {
-      const propType = this.getSpecificType(this.state.schema.properties[key]);
-      if (propType === Constants.FIELD_TYPE_FILE || propType === Constants.FIELD_TYPE_FILE_LIST) {
-        if (key in this.state.uiSchema) {
-          uiSchema[key][Constants.UI_DISABLED] = state;
-        } else {
-          uiSchema[key] = {};
-          uiSchema[key][Constants.UI_DISABLED] = state;
-        }
-      }
-    });
-    this.setState({uiSchema});
-  }
-
+  // submits, changes
   formSubmit = (event) => {
 
     let formData = event.formData;
@@ -287,194 +254,48 @@ class FormCreate extends React.Component {
     return true;
   }
 
-  getFieldsByGroup = (state, groupName) => {
-    let fields = [];
-    for (let fieldInGroup in state.uiSchema.groups) {
-      if (state.uiSchema.groups[fieldInGroup] !== groupName) continue;
-      fields.push(fieldInGroup);
-    }
-    return fields;
-  }
-
-  getFieldsBySection = (state, sectionName) => {
-    let fields = [];
-    for (let fieldInGroup in state.uiSchema.sections) {
-      if (state.uiSchema.sections[fieldInGroup] !== sectionName) continue;
-      fields.push(fieldInGroup);
-    }
-    return fields;
-  }
-
-  getEffectByType = (type) => {
-    switch (type) {
-      case Constants.EFFECT_DISABLED: {
-        return Constants.UI_DISABLED;
-      }
-      case Constants.EFFECT_HIDDEN: {
-        return Constants.UI_HIDDEN;
-      }
-      default: {
-        return Constants.UI_NO_EFFECT;
-      }
-    }
+  onChangeForm = (event) => {
+    let state = clone(this.state);
+    let oldState = clone(this.state);
+    state.formData = event.formData;
+    this.dependencyChecker(state);
+    this.setState(state);
+    this.onChangeSaving(oldState.formData, state.formData);
   };
 
-  getEffects = () => {
-    return ['', Constants.EFFECT_DISABLED, Constants.EFFECT_HIDDEN];
+  submit = (event) => {
+    this.setState((state) => {
+      state.formData = event.formData;
+      return {
+        state
+      }
+    })
+
   };
 
-  operatorResult = (operator, fieldValue, value, field = null) => {
-    // todo bug resolved
-    // if (!fieldValue || !value) return true;
-    const typeField = this.getSpecificType(this.state.schema.properties[field]);
-    switch (operator) {
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL: {
+  submitDForm() {
 
-        if (Array.isArray(fieldValue)) {
-          if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
-            return true;
-          }
-          return false;
-        }
+    let schema = clone(this.state.schema);
+    let uiSchema = clone(this.state.uiSchema);
 
-        if (typeField === Constants.FIELD_TYPE_NUMBER) {
-          if (parseFloat(fieldValue) === parseFloat(value)) {
-            return true;
-          }
-          return false;
-        }
-        if (typeField === Constants.FIELD_TYPE_BOOLEAN) {
-          if (Boolean(fieldValue) === Boolean(value)) {
-            return true;
-          }
-          return false;
-        }
-
-        if (fieldValue === value) {
-          return true;
-        }
-        return false;
-      }
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL: {
-
-        if (Array.isArray(fieldValue)) {
-          if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
-            return false;
-          }
-          return true;
-        }
-
-        if (typeField === Constants.FIELD_TYPE_BOOLEAN) {
-          if (Boolean(fieldValue) !== Boolean(value)) {
-            return true;
-          }
-          return false;
-        }
-
-        if (typeField === Constants.FIELD_TYPE_NUMBER) {
-          if (parseFloat(fieldValue) !== parseFloat(value)) {
-            return true;
-          }
-          return false;
-        }
-
-        if (fieldValue !== value) {
-          return true;
-        }
-
-        return false;
-      }
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_MORE: {
-
-        if (Array.isArray(fieldValue)) {
-          if (fieldValue.some(nextFieldValue => nextFieldValue > value)) {
-            return true;
-          }
-
-          return false;
-        }
-        if (typeField === Constants.FIELD_TYPE_NUMBER) {
-          if (parseFloat(fieldValue) > parseFloat(value)) {
-            return true;
-          }
-          return false;
-        }
-
-        if (fieldValue.length > value) {
-          return true;
-        }
-
-        return false;
-      }
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_LESS: {
-
-        if (Array.isArray(fieldValue)) {
-          if (fieldValue.some(nextFieldValue => nextFieldValue < value)) {
-            return true;
-          }
-
-          return false;
-        }
-        if (typeField === Constants.FIELD_TYPE_NUMBER) {
-          if (parseFloat(fieldValue) < parseFloat(value)) {
-            return true;
-          }
-          return false;
-        }
-        if (fieldValue.length < value) {
-          return true;
-        }
-
-        return false;
-      }
-      default: {
-        return false
-      }
-    }
-  }
-
-  isValidationFieldPassed = (state, field) => {
-
-    if (!(field in state.formData) && 'minLength' in state.schema.properties[field] && state.schema.properties[field]['minLength'] > 0) {
-      return false;
-    }
-
-    if ('minLength' in state.schema.properties[field] && state.formData[field].length < state.schema.properties[field]['minLength']) {
-      return false;
-    }
-
-    if ('maxLength' in state.schema.properties[field] && state.formData[field].length > state.schema.properties[field]['maxLength']) {
-      return false;
-    }
-
-    return true;
-  };
-
-  isFieldHasDefaultEffectByOperator(operator) {
-    switch(operator) {
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
-        return false;
-      }
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
-        return true;
-      }
-      default : {
-        return false
-      }
-    }
-  }
-
-  withoutFiles(formData) {
-    let formDataFormatted = clone(formData);
-    Object.keys(this.state.schema.properties).forEach(key => {
-      const propType = this.getSpecificType(this.state.schema.properties[key]);
-      if (propType === Constants.FIELD_TYPE_FILE || propType === Constants.FIELD_TYPE_FILE_LIST) {
-        if(key in formDataFormatted) {
-          delete formDataFormatted[key];
-        }
+    const propertyKeys = Object.keys(schema.properties);
+    propertyKeys.forEach((objKey) => {
+      if (objKey in uiSchema && isEmpty(uiSchema[objKey])) {
+        delete uiSchema[objKey]
       }
     });
-    return formDataFormatted;
+
+    let backendSchema = {
+      schema: schema,
+      uiSchema: uiSchema
+    };
+    let dForm = clone(this.state.dFormTemplate);
+    dForm.schema = backendSchema;
+    this.props.submitDForm(dForm, this.state.additionalData);
+  }
+
+  onSave() {
+    this.props.onSave && this.props.onSave(this.state.formData);
   }
 
   onChangeSaving = debounce((previousFormData, formData) => {
@@ -494,24 +315,410 @@ class FormCreate extends React.Component {
     }
   }, 300);
 
-  onChangeForm = (event) => {
+
+
+  // refresh btn for dForm
+  reInit = debounce(() => {
+    let state = this.initState(this.props);
+    state.formData = this.props.dForm.submit_data;
+    this.dependencyChecker(state);
+    this.setState(state, async () => {
+      this.groupedFiles()
+    });
+  }, 100);
+
+
+
+  // files
+  withoutFiles(formData) {
+    let formDataFormatted = clone(formData);
+    Object.keys(this.state.schema.properties).forEach(key => {
+      const propType = getSpecificType(this.state.schema.properties[key]);
+      if (propType === Constants.FIELD_TYPE_FILE || propType === Constants.FIELD_TYPE_FILE_LIST) {
+        if(key in formDataFormatted) {
+          delete formDataFormatted[key];
+        }
+      }
+    });
+    return formDataFormatted;
+  }
+
+  setLoadingFiles() {
+    let loadingFiles = this.state.dFormTemplate.files.map((file) => {
+      return {
+        file,
+        property_value: null
+      }
+    });
+    this.setState({loadingFiles})
+  }
+
+  async groupedFiles() {
+
+    if(!this.props.fileLoader) {
+      return;
+    }
+
+    this.changeFilesState(true);
+    this.setLoadingFiles();
+    const response = await fileService.getDFormFiles(this.state.dFormTemplate.id);
+    let groupedFiles = response.data.data;
+
+    this.setState({formData: {...this.state.formData, ...groupedFiles}}, () => {
+      this.changeFilesState(false);
+      this.setState({loadingFiles: []}, () => {
+        this.refreshDependencies();
+      })
+    })
+  }
+
+  changeFilesState(state) {
+    let uiSchema = clone(this.state.uiSchema);
+    Object.keys(this.state.schema.properties).forEach(key => {
+      const propType = getSpecificType(this.state.schema.properties[key]);
+      if (propType === Constants.FIELD_TYPE_FILE || propType === Constants.FIELD_TYPE_FILE_LIST) {
+        if (key in this.state.uiSchema) {
+          uiSchema[key][Constants.UI_DISABLED] = state;
+        } else {
+          uiSchema[key] = {};
+          uiSchema[key][Constants.UI_DISABLED] = state;
+        }
+      }
+    });
+    this.setState({uiSchema});
+  }
+
+
+
+  // dependency
+  refreshDependencies() {
     let state = clone(this.state);
-    let oldState = clone(this.state);
-    state.formData = event.formData;
+    this.dependencyChecker(state);
+    this.setState(state)
+  }
+
+  dependecyModalSave = (dependencyType, objKey) => {
+    let state = clone(this.state);
+    this.changeNameByDependencyType(objKey, dependencyType, state);
+    this.removeUiEffects(state, dependencyType, objKey);
+    state.uiSchema.dependencies[dependencyType][objKey] = clone(state.uiSettings.dependencies);
     this.dependencyChecker(state);
     this.setState(state);
-    this.onChangeSaving(oldState.formData, state.formData);
   };
 
-  submit = (event) => {
-    this.setState((state) => {
-      state.formData = event.formData;
-      return {
-        state
+  dependencyModalOpen = (dependencyType, objKey) => {
+    let dependencies = objKey in this.state.uiSchema.dependencies[dependencyType] ? this.state.uiSchema.dependencies[dependencyType][objKey] : {}
+    this.setState({fieldEdit: {propertyKey: objKey}})
+    this.setState({
+      uiSettings: {
+        classes: '',
+        group: '',
+        section: '',
+        dependencies: dependencies
       }
-    })
-
+    });
   };
+
+  renderDependencyPart = (dependencyType, objKey) => {
+    let dependencyFields = null;
+
+    if (Object.keys(this.state.uiSettings.dependencies).length) {
+
+      dependencyFields = this.state.uiSettings.dependencies.conditions.map((condition, index) => {
+        return (
+          <Card className="mt-1" key={index}>
+            <CardHeader>
+              <CardTitle>
+                Condition
+              </CardTitle>
+              <X size={15} className="cursor-pointer mr-1" onClick={event => this.removeConditional(event, index)}/>
+            </CardHeader>
+            <CardBody>
+              <hr/>
+              {
+                dependencyType === 'sections' ?
+                  <div>
+                    <label>Sections</label>
+                    {
+                      condition.sections.map((condition, indexField) => {
+                        return (<div className="row ml-2 mt-1" key={index + '_' + indexField}>
+                          <div className="col-md-10">
+                            <select
+                              className="form-control"
+                              value={condition}
+                              onChange={event => this.setConditionalField(event, 'sections', index, indexField)}
+                            >
+                              <option key="-1"></option>
+                              {this.getSections().map((type, indexType) => <option
+                                key={index + '_' + indexField + '_' + indexType}>{type}</option>)}
+                            </select>
+                          </div>
+                          <div className="vertical-center dform-input">
+                            <X size={15} className="cursor-pointer mr-1"
+                               onClick={event => this.removeConditionalField(event, 'sections', index, indexField)}/>
+                          </div>
+                        </div>)
+                      })
+                    }
+                    <div className="row m-2">
+                      <div className="form-create__add-new-group small"
+                           onClick={this.addConditionField.bind(this, 'sections', index)}>
+                        Add section
+                      </div>
+                    </div>
+                  </div>
+                  : null
+              }
+              <div>
+                <label>Groups</label>
+
+                {
+                  condition.groups.map((condition, indexField) => {
+                    return (<div className="row mt-1 ml-2" key={indexField}>
+                      <div className="col-md-10">
+                        <select
+                          className="form-control"
+                          value={condition}
+                          onChange={event => this.setConditionalField(event, 'groups', index, indexField)}
+                        >
+                          <option key="-1"></option>
+                          {this.getGroups().map((type, indexType) => <option
+                            key={indexType}>{type}</option>)}
+                        </select>
+                      </div>
+
+                      <div className="vertical-center dform-input">
+                        <X size={15} className="cursor-pointer mr-1"
+                           onClick={event => this.removeConditionalField(event, 'groups', index, indexField)}/>
+                      </div>
+                    </div>)
+                  })
+                }
+                <div className="row m-2">
+                  <div className="form-create__add-new-group small"
+                       onClick={this.addConditionField.bind(this, 'groups', index)}>
+                    Add group
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label>Fields</label>
+                {
+                  condition.fields.map((condition, indexField) => {
+                    return (<div className="row mt-1 ml-2" key={indexField}>
+                      <div className="col-md-10">
+                        <select
+                          className="form-control"
+                          value={condition}
+                          onChange={event => this.setConditionalField(event, 'fields', index, indexField)}
+                        >
+                          <option key="-1"></option>
+                          {Object.keys(this.state.schema.properties).filter(nextFilterField => nextFilterField !== objKey).map((type, indexType) =>
+                            <option
+                              key={indexType}>{type}</option>)}
+                        </select>
+                      </div>
+
+                      <div className="vertical-center dform-input">
+                        <X size={15} className="cursor-pointer mr-1"
+                           onClick={event => this.removeConditionalField(event, 'fields', index, indexField)}/>
+                      </div>
+                    </div>)
+                  })
+                }
+                <div className="row m-2">
+                  <div className="form-create__add-new-group small"
+                       onClick={this.addConditionField.bind(this, 'fields', index)}>
+                    Add field
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label>Field operator</label>
+                {condition.fieldOperators.length ?
+
+                  condition.fieldOperators.map((fieldOperator, indexFieldOperator) => {
+                    return (<div className="row mt-1 ml-2" key={indexFieldOperator}>
+                      <div className="col-md-3">
+                        <select
+                          className="form-control"
+                          onChange={event => this.setOperatorField(event, 'fieldOperators', index, indexFieldOperator, 'field')}
+                          value={fieldOperator.field}
+                        >
+                          <option key="-1"></option>
+                          {Object.keys(this.state.schema.properties).filter(nextFilterField => nextFilterField !== objKey).map((type, indexType) =>
+                            <option
+                              key={indexType}>{type}</option>)}
+                        </select>
+                      </div>
+
+                      <div className="col-md-3">
+                        <select
+                          className="form-control"
+                          onChange={event => this.setOperatorField(event, 'fieldOperators', index, indexFieldOperator, 'operator')}
+                          value={fieldOperator.operator}
+                        >
+                          <option key="-1"></option>
+                          {Constants.DEPENDENCY_LOGIC_OPERATOR_ARR.map((type, indexType) => <option
+                            key={indexType}>{type}</option>)}
+                        </select>
+                      </div>
+
+                      <div className="col-md-4">
+                        <input type="text"
+                               onChange={event => this.setOperatorField(event, 'fieldOperators', index, indexFieldOperator, 'value')}
+                               value={fieldOperator.value}
+                               className="form-control"/>
+                      </div>
+
+                      <div className="vertical-center dform-input">
+                        <X size={15} className="cursor-pointer mr-1"
+                           onClick={event => this.removeConditionalField(event, 'fieldOperators', index, indexFieldOperator)}/>
+                      </div>
+                    </div>)
+                  })
+                  : null
+                }
+                <div className="row m-2">
+                  <div className="form-create__add-new-group small"
+                       onClick={this.addOperatorField.bind(this, 'fieldOperators', index)}>
+                    Add operator
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label>Default state (Effect)</label>
+                <select
+                  className="form-control"
+                  value={this.state.uiSettings.dependencies.effect}
+                  onChange={event => this.setConditionalEffect(event)}
+                >
+                  {this.getEffects().map((type, indexType) => <option
+                    key={indexType}>{type}</option>)}
+                </select>
+              </div>
+            </CardBody>
+          </Card>
+        );
+      })
+    }
+
+    return dependencyFields;
+  };
+
+  modalEditDependencies = (dependencyType, objKey) => {
+
+    const dependencyFields = this.renderDependencyPart(dependencyType, objKey);
+
+    return (
+      <DependencyEditModal onOpen={() => this.dependencyModalOpen(dependencyType, objKey)}
+                           onSave={() => this.dependecyModalSave(dependencyType, objKey)} onDelete={() => {
+        this.deleteGroupOrSection(dependencyType, objKey)
+      }}>
+        <div className="row" key={objKey}>
+          <div className="col-md-12 form-group">
+            <input id={`${objKey}`}
+                   value={this.state.fieldEdit.propertyKey}
+                   type="text"
+                   data-id={objKey}
+                   onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
+                   className="form-control"
+                   placeholder="Name"/>
+          </div>
+        </div>
+        <div className="border-top">
+          <div className="row"><h4 style={{margin: "15px auto"}}>Conditions</h4></div>
+          {dependencyFields}
+          <div className="row m-2">
+            <div className="form-create__add-new-group"
+                 onClick={this.addConditional.bind(this, dependencyType, objKey)}>
+              Add condition
+            </div>
+          </div>
+        </div>
+      </DependencyEditModal>
+    )
+  };
+
+
+
+  // ui settings
+
+  uiSettingsSave = (dependencyType, objKey) => {
+    let state = clone(this.state);
+
+    if (this.state.uiSettings.classes) {
+      state.uiSchema.columnsClasses[objKey] = this.state.uiSettings.classes;
+    } else {
+      delete state.uiSchema.columnsClasses[objKey];
+    }
+    if (this.state.uiSettings.group) {
+      state.uiSchema.groups[objKey] = this.state.uiSettings.group;
+    } else {
+      delete state.uiSchema.groups[objKey];
+    }
+    if (this.state.uiSettings.section) {
+      state.uiSchema.sections[objKey] = this.state.uiSettings.section;
+    } else {
+      delete state.uiSchema.sections[objKey];
+    }
+
+    // todo duplicate with dependecyModalSave
+    this.removeUiEffects(state, dependencyType, objKey);
+    state.uiSchema.dependencies.fields[objKey] = clone(state.uiSettings.dependencies);
+    this.dependencyChecker(state);
+
+    this.setState(state);
+  };
+
+  uiSettingsOpen = (objKey) => {
+    let classes = objKey in this.state.uiSchema.columnsClasses ? this.state.uiSchema.columnsClasses[objKey] : '';
+    let section = objKey in this.state.uiSchema.sections ? this.state.uiSchema.sections[objKey] : '';
+    let group = objKey in this.state.uiSchema.groups ? this.state.uiSchema.groups[objKey] : '';
+    let dependencies = objKey in this.state.uiSchema.dependencies.fields ? this.state.uiSchema.dependencies.fields[objKey] : {};
+    this.setState({
+      uiSettings: {
+        classes: classes,
+        group: group,
+        section: section,
+        dependencies: dependencies
+      }
+    });
+  };
+
+  // ui effects
+
+  getEffects = () => {
+    return ['', Constants.EFFECT_DISABLED, Constants.EFFECT_HIDDEN];
+  };
+
+  // todo maybe this function not need, in future only using for dependencyChecker
+  removeUiEffects = (state, dependencyType, objKey) => {
+
+    state.uiSchema.sectionStates = {};
+
+    state.uiSchema.groupStates = {};
+    // todo bug https://app.asana.com/0/1187636553843237/1191964394328141
+    // Object.keys(state.schema.properties).forEach(field => {
+    //   delete state.uiSchema[field];
+    // });
+  };
+
+
+
+  // dform select for status change
+  getSelectedDFormAction(action) {
+    return {
+      value: action,
+      label: action
+    }
+  }
+
+  setSelectedDFormAction(action) {
+    this.setState({dFormSelectedAction: action});
+    this.props.statusChanged && this.props.statusChanged(action.value);
+  }
+
 
   handleJsonChange(value) {
     if (IsJsonString(value)) {
@@ -543,26 +750,6 @@ class FormCreate extends React.Component {
       }
     });
   };
-
-  getDefaultValueByType(type) {
-    switch (type) {
-      case Constants.RJSF_FIELD_TYPE_STRING: {
-        return '';
-      }
-      case Constants.RJSF_FIELD_TYPE_INTEGER: {
-        return 0;
-      }
-      case Constants.RJSF_FIELD_TYPE_NUMBER: {
-        return 0;
-      }
-      case Constants.RJSF_FIELD_TYPE_BOOLEAN: {
-        return false;
-      }
-      default: {
-        return null
-      }
-    }
-  }
 
   removePropertyField(previousFieldKey, stateOut = false) {
     let state = stateOut || clone(this.state);
@@ -760,73 +947,6 @@ class FormCreate extends React.Component {
     });
   };
 
-  setLoadingFiles() {
-    let loadingFiles = this.state.dFormTemplate.files.map((file) => {
-      return {
-        file,
-        property_value: null
-      }
-    });
-    this.setState({loadingFiles})
-  }
-
-  async groupedFiles() {
-
-    if(!this.props.fileLoader) {
-        return;
-    }
-
-    this.changeFilesState(true);
-    this.setLoadingFiles();
-    const response = await fileService.getDFormFiles(this.state.dFormTemplate.id);
-    let groupedFiles = response.data.data;
-
-    this.setState({formData: {...this.state.formData, ...groupedFiles}}, () => {
-      this.changeFilesState(false);
-      this.setState({loadingFiles: []}, () => {
-        this.refreshDependencies();
-      })
-    })
-  }
-
-  async componentDidMount() {
-    this.groupedFiles();
-  }
-
-  getSpecificType(property) {
-    if (
-      property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
-      (property.format === 'date' || property.format === 'date-time')
-    ) {
-      return Constants.FIELD_TYPE_DATE;
-    } else if (property.type === Constants.RJSF_FIELD_TYPE_STRING && 'enum' in property) {
-      return Constants.FIELD_TYPE_SELECT;
-    } else if (
-      property.type === Constants.RJSF_FIELD_TYPE_ARRAY && 'items' in property &&
-      'format' in property.items &&
-      (property.items.format === 'data-url' || property.items.format === 'file')
-    ) {
-      return Constants.FIELD_TYPE_FILE_LIST;
-    } else if (property.type === Constants.RJSF_FIELD_TYPE_ARRAY && 'items' in property) {
-      return Constants.FIELD_TYPE_MULTI_SELECT;
-    } else if (
-      property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
-      property.format === 'textarea') {
-      return Constants.FIELD_TYPE_TEXT_AREA;
-    } else if (
-      property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
-      (property.format === 'data-url' || property.format === 'file')
-    ) {
-      return Constants.FIELD_TYPE_FILE;
-    } else if (property.type === Constants.RJSF_FIELD_TYPE_STRING) {
-      return Constants.FIELD_TYPE_TEXT;
-    } else if (property.type === Constants.RJSF_FIELD_TYPE_NUMBER) {
-      return Constants.FIELD_TYPE_NUMBER;
-    } else if (property.type === Constants.RJSF_FIELD_TYPE_BOOLEAN) {
-      return Constants.FIELD_TYPE_BOOLEAN;
-    }
-  }
-
   setSelectValues = (event, objKey, index) => {
     const {target: {value}} = event;
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
@@ -852,6 +972,7 @@ class FormCreate extends React.Component {
     schemaPropertyEdit['items']['anyOf'][index]['enum'][0] = value;
     this.setState({schemaPropertyEdit})
   };
+
   setMultiSelectTitle = (event, objKey, index) => {
     const {target: {value}} = event;
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
@@ -917,15 +1038,6 @@ class FormCreate extends React.Component {
     }
 
     return 'default';
-  }
-
-  checkUiOptionField(objKey, option) {
-    if (!this.state.uiSchema[objKey] || !this.state.uiSchema[objKey][Constants.UI_OPTIONS]) return true;
-
-    if (this.state.uiSchema[objKey][Constants.UI_OPTIONS] && this.state.uiSchema[objKey][Constants.UI_OPTIONS][option]) {
-      return true
-    }
-    return false;
   }
 
   getLabelShowingCheckbox() {
@@ -996,18 +1108,6 @@ class FormCreate extends React.Component {
     this.setState(state);
   };
 
-  // todo maybe this function not need, in future only using for dependencyChecker
-  removeUiEffects = (state, dependencyType, objKey) => {
-
-    state.uiSchema.sectionStates = {};
-
-    state.uiSchema.groupStates = {};
-    // todo bug https://app.asana.com/0/1187636553843237/1191964394328141
-    // Object.keys(state.schema.properties).forEach(field => {
-    //   delete state.uiSchema[field];
-    // });
-  };
-
   setConditionalEffect = (event) => {
     let state = clone(this.state);
     state.uiSettings.dependencies.effect = event.target.value;
@@ -1056,70 +1156,6 @@ class FormCreate extends React.Component {
     this.setState(state);
   };
 
-  dependecyModalSave = (dependencyType, objKey) => {
-    let state = clone(this.state);
-    this.changeNameByDependencyType(objKey, dependencyType, state);
-    this.removeUiEffects(state, dependencyType, objKey);
-    state.uiSchema.dependencies[dependencyType][objKey] = clone(state.uiSettings.dependencies);
-    this.dependencyChecker(state);
-    this.setState(state);
-  };
-
-  dependencyModalOpen = (dependencyType, objKey) => {
-    let dependencies = objKey in this.state.uiSchema.dependencies[dependencyType] ? this.state.uiSchema.dependencies[dependencyType][objKey] : {}
-    this.setState({fieldEdit: {propertyKey: objKey}})
-    this.setState({
-      uiSettings: {
-        classes: '',
-        group: '',
-        section: '',
-        dependencies: dependencies
-      }
-    });
-  };
-
-  uiSettingsSave = (dependencyType, objKey) => {
-    let state = clone(this.state);
-
-    if (this.state.uiSettings.classes) {
-      state.uiSchema.columnsClasses[objKey] = this.state.uiSettings.classes;
-    } else {
-      delete state.uiSchema.columnsClasses[objKey];
-    }
-    if (this.state.uiSettings.group) {
-      state.uiSchema.groups[objKey] = this.state.uiSettings.group;
-    } else {
-      delete state.uiSchema.groups[objKey];
-    }
-    if (this.state.uiSettings.section) {
-      state.uiSchema.sections[objKey] = this.state.uiSettings.section;
-    } else {
-      delete state.uiSchema.sections[objKey];
-    }
-
-    // todo duplicate with dependecyModalSave
-    this.removeUiEffects(state, dependencyType, objKey);
-    state.uiSchema.dependencies.fields[objKey] = clone(state.uiSettings.dependencies);
-    this.dependencyChecker(state);
-
-    this.setState(state);
-  };
-
-  uiSettingsOpen = (objKey) => {
-    let classes = objKey in this.state.uiSchema.columnsClasses ? this.state.uiSchema.columnsClasses[objKey] : '';
-    let section = objKey in this.state.uiSchema.sections ? this.state.uiSchema.sections[objKey] : '';
-    let group = objKey in this.state.uiSchema.groups ? this.state.uiSchema.groups[objKey] : '';
-    let dependencies = objKey in this.state.uiSchema.dependencies.fields ? this.state.uiSchema.dependencies.fields[objKey] : {};
-    this.setState({
-      uiSettings: {
-        classes: classes,
-        group: group,
-        section: section,
-        dependencies: dependencies
-      }
-    });
-  };
-
   changeClasses = (event, objKey) => {
     let state = clone(this.state);
     if (event.target.value) {
@@ -1150,27 +1186,6 @@ class FormCreate extends React.Component {
 
     this.setState(state);
   };
-
-  submitDForm() {
-
-    let schema = clone(this.state.schema);
-    let uiSchema = clone(this.state.uiSchema);
-
-    const propertyKeys = Object.keys(schema.properties);
-    propertyKeys.forEach((objKey) => {
-      if (objKey in uiSchema && isEmpty(uiSchema[objKey])) {
-        delete uiSchema[objKey]
-      }
-    });
-
-    let backendSchema = {
-      schema: schema,
-      uiSchema: uiSchema
-    };
-    let dForm = clone(this.state.dFormTemplate);
-    dForm.schema = backendSchema;
-    this.props.submitDForm(dForm, this.state.additionalData);
-  }
 
   deleteGroupOrSection(type, previousFieldKey, stateOut = false) {
     if (type === 'sections') {
@@ -1407,227 +1422,6 @@ class FormCreate extends React.Component {
     }
   }
 
-  renderDependencyPart = (dependencyType, objKey) => {
-    let dependencyFields = null;
-
-    if (Object.keys(this.state.uiSettings.dependencies).length) {
-
-      dependencyFields = this.state.uiSettings.dependencies.conditions.map((condition, index) => {
-        return (
-          <Card className="mt-1" key={index}>
-            <CardHeader>
-              <CardTitle>
-                Condition
-              </CardTitle>
-              <X size={15} className="cursor-pointer mr-1" onClick={event => this.removeConditional(event, index)}/>
-            </CardHeader>
-            <CardBody>
-              <hr/>
-              {
-                dependencyType === 'sections' ?
-                  <div>
-                    <label>Sections</label>
-                    {
-                      condition.sections.map((condition, indexField) => {
-                        return (<div className="row ml-2 mt-1" key={index + '_' + indexField}>
-                          <div className="col-md-10">
-                            <select
-                              className="form-control"
-                              value={condition}
-                              onChange={event => this.setConditionalField(event, 'sections', index, indexField)}
-                            >
-                              <option key="-1"></option>
-                              {this.getSections().map((type, indexType) => <option
-                                key={index + '_' + indexField + '_' + indexType}>{type}</option>)}
-                            </select>
-                          </div>
-                          <div className="vertical-center dform-input">
-                            <X size={15} className="cursor-pointer mr-1"
-                               onClick={event => this.removeConditionalField(event, 'sections', index, indexField)}/>
-                          </div>
-                        </div>)
-                      })
-                    }
-                    <div className="row m-2">
-                      <div className="form-create__add-new-group small"
-                           onClick={this.addConditionField.bind(this, 'sections', index)}>
-                        Add section
-                      </div>
-                    </div>
-                  </div>
-                  : null
-              }
-              <div>
-                <label>Groups</label>
-
-                {
-                  condition.groups.map((condition, indexField) => {
-                    return (<div className="row mt-1 ml-2" key={indexField}>
-                      <div className="col-md-10">
-                        <select
-                          className="form-control"
-                          value={condition}
-                          onChange={event => this.setConditionalField(event, 'groups', index, indexField)}
-                        >
-                          <option key="-1"></option>
-                          {this.getGroups().map((type, indexType) => <option
-                            key={indexType}>{type}</option>)}
-                        </select>
-                      </div>
-
-                      <div className="vertical-center dform-input">
-                        <X size={15} className="cursor-pointer mr-1"
-                           onClick={event => this.removeConditionalField(event, 'groups', index, indexField)}/>
-                      </div>
-                    </div>)
-                  })
-                }
-                <div className="row m-2">
-                  <div className="form-create__add-new-group small"
-                       onClick={this.addConditionField.bind(this, 'groups', index)}>
-                    Add group
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label>Fields</label>
-                {
-                  condition.fields.map((condition, indexField) => {
-                    return (<div className="row mt-1 ml-2" key={indexField}>
-                      <div className="col-md-10">
-                        <select
-                          className="form-control"
-                          value={condition}
-                          onChange={event => this.setConditionalField(event, 'fields', index, indexField)}
-                        >
-                          <option key="-1"></option>
-                          {Object.keys(this.state.schema.properties).filter(nextFilterField => nextFilterField !== objKey).map((type, indexType) =>
-                            <option
-                              key={indexType}>{type}</option>)}
-                        </select>
-                      </div>
-
-                      <div className="vertical-center dform-input">
-                        <X size={15} className="cursor-pointer mr-1"
-                           onClick={event => this.removeConditionalField(event, 'fields', index, indexField)}/>
-                      </div>
-                    </div>)
-                  })
-                }
-                <div className="row m-2">
-                  <div className="form-create__add-new-group small"
-                       onClick={this.addConditionField.bind(this, 'fields', index)}>
-                    Add field
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label>Field operator</label>
-                {condition.fieldOperators.length ?
-
-                  condition.fieldOperators.map((fieldOperator, indexFieldOperator) => {
-                    return (<div className="row mt-1 ml-2" key={indexFieldOperator}>
-                      <div className="col-md-3">
-                        <select
-                          className="form-control"
-                          onChange={event => this.setOperatorField(event, 'fieldOperators', index, indexFieldOperator, 'field')}
-                          value={fieldOperator.field}
-                        >
-                          <option key="-1"></option>
-                          {Object.keys(this.state.schema.properties).filter(nextFilterField => nextFilterField !== objKey).map((type, indexType) =>
-                            <option
-                              key={indexType}>{type}</option>)}
-                        </select>
-                      </div>
-
-                      <div className="col-md-3">
-                        <select
-                          className="form-control"
-                          onChange={event => this.setOperatorField(event, 'fieldOperators', index, indexFieldOperator, 'operator')}
-                          value={fieldOperator.operator}
-                        >
-                          <option key="-1"></option>
-                          {Constants.DEPENDENCY_LOGIC_OPERATOR_ARR.map((type, indexType) => <option
-                            key={indexType}>{type}</option>)}
-                        </select>
-                      </div>
-
-                      <div className="col-md-4">
-                        <input type="text"
-                               onChange={event => this.setOperatorField(event, 'fieldOperators', index, indexFieldOperator, 'value')}
-                               value={fieldOperator.value}
-                               className="form-control"/>
-                      </div>
-
-                      <div className="vertical-center dform-input">
-                        <X size={15} className="cursor-pointer mr-1"
-                           onClick={event => this.removeConditionalField(event, 'fieldOperators', index, indexFieldOperator)}/>
-                      </div>
-                    </div>)
-                  })
-                  : null
-                }
-                <div className="row m-2">
-                  <div className="form-create__add-new-group small"
-                       onClick={this.addOperatorField.bind(this, 'fieldOperators', index)}>
-                    Add operator
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label>Default state (Effect)</label>
-                <select
-                  className="form-control"
-                  value={this.state.uiSettings.dependencies.effect}
-                  onChange={event => this.setConditionalEffect(event)}
-                >
-                  {this.getEffects().map((type, indexType) => <option
-                    key={indexType}>{type}</option>)}
-                </select>
-              </div>
-            </CardBody>
-          </Card>
-        );
-      })
-    }
-
-    return dependencyFields;
-  };
-
-  modalEditDependencies = (dependencyType, objKey) => {
-
-    const dependencyFields = this.renderDependencyPart(dependencyType, objKey);
-
-    return (
-      <DependencyEditModal onOpen={() => this.dependencyModalOpen(dependencyType, objKey)}
-                           onSave={() => this.dependecyModalSave(dependencyType, objKey)} onDelete={() => {
-        this.deleteGroupOrSection(dependencyType, objKey)
-      }}>
-        <div className="row" key={objKey}>
-          <div className="col-md-12 form-group">
-            <input id={`${objKey}`}
-                   value={this.state.fieldEdit.propertyKey}
-                   type="text"
-                   data-id={objKey}
-                   onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
-                   className="form-control"
-                   placeholder="Name"/>
-          </div>
-        </div>
-        <div className="border-top">
-          <div className="row"><h4 style={{margin: "15px auto"}}>Conditions</h4></div>
-          {dependencyFields}
-          <div className="row m-2">
-            <div className="form-create__add-new-group"
-                 onClick={this.addConditional.bind(this, dependencyType, objKey)}>
-              Add condition
-            </div>
-          </div>
-        </div>
-      </DependencyEditModal>
-    )
-  };
-
   getUniqueValues = (notUniqArray) => {
     return notUniqArray.filter((value, index, arr) => arr.indexOf(value) === index);
   };
@@ -1641,10 +1435,6 @@ class FormCreate extends React.Component {
     const groups = Object.values(this.state.uiSchema.groups);
     return this.getUniqueValues(groups);
   };
-
-  onSave() {
-    this.props.onSave && this.props.onSave(this.state.formData);
-  }
 
   render() {
 

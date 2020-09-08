@@ -20,6 +20,7 @@ import DependencyEditModal from "../DependencyEditModal";
 import {isEmpty} from "lodash";
 import classnames from "classnames";
 import React from "react";
+import {getSpecificType} from "../helper";
 
 export function listControls(properties) {
   let keys = Object.keys(properties);
@@ -120,7 +121,7 @@ export function listControls(properties) {
       return (<label htmlFor={`${index}-${column}`}>{text}</label>)
     };
 
-    const specificType = this.getSpecificType(schemaPropertyEdit);
+    const specificType = getSpecificType(schemaPropertyEdit);
 
     const renderSpecificType = () => {
 
@@ -391,7 +392,7 @@ export function listControls(properties) {
           <div className="pull-right-icons position-relative">
             {renderKeyObjectColumn('property-' + objKey, 'Property')}
             <Badge
-              color="primary position-absolute dform-type-badget">{this.getSpecificType(this.state.schema.properties[objKey])}</Badge>
+              color="primary position-absolute dform-type-badget">{getSpecificType(this.state.schema.properties[objKey])}</Badge>
           </div>
 
           <div className="d-flex dform-input-setting">

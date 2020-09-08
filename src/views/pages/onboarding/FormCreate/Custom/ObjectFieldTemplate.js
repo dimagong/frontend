@@ -5,10 +5,19 @@ import Constants from "../Parts/Constants";
 
 export function ObjectFieldTemplate(props) {
 
+  const checkUiOptionField = (objKey, option) => {
+    if (!this.state.uiSchema[objKey] || !this.state.uiSchema[objKey][Constants.UI_OPTIONS]) return true;
+
+    if (this.state.uiSchema[objKey][Constants.UI_OPTIONS] && this.state.uiSchema[objKey][Constants.UI_OPTIONS][option]) {
+      return true
+    }
+    return false;
+  };
+
   const getColumnClass = (key, element) => {
     let classes = [];
     classes.push(key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12');
-    if (!this.checkUiOptionField(element.name, 'label')) {
+    if (!checkUiOptionField(element.name, 'label')) {
       classes.push('label-hide');
     }
     return classes.join(' ');

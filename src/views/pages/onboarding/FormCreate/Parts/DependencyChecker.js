@@ -1,4 +1,12 @@
 import Constants from "./Constants";
+import {
+  getEffectByType,
+  getFieldsBySection,
+  isFieldHasDefaultEffectByOperator,
+  operatorResult,
+  isValidationFieldPassed,
+  getFieldsByGroup
+} from "../helper";
 
 export function dependencyChecker(state) {
   let fieldsStates = {};
@@ -29,7 +37,7 @@ export function dependencyChecker(state) {
   Object.keys(state.uiSchema.dependencies.fields).forEach((field) => {
     if (!state.uiSchema.dependencies.fields[field] || !('conditions' in state.uiSchema.dependencies.fields[field])) return;
 
-    const effect = this.getEffectByType(state.uiSchema.dependencies.fields[field].effect);
+    const effect = getEffectByType(state.uiSchema.dependencies.fields[field].effect);
 
     state.uiSchema.dependencies.fields[field].conditions.forEach(condition => {
 
@@ -43,13 +51,13 @@ export function dependencyChecker(state) {
 
         // todo 04.09.2020 bug  if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
         if (!(fieldOperator.field in state.formData)) {
-          setField(field, this.isFieldHasDefaultEffectByOperator(fieldOperator.operator), effect);
+          setField(field, isFieldHasDefaultEffectByOperator(fieldOperator.operator), effect);
           continue;
         }
 
         const fieldValue = state.formData[fieldOperator.field];
 
-        if (this.operatorResult(fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field)) {
+        if (operatorResult(this.state.schema.properties[fieldOperator.field], fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field)) {
           setField(field, true, effect);
           continue;
         }
@@ -62,7 +70,7 @@ export function dependencyChecker(state) {
         if (!(field in state.uiSchema)) {
           state.uiSchema[field] = {};
         }
-        if (!state.formData[conditionField] || !this.isValidationFieldPassed(state, conditionField)) {
+        if (!state.formData[conditionField] || !isValidationFieldPassed(state, conditionField)) {
           setField(field, true, effect);
         } else {
           setField(field, false, effect);
@@ -73,10 +81,10 @@ export function dependencyChecker(state) {
         if (!(field in state.uiSchema)) {
           state.uiSchema[field] = {};
         }
-        let isDisabled = this.getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
+        let isDisabled = getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
           return !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
         });
 
         if (isDisabled) {
@@ -92,7 +100,7 @@ export function dependencyChecker(state) {
     if (!('conditions' in state.uiSchema.dependencies.groups[settingGroup])) return;
     let isGroupDisabled = false;
 
-    const effect = this.getEffectByType(state.uiSchema.dependencies.groups[settingGroup].effect);
+    const effect = getEffectByType(state.uiSchema.dependencies.groups[settingGroup].effect);
 
     state.uiSchema.dependencies.groups[settingGroup].conditions.forEach(condition => {
 
@@ -104,11 +112,11 @@ export function dependencyChecker(state) {
         }
 
         const fieldValue = state.formData[fieldOperator.field];
-        const isDisabled = this.operatorResult(fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
+        const isDisabled = operatorResult(this.state.schema.properties[fieldOperator.field], fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
 
         const setStateForFieldsCurrGroup = () => {
 
-          this.getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
+          getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
             if (!(fieldInGroup in state.uiSchema)) {
               state.uiSchema[fieldInGroup] = {};
             }
@@ -142,7 +150,7 @@ export function dependencyChecker(state) {
         let isDisabled = condition.fields.some((fieldInGroup) => {
           return !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
         });
 
         if (isDisabled) {
@@ -151,7 +159,7 @@ export function dependencyChecker(state) {
           setGroup(settingGroup, false, effect);
         }
 
-        this.getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
+        getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
           if (!(fieldInGroup in state.uiSchema)) {
             state.uiSchema[fieldInGroup] = {};
           }
@@ -170,17 +178,17 @@ export function dependencyChecker(state) {
           state.uiSchema.groupStates[settingGroup] = {};
         }
 
-        let isDisabled = this.getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
+        let isDisabled = getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
           return !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
         });
         if (isDisabled) {
           setGroup(settingGroup, true, effect);
         } else {
           setGroup(settingGroup, false, effect);
         }
-        this.getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
+        getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
           if (!(fieldInGroup in state.uiSchema)) {
             state.uiSchema[fieldInGroup] = {};
           }
@@ -197,7 +205,7 @@ export function dependencyChecker(state) {
   Object.keys(state.uiSchema.dependencies.sections).forEach((settingSection) => {
     if (!('conditions' in state.uiSchema.dependencies.sections[settingSection])) return;
 
-    const effect = this.getEffectByType(state.uiSchema.dependencies.sections[settingSection].effect);
+    const effect = getEffectByType(state.uiSchema.dependencies.sections[settingSection].effect);
 
     state.uiSchema.dependencies.sections[settingSection].conditions.forEach(condition => {
 
@@ -209,11 +217,11 @@ export function dependencyChecker(state) {
         }
 
         const fieldValue = state.formData[fieldOperator.field];
-        const isDisabled = this.operatorResult(fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
+        const isDisabled = operatorResult(this.state.schema.properties[fieldOperator.field], fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
 
         const setStateForFieldsCurrSection = () => {
 
-          this.getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
+          getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
             if (!(fieldInSection in state.uiSchema)) {
               state.uiSchema[fieldInSection] = {};
             }
@@ -247,7 +255,7 @@ export function dependencyChecker(state) {
         let isDisabled = condition.fields.some((fieldInGroup) => {
           return !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
         });
 
         if (isDisabled) {
@@ -256,7 +264,7 @@ export function dependencyChecker(state) {
           setSection(settingSection, false, effect);
         }
 
-        this.getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
+        getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
           if (!(fieldInSection in state.uiSchema)) {
             state.uiSchema[fieldInSection] = {};
           }
@@ -275,17 +283,17 @@ export function dependencyChecker(state) {
           state.uiSchema.sectionStates[settingSection] = {};
         }
 
-        let isDisabled = this.getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
+        let isDisabled = getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
           return !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
         });
         if (isDisabled) {
           setSection(settingSection, true, effect);
         } else {
           setSection(settingSection, false, effect);
         }
-        this.getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
+        getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
           if (!(fieldInSection in state.uiSchema)) {
             state.uiSchema[fieldInSection] = {};
           }
@@ -304,17 +312,17 @@ export function dependencyChecker(state) {
           state.uiSchema.sectionStates[settingSection] = {};
         }
 
-        let isDisabled = this.getFieldsBySection(state, conditionSection).some((fieldInGroup) => {
+        let isDisabled = getFieldsBySection(state, conditionSection).some((fieldInGroup) => {
           return !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !this.isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
         });
         if (isDisabled) {
           setSection(settingSection, true, effect);
         } else {
           setSection(settingSection, false, effect);
         }
-        this.getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
+        getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
           if (!(fieldInSection in state.uiSchema)) {
             state.uiSchema[fieldInSection] = {};
           }
@@ -401,4 +409,4 @@ export function dependencyChecker(state) {
 
     state.uiSchema.sectionStates[section] = {};
   })
-};
+}
