@@ -675,11 +675,12 @@ class UserEdit extends React.Component {
     }
   }
 
-  async submitDForm(dForm, {name, description}) {
+  async submitDForm(dForm, {name, description, protected_properties}) {
 
     const dFormChanges = clone(dForm);
     dFormChanges.name = name;
     dFormChanges.description = description;
+    dFormChanges.protected_properties = protected_properties;
 
     try {
       await workflowService.updateDForm(dFormChanges);

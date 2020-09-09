@@ -2,6 +2,7 @@ import {Col, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
 import React, {useState} from "react";
 import classnames from "classnames";
 import Constants from "../Parts/Constants";
+import {isElementProtected} from "../helper";
 
 export function ObjectFieldTemplate(props) {
 
@@ -72,9 +73,14 @@ export function ObjectFieldTemplate(props) {
       const elementContent = groupedElements[groupName].map(element => {
         if (isElementInSection(element.name, sectionName)) {
           const isElementHidden = (elementKey) => {
-            return elementKey in this.state.uiSchema && Constants.UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][Constants.UI_HIDDEN]
+            let isHidden = elementKey in this.state.uiSchema && Constants.UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][Constants.UI_HIDDEN]
               ? {display: 'none'} : {}
-          }
+
+            if(isElementProtected(this.state, 'fields', elementKey) && this.state.isShowProtectedElements) {
+              isHidden = {display: 'none'};
+            }
+            return isHidden;
+          };
           return (
             <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
                  key={element.name}>
@@ -96,7 +102,11 @@ export function ObjectFieldTemplate(props) {
       }
 
       let isHidden = groupName in this.state.uiSchema.groupStates && Constants.UI_HIDDEN in this.state.uiSchema.groupStates[groupName] && this.state.uiSchema.groupStates[groupName][Constants.UI_HIDDEN]
-        ? {display: 'none'} : {}
+        ? {display: 'none'} : {};
+
+      if(isElementProtected(this.state, 'groups', groupName) && this.state.isShowProtectedElements) {
+        isHidden = {display: 'none'};
+      }
 
       return (
         <div className="border px-2" key={sectionName + '_' + groupName} style={isHidden}>
@@ -125,8 +135,13 @@ export function ObjectFieldTemplate(props) {
       let elementContent = groupedElements[groupName].map(element => {
         if (isElementInSection(element.name, sectionName)) {
           const isElementHidden = (elementKey) => {
-            return elementKey in this.state.uiSchema && Constants.UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][Constants.UI_HIDDEN]
+            let isHidden = elementKey in this.state.uiSchema && Constants.UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][Constants.UI_HIDDEN]
               ? {display: 'none'} : {}
+
+            if(isElementProtected(this.state, 'fields', elementKey) && this.state.isShowProtectedElements) {
+              isHidden = {display: 'none'};
+            }
+            return isHidden;
           }
           return (
             <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
@@ -141,18 +156,29 @@ export function ObjectFieldTemplate(props) {
     })
   };
 
+  const isSectionHidden = (section, effect) => {
+    let isHidden = section in this.state.uiSchema.sectionStates && Constants.UI_HIDDEN in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][Constants.UI_HIDDEN]
+      ? {display: 'none'} : {};
+    if(isElementProtected(this.state, 'sections', section) && this.state.isShowProtectedElements) {
+      isHidden = {display: 'none'};
+    }
+    return isHidden;
+  };
+
+  const checkIsSectionHidden = (section, effect) => {
+    let isHidden = section in this.state.uiSchema.sectionStates && Constants.UI_HIDDEN in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][Constants.UI_HIDDEN];
+    if(isElementProtected(this.state, 'sections', section) && this.state.isShowProtectedElements) {
+      isHidden = true;
+    }
+    return isHidden;
+  };
+
   const sections = getSections();
   const groupedElements = elementsByGroups();
-
-  const defaultTab = sections.length ? 0 : -1;
+  console.log(sections, '=====<<');
+  const defaultTab = sections.length ? sections.findIndex(section => !checkIsSectionHidden(section)) : -1;
 
   const [keyTab, setKeyTab] = useState(defaultTab);
-
-
-  const isSectionHidden = (section, effect) => {
-    return section in this.state.uiSchema.sectionStates && Constants.UI_HIDDEN in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][Constants.UI_HIDDEN]
-      ? {display: 'none'} : {}
-  };
 
   const isSectionDisabled = (section) => {
     return section in this.state.uiSchema.sectionStates && Constants.UI_DISABLED in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][Constants.UI_DISABLED]
@@ -185,7 +211,7 @@ export function ObjectFieldTemplate(props) {
       <TabContent activeTab={keyTab}>
         {
           sections.map((section, index) =>
-            <TabPane tabId={index} key={section}>
+            <TabPane tabId={index} key={section} style={isSectionHidden(section)}>
               <Row className="mx-0" col="12">
                 <Col className="pl-0" sm="12">
                   {

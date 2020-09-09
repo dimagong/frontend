@@ -34,9 +34,9 @@ import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "../../../../services/file.service";
 import Constants from './Parts/Constants'
 
-import { dependencyChecker } from './Parts/DependencyChecker'
-import { listControls } from './Parts/ListControls'
-import { getSpecificType } from "./helper";
+import {dependencyChecker} from './Parts/DependencyChecker'
+import {listControls} from './Parts/ListControls'
+import {getSpecificType, isElementProtected} from "./helper";
 
 const clone = rfdc();
 
@@ -78,6 +78,11 @@ class FormCreate extends React.Component {
     const propsDFormUiSchema = clone(props.dForm.schema.uiSchema);
 
     let fileLoading = false;
+    const protectedPropertiesDefault = {
+      fields: [],
+      groups: [],
+      sections: []
+    };
 
     if (
       props.fill &&
@@ -88,7 +93,7 @@ class FormCreate extends React.Component {
         if (key in propsDFormSchema.properties) {
           propsDFormSchema.properties[key].default = props.dForm.submit_data[key];
 
-          if(!(key in propsDFormUiSchema)) {
+          if (!(key in propsDFormUiSchema)) {
             propsDFormUiSchema[key] = {};
           }
           //propsDFormUiSchema[key]['ui:emptyValue'] = null;
@@ -100,13 +105,15 @@ class FormCreate extends React.Component {
       }))
     }
 
-
+    const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
 
     return {
       additionalData: {
         name: props.dForm.name,
-        description: props.dForm.description
+        description: props.dForm.description,
+        protected_properties: protectedProperties
       },
+      isShowProtectedElements: typeof props.isShowProtectedElements === 'boolean' ? props.isShowProtectedElements : false,
       refresh: false,
       tabConfig: 0,
       inputDisabled: props.inputDisabled === true ? true : false,
@@ -224,7 +231,6 @@ class FormCreate extends React.Component {
   }
 
 
-
   // submits, changes
   formSubmit = (event) => {
 
@@ -299,7 +305,7 @@ class FormCreate extends React.Component {
   }
 
   onChangeSaving = debounce((previousFormData, formData) => {
-    if((!previousFormData || !formData)) {
+    if ((!previousFormData || !formData)) {
       return;
     }
 
@@ -316,7 +322,6 @@ class FormCreate extends React.Component {
   }, 300);
 
 
-
   // refresh btn for dForm
   reInit = debounce(() => {
     let state = this.initState(this.props);
@@ -328,14 +333,13 @@ class FormCreate extends React.Component {
   }, 100);
 
 
-
   // files
   withoutFiles(formData) {
     let formDataFormatted = clone(formData);
     Object.keys(this.state.schema.properties).forEach(key => {
       const propType = getSpecificType(this.state.schema.properties[key]);
       if (propType === Constants.FIELD_TYPE_FILE || propType === Constants.FIELD_TYPE_FILE_LIST) {
-        if(key in formDataFormatted) {
+        if (key in formDataFormatted) {
           delete formDataFormatted[key];
         }
       }
@@ -355,7 +359,7 @@ class FormCreate extends React.Component {
 
   async groupedFiles() {
 
-    if(!this.props.fileLoader) {
+    if (!this.props.fileLoader) {
       return;
     }
 
@@ -388,8 +392,6 @@ class FormCreate extends React.Component {
     this.setState({uiSchema});
   }
 
-
-
   // dependency
   refreshDependencies() {
     let state = clone(this.state);
@@ -402,19 +404,34 @@ class FormCreate extends React.Component {
     this.changeNameByDependencyType(objKey, dependencyType, state);
     this.removeUiEffects(state, dependencyType, objKey);
     state.uiSchema.dependencies[dependencyType][objKey] = clone(state.uiSettings.dependencies);
+
+    if(state.uiSettings.protectedProperty) {
+      let protectedPropertyIndex = state.additionalData.protected_properties[dependencyType].indexOf(objKey);
+      if( protectedPropertyIndex === -1 ) {
+        state.additionalData.protected_properties[dependencyType].push(objKey);
+      }
+    } else {
+      let protectedPropertyIndex = state.additionalData.protected_properties[dependencyType].indexOf(objKey);
+      if( protectedPropertyIndex !== -1 ) {
+        state.additionalData.protected_properties[dependencyType].splice(protectedPropertyIndex, 1);
+      }
+    }
+    console.log(state);
     this.dependencyChecker(state);
     this.setState(state);
   };
 
   dependencyModalOpen = (dependencyType, objKey) => {
     let dependencies = objKey in this.state.uiSchema.dependencies[dependencyType] ? this.state.uiSchema.dependencies[dependencyType][objKey] : {}
-    this.setState({fieldEdit: {propertyKey: objKey}})
+    this.setState({fieldEdit: {propertyKey: objKey}});
+
     this.setState({
       uiSettings: {
         classes: '',
         group: '',
         section: '',
-        dependencies: dependencies
+        dependencies: dependencies,
+        protectedProperty: isElementProtected(this.state, dependencyType, objKey)
       }
     });
   };
@@ -625,6 +642,19 @@ class FormCreate extends React.Component {
                    className="form-control"
                    placeholder="Name"/>
           </div>
+          <div className="col-md-12 form-group">
+            <Checkbox
+              color="primary"
+              icon={<Check className="vx-icon" size={16}/>}
+              label="is protected"
+              onChange={event => {
+                this.setState({
+                  uiSettings: {...this.state.uiSettings, protectedProperty: event.target.checked}
+                })
+              }}
+              checked={this.state.uiSettings.protectedProperty}
+            />
+          </div>
         </div>
         <div className="border-top">
           <div className="row"><h4 style={{margin: "15px auto"}}>Conditions</h4></div>
@@ -639,7 +669,6 @@ class FormCreate extends React.Component {
       </DependencyEditModal>
     )
   };
-
 
 
   // ui settings
@@ -663,6 +692,17 @@ class FormCreate extends React.Component {
       delete state.uiSchema.sections[objKey];
     }
 
+    if(state.uiSettings.protectedProperty) {
+      let protectedPropertyIndex = state.additionalData.protected_properties[dependencyType].indexOf(objKey);
+      if( protectedPropertyIndex === -1 ) {
+        state.additionalData.protected_properties[dependencyType].push(objKey);
+      }
+    } else {
+      let protectedPropertyIndex = state.additionalData.protected_properties[dependencyType].indexOf(objKey);
+      if( protectedPropertyIndex !== -1 ) {
+        state.additionalData.protected_properties[dependencyType].splice(protectedPropertyIndex, 1);
+      }
+    }
     // todo duplicate with dependecyModalSave
     this.removeUiEffects(state, dependencyType, objKey);
     state.uiSchema.dependencies.fields[objKey] = clone(state.uiSettings.dependencies);
@@ -681,7 +721,8 @@ class FormCreate extends React.Component {
         classes: classes,
         group: group,
         section: section,
-        dependencies: dependencies
+        dependencies: dependencies,
+        protectedProperty: isElementProtected(this.state,'fields', objKey)
       }
     });
   };
@@ -703,7 +744,6 @@ class FormCreate extends React.Component {
     //   delete state.uiSchema[field];
     // });
   };
-
 
 
   // dform select for status change

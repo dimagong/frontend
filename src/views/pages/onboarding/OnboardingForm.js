@@ -9,6 +9,7 @@ import "../../../assets/scss/plugins/extensions/toastr.scss"
 import Form from "@rjsf/core";
 import {debounce} from 'lodash';
 import moment from "moment";
+import userService from "../../../services/user.service";
 
 class OnboardingForm extends React.Component {
 
@@ -74,9 +75,11 @@ class OnboardingForm extends React.Component {
         onSaveButtonHidden={this.isDisabledSubmit()}
         dForm={this.props.user.onboarding.d_form}
         isStateConfig={false}
+        isShowProtectedElements={userService.isShowProtectedElements(this.props.user)}
       ></FormCreate>
     } else {
       return <FormCreate
+        isShowProtectedElements={userService.isShowProtectedElements(this.props.user)}
         fileLoader={true}
         onSubmit={(formData) => this.submitOnboardingForm(formData)}
         fill={true}

@@ -1,5 +1,6 @@
 import axios from '../overrides/axios';
 import {isEmpty} from 'lodash'
+
 class UserService {
   getProfile() {
     return axios.get("/api/user/profile");
@@ -68,6 +69,9 @@ class UserService {
     return false;
   }
 
+  isShowProtectedElements(user) {
+    return !user.roles.some(role =>  ['corporate_manager', 'member_firm_manager', 'adviser', 'admin'].indexOf(role) !== -1);
+  }
 }
 
 const userService = new UserService();
