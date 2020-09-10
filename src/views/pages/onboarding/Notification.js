@@ -26,6 +26,7 @@ import { ContextLayout } from "../../../utility/context/Layout"
 import { AgGridReact } from "ag-grid-react"
 import "../../../assets/scss/plugins/tables/_agGridStyleOverride.scss"
 import workflowService from '../../../services/workflow.service'
+import MultiSelect from "./components/multiSelect";
 
 class Notification extends React.Component {
     state = {
@@ -36,7 +37,8 @@ class Notification extends React.Component {
         notificationTemplate: {
             name: '',
             description: '',
-            content: ''
+            content: '',
+            groups: [],
         },
         columnDefs: [
             {
@@ -54,6 +56,12 @@ class Notification extends React.Component {
             {
                 headerName: "Content",
                 field: "content",
+                suppressSizeToFit: false,
+                width: 250
+            },
+            {
+                headerName: "Organizations",
+                field: "organizations",
                 suppressSizeToFit: false,
                 width: 250
             },
@@ -98,8 +106,10 @@ class Notification extends React.Component {
         this.notificationTemplate = {
             name: '',
             description: '',
-            content: ''
+            content: '',
+            groups: [],
         }
+        this.multiSelectRef = React.createRef();
     }
 
     onSetSidebarOpen(open) {
@@ -187,7 +197,7 @@ class Notification extends React.Component {
 
     async submitCreateNotification() {
         try {
-            const response = await workflowService.createNotification(this.state.notificationTemplate);
+            const response = await workflowService.createNotification({ ...this.state.notificationTemplate, groups: this.multiSelectRef.current.getMultiSelectState() });
             this.closeNotification();
             toast.success('Success')
         } catch (error) {
@@ -202,7 +212,7 @@ class Notification extends React.Component {
 
     async submitUpdateNotification() {
         try {
-            const response = await workflowService.updateNotification(this.state.notificationTemplate);
+            const response = await workflowService.updateNotification({ ...this.state.notificationTemplate, groups: this.multiSelectRef.current.getMultiSelectState() });
             toast.success('Success')
         } catch (error) {
             if ('response' in error) {
@@ -288,6 +298,7 @@ class Notification extends React.Component {
                                                         <Label>Content</Label>
                                                         <Input value={this.state.notificationTemplate.content} onChange={(event) => this.setState({ notificationTemplate: { ...this.state.notificationTemplate, content: event.target.value } })} type="textarea" name="content" placeholder="Content" />
                                                     </FormGroup>
+                                                    <MultiSelect ref={this.multiSelectRef}/>
                                                     <div className="d-flex justify-content-center flex-wrap mt-2">
                                                         <Button color="primary d-flex-left" onClick={() => this.submitNotification()}>Save</Button>
                                                     </div>

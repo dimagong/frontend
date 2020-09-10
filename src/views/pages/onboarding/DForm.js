@@ -50,6 +50,12 @@ class DForm extends React.Component {
         suppressSizeToFit: false,
         width: 250
       },
+      {
+        headerName: "Organizations",
+        field: "organizations",
+        suppressSizeToFit: false,
+        width: 250
+    },
       // {
       //     headerName: "Access type",
       //     field: "access_type",

@@ -24,7 +24,6 @@ import "flatpickr/dist/themes/light.css";
 import "../../../assets/scss/plugins/forms/flatpickr/flatpickr.scss"
 import Select, {components} from "react-select"
 import classnames from "classnames"
-import chroma from "chroma-js"
 import GroupService from '../../../services/group.service'
 import RoleService from '../../../services/role.service'
 import UserService from '../../../services/user.service'
@@ -43,6 +42,8 @@ import userImg from "../../../assets/img/portrait/small/avatar-s-18.jpg"
 import workflowService from "../../../services/workflow.service";
 import FormCreate from "../onboarding/FormCreate/FormCreate";
 import {debounce, isEmpty} from 'lodash';
+import {colourStyles} from "utility/select/selectSettigns";
+import {prepareSelectData} from "utility/select/prepareSelectData";
 
 const clone = rfdc();
 
@@ -59,67 +60,6 @@ const DropdownIndicator = props => {
 
 const DropdownIndicatorClear = props => {
   return null;
-};
-
-const colourStyles = {
-  control: styles => ({
-    ...styles,
-    backgroundColor: "white",
-    border: 0,
-    // This line disable the blue border
-    boxShadow: "none"
-  }),
-  option: (styles, {data, isDisabled, isFocused, isSelected}) => {
-    const color = data.color ? chroma(data.color) : colorMultiSelect
-    return {
-      ...styles,
-      backgroundColor: isDisabled
-        ? null
-        : isSelected
-          ? data.color
-          : isFocused
-            ? color.alpha(0.1).css()
-            : null,
-      color: isDisabled
-        ? "#ccc"
-        : isSelected
-          ? chroma.contrast(color, "white") > 2
-            ? "white"
-            : "black"
-          : data.color,
-      cursor: isDisabled ? "not-allowed" : "default",
-
-      ":active": {
-        ...styles[":active"],
-        backgroundColor: !isDisabled && (isSelected ? data.color : "white")
-      }
-    }
-  },
-  multiValue: (styles, {data}) => {
-    const color = data.color ? chroma(data.color) : colorMultiSelect
-    return {
-      ...styles,
-      backgroundColor: color.alpha(0.1).css()
-    }
-  },
-  multiValueLabel: (styles, {data}) => ({
-    ...styles,
-    color: data.color ? data.color : colorMultiSelect
-  }),
-  multiValueRemove: (styles, {data}) => ({
-    ...styles,
-    color: data.color,
-    ":hover": {
-      backgroundColor: data.color ? data.color : colorMultiSelect,
-      color: "white"
-    }
-  }),
-  valueContainer: base => ({
-    ...base,
-    padding: 0,
-    'margin-left': '-2px'
-  }),
-  indicatorSeparator: (styles) => ({display: 'none'})
 };
 
 const groupTypes = {
@@ -372,64 +312,11 @@ class UserEdit extends React.Component {
 
     this.groups = groups;
 
-    const multiSelectGroups = this.getListByTreeGroups(groups)
+    const multiSelectGroups = prepareSelectData(groups)
 
     this.setState({...this.state, selectOptions: {...this.state.selectOptions, groups: multiSelectGroups}})
   }
 
-  getListByTreeGroups = (groups) => {
-
-    let groupsMultiSelect = [];
-
-    if (!groups) return groupsMultiSelect;
-
-    groups.forEach(admin => {
-      groupsMultiSelect.push({
-        value: {
-          group_id: admin.id,
-          type: 'admin'
-        },
-        label: `${admin.name}`,
-        // label: `${admin.name}(${admin.id})`,
-        color: colorMultiSelect
-      });
-      admin.corporations.forEach(corporation => {
-        groupsMultiSelect.push({
-          value: {
-            group_id: corporation.id,
-            type: 'corporation'
-          },
-          // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`,
-          label: `${corporation.name}`,
-          color: colorMultiSelect
-        });
-        corporation.networks.forEach(network => {
-          groupsMultiSelect.push({
-            value: {
-              group_id: network.id,
-              type: 'network'
-            },
-            // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`,
-            label: `${network.name}`,
-            color: colorMultiSelect
-          });
-          network.member_firms.forEach(memberFirm => {
-            groupsMultiSelect.push({
-              value: {
-                group_id: memberFirm.id,
-                type: 'member_firm'
-              },
-              // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`,
-              label: `${memberFirm.name}`,
-              color: colorMultiSelect
-            });
-          });
-        });
-      });
-    });
-
-    return groupsMultiSelect;
-  }
 
   getGroupName = (groups, groupId, groupType) => {
 

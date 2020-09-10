@@ -37,6 +37,8 @@ import { AgGridReact } from "ag-grid-react"
 import "../../../assets/scss/plugins/tables/_agGridStyleOverride.scss"
 import workflowService from '../../../services/workflow.service'
 import userService from '../../../services/user.service';
+import MultiSelect from "./components/multiSelect";
+import {colourStyles} from "utility/select/selectSettigns";
 
 const colorMultiSelect = '#007bff';
 const clone = rfdc();
@@ -45,54 +47,6 @@ const DropdownIndicatorClear = props => {
     return null;
 };
 
-const colourStyles = {
-    control: styles => ({ ...styles, backgroundColor: "white" }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-        const color = data.color ? chroma(data.color) : "#7367f0"
-        return {
-            ...styles,
-            backgroundColor: isDisabled
-                ? null
-                : isSelected
-                    ? data.color
-                    : isFocused
-                        ? color.alpha(0.1).css()
-                        : null,
-            color: isDisabled
-                ? "#ccc"
-                : isSelected
-                    ? chroma.contrast(color, "white") > 2
-                        ? "white"
-                        : "black"
-                    : data.color,
-            cursor: isDisabled ? "not-allowed" : "default",
-
-            ":active": {
-                ...styles[":active"],
-                backgroundColor: !isDisabled && (isSelected ? data.color : "#7367f0")
-            }
-        }
-    },
-    multiValue: (styles, { data }) => {
-        const color = data.color ? chroma(data.color) : "#7367f0"
-        return {
-            ...styles,
-            backgroundColor: color.alpha(0.1).css()
-        }
-    },
-    multiValueLabel: (styles, { data }) => ({
-        ...styles,
-        color: data.color ? data.color : "#7367f0"
-    }),
-    multiValueRemove: (styles, { data }) => ({
-        ...styles,
-        color: data.color,
-        ":hover": {
-            backgroundColor: data.color ? data.color : "#7367f0",
-            color: "white"
-        }
-    })
-}
 class Workflow extends React.Component {
     state = {
         workflowEdit: false,
@@ -129,6 +83,12 @@ class Workflow extends React.Component {
             {
                 headerName: "Description",
                 field: "description",
+                suppressSizeToFit: false,
+                width: 250
+            },
+            {
+                headerName: "Organizations",
+                field: "organizations",
                 suppressSizeToFit: false,
                 width: 250
             },
@@ -207,6 +167,7 @@ class Workflow extends React.Component {
                 action: 'App\\NotificationTemplate'
             }
         }
+        this.multiSelectRef = React.createRef();
     }
 
     changeUserTypeOption(event, keyTrigger, keyAction) {
@@ -464,7 +425,7 @@ class Workflow extends React.Component {
 
     async updateWorkflow() {
         try {
-            const response = await workflowService.updateWorkflow(this.state.workflowTemplate);
+            const response = await workflowService.updateWorkflow({ ...this.state.workflowTemplate, groups: this.multiSelectRef.current.getMultiSelectState() });
             toast.success('Success')
         } catch (error) {
             if ('response' in error) {
@@ -477,7 +438,7 @@ class Workflow extends React.Component {
 
     async createWorkflow() {
         try {
-            const response = await workflowService.createWorkflow(this.state.workflowTemplate);
+            const response = await workflowService.createWorkflow({ ...this.state.workflowTemplate, groups: this.multiSelectRef.current.getMultiSelectState() });
             this.getWorkflows();
             this.onSetSidebarOpen(false);
             toast.success('Success')
@@ -535,6 +496,9 @@ class Workflow extends React.Component {
                         />
                         <FormFeedback></FormFeedback>
                     </FormGroup>
+                </Col>
+                <Col>
+                <MultiSelect ref={this.multiSelectRef}/>
                 </Col>
 
                 <Col sm="12">

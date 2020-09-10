@@ -37,6 +37,7 @@ import Constants from './Parts/Constants'
 import { dependencyChecker } from './Parts/DependencyChecker'
 import { listControls } from './Parts/ListControls'
 import { getSpecificType } from "./helper";
+import MultiSelect from "views/pages/onboarding/components/multiSelect";
 
 const clone = rfdc();
 
@@ -61,6 +62,9 @@ class FormCreate extends React.Component {
     // parts
     this.getListControls = listControls.bind(this);
     this.dependencyChecker = dependencyChecker.bind(this);
+
+    this.multiSelectRef = React.createRef();
+
   }
 
   // hooks
@@ -291,7 +295,7 @@ class FormCreate extends React.Component {
     };
     let dForm = clone(this.state.dFormTemplate);
     dForm.schema = backendSchema;
-    this.props.submitDForm(dForm, this.state.additionalData);
+    this.props.submitDForm({...dForm, groups: this.multiSelectRef.current.getMultiSelectState()}, this.state.additionalData);
   }
 
   onSave() {
@@ -1462,6 +1466,7 @@ class FormCreate extends React.Component {
                 }} type="text"
                        className="form-control"/>
               </div>
+              <MultiSelect ref={this.multiSelectRef}/>
               <div className="">
                 {controls}
               </div>
