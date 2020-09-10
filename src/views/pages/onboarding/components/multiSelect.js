@@ -38,13 +38,12 @@ export class MultiSelect extends Component {
         this.setState({...this.state, selectOptions: {...this.state.selectOptions, groups: multiSelectGroups}})
       }
 
-      onSelectGroupsChange = (values) => {
+    onSelectGroupsChange = (values) => {
         this.setState({ groups: values })
       };
     
     getMultiSelectState = () => {
-        console.log("this.state.groups", this.state.groups)
-        return this.state.groups
+        return this.state.groups.map(select => select.value);
     }
     render() {
         return (
