@@ -55,7 +55,7 @@ class DForm extends React.Component {
         field: "organizations",
         suppressSizeToFit: false,
         width: 250
-    },
+      },
       // {
       //     headerName: "Access type",
       //     field: "access_type",
@@ -354,9 +354,9 @@ class DForm extends React.Component {
         this.setState({dFormTypeModal: type})
         break;
       }
-        default: {
-          break;
-        }
+      default: {
+        break;
+      }
     }
   }
 
@@ -485,9 +485,12 @@ class DForm extends React.Component {
 
                     </CardHeader>
                     <CardBody className="card-top-padding">
-                      <FormCreate fileLoader={false} submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
+                      <FormCreate fileLoader={false}
+                                  submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
                                   liveValidate={false}
-                                  dForm={this.state.dFormTemplate} isStateConfig={this.state.isStateConfig}
+                                  isShowToggleProtectedProperties={true}
+                                  dForm={this.state.dFormTemplate}
+                                  isStateConfig={this.state.isStateConfig}
                       ></FormCreate>
                     </CardBody>
                   </Card>

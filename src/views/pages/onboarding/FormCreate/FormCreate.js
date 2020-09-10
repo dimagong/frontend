@@ -34,9 +34,9 @@ import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "../../../../services/file.service";
 import Constants from './Parts/Constants'
 
-import { dependencyChecker } from './Parts/DependencyChecker'
-import { listControls } from './Parts/ListControls'
-import { getSpecificType, isElementProtected } from "./helper";
+import {dependencyChecker} from './Parts/DependencyChecker'
+import {listControls} from './Parts/ListControls'
+import {getSpecificType, isElementProtected} from "./helper";
 import MultiSelect from "views/pages/onboarding/components/multiSelect";
 
 const clone = rfdc();
@@ -131,6 +131,7 @@ class FormCreate extends React.Component {
         protected_properties: protectedProperties
       },
       isShowProtectedElements: typeof props.isShowProtectedElements === 'boolean' ? props.isShowProtectedElements : false,
+      isShowToggleProtectedProperties: typeof props.isShowToggleProtectedProperties === 'boolean' ? props.isShowToggleProtectedProperties : false,
       refresh: false,
       tabConfig: 0,
       inputDisabled: props.inputDisabled === true ? true : false,
@@ -314,7 +315,10 @@ class FormCreate extends React.Component {
     };
     let dForm = clone(this.state.dFormTemplate);
     dForm.schema = backendSchema;
-    this.props.submitDForm({...dForm, groups: this.multiSelectRef.current.getMultiSelectState()}, this.state.additionalData);
+    this.props.submitDForm({
+      ...dForm,
+      groups: this.multiSelectRef.current.getMultiSelectState()
+    }, this.state.additionalData);
   }
 
   onSave() {
@@ -417,23 +421,26 @@ class FormCreate extends React.Component {
     this.setState(state)
   }
 
+
   dependecyModalSave = (dependencyType, objKey) => {
     let state = clone(this.state);
-    this.changeNameByDependencyType(objKey, dependencyType, state);
-    this.removeUiEffects(state, dependencyType, objKey);
-    state.uiSchema.dependencies[dependencyType][objKey] = clone(state.uiSettings.dependencies);
 
-    if(state.uiSettings.protectedProperty) {
+    if (state.uiSettings.protectedProperty) {
       let protectedPropertyIndex = state.additionalData.protected_properties[dependencyType].indexOf(objKey);
-      if( protectedPropertyIndex === -1 ) {
+      if (protectedPropertyIndex === -1) {
         state.additionalData.protected_properties[dependencyType].push(objKey);
       }
     } else {
       let protectedPropertyIndex = state.additionalData.protected_properties[dependencyType].indexOf(objKey);
-      if( protectedPropertyIndex !== -1 ) {
+      if (protectedPropertyIndex !== -1) {
         state.additionalData.protected_properties[dependencyType].splice(protectedPropertyIndex, 1);
       }
     }
+
+    this.changeNameByDependencyType(objKey, dependencyType, state);
+    this.removeUiEffects(state, dependencyType, objKey);
+    state.uiSchema.dependencies[dependencyType][objKey] = clone(state.uiSettings.dependencies);
+
 
     this.dependencyChecker(state);
     this.setState(state);
@@ -710,14 +717,14 @@ class FormCreate extends React.Component {
       delete state.uiSchema.sections[objKey];
     }
 
-    if(state.uiSettings.protectedProperty) {
+    if (state.uiSettings.protectedProperty) {
       let protectedPropertyIndex = state.additionalData.protected_properties[dependencyType].indexOf(objKey);
-      if( protectedPropertyIndex === -1 ) {
+      if (protectedPropertyIndex === -1) {
         state.additionalData.protected_properties[dependencyType].push(objKey);
       }
     } else {
       let protectedPropertyIndex = state.additionalData.protected_properties[dependencyType].indexOf(objKey);
-      if( protectedPropertyIndex !== -1 ) {
+      if (protectedPropertyIndex !== -1) {
         state.additionalData.protected_properties[dependencyType].splice(protectedPropertyIndex, 1);
       }
     }
@@ -740,7 +747,7 @@ class FormCreate extends React.Component {
         group: group,
         section: section,
         dependencies: dependencies,
-        protectedProperty: isElementProtected(this.state,'fields', objKey)
+        protectedProperty: isElementProtected(this.state, 'fields', objKey)
       }
     });
   };
@@ -833,6 +840,11 @@ class FormCreate extends React.Component {
       delete state.formData[previousFieldKey];
     }
 
+    const protectedFieldIndex = state.additionalData.protected_properties['fields'].indexOf(previousFieldKey);
+    if (protectedFieldIndex !== -1) {
+      state.additionalData.protected_properties['fields'].splice(protectedFieldIndex, 1);
+    }
+
     let requiredFieldIndex = schema.required.indexOf(previousFieldKey);
     if (requiredFieldIndex !== -1) {
       schema.required.splice(requiredFieldIndex, 1);
@@ -912,6 +924,12 @@ class FormCreate extends React.Component {
     let requiredFieldIndex = schema.required.indexOf(previousFieldKey);
     if (requiredFieldIndex !== -1) {
       schema.required[requiredFieldIndex] = newFieldKey;
+    }
+
+    const protectedFieldIndex = state.additionalData.protected_properties['fields'].indexOf(previousFieldKey);
+    if (protectedFieldIndex !== -1) {
+      state.additionalData.protected_properties['fields'].splice(protectedFieldIndex, 1);
+      state.additionalData.protected_properties['fields'].push(newFieldKey);
     }
 
     // dependencies for fields
@@ -1281,6 +1299,11 @@ class FormCreate extends React.Component {
         delete state.uiSchema.dependencies.sections[previousFieldKey];
       }
 
+      const protectedSectionIndex = state.additionalData.protected_properties['sections'].indexOf(previousFieldKey);
+      if (protectedSectionIndex !== -1) {
+        state.additionalData.protected_properties['sections'].splice(protectedSectionIndex, 1);
+      }
+
       const dependencyTypes = ['fields', 'groups', 'sections'];
 
       dependencyTypes.forEach(dependencyType => {
@@ -1334,6 +1357,11 @@ class FormCreate extends React.Component {
 
       if (previousFieldKey in state.uiSchema.dependencies.groups) {
         delete state.uiSchema.dependencies.groups[previousFieldKey];
+      }
+
+      const protectedFieldIndex = state.additionalData.protected_properties['groups'].indexOf(previousFieldKey);
+      if (protectedFieldIndex !== -1) {
+        state.additionalData.protected_properties['groups'].splice(protectedFieldIndex, 1);
       }
 
       const dependencyTypes = ['fields', 'groups', 'sections'];
@@ -1399,6 +1427,12 @@ class FormCreate extends React.Component {
         delete state.uiSchema.dependencies.sections[previousFieldKey];
       }
 
+      const protectedFieldIndex = state.additionalData.protected_properties['sections'].indexOf(previousFieldKey);
+      if (protectedFieldIndex !== -1) {
+        state.additionalData.protected_properties['sections'].splice(protectedFieldIndex, 1);
+        state.additionalData.protected_properties['sections'].push(newFieldKey);
+      }
+
       const dependencyTypes = ['fields', 'groups', 'sections'];
 
       dependencyTypes.forEach(dependencyType => {
@@ -1451,6 +1485,12 @@ class FormCreate extends React.Component {
       if (previousFieldKey in state.uiSchema.dependencies.groups) {
         state.uiSchema.dependencies.groups[newFieldKey] = state.uiSchema.dependencies.groups[previousFieldKey];
         delete state.uiSchema.dependencies.groups[previousFieldKey];
+      }
+
+      const protectedFieldIndex = state.additionalData.protected_properties['groups'].indexOf(previousFieldKey);
+      if (protectedFieldIndex !== -1) {
+        state.additionalData.protected_properties['groups'].splice(protectedFieldIndex, 1);
+        state.additionalData.protected_properties['groups'].push(newFieldKey);
       }
 
       const dependencyTypes = ['fields', 'groups', 'sections'];
@@ -1534,6 +1574,32 @@ class FormCreate extends React.Component {
             </Col>
             :
             <Col>
+
+              {
+                this.state.isShowToggleProtectedProperties ?
+                  <div className="mt-2 mb-2">
+                    <Checkbox
+                      color="primary"
+                      icon={<Check className="vx-icon" size={16}/>}
+                      label="is protected properties hidden"
+                      onChange={event => {
+                        const formData = clone(this.state.formData);
+                        this.setState({
+                          isShowProtectedElements: !this.state.isShowProtectedElements,
+                          formData: {___refresh___field: true}
+                        }, () => {
+                          this.setState({
+                            formData
+                          });
+                        });
+
+                      }}
+                      checked={this.state.isShowProtectedElements}
+                    />
+                  </div>
+                  : null
+              }
+
               <Form
                 showErrorList={false}
                 liveValidate={false}
