@@ -69,7 +69,7 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
-    console.log('componentDidUpdate', this.state);
+
   };
 
   async componentDidMount() {
@@ -87,6 +87,19 @@ class FormCreate extends React.Component {
       groups: [],
       sections: []
     };
+
+    propsDFormSchema.properties = isEmpty(propsDFormSchema.properties) ? {} : propsDFormSchema.properties;
+
+    propsDFormUiSchema.groups = isEmpty(propsDFormUiSchema.groups) ? {} : propsDFormUiSchema.groups;
+    propsDFormUiSchema.sections = isEmpty(propsDFormUiSchema.sections) ? {} : propsDFormUiSchema.sections;
+    propsDFormUiSchema.groupStates = isEmpty(propsDFormUiSchema.groupStates) ? {} : propsDFormUiSchema.groupStates;
+    propsDFormUiSchema.onlySections = isEmpty(propsDFormUiSchema.onlySections) ? {} : propsDFormUiSchema.onlySections;
+    propsDFormUiSchema.sectionGroups = isEmpty(propsDFormUiSchema.sectionGroups) ? {} : propsDFormUiSchema.sectionGroups;
+    propsDFormUiSchema.sectionStates = isEmpty(propsDFormUiSchema.sectionStates) ? {} : propsDFormUiSchema.sectionStates;
+
+    propsDFormUiSchema.dependencies.sections = isEmpty(propsDFormUiSchema.dependencies.sections) ? {} : propsDFormUiSchema.dependencies.sections;
+    propsDFormUiSchema.dependencies.groups = isEmpty(propsDFormUiSchema.dependencies.groups) ? {} : propsDFormUiSchema.dependencies.groups;
+    propsDFormUiSchema.dependencies.fields = isEmpty(propsDFormUiSchema.dependencies.fields) ? {} : propsDFormUiSchema.dependencies.fields;
 
     if (
       props.fill &&
@@ -329,6 +342,7 @@ class FormCreate extends React.Component {
   // refresh btn for dForm
   reInit = debounce(() => {
     let state = this.initState(this.props);
+
     state.formData = this.props.dForm.submit_data;
     this.dependencyChecker(state);
     this.setState(state, async () => {
@@ -420,7 +434,7 @@ class FormCreate extends React.Component {
         state.additionalData.protected_properties[dependencyType].splice(protectedPropertyIndex, 1);
       }
     }
-    console.log(state);
+
     this.dependencyChecker(state);
     this.setState(state);
   };
