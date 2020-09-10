@@ -203,12 +203,11 @@ export function dependencyChecker(state) {
   });
 
   Object.keys(state.uiSchema.dependencies.sections).forEach((settingSection) => {
-    if (!('conditions' in state.uiSchema.dependencies.sections[settingSection])) return;
+    if (!state.uiSchema.dependencies.sections[settingSection] || !('conditions' in state.uiSchema.dependencies.sections[settingSection])) return;
 
     const effect = getEffectByType(state.uiSchema.dependencies.sections[settingSection].effect);
 
     state.uiSchema.dependencies.sections[settingSection].conditions.forEach(condition => {
-
       for (let fieldOperator of condition.fieldOperators) {
         // check required
 

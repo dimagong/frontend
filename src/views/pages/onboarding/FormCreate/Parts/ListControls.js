@@ -461,6 +461,19 @@ export function listControls(properties) {
                     </select>
                   </div>
                 </div>
+                <div className="col-md-12 form-group">
+                  <Checkbox
+                    color="primary"
+                    icon={<Check className="vx-icon" size={16}/>}
+                    label="is protected"
+                    onChange={event => {
+                      this.setState({
+                        uiSettings: {...this.state.uiSettings, protectedProperty: event.target.checked}
+                      })
+                    }}
+                    checked={this.state.uiSettings.protectedProperty}
+                  />
+                </div>
                 <div className="border-top">
                   <div className="row"><h4 style={{margin: "15px auto"}}>Conditions</h4></div>
                   {dependencyFields}

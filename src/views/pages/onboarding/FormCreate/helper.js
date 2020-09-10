@@ -229,3 +229,6 @@ export function getDefaultValueByType(type) {
     }
   }
 }
+export function isElementProtected(state, dependencyType, objKey) {
+  return state.additionalData.protected_properties[dependencyType].indexOf(objKey) !== -1;
+}

@@ -388,11 +388,12 @@ class DForm extends React.Component {
     this.dFormOpen();
   }
 
-  async submitDForm(dForm, {name, description}) {
+  async submitDForm(dForm, {name, description, protected_properties}) {
 
     const dFormChanges = clone(dForm);
     dFormChanges.name = name;
     dFormChanges.description = description;
+    dFormChanges.protected_properties = protected_properties;
 
     if (this.state.dFormTypeModal === 'create') {
       try {

@@ -247,11 +247,11 @@ const mapStateToProps = state => {
     nav: state.user.list.nav,
     userEditing: state.userManagement.userEditing
   }
-}
+};
 const mapActionsToProps = (dispatch) => {
   return {
     setUserList: bindActionCreators(setUserList, dispatch),
     setEditUser: bindActionCreators(setEditUser, dispatch)
   }
-}
+};
 export default connect(mapStateToProps, mapActionsToProps)(UsersList)
