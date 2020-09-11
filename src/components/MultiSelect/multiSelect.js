@@ -83,7 +83,6 @@ export class MultiSelect extends Component {
         return this.state.groups.map(select => select.value);
     }
     render() {
-    console.log('this.state.groups', this.state.groups)
     return (
             <div className="d-flex mb-1">
             <div className="font-weight-bold column-sizing" style={{padding: 5}}>Organisations</div>
