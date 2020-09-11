@@ -6,7 +6,7 @@ import {
   CardBody,
   Row,
   Col,
-  Button,
+  Button, Badge,
 } from "reactstrap"
 import {
   Trash2,
@@ -30,6 +30,7 @@ import rfdc from 'rfdc';
 import Form from "@rjsf/core";
 import {debounce} from "lodash";
 import {prepareTableGroupData} from "utility/table/prepareTableGroupData"
+import MultiSelect from "../../../../components/MultiSelect/multiSelect";
 
 const clone = rfdc();
 
@@ -55,7 +56,14 @@ class DForm extends React.Component {
         headerName: "Organizations",
         field: "groups",
         suppressSizeToFit: false,
-        width: 250
+        width: 250,
+        cellRendererFramework: params => {
+          return params.value.map(next => (
+            <Badge color="primary" style={{margin: '1px'}}>
+              {next.name}
+            </Badge>
+          ))
+        }
       },
       // {
       //     headerName: "Access type",
@@ -246,6 +254,7 @@ class DForm extends React.Component {
     this.dFormTemplate = {
       name: '',
       description: '',
+      groups: [],
       schema: {
         schema: {
           properties: {},
@@ -282,6 +291,7 @@ class DForm extends React.Component {
     };
 
     this.state.dFormTemplate = this.dFormTemplate;
+    this.multiSelectRef = React.createRef();
     // this.state.dFormTemplate.schema.schema = this.state.dForm.schema;
     // this.state.dFormTemplate.schema.uiSchema = this.state.dForm.uiSchema;
   }
@@ -324,14 +334,15 @@ class DForm extends React.Component {
       }
       return dForm;
     });
-    const prepareRows = ({data: {data}}) => {
-      return { rowData: prepareTableGroupData(data) }
-  }
-    this.setState(prepareRows(response))
+    this.setState({ rowData: response.data.data })
   }
 
   async componentDidMount() {
     this.getDForms();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+
   }
 
   componentWillMount() {
@@ -398,6 +409,7 @@ class DForm extends React.Component {
     dFormChanges.name = name;
     dFormChanges.description = description;
     dFormChanges.protected_properties = protected_properties;
+    dFormChanges.groups = this.multiSelectRef.current.getMultiSelectState();
 
     if (this.state.dFormTypeModal === 'create') {
       try {
@@ -489,6 +501,9 @@ class DForm extends React.Component {
 
                     </CardHeader>
                     <CardBody className="card-top-padding">
+                      <div className="mt-2">
+                        <MultiSelect ref={this.multiSelectRef} groups={this.state.dFormTemplate.groups}/>
+                      </div>
                       <FormCreate fileLoader={false}
                                   submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
                                   liveValidate={false}
