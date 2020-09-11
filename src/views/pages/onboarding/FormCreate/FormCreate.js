@@ -100,7 +100,6 @@ class FormCreate extends React.Component {
     propsDFormUiSchema.dependencies.sections = isEmpty(propsDFormUiSchema.dependencies.sections) ? {} : propsDFormUiSchema.dependencies.sections;
     propsDFormUiSchema.dependencies.groups = isEmpty(propsDFormUiSchema.dependencies.groups) ? {} : propsDFormUiSchema.dependencies.groups;
     propsDFormUiSchema.dependencies.fields = isEmpty(propsDFormUiSchema.dependencies.fields) ? {} : propsDFormUiSchema.dependencies.fields;
-
     if (
       props.fill &&
       props.fill === true &&
@@ -132,6 +131,7 @@ class FormCreate extends React.Component {
       },
       isShowProtectedElements: typeof props.isShowProtectedElements === 'boolean' ? props.isShowProtectedElements : false,
       isShowToggleProtectedProperties: typeof props.isShowToggleProtectedProperties === 'boolean' ? props.isShowToggleProtectedProperties : false,
+      dForms: props.dForms,
       refresh: false,
       tabConfig: 0,
       inputDisabled: props.inputDisabled === true ? true : false,
@@ -389,7 +389,7 @@ class FormCreate extends React.Component {
     this.setLoadingFiles();
     const response = await fileService.getDFormFiles(this.state.dFormTemplate.id);
     let groupedFiles = response.data.data;
-
+    
     this.setState({formData: {...this.state.formData, ...groupedFiles}}, () => {
       this.changeFilesState(false);
       this.setState({loadingFiles: []}, () => {
@@ -1534,8 +1534,14 @@ class FormCreate extends React.Component {
     return this.getUniqueValues(groups);
   };
 
-  render() {
+  selectGroup() {
+    const dForms = this.state.dForms.find( (notification) =>{
+         return this.state.dFormTemplate.id === notification.id
+        })
+    return dForms ?  dForms.groups : [];
+}
 
+  render() {
     let controls = this.getListControls(this.state.schema.properties);
     const options = {
       selectOnLineNumbers: true
@@ -1560,7 +1566,7 @@ class FormCreate extends React.Component {
                 }} type="text"
                        className="form-control"/>
               </div>
-              <MultiSelect ref={this.multiSelectRef}/>
+              <MultiSelect ref={this.multiSelectRef} groups={this.selectGroup()}/>
               <div className="">
                 {controls}
               </div>

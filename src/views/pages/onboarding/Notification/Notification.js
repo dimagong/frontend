@@ -235,12 +235,13 @@ class Notification extends React.Component {
         }
     }
 
-
     selectGroup() {
-        return this.state.notifications.find( (notification) =>{
+        const notifications = this.state.notifications.find( (notification) =>{
              return this.state.notificationTemplate.id === notification.id
             })
+        return notifications ?  notifications.groups : [];
     }
+
     render() {
     const { rowData, columnDefs, defaultColDef, pageSize } = this.state
         const notificationEditElement = <Card style={{ height: 'calc(100%)', 'margin-bottom': 0 }}>
@@ -315,7 +316,7 @@ class Notification extends React.Component {
                                                         <Label>Content</Label>
                                                         <Input value={this.state.notificationTemplate.content} onChange={(event) => this.setState({ notificationTemplate: { ...this.state.notificationTemplate, content: event.target.value } })} type="textarea" name="content" placeholder="Content" />
                                                     </FormGroup>
-                                                    <MultiSelect ref={this.multiSelectRef} groups={this.selectGroup().groups}/>
+                                                    <MultiSelect ref={this.multiSelectRef} groups={this.selectGroup()}/>
                                                     <div className="d-flex justify-content-center flex-wrap mt-2">
                                                         <Button color="primary d-flex-left" onClick={() => this.submitNotification()}>Save</Button>
                                                     </div>

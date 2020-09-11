@@ -72,8 +72,10 @@ class Workflow extends React.Component {
         workflowTemplate: {
             name: '',
             description: '',
-            triggers: []
+            triggers: [],
+            groups: []
         },
+        workflows: [],
         columnDefs: [
             {
                 headerName: "Name",
@@ -235,6 +237,7 @@ class Workflow extends React.Component {
         const prepareRows = ({data: {data}}) => {
             return { rowData: prepareTableGroupData(data) }
         }
+        this.setState({workflows: response.data.data});
         this.setState(prepareRows(response))
     }
 
@@ -454,6 +457,12 @@ class Workflow extends React.Component {
             }
         }
     }
+    selectGroup() {
+        const workflows = this.state.workflows.find( (workflow) =>{
+             return this.state.workflowTemplate.id === workflow.id
+            })
+        return workflows ?  workflows.groups : [];
+    }
 
     render() {
         const { rowData, columnDefs, defaultColDef, pageSize } = this.state
@@ -502,7 +511,7 @@ class Workflow extends React.Component {
                     </FormGroup>
                 </Col>
                 <Col>
-                <MultiSelect ref={this.multiSelectRef}/>
+                <MultiSelect ref={this.multiSelectRef} groups={this.selectGroup()}/>
                 </Col>
 
                 <Col sm="12">

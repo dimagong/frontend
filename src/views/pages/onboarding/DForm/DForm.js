@@ -38,6 +38,7 @@ class DForm extends React.Component {
     gridClearSelection: false,
     dFormEdit: false,
     pageSize: 20,
+    dForms: [],
     columnDefs: [
       {
         headerName: "Name",
@@ -327,6 +328,7 @@ class DForm extends React.Component {
     const prepareRows = ({data: {data}}) => {
       return { rowData: prepareTableGroupData(data) }
   }
+    this.setState({dForms: response.data.data})
     this.setState(prepareRows(response))
   }
 
@@ -495,6 +497,7 @@ class DForm extends React.Component {
                                   isShowToggleProtectedProperties={true}
                                   dForm={this.state.dFormTemplate}
                                   isStateConfig={this.state.isStateConfig}
+                                  dForms={this.state.dForms}
                       ></FormCreate>
                     </CardBody>
                   </Card>
