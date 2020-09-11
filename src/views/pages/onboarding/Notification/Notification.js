@@ -40,8 +40,7 @@ class Notification extends React.Component {
             name: '',
             description: '',
             content: '',
-            groups: '',
-            index: null
+            groups: [],
         },
         columnDefs: [
             {
@@ -110,8 +109,7 @@ class Notification extends React.Component {
             name: '',
             description: '',
             content: '',
-            groups: '',
-            index: null
+            groups: [],
         }
         this.multiSelectRef = React.createRef();
     }
@@ -131,6 +129,13 @@ class Notification extends React.Component {
 
     async componentDidMount() {
         this.getNotifications();
+    }
+
+    componentDidUpdate(prevProp, prevState){
+        const notification = this.selectGroup();
+        if(prevState.notificationTemplate !== this.state.notificationTemplate){
+            this.setState({...this.state.notificationTemplate, groups: notification.groups })
+        }
     }
 
     closeNotification() {
