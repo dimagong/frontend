@@ -12,23 +12,24 @@ import {
   Trash2,
 } from "react-feather"
 import "flatpickr/dist/themes/light.css";
-import "../../../assets/scss/plugins/forms/flatpickr/flatpickr.scss"
+import "assets/scss/plugins/forms/flatpickr/flatpickr.scss"
 import {X, Eye, EyeOff} from "react-feather"
 
-import workflowService from '../../../services/workflow.service'
+import workflowService from 'services/workflow.service'
 
 import {toast} from "react-toastify"
 import {ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import "../../../assets/scss/plugins/extensions/toastr.scss"
+import "assets/scss/plugins/extensions/toastr.scss"
 import {connect} from "react-redux"
-import {ContextLayout} from "../../../utility/context/Layout"
+import {ContextLayout} from "utility/context/Layout"
 import {AgGridReact} from "ag-grid-react"
-import "../../../assets/scss/plugins/tables/_agGridStyleOverride.scss"
-import FormCreate from './FormCreate/FormCreate'
+import "assets/scss/plugins/tables/_agGridStyleOverride.scss"
+import FormCreate from '../FormCreate/FormCreate'
 import rfdc from 'rfdc';
 import Form from "@rjsf/core";
 import {debounce} from "lodash";
+import {prepareTableGroupData} from "utility/table/prepareTableGroupData"
 
 const clone = rfdc();
 
@@ -52,7 +53,7 @@ class DForm extends React.Component {
       },
       {
         headerName: "Organizations",
-        field: "organizations",
+        field: "groups",
         suppressSizeToFit: false,
         width: 250
       },
@@ -323,7 +324,10 @@ class DForm extends React.Component {
       }
       return dForm;
     });
-    this.setState({rowData: response.data.data})
+    const prepareRows = ({data: {data}}) => {
+      return { rowData: prepareTableGroupData(data) }
+  }
+    this.setState(prepareRows(response))
   }
 
   async componentDidMount() {

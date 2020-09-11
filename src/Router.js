@@ -23,9 +23,9 @@ const invitationAccept = lazy(() => import("./views/pages/invitation/InvitationA
 
 
 // onboarding
-const workflow = lazy(() => import("./views/pages/onboarding/Workflow"));
-const notification = lazy(() => import("./views/pages/onboarding/Notification"));
-const dForm = lazy(() => import("./views/pages/onboarding/DForm"));
+const workflow = lazy(() => import("./views/pages/onboarding/Workflow/Workflow"));
+const notification = lazy(() => import("./views/pages/onboarding/Notification/Notification"));
+const dForm = lazy(() => import("./views/pages/onboarding/DForm/DForm"));
 const onboardingForm = lazy(() => import("./views/pages/onboarding/OnboardingForm"));
 
 

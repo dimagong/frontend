@@ -4,6 +4,7 @@ import { Plus } from "react-feather"
 import {colourStyles} from "utility/select/selectSettigns";
 import GroupService from 'services/group.service'
 import {prepareSelectData} from "utility/select/prepareSelectData";
+import _ from "lodash";
 
 const DropdownIndicator = props => {
     return components.DropdownIndicator && (
@@ -25,14 +26,14 @@ export class MultiSelect extends Component {
     }
     componentDidMount() {
         this.getGroups();
-    }
+
+      }
 
     getGroups = async () => {
         const response = await GroupService.getAll();
         const groups = response.data.data;
     
         this.groups = groups;
-    
         const multiSelectGroups = prepareSelectData(groups)
     
         this.setState({...this.state, selectOptions: {...this.state.selectOptions, groups: multiSelectGroups}})

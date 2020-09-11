@@ -16,17 +16,18 @@ import {
     Trash2
 } from "react-feather"
 import "flatpickr/dist/themes/light.css";
-import "../../../assets/scss/plugins/forms/flatpickr/flatpickr.scss"
+import "assets/scss/plugins/forms/flatpickr/flatpickr.scss"
 import {  X } from "react-feather"
 import { toast } from "react-toastify"
 import { ToastContainer } from "react-toastify"
-import "../../../assets/scss/plugins/extensions/toastr.scss"
+import "assets/scss/plugins/extensions/toastr.scss"
 import { connect } from "react-redux"
-import { ContextLayout } from "../../../utility/context/Layout"
+import { ContextLayout } from "utility/context/Layout"
 import { AgGridReact } from "ag-grid-react"
-import "../../../assets/scss/plugins/tables/_agGridStyleOverride.scss"
-import workflowService from '../../../services/workflow.service'
-import MultiSelect from "./components/multiSelect";
+import "assets/scss/plugins/tables/_agGridStyleOverride.scss"
+import workflowService from 'services/workflow.service'
+import MultiSelect from "components/MultiSelect/multiSelect";
+import {prepareTableGroupData} from "utility/table/prepareTableGroupData"
 
 class Notification extends React.Component {
     state = {
@@ -34,11 +35,13 @@ class Notification extends React.Component {
         gridClearSelection: false,
         pageSize: 20,
         modalType: 'create',
+        notifications: [],
         notificationTemplate: {
             name: '',
             description: '',
             content: '',
-            groups: [],
+            groups: '',
+            index: null
         },
         columnDefs: [
             {
@@ -61,7 +64,7 @@ class Notification extends React.Component {
             },
             {
                 headerName: "Organizations",
-                field: "organizations",
+                field: "groups",
                 suppressSizeToFit: false,
                 width: 250
             },
@@ -107,7 +110,8 @@ class Notification extends React.Component {
             name: '',
             description: '',
             content: '',
-            groups: [],
+            groups: '',
+            index: null
         }
         this.multiSelectRef = React.createRef();
     }
@@ -117,8 +121,12 @@ class Notification extends React.Component {
     }
 
     async getNotifications() {
+        const prepareRows = ({data: {data}}) => {
+            return { rowData: prepareTableGroupData(data) }
+        }
         const response = await workflowService.getNotifications();
-        this.setState({ rowData: response.data.data });
+        this.setState({notifications: response.data.data});
+        this.setState(prepareRows(response));
     }
 
     async componentDidMount() {
@@ -170,7 +178,6 @@ class Notification extends React.Component {
 
         let selectedData = this.gridApi.getSelectedRows();
         const notification = selectedData[0];
-        this.setDFormTypeModal('edit');
         this.setState({ notificationTemplate: notification });
         this.notificationOpen();
     }
@@ -223,9 +230,14 @@ class Notification extends React.Component {
         }
     }
 
-    render() {
-        const { rowData, columnDefs, defaultColDef, pageSize } = this.state
 
+    selectGroup() {
+        return this.state.notifications.find( (notification) =>{
+             return this.state.notificationTemplate.id === notification.id
+            })
+    }
+    render() {
+    const { rowData, columnDefs, defaultColDef, pageSize } = this.state
         const notificationEditElement = <Card style={{ height: 'calc(100%)', 'margin-bottom': 0 }}>
             <CardHeader>
                 <CardTitle>
@@ -298,7 +310,7 @@ class Notification extends React.Component {
                                                         <Label>Content</Label>
                                                         <Input value={this.state.notificationTemplate.content} onChange={(event) => this.setState({ notificationTemplate: { ...this.state.notificationTemplate, content: event.target.value } })} type="textarea" name="content" placeholder="Content" />
                                                     </FormGroup>
-                                                    <MultiSelect ref={this.multiSelectRef}/>
+                                                    <MultiSelect ref={this.multiSelectRef} groups={this.selectGroup().groups}/>
                                                     <div className="d-flex justify-content-center flex-wrap mt-2">
                                                         <Button color="primary d-flex-left" onClick={() => this.submitNotification()}>Save</Button>
                                                     </div>

@@ -30,15 +30,16 @@ import chroma from "chroma-js"
 import { toast } from "react-toastify"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import "../../../assets/scss/plugins/extensions/toastr.scss"
+import "assets/scss/plugins/extensions/toastr.scss"
 import { connect } from "react-redux"
-import { ContextLayout } from "../../../utility/context/Layout"
+import { ContextLayout } from "utility/context/Layout"
 import { AgGridReact } from "ag-grid-react"
-import "../../../assets/scss/plugins/tables/_agGridStyleOverride.scss"
-import workflowService from '../../../services/workflow.service'
-import userService from '../../../services/user.service';
-import MultiSelect from "./components/multiSelect";
+import "assets/scss/plugins/tables/_agGridStyleOverride.scss"
+import workflowService from 'services/workflow.service'
+import userService from 'services/user.service';
+import MultiSelect from "components/MultiSelect/multiSelect";
 import {colourStyles} from "utility/select/selectSettigns";
+import {prepareTableGroupData} from "utility/table/prepareTableGroupData"
 
 const colorMultiSelect = '#007bff';
 const clone = rfdc();
@@ -88,7 +89,7 @@ class Workflow extends React.Component {
             },
             {
                 headerName: "Organizations",
-                field: "organizations",
+                field: "groups",
                 suppressSizeToFit: false,
                 width: 250
             },
@@ -231,7 +232,10 @@ class Workflow extends React.Component {
     }
     async getWorkflows() {
         const response = await workflowService.getWorkflows();
-        this.setState({ rowData: response.data.data })
+        const prepareRows = ({data: {data}}) => {
+            return { rowData: prepareTableGroupData(data) }
+        }
+        this.setState(prepareRows(response))
     }
 
     async getManagers() {

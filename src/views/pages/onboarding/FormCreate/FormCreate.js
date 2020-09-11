@@ -37,7 +37,7 @@ import Constants from './Parts/Constants'
 import {dependencyChecker} from './Parts/DependencyChecker'
 import {listControls} from './Parts/ListControls'
 import {getSpecificType, isElementProtected} from "./helper";
-import MultiSelect from "views/pages/onboarding/components/multiSelect";
+import MultiSelect from "components/MultiSelect/multiSelect";
 
 const clone = rfdc();
 
