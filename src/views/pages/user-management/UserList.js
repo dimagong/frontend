@@ -212,6 +212,7 @@ class UsersList extends React.Component {
                   <ContextLayout.Consumer>
                     {context => (
                       <AgGridReact
+                        className="aggrid-hide-pagination"
                         gridOptions={{}}
                         rowSelection="multiple"
                         defaultColDef={defaultColDef}

@@ -44,6 +44,7 @@ import FormCreate from "../onboarding/FormCreate/FormCreate";
 import {debounce, isEmpty} from 'lodash';
 import {colourStyles} from "utility/select/selectSettigns";
 import {prepareSelectData} from "utility/select/prepareSelectData";
+import DataTable from "react-data-table-component"
 
 const clone = rfdc();
 
@@ -109,6 +110,9 @@ class UserEdit extends React.Component {
       label: 'Onboarding',
       color: colorMultiSelect
     }],
+    onboardingTemplate: {},
+    onboardingViewState: '',
+    selectedOnboarding: {},
     dForms: [],
     editField: null,
     errors: {},
@@ -131,6 +135,12 @@ class UserEdit extends React.Component {
     this.debounceOnSave = debounce(async (formData) => {
       this.submitOnboardingForm(formData)
     }, 1500);
+
+    this.onboardingColumnDefs = {
+      sortable: true,
+      suppressSizeToFit: false,
+      resizable: true,
+    };
   }
 
   toggle = tab => {
@@ -196,6 +206,18 @@ class UserEdit extends React.Component {
     });
   }
 
+  setDFormCreate(values) {
+
+    if (Array.isArray(values) && values.length) {
+      values = values.pop().value;
+    } else {
+      values = {};
+    }
+
+    this.setState({onboardingTemplate: {...this.state.onboardingTemplate, d_form: values}}, () => {
+    })
+  }
+
   setDForm(values) {
 
     if (Array.isArray(values) && values.length) {
@@ -206,6 +228,15 @@ class UserEdit extends React.Component {
 
     this.setState({onboarding: {...this.state.onboarding, d_form: values}}, () => {
     })
+  }
+
+  setWorkflowCreate(values) {
+    if (Array.isArray(values) && values.length) {
+      values = values.pop().value;
+    } else {
+      values = {};
+    }
+    this.setState({onboardingTemplate: {...this.state.onboardingTemplate, workflow: values}})
   }
 
   setWorkflow(values) {
@@ -226,6 +257,15 @@ class UserEdit extends React.Component {
     this.setState({modules: values}, () => {
       this.submitData();
     });
+  }
+
+  setReviewersCreate(values) {
+    if (!Array.isArray(values)) {
+      values = [];
+    } else {
+      values = values.map((value) => value.value);
+    }
+    this.setState({onboardingTemplate: {...this.state.onboardingTemplate, reviewers: values}})
   }
 
   setReviewers(values) {
@@ -416,7 +456,7 @@ class UserEdit extends React.Component {
   }
 
   async deleteOnboarding() {
-    await workflowService.onboardingDelete(this.state.onboarding);
+    await workflowService.onboardingDelete(this.state.selectedOnboarding);
     this.dispatchUserList();
     this.dispatchEditUser();
   }
@@ -428,7 +468,7 @@ class UserEdit extends React.Component {
       const updatedUser = response.data.data;
       store.dispatch(setEditUser(updatedUser));
       await this.dispatchUserList();
-      toast.success('success')
+      toast.success('success');
       this.setState({...this.state, errors: {}})
     } catch (responseError) {
       if ('response' in responseError) {
@@ -441,11 +481,11 @@ class UserEdit extends React.Component {
         console.log(responseError);
       }
     }
-  }
+  };
 
   async submitOnboardingForm(formData) {
 
-    if (isEmpty(this.props.user.onboarding)) {
+    if (isEmpty(this.props.user.onboardings)) {
       return;
     }
 
@@ -457,7 +497,7 @@ class UserEdit extends React.Component {
         </div>
       )
     });
-    const response = await workflowService.submitData(this.props.user.onboarding.d_form, formData);
+    const response = await workflowService.submitData(this.state.selectedOnboarding.d_form, formData);
     await this.dispatchUserList();
     this.setState({updatedAtText: `Progress saved: ${moment(response.data.updated_at).format('YYYY-MM-DD HH:mm:ss')}`});
     toast.success('success')
@@ -468,7 +508,7 @@ class UserEdit extends React.Component {
   }
 
   getDefaultUpdatedAtText() {
-    return `Progress saved: ${moment(this.props.user.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`;
+    return `Progress saved: ${moment(this.state.selectedOnboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`;
   }
 
   async statusChanged(status) {
@@ -493,6 +533,14 @@ class UserEdit extends React.Component {
       const error = responseError.response.data.error;
       toast.error(error.message)
     }
+  }
+
+  createViewOnboarding() {
+    this.setState({onboardingViewState: 'create', onboardingTemplate: this.onboardingTemplate, selectedOnboarding: {}})
+  }
+
+  closeCreateOnboarding() {
+    this.setState({onboardingViewState: '', onboardingTemplate: this.onboardingTemplate})
   }
 
   editField = (fieldName) => {
@@ -582,6 +630,10 @@ class UserEdit extends React.Component {
 
   }
 
+  closeOnboarding() {
+    this.setState({selectedOnboarding: {}, onboardingViewState: '', onboardingTemplate: this.onboardingTemplate});
+  }
+
   modulesRender() {
     if (this.state.id !== this.props.user.id) return null;
 
@@ -607,163 +659,343 @@ class UserEdit extends React.Component {
             <TabContent activeTab={this.state.activeTab}>
               <TabPane tabId="1">
                 <Row className="mx-0" col="12">
-                  <Col className="pl-0" sm="12">
-                    <Media className="d-sm-flex d-block">
-                      <Media body>
-                        <Row className="mt-1">
-                          <Col md="12" lg="6">
-                            <div className="users-page-view-table">
-                              <div className="d-flex mb-1">
-                                <div className="font-weight-bold column-sizing">dForm</div>
-                                <div className="full-width">
-
-                                  <Select
-                                    isDisabled={!!this.props.user.onboarding}
-                                    components={{DropdownIndicator: DropdownIndicatorClear}}
-                                    value={this.getCustomSelectedValues(this.state.onboarding.d_form)}
-                                    maxMenuHeight={200}
-                                    isMulti
-                                    isClearable={false}
-                                    styles={colourStyles}
-                                    options={this.selectNoRepeat(this.state.dFormSelects, this.getCustomSelectedValues(this.state.onboarding.d_form))}
-                                    className="fix-margin-select"
-                                    onChange={(values) => {
-                                      this.setDForm(values)
-                                    }}
-                                    classNamePrefix="select"
-                                    id="languages"
-                                  />
-                                </div>
-                              </div>
-                              <div className="d-flex mb-1">
-                                <div className="font-weight-bold column-sizing">Reviewer</div>
-                                <div className="full-width">
-
-                                  <Select
-                                    isDisabled={!!this.props.user.onboarding}
-                                    components={{DropdownIndicator}}
-                                    value={this.getCustomSelects(this.state.onboarding.reviewers)}
-                                    maxMenuHeight={200}
-                                    isMulti
-                                    isClearable={false}
-                                    styles={colourStyles}
-                                    options={this.selectNoRepeat(this.state.reviewersSelect, this.getCustomSelects(this.state.onboarding.reviewers))}
-                                    onChange={(values) => {
-                                      this.setReviewers(values)
-                                    }}
-                                    className="fix-margin-select"
-                                    classNamePrefix="select"
-                                    id="languages"
-                                  />
-
-                                </div>
-                              </div>
-                              <div className="d-flex">
-                                <div className="font-weight-bold column-sizing">Workflow</div>
-                                <div className="full-width">
-
-                                  <Select
-                                    isDisabled={!!this.props.user.onboarding}
-                                    components={{DropdownIndicator: DropdownIndicatorClear}}
-                                    value={this.getCustomSelectedValues(this.state.onboarding.workflow)}
-                                    maxMenuHeight={200}
-                                    isMulti
-                                    isClearable={false}
-                                    styles={colourStyles}
-                                    options={this.selectNoRepeat(this.state.workflowSelects, this.getCustomSelectedValues(this.state.onboarding.workflow))}
-                                    onChange={(values) => {
-                                      this.setWorkflow(values)
-                                    }}
-                                    className="fix-margin-select"
-                                    classNamePrefix="select"
-                                    id="languages"
-                                  />
-
-                                </div>
-                              </div>
-
-                            </div>
-                          </Col>
-                          <Col>
-                            {
-                              this.props.user.onboarding ? null :
-                                <div className="d-flex justify-content-end flex-wrap mt-2">
-                                  <Button className="mt-1" color="primary" onClick={() => {
-                                    this.submitData()
-                                  }}>Save</Button>
-                                </div>
-                            }
-                            {
-                              !this.props.user.onboarding ? null :
-                                <div className="d-flex justify-content-end flex-wrap mt-2">
-                                  <Button className="mt-1" color="danger" onClick={() => {
-                                    this.deleteOnboarding()
-                                  }}>Delete onboarding</Button>
-                                </div>
-                            }
-                          </Col>
-
-                          {
-                            this.props.user.onboarding && this.props.user.onboarding.d_form ?
-                              <Col md="12" className="mt-2 mb-4">
-                                <Card className="border">
-                                  <CardHeader className="m-0">
-                                    <CardTitle>
-                                      Onboarding dForm
-                                    </CardTitle>
-                                    <div>
-                                      {
-                                        this.state.isStateConfig ?
-                                          <EyeOff size={15} className="cursor-pointer mr-1"
-                                                  onClick={() => this.changeStateConfig(false)}/>
-                                          :
-                                          <Eye size={15} className="cursor-pointer mr-1"
-                                               onClick={() => this.changeStateConfig(true)}/>
-                                      }
-                                      <RefreshCw
-                                        className={`bg-hover-icon${this.state.refreshOnboarding ? ' rotating' : ''}`}
-                                        size={15} onClick={(event) => {
-                                        this.refreshOnboarding();
-                                      }}/>
-                                    </div>
-                                  </CardHeader>
-                                  <CardBody className="pt-0">
-                                    <hr/>
-                                    {
-                                      // this.state.refreshOnboarding ?
-                                      //   null :
-                                      <FormCreate
-                                        fileLoader={true}
-                                        reInit={(reInit, context) => {
-                                          this.reInitForm = reInit.bind(context)
-                                        }}
-                                        submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
-                                        liveValidate={false}
-                                        inputDisabled={false}
-                                        fill={true}
-                                        onSaveButtonHidden={true}
-                                        statusChanged={(value) => {
-                                          this.statusChanged(value)
-                                        }}
-                                        onChange={(formData) => this.debounceOnSave(formData)}
-                                        dForm={this.props.user.onboarding.d_form}
-                                        isStateConfig={this.state.isStateConfig}
-                                        updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
-                                      />
-                                    }
-
-                                  </CardBody>
-                                </Card>
-                              </Col>
-                              :
-                              null
-                          }
-
-                        </Row>
-
-                      </Media>
-                    </Media>
+                  <Col md="12" className="ml-0 pl-0">
+                    <div className="d-flex justify-content-end flex-wrap mt-2">
+                      <Button className="mt-1" color="primary" onClick={() => {
+                        this.createViewOnboarding()
+                      }}>Create</Button>
+                    </div>
                   </Col>
+                  <Col md="12" className="ml-0 pl-0">
+                    <DataTable
+                      data={this.props.user.onboardings}
+                      columns={[
+                        // {
+                        //   name: "Id",
+                        //   selector: "id",
+                        //   sortable: true
+                        // },
+                        {
+                          name: 'DForm',
+                          cell: (onboarding) => {
+                            return onboarding.d_form.name
+                          }
+                        },
+                        {
+                          name: 'Reviewers',
+                          cell: (onboarding) => {
+                            return onboarding.reviewers.map(reviewer => reviewer.name).join(', ')
+                          }
+                        },
+                        {
+                          name: 'Workflow',
+                          cell: (onboarding) => {
+                            return onboarding.workflow.name;
+                          }
+                        }
+                      ]}
+                      Clicked
+                      onRowClicked={(onboarding) => {
+                        console.log(onboarding);
+                        this.setState({selectedOnboarding: clone(onboarding), onboardingViewState: 'edit'})
+                      }}
+                      highlightOnHover
+                      noHeader
+                    />
+                  </Col>
+                  {
+                    this.state.onboardingViewState !== 'create' ? null :
+                      <Col md="12" lg="12" className="pl-0 ml-0 mt-2">
+                        <Card className="border mb-0">
+                          <CardHeader className="m-0">
+                            <CardTitle>
+                              Onboarding create
+                            </CardTitle>
+                            <X size={15} onClick={() => this.closeCreateOnboarding()}/>
+                          </CardHeader>
+                          <CardBody className="pt-0">
+                            <hr/>
+                            <div className="mt-3">
+                              <div className="users-page-view-table">
+                                <div className="d-flex mb-1">
+                                  <div className="font-weight-bold column-sizing">dForm</div>
+                                  <div className="full-width">
+
+                                    <Select
+                                      components={{DropdownIndicator: DropdownIndicatorClear}}
+                                      value={this.getCustomSelectedValues(this.state.onboardingTemplate.d_form)}
+                                      maxMenuHeight={200}
+                                      isMulti
+                                      isClearable={false}
+                                      styles={colourStyles}
+                                      options={this.selectNoRepeat(this.state.dFormSelects, this.getCustomSelectedValues(this.state.onboardingTemplate.d_form))}
+                                      className="fix-margin-select"
+                                      onChange={(values) => {
+                                        this.setDFormCreate(values)
+                                      }}
+                                      classNamePrefix="select"
+                                      id="languages"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="d-flex mb-1">
+                                  <div className="font-weight-bold column-sizing">Reviewer</div>
+                                  <div className="full-width">
+
+                                    <Select
+                                      components={{DropdownIndicator}}
+                                      value={this.getCustomSelects(this.state.onboardingTemplate.reviewers)}
+                                      maxMenuHeight={200}
+                                      isMulti
+                                      isClearable={false}
+                                      styles={colourStyles}
+                                      options={this.selectNoRepeat(this.state.reviewersSelect, this.getCustomSelects(this.state.onboardingTemplate.reviewers))}
+                                      onChange={(values) => {
+                                        this.setReviewersCreate(values)
+                                      }}
+                                      className="fix-margin-select"
+                                      classNamePrefix="select"
+                                      id="languages"
+                                    />
+
+                                  </div>
+                                </div>
+                                <div className="d-flex">
+                                  <div className="font-weight-bold column-sizing">Workflow</div>
+                                  <div className="full-width">
+
+                                    <Select
+                                      components={{DropdownIndicator: DropdownIndicatorClear}}
+                                      value={this.getCustomSelectedValues(this.state.onboardingTemplate.workflow)}
+                                      maxMenuHeight={200}
+                                      isMulti
+                                      isClearable={false}
+                                      styles={colourStyles}
+                                      options={this.selectNoRepeat(this.state.workflowSelects, this.getCustomSelectedValues(this.state.onboardingTemplate.workflow))}
+                                      onChange={(values) => {
+                                        this.setWorkflowCreate(values)
+                                      }}
+                                      className="fix-margin-select"
+                                      classNamePrefix="select"
+                                      id="languages"
+                                    />
+
+                                  </div>
+                                </div>
+
+                              </div>
+                              <div>
+                                {
+                                  <div className="d-flex justify-content-end flex-wrap mt-2">
+                                    <Button className="mt-1" color="primary" onClick={() => {
+                                      this.submitData()
+                                    }}>Save</Button>
+                                  </div>
+                                }
+                              </div>
+                            </div>
+
+                          </CardBody>
+                        </Card>
+                      </Col>
+                  }
+                  {
+                    isEmpty(this.state.selectedOnboarding) ? null :
+                      <Col md="12" lg="12" className="pl-0 ml-0 mt-2">
+                        <Card className="border mb-0">
+                          <CardHeader className="m-0">
+                            <CardTitle>
+                              Onboarding settings
+                            </CardTitle>
+                            <X size={15} onClick={() => this.closeOnboarding()}/>
+                          </CardHeader>
+                          <CardBody className="pt-0">
+                            <hr/>
+                            <div className="mt-3">
+                              <div className="users-page-view-table">
+                                <div className="d-flex mb-1">
+                                  <div className="font-weight-bold column-sizing">dForm</div>
+                                  <div className="full-width">
+
+                                    <Select
+                                      isDisabled={isEmpty(this.state.selectedOnboarding)}
+                                      components={{DropdownIndicator: DropdownIndicatorClear}}
+                                      value={this.getCustomSelectedValues(this.state.selectedOnboarding.d_form)}
+                                      maxMenuHeight={200}
+                                      isMulti
+                                      isClearable={false}
+                                      styles={colourStyles}
+                                      options={this.selectNoRepeat(this.state.dFormSelects, this.getCustomSelectedValues(this.state.selectedOnboarding.d_form))}
+                                      className="fix-margin-select"
+                                      onChange={(values) => {
+                                        this.setDForm(values)
+                                      }}
+                                      classNamePrefix="select"
+                                      id="languages"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="d-flex mb-1">
+                                  <div className="font-weight-bold column-sizing">Reviewer</div>
+                                  <div className="full-width">
+
+                                    <Select
+                                      isDisabled={isEmpty(this.state.selectedOnboarding)}
+                                      components={{DropdownIndicator}}
+                                      value={this.getCustomSelects(this.state.selectedOnboarding.reviewers)}
+                                      maxMenuHeight={200}
+                                      isMulti
+                                      isClearable={false}
+                                      styles={colourStyles}
+                                      options={this.selectNoRepeat(this.state.reviewersSelect, this.getCustomSelects(this.state.selectedOnboarding.reviewers))}
+                                      onChange={(values) => {
+                                        this.setReviewers(values)
+                                      }}
+                                      className="fix-margin-select"
+                                      classNamePrefix="select"
+                                      id="languages"
+                                    />
+
+                                  </div>
+                                </div>
+                                <div className="d-flex">
+                                  <div className="font-weight-bold column-sizing">Workflow</div>
+                                  <div className="full-width">
+
+                                    <Select
+                                      isDisabled={isEmpty(this.state.selectedOnboarding)}
+                                      components={{DropdownIndicator: DropdownIndicatorClear}}
+                                      value={this.getCustomSelectedValues(this.state.selectedOnboarding.workflow)}
+                                      maxMenuHeight={200}
+                                      isMulti
+                                      isClearable={false}
+                                      styles={colourStyles}
+                                      options={this.selectNoRepeat(this.state.workflowSelects, this.getCustomSelectedValues(this.state.selectedOnboarding.workflow))}
+                                      onChange={(values) => {
+                                        this.setWorkflow(values)
+                                      }}
+                                      className="fix-margin-select"
+                                      classNamePrefix="select"
+                                      id="languages"
+                                    />
+
+                                  </div>
+                                </div>
+
+                              </div>
+                              <div>
+                                {
+                                  !isEmpty(this.state.selectedOnboarding) ? null :
+                                    <div className="d-flex justify-content-end flex-wrap mt-2">
+                                      <Button className="mt-1" color="primary" onClick={() => {
+                                        this.submitData()
+                                      }}>Save</Button>
+                                    </div>
+                                }
+                                {
+                                  isEmpty(this.state.selectedOnboarding) ? null :
+                                    <div className="d-flex justify-content-end flex-wrap mt-2">
+                                      <Button className="mt-1" color="danger" onClick={() => {
+                                        window.confirm("Are you sure?") && this.deleteOnboarding()
+                                      }}>Delete onboarding</Button>
+                                    </div>
+                                }
+                              </div>
+                            </div>
+
+                          </CardBody>
+                        </Card>
+                      </Col>
+                  }
+
+                  {/*<Col className="w-100 ml-0 pl-0 mr-1">*/}
+                  {/*  <div className="pull-right-icons">*/}
+                  {/*    <Select*/}
+                  {/*      className=""*/}
+                  {/*      classNamePrefix="select"*/}
+                  {/*      defaultValue={{value: "ocean", label: "Ocean"}}*/}
+                  {/*      name="color"*/}
+                  {/*      options={[{value: "ocean", label: "Ocean"}]}*/}
+                  {/*    />*/}
+                  {/*    <div className="pull-left">*/}
+                  {/*      <div className="d-flex justify-content-end flex-wrap">*/}
+                  {/*        <Button className="" color="primary" onClick={() => {*/}
+                  {/*          alert();*/}
+                  {/*        }}>Save</Button>*/}
+                  {/*      </div>*/}
+                  {/*    </div>*/}
+                  {/*  </div>*/}
+
+                  {/*</Col>*/}
+                  {
+                    isEmpty(this.state.selectedOnboarding) ? null :
+                      <Col className="pl-0" sm="12">
+                        <Media className="d-sm-flex d-block">
+                          <Media body>
+                            <Row className="mt-1">
+                              {
+                                !isEmpty(this.state.selectedOnboarding) && !isEmpty(this.state.selectedOnboarding.d_form) ?
+                                  <Col md="12" className="mb-4">
+                                    <Card className="border">
+                                      <CardHeader className="m-0">
+                                        <CardTitle>
+                                          Onboarding dForm
+                                        </CardTitle>
+                                        <div>
+                                          {
+                                            this.state.isStateConfig ?
+                                              <EyeOff size={15} className="cursor-pointer mr-1"
+                                                      onClick={() => this.changeStateConfig(false)}/>
+                                              :
+                                              <Eye size={15} className="cursor-pointer mr-1"
+                                                   onClick={() => this.changeStateConfig(true)}/>
+                                          }
+                                          <RefreshCw
+                                            className={`bg-hover-icon${this.state.refreshOnboarding ? ' rotating' : ''}`}
+                                            size={15} onClick={(event) => {
+                                            this.refreshOnboarding();
+                                          }}/>
+                                        </div>
+                                      </CardHeader>
+                                      <CardBody className="pt-0">
+                                        <hr/>
+                                        {
+                                          // this.state.refreshOnboarding ?
+                                          //   null :
+                                          <FormCreate
+                                            fileLoader={true}
+                                            reInit={(reInit, context) => {
+                                              this.reInitForm = reInit.bind(context)
+                                            }}
+                                            submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
+                                            liveValidate={false}
+                                            inputDisabled={false}
+                                            fill={true}
+                                            onSaveButtonHidden={true}
+                                            statusChanged={(value) => {
+                                              this.statusChanged(value)
+                                            }}
+                                            onChange={(formData) => this.debounceOnSave(formData)}
+                                            dForm={this.state.selectedOnboarding.d_form}
+                                            isStateConfig={this.state.isStateConfig}
+                                            updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
+                                          />
+                                        }
+
+                                      </CardBody>
+                                    </Card>
+                                  </Col>
+                                  :
+                                  null
+                              }
+
+                            </Row>
+
+                          </Media>
+                        </Media>
+                      </Col>
+                  }
+
                 </Row>
               </TabPane>
             </TabContent>

@@ -107,7 +107,14 @@
 .pull-right-icons {
     width: calc(100% - 70px)
 }
-
+.pull-left {
+  position: absolute;
+  top: 0;
+  right: 2px;
+}
+.w-90 {
+  width: 90%;
+}
 // dForm FormCreate
 .form-create__tab-min-height {
     min-height: 300px;
@@ -125,6 +132,9 @@
     margin: 10px;
     color: rgba(0,123,255, 0.3);
     transition: ease-in 0.2s;
+}
+.aggrid-hide-pagination .ag-paging-panel {
+  display: none!important;
 }
 .form-create__add-new-group.small {
     height: 50px;
