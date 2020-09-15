@@ -8,6 +8,9 @@ import {
   loginSuccess,
   loginRequest,
   loginError,
+  verifyPasswordSuccess,
+  verifyPasswordRequest,
+  verifyPasswordError,
 } from "app/slices/appSlice";
 
 
@@ -17,7 +20,7 @@ function* login({ payload }) {
     yield call(authApi.login, payload);
     yield put(loginSuccess());
   } catch (error) {
-    yield put(loginError());
+    yield put(loginError(error));
   }
 }
 
@@ -26,7 +29,16 @@ function* resetPassword({ payload }) {
     yield call(authApi.resetPassword, payload);
     yield put(resetPasswordSuccess());
   } catch (error) {
-    yield put(resetPasswordError());
+    yield put(resetPasswordError(error));
+  }
+}
+
+function* verifyPassword({ payload }) {
+  try {
+    yield call(authApi.verifyPassword, payload);
+    yield put(verifyPasswordSuccess());
+  } catch (error) {
+    yield put(verifyPasswordError(error));
   }
 }
 
@@ -35,6 +47,7 @@ function* resetPassword({ payload }) {
 export default function* () {
   yield all([
     yield takeLatest(resetPasswordRequest.type, resetPassword),
+    yield takeLatest(verifyPasswordRequest.type, verifyPassword),
     yield takeLatest(loginRequest.type, login),
   ]);
 }

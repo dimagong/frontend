@@ -1,43 +1,29 @@
 import instance from "api";
-import authService from "services/auth"
+import authService from "services/auth";
+import { loginPath, resetPasswordPath, verifyPasswordPath } from "constants/auth";
 
 const authApi = {
   async login(data) {
     try {
       const result = await instance({
-        url: "/authenticate",
+        url: loginPath,
         method: "POST",
         data,
       });
-      authService.setToken(result.data.data.token)
+      authService.setToken(result.data.data.token);
 
       return result;
     } catch (err) {
       throw err;
     }
   },
-  async signUp(data) {
-    try {
-      const result = await instance({
-        url: "/authenticate/register",
-        method: "POST",
-        data,
-      });
 
-      return result;
-    } catch (err) {
-      throw err;
-    }
-  },
-  async resetPassword({ password, token }) {
+  async resetPassword({ email }) {
     try {
       return await instance({
-        url: `/authenticate/remind-password/`,
+        url: resetPasswordPath,
         method: "POST",
-        data: { password: password },
-        params: {
-          token,
-        },
+        data: { email },
       });
     } catch (err) {
       if (
@@ -51,37 +37,14 @@ const authApi = {
       throw Error("Something is wrong");
     }
   },
-
-  async sendEmail(data) {
-    try {
-      return await instance({
-        url: "/authenticate",
-        method: "POST",
-        data: {
-          email: data,
-        },
-      });
-    } catch (err) {
-      if (
-        err &&
-        err.response &&
-        err.response.data &&
-        err.response.data.detail
-      ) {
-        throw Error(err.response.data.detail);
-      }
-      throw Error("Something is wrong");
-    }
-  },
-
-  async verify(data) {
+  
+  async verifyPassword(data) {
     try {
       const result = await instance({
-        url: "/authenticate/verify",
+        url: verifyPasswordPath,
         method: "POST",
         data,
       });
-
 
       return result;
     } catch (err) {
@@ -90,8 +53,7 @@ const authApi = {
   },
 
   logout() {
-    authService.logout()
-
+    authService.logout();
 
     return true;
   },

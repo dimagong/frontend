@@ -4,20 +4,20 @@ const loginSuccess = (state) => ({
   ...state,
   isAuth: true,
   isLoading: false,
-  isError: false,
+  isError: null,
 });
 
 const loginRequest = (state, {payload}) => ({
   ...state,
   isAuth: false,
   isLoading: true,
-  isError: false,
+  isError: null,
 });
-const loginError = (state) => ({
+const loginError = (state , {payload}) => ({
   ...state,
   isAuth: false,
   isLoading: false,
-  isError: true,
+  isError: payload,
 });
 
 const logout = (state) => {
@@ -26,27 +26,46 @@ return {
   ...state,
   isAuth: false,
   isLoading: false,
-  isError: false,
+  isError: null,
 }};
 
 const resetPasswordSuccess = (state) => ({
   ...state,
   isAuth: false,
   isLoading: false,
-  isError: false,
+  isError: null,
 });
 
 const resetPasswordRequest = (state, {payload}) => ({
   ...state,
   isAuth: false,
   isLoading: true,
-  isError: false,
+  isError: null,
 });
-const resetPasswordError = (state) => ({
+const resetPasswordError = (state, {payload}) => ({
   ...state,
   isAuth: false,
   isLoading: false,
-  isError: true,
+  isError: payload,
+});
+const verifyPasswordSuccess = (state) => ({
+  ...state,
+  isAuth: false,
+  isLoading: false,
+  isError: null,
+});
+
+const verifyPasswordRequest = (state, {payload}) => ({
+  ...state,
+  isAuth: false,
+  isLoading: true,
+  isError: null,
+});
+const verifyPasswordError = (state, {payload}) => ({
+  ...state,
+  isAuth: false,
+  isLoading: false,
+  isError: payload,
 });
 
 
@@ -58,4 +77,7 @@ export default {
   resetPasswordSuccess,
   resetPasswordRequest,
   resetPasswordError,
+  verifyPasswordSuccess,
+  verifyPasswordRequest,
+  verifyPasswordError,
 };

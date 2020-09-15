@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import loginImg from "assets/img/pages/login.png";
 import {
   Card,
@@ -15,13 +15,31 @@ import {
   FormFeedback,
 } from "reactstrap";
 import { ToastContainer } from "react-toastify";
-import SweetAlert from "react-bootstrap-sweetalert";
+// import SweetAlert from "react-bootstrap-sweetalert";
 import { Mail, Lock, Check } from "react-feather";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import { Link } from "react-router-dom";
 import PageTemplate from "templates/pageTemplate";
+import { useDispatch } from "react-redux";
+import {loginRequest} from "app/slices/appSlice"
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+
+  const handleLogin = (e) =>{ 
+    e.preventDefault();
+    dispatch(loginRequest({email, password, device_name: "browser", code: ""}))};
+
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  }
+
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+  }
+
   return (
     <PageTemplate>
       <Row className="login">
@@ -46,15 +64,14 @@ const Login = () => {
                   </p>
                   <CardBody className="pt-1">
                     <Form
-                    //   action="/"
-                    //   onSubmit={this.handleLogin}
+                      onSubmit={handleLogin}
                     >
                       <FormGroup className="form-label-group position-relative has-icon-left">
                         <Input
                           type="email"
                           placeholder="Email"
-                          // value={this.state.email}
-                          // onChange={event => this.setState({email: event.target.value})}
+                          value={email}
+                          onChange={handleEmail}
                           required
                           // {...{invalid: 'email' in this.state.errors}}
                         />
@@ -70,8 +87,8 @@ const Login = () => {
                         <Input
                           type="password"
                           placeholder="Password"
-                          // value={this.state.password}
-                          // onChange={e => this.setState({password: e.target.value})}
+                          value={password}
+                          onChange={handlePassword}
                           required
                         />
                         <div className="form-control-position">
@@ -85,7 +102,7 @@ const Login = () => {
                           icon={<Check className="vx-icon" size={16} />}
                           label="Remember me"
                           defaultChecked={false}
-                          // onChange={this.handleRemember}
+                          // onChange={handleRemember}
                         />
                         <div className="float-right">
                           <Link to="/forgot-password">Forgot Password?</Link>
@@ -98,17 +115,17 @@ const Login = () => {
                       </div>
                     </Form>
                   </CardBody>
-                  <SweetAlert
+                  {/* <SweetAlert
                     title="Code Verification"
                     input
-                    show={false}
+                    show={true}
                     placeHolder="Your code"
-                    // onConfirm={(response) => this.confirmCode(response)}
+                    onConfirm={(response) => confirmCode(response)}
                   >
                     <p className="sweet-alert-text">
                       Please check your email address and enter the code
                     </p>
-                  </SweetAlert>
+                  </SweetAlert> */}
                 </Card>
               </Col>
             </Row>

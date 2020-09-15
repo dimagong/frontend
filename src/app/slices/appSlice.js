@@ -8,7 +8,7 @@ export const appSlice = createSlice({
   initialState: {
     isAuth: !!token,
     isLoading: false,
-    isError: false,
+    isError: null,
   },
   reducers: {
     ...appReducer,
@@ -22,6 +22,9 @@ export const {
   resetPasswordSuccess,
   resetPasswordRequest,
   resetPasswordError,
+  verifyPasswordSuccess,
+  verifyPasswordRequest,
+  verifyPasswordError,
 } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -1,5 +1,5 @@
 import React from "react";
-import routes from "./route";
+import routes from "./routes";
 import { v4 } from "uuid";
 import { Switch} from "react-router-dom";
 import { PrivateRoute, PublicRoute } from "./RouteProvider";
