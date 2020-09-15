@@ -39,7 +39,7 @@ export function isFieldHasDefaultEffectByOperator(operator) {
 
 export function operatorResult (property, operator, fieldValue, value, field = null) {
   // todo bug resolved
-  // if (!fieldValue || !value) return true;
+  if (!fieldValue || !value) return true;
   const typeField = getSpecificType(property);
   switch (operator) {
     case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL: {
@@ -60,7 +60,9 @@ export function operatorResult (property, operator, fieldValue, value, field = n
 
       if (typeField === Constants.FIELD_TYPE_BOOLEAN) {
         // temporary fix ( need update condition template by type of choosed fileds )
-        console.log(fieldValue, value);
+        // if(!fieldValue || !value) {
+        //    return fieldValue === value;
+        // }
         if (fieldValue.toString() === value.toString()) {
           return true;
         }

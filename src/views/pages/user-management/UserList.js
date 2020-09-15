@@ -159,6 +159,7 @@ class UsersList extends React.Component {
 
   onSelectionChanged = async (params) => {
     var selectedRows = params.api.getSelectedRows();
+    if(!selectedRows.length) return;
     const user = selectedRows[0];
     const refreshUser = await this.getUserById(user.id);
     this.props.setEditUser(refreshUser);

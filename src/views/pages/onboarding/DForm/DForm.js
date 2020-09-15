@@ -416,6 +416,7 @@ class DForm extends React.Component {
         await workflowService.createTemplateDForm(dFormChanges);
         this.getDForms();
         this.closeDForm();
+
         toast.success('Success')
       } catch (error) {
         if ('response' in error) {

@@ -9,6 +9,9 @@ import {
 } from "../helper";
 
 export function dependencyChecker(state) {
+
+  if (this.props.inputDisabled) return true;
+
   let fieldsStates = {};
   let groupsStates = {};
   let sectionsStates = {};
@@ -49,6 +52,7 @@ export function dependencyChecker(state) {
           state.uiSchema[field] = {};
         }
 
+        console.log(state.formData);
         // todo 04.09.2020 bug  if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
         if (!(fieldOperator.field in state.formData)) {
           setField(field, isFieldHasDefaultEffectByOperator(fieldOperator.operator), effect);
@@ -57,7 +61,15 @@ export function dependencyChecker(state) {
 
         const fieldValue = state.formData[fieldOperator.field];
 
-        if (operatorResult(this.state.schema.properties[fieldOperator.field], fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field)) {
+        if (
+          fieldOperator.field in this.state.schema.properties &&
+          operatorResult(
+            this.state.schema.properties[fieldOperator.field],
+            fieldOperator.operator,
+            fieldValue,
+            fieldOperator.value,
+            fieldOperator.field)
+        ) {
           setField(field, true, effect);
           continue;
         }

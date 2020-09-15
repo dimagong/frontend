@@ -70,12 +70,24 @@ const ThemeNavbar = props => {
               className="navbar-collapse d-flex justify-content-between align-items-center"
               id="navbar-mobile"
             >
+
               <div className="bookmark-wrapper">
                 <NavbarBookmarks
+                  className=""
                   sidebarVisibility={props.sidebarVisibility}
                   handleAppOverlay={props.handleAppOverlay}
                 />
+                {
+                  props.navbar.navConfig.headTitle ?
+                    <div className="float-left" ><h4 style={{'line-height': '60px', height: '100%'}}>{props.navbar.navConfig.headTitle}</h4></div>
+                    : null
+                }
+
               </div>
+
+
+
+
               {props.horizontal ? (
                 <div className="logo d-flex align-items-center">
                   <div className="brand-logo mr-50"></div>
@@ -102,13 +114,15 @@ const ThemeNavbar = props => {
 const mapStateToProps = state => {
   return {
     user: state.user,
-    userProfile: state.user.profile
+    userProfile: state.user.profile,
+    navbar: state.navbar
   }
 }
 
 const mapActionsToProps = (dispatch) => {
   return {
-    logoutWithJWT: bindActionCreators(logoutWithJWT, dispatch)
+    logoutWithJWT: bindActionCreators(logoutWithJWT, dispatch),
+
   }
 }
 

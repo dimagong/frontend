@@ -21,6 +21,6 @@ const rootReducer = combineReducers({
   navbar: navbar,
   dataList: dataList,
   userManagement: userManagement
-})
+});
 
 export default rootReducer

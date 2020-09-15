@@ -44,7 +44,7 @@ import FormCreate from "../onboarding/FormCreate/FormCreate";
 import {debounce, isEmpty} from 'lodash';
 import {colourStyles} from "utility/select/selectSettigns";
 import {prepareSelectData} from "utility/select/prepareSelectData";
-import DataTable from "react-data-table-component"
+import DataTable, { createTheme } from "react-data-table-component"
 
 const clone = rfdc();
 
@@ -296,7 +296,10 @@ class UserEdit extends React.Component {
 
   async componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      await this.getUser();
+      if(prevProps.user.id !== this.props.user.id) {
+        await this.getUser();
+        this.setState({onboardingViewState: ''})
+      }
     }
   }
 
@@ -459,6 +462,14 @@ class UserEdit extends React.Component {
     await workflowService.onboardingDelete(this.state.selectedOnboarding);
     this.dispatchUserList();
     this.dispatchEditUser();
+    this.setState({onboardingViewState: '', onboardingTemplate: this.onboardingTemplate, selectedOnboarding: {}})
+  }
+
+  async createOnboarding() {
+    await workflowService.onboardingCreate({user_id: this.props.user.id, ...this.state.onboardingTemplate});
+    await this.dispatchUserList();
+    await this.dispatchEditUser();
+    this.setState({onboardingViewState: '', onboardingTemplate: this.onboardingTemplate, selectedOnboarding: {}})
   }
 
   submitData = async () => {
@@ -512,7 +523,7 @@ class UserEdit extends React.Component {
   }
 
   async statusChanged(status) {
-    await workflowService.changeStatus(this.props.user.onboarding.d_form, status);
+    await workflowService.changeStatus(this.state.selectedOnboarding.d_form, status);
     await this.dispatchUserList();
     toast.success('success')
   }
@@ -578,6 +589,14 @@ class UserEdit extends React.Component {
     });
   }
 
+  refreshOnboardingState() {
+
+    this.setState({refreshOnboarding: true}, async () => {
+      this.setState({refreshOnboarding: false});
+      this.reInitForm();
+    });
+  }
+
   onSelectGroupsChange = (values) => {
 
     this.setState({groups: values}, () => {
@@ -620,6 +639,8 @@ class UserEdit extends React.Component {
     try {
       await workflowService.updateDForm(dFormChanges);
       toast.success('Success')
+      this.dispatchUserList();
+      this.dispatchEditUser();
     } catch (error) {
       if ('response' in error) {
         if ('error' in error.response.data) {
@@ -696,10 +717,20 @@ class UserEdit extends React.Component {
                       ]}
                       Clicked
                       onRowClicked={(onboarding) => {
-                        console.log(onboarding);
-                        this.setState({selectedOnboarding: clone(onboarding), onboardingViewState: 'edit'})
+                        this.setState({selectedOnboarding: clone(onboarding), onboardingViewState: 'edit'}, () => {
+                          this.refreshOnboardingState();
+                          this.setState({onboardingViewState: 'edit'})
+                        })
                       }}
-                      highlightOnHover
+                      conditionalRowStyles={[
+                        {
+                          when: row => row.id === this.state.selectedOnboarding.id,
+                          style: row => ({
+                            backgroundColor: '#007bff',
+                            color: 'white'
+                          }),
+                        }
+                      ]}
                       noHeader
                     />
                   </Col>
@@ -788,7 +819,7 @@ class UserEdit extends React.Component {
                                 {
                                   <div className="d-flex justify-content-end flex-wrap mt-2">
                                     <Button className="mt-1" color="primary" onClick={() => {
-                                      this.submitData()
+                                      this.createOnboarding()
                                     }}>Save</Button>
                                   </div>
                                 }
@@ -800,7 +831,7 @@ class UserEdit extends React.Component {
                       </Col>
                   }
                   {
-                    isEmpty(this.state.selectedOnboarding) ? null :
+                    isEmpty(this.state.selectedOnboarding) || this.state.onboardingViewState !== 'edit' ? null :
                       <Col md="12" lg="12" className="pl-0 ml-0 mt-2">
                         <Card className="border mb-0">
                           <CardHeader className="m-0">
@@ -818,7 +849,7 @@ class UserEdit extends React.Component {
                                   <div className="full-width">
 
                                     <Select
-                                      isDisabled={isEmpty(this.state.selectedOnboarding)}
+                                      isDisabled={true}
                                       components={{DropdownIndicator: DropdownIndicatorClear}}
                                       value={this.getCustomSelectedValues(this.state.selectedOnboarding.d_form)}
                                       maxMenuHeight={200}
@@ -840,7 +871,7 @@ class UserEdit extends React.Component {
                                   <div className="full-width">
 
                                     <Select
-                                      isDisabled={isEmpty(this.state.selectedOnboarding)}
+                                      isDisabled={true}
                                       components={{DropdownIndicator}}
                                       value={this.getCustomSelects(this.state.selectedOnboarding.reviewers)}
                                       maxMenuHeight={200}
@@ -863,7 +894,7 @@ class UserEdit extends React.Component {
                                   <div className="full-width">
 
                                     <Select
-                                      isDisabled={isEmpty(this.state.selectedOnboarding)}
+                                      isDisabled={true}
                                       components={{DropdownIndicator: DropdownIndicatorClear}}
                                       value={this.getCustomSelectedValues(this.state.selectedOnboarding.workflow)}
                                       maxMenuHeight={200}
@@ -885,14 +916,6 @@ class UserEdit extends React.Component {
                               </div>
                               <div>
                                 {
-                                  !isEmpty(this.state.selectedOnboarding) ? null :
-                                    <div className="d-flex justify-content-end flex-wrap mt-2">
-                                      <Button className="mt-1" color="primary" onClick={() => {
-                                        this.submitData()
-                                      }}>Save</Button>
-                                    </div>
-                                }
-                                {
                                   isEmpty(this.state.selectedOnboarding) ? null :
                                     <div className="d-flex justify-content-end flex-wrap mt-2">
                                       <Button className="mt-1" color="danger" onClick={() => {
@@ -907,28 +930,8 @@ class UserEdit extends React.Component {
                         </Card>
                       </Col>
                   }
-
-                  {/*<Col className="w-100 ml-0 pl-0 mr-1">*/}
-                  {/*  <div className="pull-right-icons">*/}
-                  {/*    <Select*/}
-                  {/*      className=""*/}
-                  {/*      classNamePrefix="select"*/}
-                  {/*      defaultValue={{value: "ocean", label: "Ocean"}}*/}
-                  {/*      name="color"*/}
-                  {/*      options={[{value: "ocean", label: "Ocean"}]}*/}
-                  {/*    />*/}
-                  {/*    <div className="pull-left">*/}
-                  {/*      <div className="d-flex justify-content-end flex-wrap">*/}
-                  {/*        <Button className="" color="primary" onClick={() => {*/}
-                  {/*          alert();*/}
-                  {/*        }}>Save</Button>*/}
-                  {/*      </div>*/}
-                  {/*    </div>*/}
-                  {/*  </div>*/}
-
-                  {/*</Col>*/}
                   {
-                    isEmpty(this.state.selectedOnboarding) ? null :
+                    isEmpty(this.state.selectedOnboarding) || this.state.onboardingViewState !== 'edit' ? null :
                       <Col className="pl-0" sm="12">
                         <Media className="d-sm-flex d-block">
                           <Media body>
@@ -960,26 +963,25 @@ class UserEdit extends React.Component {
                                       <CardBody className="pt-0">
                                         <hr/>
                                         {
-                                          // this.state.refreshOnboarding ?
-                                          //   null :
-                                          <FormCreate
-                                            fileLoader={true}
-                                            reInit={(reInit, context) => {
-                                              this.reInitForm = reInit.bind(context)
-                                            }}
-                                            submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
-                                            liveValidate={false}
-                                            inputDisabled={false}
-                                            fill={true}
-                                            onSaveButtonHidden={true}
-                                            statusChanged={(value) => {
-                                              this.statusChanged(value)
-                                            }}
-                                            onChange={(formData) => this.debounceOnSave(formData)}
-                                            dForm={this.state.selectedOnboarding.d_form}
-                                            isStateConfig={this.state.isStateConfig}
-                                            updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
-                                          />
+                                          isEmpty(this.state.selectedOnboarding) ? null :
+                                            <FormCreate
+                                              fileLoader={true}
+                                              reInit={(reInit, context) => {
+                                                this.reInitForm = reInit.bind(context)
+                                              }}
+                                              submitDForm={(dForm, data) => this.submitDForm(dForm, data)}
+                                              liveValidate={false}
+                                              inputDisabled={false}
+                                              fill={true}
+                                              onSaveButtonHidden={true}
+                                              statusChanged={(value) => {
+                                                this.statusChanged(value)
+                                              }}
+                                              onChange={(formData) => this.debounceOnSave(formData)}
+                                              dForm={this.state.selectedOnboarding.d_form}
+                                              isStateConfig={this.state.isStateConfig}
+                                              updatedAtText={this.state.updatedAtText ? this.state.updatedAtText : this.getDefaultUpdatedAtText()}
+                                            />
                                         }
 
                                       </CardBody>

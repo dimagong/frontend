@@ -26,7 +26,7 @@ const invitationAccept = lazy(() => import("./views/pages/invitation/InvitationA
 const workflow = lazy(() => import("./views/pages/onboarding/Workflow/Workflow"));
 const notification = lazy(() => import("./views/pages/onboarding/Notification/Notification"));
 const dForm = lazy(() => import("./views/pages/onboarding/DForm/DForm"));
-const onboardingForm = lazy(() => import("./views/pages/onboarding/OnboardingForm"));
+const onboardingUser = lazy(() => import("./views/pages/onboarding/OnboardingUser"));
 
 
 const error404 = lazy(() => import("./views/pages/misc/error/404"))
@@ -201,7 +201,7 @@ class AppRouter extends React.Component {
           <AppRoute
             path="/onboarding-process"
             exact
-            component={onboardingForm} />
+            component={onboardingUser} />
 
           <AppRoute
             path="/forgot-password"

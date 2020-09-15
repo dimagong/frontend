@@ -109,18 +109,20 @@ class FormCreate extends React.Component {
         if (key in propsDFormSchema.properties) {
           propsDFormSchema.properties[key].default = props.dForm.submit_data[key];
 
-          if (!(key in propsDFormUiSchema)) {
-            propsDFormUiSchema[key] = {};
-          }
           //propsDFormUiSchema[key]['ui:emptyValue'] = null;
-
-          if (this.props.inputDisabled) {
-            propsDFormUiSchema[key][Constants.UI_DISABLED] = true;
-          }
         }
       }))
     }
+    Object.keys(propsDFormSchema.properties).forEach(key => {
+      if (!(key in propsDFormUiSchema)) {
+        propsDFormUiSchema[key] = {};
+      }
+      if (this.props.inputDisabled) {
+        propsDFormUiSchema[key][Constants.UI_DISABLED] = true;
+      }
+    });
 
+    console.log('propsDFormUiSchema', propsDFormUiSchema);
     const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
 
     return {
@@ -336,14 +338,14 @@ class FormCreate extends React.Component {
         this.props.onChange(formDataFormatted)
       }
     }
-  }, 300);
+  }, 0);
 
 
   // refresh btn for dForm
   reInit = debounce(() => {
     let state = this.initState(this.props);
 
-    state.formData = this.props.dForm.submit_data;
+    state.formData = isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data;
     this.dependencyChecker(state);
     this.setState(state, async () => {
       this.groupedFiles()

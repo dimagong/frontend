@@ -8,10 +8,6 @@ import {
 import * as Icon from "react-feather"
 import { history } from "../../../history"
 import { connect } from "react-redux"
-import {
-  loadSuggestions,
-  updateStarred
-} from "../../../redux/actions/navbar/Index"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 // a little function to help us with reordering the bookmarks
@@ -45,14 +41,14 @@ class NavbarBookmarks extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.bookmarks.starred.length !== this.state.starredItems.length && this.updateBookmarks === true) {
-      this.setState({ starredItems: this.props.bookmarks.starred })
-      this.updateBookmarks = false
-    }
+    // if (prevProps.bookmarks.starred.length !== this.state.starredItems.length && this.updateBookmarks === true) {
+    //   this.setState({ starredItems: this.props.bookmarks.starred })
+    //   this.updateBookmarks = false
+    // }
   }
 
   componentDidMount() {
- 
+
   }
 
   onDragEnd = result => {
@@ -300,6 +296,6 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { loadSuggestions, updateStarred })(
+export default connect(mapStateToProps, {  })(
   NavbarBookmarks
 )
