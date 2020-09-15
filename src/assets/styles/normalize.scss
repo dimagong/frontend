@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  overflow-y: auto;
+
+}
+html body {
+  line-height: initial;
+  font-variant: initial;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+}
+.wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  // overflow-x: hidden;
+}
+
+#modal {
+  position: absolute;
+}
+input {
+  outline: none;
+  ::placeholder {
+    opacity: .5;
+  }
+}
+p {
+  margin-bottom: 0;
+}
+a, a:hover, a:active, a:visited, a:focus {
+  text-decoration:none;
+}
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.custom-button {
+  &:hover, &:disabled, &:active {
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+button{
+  background: none;
+  padding: 0;
+  border: 0;
+  &:active{
+    outline:none;
+  }
+  &:focus{
+    outline:none;
+  }
+}
+.btn-primary:not(:disabled):not(.disabled).focus, .btn-primary:not(:disabled):not(.disabled):focus {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show>.btn-primary.dropdown-toggle:focus {
+  box-shadow: none;
+}
+@media screen and (max-width: 1400px) {
+  .container {
+    max-width: 96vw !important;
+  }
+}
+@media screen and (min-width: 1400px) {
+  .container {
+    max-width: 1370px!important;
+  }
+}
+@media screen and (min-width: 1600px) {
+  .container {
+    max-width: 1560px!important;
+  }
+  .container-lg {
+    max-width: 1270px;
+  }
+}

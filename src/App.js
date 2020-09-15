@@ -1,33 +1,13 @@
-import React from "react"
-import Router from "./Router"
-import "./components/@vuexy/rippleButton/RippleButton"
-import "react-perfect-scrollbar/dist/css/styles.css"
-import "prismjs/themes/prism-tomorrow.css"
-import UserService from './services/user.service';
-import { store } from './redux/storeConfig/store'
-import { setUserProfile } from './redux/actions/user/userActions'
-import AuthService from './services/auth.service'
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import Routes from "routes";
 
-class App extends React.Component {
-
-  constructor() {
-    super();
-  }
-
-  async componentDidMount() {
-    if(AuthService.isAuth()) {
-      this.getUserData();
-    }
-  }
-  
-  getUserData = async () => {
-    const response = await UserService.getProfile();
-    store.dispatch(setUserProfile(response.data.data));
-  }
-
-  render = () => {
-    return <Router />;
-  }
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes />
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
