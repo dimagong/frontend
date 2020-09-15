@@ -19,7 +19,8 @@ class OnboardingUser extends React.Component {
     return (
       <div>
         {
-          this.props.user && this.props.user.onboardings && this.props.user.onboardings.length && <OnboardingForm></OnboardingForm>
+          this.props.user && this.props.user.onboardings && this.props.user.onboardings.length
+            ? <OnboardingForm></OnboardingForm> : 'Onboarding not exist'
         }
       </div>
     )

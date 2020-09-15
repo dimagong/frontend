@@ -60,9 +60,6 @@ export function operatorResult (property, operator, fieldValue, value, field = n
 
       if (typeField === Constants.FIELD_TYPE_BOOLEAN) {
         // temporary fix ( need update condition template by type of choosed fileds )
-        // if(!fieldValue || !value) {
-        //    return fieldValue === value;
-        // }
         if (fieldValue.toString() === value.toString()) {
           return true;
         }

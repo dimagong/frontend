@@ -45,6 +45,7 @@ import {debounce, isEmpty} from 'lodash';
 import {colourStyles} from "utility/select/selectSettigns";
 import {prepareSelectData} from "utility/select/prepareSelectData";
 import DataTable, { createTheme } from "react-data-table-component"
+import Checkbox from "../../../components/@vuexy/checkbox/CheckboxesVuexy";
 
 const clone = rfdc();
 
@@ -99,6 +100,7 @@ class UserEdit extends React.Component {
     dFormSelects: [],
     workflowSelects: [],
     reviewersSelect: [],
+    // managersSelect: [],
     moduleSelects: [],
     reviewer: [{
       value: 'Manager',
@@ -130,7 +132,9 @@ class UserEdit extends React.Component {
     this.onboardingTemplate = {
       d_form: {},
       workflow: {},
-      reviewers: []
+      reviewers: [],
+      is_internal: false,
+      // managers: [],
     };
     this.debounceOnSave = debounce(async (formData) => {
       this.submitOnboardingForm(formData)
@@ -173,6 +177,7 @@ class UserEdit extends React.Component {
   async getReviwers() {
     const response = await UserService.getAll();
     const reviewers = response.data.data;
+    // todo separate managers
     this.setState({reviewers: reviewers});
     const reviewersSelect = this.getCustomSelects(reviewers);
     this.setState({reviewersSelect: reviewersSelect})
@@ -298,7 +303,7 @@ class UserEdit extends React.Component {
     if (prevProps !== this.props) {
       if(prevProps.user.id !== this.props.user.id) {
         await this.getUser();
-        this.setState({onboardingViewState: ''})
+        this.setState({onboardingViewState: '', selectedOnboarding: {}})
       }
     }
   }
@@ -713,7 +718,25 @@ class UserEdit extends React.Component {
                           cell: (onboarding) => {
                             return onboarding.workflow.name;
                           }
-                        }
+                        },
+                        // {
+                        //   name: 'Allowed',
+                        //   cell: (onboarding) => {
+                        //     if(!onboarding.managers.length) {
+                        //       return 'Visible to all managers'
+                        //     }
+                        //     return onboarding.managers.map(manager => manager.name).join(', ')
+                        //   }
+                        // },
+                        {
+                          name: 'Allowed',
+                          cell: (onboarding) => {
+                            if(onboarding.is_internal) {
+                              return 'Only managers see'
+                            }
+                            return 'Visible to all'
+                          }
+                        },
                       ]}
                       Clicked
                       onRowClicked={(onboarding) => {
@@ -791,7 +814,7 @@ class UserEdit extends React.Component {
 
                                   </div>
                                 </div>
-                                <div className="d-flex">
+                                <div className="d-flex mb-1">
                                   <div className="font-weight-bold column-sizing">Workflow</div>
                                   <div className="full-width">
 
@@ -813,6 +836,42 @@ class UserEdit extends React.Component {
 
                                   </div>
                                 </div>
+                                <div className="d-flex">
+                                  <div className="font-weight-bold column-sizing">Is internal</div>
+                                  <div className="">
+
+                                    <Checkbox
+                                      size="sm"
+                                      color="primary"
+                                      icon={<Check className="vx-icon" size={12} />}
+                                      label=""
+                                      checked={this.state.onboardingTemplate.is_internal}
+                                      onChange={(event) => this.setState({onboardingTemplate: {...this.state.onboardingTemplate, is_internal: event.target.checked}})}
+                                    />
+
+                                  </div>
+                                </div>
+
+                                {/*<div className="d-flex">*/}
+                                {/*  <div className="font-weight-bold column-sizing">Allowed</div>*/}
+                                {/*  <div className="full-width">*/}
+                                {/*    <Select*/}
+                                {/*      components={{DropdownIndicator}}*/}
+                                {/*      value={this.getCustomSelects(this.state.onboardingTemplate.managers)}*/}
+                                {/*      maxMenuHeight={200}*/}
+                                {/*      isMulti*/}
+                                {/*      isClearable={false}*/}
+                                {/*      styles={colourStyles}*/}
+                                {/*      options={this.selectNoRepeat(this.state.managersSelect, this.getCustomSelects(this.state.onboardingTemplate.managers))}*/}
+                                {/*      onChange={(values) => {*/}
+                                {/*        this.setManagerCreate(values)*/}
+                                {/*      }}*/}
+                                {/*      className="fix-margin-select"*/}
+                                {/*      classNamePrefix="select"*/}
+                                {/*      id="languages"*/}
+                                {/*    />*/}
+                                {/*  </div>*/}
+                                {/*</div>*/}
 
                               </div>
                               <div>
@@ -889,7 +948,7 @@ class UserEdit extends React.Component {
 
                                   </div>
                                 </div>
-                                <div className="d-flex">
+                                <div className="d-flex mb-1">
                                   <div className="font-weight-bold column-sizing">Workflow</div>
                                   <div className="full-width">
 
@@ -912,6 +971,45 @@ class UserEdit extends React.Component {
 
                                   </div>
                                 </div>
+                                <div className="d-flex">
+                                  <div className="font-weight-bold column-sizing">Is internal</div>
+                                  <div className="">
+
+                                    <Checkbox
+                                      disabled={true}
+                                      size="sm"
+                                      color="primary"
+                                      icon={<Check className="vx-icon" size={12} />}
+                                      label=""
+                                      checked={this.state.selectedOnboarding.is_internal}
+                                      onChange={(event) => this.setState({selectedOnboarding: {...this.state.selectedOnboarding, is_internal: event.target.checked}})}
+                                    />
+
+                                  </div>
+                                </div>
+                                {/*<div className="d-flex mb-1">*/}
+                                {/*  <div className="font-weight-bold column-sizing">Allowed</div>*/}
+                                {/*  <div className="full-width">*/}
+
+                                {/*    <Select*/}
+                                {/*      isDisabled={true}*/}
+                                {/*      components={{DropdownIndicator}}*/}
+                                {/*      value={this.getCustomSelects(this.state.selectedOnboarding.managers)}*/}
+                                {/*      maxMenuHeight={200}*/}
+                                {/*      isMulti*/}
+                                {/*      isClearable={false}*/}
+                                {/*      styles={colourStyles}*/}
+                                {/*      options={this.selectNoRepeat(this.state.managersSelect, this.getCustomSelects(this.state.selectedOnboarding.managers))}*/}
+                                {/*      onChange={(values) => {*/}
+                                {/*        this.setManagers(values)*/}
+                                {/*      }}*/}
+                                {/*      className="fix-margin-select"*/}
+                                {/*      classNamePrefix="select"*/}
+                                {/*      id="languages"*/}
+                                {/*    />*/}
+
+                                {/*  </div>*/}
+                                {/*</div>*/}
 
                               </div>
                               <div>
