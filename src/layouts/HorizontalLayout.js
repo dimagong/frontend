@@ -4,16 +4,16 @@ import Customizer from "../components/@vuexy/customizer/Customizer"
 import Sidebar from "./components/menu/horizontal-menu/HorizontalMenu"
 import Navbar from "./components/navbar/Navbar"
 import Footer from "./components/footer/Footer"
-import themeConfig from "../configs/themeConfig"
+import themeConfig from "configs/themeConfig"
 import { connect } from "react-redux"
-// import {
-//   changeNavbarColor,
-//   changeNavbarType,
-//   changeFooterType,
-//   changeMenuColor,
-//   hideScrollToTop,
-//   changeMode
-// } from "../redux/actions/customizer/index"
+import {
+  changeNavbarColor,
+  changeNavbarType,
+  changeFooterType,
+  changeMenuColor,
+  hideScrollToTop,
+  changeMode
+} from "app/actions/vuexy/customizer"
 
 class HorizontalLayout extends PureComponent {
   state = {
@@ -264,10 +264,10 @@ const mapStateToProps = state => {
   }
 }
 export default connect(mapStateToProps, {
-  // changeNavbarColor,
-  // changeNavbarType,
-  // changeFooterType,
-  // changeMenuColor,
-  // hideScrollToTop,
-  // changeMode
+  changeNavbarColor,
+  changeNavbarType,
+  changeFooterType,
+  changeMenuColor,
+  hideScrollToTop,
+  changeMode
 })(HorizontalLayout)

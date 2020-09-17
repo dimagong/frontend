@@ -2,9 +2,9 @@ import React from "react"
 import { Navbar } from "reactstrap"
 import { connect } from "react-redux"
 import classnames from "classnames"
-// import {
-//   logoutWithJWT,
-// } from "../../../redux/actions/auth/loginActions"
+import {
+  logoutWithJWT,
+} from "app/actions/vuexy/auth/loginActions"
 import NavbarBookmarks from "./NavbarBookmarks"
 import NavbarUser from "./NavbarUser"
 import userImg from "../../../assets/img/portrait/small/avatar-s-11.jpg"
@@ -29,7 +29,7 @@ const ThemeNavbar = props => {
     // await AuthService.logout();
     // AuthService.removeToken();
     history.push("/login");
-    // props.logoutWithJWT();
+    props.logoutWithJWT();
   }
   return (
     <React.Fragment>
@@ -89,7 +89,7 @@ const ThemeNavbar = props => {
                 email={props.user.profile.email}
                 userImg={userImg}
                 loggedType={null}
-                // logoutWithJWT={logoutJWT}
+                logoutWithJWT={logoutJWT}
               />
             </div>
           </div>
@@ -101,14 +101,14 @@ const ThemeNavbar = props => {
 
 const mapStateToProps = state => {
   return {
-    user: state.user,
-    userProfile: state.user.profile
+    user: state.vuexy.user,
+    userProfile: state.vuexy.user.profile
   }
 }
 
 const mapActionsToProps = (dispatch) => {
   return {
-    // logoutWithJWT: bindActionCreators(logoutWithJWT, dispatch)
+    logoutWithJWT: bindActionCreators(logoutWithJWT, dispatch)
   }
 }
 

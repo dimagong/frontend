@@ -168,14 +168,14 @@ class Sidebar extends Component {
 
               <div
                 ref={this.navBarRef}
-                // className={classnames(
-                //   `main-menu menu-fixed menu-light menu-accordion menu-shadow theme-${activeTheme}`,
-                //   {
-                //     collapsed: sidebarState === true,
-                //     "hide-sidebar": this.state.width < 1200 && visibilityState === false,
-                //     'd-none': UserService.isOnboarding(this.props.userProfile, true),
-                //   },
-                // )}
+                className={classnames(
+                  `main-menu menu-fixed menu-light menu-accordion menu-shadow theme-${activeTheme}`,
+                  {
+                    collapsed: sidebarState === true,
+                    "hide-sidebar": this.state.width < 1200 && visibilityState === false,
+                    // 'd-none': UserService.isOnboarding(this.props.userProfile, true),
+                  },
+                )}
                 onMouseEnter={() => sidebarHover(false)}
                 onMouseLeave={() => sidebarHover(true)}>
                 <SidebarHeader
@@ -241,8 +241,8 @@ class Sidebar extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.auth.login.userRole,
-    userProfile: state.user.profile
+    currentUser: state.vuexy.auth.login.userRole,
+    userProfile: state.vuexy.user.profile
   }
 };
 

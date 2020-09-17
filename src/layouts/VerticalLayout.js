@@ -5,15 +5,15 @@ import Sidebar from "./components/menu/vertical-menu/Sidebar";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import { connect } from "react-redux";
-// import {
-//   changeMode,
-//   collapseSidebar,
-//   changeNavbarColor,
-//   changeNavbarType,
-//   changeFooterType,
-//   changeMenuColor,
-//   hideScrollToTop
-// } from "../redux/actions/customizer/index";
+import {
+  changeMode,
+  collapseSidebar,
+  changeNavbarColor,
+  changeNavbarType,
+  changeFooterType,
+  changeMenuColor,
+  hideScrollToTop
+} from "app/actions/vuexy/customizer/index";
 
 // import UserService from '../services/user.service';
 
@@ -294,16 +294,16 @@ class VerticalLayout extends PureComponent {
 }
 const mapStateToProps = state => {
   return {
-    app: state.customizer,
-    userProfile: state.user.profile
+    app: state.vuexy.customizer,
+    userProfile: state.vuexy.user.profile,
   };
 };
 export default connect(mapStateToProps, {
-  // changeMode,
-  // collapseSidebar,
-  // changeNavbarColor,
-  // changeNavbarType,
-  // changeFooterType,
-  // changeMenuColor,
-  // hideScrollToTop
+  changeMode,
+  collapseSidebar,
+  changeNavbarColor,
+  changeNavbarType,
+  changeFooterType,
+  changeMenuColor,
+  hideScrollToTop
 })(VerticalLayout);
