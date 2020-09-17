@@ -17,7 +17,8 @@ import {
   NavLink,
   TabContent,
   TabPane,
-  Media, Spinner
+  Media, Spinner,
+  UncontrolledTooltip
 } from "reactstrap"
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/light.css";
@@ -44,8 +45,9 @@ import FormCreate from "../onboarding/FormCreate/FormCreate";
 import {debounce, isEmpty} from 'lodash';
 import {colourStyles} from "utility/select/selectSettigns";
 import {prepareSelectData} from "utility/select/prepareSelectData";
-import DataTable, { createTheme } from "react-data-table-component"
+import DataTable, {createTheme} from "react-data-table-component"
 import Checkbox from "../../../components/@vuexy/checkbox/CheckboxesVuexy";
+
 
 const clone = rfdc();
 
@@ -159,7 +161,7 @@ class UserEdit extends React.Component {
   };
 
   async getDForms() {
-    const response = await workflowService.getDFormTemplateAll();
+    const response = await workflowService.getDFormTemplateAllowed();
     const dForms = response.data.data;
     this.setState({dForms: dForms});
     const dFormSelects = this.getCustomSelects(dForms);
@@ -301,7 +303,7 @@ class UserEdit extends React.Component {
 
   async componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      if(prevProps.user.id !== this.props.user.id) {
+      if (prevProps.user.id !== this.props.user.id) {
         await this.getUser();
         this.setState({onboardingViewState: '', selectedOnboarding: {}})
       }
@@ -471,10 +473,17 @@ class UserEdit extends React.Component {
   }
 
   async createOnboarding() {
-    await workflowService.onboardingCreate({user_id: this.props.user.id, ...this.state.onboardingTemplate});
-    await this.dispatchUserList();
-    await this.dispatchEditUser();
-    this.setState({onboardingViewState: '', onboardingTemplate: this.onboardingTemplate, selectedOnboarding: {}})
+    try {
+      await workflowService.onboardingCreate({user_id: this.props.user.id, ...this.state.onboardingTemplate});
+      await this.dispatchUserList();
+      await this.dispatchEditUser();
+      this.setState({onboardingViewState: '', onboardingTemplate: this.onboardingTemplate, selectedOnboarding: {}})
+    } catch (responseError) {
+      if('response' in responseError) {
+        const error = responseError.response.data.error;
+        toast.error(error.message);
+      }
+    }
   }
 
   submitData = async () => {
@@ -515,6 +524,7 @@ class UserEdit extends React.Component {
     });
     const response = await workflowService.submitData(this.state.selectedOnboarding.d_form, formData);
     await this.dispatchUserList();
+    await this.dispatchEditUser();
     this.setState({updatedAtText: `Progress saved: ${moment(response.data.updated_at).format('YYYY-MM-DD HH:mm:ss')}`});
     toast.success('success')
   }
@@ -729,12 +739,12 @@ class UserEdit extends React.Component {
                         //   }
                         // },
                         {
-                          name: 'Allowed',
+                          name: 'Private',
                           cell: (onboarding) => {
-                            if(onboarding.is_internal) {
-                              return 'Only managers see'
+                            if (onboarding.is_internal) {
+                              return 'For reviewers only'
                             }
-                            return 'Visible to all'
+                            return ''
                           }
                         },
                       ]}
@@ -837,19 +847,26 @@ class UserEdit extends React.Component {
                                   </div>
                                 </div>
                                 <div className="d-flex">
-                                  <div className="font-weight-bold column-sizing">Is internal</div>
-                                  <div className="">
-
+                                  <div className="font-weight-bold column-sizing">Private</div>
+                                  <div className="" id="onboarding-create-config-is-internal">
                                     <Checkbox
                                       size="sm"
                                       color="primary"
-                                      icon={<Check className="vx-icon" size={12} />}
+                                      icon={<Check className="vx-icon" size={12}/>}
                                       label=""
                                       checked={this.state.onboardingTemplate.is_internal}
-                                      onChange={(event) => this.setState({onboardingTemplate: {...this.state.onboardingTemplate, is_internal: event.target.checked}})}
+                                      onChange={(event) => this.setState({
+                                        onboardingTemplate: {
+                                          ...this.state.onboardingTemplate,
+                                          is_internal: event.target.checked
+                                        }
+                                      })}
                                     />
 
                                   </div>
+                                  <UncontrolledTooltip placement="right" target="onboarding-create-config-is-internal">
+                                    For reviewers only
+                                  </UncontrolledTooltip>
                                 </div>
 
                                 {/*<div className="d-flex">*/}
@@ -972,20 +989,28 @@ class UserEdit extends React.Component {
                                   </div>
                                 </div>
                                 <div className="d-flex">
-                                  <div className="font-weight-bold column-sizing">Is internal</div>
-                                  <div className="">
+                                  <div className="font-weight-bold column-sizing">Private</div>
+                                  <div className="" id="onboarding-edit-config-is-internal">
 
                                     <Checkbox
                                       disabled={true}
                                       size="sm"
                                       color="primary"
-                                      icon={<Check className="vx-icon" size={12} />}
+                                      icon={<Check className="vx-icon" size={12}/>}
                                       label=""
                                       checked={this.state.selectedOnboarding.is_internal}
-                                      onChange={(event) => this.setState({selectedOnboarding: {...this.state.selectedOnboarding, is_internal: event.target.checked}})}
+                                      onChange={(event) => this.setState({
+                                        selectedOnboarding: {
+                                          ...this.state.selectedOnboarding,
+                                          is_internal: event.target.checked
+                                        }
+                                      })}
                                     />
 
                                   </div>
+                                  <UncontrolledTooltip placement="right" target="onboarding-edit-config-is-internal">
+                                    For reviewers only
+                                  </UncontrolledTooltip>
                                 </div>
                                 {/*<div className="d-flex mb-1">*/}
                                 {/*  <div className="font-weight-bold column-sizing">Allowed</div>*/}

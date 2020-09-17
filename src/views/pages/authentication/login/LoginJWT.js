@@ -16,8 +16,8 @@ import {setUserProfile} from '../../../../redux/actions/user/userActions'
 
 class LoginJWT extends React.Component {
   state = {
-    email: "brad@rimbal.com",
-    password: "brad-password",
+    email: "",
+    password: "",
     remember: false,
     device_name: 'browser',
     code: '',

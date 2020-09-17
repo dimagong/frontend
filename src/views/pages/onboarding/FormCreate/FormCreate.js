@@ -160,7 +160,7 @@ class FormCreate extends React.Component {
         }
       },
       loadingFiles: [],
-      formData: {},
+      formData: this.props.dForm.submit_data,
       sumbitFormData: {},
       dFormTemplate: props.dForm,
       schemaPropertyEdit: {},

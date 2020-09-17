@@ -46,6 +46,10 @@ class WorkflowService {
     return axios.get("/api/dform-template");
   }
 
+  getDFormTemplateAllowed() {
+    return axios.get("/api/dform-template/allowed");
+  }
+
   createTemplateDForm(dForm) {
     return axios.post("/api/dform-template", dForm);
   }
