@@ -41,7 +41,6 @@ const Login = () => {
   }
 
   return (
-    <PageTemplate>
       <Row className="login">
         <Col sm="8" xl="7" lg="10" md="8" className="login-col">
           <Card className="login-card">
@@ -133,7 +132,6 @@ const Login = () => {
         </Col>
         <ToastContainer />
       </Row>
-    </PageTemplate>
   );
 };
 

@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import appReducer from "app/reducers/app/appReducer";
-
-const token = JSON.parse(localStorage.getItem("token") || "false");
+const token = localStorage.getItem("token");
 
 export const appSlice = createSlice({
   name: "app",
@@ -25,6 +24,9 @@ export const {
   verifyPasswordSuccess,
   verifyPasswordRequest,
   verifyPasswordError,
+  notificationsSuccess,
+  notificationsRequest,
+  notificationsError,
 } = appSlice.actions;
 
 export default appSlice.reducer;

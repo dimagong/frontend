@@ -4,11 +4,13 @@ import {  lazy } from "react"
 import {
   loginPath,
   homePath,
-  forgotPasswordPath
+  forgotPasswordPath,
+  notificationsPath,
 } from "constants/paths";
 
 const Login = lazy(() => import("features/auth/login/Login"));
 const ForgotPassword = lazy(() => import("features/auth/forgotPassword/ForgotPassword"));
+const Notifications = lazy(() => import("features/onboarding/notifications/Notifications"));
 
 const routes = [
  
@@ -17,14 +19,22 @@ const routes = [
     Component: Login,
     isPrivate: false,
     exact: true,
-    redirect: homePath,
+    redirect: notificationsPath,
+    fullLayout: true
   },
   {
     path: forgotPasswordPath,
     Component: ForgotPassword,
     isPrivate: false,
     exact: true,
-    redirect: homePath,
+    redirect: notificationsPath,
+  },
+  {
+    path: notificationsPath,
+    Component: Notifications,
+    isPrivate: true,
+    exact: false,
+    redirect: loginPath,
   },
   // {
   //   path: uploadVideoPath,

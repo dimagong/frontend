@@ -1,0 +1,1 @@
+export const getProfilePath =  "/api/user/profile";

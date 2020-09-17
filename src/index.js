@@ -12,6 +12,7 @@ import "assets/styles/index.scss";
 import "react-toastify/dist/ReactToastify.css"
 import "assets/scss/plugins/extensions/toastr.scss"
 import "assets/scss/pages/authentication.scss"
+import "assets/scss/plugins/tables/_agGridStyleOverride.scss";
 
 // import * as serviceWorker from './serviceWorker';
 

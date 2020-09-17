@@ -12,19 +12,15 @@ const Routes = ()=>{
     return(
         <Switch>
                 {routes.map((route) => {
-                    const {  path, Component, exact, isPrivate, redirect } = route;
+                    const {  path, Component, exact, isPrivate, redirect, ...rest } = route;
 
                     if (isPrivate) {
                         return (
-                            <PrivateRoute path={path} exact={exact} key={v4()} redirect={redirect} isAuth={isAuth}>
-                                <Component />
-                            </PrivateRoute>
+                            <PrivateRoute path={path} exact={exact} key={v4()} redirect={redirect} isAuth={isAuth} Component={Component} {...rest}/>
                         );
                     }
                     return (
-                        <PublicRoute path={path} exact={exact} key={v4()} redirect={redirect} isAuth={isAuth}>
-                            <Component />
-                        </PublicRoute>
+                        <PublicRoute path={path} exact={exact} key={v4()} redirect={redirect} isAuth={isAuth} Component={Component} {...rest}/>
                     );
                 })}
             </Switch>

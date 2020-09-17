@@ -1,24 +1,41 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import { ContextLayout } from "utility/context/Layout"
 
-export const PrivateRoute = ({
-  children,
-  redirect,
-  isAuth,
-  ...rest
-}) => {
+const renderDefault = ({fullLayout, Component}) => props => {
+  return (
+    <ContextLayout.Consumer>
+      {context => {
 
+        let LayoutTag =
+          fullLayout === true
+            ? context.fullLayout
+            : context.state.activeLayout === "horizontal"
+              ? context.horizontalLayout
+              : context.VerticalLayout
+        return (
+          <LayoutTag {...props} permission={props.user}>
+              <Component {...props} />
+          </LayoutTag>
+        )
+      }}
+    </ContextLayout.Consumer>
+  )
+};
+
+
+export const PrivateRoute = ({ Component, redirect, isAuth, fullLayout, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={({ location }) => {
-        if (isAuth) return children;
+      render={(props) => {
+        if (isAuth) return renderDefault({fullLayout, Component})(props);
         else {
           return (
             <Redirect
               to={{
                 pathname: redirect,
-                state: { from: location },
+                state: { from: props.location },
               }}
             />
           );
@@ -28,25 +45,26 @@ export const PrivateRoute = ({
   );
 };
 
-export const PublicRoute = ({children, redirect, isAuth, ...rest}) => {
-  
-    return( 
-        <Route
-            {...rest}
-            render={({ location }) => {
-                if (isAuth && redirect)
+export const PublicRoute = ({ Component, redirect, isAuth, fullLayout, ...rest }) => {
+        return (
+              <Route
+                {...rest}
+                render={(props) => {
+                  if (isAuth && redirect)
                     return (
-                        <Redirect
-                            to={{
-                                pathname: redirect,
-                                state: { from: location }
-                            }}
-                        />
+                      <Redirect
+                        to={{
+                          pathname: redirect,
+                          state: { from: props.location },
+                        }}
+                      />
                     );
-                else {
-                    return children;
-                }
-            }}
-        />
-    )
+                  else {
+                      return (
+                    renderDefault({fullLayout, Component})(props)
+                    );
+                  }
+                }}
+              />
+        );
 };
