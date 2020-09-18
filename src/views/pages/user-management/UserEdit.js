@@ -28,6 +28,7 @@ import classnames from "classnames"
 import GroupService from '../../../services/group.service'
 import RoleService from '../../../services/role.service'
 import UserService from '../../../services/user.service'
+import groupsRelationsService from '../../../services/groupsRelations.service'
 import moment from 'moment';
 import {toast} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
@@ -39,7 +40,7 @@ import InvitationCreate from '../invitation/InvitationCreate'
 import {connect} from "react-redux"
 import {setUserList} from '../../../redux/actions/user/userActions'
 import {bindActionCreators} from "redux"
-import userImg from "../../../assets/img/portrait/small/avatar-s-18.jpg"
+import noneAvatar from "../../../assets/img/portrait/none-avatar.png"
 import workflowService from "../../../services/workflow.service";
 import FormCreate from "../onboarding/FormCreate/FormCreate";
 import {debounce, isEmpty} from 'lodash';
@@ -47,6 +48,7 @@ import {colourStyles} from "utility/select/selectSettigns";
 import {prepareSelectData} from "utility/select/prepareSelectData";
 import DataTable, {createTheme} from "react-data-table-component"
 import Checkbox from "../../../components/@vuexy/checkbox/CheckboxesVuexy";
+import fileService from "../../../services/file.service";
 
 
 const clone = rfdc();
@@ -114,6 +116,7 @@ class UserEdit extends React.Component {
       label: 'Onboarding',
       color: colorMultiSelect
     }],
+    userAvatar: '',
     onboardingTemplate: {},
     onboardingViewState: '',
     selectedOnboarding: {},
@@ -290,10 +293,23 @@ class UserEdit extends React.Component {
     this.getUser();
 
     // onboarding
-    await this.getDForms();
-    await this.getWorkflows();
+
+    await this.getGroupsRelations();
+    // await this.getDForms();
+    // await this.getWorkflows();
     await this.getReviwers();
     await this.getModules();
+  }
+
+  async getGroupsRelations() {
+    const response = await groupsRelationsService.getAll();
+    const dForms = response.data.data.dForms;
+    const workflows = response.data.data.workflows;
+    this.setState({dForms, workflows});
+    console.log('response', response);
+    const dFormSelects = this.getCustomSelects(dForms);
+    const workflowSelects = this.getCustomSelects(workflows);
+    this.setState({dFormSelects, workflowSelects})
   }
 
   mapSelectValues = (selectValues) => {
@@ -306,6 +322,7 @@ class UserEdit extends React.Component {
       if (prevProps.user.id !== this.props.user.id) {
         await this.getUser();
         this.setState({onboardingViewState: '', selectedOnboarding: {}})
+        this.getUserAvatar();
       }
     }
   }
@@ -479,7 +496,7 @@ class UserEdit extends React.Component {
       await this.dispatchEditUser();
       this.setState({onboardingViewState: '', onboardingTemplate: this.onboardingTemplate, selectedOnboarding: {}})
     } catch (responseError) {
-      if('response' in responseError) {
+      if ('response' in responseError) {
         const error = responseError.response.data.error;
         toast.error(error.message);
       }
@@ -1130,6 +1147,31 @@ class UserEdit extends React.Component {
     );
   }
 
+  changeAvatar(event) {
+    event.preventDefault();
+    let input = window.document.getElementById('input-user-edit-avatar');
+    if (!input) return;
+    input.click();
+  }
+
+  async getUserAvatar() {
+    this.setState({userAvatar: ''}, async () => {
+      const response = await fileService.getUserAvatar(this.props.user.id);
+      this.setState({userAvatar: response.data.data.avatar});
+    });
+  }
+
+  async onChangeAvatar(event) {
+    let files = event.target.files;
+    if(!files.length) {
+      return;
+    }
+    let formData = new FormData();
+    formData.set('avatar', files[0]);
+    const response = await fileService.changeUserAvatar(this.props.user.id, formData);
+    this.getUserAvatar();
+  }
+
   render() {
 
     const {
@@ -1194,16 +1236,22 @@ class UserEdit extends React.Component {
           <Row className="mx-0" col="12">
             <Col className="pl-0" sm="12">
               <Media className="d-sm-flex d-block">
-                <Media className="mt-md-1 mt-0" left>
+                <Media className="mt-md-1 mt-0 mr-1" left style={{'display': 'flex', 'flex-direction': 'column'}}>
                   <Media
-                    className="rounded mr-2"
+                    className="rounded"
                     object
-                    src={userImg}
+                    src={!this.state.userAvatar ? noneAvatar : this.state.userAvatar}
                     alt="Generic placeholder image"
                     height="112"
                     width="112"
                   />
+                  <div style={{'margin-top': '5px'}} className="d-flex justify-content-center">
+                    <Button.Ripple onClick={(event) => this.changeAvatar(event)} outline size="sm"
+                                   color="primary">Change</Button.Ripple>
+                    <input id="input-user-edit-avatar" type="file" hidden onChange={(event) => this.onChangeAvatar(event)}/>
+                  </div>
                 </Media>
+
                 <Media className="edit-clicked" body>
                   <Row className="mt-1">
                     <Col sm="9" md="6" lg="6">

@@ -6,7 +6,7 @@ import {
   DropdownToggle,
 } from "reactstrap"
 import * as Icon from "react-feather"
-
+import noneAvatar from "../../../assets/img/portrait/none-avatar.png"
 import { history } from "../../../history"
 
 
@@ -51,17 +51,17 @@ const UserDropdown = props => {
 class NavbarUser extends React.PureComponent {
   state = {
     navbarSearch: false,
-    langDropdown: false,    
+    langDropdown: false,
     suggestions: []
   }
 
   componentDidMount() {
-   
+
   }
 
   render() {
     return (
-      
+
       <ul className="nav navbar-nav navbar-nav-user float-right">
         <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
           <DropdownToggle tag="a" className="nav-link dropdown-user-link">
@@ -73,7 +73,7 @@ class NavbarUser extends React.PureComponent {
             </div>
             <span data-tour="user">
               <img
-                src={this.props.userImg}
+                src={noneAvatar}
                 className="round"
                 height="40"
                 width="40"

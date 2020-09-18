@@ -37,8 +37,10 @@ import {AgGridReact} from "ag-grid-react"
 import "assets/scss/plugins/tables/_agGridStyleOverride.scss"
 import workflowService from 'services/workflow.service'
 import userService from 'services/user.service';
+import groupsRelationsService from 'services/groupsRelations.service';
 import MultiSelect from "components/MultiSelect/multiSelect";
 import {colourStyles} from "utility/select/selectSettigns";
+
 
 const colorMultiSelect = '#007bff';
 const clone = rfdc();
@@ -229,6 +231,12 @@ class Workflow extends React.Component {
     this.setState({dform: {...this.state.dform, triggers: response.data.data}})
   }
 
+  async getGroupsRelations() {
+    const response = await groupsRelationsService.getAll();
+    let notificationTemplates = response.data.data.notificationTemplates;
+    this.setState({notification: {...this.state.notification, actions: notificationTemplates}})
+  }
+
   async getNotifications() {
     const response = await workflowService.getNotifications();
     this.setState({notification: {...this.state.notification, actions: response.data.data}})
@@ -269,7 +277,8 @@ class Workflow extends React.Component {
   async componentDidMount() {
     this.getTriggers();
     this.getActions();
-    this.getNotifications();
+    //this.getNotifications();
+    this.getGroupsRelations();
     this.getWorkflows();
     this.getManagers();
   }
