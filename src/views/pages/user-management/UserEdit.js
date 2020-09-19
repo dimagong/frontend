@@ -38,9 +38,8 @@ import {store} from '../../../redux/storeConfig/store'
 import {setEditUser} from '../../../redux/actions/user-management/userEditActions'
 import InvitationCreate from '../invitation/InvitationCreate'
 import {connect} from "react-redux"
-import {setUserList} from '../../../redux/actions/user/userActions'
+import {setUserList, setUserProfile} from '../../../redux/actions/user/userActions'
 import {bindActionCreators} from "redux"
-import noneAvatar from "../../../assets/img/portrait/none-avatar.png"
 import workflowService from "../../../services/workflow.service";
 import FormCreate from "../onboarding/FormCreate/FormCreate";
 import {debounce, isEmpty} from 'lodash';
@@ -48,8 +47,7 @@ import {colourStyles} from "utility/select/selectSettigns";
 import {prepareSelectData} from "utility/select/prepareSelectData";
 import DataTable, {createTheme} from "react-data-table-component"
 import Checkbox from "../../../components/@vuexy/checkbox/CheckboxesVuexy";
-import fileService from "../../../services/file.service";
-
+import UserAvatar from "./User/UserAvatar"
 
 const clone = rfdc();
 
@@ -322,7 +320,6 @@ class UserEdit extends React.Component {
       if (prevProps.user.id !== this.props.user.id) {
         await this.getUser();
         this.setState({onboardingViewState: '', selectedOnboarding: {}})
-        this.getUserAvatar();
       }
     }
   }
@@ -457,6 +454,9 @@ class UserEdit extends React.Component {
       const response = await UserService.getUserById(userId);
       const user = response.data.data;
       store.dispatch(setEditUser(user));
+      if(this.props.userProfile.id === user.id) {
+        store.dispatch(setUserProfile(user));
+      }
     }
   }
 
@@ -594,9 +594,10 @@ class UserEdit extends React.Component {
     return this.state.editField === field;
   }
 
-  editFieldSave = () => {
-    this.submitData();
+  editFieldSave = async () => {
+    await this.submitData();
     this.setState({editField: null});
+    await this.dispatchEditUser();
   }
 
   editFieldClose = () => {
@@ -1147,31 +1148,6 @@ class UserEdit extends React.Component {
     );
   }
 
-  changeAvatar(event) {
-    event.preventDefault();
-    let input = window.document.getElementById('input-user-edit-avatar');
-    if (!input) return;
-    input.click();
-  }
-
-  async getUserAvatar() {
-    this.setState({userAvatar: ''}, async () => {
-      const response = await fileService.getUserAvatar(this.props.user.id);
-      this.setState({userAvatar: response.data.data.avatar});
-    });
-  }
-
-  async onChangeAvatar(event) {
-    let files = event.target.files;
-    if(!files.length) {
-      return;
-    }
-    let formData = new FormData();
-    formData.set('avatar', files[0]);
-    const response = await fileService.changeUserAvatar(this.props.user.id, formData);
-    this.getUserAvatar();
-  }
-
   render() {
 
     const {
@@ -1236,22 +1212,7 @@ class UserEdit extends React.Component {
           <Row className="mx-0" col="12">
             <Col className="pl-0" sm="12">
               <Media className="d-sm-flex d-block">
-                <Media className="mt-md-1 mt-0 mr-1" left style={{'display': 'flex', 'flex-direction': 'column'}}>
-                  <Media
-                    className="rounded"
-                    object
-                    src={!this.state.userAvatar ? noneAvatar : this.state.userAvatar}
-                    alt="Generic placeholder image"
-                    height="112"
-                    width="112"
-                  />
-                  <div style={{'margin-top': '5px'}} className="d-flex justify-content-center">
-                    <Button.Ripple onClick={(event) => this.changeAvatar(event)} outline size="sm"
-                                   color="primary">Change</Button.Ripple>
-                    <input id="input-user-edit-avatar" type="file" hidden onChange={(event) => this.onChangeAvatar(event)}/>
-                  </div>
-                </Media>
-
+                <UserAvatar avatar={this.props.user.avatar} userId={this.props.user.id}/>
                 <Media className="edit-clicked" body>
                   <Row className="mt-1">
                     <Col sm="9" md="6" lg="6">
@@ -1480,6 +1441,7 @@ class UserEdit extends React.Component {
 const mapStateToProps = state => {
   return {
     user: state.userManagement.userEditing,
+    userProfile: state.user.profile
   }
 };
 const mapActionsToProps = (dispatch) => {

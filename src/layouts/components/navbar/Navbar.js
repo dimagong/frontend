@@ -1,6 +1,6 @@
 import React from "react"
-import { Navbar } from "reactstrap"
-import { connect } from "react-redux"
+import {Navbar} from "reactstrap"
+import {connect} from "react-redux"
 import classnames from "classnames"
 import {
   logoutWithJWT,
@@ -8,9 +8,9 @@ import {
 import NavbarBookmarks from "./NavbarBookmarks"
 import NavbarUser from "./NavbarUser"
 import userImg from "../../../assets/img/portrait/small/avatar-s-11.jpg"
-import { bindActionCreators } from "redux"
+import {bindActionCreators} from "redux"
 import AuthService from '../../../services/auth.service'
-import { history } from "../../../history";
+import {history} from "../../../history";
 import userService from "../../../services/user.service";
 
 const UserName = props => {
@@ -33,8 +33,8 @@ const ThemeNavbar = props => {
   }
   return (
     <React.Fragment>
-      <div className="content-overlay" />
-      <div className="header-navbar-shadow" />
+      <div className="content-overlay"/>
+      <div className="header-navbar-shadow"/>
       <Navbar
         className={classnames(
           "header-navbar navbar-expand-lg navbar navbar-with-menu navbar-shadow",
@@ -79,13 +79,12 @@ const ThemeNavbar = props => {
                 />
                 {
                   props.navbar.navConfig.headTitle ?
-                    <div className="float-left" ><h4 style={{'line-height': '60px', height: '100%'}}>{props.navbar.navConfig.headTitle}</h4></div>
+                    <div className="float-left"><h4
+                      style={{'line-height': '60px', height: '100%'}}>{props.navbar.navConfig.headTitle}</h4></div>
                     : null
                 }
 
               </div>
-
-
 
 
               {props.horizontal ? (
@@ -94,15 +93,21 @@ const ThemeNavbar = props => {
                   <h2 className="text-primary brand-text mb-0">Vuexy</h2>
                 </div>
               ) : null}
-              <NavbarUser
-                handleAppOverlay={props.handleAppOverlay}
-                changeCurrentLang={props.changeCurrentLang}
-                userName={<UserName {...props} />}
-                email={props.user.profile.email}
-                userImg={userImg}
-                loggedType={null}
-                logoutWithJWT={logoutJWT}
-              />
+              {
+                props.userProfile && props.userProfile.id > 0 ?
+                  <NavbarUser
+                    handleAppOverlay={props.handleAppOverlay}
+                    changeCurrentLang={props.changeCurrentLang}
+                    userName={<UserName {...props} />}
+                    email={props.user.profile.email}
+                    userId={props.userProfile.id}
+                    avatar={props.userProfile.avatar}
+                    loggedType={null}
+                    logoutWithJWT={logoutJWT}
+                  />
+                  : null
+              }
+
             </div>
           </div>
         </div>

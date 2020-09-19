@@ -8,6 +8,7 @@ import {
 import * as Icon from "react-feather"
 import noneAvatar from "../../../assets/img/portrait/none-avatar.png"
 import { history } from "../../../history"
+import UserNavAvatar from "../../../views/pages/user-management/User/UserNavAvatar";
 
 
 const handleNavigation = (e, path) => {
@@ -72,13 +73,7 @@ class NavbarUser extends React.PureComponent {
               <span className="user-status">{this.props.email}</span>
             </div>
             <span data-tour="user">
-              <img
-                src={noneAvatar}
-                className="round"
-                height="40"
-                width="40"
-                alt="avatar"
-              />
+              <UserNavAvatar userId={this.props.userId} avatar={this.props.avatar}/>
             </span>
           </DropdownToggle>
           <UserDropdown {...this.props} />
