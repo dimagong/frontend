@@ -1,11 +1,11 @@
 import instance from "api";
-import { getProfilePath } from "constants/user";
+import { groupsPath } from "constants/onboarding";
 
-const userApi = {
-  async getProfile() {
+const notificationApi = {
+  async getGroups() {
     try {
       const result = await instance({
-        url: getProfilePath,
+        url: groupsPath,
         method: "GET",
       });
 
@@ -14,6 +14,7 @@ const userApi = {
       throw err;
     }
   },
+
 };
 
-export default userApi;
+export default notificationApi;

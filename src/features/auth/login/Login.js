@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import loginImg from "assets/img/pages/login.png";
 import {
   Card,
@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 import PageTemplate from "templates/pageTemplate";
 import { useDispatch } from "react-redux";
 import {loginRequest} from "app/slices/appSlice"
+import { push } from "connected-react-router"
 
 const Login = () => {
   const [email, setEmail] = useState("");

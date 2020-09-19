@@ -1,12 +1,14 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import Select, {components} from "react-select"
 import { Plus } from "react-feather"
 import {colourStyles} from "utility/select/selectSettigns";
-import GroupService from 'services/group.service'
-import {prepareSelectData} from "utility/select/prepareSelectData";
+import {prepareSelectOptions, normalizeGroups} from "utility/select/prepareSelectData";
 import _ from "lodash";
-
-const colorMultiSelect = '#007bff'; //#7367f0
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getGroupsRequest,
+} from "app/slices/appSlice";
+import {selectGroups} from 'app/selectors/groupSelector'
 
 const DropdownIndicator = props => {
     return components.DropdownIndicator && (
@@ -17,86 +19,40 @@ const DropdownIndicator = props => {
     )
   }
 
-export class MultiSelect extends Component {
-
-    state = {
-        selectOptions: {
-            groups: [],
-          },
-        groups: [],
-        
-    }
-
-    updateOptions = () => {
-      const groups = this.state.selectOptions.groups
-      .filter( groupSelect => !this.state.groups
+export const MultiSelect = ({groups:  selectedGroups, setGroups}) =>  {
+const initGroups = useSelector(selectGroups) || []
+const groups = prepareSelectOptions(initGroups)
+  const dispatch = useDispatch();
+    
+// TODO: remove choosen options for select options
+    const filtredSelectOptions = () => {
+      return groups
+      .filter( groupSelect => !selectedGroups
         .some( group =>  group.value.group_id === groupSelect.value.group_id && group.value.type === groupSelect.value.type ))
-        return groups
     }
 
-    componentDidMount() {
-      this.getGroups();
-      this.setState({groups: this.props.groups.map(group => {
-        return {
-              value: {
-                group_id: group.id,
-                type: group.type
-              },
-              label: group.name,
-              color: colorMultiSelect
-            }
-      })})
-      }
-
-      componentDidUpdate(prevProps, prevState){
-      if(!_.isEqual(prevProps.groups, this.props.groups) ){
-          this.setState({groups:this.props.groups.map(group => {
-            return {
-                  value: {
-                    group_id: group.id,
-                    type: group.type
-                  },
-                  label: group.name,
-                  color: colorMultiSelect
-                }
-          })})
-          
-        }
-     
-      }
-    
-    getGroups = async () => {
-        const response = await GroupService.getAll();
-        const groups = response.data.data;
-    
-        this.groups = groups;
-        const multiSelectGroups = prepareSelectData(groups)
-    
-        this.setState({...this.state, selectOptions: {...this.state.selectOptions, groups: multiSelectGroups}})
-      }
-
-    onSelectGroupsChange = (values) => {
-        this.setState({ groups: values })
+    useEffect(()=>{
+      !groups.length && dispatch(getGroupsRequest())
+    },[])
+// TODO: set groups in to parrent component
+      const onSelectGroupsChange = (values) => {
+        values ? dispatch(setGroups(normalizeGroups(initGroups).filter( group => values.some( value => value.label === group.name)))) : dispatch(setGroups([]))
       };
 
-    getMultiSelectState = () => {
-        return this.state.groups.map(select => select.value);
-    }
-    render() {
     return (
             <div className="d-flex mb-1">
             <div className="font-weight-bold column-sizing" style={{padding: 5}}>Organisations</div>
                 <div className="w-100">
                     <Select
                         components={{DropdownIndicator}}
-                        value={this.state.groups}
+                        value={selectedGroups}
                         maxMenuHeight={200}
                         isMulti
                         isClearable={false}
                         styles={colourStyles}
-                        options={this.updateOptions()}
+                        options={filtredSelectOptions()}
                         onChange={(values) => {
-                            this.onSelectGroupsChange(values)
+                            onSelectGroupsChange(values)
                         }}
                         classNamePrefix="select"
                         id="languages"
@@ -104,7 +60,6 @@ export class MultiSelect extends Component {
                 </div>
             </div>
         )
-    }
 }
 
 export default MultiSelect

@@ -1,18 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
-import appReducer from "app/reducers/app/appReducer";
+import notificationsReducer from "app/reducers/onboarding/notificationsReducer";
 
-const token = JSON.parse(localStorage.getItem("token") || "false");
 
 export const onboardingSlice = createSlice({
   name: "onboarding",
   initialState: {
-    notifications: [],
-    notification: null,
-    dForms: [],
-    dForm: null,
+    notification: {
+      notifications: [],
+      notification: null,
+    },
+    dForm: {
+      dForms: [],
+      dForm: null,
+    }
   },
   reducers: {
-    ...appReducer,
+    ...notificationsReducer,
   },
 });
 
@@ -22,6 +25,7 @@ export const {
     notificationsSuccess,
     notificationsRequest,
     notificationsError,
+    setNotificationGroups
 } = onboardingSlice.actions;
 
 export default onboardingSlice.reducer;

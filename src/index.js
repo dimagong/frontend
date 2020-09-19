@@ -11,7 +11,8 @@ import "react-toastify/dist/ReactToastify.css"
 import "assets/scss/plugins/extensions/toastr.scss"
 import "assets/scss/pages/authentication.scss"
 import "assets/scss/plugins/tables/_agGridStyleOverride.scss";
-
+import "flatpickr/dist/themes/light.css";
+import "assets/scss/plugins/forms/flatpickr/flatpickr.scss";
 // import * as serviceWorker from './serviceWorker';
 
 const LazyApp = lazy(() => import("./App"));

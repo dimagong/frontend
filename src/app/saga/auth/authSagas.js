@@ -11,6 +11,7 @@ import {
   verifyPasswordSuccess,
   verifyPasswordRequest,
   verifyPasswordError,
+  getProfileRequest
 } from "app/slices/appSlice";
 
 
@@ -19,6 +20,7 @@ function* login({ payload }) {
   try {
     yield call(authApi.login, payload);
     yield put(loginSuccess());
+    yield put(getProfileRequest())
   } catch (error) {
     yield put(loginError(error));
   }

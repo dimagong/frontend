@@ -6,13 +6,19 @@ import {
   getProfileRequest,
   getProfileError,
 } from "app/slices/appSlice";
+import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
+import {setUserProfile} from 'app/actions/vuexy/user/userActions'
 
 
 
-function* getProfile({ payload }) {
+function* getProfile() {
   try {
-    yield call(userApi.getProfile, payload);
+    const responce = yield call(userApi.getProfile);
+
     yield put(getProfileSuccess());
+    yield put(loginWithJWT(responce))
+    yield put(setUserProfile(responce))
+
   } catch (error) {
     yield put(getProfileError(error));
   }
