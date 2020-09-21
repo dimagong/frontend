@@ -48,7 +48,7 @@ const DForm = () => {
   const isCreate = useRef(false)
 
   useEffect(() => {
-    DForms && dispatch(getdFormsRequest());
+    !DForms.length && dispatch(getdFormsRequest());
   }, []);
 
    // TODO: START - AG GRID API

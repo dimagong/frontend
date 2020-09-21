@@ -4,3 +4,4 @@ export const forgotPasswordPath = "/forgot-password";
 export const notificationsPath = "/onboarding/notifications";
 export const processPath = "/onboarding-process";
 export const dformsPath = "/onboarding/dforms";
+export const workflowsPath = "/onboarding/workflows";

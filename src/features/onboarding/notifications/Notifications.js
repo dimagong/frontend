@@ -25,7 +25,6 @@ import {
 } from "app/selectors/onboardingSelectors";
 import NotificationsForm from "./NotificationsForm";
 import { ChangeDetectionStrategyType } from 'ag-grid-react/lib/changeDetectionService'
-import { func } from "prop-types";
 
 const initNotification = {name: '',description:"", content: "", groups: []};
 
@@ -37,7 +36,7 @@ const Notification = () => {
   const isCreate = useRef(false)
 
   useEffect(() => {
-    notifications && dispatch(getNotificationsRequest());
+    !notifications.length && dispatch(getNotificationsRequest());
   }, []);
 
   // TODO: START - AG GRID API
@@ -69,13 +68,10 @@ const Notification = () => {
   }
 
   function handleDelete(params) {
-    console.log(params, "params")
     if(window.confirm("Are you sure?")) {
         dispatch(deleteNotificationRequest(params.data))
     }
 }
-
-  console.log(notifications, "notifications")
 
   return (
     <div className="notifications">

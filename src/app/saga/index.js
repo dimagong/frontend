@@ -5,6 +5,7 @@ import notificationSagas from "./onboarding/notification/notificationSagas";
 import dFromSagas from "./onboarding/dForm/dFromSagas";
 import userSagas from "./user/userSagas";
 import groupSagas from "./group/groupSagas";
+import workflowSagas from "./onboarding/workflow/workflowSagas";
 
 
 export default function *rootSaga() {
@@ -14,5 +15,6 @@ export default function *rootSaga() {
     userSagas(),
     groupSagas(),
     dFromSagas(),
+    workflowSagas(),
   ]);
 }
