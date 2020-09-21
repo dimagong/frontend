@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import notificationsReducer from "app/reducers/onboarding/notificationsReducer";
+import dFormReducers from "app/reducers/onboarding/dFormReducers";
 
 
 export const onboardingSlice = createSlice({
@@ -16,15 +17,15 @@ export const onboardingSlice = createSlice({
   },
   reducers: {
     ...notificationsReducer,
+    ...dFormReducers,
   },
 });
 
 export const {
     setNotifications,
     setNotification,
-    notificationsSuccess,
-    notificationsRequest,
-    notificationsError,
+    setdForms,
+    setdForm,
     setNotificationGroups
 } = onboardingSlice.actions;
 

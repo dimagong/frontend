@@ -42,6 +42,18 @@ export const {
   deleteNotificationSuccess,
   deleteNotificationRequest,
   deleteNotificationError,
+  getdFormsSuccess,
+  getdFormsRequest,
+  getdFormsError,
+  createdFormSuccess,
+  createdFormRequest,
+  createdFormError,
+  updatedFormSuccess,
+  updatedFormRequest,
+  updatedFormError,
+  deletedFormSuccess,
+  deletedFormRequest,
+  deletedFormError,
   logout,
 } = appSlice.actions;
 

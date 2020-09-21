@@ -2,6 +2,7 @@ import { all } from "redux-saga/effects";
 
 import authSagas from "./auth/authSagas";
 import notificationSagas from "./onboarding/notification/notificationSagas";
+import dFromSagas from "./onboarding/dForm/dFromSagas";
 import userSagas from "./user/userSagas";
 import groupSagas from "./group/groupSagas";
 
@@ -11,6 +12,7 @@ export default function *rootSaga() {
     authSagas(),
     notificationSagas(),
     userSagas(),
-    groupSagas()
+    groupSagas(),
+    dFromSagas(),
   ]);
 }

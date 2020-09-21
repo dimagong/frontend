@@ -6,7 +6,9 @@ import {
   homePath,
   forgotPasswordPath,
   notificationsPath,
+  dformsPath
 } from "constants/paths";
+import DForm from "features/onboarding/dForm/DForm";
 
 const Login = lazy(() => import("features/auth/login/Login"));
 const ForgotPassword = lazy(() => import("features/auth/forgotPassword/ForgotPassword"));
@@ -32,6 +34,13 @@ const routes = [
   {
     path: notificationsPath,
     Component: Notifications,
+    isPrivate: true,
+    exact: false,
+    redirect: loginPath,
+  },
+  {
+    path: dformsPath,
+    Component: DForm,
     isPrivate: true,
     exact: false,
     redirect: loginPath,
