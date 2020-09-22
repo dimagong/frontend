@@ -37,18 +37,19 @@ import {
   selectdForms,
   selectdForm,
 } from "app/selectors/onboardingSelectors";
-import DFormForm from './DFormForm'
+import DFormForm from './DFormCreate'
 import { getdFormsRequest } from "app/slices/appSlice";
+import { setdForm } from "app/slices/onboardingSlice";
 
 const DForm = () => {
   const [gridApi, setGridApi] = useState(null);
-  const DForms = useSelector(selectdForms)
-  const DForm = useSelector(selectdForm)
+  const dForms = useSelector(selectdForms)
+  const dForm = useSelector(selectdForm)
   const dispatch = useDispatch();
   const isCreate = useRef(false)
 
   useEffect(() => {
-    !DForms.length && dispatch(getdFormsRequest());
+    !dForms.length && dispatch(getdFormsRequest());
   }, []);
 
    // TODO: START - AG GRID API
@@ -63,7 +64,7 @@ const DForm = () => {
 
   const onSelectionChanged = () => {
     const [selectedRow] = gridApi.getSelectedRows();
-    // dispatch(setDForm(selectedRow));
+    dispatch(setdForm(selectedRow));
     isCreate.current = false;
   };
 
@@ -88,7 +89,7 @@ const DForm = () => {
                             rowSelection="multiple"
                             defaultColDef={{resizable: true}}
                             columnDefs={columnDefs({handleDelete: () => null})}
-                            rowData={DForms}
+                            rowData={dForms}
                             onGridReady={onGridReady}
                             colResizeDefault={"shift"}
                             animateRows={true}
@@ -107,7 +108,7 @@ const DForm = () => {
               </Card>
             </Col>
             <Col md="6">
-              {DForm ? <DFormForm/>: null}
+              {dForm ? <DFormForm/>: null}
             </Col>
             <ToastContainer/>
           </Row>
