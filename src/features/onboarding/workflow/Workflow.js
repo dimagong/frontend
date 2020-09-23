@@ -7,6 +7,7 @@ import {
   Col,
   Button,
 } from "reactstrap"
+import { setWorkflow } from "app/slices/onboardingSlice";
 
 import {ToastContainer} from "react-toastify"
 
@@ -27,7 +28,7 @@ const Workflow = () => {
     const workflows = useSelector(selectWorkflows)
     const workflow = useSelector(selectWorkflow)
     const dispatch = useDispatch();
-    const isCreate = useRef(false)
+    const workflowModalType = useRef("Create")
 
     useEffect(() => {
         !workflows.length && dispatch(getWorkflowsRequest());
@@ -45,8 +46,12 @@ const Workflow = () => {
     
       const onSelectionChanged = () => {
         const [selectedRow] = gridApi.getSelectedRows();
-        // dispatch(setDForm(selectedRow));
-        isCreate.current = false;
+        workflowModalType.current = "Edit";
+        dispatch(setWorkflow(selectedRow));
+      };
+      const clearGridSelection = () => {
+        gridApi.deselectAll();
+        gridApi.clearFocusedCell();
       };
     
       // TODO: END - AG GRID API
@@ -90,7 +95,7 @@ const Workflow = () => {
               </Card>
             </Col>
             {
-              workflow ?<WorkflowForm/> : null
+              workflow ?<WorkflowForm clearGridSelection={clearGridSelection} workflowModalType={workflowModalType.current}/> : null
             }
           </Row>
         </div>
