@@ -24,9 +24,22 @@
       }
     }
   })
-  
+
+  const setWorkflowTriggers = (state, {payload}) => ({
+    ...state,
+    workflow: {
+      workflows: state.workflow.workflows,
+      workflow: {
+        ...state.workflow.workflow,
+        triggers: payload
+      }
+    }
+  })
+
+
 export default {
   setWorkflows,
   setWorkflow,
-  setWorkflowGroups
+  setWorkflowGroups,
+  setWorkflowTriggers,
   };

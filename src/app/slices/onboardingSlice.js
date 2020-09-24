@@ -14,6 +14,8 @@ export const onboardingSlice = createSlice({
     dForm: {
       dForms: [],
       dForm: null,
+      actions: [],
+      triggers: [],
     },
     workflow: {
       workflows: [],
@@ -34,9 +36,12 @@ export const {
     setdForms,
     setdForm,
     setdFormGroups,
+    setdFormActions,
+    setdFormTriggers,
     setWorkflows,
     setWorkflow,
-    setWorkflowGroups
+    setWorkflowGroups,
+    setWorkflowTriggers,
 } = onboardingSlice.actions;
 
 export default onboardingSlice.reducer;

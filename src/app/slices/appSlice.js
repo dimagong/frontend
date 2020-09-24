@@ -66,6 +66,12 @@ export const {
   deleteWorkflowSuccess,
   deleteWorkflowRequest,
   deleteWorkflowError,
+  getdFormActionsSuccess,
+  getdFormActionsRequest,
+  getdFormActionsError,
+  getdFormTriggersSuccess,
+  getdFormTriggersRequest,
+  getdFormTriggersError,
   logout,
 } = appSlice.actions;
 

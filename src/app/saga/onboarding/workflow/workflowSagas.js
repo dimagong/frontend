@@ -14,6 +14,9 @@ import {
   deleteWorkflowSuccess,
   deleteWorkflowRequest,
   deleteWorkflowError,
+  getdFormActionsRequest,
+  getdFormTriggersRequest,
+  getNotificationsRequest
 } from "app/slices/appSlice";
 import {
   setWorkflows
@@ -21,8 +24,9 @@ import {
 import {prepareSelectData} from "utility/select/prepareSelectData";
 import {
   selectWorkflows,
+  selectNotifications
 } from "app/selectors/onboardingSelectors";
-import _ from "lodash"
+
 
 function* getWorkflows() {
   try {
@@ -30,6 +34,13 @@ function* getWorkflows() {
     
     yield put(getWorkflowsSuccess());
     yield put(setWorkflows(responce))
+    yield put(getdFormActionsRequest())
+    yield put(getdFormTriggersRequest())
+    const notifications = yield select(selectNotifications);
+    if(!notifications.length){
+      yield put(getNotificationsRequest())
+    }
+
   } catch (error) {
     yield put(getWorkflowsError(error));
   }

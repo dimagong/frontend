@@ -1,5 +1,5 @@
 import instance from "api";
-import { dFormPath } from "constants/onboarding";
+import { dFormPath,dFormActionsPath,dFormTriggersPath } from "constants/onboarding";
 
 const dFormApi = {
   async getdForms() {
@@ -52,7 +52,30 @@ const dFormApi = {
       throw err;
     }
   },
+  async getdFormActions() {
+    try {
+      const result = await instance({
+        url: dFormActionsPath,
+        method: "GET",
+      });
 
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
+  async getdFormTriggers() {
+    try {
+      const result = await instance({
+        url: dFormTriggersPath,
+        method: "GET",
+      });
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
 };
 
 export default dFormApi;

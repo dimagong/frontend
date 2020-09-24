@@ -65,7 +65,38 @@ const getdFormsSuccess = (state) => ({
     isLoading: false,
     isError: payload,
   });
-
+  const getdFormActionsSuccess = (state) => ({
+    ...state,
+    isLoading: false,
+    isError: null,
+  });
+  
+  const getdFormActionsRequest = (state, {payload}) => ({
+    ...state,
+    isLoading: true,
+    isError: null,
+  });
+  const getdFormActionsError = (state , {payload}) => ({
+    ...state,
+    isLoading: false,
+    isError: payload,
+  });
+  const getdFormTriggersSuccess = (state) => ({
+    ...state,
+    isLoading: false,
+    isError: null,
+  });
+  
+  const getdFormTriggersRequest = (state, {payload}) => ({
+    ...state,
+    isLoading: true,
+    isError: null,
+  });
+  const getdFormTriggersError = (state , {payload}) => ({
+    ...state,
+    isLoading: false,
+    isError: payload,
+  });
 
   
 export default {
@@ -81,4 +112,10 @@ export default {
   deletedFormSuccess,
   deletedFormRequest,
   deletedFormError,
+  getdFormActionsSuccess,
+  getdFormActionsRequest,
+  getdFormActionsError,
+  getdFormTriggersSuccess,
+  getdFormTriggersRequest,
+  getdFormTriggersError,
   };

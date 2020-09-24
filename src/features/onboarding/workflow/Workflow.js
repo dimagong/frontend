@@ -1,5 +1,5 @@
 import React, {useState ,useRef, useEffect} from 'react'
-import WorkflowForm from './WorkflowForm'
+import WorkflowForm from './components/WorkflowForm'
 import {
   Card,
   CardBody,
