@@ -160,7 +160,7 @@ class FormCreate extends React.Component {
         }
       },
       loadingFiles: [],
-      formData: this.props.dForm.submit_data,
+      formData: isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data,
       sumbitFormData: {},
       dFormTemplate: props.dForm,
       schemaPropertyEdit: {},
@@ -1579,7 +1579,7 @@ class FormCreate extends React.Component {
                     <Checkbox
                       color="primary"
                       icon={<Check className="vx-icon" size={16}/>}
-                      label="is protected properties hidden"
+                      label="Subject view"
                       onChange={event => {
                         const formData = clone(this.state.formData);
                         this.setState({
