@@ -1,1 +1,1 @@
-export const selectGroups = state => state.group.groups 
+export const selectGroups = state => state.app.group.groups 

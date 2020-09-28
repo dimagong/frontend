@@ -16,10 +16,12 @@ import {
   deleteWorkflowError,
   getdFormActionsRequest,
   getdFormTriggersRequest,
-  getNotificationsRequest
+  getNotificationsRequest,
+  getUsersRequest,
 } from "app/slices/appSlice";
 import {
-  setWorkflows
+  setWorkflows,
+  setWorkflow
 } from "app/slices/onboardingSlice";
 import {prepareSelectData} from "utility/select/prepareSelectData";
 import {
@@ -36,6 +38,7 @@ function* getWorkflows() {
     yield put(setWorkflows(responce))
     yield put(getdFormActionsRequest())
     yield put(getdFormTriggersRequest())
+    yield put(getUsersRequest())
     const notifications = yield select(selectNotifications);
     if(!notifications.length){
       yield put(getNotificationsRequest())
@@ -53,6 +56,7 @@ function* createWorkflow({payload}) {
     yield put(createWorkflowSuccess());
     const notifications = yield select(selectWorkflows)
     yield put(setWorkflows([...notifications, responce]))
+    yield put(setWorkflow(null))
   } catch (error) {
     yield put(createWorkflowError(error));
   }

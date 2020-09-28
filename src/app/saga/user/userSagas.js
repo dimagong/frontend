@@ -5,6 +5,9 @@ import {
   getProfileSuccess,
   getProfileRequest,
   getProfileError,
+  getUsersSuccess,
+  getUsersRequest,
+  getUsersError,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {setUserProfile} from 'app/actions/vuexy/user/userActions'
@@ -24,10 +27,22 @@ function* getProfile() {
   }
 }
 
+function* getUsers() {
+  try {
+    const responce = yield call(userApi.getUsers);
+
+    yield put(getUsersSuccess(responce));
+
+  } catch (error) {
+    yield put(getProfileError(getUsersError));
+  }
+}
+
 
 
 export default function* () {
   yield all([
     yield takeLatest(getProfileRequest.type, getProfile),
+    yield takeLatest(getUsersRequest.type, getUsers),
   ]);
 }

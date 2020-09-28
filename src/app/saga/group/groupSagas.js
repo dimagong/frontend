@@ -6,17 +6,14 @@ import {
   getGroupsRequest,
   getGroupsError,
 } from "app/slices/appSlice";
-import {
-  setGroups
-} from "app/slices/groupSlice"
+
 
 
 
 function* getGroups() {
   try {
     const  responce = yield call(groupApi.getGroups);
-    yield put(getGroupsSuccess());
-    yield put(setGroups(responce));
+    yield put(getGroupsSuccess(responce));
   } catch (error) {
     console.log(error)
     yield put(getGroupsError(error));

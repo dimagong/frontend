@@ -16,19 +16,12 @@ import { setWorkflowTriggers } from "app/slices/onboardingSlice";
 import {
   selectWorkflow,
   selectdFormTriggers,
-  selectdFormActions,
 } from "app/selectors/onboardingSelectors";
-import {
-  triggerTypes,
-  userTargetTypes,
-  actionTypes,
-  types,
-} from "./constants";
+import { triggerTypes, types } from "./constants";
 
 const WorkflowTrigger = ({ keyTrigger, trigger }) => {
   const workflow = useSelector(selectWorkflow);
   const triggers = useSelector(selectdFormTriggers);
-  const actions = useSelector(selectdFormActions);
   const dispatch = useDispatch();
 
   const isTriggerDisabled = (type) => {
@@ -59,12 +52,34 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
       );
     }
   };
+
   const setTriggerProperty = (triggerProperty) => {
     dispatch(
       setWorkflowTriggers(
         workflow.triggers.map((element) =>
           element.id === trigger.id
             ? { ...element, ...triggerProperty }
+            : element
+        )
+      )
+    );
+  };
+
+  const createAction = () => {
+    dispatch(
+      setWorkflowTriggers(
+        workflow.triggers.map((element) =>
+          element.id === trigger.id
+            ? {
+                ...element,
+                actions: [
+                  ...element.actions,
+                  {
+                    action_users: [],
+                    id: element.actions.length ? element.actions[element.actions.length - 1].id + 1 : 0  ,
+                  },
+                ],
+              }
             : element
         )
       )
@@ -132,18 +147,18 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
                 <ChevronDown size={15} />
               </DropdownToggle>
               <DropdownMenu>
-                {types.dform.trigger === trigger.trigger_type 
-                ? triggers.map((trigger) => (
-                  <DropdownItem
-                    onClick={() =>
-                      setTriggerProperty({ trigger_id: trigger.id })
-                    }
-                    tag="button"
-                  >
-                    {trigger.trigger}
-                  </DropdownItem>
-                ))
-                : null}
+                {types.dform.trigger === trigger.trigger_type
+                  ? triggers.map((trigger) => (
+                      <DropdownItem
+                        onClick={() =>
+                          setTriggerProperty({ trigger_id: trigger.id })
+                        }
+                        tag="button"
+                      >
+                        {trigger.trigger}
+                      </DropdownItem>
+                    ))
+                  : null}
               </DropdownMenu>
             </UncontrolledButtonDropdown>
           </div>
@@ -160,11 +175,7 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
         ))}
       </ListGroup>
       <div className="d-flex justify-content-end flex-wrap mt-2">
-        <Button
-          size="sm"
-          color="primary d-flex-left"
-          onClick={() => this.createAction(keyTrigger)}
-        >
+        <Button size="sm" color="primary d-flex-left" onClick={createAction}>
           CREATE ACTION
         </Button>
       </div>

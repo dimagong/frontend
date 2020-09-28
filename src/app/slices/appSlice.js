@@ -8,6 +8,12 @@ export const appSlice = createSlice({
     isAuth: !!token,
     isLoading: false,
     isError: null,
+    user: {
+      managers: []
+    },
+    group: {
+      groups: []
+    } 
   },
   reducers: {
     ...appReducer,
@@ -18,60 +24,83 @@ export const {
   loginSuccess,
   loginRequest,
   loginError,
+
   resetPasswordSuccess,
   resetPasswordRequest,
   resetPasswordError,
+
   verifyPasswordSuccess,
   verifyPasswordRequest,
   verifyPasswordError,
+
   getNotificationsRequest,
   getNotificationsSuccess,
   getNotificationsError,
+
   getProfileSuccess,
   getProfileRequest,
   getProfileError,
+
   getGroupsSuccess,
   getGroupsRequest,
   getGroupsError,
+
   createNotificationSuccess,
   createNotificationRequest,
   createNotificationError,
+
   updateNotificationSuccess,
   updateNotificationRequest,
   updateNotificationError,
+
   deleteNotificationSuccess,
   deleteNotificationRequest,
   deleteNotificationError,
+
   getdFormsSuccess,
   getdFormsRequest,
   getdFormsError,
+
   createdFormSuccess,
   createdFormRequest,
   createdFormError,
+
   updatedFormSuccess,
   updatedFormRequest,
   updatedFormError,
+
   deletedFormSuccess,
   deletedFormRequest,
   deletedFormError,
+
   getWorkflowsSuccess,
   getWorkflowsRequest,
   getWorkflowsError,
+
   createWorkflowSuccess,
   createWorkflowRequest,
   createWorkflowError,
+
   updateWorkflowSuccess,
   updateWorkflowRequest,
   updateWorkflowError,
+
   deleteWorkflowSuccess,
   deleteWorkflowRequest,
   deleteWorkflowError,
+
   getdFormActionsSuccess,
   getdFormActionsRequest,
   getdFormActionsError,
+
   getdFormTriggersSuccess,
   getdFormTriggersRequest,
   getdFormTriggersError,
+
+  getUsersSuccess,
+  getUsersRequest,
+  getUsersError,
+  
   logout,
 } = appSlice.actions;
 

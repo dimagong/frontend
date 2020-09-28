@@ -21,7 +21,8 @@ import {
     selectWorkflows,
     selectWorkflow,
   } from "app/selectors/onboardingSelectors";
-  import { getWorkflowsRequest } from "app/slices/appSlice";
+  import { getWorkflowsRequest, deleteWorkflowRequest } from "app/slices/appSlice";
+import {initWorkflow} from './components/constants';
 
 const Workflow = () => {
     const [gridApi, setGridApi] = useState(null);
@@ -56,8 +57,19 @@ const Workflow = () => {
     
       // TODO: END - AG GRID API
 
+      const deleteWorkflow = (params) => {
+        if(window.confirm("Are you sure?")) {
+          dispatch(deleteWorkflowRequest(params.data))
+      }
+      }
+
+      const createWorkflow = () => {
+        dispatch(setWorkflow(initWorkflow))
+        workflowModalType.current = "Create";
+      }
+
     return (
-        <div>
+        <div className="workflow">
         <div>
           <Row className="app-user-list">
             <Col lg="6">
@@ -65,7 +77,7 @@ const Workflow = () => {
               <Card>
                 <CardBody>
                   <div className="d-flex justify-content-end flex-wrap mt-2">
-                    <Button onClick={() => this.openWorkflow()} color="primary d-flex-left">Create</Button>
+                    <Button onClick={createWorkflow} color="primary d-flex-left">Create</Button>
                   </div>
                   <div className="ag-theme-material ag-grid-table">
                       <ContextLayout.Consumer>
@@ -75,7 +87,7 @@ const Workflow = () => {
                             gridOptions={{}}
                             rowSelection="multiple"
                             defaultColDef={{ resizable: true, }}
-                            columnDefs={columnDefs({handleDelete: () => null})}
+                            columnDefs={columnDefs({deleteWorkflow})}
                             rowData={workflows}
                             onGridReady={onGridReady}
                             colResizeDefault={"shift"}

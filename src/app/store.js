@@ -1,7 +1,6 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import appSlice from "./slices/appSlice";
 import onboardingSlice from "./slices/onboardingSlice";
-import groupSlice from "./slices/groupSlice";
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from "app/saga";
 import vuexyReducer from 'app/reducers/vuexy/rootReducer'
@@ -21,7 +20,6 @@ const store = configureStore({
   reducer: {
     app: appSlice,
     onboarding: onboardingSlice,
-    group: groupSlice,
     vuexy: vuexyReducer,
     router: connectRouter(history)
   },

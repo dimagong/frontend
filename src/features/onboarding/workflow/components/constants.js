@@ -25,3 +25,5 @@ export const userTypeOptions = [
   {value: "reviewer", label: "Reviewer"},
   {value: "subject", label: "Subject"}
 ]
+export const initWorkflow = {name: '',description:"", triggers: [], groups: []}
+ 

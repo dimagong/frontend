@@ -8,7 +8,12 @@ import {
 } from "reactstrap";
 import CreatableSelect from "react-select/creatable";
 import { X, ChevronDown } from "react-feather";
-import { actionTypes, types, userTypeOptions, userTargetTypes } from "./constants";
+import {
+  actionTypes,
+  types,
+  userTypeOptions,
+  userTargetTypes,
+} from "./constants";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectWorkflow,
@@ -16,12 +21,17 @@ import {
   selectdFormActions,
 } from "app/selectors/onboardingSelectors";
 import { setWorkflowTriggers } from "app/slices/onboardingSlice";
+import { selectManagers } from "app/selectors/userSelectors";
+import Select from "react-select";
+import { colourStyles } from "utility/select/selectSettigns";
+const colorMultiSelect = "#007bff";
 
 const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
   const dispatch = useDispatch();
   const workflow = useSelector(selectWorkflow);
   const actions = useSelector(selectdFormActions);
   const notification = useSelector(selectNotifications);
+  const managers = useSelector(selectManagers);
   const [actionData, setActionData] = useState([]);
 
   useEffect(() => {
@@ -30,7 +40,8 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
         ? actions
         : action.action_type === types.notification.action
         ? notification
-        : [])
+        : []
+    );
   }, [action, actions, notification]);
 
   const isActionDisabled = (type) => {
@@ -72,14 +83,39 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
     );
   };
 
+  const removeAction = () => {
+    if (window.confirm("Are you sure?")) {
+      dispatch(
+        setWorkflowTriggers(
+          workflow.triggers.map((activeTrigger) =>
+          activeTrigger.id === trigger.id
+            ? {
+                ...activeTrigger,
+                actions: activeTrigger.actions.filter((activeAction) =>
+                  activeAction.id !== action.id
+                ),
+              }
+            : activeTrigger
+        )
+        )
+      );
+    }
+  };
+
+  const prepareSelectData = (managers) => {
+    return managers.map((manager) => ({
+      value: manager,
+      label: manager.name + ` (${manager.id})`,
+      color: colorMultiSelect,
+    }));
+  };
+
   return (
     <ListGroupItem>
       <X
         size="15"
         className="x-closer"
-        onClick={() => {
-          this.removeAction(keyTrigger, keyAction);
-        }}
+        onClick={removeAction}
       />
       <div className="d-flex flex-wrap justify-content-center align-items-center w-100">
         <div className="mb-1 w-100 text-center text-primary">
@@ -139,19 +175,13 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
             </DropdownToggle>
             <DropdownMenu>
               {actionData.map((actionObj) => (
-                  <DropdownItem
-                    onClick={() =>
-                      this.setWorkflowTriggerAction(
-                        keyTrigger,
-                        keyAction,
-                        actionObj
-                      )
-                    }
-                    tag="button"
-                  >
-                    {actionObj.action || actionObj.name}
-                  </DropdownItem>
-                ))}
+                <DropdownItem
+                  onClick={() => setActionProperty({ action_id: actionObj.id })}
+                  tag="button"
+                >
+                  {actionObj.action || actionObj.name}
+                </DropdownItem>
+              ))}
             </DropdownMenu>
           </UncontrolledButtonDropdown>
         </div>
@@ -166,41 +196,41 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
                 options={userTypeOptions}
                 value={userTypeOptions.find(
                   (userTypeOption) =>
-                    userTypeOption.value ===
-                    action.user_target_type
+                    userTypeOption.value === action.user_target_type
                 )}
                 onChange={(event) => {
                   event.value === userTargetTypes.subject
-                ?setActionProperty({user_target_type: event.value})
-                :setActionProperty({user_target_type: event.value, action_users:[]})
+                    ? setActionProperty({ user_target_type: event.value })
+                    : setActionProperty({
+                        user_target_type: event.value,
+                        action_users: [],
+                      });
                 }}
               />
             </div>
-            {/* {action.user_target_type ===
-              this.userTargetTypes.managers ? (
-                <div className="text-center w-100 mt-2">
-                  <Select
-                    value={action.action_users.map((user) =>
-                      this.transformManagerToSelectFormat(user)
-                    )}
-                    maxMenuHeight={200}
-                    isMulti
-                    isSearchable={true}
-                    isClearable={false}
-                    styles={colourStyles}
-                    options={this.state.selectManagers}
-                    className="fix-margin-select"
-                    onChange={(values) => {
-                      this.onChangeActionUser(
-                        values,
-                        keyTrigger,
-                        keyAction
-                      );
-                    }}
-                    classNamePrefix="select"
-                  />
-                </div>
-              ) : null} */}
+            {}
+            {action.user_target_type === userTargetTypes.managers ? (
+              <div className="text-center w-100 mt-2">
+                <Select
+                  value={prepareSelectData(action.action_users)}
+                  maxMenuHeight={200}
+                  isMulti
+                  isSearchable={true}
+                  isClearable={false}
+                  styles={colourStyles}
+                  options={prepareSelectData(managers)}
+                  className="fix-margin-select"
+                  onChange={(values) => {
+                    setActionProperty({
+                      action_users: values
+                        ? values.map((value) => value.value)
+                        : [],
+                    });
+                  }}
+                  classNamePrefix="select"
+                />
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>

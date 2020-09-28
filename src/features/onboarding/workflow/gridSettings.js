@@ -4,7 +4,7 @@ import {
     Badge,
   } from "reactstrap"
 
-export const columnDefs = ({handleDelete}) => [
+export const columnDefs = ({deleteWorkflow}) => [
     {
         headerName: "Name",
         field: "name",
@@ -41,7 +41,7 @@ export const columnDefs = ({handleDelete}) => [
                     <Trash2
                         className="mr-50"
                         size={15}
-                        onClick={() =>handleDelete(params)}
+                        onClick={() =>deleteWorkflow(params)}
                     />
                 </div>
             )
