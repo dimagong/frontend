@@ -200,7 +200,6 @@ class Notification extends React.Component {
   }
 
   async submitNotification() {
-    console.log('this.state.modalType', this.state.modalType);
     if (this.state.modalType === 'create') {
       await this.submitCreateNotification();
     } else {

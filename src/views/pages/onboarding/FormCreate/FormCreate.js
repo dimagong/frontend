@@ -37,6 +37,7 @@ import Constants from './Parts/Constants'
 import {dependencyChecker} from './Parts/DependencyChecker'
 import {listControls} from './Parts/ListControls'
 import {getSpecificType, isElementProtected} from "./helper";
+import SortableEditModal from './SortableEditModal'
 
 const clone = rfdc();
 
@@ -63,7 +64,6 @@ class FormCreate extends React.Component {
     this.dependencyChecker = dependencyChecker.bind(this);
 
     this.multiSelectRef = React.createRef();
-
   }
 
   // hooks
@@ -73,6 +73,7 @@ class FormCreate extends React.Component {
 
   async componentDidMount() {
     this.groupedFiles();
+    this.refreshDependencies();
   }
 
   // initial state by props
@@ -122,7 +123,6 @@ class FormCreate extends React.Component {
       }
     });
 
-    console.log('propsDFormUiSchema', propsDFormUiSchema);
     const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
 
     return {
@@ -1532,6 +1532,15 @@ class FormCreate extends React.Component {
     return this.getUniqueValues(groups);
   };
 
+  onOpenSortableModal = () => {
+
+  };
+
+
+  onSaveSortableModal = () => {
+
+  };
+
   render() {
 
     let controls = this.getListControls(this.state.schema.properties);
@@ -1558,7 +1567,9 @@ class FormCreate extends React.Component {
                 }} type="text"
                        className="form-control"/>
               </div>
-
+              <div className="d-flex justify-content-end">
+                <SortableEditModal onOpen={() => this.onOpenSortableModal()} onSave={() => this.onSaveSortableModal()}/>
+              </div>
               <div className="">
                 {controls}
               </div>
@@ -1569,6 +1580,7 @@ class FormCreate extends React.Component {
                   </div>
                 </Col>
               </Row>
+
             </Col>
             :
             <Col>
@@ -1589,6 +1601,7 @@ class FormCreate extends React.Component {
                           this.setState({
                             formData
                           });
+                          this.refreshDependencies();
                         });
 
                       }}

@@ -6,7 +6,6 @@ export function CheckboxWidget(props) {
   const onChange = (event) => {
     return props.onChange(event.target.checked);
   };
-  console.log('props', props);
   return (
     <div>
       {props.options.label ? <label>{props.label}</label> : null}

@@ -18,7 +18,6 @@ export const list = (state = {
     total: 10
   }
 }, action) => {
-  console.log("UPDATE_USER_IN_LIST", action.payload, state.data);
   switch (action.type) {
 
     case "SET_USERS_LIST": {
