@@ -2,11 +2,12 @@ import Constants from "./Constants";
 import {
   getEffectByType,
   getFieldsBySection,
-  isFieldHasDefaultEffectByOperator,
+  getFieldHasDefaultEffectByOperator,
   operatorResult,
   isValidationFieldPassed,
-  getFieldsByGroup
+  getFieldsByGroup, getSpecificType
 } from "../helper";
+import {isArray} from "leaflet/src/core/Util";
 
 export function dependencyChecker(state) {
 
@@ -52,10 +53,12 @@ export function dependencyChecker(state) {
           state.uiSchema[field] = {};
         }
 
-        console.log(state.formData);
+        let specificType = getSpecificType(this.state.schema.properties[fieldOperator.field]);
+        let defaultValue = getFieldHasDefaultEffectByOperator(fieldOperator.operator, specificType);
+
         // todo 04.09.2020 bug  if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
         if (!(fieldOperator.field in state.formData)) {
-          setField(field, isFieldHasDefaultEffectByOperator(fieldOperator.operator), effect);
+          setField(field, defaultValue, effect);
           continue;
         }
 
@@ -71,6 +74,12 @@ export function dependencyChecker(state) {
             fieldOperator.field)
         ) {
           setField(field, true, effect);
+          continue;
+        }
+
+        // isArray for multiselect
+        if(!fieldValue || (Array.isArray(fieldValue) && !fieldValue.length)) {
+          setField(field, defaultValue, effect);
           continue;
         }
 
@@ -359,6 +368,13 @@ export function dependencyChecker(state) {
       return fieldObj.value && fieldObj.effect === Constants.UI_DISABLED;
     });
 
+    // let notHidden = fieldsStates[field].find(fieldObj => {
+    //   return !fieldObj.value && fieldObj.effect === Constants.UI_HIDDEN;
+    // });
+    // let notDisabled = fieldsStates[field].find(fieldObj => {
+    //   return !fieldObj.value && fieldObj.effect === Constants.UI_DISABLED;
+    // });
+
     if (hidden) {
       state.uiSchema[field][hidden.effect] = true;
       return;
@@ -420,4 +436,6 @@ export function dependencyChecker(state) {
 
     state.uiSchema.sectionStates[section] = {};
   })
+
+  console.log('fieldsStates', fieldsStates);
 }

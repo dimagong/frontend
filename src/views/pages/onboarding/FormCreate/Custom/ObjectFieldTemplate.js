@@ -175,7 +175,6 @@ export function ObjectFieldTemplate(props) {
 
   const sections = getSections();
   const groupedElements = elementsByGroups();
-  console.log(sections, '=====<<');
   const defaultTab = sections.length ? sections.findIndex(section => !checkIsSectionHidden(section)) : -1;
 
   const [keyTab, setKeyTab] = useState(defaultTab);
