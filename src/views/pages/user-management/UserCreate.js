@@ -82,8 +82,10 @@ const colourStyles = {
 
 class UserCreate extends React.Component {
   state = {
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
+    postcode: '',
     number: '',
     valid_until: moment().format('YYYY-MM-DD HH:mm:ss'),
     password: '',
@@ -231,7 +233,9 @@ class UserCreate extends React.Component {
   render() {
 
     const {
-      name,
+      first_name,
+      last_name,
+      postcode,
       email,
       number,
       // valid_until,
@@ -242,17 +246,32 @@ class UserCreate extends React.Component {
       <Row>
         <Col sm="6">
           <FormGroup>
-            <Label for="nameVertical">Name</Label>
+            <Label for="nameVertical">First Name</Label>
             <Input
               type="text"
-              name="name"
+              name="first_name"
               id="nameVertical"
-              placeholder="Name"
-              value={name}
-              onChange={(event) => this.setState({name: event.target.value})}
-              {...{invalid: 'name' in this.state.errors}}
+              placeholder="First name"
+              value={first_name}
+              onChange={(event) => this.setState({first_name: event.target.value})}
+              {...{invalid: 'first_name' in this.state.errors}}
             />
-            <FormFeedback>{'name' in this.state.errors ? this.state.errors['name'] : ''}</FormFeedback>
+            <FormFeedback>{'first_name' in this.state.errors ? this.state.errors['first_name'] : ''}</FormFeedback>
+          </FormGroup>
+        </Col>
+        <Col sm="6">
+          <FormGroup>
+            <Label for="nameVertical">Last Name</Label>
+            <Input
+              type="text"
+              name="last_name"
+              id="nameVertical"
+              placeholder="Last name"
+              value={last_name}
+              onChange={(event) => this.setState({last_name: event.target.value})}
+              {...{invalid: 'last_name' in this.state.errors}}
+            />
+            <FormFeedback>{'last_name' in this.state.errors ? this.state.errors['last_name'] : ''}</FormFeedback>
           </FormGroup>
         </Col>
         <Col sm="6">
@@ -268,6 +287,20 @@ class UserCreate extends React.Component {
               {...{invalid: 'email' in this.state.errors}}
             />
             <FormFeedback>{'email' in this.state.errors ? this.state.errors['email'] : ''}</FormFeedback>
+          </FormGroup>
+        </Col>
+        <Col sm="6">
+          <FormGroup>
+            <Label for="EmailVertical">Postcode</Label>
+            <Input
+              type="text"
+              name="postcode"
+              placeholder="Postcode"
+              value={postcode}
+              onChange={(event) => this.setState({postcode: event.target.value})}
+              {...{invalid: 'postcode' in this.state.errors}}
+            />
+            <FormFeedback>{'postcode' in this.state.errors ? this.state.errors['postcode'] : ''}</FormFeedback>
           </FormGroup>
         </Col>
         <Col sm="6">

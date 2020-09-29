@@ -72,7 +72,7 @@ class Stats extends React.Component {
                   this.state.usersOnline.map(user => {
                     return (<Row>
                       <Col md="5">
-                        <div className="user-info-title font-weight-bold">{user.name}</div>
+                        <div className="user-info-title font-weight-bold">{user.name + ' ' + user.first_name}</div>
                       </Col>
                       <Col md="5">
                         <div>
@@ -99,7 +99,7 @@ class Stats extends React.Component {
                       <div className="user-info-title font-weight-bold">Invite accepted:</div>
                     </Col>
                     <Col md="4">
-                      <div>{this.state.lastAcceptedInvitation.invited_user.name}</div>
+                      <div>{this.state.lastAcceptedInvitation.invited_user.name.name + ' ' + this.state.lastAcceptedInvitation.invited_user.name.first_name}</div>
                     </Col>
                     <Col md="3">
                       <div>{moment().to(this.state.lastAcceptedInvitation.accepted_at)}</div>
@@ -114,7 +114,7 @@ class Stats extends React.Component {
                       <div className="user-info-title font-weight-bold">User invited:</div>
                     </Col>
                     <Col md="4">
-                      <div>{this.state.lastInvitedUser.invited_user.name}</div>
+                      <div>{this.state.lastInvitedUser.invited_user.first_name + ' ' + this.state.lastInvitedUser.invited_user.last_name}</div>
                     </Col>
                     <Col md="3">
                       <div>{moment().to(this.state.lastInvitedUser.created_at)}</div>
@@ -128,7 +128,7 @@ class Stats extends React.Component {
                       <div className="user-info-title font-weight-bold">New user:</div>
                     </Col>
                     <Col md="4">
-                      <div>{this.state.newUser.name}</div>
+                      <div>{this.state.newUser.first_name}</div>
                     </Col>
                     <Col md="3">
                       <div>{moment().to(this.state.newUser.created_at)}</div>

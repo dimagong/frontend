@@ -10,20 +10,16 @@ import AuthService from './services/auth.service'
 
 class App extends React.Component {
 
-  constructor() {
-    super();
-  }
-
   async componentDidMount() {
     if(AuthService.isAuth()) {
       this.getUserData();
     }
   }
-  
+
   getUserData = async () => {
     const response = await UserService.getProfile();
     store.dispatch(setUserProfile(response.data.data));
-  }
+  };
 
   render = () => {
     return <Router />;

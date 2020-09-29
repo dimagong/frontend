@@ -99,7 +99,7 @@ class InvitationList extends React.Component {
                 field: "invited_user",
                 width: 200,
                 cellRendererFramework: params => {
-                    return params.value.name;
+                    return params.value.first_name + ' ' + params.value.last_name;
                     // return <Link to={`/user/${params.value.id}/edit`}>{params.value.name}</Link>
                 },
                 suppressSizeToFit: false,

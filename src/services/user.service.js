@@ -6,12 +6,12 @@ class UserService {
     return axios.get("/api/user/profile");
   }
 
-  createUser({name, number, email, password, valid_until, groups, roles}) {
-    return axios.post("/api/user", {name, number, email, password, valid_until, groups, roles});
+  createUser({first_name, last_name, postcode, number, email, password, valid_until, groups, roles}) {
+    return axios.post("/api/user", {first_name, last_name, postcode, number, email, password, valid_until, groups, roles});
   }
 
-  updateUser({id, name, number, email, valid_until, groups, roles, onboarding, modules}) {
-    return axios.put("/api/user/" + id, {name, number, email, valid_until, groups, roles, onboarding, modules});
+  updateUser({id, first_name, last_name, postcode, number, email, valid_until, groups, roles, onboarding, modules}) {
+    return axios.put("/api/user/" + id, {first_name, last_name, postcode, number, email, valid_until, groups, roles, onboarding, modules});
   }
 
   remove(id) {

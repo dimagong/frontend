@@ -83,7 +83,7 @@ class UsersList extends React.Component {
         this.props.setUserList(this.props.users, {...this.props.nav, searchVal: event.target.value});
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(() => {
- 
+
             this.getUserByEmail();
         }, 500);
     }
@@ -131,7 +131,7 @@ class UsersList extends React.Component {
                 </Col>
                 <Col md="12" sm="12">
                     {/* <h4 className="my-1">Users list</h4> */}
-                    <ListGroup flush>                     
+                    <ListGroup flush>
                         <Row>
                             {
                                 this.props.users && this.props.users.map((user, index) => {
@@ -149,7 +149,7 @@ class UsersList extends React.Component {
                                                     />
                                                 </Media>
                                                 <Media body>
-                                                    <h5 className="mt-0">{user.name}</h5>
+                                                    <h5 className="mt-0">{user.first_name + ' ' + user.first_name}</h5>
                                                     {user.number}
                                                 </Media>
                                             </Media>

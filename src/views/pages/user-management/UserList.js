@@ -35,8 +35,13 @@ class UsersList extends React.Component {
     searchVal: "",
     columnDefs: [
       {
-        headerName: "Name",
-        field: "name",
+        headerName: "First name",
+        field: "first_name",
+        width: 200
+      },
+      {
+        headerName: "Last name",
+        field: "last_name",
         width: 200
       },
       {

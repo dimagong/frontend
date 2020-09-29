@@ -18,7 +18,10 @@ import {
   TabContent,
   TabPane,
   Media, Spinner,
-  UncontrolledTooltip
+  UncontrolledTooltip,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
 } from "reactstrap"
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/light.css";
@@ -76,7 +79,8 @@ const groupTypes = {
 class UserEdit extends React.Component {
   state = {
     id: -1,
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     number: '',
     valid_until: moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -182,7 +186,7 @@ class UserEdit extends React.Component {
     const reviewers = response.data.data;
     // todo separate managers
     this.setState({reviewers: reviewers});
-    const reviewersSelect = this.getCustomSelects(reviewers);
+    const reviewersSelect = this.getCustomSelects(reviewers, ['first_name', 'last_name']);
     this.setState({reviewersSelect: reviewersSelect})
   }
 
@@ -194,9 +198,18 @@ class UserEdit extends React.Component {
   }
 
   getCustomSelect(obj, by = 'name') {
+
+    let label = '';
+
+    if (Array.isArray(by)) {
+      label = by.map(nextBy => obj[nextBy]).join(' ');
+    } else {
+      label = obj[by];
+    }
+
     return {
       value: obj,
-      label: obj[by],
+      label: label,
       color: colorMultiSelect
     }
   }
@@ -208,9 +221,9 @@ class UserEdit extends React.Component {
     ]
   }
 
-  getCustomSelects(arrValues) {
+  getCustomSelects(arrValues, keyProp = 'name') {
     return arrValues.map((value) => {
-      return this.getCustomSelect(value);
+      return this.getCustomSelect(value, keyProp);
     });
   }
 
@@ -313,7 +326,7 @@ class UserEdit extends React.Component {
   mapSelectValues = (selectValues) => {
     if (!selectValues) return [];
     return selectValues.map(select => select.value);
-  }
+  };
 
   async componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
@@ -353,7 +366,7 @@ class UserEdit extends React.Component {
       groups: defaultGroups,
       roles: defaultRoles
     })
-  }
+  };
 
   getRoles = async () => {
     const response = await RoleService.getAll();
@@ -368,7 +381,7 @@ class UserEdit extends React.Component {
     });
 
     this.setState({...this.state, selectOptions: {...this.state.selectOptions, roles: multiSelectRoles}})
-  }
+  };
 
   getGroups = async () => {
     const response = await GroupService.getAll();
@@ -376,10 +389,10 @@ class UserEdit extends React.Component {
 
     this.groups = groups;
 
-    const multiSelectGroups = prepareSelectData(groups)
+    const multiSelectGroups = prepareSelectData(groups);
 
     this.setState({...this.state, selectOptions: {...this.state.selectOptions, groups: multiSelectGroups}})
-  }
+  };
 
 
   getGroupName = (groups, groupId, groupType) => {
@@ -408,20 +421,20 @@ class UserEdit extends React.Component {
               // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`
             }
           }
-          ;
+
         }
-        ;
+
       }
-      ;
+
     }
     return null;
-  }
+  };
 
   getSelectRolesData = (user) => {
     return user.roles.map((role) => {
       return role.value;
     })
-  }
+  };
 
 
   getSelectGroupsData = (user) => {
@@ -430,23 +443,23 @@ class UserEdit extends React.Component {
         ...group.value
       }
     });
-  }
+  };
 
   getUserForSend = () => {
     let user = this.rfdc(this.state);
-    user.groups = user.groups ? user.groups : []
-    user.roles = user.roles ? user.roles : []
+    user.groups = user.groups ? user.groups : [];
+    user.roles = user.roles ? user.roles : [];
     user.groups = this.getSelectGroupsData(user);
     user.roles = this.getSelectRolesData(user);
     return user;
-  }
+  };
 
   dispatchUserList = async () => {
     const nav = store.getState().user.list.nav;
     const response = await UserService.getByEmail(nav.searchVal, nav.currPage);
     const users = response.data.data;
     this.props.setUserList(users, nav);
-  }
+  };
 
   dispatchEditUser = async () => {
     const userId = store.getState().userManagement.userEditing.id;
@@ -454,16 +467,16 @@ class UserEdit extends React.Component {
       const response = await UserService.getUserById(userId);
       const user = response.data.data;
       store.dispatch(setEditUser(user));
-      if(this.props.userProfile.id === user.id) {
+      if (this.props.userProfile.id === user.id) {
         store.dispatch(setUserProfile(user));
       }
     }
-  }
+  };
 
   formSubmit = async (event) => {
     event.preventDefault();
     this.submitData();
-  }
+  };
 
   formRolesSubmit = async () => {
     try {
@@ -472,7 +485,7 @@ class UserEdit extends React.Component {
       const updatedUser = response.data.data;
       store.dispatch(setEditUser(updatedUser));
       await this.dispatchUserList();
-      toast.success('success')
+      toast.success('success');
       this.setState({...this.state, errors: {}})
     } catch (responseError) {
       this.getUser();
@@ -480,7 +493,7 @@ class UserEdit extends React.Component {
       const error = responseError.response.data.error;
       toast.error(error.message)
     }
-  }
+  };
 
   async deleteOnboarding() {
     await workflowService.onboardingDelete(this.state.selectedOnboarding);
@@ -568,7 +581,7 @@ class UserEdit extends React.Component {
       store.dispatch(setEditUser(updatedUser));
       await this.dispatchUserList();
 
-      toast.success('success')
+      toast.success('success');
       this.setState({...this.state, errors: {}})
     } catch (responseError) {
       this.getUser();
@@ -576,7 +589,7 @@ class UserEdit extends React.Component {
       const error = responseError.response.data.error;
       toast.error(error.message)
     }
-  }
+  };
 
   createViewOnboarding() {
     this.setState({onboardingViewState: 'create', onboardingTemplate: this.onboardingTemplate, selectedOnboarding: {}})
@@ -588,29 +601,52 @@ class UserEdit extends React.Component {
 
   editField = (fieldName) => {
     this.setState({editField: fieldName});
-  }
+  };
 
   isFieldEdit = (field) => {
-    return this.state.editField === field;
-  }
+    let editedField = this.state.editField,
+      currField = field;
+    if (Array.isArray(field)) {
+      currField = field.join();
+    }
+    if (Array.isArray(this.state.editField)) {
+      editedField = this.state.editField.join();
+    }
+
+    return editedField === currField;
+  };
 
   editFieldSave = async () => {
     await this.submitData();
     this.setState({editField: null});
     await this.dispatchEditUser();
+  };
+
+  setEmptyEditField() {
+    this.setState({editField: null});
   }
 
   editFieldClose = () => {
-    this.setState({...this.state, [this.state.editField]: this.props.user[this.state.editField]}, () => {
-      this.setState({editField: null});
-    });
-  }
+    if (Array.isArray(this.state.editField)) {
+      let editingData = {};
+      this.state.editField.forEach((editField) => {
+        editingData[editField] = this.props.user[editField];
+      });
+      this.setState({...this.state, ...editingData}, () => {
+        this.setEmptyEditField();
+      });
+    } else {
+      this.setState({...this.state, [this.state.editField]: this.props.user[this.state.editField]}, () => {
+        this.setEmptyEditField();
+      });
+    }
+  };
 
   onSelectRolesChange = (values) => {
     this.setState({roles: values}, () => {
       this.formRolesSubmit();
     })
-  }
+  };
 
   refreshOnboarding() {
 
@@ -671,7 +707,7 @@ class UserEdit extends React.Component {
 
     try {
       await workflowService.updateDForm(dFormChanges);
-      toast.success('Success')
+      toast.success('Success');
       this.dispatchUserList();
       this.dispatchEditUser();
     } catch (error) {
@@ -738,7 +774,7 @@ class UserEdit extends React.Component {
                         {
                           name: 'Reviewers',
                           cell: (onboarding) => {
-                            return onboarding.reviewers.map(reviewer => reviewer.name).join(', ')
+                            return onboarding.reviewers.map(reviewer => reviewer.first_name + ' ' + reviewer.last_name).join(', ')
                           }
                         },
                         {
@@ -826,12 +862,12 @@ class UserEdit extends React.Component {
 
                                     <Select
                                       components={{DropdownIndicator}}
-                                      value={this.getCustomSelects(this.state.onboardingTemplate.reviewers)}
+                                      value={this.getCustomSelects(this.state.onboardingTemplate.reviewers, ['first_name', 'last_name'])}
                                       maxMenuHeight={200}
                                       isMulti
                                       isClearable={false}
                                       styles={colourStyles}
-                                      options={this.selectNoRepeat(this.state.reviewersSelect, this.getCustomSelects(this.state.onboardingTemplate.reviewers))}
+                                      options={this.selectNoRepeat(this.state.reviewersSelect, this.getCustomSelects(this.state.onboardingTemplate.reviewers, ['first_name', 'last_name']))}
                                       onChange={(values) => {
                                         this.setReviewersCreate(values)
                                       }}
@@ -1151,10 +1187,12 @@ class UserEdit extends React.Component {
   render() {
 
     const {
-      name,
+      first_name,
+      last_name,
       email,
       number,
       valid_until,
+      postcode
       // password,
       // invited,
       // onboarding
@@ -1170,42 +1208,74 @@ class UserEdit extends React.Component {
           <div className="d-flex edit-btn-trigger">
             <div className="edit-container edit-clicked">
               {
-                this.isFieldEdit('name') ?
-                  <FormGroup className="position-absolute input-divider-right" style={{
+                this.isFieldEdit(['first_name', 'last_name']) ?
+                  <FormGroup className="position-absolute input-divider-right z-index" style={{
                     'margin-bottom': '0',
                     'padding': 0,
                     top: '-9px',
                     left: '-2px',
-                    'min-width': '240px'
+                    'min-width': '480px',
                   }}>
-                    <Input
-                      style={{'padding-right': 'calc(1.25 * 1em + 1.4rem + 1px + 32px)'}}
-                      autoFocus
-                      type="text"
-                      name="name"
-                      id="mobileVertical"
-                      placeholder="Mobile"
-                      value={name}
-                      onChange={(event) => this.setState({name: event.target.value})}
-                      {...{invalid: 'name' in this.state.errors}}
-                    />
-                    <div className="form-control-position" style={{'margin-bottom': '0', 'padding': 0}}
+                    <div className="d-flex">
+                      <InputGroup>
+                        <InputGroupAddon addonType="prepend">First name</InputGroupAddon>
+                        <Input
+                          autoFocus
+                          type="text"
+                          name="name"
+                          id="mobileVertical"
+                          placeholder="First name"
+                          value={first_name}
+                          onChange={(event) => this.setState({first_name: event.target.value})}
+                          {...{invalid: 'first_name' in this.state.errors}}
+                          style={{
+                            'border-radius': '0 0 2px 2px'
+                          }}
+                        />
+                      </InputGroup>
+                      <InputGroup>
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText style={{
+                            'border-radius': '2px 2px 0 0'
+                          }}>
+                            Last name
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          style={{'padding-right': 'calc(1.25 * 1em + 1.4rem + 1px + 32px)'}}
+                          autoFocus
+                          type="text"
+                          name="name"
+                          id="mobileVertical"
+                          placeholder="Last name"
+                          value={last_name}
+                          onChange={(event) => this.setState({last_name: event.target.value})}
+                          {...{invalid: 'last_name' in this.state.errors}}
+
+                        />
+                      </InputGroup>
+                    </div>
+
+                    <div className="form-control-position z-index-9" style={{'margin-bottom': '0', 'padding': 0}}
                          onClick={() => this.editFieldSave()}>
                       <Check className="bg-hover-icon" size={15}/>
                     </div>
-                    <div className="form-control-position"
+                    <div className="form-control-position z-index-9"
                          style={{'margin-bottom': '0', 'padding': 0, 'margin-right': '32px'}}
                          onClick={() => this.editFieldClose()}>
                       <X className="bg-hover-icon" size={15}/>
                     </div>
-                    <FormFeedback>{'name' in this.state.errors ? this.state.errors['name'] : ''}</FormFeedback>
+                    <FormFeedback>{'first_name' in this.state.errors ? this.state.errors['first_name'] : ''}</FormFeedback>
                   </FormGroup>
-                  : <div onClick={() => this.editField('name')}>{name} <Edit2 className="edit-btn" size={15}/></div>
+                  :
+                  <div onClick={() => this.editField(['first_name', 'last_name'])}>{(first_name || 'No name') + ' ' + (last_name || '')} <Edit2
+                    className="edit-btn" size={15}/></div>
               }
+
             </div>
           </div>
         </CardTitle>
-        <X size={15} onClick={this.removeCard}/>
+        <X size={15} className="x-close-position" onClick={this.removeCard}/>
       </CardHeader>
       <CardBody className="card-top-padding">
         <Form onSubmit={(event) => this.formSubmit(event)}>
@@ -1232,7 +1302,7 @@ class UserEdit extends React.Component {
                                     type="text"
                                     name="number"
                                     id="mobileVertical"
-                                    placeholder="Mobile"
+                                    placeholder="Phone number"
                                     value={number}
                                     onChange={(event) => this.setState({number: event.target.value})}
                                     {...{invalid: 'number' in this.state.errors}}
@@ -1249,6 +1319,42 @@ class UserEdit extends React.Component {
                                   <FormFeedback>{'number' in this.state.errors ? this.state.errors['number'] : ''}</FormFeedback>
                                 </FormGroup>
                                 : <div onClick={() => this.editField('number')}>{number} <Edit2 className="edit-btn"
+                                                                                                size={15}/></div>
+                            }
+                          </div>
+                        </div>
+                        <div className="d-flex edit-btn-trigger">
+                          <div className="font-weight-bold-lighter column-sizing-user-info"
+                               onClick={() => this.editField('postcode')}>Postcode
+                          </div>
+                          <div className="edit-container">
+                            {
+                              this.isFieldEdit('postcode') ?
+                                <FormGroup className="position-absolute input-divider-right"
+                                           style={{'margin-bottom': '0', 'padding': 0, top: '-9px', left: '-2px'}}>
+                                  <Input
+                                    style={{'padding-right': 'calc(1.25 * 1em + 1.4rem + 1px + 32px)'}}
+                                    autoFocus
+                                    type="text"
+                                    name="postcode"
+                                    id="mobileVertical"
+                                    placeholder="Postcode"
+                                    value={postcode}
+                                    onChange={(event) => this.setState({postcode: event.target.value})}
+                                    {...{invalid: 'postcode' in this.state.errors}}
+                                  />
+                                  <div className="form-control-position" style={{'margin-bottom': '0', 'padding': 0}}
+                                       onClick={() => this.editFieldSave()}>
+                                    <Check className="bg-hover-icon" size={15}/>
+                                  </div>
+                                  <div className="form-control-position"
+                                       style={{'margin-bottom': '0', 'padding': 0, 'margin-right': '32px'}}
+                                       onClick={() => this.editFieldClose()}>
+                                    <X className="bg-hover-icon" size={15}/>
+                                  </div>
+                                  <FormFeedback>{'postcode' in this.state.errors ? this.state.errors['postcode'] : ''}</FormFeedback>
+                                </FormGroup>
+                                : <div onClick={() => this.editField('postcode')}>{postcode} <Edit2 className="edit-btn"
                                                                                                 size={15}/></div>
                             }
                           </div>
