@@ -9,7 +9,8 @@ export const appSlice = createSlice({
     isLoading: false,
     isError: null,
     user: {
-      managers: []
+      managers: [],
+      manager: null
     },
     group: {
       groups: []
@@ -100,6 +101,8 @@ export const {
   getUsersSuccess,
   getUsersRequest,
   getUsersError,
+
+  setUser,
   
   logout,
 } = appSlice.actions;

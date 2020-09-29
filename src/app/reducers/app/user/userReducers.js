@@ -34,7 +34,15 @@ const getProfileSuccess = (state) => ({
     isLoading: false,
     isError: payload,
   });
- 
+  const setUser = (state , {payload}) => ({
+    ...state,
+    isLoading: false,
+    isError: null,
+    user: {
+      ...state.user,
+      manager: payload
+    }
+  });
 
   
 export default {
@@ -44,4 +52,5 @@ export default {
     getUsersSuccess,
     getUsersRequest,
     getUsersError,
+    setUser,
   };

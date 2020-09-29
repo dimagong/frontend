@@ -17,10 +17,12 @@ const userApi = {
   async getUsers() {
     try {
       const result = await instance({
-        url: getUsersPath,
+        url: "/api/user/getByEmail",
         method: "GET",
         params: {
-          page: 1
+          page: 1,
+          email: ""
+
         }
       });
 

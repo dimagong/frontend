@@ -10,7 +10,7 @@ import {
 } from "app/slices/appSlice";
 import {selectGroups} from 'app/selectors/groupSelector'
 
-const DropdownIndicator = props => {
+export const DropdownIndicator = props => {
     return components.DropdownIndicator && (
       <components.DropdownIndicator {...props}>
         {/* <FontAwesomeIcon icon={props.selectProps.menuIsOpen ? "caret-up" : "caret-down"}/> */}
