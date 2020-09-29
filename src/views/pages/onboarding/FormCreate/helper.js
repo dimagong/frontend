@@ -56,6 +56,7 @@ export function isFieldHasDefaultEffectByOperator(operator) {
 }
 
 export function getFieldHasDefaultEffectByOperator(operator, typeField) {
+  return false;
   if(typeField === Constants.FIELD_TYPE_SELECT || typeField === Constants.FIELD_TYPE_MULTI_SELECT) {
     switch (operator) {
       case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
@@ -71,7 +72,7 @@ export function getFieldHasDefaultEffectByOperator(operator, typeField) {
   } else {
     switch (operator) {
       case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
-        return false;
+        return true;
       }
       case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
         return true;
@@ -86,7 +87,7 @@ export function getFieldHasDefaultEffectByOperator(operator, typeField) {
 export function operatorResult(property, operator, fieldValue, value, field = null) {
   // todo bug resolved
   const typeField = getSpecificType(property);
-  if (!fieldValue || !value) return getFieldHasDefaultEffectByOperator(operator, typeField);
+  // if (!fieldValue || !value) return getFieldHasDefaultEffectByOperator(operator, typeField);
 
   switch (operator) {
     case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL: {

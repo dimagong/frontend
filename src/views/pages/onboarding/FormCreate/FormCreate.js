@@ -32,7 +32,12 @@ import {CheckboxWidget} from "./Custom/CheckboxWidget";
 
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "../../../../services/file.service";
-import Constants from './Parts/Constants'
+import Constants, {
+  FIELD_TYPE_BOOLEAN, FIELD_TYPE_DATE, FIELD_TYPE_FILE, FIELD_TYPE_FILE_LIST,
+  FIELD_TYPE_MULTI_SELECT, FIELD_TYPE_NUMBER,
+  FIELD_TYPE_SELECT, FIELD_TYPE_TEXT,
+  FIELD_TYPE_TEXT_AREA
+} from './Parts/Constants'
 
 import {dependencyChecker} from './Parts/DependencyChecker'
 import {listControls} from './Parts/ListControls'
@@ -81,6 +86,8 @@ class FormCreate extends React.Component {
   initState(props) {
     const propsDFormSchema = clone(props.dForm.schema.schema);
     const propsDFormUiSchema = clone(props.dForm.schema.uiSchema);
+    const formData = !isEmpty(this.props.dForm.submit_data) ? clone(this.props.dForm.submit_data) : {};
+
 
     let fileLoading = false;
     const protectedPropertiesDefault = {
@@ -115,6 +122,9 @@ class FormCreate extends React.Component {
         }
       }))
     }
+
+
+
     Object.keys(propsDFormSchema.properties).forEach(key => {
       if (!(key in propsDFormUiSchema)) {
         propsDFormUiSchema[key] = {};
@@ -123,6 +133,14 @@ class FormCreate extends React.Component {
         propsDFormUiSchema[key][Constants.UI_DISABLED] = true;
       }
     });
+
+    this.formatDefaultFormData(propsDFormSchema, formData);
+
+    console.log('FORMDATA', formData);
+
+    setTimeout(() => {
+      console.log('FORMDATA 2 ', this.state.formData);
+    }, 5000)
 
     const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
 
@@ -161,7 +179,7 @@ class FormCreate extends React.Component {
         }
       },
       loadingFiles: [],
-      formData: isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data,
+      formData: formData,
       sumbitFormData: {},
       dFormTemplate: props.dForm,
       schemaPropertyEdit: {},
@@ -250,6 +268,56 @@ class FormCreate extends React.Component {
     };
   }
 
+  formatDefaultFormData(schema, formData) {
+    Object.keys(schema.properties).forEach(key => {
+      if(key in formData) {
+        return;
+      }
+
+      switch (getSpecificType(schema.properties[key])) {
+        case FIELD_TYPE_SELECT: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_MULTI_SELECT: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_BOOLEAN: {
+          formData[key] = false;
+          break;
+        }
+        case FIELD_TYPE_TEXT_AREA: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_TEXT: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_NUMBER: {
+          formData[key] = 0;
+          break;
+        }
+        case FIELD_TYPE_DATE: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_FILE_LIST: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_FILE: {
+          formData[key] = '';
+          break;
+        }
+        default: {
+          formData[key] = '';
+          break;
+        }
+      }
+    });
+  }
 
   // submits, changes
   formSubmit = (event) => {
@@ -346,7 +414,8 @@ class FormCreate extends React.Component {
   reInit = debounce(() => {
     let state = this.initState(this.props);
 
-    state.formData = isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data;
+    console.log('PROPS', state.formData);
+    //state.formData = isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data;
     this.dependencyChecker(state);
     this.setState(state, async () => {
       this.groupedFiles()

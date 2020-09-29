@@ -653,9 +653,18 @@ class UserEdit extends React.Component {
     this.setState({refreshOnboarding: true}, async () => {
       await this.dispatchUserList();
       await this.dispatchEditUser();
+      this.updateSelectedOnboarding();
       this.setState({refreshOnboarding: false});
       this.reInitForm();
     });
+  }
+
+  updateSelectedOnboarding() {
+    let updatedCurrOnboarding = this.props.user.onboardings.find(onboarding => onboarding.id === this.state.selectedOnboarding.id);
+    if(!updatedCurrOnboarding) {
+      return;
+    }
+    this.setState({selectedOnboarding: updatedCurrOnboarding})
   }
 
   refreshOnboardingState() {
@@ -1003,12 +1012,12 @@ class UserEdit extends React.Component {
                                     <Select
                                       isDisabled={true}
                                       components={{DropdownIndicator}}
-                                      value={this.getCustomSelects(this.state.selectedOnboarding.reviewers)}
+                                      value={this.getCustomSelects(this.state.selectedOnboarding.reviewers, ['first_name', 'last_name'])}
                                       maxMenuHeight={200}
                                       isMulti
                                       isClearable={false}
                                       styles={colourStyles}
-                                      options={this.selectNoRepeat(this.state.reviewersSelect, this.getCustomSelects(this.state.selectedOnboarding.reviewers))}
+                                      options={this.selectNoRepeat(this.state.reviewersSelect, this.getCustomSelects(this.state.selectedOnboarding.reviewers, ['first_name', 'last_name']))}
                                       onChange={(values) => {
                                         this.setReviewers(values)
                                       }}
