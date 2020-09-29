@@ -307,11 +307,11 @@ export function listControls(properties) {
             <div>
               {renderRequiredColumn(objKey, 'Required?')}
             </div>
-            <Col md="12">
+            <div>
               <FormGroup>
                 {renderLabelShowing(objKey, 'Required?')}
               </FormGroup>
-            </Col>
+            </div>
           </div>)
         }
         case Constants.FIELD_TYPE_MULTI_SELECT: {

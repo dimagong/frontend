@@ -38,6 +38,7 @@ import {dependencyChecker} from './Parts/DependencyChecker'
 import {listControls} from './Parts/ListControls'
 import {getSpecificType, isElementProtected} from "./helper";
 import SortableEditModal from './SortableEditModal'
+import Sortable from './Sortable'
 
 const clone = rfdc();
 
@@ -1568,7 +1569,9 @@ class FormCreate extends React.Component {
                        className="form-control"/>
               </div>
               <div className="d-flex justify-content-end">
-                <SortableEditModal onOpen={() => this.onOpenSortableModal()} onSave={() => this.onSaveSortableModal()}/>
+                <SortableEditModal onOpen={() => this.onOpenSortableModal()} onSave={() => this.onSaveSortableModal()}>
+                  <Sortable items={this.state.uiSchema.onlySections}/>
+                </SortableEditModal>
               </div>
               <div className="">
                 {controls}

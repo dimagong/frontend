@@ -368,6 +368,13 @@ export function dependencyChecker(state) {
       return fieldObj.value && fieldObj.effect === Constants.UI_DISABLED;
     });
 
+    // let notHidden = fieldsStates[field].find(fieldObj => {
+    //   return !fieldObj.value && fieldObj.effect === Constants.UI_HIDDEN;
+    // });
+    // let notDisabled = fieldsStates[field].find(fieldObj => {
+    //   return !fieldObj.value && fieldObj.effect === Constants.UI_DISABLED;
+    // });
+
     if (hidden) {
       state.uiSchema[field][hidden.effect] = true;
       return;
@@ -429,4 +436,6 @@ export function dependencyChecker(state) {
 
     state.uiSchema.sectionStates[section] = {};
   })
+
+  console.log('fieldsStates', fieldsStates);
 }
