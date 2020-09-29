@@ -1568,11 +1568,11 @@ class FormCreate extends React.Component {
                 }} type="text"
                        className="form-control"/>
               </div>
-              <div className="d-flex justify-content-end">
-                <SortableEditModal onOpen={() => this.onOpenSortableModal()} onSave={() => this.onSaveSortableModal()}>
-                  <Sortable items={this.state.uiSchema.onlySections}/>
-                </SortableEditModal>
-              </div>
+              {/*<div className="d-flex justify-content-end">*/}
+              {/*  <SortableEditModal onOpen={() => this.onOpenSortableModal()} onSave={() => this.onSaveSortableModal()}>*/}
+              {/*    <Sortable items={this.state.uiSchema.onlySections}/>*/}
+              {/*  </SortableEditModal>*/}
+              {/*</div>*/}
               <div className="">
                 {controls}
               </div>
