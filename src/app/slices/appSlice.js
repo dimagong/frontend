@@ -102,6 +102,22 @@ export const {
   getUsersRequest,
   getUsersError,
 
+  updateUserSuccess,
+  updateUserRequest,
+  updateUserError,
+
+  updateUserAvatarSuccess,
+  updateUserAvatarRequest,
+  updateUserAvatarError,
+
+  deleteUserAvatarSuccess,
+  deleteUserAvatarRequest,
+  deleteUserAvatarError,
+
+  getUserAvatarSuccess,
+  getUserAvatarRequest,
+  getUserAvatarError,
+
   setUser,
   
   logout,
