@@ -134,7 +134,7 @@ class FormCreate extends React.Component {
       }
     });
 
-    this.formatDefaultFormData(propsDFormSchema, formData);
+    //this.formatDefaultFormData(propsDFormSchema, formData);
 
     console.log('FORMDATA', formData);
 
@@ -280,7 +280,7 @@ class FormCreate extends React.Component {
           break;
         }
         case FIELD_TYPE_MULTI_SELECT: {
-          formData[key] = '';
+          formData[key] = [];
           break;
         }
         case FIELD_TYPE_BOOLEAN: {
@@ -296,7 +296,7 @@ class FormCreate extends React.Component {
           break;
         }
         case FIELD_TYPE_NUMBER: {
-          formData[key] = 0;
+          formData[key] = '';
           break;
         }
         case FIELD_TYPE_DATE: {
@@ -304,7 +304,7 @@ class FormCreate extends React.Component {
           break;
         }
         case FIELD_TYPE_FILE_LIST: {
-          formData[key] = '';
+          formData[key] = [];
           break;
         }
         case FIELD_TYPE_FILE: {

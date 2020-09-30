@@ -54,34 +54,34 @@ export function isFieldHasDefaultEffectByOperator(operator) {
     }
   }
 }
-
-export function getFieldHasDefaultEffectByOperator(operator, typeField) {
+// operator, typeField
+export function getFieldHasDefaultEffectByOperator() {
   return false;
-  if(typeField === Constants.FIELD_TYPE_SELECT || typeField === Constants.FIELD_TYPE_MULTI_SELECT) {
-    switch (operator) {
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
-        return true;
-      }
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
-        return true;
-      }
-      default : {
-        return false
-      }
-    }
-  } else {
-    switch (operator) {
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
-        return true;
-      }
-      case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
-        return true;
-      }
-      default : {
-        return false
-      }
-    }
-  }
+  // if(typeField === Constants.FIELD_TYPE_SELECT || typeField === Constants.FIELD_TYPE_MULTI_SELECT) {
+  //   switch (operator) {
+  //     case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
+  //       return true;
+  //     }
+  //     case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
+  //       return true;
+  //     }
+  //     default : {
+  //       return false
+  //     }
+  //   }
+  // } else {
+  //   switch (operator) {
+  //     case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
+  //       return true;
+  //     }
+  //     case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
+  //       return true;
+  //     }
+  //     default : {
+  //       return false
+  //     }
+  //   }
+  // }
 }
 
 export function operatorResult(property, operator, fieldValue, value, field = null) {

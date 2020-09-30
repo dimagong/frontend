@@ -261,7 +261,7 @@ class Workflow extends React.Component {
   transformManagerToSelectFormat(manager) {
     return {
       value: manager,
-      label: manager.name + ` (${manager.id})`,
+      label: manager.first_name + ' ' + manager.last_name + ` (${manager.id})`,
       color: colorMultiSelect
     }
   }

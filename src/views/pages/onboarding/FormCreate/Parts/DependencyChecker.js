@@ -53,12 +53,12 @@ export function dependencyChecker(state) {
           state.uiSchema[field] = {};
         }
 
-        let specificType = getSpecificType(this.state.schema.properties[fieldOperator.field]);
-        let defaultValue = getFieldHasDefaultEffectByOperator(fieldOperator.operator, specificType);
+        // todo undefined
+        let defaultValue = getFieldHasDefaultEffectByOperator();
 
         // todo 04.09.2020 bug  if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
         if (!(fieldOperator.field in state.formData)) {
-          setField(field, defaultValue, effect);
+          setField(field, true, effect);
           continue;
         }
 
@@ -130,6 +130,10 @@ export function dependencyChecker(state) {
 
         if (!(settingGroup in state.uiSchema.groupStates)) {
           state.uiSchema.groupStates[settingGroup] = {};
+        }
+
+        if(!(fieldOperator.field in this.state.schema.properties)) {
+          return;
         }
 
         const fieldValue = state.formData[fieldOperator.field];
