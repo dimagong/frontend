@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 import { X, Eye, EyeOff } from "react-feather";
 import MultiSelect from "components/MultiSelect/multiSelect";
-import { prepareSelectData } from "utility/select/prepareSelectData";
+import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { useDispatch, useSelector } from "react-redux";
 import { selectdForms, selectdForm } from "app/selectors/onboardingSelectors";
 import {Check, Plus} from "react-feather";
@@ -52,7 +52,7 @@ const DFormForm = () => {
       </CardHeader>
       <CardBody className="card-top-padding">
         <div className="mt-2">
-          <MultiSelect setGroups={() => null} groups={prepareSelectData(dForm.groups)} />
+          <MultiSelect setGroups={() => null} groups={prepareSelectGroups(dForm.groups)} />
         </div>
         {/* <FormCreate fileLoader={false}
                       submitDForm={(dForm, data) => this.submitDForm(dForm, data)}

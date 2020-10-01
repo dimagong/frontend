@@ -14,6 +14,12 @@ export const appSlice = createSlice({
     },
     group: {
       groups: []
+    },
+    role: {
+      roles: []
+    },
+    module: {
+      modules: []
     } 
   },
   reducers: {
@@ -45,6 +51,14 @@ export const {
   getGroupsSuccess,
   getGroupsRequest,
   getGroupsError,
+
+  getRolesSuccess,
+  getRolesRequest,
+  getRolesError,
+
+  getModulesSuccess,
+  getModulesRequest,
+  getModulesError,
 
   createNotificationSuccess,
   createNotificationRequest,
@@ -119,6 +133,9 @@ export const {
   getUserAvatarError,
 
   setUser,
+  setUserGroups,
+  setUserModules,
+  setUserRoles,
   
   logout,
 } = appSlice.actions;

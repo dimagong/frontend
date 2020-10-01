@@ -22,7 +22,7 @@ import {
   getdFormTriggersError,
 } from "app/slices/appSlice";
 import { setdForms, setdFormActions, setdFormTriggers } from "app/slices/onboardingSlice";
-import { prepareSelectData } from "utility/select/prepareSelectData";
+import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { selectdForms } from "app/selectors/onboardingSelectors";
 import _ from "lodash";
 
@@ -41,7 +41,7 @@ function* createdForm({ payload }) {
   try {
     const responce = yield call(dFormApi.createdForm, {
       ...payload,
-      groups: prepareSelectData(payload.groups).map((group) => group.value),
+      groups: prepareSelectGroups(payload.groups).map((group) => group.value),
     });
 
     yield put(createdFormSuccess());
@@ -56,7 +56,7 @@ function* updatedForm({ payload }) {
   try {
     const responce = yield call(dFormApi.updatedForm, {
       ...payload,
-      groups: prepareSelectData(payload.groups).map((group) => group.value),
+      groups: prepareSelectGroups(payload.groups).map((group) => group.value),
     });
     yield put(updatedFormSuccess());
     const notifications = yield select(selectdForms);

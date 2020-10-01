@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectNotification } from "app/selectors/onboardingSelectors";
 import { setNotification, setNotificationGroups } from "app/slices/onboardingSlice";
 import {MultiSelect} from "components/MultiSelect/multiSelect";
-import {prepareSelectData} from "utility/select/prepareSelectData";
+import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import { createNotificationRequest, updateNotificationRequest } from "app/slices/appSlice";
 
 const NotificationsForm = ({ clearGridSelection, isCreate }) => {
@@ -93,7 +93,7 @@ const NotificationsForm = ({ clearGridSelection, isCreate }) => {
                 </FormGroup>
                 <MultiSelect
                   setGroups={setNotificationGroups}
-                  groups={prepareSelectData(notification.groups)}
+                  groups={prepareSelectGroups(notification.groups)}
                 />
                 <div className="d-flex justify-content-center flex-wrap mt-2">
                   <Button

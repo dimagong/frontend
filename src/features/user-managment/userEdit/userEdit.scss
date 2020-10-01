@@ -1,0 +1,27 @@
+.user-edit{
+    &__user-avatar{
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        &_button-wrapper{
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+        }
+        &_spinner-wrapper{
+           position: absolute;
+           top: 50%;
+           left: 50%;
+           transform: "translate(-50%, -50%)";
+        }
+        .x-closer{
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            border: 1px;
+            border-radius: 10px;
+            color: #000;
+            background: #FFF;
+        }
+    }
+}

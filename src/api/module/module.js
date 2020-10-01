@@ -1,11 +1,11 @@
 import instance from "api";
-import { groupsPath } from "constants/onboarding";
+import { modulesPath } from "constants/onboarding";
 
-const groupApi = {
-  async getGroups() {
+const moduleApi = {
+  async getModules() {
     try {
       const result = await instance({
-        url: groupsPath,
+        url: modulesPath,
         method: "GET",
       });
 
@@ -17,4 +17,4 @@ const groupApi = {
 
 };
 
-export default groupApi;
+export default moduleApi;

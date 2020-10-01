@@ -1,11 +1,11 @@
 import instance from "api";
-import { groupsPath } from "constants/onboarding";
+import { rolesPath } from "constants/onboarding";
 
-const groupApi = {
-  async getGroups() {
+const roleApi = {
+  async getRoles() {
     try {
       const result = await instance({
-        url: groupsPath,
+        url: rolesPath,
         method: "GET",
       });
 
@@ -17,4 +17,4 @@ const groupApi = {
 
 };
 
-export default groupApi;
+export default roleApi;

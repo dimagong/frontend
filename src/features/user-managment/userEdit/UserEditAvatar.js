@@ -1,6 +1,6 @@
 import React, {useRef, useEffect} from "react";
 import { Button, Media, Spinner } from "reactstrap";
-import noneAvatar from "../../../../assets/img/portrait/none-avatar.png";
+import noneAvatar from "assets/img/portrait/none-avatar.png";
 import { X } from "react-feather";
 import { selectLoading } from "app/selectors/authSelectors";
 import { selectManager } from "app/selectors/userSelectors";
@@ -49,7 +49,7 @@ const UserAvatar = () => {
       <div
         className="user-edit__user-avatar_button-wrapper"
       >
-        <Button.Ripple
+        <Button
           disabled={isLoading}
           onClick={(event) => changeAvatar(event)}
           outline
@@ -57,7 +57,7 @@ const UserAvatar = () => {
           color="primary"
         >
           Change
-        </Button.Ripple>
+        </Button>
         <input
           id="input-user-edit-avatar"
           ref={fileInputRef}

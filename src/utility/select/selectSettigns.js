@@ -1,6 +1,6 @@
 import chroma from "chroma-js"
 
-const colorMultiSelect = '#007bff'; //#7367f0
+export const colorMultiSelect = '#007bff'; //#7367f0
 
 
 export const colourStyles = {

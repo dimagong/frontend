@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectManager, selectManagers } from "app/selectors/userSelectors";
 import { getUsersRequest } from "app/slices/appSlice";
 import { navItemFactory } from "./contants";
+import UserEdit from './userEdit/UserEdit'
 
 const UserManagment = () => {
   const manager = useSelector(selectManager);
@@ -32,7 +33,7 @@ const UserManagment = () => {
   }, []);
 
   return (
-    <Row>
+    <Row className="user-managment">
       <Col sm="12" md="12" lg="12" xl="5">
         <Card>
           <CardBody className="pt-2">
@@ -62,7 +63,7 @@ const UserManagment = () => {
         </Card>
       </Col>
       <Col sm="12" md="12" lg="12" xl="7">
-        {/* {user ? <UserEdit /> : null} */}
+        {manager ? <UserEdit /> : null}
       </Col>
       <ToastContainer />
     </Row>

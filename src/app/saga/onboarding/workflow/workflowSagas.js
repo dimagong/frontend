@@ -23,7 +23,7 @@ import {
   setWorkflows,
   setWorkflow
 } from "app/slices/onboardingSlice";
-import {prepareSelectData} from "utility/select/prepareSelectData";
+import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {
   selectWorkflows,
   selectNotifications
@@ -51,7 +51,7 @@ function* getWorkflows() {
 
 function* createWorkflow({payload}) {
   try {
-    const responce = yield call(workflowApi.createWorkflow, {...payload, groups: prepareSelectData(payload.groups).map(group => group.value)});
+    const responce = yield call(workflowApi.createWorkflow, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
     
     yield put(createWorkflowSuccess());
     const notifications = yield select(selectWorkflows)
@@ -64,7 +64,7 @@ function* createWorkflow({payload}) {
 
 function* updateWorkflow({payload}) {
   try {
-    const responce = yield call(workflowApi.updateWorkflow, {...payload, groups: prepareSelectData(payload.groups).map(group => group.value)});
+    const responce = yield call(workflowApi.updateWorkflow, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
     yield put(updateWorkflowSuccess());
     const notifications = yield select(selectWorkflows);
     yield put(setWorkflows(notifications.map( notification => notification.id === responce.id ? responce : notification)))

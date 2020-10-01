@@ -6,7 +6,8 @@ import dFromSagas from "./onboarding/dForm/dFromSagas";
 import userSagas from "./user/userSagas";
 import groupSagas from "./group/groupSagas";
 import workflowSagas from "./onboarding/workflow/workflowSagas";
-
+import roleSagas from './role/roleSagas'
+import moduleSagas from './module/moduleSagas'
 
 export default function *rootSaga() {
   yield all([
@@ -16,5 +17,7 @@ export default function *rootSaga() {
     groupSagas(),
     dFromSagas(),
     workflowSagas(),
+    roleSagas(),
+    moduleSagas(),
   ]);
 }

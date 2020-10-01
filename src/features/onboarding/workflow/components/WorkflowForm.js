@@ -24,7 +24,7 @@ import CreatableSelect from "react-select/creatable";
 import "flatpickr/dist/themes/light.css";
 import { X, ChevronDown } from "react-feather";
 import MultiSelect from "components/MultiSelect/multiSelect";
-import { prepareSelectData } from "utility/select/prepareSelectData";
+import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { selectWorkflow } from "app/selectors/onboardingSelectors";
 import { useDispatch, useSelector } from "react-redux";
 import { setWorkflow, setWorkflowGroups } from "app/slices/onboardingSlice";
@@ -104,7 +104,7 @@ const submitWorkflow = (e) => {
               </FormGroup>
             </Col>
             <Col>
-              <MultiSelect groups={prepareSelectData(workflow.groups)} setGroups={setWorkflowGroups}/>
+              <MultiSelect groups={prepareSelectGroups(workflow.groups)} setGroups={setWorkflowGroups}/>
             </Col>
             <WorkflowTriggers/>
             

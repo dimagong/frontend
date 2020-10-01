@@ -6,3 +6,5 @@ export const dFormTriggersPath = "/api/dform/triggers";
 export const workflowPath = "/api/workflow";
 
 export const groupsPath = "/api/group/all";
+export const rolesPath = "/api/role/all";
+export const modulesPath = "/api/module";

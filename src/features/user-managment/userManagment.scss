@@ -1,4 +1,4 @@
-.user_managment {
+.user-managment {
   &__edit {
     &_header {
       height: 68px;
@@ -8,8 +8,9 @@
         top: -9px;
         left: -2px;
         min-width: 240px;
-        .form-control {
-          padding-right: "calc(1.25 * 1em + 1.4rem + 1px + 32px)";
+
+        > .form-control {
+          padding-right: calc(1.25 * 1em + 1.4rem + 1px + 32px);
         }
         &_check {
           margin-bottom: 0;
@@ -19,6 +20,62 @@
           margin-bottom: 0;
           padding: 0;
           margin-right: 32px;
+        }
+        
+      }
+      .edit-container {
+        position: relative;
+        width: 100%;
+      }
+    }
+    &_body {
+      padding-top: 0;
+      &_user-info{
+        .column-sizing-user-info{
+          margin-bottom: 8px;
+          min-width: 100px;
+        }
+        &-container{
+          position: relative;
+          width: 70%;
+          z-index: 1;
+        }
+      }
+      &_form {
+        position: absolute;
+        margin-bottom: 0;
+        padding: 0;
+        top: -9px;
+        left: -2px;
+        &__select{
+          display: flex;
+        }
+        &__select-wrapper{
+          .column-sizing{
+            min-width: 120px;
+            min-height: 25px;
+            padding: 0 !important;
+          }
+        }
+        &_check {
+          margin-bottom: 0;
+          padding: 0;
+        }
+        &_cross {
+          margin-bottom: 0;
+          padding: 0;
+          margin-right: 32px;
+        }
+        &_text{
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          span{
+           
+          }
+        }
+        > .form-control {
+          padding-right: calc(1.25 * 1em + 1.4rem + 1px + 32px);
         }
       }
     }

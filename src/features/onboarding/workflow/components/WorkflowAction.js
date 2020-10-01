@@ -24,7 +24,8 @@ import { setWorkflowTriggers } from "app/slices/onboardingSlice";
 import { selectManagers } from "app/selectors/userSelectors";
 import Select from "react-select";
 import { colourStyles } from "utility/select/selectSettigns";
-const colorMultiSelect = "#007bff";
+import {prepareSelectManagers} from "utility/select/prepareSelectData";
+
 
 const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
   const dispatch = useDispatch();
@@ -100,14 +101,6 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
         )
       );
     }
-  };
-
-  const prepareSelectData = (managers) => {
-    return managers.map((manager) => ({
-      value: manager,
-      label: manager.name + ` (${manager.id})`,
-      color: colorMultiSelect,
-    }));
   };
 
   return (
@@ -212,13 +205,13 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
             {action.user_target_type === userTargetTypes.managers ? (
               <div className="text-center w-100 mt-2">
                 <Select
-                  value={prepareSelectData(action.action_users)}
+                  value={prepareSelectManagers(action.action_users)}
                   maxMenuHeight={200}
                   isMulti
                   isSearchable={true}
                   isClearable={false}
                   styles={colourStyles}
-                  options={prepareSelectData(managers)}
+                  options={prepareSelectManagers(managers)}
                   className="fix-margin-select"
                   onChange={(values) => {
                     setActionProperty({

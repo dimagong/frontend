@@ -18,7 +18,7 @@ import {
 import {
   setNotifications
 } from "app/slices/onboardingSlice";
-import {prepareSelectData} from "utility/select/prepareSelectData";
+import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {
   selectNotifications,
 } from "app/selectors/onboardingSelectors";
@@ -37,7 +37,7 @@ function* getNotifications() {
 
 function* createNotification({payload}) {
   try {
-    const responce = yield call(notificationApi.createNotification, {...payload, groups: prepareSelectData(payload.groups).map(group => group.value)});
+    const responce = yield call(notificationApi.createNotification, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
     
     yield put(createNotificationSuccess());
     const notifications = yield select(selectNotifications)
@@ -49,7 +49,7 @@ function* createNotification({payload}) {
 
 function* updateNotification({payload}) {
   try {
-    const responce = yield call(notificationApi.updateNotification, {...payload, groups: prepareSelectData(payload.groups).map(group => group.value)});
+    const responce = yield call(notificationApi.updateNotification, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
     yield put(updateNotificationSuccess());
     const notifications = yield select(selectNotifications);
     yield put(setNotifications(notifications.map( notification => notification.id === responce.id ? responce : notification)))

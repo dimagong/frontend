@@ -104,7 +104,36 @@ const setUser = (state, { payload }) => ({
     manager: payload,
   },
 });
-
+const setUserGroups = (state, {payload}) => ({
+  ...state,
+  user: {
+    users: state.user.users,
+    user: {
+      ...state.user.user,
+      groups: payload
+    }
+  }
+})
+const setUserModules = (state, {payload}) => ({
+  ...state,
+  user: {
+    users: state.user.users,
+    user: {
+      ...state.user.user,
+      modules: payload
+    }
+  }
+})
+const setUserRoles = (state, {payload}) => ({
+  ...state,
+  user: {
+    users: state.user.users,
+    user: {
+      ...state.user.user,
+      roles: payload
+    }
+  }
+})
 
 export default {
   getProfileSuccess,
@@ -123,4 +152,7 @@ export default {
   getUserAvatarSuccess,
   getUserAvatarRequest,
   getUserAvatarError,
+  setUserGroups,
+  setUserModules,
+  setUserRoles,
 };

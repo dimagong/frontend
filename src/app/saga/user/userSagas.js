@@ -51,7 +51,7 @@ function* getUserAvatar({payload}) {
   try {
     const {managerId} = payload;
 
-    const url = yield call(userApi.getUserAvatar, managerId);
+    const url = yield call(userApi.getUserAvatar, {managerId});
     yield put(getUserAvatarSuccess({url}));
 
   } catch (error) {
@@ -62,11 +62,11 @@ function* getUserAvatar({payload}) {
 
 function* updateUserAvatar({payload}) {
   try {
-    const {files} = payload;
+    const {files, avatarId} = payload;
     const formData = new FormData();
     formData.set('avatar', files[0]);
 
-    const avatar = yield call(userApi.updateUserAvatar, formData);
+    const avatar = yield call(userApi.updateUserAvatar, {formData, avatarId});
     yield put(updateUserAvatarSuccess({avatar}));
 
   } catch (error) {
@@ -78,7 +78,7 @@ function* deleteUserAvatar({payload}) {
   try {
     const {avatarId} = payload;
 
-    yield call(userApi.deleteUserAvatar, avatarId);
+    yield call(userApi.deleteUserAvatar, {avatarId});
     yield put(deleteUserAvatarSuccess({avatar: null, url: null}));
 
   } catch (error) {
