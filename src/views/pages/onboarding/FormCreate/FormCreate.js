@@ -56,7 +56,7 @@ class FormCreate extends React.Component {
     super(props);
 
     this.state = this.initState(props);
-
+    console.log('STATE', this.state);
     this.refTitles = React.createRef();
 
     this.props.reInit && this.props.reInit(this.reInit, this);
@@ -160,6 +160,10 @@ class FormCreate extends React.Component {
         UI_OPTIONS: {
           label: true
         }
+      },
+      sortableFilter: {
+        group: null,
+        section: null
       },
       loadingFiles: [],
       formData: formData,
@@ -408,7 +412,7 @@ class FormCreate extends React.Component {
   reInit = debounce(() => {
     let state = this.initState(this.props);
 
-    console.log('PROPS', state.formData);
+
     //state.formData = isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data;
     this.dependencyChecker(state);
     this.setState(state, async () => {
@@ -1631,11 +1635,34 @@ class FormCreate extends React.Component {
                 }} type="text"
                        className="form-control"/>
               </div>
-              {/*<div className="d-flex justify-content-end">*/}
-              {/*  <SortableEditModal onOpen={() => this.onOpenSortableModal()} onSave={() => this.onSaveSortableModal()}>*/}
-              {/*    <Sortable items={this.state.uiSchema.onlySections}/>*/}
-              {/*  </SortableEditModal>*/}
-              {/*</div>*/}
+              <div className="d-flex justify-content-end">
+                <SortableEditModal onOpen={() => this.onOpenSortableModal()} onSave={() => this.onSaveSortableModal()}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Sections</CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                      <Sortable selfKey={this.state.sortableFilter.section} items={this.state.uiSchema.onlySections} onChangeFilterKey={(filterKey) => {this.setState({sortableFilter: {...this.state.sortableFilter, section: filterKey, group: null}})}} onDragEnd={(items) => {this.setState({uiSchema: { ...this.state.uiSchema, onlySections: items}})}}/>
+                    </CardBody>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Groups</CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                      <Sortable selfKey={this.state.sortableFilter.group} filterControlled={true} filterKey={this.state.sortableFilter.section} onChangeFilterKey={(filterKey) => {this.setState({sortableFilter: {...this.state.sortableFilter, group: filterKey}})}} items={this.state.uiSchema.sectionGroups}  onDragEnd={(items) => {this.setState({uiSchema: { ...this.state.uiSchema, sectionGroups: items}})}}/>
+                    </CardBody>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Fields</CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                      <Sortable filterControlled={true} filterKey={this.state.sortableFilter.group} filterItems={this.state.uiSchema.groups} items={this.state.schema.properties} onDragEnd={(items) => {this.setState({schema: { ...this.state.schema, properties: items}})}}/>
+                    </CardBody>
+                  </Card>
+                </SortableEditModal>
+              </div>
               <div className="">
                 {controls}
               </div>

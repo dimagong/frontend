@@ -28,14 +28,14 @@ function SortableEditModal(props) {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>UI settings</Modal.Title>
+                    <Modal.Title>Ordering</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>{props.children}</Modal.Body>
-                <Modal.Footer className="justify-content-between">
-                    <div className="d-flex justify-content-start">
-                        <Button onClick={handleSave} variant="primary">Save</Button>
-                    </div>
-                </Modal.Footer>
+                {/*<Modal.Footer className="justify-content-between">*/}
+                {/*    <div className="d-flex justify-content-start">*/}
+                {/*        <Button onClick={handleSave} variant="primary">Save</Button>*/}
+                {/*    </div>*/}
+                {/*</Modal.Footer>*/}
             </Modal>
         </div>
     );
