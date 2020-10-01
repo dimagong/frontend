@@ -11,7 +11,8 @@ import {isArray} from "leaflet/src/core/Util";
 
 export function dependencyChecker(state) {
 
-  if (this.props.inputDisabled) return true;
+  // todo
+  //if (this.props.inputDisabled) return true;
 
   let fieldsStates = {};
   let groupsStates = {};
@@ -132,6 +133,7 @@ export function dependencyChecker(state) {
           state.uiSchema.groupStates[settingGroup] = {};
         }
 
+        // todo
         if(!(fieldOperator.field in this.state.schema.properties)) {
           return;
         }
@@ -442,4 +444,7 @@ export function dependencyChecker(state) {
   })
 
   console.log('fieldsStates', fieldsStates);
+
+  // todo function in DForm, if checked them disabled
+  this.disableAllInputs(state.schema, state.uiSchema);
 }

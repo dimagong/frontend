@@ -117,30 +117,13 @@ class FormCreate extends React.Component {
       Object.keys(props.dForm.submit_data).forEach((key => {
         if (key in propsDFormSchema.properties) {
           propsDFormSchema.properties[key].default = props.dForm.submit_data[key];
-
-          //propsDFormUiSchema[key]['ui:emptyValue'] = null;
         }
       }))
     }
 
+    this.formatDefaultFormData(propsDFormSchema, formData);
 
-
-    Object.keys(propsDFormSchema.properties).forEach(key => {
-      if (!(key in propsDFormUiSchema)) {
-        propsDFormUiSchema[key] = {};
-      }
-      if (this.props.inputDisabled) {
-        propsDFormUiSchema[key][Constants.UI_DISABLED] = true;
-      }
-    });
-
-    //this.formatDefaultFormData(propsDFormSchema, formData);
-
-    console.log('FORMDATA', formData);
-
-    setTimeout(() => {
-      console.log('FORMDATA 2 ', this.state.formData);
-    }, 5000)
+    this.disableAllInputs(propsDFormSchema, propsDFormUiSchema);
 
     const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
 
@@ -268,15 +251,26 @@ class FormCreate extends React.Component {
     };
   }
 
+  disableAllInputs(dFormSchema, dFormUiSchema) {
+    if (this.props.inputDisabled) {
+      Object.keys(dFormSchema.properties).forEach(key => {
+        if (!(key in dFormUiSchema)) {
+          dFormUiSchema[key] = {};
+        }
+        dFormUiSchema[key][Constants.UI_DISABLED] = true;
+      });
+    }
+  }
+
   formatDefaultFormData(schema, formData) {
     Object.keys(schema.properties).forEach(key => {
-      if(key in formData) {
+      if (key in formData) {
         return;
       }
 
       switch (getSpecificType(schema.properties[key])) {
         case FIELD_TYPE_SELECT: {
-          formData[key] = '';
+          formData[key] = null;
           break;
         }
         case FIELD_TYPE_MULTI_SELECT: {
@@ -346,7 +340,7 @@ class FormCreate extends React.Component {
       this.props.onSubmit(formData);
     }
     return true;
-  }
+  };
 
   onChangeForm = (event) => {
     let state = clone(this.state);
@@ -515,7 +509,7 @@ class FormCreate extends React.Component {
   };
 
   dependencyModalOpen = (dependencyType, objKey) => {
-    let dependencies = objKey in this.state.uiSchema.dependencies[dependencyType] ? this.state.uiSchema.dependencies[dependencyType][objKey] : {}
+    let dependencies = objKey in this.state.uiSchema.dependencies[dependencyType] ? this.state.uiSchema.dependencies[dependencyType][objKey] : {};
     this.setState({fieldEdit: {propertyKey: objKey}});
 
     this.setState({
@@ -1462,7 +1456,7 @@ class FormCreate extends React.Component {
 
   changeNameByDependencyType(previousFieldKey, dependencyType, stateOut = false) {
     if (dependencyType === 'sections') {
-      const newFieldKey = this.state.fieldEdit.propertyKey
+      const newFieldKey = this.state.fieldEdit.propertyKey;
 
       if (newFieldKey === previousFieldKey) return;
 
