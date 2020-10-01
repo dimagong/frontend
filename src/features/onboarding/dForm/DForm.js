@@ -71,7 +71,7 @@ const DForm = () => {
   // TODO: END - AG GRID API
 
     return (
-        <div>
+        <div className="dform">
         <div>
           <Row className="app-user-list">
             <Col md="6">

@@ -1,7 +1,31 @@
 .user-managment {
+  .plus-select {
+    &:hover {
+        color: $cyan;
+    }
+    color: #007bffa8;
+    stroke-width: 5;
+    cursor: pointer;
+}
+.ag-row-selected {
+  background-color: rgba(0, 123, 255, 0.2)!important;
+}
+.ag-row-hover {
+  background-color: rgba(0, 123, 255, 0.1)!important;
+}
   &__edit {
     &_header {
       height: 68px;
+      &_user-info{
+        .column-sizing-user-info{
+          margin-bottom: 8px;
+          min-width: 100px;
+        }
+        &-container{
+          position: relative;
+          z-index: 1;
+        }
+      }
       &_form {
         margin-bottom: 0;
         padding: 0;
