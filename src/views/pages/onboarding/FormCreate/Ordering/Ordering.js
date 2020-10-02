@@ -27,7 +27,7 @@ const reorderKeys = (list, startIndex, endIndex, draggableKey) => {
 };
 
 
-function Sortable(props) {
+function Ordering(props) {
   const [direction, setDirection] = useState('vertical');
   const [deviceWidth, setDeviceWidth] = useState(window.width);
   const [items, setItems] = useState(props.items);
@@ -119,4 +119,4 @@ function Sortable(props) {
   );
 }
 
-export default Sortable;
+export default Ordering;

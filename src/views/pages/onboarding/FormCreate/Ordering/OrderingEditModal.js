@@ -2,7 +2,7 @@ import { Button, Modal } from "react-bootstrap";
 import React, { useState } from "react";
 import { MoreVertical } from "react-feather"
 
-function SortableEditModal(props) {
+function OrderingEditModal(props) {
     const [show, setShow] = useState(false);
 
     const handleClose = () => {
@@ -41,4 +41,4 @@ function SortableEditModal(props) {
     );
 }
 
-export default SortableEditModal;
+export default OrderingEditModal;
