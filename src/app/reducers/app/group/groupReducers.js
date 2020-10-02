@@ -2,8 +2,8 @@ const getGroupsSuccess = (state, {payload}) => ({
     ...state,
     isLoading: false,
     isError: null,
-    group: {
-      ...state.groups,
+    user: {
+      ...state.user,
       groups: payload
     }
   });

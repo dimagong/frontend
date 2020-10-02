@@ -1,5 +1,5 @@
 import instance from "api";
-import { getProfilePath, getUsersPath, updateUserAvatarPath, getUserAvatarPath, deleteUserAvatarPath } from "constants/user";
+import { getProfilePath, getUsersPath, updateUserAvatarPath, getUserAvatarPath, deleteUserAvatarPath, getUsersDataPath } from "constants/user";
 
 const userApi = {
   async getProfile() {
@@ -68,6 +68,20 @@ const userApi = {
       throw err;
     }
   },
+  async getUsersData(){
+    try {
+      const result = await instance({
+        url: getUsersDataPath,
+        method: "GET",
+        params: {
+          page: 1
+        }
+      });
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  }
 };
 
 export default userApi;

@@ -27,6 +27,7 @@ import { setUser, updateUserRequest, getRolesRequest, getGroupsRequest } from "a
 import {useOutsideAlerter} from 'hooks/useOutsideAlerter'
 import UserEditAvatar from "./UserEditAvatar"
 import UserEditSelects from './UserEditSelects';
+import UserOnboarding from '../userOnboarding/UserOnboarding';
 
 const UserEdit = () => {
   const manager = useSelector(selectManager);
@@ -56,7 +57,7 @@ const UserEdit = () => {
   }
   
   const formSubmit =() => {
-      
+      // dispatch(createUserOnboardingRequset())
   }
 
     return (
@@ -243,8 +244,7 @@ const UserEdit = () => {
             </Col>
           </Row>
         </Form>
-        {/* {this.modulesRender()} */}
-
+        <UserOnboarding/>
       </CardBody>
     </Card>
     )

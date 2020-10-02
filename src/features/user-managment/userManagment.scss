@@ -13,6 +13,10 @@
 .ag-row-hover {
   background-color: rgba(0, 123, 255, 0.1)!important;
 }
+.column-sizing {
+  min-width: 120px;
+  min-height: 25px;
+}
   &__edit {
     &_header {
       height: 68px;

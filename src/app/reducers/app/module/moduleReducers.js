@@ -2,8 +2,8 @@ const getModulesSuccess = (state, {payload}) => ({
     ...state,
     isLoading: false,
     isError: null,
-    module: {
-      ...state.module,
+    user: {
+      ...state.user,
       modules: payload
     }
   });

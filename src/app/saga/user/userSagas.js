@@ -1,6 +1,7 @@
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import userApi from "api/User/user";
+import groupRelations from "api/groupRelations/groupRelations";
 import {
   getProfileSuccess,
   getProfileRequest,
@@ -17,6 +18,9 @@ import {
   getUserAvatarSuccess,
   getUserAvatarRequest,
   getUserAvatarError,
+  getUserOnboardingSuccess,
+  getUserOnboardingRequest,
+  getUserOnboardingError,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {setUserProfile} from 'app/actions/vuexy/user/userActions'
@@ -86,6 +90,18 @@ function* deleteUserAvatar({payload}) {
   }
 }
 
+function* getUserOnboarding() {
+  try {
+    const onboarding = yield call(groupRelations.getGroupsRelations);
+    const reviewers = yield call(userApi.getUsersData);
+    yield put(getUserOnboardingSuccess({...onboarding, reviewers}));
+
+  } catch (error) {
+    yield put(getUserOnboardingError(getUsersError));
+  }
+}
+
+
 export default function* () {
   yield all([
     yield takeLatest(getProfileRequest.type, getProfile),
@@ -93,5 +109,6 @@ export default function* () {
     yield takeLatest(updateUserAvatarRequest.type, updateUserAvatar),
     yield takeLatest(deleteUserAvatarRequest.type, deleteUserAvatar),
     yield takeLatest(getUserAvatarRequest.type, getUserAvatar),
+    yield takeLatest(getUserOnboardingRequest.type, getUserOnboarding),
   ]);
 }

@@ -2,8 +2,8 @@ const getRolesSuccess = (state, {payload}) => ({
     ...state,
     isLoading: false,
     isError: null,
-    role: {
-      ...state.role,
+    user: {
+      ...state.user,
       roles: payload
     }
   });

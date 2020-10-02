@@ -34,6 +34,8 @@ const groups = prepareSelectOptions(initGroups)
     useEffect(()=>{
       !groups.length && dispatch(getGroupsRequest())
     },[])
+    // console.log("initGroups", initGroups)
+    // console.log("normalizeGroups", normalizeGroups(initGroups))
 // TODO: set groups in to parrent component
       const onSelectGroupsChange = (values) => {
         values ? dispatch(setGroups(normalizeGroups(initGroups).filter( group => values.some( value => value.label === group.name)))) : dispatch(setGroups([]))

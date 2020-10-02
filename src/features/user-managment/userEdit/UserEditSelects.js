@@ -18,8 +18,8 @@ const UserEditSelects = () => {
     const groups = useSelector(selectGroups);
     const roles = useSelector(selectRoles);
     const modules = useSelector(selectModules);
-  const manager = useSelector(selectManager);
-  const dispatch = useDispatch();
+    const manager = useSelector(selectManager);
+    const dispatch = useDispatch();
 
     useEffect(()=>{
         !roles.length && dispatch(getRolesRequest());

@@ -22,11 +22,55 @@ import {
   } from "reactstrap"
 import {User, X, Check, Plus, Edit2, RefreshCw, EyeOff, Eye} from "react-feather"
 import Select, {components} from "react-select"
-import {colourStyles} from "utility/select/selectSettigns";
+import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
 import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import { useDispatch, useSelector } from "react-redux";
+import { selectManager, selectUserDForms, selectUserWorkfows, selectUserReviewers } from "app/selectors";
+import {setManagerOnboardingProperty, setManagerOnboarding , setUserDForms, setUserWorkflows, setUserReviewers} from 'app/slices/appSlice'
 
-const UserOnboardingCreate = () => {
+const prepareSelect = (data) => {
+  return data.map((value) => {
+    return {
+      value: value,
+      label: value["name"],
+      color: colorMultiSelect
+    };
+  });
+}
+
+const UserOnboardingCreate = ({isCreate}) => {
+    const manager = useSelector(selectManager);
+    const dForms = useSelector(selectUserDForms)
+    const workflows = useSelector(selectUserWorkfows)
+    const reviewers = useSelector(selectUserReviewers)
+    const dispatch = useDispatch();
+
+    
+
+    const closeCreateOnboarding = () => {
+      dispatch(setManagerOnboarding(null))
+    }
+
+    const onSelectDFormChange = (values) => {
+     console.log(values)
+      values ? dispatch(setUserDForms(values[0].value)) : dispatch(setUserDForms(null))
+    }
+
+    const onSelectReviewersChange = (values) => {
+      console.log("onSelectDFormChange dForms", dForms)
+      console.log("onSelectDFormChange", values)
+      console.log("odForms", manager.onboarding)
+      values ? dispatch(setUserReviewers(reviewers.filter( group => values.some( value => value.label === group.name)))) : dispatch(setUserDForms([]))
+
+    }
+
+    const onSelectWorkflowChange = (values) => {
+      values ? dispatch(setUserWorkflows(values[0].value)) : dispatch(setUserDForms(null))
+    }
+
+    const createOnboarding = () => {}
+
     return (
         <Col md="12" lg="12" className="pl-0 ml-0 mt-2">
                           <Card className="border mb-0">
@@ -34,7 +78,7 @@ const UserOnboardingCreate = () => {
                               <CardTitle>
                                 Onboarding create
                               </CardTitle>
-                              <X size={15} onClick={() => this.closeCreateOnboarding()}/>
+                              <X size={15} onClick={closeCreateOnboarding}/>
                             </CardHeader>
                             <CardBody className="pt-0">
                               <hr/>
@@ -43,18 +87,18 @@ const UserOnboardingCreate = () => {
                                   <div className="d-flex mb-1">
                                     <div className="font-weight-bold column-sizing">dForm</div>
                                     <div className="full-width">
-  
                                       <Select
+                                        isDisabled={isCreate.current?false:true}
                                         components={{DropdownIndicator: null}}
-                                        value={this.getCustomSelectedValues(this.state.onboardingTemplate.d_form)}
+                                        value={prepareSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])}
                                         maxMenuHeight={200}
                                         isMulti
                                         isClearable={false}
                                         styles={colourStyles}
-                                        options={this.selectNoRepeat(this.state.dFormSelects, this.getCustomSelectedValues(this.state.onboardingTemplate.d_form))}
+                                        options={prepareSelect(dForms)}
                                         className="fix-margin-select"
                                         onChange={(values) => {
-                                          this.setDFormCreate(values)
+                                          onSelectDFormChange(values)
                                         }}
                                         classNamePrefix="select"
                                         id="languages"
@@ -66,15 +110,16 @@ const UserOnboardingCreate = () => {
                                     <div className="full-width">
   
                                       <Select
+                                        isDisabled={isCreate.current?false:true}
                                         components={{DropdownIndicator}}
-                                        value={this.getCustomSelects(this.state.onboardingTemplate.reviewers)}
+                                        value={prepareSelect(manager.onboarding.reviewers)}
                                         maxMenuHeight={200}
                                         isMulti
                                         isClearable={false}
                                         styles={colourStyles}
-                                        options={this.selectNoRepeat(this.state.reviewersSelect, this.getCustomSelects(this.state.onboardingTemplate.reviewers))}
+                                        options={prepareSelect(reviewers)}
                                         onChange={(values) => {
-                                          this.setReviewersCreate(values)
+                                          onSelectReviewersChange(values)
                                         }}
                                         className="fix-margin-select"
                                         classNamePrefix="select"
@@ -88,15 +133,16 @@ const UserOnboardingCreate = () => {
                                     <div className="full-width">
   
                                       <Select
+                                        isDisabled={isCreate.current?false:true}
                                         components={{DropdownIndicator: null}}
-                                        value={this.getCustomSelectedValues(this.state.onboardingTemplate.workflow)}
+                                        value={prepareSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
                                         maxMenuHeight={200}
                                         isMulti
                                         isClearable={false}
                                         styles={colourStyles}
-                                        options={this.selectNoRepeat(this.state.workflowSelects, this.getCustomSelectedValues(this.state.onboardingTemplate.workflow))}
+                                        options={prepareSelect(workflows)}
                                         onChange={(values) => {
-                                          this.setWorkflowCreate(values)
+                                          onSelectWorkflowChange(values)
                                         }}
                                         className="fix-margin-select"
                                         classNamePrefix="select"
@@ -109,17 +155,15 @@ const UserOnboardingCreate = () => {
                                     <div className="font-weight-bold column-sizing">Private</div>
                                     <div className="" id="onboarding-create-config-is-internal">
                                       <Checkbox
+                                        disabled={isCreate.current?false:true}
                                         size="sm"
                                         color="primary"
                                         icon={<Check className="vx-icon" size={12}/>}
                                         label=""
-                                        checked={this.state.onboardingTemplate.is_internal}
-                                        onChange={(event) => this.setState({
-                                          onboardingTemplate: {
-                                            ...this.state.onboardingTemplate,
+                                        checked={manager.onboarding.is_internal}
+                                        onChange={(event) => dispatch(setManagerOnboardingProperty({
                                             is_internal: event.target.checked
-                                          }
-                                        })}
+                                        }))}
                                       />
   
                                     </div>
@@ -131,9 +175,7 @@ const UserOnboardingCreate = () => {
                                 <div>
                                   {
                                     <div className="d-flex justify-content-end flex-wrap mt-2">
-                                      <Button className="mt-1" color="primary" onClick={() => {
-                                        this.createOnboarding()
-                                      }}>Save</Button>
+                                      <Button className="mt-1" color="primary" onClick={createOnboarding}>Save</Button>
                                     </div>
                                   }
                                 </div>

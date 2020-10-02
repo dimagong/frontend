@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import {
     Row,
     Col,
@@ -9,14 +9,16 @@ import {
     TabContent,
     TabPane,
   } from "reactstrap"
-  import { selectGroups, selectRoles, selectModules, selectManager } from "app/selectors";
+  import { selectGroups, selectRoles, selectModules, selectManager, selectUserDForms, selectUserWorkfows, selectUserReviewers } from "app/selectors";
   import { useDispatch, useSelector } from "react-redux";
   import classnames from "classnames"
   import DataTable, {createTheme} from "react-data-table-component"
   import {User, X, Check, Plus, Edit2, RefreshCw, EyeOff, Eye} from "react-feather"
 import {columnDefs} from './gridSettings';
-// import UserOnboardingCreate from './UserOnboardingCreate';
-// import UserOnboardingEdit from './UserOnboardingEdit';
+import UserOnboardingForm from './UserOnboardingForm';
+import { setManagerOnboarding, getUserOnboardingRequest} from 'app/slices/appSlice'
+
+
 
 const UserOnboarding = () => {
     const [activeTab, setActiveTab] = useState("1")
@@ -24,14 +26,38 @@ const UserOnboarding = () => {
     const modules = useSelector(selectModules);
     const roles = useSelector(selectRoles);
     const groups = useSelector(selectGroups);
+    const dForms = useSelector(selectUserDForms)
+    const workflows = useSelector(selectUserWorkfows)
+    const reviewers = useSelector(selectUserReviewers)
     const isCreate = useRef(false)
+    const dispatch = useDispatch();
+
+    const initOnboarding = {
+      d_form: null,
+      is_internal: false,
+      reviewers: [],
+      user_id: manager.id,
+      workflow: null,
+}
+useEffect(()=>{
+  if(!dForms.length && !reviewers.length && !workflows.length){
+  } dispatch(getUserOnboardingRequest())
+}, [])
+    
+    const isOnboarding = () => manager && modules.length && manager.modules.find((module) => module.name === 'Onboarding') 
 
     const createViewOnboarding = () => {
-
+      dispatch(setManagerOnboarding(initOnboarding));
+      isCreate.current = true;
     }
 
-    return (
-        manager && modules.length && manager.modules.find((module) => module.name === 'Onboarding') ?
+    const handleRowClick = (onboarding) => {
+      dispatch(setManagerOnboarding(onboarding));
+      isCreate.current = false;
+    }
+
+    return ( isOnboarding()
+        ?
           <Row>
             <Col>
               <Nav tabs className="mt-2">
@@ -62,7 +88,7 @@ const UserOnboarding = () => {
                         data={manager.onboardings}
                         columns={columnDefs}
                         Clicked
-                        // onRowClicked={handleRowClick}
+                        onRowClicked={handleRowClick}
                         conditionalRowStyles={[
                           {
                             when: row => manager.onboarding ? row.id === manager.onboarding.id : false,
@@ -75,11 +101,9 @@ const UserOnboarding = () => {
                         noHeader
                       />
                     </Col>{
-                        // manager.onboardings
-                        // ? isCreate 
-                        //     ? <UserOnboardingCreate/>
-                        //     : <UserOnboardingEdit/>
-                        // :null
+                        manager.onboarding
+                        ? <UserOnboardingForm isCreate={isCreate}/> 
+                        :null
                     }
                     
                   </Row>

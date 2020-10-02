@@ -95,6 +95,28 @@ const getUserAvatarError = (state, { payload }) => ({
   isError: payload,
 });
 
+const getUserOnboardingSuccess = (state, { payload: {dForms, workflows, reviewers} }) => ({
+  ...state,
+  isLoading: false,
+  isError: null,
+  user: {
+    ...state.user,
+    workflows,
+    dForms,
+    reviewers
+  }
+});
+const getUserOnboardingRequest = (state, { payload }) => ({
+  ...state,
+  isLoading: true,
+  isError: null,
+});
+const getUserOnboardingError = (state, { payload }) => ({
+  ...state,
+  isLoading: false,
+  isError: payload,
+});
+
 const setUser = (state, { payload }) => ({
   ...state,
   isLoading: false,
@@ -107,30 +129,86 @@ const setUser = (state, { payload }) => ({
 const setUserGroups = (state, {payload}) => ({
   ...state,
   user: {
-    users: state.user.users,
-    user: {
-      ...state.user.user,
-      groups: payload
-    }
+    ...state.user,
+    groups: payload
   }
 })
 const setUserModules = (state, {payload}) => ({
   ...state,
   user: {
-    users: state.user.users,
-    user: {
-      ...state.user.user,
+    ...state.user,
       modules: payload
-    }
   }
 })
 const setUserRoles = (state, {payload}) => ({
   ...state,
-  user: {
-    users: state.user.users,
     user: {
-      ...state.user.user,
+      ...state.user,
       roles: payload
+    }
+})
+
+const setManagerOnboarding = (state, {payload}) => ({
+  ...state,
+  user: {
+      ...state.user,
+    manager: {
+      ...state.user.manager,
+      onboarding: payload
+    }
+  }
+})
+const setManagerOnboardingProperty = (state, {payload}) => ({
+  ...state,
+  user: {
+      ...state.user,
+      manager: {
+      ...state.user.manager,
+      onboarding: {
+        ...state.user.manager.onboarding,
+        ...payload
+      }
+    }
+  }
+})
+const setUserDForms = (state, {payload}) => ({
+  ...state,
+  user: {
+      ...state.user,
+      manager: {
+      ...state.user.manager,
+      onboarding: {
+        ...state.user.manager.onboarding,
+        d_form: payload
+      }
+    }
+  }
+})
+
+const setUserWorkflows = (state, {payload}) => ({
+  ...state,
+  user: {
+      ...state.user,
+      manager: {
+      ...state.user.manager,
+      onboarding: {
+        ...state.user.manager.onboarding,
+        workflow: payload
+      }
+    }
+  }
+})
+
+const setUserReviewers = (state, {payload}) => ({
+  ...state,
+  user: {
+      ...state.user,
+      manager: {
+      ...state.user.manager,
+      onboarding: {
+        ...state.user.manager.onboarding,
+        reviewers: payload
+      }
     }
   }
 })
@@ -152,7 +230,15 @@ export default {
   getUserAvatarSuccess,
   getUserAvatarRequest,
   getUserAvatarError,
+  getUserOnboardingSuccess,
+  getUserOnboardingRequest,
+  getUserOnboardingError,
   setUserGroups,
   setUserModules,
   setUserRoles,
+  setManagerOnboardingProperty, 
+  setManagerOnboarding,
+  setUserDForms, 
+  setUserWorkflows,
+  setUserReviewers,
 };

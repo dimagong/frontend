@@ -10,17 +10,14 @@ export const appSlice = createSlice({
     isError: null,
     user: {
       managers: [],
-      manager: null
+      manager: null,
+      groups: [],
+      roles: [],
+      modules: [],
+      workflows: [],
+      dForms: [],
+      reviewers: [],
     },
-    group: {
-      groups: []
-    },
-    role: {
-      roles: []
-    },
-    module: {
-      modules: []
-    } 
   },
   reducers: {
     ...appReducer,
@@ -132,10 +129,19 @@ export const {
   getUserAvatarRequest,
   getUserAvatarError,
 
+  getUserOnboardingSuccess,
+  getUserOnboardingRequest,
+  getUserOnboardingError,
+
   setUser,
   setUserGroups,
   setUserModules,
   setUserRoles,
+  setManagerOnboardingProperty, 
+  setManagerOnboarding,
+  setUserDForms, 
+  setUserWorkflows,
+  setUserReviewers,
   
   logout,
 } = appSlice.actions;

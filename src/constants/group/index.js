@@ -4,3 +4,4 @@ export const groupTypes = {
     'App\\Network': 'network',
     'App\\MemberFirm': 'member_firm',
   };
+export const groupRelationsPath = '/api/groups-relations';
