@@ -134,7 +134,7 @@
           color: $primary;
           transition: all 0.2s ease;
           background-color: $white;
-          transform: translateY(-2px);
+          //transform: translateY(-2px);
           &:after {
             content: attr(data-before);
             height: 2px;
