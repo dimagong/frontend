@@ -5,35 +5,24 @@ import {
     CardHeader,
     CardTitle,
     CardBody,
-    FormGroup,
-    Row,
     Col,
-    Input,
-    Form,
     Button,
-    FormFeedback,
-    Nav,
-    NavItem,
-    NavLink,
-    TabContent,
-    TabPane,
-    Media, Spinner,
     UncontrolledTooltip
   } from "reactstrap"
-import {User, X, Check, Plus, Edit2, RefreshCw, EyeOff, Eye} from "react-feather"
-import Select, {components} from "react-select"
+import {X, Check} from "react-feather"
+import Select from "react-select"
 import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
 import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import { useDispatch, useSelector } from "react-redux";
 import { selectManager, selectUserDForms, selectUserWorkfows, selectUserReviewers } from "app/selectors";
-import {setManagerOnboardingProperty, setManagerOnboarding , setUserDForms, setUserWorkflows, setUserReviewers} from 'app/slices/appSlice'
+import {setManagerOnboardingProperty, setManagerOnboarding , setUserDForms, setUserWorkflows, setUserReviewers, createUserOnboardingRequest, deleteUserOnboardingRequest} from 'app/slices/appSlice'
 
 const prepareSelect = (data) => {
   return data.map((value) => {
     return {
       value: value,
-      label: value["name"],
+      label: value["first_name"],
       color: colorMultiSelect
     };
   });
@@ -53,24 +42,26 @@ const UserOnboardingCreate = ({isCreate}) => {
     }
 
     const onSelectDFormChange = (values) => {
-     console.log(values)
       values ? dispatch(setUserDForms(values[0].value)) : dispatch(setUserDForms(null))
     }
 
     const onSelectReviewersChange = (values) => {
-      console.log("onSelectDFormChange dForms", dForms)
-      console.log("onSelectDFormChange", values)
-      console.log("odForms", manager.onboarding)
       values ? dispatch(setUserReviewers(reviewers.filter( group => values.some( value => value.label === group.name)))) : dispatch(setUserDForms([]))
-
     }
 
     const onSelectWorkflowChange = (values) => {
       values ? dispatch(setUserWorkflows(values[0].value)) : dispatch(setUserDForms(null))
     }
 
-    const createOnboarding = () => {}
+    const createOnboarding = () => {
+      dispatch(createUserOnboardingRequest(manager.onboarding))
+    }
 
+    const deleteOnboarding = () => {
+      if(window.confirm("Are you sure?")){
+        dispatch(deleteUserOnboardingRequest(manager.onboarding))
+      }
+    }
     return (
         <Col md="12" lg="12" className="pl-0 ml-0 mt-2">
                           <Card className="border mb-0">
@@ -108,7 +99,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                                   <div className="d-flex mb-1">
                                     <div className="font-weight-bold column-sizing">Reviewer</div>
                                     <div className="full-width">
-  
+                                      {console.log(prepareSelect(manager.onboarding.reviewers))}
                                       <Select
                                         isDisabled={isCreate.current?false:true}
                                         components={{DropdownIndicator}}
@@ -174,9 +165,13 @@ const UserOnboardingCreate = ({isCreate}) => {
                                 </div>
                                 <div>
                                   {
-                                    <div className="d-flex justify-content-end flex-wrap mt-2">
+                                    isCreate.current
+                                    ?<div className="d-flex justify-content-end flex-wrap mt-2">
                                       <Button className="mt-1" color="primary" onClick={createOnboarding}>Save</Button>
                                     </div>
+                                    : <div className="d-flex justify-content-end flex-wrap mt-2">
+                                    <Button disabled={!!!manager.onboarding.id} className="mt-1" color="danger" onClick={deleteOnboarding}>Delete onboarding</Button>
+                                  </div>
                                   }
                                 </div>
                               </div>

@@ -9,7 +9,7 @@ export function useOutsideAlerter(ref, callback) {
          * Alert if clicked on outside of element
          */
         function handleClickOutside(event) {
-            if (ref.current && ref.current.contains && !ref.current.contains(event.target)) {
+            if (ref.every(ref =>!!ref.current) && !ref.some( ref => ref.current.contains(event.target))) {
                 callback()
             }
         }

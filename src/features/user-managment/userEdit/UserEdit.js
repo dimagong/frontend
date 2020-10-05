@@ -34,9 +34,11 @@ const UserEdit = () => {
   const [editField, setEditField] = useState(null);
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
-  const nameFieldRef = useRef(null);
-  useOutsideAlerter(nameFieldRef, () => setEditField(null));
-
+  const titleRef = useRef(null);
+  const validUntilRef = useRef(null)
+  const numberRef = useRef(null)
+  const emailRef = useRef(null)
+  useOutsideAlerter([titleRef, validUntilRef, numberRef, emailRef], () => setEditField(null));
 
 
   const handleManager = (managerValue) => {
@@ -48,11 +50,11 @@ const UserEdit = () => {
   }
   const editFieldSave = () => {
     setEditField(null)
-    // dispatch(updateUserRequest(manager))
-
+    dispatch(updateUserRequest(manager))
   }
 
   const removeCard = () => {
+    dispatch(setUser(null));
 
   }
   
@@ -71,7 +73,7 @@ const UserEdit = () => {
       <CardHeader className="user-managment__edit_header">
         <CardTitle className="font-weight-bold">
           <div className="d-flex edit-btn-trigger">
-            <div className="user-managment__edit_header_user-info-container" ref={nameFieldRef}>
+            <div className="user-managment__edit_header_user-info-container" ref={titleRef}>
               {
                 editField === "name" ?
                   <FormGroup className="position-absolute input-divider-right user-managment__edit_header_form" >
@@ -81,7 +83,7 @@ const UserEdit = () => {
                       name="name"
                       id="mobileVertical"
                       placeholder="Mobile"
-                      value={manager.name}
+                      value={manager.first_name}
                       onChange={(event) => handleManager({name: event.target.value})}
                       {...{invalid: errors['name'] }}
                     />
@@ -95,7 +97,7 @@ const UserEdit = () => {
                     </div>
                     <FormFeedback>{errors['name'] ? errors['name'] : ''}</FormFeedback>
                   </FormGroup>
-                  : <div onClick={() => setEditField('name')}>{manager.name} <Edit2 className="edit-btn" size={15}/></div>
+                  : <div onClick={() => setEditField('name')}>{manager.first_name} <Edit2 className="edit-btn" size={15}/></div>
               }
             </div>
           </div>
@@ -117,7 +119,7 @@ const UserEdit = () => {
                           <div className="font-weight-bold-lighter column-sizing-user-info"
                                onClick={() => setEditField('number')}>Number
                           </div>
-                          <div className="user-managment__edit_body_user-info-container">
+                          <div className="user-managment__edit_body_user-info-container" ref={numberRef}>
                             {
                               editField ==='number' ?
                                 <FormGroup className="input-divider-right user-managment__edit_body_form">
@@ -150,7 +152,7 @@ const UserEdit = () => {
                           <div className="font-weight-bold-lighter column-sizing-user-info"
                                onClick={() => setEditField('email')}>Email
                           </div>
-                          <div className="user-managment__edit_body_user-info-container">
+                          <div className="user-managment__edit_body_user-info-container" ref={emailRef}>
                             {
                               editField === 'email' ?
                                 <FormGroup className="input-divider-right user-managment__edit_body_form">
@@ -183,7 +185,7 @@ const UserEdit = () => {
                           <div className="font-weight-bold-lighter column-sizing-user-info"
                                onClick={() => setEditField('valid_until')}>Valid until
                           </div>
-                          <div className="user-managment__edit_body_user-info-container">
+                          <div className="user-managment__edit_body_user-info-container" ref={validUntilRef}>
                             {
                               editField === 'valid_until' ?
                                 <FormGroup className="input-divider-right user-managment__edit_body_form">

@@ -133,6 +133,26 @@ export const {
   getUserOnboardingRequest,
   getUserOnboardingError,
 
+  createUserOnboardingSuccess,
+  createUserOnboardingRequest,
+  createUserOnboardingError,
+
+  deleteUserOnboardingSuccess,
+  deleteUserOnboardingRequest,
+  deleteUserOnboardingError,
+
+  updateUserRolesSuccess,
+  updateUserRolesRequest,
+  updateUserRolesError,
+
+  updateUserGroupsSuccess,
+  updateUserGroupsRequest,
+  updateUserGroupsError,
+
+  updateUserModulesSuccess,
+  updateUserModulesRequest,
+  updateUserModulesError,
+
   setUser,
   setUserGroups,
   setUserModules,

@@ -15,7 +15,7 @@ import { history } from "../../../history";
 
 const UserName = props => {
   if (Object.keys(props.user.profile).length && props.user.profile.constructor === Object) {
-    return props.user.profile.name;
+    return props.user.profile.first_name;
   }
   return '';
 }

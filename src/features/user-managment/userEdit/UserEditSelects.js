@@ -5,9 +5,17 @@ import {
   import Select, {components} from "react-select"
 import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
-import {  getRolesRequest, getGroupsRequest, getModulesRequest, setUserGroups,
-    setUserModules,
-    setUserRoles, } from "app/slices/appSlice";
+import {  
+    getRolesRequest, 
+    getGroupsRequest, 
+    getModulesRequest, 
+    setUserGroups,
+    setUserModules, 
+    updateUserRolesRequest,
+    setUserRoles,
+    updateUserGroupsRequest ,
+    updateUserModulesRequest
+  } from "app/slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroups, selectRoles, selectModules, selectManager } from "app/selectors";
 import {groupTypes} from 'constants/group'
@@ -49,14 +57,25 @@ const UserEditSelects = () => {
     }
 
     const onSelectRolesChange = (values) => {
-        dispatch(setUserRoles([]))
+        values 
+        ? dispatch(updateUserRolesRequest({id: manager.id, roles : roles.filter( role =>  values.some(value => value.value === role))})) 
+        : dispatch(updateUserRolesRequest({id: manager.id, roles :[]}))
     }
 
 
     const onSelectModulesChange = (values) => {
-        dispatch(setUserModules([]))
+      values 
+      ? dispatch(updateUserModulesRequest({...manager, modules : modules.filter( module =>  values.some(value => value.value.id === module.id))})) 
+      : dispatch(updateUserModulesRequest({...manager, modules :[]}))
         
     }
+
+    const onSelectGroupsChange = (values) => {
+      values 
+      ? dispatch(updateUserGroupsRequest({id: manager.id, groups: normalizeGroups(groups).filter( group => values.some( value => value.label === group.name))})) 
+      : dispatch(updateUserGroupsRequest({id: manager.id, groups:[]}))
+    };
+
     const prepareSelectGroups  = selectedGroups => {
       return selectedGroups.map(group => {
         return {
@@ -68,6 +87,12 @@ const UserEditSelects = () => {
           color: colorMultiSelect
         }
       });
+    }
+
+    const filtredSelectOptions = () => {
+      return prepareSelectOptions(groups)
+      .filter( groupSelect => !prepareSelectGroups(manager.groups)
+        .some( group =>  group.value.group_id === groupSelect.value.group_id && group.value.type === groupSelect.value.type ))
     }
 
     return roles.length && groups.length &&  modules.length  ? (
@@ -93,7 +118,25 @@ const UserEditSelects = () => {
                             />
                           </div>
                         </div>
-                        <MultiSelect groups={prepareSelectGroups(manager.groups)} setGroups={setUserGroups}/>
+                        <div className="d-flex mb-1">
+                          <div className="font-weight-bold column-sizing" style={{padding: 5}}>Organisations</div>
+                              <div className="w-100">
+                                  <Select
+                                      components={{DropdownIndicator}}
+                                      value={prepareSelectGroups(manager.groups)}
+                                      maxMenuHeight={200}
+                                      isMulti
+                                      isClearable={false}
+                                      styles={colourStyles}
+                                      options={filtredSelectOptions()}
+                                      onChange={(values) => {
+                                          onSelectGroupsChange(values)
+                                      }}
+                                      classNamePrefix="select"
+                                      id="languages"
+                                      />
+                              </div>
+                        </div>
                         <div className="user-managment__edit_body_form__select">
                           <div className="font-weight-bold column-sizing">Modules</div>
                           <div className="full-width">

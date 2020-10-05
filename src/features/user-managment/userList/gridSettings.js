@@ -6,7 +6,7 @@ import {
 export const columnDefs = [
     {
         headerName: "Name",
-        field: "name",
+        field: "first_name",
         width: 200
       },
       {

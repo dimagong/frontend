@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 import {
   Card,
   CardBody,
@@ -19,7 +19,12 @@ import {
 const UserList = () => {
     const [gridApi, setGridApi] = useState(null);
     const managers = useSelector(selectManagers);
+    const manager = useSelector(selectManager);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+      !manager && gridApi && clearGridSelection();
+    }, [manager])
 
 
       // TODO: START - AG GRID API
@@ -35,6 +40,11 @@ const UserList = () => {
       const onSelectionChanged = () => {
         const [selectedRow] = gridApi.getSelectedRows();
         dispatch(setUser(selectedRow));
+      };
+
+      const clearGridSelection = () => {
+        gridApi.deselectAll();
+        gridApi.clearFocusedCell();
       };
 
     
