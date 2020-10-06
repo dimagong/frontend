@@ -57,7 +57,7 @@ const userApi = {
   async deleteUserAvatar({ avatarId }) {
     try {
       const result = await instance({
-        url: `${deleteUserAvatarPath}/${avatarId}`,
+        url: deleteUserAvatarPath(avatarId),
         method: "DELETE",
       });
 
@@ -66,10 +66,10 @@ const userApi = {
       throw err;
     }
   },
-  async updateUserAvatar({ avatarId, formData }) {
+  async updateUserAvatar({ managerId, formData }) {
     try {
       const result = await instance({
-        url: `${updateUserAvatarPath}/${avatarId}`,
+        url: updateUserAvatarPath(managerId),
         method: "POST",
         data: formData,
       });

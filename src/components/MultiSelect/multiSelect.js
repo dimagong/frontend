@@ -42,7 +42,7 @@ const groups = prepareSelectOptions(initGroups)
       };
 
     return (
-            <div className="d-flex mb-1">
+          <div className="d-flex mb-1">
             <div className="font-weight-bold column-sizing" style={{padding: 5}}>Organisations</div>
                 <div className="w-100">
                     <Select

@@ -63,7 +63,7 @@ const updateUserAvatarSuccess = (state, { payload }) => ({
   isError: null,
   user: {
     ...state.user,
-    manager: {...this.state.user.manager,...payload},
+    manager: {...state.user.manager,...payload},
   },
 });
 const updateUserAvatarRequest = (state, { payload }) => ({
@@ -77,13 +77,13 @@ const updateUserAvatarError = (state, { payload }) => ({
   isError: payload,
 });
 
-const deleteUserAvatarSuccess = (state, { payload }) => ({
+const deleteUserAvatarSuccess = (state) => ({
   ...state,
   isLoading: false,
   isError: null,
   user: {
     ...state.user,
-    manager: {...this.state.user.manager,...payload},
+    manager: {...state.user.manager, url : null, avatar: null},
   },
 });
 const deleteUserAvatarRequest = (state, { payload }) => ({
@@ -103,7 +103,7 @@ const getUserAvatarSuccess = (state, { payload }) => ({
   isError: null,
   user: {
     ...state.user,
-    manager: {...this.state.user.manager,...payload},
+    manager: {...state.user.manager,url: payload.url.avatar},
   },
 });
 const getUserAvatarRequest = (state, { payload }) => ({

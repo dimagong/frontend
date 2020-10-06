@@ -14,7 +14,7 @@ const UserAvatar = () => {
   const fileInputRef = useRef(null)
 
   useEffect(() => {
-    dispatch(getUserAvatarRequest({managerId: manager.id}))
+    manager.avatar && dispatch(getUserAvatarRequest({managerId: manager.id}))
   },[manager.avatar])
 
   const changeAvatar = () => {
@@ -30,7 +30,7 @@ const UserAvatar = () => {
   const removeAvatar = () => {
         dispatch(deleteUserAvatarRequest({avatarId: manager.avatar.id}))
   }
-
+  
   return (
     <Media left className="user-edit__user-avatar mt-md-1 mt-0 mr-1">
       <Media

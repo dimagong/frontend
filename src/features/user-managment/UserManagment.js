@@ -45,7 +45,7 @@ const UserManagment = () => {
                       active: activeTab === `${index + 1}`,
                     })}
                     onClick={() => {
-                      setActiveTab(index);
+                      setActiveTab(`${index + 1}`);
                     }}
                   >
                     {icon()}
