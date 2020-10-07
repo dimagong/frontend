@@ -7,11 +7,12 @@ import {
 } from "app/actions/vuexy/auth/loginActions"
 import NavbarBookmarks from "./NavbarBookmarks"
 import NavbarUser from "./NavbarUser"
-import userImg from "../../../assets/img/portrait/small/avatar-s-11.jpg"
+import noneAvatar from "assets/img/portrait/none-avatar.png";
 import { bindActionCreators } from "redux"
 // import AuthService from '../../../services/auth.service'
 import { history } from "../../../history";
 // import userService from "../../../services/user.service";
+import {selectManager} from "app/selectors"
 
 const UserName = props => {
   if (Object.keys(props.user.profile).length && props.user.profile.constructor === Object) {
@@ -21,7 +22,7 @@ const UserName = props => {
 }
 
 const ThemeNavbar = props => {
-
+  const {manager} = props;
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"]
   const navbarTypes = ["floating", "static", "sticky", "hidden"]
 
@@ -31,6 +32,7 @@ const ThemeNavbar = props => {
     history.push("/login");
     props.logoutWithJWT();
   }
+
   return (
     <React.Fragment>
       <div className="content-overlay" />
@@ -87,7 +89,7 @@ const ThemeNavbar = props => {
                 changeCurrentLang={props.changeCurrentLang}
                 userName={<UserName {...props} />}
                 email={props.user.profile.email}
-                userImg={userImg}
+                userImg={manager.ulr? manager.ulr : noneAvatar}
                 loggedType={null}
                 logoutWithJWT={logoutJWT}
               />
@@ -102,7 +104,8 @@ const ThemeNavbar = props => {
 const mapStateToProps = state => {
   return {
     user: state.vuexy.user,
-    userProfile: state.vuexy.user.profile
+    userProfile: state.vuexy.user.profile,
+    manager: selectManager
   }
 }
 

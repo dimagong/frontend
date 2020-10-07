@@ -1,3 +1,5 @@
+import {initUser} from 'app/slices/appSlice';
+
 const getProfileSuccess = (state) => ({
   ...state,
   isLoading: false,
@@ -249,9 +251,41 @@ const updateUserModulesError = (state, { payload }) => ({
   isError: payload,
 });
 
+const createUserSuccess = (state, { payload }) => ({
+  ...state,
+  isLoading: false,
+  isError: null,
+  user: {
+    ...state.user,
+    user: initUser,
+    managers: [payload, ...this.state.user.managers]
+  },
+});
+
+const createUserRequest = (state, { payload }) => ({
+  ...state,
+  isLoading: true,
+  isError: null,
+});
+const createUserError = (state, { payload }) => ({
+  ...state,
+  isLoading: false,
+  isError: payload,
+});
+
 // TODO: SETTERS
 
 const setUser = (state, { payload }) => ({
+  ...state,
+  isLoading: false,
+  isError: null,
+  user: {
+    ...state.user,
+    user: payload,
+  },
+});
+
+const setManager = (state, { payload }) => ({
   ...state,
   isLoading: false,
   isError: null,
@@ -358,7 +392,9 @@ export default {
   updateUserSuccess,
   updateUserRequest,
   updateUserError,
-  setUser,
+  createUserSuccess,
+  createUserRequest,
+  createUserError,
   updateUserAvatarSuccess,
   updateUserAvatarRequest,
   updateUserAvatarError,
@@ -386,6 +422,8 @@ export default {
   updateUserModulesSuccess,
   updateUserModulesRequest,
   updateUserModulesError,
+  setUser,
+  setManager,
   setUserGroups,
   setUserModules,
   setUserRoles,

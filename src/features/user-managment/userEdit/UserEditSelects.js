@@ -19,7 +19,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroups, selectRoles, selectModules, selectManager } from "app/selectors";
 import {groupTypes} from 'constants/group'
-import MultiSelect from "components/MultiSelect/multiSelect";
 import {prepareSelectOptions, normalizeGroups, getGroupName} from "utility/select/prepareSelectData";
 
 const UserEditSelects = () => {
@@ -30,8 +29,7 @@ const UserEditSelects = () => {
     const dispatch = useDispatch();
 
     useEffect(()=>{
-        !roles.length && dispatch(getRolesRequest());
-        !groups.length && dispatch(getGroupsRequest());
+        
         !modules.length && dispatch(getModulesRequest());
       },[])
 

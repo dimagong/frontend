@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react'
+import React, {useState, useRef} from 'react'
 import {
   Card,
   CardHeader,
@@ -23,11 +23,12 @@ import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 // import InvitationCreate from '../invitation/InvitationCreate'
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroups, selectRoles, selectManager, selectManagers } from "app/selectors";
-import { setUser, updateUserRequest, getRolesRequest, getGroupsRequest } from "app/slices/appSlice";
+import { setManager, updateUserRequest, getRolesRequest, getGroupsRequest } from "app/slices/appSlice";
 import {useOutsideAlerter} from 'hooks/useOutsideAlerter'
 import UserEditAvatar from "./UserEditAvatar"
 import UserEditSelects from './UserEditSelects';
 import UserOnboarding from '../userOnboarding/UserOnboarding';
+import UserInvitationsCreate from '../userInvitations/UserInvitationsCreate';
 
 const UserEdit = () => {
   const manager = useSelector(selectManager);
@@ -42,7 +43,7 @@ const UserEdit = () => {
 
 
   const handleManager = (managerValue) => {
-    dispatch(setUser({ ...manager, ...managerValue }));
+    dispatch(setManager({ ...manager, ...managerValue }));
   };
 
   const editFieldClose = () => {
@@ -54,7 +55,7 @@ const UserEdit = () => {
   }
 
   const removeCard = () => {
-    dispatch(setUser(null));
+    dispatch(setManager(null));
 
   }
   
@@ -219,21 +220,21 @@ const UserEdit = () => {
                         <div className="d-flex">
                           <div className="font-weight-bold-lighter column-sizing-user-info">Portal access</div>
                           <div>
-                            {/* {
+                            {
                               manager.invited && !manager.invited.revoked_at ?
-                                <InvitationCreate user={manager} send={false} resend={true} trash={true}
+                                <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
                                                   invitationText="Resend invitation"/> :
                                 manager.invited && !manager.invited.accepted_at ?
-                                  <InvitationCreate user={manager} send={false} resend={true} trash={true}
+                                  <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
                                                     invitationText="Resend invitation"/> :
                                   manager.invited && manager.invited.accepted_at ? 'Invitation accepted' :
                                     manager.roles.indexOf('prospect') === -1 && manager.roles.length && manager.groups.length ?
                                       'Allowed'
                                       : manager.roles.indexOf('prospect') !== -1 && !manager.groups.length ?
-                                      <InvitationCreate send={true} resend={false} trash={false}
+                                      <UserInvitationsCreate send={true} resend={false} trash={false}
                                                         user={manager}/>
                                       : 'User cannot be invited'
-                            } */}
+                            }
 
                           </div>
                         </div>

@@ -9,7 +9,7 @@ import { ChangeDetectionStrategyType } from 'ag-grid-react/lib/changeDetectionSe
 import {ContextLayout} from "utility/context/Layout"
 import {AgGridReact} from "ag-grid-react"
 import { columnDefs } from "./gridSettings";
-import { getUsersRequest, setUser } from "app/slices/appSlice";
+import { getUsersRequest, setManager } from "app/slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
     selectManager,
@@ -39,7 +39,7 @@ const UserList = () => {
 
       const onSelectionChanged = () => {
         const [selectedRow] = gridApi.getSelectedRows();
-        dispatch(setUser(selectedRow));
+        dispatch(setManager(selectedRow));
       };
 
       const clearGridSelection = () => {
@@ -63,7 +63,11 @@ const UserList = () => {
                             className="aggrid-hide-pagination"
                         gridOptions={{}}
                         rowSelection="multiple"
-                        defaultColDef={{ resizable: true }}
+                        defaultColDef={{
+                          sortable: true,
+                          suppressSizeToFit: false,
+                          resizable: true,
+                        }}
                         columnDefs={columnDefs}
                         rowData={managers}
                         onGridReady={onGridReady}

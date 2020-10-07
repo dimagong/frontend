@@ -33,7 +33,6 @@ const ForgotPasswordFactory = ({
   const { push } = useRouter();
 
   const goToLogin = () => push(loginPath);
-  console.log(email,"email")
   switch (step) {
     case STEP_FORGOT_SUCCESS:
       return (

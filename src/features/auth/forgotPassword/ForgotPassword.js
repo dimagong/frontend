@@ -57,7 +57,6 @@ const ForgotPassword = () => {
   }, [query])
 
   useEffect(() => {
-    console.log("isError", isError)
     if(isError){
       setStep(STEP_FORGOT)
     }

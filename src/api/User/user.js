@@ -11,6 +11,13 @@ import {
   updateUserPath,
   updateUserRolesPath,
   updateUserGroupsPath,
+  createUserPath,
+  getInvitationsPath,
+  createInvitationsPath,
+  deleteInvitationsPath,
+  revokeInvitationsPath,
+  getInvitationPath,
+  sendInvitationAcceptPath,
 } from "constants/user";
 
 const userApi = {
@@ -21,9 +28,9 @@ const userApi = {
         method: "GET",
       });
 
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async getUsers() {
@@ -37,9 +44,9 @@ const userApi = {
         },
       });
 
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async getUserAvatar({ managerId }) {
@@ -49,9 +56,9 @@ const userApi = {
         method: "GET",
       });
 
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async deleteUserAvatar({ avatarId }) {
@@ -61,9 +68,9 @@ const userApi = {
         method: "DELETE",
       });
 
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async updateUserAvatar({ managerId, formData }) {
@@ -74,9 +81,9 @@ const userApi = {
         data: formData,
       });
 
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async getUsersData() {
@@ -88,9 +95,9 @@ const userApi = {
           page: 1,
         },
       });
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async createUserOnboarding(data) {
@@ -100,7 +107,7 @@ const userApi = {
         method: "POST",
         data,
       });
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (error) {}
   },
   async deleteUserOnboarding({ id }) {
@@ -109,7 +116,7 @@ const userApi = {
         url: `${createUserOnboarding}/${id}`,
         method: "DELETE",
       });
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (error) {}
   },
   async updateUser(payload) {
@@ -121,9 +128,21 @@ const userApi = {
         data,
       });
 
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
+    }
+  },
+  async createUser(payload) {
+    try {
+      const result = await instance({
+        url: createUserPath,
+        method: "POST",
+        data: payload,
+      });
+      return  result ? result.data.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
     }
   },
   async updateUserRoles(payload) {
@@ -135,9 +154,9 @@ const userApi = {
         data: {roles},
       });
 
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async updateGroupRoles(payload) {
@@ -149,9 +168,76 @@ const userApi = {
         data: {groups: groups.map( (group, id) => ({type: group.type, group_id:  group.id}))},
       });
 
-      return result.data.data;
+      return result ? result.data.data : result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
+    }
+  },
+  async getInvitations() {
+    try {
+      const result = await instance({
+        url: getInvitationsPath,
+        method: "GET",
+      });
+      return  result ? result.data.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async createInvitations({payload}) {
+    try {
+      const result = await instance({
+        url: createInvitationsPath(payload),
+        method: "POST",
+      });
+      return  result ? result?.data?.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async deleteInvitations({payload: {managerInvitedId}}) {
+    try {
+      const result = await instance({
+        url: deleteInvitationsPath(managerInvitedId),
+        method: "DELETE",
+      });
+      return  result ? result?.data?.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async revokeInvitations({payload: {invitationId}}) {
+    try {
+      const result = await instance({
+        url: revokeInvitationsPath(invitationId),
+        method: "PUT",
+      });
+      return  result ? result?.data?.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getInvitation({payload: {invitationId}}) {
+    try {
+      const result = await instance({
+        url: getInvitationPath(invitationId),
+        method: "GET",
+      });
+      return  result ? result?.data?.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async sendInvitationAccept({data}) {
+    try {
+      const result = await instance({
+        url: sendInvitationAcceptPath,
+        method: "POST",
+        data
+      });
+      return  result ? result?.data?.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
     }
   },
 };

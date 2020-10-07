@@ -6,3 +6,6 @@ export const selectUserReviewers = state => state.app.user.reviewers
 export const selectModules = state => state.app.user.modules 
 export const selectRoles = state => state.app.user.roles 
 export const selectGroups = state => state.app.user.groups 
+export const selectUser = state => state.app.user.user 
+export const selectInvitations = state => state.app.user.invitations 
+export const selectInvitation = state => state.app.user.invitation

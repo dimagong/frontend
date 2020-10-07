@@ -1,6 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 import appReducer from "app/reducers/app/appReducer";
+import moment from 'moment';
 const token = localStorage.getItem("token");
+
+export const initUser = {
+  first_name: '',
+  last_name: 'surname',
+  email: '',
+  number: '',
+  valid_until: moment().format('YYYY-MM-DD HH:mm:ss'),
+  password: '',
+  groups: [],
+  roles: [],
+  errors: {}
+};
 
 export const appSlice = createSlice({
   name: "app",
@@ -11,6 +24,9 @@ export const appSlice = createSlice({
     user: {
       managers: [],
       manager: null,
+      invitations: [],
+      invitation: null,
+      user: initUser,
       groups: [],
       roles: [],
       modules: [],
@@ -153,6 +169,35 @@ export const {
   updateUserModulesRequest,
   updateUserModulesError,
 
+  createUserSuccess,
+  createUserRequest,
+  createUserError,
+
+  getInvitationsSuccess,
+  getInvitationsRequest,
+  getInvitationsError,
+
+  createInvitationsSuccess,
+  createInvitationsRequest,
+  createInvitationsError,
+
+  deleteInvitationsSuccess,
+  deleteInvitationsRequest,
+  deleteInvitationsError,
+
+  revokeInvitationsSuccess,
+  revokeInvitationsRequest,
+  revokeInvitationsError,
+
+  getInvitationSuccess,
+  getInvitationRequest,
+  getInvitationError,
+
+  sendInvitationAcceptSuccess,
+  sendInvitationAcceptRequest,
+  sendInvitationAcceptError,
+
+  setManager,
   setUser,
   setUserGroups,
   setUserModules,

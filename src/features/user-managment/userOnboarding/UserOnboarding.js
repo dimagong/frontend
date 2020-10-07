@@ -24,8 +24,6 @@ const UserOnboarding = () => {
     const [activeTab, setActiveTab] = useState("1")
     const manager = useSelector(selectManager);
     const modules = useSelector(selectModules);
-    const roles = useSelector(selectRoles);
-    const groups = useSelector(selectGroups);
     const dForms = useSelector(selectUserDForms)
     const workflows = useSelector(selectUserWorkfows)
     const reviewers = useSelector(selectUserReviewers)

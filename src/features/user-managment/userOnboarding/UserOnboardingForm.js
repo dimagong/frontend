@@ -27,6 +27,15 @@ const prepareSelect = (data) => {
     };
   });
 }
+const prepareDFormSelect = (data) => {
+  return data.map((value) => {
+    return {
+      value: value,
+      label: value["name"],
+      color: colorMultiSelect
+    };
+  });
+}
 
 const UserOnboardingCreate = ({isCreate}) => {
     const manager = useSelector(selectManager);
@@ -81,12 +90,12 @@ const UserOnboardingCreate = ({isCreate}) => {
                                       <Select
                                         isDisabled={isCreate.current?false:true}
                                         components={{DropdownIndicator: null}}
-                                        value={prepareSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])}
+                                        value={prepareDFormSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])}
                                         maxMenuHeight={200}
                                         isMulti
                                         isClearable={false}
                                         styles={colourStyles}
-                                        options={prepareSelect(dForms)}
+                                        options={prepareDFormSelect(dForms)}
                                         className="fix-margin-select"
                                         onChange={(values) => {
                                           onSelectDFormChange(values)
@@ -99,7 +108,6 @@ const UserOnboardingCreate = ({isCreate}) => {
                                   <div className="d-flex mb-1">
                                     <div className="font-weight-bold column-sizing">Reviewer</div>
                                     <div className="full-width">
-                                      {console.log(prepareSelect(manager.onboarding.reviewers))}
                                       <Select
                                         isDisabled={isCreate.current?false:true}
                                         components={{DropdownIndicator}}
@@ -126,12 +134,12 @@ const UserOnboardingCreate = ({isCreate}) => {
                                       <Select
                                         isDisabled={isCreate.current?false:true}
                                         components={{DropdownIndicator: null}}
-                                        value={prepareSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
+                                        value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
                                         maxMenuHeight={200}
                                         isMulti
                                         isClearable={false}
                                         styles={colourStyles}
-                                        options={prepareSelect(workflows)}
+                                        options={prepareDFormSelect(workflows)}
                                         onChange={(values) => {
                                           onSelectWorkflowChange(values)
                                         }}

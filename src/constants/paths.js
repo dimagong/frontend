@@ -6,3 +6,4 @@ export const processPath = "/onboarding-process";
 export const dformsPath = "/onboarding/dforms";
 export const workflowsPath = "/onboarding/workflows";
 export const userManagmentPath = "/user-management";
+export const invitationPath = "/invitation-accept/:invitationId";

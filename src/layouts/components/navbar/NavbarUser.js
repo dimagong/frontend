@@ -48,32 +48,20 @@ const UserDropdown = props => {
   )
 }
 
-class NavbarUser extends React.PureComponent {
-  state = {
-    navbarSearch: false,
-    langDropdown: false,    
-    suggestions: []
-  }
-
-  componentDidMount() {
-   
-  }
-
-  render() {
-    return (
+const NavbarUser = ({userImg, userName, email, ...props}) => (
       
       <ul className="nav navbar-nav navbar-nav-user float-right">
         <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
           <DropdownToggle tag="a" className="nav-link dropdown-user-link">
             <div className="user-nav d-sm-flex d-none">
               <span className="user-name text-bold-600">
-                {this.props.userName}
+                {userName}
               </span>
-              <span className="user-status">{this.props.email}</span>
+              <span className="user-status">{email}</span>
             </div>
             <span data-tour="user">
               <img
-                src={this.props.userImg}
+                src={userImg}
                 className="round"
                 height="40"
                 width="40"
@@ -81,10 +69,9 @@ class NavbarUser extends React.PureComponent {
               />
             </span>
           </DropdownToggle>
-          <UserDropdown {...this.props} />
+          <UserDropdown {...props} />
         </UncontrolledDropdown>
       </ul>
     )
-  }
-}
+    
 export default NavbarUser

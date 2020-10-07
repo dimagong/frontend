@@ -30,7 +30,7 @@ instance.interceptors.response.use(
       store.dispatch(logout())
   }
 
-    Promise.reject(error)
+    return Promise.reject(error)
   }
 );
 

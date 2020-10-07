@@ -17,18 +17,22 @@ import classnames from "classnames";
 // import UserEdit from './UserEdit'
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { selectManager, selectManagers } from "app/selectors/userSelectors";
-import { getUsersRequest } from "app/slices/appSlice";
+import { selectGroups, selectRoles, selectManager, selectManagers } from "app/selectors";
+import { getUsersRequest,getRolesRequest, getGroupsRequest,  } from "app/slices/appSlice";
 import { navItemFactory } from "./contants";
 import UserEdit from './userEdit/UserEdit'
 
 const UserManagment = () => {
   const manager = useSelector(selectManager);
   const managers = useSelector(selectManagers);
+  const groups = useSelector(selectGroups);
+  const roles = useSelector(selectRoles);
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("1");
 
   useEffect(() => {
+    !roles.length && dispatch(getRolesRequest());
+    !groups.length && dispatch(getGroupsRequest());
     !managers.length && dispatch(getUsersRequest());
   }, []);
 
@@ -56,7 +60,7 @@ const UserManagment = () => {
             </Nav>
             <TabContent activeTab={activeTab}>
               {navItemFactory.map(({ component }, index) => (
-                <TabPane tabId={`${index + 1}`}>{component()}</TabPane>
+                <TabPane tabId={`${index + 1}`}>{component({activeTab})}</TabPane>
               ))}
             </TabContent>
           </CardBody>
