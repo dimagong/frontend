@@ -55,7 +55,6 @@ const Invitation = () => {
     const confirmCode = () => {
 
     }
-    console.log(errors)
     return (
         <Row className="m-0 justify-content-center">
         <Col

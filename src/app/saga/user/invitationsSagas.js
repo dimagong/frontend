@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest } from "redux-saga/effects";
+import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import userApi from "api/User/user";
 import {
@@ -20,7 +20,9 @@ import {
   sendInvitationAcceptSuccess,
   sendInvitationAcceptRequest,
   sendInvitationAcceptError,
+  loginRequest
 } from "app/slices/appSlice";
+import { selectInvitation } from "app/selectors";
 
 function* getInvitations() {
     try {
@@ -78,6 +80,13 @@ function* getInvitations() {
     try {
       yield call(userApi.sendInvitationAccept, payload);
       yield put(sendInvitationAcceptSuccess());
+      const invitation = yield select(selectInvitation)
+      yield put(loginRequest({
+        password: payload.data.password,
+        code: "",
+        device_name: "browser",
+        email: invitation.invitedByUser.email
+      }))
   
     } catch (error) {
       console.log(error)
