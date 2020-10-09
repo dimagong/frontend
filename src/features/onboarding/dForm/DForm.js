@@ -37,9 +37,10 @@ import {
   selectdForms,
   selectdForm,
 } from "app/selectors/onboardingSelectors";
-import DFormForm from './DFormCreate'
-import { getdFormsRequest } from "app/slices/appSlice";
+import DFormForm from './DFormForm'
+import { getdFormsRequest, deletedFormRequest } from "app/slices/appSlice";
 import { setdForm } from "app/slices/onboardingSlice";
+import {initDForm} from "./settings"
 
 const DForm = () => {
   const [gridApi, setGridApi] = useState(null);
@@ -68,7 +69,24 @@ const DForm = () => {
     isCreate.current = false;
   };
 
+  const clearGridSelection = () => {
+    gridApi.deselectAll();
+    gridApi.clearFocusedCell();
+  };
+
   // TODO: END - AG GRID API
+
+  const createDForm = () => {
+    dispatch(setdForm(initDForm));
+    isCreate.current = true;
+
+  }
+  
+  const handleDelete = (params) => {
+    if(window.confirm("Are you sure?")) {
+      dispatch(deletedFormRequest(params.data));
+    }
+  }
 
     return (
         <div className="dform">
@@ -78,7 +96,7 @@ const DForm = () => {
               <Card>
                 <CardBody>
                   <div className="d-flex justify-content-end flex-wrap mt-2">
-                    <Button onClick={() => this.createDForm()} color="primary d-flex-left">Create</Button>
+                    <Button onClick={createDForm} color="primary d-flex-left">Create</Button>
                   </div>
                   <div className="ag-theme-material ag-grid-table">
                       <ContextLayout.Consumer>
@@ -88,7 +106,7 @@ const DForm = () => {
                             gridOptions={{}}
                             rowSelection="multiple"
                             defaultColDef={{resizable: true}}
-                            columnDefs={columnDefs({handleDelete: () => null})}
+                            columnDefs={columnDefs({handleDelete})}
                             rowData={dForms}
                             onGridReady={onGridReady}
                             colResizeDefault={"shift"}
@@ -108,7 +126,7 @@ const DForm = () => {
               </Card>
             </Col>
             <Col md="6">
-              {dForm ? <DFormForm/>: null}
+              {dForm ? <DFormForm clearGridSelection={clearGridSelection} isCreate={isCreate}/>: null}
             </Col>
             <ToastContainer/>
           </Row>

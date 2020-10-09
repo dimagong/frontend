@@ -77,10 +77,10 @@ function* deletedForm({ payload }) {
   try {
     yield call(dFormApi.deletedForm, payload);
     yield put(deletedFormSuccess());
-    const notifications = yield select(selectdForms);
+    const dForm = yield select(selectdForms);
     yield put(
       setdForms(
-        notifications.filter((notification) => notification.id !== payload.id)
+        dForm.filter((notification) => notification.id !== payload.id)
       )
     );
   } catch (error) {
