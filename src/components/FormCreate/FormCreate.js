@@ -68,7 +68,7 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
-    if(!isEqual(prevProps, this.props)){
+    if(!isEqual(prevProps.dForm, this.props.dForm)){
       this.setState(this.initState(this.props));
       this.groupedFiles();
     }

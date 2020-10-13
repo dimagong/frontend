@@ -1,5 +1,5 @@
 import instance from "api";
-import { dFormPath,dFormActionsPath,dFormTriggersPath } from "constants/onboarding";
+import { dFormPath,dFormActionsPath,dFormTriggersPath, submitdFormPath, changedFormStatusPath } from "constants/onboarding";
 
 const dFormApi = {
   async getdForms() {
@@ -7,6 +7,31 @@ const dFormApi = {
       const result = await instance({
         url: dFormPath,
         method: "GET",
+      });
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
+  async submitdForm({dForm, data}) {
+    try {
+      const result = await instance({
+        url: submitdFormPath(dForm.id),
+        method: "PUT",
+        data
+      });
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },async changedFormStatus({dForm, status}) {
+    try {
+      const result = await instance({
+        url: changedFormStatusPath(dForm.id),
+        method: "PUT",
+        status
       });
 
       return result.data.data;

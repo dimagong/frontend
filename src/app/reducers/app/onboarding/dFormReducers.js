@@ -92,7 +92,51 @@ const getdFormsSuccess = (state) => ({
     isLoading: true,
     isError: null,
   });
-  const getdFormTriggersError = (state , {payload}) => ({
+  const getdFormTriggersError = (state, {payload}) => ({
+    ...state,
+    isLoading: false,
+    isError: payload,
+  });
+  const submitdFormSuccess = (state, {payload}) => ({
+    ...state,
+    isLoading: false,
+    isError: null,
+    user: {
+      ...state.user,
+      manager: {
+        ...state.user.manager,
+        onboarding : {...state.user.manager.onboarding, d_form: payload}
+      },
+      managers: state.user.managers.map( manager => manager.id === state.user.manager.id ? {
+        ...state.user.manager,
+        onboarding : {...state.user.manager.onboarding, d_form: payload}
+      } : manager)
+    }
+    
+  });
+  
+  const submitdFormRequest = (state, {payload}) => ({
+    ...state,
+    isLoading: true,
+    isError: null,
+  });
+  const submitdFormError = (state , {payload}) => ({
+    ...state,
+    isLoading: false,
+    isError: payload,
+  });
+  const changedFormStatusSuccess = (state) => ({
+    ...state,
+    isLoading: false,
+    isError: null,
+  });
+  
+  const changedFormStatusRequest = (state, {payload}) => ({
+    ...state,
+    isLoading: true,
+    isError: null,
+  });
+  const changedFormStatusError = (state , {payload}) => ({
     ...state,
     isLoading: false,
     isError: payload,
@@ -118,4 +162,10 @@ export default {
   getdFormTriggersSuccess,
   getdFormTriggersRequest,
   getdFormTriggersError,
+  submitdFormSuccess,
+  submitdFormRequest,
+  submitdFormError,
+  changedFormStatusSuccess,
+  changedFormStatusRequest,
+  changedFormStatusError,
   };

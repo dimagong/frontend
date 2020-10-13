@@ -14,6 +14,9 @@ import {
   updateUserSuccess,
   updateUserRequest,
   updateUserError,
+  getUserByIdSuccess,
+  getUserByIdRequest,
+  getUserByIdError,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {setUserProfile} from 'app/actions/vuexy/user/userActions'
@@ -44,6 +47,18 @@ function* getUsers() {
   }
 }
 
+function* getUserById({payload}) {
+  try {
+    const responce = yield call(userApi.getUserById, payload);
+
+    yield put(getUserByIdSuccess(responce));
+
+  } catch (error) {
+    console.log(error)
+    yield put(getUserByIdError(error));
+  }
+}
+
 
 function* updateUser({payload}) {
   try {
@@ -70,6 +85,7 @@ export default function* () {
   yield all([
     yield takeLatest(getProfileRequest.type, getProfile),
     yield takeLatest(getUsersRequest.type, getUsers),
+    yield takeLatest(getUserByIdRequest.type, getUserById),
     yield takeLatest(updateUserRequest.type, updateUser),
     yield takeLatest(createUserRequest.type, createUser),
   ]);

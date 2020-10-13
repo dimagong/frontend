@@ -17,6 +17,7 @@ import {
 import {columnDefs} from './gridSettings';
 import UserOnboardingForm from './UserOnboardingForm';
 import { setManagerOnboarding, getUserOnboardingRequest} from 'app/slices/appSlice'
+import UserOnboardingDForm from './UserOnboardingDForm';
 
 
 
@@ -98,12 +99,17 @@ useEffect(()=>{
                         ]}
                         noHeader
                       />
-                    </Col>{
+                    </Col>
+                    {
                         manager.onboarding
                         ? <UserOnboardingForm isCreate={isCreate}/> 
-                        :null
+                        : null
                     }
-                    
+                    {
+                      manager.onboarding && !isCreate.current
+                      ? <UserOnboardingDForm /> 
+                      : null
+                    }
                   </Row>
                 </TabPane>
               </TabContent>

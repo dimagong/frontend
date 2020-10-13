@@ -14,6 +14,7 @@ import "assets/scss/plugins/tables/_agGridStyleOverride.scss";
 import "flatpickr/dist/themes/light.css";
 import "assets/scss/plugins/forms/flatpickr/flatpickr.scss";
 import "assets/scss/pages/users.scss"
+import "assets/scss/pages/coming-soon.scss"
 // import * as serviceWorker from './serviceWorker';
 
 const LazyApp = lazy(() => import("./App"));

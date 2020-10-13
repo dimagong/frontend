@@ -1,6 +1,10 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { ContextLayout } from "utility/context/Layout"
+import {
+  loginPath,
+  userManagmentPath,
+} from "constants/paths";
 
 const renderDefault = ({fullLayout, Component}) => props => {
   return (
@@ -50,6 +54,16 @@ export const PublicRoute = ({ Component, redirect, isAuth, fullLayout, ...rest }
               <Route
                 {...rest}
                 render={(props) => {
+                  if (!Component){
+                    return (
+                      <Redirect
+                        to={{
+                          pathname: isAuth ? userManagmentPath : loginPath,
+                          state: { from: props.location },
+                        }}
+                      />
+                    );
+                  }
                   if (isAuth && redirect)
                     return (
                       <Redirect

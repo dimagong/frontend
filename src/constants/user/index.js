@@ -1,6 +1,7 @@
 import qs from "query-string"
 export const getProfilePath =  "/api/user/profile";
 export const getUsersPath =  "/api/user/getByEmail";
+export const getUserByIdPath =  (id) => `/api/user/${id}`;
 export const updateUserPath =  "/api/user";
 export const updateUserRolesPath = (id) => `/api/user/${id}/roles`;
 export const updateUserGroupsPath = (id) => `/api/user/${id}/groups`;

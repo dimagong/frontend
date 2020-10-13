@@ -38,6 +38,27 @@ const getUsersError = (state, { payload }) => ({
   isError: payload,
 });
 
+const getUserByIdSuccess = (state, { payload }) => ({
+  ...state,
+  isLoading: false,
+  isError: null,
+  user: {
+    ...state.user,
+    manager: {...payload, onboarding: payload.onboardings.find( onboarding => onboarding.id === state.user.manager.onboarding.id)}
+  },
+});
+
+const getUserByIdRequest = (state, { payload }) => ({
+  ...state,
+  isLoading: true,
+  isError: null,
+});
+const getUserByIdError = (state, { payload }) => ({
+  ...state,
+  isLoading: false,
+  isError: payload,
+});
+
 const updateUserSuccess = (state, { payload }) => ({
   ...state,
   isLoading: false,
@@ -145,15 +166,15 @@ const createUserOnboardingSuccess = (state, { payload }) => ({
   ...state,
   isLoading: false,
   isError: null,
-  // user: {
-  //   ...state.user,
-  //   manager: {
-  //   ...state.user.manager,
-  //     onboardings: [...state.user.manager.onboardings, {payload}],
-  //     onboarding: null,
-  //   },
-  //   managers: state.user.managers.map( manager => manager.id === state.user.manager.id ? {...manager, onboardings: [...manager.onboardings, payload]} : manager)
-  // }
+  user: {
+    ...state.user,
+    manager: {
+    ...state.user.manager,
+      onboardings: [...state.user.manager.onboardings, payload],
+      onboarding: null,
+    },
+    managers: state.user.managers.map( manager => manager.id === state.user.manager.id ? {...manager, onboardings: [...manager.onboardings, payload]} : manager)
+  }
 });
 const createUserOnboardingRequest = (state, { payload }) => ({
   ...state,
@@ -389,6 +410,9 @@ export default {
   getUsersSuccess,
   getUsersRequest,
   getUsersError,
+  getUserByIdSuccess,
+  getUserByIdRequest,
+  getUserByIdError,
   updateUserSuccess,
   updateUserRequest,
   updateUserError,

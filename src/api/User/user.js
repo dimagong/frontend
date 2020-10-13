@@ -2,6 +2,7 @@ import instance from "api";
 import {
   getProfilePath,
   getUsersPath,
+  getUserByIdPath,
   updateUserAvatarPath,
   getUserAvatarPath,
   deleteUserAvatarPath,
@@ -42,6 +43,18 @@ const userApi = {
           page: 1,
           email: "",
         },
+      });
+
+      return result ? result.data.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getUserById({userId}) {
+    try {
+      const result = await instance({
+        url: getUserByIdPath(userId),
+        method: "GET",
       });
 
       return result ? result.data.data : result;

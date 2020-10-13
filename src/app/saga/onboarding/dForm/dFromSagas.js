@@ -20,6 +20,12 @@ import {
   getdFormTriggersSuccess,
   getdFormTriggersRequest,
   getdFormTriggersError,
+  submitdFormSuccess,
+  submitdFormRequest,
+  submitdFormError,
+  changedFormStatusSuccess,
+  changedFormStatusRequest,
+  changedFormStatusError,
 } from "app/slices/appSlice";
 import { setdForms, setdFormActions, setdFormTriggers } from "app/slices/onboardingSlice";
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
@@ -34,6 +40,24 @@ function* getdForms() {
     yield put(setdForms(responce));
   } catch (error) {
     yield put(getdFormsError(error));
+  }
+}
+function* submitdForm({payload}) {
+  try {
+    const responce = yield call(dFormApi.submitdForm, payload);
+    yield put(submitdFormSuccess(responce));
+  } catch (error) {
+    console.log(error)
+    yield put(submitdFormError(error));
+  }
+}
+
+function* changedFormStatus({payload}) {
+  try {
+    const responce = yield call(dFormApi.changedFormStatus, payload);
+    yield put(changedFormStatusSuccess(responce));
+  } catch (error) {
+    yield put(changedFormStatusError(error));
   }
 }
 
@@ -119,5 +143,7 @@ export default function* () {
     yield takeLatest(deletedFormRequest.type, deletedForm),
     yield takeLatest(getdFormActionsRequest.type, getdFormActions),
     yield takeLatest(getdFormTriggersRequest.type, getdFormTriggers),
+    yield takeLatest(submitdFormRequest.type, submitdForm),
+    yield takeLatest(changedFormStatusRequest.type, changedFormStatus),
   ]);
 }

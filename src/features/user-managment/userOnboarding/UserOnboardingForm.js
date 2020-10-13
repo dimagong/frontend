@@ -55,7 +55,7 @@ const UserOnboardingCreate = ({isCreate}) => {
     }
 
     const onSelectReviewersChange = (values) => {
-      values ? dispatch(setUserReviewers(reviewers.filter( group => values.some( value => value.label === group.name)))) : dispatch(setUserDForms([]))
+      values ? dispatch(setUserReviewers(reviewers.filter( group => values.some( value => value.label === group.first_name)))) : dispatch(setUserDForms([]))
     }
 
     const onSelectWorkflowChange = (values) => {

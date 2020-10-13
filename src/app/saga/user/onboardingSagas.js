@@ -39,15 +39,9 @@ function* getUserOnboarding() {
 }
 
 function* createUserOnboarding({payload}) {
-  // FIXME: TODO: return new user from API acfter create
-  // TODO: create new onboarding -> get managers -> updated current manager
 try {
-  yield call(userApi.createUserOnboarding, payload);
-  yield put(createUserOnboardingSuccess(payload))
-  yield put(getUsersRequest())
-  const managers = yield select(selectManagers);
-  const currentMangager = yield select(selectManager);
-  yield put(setManager(managers.find(manager => manager.id === currentMangager.id)))
+  const response = yield call(userApi.createUserOnboarding, payload);
+  yield put(createUserOnboardingSuccess(response))
 } catch (error) {
   yield put(createUserOnboardingError(error));
 }

@@ -101,6 +101,14 @@ export const {
   deletedFormRequest,
   deletedFormError,
 
+  submitdFormSuccess,
+  submitdFormRequest,
+  submitdFormError,
+
+  changedFormStatusSuccess,
+  changedFormStatusRequest,
+  changedFormStatusError,
+
   getWorkflowsSuccess,
   getWorkflowsRequest,
   getWorkflowsError,
@@ -128,6 +136,10 @@ export const {
   getUsersSuccess,
   getUsersRequest,
   getUsersError,
+
+  getUserByIdSuccess,
+  getUserByIdRequest,
+  getUserByIdError,
 
   updateUserSuccess,
   updateUserRequest,
