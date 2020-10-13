@@ -21,6 +21,7 @@ import {isEmpty} from "lodash";
 import classnames from "classnames";
 import React from "react";
 import {getSpecificType} from "../helper";
+import WysiwygEditor from "../Custom/WysiwygEditor";
 
 export function listControls(properties) {
   let keys = Object.keys(properties);
@@ -76,6 +77,16 @@ export function listControls(properties) {
       );
     };
 
+    const renderEditor = (column, placeholder, inputType = "text", defaultValue = '') => {
+      return (<WysiwygEditor
+          id={`${index}-${column}`}
+          type={inputType}
+          data={column in schemaPropertyEdit ? schemaPropertyEdit[column] : defaultValue}
+          onChange={event => this.wysiwygChange(event, objKey, column)}
+          className="form-control" placeholder={placeholder}/>
+      );
+    };
+
     const renderSelectColumn = (column, values) => {
       return (<select
           id={`${index}-${column}`}
@@ -125,10 +136,21 @@ export function listControls(properties) {
 
     const renderSpecificType = () => {
 
+      let labelForControls = <div>
+        {renderLabel('title', 'Title')}
+        <div className="form-group">
+          {renderInputColumn('title', 'Title')}
+        </div>
+      </div>;
+
       switch (specificType) {
         case Constants.FIELD_TYPE_TEXT: {
           return (
             <Row>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+
               <Col md="6">
                 <FormGroup>
                   {renderLabel('minLength', 'Min length')}
@@ -158,6 +180,10 @@ export function listControls(properties) {
         case Constants.FIELD_TYPE_NUMBER: {
           return (
             <Row>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+
               <Col md="6">
                 <FormGroup>
                   {renderLabel('minimum', 'Min length')}
@@ -188,6 +214,10 @@ export function listControls(properties) {
           return (
             <Row>
               <Col md="12">
+                {labelForControls}
+              </Col>
+
+              <Col md="12">
                 <FormGroup>
                   {renderRequiredColumn(objKey, 'Required?')}
                 </FormGroup>
@@ -203,6 +233,10 @@ export function listControls(properties) {
         case Constants.FIELD_TYPE_FILE_LIST: {
           return (
             <Row>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+
               <Col md="12">
                 <FormGroup>
                   {renderRequiredColumn(objKey, 'Required?')}
@@ -220,6 +254,10 @@ export function listControls(properties) {
           return (
             <Row>
               <Col md="12">
+                {labelForControls}
+              </Col>
+
+              <Col md="12">
                 <FormGroup>
                   {renderRequiredColumn(objKey, 'Required?')}
                 </FormGroup>
@@ -235,6 +273,10 @@ export function listControls(properties) {
         case Constants.FIELD_TYPE_TEXT_AREA: {
           return (
             <Row>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+
               <Col md="6">
                 <FormGroup>
                   {renderLabel('minLength', 'Min length')}
@@ -263,20 +305,30 @@ export function listControls(properties) {
         }
         case Constants.FIELD_TYPE_DATE: {
           return (<div>
+            <Row>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+            </Row>
+
             {renderLabel('format', 'Format')}
             {renderSelectColumn('format', ['date', 'date-time'])}
-            <div>
+            <div className="mt-1">
               {renderRequiredColumn(objKey, 'Required?')}
             </div>
-            <Col md="12">
-              <FormGroup>
-                {renderLabelShowing(objKey, 'Required?')}
-              </FormGroup>
-            </Col>
+            <div>
+              {renderLabelShowing(objKey)}
+            </div>
           </div>)
         }
         case Constants.FIELD_TYPE_SELECT: {
           return (<div>
+            <Row>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+            </Row>
+
             {schemaPropertyEdit.enum.map((enumInput, index) => {
               return (
                 <div className="row" key={index}>
@@ -317,6 +369,10 @@ export function listControls(properties) {
         case Constants.FIELD_TYPE_MULTI_SELECT: {
           return (<div>
             <div className="row" key={index}>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+
               <div className="col-md-12 form-group">
                 {renderLabel('uischema-multiselect-checkboxes', 'UI style')}
                 <select id="uischema-multiselect-checkboxes" className="form-control"
@@ -376,12 +432,21 @@ export function listControls(properties) {
             </div>
           </div>)
         }
+        case Constants.FIELD_TYPE_HELP_TEXT: {
+          return (<div>
+            <FormGroup>
+              {renderEditor('description', 'Description')}
+            </FormGroup>
+          </div>)
+        }
         default:
           return (<div></div>)
       }
     };
 
     let dependencyFields = this.renderDependencyPart('fields', objKey);
+    let currentSpecificType = getSpecificType(this.state.schema.properties[objKey]);
+
 
     return (
       <div
@@ -392,7 +457,7 @@ export function listControls(properties) {
           <div className="pull-right-icons position-relative">
             {renderKeyObjectColumn('property-' + objKey, 'Property')}
             <Badge
-              color="primary position-absolute dform-type-badget">{getSpecificType(this.state.schema.properties[objKey])}</Badge>
+              color="primary position-absolute dform-type-badget">{currentSpecificType}</Badge>
           </div>
 
           <div className="d-flex dform-input-setting">
@@ -402,10 +467,6 @@ export function listControls(properties) {
                 {renderLabel('property-' + objKey, 'Property')}
                 <div className="form-group">
                   {renderKeyObjectEditColumn('property-' + objKey, 'Property')}
-                </div>
-                {renderLabel('title', 'Title')}
-                <div className="form-group">
-                  {renderInputColumn('title', 'Title')}
                 </div>
                 <div className="form-group">
                   {renderLabel('type', 'Type')}
@@ -567,7 +628,7 @@ export function listControls(properties) {
         });
       }
     })
-  }
+  };
 
   const renderElementsByGroupsAndSections = (sectionName) => {
 
@@ -689,7 +750,7 @@ export function listControls(properties) {
   };
 
   const sections = getSections();
-  const onlySections = Object.keys(this.state.uiSchema.onlySections)
+  const onlySections = Object.keys(this.state.uiSchema.onlySections);
   const groupedElements = elementsByGroups();
 
 

@@ -3,8 +3,20 @@ import React, {useState} from "react";
 import classnames from "classnames";
 import Constants from "../Parts/Constants";
 import {isElementProtected} from "../helper";
+import HelpText from "./HelpText";
 
 export function ObjectFieldTemplate(props) {
+
+  const renderCustomFieldsComponents = (element) => {
+    switch (element.content.props.schema.type) {
+      case Constants.FIELD_TYPE_HELP_TEXT: {
+        return HelpText(element.content.props);
+      }
+      default: {
+        return element.content;
+      }
+    }
+  };
 
   const checkUiOptionField = (objKey, option) => {
     if (!this.state.uiSchema[objKey] || !this.state.uiSchema[objKey][Constants.UI_OPTIONS]) return true;
@@ -74,17 +86,19 @@ export function ObjectFieldTemplate(props) {
         if (isElementInSection(element.name, sectionName)) {
           const isElementHidden = (elementKey) => {
             let isHidden = elementKey in this.state.uiSchema && Constants.UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][Constants.UI_HIDDEN]
-              ? {display: 'none'} : {}
+              ? {display: 'none'} : {};
 
-            if(isElementProtected(this.state, 'fields', elementKey) && this.state.isShowProtectedElements) {
+            if (isElementProtected(this.state, 'fields', elementKey) && this.state.isShowProtectedElements) {
               isHidden = {display: 'none'};
             }
             return isHidden;
           };
+          console.log('ElementContent', element);
+
           return (
             <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
                  key={element.name}>
-              {element.content}
+              {renderCustomFieldsComponents(element)}
             </div>)
         }
         return null;
@@ -104,7 +118,7 @@ export function ObjectFieldTemplate(props) {
       let isHidden = groupName in this.state.uiSchema.groupStates && Constants.UI_HIDDEN in this.state.uiSchema.groupStates[groupName] && this.state.uiSchema.groupStates[groupName][Constants.UI_HIDDEN]
         ? {display: 'none'} : {};
 
-      if(isElementProtected(this.state, 'groups', groupName) && this.state.isShowProtectedElements) {
+      if (isElementProtected(this.state, 'groups', groupName) && this.state.isShowProtectedElements) {
         isHidden = {display: 'none'};
       }
 
@@ -136,13 +150,13 @@ export function ObjectFieldTemplate(props) {
         if (isElementInSection(element.name, sectionName)) {
           const isElementHidden = (elementKey) => {
             let isHidden = elementKey in this.state.uiSchema && Constants.UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][Constants.UI_HIDDEN]
-              ? {display: 'none'} : {}
+              ? {display: 'none'} : {};
 
-            if(isElementProtected(this.state, 'fields', elementKey) && this.state.isShowProtectedElements) {
+            if (isElementProtected(this.state, 'fields', elementKey) && this.state.isShowProtectedElements) {
               isHidden = {display: 'none'};
             }
             return isHidden;
-          }
+          };
           return (
             <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
                  key={element.name}>
@@ -159,7 +173,7 @@ export function ObjectFieldTemplate(props) {
   const isSectionHidden = (section, effect) => {
     let isHidden = section in this.state.uiSchema.sectionStates && Constants.UI_HIDDEN in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][Constants.UI_HIDDEN]
       ? {display: 'none'} : {};
-    if(isElementProtected(this.state, 'sections', section) && this.state.isShowProtectedElements) {
+    if (isElementProtected(this.state, 'sections', section) && this.state.isShowProtectedElements) {
       isHidden = {display: 'none'};
     }
     return isHidden;
@@ -167,7 +181,7 @@ export function ObjectFieldTemplate(props) {
 
   const checkIsSectionHidden = (section, effect) => {
     let isHidden = section in this.state.uiSchema.sectionStates && Constants.UI_HIDDEN in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][Constants.UI_HIDDEN];
-    if(isElementProtected(this.state, 'sections', section) && this.state.isShowProtectedElements) {
+    if (isElementProtected(this.state, 'sections', section) && this.state.isShowProtectedElements) {
       isHidden = true;
     }
     return isHidden;

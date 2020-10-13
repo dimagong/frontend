@@ -29,6 +29,7 @@ import {ObjectFieldTemplate} from './Custom/ObjectFieldTemplate'
 import {FileWidget} from "./Custom/FileWidget";
 import {CheckboxesWidget} from "./Custom/CheckboxesWidget";
 import {CheckboxWidget} from "./Custom/CheckboxWidget";
+import HelpText from "./Custom/HelpText";
 
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "../../../../services/file.service";
@@ -197,6 +198,11 @@ class FormCreate extends React.Component {
             "type": "string",
             "format": "data-url"
           }
+        },
+        [Constants.FIELD_TYPE_HELP_TEXT]: {
+          "title": "",
+          "description": "help text",
+          "type": Constants.RJSF_FIELD_TYPE_HELP_TEXT
         },
         number: {
           type: "number",
@@ -1037,7 +1043,7 @@ class FormCreate extends React.Component {
     this.setState(state);
   };
 
-  inputChangeHandler = (event, index, prop) => {
+  inputChangeHandler = (event, objKey, prop) => {
     const {target: {value}} = event;
 
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
@@ -1055,6 +1061,29 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit});
   };
 
+
+  wysiwygChange = (event, objKey, prop) => {
+    // console.log('!!!!!!!!!!!!!!!', event);
+    let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
+    schemaPropertyEdit[prop] = event;
+    this.setState({schemaPropertyEdit});
+    // const {target: {value}} = event;
+    //
+    // let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
+    // if (prop === 'type') {
+    //   delete schemaPropertyEdit['minimum'];
+    //   delete schemaPropertyEdit['maximum'];
+    //   delete schemaPropertyEdit['maxLength'];
+    //   delete schemaPropertyEdit['minLength'];
+    //   //schemaPropertyEdit.default = this.getDefaultValueByType(value);
+    //   schemaPropertyEdit = this.state.controls[value];
+    // } else {
+    //   schemaPropertyEdit[prop] = value;
+    // }
+    //
+    // this.setState({schemaPropertyEdit});
+  };
+
   inputNumberChangeHandler = (event, index, prop) => {
     const {target: {value}} = event;
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
@@ -1068,6 +1097,7 @@ class FormCreate extends React.Component {
   };
 
   addControl = (sectionName, groupName) => {
+
     this.setState(state => {
       let schema = clone(this.state.schema);
       let uiSchema = clone(this.state.uiSchema);
@@ -1696,6 +1726,7 @@ class FormCreate extends React.Component {
                   CheckboxesWidget: CheckboxesWidget,
                   FileWidget: this.fileWidget
                 }}
+                fields={{}}
                 onChange={(event) => {
                   this.onChangeForm(event)
                 }}
