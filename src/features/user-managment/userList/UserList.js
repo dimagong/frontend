@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect, useRef} from "react"
 import {
   Card,
   CardBody,
   Row,
   Col,
+  Spinner,
 } from "reactstrap"
 import { ChangeDetectionStrategyType } from 'ag-grid-react/lib/changeDetectionService'
 import {ContextLayout} from "utility/context/Layout"
@@ -15,17 +16,31 @@ import {
     selectManager,
     selectManagers,
   } from "app/selectors/userSelectors";
-
+  ;
 const UserList = () => {
     const [gridApi, setGridApi] = useState(null);
     const managers = useSelector(selectManagers);
     const manager = useSelector(selectManager);
     const dispatch = useDispatch();
+    const isFirstRender = useRef(true)
 
     useEffect(() => {
       !manager && gridApi && clearGridSelection();
     }, [manager])
 
+    useEffect(() => {
+      if(!managers.length && gridApi && isFirstRender){
+        setTimeout(()=>gridApi.showLoadingOverlay(),0)
+        isFirstRender.current = false
+      }else if(managers.length && gridApi && !isFirstRender){
+        setTimeout(()=>gridApi.hideOverlay(),0)
+      }else if(!managers.length && gridApi && isFirstRender){
+        setTimeout(()=>{
+          gridApi.hideOverlay();
+          gridApi.showNoRowsOverlay();
+        },0)
+      }
+    }, [managers,gridApi])
 
       // TODO: START - AG GRID API
       const  onGridReady = (params) => {
@@ -47,6 +62,21 @@ const UserList = () => {
         gridApi.clearFocusedCell();
       };
 
+      const CustomLoadingOverlay= () => (
+        <div
+        className="ag-overlay-loading-center"
+    >
+      <Spinner/>
+    </div>
+      )
+
+      const CustomNoRowsOverlay= () => (
+        <div
+        className="ag-overlay-loading-center"
+    >
+      <p>No Rows to Show</p>
+    </div>
+      )
     
       // TODO: END - AG GRID API
 
@@ -78,6 +108,13 @@ const UserList = () => {
                         pivotPanelShow="always"
                         paginationPageSize={20}
                         resizable={true}
+                        frameworkComponents={{
+                          customLoadingOverlay: CustomLoadingOverlay,
+                          customNoRowsOverlay: CustomNoRowsOverlay,
+                        }}
+                        loadingOverlayComponent={'customLoadingOverlay'}
+                        
+                        noRowsOverlayComponent={'customNoRowsOverlay'}
                         onSelectionChanged={onSelectionChanged}
                         enableRtl={context.state.direction === "rtl"}
                       />

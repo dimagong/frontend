@@ -17,6 +17,14 @@
   min-width: 120px;
   min-height: 25px;
 }
+.ag-overlay-loading-cell{
+  border: 0;
+  box-shadow: none !important;
+}
+.ag-overlay-loading-center{
+  border: 0;
+  box-shadow: none !important;
+}
   &__edit {
     &_header {
       height: 68px;

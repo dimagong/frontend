@@ -403,6 +403,8 @@ const setUserReviewers = (state, {payload}) => ({
   }
 })
 
+const getUserManagment = (state) => state
+
 export default {
   getProfileSuccess,
   getProfileRequest,
@@ -456,5 +458,5 @@ export default {
   setUserDForms, 
   setUserWorkflows,
   setUserReviewers,
-  
+  getUserManagment,
 };

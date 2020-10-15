@@ -219,7 +219,8 @@ export const {
   setUserDForms, 
   setUserWorkflows,
   setUserReviewers,
-  
+  getUserManagment,
+
   logout,
 } = appSlice.actions;
 

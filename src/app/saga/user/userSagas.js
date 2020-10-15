@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest } from "redux-saga/effects";
+import { all, put, call, takeLatest, select, takeEvery } from "redux-saga/effects";
 
 import userApi from "api/User/user";
 import {
@@ -17,10 +17,14 @@ import {
   getUserByIdSuccess,
   getUserByIdRequest,
   getUserByIdError,
+  getRolesRequest,
+  getGroupsRequest,
+  getUserManagment,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {setUserProfile} from 'app/actions/vuexy/user/userActions'
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
+import { selectGroups, selectRoles } from "app/selectors";
 
 function* getProfile() {
   try {
@@ -81,6 +85,26 @@ function* createUser({payload}) {
   }
 }
 
+function* getUserManagmentData() {
+  const groups = yield select(selectGroups)
+  const roles = yield select(selectRoles)
+  try {
+    const responce = yield call(userApi.getUsers);
+    yield put(getUsersSuccess(responce));
+
+    if(!groups.length){
+      yield put(getGroupsRequest())
+    } 
+    if(!roles.length){
+      yield put(getRolesRequest())
+    }
+
+  } catch (error) {
+    yield put(getUsersError(error));
+  }
+  
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getProfileRequest.type, getProfile),
@@ -88,5 +112,6 @@ export default function* () {
     yield takeLatest(getUserByIdRequest.type, getUserById),
     yield takeLatest(updateUserRequest.type, updateUser),
     yield takeLatest(createUserRequest.type, createUser),
+    yield takeEvery(getUserManagment.type, getUserManagmentData),
   ]);
 }
