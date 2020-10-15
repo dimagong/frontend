@@ -96,7 +96,7 @@ class InvitationList extends React.Component {
             // },
             {
                 headerName: "Invited user",
-                field: "invited_user",
+                field: "invitedUser",
                 width: 200,
                 cellRendererFramework: params => {
                     return params.value.first_name + ' ' + params.value.last_name;
