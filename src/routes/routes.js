@@ -19,6 +19,7 @@ const DForm = lazy(() => import("features/onboarding/dForm/DForm"));
 const Workflow = lazy(() => import("features/onboarding/workflow/Workflow"));
 const UserManagment = lazy(() => import("features/user-managment/UserManagment"));
 const Invitation = lazy(() => import("features/invitation/Invitation"));
+const Home = lazy(() => import("features/home/Home"));
 const Error404 = lazy(() => import("components/misc/error/404"));
 
 const routes = [
@@ -76,7 +77,9 @@ const routes = [
   },
   {
     path: homePath,
-    isPrivate: false,
+    Component: Home,
+    isPrivate: true,
+    redirect: loginPath,
     exact: true,
   },
   {

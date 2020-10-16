@@ -87,6 +87,13 @@
     hsla(0, 0%, 100%, 0)
   );
   z-index: 1000;
+  .brand-logo {
+    background: url("../../img/logo/logo_vp.jpg") no-repeat;
+    //background-image: ;
+    height: 40px;
+    width: 140px;
+    background-size:contain;
+  }
   &.fixed-top {
     left: $menu-expanded-width;
   }

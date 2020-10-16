@@ -268,7 +268,7 @@ class VerticalLayout extends PureComponent {
           }
         )}
       >
-        <Sidebar {...sidebarProps} />
+        {/* <Sidebar {...sidebarProps} /> */}
         <div
           className={classnames("app-content content", {
             "show-overlay": this.state.appOverlay === true,

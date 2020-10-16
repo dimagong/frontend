@@ -13,6 +13,7 @@ import { bindActionCreators } from "redux"
 import { history } from "../../../history";
 // import userService from "../../../services/user.service";
 import {selectManager} from "app/selectors"
+import { NavLink } from "react-router-dom"
 
 const UserName = props => {
   if (Object.keys(props.user.profile).length && props.user.profile.constructor === Object) {
@@ -73,10 +74,13 @@ const ThemeNavbar = props => {
               id="navbar-mobile"
             >
               <div className="bookmark-wrapper">
-                <NavbarBookmarks
+              <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
+               <div className="brand-logo" />
+            </NavLink>
+                {/* <NavbarBookmarks
                   sidebarVisibility={props.sidebarVisibility}
                   handleAppOverlay={props.handleAppOverlay}
-                />
+                /> */}
               </div>
               {props.horizontal ? (
                 <div className="logo d-flex align-items-center">

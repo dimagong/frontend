@@ -198,14 +198,14 @@ const UserCreate = () => {
         </Col>
         <Col className="d-flex justify-content-end flex-wrap mt-2" sm="12">
           <FormGroup>
-            <Button
+            <Button.Ripple
               color="primary"
               type="submit"
               className="mr-1 mb-1"
               onClick={onSubmit}
             >
               Submit
-            </Button>
+            </Button.Ripple>
           </FormGroup>
         </Col>
       </Row>
