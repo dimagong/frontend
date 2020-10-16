@@ -9,3 +9,4 @@ export const selectGroups = state => state.app.user.groups
 export const selectUser = state => state.app.user.user 
 export const selectInvitations = state => state.app.user.invitations 
 export const selectInvitation = state => state.app.user.invitation
+export const selectProfile = state => state.vuexy.user.profile

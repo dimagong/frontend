@@ -18,7 +18,8 @@ import {
   selectGroups,
   selectUser,
   selectInvitations,
-  selectInvitation
+  selectInvitation,
+  selectProfile,
 } from "./userSelectors";
 
 export {
@@ -42,4 +43,5 @@ export {
   selectUser,
   selectInvitations,
   selectInvitation,
+  selectProfile,
 };
