@@ -2,9 +2,9 @@ import React from "react"
 import ReactDOM from "react-dom"
 import PropTypes from "prop-types"
 import classnames from "classnames"
-import { history } from "../../../history"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { AlertTriangle } from "react-feather"
+import {withRouter} from "react-router-dom"
 class Autocomplete extends React.Component {
   constructor(props) {
     super(props)
@@ -18,7 +18,8 @@ class Autocomplete extends React.Component {
     }
 
     this.filteredData = []
-    document.body.addEventListener("click", this.handleExtenalClick)
+    this.wrapperRef = React.createRef();
+    this.handleExtenalClick = this.handleExtenalClick.bind(this)
   }
 
   // Suggestion Click Event
@@ -31,7 +32,7 @@ class Autocomplete extends React.Component {
       showSuggestions: false,
       userInput: e.currentTarget.innerText
     })
-    if (url) history.push(url)
+    if (url) this.props.history.push(url)
   }
 
   // Suggestion Hover Event
@@ -290,9 +291,8 @@ class Autocomplete extends React.Component {
 
   // Closes Suggestions if clicked outside container (On Blur Basically)
   handleExtenalClick = e => {
-    let { container } = this.refs
     const { target } = e
-    if (target !== container && !container.contains(target)) {
+    if (this.wrapperRef.current && !this.wrapperRef.current.contains(target) && !this.state.showSuggestions) {
       this.setState({
         showSuggestions: false
       })
@@ -301,11 +301,10 @@ class Autocomplete extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let textInput = ReactDOM.findDOMNode(this.input)
     let { autoFocus, onSuggestionsShown, clearInput } = this.props
     // For searchbar focus
-    if (textInput !== null && autoFocus) {
-      textInput.focus()
+    if (this.wrapperRef.current && autoFocus) {
+      this.wrapperRef.current.focus()
     }
 
     if (
@@ -313,19 +312,19 @@ class Autocomplete extends React.Component {
       prevState.showSuggestions === false &&
       this.state.focused
     ) {
-      this.setState({ showSuggestions: true })
+    this.setState({ showSuggestions: true })
     }
 
     // Clear Input
     if (clearInput === false && this.state.userInput.length) {
-      this.setState({
+    this.setState({
         userInput: ""
       })
     }
 
     // Function on Suggestions Shown
     if (onSuggestionsShown && this.state.showSuggestions) {
-      onSuggestionsShown(this.state.userInput)
+    onSuggestionsShown(this.state.userInput)
     }
 
     if (
@@ -333,12 +332,13 @@ class Autocomplete extends React.Component {
       prevState.focused === false &&
       this.state.focused === true
     ) {
-      this.setState({ showSuggestions: true })
+    this.setState({ showSuggestions: true })
     }
   }
 
   componentDidMount() {
-    if (this.props.defaultSuggestions && this.state.focused) {
+    document.addEventListener('mousedown', this.handleExtenalClick);
+      if (this.props.defaultSuggestions && this.state.focused) {
       this.setState({ showSuggestions: true })
     }
   }
@@ -354,7 +354,6 @@ class Autocomplete extends React.Component {
       state: { showSuggestions, userInput, openUp }
     } = this
     let suggestionsListComponent
-
     if (showSuggestions) {
       suggestionsListComponent = (
         <PerfectScrollbar
@@ -372,6 +371,7 @@ class Autocomplete extends React.Component {
     return (
       <div className="vx-autocomplete-container" ref="container">
         <input
+          ref={this.wrapperRef}
           type="text"
           onChange={e => {
             onChange(e)
@@ -386,9 +386,6 @@ class Autocomplete extends React.Component {
           }`}
           placeholder={this.props.placeholder}
           onClick={this.onInputClick}
-          ref={el => {
-            return (this.input = el)
-          }}
           onFocus={e => {
             this.setState({ focused: true })
           }}
@@ -405,7 +402,7 @@ class Autocomplete extends React.Component {
   }
 }
 
-export default Autocomplete
+export default withRouter(Autocomplete)
 
 Autocomplete.propTypes = {
   suggestions: PropTypes.array.isRequired,

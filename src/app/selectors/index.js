@@ -20,6 +20,7 @@ import {
   selectInvitations,
   selectInvitation,
   selectProfile,
+  selectVuexyUser,
 } from "./userSelectors";
 
 export {
@@ -44,4 +45,5 @@ export {
   selectInvitations,
   selectInvitation,
   selectProfile,
+  selectVuexyUser,
 };

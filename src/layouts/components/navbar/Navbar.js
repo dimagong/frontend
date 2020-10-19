@@ -12,8 +12,11 @@ import { bindActionCreators } from "redux"
 // import AuthService from '../../../services/auth.service'
 import { history } from "../../../history";
 // import userService from "../../../services/user.service";
-import {selectManager} from "app/selectors"
+import {selectManager, selectProfile, selectVuexyUser, selectManagers} from "app/selectors"
 import { NavLink } from "react-router-dom"
+import AutoComplete from "components/@vuexy/autoComplete/AutoCompleteComponent"
+import {userManagmentOptionsPath} from "constants/paths"
+import qs from "query-string"
 
 const UserName = props => {
   if (Object.keys(props.user.profile).length && props.user.profile.constructor === Object) {
@@ -23,7 +26,7 @@ const UserName = props => {
 }
 
 const ThemeNavbar = props => {
-  const {manager} = props;
+  const {manager, managers} = props;
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"]
   const navbarTypes = ["floating", "static", "sticky", "hidden"]
 
@@ -74,26 +77,66 @@ const ThemeNavbar = props => {
               id="navbar-mobile"
             >
               <div className="bookmark-wrapper">
-              <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
-               <div className="brand-logo" />
-            </NavLink>
-                {/* <NavbarBookmarks
-                  sidebarVisibility={props.sidebarVisibility}
-                  handleAppOverlay={props.handleAppOverlay}
-                /> */}
+                <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
+                  <div className="brand-logo" />
+                </NavLink>
+                  {/* <NavbarBookmarks
+                    sidebarVisibility={props.sidebarVisibility}
+                    handleAppOverlay={props.handleAppOverlay}
+                  /> */}
               </div>
-              {props.horizontal ? (
+              {console.log(managers.map( ({first_name}) => ({first_name})))}
+              <AutoComplete 
+                suggestions={managers.map( ({first_name, id}) => ({name: first_name, id}))} 
+                className="form-control" 
+                filterKey="name" 
+                suggestionLimit={4} 
+                defaultSuggestions={true}
+                customRender={(
+                  suggestion,
+                  i,
+                  filteredData,
+                  activeSuggestion,
+                  onSuggestionItemClick,
+                  onSuggestionItemHover
+                ) => (
+                  <li
+                    className={classnames("suggestion-item", {
+                      active:
+                        filteredData.indexOf(suggestion) === activeSuggestion
+                    })}
+                    key={i}
+                    onMouseEnter={() =>
+                      onSuggestionItemHover(filteredData.indexOf(suggestion))
+                    }
+                    onClick={e => {
+                      console.log(suggestion)
+                      onSuggestionItemClick(userManagmentOptionsPath(suggestion.id), e)
+                    }}
+                  >
+                    <img
+                      src={noneAvatar}
+                      alt={suggestion.name}
+                      height="32"
+                      width="32"
+                      className="mr-1"
+                    />
+                    <span>{suggestion.name}</span>
+                  </li>
+                )}
+                />
+              {/* {props.horizontal ? (
                 <div className="logo d-flex align-items-center">
                   <div className="brand-logo mr-50"></div>
                   <h2 className="text-primary brand-text mb-0">Vuexy</h2>
                 </div>
-              ) : null}
+              ) : null} */}
               <NavbarUser
                 handleAppOverlay={props.handleAppOverlay}
                 changeCurrentLang={props.changeCurrentLang}
                 userName={<UserName {...props} />}
                 email={props.user.profile.email}
-                userImg={manager.ulr? manager.ulr : noneAvatar}
+                userImg={manager && manager.ulr? manager.ulr : noneAvatar}
                 loggedType={null}
                 logoutWithJWT={logoutJWT}
               />
@@ -107,9 +150,10 @@ const ThemeNavbar = props => {
 
 const mapStateToProps = state => {
   return {
-    user: state.vuexy.user,
-    userProfile: state.vuexy.user.profile,
-    manager: selectManager
+    user: selectVuexyUser(state),
+    userProfile: selectProfile(state),
+    manager: selectManager(state),
+    managers: selectManagers(state),
   }
 }
 

@@ -23,7 +23,12 @@
   &__card-wrapper {
     display: flex;
     flex-wrap: wrap;
-    padding-top: 10px;
+    padding-top: 50px;
+    align-items: flex-start;
+    align-content: flex-start;
+    >div {
+      height: 100px;
+    }
   }
   &__card {
     width: 50%;

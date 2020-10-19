@@ -10,6 +10,8 @@ import {
   workflowsPath,
   userManagmentPath,
   invitationPath,
+  processPath,
+  masterSchemaPath,
 } from "constants/paths";
 
 const Login = lazy(() => import("features/auth/login/Login"));
@@ -21,6 +23,7 @@ const UserManagment = lazy(() => import("features/user-managment/UserManagment")
 const Invitation = lazy(() => import("features/invitation/Invitation"));
 const Home = lazy(() => import("features/home/Home"));
 const Error404 = lazy(() => import("components/misc/error/404"));
+const MasterSchema = lazy(() => import("components/misc/ComingSoon"));
 
 const routes = [
  
@@ -78,6 +81,13 @@ const routes = [
   {
     path: homePath,
     Component: Home,
+    isPrivate: true,
+    redirect: loginPath,
+    exact: true,
+  },
+  {
+    path: masterSchemaPath,
+    Component: MasterSchema,
     isPrivate: true,
     redirect: loginPath,
     exact: true,

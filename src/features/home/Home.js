@@ -50,16 +50,18 @@ import {
   dformsPath,
   workflowsPath,
   userManagmentPath,
+  userManagmentOptionsPath
 } from "constants/paths";
 import noneAvatar from "assets/img/portrait/none-avatar.png";
+import { useRouter } from "hooks/useRouter";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const manager = useSelector(selectManager);
-  const managers1 = useSelector(selectManagers);
-  const managers = [...managers1,...managers1,...managers1]
+  const managers = useSelector(selectManagers);
   const dispatch = useDispatch();
+  const { push } = useRouter();
 
   useEffect(() => {
     !managers.length && dispatch(getUserManagment());
@@ -76,6 +78,9 @@ const Home = () => {
     return managers.slice(8 * number, 8 * (number + 1))
   }
 
+  const handleCard = () => {
+
+  }
 
   return (
     <Row className="home">
@@ -143,7 +148,7 @@ const Home = () => {
                         <Col className="home__card-wrapper">
                           {
                              users(activeTab).map((manager) => (
-                                <Card className="flex-row flex-wrap home__card">
+                                <Card className="flex-row flex-wrap home__card" onClick={() => push(userManagmentOptionsPath(manager.id))}>
                                   <CardImg variant="top" src={noneAvatar} className="round user-nav d-sm-flex d-none" />
                                   <CardBody>
                                     <CardTitle>{`${manager.first_name} ${manager.last_name}`}</CardTitle>

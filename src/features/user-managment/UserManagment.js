@@ -18,19 +18,27 @@ import classnames from "classnames";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroups, selectRoles, selectManager, selectManagers } from "app/selectors";
-import { getUserManagment } from "app/slices/appSlice";
+import { getUserManagment, setManager } from "app/slices/appSlice";
 import { navItemFactory } from "./contants";
 import UserEdit from './userEdit/UserEdit'
+import { useRouter } from "hooks/useRouter";
 
 const UserManagment = () => {
   const manager = useSelector(selectManager);
   const managers = useSelector(selectManagers);
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("1");
+  const {query} = useRouter()
 
   useEffect(() => {
     !managers.length && dispatch(getUserManagment());
   }, []);
+
+  useEffect(() => {
+    if(query.user_id && managers.length){
+      dispatch(setManager(managers.find( manager => manager.id === +query.user_id)))
+    }
+  }, [managers])
 
   return (
     <Row className="user-managment">
