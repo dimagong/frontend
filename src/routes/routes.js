@@ -10,7 +10,7 @@ import {
   workflowsPath,
   userManagmentPath,
   invitationPath,
-  processPath,
+  onboardingProcessPath,
   masterSchemaPath,
 } from "constants/paths";
 
@@ -19,6 +19,7 @@ const ForgotPassword = lazy(() => import("features/auth/forgotPassword/ForgotPas
 const Notifications = lazy(() => import("features/onboarding/notifications/Notifications"));
 const DForm = lazy(() => import("features/onboarding/dForm/DForm"));
 const Workflow = lazy(() => import("features/onboarding/workflow/Workflow"));
+const OnboardingUser = lazy(() => import("features/onboarding/OnboardingUser"));
 const UserManagment = lazy(() => import("features/user-managment/UserManagment"));
 const Invitation = lazy(() => import("features/invitation/Invitation"));
 const Home = lazy(() => import("features/home/Home"));
@@ -32,7 +33,7 @@ const routes = [
     Component: Login,
     isPrivate: false,
     exact: true,
-    redirect: userManagmentPath,
+    redirect: homePath,
     fullLayout: true
   },
   {
@@ -40,7 +41,7 @@ const routes = [
     Component: ForgotPassword,
     isPrivate: false,
     exact: true,
-    redirect: userManagmentPath,
+    redirect: homePath,
   },
   {
     path: notificationsPath,
@@ -88,6 +89,13 @@ const routes = [
   {
     path: masterSchemaPath,
     Component: MasterSchema,
+    isPrivate: true,
+    redirect: loginPath,
+    exact: true,
+  },
+  {
+    path: onboardingProcessPath,
+    Component: OnboardingUser,
     isPrivate: true,
     redirect: loginPath,
     exact: true,

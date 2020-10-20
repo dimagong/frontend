@@ -8,6 +8,7 @@ import SideMenuContent from "./sidemenu/SideMenuContent"
 import PerfectScrollbar from "react-perfect-scrollbar"
 // import UserService from '../../../../services/user.service'
 import {User} from "react-feather";
+import { selectProfile } from "app/selectors"
 
 class Sidebar extends Component {
 
@@ -242,7 +243,7 @@ class Sidebar extends Component {
 const mapStateToProps = state => {
   return {
     currentUser: state.vuexy.auth.login.userRole,
-    userProfile: state.vuexy.user.profile
+    userProfile: selectProfile(state)
   }
 };
 

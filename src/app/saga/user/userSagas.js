@@ -22,7 +22,6 @@ import {
   getUserManagment,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
-import {setUserProfile} from 'app/actions/vuexy/user/userActions'
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import { selectGroups, selectRoles } from "app/selectors";
 
@@ -30,9 +29,8 @@ function* getProfile() {
   try {
     const responce = yield call(userApi.getProfile);
 
-    yield put(getProfileSuccess());
+    yield put(getProfileSuccess(responce));
     yield put(loginWithJWT(responce))
-    yield put(setUserProfile(responce))
 
   } catch (error) {
     console.log(error)

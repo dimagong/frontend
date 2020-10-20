@@ -125,6 +125,22 @@ const getdFormsSuccess = (state) => ({
     isLoading: false,
     isError: payload,
   });
+  const submitdFormDataSuccess = (state, {payload}) => ({
+    ...state,
+    isLoading: false,
+    isError: null,
+  });
+  
+  const submitdFormDataRequest = (state, {payload}) => ({
+    ...state,
+    isLoading: true,
+    isError: null,
+  });
+  const submitdFormDataError = (state , {payload}) => ({
+    ...state,
+    isLoading: false,
+    isError: payload,
+  });
   const changedFormStatusSuccess = (state) => ({
     ...state,
     isLoading: false,
@@ -165,6 +181,9 @@ export default {
   submitdFormSuccess,
   submitdFormRequest,
   submitdFormError,
+  submitdFormDataSuccess,
+  submitdFormDataRequest,
+  submitdFormDataError,
   changedFormStatusSuccess,
   changedFormStatusRequest,
   changedFormStatusError,

@@ -16,19 +16,25 @@ import {
     selectManager,
     selectManagers,
   } from "app/selectors/userSelectors";
-  ;
+import { useRouter } from "hooks/useRouter";
+import { userManagmentOptionsPath, userManagmentPath } from "constants/paths"
+
 const UserList = () => {
     const [gridApi, setGridApi] = useState(null);
     const managers = useSelector(selectManagers);
     const manager = useSelector(selectManager);
     const dispatch = useDispatch();
     const isFirstRender = useRef(true)
+    const {push} = useRouter()
 
     useEffect(() => {
       !manager && gridApi && clearGridSelection();
     }, [manager])
 
+      // TODO: START - AG GRID API
+
     useEffect(() => {
+      // setup loading overlay
       if(!managers.length && gridApi && isFirstRender){
         setTimeout(()=>gridApi.showLoadingOverlay(),0)
         isFirstRender.current = false
@@ -42,7 +48,6 @@ const UserList = () => {
       }
     }, [managers,gridApi])
 
-      // TODO: START - AG GRID API
       const  onGridReady = (params) => {
         setGridApi(params.api);
         params.api.sizeColumnsToFit();
@@ -55,6 +60,9 @@ const UserList = () => {
       const onSelectionChanged = () => {
         const [selectedRow] = gridApi.getSelectedRows();
         dispatch(setManager(selectedRow));
+        selectedRow
+        ?push(userManagmentOptionsPath(selectedRow.id))
+        :push(userManagmentPath)
       };
 
       const clearGridSelection = () => {

@@ -5,39 +5,38 @@ import classnames from "classnames"
 import {
   logoutWithJWT,
 } from "app/actions/vuexy/auth/loginActions"
-import NavbarBookmarks from "./NavbarBookmarks"
+// import NavbarBookmarks from "./NavbarBookmarks"
 import NavbarUser from "./NavbarUser"
 import noneAvatar from "assets/img/portrait/none-avatar.png";
 import { bindActionCreators } from "redux"
-// import AuthService from '../../../services/auth.service'
 import { history } from "../../../history";
 // import userService from "../../../services/user.service";
-import {selectManager, selectProfile, selectVuexyUser, selectManagers} from "app/selectors"
+import {selectManager, selectProfile, selectManagers} from "app/selectors"
 import { NavLink } from "react-router-dom"
 import AutoComplete from "components/@vuexy/autoComplete/AutoCompleteComponent"
 import {userManagmentOptionsPath} from "constants/paths"
-import qs from "query-string"
+import {logout} from 'app/slices/appSlice'
 
-const UserName = props => {
-  if (Object.keys(props.user.profile).length && props.user.profile.constructor === Object) {
-    return props.user.profile.first_name;
+const UserName = ({userProfile}) => {
+  if (Object.keys(userProfile).length && userProfile.constructor === Object) {
+    return userProfile.first_name;
   }
   return '';
 }
 
 const ThemeNavbar = props => {
-  const {manager, managers} = props;
+  const {manager, managers, userProfile} = props;
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"]
   const navbarTypes = ["floating", "static", "sticky", "hidden"]
 
   const logoutJWT = async () => {
-    // await AuthService.logout();
-    // AuthService.removeToken();
+    props.logout();
     history.push("/login");
     props.logoutWithJWT();
   }
 
-  return (
+  return userProfile
+  ? (
     <React.Fragment>
       <div className="content-overlay" />
       <div className="header-navbar-shadow" />
@@ -85,7 +84,6 @@ const ThemeNavbar = props => {
                     handleAppOverlay={props.handleAppOverlay}
                   /> */}
               </div>
-              {console.log(managers.map( ({first_name}) => ({first_name})))}
               <AutoComplete 
                 suggestions={managers.map( ({first_name, id}) => ({name: first_name, id}))} 
                 className="form-control" 
@@ -110,7 +108,6 @@ const ThemeNavbar = props => {
                       onSuggestionItemHover(filteredData.indexOf(suggestion))
                     }
                     onClick={e => {
-                      console.log(suggestion)
                       onSuggestionItemClick(userManagmentOptionsPath(suggestion.id), e)
                     }}
                   >
@@ -135,7 +132,7 @@ const ThemeNavbar = props => {
                 handleAppOverlay={props.handleAppOverlay}
                 changeCurrentLang={props.changeCurrentLang}
                 userName={<UserName {...props} />}
-                email={props.user.profile.email}
+                email={userProfile.email}
                 userImg={manager && manager.ulr? manager.ulr : noneAvatar}
                 loggedType={null}
                 logoutWithJWT={logoutJWT}
@@ -145,12 +142,11 @@ const ThemeNavbar = props => {
         </div>
       </Navbar>
     </React.Fragment>
-  )
+  ) : null
 }
 
 const mapStateToProps = state => {
   return {
-    user: selectVuexyUser(state),
     userProfile: selectProfile(state),
     manager: selectManager(state),
     managers: selectManagers(state),
@@ -159,7 +155,8 @@ const mapStateToProps = state => {
 
 const mapActionsToProps = (dispatch) => {
   return {
-    logoutWithJWT: bindActionCreators(logoutWithJWT, dispatch)
+    logoutWithJWT: bindActionCreators(logoutWithJWT, dispatch),
+    logout: bindActionCreators(logout, dispatch),
   }
 }
 

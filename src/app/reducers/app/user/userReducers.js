@@ -1,9 +1,13 @@
 import {initUser} from 'app/slices/appSlice';
 
-const getProfileSuccess = (state) => ({
+const getProfileSuccess = (state, { payload }) => ({
   ...state,
   isLoading: false,
   isError: null,
+  user: {
+    ...state.user,
+    profile: payload
+  }
 });
 
 const getProfileRequest = (state, { payload }) => ({
@@ -348,6 +352,17 @@ const setManagerOnboarding = (state, {payload}) => ({
   }
 })
 
+const setProfileOnboarding = (state, {payload}) => ({
+  ...state,
+  user: {
+      ...state.user,
+    profile: {
+      ...state.user.profile,
+      onboarding: payload
+    }
+  }
+})
+
 const setManagerOnboardingProperty = (state, {payload}) => ({
   ...state,
   user: {
@@ -459,4 +474,5 @@ export default {
   setUserWorkflows,
   setUserReviewers,
   getUserManagment,
+  setProfileOnboarding,
 };

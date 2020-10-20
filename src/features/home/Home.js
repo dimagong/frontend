@@ -78,8 +78,8 @@ const Home = () => {
     return managers.slice(8 * number, 8 * (number + 1))
   }
 
-  const handleCard = () => {
-
+  const redirectToManager = (id) => {
+    push(userManagmentOptionsPath(id))
   }
 
   return (
@@ -148,7 +148,7 @@ const Home = () => {
                         <Col className="home__card-wrapper">
                           {
                              users(activeTab).map((manager) => (
-                                <Card className="flex-row flex-wrap home__card" onClick={() => push(userManagmentOptionsPath(manager.id))}>
+                                <Card className="flex-row flex-wrap home__card" onClick={() => redirectToManager(manager.id)}>
                                   <CardImg variant="top" src={noneAvatar} className="round user-nav d-sm-flex d-none" />
                                   <CardBody>
                                     <CardTitle>{`${manager.first_name} ${manager.last_name}`}</CardTitle>

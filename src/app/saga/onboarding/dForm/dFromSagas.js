@@ -23,6 +23,9 @@ import {
   submitdFormSuccess,
   submitdFormRequest,
   submitdFormError,
+  submitdFormDataSuccess,
+  submitdFormDataRequest,
+  submitdFormDataError,
   changedFormStatusSuccess,
   changedFormStatusRequest,
   changedFormStatusError,
@@ -42,9 +45,19 @@ function* getdForms() {
     yield put(getdFormsError(error));
   }
 }
-function* submitdForm({payload}) {
+function* submitdFormData ({payload}) {
   try {
-    const responce = yield call(dFormApi.submitdForm, payload);
+    const responce = yield call(dFormApi.submitdFormData  , payload);
+    yield put(submitdFormDataSuccess(responce));
+  } catch (error) {
+    console.log(error)
+    yield put(submitdFormDataError(error));
+  }
+}
+
+function* submitdForm ({payload}) {
+  try {
+    const responce = yield call(dFormApi.submitdForm  , payload);
     yield put(submitdFormSuccess(responce));
   } catch (error) {
     console.log(error)
@@ -143,7 +156,8 @@ export default function* () {
     yield takeLatest(deletedFormRequest.type, deletedForm),
     yield takeLatest(getdFormActionsRequest.type, getdFormActions),
     yield takeLatest(getdFormTriggersRequest.type, getdFormTriggers),
-    yield takeLatest(submitdFormRequest.type, submitdForm),
+    yield takeLatest(submitdFormDataRequest.type, submitdFormData ),
+    yield takeLatest(submitdFormRequest.type, submitdForm ),
     yield takeLatest(changedFormStatusRequest.type, changedFormStatus),
   ]);
 }

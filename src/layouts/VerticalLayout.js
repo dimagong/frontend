@@ -14,6 +14,7 @@ import {
   changeMenuColor,
   hideScrollToTop
 } from "app/actions/vuexy/customizer/index";
+import { selectProfile } from "app/selectors";
 
 // import UserService from '../services/user.service';
 
@@ -295,7 +296,7 @@ class VerticalLayout extends PureComponent {
 const mapStateToProps = state => {
   return {
     app: state.vuexy.customizer,
-    userProfile: state.vuexy.user.profile,
+    userProfile: selectProfile(state),
   };
 };
 export default connect(mapStateToProps, {

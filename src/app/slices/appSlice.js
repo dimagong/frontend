@@ -26,6 +26,7 @@ export const appSlice = createSlice({
       manager: null,
       invitations: [],
       invitation: null,
+      profile: null,
       user: initUser,
       groups: [],
       roles: [],
@@ -104,6 +105,10 @@ export const {
   submitdFormSuccess,
   submitdFormRequest,
   submitdFormError,
+
+  submitdFormDataSuccess,
+  submitdFormDataRequest,
+  submitdFormDataError,
 
   changedFormStatusSuccess,
   changedFormStatusRequest,
@@ -220,7 +225,8 @@ export const {
   setUserWorkflows,
   setUserReviewers,
   getUserManagment,
-
+  setProfileOnboarding,
+  
   logout,
 } = appSlice.actions;
 
