@@ -95,7 +95,7 @@ class InvitationAccept extends React.Component {
       toast.success("Successed");
 
       const response = await AuthService.login({
-        email: this.state.invitation.invited.email,
+        email: this.state.invitation.invitedUser.email,
         password: this.state.invitationRequest.password,
         remember: false,
         device_name: 'browser',
