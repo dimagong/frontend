@@ -40,19 +40,31 @@ export function ObjectFieldTemplate(props) {
     const groups = {};
 
     const groupedFields = Object.keys(this.state.uiSchema.groups);
-    props.properties.forEach(element => {
-      if (groupedFields.indexOf(element.name) !== -1) {
-        const groupName = props.uiSchema.groups[element.name];
-        if (!Array.isArray(groups[groupName])) {
-          groups[groupName] = [];
+
+    const groupedProperties = Object.keys(props.uiSchema.sectionGroups).map((groupName) => {
+      return props.properties.filter(element => {
+        if (element.name in this.state.uiSchema.groups && groupName === this.state.uiSchema.groups[element.name]) {
+          return true;
         }
-        groups[groupName].push(element);
-      } else {
-        if (!Array.isArray(groups[Constants.WITHOUT_GROUP + element.name])) {
-          groups[Constants.WITHOUT_GROUP + element.name] = [];
+        return false;
+      });
+    });
+
+    groupedProperties.forEach(gropedElements => {
+      gropedElements.forEach((element) => {
+        if (groupedFields.indexOf(element.name) !== -1) {
+          const groupName = props.uiSchema.groups[element.name];
+          if (!Array.isArray(groups[groupName])) {
+            groups[groupName] = [];
+          }
+          groups[groupName].push(element);
+        } else {
+          if (!Array.isArray(groups[Constants.WITHOUT_GROUP + element.name])) {
+            groups[Constants.WITHOUT_GROUP + element.name] = [];
+          }
+          groups[Constants.WITHOUT_GROUP + element.name].push(element);
         }
-        groups[Constants.WITHOUT_GROUP + element.name].push(element);
-      }
+      });
     });
     return groups;
   };
@@ -62,7 +74,7 @@ export function ObjectFieldTemplate(props) {
   };
 
   const getSections = () => {
-    const sections = Object.values(this.state.uiSchema.sections);
+    const sections = Object.keys(this.state.uiSchema.onlySections);
     return getUniqueValues(sections);
   };
 

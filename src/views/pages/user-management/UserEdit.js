@@ -313,7 +313,7 @@ class UserEdit extends React.Component {
   }
 
   async getGroupsRelations() {
-    const response = await groupsRelationsService.getAll();
+    const response = await groupsRelationsService.getByUserId(this.props.user.id);
     const dForms = response.data.data.dForms;
     const workflows = response.data.data.workflows;
     this.setState({dForms, workflows});
@@ -580,7 +580,7 @@ class UserEdit extends React.Component {
       const updatedUser = response.data.data;
       store.dispatch(setEditUser(updatedUser));
       await this.dispatchUserList();
-
+      await this.getGroupsRelations();
       toast.success('success');
       this.setState({...this.state, errors: {}})
     } catch (responseError) {
