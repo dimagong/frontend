@@ -13,7 +13,9 @@ import {
   NavLink,
   Row,
   TabContent,
-  TabPane
+  TabPane,
+  FormFeedback,
+  Input
 } from "reactstrap";
 import ElementEditModal from "../ElementEditModal";
 import DependencyEditModal from "../DependencyEditModal";
@@ -50,17 +52,24 @@ export function listControls(properties) {
     };
 
     const renderKeyObjectEditColumn = (column, placeholder) => {
+
+      const errorPropertyNameAlreadyTaken = this.isPropertyNameAlreadyTaken(column, this.state.fieldEdit.propertyKey);
+
       return (
         <div>
           <div className="row" key={index}>
             <div className="col-md-12 form-group">
-              <input id={`${index}-${column}`}
+              <Input id={`${index}-property-${column}`}
                      value={this.state.fieldEdit.propertyKey} type="text"
                      ref={this.refTitles}
                      data-id={objKey}
                      onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
                      className="form-control"
+                     invalid={errorPropertyNameAlreadyTaken}
                      placeholder={placeholder}/>
+              <FormFeedback>
+                {errorPropertyNameAlreadyTaken ? 'That property name is already taken' : null}
+              </FormFeedback>
             </div>
           </div>
 
@@ -466,7 +475,7 @@ export function listControls(properties) {
                                 onSave={() => this.elementEditModalSave(objKey)}>
                 {renderLabel('property-' + objKey, 'Property')}
                 <div className="form-group">
-                  {renderKeyObjectEditColumn('property-' + objKey, 'Property')}
+                  {renderKeyObjectEditColumn(objKey, 'Property')}
                 </div>
                 <div className="form-group">
                   {renderLabel('type', 'Type')}

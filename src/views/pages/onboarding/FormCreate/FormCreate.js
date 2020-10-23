@@ -18,7 +18,7 @@ import {
   FormGroup,
   CardBody,
   CardHeader,
-  Badge
+  Badge, FormFeedback, Input
 } from 'reactstrap';
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy"
 import {X, Check, Plus} from "react-feather"
@@ -58,7 +58,7 @@ class FormCreate extends React.Component {
     super(props);
 
     this.state = this.initState(props);
-    console.log('STATE', this.state);
+
     this.refTitles = React.createRef();
 
     this.props.reInit && this.props.reInit(this.reInit, this);
@@ -492,6 +492,18 @@ class FormCreate extends React.Component {
 
 
   dependecyModalSave = (dependencyType, objKey) => {
+    if (
+      dependencyType === 'sections' &&
+      this.isSectionNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey)
+    ) {
+      return false;
+    } else if (
+      dependencyType === 'groups' &&
+      this.isGroupNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey)
+    ) {
+      return false;
+    }
+
     let state = clone(this.state);
 
     if (state.uiSettings.protectedProperty) {
@@ -513,6 +525,7 @@ class FormCreate extends React.Component {
 
     this.dependencyChecker(state);
     this.setState(state);
+    return true;
   };
 
   dependencyModalOpen = (dependencyType, objKey) => {
@@ -721,6 +734,15 @@ class FormCreate extends React.Component {
 
     const dependencyFields = this.renderDependencyPart(dependencyType, objKey);
 
+    let errorNameAlreadyTaken = false;
+
+    if (dependencyType === 'sections') {
+      errorNameAlreadyTaken = this.isSectionNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey);
+    } else if (dependencyType === 'groups') {
+      errorNameAlreadyTaken = this.isGroupNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey);
+    }
+
+
     return (
       <DependencyEditModal onOpen={() => this.dependencyModalOpen(dependencyType, objKey)}
                            onSave={() => this.dependecyModalSave(dependencyType, objKey)} onDelete={() => {
@@ -728,13 +750,18 @@ class FormCreate extends React.Component {
       }}>
         <div className="row" key={objKey}>
           <div className="col-md-12 form-group">
-            <input id={`${objKey}`}
+            <Input id={`${objKey}`}
                    value={this.state.fieldEdit.propertyKey}
                    type="text"
                    data-id={objKey}
                    onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
                    className="form-control"
-                   placeholder="Name"/>
+                   placeholder="Name"
+                   invalid={errorNameAlreadyTaken}
+            />
+            <FormFeedback>
+              {errorNameAlreadyTaken ? 'That name is already taken' : null}
+            </FormFeedback>
           </div>
           <div className="col-md-12 form-group">
             <Checkbox
@@ -968,6 +995,11 @@ class FormCreate extends React.Component {
     const properties = schema.properties;
     schema.properties = {};
 
+    if (previousFieldKey in state.uiSchema.columnsClasses) {
+      state.uiSchema.columnsClasses[newFieldKey] = state.uiSchema.columnsClasses[previousFieldKey];
+      delete state.uiSchema.columnsClasses[previousFieldKey];
+    }
+
     Object.keys(properties).forEach((deepIndex, deepCounter) => {
       if (previousFieldKey === deepIndex) {
         schema.properties[newFieldKey] = properties[deepIndex];
@@ -1039,13 +1071,15 @@ class FormCreate extends React.Component {
       });
     });
 
+    if (previousFieldKey in state.uiSchema && !(previousFieldKey in state.schema.properties)) {
+      delete state.uiSchema[previousFieldKey];
+    }
 
     this.setState(state);
   };
 
   inputChangeHandler = (event, objKey, prop) => {
     const {target: {value}} = event;
-
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     if (prop === 'type') {
       delete schemaPropertyEdit['minimum'];
@@ -1053,35 +1087,30 @@ class FormCreate extends React.Component {
       delete schemaPropertyEdit['maxLength'];
       delete schemaPropertyEdit['minLength'];
       //schemaPropertyEdit.default = this.getDefaultValueByType(value);
+
       schemaPropertyEdit = this.state.controls[value];
+
+      if (
+        objKey in this.state.schema.properties &&
+        'title' in this.state.schema.properties[objKey] &&
+        'title' in this.state.schemaPropertyEdit
+      ) {
+        schemaPropertyEdit.title = this.state.schemaPropertyEdit.title;
+      }
+
     } else {
       schemaPropertyEdit[prop] = value;
     }
+
 
     this.setState({schemaPropertyEdit});
   };
 
 
   wysiwygChange = (event, objKey, prop) => {
-    // console.log('!!!!!!!!!!!!!!!', event);
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit[prop] = event;
     this.setState({schemaPropertyEdit});
-    // const {target: {value}} = event;
-    //
-    // let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
-    // if (prop === 'type') {
-    //   delete schemaPropertyEdit['minimum'];
-    //   delete schemaPropertyEdit['maximum'];
-    //   delete schemaPropertyEdit['maxLength'];
-    //   delete schemaPropertyEdit['minLength'];
-    //   //schemaPropertyEdit.default = this.getDefaultValueByType(value);
-    //   schemaPropertyEdit = this.state.controls[value];
-    // } else {
-    //   schemaPropertyEdit[prop] = value;
-    // }
-    //
-    // this.setState({schemaPropertyEdit});
   };
 
   inputNumberChangeHandler = (event, index, prop) => {
@@ -1167,16 +1196,36 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit})
   };
 
-  elementEditModalSave(objKey) {
+  isPropertyNameAlreadyTaken(previousFieldKey, newFieldKey) {
+    return newFieldKey !== previousFieldKey && newFieldKey in this.state.schema.properties;
+  }
+
+  isSectionNameAlreadyTaken(previousFieldKey, newFieldKey) {
+    return newFieldKey !== previousFieldKey && newFieldKey in this.state.uiSchema.onlySections;
+  }
+
+  isGroupNameAlreadyTaken(previousFieldKey, newFieldKey) {
+    return newFieldKey !== previousFieldKey && newFieldKey in this.state.uiSchema.sectionGroups;
+  }
+
+  elementEditModalSave(previousFieldKey) {
+    const newFieldKey = this.state.fieldEdit.propertyKey;
+
+    if (this.isPropertyNameAlreadyTaken(previousFieldKey, newFieldKey)) {
+      return;
+    }
+
     let schema = clone(this.state.schema);
     let uiSchema = clone(this.state.uiSchema);
-    schema.properties[objKey] = clone(this.state.schemaPropertyEdit);
-    uiSchema[objKey] = clone(this.state.uiSchemaPropertyEdit);
+    schema.properties[previousFieldKey] = clone(this.state.schemaPropertyEdit);
+    uiSchema[previousFieldKey] = clone(this.state.uiSchemaPropertyEdit);
     schema.required = clone(this.state.schemaRequiredFields);
 
     this.setState({schema, uiSchema}, () => {
-      this.inputKeyObjectHandler(objKey);
-    })
+      this.inputKeyObjectHandler(previousFieldKey);
+    });
+
+    return true;
   }
 
   elementEditModalOpened = (column) => {
@@ -1230,6 +1279,7 @@ class FormCreate extends React.Component {
 
   addOperatorField = (conditionFieldType, index) => {
     let state = clone(this.state);
+
     state.uiSettings.dependencies.conditions[index][conditionFieldType].push({
       "field": "text",
       "operator": "=",
