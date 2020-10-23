@@ -830,6 +830,8 @@ class FormCreate extends React.Component {
     this.dependencyChecker(state);
 
     this.setState(state);
+
+    return true;
   };
 
   uiSettingsOpen = (objKey) => {
