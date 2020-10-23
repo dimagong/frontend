@@ -535,6 +535,7 @@ class UserEdit extends React.Component {
       } else {
         console.log(responseError);
       }
+      throw responseError;
     }
   };
 
@@ -617,9 +618,13 @@ class UserEdit extends React.Component {
   };
 
   editFieldSave = async () => {
-    await this.submitData();
-    this.setState({editField: null});
-    await this.dispatchEditUser();
+    try {
+      await this.submitData();
+      this.setState({editField: null});
+      await this.dispatchEditUser();
+    } catch (e) {
+      return false;
+    }
   };
 
   setEmptyEditField() {
