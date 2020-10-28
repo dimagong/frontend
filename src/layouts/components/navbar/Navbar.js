@@ -17,6 +17,8 @@ import AutoComplete from "components/@vuexy/autoComplete/AutoCompleteComponent"
 import {userManagmentOptionsPath} from "constants/paths"
 import {logout} from 'app/slices/appSlice'
 
+import SearchInput from './SearchInput'
+
 const UserName = ({userProfile}) => {
   if (Object.keys(userProfile).length && userProfile.constructor === Object) {
     return userProfile.first_name;
@@ -84,44 +86,9 @@ const ThemeNavbar = props => {
                     handleAppOverlay={props.handleAppOverlay}
                   /> */}
               </div>
-              <AutoComplete 
-                suggestions={managers.map( ({first_name, id}) => ({name: first_name, id}))} 
-                className="form-control" 
-                filterKey="name" 
-                suggestionLimit={4} 
-                defaultSuggestions={true}
-                customRender={(
-                  suggestion,
-                  i,
-                  filteredData,
-                  activeSuggestion,
-                  onSuggestionItemClick,
-                  onSuggestionItemHover
-                ) => (
-                  <li
-                    className={classnames("suggestion-item", {
-                      active:
-                        filteredData.indexOf(suggestion) === activeSuggestion
-                    })}
-                    key={i}
-                    onMouseEnter={() =>
-                      onSuggestionItemHover(filteredData.indexOf(suggestion))
-                    }
-                    onClick={e => {
-                      onSuggestionItemClick(userManagmentOptionsPath(suggestion.id), e)
-                    }}
-                  >
-                    <img
-                      src={noneAvatar}
-                      alt={suggestion.name}
-                      height="32"
-                      width="32"
-                      className="mr-1"
-                    />
-                    <span>{suggestion.name}</span>
-                  </li>
-                )}
-                />
+
+              <SearchInput suggestions={managers.map(({ first_name, id, status }) => ({ name: first_name, id, status }))}/>
+
               {/* {props.horizontal ? (
                 <div className="logo d-flex align-items-center">
                   <div className="brand-logo mr-50"></div>

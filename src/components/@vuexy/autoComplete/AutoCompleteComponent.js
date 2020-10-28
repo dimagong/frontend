@@ -123,61 +123,11 @@ class Autocomplete extends React.Component {
     }
   }
 
-  // Grouped Suggestions
-  renderGroupedSuggestion = arr => {
-    const { filterKey, customRender } = this.props
-    const {
-      onSuggestionItemClick,
-      onSuggestionItemHover,
-      state: { activeSuggestion, userInput }
-    } = this
+  filterSuggestions = (suggestions, suggestionsLimit) => {
+    const {filterKey} = this.props;
+    const {userInput} = this.state;
 
-    let renderSuggestion = (item, i) => {
-      if (!customRender) {
-        return (
-          <li
-            className={classnames("suggestion-item", {
-              active: this.filteredData.indexOf(item) === activeSuggestion
-            })}
-            key={item[filterKey]}
-            onClick={e => onSuggestionItemClick(item.link, e)}
-            onMouseEnter={() => {
-              this.onSuggestionItemHover(this.filteredData.indexOf(item))
-            }}>
-            {item[filterKey]}
-          </li>
-        )
-      } else if (customRender) {
-        return customRender(
-          item,
-          i,
-          this.filteredData,
-          activeSuggestion,
-          onSuggestionItemClick,
-          onSuggestionItemHover,
-          userInput
-        )
-      } else {
-        return null
-      }
-    }
-
-    return arr.map((item, i) => {
-      return renderSuggestion(item, i)
-    })
-  }
-
-  // Ungrouped Suggestions
-  renderUngroupedSuggestions = () => {
-    const { filterKey, suggestions, customRender, suggestionLimit } = this.props
-    const {
-      onSuggestionItemClick,
-      onSuggestionItemHover,
-      state: { activeSuggestion, userInput }
-    } = this
-
-    this.filteredData = []
-    let sortSingleData = suggestions
+    return suggestions
       .filter(i => {
         let startCondition = i[filterKey]
             .toLowerCase()
@@ -185,98 +135,93 @@ class Autocomplete extends React.Component {
           includeCondition = i[filterKey]
             .toLowerCase()
             .includes(userInput.toLowerCase())
-        if (startCondition) {
-          return startCondition
-        } else if (!startCondition && includeCondition) {
-          return includeCondition
-        } else {
-          return null
-        }
+
+        return startCondition || includeCondition;
       })
-      .slice(0, suggestionLimit)
-    this.filteredData.push(...sortSingleData)
-    return sortSingleData.map((suggestion, index) => {
-      if (!customRender) {
-        return (
-          <li
-            className={classnames("suggestion-item", {
-              active: this.filteredData.indexOf(suggestion) === activeSuggestion
-            })}
-            key={suggestion[filterKey]}
-            onClick={e =>
-              onSuggestionItemClick(suggestion.link ? suggestion.link : null, e)
-            }
-            onMouseEnter={() =>
-              this.onSuggestionItemHover(this.filteredData.indexOf(suggestion))
-            }>
-            {suggestion[filterKey]}
-          </li>
-        )
-      } else if (customRender) {
+      .slice(0, suggestionsLimit)
+  }
+
+  // suggestion template
+  renderSuggestion = (suggestion, filterKey, filteredData, activeSuggestion) => (
+    <li
+      className={classnames("suggestion-item", {
+        active: this.filteredData.indexOf(suggestion) === activeSuggestion
+      })}
+      key={suggestion[filterKey]}
+      onClick={e =>
+        this.onSuggestionItemClick(suggestion.link ? suggestion.link : null, e)
+      }
+      onMouseEnter={() =>
+        this.onSuggestionItemHover(this.filteredData.indexOf(suggestion))
+      }>
+      {suggestion[filterKey]}
+    </li>
+  )
+
+  // Render list of suggestions
+  renderSingleSuggestionsGroup = (suggestionsGroup, groupSuggestionsLimit) => {
+    const { filterKey, customRender, suggestionLimit } = this.props
+    const {
+      onSuggestionItemClick,
+      onSuggestionItemHover,
+      state: { activeSuggestion, userInput }
+    } = this
+
+    let filteredSuggestions = this.filterSuggestions(suggestionsGroup, groupSuggestionsLimit || suggestionLimit)
+
+    if (!filteredSuggestions.length) {
+      return (
+        <li className="suggestion-item no-result">
+          <AlertTriangle size={15} />{" "}
+          <span className="align-middle ml-50">No Result</span>
+        </li>
+      )
+    }
+
+    return filteredSuggestions.map((suggestion, index) => {
+      if (customRender) {
         return customRender(
           suggestion,
           index,
-          this.filteredData,
+          filteredSuggestions,
           activeSuggestion,
           onSuggestionItemClick,
           onSuggestionItemHover,
           userInput
         )
       } else {
-        return null
+        return this.renderSuggestion(suggestion, filterKey, filteredSuggestions, activeSuggestion)
       }
     })
   }
 
-  // Renders Suggestions
+  // render groups of suggestions
+  renderSuggestionsGroups = (suggestionsGroup) => {
+    const { filterHeaderKey } = this.props
+
+    return (
+      <React.Fragment key={suggestionsGroup[filterHeaderKey]}>
+        <li className="suggestion-item suggestion-title text-primary text-bold-600">
+          {suggestionsGroup[filterHeaderKey]}
+        </li>
+        {suggestionsGroup.map((suggestion) => (
+          this.renderSingleSuggestionsGroup(suggestion.data)
+        ))}
+      </React.Fragment>
+    )
+  }
+
+  // Render suggestions or groups of suggestions
   renderSuggestions = () => {
-    const { filterKey, grouped, filterHeaderKey, suggestions } = this.props
-    const {
-      renderUngroupedSuggestions,
-      state: { userInput }
-    } = this
+    const { grouped, suggestions } = this.props
 
     // Checks if suggestions are grouped or not.
     if (grouped === undefined || grouped === null || !grouped) {
-      return renderUngroupedSuggestions()
+      return this.renderSingleSuggestionsGroup(suggestions)
     } else {
-      this.filteredData = []
-      return suggestions.map(suggestion => {
-        let sortData = suggestion.data
-          .filter(i => {
-            let startCondition = i[filterKey]
-                .toLowerCase()
-                .startsWith(userInput.toLowerCase()),
-              includeCondition = i[filterKey]
-                .toLowerCase()
-                .includes(userInput.toLowerCase())
-            if (startCondition) {
-              return startCondition
-            } else if (!startCondition && includeCondition) {
-              return includeCondition
-            } else {
-              return null
-            }
-          })
-          .slice(0, suggestion.searchLimit)
-
-        this.filteredData.push(...sortData)
-        return (
-          <React.Fragment key={suggestion[filterHeaderKey]}>
-            <li className="suggestion-item suggestion-title text-primary text-bold-600">
-              {suggestion[filterHeaderKey]}
-            </li>
-            {sortData.length ? (
-              this.renderGroupedSuggestion(sortData)
-            ) : (
-              <li className="suggestion-item no-result">
-                <AlertTriangle size={15} />{" "}
-                <span className="align-middle ml-50">No Result</span>
-              </li>
-            )}
-          </React.Fragment>
-        )
-      })
+      return suggestions.map(suggestion => (
+        this.renderSuggestionsGroups(suggestion)
+      ))
     }
   }
 
@@ -354,6 +299,8 @@ class Autocomplete extends React.Component {
       state: { showSuggestions, userInput, openUp }
     } = this
     let suggestionsListComponent
+    const recentSearches = ["Brad Powar", "Brad", "John Doe"]
+
     if (showSuggestions) {
       suggestionsListComponent = (
         <PerfectScrollbar
@@ -363,7 +310,24 @@ class Autocomplete extends React.Component {
           ref={el => (this.suggestionList = el)}
           component="ul"
           options={{ wheelPropagation: false }}>
+          <div className="d-flex justify-content-between p-1">
+            <span>Suggestions</span>
+            <span>View all</span>
+          </div>
           {this.renderSuggestions()}
+          <div className="text-right px-1 pt-1">
+            <span>Tip: Hold CTRL or CONTROL while clicking to show preview</span>
+          </div>
+          {!!recentSearches.length && (
+            <div className="m-1 border-top-secondary ">
+              <div className="py-1">Recent searches</div>
+              {recentSearches.map((rs) => (
+                <div className="h5">
+                  {rs}
+                </div>
+              ))}
+            </div>
+          )}
         </PerfectScrollbar>
       )
     }
@@ -415,5 +379,6 @@ Autocomplete.propTypes = {
   onKeyDown: PropTypes.func,
   onChange: PropTypes.func,
   onSuggestionsShown: PropTypes.func,
-  onSuggestionItemClick: PropTypes.func
+  onSuggestionItemClick: PropTypes.func,
+
 }
