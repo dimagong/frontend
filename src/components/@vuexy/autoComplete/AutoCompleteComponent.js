@@ -333,7 +333,7 @@ class Autocomplete extends React.Component {
     }
 
     return (
-      <div className="vx-autocomplete-container" ref="container">
+      <div className="vx-autocomplete-container">
         <input
           ref={this.wrapperRef}
           type="text"

@@ -66,7 +66,6 @@ const Home = () => {
   useEffect(() => {
     !managers.length && dispatch(getUserManagment());
   }, []);
-  
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -148,7 +147,11 @@ const Home = () => {
                         <Col className="home__card-wrapper">
                           {
                              users(activeTab).map((manager) => (
-                                <Card className="flex-row flex-wrap home__card" onClick={() => redirectToManager(manager.id)}>
+                                <Card
+                                  key={`${manager.email}`}
+                                  className="flex-row flex-wrap home__card"
+                                  onClick={() => redirectToManager(manager.id)}
+                                >
                                   <CardImg variant="top" src={noneAvatar} className="round user-nav d-sm-flex d-none" />
                                   <CardBody>
                                     <CardTitle>{`${manager.first_name} ${manager.last_name}`}</CardTitle>
@@ -158,7 +161,6 @@ const Home = () => {
                                     <CardText>
                                       {manager.email ? `${manager.email}` : "email number is empty"}
                                     </CardText>
-                                   
                                   </CardBody>
                                 </Card>
                               ))
@@ -167,13 +169,13 @@ const Home = () => {
                       </Row>
                         <Pagination aria-label="Page navigation">
                           {getPagination().map( (_, index) => (
-                            <PaginationItem active={activeTab === index}>
-                            <PaginationLink onClick={() => {
-                              setActiveTab(index)
-                            }}>
-                              {index + 1}
-                           </PaginationLink>
-                          </PaginationItem>
+                            <PaginationItem key={index} active={activeTab === index}>
+                              <PaginationLink onClick={() => {
+                                setActiveTab(index)
+                              }}>
+                                {index + 1}
+                             </PaginationLink>
+                            </PaginationItem>
                           ))}
                         </Pagination>
                     </div>
