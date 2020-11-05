@@ -51,6 +51,8 @@ import {prepareSelectData} from "utility/select/prepareSelectData";
 import DataTable, {createTheme} from "react-data-table-component"
 import Checkbox from "../../../components/@vuexy/checkbox/CheckboxesVuexy";
 import UserAvatar from "./User/UserAvatar"
+import {MultiSelectOrganization} from "../../../components/MultiSelect/MultiSelectOrganizations";
+import OrganizationPermissionsModal from '../../../components/modals/OrganizationPermissionsModal'
 
 const clone = rfdc();
 
@@ -118,6 +120,7 @@ class UserEdit extends React.Component {
       label: 'Onboarding',
       color: colorMultiSelect
     }],
+    selectedOrganization: {},
     userAvatar: '',
     onboardingTemplate: {},
     onboardingViewState: '',
@@ -666,7 +669,7 @@ class UserEdit extends React.Component {
 
   updateSelectedOnboarding() {
     let updatedCurrOnboarding = this.props.user.onboardings.find(onboarding => onboarding.id === this.state.selectedOnboarding.id);
-    if(!updatedCurrOnboarding) {
+    if (!updatedCurrOnboarding) {
       return;
     }
     this.setState({selectedOnboarding: updatedCurrOnboarding})
@@ -1212,6 +1215,10 @@ class UserEdit extends React.Component {
       // onboarding
     } = this.state;
 
+    const CustomOptionComponent = ({innerProps, innerRef}) =>
+      (<div className="test123" ref={innerRef} {...innerProps} />);
+
+
     return <Card
       onClick={(event) => this.cardClicked(event)}
       className={classnames("card-action", {
@@ -1282,8 +1289,10 @@ class UserEdit extends React.Component {
                     <FormFeedback>{'first_name' in this.state.errors ? this.state.errors['first_name'] : ''}</FormFeedback>
                   </FormGroup>
                   :
-                  <div onClick={() => this.editField(['first_name', 'last_name'])}>{(first_name || 'No name') + ' ' + (last_name || '')} <Edit2
-                    className="edit-btn" size={15}/></div>
+                  <div
+                    onClick={() => this.editField(['first_name', 'last_name'])}>{(first_name || 'No name') + ' ' + (last_name || '')}
+                    <Edit2
+                      className="edit-btn" size={15}/></div>
               }
 
             </div>
@@ -1369,7 +1378,7 @@ class UserEdit extends React.Component {
                                   <FormFeedback>{'postcode' in this.state.errors ? this.state.errors['postcode'] : ''}</FormFeedback>
                                 </FormGroup>
                                 : <div onClick={() => this.editField('postcode')}>{postcode} <Edit2 className="edit-btn"
-                                                                                                size={15}/></div>
+                                                                                                    size={15}/></div>
                             }
                           </div>
                         </div>
@@ -1502,23 +1511,40 @@ class UserEdit extends React.Component {
                             {/* <Form onSubmit={(event) => this.formGroupsSubmit(event)}>
                                                             <FormGroup> */}
                             {/* <h5 className="text-bold-500">Groups</h5> */}
-                            <Select
-                              components={{DropdownIndicator}}
+                            {/*<Select*/}
+                            {/*  components={{DropdownIndicator, MultiValue: CustomOptionComponent}}*/}
+                            {/*  value={this.state.groups}*/}
+                            {/*  maxMenuHeight={200}*/}
+                            {/*  isMulti*/}
+                            {/*  isClearable={false}*/}
+                            {/*  styles={colourStyles}*/}
+                            {/*  options={this.state.selectOptions.groups}*/}
+                            {/*  onChange={(values) => {*/}
+                            {/*    this.onSelectGroupsChange(values)*/}
+                            {/*  }}*/}
+                            {/*  className="fix-margin-select"*/}
+                            {/*  classNamePrefix="select"*/}
+                            {/*  id="languages"*/}
+                            {/*/>*/}
+                            <MultiSelectOrganization
                               value={this.state.groups}
-                              maxMenuHeight={200}
-                              isMulti
-                              isClearable={false}
-                              styles={colourStyles}
                               options={this.state.selectOptions.groups}
                               onChange={(values) => {
                                 this.onSelectGroupsChange(values)
                               }}
-                              className="fix-margin-select"
-                              classNamePrefix="select"
-                              id="languages"
+                              onSelectElement={(organization) => {
+                                console.log(organization);
+                                this.setState({selectedOrganization: organization});
+                              }}
                             />
-                            {/* </FormGroup>
-                                                        </Form> */}
+
+                            <OrganizationPermissionsModal
+                              isOpen={!isEmpty(this.state.selectedOrganization)}
+                              organization={this.state.selectedOrganization}
+                              onClose={() => this.setState({selectedOrganization: {}})}
+                              user={this.props.user}
+                            />
+
                           </div>
                         </div>
                         <div className="d-flex">
