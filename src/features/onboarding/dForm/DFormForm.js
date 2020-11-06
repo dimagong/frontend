@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {
   Card,
   CardHeader,
@@ -6,23 +6,16 @@ import {
   CardBody,
   Row,
   Col,
-  Nav,
-  NavItem,
-  NavLink,
-  TabContent,
-  TabPane,
-  Button
 } from "reactstrap";
 import { X, Eye, EyeOff } from "react-feather";
 import MultiSelect from "components/MultiSelect/multiSelect";
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { useDispatch, useSelector } from "react-redux";
 import { selectdForms, selectdForm } from "app/selectors/onboardingSelectors";
-import {Check, Plus} from "react-feather";
-import ControlsFactory from "./Controls/ControlsFactory";
 import FormCreate from "components/FormCreate/FormCreate"
 import { setdForm } from "app/slices/onboardingSlice";
 import { createdFormRequest, updatedFormRequest } from "app/slices/appSlice";
+import {initDForm} from './settings'
 
 const DFormForm = ({clearGridSelection, isCreate}) => {
   const dForm = useSelector(selectdForm);
@@ -38,13 +31,21 @@ const DFormForm = ({clearGridSelection, isCreate}) => {
     if(isCreate.current){
       dispatch(createdFormRequest({...dForm, name, description, protected_properties}))
     }else{
-      dispatch(updatedFormRequest({...dForm, name, description, protected_properties})) 
+      dispatch(updatedFormRequest({...dForm, name, description, protected_properties}))
     }
   }
 
   const changeStateConfig = () => {
     setIsStateConfig(!isStateConfig)
   }
+
+  useEffect(() => {
+    if(isCreate) {
+      dispatch(setdForm(initDForm));
+    }
+  }, [isCreate])
+
+  if(!dForm) return null;
 
   return (
     <Card className="dForm">

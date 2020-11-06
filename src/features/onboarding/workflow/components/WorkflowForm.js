@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -11,18 +11,10 @@ import {
   Button,
   Label,
   FormFeedback,
-  ListGroup,
-  ListGroupItem,
-  ListGroupItemHeading,
-  DropdownToggle,
-  DropdownItem,
-  UncontrolledButtonDropdown,
-  DropdownMenu,
   Badge,
 } from "reactstrap";
-import CreatableSelect from "react-select/creatable";
 import "flatpickr/dist/themes/light.css";
-import { X, ChevronDown } from "react-feather";
+import { X } from "react-feather";
 import MultiSelect from "components/MultiSelect/multiSelect";
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { selectWorkflow } from "app/selectors/onboardingSelectors";
@@ -30,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setWorkflow, setWorkflowGroups } from "app/slices/onboardingSlice";
 import { createWorkflowRequest, updateWorkflowRequest } from "app/slices/appSlice";
 import WorkflowTriggers from './WorkflowTriggers'
+import {initWorkflow} from './constants'
 
 const WorkflowForm = ({ clearGridSelection, workflowModalType }) => {
   const workflow = useSelector(selectWorkflow);
@@ -45,11 +38,11 @@ const WorkflowForm = ({ clearGridSelection, workflowModalType }) => {
     dispatch(setWorkflow({ ...workflow, ...workflowValue }));
   };
 
-const submitWorkflow = (e) => {
+  const submitWorkflow = (e) => {
     e.preventDefault();
     switch (workflowModalType) {
       case "Edit":
-        dispatch(updateWorkflowRequest(workflow)) 
+        dispatch(updateWorkflowRequest(workflow))
 
         break;
         case "Create":
@@ -58,7 +51,15 @@ const submitWorkflow = (e) => {
       default:
         return <></>
     }
-}
+  }
+
+  useEffect(() => {
+    if(workflowModalType === "Create") {
+      dispatch(setWorkflow(initWorkflow))
+    }
+  }, [workflowModalType])
+
+  if(!workflow) return null;
 
   return (
     <Col col="md-6">
@@ -107,7 +108,7 @@ const submitWorkflow = (e) => {
               <MultiSelect groups={prepareSelectGroups(workflow.groups)} setGroups={setWorkflowGroups}/>
             </Col>
             <WorkflowTriggers/>
-            
+
             <Col md="12">
               <div className="d-flex justify-content-center flex-wrap mt-2">
                 <Button
