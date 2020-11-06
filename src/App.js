@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
 import Routes from "routes";
 import { history } from "./history";
 import { ConnectedRouter } from "connected-react-router";
@@ -15,9 +15,9 @@ function App() {
 
   return (
     <ConnectedRouter history={history}>
-      <BrowserRouter history={history}>
+      <Router history={history}>
         <Routes />
-      </BrowserRouter>
+      </Router>
     </ConnectedRouter>
   );
 }
