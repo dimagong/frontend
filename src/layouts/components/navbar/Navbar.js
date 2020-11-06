@@ -87,7 +87,9 @@ const ThemeNavbar = props => {
                   /> */}
               </div>
 
+
               <SearchInput suggestions={managers.map(({ first_name, id, status }) => ({ name: first_name, id, status }))}/>
+
 
               {/* {props.horizontal ? (
                 <div className="logo d-flex align-items-center">

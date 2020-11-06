@@ -1,26 +1,19 @@
-const getModulesSuccess = (state, {payload}) => ({
-    ...state,
-    isLoading: false,
-    isError: null,
-    user: {
-      ...state.user,
-      modules: payload
-    }
-  });
-  
-  const getModulesRequest = (state) => ({
-    ...state,
-    isLoading: true,
-    isError: null,
-    
-  });
-  const getModulesError = (state , {payload}) => ({
-    ...state,
-    isLoading: false,
-    isError: payload,
-  });
+const getModulesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.modules = payload;
+};
 
-  
+const getModulesRequest = (state) => {
+  state.isLoading = true;
+  state.isError = null;
+};
+const getModulesError = (state , {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+};
+
+
 export default {
     getModulesSuccess,
     getModulesRequest,

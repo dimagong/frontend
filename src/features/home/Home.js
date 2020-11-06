@@ -64,7 +64,7 @@ const Home = () => {
   const { push } = useRouter();
 
   useEffect(() => {
-    !managers.length && dispatch(getUserManagment());
+    managers !== undefined && !managers.length && dispatch(getUserManagment());
   }, []);
 
   const toggle = () => setIsOpen(!isOpen);
@@ -80,7 +80,7 @@ const Home = () => {
   const redirectToManager = (id) => {
     push(userManagmentOptionsPath(id))
   }
-
+  console.log("managers", managers)
   return (
     <Row className="home">
       <Col sm="12" md="12" lg="12" xl="9">
@@ -146,7 +146,7 @@ const Home = () => {
                       <Row>
                         <Col className="home__card-wrapper">
                           {
-                             users(activeTab).map((manager) => (
+                             managers && users(activeTab).map((manager) => (
                                 <Card
                                   key={`${manager.email}`}
                                   className="flex-row flex-wrap home__card"
@@ -168,7 +168,7 @@ const Home = () => {
                         </Col>
                       </Row>
                         <Pagination aria-label="Page navigation">
-                          {getPagination().map( (_, index) => (
+                          {managers && getPagination().map( (_, index) => (
                             <PaginationItem key={index} active={activeTab === index}>
                               <PaginationLink onClick={() => {
                                 setActiveTab(index)
