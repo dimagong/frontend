@@ -443,7 +443,6 @@ export function dependencyChecker(state) {
     state.uiSchema.sectionStates[section] = {};
   })
 
-  console.log('fieldsStates', fieldsStates);
 
   // todo function in DForm, if checked them disabled
   this.disableAllInputs(state.schema, state.uiSchema);

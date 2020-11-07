@@ -30,8 +30,12 @@ class UserService {
     return axios.put(`/api/user/${id}/roles`, {roles});
   }
 
-  updateGroups({id, groups}) {
-    return axios.put(`/api/user/${id}/groups`, {groups});
+  addGroup(userId, group) {
+    return axios.put(`/api/user/${userId}/groups/add`, group);
+  }
+
+  removeGroup(userId, group) {
+    return axios.put(`/api/user/${userId}/groups/remove`, group);
   }
 
   getUserById(id) {

@@ -105,7 +105,6 @@ export function ObjectFieldTemplate(props) {
             }
             return isHidden;
           };
-          console.log('ElementContent', element);
 
           return (
             <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}

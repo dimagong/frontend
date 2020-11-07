@@ -130,7 +130,8 @@ class UserEdit extends React.Component {
     errors: {},
     updatedAtText: '',
     refreshOnboarding: false,
-    isStateConfig: false
+    isStateConfig: false,
+    isDisabledGroups: false
   };
 
   constructor(props) {
@@ -320,7 +321,6 @@ class UserEdit extends React.Component {
     const dForms = response.data.data.dForms;
     const workflows = response.data.data.workflows;
     this.setState({dForms, workflows});
-    console.log('response', response);
     const dFormSelects = this.getCustomSelects(dForms);
     const workflowSelects = this.getCustomSelects(workflows);
     this.setState({dFormSelects, workflowSelects})
@@ -577,22 +577,26 @@ class UserEdit extends React.Component {
     toast.success('success')
   }
 
-  formGroupsSubmit = async () => {
-    try {
-      let user = this.getUserForSend();
-      const response = await UserService.updateGroups(user);
-      const updatedUser = response.data.data;
-      store.dispatch(setEditUser(updatedUser));
-      await this.dispatchUserList();
-      await this.getGroupsRelations();
-      toast.success('success');
-      this.setState({...this.state, errors: {}})
-    } catch (responseError) {
-      this.getUser();
-      // const errorStatus = responseError.response.status;
-      const error = responseError.response.data.error;
-      toast.error(error.message)
-    }
+  submitAddGroup = async (group) => {
+    let user = this.getUserForSend();
+    const response = await UserService.addGroup(user.id, group);
+    const updatedUser = response.data.data;
+    store.dispatch(setEditUser(updatedUser));
+    await this.dispatchUserList();
+    await this.getGroupsRelations();
+    toast.success('success');
+    this.setState({...this.state, errors: {}})
+  };
+
+  submitRemoveGroup = async (group) => {
+    let user = this.getUserForSend();
+    const response = await UserService.removeGroup(user.id, group);
+    const updatedUser = response.data.data;
+    store.dispatch(setEditUser(updatedUser));
+    await this.dispatchUserList();
+    await this.getGroupsRelations();
+    toast.success('success');
+    this.setState({...this.state, errors: {}})
   };
 
   createViewOnboarding() {
@@ -683,11 +687,48 @@ class UserEdit extends React.Component {
     });
   }
 
-  onSelectGroupsChange = (values) => {
+  onSelectGroupsChange = async (values) => {
 
-    this.setState({groups: values}, () => {
-      this.formGroupsSubmit();
-    })
+    this.setState({isDisabledGroups: true})
+
+    let deleted = [];
+    let added = [];
+    let group;
+
+    let isAdd = false;
+
+    if (!values) {
+      group = this.state.groups[0].value;
+      isAdd = false;
+    } else if ((Array.isArray(this.state.groups) && !this.state.groups.length) || !this.state.groups) {
+      group = values[0].value;
+      isAdd = true;
+    } else {
+      added = values.filter(next => !this.state.groups.includes(next));
+      deleted = this.state.groups.filter(next => !values.includes(next));
+      if (added.length) {
+        group = added[0].value;
+        isAdd = true;
+      } else {
+        group = deleted[0].value;
+        isAdd = false;
+      }
+    }
+
+    try {
+      if (isAdd) {
+        await this.submitAddGroup(group);
+      } else {
+        await this.submitRemoveGroup(group);
+      }
+      this.setState({groups: values})
+    } catch (responseError) {
+      this.getUser();
+      const error = responseError.response.data.error;
+      toast.error(error.message)
+    } finally {
+      this.setState({isDisabledGroups: false})
+    }
   };
 
   selectNoRepeat(options, values) {
@@ -1527,13 +1568,13 @@ class UserEdit extends React.Component {
                             {/*  id="languages"*/}
                             {/*/>*/}
                             <MultiSelectOrganization
+                              isDisabled={this.state.isDisabledGroups}
                               value={this.state.groups}
                               options={this.state.selectOptions.groups}
                               onChange={(values) => {
                                 this.onSelectGroupsChange(values)
                               }}
                               onSelectElement={(organization) => {
-                                console.log(organization);
                                 this.setState({selectedOrganization: organization});
                               }}
                             />

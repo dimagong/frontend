@@ -34,7 +34,6 @@ function Ordering(props) {
 
   const modalContainer = React.createRef();
 
-  console.log(props.items);
 
   const updateWidth = () => {
     setDeviceWidth(modalContainer.current.scrollWidth);
@@ -54,7 +53,6 @@ function Ordering(props) {
     if (!result.destination) {
       return
     }
-    console.log(items, result);
 
     setItems(reorderKeys(
       items,
