@@ -2,20 +2,21 @@ import React from "react"
 import { Navbar } from "reactstrap"
 import { connect } from "react-redux"
 import classnames from "classnames"
+import { useDispatch } from 'react-redux'
 import {
   logoutWithJWT,
 } from "app/actions/vuexy/auth/loginActions"
-// import NavbarBookmarks from "./NavbarBookmarks"
+
 import NavbarUser from "./NavbarUser"
 import noneAvatar from "assets/img/portrait/none-avatar.png";
 import { bindActionCreators } from "redux"
 import { history } from "../../../history";
-// import userService from "../../../services/user.service";
+
 import {selectManager, selectProfile, selectManagers} from "app/selectors"
 import { NavLink } from "react-router-dom"
-import AutoComplete from "components/@vuexy/autoComplete/AutoCompleteComponent"
-import {userManagmentOptionsPath} from "constants/paths"
-import {logout} from 'app/slices/appSlice'
+import { ChevronDown } from "react-feather"
+
+import { logout, showContextSearch } from 'app/slices/appSlice'
 
 import SearchInput from './SearchInput'
 
@@ -27,6 +28,7 @@ const UserName = ({userProfile}) => {
 }
 
 const ThemeNavbar = props => {
+  const dispatch = useDispatch();
   const {manager, managers, userProfile} = props;
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"]
   const navbarTypes = ["floating", "static", "sticky", "hidden"]
@@ -35,6 +37,10 @@ const ThemeNavbar = props => {
     props.logout();
     history.push("/login");
     props.logoutWithJWT();
+  }
+
+  const handleContextSearchToggle = () => {
+    dispatch(showContextSearch())
   }
 
   return userProfile
@@ -87,8 +93,14 @@ const ThemeNavbar = props => {
                   /> */}
               </div>
 
+              <div className="search-input_container">
+                <SearchInput suggestions={managers.map(({ first_name, id, status }) => ({ name: first_name, id, status }))}/>
+                <ChevronDown
+                  className="autocomplete-expand-icon"
+                  onClick={handleContextSearchToggle}
+                />
+              </div>
 
-              <SearchInput suggestions={managers.map(({ first_name, id, status }) => ({ name: first_name, id, status }))}/>
 
 
               {/* {props.horizontal ? (

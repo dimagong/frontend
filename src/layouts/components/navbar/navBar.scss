@@ -1,5 +1,13 @@
 .header-navbar{
-    .vx-autocomplete-container{
-        width: 40%;
+  .search-input_container{
+    width: 40%;
+    position: relative;
+    padding-right: 30px;
+    .autocomplete-expand-icon {
+      position: absolute;
+      right: 0;
+      top: 9px;
+      cursor: pointer;
     }
+  }
 }

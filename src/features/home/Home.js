@@ -1,23 +1,19 @@
-import React, { useState } from "react";
+import React from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { hideContextSearch } from "app/slices/appSlice"
+import { selectContextSearchVisibility } from 'app/selectors'
 
 import ContextSearch from './ContextSearch'
 import Context from './Context'
-import UserManagment from 'features/user-managment/UserManagment'
+
 
 const Home = () => {
-
-  const [isContextSearchVisible, setIsContextSearchVisible] = useState(true)
+  const dispatch = useDispatch();
+  const isContextSearchVisible = useSelector(selectContextSearchVisibility)
 
   const handleContextSearchHide = () => {
-    console.log("SOMETHING")
-    setIsContextSearchVisible(false)
+    dispatch(hideContextSearch())
   }
-
-  const handleContextSearchShow = () => {
-    setIsContextSearchVisible(true)
-  }
-
-
 
   return (
     <>

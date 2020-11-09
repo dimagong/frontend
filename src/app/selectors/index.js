@@ -23,6 +23,10 @@ import {
   selectVuexyUser,
 } from "./userSelectors";
 
+import {
+  selectContextSearchVisibility
+} from './layoutSelector'
+
 export {
   selectAuth,
   selectLoading,
@@ -46,4 +50,5 @@ export {
   selectInvitation,
   selectProfile,
   selectVuexyUser,
+  selectContextSearchVisibility,
 };

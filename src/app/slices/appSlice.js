@@ -21,6 +21,7 @@ export const appSlice = createSlice({
     isAuth: !!token,
     isLoading: false,
     isError: null,
+    isContextSearchVisible: true,
     user: {
       managers: [],
       manager: null,
@@ -219,14 +220,17 @@ export const {
   setUserGroups,
   setUserModules,
   setUserRoles,
-  setManagerOnboardingProperty, 
+  setManagerOnboardingProperty,
   setManagerOnboarding,
-  setUserDForms, 
+  setUserDForms,
   setUserWorkflows,
   setUserReviewers,
   getUserManagment,
   setProfileOnboarding,
-  
+
+  showContextSearch,
+  hideContextSearch,
+
   logout,
 } = appSlice.actions;
 
