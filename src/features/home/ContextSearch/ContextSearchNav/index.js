@@ -12,66 +12,17 @@ import {
   NavbarToggler,
   Collapse,
   Nav,
-  NavLink,
 } from 'reactstrap'
 
-import {
-  dformsPath,
-  masterSchemaPath,
-  notificationsPath,
-  userManagmentPath,
-  workflowsPath
-} from '../../../../constants/paths'
+const ContextSearchNav = ({ onChange, selectedNavItem, navOptions }) => {
 
-
-const navBar = [
-  {
-    title: "Users",
-    actions: [
-      {
-        title: "Create user",
-      },
-      {
-        title: "Invitations",
-      },
-    ]
-  },
-  {
-    title: "Notifications",
-    actions: [
-      {
-        title: "Create notification",
-      },
-    ]
-  },
-  {
-    title: "dForms",
-    actions: [
-      {
-        title: "Create dForm",
-      },
-    ]
-  },
-  {
-    title: "Workflows",
-    actions: [
-      {
-        title: "Create workflow",
-      },
-    ]
-  },
-  {
-    title: "MasterSchema",
-    actions: [],
-  },
-]
-
-const ContextSearchNav = () => {
-
-  const [selectedNavItem, setSelectedNavItem] = useState(navBar[0])
   const [isCollapsedNavBarOpen, setIsCollapsedNavBarOpen] = useState(false)
 
   const toggle = () => setIsCollapsedNavBarOpen(!isCollapsedNavBarOpen);
+
+  const handleNavItemSelect = (navItem) => {
+    onChange(navItem);
+  }
 
   return (
     <Row>
@@ -82,16 +33,19 @@ const ContextSearchNav = () => {
               {selectedNavItem.title}
             </DropdownToggle>
             <DropdownMenu left>
-              {navBar.map((navEl) => (
-                <DropdownItem>
-                  <NavItem onClick={() => setSelectedNavItem(navEl)}>
+              {navOptions.map((navEl) => (
+                <DropdownItem
+                  //*TODO Temp disabled, remove after masterSchema implement
+                  disabled={navEl.title === "MasterSchema"}
+                  onClick={() => handleNavItemSelect(navEl)}
+                >
+                  <NavItem>
                     {navEl.title}
                   </NavItem>
                 </DropdownItem>
               ))}
             </DropdownMenu>
           </UncontrolledDropdown>
-
 
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isCollapsedNavBarOpen} navbar>

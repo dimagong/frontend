@@ -6,7 +6,12 @@ const hideContextSearch = (state) => {
   state.isContextSearchVisible = false
 }
 
+const setContext = (state, {payload}) => {
+  state.context = payload;
+}
+
 export default {
   showContextSearch,
   hideContextSearch,
+  setContext,
 }

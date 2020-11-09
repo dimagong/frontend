@@ -24,7 +24,8 @@ import {
 } from "./userSelectors";
 
 import {
-  selectContextSearchVisibility
+  selectContextSearchVisibility,
+  selectContext,
 } from './layoutSelector'
 
 export {
@@ -51,4 +52,5 @@ export {
   selectProfile,
   selectVuexyUser,
   selectContextSearchVisibility,
+  selectContext,
 };

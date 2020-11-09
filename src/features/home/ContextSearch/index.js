@@ -4,19 +4,6 @@ import {
   CardBody,
   Row,
   Col,
-  Nav,
-  NavItem,
-  NavLink,
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  CardImg,
-  CardText,
-  CardTitle,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -24,49 +11,107 @@ import {
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  selectdForms,
   selectManager,
   selectManagers,
+  selectNotifications,
 } from "app/selectors";
-import { getUserManagment } from "app/slices/appSlice";
 
 import {
-  masterSchemaPath,
-  notificationsPath,
-  dformsPath,
-  workflowsPath,
-  userManagmentPath,
-  userManagmentOptionsPath
-} from "constants/paths";
-import noneAvatar from "assets/img/portrait/none-avatar.png";
-import { useRouter } from "hooks/useRouter";
+  getUserManagment,
+  getdFormsRequest,
+  getNotificationsRequest,
+  getWorkflowsRequest,
+  setManager,
+  setContext,
+} from "app/slices/appSlice";
+
+import {
+  setWorkflow,
+  setdForm,
+  setNotification,
+} from 'app/slices/onboardingSlice'
 
 import { X } from 'react-feather'
 
+import { NAV_OPTIONS } from './ContextSearchNav/constants'
+
 import ContextSearchNav from './ContextSearchNav'
 
-const ContextSearch = ({isShown, onContextSearchHide}) => {
+import {selectLoading} from 'app/selectors'
+import {selectWorkflows} from 'app/selectors/onboardingSelectors'
 
-  const [activeTab, setActiveTab] = useState(0);
+
+import DFormCardTemplate from './CardTemplates/dFormCard'
+import WorkFlowTemplate from './CardTemplates/workFlowCard'
+import UserCardTemplate from './CardTemplates/userCard'
+import NotificationTemplate from './CardTemplates/notificationsCard'
+
+const ContextSearch = ({isShown, onContextSearchHide}) => {
+  const dispatch = useDispatch();
+
   const manager = useSelector(selectManager);
   const managers = useSelector(selectManagers);
-  const dispatch = useDispatch();
-  const { push } = useRouter();
+  const dForms = useSelector(selectdForms)
+  const notifications = useSelector(selectNotifications)
+  const workFlows = useSelector(selectWorkflows)
+  const isLoading = useSelector(selectLoading)
 
-  useEffect(() => {
-    managers !== undefined && !managers.length && dispatch(getUserManagment());
-  }, []);
+
+  const [page, setPage] = useState(0);
+  const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
+
+  // Slice data depending on page, decide which template to use and render it
+  const renderContent = (data, type, page) => {
+
+    const sliceData = (data, page) => {
+      return data.slice(8 * page, 8 * (page + 1))
+    }
+
+    const templates = {
+      dForms: <DFormCardTemplate onClick={(dForm) => {
+                dispatch(setdForm(dForm));
+                dispatch(setContext("dForm"))
+              }} />,
+      managers: <UserCardTemplate onClick={(user) => {
+                  dispatch(setManager(user));
+                  dispatch(setContext("User"))
+                }} />,
+      workFlows: <WorkFlowTemplate onClick={(workFlow) => {
+                  dispatch(setWorkflow(workFlow))
+                  dispatch(setContext("WorkFlow"))
+                }} />,
+      notifications: <NotificationTemplate onClick={(notification) => {
+                      dispatch(setNotification(notification))
+                      dispatch(setContext("Notification"))
+                    }} />,
+    }
+
+    return sliceData(data, page).map((elData) => (React.cloneElement(templates[type], elData)))
+  }
+
+
+  const handleNavItemChange = (navItem) => {
+    setSelectedNavItem(navItem)
+  }
 
   const getPagination = () => {
-    return Array.from(Array(Math.ceil(managers.length/8)))
+    return Array.from(Array(Math.ceil(data[selectedNavItem.id].length/8)))
   }
 
-  const users = (number) => {
-    return managers.slice(8 * number, 8 * (number + 1))
+  const data = {
+    dForms,
+    notifications,
+    workFlows,
+    managers,
   }
 
-  const redirectToManager = (id) => {
-    push(userManagmentOptionsPath(id))
-  }
+  useEffect(() => {
+    dispatch(getUserManagment());
+    dispatch(getWorkflowsRequest())
+    dispatch(getdFormsRequest())
+    dispatch(getNotificationsRequest())
+  }, []);
 
   if(!isShown) return null;
 
@@ -81,37 +126,22 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                   <CardBody>
                     <div className="grid">
 
-                      <ContextSearchNav />
+                      <ContextSearchNav
+                        onChange={handleNavItemChange}
+                        selectedNavItem={selectedNavItem}
+                        navOptions={NAV_OPTIONS}
+                      />
 
                       <Row>
                         <Col className="home__card-wrapper">
-                          {
-                            managers && users(activeTab).map((manager) => (
-                              <Card
-                                key={`${manager.email}`}
-                                className="flex-row flex-wrap home__card"
-                                onClick={() => redirectToManager(manager.id)}
-                              >
-                                <CardImg variant="top" src={noneAvatar} className="round user-nav d-sm-flex d-none" />
-                                <CardBody>
-                                  <CardTitle>{`${manager.first_name} ${manager.last_name}`}</CardTitle>
-                                  <CardText>
-                                    {manager.number ? `${manager.number}` : "phone number is empty"}
-                                  </CardText>
-                                  <CardText>
-                                    {manager.email ? `${manager.email}` : "email is empty"}
-                                  </CardText>
-                                </CardBody>
-                              </Card>
-                            ))
-                          }
+                          {!isLoading && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
                         </Col>
                       </Row>
                       <Pagination aria-label="Page navigation">
-                        {managers && getPagination().map( (_, index) => (
-                          <PaginationItem key={index} active={activeTab === index}>
+                        {!isLoading && getPagination().length > 1 && getPagination().map( (_, index) => (
+                          <PaginationItem key={index} active={page === index}>
                             <PaginationLink onClick={() => {
-                              setActiveTab(index)
+                              setPage(index)
                             }}>
                               {index + 1}
                             </PaginationLink>

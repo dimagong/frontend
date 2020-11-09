@@ -9,12 +9,13 @@ import NotificationsForm from 'features/onboarding/notifications/NotificationsFo
 import DFormForm from 'features/onboarding/dForm/DFormForm'
 import WorkflowForm from 'features/onboarding/workflow/components/WorkflowForm'
 
-const Context = () => {
-  const selectedContext = "Create workflow"
+const Context = ({ selectedContext }) => {
+
+  if(!selectedContext) return null;
 
   return (
     <Row>
-      <Col sm="12" md="12" lg="12" xl="5">
+      <Col sm="12" md="12" lg="12" xl="7">
         <Card>
           <CardBody className="pt-2">
             {{
@@ -27,6 +28,7 @@ const Context = () => {
               "dForm": <DFormForm isCreate={false} />,
               "Create workflow": <WorkflowForm workflowModalType="Create" />,
               "Workflow": <WorkflowForm workflowModalType="Edit" />,
+              // "MasterSchema":
             }[selectedContext]}
           </CardBody>
         </Card>
