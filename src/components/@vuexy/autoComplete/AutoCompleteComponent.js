@@ -19,7 +19,8 @@ class Autocomplete extends React.Component {
 
     this.filteredData = []
     this.wrapperRef = React.createRef();
-    this.handleExtenalClick = this.handleExtenalClick.bind(this)
+    this.containerRef = React.createRef();
+    this.handleExternalClick = this.handleExternalClick.bind(this)
   }
 
   // Suggestion Click Event
@@ -235,9 +236,9 @@ class Autocomplete extends React.Component {
   }
 
   // Closes Suggestions if clicked outside container (On Blur Basically)
-  handleExtenalClick = e => {
+  handleExternalClick = e => {
     const { target } = e
-    if (this.wrapperRef.current && !this.wrapperRef.current.contains(target) && !this.state.showSuggestions) {
+    if (this.containerRef.current && !this.containerRef.current.contains(target)) {
       this.setState({
         showSuggestions: false
       })
@@ -282,14 +283,14 @@ class Autocomplete extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('mousedown', this.handleExtenalClick);
-      if (this.props.defaultSuggestions && this.state.focused) {
+    document.addEventListener('mousedown', this.handleExternalClick);
+    if (this.props.defaultSuggestions && this.state.focused) {
       this.setState({ showSuggestions: true })
     }
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener("click", this.handleExtenalClick)
+    document.body.removeEventListener("click", this.handleExternalClick)
   }
 
   render() {
@@ -333,7 +334,10 @@ class Autocomplete extends React.Component {
     }
 
     return (
-      <div className="vx-autocomplete-container">
+      <div
+        className="vx-autocomplete-container"
+        ref={this.containerRef}
+      >
         <input
           ref={this.wrapperRef}
           type="text"
