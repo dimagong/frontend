@@ -31,7 +31,7 @@ class Autocomplete extends React.Component {
     this.setState({
       activeSuggestion: 0,
       showSuggestions: false,
-      userInput: e.currentTarget.innerText
+      userInput: ""
     })
     if (url) this.props.history.push(url)
   }
@@ -323,7 +323,10 @@ class Autocomplete extends React.Component {
             <div className="m-1 border-top-secondary ">
               <div className="py-1">Recent searches</div>
               {recentSearches.map((rs) => (
-                <div className="h5">
+                <div
+                  className="h5 cursor-pointer"
+                  onClick={() => this.setState({userInput: rs})}
+                >
                   {rs}
                 </div>
               ))}

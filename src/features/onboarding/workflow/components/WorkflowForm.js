@@ -24,13 +24,15 @@ import { createWorkflowRequest, updateWorkflowRequest } from "app/slices/appSlic
 import WorkflowTriggers from './WorkflowTriggers'
 import {initWorkflow} from './constants'
 
-const WorkflowForm = ({ clearGridSelection, workflowModalType }) => {
+import {setContext} from 'app/slices/appSlice'
+
+const WorkflowForm = ({ workflowModalType }) => {
   const workflow = useSelector(selectWorkflow);
   const { name, description } = workflow || {};
   const dispatch = useDispatch();
 
   const closeWorkflow = () => {
-    clearGridSelection();
+    dispatch(setContext(null))
     dispatch(setWorkflow(null));
   };
 
@@ -62,67 +64,69 @@ const WorkflowForm = ({ clearGridSelection, workflowModalType }) => {
   if(!workflow) return null;
 
   return (
-    <Col col="md-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-weight-bold">
-            {workflow.name} <Badge color="info">{workflowModalType}</Badge>
-          </CardTitle>
-          <X
-            size={15}
-            className="cursor-pointer"
-            onClick={closeWorkflow}
-          />
-        </CardHeader>
-        <CardBody className="card-top-padding">
-          <Row className="mt-2">
-            <Col sm="12">
-              <FormGroup>
-                <Label for="">Name</Label>
-                <Input
-                  type="text"
-                  name="Name"
-                  id="mobileVertical"
-                  placeholder="Name"
-                  value={name}
-                  onChange={(event) => handleWorkflow({name: event.target.value})}
-                />
-                <FormFeedback></FormFeedback>
-              </FormGroup>
-            </Col>
-            <Col sm="12">
-              <FormGroup>
-                <Label for="">Description</Label>
-                <Input
-                  type="text"
-                  name="description"
-                  id="mobileVertical"
-                  placeholder="description"
-                  value={description}
-                  onChange={(event) => handleWorkflow({description: event.target.value})}
-                />
-                <FormFeedback></FormFeedback>
-              </FormGroup>
-            </Col>
-            <Col>
-              <MultiSelect groups={prepareSelectGroups(workflow.groups)} setGroups={setWorkflowGroups}/>
-            </Col>
-            <WorkflowTriggers/>
+    <Row>
+      <Col sm="12" md="12" lg="12" xl="7">
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-weight-bold">
+              {workflow.name} <Badge color="info">{workflowModalType}</Badge>
+            </CardTitle>
+            <X
+              size={15}
+              className="cursor-pointer"
+              onClick={closeWorkflow}
+            />
+          </CardHeader>
+          <CardBody className="card-top-padding">
+            <Row className="mt-2">
+              <Col sm="12">
+                <FormGroup>
+                  <Label for="">Name</Label>
+                  <Input
+                    type="text"
+                    name="Name"
+                    id="mobileVertical"
+                    placeholder="Name"
+                    value={name}
+                    onChange={(event) => handleWorkflow({name: event.target.value})}
+                  />
+                  <FormFeedback></FormFeedback>
+                </FormGroup>
+              </Col>
+              <Col sm="12">
+                <FormGroup>
+                  <Label for="">Description</Label>
+                  <Input
+                    type="text"
+                    name="description"
+                    id="mobileVertical"
+                    placeholder="description"
+                    value={description}
+                    onChange={(event) => handleWorkflow({description: event.target.value})}
+                  />
+                  <FormFeedback></FormFeedback>
+                </FormGroup>
+              </Col>
+              <Col>
+                <MultiSelect groups={prepareSelectGroups(workflow.groups)} setGroups={setWorkflowGroups}/>
+              </Col>
+              <WorkflowTriggers/>
 
-            <Col md="12">
-              <div className="d-flex justify-content-center flex-wrap mt-2">
-                <Button
-                  color="primary d-flex-left"
-                  onClick={submitWorkflow}
-                >
-                  Save
-                </Button>
-              </div>
-            </Col>
-          </Row>
-        </CardBody>
-      </Card>
-    </Col>
+              <Col md="12">
+                <div className="d-flex justify-content-center flex-wrap mt-2">
+                  <Button
+                    color="primary d-flex-left"
+                    onClick={submitWorkflow}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </CardBody>
+        </Card>
+      </Col>
+    </Row>
   );
 };
 

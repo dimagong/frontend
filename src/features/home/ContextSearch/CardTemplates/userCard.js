@@ -5,8 +5,14 @@ import noneAvatar from 'assets/img/portrait/none-avatar.png'
 const UserCardTemplate = ({ onClick, ...manager }) => (
   <Card
     key={manager.email}
-    className="flex-row flex-wrap home__card"
-    onClick={() => {onClick(manager)}}
+    className="flex-row flex-wrap home__card cursor-pointer"
+    onClick={(e) => {
+      if (e.ctrlKey) {
+
+      }
+      onClick(manager)
+
+    }}
   >
     <CardImg variant="top" src={noneAvatar} className="round user-nav d-sm-flex d-none" />
     <CardBody>

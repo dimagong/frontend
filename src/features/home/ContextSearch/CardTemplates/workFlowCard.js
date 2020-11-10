@@ -5,7 +5,7 @@ import noneAvatar from 'assets/img/portrait/none-avatar.png'
 const WorkFlowTemplate = ({onClick, ...workFlow}) => (
   <Card
     key={workFlow.id}
-    className="flex-row flex-wrap home__card"
+    className="flex-row flex-wrap home__card cursor-pointer"
     onClick={() => {onClick(workFlow)}}
   >
     <CardImg variant="top" src={noneAvatar} className="round user-nav d-sm-flex d-none" />

@@ -61,6 +61,10 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const [page, setPage] = useState(0);
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
 
+  const handleContextChange = (context) => {
+    dispatch(setContext(context))
+  }
+
   // Slice data depending on page, decide which template to use and render it
   const renderContent = (data, type, page) => {
 
@@ -71,19 +75,19 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     const templates = {
       dForms: <DFormCardTemplate onClick={(dForm) => {
                 dispatch(setdForm(dForm));
-                dispatch(setContext("dForm"))
+                handleContextChange("dForm")
               }} />,
       managers: <UserCardTemplate onClick={(user) => {
                   dispatch(setManager(user));
-                  dispatch(setContext("User"))
+                  handleContextChange("User")
                 }} />,
       workFlows: <WorkFlowTemplate onClick={(workFlow) => {
                   dispatch(setWorkflow(workFlow))
-                  dispatch(setContext("WorkFlow"))
+                  handleContextChange("WorkFlow")
                 }} />,
       notifications: <NotificationTemplate onClick={(notification) => {
                       dispatch(setNotification(notification))
-                      dispatch(setContext("Notification"))
+                      handleContextChange("Notification")
                     }} />,
     }
 
@@ -130,15 +134,16 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                         onChange={handleNavItemChange}
                         selectedNavItem={selectedNavItem}
                         navOptions={NAV_OPTIONS}
+                        onContextChange={handleContextChange}
                       />
 
                       <Row>
                         <Col className="home__card-wrapper">
-                          {!isLoading && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
+                          {data[selectedNavItem.id] && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
                         </Col>
                       </Row>
                       <Pagination aria-label="Page navigation">
-                        {!isLoading && getPagination().length > 1 && getPagination().map( (_, index) => (
+                        {data[selectedNavItem.id] && getPagination().length > 1 && getPagination().map( (_, index) => (
                           <PaginationItem key={index} active={page === index}>
                             <PaginationLink onClick={() => {
                               setPage(index)
@@ -148,7 +153,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                           </PaginationItem>
                         ))}
                       </Pagination>
-                      <X className={"align-self-end"} size={15} onClick={onContextSearchHide}/>
+                      <X className="align-self-end cursor-pointer" size={15} onClick={onContextSearchHide}/>
                     </div>
                   </CardBody>
                 </Card>

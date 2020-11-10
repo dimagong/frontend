@@ -14,7 +14,7 @@ import {
   Nav,
 } from 'reactstrap'
 
-const ContextSearchNav = ({ onChange, selectedNavItem, navOptions }) => {
+const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChange }) => {
 
   const [isCollapsedNavBarOpen, setIsCollapsedNavBarOpen] = useState(false)
 
@@ -25,11 +25,11 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions }) => {
   }
 
   return (
-    <Row>
+    <Row className="context-search-nav">
       <Col>
         <Navbar light expand="md">
           <UncontrolledDropdown>
-            <DropdownToggle nav caret={true}>
+            <DropdownToggle className="text-dark" nav caret={true}>
               {selectedNavItem.title}
             </DropdownToggle>
             <DropdownMenu left>
@@ -51,7 +51,10 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions }) => {
           <Collapse isOpen={isCollapsedNavBarOpen} navbar>
             <Nav className="ml-auto" navbar>
               {selectedNavItem.actions.map((navItemAction) => (
-                <NavItem>
+                <NavItem
+                  className="pr-2 cursor-pointer"
+                  onClick={() => {onContextChange(navItemAction.title)}}
+                >
                   {navItemAction.title}
                 </NavItem>
               ))}

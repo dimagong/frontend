@@ -14,27 +14,42 @@ const Context = ({ selectedContext }) => {
   if(!selectedContext) return null;
 
   return (
-    <Row>
-      <Col sm="12" md="12" lg="12" xl="7">
-        <Card>
-          <CardBody className="pt-2">
-            {{
-              "User": <UserEdit />,
-              "User create": <UserCreate />,
-              "User invitations": <UserInvitations />,
-              "Create notification": <NotificationsForm isCreate={true} />,
-              "Notification": <NotificationsForm isCreate={false} />,
-              "Create dForm": <DFormForm isCreate={true} />,
-              "dForm": <DFormForm isCreate={false} />,
-              "Create workflow": <WorkflowForm workflowModalType="Create" />,
-              "Workflow": <WorkflowForm workflowModalType="Edit" />,
-              // "MasterSchema":
-            }[selectedContext]}
-          </CardBody>
-        </Card>
-      </Col>
-    </Row>
+    <>
+      {{
+        "User": <UserEdit />,
+        "Create user": <UserCreate />,
+        "Invitations": <UserInvitations />,
+        "Create notification": <NotificationsForm isCreate={true} />,
+        "Notification": <NotificationsForm isCreate={false} />,
+        "Create dForm": <DFormForm isCreate={true} />,
+        "dForm": <DFormForm isCreate={false} />,
+        "Create workflow": <WorkflowForm workflowModalType="Create" />,
+        "WorkFlow": <WorkflowForm workflowModalType="Edit" />,
+        // "MasterSchema":
+      }[selectedContext]}
+    </>
   )
 }
+//
+// <Row>
+//   <Col sm="12" md="12" lg="12" xl="7">
+//     <Card>
+//       <CardBody className="pt-2">
+//         {{
+//           "User": <UserEdit />,
+//           "Create user": <UserCreate />,
+//           "Invitations": <UserInvitations />,
+//           "Create notification": <NotificationsForm isCreate={true} />,
+//           "Notification": <NotificationsForm isCreate={false} />,
+//           "Create dForm": <DFormForm isCreate={true} />,
+//           "dForm": <DFormForm isCreate={false} />,
+//           "Create workflow": <WorkflowForm workflowModalType="Create" />,
+//           "WorkFlow": <WorkflowForm workflowModalType="Edit" />,
+//           // "MasterSchema":
+//         }[selectedContext]}
+//       </CardBody>
+//     </Card>
+//   </Col>
+// </Row>
 
 export default Context;

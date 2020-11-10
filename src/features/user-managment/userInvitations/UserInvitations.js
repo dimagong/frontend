@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from 'react'
 import {
-    Card,
-    CardBody,
-    Row,
-    Col,
+  Card,
+  CardBody,
+  Row,
+  Col, CardTitle, CardHeader
 } from "reactstrap"
 import { ContextLayout } from "utility/context/Layout"
 import { AgGridReact } from "ag-grid-react"
@@ -14,8 +14,13 @@ import { AgGridReact } from "ag-grid-react"
 import { useDispatch, useSelector } from "react-redux";
 import { selectInvitations } from "app/selectors";
 import { columnDefs } from "./gridSettings";
-import { getInvitationsRequest, revokeInvitationsRequest } from "app/slices/appSlice";
+import {
+  getInvitationsRequest,
+  revokeInvitationsRequest,
+  setContext,
+} from "app/slices/appSlice";
 import { toast } from "react-toastify"
+import {X} from 'react-feather'
 
 const UserInvitations = ({activeTab}) => {
     const gridApi = useRef(null);
@@ -37,7 +42,7 @@ const UserInvitations = ({activeTab}) => {
     const onGridReady = (params) => {
         gridApi.current = params.api;
         params.api.sizeColumnsToFit();
-    
+
         window.addEventListener("resize", () => {
           params.api.sizeColumnsToFit();
         });
@@ -58,12 +63,23 @@ const UserInvitations = ({activeTab}) => {
         })
     }
 
-   
+
+    const closeInvitations = () => {
+      dispatch(setContext(null))
+    }
 
     return (
         <Row className="app-user-list">
-                <Col sm="12">
+                <Col sm="12" md="12" lg="12" xl="7">
                     <Card>
+                      <CardHeader>
+                        <CardTitle className="font-weight-bold">Invitations</CardTitle>
+                        <X
+                          size={15}
+                          className="cursor-pointer"
+                          onClick={() => closeInvitations()}
+                        />
+                      </CardHeader>
                         <CardBody>
                             <div className="ag-theme-material ag-grid-table">
                                 <ContextLayout.Consumer>
