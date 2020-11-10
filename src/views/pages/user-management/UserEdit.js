@@ -400,34 +400,28 @@ class UserEdit extends React.Component {
 
   getGroupName = (groups, groupId, groupType) => {
 
-    for (let admin of groups) {
-      if (groupType === 'admin' && groupId === admin.id) {
-        return `${admin.name}`
-        // return `${admin.name}(${admin.id})`
+
+    for (let corporation of groups) {
+      if (groupType === 'corporation' && groupId === corporation.id) {
+        return `${corporation.name}`
+        // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`
       }
 
-      for (let corporation of admin.corporations) {
-        if (groupType === 'corporation' && groupId === corporation.id) {
-          return `${corporation.name}`
-          // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`
+      for (let network of corporation.networks) {
+        if (groupType === 'network' && groupId === network.id) {
+          return `${network.name}`
+          // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`
         }
 
-        for (let network of corporation.networks) {
-          if (groupType === 'network' && groupId === network.id) {
-            return `${network.name}`
-            // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`
+        for (let memberFirm of network.member_firms) {
+          if (groupType === 'member_firm' && groupId === memberFirm.id) {
+            return `${memberFirm.name}`
+            // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`
           }
-
-          for (let memberFirm of network.member_firms) {
-            if (groupType === 'member_firm' && groupId === memberFirm.id) {
-              return `${memberFirm.name}`
-              // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`
-            }
-          }
-
         }
 
       }
+
 
     }
     return null;
@@ -689,7 +683,7 @@ class UserEdit extends React.Component {
 
   onSelectGroupsChange = async (values) => {
 
-    this.setState({isDisabledGroups: true})
+    this.setState({isDisabledGroups: true});
 
     let deleted = [];
     let added = [];

@@ -3,54 +3,45 @@ const colorMultiSelect = '#007bff'; //#7367f0
 
 export const prepareSelectData = (groups) => {
 
-    let groupsMultiSelect = [];
+  let groupsMultiSelect = [];
 
-    if (!groups) return groupsMultiSelect;
+  if (!groups) return groupsMultiSelect;
 
-    groups.forEach(admin => {
+
+  groups.forEach(corporation => {
+    groupsMultiSelect.push({
+      value: {
+        group_id: corporation.id,
+        type: 'corporation'
+      },
+      // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`,
+      label: `${corporation.name}`,
+      color: colorMultiSelect
+    });
+    corporation.networks.forEach(network => {
       groupsMultiSelect.push({
         value: {
-          group_id: admin.id,
-          type: 'admin'
+          group_id: network.id,
+          type: 'network'
         },
-        label: `${admin.name}`,
-        // label: `${admin.name}(${admin.id})`,
+        // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`,
+        label: `${network.name}`,
         color: colorMultiSelect
       });
-      admin.corporations.forEach(corporation => {
+      network.member_firms.forEach(memberFirm => {
         groupsMultiSelect.push({
           value: {
-            group_id: corporation.id,
-            type: 'corporation'
+            group_id: memberFirm.id,
+            type: 'member_firm'
           },
-          // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`,
-          label: `${corporation.name}`,
+          // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`,
+          label: `${memberFirm.name}`,
           color: colorMultiSelect
-        });
-        corporation.networks.forEach(network => {
-          groupsMultiSelect.push({
-            value: {
-              group_id: network.id,
-              type: 'network'
-            },
-            // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`,
-            label: `${network.name}`,
-            color: colorMultiSelect
-          });
-          network.member_firms.forEach(memberFirm => {
-            groupsMultiSelect.push({
-              value: {
-                group_id: memberFirm.id,
-                type: 'member_firm'
-              },
-              // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`,
-              label: `${memberFirm.name}`,
-              color: colorMultiSelect
-            });
-          });
         });
       });
     });
+  });
 
-    return groupsMultiSelect;
-  }
+
+  return groupsMultiSelect;
+}

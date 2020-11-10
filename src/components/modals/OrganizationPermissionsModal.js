@@ -97,7 +97,7 @@ export default function OrganizationPermissionsModal(props) {
                   <tr>
                     <td>Name</td>
                     <td>
-                      <Chip color="primary" text={titleTransform(props.organization.name)}/>
+                      {titleTransform(props.organization.name)}
                     </td>
                   </tr>
                   <tr>

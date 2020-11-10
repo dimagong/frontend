@@ -34,7 +34,7 @@ const colorMultiSelect = '#007bff'; //#7367f0
 const colourStyles = {
   control: styles => ({...styles, backgroundColor: "white"}),
   option: (styles, {data, isDisabled, isFocused, isSelected}) => {
-    const color = data.color ? chroma(data.color) : colorMultiSelect
+    const color = data.color ? chroma(data.color) : colorMultiSelect;
     return {
       ...styles,
       backgroundColor: isDisabled
@@ -60,7 +60,7 @@ const colourStyles = {
     }
   },
   multiValue: (styles, {data}) => {
-    const color = data.color ? chroma(data.color) : colorMultiSelect
+    const color = data.color ? chroma(data.color) : colorMultiSelect;
     return {
       ...styles,
       backgroundColor: color.alpha(0.1).css()
@@ -78,7 +78,7 @@ const colourStyles = {
       color: "white"
     }
   })
-}
+};
 
 class UserCreate extends React.Component {
   state = {
@@ -142,23 +142,23 @@ class UserCreate extends React.Component {
     });
 
     this.setState({...this.state, default: {...this.state.default, roles: multiSelectRoles}})
-  }
+  };
 
   getGroups = async () => {
     const response = await GroupService.getAll();
     const groups = response.data.data;
 
-    const multiSelectGroups = this.getListByTreeGroups(groups)
+    const multiSelectGroups = this.getListByTreeGroups(groups);
 
     this.setState({...this.state, default: {...this.state.default, groups: multiSelectGroups}})
-  }
+  };
 
   dispatchUserList = async () => {
     const nav = store.getState().user.list.nav;
     const response = await UserService.getByEmail(nav.searchVal, nav.currPage);
     const users = response.data.data;
     this.props.setUserList(users, nav);
-  }
+  };
 
   getListByTreeGroups = (groups) => {
 
@@ -166,53 +166,44 @@ class UserCreate extends React.Component {
 
     if (!groups) return groupsMultiSelect;
 
-    groups.forEach(admin => {
+
+    groups.forEach(corporation => {
       groupsMultiSelect.push({
         value: {
-          group_id: admin.id,
-          type: 'admin'
+          group_id: corporation.id,
+          type: 'corporation'
         },
-        //label: `${admin.name}(${admin.id})`,
-        label: `${admin.name}`,
+        //label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`,
+        label: `${corporation.name}`,
         color: colorMultiSelect
       });
-      admin.corporations.forEach(corporation => {
+      corporation.networks.forEach(network => {
         groupsMultiSelect.push({
           value: {
-            group_id: corporation.id,
-            type: 'corporation'
+            group_id: network.id,
+            type: 'network'
           },
-          //label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`,
-          label: `${corporation.name}`,
+          // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`,
+          label: `${network.name}`,
           color: colorMultiSelect
         });
-        corporation.networks.forEach(network => {
+        network.member_firms.forEach(memberFirm => {
           groupsMultiSelect.push({
             value: {
-              group_id: network.id,
-              type: 'network'
+              group_id: memberFirm.id,
+              type: 'member_firm'
             },
-            // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`,
-            label: `${network.name}`,
+            // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`,
+            label: `${memberFirm.name}`,
             color: colorMultiSelect
-          });
-          network.member_firms.forEach(memberFirm => {
-            groupsMultiSelect.push({
-              value: {
-                group_id: memberFirm.id,
-                type: 'member_firm'
-              },
-              // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`,
-              label: `${memberFirm.name}`,
-              color: colorMultiSelect
-            });
           });
         });
       });
     });
 
+
     return groupsMultiSelect;
-  }
+  };
 
   formSubmit = async (event) => {
     event.preventDefault();
@@ -225,10 +216,10 @@ class UserCreate extends React.Component {
       // const errorStatus = responseError.response.status;
       const error = responseError.response.data.error;
 
-      toast.error(error.message)
+      toast.error(error.message);
       this.setState({...this.state, errors: {...error.errors}})
     }
-  }
+  };
 
   render() {
 
@@ -436,10 +427,10 @@ class UserCreate extends React.Component {
 
 const mapStateToProps = state => {
   return {}
-}
+};
 const mapActionsToProps = (dispatch) => {
   return {
     setUserList: bindActionCreators(setUserList, dispatch)
   }
-}
+};
 export default connect(mapStateToProps, mapActionsToProps)(UserCreate)
