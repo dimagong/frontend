@@ -39,14 +39,12 @@ function* getProfile() {
 }
 
 function* getUsers() {
-  try {
+  
     const responce = yield call(userApi.getUsers);
 
     yield put(getUsersSuccess(responce));
 
-  } catch (error) {
-    yield put(getUsersError(error));
-  }
+
 }
 
 function* getUserById({payload}) {
@@ -92,7 +90,7 @@ function* getUserManagmentData() {
 
     if(!groups.length){
       yield put(getGroupsRequest())
-    } 
+    }
     if(!roles.length){
       yield put(getRolesRequest())
     }
@@ -100,7 +98,7 @@ function* getUserManagmentData() {
   } catch (error) {
     yield put(getUsersError(error));
   }
-  
+
 }
 
 export default function* () {
