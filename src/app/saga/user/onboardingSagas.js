@@ -36,9 +36,9 @@ import {
 import {selectManager, selectManagers} from "app/selectors";
 
 
-function* getUserOnboarding() {
+function* getUserOnboarding({payload}) {
   try {
-    const onboarding = yield call(groupRelations.getGroupsRelations);
+    const onboarding = yield call(groupRelations.getGroupsRelationsByUserId, payload);
     const reviewers = yield call(userApi.getUsersData);
     yield put(getUserOnboardingSuccess({...onboarding, reviewers}));
 
@@ -48,7 +48,6 @@ function* getUserOnboarding() {
 }
 
 function* createUserOnboarding({payload}) {
-  console.log('payload', payload);
   try {
     const response = yield call(userApi.createUserOnboarding, payload);
     yield put(createUserOnboardingSuccess(response))

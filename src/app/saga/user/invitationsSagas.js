@@ -28,7 +28,7 @@ function* getInvitations() {
     try {
       const user = yield call(userApi.getInvitations);
       yield put(getInvitationsSuccess(user));
-  
+
     } catch (error) {
       yield put(getInvitationsError(error));
     }
@@ -38,7 +38,7 @@ function* getInvitations() {
     try {
       const user = yield call(userApi.createInvitations, payload  );
       yield put(createInvitationsSuccess(user));
-  
+
     } catch (error) {
       yield put(createInvitationsError(error));
     }
@@ -48,7 +48,7 @@ function* getInvitations() {
     try {
       yield call(userApi.deleteInvitations, payload  );
       yield put(deleteInvitationsSuccess(payload));
-  
+
     } catch (error) {
       yield put(deleteInvitationsError(error));
     }
@@ -58,7 +58,7 @@ function* getInvitations() {
     try {
       const invitation = yield call(userApi.revokeInvitations, payload  );
       yield put(revokeInvitationsSuccess(invitation));
-  
+
     } catch (error) {
       console.log(error)
       yield put(revokeInvitationsError(error));
@@ -69,7 +69,7 @@ function* getInvitations() {
     try {
       const invitation = yield call(userApi.getInvitation, payload  );
       yield put(getInvitationSuccess(invitation));
-  
+
     } catch (error) {
       console.log(error)
       yield put(getInvitationError(error));
@@ -85,15 +85,15 @@ function* getInvitations() {
         password: payload.data.password,
         code: "",
         device_name: "browser",
-        email: invitation.invitedByUser.email
+        email: invitation.invitedUser.email
       }))
-  
+
     } catch (error) {
       console.log(error)
       yield put(sendInvitationAcceptError(error));
     }
   }
-  
+
   export default function* () {
     yield all([
         yield takeLatest(getInvitationsRequest.type, getInvitations),

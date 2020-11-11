@@ -27,7 +27,7 @@ const Error404 = lazy(() => import("components/misc/error/404"));
 const MasterSchema = lazy(() => import("components/misc/ComingSoon"));
 
 const routes = [
- 
+
   {
     path: loginPath,
     Component: Login,
@@ -74,7 +74,7 @@ const routes = [
   {
     path: invitationPath,
     Component: Invitation,
-    isPrivate: true,
+    isPrivate: false,
     exact: true,
     redirect: loginPath,
     fullLayout: true

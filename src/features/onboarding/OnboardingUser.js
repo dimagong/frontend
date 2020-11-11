@@ -120,7 +120,7 @@ const isShowProtectedElements = (roles) => {
                   {/*<CardHeader>*/}
                   {/*  <CardTitle>Onboarding</CardTitle>*/}
                   {/*</CardHeader>*/}
-      
+
                   <CardBody className="pt-1">
                     {
                       profile && profile.onboardings && profile.onboardings.length ?
@@ -130,7 +130,7 @@ const isShowProtectedElements = (roles) => {
                               profile.onboardings.map(onboarding => {
                                 return (
                                   <TabPane tabId={onboarding.id}>
-      
+
                                   </TabPane>
                                 );
                               })
@@ -139,10 +139,10 @@ const isShowProtectedElements = (roles) => {
                         </div>
                         :  'Onboarding not exist'
                     }
-                    
-      
-                    {!isEmpty(profile.onboarding) 
-                    ? profile.onboarding.d_form.access_type === 'user-lock' 
+
+
+                    {!isEmpty(profile.onboarding)
+                    ? profile.onboarding.d_form.access_type === 'user-lock'
                       ? <FormCreate
                         // reInit={(reInit, context) => {
                         //   this.reInitForm = reInit.bind(context)
@@ -170,7 +170,7 @@ const isShowProtectedElements = (roles) => {
                           debounceOnSave.current(data)
                         }}
                         updatedAtText={
-                        loading 
+                        loading
                           ? "Saving progress"
                           : `Progress saved: ${moment(profile.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`}
                         isStateConfig={false}
@@ -178,7 +178,7 @@ const isShowProtectedElements = (roles) => {
                      : null}
                     {/*{*/}
                     {/*  Object.keys(this.props.user).length ?*/}
-      
+
                     {/*    isEmpty(this.state.selectedOnboarding) ?*/}
                     {/*      null*/}
                     {/*      :*/}

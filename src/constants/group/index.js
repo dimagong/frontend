@@ -5,3 +5,4 @@ export const groupTypes = {
     'App\\MemberFirm': 'member_firm',
   };
 export const groupRelationsPath = '/api/groups-relations';
+export const groupRelationsByUserIdPath = (id) => `/api/groups-relations/${id}`;

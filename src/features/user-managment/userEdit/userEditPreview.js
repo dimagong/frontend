@@ -28,7 +28,7 @@ import {User, X, Check, Plus, Edit2, RefreshCw, EyeOfxf, Eye} from "react-feathe
 import {colourStyles} from "utility/select/selectSettigns";
 import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 // import InvitationCreate from '../invitation/InvitationCreate'
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
   selectGroups,
   selectRoles,
@@ -60,22 +60,21 @@ import {selectPreview} from '../../../app/selectors/layoutSelector'
 import noneAvatar from '../../../assets/img/portrait/none-avatar.png'
 
 const UserEditPreview = (props, context) => {
-  console.log(props, context)
   const manager = useSelector(selectPreview);
   const [editField, setEditField] = useState(null);
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const titleRef = useRef(null);
-  const validUntilRef = useRef(null)
-  const numberRef = useRef(null)
-  const emailRef = useRef(null)
+  const validUntilRef = useRef(null);
+  const numberRef = useRef(null);
+  const emailRef = useRef(null);
 
-  const [activeTab, setActiveTab] = useState("1")
+  const [activeTab, setActiveTab] = useState("1");
   const modules = useSelector(selectModules);
-  const dForms = useSelector(selectUserDForms)
-  const workflows = useSelector(selectUserWorkfows)
-  const reviewers = useSelector(selectUserReviewers)
-  const isCreate = useRef(false)
+  const dForms = useSelector(selectUserDForms);
+  const workflows = useSelector(selectUserWorkfows);
+  const reviewers = useSelector(selectUserReviewers);
+  const isCreate = useRef(false);
 
   const initOnboarding = {
     d_form: null,
@@ -83,48 +82,50 @@ const UserEditPreview = (props, context) => {
     reviewers: [],
     user_id: manager.id,
     workflow: null,
-  }
+  };
 
-  const isOnboarding = () => manager && modules.length && manager.modules.find((module) => module.name === 'Onboarding')
+  const isOnboarding = () => manager && modules.length && manager.modules.find((module) => module.name === 'Onboarding');
 
   const createViewOnboarding = () => {
     dispatch(setManagerOnboarding(initOnboarding));
     isCreate.current = true;
-  }
+  };
 
   const handleRowClick = (onboarding) => {
     dispatch(setManagerOnboarding(onboarding));
     isCreate.current = false;
-  }
+  };
 
-  useEffect(()=>{
-    if(!dForms.length && !reviewers.length && !workflows.length){
-    } dispatch(getUserOnboardingRequest())
-  }, [])
+  useEffect(() => {
+    if (!dForms.length && !reviewers.length && !workflows.length) {
+    }
+    // todo what is that
+    dispatch(getUserOnboardingRequest({userId: manager.id}))
+  }, []);
 
   useOutsideAlerter([titleRef, validUntilRef, numberRef, emailRef], () => setEditField(null));
 
 
   const handleManager = (managerValue) => {
-    dispatch(setManager({ ...manager, ...managerValue }));
+    dispatch(setManager({...manager, ...managerValue}));
   };
 
   const editFieldClose = () => {
     setEditField(null)
-  }
+  };
   const editFieldSave = () => {
-    setEditField(null)
+    setEditField(null);
     dispatch(updateUserRequest(manager))
-  }
+  };
 
   const removeCard = () => {
-    dispatch(setContext(null))
+    dispatch(setContext(null));
     dispatch(setManager(null));
-  }
+  };
 
-  const formSubmit =() => {
+  const formSubmit = () => {
     // dispatch(createUserOnboardingRequset())
-  }
+  };
 
   return (
     <Row className="user-managment">
@@ -136,7 +137,7 @@ const UserEditPreview = (props, context) => {
                 <div className="user-managment__edit_header_user-info-container" ref={titleRef}>
                   {
                     editField === "name" ?
-                      <FormGroup className="position-absolute input-divider-right user-managment__edit_header_form" >
+                      <FormGroup className="position-absolute input-divider-right user-managment__edit_header_form">
                         <Input
                           autoFocus
                           type="text"
@@ -145,19 +146,22 @@ const UserEditPreview = (props, context) => {
                           placeholder="Mobile"
                           value={manager.first_name}
                           onChange={(event) => handleManager({name: event.target.value})}
-                          {...{invalid: errors['name'] }}
+                          {...{invalid: errors['name']}}
                         />
-                        <div className="form-control-position input-divider-right user-managment__edit_header_form_check"
-                             onClick={editFieldSave}>
+                        <div
+                          className="form-control-position input-divider-right user-managment__edit_header_form_check"
+                          onClick={editFieldSave}>
                           <Check className="bg-hover-icon" size={15}/>
                         </div>
-                        <div className="form-control-position input-divider-right user-managment__edit_header_form_cross"
-                             onClick={editFieldClose}>
+                        <div
+                          className="form-control-position input-divider-right user-managment__edit_header_form_cross"
+                          onClick={editFieldClose}>
                           <X className="bg-hover-icon" size={15}/>
                         </div>
                         <FormFeedback>{errors['name'] ? errors['name'] : ''}</FormFeedback>
                       </FormGroup>
-                      : <div onClick={() => setEditField('name')}>{manager.first_name} <Edit2 className="edit-btn" size={15}/></div>
+                      : <div onClick={() => setEditField('name')}>{manager.first_name} <Edit2 className="edit-btn"
+                                                                                              size={15}/></div>
                   }
                 </div>
               </div>
@@ -176,7 +180,7 @@ const UserEditPreview = (props, context) => {
                         object
                         src={
                           manager.url
-                            ?  manager.url
+                            ? manager.url
                             : noneAvatar
                         }
                         alt="Generic placeholder image"
@@ -194,7 +198,7 @@ const UserEditPreview = (props, context) => {
                               </div>
                               <div className="user-managment__edit_body_user-info-container" ref={numberRef}>
                                 {
-                                  editField ==='number' ?
+                                  editField === 'number' ?
                                     <FormGroup className="input-divider-right user-managment__edit_body_form">
                                       <Input
                                         autoFocus
@@ -210,14 +214,17 @@ const UserEditPreview = (props, context) => {
                                            onClick={editFieldSave}>
                                         <Check className="bg-hover-icon" size={15}/>
                                       </div>
-                                      <div className="form-control-position form-control-position user-managment__edit_body_form_cross"
-                                           onClick={editFieldClose}>
+                                      <div
+                                        className="form-control-position form-control-position user-managment__edit_body_form_cross"
+                                        onClick={editFieldClose}>
                                         <X className="bg-hover-icon" size={15}/>
                                       </div>
                                       <FormFeedback>{errors['number'] ? errors['number'] : ''}</FormFeedback>
                                     </FormGroup>
-                                    : <div onClick={() => setEditField('number')} className=" user-managment__edit_body_form_text"><span>{manager.number} </span><Edit2 className="edit-btn"
-                                                                                                                                                                        size={15}/></div>
+                                    : <div onClick={() => setEditField('number')}
+                                           className=" user-managment__edit_body_form_text">
+                                      <span>{manager.number} </span><Edit2 className="edit-btn"
+                                                                           size={15}/></div>
                                 }
                               </div>
                             </div>
@@ -239,18 +246,22 @@ const UserEditPreview = (props, context) => {
                                         onChange={(event) => handleManager({email: event.target.value})}
                                         {...{invalid: errors['email']}}
                                       />
-                                      <div className="form-control-position form-control-position user-managment__edit_body_form_check"
-                                           onClick={editFieldSave}>
+                                      <div
+                                        className="form-control-position form-control-position user-managment__edit_body_form_check"
+                                        onClick={editFieldSave}>
                                         <Check className="bg-hover-icon" size={15}/>
                                       </div>
-                                      <div className="form-control-position form-control-position user-managment__edit_body_form_cross"
-                                           onClick={editFieldClose}>
+                                      <div
+                                        className="form-control-position form-control-position user-managment__edit_body_form_cross"
+                                        onClick={editFieldClose}>
                                         <X className="bg-hover-icon" size={15}/>
                                       </div>
-                                      <FormFeedback>{ errors['email'] ?  errors['email'] : ''}</FormFeedback>
+                                      <FormFeedback>{errors['email'] ? errors['email'] : ''}</FormFeedback>
                                     </FormGroup>
-                                    : <div onClick={() => setEditField('email')} className="user-managment__edit_body_form_text"><span>{manager.email}</span><Edit2 className="edit-btn"
-                                                                                                                                                                    size={15}/></div>
+                                    : <div onClick={() => setEditField('email')}
+                                           className="user-managment__edit_body_form_text">
+                                      <span>{manager.email}</span><Edit2 className="edit-btn"
+                                                                         size={15}/></div>
                                 }
                               </div>
                             </div>
@@ -272,18 +283,22 @@ const UserEditPreview = (props, context) => {
                                           handleManager({valid_until: moment(date[0]).format('YYYY-MM-DD HH:mm:ss')});
                                         }}
                                       />
-                                      <div className="form-control-position form-control-position user-managment__edit_body_form_check"
-                                           onClick={editFieldSave}>
+                                      <div
+                                        className="form-control-position form-control-position user-managment__edit_body_form_check"
+                                        onClick={editFieldSave}>
                                         <Check className="bg-hover-icon" size={15}/>
                                       </div>
-                                      <div className="form-control-position form-control-position user-managment__edit_body_form_cross"
-                                           onClick={editFieldClose}>
+                                      <div
+                                        className="form-control-position form-control-position user-managment__edit_body_form_cross"
+                                        onClick={editFieldClose}>
                                         <X className="bg-hover-icon" size={15}/>
                                       </div>
-                                      <FormFeedback>{ errors['valid_until']  ? errors['valid_until'] : ''}</FormFeedback>
+                                      <FormFeedback>{errors['valid_until'] ? errors['valid_until'] : ''}</FormFeedback>
                                     </FormGroup>
                                     :
-                                    <div onClick={() => setEditField('valid_until')} className="user-managment__edit_body_form_text"><span>{manager.valid_until}</span><Edit2
+                                    <div onClick={() => setEditField('valid_until')}
+                                         className="user-managment__edit_body_form_text">
+                                      <span>{manager.valid_until}</span><Edit2
                                       className="edit-btn" size={15}/></div>
                                 }
 
@@ -380,13 +395,13 @@ const UserEditPreview = (props, context) => {
           }
           {
             manager.onboarding && !isCreate.current
-              ? <UserOnboardingDForm />
+              ? <UserOnboardingDForm/>
               : null
           }
         </Card>
       </Col>
     </Row>
   )
-}
+};
 
 export default UserEditPreview

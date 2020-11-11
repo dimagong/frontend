@@ -14,11 +14,15 @@ const Routes = ()=>{
                 {routes.map((route) => {
                     const {  path, Component, exact, isPrivate, redirect, ...rest } = route;
 
+                    console.log(route, 'route');
+
                     if (isPrivate) {
+
                         return (
                             <PrivateRoute path={path} exact={exact} key={v4()} redirect={redirect} isAuth={isAuth} Component={Component} {...rest}/>
                         );
                     }
+
                     return (
                         <PublicRoute path={path} exact={exact} key={v4()} redirect={redirect} isAuth={isAuth} Component={Component} {...rest}/>
                     );
