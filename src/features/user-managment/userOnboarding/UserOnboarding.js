@@ -38,12 +38,12 @@ const UserOnboarding = () => {
       user_id: manager.id,
       workflow: null,
 }
-useEffect(()=>{
-  if(!dForms.length && !reviewers.length && !workflows.length){
-  } dispatch(getUserOnboardingRequest())
-}, [])
-    
-    const isOnboarding = () => manager && modules.length && manager.modules.find((module) => module.name === 'Onboarding') 
+  useEffect(()=>{
+    if(!dForms.length && !reviewers.length && !workflows.length){
+    } dispatch(getUserOnboardingRequest())
+  }, [])
+
+    const isOnboarding = () => manager && modules.length && manager.modules.find((module) => module.name === 'Onboarding')
 
     const createViewOnboarding = () => {
       dispatch(setManagerOnboarding(initOnboarding));
@@ -102,12 +102,12 @@ useEffect(()=>{
                     </Col>
                     {
                         manager.onboarding
-                        ? <UserOnboardingForm isCreate={isCreate}/> 
+                        ? <UserOnboardingForm isCreate={isCreate}/>
                         : null
                     }
                     {
                       manager.onboarding && !isCreate.current
-                      ? <UserOnboardingDForm /> 
+                      ? <UserOnboardingDForm />
                       : null
                     }
                   </Row>

@@ -44,7 +44,7 @@ const UserOnboardingCreate = ({isCreate}) => {
     const reviewers = useSelector(selectUserReviewers)
     const dispatch = useDispatch();
 
-    
+
 
     const closeCreateOnboarding = () => {
       dispatch(setManagerOnboarding(null))
@@ -72,8 +72,8 @@ const UserOnboardingCreate = ({isCreate}) => {
       }
     }
     return (
-        <Col md="12" lg="12" className="pl-0 ml-0 mt-2">
-                          <Card className="border mb-0">
+        <Col md="12" lg="12" className="p-0 ml-0">
+                          <Card className="border-0 mb-0">
                             <CardHeader className="m-0">
                               <CardTitle>
                                 Onboarding create
@@ -124,13 +124,13 @@ const UserOnboardingCreate = ({isCreate}) => {
                                         classNamePrefix="select"
                                         id="languages"
                                       />
-  
+
                                     </div>
                                   </div>
                                   <div className="d-flex mb-1">
                                     <div className="font-weight-bold column-sizing">Workflow</div>
                                     <div className="full-width">
-  
+
                                       <Select
                                         isDisabled={isCreate.current?false:true}
                                         components={{DropdownIndicator: null}}
@@ -147,7 +147,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                                         classNamePrefix="select"
                                         id="languages"
                                       />
-  
+
                                     </div>
                                   </div>
                                   <div className="d-flex">
@@ -164,7 +164,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                                             is_internal: event.target.checked
                                         }))}
                                       />
-  
+
                                     </div>
                                     <UncontrolledTooltip placement="right" target="onboarding-create-config-is-internal">
                                       For reviewers only
@@ -183,7 +183,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                                   }
                                 </div>
                               </div>
-  
+
                             </CardBody>
                           </Card>
                         </Col>

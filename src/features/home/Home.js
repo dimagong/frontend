@@ -21,10 +21,7 @@ const Home = () => {
 
   return (
     <>
-      <ContextSearch
-        isShown={isContextSearchVisible}
-        onContextSearchHide={handleContextSearchHide}
-      />
+
       <Context selectedContext={selectedContext}/>
     </>
   );

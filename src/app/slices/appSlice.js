@@ -23,6 +23,7 @@ export const appSlice = createSlice({
     isError: null,
     isContextSearchVisible: true,
     context: null,
+    preview: null,
     user: {
       managers: [],
       manager: null,
@@ -232,6 +233,7 @@ export const {
   showContextSearch,
   hideContextSearch,
   setContext,
+  setPreview,
 
   logout,
 } = appSlice.actions;

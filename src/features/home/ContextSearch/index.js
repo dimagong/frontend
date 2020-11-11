@@ -24,6 +24,7 @@ import {
   getWorkflowsRequest,
   setManager,
   setContext,
+  setPreview,
 } from "app/slices/appSlice";
 
 import {
@@ -40,12 +41,17 @@ import ContextSearchNav from './ContextSearchNav'
 
 import {selectLoading} from 'app/selectors'
 import {selectWorkflows} from 'app/selectors/onboardingSelectors'
-
+import { selectAuth } from "app/selectors/authSelectors"
+import {selectVuexyUser} from 'app/selectors'
+import {selectPreview} from '../../../app/selectors/layoutSelector'
 
 import DFormCardTemplate from './CardTemplates/dFormCard'
 import WorkFlowTemplate from './CardTemplates/workFlowCard'
 import UserCardTemplate from './CardTemplates/userCard'
 import NotificationTemplate from './CardTemplates/notificationsCard'
+import useWindowSize from '../../../hooks/windowWidth'
+
+import UserEditPreview from 'features/user-managment/userEdit/userEditPreview'
 
 const ContextSearch = ({isShown, onContextSearchHide}) => {
   const dispatch = useDispatch();
@@ -56,38 +62,65 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const notifications = useSelector(selectNotifications)
   const workFlows = useSelector(selectWorkflows)
   const isLoading = useSelector(selectLoading)
-
+  const isAuth = useSelector(selectAuth)
+  const vuexyUser = useSelector(selectVuexyUser)
+  const preview = useSelector(selectPreview)
 
   const [page, setPage] = useState(0);
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
   const handleContextChange = (context) => {
     dispatch(setContext(context))
   }
+  const width = useWindowSize()
+
+  const oneColumn = width < 1250 && preview;
+  const itemsPerPage = oneColumn ? 4 : 8;
 
   // Slice data depending on page, decide which template to use and render it
   const renderContent = (data, type, page) => {
 
     const sliceData = (data, page) => {
-      return data.slice(8 * page, 8 * (page + 1))
+
+
+      return data.slice(itemsPerPage * page, itemsPerPage * (page + 1))
     }
 
+
+    //* TODO MAKE PREVIEW FOR ALL !!!
     const templates = {
-      dForms: <DFormCardTemplate onClick={(dForm) => {
-                dispatch(setdForm(dForm));
-                handleContextChange("dForm")
+      dForms: <DFormCardTemplate oneColumn={oneColumn} onClick={(e, dForm) => {
+                if (e.ctrlKey) {
+                  dispatch(setPreview({type: "dForm", ...dForm}))
+                } else {
+                  dispatch(setdForm(dForm));
+                  handleContextChange("dForm")
+                }
               }} />,
-      managers: <UserCardTemplate onClick={(user) => {
-                  dispatch(setManager(user));
-                  handleContextChange("User")
+      managers: <UserCardTemplate oneColumn={oneColumn} onClick={(e, user) => {
+                  if (e.ctrlKey) {
+                    dispatch(setPreview({type: "user", ...user}))
+                  } else {
+                    dispatch(setManager(user));
+                    handleContextChange("User")
+                  }
                 }} />,
-      workFlows: <WorkFlowTemplate onClick={(workFlow) => {
-                  dispatch(setWorkflow(workFlow))
-                  handleContextChange("WorkFlow")
+      workFlows: <WorkFlowTemplate oneColumn={oneColumn} onClick={(e, workFlow) => {
+                  if (e.ctrlKey) {
+                    dispatch(setPreview({type: "workFlow", ...workFlow}))
+                  } else {
+                    dispatch(setWorkflow(workFlow))
+                    handleContextChange("WorkFlow")
+                  }
                 }} />,
-      notifications: <NotificationTemplate onClick={(notification) => {
+      notifications: <NotificationTemplate oneColumn={oneColumn} onClick={(e, notification) => {
+                    if (e.ctrlKey) {
+                      dispatch(setPreview({type: "notification", ...notification}))
+                    } else {
                       dispatch(setNotification(notification))
                       handleContextChange("Notification")
+                    }
                     }} />,
     }
 
@@ -100,7 +133,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   }
 
   const getPagination = () => {
-    return Array.from(Array(Math.ceil(data[selectedNavItem.id].length/8)))
+    return Array.from(Array(Math.ceil(data[selectedNavItem.id].length/itemsPerPage)))
   }
 
   const data = {
@@ -111,13 +144,28 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   }
 
   useEffect(() => {
-    dispatch(getUserManagment());
-    dispatch(getWorkflowsRequest())
-    dispatch(getdFormsRequest())
-    dispatch(getNotificationsRequest())
-  }, []);
+    console.log(isAuth, vuexyUser)
+    if (isAuth && vuexyUser) {
+      dispatch(getUserManagment())
+      dispatch(getWorkflowsRequest())
+      dispatch(getdFormsRequest())
+      dispatch(getNotificationsRequest())
+    }
+  }, [isAuth, vuexyUser]);
+
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+  }, [])
+
 
   if(!isShown) return null;
+
+
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth)
+  }
 
   return (
     <Row className="home mb-2">
@@ -138,9 +186,16 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                       />
 
                       <Row>
-                        <Col className="home__card-wrapper">
+                        <Col className="home__card-wrapper" sm={preview ? "8" : "12"}>
                           {data[selectedNavItem.id] && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
                         </Col>
+                        {preview && (
+                          <Col sm="4">
+                            {{
+                              user: <UserEditPreview />
+                            }[preview.type]}
+                          </Col>
+                        )}
                       </Row>
                       <Pagination aria-label="Page navigation">
                         {data[selectedNavItem.id] && getPagination().length > 1 && getPagination().map( (_, index) => (

@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import {
   Card,
   CardHeader,
@@ -11,7 +11,14 @@ import {
   Form,
   FormFeedback,
   Media,
+  Nav,
+  NavItem,
+  NavLink,
+  TabPane,
+  Button,
+  TabContent,
 } from "reactstrap"
+import DataTable from "react-data-table-component"
 import Flatpickr from "react-flatpickr";
 import Select, {components} from "react-select"
 import classnames from "classnames"
@@ -22,15 +29,34 @@ import {colourStyles} from "utility/select/selectSettigns";
 import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 // import InvitationCreate from '../invitation/InvitationCreate'
 import { useDispatch, useSelector } from "react-redux";
-import { selectGroups, selectRoles, selectManager, selectManagers } from "app/selectors";
-import {setManager, updateUserRequest, getRolesRequest, getGroupsRequest, setContext} from "app/slices/appSlice";
+import {
+  selectGroups,
+  selectRoles,
+  selectManager,
+  selectManagers,
+  selectModules,
+  selectUserDForms,
+  selectUserWorkfows, selectUserReviewers
+} from "app/selectors";
+import {
+  setManager,
+  updateUserRequest,
+  getRolesRequest,
+  getGroupsRequest,
+  setContext,
+  setManagerOnboarding, getUserOnboardingRequest
+} from "app/slices/appSlice";
 import {useOutsideAlerter} from 'hooks/useOutsideAlerter'
 import UserEditAvatar from "./UserEditAvatar"
 import UserEditSelects from './UserEditSelects';
 import UserOnboarding from '../userOnboarding/UserOnboarding';
 import UserInvitationsCreate from '../userInvitations/UserInvitationsCreate';
+import {columnDefs} from '../userOnboarding/gridSettings'
+import UserOnboardingForm from '../userOnboarding/UserOnboardingForm'
+import UserOnboardingDForm from '../userOnboarding/UserOnboardingDForm'
 
-const UserEdit = () => {
+const UserEdit = (props, context) => {
+  console.log(props, context)
   const manager = useSelector(selectManager);
   const [editField, setEditField] = useState(null);
   const [errors, setErrors] = useState({});
@@ -39,6 +65,39 @@ const UserEdit = () => {
   const validUntilRef = useRef(null)
   const numberRef = useRef(null)
   const emailRef = useRef(null)
+
+  const [activeTab, setActiveTab] = useState("1")
+  const modules = useSelector(selectModules);
+  const dForms = useSelector(selectUserDForms)
+  const workflows = useSelector(selectUserWorkfows)
+  const reviewers = useSelector(selectUserReviewers)
+  const isCreate = useRef(false)
+
+  const initOnboarding = {
+    d_form: null,
+    is_internal: false,
+    reviewers: [],
+    user_id: manager.id,
+    workflow: null,
+  }
+
+  const isOnboarding = () => manager && modules.length && manager.modules.find((module) => module.name === 'Onboarding')
+
+  const createViewOnboarding = () => {
+    dispatch(setManagerOnboarding(initOnboarding));
+    isCreate.current = true;
+  }
+
+  const handleRowClick = (onboarding) => {
+    dispatch(setManagerOnboarding(onboarding));
+    isCreate.current = false;
+  }
+
+  useEffect(()=>{
+    if(!dForms.length && !reviewers.length && !workflows.length){
+    } dispatch(getUserOnboardingRequest())
+  }, [])
+
   useOutsideAlerter([titleRef, validUntilRef, numberRef, emailRef], () => setEditField(null));
 
 
@@ -57,6 +116,7 @@ const UserEdit = () => {
   const removeCard = () => {
     dispatch(setContext(null))
     dispatch(setManager(null));
+
   }
 
   const formSubmit =() => {
@@ -243,8 +303,70 @@ const UserEdit = () => {
                   </Col>
                 </Row>
               </Form>
-              <UserOnboarding/>
+              <Row>
+                <Col>
+                  <Nav tabs className="mt-2">
+                    <NavItem>
+                      <NavLink
+                        className={classnames({
+                          active: activeTab === "1"
+                        })}
+                        onClick={() => {
+                          setActiveTab("1")
+                        }}
+                      >
+                        <User size={16}/>
+                        <span className="align-middle ml-50">Onboarding</span>
+                      </NavLink>
+                    </NavItem>
+                  </Nav>
+                  <TabContent activeTab={activeTab}>
+                    <TabPane tabId="1">
+                      <Row className="mx-0" col="12">
+                        <Col md="12" className="ml-0 pl-0">
+                          <div className="d-flex justify-content-end flex-wrap mt-2">
+                            <Button className="mt-1" color="primary" onClick={createViewOnboarding}>Create</Button>
+                          </div>
+                        </Col>
+                        <Col md="12" className="ml-0 pl-0">
+                          <DataTable
+                            data={manager.onboardings}
+                            columns={columnDefs}
+                            Clicked
+                            onRowClicked={handleRowClick}
+                            conditionalRowStyles={[
+                              {
+                                when: row => manager.onboarding ? row.id === manager.onboarding.id : false,
+                                style: row => ({
+                                  backgroundColor: '#007bff',
+                                  color: 'white'
+                                }),
+                              }
+                            ]}
+                            noHeader
+                          />
+                        </Col>
+
+                      </Row>
+                    </TabPane>
+                  </TabContent>
+                </Col>
+              </Row>
             </CardBody>
+          </Card>
+        </Col>
+        <Col xs="5">
+          <Card>
+            {
+              manager.onboarding
+                ? <UserOnboardingForm isCreate={isCreate}/>
+                : null
+            }
+            {
+              manager.onboarding && !isCreate.current
+                ? <UserOnboardingDForm />
+                : null
+            }
           </Card>
         </Col>
       </Row>
