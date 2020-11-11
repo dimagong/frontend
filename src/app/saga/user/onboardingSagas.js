@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest, select } from "redux-saga/effects";
+import {all, put, call, takeLatest, select} from "redux-saga/effects";
 
 import userApi from "api/User/user";
 import groupRelations from "api/groupRelations/groupRelations";
@@ -7,24 +7,33 @@ import {
   getUserOnboardingSuccess,
   getUserOnboardingRequest,
   getUserOnboardingError,
+
   createUserOnboardingSuccess,
   createUserOnboardingRequest,
   createUserOnboardingError,
+
   deleteUserOnboardingSuccess,
   deleteUserOnboardingRequest,
   deleteUserOnboardingError,
+
   updateUserRolesSuccess,
   updateUserRolesRequest,
   updateUserRolesError,
-  updateUserGroupsSuccess,
-  updateUserGroupsRequest,
-  updateUserGroupsError,
+
+  addUserGroupsSuccess,
+  addUserGroupsRequest,
+  addUserGroupsError,
+
+  removeUserGroupsSuccess,
+  removeUserGroupsRequest,
+  removeUserGroupsError,
+
   updateUserModulesSuccess,
   updateUserModulesRequest,
   updateUserModulesError,
   setManager,
 } from "app/slices/appSlice";
-import { selectManager, selectManagers } from "app/selectors";
+import {selectManager, selectManagers} from "app/selectors";
 
 
 function* getUserOnboarding() {
@@ -39,22 +48,22 @@ function* getUserOnboarding() {
 }
 
 function* createUserOnboarding({payload}) {
-try {
-  const response = yield call(userApi.createUserOnboarding, payload);
-  yield put(createUserOnboardingSuccess(response))
-} catch (error) {
-  yield put(createUserOnboardingError(error));
-}
+  console.log('payload', payload);
+  try {
+    const response = yield call(userApi.createUserOnboarding, payload);
+    yield put(createUserOnboardingSuccess(response))
+  } catch (error) {
+    yield put(createUserOnboardingError(error));
+  }
 }
 
 function* deleteUserOnboarding({payload}) {
   try {
     const onboarding = yield call(userApi.deleteUserOnboarding, payload);
-    console.log("deleteUserOnboarding",onboarding)
     yield put(deleteUserOnboardingSuccess(payload))
   } catch (error) {
-  yield put(deleteUserOnboardingError(error));
-}
+    yield put(deleteUserOnboardingError(error));
+  }
 }
 
 function* updateUserRoles({payload}) {
@@ -62,30 +71,42 @@ function* updateUserRoles({payload}) {
     const responce = yield call(userApi.updateUserRoles, payload);
     yield put(updateUserRolesSuccess({roles: payload.roles}));
   } catch (error) {
-  console.log("error", error)
-  yield put(updateUserRolesError(error));
+    console.log("error", error);
+    yield put(updateUserRolesError(error));
   }
 }
 
-function* updateUserGroups({payload}) {
+function* addUserGroups({payload}) {
   try {
-    const { groups } = yield call(userApi.updateGroupRoles, payload);
-    yield put(updateUserGroupsSuccess({
+    const {groups} = yield call(userApi.addUsersGroup, payload);
+    yield put(addUserGroupsSuccess({
       groups
     }));
   } catch (error) {
-  console.log("error", error)
-  yield put(updateUserGroupsError(error));
+    console.log("error", error);
+    yield put(addUserGroupsError(error));
+  }
+}
+
+function* removeUserGroups({payload}) {
+  try {
+    const {groups} = yield call(userApi.removeUsersGroup, payload);
+    yield put(removeUserGroupsSuccess({
+      groups
+    }));
+  } catch (error) {
+    console.log("error", error);
+    yield put(removeUserGroupsError(error));
   }
 }
 
 function* updateUserModules({payload}) {
   try {
     const responce = yield call(userApi.updateUser, payload);
-    yield put(updateUserModulesSuccess({modules:responce.modules}))
+    yield put(updateUserModulesSuccess({modules: responce.modules}))
   } catch (error) {
-  console.log("error", error)
-  yield put(updateUserModulesError(error));
+    console.log("error", error);
+    yield put(updateUserModulesError(error));
   }
 }
 
@@ -96,7 +117,8 @@ export default function* () {
     yield takeLatest(createUserOnboardingRequest.type, createUserOnboarding),
     yield takeLatest(deleteUserOnboardingRequest.type, deleteUserOnboarding),
     yield takeLatest(updateUserRolesRequest.type, updateUserRoles),
-    yield takeLatest(updateUserGroupsRequest.type, updateUserGroups),
+    yield takeLatest(addUserGroupsRequest.type, addUserGroups),
+    yield takeLatest(removeUserGroupsRequest.type, removeUserGroups),
     yield takeLatest(updateUserModulesRequest.type, updateUserModules),
   ]);
 }

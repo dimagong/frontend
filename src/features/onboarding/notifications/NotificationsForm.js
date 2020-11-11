@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 import {
   Card,
   CardHeader,
@@ -12,46 +12,46 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import { X } from "react-feather";
-import { useDispatch, useSelector } from "react-redux";
-import { selectNotification } from "app/selectors/onboardingSelectors";
-import { setNotification, setNotificationGroups } from "app/slices/onboardingSlice";
+import {X} from "react-feather";
+import {useDispatch, useSelector} from "react-redux";
+import {selectNotification} from "app/selectors/onboardingSelectors";
+import {setNotification, setNotificationGroups} from "app/slices/onboardingSlice";
 import {MultiSelect} from "components/MultiSelect/multiSelect";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {createNotificationRequest, setContext, updateNotificationRequest} from "app/slices/appSlice";
 
-const initNotification = {name: '',description:"", content: "", groups: []};
+const initNotification = {name: '', description: "", content: "", groups: []};
 
-const NotificationsForm = ({ isCreate }) => {
+const NotificationsForm = ({isCreate}) => {
   const notification = useSelector(selectNotification);
-  const { name, description, content } = notification || {};
+  const {name, description, content} = notification || {};
   const dispatch = useDispatch();
 
   const closeNotification = () => {
-    dispatch(setContext(null))
+    dispatch(setContext(null));
     dispatch(setNotification(null));
   };
 
   const handleNotification = (notificationValue) => {
-    dispatch(setNotification({ ...notification, ...notificationValue }));
+    dispatch(setNotification({...notification, ...notificationValue}));
   };
 
   const submitNotification = (e) => {
     e.preventDefault();
-    if(isCreate.current){
+    if (isCreate) {
       dispatch(createNotificationRequest(notification))
-    }else{
+    } else {
       dispatch(updateNotificationRequest(notification))
     }
-  }
+  };
 
   useEffect(() => {
-    if(isCreate) {
+    if (isCreate) {
       dispatch(setNotification(initNotification))
     }
-  }, [isCreate])
+  }, [isCreate]);
 
-  if(!notification) return null;
+  if (!notification) return null;
 
   return (
     <Row>
@@ -72,7 +72,7 @@ const NotificationsForm = ({ isCreate }) => {
                 <Input
                   value={name}
                   onChange={(event) =>
-                    handleNotification({ name: event.target.value })
+                    handleNotification({name: event.target.value})
                   }
                   type="text"
                   name="name"
@@ -84,7 +84,7 @@ const NotificationsForm = ({ isCreate }) => {
                 <Input
                   value={description}
                   onChange={(event) =>
-                    handleNotification({ description: event.target.value })
+                    handleNotification({description: event.target.value})
                   }
                   type="textarea"
                   name="description"
@@ -96,7 +96,7 @@ const NotificationsForm = ({ isCreate }) => {
                 <Input
                   value={content}
                   onChange={(event) =>
-                    handleNotification({ content: event.target.value })
+                    handleNotification({content: event.target.value})
                   }
                   type="textarea"
                   name="content"

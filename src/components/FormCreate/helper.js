@@ -1,5 +1,23 @@
 import Constants from "./Parts/Constants";
 
+function _toBool(value) {
+  switch (typeof value) {
+    case 'string' : {
+      return value === '1' || value === 'true';
+    }
+    case 'boolean' : {
+      return value;
+    }
+    case 'number' : {
+      return Boolean(value);
+    }
+    default : {
+      console.log('DEFAULT BOOL VALUE');
+      return false;
+    }
+  }
+}
+
 export function getEffectByType(type) {
   switch (type) {
     case Constants.EFFECT_DISABLED: {
@@ -24,9 +42,9 @@ export function getFieldsBySection(state, sectionName) {
 }
 
 export function isFieldHasDefaultEffectByOperator(operator) {
-  switch(operator) {
+  switch (operator) {
     case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
-      return false;
+      return true;
     }
     case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
       return true;
@@ -36,15 +54,45 @@ export function isFieldHasDefaultEffectByOperator(operator) {
     }
   }
 }
+// operator, typeField
+export function getFieldHasDefaultEffectByOperator() {
+  return false;
+  // if(typeField === Constants.FIELD_TYPE_SELECT || typeField === Constants.FIELD_TYPE_MULTI_SELECT) {
+  //   switch (operator) {
+  //     case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
+  //       return true;
+  //     }
+  //     case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
+  //       return true;
+  //     }
+  //     default : {
+  //       return false
+  //     }
+  //   }
+  // } else {
+  //   switch (operator) {
+  //     case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
+  //       return true;
+  //     }
+  //     case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
+  //       return true;
+  //     }
+  //     default : {
+  //       return false
+  //     }
+  //   }
+  // }
+}
 
-export function operatorResult (property, operator, fieldValue, value, field = null) {
+export function operatorResult(property, operator, fieldValue, value, field = null) {
   // todo bug resolved
-  if (!fieldValue || !value) return true;
   const typeField = getSpecificType(property);
+  // if (!fieldValue || !value) return getFieldHasDefaultEffectByOperator(operator, typeField);
+
   switch (operator) {
     case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL: {
-
       if (Array.isArray(fieldValue)) {
+
         if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
           return true;
         }
@@ -60,7 +108,7 @@ export function operatorResult (property, operator, fieldValue, value, field = n
 
       if (typeField === Constants.FIELD_TYPE_BOOLEAN) {
         // temporary fix ( need update condition template by type of choosed fileds )
-        if (fieldValue.toString() === value.toString()) {
+        if (_toBool(fieldValue) === _toBool(value)) {
           return true;
         }
         return false;
@@ -69,6 +117,7 @@ export function operatorResult (property, operator, fieldValue, value, field = n
       if (fieldValue === value) {
         return true;
       }
+
       return false;
     }
     case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL: {
@@ -81,7 +130,8 @@ export function operatorResult (property, operator, fieldValue, value, field = n
       }
 
       if (typeField === Constants.FIELD_TYPE_BOOLEAN) {
-        if (fieldValue.toString() !== value.toString()) {
+
+        if (_toBool(fieldValue) !== _toBool(value)) {
           return true;
         }
         return false;
@@ -176,7 +226,9 @@ export function getFieldsByGroup(state, groupName) {
 }
 
 export function getSpecificType(property) {
-  if (
+  if (property.type === Constants.RJSF_FIELD_TYPE_HELP_TEXT) {
+    return Constants.FIELD_TYPE_HELP_TEXT;
+  } else if (
     property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
     (property.format === 'date' || property.format === 'date-time')
   ) {
@@ -228,6 +280,7 @@ export function getDefaultValueByType(type) {
     }
   }
 }
+
 export function isElementProtected(state, dependencyType, objKey) {
   return state.additionalData.protected_properties[dependencyType].indexOf(objKey) !== -1;
 }

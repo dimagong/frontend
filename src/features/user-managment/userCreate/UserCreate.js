@@ -26,8 +26,6 @@ import { selectGroups, selectRoles, selectError } from "app/selectors";
 import {prepareSelectOptions, normalizeGroups, getGroupName, prepareSelectGroups} from "utility/select/prepareSelectData";
 import {groupTypes} from 'constants/group'
 
-import './styles.scss'
-
 const UserCreate = () => {
     const user = useSelector(selectUser);
     const roles = useSelector(selectRoles);

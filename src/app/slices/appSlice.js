@@ -180,9 +180,13 @@ export const {
   updateUserRolesRequest,
   updateUserRolesError,
 
-  updateUserGroupsSuccess,
-  updateUserGroupsRequest,
-  updateUserGroupsError,
+  addUserGroupsSuccess,
+  addUserGroupsRequest,
+  addUserGroupsError,
+
+  removeUserGroupsSuccess,
+  removeUserGroupsRequest,
+  removeUserGroupsError,
 
   updateUserModulesSuccess,
   updateUserModulesRequest,

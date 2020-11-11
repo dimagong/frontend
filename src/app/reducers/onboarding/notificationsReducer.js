@@ -16,7 +16,7 @@ const setNotification = (state, {payload}) => {
 const setNotificationGroups = (state, {payload}) => {
   // And same again
   // state.notification.notifications = state.notification.notifications;
-  state.notification.groups = payload
+  state.notification.notification.groups = payload
 }
 
 export default {

@@ -11,7 +11,6 @@ import {
   deleteUserOnboarding,
   updateUserPath,
   updateUserRolesPath,
-  updateUserGroupsPath,
   createUserPath,
   getInvitationsPath,
   createInvitationsPath,
@@ -20,6 +19,7 @@ import {
   getInvitationPath,
   sendInvitationAcceptPath,
 } from "constants/user";
+import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
 
 const userApi = {
   async getProfile() {
@@ -172,13 +172,31 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async updateGroupRoles(payload) {
-    const { id, groups } = payload;
+  async addUsersGroup({userId, group}) {
     try {
       const result = await instance({
-        url: updateUserGroupsPath(id),
+        url: addUserGroupsPath(userId),
         method: "PUT",
-        data: {groups: groups.map( (group, id) => ({type: group.type, group_id:  group.id}))},
+        data: {
+          group_id: group.group_id,
+          type: group.type
+        },
+      });
+
+      return result ? result.data.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async removeUsersGroup({userId, group}) {
+    try {
+      const result = await instance({
+        url: removeUserGroupsPath(userId),
+        method: "PUT",
+        data: {
+          group_id: group.group_id,
+          type: group.type
+        },
       });
 
       return result ? result.data.data : result;

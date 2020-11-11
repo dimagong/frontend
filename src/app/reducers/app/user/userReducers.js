@@ -167,17 +167,33 @@ const updateUserRolesError = (state, { payload }) => {
   state.isError = payload;
 };
 
-const updateUserGroupsSuccess = (state, { payload }) => {
+const addUserGroupsSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.manager = {...state.user.manager,...payload};
 };
 
-const updateUserGroupsRequest = (state, { payload }) => {
+const addUserGroupsRequest = (state, { payload }) => {
   state.isLoading = true;
   state.isError = null;
 };
-const updateUserGroupsError = (state, { payload }) => {
+const addUserGroupsError = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = payload;
+};
+
+
+const removeUserGroupsSuccess = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.manager = {...state.user.manager,...payload};
+};
+
+const removeUserGroupsRequest = (state, { payload }) => {
+  state.isLoading = true;
+  state.isError = null;
+};
+const removeUserGroupsError = (state, { payload }) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -300,9 +316,15 @@ export default {
   updateUserRolesSuccess,
   updateUserRolesRequest,
   updateUserRolesError,
-  updateUserGroupsSuccess,
-  updateUserGroupsRequest,
-  updateUserGroupsError,
+
+  addUserGroupsSuccess,
+  addUserGroupsRequest,
+  addUserGroupsError,
+
+  removeUserGroupsSuccess,
+  removeUserGroupsRequest,
+  removeUserGroupsError,
+
   updateUserModulesSuccess,
   updateUserModulesRequest,
   updateUserModulesError,

@@ -23,7 +23,7 @@ import { selectdForms, selectdForm } from "app/selectors/onboardingSelectors";
 const ControlsSections = ({sectionName}) => {
   const dForm = useSelector(selectdForm);
   const {schema} = dForm;
-    const groupedFieldsKeys = Object.keys(schema.uiSchema.groups) 
+    const groupedFieldsKeys = Object.keys(schema.uiSchema.groups)
     const propertiesKeys = Object.keys(schema.schema.properties);
     const sectionGroupsKeys = Object.keys(schema.uiSchema.sectionGroups);
     const groupedElements = elementsByGroups({schema, propertiesKeys, groupedFieldsKeys});
@@ -38,12 +38,10 @@ const ControlsSections = ({sectionName}) => {
       const isElementInSection = (elementContentKey, sectionName) => {
         return elementContentKey in schema.uiSchema.sections && schema.uiSchema.sections[elementContentKey] === sectionName;
       };
- 
+
   return sectionGroupsKeys.map(
     (groupName, index) => {
-        console.log(groupedElements, groupName, "groupedElements")
         const groupedElementKeys = Object.keys(groupedElements[groupName] || {})
-        console.log(groupedElementKeys, "groupedElementKeys")
       if (groupedElementsKeys.indexOf(groupName) !== -1) {
         if (!isSectionHaveOneElement(groupedElements[groupName], sectionName)) {
           return null;

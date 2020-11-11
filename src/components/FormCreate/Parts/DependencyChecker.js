@@ -2,15 +2,17 @@ import Constants from "./Constants";
 import {
   getEffectByType,
   getFieldsBySection,
-  isFieldHasDefaultEffectByOperator,
+  getFieldHasDefaultEffectByOperator,
   operatorResult,
   isValidationFieldPassed,
-  getFieldsByGroup
+  getFieldsByGroup, getSpecificType
 } from "../helper";
+import {isArray} from "leaflet/src/core/Util";
 
 export function dependencyChecker(state) {
 
-  if (this.props.inputDisabled) return true;
+  // todo
+  //if (this.props.inputDisabled) return true;
 
   let fieldsStates = {};
   let groupsStates = {};
@@ -52,10 +54,12 @@ export function dependencyChecker(state) {
           state.uiSchema[field] = {};
         }
 
-        console.log(state.formData);
+        // todo undefined
+        let defaultValue = getFieldHasDefaultEffectByOperator();
+
         // todo 04.09.2020 bug  if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
         if (!(fieldOperator.field in state.formData)) {
-          setField(field, isFieldHasDefaultEffectByOperator(fieldOperator.operator), effect);
+          setField(field, true, effect);
           continue;
         }
 
@@ -71,6 +75,12 @@ export function dependencyChecker(state) {
             fieldOperator.field)
         ) {
           setField(field, true, effect);
+          continue;
+        }
+
+        // isArray for multiselect
+        if(!fieldValue || (Array.isArray(fieldValue) && !fieldValue.length)) {
+          setField(field, defaultValue, effect);
           continue;
         }
 
@@ -121,6 +131,11 @@ export function dependencyChecker(state) {
 
         if (!(settingGroup in state.uiSchema.groupStates)) {
           state.uiSchema.groupStates[settingGroup] = {};
+        }
+
+        // todo
+        if(!(fieldOperator.field in this.state.schema.properties)) {
+          return;
         }
 
         const fieldValue = state.formData[fieldOperator.field];
@@ -359,6 +374,13 @@ export function dependencyChecker(state) {
       return fieldObj.value && fieldObj.effect === Constants.UI_DISABLED;
     });
 
+    // let notHidden = fieldsStates[field].find(fieldObj => {
+    //   return !fieldObj.value && fieldObj.effect === Constants.UI_HIDDEN;
+    // });
+    // let notDisabled = fieldsStates[field].find(fieldObj => {
+    //   return !fieldObj.value && fieldObj.effect === Constants.UI_DISABLED;
+    // });
+
     if (hidden) {
       state.uiSchema[field][hidden.effect] = true;
       return;
@@ -420,4 +442,8 @@ export function dependencyChecker(state) {
 
     state.uiSchema.sectionStates[section] = {};
   })
+
+
+  // todo function in DForm, if checked them disabled
+  this.disableAllInputs(state.schema, state.uiSchema);
 }

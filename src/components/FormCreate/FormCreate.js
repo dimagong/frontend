@@ -18,7 +18,7 @@ import {
   FormGroup,
   CardBody,
   CardHeader,
-  Badge
+  Badge, FormFeedback, Input
 } from 'reactstrap';
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy"
 import {X, Check, Plus} from "react-feather"
@@ -29,14 +29,23 @@ import {ObjectFieldTemplate} from './Custom/ObjectFieldTemplate'
 import {FileWidget} from "./Custom/FileWidget";
 import {CheckboxesWidget} from "./Custom/CheckboxesWidget";
 import {CheckboxWidget} from "./Custom/CheckboxWidget";
+import HelpText from "./Custom/HelpText";
 
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "./services/file.service";
-import Constants from './Parts/Constants'
+import Constants, {
+  FIELD_TYPE_BOOLEAN, FIELD_TYPE_DATE, FIELD_TYPE_FILE, FIELD_TYPE_FILE_LIST,
+  FIELD_TYPE_MULTI_SELECT, FIELD_TYPE_NUMBER,
+  FIELD_TYPE_SELECT, FIELD_TYPE_TEXT,
+  FIELD_TYPE_TEXT_AREA
+} from './Parts/Constants'
 
 import {dependencyChecker} from './Parts/DependencyChecker'
 import {listControls} from './Parts/ListControls'
 import {getSpecificType, isElementProtected} from "./helper";
+import OrderingEditModal from './Ordering/OrderingEditModal'
+import Ordering from './Ordering/Ordering'
+import FormOrdering from './Ordering/index'
 
 const clone = rfdc();
 
@@ -63,25 +72,24 @@ class FormCreate extends React.Component {
     this.dependencyChecker = dependencyChecker.bind(this);
 
     this.multiSelectRef = React.createRef();
-
   }
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
-    if(!isEqual(prevProps.dForm, this.props.dForm)){
-      this.setState(this.initState(this.props));
-      this.groupedFiles();
-    }
+
   };
 
   async componentDidMount() {
     this.groupedFiles();
+    this.refreshDependencies();
   }
 
   // initial state by props
   initState(props) {
     const propsDFormSchema = clone(props.dForm.schema.schema);
     const propsDFormUiSchema = clone(props.dForm.schema.uiSchema);
+    const formData = !isEmpty(this.props.dForm.submit_data) ? clone(this.props.dForm.submit_data) : {};
+
 
     let fileLoading = false;
     const protectedPropertiesDefault = {
@@ -111,19 +119,13 @@ class FormCreate extends React.Component {
       Object.keys(props.dForm.submit_data).forEach((key => {
         if (key in propsDFormSchema.properties) {
           propsDFormSchema.properties[key].default = props.dForm.submit_data[key];
-
-          //propsDFormUiSchema[key]['ui:emptyValue'] = null;
         }
       }))
     }
-    Object.keys(propsDFormSchema.properties).forEach(key => {
-      if (!(key in propsDFormUiSchema)) {
-        propsDFormUiSchema[key] = {};
-      }
-      if (this.props.inputDisabled) {
-        propsDFormUiSchema[key][Constants.UI_DISABLED] = true;
-      }
-    });
+
+    this.formatDefaultFormData(propsDFormSchema, formData);
+
+    this.disableAllInputs(propsDFormSchema, propsDFormUiSchema);
 
     const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
 
@@ -162,7 +164,7 @@ class FormCreate extends React.Component {
         }
       },
       loadingFiles: [],
-      formData: isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data,
+      formData: formData,
       sumbitFormData: {},
       dFormTemplate: props.dForm,
       schemaPropertyEdit: {},
@@ -196,6 +198,11 @@ class FormCreate extends React.Component {
             "type": "string",
             "format": "data-url"
           }
+        },
+        [Constants.FIELD_TYPE_HELP_TEXT]: {
+          "title": "",
+          "description": "help text",
+          "type": Constants.RJSF_FIELD_TYPE_HELP_TEXT
         },
         number: {
           type: "number",
@@ -251,6 +258,67 @@ class FormCreate extends React.Component {
     };
   }
 
+  disableAllInputs(dFormSchema, dFormUiSchema) {
+    if (this.props.inputDisabled) {
+      Object.keys(dFormSchema.properties).forEach(key => {
+        if (!(key in dFormUiSchema)) {
+          dFormUiSchema[key] = {};
+        }
+        dFormUiSchema[key][Constants.UI_DISABLED] = true;
+      });
+    }
+  }
+
+  formatDefaultFormData(schema, formData) {
+    Object.keys(schema.properties).forEach(key => {
+      if (key in formData) {
+        return;
+      }
+
+      switch (getSpecificType(schema.properties[key])) {
+        case FIELD_TYPE_SELECT: {
+          formData[key] = null;
+          break;
+        }
+        case FIELD_TYPE_MULTI_SELECT: {
+          formData[key] = [];
+          break;
+        }
+        case FIELD_TYPE_BOOLEAN: {
+          formData[key] = false;
+          break;
+        }
+        case FIELD_TYPE_TEXT_AREA: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_TEXT: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_NUMBER: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_DATE: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_FILE_LIST: {
+          formData[key] = [];
+          break;
+        }
+        case FIELD_TYPE_FILE: {
+          formData[key] = '';
+          break;
+        }
+        default: {
+          formData[key] = '';
+          break;
+        }
+      }
+    });
+  }
 
   // submits, changes
   formSubmit = (event) => {
@@ -279,7 +347,7 @@ class FormCreate extends React.Component {
       this.props.onSubmit(formData);
     }
     return true;
-  }
+  };
 
   onChangeForm = (event) => {
     let state = clone(this.state);
@@ -318,6 +386,7 @@ class FormCreate extends React.Component {
     };
     let dForm = clone(this.state.dFormTemplate);
     dForm.schema = backendSchema;
+    dForm.groups = this.props.dForm.groups;
     this.props.submitDForm(dForm, this.state.additionalData);
   }
 
@@ -347,7 +416,8 @@ class FormCreate extends React.Component {
   reInit = debounce(() => {
     let state = this.initState(this.props);
 
-    state.formData = isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data;
+
+    //state.formData = isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data;
     this.dependencyChecker(state);
     this.setState(state, async () => {
       this.groupedFiles()
@@ -423,6 +493,18 @@ class FormCreate extends React.Component {
 
 
   dependecyModalSave = (dependencyType, objKey) => {
+    if (
+      dependencyType === 'sections' &&
+      this.isSectionNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey)
+    ) {
+      return false;
+    } else if (
+      dependencyType === 'groups' &&
+      this.isGroupNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey)
+    ) {
+      return false;
+    }
+
     let state = clone(this.state);
 
     if (state.uiSettings.protectedProperty) {
@@ -444,10 +526,11 @@ class FormCreate extends React.Component {
 
     this.dependencyChecker(state);
     this.setState(state);
+    return true;
   };
 
   dependencyModalOpen = (dependencyType, objKey) => {
-    let dependencies = objKey in this.state.uiSchema.dependencies[dependencyType] ? this.state.uiSchema.dependencies[dependencyType][objKey] : {}
+    let dependencies = objKey in this.state.uiSchema.dependencies[dependencyType] ? this.state.uiSchema.dependencies[dependencyType][objKey] : {};
     this.setState({fieldEdit: {propertyKey: objKey}});
 
     this.setState({
@@ -652,6 +735,15 @@ class FormCreate extends React.Component {
 
     const dependencyFields = this.renderDependencyPart(dependencyType, objKey);
 
+    let errorNameAlreadyTaken = false;
+
+    if (dependencyType === 'sections') {
+      errorNameAlreadyTaken = this.isSectionNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey);
+    } else if (dependencyType === 'groups') {
+      errorNameAlreadyTaken = this.isGroupNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey);
+    }
+
+
     return (
       <DependencyEditModal onOpen={() => this.dependencyModalOpen(dependencyType, objKey)}
                            onSave={() => this.dependecyModalSave(dependencyType, objKey)} onDelete={() => {
@@ -659,13 +751,18 @@ class FormCreate extends React.Component {
       }}>
         <div className="row" key={objKey}>
           <div className="col-md-12 form-group">
-            <input id={`${objKey}`}
+            <Input id={`${objKey}`}
                    value={this.state.fieldEdit.propertyKey}
                    type="text"
                    data-id={objKey}
                    onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
                    className="form-control"
-                   placeholder="Name"/>
+                   placeholder="Name"
+                   invalid={errorNameAlreadyTaken}
+            />
+            <FormFeedback>
+              {errorNameAlreadyTaken ? 'That name is already taken' : null}
+            </FormFeedback>
           </div>
           <div className="col-md-12 form-group">
             <Checkbox
@@ -734,6 +831,8 @@ class FormCreate extends React.Component {
     this.dependencyChecker(state);
 
     this.setState(state);
+
+    return true;
   };
 
   uiSettingsOpen = (objKey) => {
@@ -899,6 +998,11 @@ class FormCreate extends React.Component {
     const properties = schema.properties;
     schema.properties = {};
 
+    if (previousFieldKey in state.uiSchema.columnsClasses) {
+      state.uiSchema.columnsClasses[newFieldKey] = state.uiSchema.columnsClasses[previousFieldKey];
+      delete state.uiSchema.columnsClasses[previousFieldKey];
+    }
+
     Object.keys(properties).forEach((deepIndex, deepCounter) => {
       if (previousFieldKey === deepIndex) {
         schema.properties[newFieldKey] = properties[deepIndex];
@@ -970,13 +1074,15 @@ class FormCreate extends React.Component {
       });
     });
 
+    if (previousFieldKey in state.uiSchema && !(previousFieldKey in state.schema.properties)) {
+      delete state.uiSchema[previousFieldKey];
+    }
 
     this.setState(state);
   };
 
-  inputChangeHandler = (event, index, prop) => {
+  inputChangeHandler = (event, objKey, prop) => {
     const {target: {value}} = event;
-
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     if (prop === 'type') {
       delete schemaPropertyEdit['minimum'];
@@ -984,11 +1090,29 @@ class FormCreate extends React.Component {
       delete schemaPropertyEdit['maxLength'];
       delete schemaPropertyEdit['minLength'];
       //schemaPropertyEdit.default = this.getDefaultValueByType(value);
+
       schemaPropertyEdit = this.state.controls[value];
+
+      if (
+        objKey in this.state.schema.properties &&
+        'title' in this.state.schema.properties[objKey] &&
+        'title' in this.state.schemaPropertyEdit
+      ) {
+        schemaPropertyEdit.title = this.state.schemaPropertyEdit.title;
+      }
+
     } else {
       schemaPropertyEdit[prop] = value;
     }
 
+
+    this.setState({schemaPropertyEdit});
+  };
+
+
+  wysiwygChange = (event, objKey, prop) => {
+    let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
+    schemaPropertyEdit[prop] = event;
     this.setState({schemaPropertyEdit});
   };
 
@@ -1005,6 +1129,7 @@ class FormCreate extends React.Component {
   };
 
   addControl = (sectionName, groupName) => {
+
     this.setState(state => {
       let schema = clone(this.state.schema);
       let uiSchema = clone(this.state.uiSchema);
@@ -1074,16 +1199,36 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit})
   };
 
-  elementEditModalSave(objKey) {
+  isPropertyNameAlreadyTaken(previousFieldKey, newFieldKey) {
+    return newFieldKey !== previousFieldKey && newFieldKey in this.state.schema.properties;
+  }
+
+  isSectionNameAlreadyTaken(previousFieldKey, newFieldKey) {
+    return newFieldKey !== previousFieldKey && newFieldKey in this.state.uiSchema.onlySections;
+  }
+
+  isGroupNameAlreadyTaken(previousFieldKey, newFieldKey) {
+    return newFieldKey !== previousFieldKey && newFieldKey in this.state.uiSchema.sectionGroups;
+  }
+
+  elementEditModalSave(previousFieldKey) {
+    const newFieldKey = this.state.fieldEdit.propertyKey;
+
+    if (this.isPropertyNameAlreadyTaken(previousFieldKey, newFieldKey)) {
+      return;
+    }
+
     let schema = clone(this.state.schema);
     let uiSchema = clone(this.state.uiSchema);
-    schema.properties[objKey] = clone(this.state.schemaPropertyEdit);
-    uiSchema[objKey] = clone(this.state.uiSchemaPropertyEdit);
+    schema.properties[previousFieldKey] = clone(this.state.schemaPropertyEdit);
+    uiSchema[previousFieldKey] = clone(this.state.uiSchemaPropertyEdit);
     schema.required = clone(this.state.schemaRequiredFields);
 
     this.setState({schema, uiSchema}, () => {
-      this.inputKeyObjectHandler(objKey);
-    })
+      this.inputKeyObjectHandler(previousFieldKey);
+    });
+
+    return true;
   }
 
   elementEditModalOpened = (column) => {
@@ -1137,6 +1282,7 @@ class FormCreate extends React.Component {
 
   addOperatorField = (conditionFieldType, index) => {
     let state = clone(this.state);
+
     state.uiSettings.dependencies.conditions[index][conditionFieldType].push({
       "field": "text",
       "operator": "=",
@@ -1394,7 +1540,7 @@ class FormCreate extends React.Component {
 
   changeNameByDependencyType(previousFieldKey, dependencyType, stateOut = false) {
     if (dependencyType === 'sections') {
-      const newFieldKey = this.state.fieldEdit.propertyKey
+      const newFieldKey = this.state.fieldEdit.propertyKey;
 
       if (newFieldKey === previousFieldKey) return;
 
@@ -1540,6 +1686,7 @@ class FormCreate extends React.Component {
     const options = {
       selectOnLineNumbers: true
     };
+
     return (
       <Row>
         {
@@ -1559,7 +1706,24 @@ class FormCreate extends React.Component {
                 }} type="text"
                        className="form-control"/>
               </div>
+              <div className="d-flex justify-content-end">
+                <FormOrdering
+                  sections={this.state.uiSchema.onlySections}
+                  groups={this.state.uiSchema.sectionGroups}
+                  fields={this.state.schema.properties}
+                  fieldsFilter={this.state.uiSchema.groups}
 
+                  onChangeSections={(items) => {
+                    this.setState({uiSchema: {...this.state.uiSchema, onlySections: items}})
+                  }}
+                  onChangeGroups={(items) => {
+                    this.setState({uiSchema: {...this.state.uiSchema, sectionGroups: items}})
+                  }}
+                  onChangeFields={(items) => {
+                    this.setState({schema: {...this.state.schema, properties: items}})
+                  }}
+                />
+              </div>
               <div className="">
                 {controls}
               </div>
@@ -1570,6 +1734,7 @@ class FormCreate extends React.Component {
                   </div>
                 </Col>
               </Row>
+
             </Col>
             :
             <Col>
@@ -1590,6 +1755,7 @@ class FormCreate extends React.Component {
                           this.setState({
                             formData
                           });
+                          this.refreshDependencies();
                         });
 
                       }}
@@ -1613,6 +1779,7 @@ class FormCreate extends React.Component {
                   CheckboxesWidget: CheckboxesWidget,
                   FileWidget: this.fileWidget
                 }}
+                fields={{}}
                 onChange={(event) => {
                   this.onChangeForm(event)
                 }}

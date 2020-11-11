@@ -81,7 +81,7 @@ const DForm = () => {
     isCreate.current = true;
 
   }
-  
+
   const handleDelete = (params) => {
     if(window.confirm("Are you sure?")) {
       dispatch(deletedFormRequest(params.data));

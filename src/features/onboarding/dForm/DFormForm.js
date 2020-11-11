@@ -11,9 +11,9 @@ import { X, Eye, EyeOff } from "react-feather";
 import MultiSelect from "components/MultiSelect/multiSelect";
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { useDispatch, useSelector } from "react-redux";
-import { selectdForms, selectdForm } from "app/selectors/onboardingSelectors";
+import { selectdForms, selectdForm} from "app/selectors/onboardingSelectors";
 import FormCreate from "components/FormCreate/FormCreate"
-import { setdForm } from "app/slices/onboardingSlice";
+import { setdForm, setdFormGroups } from "app/slices/onboardingSlice";
 import {createdFormRequest, setContext, updatedFormRequest} from "app/slices/appSlice";
 import {initDForm} from './settings'
 
@@ -28,7 +28,7 @@ const DFormForm = ({isCreate}) => {
   };
 
   const submitDForm = (dForm, {name, description, protected_properties}) => {
-    if(isCreate.current){
+    if(isCreate){
       dispatch(createdFormRequest({...dForm, name, description, protected_properties}))
     }else{
       dispatch(updatedFormRequest({...dForm, name, description, protected_properties}))
@@ -74,7 +74,7 @@ const DFormForm = ({isCreate}) => {
           </CardHeader>
           <CardBody className="card-top-padding">
             <div className="mt-2">
-              <MultiSelect setGroups={() => null} groups={prepareSelectGroups(dForm.groups)} />
+              <MultiSelect setGroups={setdFormGroups} groups={prepareSelectGroups(dForm.groups)} />
             </div>
             <FormCreate fileLoader={false}
                         submitDForm={submitDForm}

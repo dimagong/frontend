@@ -144,7 +144,6 @@ export function FileWidget(props) {
       let loadingFiles = this.state.loadingFiles.filter(loadingFile => {
         return loadingFile.file.group === propertyKey
       });
-      console.log('this.state.loadingFiles', this.state.loadingFiles);
       return loadingFiles.map(loadingFile => {
         return <div>{loadingFile.file.name}<Spinner color="primary" className="ml-1" size="sm"/></div>;
       })
