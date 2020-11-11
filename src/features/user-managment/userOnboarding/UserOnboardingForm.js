@@ -55,11 +55,11 @@ const UserOnboardingCreate = ({isCreate}) => {
     }
 
     const onSelectReviewersChange = (values) => {
-      values ? dispatch(setUserReviewers(reviewers.filter( group => values.some( value => value.label === group.first_name)))) : dispatch(setUserDForms([]))
+      values ? dispatch(setUserReviewers(reviewers.filter( group => values.some( value => value.label === group.first_name)))) : dispatch(setUserReviewers([]))
     }
 
     const onSelectWorkflowChange = (values) => {
-      values ? dispatch(setUserWorkflows(values[0].value)) : dispatch(setUserDForms(null))
+      values ? dispatch(setUserWorkflows(values[0].value)) : dispatch(setUserWorkflows(null))
     }
 
     const createOnboarding = () => {
