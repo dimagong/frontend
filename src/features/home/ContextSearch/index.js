@@ -144,7 +144,6 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   }
 
   useEffect(() => {
-    console.log(isAuth, vuexyUser)
     if (isAuth && vuexyUser) {
       dispatch(getUserManagment())
       dispatch(getWorkflowsRequest())

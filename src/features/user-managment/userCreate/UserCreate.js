@@ -75,7 +75,7 @@ const UserCreate = () => {
         <Col sm="12" md="12" lg="12" xl="5">
           <Card>
             <CardHeader>
-              <CardTitle className="font-weight-bold">DForm</CardTitle>
+              <CardTitle className="font-weight-bold">User Create</CardTitle>
               <div>
                 <X size={15} className="cursor-pointer mr-1" onClick={() => {handleCardClose()}} />
               </div>
