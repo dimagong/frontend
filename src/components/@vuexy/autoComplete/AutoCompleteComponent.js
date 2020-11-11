@@ -28,6 +28,18 @@ class Autocomplete extends React.Component {
     if (this.props.onSuggestionClick) {
       this.props.onSuggestionClick(e)
     }
+
+    // If user input not equal to empty string and user input haven't been already remembered, then remember
+    if (this.state.userInput !== "" && this.state.userInput.length > 2) {
+      const repeats = this.state.recentSearches.filter((el) => el.toLowerCase() === this.state.userInput.toLowerCase())
+      if(!repeats.length) {
+        localStorage.setItem("recentSearches", JSON.stringify([this.state.userInput, ...this.state.recentSearches.slice(0,2)]))
+        this.setState({
+          recentSearches: [this.state.userInput, ...this.state.recentSearches.slice(0,2)]
+        })
+      }
+    }
+
     this.setState({
       activeSuggestion: 0,
       showSuggestions: false,
@@ -287,6 +299,13 @@ class Autocomplete extends React.Component {
     if (this.props.defaultSuggestions && this.state.focused) {
       this.setState({ showSuggestions: true })
     }
+    const recentSearches = JSON.parse(localStorage.getItem("recentSearches"))
+    console.log(recentSearches)
+    if (recentSearches === null) {
+      localStorage.setItem("recentSearches", JSON.stringify([]))
+    } else {
+      this.setState({ recentSearches })
+    }
   }
 
   componentWillUnmount() {
@@ -300,7 +319,6 @@ class Autocomplete extends React.Component {
       state: { showSuggestions, userInput, openUp }
     } = this
     let suggestionsListComponent
-    const recentSearches = ["Brad Powar", "Brad", "John Doe"]
 
     if (showSuggestions) {
       suggestionsListComponent = (
@@ -319,10 +337,10 @@ class Autocomplete extends React.Component {
           <div className="text-right px-1 pt-1">
             <span>Tip: Hold CTRL or CONTROL while clicking to show preview</span>
           </div>
-          {!!recentSearches.length && (
+          {!!this.state.recentSearches.length && (
             <div className="m-1 border-top-secondary ">
               <div className="py-1">Recent searches</div>
-              {recentSearches.map((rs) => (
+              {this.state.recentSearches.map((rs) => (
                 <div
                   className="h5 cursor-pointer"
                   onClick={() => this.setState({userInput: rs})}

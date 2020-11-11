@@ -5,7 +5,7 @@ import noneAvatar from 'assets/img/portrait/none-avatar.png'
 import useWindowSize from 'hooks/windowWidth'
 
 const UserCardTemplate = ({oneColumn, onClick, ...manager }) => (
-  <Col sm={oneColumn ? "8" : "6"}>
+  <Col sm={oneColumn ? "12" : "6"}>
     <Card
       key={manager.email}
       className="flex-row home__card cursor-pointer"

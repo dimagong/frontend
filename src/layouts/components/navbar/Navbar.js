@@ -94,7 +94,7 @@ const ThemeNavbar = props => {
               </div>
 
               <div className="search-input_container">
-                <SearchInput suggestions={managers.map(({ first_name, id, status }) => ({ name: first_name, id, status }))}/>
+                <SearchInput suggestions={managers.map(({ first_name, ...rest }) => ({ name: first_name, ...rest }))}/>
                 <ChevronDown
                   className="autocomplete-expand-icon"
                   onClick={handleContextSearchToggle}

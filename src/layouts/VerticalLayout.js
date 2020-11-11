@@ -12,9 +12,12 @@ import {
   changeNavbarType,
   changeFooterType,
   changeMenuColor,
-  hideScrollToTop
+  hideScrollToTop,
+  onContextSearchHide,
 } from "app/actions/vuexy/customizer/index";
 import { selectProfile } from "app/selectors";
+
+import {hideContextSearch} from 'app/slices/appSlice'
 
 import ContextSearch from 'features/home/ContextSearch'
 
@@ -194,6 +197,8 @@ class VerticalLayout extends PureComponent {
     });
   };
 
+
+
   render() {
     let appProps = this.props.app.customizer;
     let menuThemeArr = [
@@ -281,7 +286,7 @@ class VerticalLayout extends PureComponent {
         >
           <Navbar {...navbarProps} />
           <div className="content-wrapper">
-            <ContextSearch isShown={true} onContextSearchHide={() => {}} />
+            <ContextSearch isShown={this.props.isContextSearchVisible} onContextSearchHide={this.props.onContextSearchHide} />
             {this.props.children}
           </div>
         </div>
@@ -302,9 +307,12 @@ const mapStateToProps = state => {
   return {
     app: state.vuexy.customizer,
     userProfile: selectProfile(state),
+    isContextSearchVisible: state.app.isContextSearchVisible,
   };
 };
+
 export default connect(mapStateToProps, {
+  onContextSearchHide: () => ({type: 'app/hideContextSearch'}),
   changeMode,
   collapseSidebar,
   changeNavbarColor,

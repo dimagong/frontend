@@ -6,9 +6,9 @@ export const NAV_OPTIONS = [
       {
         title: "Create user",
       },
-      {
-        title: "Invitations",
-      },
+      // {
+      //   title: "Invitations",
+      // },
     ]
   },
   {

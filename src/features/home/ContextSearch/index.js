@@ -7,6 +7,7 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
+  Badge,
 } from "reactstrap";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,6 +53,11 @@ import NotificationTemplate from './CardTemplates/notificationsCard'
 import useWindowSize from '../../../hooks/windowWidth'
 
 import UserEditPreview from 'features/user-managment/userEdit/userEditPreview'
+import DFormFormPreview from 'features/onboarding/dForm/DFormFormPreview'
+import WorkflowFormPreview from 'features/onboarding/workflow/workflowPreview'
+import NotificationsFormPreview from 'features/onboarding/notifications/notificationPreview'
+
+import './styles.scss'
 
 const ContextSearch = ({isShown, onContextSearchHide}) => {
   const dispatch = useDispatch();
@@ -75,7 +81,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   }
   const width = useWindowSize()
 
-  const oneColumn = width < 1250 && preview;
+  const oneColumn =  preview;
   const itemsPerPage = oneColumn ? 4 : 8;
 
   // Slice data depending on page, decide which template to use and render it
@@ -88,7 +94,6 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     }
 
 
-    //* TODO MAKE PREVIEW FOR ALL !!!
     const templates = {
       dForms: <DFormCardTemplate oneColumn={oneColumn} onClick={(e, dForm) => {
                 if (e.ctrlKey) {
@@ -167,7 +172,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   }
 
   return (
-    <Row className="home mb-2">
+    <Row className="home mb-2 context-search">
       <Col sm="12" md="12" lg="12" xl="12">
         <Card>
           <CardBody className="pt-2">
@@ -185,13 +190,16 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                       />
 
                       <Row>
-                        <Col className="home__card-wrapper" sm={preview ? "8" : "12"}>
+                        <Col className="home__card-wrapper" sm={preview ? oneColumn ? "5" : "8" : "12"}>
                           {data[selectedNavItem.id] && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
                         </Col>
                         {preview && (
-                          <Col sm="4">
+                          <Col sm={oneColumn ? "6" : "4"} className="preview">
                             {{
-                              user: <UserEditPreview />
+                              user: <UserEditPreview />,
+                              dForm: <DFormFormPreview />,
+                              workFlow: <WorkflowFormPreview />,
+                              notification: <NotificationsFormPreview />,
                             }[preview.type]}
                           </Col>
                         )}

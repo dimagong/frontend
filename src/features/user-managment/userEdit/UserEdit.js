@@ -56,7 +56,7 @@ import UserOnboardingForm from '../userOnboarding/UserOnboardingForm'
 import UserOnboardingDForm from '../userOnboarding/UserOnboardingDForm'
 
 const UserEdit = (props, context) => {
-  console.log(props, context)
+
   const manager = useSelector(selectManager);
   const [editField, setEditField] = useState(null);
   const [errors, setErrors] = useState({});
