@@ -106,6 +106,12 @@ const UserOnboardingDForm = () => {
             dForm={manager.onboarding.d_form}
             isStateConfig={isStateConfig}
             updatedAtText={updatedAtText()}
+
+
+
+            // reInit={(reInit, context) => {
+            //   this.reInitForm = reInit.bind(context)
+            // }}
           />
         </CardBody>
       </Card>

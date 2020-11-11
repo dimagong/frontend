@@ -8,7 +8,7 @@ export const initUser = {
   last_name: 'surname',
   email: '',
   number: '',
-  valid_until: moment().format('YYYY-MM-DD HH:mm:ss'),
+  valid_until: null,
   password: '',
   groups: [],
   roles: [],

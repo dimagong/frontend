@@ -40,6 +40,8 @@ import Constants, {
   FIELD_TYPE_TEXT_AREA
 } from './Parts/Constants'
 
+import './FormCreate.scss';
+
 import {dependencyChecker} from './Parts/DependencyChecker'
 import {listControls} from './Parts/ListControls'
 import {getSpecificType, isElementProtected} from "./helper";
@@ -76,7 +78,12 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
-
+    if(!isEqual(prevProps, this.props)) {
+      if (!isEqual(prevProps.dForm, this.props.dForm)) {
+        this.setState(this.initState(this.props));
+        this.groupedFiles();
+      }
+    }
   };
 
   async componentDidMount() {
