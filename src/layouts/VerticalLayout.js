@@ -17,6 +17,8 @@ import {
 } from "app/actions/vuexy/customizer/index";
 import { selectProfile } from "app/selectors";
 
+import { userService } from 'services/user'
+
 import {hideContextSearch} from 'app/slices/appSlice'
 
 import ContextSearch from 'features/home/ContextSearch'
@@ -285,10 +287,13 @@ class VerticalLayout extends PureComponent {
           onClick={this.handleAppOverlayClick}
         >
           <Navbar {...navbarProps} />
-          <div className="content-wrapper">
-            <ContextSearch isShown={this.props.isContextSearchVisible} onContextSearchHide={this.props.onContextSearchHide} />
-            {this.props.children}
-          </div>
+
+          {!userService.isOnboarding(this.props.userProfile) && (
+            <div className="content-wrapper">
+              <ContextSearch isShown={this.props.isContextSearchVisible} onContextSearchHide={this.props.onContextSearchHide} />
+              {this.props.children}
+            </div>
+          )}
         </div>
 
         <Footer {...footerProps} />

@@ -44,7 +44,7 @@ export const appSlice = createSlice({
   reducers: {
     ...appReducer,
     resetAppSlice: (state) => {
-      Object.assign(state, initialState)
+      Object.assign(state, {...initialState, isAuth:false})
     }
   },
 });

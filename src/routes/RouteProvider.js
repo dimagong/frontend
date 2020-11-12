@@ -2,8 +2,9 @@ import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { ContextLayout } from "utility/context/Layout"
 import {
-  loginPath,
-  userManagmentPath,
+  homePath,
+  loginPath, onboardingProcessPath,
+  userManagmentPath
 } from "constants/paths";
 
 const renderDefault = ({fullLayout, Component}) => props => {
@@ -28,12 +29,34 @@ const renderDefault = ({fullLayout, Component}) => props => {
 };
 
 
-export const PrivateRoute = ({ Component, redirect, isAuth, fullLayout, ...rest }) => {
+export const PrivateRoute = ({ Component, redirect, isAuth, fullLayout, isOnboarding, ...rest }) => {
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (isAuth) return renderDefault({fullLayout, Component})(props);
+        if (isAuth) {
+          if (props.location.pathname === onboardingProcessPath && isOnboarding === false) {
+              return (
+                <Redirect
+                  to={{
+                    pathname: homePath,
+
+                  }}
+                />
+              )
+          } else if (props.location.pathname !== onboardingProcessPath && isOnboarding === true){
+            return (
+              <Redirect
+                to={{
+                  pathname: onboardingProcessPath,
+
+                }}
+              />
+            )
+          } else {
+            return renderDefault({fullLayout, Component})(props)
+          }
+        }
         else {
           return (
             <Redirect
