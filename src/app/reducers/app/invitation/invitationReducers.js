@@ -15,7 +15,10 @@ const getInvitationsError = (state , {payload}) => {
 const createInvitationsSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.invitations = [payload, ...state.user.invitations];
+  // todo list invitations was deleted
+  // state.user.invitations = [payload, ...state.user.invitations];
+  state.user.manager = {...state.user.manager, invited: payload}
+
 };
 const createInvitationsRequest = (state) => {
   state.isLoading = true;

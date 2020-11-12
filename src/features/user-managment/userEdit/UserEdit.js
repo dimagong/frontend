@@ -280,22 +280,7 @@ const UserEdit = (props, context) => {
                               <div className="d-flex">
                                 <div className="font-weight-bold-lighter column-sizing-user-info">Portal access</div>
                                 <div>
-                                  {
-                                    manager.invited && !manager.invited.revoked_at ?
-                                      <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
-                                                             invitationText="Resend invitation"/> :
-                                      manager.invited && !manager.invited.accepted_at ?
-                                        <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
-                                                               invitationText="Resend invitation"/> :
-                                        manager.invited && manager.invited.accepted_at ? 'Invitation accepted' :
-                                          manager.roles.indexOf('prospect') === -1 && manager.roles.length && manager.groups.length ?
-                                            'Allowed'
-                                            : manager.roles.indexOf('prospect') !== -1 && !manager.groups.length ?
-                                            <UserInvitationsCreate send={true} resend={false} trash={false}
-                                                                   user={manager}/>
-                                            : 'User cannot be invited'
-                                  }
-
+                                      <UserInvitationsCreate user={manager}/>
                                 </div>
                               </div>
                             </div>
