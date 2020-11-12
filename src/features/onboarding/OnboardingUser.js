@@ -115,13 +115,13 @@ const OnboardingUser = () => {
               <Col sm="12" md={{size: 10, offset: 1}}>
                 <Nav pills className="nav-justified">
                   {
-                    profile.onboardings.map(onboarding => {
+                    profile.onboardings.map((onboarding, index) => {
                       return (
                         <NavItem>
                           <NavLink
                             disabled={isDebounced || loading}
                             className={classnames({
-                              active: active === onboarding.id
+                              active: active === index
                             })}
                             onClick={() => {
                               handleNavClick(onboarding)
@@ -147,10 +147,45 @@ const OnboardingUser = () => {
                         <div>
                           <TabContent activeTab={active}>
                             {
-                              profile.onboardings.map(onboarding => {
+                              profile.onboardings.map((onboarding, index) => {
                                 return (
-                                  <TabPane tabId={onboarding.id}>
-
+                                  <TabPane tabId={index}>
+                                    {!isEmpty(profile.onboarding)
+                                      ? profile.onboarding.d_form.access_type === 'user-lock'
+                                        ? <FormCreate
+                                          // reInit={(reInit, context) => {
+                                          //   this.reInitForm = reInit.bind(context)
+                                          // }}
+                                          isShowProtectedElements={isShowProtectedElements(profile.roles)}
+                                          fileLoader={true}
+                                          inputDisabled={true}
+                                          fill={true}
+                                          dForm={profile.onboarding.d_form}
+                                          onSaveButtonHidden={isDisabledSubmit()}
+                                          isStateConfig={false}
+                                        ></FormCreate>
+                                        : <FormCreate
+                                          // reInit={(reInit, context) => {
+                                          //   this.reInitForm = reInit.bind(context)
+                                          // }}
+                                          isShowProtectedElements={isShowProtectedElements(profile.roles)}
+                                          onSubmit={(formData) => submitOnboardingForm(formData)}
+                                          fileLoader={true}
+                                          inputDisabled={false}
+                                          fill={true}
+                                          dForm={profile.onboarding.d_form}
+                                          onSaveButtonHidden={true}
+                                          onChange={(data) => {
+                                            setDebounced(true);
+                                            debounceOnSave.current(data, profile.onboarding.d_form)
+                                          }}
+                                          updatedAtText={
+                                            loading
+                                              ? "Saving progress"
+                                              : `Progress saved: ${moment(profile.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`}
+                                          isStateConfig={false}
+                                        ></FormCreate>
+                                      : null}
                                   </TabPane>
                                 );
                               })
@@ -161,42 +196,7 @@ const OnboardingUser = () => {
                     }
 
 
-                    {!isEmpty(profile.onboarding)
-                      ? profile.onboarding.d_form.access_type === 'user-lock'
-                        ? <FormCreate
-                          // reInit={(reInit, context) => {
-                          //   this.reInitForm = reInit.bind(context)
-                          // }}
-                          isShowProtectedElements={isShowProtectedElements(profile.roles)}
-                          fileLoader={true}
-                          inputDisabled={true}
-                          fill={true}
-                          dForm={profile.onboarding.d_form}
-                          onSaveButtonHidden={isDisabledSubmit()}
-                          isStateConfig={false}
-                        ></FormCreate>
-                        : <FormCreate
-                          // reInit={(reInit, context) => {
-                          //   this.reInitForm = reInit.bind(context)
-                          // }}
-                          isShowProtectedElements={isShowProtectedElements(profile.roles)}
-                          onSubmit={(formData) => submitOnboardingForm(formData)}
-                          fileLoader={true}
-                          inputDisabled={false}
-                          fill={true}
-                          dForm={profile.onboarding.d_form}
-                          onSaveButtonHidden={true}
-                          onChange={(data) => {
-                            setDebounced(true);
-                            debounceOnSave.current(data, profile.onboarding.d_form)
-                          }}
-                          updatedAtText={
-                            loading
-                              ? "Saving progress"
-                              : `Progress saved: ${moment(profile.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`}
-                          isStateConfig={false}
-                        ></FormCreate>
-                      : null}
+
                     {/*{*/}
                     {/*  Object.keys(this.props.user).length ?*/}
 
