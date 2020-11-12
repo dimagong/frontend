@@ -27,7 +27,7 @@ const Error404 = lazy(() => import("components/misc/error/404"));
 const MasterSchema = lazy(() => import("components/misc/ComingSoon"));
 
 const routes = [
- 
+
   {
     path: loginPath,
     Component: Login,
@@ -43,42 +43,42 @@ const routes = [
     exact: true,
     redirect: homePath,
   },
-  {
-    path: notificationsPath,
-    Component: Notifications,
-    isPrivate: true,
-    exact: false,
-    redirect: loginPath,
-  },
-  {
-    path: dformsPath,
-    Component: DForm,
-    isPrivate: true,
-    exact: false,
-    redirect: loginPath,
-  },
-  {
-    path: workflowsPath,
-    Component: Workflow,
-    isPrivate: true,
-    exact: false,
-    redirect: loginPath,
-  },
-  {
-    path: userManagmentPath,
-    Component: UserManagment,
-    isPrivate: true,
-    exact: true,
-    redirect: loginPath,
-  },
-  {
-    path: invitationPath,
-    Component: Invitation,
-    isPrivate: true,
-    exact: true,
-    redirect: loginPath,
-    fullLayout: true
-  },
+  // {
+  //   path: notificationsPath,
+  //   Component: Notifications,
+  //   isPrivate: true,
+  //   exact: false,
+  //   redirect: loginPath,
+  // },
+  // {
+  //   path: dformsPath,
+  //   Component: DForm,
+  //   isPrivate: true,
+  //   exact: false,
+  //   redirect: loginPath,
+  // },
+  // {
+  //   path: workflowsPath,
+  //   Component: Workflow,
+  //   isPrivate: true,
+  //   exact: false,
+  //   redirect: loginPath,
+  // },
+  // {
+  //   path: userManagmentPath,
+  //   Component: UserManagment,
+  //   isPrivate: true,
+  //   exact: true,
+  //   redirect: loginPath,
+  // },
+  // {
+  //   path: invitationPath,
+  //   Component: Invitation,
+  //   isPrivate: true,
+  //   exact: true,
+  //   redirect: loginPath,
+  //   fullLayout: true
+  // },
   {
     path: homePath,
     Component: Home,
@@ -86,13 +86,13 @@ const routes = [
     redirect: loginPath,
     exact: true,
   },
-  {
-    path: masterSchemaPath,
-    Component: MasterSchema,
-    isPrivate: true,
-    redirect: loginPath,
-    exact: true,
-  },
+  // {
+  //   path: masterSchemaPath,
+  //   Component: MasterSchema,
+  //   isPrivate: true,
+  //   redirect: loginPath,
+  //   exact: true,
+  // },
   {
     path: onboardingProcessPath,
     Component: OnboardingUser,
