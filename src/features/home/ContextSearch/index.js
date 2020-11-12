@@ -97,7 +97,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     const templates = {
       dForms: <DFormCardTemplate oneColumn={oneColumn} onClick={(e, dForm) => {
                 if (e.ctrlKey) {
-                  dispatch(setPreview({type: "dForm", ...dForm}))
+                  dispatch(setPreview({type: "dForm", id: dForm.id}))
                 } else {
                   dispatch(setdForm(dForm));
                   handleContextChange("dForm")
@@ -105,7 +105,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
               }} />,
       managers: <UserCardTemplate oneColumn={oneColumn} onClick={(e, user) => {
                   if (e.ctrlKey) {
-                    dispatch(setPreview({type: "user", ...user}))
+                    dispatch(setPreview({type: "user", id: user.id}))
                   } else {
                     dispatch(setManager(user));
                     handleContextChange("User")
@@ -113,7 +113,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                 }} />,
       workFlows: <WorkFlowTemplate oneColumn={oneColumn} onClick={(e, workFlow) => {
                   if (e.ctrlKey) {
-                    dispatch(setPreview({type: "workFlow", ...workFlow}))
+                    dispatch(setPreview({type: "workFlow", id: workFlow.id}))
                   } else {
                     dispatch(setWorkflow(workFlow))
                     handleContextChange("WorkFlow")
@@ -121,7 +121,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                 }} />,
       notifications: <NotificationTemplate oneColumn={oneColumn} onClick={(e, notification) => {
                     if (e.ctrlKey) {
-                      dispatch(setPreview({type: "notification", ...notification}))
+                      dispatch(setPreview({type: "notification", id: notification.id}))
                     } else {
                       dispatch(setNotification(notification))
                       handleContextChange("Notification")
