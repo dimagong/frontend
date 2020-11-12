@@ -45,7 +45,7 @@ const dFormApi = {
       const result = await instance({
         url: changedFormStatusPath(dForm.id),
         method: "PUT",
-        status
+        data: {status}
       });
 
       return result.data.data;

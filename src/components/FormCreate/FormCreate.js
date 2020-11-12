@@ -80,8 +80,10 @@ class FormCreate extends React.Component {
   componentDidUpdate = (prevProps, prevState) => {
     if(!isEqual(prevProps, this.props)) {
       if (!isEqual(prevProps.dForm, this.props.dForm)) {
-        this.setState(this.initState(this.props));
-        this.groupedFiles();
+        // this.setState(this.initState(this.props));
+        // this.groupedFiles();
+        console.log('reinit', this.props);
+        this.reInit();
       }
     }
   };

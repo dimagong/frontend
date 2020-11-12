@@ -13,7 +13,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectManager, selectLoading} from "app/selectors";
 import {
   updatedFormRequest,
-  submitdFormRequest,
+  submitdFormDataRequest,
   changedFormStatusRequest,
   getUserByIdRequest
 } from "app/slices/appSlice";
@@ -30,12 +30,15 @@ const UserOnboardingDForm = () => {
   const dispatch = useDispatch();
   const updatedAtTextLoding = useRef(false);
 
-  const debounceOnSave = useRef(debounce((data) => {
+  const debounceOnSave = useRef(debounce((data, dForm, userId) => {
     updatedAtTextLoding.current = true;
-    dispatch(submitdFormRequest({dForm: manager.onboarding.d_form, data}))
+    console.log({dForm: dForm, data});
+    dispatch(submitdFormDataRequest({dForm: dForm, data}))
+    // todo for refresh (refactor)
+    dispatch(getUserByIdRequest({userId: userId}))
   }, 1500));
-  const refreshOnboarding = useRef(debounce(() => {
-    dispatch(getUserByIdRequest({userId: manager.id}))
+  const refreshOnboarding = useRef(debounce((userId) => {
+    dispatch(getUserByIdRequest({userId: userId}))
 
   }, 1500));
 
@@ -68,7 +71,7 @@ const UserOnboardingDForm = () => {
       : `Progress saved: ${moment(manager.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`
   };
   const handleRefresh = () => {
-    refreshOnboarding.current();
+    refreshOnboarding.current(manager.id);
     setRefreshClassName(`${initRefreshClassName} rotating`)
   };
   return (
@@ -102,7 +105,7 @@ const UserOnboardingDForm = () => {
             fill={true}
             onSaveButtonHidden={true}
             statusChanged={statusChanged}
-            onChange={(data) => debounceOnSave.current(data)}
+            onChange={(data) => debounceOnSave.current(data, manager.onboarding.d_form, manager.id)}
             dForm={manager.onboarding.d_form}
             isStateConfig={isStateConfig}
             updatedAtText={updatedAtText()}

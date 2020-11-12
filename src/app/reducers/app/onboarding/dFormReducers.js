@@ -81,11 +81,14 @@ const getdFormTriggersError = (state, {payload}) => {
 const submitdFormSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.manager.onboarding = {...state.user.manager.onboarding, d_form: payload};
-  state.user.managers = state.user.managers.map( manager => manager.id === state.user.manager.id ? {
-    ...state.user.manager,
-    onboarding : {...state.user.manager.onboarding, d_form: payload}
-  } : manager)
+  const result = state.user.profile.onboardings.some(onboarding => {
+    if(onboarding.d_form.id === payload.id) {
+      onboarding.d_form = payload;
+      return true;
+    }
+    return false;
+  });
+  state.user.profile.onboarding.d_form = payload;
 };
 
 const submitdFormRequest = (state, {payload}) => {
@@ -99,6 +102,14 @@ const submitdFormError = (state , {payload}) => {
 const submitdFormDataSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
+  const result = state.user.profile.onboardings.some(onboarding => {
+    if(onboarding.d_form.id === payload.id) {
+      onboarding.d_form = payload;
+      return true;
+    }
+    return false;
+  });
+  state.user.profile.onboarding.d_form = payload;
 };
 
 const submitdFormDataRequest = (state, {payload}) => {
