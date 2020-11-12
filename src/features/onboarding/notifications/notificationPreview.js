@@ -28,7 +28,7 @@ const initNotification = {name: '', description: "", content: "", groups: []};
 const NotificationsFormPreview = ({isCreate}) => {
   const preview = useSelector(selectPreview);
   const notifications = useSelector(selectNotifications)
-  const {name, description, content} = notification || {};
+
   const dispatch = useDispatch();
 
   const notification = notifications.filter(({id}) => id === preview.id)[0]
