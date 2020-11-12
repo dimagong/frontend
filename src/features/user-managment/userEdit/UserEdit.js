@@ -83,6 +83,8 @@ const UserEdit = (props, context) => {
 
   const isOnboarding = () => manager && modules.length && manager.modules.find((module) => module.name === 'Onboarding')
 
+  const isUserHasModules = manager && manager.modules && manager.modules.length > 0;
+
   const createViewOnboarding = () => {
     dispatch(setManagerOnboarding(initOnboarding));
     isCreate.current = true;
@@ -305,55 +307,57 @@ const UserEdit = (props, context) => {
                   </Col>
                 </Row>
               </Form>
-              <Row>
-                <Col>
-                  <Nav tabs className="mt-2">
-                    <NavItem>
-                      <NavLink
-                        className={classnames({
-                          active: activeTab === "1"
-                        })}
-                        onClick={() => {
-                          setActiveTab("1")
-                        }}
-                      >
-                        <User size={16}/>
-                        <span className="align-middle ml-50">Onboarding</span>
-                      </NavLink>
-                    </NavItem>
-                  </Nav>
-                  <TabContent activeTab={activeTab}>
-                    <TabPane tabId="1">
-                      <Row className="mx-0" col="12">
-                        <Col md="12" className="ml-0 pl-0">
-                          <div className="d-flex justify-content-end flex-wrap mt-2">
-                            <Button className="mt-1" color="primary" onClick={createViewOnboarding}>Create</Button>
-                          </div>
-                        </Col>
-                        <Col md="12" className="ml-0 pl-0">
-                          <DataTable
-                            data={manager.onboardings}
-                            columns={columnDefs}
-                            Clicked
-                            onRowClicked={handleRowClick}
-                            conditionalRowStyles={[
-                              {
-                                when: row => manager.onboarding ? row.id === manager.onboarding.id : false,
-                                style: row => ({
-                                  backgroundColor: '#007bff',
-                                  color: 'white'
-                                }),
-                              }
-                            ]}
-                            noHeader
-                          />
-                        </Col>
+              {isUserHasModules && (
+                <Row>
+                  <Col>
+                    <Nav tabs className="mt-2">
+                      <NavItem>
+                        <NavLink
+                          className={classnames({
+                            active: activeTab === "1"
+                          })}
+                          onClick={() => {
+                            setActiveTab("1")
+                          }}
+                        >
+                          <User size={16}/>
+                          <span className="align-middle ml-50">Onboarding</span>
+                        </NavLink>
+                      </NavItem>
+                    </Nav>
+                    <TabContent activeTab={activeTab}>
+                      <TabPane tabId="1">
+                        <Row className="mx-0" col="12">
+                          <Col md="12" className="ml-0 pl-0">
+                            <div className="d-flex justify-content-end flex-wrap mt-2">
+                              <Button className="mt-1" color="primary" onClick={createViewOnboarding}>Create</Button>
+                            </div>
+                          </Col>
+                          <Col md="12" className="ml-0 pl-0">
+                            <DataTable
+                              data={manager.onboardings}
+                              columns={columnDefs}
+                              Clicked
+                              onRowClicked={handleRowClick}
+                              conditionalRowStyles={[
+                                {
+                                  when: row => manager.onboarding ? row.id === manager.onboarding.id : false,
+                                  style: row => ({
+                                    backgroundColor: '#007bff',
+                                    color: 'white'
+                                  }),
+                                }
+                              ]}
+                              noHeader
+                            />
+                          </Col>
 
-                      </Row>
-                    </TabPane>
-                  </TabContent>
-                </Col>
-              </Row>
+                        </Row>
+                      </TabPane>
+                    </TabContent>
+                  </Col>
+                </Row>
+              )}
             </CardBody>
           </Card>
         </Col>
