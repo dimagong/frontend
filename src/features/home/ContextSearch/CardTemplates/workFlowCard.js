@@ -3,7 +3,7 @@ import {Card, CardBody, CardImg, CardText, CardTitle, Col} from 'reactstrap'
 import noneAvatar from 'assets/img/portrait/none-avatar.png'
 
 const WorkFlowTemplate = ({oneColumn, onClick, ...workFlow}) => (
-  <Col sm={oneColumn ? "8" : "6"}>
+  <Col sm={oneColumn ? "12" : "6"}>
     <Card
       key={workFlow.id}
       className="flex-row flex-wrap home__card cursor-pointer"

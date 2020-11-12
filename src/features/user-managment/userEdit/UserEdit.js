@@ -28,7 +28,7 @@ import {User, X, Check, Plus, Edit2, RefreshCw, EyeOfxf, Eye} from "react-feathe
 import {colourStyles} from "utility/select/selectSettigns";
 import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 // import InvitationCreate from '../invitation/InvitationCreate'
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectGroups,
   selectRoles,
@@ -56,7 +56,7 @@ import UserOnboardingForm from '../userOnboarding/UserOnboardingForm'
 import UserOnboardingDForm from '../userOnboarding/UserOnboardingDForm'
 
 const UserEdit = (props, context) => {
-  console.log(props, context);
+
   const manager = useSelector(selectManager);
   const [editField, setEditField] = useState(null);
   const [errors, setErrors] = useState({});
