@@ -287,13 +287,13 @@ class VerticalLayout extends PureComponent {
           onClick={this.handleAppOverlayClick}
         >
           <Navbar {...navbarProps} />
-
-          {!userService.isOnboarding(this.props.userProfile) && (
-            <div className="content-wrapper">
+          <div className="content-wrapper">
+            {!userService.isOnboarding(this.props.userProfile) && (
               <ContextSearch isShown={this.props.isContextSearchVisible} onContextSearchHide={this.props.onContextSearchHide} />
-              {this.props.children}
-            </div>
-          )}
+            )}
+            {this.props.children}
+          </div>
+
         </div>
 
         <Footer {...footerProps} />

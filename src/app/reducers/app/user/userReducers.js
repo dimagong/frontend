@@ -3,7 +3,10 @@ import {initUser} from 'app/slices/appSlice';
 const getProfileSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.profile = payload;
+  state.user.profile = {
+    ...payload,
+    onboarding: []
+  };
 };
 
 const getProfileRequest = (state, { payload }) => {
