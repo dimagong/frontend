@@ -4,44 +4,50 @@ import dFormReducers from "app/reducers/onboarding/dFormReducers";
 import workflowReducers from "app/reducers/onboarding/workflowReducers";
 
 
+export const onboardingInitialState = {
+  notification: {
+    notifications: [],
+    notification: null,
+  },
+  dForm: {
+    dForms: [],
+    dForm: null,
+    actions: [],
+    triggers: [],
+  },
+  workflow: {
+    workflows: [],
+    workflow: null,
+  },
+}
+
 export const onboardingSlice = createSlice({
   name: "onboarding",
-  initialState: {
-    notification: {
-      notifications: [],
-      notification: null,
-    },
-    dForm: {
-      dForms: [],
-      dForm: null,
-      actions: [],
-      triggers: [],
-    },
-    workflow: {
-      workflows: [],
-      workflow: null,
-    },
-  },
+  initialState: onboardingInitialState,
   reducers: {
     ...notificationsReducer,
     ...dFormReducers,
     ...workflowReducers,
+    resetOnboardingSlice: (state) => {
+      Object.assign(state, onboardingInitialState)
+    }
   },
 });
 
 export const {
-    setNotifications,
-    setNotification,
-    setNotificationGroups,
-    setdForms,
-    setdForm,
-    setdFormGroups,
-    setdFormActions,
-    setdFormTriggers,
-    setWorkflows,
-    setWorkflow,
-    setWorkflowGroups,
-    setWorkflowTriggers,
+  setNotifications,
+  setNotification,
+  setNotificationGroups,
+  setdForms,
+  setdForm,
+  setdFormGroups,
+  setdFormActions,
+  setdFormTriggers,
+  setWorkflows,
+  setWorkflow,
+  setWorkflowGroups,
+  setWorkflowTriggers,
+  resetOnboardingSlice,
 } = onboardingSlice.actions;
 
 export default onboardingSlice.reducer;

@@ -17,7 +17,7 @@ import "flatpickr/dist/themes/light.css";
 import { X } from "react-feather";
 import MultiSelect from "components/MultiSelect/multiSelect";
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
-import { selectWorkflow } from "app/selectors/onboardingSelectors";
+import {selectWorkflow, selectWorkflows} from "app/selectors/onboardingSelectors";
 import { useDispatch, useSelector } from "react-redux";
 import { setWorkflow, setWorkflowGroups } from "app/slices/onboardingSlice";
 import { createWorkflowRequest, updateWorkflowRequest, setPreview } from "app/slices/appSlice";
@@ -26,7 +26,11 @@ import {selectPreview} from 'app/selectors/layoutSelector'
 
 
 const WorkflowFormPreview = ({ workflowModalType }) => {
-  const workflow = useSelector(selectPreview);
+  const preview = useSelector(selectPreview);
+  const workflows = useSelector(selectWorkflows);
+
+  const workflow = workflows.filter(({id}) => id === preview.id)[0]
+
   const { name, description } = workflow || {};
   const dispatch = useDispatch();
 

@@ -1,9 +1,10 @@
 import React from "react";
-import {Route, Redirect} from "react-router-dom";
-import {ContextLayout} from "utility/context/Layout"
+import { Route, Redirect } from "react-router-dom";
+import { ContextLayout } from "utility/context/Layout"
 import {
-  loginPath,
-  userManagmentPath,
+  homePath,
+  loginPath, onboardingProcessPath,
+  userManagmentPath
 } from "constants/paths";
 
 const renderDefault = ({fullLayout, Component}) => props => {
@@ -15,11 +16,11 @@ const renderDefault = ({fullLayout, Component}) => props => {
           fullLayout === true
             ? context.fullLayout
             : context.state.activeLayout === "horizontal"
-            ? context.horizontalLayout
-            : context.VerticalLayout;
+              ? context.horizontalLayout
+              : context.VerticalLayout
         return (
           <LayoutTag {...props} permission={props.user}>
-            <Component {...props} />
+              <Component {...props} />
           </LayoutTag>
         )
       }}
@@ -28,18 +29,40 @@ const renderDefault = ({fullLayout, Component}) => props => {
 };
 
 
-export const PrivateRoute = ({Component, redirect, isAuth, fullLayout, ...rest}) => {
+export const PrivateRoute = ({ Component, redirect, isAuth, fullLayout, isOnboarding, ...rest }) => {
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (isAuth) return renderDefault({fullLayout, Component})(props);
+        if (isAuth) {
+          if (props.location.pathname === onboardingProcessPath && isOnboarding === false) {
+              return (
+                <Redirect
+                  to={{
+                    pathname: homePath,
+
+                  }}
+                />
+              )
+          } else if (props.location.pathname !== onboardingProcessPath && isOnboarding === true){
+            return (
+              <Redirect
+                to={{
+                  pathname: onboardingProcessPath,
+
+                }}
+              />
+            )
+          } else {
+            return renderDefault({fullLayout, Component})(props)
+          }
+        }
         else {
           return (
             <Redirect
               to={{
                 pathname: redirect,
-                state: {from: props.location},
+                state: { from: props.location },
               }}
             />
           );
@@ -49,38 +72,36 @@ export const PrivateRoute = ({Component, redirect, isAuth, fullLayout, ...rest})
   );
 };
 
-export const PublicRoute = ({Component, redirect, isAuth, fullLayout, ...rest}) => {
-  return (
-    <Route
-      {...rest}
-      render={(props) => {
-        if (!Component) {
-          return (
-            <Redirect
-              to={{
-                pathname: isAuth ? userManagmentPath : loginPath,
-                state: {from: props.location},
-              }}
-            />
-          );
-        }
-
-        if (isAuth && redirect) {
-
-          return (
-            <Redirect
-              to={{
-                pathname: redirect,
-                state: {from: props.location},
-              }}
-            />
-          )
-        } else {
-          return (
-            renderDefault({fullLayout, Component})(props)
-          );
-        }
-      }}
-    />
-  );
+export const PublicRoute = ({ Component, redirect, isAuth, fullLayout, ...rest }) => {
+        return (
+              <Route
+                {...rest}
+                render={(props) => {
+                  if (!Component){
+                    return (
+                      <Redirect
+                        to={{
+                          pathname: isAuth ? userManagmentPath : loginPath,
+                          state: { from: props.location },
+                        }}
+                      />
+                    );
+                  }
+                  if (isAuth && redirect)
+                    return (
+                      <Redirect
+                        to={{
+                          pathname: redirect,
+                          state: { from: props.location },
+                        }}
+                      />
+                    );
+                  else {
+                      return (
+                    renderDefault({fullLayout, Component})(props)
+                    );
+                  }
+                }}
+              />
+        );
 };

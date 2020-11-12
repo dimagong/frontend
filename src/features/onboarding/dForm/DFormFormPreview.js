@@ -15,10 +15,14 @@ import { setPreview } from "app/slices/appSlice";
 
 
 import {selectPreview} from 'app/selectors/layoutSelector'
+import {selectdForms} from '../../../app/selectors'
 
 const DFormFormPreview = () => {
-  const dForm = useSelector(selectPreview);
+  const preview = useSelector(selectPreview);
+  const dForms = useSelector(selectdForms)
   const dispatch = useDispatch();
+
+  const dForm = dForms.filter(({id}) => id === preview.id)[0]
 
   const closeDForm = () => {
     dispatch(setPreview(null))

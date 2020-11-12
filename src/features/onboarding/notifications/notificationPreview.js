@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import {X} from "react-feather";
 import {useDispatch, useSelector} from "react-redux";
-import {selectNotification} from "app/selectors/onboardingSelectors";
+import {selectNotification, selectNotifications} from "app/selectors/onboardingSelectors";
 import {setNotification, setNotificationGroups} from "app/slices/onboardingSlice";
 import {MultiSelect} from "components/MultiSelect/multiSelect";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
@@ -26,9 +26,12 @@ import {setPreview} from 'app/slices/appSlice'
 const initNotification = {name: '', description: "", content: "", groups: []};
 
 const NotificationsFormPreview = ({isCreate}) => {
-  const notification = useSelector(selectPreview);
+  const preview = useSelector(selectPreview);
+  const notifications = useSelector(selectNotifications)
   const {name, description, content} = notification || {};
   const dispatch = useDispatch();
+
+  const notification = notifications.filter(({id}) => id === preview.id)[0]
 
   const closeNotification = () => {
     dispatch(setPreview(null));

@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectGroups,
   selectUserDForms,
-  selectUserWorkfows, selectUserReviewers
+  selectUserWorkfows, selectUserReviewers, selectManagers
 } from "app/selectors";
 import {
   getUserOnboardingRequest
@@ -38,14 +38,16 @@ import {groupTypes} from '../../../constants/group'
 
 const UserEditPreview = (props, context) => {
 
-  const manager = useSelector(selectPreview);
+  const preview = useSelector(selectPreview);
   const groups = useSelector(selectGroups)
   const dispatch = useDispatch();
-
+  const managers = useSelector(selectManagers)
   const [activeTab, setActiveTab] = useState("1")
   const dForms = useSelector(selectUserDForms)
   const workflows = useSelector(selectUserWorkfows)
   const reviewers = useSelector(selectUserReviewers)
+
+  const manager = managers.filter(({ id }) => id === preview.id)[0]
 
   const initOnboarding = {
     d_form: null,

@@ -216,7 +216,7 @@ const createUserSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.user = initUser;
-  state.user.managers = [payload, ...this.state.user.managers];
+  state.user.managers = [payload, ...state.user.managers];
 };
 
 const createUserRequest = (state, { payload }) => {

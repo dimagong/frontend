@@ -1,8 +1,7 @@
-const getdFormsSuccess = (state) => ({
-  ...state,
-  isLoading: false,
-  isError: null,
-});
+const getdFormsSuccess = (state) => {
+  state.isLoading = false;
+  state.isError = null;
+};
 const getdFormsRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;

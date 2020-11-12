@@ -18,6 +18,8 @@ import { ChevronDown } from "react-feather"
 
 import { logout, showContextSearch } from 'app/slices/appSlice'
 
+import {userService} from 'services/user'
+
 import SearchInput from './SearchInput'
 
 const UserName = ({userProfile}) => {
@@ -35,8 +37,8 @@ const ThemeNavbar = props => {
 
   const logoutJWT = async () => {
     props.logout();
-    history.push("/login");
     props.logoutWithJWT();
+    history.push("/login");
   }
 
   const handleContextSearchToggle = () => {
@@ -93,13 +95,15 @@ const ThemeNavbar = props => {
                   /> */}
               </div>
 
-              <div className="search-input_container">
-                <SearchInput suggestions={managers.map(({ first_name, ...rest }) => ({ name: first_name, ...rest }))}/>
-                <ChevronDown
-                  className="autocomplete-expand-icon"
-                  onClick={handleContextSearchToggle}
-                />
-              </div>
+              {!userService.isOnboarding(userProfile) && (
+                <div className="search-input_container">
+                  <SearchInput suggestions={managers.map(({ first_name, ...rest }) => ({ name: first_name, ...rest }))}/>
+                  <ChevronDown
+                    className="autocomplete-expand-icon"
+                    onClick={handleContextSearchToggle}
+                  />
+                </div>
+              )}
 
 
 
