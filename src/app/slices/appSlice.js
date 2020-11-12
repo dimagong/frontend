@@ -15,32 +15,37 @@ export const initUser = {
   errors: {}
 };
 
+export const initialState = {
+  isAuth: !!token,
+  isLoading: false,
+  isError: null,
+  isContextSearchVisible: true,
+  context: null,
+  preview: null,
+  user: {
+    managers: [],
+    manager: null,
+    invitations: [],
+    invitation: null,
+    profile: null,
+    user: initUser,
+    groups: [],
+    roles: [],
+    modules: [],
+    workflows: [],
+    dForms: [],
+    reviewers: [],
+  },
+}
+
 export const appSlice = createSlice({
   name: "app",
-  initialState: {
-    isAuth: !!token,
-    isLoading: false,
-    isError: null,
-    isContextSearchVisible: true,
-    context: null,
-    preview: null,
-    user: {
-      managers: [],
-      manager: null,
-      invitations: [],
-      invitation: null,
-      profile: null,
-      user: initUser,
-      groups: [],
-      roles: [],
-      modules: [],
-      workflows: [],
-      dForms: [],
-      reviewers: [],
-    },
-  },
+  initialState,
   reducers: {
     ...appReducer,
+    resetAppSlice: (state) => {
+      Object.assign(state, initialState)
+    }
   },
 });
 
@@ -239,6 +244,7 @@ export const {
   setContext,
   setPreview,
 
+  resetAppSlice,
   logout,
 } = appSlice.actions;
 

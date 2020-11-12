@@ -11,9 +11,14 @@ import {
   verifyPasswordSuccess,
   verifyPasswordRequest,
   verifyPasswordError,
-  getProfileRequest
+  getProfileRequest,
+  logout,
+  resetAppSlice,
 } from "app/slices/appSlice";
 
+import {
+  resetOnboardingSlice,
+} from 'app/slices/onboardingSlice'
 
 
 function* login({ payload }) {
@@ -44,6 +49,10 @@ function* verifyPassword({ payload }) {
   }
 }
 
+function* onLogout() {
+  yield put(resetAppSlice())
+  yield put(resetOnboardingSlice());
+}
 
 
 export default function* () {
@@ -51,5 +60,6 @@ export default function* () {
     yield takeLatest(resetPasswordRequest.type, resetPassword),
     yield takeLatest(verifyPasswordRequest.type, verifyPassword),
     yield takeLatest(loginRequest.type, login),
+    yield takeLatest(logout.type, onLogout),
   ]);
 }
