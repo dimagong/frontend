@@ -141,7 +141,7 @@ const UserEdit = (props, context) => {
                             id="mobileVertical"
                             placeholder="Mobile"
                             value={manager.first_name}
-                            onChange={(event) => handleManager({name: event.target.value})}
+                            onChange={(event) => handleManager({first_name: event.target.value})}
                             {...{invalid: errors['name'] }}
                           />
                           <div className="form-control-position input-divider-right user-managment__edit_header_form_check"
