@@ -80,6 +80,7 @@ const SearchInput = ({ suggestions }) => {
 
   return (
     <AutoComplete
+      placeholder="Search"
       suggestions={suggestions}
       className="form-control"
       filterKey="name"

@@ -12,6 +12,8 @@ import {
   NavbarToggler,
   Collapse,
   Nav,
+  Card,
+  CardBody,
 } from 'reactstrap'
 
 const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChange }) => {
@@ -25,9 +27,11 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChan
   }
 
   return (
+    <Card>
+      <CardBody className="py-2">
     <Row className="context-search-nav">
       <Col>
-        <Navbar light expand="md">
+        <Navbar light expand="md" className="p-0">
           <UncontrolledDropdown>
             <DropdownToggle className="text-dark" nav caret={true}>
               {selectedNavItem.title}
@@ -46,23 +50,28 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChan
               ))}
             </DropdownMenu>
           </UncontrolledDropdown>
+          <div className="ml-auto">
+            <span className="font-weight-bold" style={{color: "#707070"}}>Contextual Search</span>
+          </div>
 
-          <NavbarToggler onClick={toggle} />
-          <Collapse isOpen={isCollapsedNavBarOpen} navbar>
-            <Nav className="ml-auto" navbar>
-              {selectedNavItem.actions.map((navItemAction) => (
-                <NavItem
-                  className="pr-2 cursor-pointer"
-                  onClick={() => {onContextChange(navItemAction.title)}}
-                >
-                  {navItemAction.title}
-                </NavItem>
-              ))}
-            </Nav>
-          </Collapse>
+          {/*<NavbarToggler onClick={toggle} />*/}
+          {/*<Collapse isOpen={isCollapsedNavBarOpen} navbar>*/}
+          {/*  <Nav className="ml-auto" navbar>*/}
+          {/*    {selectedNavItem.actions.map((navItemAction) => (*/}
+          {/*      <NavItem*/}
+          {/*        className="pr-2 cursor-pointer"*/}
+          {/*        onClick={() => {onContextChange(navItemAction.title)}}*/}
+          {/*      >*/}
+          {/*        {navItemAction.title}*/}
+          {/*      </NavItem>*/}
+          {/*    ))}*/}
+          {/*  </Nav>*/}
+          {/*</Collapse>*/}
         </Navbar>
       </Col>
     </Row>
+      </CardBody>
+    </Card>
   )
 }
 

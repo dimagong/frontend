@@ -8,14 +8,15 @@ import {
   PaginationItem,
   PaginationLink,
   Badge,
+  Button,
 } from "reactstrap";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectdForms,
+  selectdForms, selectGroups,
   selectManager,
   selectManagers,
-  selectNotifications,
+  selectNotifications
 } from "app/selectors";
 
 import {
@@ -34,7 +35,7 @@ import {
   setNotification,
 } from 'app/slices/onboardingSlice'
 
-import { X } from 'react-feather'
+import { X, ChevronLeft, ChevronRight, ChevronUp, Plus } from 'react-feather'
 
 import { NAV_OPTIONS } from './ContextSearchNav/constants'
 
@@ -58,6 +59,8 @@ import WorkflowFormPreview from 'features/onboarding/workflow/workflowPreview'
 import NotificationsFormPreview from 'features/onboarding/notifications/notificationPreview'
 
 import './styles.scss'
+import {getGroupName} from '../../../utility/select/prepareSelectData'
+import {groupTypes} from '../../../constants/group'
 
 const ContextSearch = ({isShown, onContextSearchHide}) => {
   const dispatch = useDispatch();
@@ -71,6 +74,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const isAuth = useSelector(selectAuth)
   const vuexyUser = useSelector(selectVuexyUser)
   const preview = useSelector(selectPreview)
+  const groups = useSelector(selectGroups)
 
   const [page, setPage] = useState(0);
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
@@ -80,9 +84,10 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     dispatch(setContext(context))
   }
   const width = useWindowSize()
+  let itemsPerPage = width <= 1400 ? 6 : 9;
 
-  const oneColumn =  preview;
-  const itemsPerPage = oneColumn ? 4 : 8;
+  itemsPerPage = preview ? 3 : itemsPerPage;
+  const oneColumn = !!preview
 
   // Slice data depending on page, decide which template to use and render it
   const renderContent = (data, type, page) => {
@@ -92,7 +97,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
       return data.slice(itemsPerPage * page, itemsPerPage * (page + 1))
     }
-
+    const getOrganizationName = (groupId, groupType) => {
+      return getGroupName(groups, groupId, groupTypes[groupType])
+    }
 
     const templates = {
       dForms: <DFormCardTemplate oneColumn={oneColumn} onClick={(e, dForm) => {
@@ -103,7 +110,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                   handleContextChange("dForm")
                 }
               }} />,
-      managers: <UserCardTemplate oneColumn={oneColumn} onClick={(e, user) => {
+      managers: <UserCardTemplate getOrganizationName={getOrganizationName} oneColumn={oneColumn} onClick={(e, user) => {
                   if (e.ctrlKey) {
                     dispatch(setPreview({type: "user", id: user.id}))
                   } else {
@@ -174,12 +181,12 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   return (
     <Row className="home mb-2 context-search">
       <Col sm="12" md="12" lg="12" xl="12">
-        <Card>
-          <CardBody className="pt-2">
+        <div>
+          <div className="">
             <Row className="app-user-list">
               <Col sm="12">
-                <Card>
-                  <CardBody>
+                <div>
+                  <div>
                     <div className="grid">
 
                       <ContextSearchNav
@@ -190,7 +197,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                       />
 
                       <Row>
-                        <Col className="home__card-wrapper" sm={preview ? oneColumn ? "5" : "8" : "12"}>
+                        <Col className={`home__card-wrapper ${preview ? "preview-visible" : ""}`} sm={preview ? oneColumn ? "5" : "8" : "12"}>
                           {data[selectedNavItem.id] && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
                         </Col>
                         {preview && (
@@ -204,25 +211,55 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                           </Col>
                         )}
                       </Row>
-                      <Pagination aria-label="Page navigation">
-                        {data[selectedNavItem.id] && getPagination().length > 1 && getPagination().map( (_, index) => (
-                          <PaginationItem key={index} active={page === index}>
-                            <PaginationLink onClick={() => {
-                              setPage(index)
-                            }}>
-                              {index + 1}
-                            </PaginationLink>
-                          </PaginationItem>
-                        ))}
-                      </Pagination>
-                      <X className="align-self-end cursor-pointer" size={15} onClick={onContextSearchHide}/>
+                      <div className="search-content-footer">
+                        <Button
+                          color="primary"
+                          className="add-icon p-0"
+                        >
+                          <Plus size={28}/>
+                        </Button>
+                        {data[selectedNavItem.id] && getPagination().length > 1 && (
+                          <div className="search-context-pagination">
+                            <Button
+                              className="pagination-arrow"
+                              onClick={() => {
+                                if (page !== 0) setPage(page - 1)
+                              }}
+                            >
+                              <ChevronLeft size={28} color="#707070"/>
+                            </Button>
+                            <Pagination aria-label="Page navigation">
+                              {getPagination().map( (_, index) => (
+                                <PaginationItem key={index} active={page === index}>
+                                  <PaginationLink onClick={() => {
+                                    setPage(index)
+                                  }}>
+                                    {index + 1}
+                                  </PaginationLink>
+                                </PaginationItem>
+                              ))}
+                            </Pagination>
+                            <Button
+                              className="pagination-arrow"
+                              onClick={() => {
+                                if (page !== getPagination().length -1) setPage(page + 1)
+                              }}
+                            >
+                              <ChevronRight size={28} color="#707070"/>
+                            </Button>
+                          </div>
+                        )}
+                        <Button color="primary" onClick={onContextSearchHide} className="hide-context-icon p-0">
+                          <ChevronUp size={28} />
+                        </Button>
+                      </div>
                     </div>
-                  </CardBody>
-                </Card>
+                  </div>
+                </div>
               </Col>
             </Row>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </Col>
       <ToastContainer />
     </Row>

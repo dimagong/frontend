@@ -1,0 +1,60 @@
+.user-card {
+  color: #707070!important;
+  padding: 25px 30px;
+  &-img {
+    height: 100px!important;
+    width: 100px!important;
+    border-radius: 0!important;
+    margin-right: 16px;
+  }
+  &-body {
+    display: flex;
+    justify-content: space-between;
+    &-right {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+      justify-content: space-between;
+      .organization-name {
+        padding-right: 5px;
+        &:last-child {
+          padding-right: 0;
+        }
+      }
+    }
+    &_last-seen {
+      font-size: 13px !important;
+    }
+  }
+}
+
+@media (max-width: 1600px) {
+  .user-card {
+    padding: 0;
+    &-img {
+      border-radius: inherit!important;
+    }
+    &-body {
+      &_title {
+        font-size: 20px;
+      }
+      &-left {
+        padding-top: 4px;
+      }
+      &-right {
+        padding-top: 6px;
+        padding-right: 9px;
+        .organization-name {
+
+          &:last-child {
+
+          }
+        }
+      }
+      &_last-seen.card-text{
+        font-size: 9px !important;
+      }
+    }
+  }
+
+}
