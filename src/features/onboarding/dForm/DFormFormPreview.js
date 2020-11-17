@@ -32,7 +32,7 @@ const DFormFormPreview = () => {
 
   return (
     <Row>
-      <Col sm="8" className={"pt-4"}>
+      <Col sm="8" >
         <Card className="dform border">
           <CardHeader>
             <CardTitle className="font-weight-bold">DForm</CardTitle>
