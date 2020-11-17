@@ -19,6 +19,13 @@
     font-size: inherit;
     line-height: normal;
   }
+  .contextual-search_wrapper {
+    .preview {
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+  }
+
   &__card-wrapper {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -26,6 +33,7 @@
     grid-row-gap: 25px;
     padding-top: 40px;
     padding-bottom: 40px;
+    grid-template-rows: repeat(3, max-content);
 
     &.preview-visible {
       grid-template-columns: 1fr;
@@ -119,6 +127,12 @@
 
 @media (max-width: 1800px) {
   .home {
+    .contextual-search_wrapper {
+      .preview {
+        padding-top: 24px;
+        padding-bottom: 32px;
+      }
+    }
     &__card-wrapper {
       grid-column-gap: 18px;
       grid-row-gap: 16px;

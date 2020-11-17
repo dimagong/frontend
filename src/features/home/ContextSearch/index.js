@@ -196,12 +196,12 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                         onContextChange={handleContextChange}
                       />
 
-                      <Row>
+                      <Row className={"contextual-search_wrapper"}>
                         <Col className={`home__card-wrapper ${preview ? "preview-visible" : ""}`} sm={preview ? oneColumn ? "5" : "8" : "12"}>
                           {data[selectedNavItem.id] && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
                         </Col>
                         {preview && (
-                          <Col sm={oneColumn ? "6" : "4"} className="preview">
+                          <Col sm={oneColumn ? "7" : "4"} className="preview">
                             {{
                               user: <UserEditPreview />,
                               dForm: <DFormFormPreview />,
