@@ -271,6 +271,76 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
+
+  async userAbilityAllow (data) {
+    try {
+      const result = await instance({
+        url: "api/ability/allow",
+        method: "POST",
+        data,
+      })
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  async userAbilityDisallow (data) {
+    try {
+      const result = await instance({
+        url: "api/ability/disallow",
+        method: "POST",
+        data,
+      })
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  async addUserOrganization ({userId, group_id, type}) {
+    try {
+      const result = await instance({
+        url: `user/${userId}/groups/add`,
+        method: "PUT",
+        data: {
+          group_id,
+          type,
+        }
+      })
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  async removeUserOrganization ({userId, group_id, type}) {
+    try {
+      const result = await instance({
+        url: `user/${userId}/groups/remove`,
+        method: "PUT",
+        data: {
+          group_id,
+          type,
+        }
+      })
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  async getUserOrganizations({payload}) {
+
+    try {
+      const result = await instance({
+        url: `api/organization/user/${payload}`,
+        method: "GET",
+      })
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
 };
 
 export default userApi;
