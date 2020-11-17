@@ -281,6 +281,21 @@ const setUserReviewers = (state, {payload}) => {
 
 const getUserManagment = (state) => {}
 
+const getUserOrganizationsRequest = (state) => {
+  state.isLoading = true;
+  state.isError = null;
+}
+
+const getUserOrganizationsSuccess = (state, {payload}) => {
+  state.user.organizations.corporation = payload.corporation;
+  state.user.organizations.member_firm = payload.member_firm;
+  state.user.organizations.network = payload.network;
+}
+
+const getUserOrganizationsError = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+}
 
 export default {
   getProfileSuccess,
@@ -327,6 +342,10 @@ export default {
   removeUserGroupsSuccess,
   removeUserGroupsRequest,
   removeUserGroupsError,
+
+  getUserOrganizationsRequest,
+  getUserOrganizationsSuccess,
+  getUserOrganizationsError,
 
   updateUserModulesSuccess,
   updateUserModulesRequest,

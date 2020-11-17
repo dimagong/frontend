@@ -20,6 +20,9 @@ import {
   getRolesRequest,
   getGroupsRequest,
   getUserManagment,
+  getUserOrganizationsRequest,
+  getUserOrganizationsSuccess,
+  getUserOrganizationsError,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
@@ -39,7 +42,7 @@ function* getProfile() {
 }
 
 function* getUsers() {
-  
+
     const responce = yield call(userApi.getUsers);
 
     yield put(getUsersSuccess(responce));
@@ -101,6 +104,17 @@ function* getUserManagmentData() {
 
 }
 
+function* getUserOrganizations(userId) {
+  try {
+    const response = yield call(userApi.getUserOrganizations, userId);
+
+    yield put(getUserOrganizationsSuccess(response))
+  } catch (err) {
+    yield put(getUserOrganizationsError(err))
+    throw err;
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getProfileRequest.type, getProfile),
@@ -109,5 +123,6 @@ export default function* () {
     yield takeLatest(updateUserRequest.type, updateUser),
     yield takeLatest(createUserRequest.type, createUser),
     yield takeEvery(getUserManagment.type, getUserManagmentData),
+    yield takeLatest(getUserOrganizationsRequest.type, getUserOrganizations)
   ]);
 }
