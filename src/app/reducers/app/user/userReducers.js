@@ -287,6 +287,7 @@ const getUserOrganizationsRequest = (state) => {
 }
 
 const getUserOrganizationsSuccess = (state, {payload}) => {
+  state.isLoading =  false;
   state.user.organizations.corporation = payload.corporation;
   state.user.organizations.member_firm = payload.member_firm;
   state.user.organizations.network = payload.network;
@@ -302,6 +303,8 @@ const addUserOrganizationRequest = (state) => {
   state.isError = null;
 }
 const addUserOrganizationSuccess = (state, {payload}) => {
+  state.isLoading = false;
+
   state.user.organizations[payload.type] = [...state.user.organizations[payload.type], payload]
 }
 const addUserOrganizationError = (state, {payload}) => {
@@ -309,6 +312,45 @@ const addUserOrganizationError = (state, {payload}) => {
   state.isError = payload;
 }
 
+const removeUserOrganizationRequest = (state) => {
+  state.isLoading = true;
+  state.isError = null;
+}
+const removeUserOrganizationSuccess = (state, {payload}) => {
+  state.user.organizations[payload.type] = state.user.organizations[payload.type].filter((org) => org.id !== payload.group_id)
+  state.isLoading = false;
+}
+const removeUserOrganizationError = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+}
+
+const allowUserAbilityRequest = (state) => {
+  state.isLoading = true;
+  state.isError = null;
+}
+const allowUserAbilitySuccess = (state, {payload}) => {
+  state.user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response
+  state.isLoading = false;
+}
+const allowUserAbilityError = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+}
+
+
+const disallowUserAbilityRequest = (state) => {
+  state.isLoading = true;
+  state.isError = null;
+}
+const disallowUserAbilitySuccess = (state, {payload}) => {
+  state.user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response
+  state.isLoading = false;
+}
+const disallowUserAbilityError = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+}
 
 
 export default {
@@ -364,6 +406,18 @@ export default {
   addUserOrganizationRequest,
   addUserOrganizationSuccess,
   addUserOrganizationError,
+
+  removeUserOrganizationRequest,
+  removeUserOrganizationSuccess,
+  removeUserOrganizationError,
+
+  allowUserAbilityRequest,
+  allowUserAbilitySuccess,
+  allowUserAbilityError,
+
+  disallowUserAbilityRequest,
+  disallowUserAbilitySuccess,
+  disallowUserAbilityError,
 
   updateUserModulesSuccess,
   updateUserModulesRequest,

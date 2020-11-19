@@ -31,6 +31,9 @@ import {
   getOrganizationsRequest,
   getUserOrganizationsRequest,
   addUserOrganizationRequest,
+  removeUserOrganizationRequest,
+  allowUserAbilityRequest,
+  disallowUserAbilityRequest,
 } from "app/slices/appSlice";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 
@@ -125,6 +128,9 @@ const UserEditPreview = (props, context) => {
   }
 
   const handleOrganizationDelete = () => {
+    const org = userOrganizations.filter((org) => org.name === deletionData.orgName)[0];
+    console.log(org)
+    dispatch(removeUserOrganizationRequest({userId: manager.id, group_id: org.id, type: org.type}))
     setIsDeleteModalOpen(false);
   }
 
@@ -133,6 +139,24 @@ const UserEditPreview = (props, context) => {
       orgName, name: managerName
     })
     setIsDeleteModalOpen(true)
+  }
+
+  const toggleAbility = (userOrg, ability, isChecked) => {
+    console.log("sdf")
+    const data = {
+      ability,
+      organization_type:
+      userOrg.type,
+      organization_id: userOrg.id,
+      user_id: manager.id
+    }
+
+    if (isChecked) {
+      dispatch(disallowUserAbilityRequest(data))
+    } else {
+      dispatch(allowUserAbilityRequest(data))
+    }
+
   }
 
   const modalContainer = useRef();
@@ -251,6 +275,8 @@ const UserEditPreview = (props, context) => {
                       return (
                         <>
                           <Checkbox
+                            onClick={()=>{toggleAbility(userOrganization, ability, userOrganization.abilities[ability])}}
+                            checked={userOrganization.abilities[ability]}
                             color="white"
                             icon={<X color={"#007BFF"}  size={16}/>}
                             label={ability}

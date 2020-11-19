@@ -26,6 +26,15 @@ import {
   addUserOrganizationRequest,
   addUserOrganizationSuccess,
   addUserOrganizationError,
+  removeUserOrganizationRequest,
+  removeUserOrganizationSuccess,
+  removeUserOrganizationError,
+  allowUserAbilityRequest,
+  allowUserAbilitySuccess,
+  allowUserAbilityError,
+  disallowUserAbilityRequest,
+  disallowUserAbilitySuccess,
+  disallowUserAbilityError,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
@@ -129,6 +138,41 @@ function* addUserOrganization({payload}) {
   }
 }
 
+function* removeUserOrganization({payload}) {
+  try {
+    const response = yield call(userApi.removeUserOrganization, payload)
+
+    yield put(removeUserOrganizationSuccess(payload))
+  } catch (err) {
+    yield put(removeUserOrganizationError(err))
+    throw err;
+  }
+}
+
+function* allowUserAbility({payload}) {
+  try {
+    const response = yield call(userApi.userAbilityAllow, payload)
+    console.log("res", response)
+    yield put(allowUserAbilitySuccess({response, data: payload}))
+  } catch (err) {
+    yield put(allowUserAbilityError(err))
+    throw err;
+  }
+}
+
+function* disallowUserAbility({payload}) {
+  try {
+    const response = yield call(userApi.userAbilityDisallow, payload)
+
+    console.log("res", response)
+
+    yield put(disallowUserAbilitySuccess({response, data: payload}))
+  } catch (err) {
+    yield put(disallowUserAbilityError(err))
+    throw err;
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getProfileRequest.type, getProfile),
@@ -138,6 +182,9 @@ export default function* () {
     yield takeLatest(createUserRequest.type, createUser),
     yield takeEvery(getUserManagment.type, getUserManagmentData),
     yield takeLatest(getUserOrganizationsRequest.type, getUserOrganizations),
-    yield takeLatest(addUserOrganizationRequest.type, addUserOrganization)
+    yield takeLatest(addUserOrganizationRequest.type, addUserOrganization),
+    yield takeLatest(removeUserOrganizationRequest.type, removeUserOrganization),
+    yield takeLatest(allowUserAbilityRequest.type, allowUserAbility),
+    yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility)
   ]);
 }
