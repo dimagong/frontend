@@ -6,6 +6,8 @@ import masterSchemaService from './services/masterSchema.service'
 import Select from "react-select"
 import {X} from "react-feather";
 import rfdc from "rfdc";
+import FieldEdit from "./FieldEdit";
+import GroupEdit from "./GroupEdit";
 
 const clone = rfdc();
 
@@ -244,6 +246,9 @@ function MasterSchema() {
               <X size={15} className="cursor-pointer mr-1" onClick={event => setCursor(null)}/>
             </CardHeader>
             <CardBody>
+              {
+                'children' in cursor ? <GroupEdit data={cursor}/> : <FieldEdit data={cursor}/>
+              }
             </CardBody>
           </Card>
         }
