@@ -287,7 +287,7 @@ class VerticalLayout extends PureComponent {
           onClick={this.handleAppOverlayClick}
         >
           <Navbar {...navbarProps} />
-          <div className="content-wrapper">
+          <div className="content-wrapper" style={{marginTop: "4rem"}}>
             {!userService.isOnboarding(this.props.userProfile) && (
               <ContextSearch isShown={this.props.isContextSearchVisible} onContextSearchHide={this.props.onContextSearchHide} />
             )}

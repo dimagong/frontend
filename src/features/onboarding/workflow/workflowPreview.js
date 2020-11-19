@@ -43,7 +43,7 @@ const WorkflowFormPreview = ({ workflowModalType }) => {
 
   return (
     <Row>
-      <Col sm="8" className={"pt-4"}>
+      <Col sm="8" >
         <Card className="border">
           <CardHeader>
             <CardTitle className="font-weight-bold">

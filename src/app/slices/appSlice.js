@@ -22,7 +22,17 @@ export const initialState = {
   isContextSearchVisible: true,
   context: null,
   preview: null,
+  organizations: {
+    corporation: [],
+    network: [],
+    member_firm: [],
+  },
   user: {
+    organizations: {
+      corporation: [],
+      network: [],
+      member_firm: [],
+    },
     managers: [],
     manager: null,
     invitations: [],
@@ -243,6 +253,18 @@ export const {
   hideContextSearch,
   setContext,
   setPreview,
+
+  getOrganizationsRequest,
+  getOrganizationsSuccess,
+  getOrganizationsError,
+
+  getUserOrganizationsRequest,
+  getUserOrganizationsSuccess,
+  getUserOrganizationsError,
+
+  addUserOrganizationRequest,
+  addUserOrganizationSuccess,
+  addUserOrganizationError,
 
   resetAppSlice,
   logout,

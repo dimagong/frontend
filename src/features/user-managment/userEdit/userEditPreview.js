@@ -1,55 +1,96 @@
 import React, {useState, useRef, useEffect} from 'react'
 import {
   Card,
-  CardHeader,
   CardTitle,
   CardBody,
-  Row,
-  Col,
-  Form,
-  Media,
-  Nav,
   NavItem,
-  NavLink,
-  TabPane,
-  TabContent,
-  Badge,
+  CardImg,
+  CardText,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
 } from "reactstrap"
-import DataTable from "react-data-table-component"
-import classnames from "classnames"
-import {User, X} from "react-feather"
+import {X} from "react-feather";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectGroups,
   selectUserDForms,
-  selectUserWorkfows, selectUserReviewers, selectManagers
+  selectUserWorkfows,
+  selectUserReviewers,
+  selectManagers
 } from "app/selectors";
 import {
-  getUserOnboardingRequest
+  getUserOnboardingRequest,
+  getOrganizationsRequest,
+  getUserOrganizationsRequest,
+  addUserOrganizationRequest,
 } from "app/slices/appSlice";
-import {columnDefs} from '../userOnboarding/gridSettings'
+import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 
-import {setPreview} from 'app/slices/appSlice'
+import {
+  selectOrganizations,
+  selectParentOrganizations,
+  selectChildOrganizations,
+} from 'app/selectors/groupSelector'
+
+import {setPreview, setManager} from 'app/slices/appSlice'
 import {selectPreview} from '../../../app/selectors/layoutSelector'
 import noneAvatar from '../../../assets/img/portrait/none-avatar.png'
 import {getGroupName} from '../../../utility/select/prepareSelectData'
 import {groupTypes} from '../../../constants/group'
 
+import './userEditPreview.scss'
+import {
+  selectUserOrganizations,
+  selectUserParentOrganizations,
+  selectUserChildOrganizations,
+} from 'app/selectors/userSelectors'
+
+import VPlogo from 'assets/img/logo/VPlogo.png'
+import RimbalLogo from 'assets/img/logo/Rimbal-Logo.png'
+import PreferenceLogo from 'assets/img/logo/preferenceLogo.png'
+
 const UserEditPreview = (props, context) => {
+  const [activeTab, setActiveTab] = useState("permissions")
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isAddOrganizationModalOpen, setIsAddOrganizationModalOpen] = useState(false)
+  const [deletionData, setDeletionData] = useState({name: "", orgName: ""})
+
 
   const preview = useSelector(selectPreview);
   const groups = useSelector(selectGroups)
   const dispatch = useDispatch();
   const managers = useSelector(selectManagers)
-  const [activeTab, setActiveTab] = useState("1")
   const dForms = useSelector(selectUserDForms)
   const workflows = useSelector(selectUserWorkfows)
   const reviewers = useSelector(selectUserReviewers)
-
+  const organizations = useSelector(selectOrganizations)
+  const userOrganizations = useSelector(selectUserOrganizations)
   const manager = managers.filter(({ id }) => id === preview.id)[0]
-
   const isUserHasModules = manager && manager.modules && manager.modules.length > 0;
+
+  const parentOrganizations = useSelector(selectParentOrganizations);
+  const childOrganizations = useSelector(selectChildOrganizations);
+  const userParentOrganizations = useSelector(selectUserParentOrganizations);
+  const userChildOrganizations = useSelector(selectUserChildOrganizations);
+
+  const test = (organizations, userOrganizations) => organizations.filter((org) => !userOrganizations.filter((userOrg) => userOrg.name === org.name).length);
+
+  const addableParentOrganizations = test(parentOrganizations, userParentOrganizations)
+  const addableChildOrganizations = test(childOrganizations, userChildOrganizations)
+
+  const logos = {
+    "ValidPath" : VPlogo,
+    "Rimbal" : RimbalLogo,
+    "Preference": PreferenceLogo,
+  }
 
   const initOnboarding = {
     d_form: null,
@@ -64,160 +105,232 @@ const UserEditPreview = (props, context) => {
     }
     // todo what is that
     dispatch(getUserOnboardingRequest({userId: manager.id}))
+    if(organizations.length === 0) {
+      dispatch(getOrganizationsRequest())
+    }
   }, [])
+
+  useEffect(() => {
+    dispatch(getUserOrganizationsRequest(manager.id))
+  }, [manager.id])
 
   const removeCard = () => {
     dispatch(setPreview(null))
-
   }
 
-  return (
-    <Row className="user-managment">
-      <Col sm="12" md="12" lg="12" xl="12" className={"pt-4"}>
-        <Card className={"card-action user-managment__edit border mb-1"}>
-          <CardHeader>
-            <CardTitle className="font-weight-bold">
-              Preview
-            </CardTitle>
-            <X size={15} onClick={removeCard}/>
-          </CardHeader>
-          <CardBody className="user-managment__edit_body">
+  const onOrganizationAdd = (org) => {
 
-            <Form onSubmit={() => {}}>
-              <Row className="mx-0" col="12">
-                <Col className="pl-0" sm="12">
-                  <Media className="d-sm-flex d-block">
-                    <Media left className="user-edit__user-avatar mt-md-1 mt-0 mr-1">
-                      <Media
-                        className="rounded"
-                        object
-                        src={
-                          manager.url
-                            ?  manager.url
-                            : noneAvatar
-                        }
-                        alt="Generic placeholder image"
-                        height="70"
-                        width="70"
-                      />
-                    </Media>
-                    <div style={{    alignSelf: "center", fontWeight: "bold", fontSize: "18px"}}>{manager.first_name}</div>
-                  </Media>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Media className="edit-clicked" body>
-                    <Row className="mt-1">
-                      <Col md="12" lg="12" className="mt-md-2 mt-lg-0 mb-sm-2">
-                        <div className="user-managment__edit_body_form__select-wrapper">
-                          <div className="user-managment__edit_body_form__select mb-1">
-                            <div className="font-weight-bold column-sizing">Roles</div>
-                            <div className="full-width">
-                              {manager.roles && manager.roles.length ? (
-                                manager.roles.map((role) =>
-                                  <Badge className="custom-badge" color="primary">
-                                    {role}
-                                  </Badge>
-                                )
-                              ) : (
-                                <span>No roles</span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="d-flex mb-1">
-                            <div className="font-weight-bold column-sizing" style={{padding: 5}}>Organisations</div>
-                            <div className="w-100">
-                              {manager.groups && manager.groups.length ? (
-                                manager.groups.map((group) =>
-                                  <Badge className="custom-badge" color="primary">
-                                    {getGroupName(groups, group.group_id, groupTypes[group.group_type])}
-                                  </Badge>
-                                )
-                              ) : (
-                                <span>No organizations</span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="user-managment__edit_body_form__select">
-                            <div className="font-weight-bold column-sizing">Modules</div>
-                            <div className="full-width">
-                              {manager.modules && manager.modules.length ? (
-                                manager.modules.map((module) =>
-                                  <Badge className="custom-badge" color="primary">
-                                    {module.name}
-                                  </Badge>
-                                )
-                              ) : (
-                                <span>No modules</span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Media>
-                </Col>
-              </Row>
-            </Form>
-            {isUserHasModules && (
-              <Row>
-                <Col>
-                  <Nav tabs>
+    dispatch(addUserOrganizationRequest({id: manager.id, orgId: org.id, type: org.type}))
+    setIsAddOrganizationModalOpen(false)
+  }
+
+  const handleOrganizationDelete = () => {
+    setIsDeleteModalOpen(false);
+  }
+
+  const onOrganizationDelete = (orgName, managerName) => {
+    setDeletionData({
+      orgName, name: managerName
+    })
+    setIsDeleteModalOpen(true)
+  }
+
+  const modalContainer = useRef();
+
+  const selectItems = ["permissions", "activity", "applications", "masterSchema"]
+
+  return (
+    <div className="user-managment user-edit-preview" ref={modalContainer}>
+      <Card className="tablet-hidden">
+        <CardImg variant="top" src={noneAvatar} />
+        <CardBody className="user-edit-preview_body">
+          <CardTitle className="title">
+            {`${manager.first_name} ${manager.last_name}`}
+          </CardTitle>
+          <CardText className="mb-0 email">
+            <span style={{paddingRight: "6px"}}>E:</span> {manager.email ? `${manager.email}` : "email is empty"}
+          </CardText>
+          <CardText className="mb-3">
+            M: {manager.number ? `${manager.number}` : "phone number is empty"}
+          </CardText>
+          <CardText>
+            {manager.roles && !!manager.roles.length && (manager.roles.map((role) => role + " ").join("")) + " at "}
+            {(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}
+          </CardText>
+        </CardBody>
+      </Card>
+      <Card
+        key={manager.email}
+        className="flex-row home__card cursor-pointer tablet-visible preview-card"
+      >
+        <CardImg variant="top" src={noneAvatar} className="user-card-img d-sm-flex d-none" />
+        <CardBody className="user-card-body">
+          <div className="user-card-body-left">
+            <div>
+              <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
+              <CardText style={{marginBottom: "5px"}}>
+                {manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}
+              </CardText>
+            </div>
+            <div>
+              <CardText>
+                <span style={{paddingRight: "6px"}}>E:</span> {manager.email ? `${manager.email}` : "email is empty"}
+              </CardText>
+              <CardText>
+                M: {manager.number ? `${manager.number}` : "phone number is empty"}
+              </CardText>
+            </div>
+          </div>
+          <div className="user-card-body-right">
+            <CardText>
+              {(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}
+            </CardText>
+            <UncontrolledDropdown>
+              <DropdownToggle nav caret={true}>
+                {activeTab}
+              </DropdownToggle>
+              <DropdownMenu left>
+                {selectItems.map((item) => (
+                  <DropdownItem
+                    onClick={() => {setActiveTab(item)}}
+                    disabled={item !== "permissions"}
+                  >
                     <NavItem>
-                      <NavLink
-                        className={classnames({
-                          active: activeTab === "1"
-                        })}
-                        onClick={() => {
-                          setActiveTab("1")
-                        }}
-                      >
-                        <User size={16}/>
-                        <span className="align-middle ml-50">Onboarding</span>
-                      </NavLink>
+                      {item}
                     </NavItem>
-                  </Nav>
-                  <TabContent activeTab={activeTab}>
-                    <TabPane tabId="1">
-                      <Row className="mx-0" col="12">
-                        <Col md="12" className="ml-0 pl-0">
-                          <DataTable
-                            data={manager.onboardings}
-                            columns={columnDefs}
-                            Clicked
-                            onRowClicked={() => {}}
-                            customStyles={{
-                              cells: {
-                                style: {
-                                  paddingLeft: '8px', // override the cell padding for data cells
-                                  paddingRight: '8px',
-                                },
-                              },
-                            }}
-                            conditionalRowStyles={[
-                              {
-                                when: row => manager.onboarding ? row.id === manager.onboarding.id : false,
-                                style: row => ({
-                                  wordBreak: 'normal',
-                                  backgroundColor: '#007bff',
-                                  color: 'white'
-                                }),
-                              }
-                            ]}
-                            noHeader
-                          />
-                        </Col>
-                      </Row>
-                    </TabPane>
-                  </TabContent>
-                </Col>
-              </Row>
-            )}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </div>
+        </CardBody>
+      </Card>
+      <div>
+        <Card className="tablet-hidden">
+          <CardBody>
+            <UncontrolledDropdown>
+              <DropdownToggle nav caret={true}>
+                {activeTab}
+              </DropdownToggle>
+              <DropdownMenu left>
+                {selectItems.map((item) => (
+                  <DropdownItem
+                    onClick={() => {setActiveTab(item)}}
+                    disabled={item !== "permissions"}
+                  >
+                    <NavItem>
+                      {item}
+                    </NavItem>
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </UncontrolledDropdown>
           </CardBody>
         </Card>
-      </Col>
-    </Row>
+        <div className="permissions-title">
+          <div style={{fontSize: "20px", marginTop: "15px", marginBottom: "15px"}} className={"text-center"}>
+            Organizations
+          </div>
+          <div style={{fontSize: "20px", marginTop: "15px", marginBottom: "15px"}} className={"text-center"}>
+            Roles
+          </div>
+        </div>
+        <div className="permissions">
+
+          {!!userOrganizations.length && userOrganizations.map((userOrganization) => {
+            return (
+              <>
+                <Card style={{ minHeight: "100px"}}>
+                  <CardBody className="organization-name" onClick={() => {onOrganizationDelete(userOrganization.name, manager.first_name + " " +manager.last_name)}}>
+                    {(logos[userOrganization.name] && <img src={logos[userOrganization.name]} alt=""/>) || userOrganization.name}
+                  </CardBody>
+                </Card>
+                <Card style={{ minHeight: "100px"}}>
+                  <CardBody className={`abilities ${userOrganization.name === "Rimbal" ? "hot-fix" : ""}`}>
+                    {Object.keys(userOrganization.abilities).map((ability) => {
+                      return (
+                        <>
+                          <Checkbox
+                            color="white"
+                            icon={<X color={"#007BFF"}  size={16}/>}
+                            label={ability}
+                          />
+                        </>
+                      )
+                    })}
+                  </CardBody>
+                </Card>
+              </>
+            )
+          })}
+          {!!(addableChildOrganizations.length || addableParentOrganizations.length) && (
+            <Card>
+              <CardBody className="add-organization" onClick={() => {setIsAddOrganizationModalOpen(true)}}>
+                <span>+</span>
+              </CardBody>
+            </Card>
+          )}
+        </div>
+      </div>
+
+      <Modal className={"organization-remove-modal"} isOpen={isDeleteModalOpen} fade={false} toggle={()=>{setIsDeleteModalOpen(false)}}>
+        <ModalBody>
+          <div>
+            <span style={{fontSize: "22px"}}>
+            Are you sure you want to remove {deletionData.name} from {deletionData.orgName} organization ?
+          </span>
+          </div>
+          <div className={"organization-remove-modal_action-buttons"}>
+            <Button className={"remove-button"} onClick={() => {handleOrganizationDelete()}}>
+              Remove
+            </Button>
+            <Button className={"cancel-button"} onClick={() => {setIsDeleteModalOpen(false)}}>
+              Cancel
+            </Button>
+          </div>
+        </ModalBody>
+      </Modal>
+
+      <Modal className="organization-add-modal" isOpen={isAddOrganizationModalOpen} fade={false} toggle={()=>{setIsAddOrganizationModalOpen(false)}}>
+        <ModalBody>
+          <h1 className="organization-add-modal_title">Organization select</h1>
+          <div className="organization-add-modal_all-addable-list">
+            {!!addableParentOrganizations.length && (
+              <div className="organizations-list parent-organizations">
+                <h6 className="organizations-list_title">
+                  Parent organizations
+                </h6>
+                <div className="organizations-list_list">
+                  {addableParentOrganizations.map((org) => (
+                    <Card className="organizations-list_organization">
+                      <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
+                        <img src={logos[org.name]} alt=""/>
+                      </CardBody>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+            {!!addableChildOrganizations.length && (
+              <div className="organizations-list child-organizations">
+                <h6 className="organizations-list_title">
+                  Child organizations
+                </h6>
+                <div className="organizations-list_list">
+                  {addableChildOrganizations.map((org) => (
+                    <Card className="organizations-list_organization">
+                      <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
+                        <img src={logos[org.name]} alt=""/>
+                      </CardBody>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </ModalBody>
+      </Modal>
+    </div>
   )
 }
 
