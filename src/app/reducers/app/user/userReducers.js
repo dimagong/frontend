@@ -297,6 +297,20 @@ const getUserOrganizationsError = (state, {payload}) => {
   state.isError = payload;
 }
 
+const addUserOrganizationRequest = (state) => {
+  state.isLoading = true;
+  state.isError = null;
+}
+const addUserOrganizationSuccess = (state, {payload}) => {
+  state.user.organizations[payload.type] = [...state.user.organizations[payload.type], payload]
+}
+const addUserOrganizationError = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+}
+
+
+
 export default {
   getProfileSuccess,
   getProfileRequest,
@@ -346,6 +360,10 @@ export default {
   getUserOrganizationsRequest,
   getUserOrganizationsSuccess,
   getUserOrganizationsError,
+
+  addUserOrganizationRequest,
+  addUserOrganizationSuccess,
+  addUserOrganizationError,
 
   updateUserModulesSuccess,
   updateUserModulesRequest,

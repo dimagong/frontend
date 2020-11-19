@@ -12,3 +12,5 @@ export const selectInvitation = state => state?.app?.user?.invitation
 export const selectProfile = state => state?.app?.user?.profile
 export const selectVuexyUser = state => state?.vuexy?.auth?.login?.values?.user
 export const selectUserOrganizations = state => [...state.app.user.organizations.corporation, ...state.app.user.organizations.network, ...state.app.user.organizations.member_firm]
+export const selectUserParentOrganizations = state => state.app.user.organizations.corporation
+export const selectUserChildOrganizations = state => state.app.user.organizations.network

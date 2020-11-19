@@ -262,6 +262,10 @@ export const {
   getUserOrganizationsSuccess,
   getUserOrganizationsError,
 
+  addUserOrganizationRequest,
+  addUserOrganizationSuccess,
+  addUserOrganizationError,
+
   resetAppSlice,
   logout,
 } = appSlice.actions;
