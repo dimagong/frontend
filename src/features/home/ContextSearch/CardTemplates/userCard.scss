@@ -1,22 +1,51 @@
 .user-card {
   color: #707070!important;
-  padding: 25px 30px;
+  * {
+    white-space: nowrap;
+  }
   &-img {
-    height: 100px!important;
-    width: 100px!important;
-    border-radius: 0!important;
+    height: 150px!important;
+    width: 150px!important;
     margin-right: 16px;
+    border-radius: 25px;
   }
   &-body {
     display: flex;
     justify-content: space-between;
+    min-width: 0;
+    &_title {
+      font-weight: bold!important;
+      color: #707070!important;
+      padding-top: 4px;
+      font-family: "Segoe UI"!important;
+    }
+    &-left {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-bottom: 20px;
+      .card-title {
+        font-size: 22px!important;
+      }
+      .card-title, .card-text {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
     &-right {
       display: flex;
       flex-direction: column;
       text-align: right;
       justify-content: space-between;
+      padding-right: 10px;
+      padding-top: 10px;
+      padding-bottom: 15px;
       .organization-name {
         padding-right: 5px;
+        font-size: 18px;
         &:last-child {
           padding-right: 0;
         }
@@ -33,19 +62,21 @@
     padding: 0;
     &-img {
       border-radius: inherit!important;
-      width: 117px;
-      height: 117px;
+      width: 136px!important;
+      height: 136px!important;
     }
     &-body {
-      &_title {
-        font-size: 20px;
-      }
       &-left {
         padding-top: 4px;
+        padding-bottom: 10px;
+        .card-title {
+          font-size: 20px!important;
+        }
       }
       &-right {
-        padding-top: 6px;
+        padding-top: 12px;
         padding-right: 9px;
+        padding-bottom: 6px;
         .organization-name {
 
           &:last-child {
@@ -58,5 +89,13 @@
       }
     }
   }
+}
 
+@media (max-width: 1280px) {
+  .user-card {
+    &-img {
+      width: 117px!important;
+      height: 117px!important;
+    }
+  }
 }

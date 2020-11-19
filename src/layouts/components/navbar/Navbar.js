@@ -16,7 +16,7 @@ import {selectManager, selectProfile, selectManagers} from "app/selectors"
 import { NavLink } from "react-router-dom"
 import { ChevronDown } from "react-feather"
 
-import { logout, showContextSearch } from 'app/slices/appSlice'
+import { logout, showContextSearch, hideContextSearch } from 'app/slices/appSlice'
 
 import {userService} from 'services/user'
 
@@ -42,15 +42,21 @@ const ThemeNavbar = props => {
   }
 
   const handleContextSearchToggle = () => {
-    dispatch(showContextSearch())
+    if(props.isContextSearchVisible) {
+      dispatch(hideContextSearch())
+    } else {
+      dispatch(showContextSearch())
+    }
+
   }
 
   return userProfile
   ? (
     <React.Fragment>
       <div className="content-overlay" />
-      <div className="header-navbar-shadow" />
+      {/*<div className="header-navbar-shadow" />*/}
       <Navbar
+        style={{width: "100%", margin: 0, borderRadius: 0 }}
         className={classnames(
           "header-navbar navbar-expand-lg navbar navbar-with-menu navbar-shadow",
           {
@@ -135,6 +141,7 @@ const mapStateToProps = state => {
     userProfile: selectProfile(state),
     manager: selectManager(state),
     managers: selectManagers(state),
+    isContextSearchVisible: state.app.isContextSearchVisible,
   }
 }
 

@@ -83,6 +83,11 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const handleContextChange = (context) => {
     dispatch(setContext(context))
   }
+  const closePreview = () => {
+    dispatch(setPreview(null))
+    setPage(0)
+  }
+
   const width = useWindowSize()
   let itemsPerPage = width <= 1400 ? 6 : 9;
 
@@ -148,6 +153,12 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     return Array.from(Array(Math.ceil(data[selectedNavItem.id].length/itemsPerPage)))
   }
 
+  const onPreviewExpand = () => {
+    const previewedManager = managers.filter(({ id }) => id === preview.id)[0]
+    dispatch(setManager(previewedManager))
+    handleContextChange("User")
+  }
+
   const data = {
     dForms,
     notifications,
@@ -199,6 +210,37 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                       <Row className={"contextual-search_wrapper"}>
                         <Col className={`home__card-wrapper ${preview ? "preview-visible" : ""}`} sm={preview ? oneColumn ? "5" : "8" : "12"}>
                           {data[selectedNavItem.id] && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
+                          {data[selectedNavItem.id] && getPagination().length > 1 && (
+                            <div className="search-context-pagination">
+                              <Button
+                                className="pagination-arrow"
+                                onClick={() => {
+                                  if (page !== 0) setPage(page - 1)
+                                }}
+                              >
+                                <ChevronLeft size={28} color="#707070"/>
+                              </Button>
+                              <Pagination aria-label="Page navigation">
+                                {getPagination().map( (_, index) => (
+                                  <PaginationItem key={index} active={page === index}>
+                                    <PaginationLink onClick={() => {
+                                      setPage(index)
+                                    }}>
+                                      {index + 1}
+                                    </PaginationLink>
+                                  </PaginationItem>
+                                ))}
+                              </Pagination>
+                              <Button
+                                className="pagination-arrow"
+                                onClick={() => {
+                                  if (page !== getPagination().length -1) setPage(page + 1)
+                                }}
+                              >
+                                <ChevronRight size={28} color="#707070"/>
+                              </Button>
+                            </div>
+                          )}
                         </Col>
                         {preview && (
                           <Col sm={oneColumn ? "7" : "4"} className="preview">
@@ -208,47 +250,27 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                               workFlow: <WorkflowFormPreview />,
                               notification: <NotificationsFormPreview />,
                             }[preview.type]}
+                            <div className="preview-action-buttons">
+                              <Button style={{borderRadius: "5rem"}} onClick={onPreviewExpand}>
+                                Expand
+                              </Button>
+                              <Button style={{borderRadius: "5rem", paddingLeft: "10px", paddingRight: "10px"}} onClick={closePreview}>
+                                <X size={20}/>
+                              </Button>
+                            </div>
+
                           </Col>
                         )}
                       </Row>
                       <div className="search-content-footer">
                         <Button
+                          onClick={() => {handleContextChange("Create user")}}
                           color="primary"
                           className="add-icon p-0"
                         >
                           <Plus size={28}/>
                         </Button>
-                        {data[selectedNavItem.id] && getPagination().length > 1 && (
-                          <div className="search-context-pagination">
-                            <Button
-                              className="pagination-arrow"
-                              onClick={() => {
-                                if (page !== 0) setPage(page - 1)
-                              }}
-                            >
-                              <ChevronLeft size={28} color="#707070"/>
-                            </Button>
-                            <Pagination aria-label="Page navigation">
-                              {getPagination().map( (_, index) => (
-                                <PaginationItem key={index} active={page === index}>
-                                  <PaginationLink onClick={() => {
-                                    setPage(index)
-                                  }}>
-                                    {index + 1}
-                                  </PaginationLink>
-                                </PaginationItem>
-                              ))}
-                            </Pagination>
-                            <Button
-                              className="pagination-arrow"
-                              onClick={() => {
-                                if (page !== getPagination().length -1) setPage(page + 1)
-                              }}
-                            >
-                              <ChevronRight size={28} color="#707070"/>
-                            </Button>
-                          </div>
-                        )}
+
                         <Button color="primary" onClick={onContextSearchHide} className="hide-context-icon p-0">
                           <ChevronUp size={28} />
                         </Button>

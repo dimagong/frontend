@@ -17,16 +17,20 @@ const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }
       <CardImg variant="top" src={noneAvatar} className="user-card-img d-sm-flex d-none" />
       <CardBody className="user-card-body">
         <div className="user-card-body-left">
-          <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
-          <CardText style={{marginBottom: "5px"}}>
-            {manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}
-          </CardText>
-          <CardText>
-            <span style={{paddingRight: "6px"}}>E:</span> {manager.email ? `${manager.email}` : "email is empty"}
-          </CardText>
-          <CardText>
-            M: {manager.number ? `${manager.number}` : "phone number is empty"}
-          </CardText>
+          <div>
+            <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
+            <CardText style={{marginBottom: "5px"}}>
+              {manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}
+            </CardText>
+          </div>
+          <div>
+            <CardText>
+              <span style={{paddingRight: "6px"}}>E:</span> {manager.email ? `${manager.email}` : "email is empty"}
+            </CardText>
+            <CardText>
+              M: {manager.number ? `${manager.number}` : "phone number is empty"}
+            </CardText>
+          </div>
         </div>
         <div className="user-card-body-right">
           <CardText>
