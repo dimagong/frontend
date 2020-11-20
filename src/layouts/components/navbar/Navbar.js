@@ -14,7 +14,7 @@ import { history } from "../../../history";
 
 import {selectManager, selectProfile, selectManagers} from "app/selectors"
 import { NavLink } from "react-router-dom"
-import { ChevronDown } from "react-feather"
+import { ChevronDown, ChevronUp } from "react-feather"
 
 import { logout, showContextSearch, hideContextSearch } from 'app/slices/appSlice'
 
@@ -104,10 +104,18 @@ const ThemeNavbar = props => {
               {!userService.isOnboarding(userProfile) && (
                 <div className="search-input_container">
                   <SearchInput suggestions={managers.map(({ first_name, ...rest }) => ({ name: first_name, ...rest }))}/>
-                  <ChevronDown
-                    className="autocomplete-expand-icon"
-                    onClick={handleContextSearchToggle}
-                  />
+                  {props.isContextSearchVisible ? (
+                    <ChevronUp
+                      className="autocomplete-expand-icon"
+                      onClick={handleContextSearchToggle}
+                    />
+                  ) : (
+                    <ChevronDown
+                      className="autocomplete-expand-icon"
+                      onClick={handleContextSearchToggle}
+                    />
+                  )}
+
                 </div>
               )}
 
@@ -119,11 +127,12 @@ const ThemeNavbar = props => {
                   <h2 className="text-primary brand-text mb-0">Vuexy</h2>
                 </div>
               ) : null} */}
+              {console.log("asdfasdf",userProfile)}
               <NavbarUser
                 handleAppOverlay={props.handleAppOverlay}
                 changeCurrentLang={props.changeCurrentLang}
                 userName={<UserName {...props} />}
-                email={userProfile.email}
+                email={`${userProfile.permissions.organization} ${userProfile.permissions.ability}`}
                 userImg={manager && manager.ulr? manager.ulr : noneAvatar}
                 loggedType={null}
                 logoutWithJWT={logoutJWT}

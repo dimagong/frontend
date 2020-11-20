@@ -137,9 +137,13 @@ class Autocomplete extends React.Component {
 
     // User Pressed ENTER
     else if (e.keyCode === 13 && showSuggestions) {
-      this.onSuggestionItemClick(this.filteredData[activeSuggestion].link, e)
+      // this.onSuggestionItemClick(this.filteredData[activeSuggestion].link, e)
+      if (this.filteredData[0]) {
+        this.props.onEnter(this.filteredData[0])
+      }
+
       this.setState({
-        userInput: this.filteredData[activeSuggestion][filterKey],
+        userInput: this.filteredData[0][filterKey],
         showSuggestions: false
       })
     } else {
@@ -397,6 +401,7 @@ class Autocomplete extends React.Component {
           }}
           onKeyDown={e => onKeyDown(e)}
           value={userInput}
+          style={{borderColor: "#707070"}}
           className={`vx-autocomplete-search ${
             this.props.className ? this.props.className : ""
           }`}

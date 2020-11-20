@@ -76,7 +76,10 @@ const SearchInput = ({ suggestions }) => {
     )
   }
 
-
+  const handleEnter = (suggestion) =>{
+    dispatch(setManager({first_name: suggestion.name, ...suggestion}))
+    dispatch(setContext("User"))
+  }
 
   return (
     <AutoComplete
@@ -84,6 +87,7 @@ const SearchInput = ({ suggestions }) => {
       suggestions={suggestions}
       className="form-control"
       filterKey="name"
+      onEnter={handleEnter}
       suggestionLimit={4}
       defaultSuggestions={false}
       customRender={SearchInputSuggestionsLayout}

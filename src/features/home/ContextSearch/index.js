@@ -105,7 +105,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     const getOrganizationName = (groupId, groupType) => {
       return getGroupName(groups, groupId, groupTypes[groupType])
     }
-
+    console.log(data)
     const templates = {
       dForms: <DFormCardTemplate oneColumn={oneColumn} onClick={(e, dForm) => {
                 if (e.ctrlKey) {
@@ -181,7 +181,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   }, [])
 
 
-  if(!isShown) return null;
+
 
 
 
@@ -190,7 +190,8 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   }
 
   return (
-    <Row className="home mb-2 context-search">
+    <>
+    <Row className={`home context-search ${isShown ? "slide-in" : "slide-out"}`}>
       <Col sm="12" md="12" lg="12" xl="12">
         <div>
           <div className="">
@@ -284,7 +285,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
         </div>
       </Col>
       <ToastContainer />
+
     </Row>
+    </>
   )
 }
 

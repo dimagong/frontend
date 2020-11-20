@@ -1,6 +1,6 @@
 export const NAV_OPTIONS = [
   {
-    title: "Users",
+    title: "User management",
     id: "managers",
     actions: [
       {
@@ -12,34 +12,39 @@ export const NAV_OPTIONS = [
     ]
   },
   {
-    title: "Notifications",
-    id: "notifications",
-    actions: [
-      {
-        title: "Create notification",
-      },
-    ]
-  },
-  {
-    title: "dForms",
-    id: "dForms",
-    actions: [
-      {
-        title: "Create dForm",
-      },
-    ]
-  },
-  {
-    title: "Workflows",
-    id: "workFlows",
-    actions: [
-      {
-        title: "Create workflow",
-      },
-    ]
-  },
-  {
-    title: "MasterSchema",
+    title: "Applications",
+    id: "applications",
     actions: [],
   },
+  // {
+  //   title: "Notifications",
+  //   id: "notifications",
+  //   actions: [
+  //     {
+  //       title: "Create notification",
+  //     },
+  //   ]
+  // },
+  // {
+  //   title: "dForms",
+  //   id: "dForms",
+  //   actions: [
+  //     {
+  //       title: "Create dForm",
+  //     },
+  //   ]
+  // },
+  // {
+  //   title: "Workflows",
+  //   id: "workFlows",
+  //   actions: [
+  //     {
+  //       title: "Create workflow",
+  //     },
+  //   ]
+  // },
+  // {
+  //   title: "MasterSchema",
+  //   actions: [],
+  // },
 ]

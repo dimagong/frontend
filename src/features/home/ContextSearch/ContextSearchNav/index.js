@@ -16,6 +16,8 @@ import {
   CardBody,
 } from 'reactstrap'
 
+import './styles.scss'
+
 const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChange }) => {
 
   const [isCollapsedNavBarOpen, setIsCollapsedNavBarOpen] = useState(false)
@@ -32,7 +34,7 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChan
     <Row className="context-search-nav">
       <Col>
         <Navbar light expand="md" className="p-0">
-          <UncontrolledDropdown>
+          <UncontrolledDropdown className="context-search-nav_dropdown">
             <DropdownToggle className="text-dark" nav caret={true}>
               {selectedNavItem.title}
             </DropdownToggle>
@@ -40,7 +42,7 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChan
               {navOptions.map((navEl) => (
                 <DropdownItem
                   //*TODO Temp disabled, remove after masterSchema implement
-                  disabled={navEl.title === "MasterSchema"}
+                  disabled={navEl.title === "Applications"}
                   onClick={() => handleNavItemSelect(navEl)}
                 >
                   <NavItem>

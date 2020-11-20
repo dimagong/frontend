@@ -1,4 +1,6 @@
 import React from 'react'
+import {useSelector} from 'react-redux'
+
 
 import {Card, CardBody, Col, Row} from 'reactstrap'
 
@@ -10,23 +12,26 @@ import DFormForm from 'features/onboarding/dForm/DFormForm'
 import WorkflowForm from 'features/onboarding/workflow/components/WorkflowForm'
 
 const Context = ({ selectedContext }) => {
-
+  const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible)
   if(!selectedContext) return null;
 
   return (
     <>
-      {{
-        "User": <UserEdit />,
-        "Create user": <UserCreate />,
-        "Invitations": <UserInvitations />,
-        "Create notification": <NotificationsForm isCreate={true} />,
-        "Notification": <NotificationsForm isCreate={false} />,
-        "Create dForm": <DFormForm isCreate={true} />,
-        "dForm": <DFormForm isCreate={false} />,
-        "Create workflow": <WorkflowForm workflowModalType="Create" />,
-        "WorkFlow": <WorkflowForm workflowModalType="Edit" />,
-        // "MasterSchema":
-      }[selectedContext]}
+      {!!isCSshown && (<div className="delimiter"/>)}
+      <div style={{paddingTop: isCSshown ? "30px" : "0"}}>
+        {{
+          "User": <UserEdit />,
+          "Create user": <UserCreate />,
+          "Invitations": <UserInvitations />,
+          "Create notification": <NotificationsForm isCreate={true} />,
+          "Notification": <NotificationsForm isCreate={false} />,
+          "Create dForm": <DFormForm isCreate={true} />,
+          "dForm": <DFormForm isCreate={false} />,
+          "Create workflow": <WorkflowForm workflowModalType="Create" />,
+          "WorkFlow": <WorkflowForm workflowModalType="Edit" />,
+          // "MasterSchema":
+        }[selectedContext]}
+      </div>
     </>
   )
 }

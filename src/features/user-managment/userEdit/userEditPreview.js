@@ -210,16 +210,16 @@ const UserEditPreview = (props, context) => {
               {(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}
             </CardText>
             <UncontrolledDropdown>
-              <DropdownToggle nav caret={true}>
+              <DropdownToggle nav caret={true} style={{fontSize: "18px"}}>
                 {activeTab}
               </DropdownToggle>
-              <DropdownMenu left>
+              <DropdownMenu right>
                 {selectItems.map((item) => (
                   <DropdownItem
                     onClick={() => {setActiveTab(item)}}
                     disabled={item !== "permissions"}
                   >
-                    <NavItem>
+                    <NavItem style={{fontSize: "16px"}}>
                       {item}
                     </NavItem>
                   </DropdownItem>
@@ -233,7 +233,7 @@ const UserEditPreview = (props, context) => {
         <Card className="tablet-hidden">
           <CardBody>
             <UncontrolledDropdown>
-              <DropdownToggle nav caret={true}>
+              <DropdownToggle style={{fontSize: "22px"}} nav caret={true}>
                 {activeTab}
               </DropdownToggle>
               <DropdownMenu left>
@@ -242,7 +242,7 @@ const UserEditPreview = (props, context) => {
                     onClick={() => {setActiveTab(item)}}
                     disabled={item !== "permissions"}
                   >
-                    <NavItem>
+                    <NavItem style={{fontSize: "18px"}}>
                       {item}
                     </NavItem>
                   </DropdownItem>
