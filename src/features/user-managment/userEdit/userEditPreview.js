@@ -278,6 +278,7 @@ const UserEditPreview = (props, context) => {
                             onClick={()=>{toggleAbility(userOrganization, ability, userOrganization.abilities[ability])}}
                             checked={userOrganization.abilities[ability]}
                             color="white"
+                            className={userOrganization.abilities[ability] ? "checked" : ""}
                             icon={<X color={"#007BFF"}  size={16}/>}
                             label={ability}
                           />

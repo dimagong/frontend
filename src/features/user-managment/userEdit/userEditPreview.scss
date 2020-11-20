@@ -57,6 +57,11 @@
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       column-gap: 10px;
+      .checked {
+        .vx-checkbox--label {
+          color: #007BFF;
+        }
+      }
     }
     .hot-fix {
       grid-template-columns: 1fr;
