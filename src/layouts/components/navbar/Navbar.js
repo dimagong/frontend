@@ -132,7 +132,7 @@ const ThemeNavbar = props => {
                 handleAppOverlay={props.handleAppOverlay}
                 changeCurrentLang={props.changeCurrentLang}
                 userName={<UserName {...props} />}
-                email={`${userProfile.permissions.organization} ${userProfile.permissions.ability}`}
+                email={`${userProfile.permissions.organization} ${userProfile.permissions.ability.replace("_", " ")}`}
                 userImg={manager && manager.ulr? manager.ulr : noneAvatar}
                 loggedType={null}
                 logoutWithJWT={logoutJWT}
