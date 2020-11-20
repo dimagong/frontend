@@ -138,12 +138,12 @@ class Autocomplete extends React.Component {
     // User Pressed ENTER
     else if (e.keyCode === 13 && showSuggestions) {
       // this.onSuggestionItemClick(this.filteredData[activeSuggestion].link, e)
-      if (this.filteredData[0]) {
-        this.props.onEnter(this.filteredData[0])
+      if (this.filteredData[activeSuggestion]) {
+        this.props.onEnter(this.filteredData[activeSuggestion])
       }
 
       this.setState({
-        userInput: this.filteredData[0][filterKey],
+        userInput: this.filteredData[activeSuggestion][filterKey],
         showSuggestions: false
       })
     } else {
@@ -205,6 +205,8 @@ class Autocomplete extends React.Component {
     } = this
 
     let filteredSuggestions = this.filterSuggestions(suggestionsGroup, groupSuggestionsLimit || suggestionLimit)
+
+    this.filteredData = filteredSuggestions
 
     if (!filteredSuggestions.length) {
       return (
