@@ -43,7 +43,9 @@ const ThemeNavbar = props => {
 
   const handleContextSearchToggle = () => {
     if(props.isContextSearchVisible) {
-      dispatch(hideContextSearch())
+      if (props.context) {
+        dispatch(hideContextSearch())
+      }
     } else {
       dispatch(showContextSearch())
     }
@@ -151,6 +153,7 @@ const mapStateToProps = state => {
     manager: selectManager(state),
     managers: selectManagers(state),
     isContextSearchVisible: state.app.isContextSearchVisible,
+    context: state.app.context,
   }
 }
 

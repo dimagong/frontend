@@ -16,7 +16,8 @@ import {
   selectdForms, selectGroups,
   selectManager,
   selectManagers,
-  selectNotifications
+  selectNotifications,
+  selectContext,
 } from "app/selectors";
 
 import {
@@ -75,6 +76,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const vuexyUser = useSelector(selectVuexyUser)
   const preview = useSelector(selectPreview)
   const groups = useSelector(selectGroups)
+  const context = useSelector(selectContext)
 
   const [page, setPage] = useState(0);
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
@@ -157,6 +159,12 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     const previewedManager = managers.filter(({ id }) => id === preview.id)[0]
     dispatch(setManager(previewedManager))
     handleContextChange("User")
+  }
+
+  const handleContextSearchHide = () => {
+    if (context) {
+      onContextSearchHide()
+    }
   }
 
   const data = {
@@ -272,7 +280,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                           <Plus size={28}/>
                         </Button>
 
-                        <Button color="primary" onClick={onContextSearchHide} className="hide-context-icon p-0">
+                        <Button color="primary" onClick={handleContextSearchHide} className="hide-context-icon p-0">
                           <ChevronUp size={28} />
                         </Button>
                       </div>
