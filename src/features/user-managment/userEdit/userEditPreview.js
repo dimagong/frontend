@@ -180,7 +180,7 @@ const UserEditPreview = (props, context) => {
           <CardText>
             {/*{manager.roles && !!manager.roles.length && (manager.roles.map((role) => role + " ").join("")) + " at "}*/}
             {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
-            {manager.permissions.ability.replace("_", " ") + " at " + manager.permissions.organization}
+            {manager?.permissions?.ability.replace("_", " ") + " at " + manager?.permissions?.organization}
           </CardText>
         </CardBody>
       </Card>

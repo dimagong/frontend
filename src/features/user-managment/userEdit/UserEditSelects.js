@@ -51,6 +51,7 @@ const UserEditSelects = () => {
   };
 
   const prepareRolesSelect = (roles) => {
+    if(!roles) return []
     return roles.map((role) => {
       return {
         value: role,

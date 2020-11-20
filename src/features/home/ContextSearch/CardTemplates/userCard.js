@@ -20,7 +20,7 @@ const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }
           <div>
             <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
             <CardText style={{marginBottom: "5px"}}>
-              {manager.permissions?.ability}
+              {manager?.permissions?.ability.replace("_", " ")}
             </CardText>
           </div>
           <div>
