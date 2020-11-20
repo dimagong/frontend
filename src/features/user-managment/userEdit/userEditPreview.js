@@ -59,6 +59,7 @@ import {
 import VPlogo from 'assets/img/logo/VPlogo.png'
 import RimbalLogo from 'assets/img/logo/Rimbal-Logo.png'
 import PreferenceLogo from 'assets/img/logo/preferenceLogo.png'
+import {capitalizeAll} from '../../../utility/common'
 
 const UserEditPreview = (props, context) => {
   const [activeTab, setActiveTab] = useState("permissions")
@@ -180,7 +181,7 @@ const UserEditPreview = (props, context) => {
           <CardText>
             {/*{manager.roles && !!manager.roles.length && (manager.roles.map((role) => role + " ").join("")) + " at "}*/}
             {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
-            {manager?.permissions?.ability.replace("_", " ") + " at " + manager?.permissions?.organization}
+            {capitalizeAll(manager?.permissions?.ability.replace("_", " ")) + " at " + manager?.permissions?.organization}
           </CardText>
         </CardBody>
       </Card>
@@ -195,7 +196,7 @@ const UserEditPreview = (props, context) => {
               <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
               <CardText style={{marginBottom: "5px"}}>
                 {/*{manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}*/}
-                {manager.permissions.ability.replace("_", " ")}
+                {capitalizeAll(manager?.permissions?.ability.replace("_", " "))}
               </CardText>
             </div>
             <div>
@@ -283,7 +284,7 @@ const UserEditPreview = (props, context) => {
                             color="white"
                             className={userOrganization.abilities[ability] ? "checked" : ""}
                             icon={<X color={"#007BFF"}  size={16}/>}
-                            label={ability}
+                            label={capitalizeAll(ability.replace("_", " "))}
                           />
                         </>
                       )

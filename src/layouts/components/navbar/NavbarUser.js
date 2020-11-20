@@ -49,12 +49,12 @@ const UserDropdown = props => {
 }
 
 const NavbarUser = ({userImg, userName, email, ...props}) => (
-      
+
       <ul className="nav navbar-nav navbar-nav-user float-right">
         <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
           <DropdownToggle tag="a" className="nav-link dropdown-user-link">
             <div className="user-nav d-sm-flex d-none">
-              <span className="user-name text-bold-600">
+              <span className="user-name">
                 {userName}
               </span>
               <span className="user-status">{email}</span>
@@ -73,5 +73,5 @@ const NavbarUser = ({userImg, userName, email, ...props}) => (
         </UncontrolledDropdown>
       </ul>
     )
-    
+
 export default NavbarUser

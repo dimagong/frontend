@@ -4,6 +4,7 @@ import noneAvatar from 'assets/img/portrait/none-avatar.png'
 
 import useWindowSize from 'hooks/windowWidth'
 import './userCard.scss'
+import {capitalizeAll} from '../../../../utility/common'
 
 const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }) => (
   <div>
@@ -20,7 +21,7 @@ const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }
           <div>
             <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
             <CardText style={{marginBottom: "5px"}}>
-              {manager?.permissions?.ability.replace("_", " ")}
+              {manager?.permissions?.ability && capitalizeAll(manager.permissions.ability.replace("_", " "))}
             </CardText>
           </div>
           <div>

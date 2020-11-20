@@ -21,6 +21,7 @@ import { logout, showContextSearch, hideContextSearch } from 'app/slices/appSlic
 import {userService} from 'services/user'
 
 import SearchInput from './SearchInput'
+import {capitalizeAll} from '../../../utility/common'
 
 const UserName = ({userProfile}) => {
   if (Object.keys(userProfile).length && userProfile.constructor === Object) {
@@ -129,12 +130,12 @@ const ThemeNavbar = props => {
                   <h2 className="text-primary brand-text mb-0">Vuexy</h2>
                 </div>
               ) : null} */}
-              {console.log("asdfasdf",userProfile)}
+
               <NavbarUser
                 handleAppOverlay={props.handleAppOverlay}
                 changeCurrentLang={props.changeCurrentLang}
                 userName={<UserName {...props} />}
-                email={`${userProfile.permissions.organization} ${userProfile.permissions.ability.replace("_", " ")}`}
+                email={`${userProfile.permissions.organization} ${capitalizeAll(userProfile.permissions.ability.replace("_", " "))}`}
                 userImg={manager && manager.ulr? manager.ulr : noneAvatar}
                 loggedType={null}
                 logoutWithJWT={logoutJWT}
