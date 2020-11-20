@@ -178,8 +178,9 @@ const UserEditPreview = (props, context) => {
             M: {manager.number ? `${manager.number}` : "phone number is empty"}
           </CardText>
           <CardText>
-            {manager.roles && !!manager.roles.length && (manager.roles.map((role) => role + " ").join("")) + " at "}
-            {(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}
+            {/*{manager.roles && !!manager.roles.length && (manager.roles.map((role) => role + " ").join("")) + " at "}*/}
+            {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
+            {manager.permissions.ability + " at " + manager.permissions.organization}
           </CardText>
         </CardBody>
       </Card>
@@ -193,7 +194,8 @@ const UserEditPreview = (props, context) => {
             <div>
               <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
               <CardText style={{marginBottom: "5px"}}>
-                {manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}
+                {/*{manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}*/}
+                {manager.permissions.ability}
               </CardText>
             </div>
             <div>
@@ -207,7 +209,8 @@ const UserEditPreview = (props, context) => {
           </div>
           <div className="user-card-body-right">
             <CardText>
-              {(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}
+              {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
+              {manager.permissions.organization}
             </CardText>
             <UncontrolledDropdown>
               <DropdownToggle nav caret={true} style={{fontSize: "18px"}}>
