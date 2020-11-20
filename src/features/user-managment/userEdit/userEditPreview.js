@@ -255,10 +255,10 @@ const UserEditPreview = (props, context) => {
           </CardBody>
         </Card>
         <div className="permissions-title">
-          <div style={{fontSize: "20px", marginTop: "15px", marginBottom: "15px"}} className={"text-center"}>
+          <div style={{fontSize: "20px", marginTop: "25px", marginBottom: "20px"}} className={"text-center"}>
             Organizations
           </div>
-          <div style={{fontSize: "20px", marginTop: "15px", marginBottom: "15px"}} className={"text-center"}>
+          <div style={{fontSize: "20px", marginTop: "25px", marginBottom: "20px"}} className={"text-center"}>
             Roles
           </div>
         </div>
