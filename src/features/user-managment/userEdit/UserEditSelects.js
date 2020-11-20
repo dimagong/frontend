@@ -41,6 +41,7 @@ const UserEditSelects = () => {
 
 
   const prepareModulesSelect = (modules) => {
+    if(!modules) return []
     return modules.map((value) => {
       return {
         value: value,
@@ -143,6 +144,7 @@ const UserEditSelects = () => {
   };
 
   const prepareSelectGroups = selectedGroups => {
+    if (!selectedGroups) return []
     return selectedGroups.map(group => {
       return {
         value: {

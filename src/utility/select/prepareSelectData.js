@@ -43,6 +43,7 @@ export const prepareSelectOptions = (groups) => {
 };
 
 export const prepareSelectGroups = (groups) => {
+  if(!groups) return []
   return groups.map((group) => {
     return {
       value: {
