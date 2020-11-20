@@ -38,7 +38,7 @@ const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }
             {manager.permissions?.organization}
           </CardText>
           <CardText className="user-card-body_last-seen">
-            Last seen 3 days ago
+            {/*Last seen 3 days ago*/}
           </CardText>
         </div>
       </CardBody>
