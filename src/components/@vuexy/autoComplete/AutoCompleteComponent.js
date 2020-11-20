@@ -56,16 +56,36 @@ class Autocomplete extends React.Component {
   // Input Change
   onChange = e => {
     const userInput = e.currentTarget.value
+
     this.setState({
-      activeSuggestion: 0,
-      showSuggestions: true,
-      userInput
+      userInput: userInput || "",
     })
-    if (e.target.value < 1) {
+
+    if (this.state.showSuggestions === true && !userInput) {
       this.setState({
-        showSuggestions: false
+        showSuggestions: false,
       })
     }
+
+    if (this.state.showSuggestions === true && userInput && userInput.length < 3) {
+      this.setState({
+        showSuggestions: false,
+      })
+    }
+
+    if(this.state.showSuggestions === false && userInput && userInput.length > 2) {
+      this.setState({
+        activeSuggestion: 0,
+        showSuggestions: true,
+        userInput: userInput || ""
+      })
+    }
+    //
+    // if (e.target.value && e.target.value.length < 3) {
+    //   this.setState({
+    //     showSuggestions: false
+    //   })
+    // }
   }
 
   // Input Click Event
@@ -270,12 +290,19 @@ class Autocomplete extends React.Component {
       prevState.showSuggestions === false &&
       this.state.focused
     ) {
-    this.setState({ showSuggestions: true })
+      this.setState({ showSuggestions: true })
+    }
+
+    if ( this.state.userInput && this.state.userInput.length > 2 &&
+      prevState.showSuggestions === false &&
+      this.state.focused
+    ) {
+      this.setState({ showSuggestions: true })
     }
 
     // Clear Input
     if (clearInput === false && this.state.userInput.length) {
-    this.setState({
+      this.setState({
         userInput: ""
       })
     }
@@ -290,7 +317,7 @@ class Autocomplete extends React.Component {
       prevState.focused === false &&
       this.state.focused === true
     ) {
-    this.setState({ showSuggestions: true })
+      this.setState({ showSuggestions: true })
     }
   }
 

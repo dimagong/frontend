@@ -85,7 +85,7 @@ const SearchInput = ({ suggestions }) => {
       className="form-control"
       filterKey="name"
       suggestionLimit={4}
-      defaultSuggestions={true}
+      defaultSuggestions={false}
       customRender={SearchInputSuggestionsLayout}
     />
   )
