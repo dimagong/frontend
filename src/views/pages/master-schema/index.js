@@ -8,6 +8,7 @@ import {X} from "react-feather";
 import rfdc from "rfdc";
 import FieldEdit from "./FieldEdit";
 import GroupEdit from "./GroupEdit";
+import './index.scss';
 
 const clone = rfdc();
 
@@ -111,29 +112,25 @@ function MasterSchema() {
     }
   };
 
-  const parseToFormatTreebeard = () => {
+  const recursiveMap = (node) => {
 
-    const recursiveMap = (node) => {
-      node.children = [];
-      node.children = node.fields;
+    if(!node) return null;
 
-      if (node.groups.length) {
-        for (let group of node.groups) {
-          group = recursiveMap(group);
-        }
-        node.children = node.children.concat(node.groups);
+    node.children = [];
+    node.children = node.fields;
+    node.toggled = true;
+    if (node.groups.length) {
+      for (let group of node.groups) {
+        group = recursiveMap(group);
       }
+      node.children = node.children.concat(node.groups);
+    }
 
-      return node;
-    };
-
+    return node;
+  };
+  const parseToFormatTreebeard = () => {
     const root = recursiveMap(clone(masterSchema.root));
-    console.log(root);
-
-    masterSchema.children = [];
-    masterSchema.children.push(root);
-
-    setMasterSchemaTreebeard(masterSchema);
+    setMasterSchemaTreebeard(root);
   };
 
   const createMasterSchema = async () => {
@@ -247,7 +244,20 @@ function MasterSchema() {
             </CardHeader>
             <CardBody>
               {
-                'children' in cursor ? <GroupEdit data={cursor}/> : <FieldEdit data={cursor}/>
+                'children' in cursor ?
+                  <GroupEdit data={cursor} onChange={(group) => {
+                    setCursor(recursiveMap(group));
+                    getCurrentMasterSchema();
+                  }} onNewField={(newField) => {
+                    getCurrentMasterSchema();
+                  }} onNewGroup={(newGroup) => {
+                    getCurrentMasterSchema();
+                  }}/>
+                  :
+                  <FieldEdit data={cursor} onChange={(field) => {
+                    setCursor(field);
+                    getCurrentMasterSchema();
+                  }}/>
               }
             </CardBody>
           </Card>
@@ -259,3 +269,4 @@ function MasterSchema() {
 
 
 export default MasterSchema;
+

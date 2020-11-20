@@ -1,0 +1,4 @@
+// fix for card arrow toggle
+.card-header:after {
+  content: none!important;
+}
