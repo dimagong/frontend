@@ -60,8 +60,10 @@
       .checked {
         .vx-checkbox--label {
           color: #007BFF;
-          white-space: nowrap;
         }
+      }
+      .vx-checkbox--label {
+        white-space: nowrap;
       }
     }
     .hot-fix {

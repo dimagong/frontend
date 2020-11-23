@@ -3,5 +3,5 @@ export function capitalizeFirstLetter(string) {
 }
 
 export function capitalizeAll(string) {
-  return string.split(" ").map((word) => capitalizeFirstLetter(word)).join(" ")
+  return string?.split(" ").map((word) => capitalizeFirstLetter(word)).join(" ")
 }

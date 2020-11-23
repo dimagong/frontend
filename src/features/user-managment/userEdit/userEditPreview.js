@@ -211,7 +211,7 @@ const UserEditPreview = (props, context) => {
           <div className="user-card-body-right">
             <CardText>
               {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
-              {manager.permissions.organization}
+              {manager?.permissions?.organization}
             </CardText>
             <UncontrolledDropdown>
               <DropdownToggle nav caret={true} style={{fontSize: "18px"}}>
