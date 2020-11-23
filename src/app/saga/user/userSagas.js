@@ -117,60 +117,56 @@ function* getUserManagmentData() {
 }
 
 function* getUserOrganizations(userId) {
-  try {
-    const response = yield call(userApi.getUserOrganizations, userId);
+  const response = yield call(userApi.getUserOrganizations, userId);
 
+  if (response?.message) {
+    yield put(getUserOrganizationsError(response.message))
+  } else {
     yield put(getUserOrganizationsSuccess(response))
-  } catch (err) {
-    yield put(getUserOrganizationsError(err))
-    throw err;
   }
 }
 
 function* addUserOrganization({payload}) {
-  try {
-    const response = yield call(userApi.addUserOrganization, payload)
+  const response = yield call(userApi.addUserOrganization, payload)
 
+  if (response?.message) {
+    yield put(addUserOrganizationError(response.message))
+  } else {
     yield put(addUserOrganizationSuccess(response))
-  } catch (err) {
-    yield put(addUserOrganizationError(err))
-    throw err;
   }
 }
 
 function* removeUserOrganization({payload}) {
-  try {
-    const response = yield call(userApi.removeUserOrganization, payload)
+  const response = yield call(userApi.removeUserOrganization, payload)
 
+  if (response?.message) {
+    yield put(removeUserOrganizationError(response.message))
+  } else {
     yield put(removeUserOrganizationSuccess(payload))
-  } catch (err) {
-    yield put(removeUserOrganizationError(err))
-    throw err;
   }
 }
 
 function* allowUserAbility({payload}) {
-  try {
-    const response = yield call(userApi.userAbilityAllow, payload)
-    console.log("res", response)
+  const response = yield call(userApi.userAbilityAllow, payload)
+
+  if (response?.message) {
+    yield put(allowUserAbilityError(response.message))
+  } else {
     yield put(allowUserAbilitySuccess({response, data: payload}))
-  } catch (err) {
-    yield put(allowUserAbilityError(err))
-    throw err;
   }
 }
 
 function* disallowUserAbility({payload}) {
-  try {
-    const response = yield call(userApi.userAbilityDisallow, payload)
+  const response = yield call(userApi.userAbilityDisallow, payload)
 
-    console.log("res", response)
-
+  if (response?.message) {
+    yield put(disallowUserAbilityError(response.message))
+  } else {
     yield put(disallowUserAbilitySuccess({response, data: payload}))
-  } catch (err) {
-    yield put(disallowUserAbilityError(err))
-    throw err;
   }
+
+
+
 }
 
 export default function* () {

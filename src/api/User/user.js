@@ -282,7 +282,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      return err;
     }
   },
 
@@ -314,7 +314,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      return err;
     }
   },
 
@@ -329,8 +329,9 @@ const userApi = {
         }
       })
     } catch (err) {
-      throw err;
+      return err;
     }
+
   },
 
   async getUserOrganizations({payload}) {
@@ -343,7 +344,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      return err;
     }
   },
 };
