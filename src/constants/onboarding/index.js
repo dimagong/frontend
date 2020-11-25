@@ -1,6 +1,7 @@
 export const notificationPath = "/api/notification";
 
-export const dFormPath = "/api/dform-template";
+export const dFormTemplatePath = "/api/dform-template";
+export const dFormPath = "/api/dform";
 export const dFormActionsPath = "/api/dform/actions";
 export const dFormTriggersPath = "/api/dform/triggers";
 export const submitdFormDataPath = id => `/api/dform/${id}/submit-data`;

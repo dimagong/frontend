@@ -252,6 +252,8 @@ export function getSpecificType(property) {
     (property.format === 'data-url' || property.format === 'file')
   ) {
     return Constants.FIELD_TYPE_FILE;
+  } else if (property.type === Constants.RJSF_FIELD_TYPE_REFERENCE) {
+    return Constants.FIELD_TYPE_REFERENCE;
   } else if (property.type === Constants.RJSF_FIELD_TYPE_STRING) {
     return Constants.FIELD_TYPE_TEXT;
   } else if (property.type === Constants.RJSF_FIELD_TYPE_NUMBER) {

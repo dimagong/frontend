@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectdForms, selectdForm} from "app/selectors/onboardingSelectors";
 import FormCreate from "components/FormCreate/FormCreate"
 import { setdForm, setdFormGroups } from "app/slices/onboardingSlice";
-import {createdFormRequest, setContext, updatedFormRequest} from "app/slices/appSlice";
+import {createDFormTemplateRequest, setContext, updateDFormTemplateRequest} from "app/slices/appSlice";
 import {initDForm} from './settings'
 
 const DFormForm = ({isCreate}) => {
@@ -29,9 +29,9 @@ const DFormForm = ({isCreate}) => {
 
   const submitDForm = (dForm, {name, description, protected_properties}) => {
     if(isCreate){
-      dispatch(createdFormRequest({...dForm, name, description, protected_properties}))
+      dispatch(createDFormTemplateRequest({...dForm, name, description, protected_properties}))
     }else{
-      dispatch(updatedFormRequest({...dForm, name, description, protected_properties}))
+      dispatch(updateDFormTemplateRequest({...dForm, name, description, protected_properties}))
     }
   }
 

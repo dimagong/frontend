@@ -1,11 +1,12 @@
 import instance from "api";
-import { dFormPath,dFormActionsPath,dFormTriggersPath, submitdFormDataPath, changedFormStatusPath, submitdFormPath } from "constants/onboarding";
+import { dFormActionsPath,dFormTriggersPath, submitdFormDataPath, changedFormStatusPath, submitdFormPath } from "constants/onboarding";
+import {dFormPath, dFormTemplatePath} from "../../constants/onboarding";
 
 const dFormApi = {
   async getdForms() {
     try {
       const result = await instance({
-        url: dFormPath,
+        url: dFormTemplatePath,
         method: "GET",
       });
 
@@ -53,10 +54,10 @@ const dFormApi = {
       throw err;
     }
   },
-  async createdForm(data) {
+  async createDFormTemplate(data) {
     try {
       const result = await instance({
-        url: dFormPath,
+        url: dFormTemplatePath,
         method: "POST",
         data
       });
@@ -66,7 +67,7 @@ const dFormApi = {
       throw err;
     }
   },
-  async updatedForm(data) {
+  async updateDForm(data) {
     try {
       const result = await instance({
         url: `${dFormPath}/${data.id}`,
@@ -79,10 +80,23 @@ const dFormApi = {
       throw err;
     }
   },
-  async deletedForm(data) {
+  async updateDFormTemplate(data) {
     try {
       const result = await instance({
-        url: `${dFormPath}/${data.id}`,
+        url: `${dFormTemplatePath}/${data.id}`,
+        method: "PUT",
+        data
+      });
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
+  async deleteDFormTemplate(data) {
+    try {
+      const result = await instance({
+        url: `${dFormTemplatePath}/${data.id}`,
         method: "DELETE",
       });
 

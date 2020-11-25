@@ -27,7 +27,7 @@ function* getOrganizations() {
     const response = yield call(organizationApi.getOrganizations);
     yield put(getOrganizationsSuccess(response));
   } catch (error) {
-    yield put(getOrganizationsError(error))
+    yield put(getOrganizationsError(error));
   }
 }
 

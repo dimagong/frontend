@@ -49,6 +49,11 @@ class MasterSchemaService {
       parent_id
     });
   }
+
+  getFields() {
+    return axios.get(`/api/master-schema-field`);
+  }
+
 }
 
 const masterSchemaService = new MasterSchemaService();

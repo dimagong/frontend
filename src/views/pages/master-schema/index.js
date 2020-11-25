@@ -12,46 +12,6 @@ import './index.scss';
 
 const clone = rfdc();
 
-const colourOptions = [
-  {value: "ocean", label: "Ocean"},
-  {value: "blue", label: "Blue"},
-  {value: "purple", label: "Purple"},
-  {value: "red", label: "Red"},
-  {value: "orange", label: "Orange"}
-];
-
-const dataDefault = {
-  name: 'root',
-  toggled: true,
-  children: [
-    {
-      name: 'parent',
-      children: [
-        {name: 'child1'},
-        {name: 'child2'}
-      ]
-    },
-    {name: 'nested child 2'},
-    {
-      name: 'loading parent',
-      loading: true,
-      children: []
-    },
-    {
-      name: 'parent',
-      children: [
-        {
-          name: 'nested parent',
-          children: [
-            {name: <div><h1>123</h1></div>},
-            {name: 'nested child 2'}
-          ]
-        }
-      ]
-    }
-  ]
-};
-
 const organizationTypesData = [
   {value: "corporation", label: "Corporation"},
   {value: "network", label: "Network"},
@@ -69,15 +29,11 @@ function MasterSchema() {
   const [cursor, setCursor] = useState(false);
 
   decorators.Header = (props) => {
-
     return <div onClick={() => {
-      console.log(111111111222222222, props);
     }} style={props.style.base}>
       <div style={props.style.title}>{props.node.name}</div>
     </div>
   };
-
-  // ---
 
   const getOrganizations = async () => {
     const response = await masterSchemaService.getOrganizations();
@@ -85,10 +41,6 @@ function MasterSchema() {
     setOrganizations(organizations);
     console.log(response.data.data);
   };
-
-  useEffect(() => {
-    console.log('cursor', cursor);
-  }, [cursor]);
 
   useEffect(() => {
     getOrganizations();
@@ -141,7 +93,6 @@ function MasterSchema() {
 
   const getOrganizationsByType = () => {
     if (!organizationType) return [];
-    // console.log(123123, organizations, organizationType);
     return organizations[organizationType.value].map((organization) => {
       return {
         value: organization,

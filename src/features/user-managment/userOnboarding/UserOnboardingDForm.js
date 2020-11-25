@@ -12,7 +12,7 @@ import FormCreate from 'components/FormCreate/FormCreate'
 import {useDispatch, useSelector} from "react-redux";
 import {selectManager, selectLoading} from "app/selectors";
 import {
-  updatedFormRequest,
+  updateDFormRequest,
   submitdFormDataRequest,
   changedFormStatusRequest,
   getUserByIdRequest
@@ -55,7 +55,7 @@ const UserOnboardingDForm = () => {
 
 
   const submitDForm = (dForm, {name, description, protected_properties}) => {
-    dispatch(updatedFormRequest({...dForm, name, description, protected_properties}))
+    dispatch(updateDFormRequest({...dForm, name, description, protected_properties}))
   };
 
   const statusChanged = (status) => {

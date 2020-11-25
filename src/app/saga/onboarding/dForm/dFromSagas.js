@@ -1,16 +1,18 @@
-import { all, put, call, takeLatest, select } from "redux-saga/effects";
+import {all, put, call, takeLatest, select} from "redux-saga/effects";
 
 import dFormApi from "api/Onboarding/dForms";
 import {
   getdFormsRequest,
   getdFormsSuccess,
   getdFormsError,
-  createdFormSuccess,
-  createdFormRequest,
-  createdFormError,
-  updatedFormSuccess,
-  updatedFormRequest,
-  updatedFormError,
+  createDFormTemplateSuccess,
+  createDFormTemplateRequest,
+  createDFormTemplateError,
+  updateDFormTemplateSuccess,
+  updateDFormTemplateRequest,
+  updateDFormRequest,
+  updateDFormError,
+  updateDFormTemplateError,
   deletedFormSuccess,
   deletedFormRequest,
   deletedFormError,
@@ -30,9 +32,9 @@ import {
   changedFormStatusRequest,
   changedFormStatusError,
 } from "app/slices/appSlice";
-import { setdForms, setdFormActions, setdFormTriggers } from "app/slices/onboardingSlice";
-import { prepareSelectGroups } from "utility/select/prepareSelectData";
-import { selectdForms } from "app/selectors/onboardingSelectors";
+import {setdForms, setdFormActions, setdFormTriggers} from "app/slices/onboardingSlice";
+import {prepareSelectGroups} from "utility/select/prepareSelectData";
+import {selectdForms} from "app/selectors/onboardingSelectors";
 import _ from "lodash";
 
 function* getdForms() {
@@ -45,22 +47,23 @@ function* getdForms() {
     yield put(getdFormsError(error));
   }
 }
-function* submitdFormData ({payload}) {
+
+function* submitdFormData({payload}) {
   try {
-    const responce = yield call(dFormApi.submitdFormData  , payload);
+    const responce = yield call(dFormApi.submitdFormData, payload);
     yield put(submitdFormDataSuccess(responce));
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(submitdFormDataError(error));
   }
 }
 
-function* submitdForm ({payload}) {
+function* submitdForm({payload}) {
   try {
-    const responce = yield call(dFormApi.submitdForm  , payload);
+    const responce = yield call(dFormApi.submitdForm, payload);
     yield put(submitdFormSuccess(responce));
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(submitdFormError(error));
   }
 }
@@ -74,28 +77,55 @@ function* changedFormStatus({payload}) {
   }
 }
 
-function* createdForm({ payload }) {
+
+function* createDForm({payload}) {
   try {
     const responce = yield call(dFormApi.createdForm, {
       ...payload,
-      groups: prepareSelectGroups(payload.groups).map((group) => group.value),
     });
 
-    yield put(createdFormSuccess());
-    const notifications = yield select(selectdForms);
-    yield put(setdForms([...notifications, responce]));
+    yield put(createDFormTemplateSuccess());
   } catch (error) {
-    yield put(createdFormError(error));
+    yield put(createDFormTemplateError(error));
   }
 }
 
-function* updatedForm({ payload }) {
+// todo only fo dFormTemplate
+function* updateDForm({payload}) {
   try {
-    const responce = yield call(dFormApi.updatedForm, {
+    const responce = yield call(dFormApi.updateDForm, {
+      ...payload,
+    });
+    yield put(updateDFormTemplateSuccess());
+  } catch (error) {
+    console.log(error);
+    yield put(updateDFormTemplateError(error));
+  }
+}
+
+function* createDFormTemplate({payload}) {
+  try {
+    const responce = yield call(dFormApi.createDFormTemplate, {
       ...payload,
       groups: prepareSelectGroups(payload.groups).map((group) => group.value),
     });
-    yield put(updatedFormSuccess());
+
+    yield put(createDFormTemplateSuccess());
+    const notifications = yield select(selectdForms);
+    yield put(setdForms([...notifications, responce]));
+  } catch (error) {
+    yield put(createDFormTemplateError(error));
+  }
+}
+
+// todo only for dFormTemplate
+function* updateDFormTemplate({payload}) {
+  try {
+    const responce = yield call(dFormApi.updateDFormTemplate, {
+      ...payload,
+      groups: prepareSelectGroups(payload.groups).map((group) => group.value),
+    });
+    yield put(updateDFormTemplateSuccess());
     const notifications = yield select(selectdForms);
     yield put(
       setdForms(
@@ -106,13 +136,13 @@ function* updatedForm({ payload }) {
     );
   } catch (error) {
     console.log(error);
-    yield put(updatedFormError(error));
+    yield put(updateDFormTemplateError(error));
   }
 }
 
-function* deletedForm({ payload }) {
+function* deleteDFormTemplate({payload}) {
   try {
-    yield call(dFormApi.deletedForm, payload);
+    yield call(dFormApi.deleteDFormTemplate, payload);
     yield put(deletedFormSuccess());
     const dForm = yield select(selectdForms);
     yield put(
@@ -151,13 +181,14 @@ function* getdFormTriggers() {
 export default function* () {
   yield all([
     yield takeLatest(getdFormsRequest.type, getdForms),
-    yield takeLatest(createdFormRequest.type, createdForm),
-    yield takeLatest(updatedFormRequest.type, updatedForm),
-    yield takeLatest(deletedFormRequest.type, deletedForm),
+    yield takeLatest(createDFormTemplateRequest.type, createDFormTemplate),
+    yield takeLatest(updateDFormTemplateRequest.type, updateDFormTemplate),
+    yield takeLatest(updateDFormRequest.type, updateDForm),
+    yield takeLatest(deletedFormRequest.type, deleteDFormTemplate),
     yield takeLatest(getdFormActionsRequest.type, getdFormActions),
     yield takeLatest(getdFormTriggersRequest.type, getdFormTriggers),
-    yield takeLatest(submitdFormDataRequest.type, submitdFormData ),
-    yield takeLatest(submitdFormRequest.type, submitdForm ),
+    yield takeLatest(submitdFormDataRequest.type, submitdFormData),
+    yield takeLatest(submitdFormRequest.type, submitdForm),
     yield takeLatest(changedFormStatusRequest.type, changedFormStatus),
   ]);
 }

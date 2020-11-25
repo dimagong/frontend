@@ -11,29 +11,44 @@ const getdFormsError = (state , {payload}) => {
   state.isError = payload;
 };
 
-const createdFormSuccess = (state) => {
+const createDFormTemplateSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
 };
-const createdFormRequest = (state, {payload}) => {
+const createDFormTemplateRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const createdFormError = (state , {payload}) => {
+const createDFormTemplateError = (state , {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
 
-const updatedFormSuccess = (state) => {
+const updateDFormTemplateSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
 };
 
-const updatedFormRequest = (state, {payload}) => {
+const updateDFormTemplateRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const updatedFormError = (state , {payload}) => {
+
+const updateDFormSuccess = (state) => {
+  state.isLoading = false;
+  state.isError = null;
+};
+
+const updateDFormRequest = (state, {payload}) => {
+  state.isLoading = true;
+  state.isError = null;
+};
+const updateDFormError = (state , {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+};
+
+const updateDFormTemplateError = (state , {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -138,12 +153,17 @@ export default {
   getdFormsSuccess,
   getdFormsRequest,
   getdFormsError,
-  createdFormSuccess,
-  createdFormRequest,
-  createdFormError,
-  updatedFormSuccess,
-  updatedFormRequest,
-  updatedFormError,
+
+  updateDFormRequest,
+  updateDFormSuccess,
+  updateDFormError,
+
+  createDFormTemplateSuccess,
+  createDFormTemplateRequest,
+  createDFormTemplateError,
+  updateDFormTemplateSuccess,
+  updateDFormTemplateRequest,
+  updateDFormTemplateError,
   deletedFormSuccess,
   deletedFormRequest,
   deletedFormError,
