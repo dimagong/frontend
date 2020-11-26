@@ -141,8 +141,8 @@ class FormCreate extends React.Component {
     this.disableAllInputs(propsDFormSchema, propsDFormUiSchema);
 
     const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
-
     return {
+      onboardingUser: props.onboardingUser,
       additionalData: {
         name: props.dForm.name,
         description: props.dForm.description,
@@ -158,10 +158,10 @@ class FormCreate extends React.Component {
       },
       onSaveButtonHidden: props.onSaveButtonHidden === true ? true : false,
       dFormActions: [
-        {value: "submitted", label: "Submitted"},
-        {value: "approved", label: "Approved"},
-        {value: "rejected", label: "Rejected"},
-        {value: "unsubmitted", label: "Unsubmitted"},
+        {value: "submitted", label: "submitted"},
+        {value: "approved", label: "approved"},
+        {value: "rejected", label: "rejected"},
+        {value: "unsubmitted", label: "unsubmitted"},
       ],
       fileLoading: fileLoading,
       dFormSelectedAction: this.getSelectedDFormAction(props.dForm.status),
@@ -1822,7 +1822,7 @@ class FormCreate extends React.Component {
                   FileWidget: this.fileWidget
                 }}
                 fields={{
-                  reference: Reference
+                  reference: Reference.bind(this)
                 }}
                 onChange={(event) => {
                   this.onChangeForm(event)

@@ -21,7 +21,6 @@ const Routes = ()=>{
                 {routes.map((route) => {
                     const {  path, Component, exact, isPrivate, redirect, ...rest } = route;
 
-                    console.log(route, 'route');
 
                     if (isPrivate) {
 

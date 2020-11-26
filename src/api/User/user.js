@@ -297,7 +297,7 @@ const userApi = {
   },
 
   async addUserOrganization ({id, orgId, type}) {
-    console.log("test", id, orgId, type)
+
     try {
       const result = await instance({
         url: `user/${id}/groups/add`,

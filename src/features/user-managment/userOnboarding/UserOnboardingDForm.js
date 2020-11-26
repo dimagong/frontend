@@ -32,14 +32,13 @@ const UserOnboardingDForm = () => {
 
   const debounceOnSave = useRef(debounce((data, dForm, userId) => {
     updatedAtTextLoding.current = true;
-    console.log({dForm: dForm, data});
+
     dispatch(submitdFormDataRequest({dForm: dForm, data}))
     // todo for refresh (refactor)
     dispatch(getUserByIdRequest({userId: userId}))
   }, 1500));
   const refreshOnboarding = useRef(debounce((userId) => {
     dispatch(getUserByIdRequest({userId: userId}))
-
   }, 1500));
 
   useEffect(() => {
@@ -72,6 +71,7 @@ const UserOnboardingDForm = () => {
   };
   const handleRefresh = () => {
     refreshOnboarding.current(manager.id);
+    setRefreshClassName(`${initRefreshClassName} rotating`)
     setRefreshClassName(`${initRefreshClassName} rotating`)
   };
   return (
@@ -107,6 +107,7 @@ const UserOnboardingDForm = () => {
             statusChanged={statusChanged}
             onChange={(data) => debounceOnSave.current(data, manager.onboarding.d_form, manager.id)}
             dForm={manager.onboarding.d_form}
+            onboardingUser={manager}
             isStateConfig={isStateConfig}
             updatedAtText={updatedAtText()}
 

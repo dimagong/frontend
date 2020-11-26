@@ -1,3 +1,7 @@
+import rfdc from "rfdc";
+
+const clone = rfdc();
+
 const getdFormsSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
@@ -34,7 +38,15 @@ const updateDFormTemplateRequest = (state, {payload}) => {
   state.isError = null;
 };
 
-const updateDFormSuccess = (state) => {
+const updateDFormSuccess = (state, {payload}) => {
+
+  // todo user.manager? refactor
+  const onboardingFound = state.user.manager.onboardings.find(onboarding => onboarding.d_form.id === payload.id);
+
+  if(onboardingFound) {
+    onboardingFound.d_form = payload;
+  }
+
   state.isLoading = false;
   state.isError = null;
 };
@@ -134,7 +146,14 @@ const submitdFormDataError = (state , {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
-const changedFormStatusSuccess = (state) => {
+const changedFormStatusSuccess = (state, {payload}) => {
+
+  state.user.manager.onboarding.d_form.status = payload.status;
+  const onboardingFound = state.user.manager.onboardings.find(onboarding => onboarding.d_form.id === payload.dForm.id);
+  if(onboardingFound) {
+    onboardingFound.d_form.status = payload.status;
+  }
+
   state.isLoading = false;
   state.isError = null;
 };

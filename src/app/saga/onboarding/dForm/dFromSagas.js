@@ -9,6 +9,7 @@ import {
   createDFormTemplateRequest,
   createDFormTemplateError,
   updateDFormTemplateSuccess,
+  updateDFormSuccess,
   updateDFormTemplateRequest,
   updateDFormRequest,
   updateDFormError,
@@ -39,6 +40,7 @@ import _ from "lodash";
 
 function* getdForms() {
   try {
+
     const responce = yield call(dFormApi.getdForms);
 
     yield put(getdFormsSuccess());
@@ -70,8 +72,8 @@ function* submitdForm({payload}) {
 
 function* changedFormStatus({payload}) {
   try {
-    const responce = yield call(dFormApi.changedFormStatus, payload);
-    yield put(changedFormStatusSuccess(responce));
+    const response = yield call(dFormApi.changedFormStatus, payload);
+    yield put(changedFormStatusSuccess(payload));
   } catch (error) {
     yield put(changedFormStatusError(error));
   }
@@ -90,13 +92,13 @@ function* createDForm({payload}) {
   }
 }
 
-// todo only fo dFormTemplate
 function* updateDForm({payload}) {
   try {
-    const responce = yield call(dFormApi.updateDForm, {
+    const response = yield call(dFormApi.updateDForm, {
       ...payload,
     });
-    yield put(updateDFormTemplateSuccess());
+
+    yield put(updateDFormSuccess(response));
   } catch (error) {
     console.log(error);
     yield put(updateDFormTemplateError(error));

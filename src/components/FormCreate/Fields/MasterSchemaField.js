@@ -48,12 +48,12 @@ export default function MasterSchemaField(props) {
   };
 
   const initCurrentStateField = (formattedOrganizations) => {
-    console.log('props', props);
+
     if(!isEmpty(props.fieldId)) {
       const formattedOrganizaiton = formattedOrganizations.find((formattedOrganization) => {
         return parseInt(props.fieldId) in formattedOrganization.masterSchemaFields;
       });
-      console.log(555555555555, formattedOrganizaiton);
+
 
       setCurrentOrganization({
         label: formattedOrganizaiton.organization.name,
@@ -78,7 +78,7 @@ export default function MasterSchemaField(props) {
 
       const formattedOrganizations = formatOrganizationMasterSchema(organizations);
 
-      console.log(333333,formattedOrganizations);
+
       setOrganizations(formattedOrganizations);
       initCurrentStateField(formattedOrganizations);
     } catch (exception) {

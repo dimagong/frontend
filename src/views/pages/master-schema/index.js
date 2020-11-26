@@ -39,7 +39,6 @@ function MasterSchema() {
     const response = await masterSchemaService.getOrganizations();
     let organizations = response.data.data;
     setOrganizations(organizations);
-    console.log(response.data.data);
   };
 
   useEffect(() => {
@@ -88,7 +87,6 @@ function MasterSchema() {
   const createMasterSchema = async () => {
     const response = await masterSchemaService.create(organization.value.type, organization.value.id);
     setMasterSchema(response.data.data);
-    console.log(response.data.data);
   };
 
   const getOrganizationsByType = () => {

@@ -62,7 +62,7 @@ const OnboardingUser = () => {
   };
   const handleNavClick = onboarding => {
     toggle(onboarding.id);
-    console.log('onboarding', onboarding);
+
     dispatch(setProfileOnboarding(onboarding))
   };
 
