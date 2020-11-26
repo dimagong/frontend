@@ -4,6 +4,8 @@ import classnames from "classnames";
 import Constants from "../Parts/Constants";
 import {isElementProtected} from "../helper";
 import HelpText from "./HelpText";
+import Sections from '../Elements/Sections'
+import Groups from '../Elements/Groups'
 
 export function ObjectFieldTemplate(props) {
 
@@ -133,17 +135,15 @@ export function ObjectFieldTemplate(props) {
         isHidden = {display: 'none'};
       }
 
-      return (
-        <div className="border px-2" key={sectionName + '_' + groupName} style={isHidden}>
-          <div className="title pt-2 pb-0">
-            <span className="text-bold-500 font-medium-2 ml-50">{groupName}</span>
-            <hr/>
-          </div>
-          <Row>
-            {elementContent}
-          </Row>
-        </div>
-      )
+      const propsGroup ={
+        key: sectionName + '_' + groupName,
+        GroupIsHidden: isHidden,
+        groupName
+      };
+
+      return <Groups {...propsGroup}>
+        {elementContent}
+      </Groups>
     })
   };
 
@@ -202,54 +202,27 @@ export function ObjectFieldTemplate(props) {
   const groupedElements = elementsByGroups();
   const defaultTab = sections.length ? sections.findIndex(section => !checkIsSectionHidden(section)) : -1;
 
-  const [keyTab, setKeyTab] = useState(defaultTab);
-
   const isSectionDisabled = (section) => {
     return section in this.state.uiSchema.sectionStates && Constants.UI_DISABLED in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][Constants.UI_DISABLED]
       ? {disabled: 'disabled'} : {};
   };
 
   const renderObject = () => {
+
+    const sectionsProps = {
+      defaultTab,
+      sections,
+      isSectionHidden,
+      isSectionDisabled,
+      renderElementsByGroupsAndSections,
+      renderElementsWithNoGroupsAndSections
+    };
+
     return (<div>
       {props.title}
       {props.description}
 
-      <Nav tabs className="mt-1">
-        {
-          sections.map((section, index) =>
-            <NavItem style={isSectionHidden(section)} key={`tab-display-${section}`} {...isSectionDisabled(section)}>
-              <NavLink
-                className={classnames({
-                  active: keyTab == index
-                })}
-                onClick={() => {
-                  setKeyTab(index)
-                }}
-              >
-                <span className="align-middle ml-50">{section}</span>
-              </NavLink>
-            </NavItem>
-          )
-        }
-      </Nav>
-      <TabContent activeTab={keyTab}>
-        {
-          sections.map((section, index) =>
-            <TabPane tabId={index} key={section} style={isSectionHidden(section)}>
-              <Row className="mx-0" col="12">
-                <Col className="pl-0" sm="12">
-                  {
-                    renderElementsByGroupsAndSections(section)
-                  }
-                  <Row className="mt-1 mb-1">
-                    {renderElementsWithNoGroupsAndSections(section)}
-                  </Row>
-                </Col>
-              </Row>
-            </TabPane>
-          )
-        }
-      </TabContent>
+      <Sections {...sectionsProps}></Sections>
 
     </div>);
   };

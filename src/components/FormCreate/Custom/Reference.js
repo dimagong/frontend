@@ -7,12 +7,14 @@ import {debounce, isEmpty} from 'lodash'
 function OnboardingReference(props) {
   console.log('Reference', props);
 
+  const {fieldId, userId} = props;
+
   const [fieldValue, setFieldValue] = useState({});
 
   let onChangeFieldValue = useCallback(
     debounce(async (newValue) => {
       try {
-        const response = await masterSchemaService.changeFieldValue(props.fieldId, props.userId, newValue);
+        const response = await masterSchemaService.changeFieldValue(fieldId, userId, newValue);
         setFieldValue(response.data.data);
       } catch (exception) {
         console.log(exception);
@@ -21,7 +23,7 @@ function OnboardingReference(props) {
   );
 
   useEffect(() => {
-    getUserValueByFieldId(props.fieldId, props.userId);
+    getUserValueByFieldId(fieldId, userId);
   }, []);
 
 

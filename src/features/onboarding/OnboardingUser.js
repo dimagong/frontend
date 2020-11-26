@@ -184,6 +184,7 @@ const OnboardingUser = () => {
                                               ? "Saving progress"
                                               : `Progress saved: ${moment(profile.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`}
                                           isStateConfig={false}
+                                          onboardingUser={profile}
                                         ></FormCreate>
                                       : null}
                                   </TabPane>

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import Form from "@rjsf/core";
+// import Form from "@rjsf/core";
+import Form from '@rjsf/material-ui';
 import ElementEditModal from "./ElementEditModal";
 import DependencyEditModal from "./DependencyEditModal";
 import classnames from "classnames"
