@@ -270,6 +270,18 @@ export const {
   addUserOrganizationSuccess,
   addUserOrganizationError,
 
+  removeUserOrganizationRequest,
+  removeUserOrganizationSuccess,
+  removeUserOrganizationError,
+
+  allowUserAbilityRequest,
+  allowUserAbilitySuccess,
+  allowUserAbilityError,
+
+  disallowUserAbilityRequest,
+  disallowUserAbilitySuccess,
+  disallowUserAbilityError,
+
   resetAppSlice,
   logout,
 } = appSlice.actions;

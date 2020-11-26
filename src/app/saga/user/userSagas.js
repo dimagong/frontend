@@ -26,6 +26,15 @@ import {
   addUserOrganizationRequest,
   addUserOrganizationSuccess,
   addUserOrganizationError,
+  removeUserOrganizationRequest,
+  removeUserOrganizationSuccess,
+  removeUserOrganizationError,
+  allowUserAbilityRequest,
+  allowUserAbilitySuccess,
+  allowUserAbilityError,
+  disallowUserAbilityRequest,
+  disallowUserAbilitySuccess,
+  disallowUserAbilityError,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
@@ -108,25 +117,56 @@ function* getUserManagmentData() {
 }
 
 function* getUserOrganizations(userId) {
-  try {
-    const response = yield call(userApi.getUserOrganizations, userId);
+  const response = yield call(userApi.getUserOrganizations, userId);
 
+  if (response?.message) {
+    yield put(getUserOrganizationsError(response.message))
+  } else {
     yield put(getUserOrganizationsSuccess(response))
-  } catch (err) {
-    yield put(getUserOrganizationsError(err))
-    throw err;
   }
 }
 
 function* addUserOrganization({payload}) {
-  try {
-    const response = yield call(userApi.addUserOrganization, payload)
+  const response = yield call(userApi.addUserOrganization, payload)
 
+  if (response?.message) {
+    yield put(addUserOrganizationError(response.message))
+  } else {
     yield put(addUserOrganizationSuccess(response))
-  } catch (err) {
-    yield put(addUserOrganizationError(err))
-    throw err;
   }
+}
+
+function* removeUserOrganization({payload}) {
+  const response = yield call(userApi.removeUserOrganization, payload)
+
+  if (response?.message) {
+    yield put(removeUserOrganizationError(response.message))
+  } else {
+    yield put(removeUserOrganizationSuccess(payload))
+  }
+}
+
+function* allowUserAbility({payload}) {
+  const response = yield call(userApi.userAbilityAllow, payload)
+
+  if (response?.message) {
+    yield put(allowUserAbilityError(response.message))
+  } else {
+    yield put(allowUserAbilitySuccess({response, data: payload}))
+  }
+}
+
+function* disallowUserAbility({payload}) {
+  const response = yield call(userApi.userAbilityDisallow, payload)
+
+  if (response?.message) {
+    yield put(disallowUserAbilityError(response.message))
+  } else {
+    yield put(disallowUserAbilitySuccess({response, data: payload}))
+  }
+
+
+
 }
 
 export default function* () {
@@ -138,6 +178,9 @@ export default function* () {
     yield takeLatest(createUserRequest.type, createUser),
     yield takeEvery(getUserManagment.type, getUserManagmentData),
     yield takeLatest(getUserOrganizationsRequest.type, getUserOrganizations),
-    yield takeLatest(addUserOrganizationRequest.type, addUserOrganization)
+    yield takeLatest(addUserOrganizationRequest.type, addUserOrganization),
+    yield takeLatest(removeUserOrganizationRequest.type, removeUserOrganization),
+    yield takeLatest(allowUserAbilityRequest.type, allowUserAbility),
+    yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility)
   ]);
 }

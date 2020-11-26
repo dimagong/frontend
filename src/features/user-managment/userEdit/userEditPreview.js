@@ -31,6 +31,9 @@ import {
   getOrganizationsRequest,
   getUserOrganizationsRequest,
   addUserOrganizationRequest,
+  removeUserOrganizationRequest,
+  allowUserAbilityRequest,
+  disallowUserAbilityRequest,
 } from "app/slices/appSlice";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 
@@ -56,6 +59,7 @@ import {
 import VPlogo from 'assets/img/logo/VPlogo.png'
 import RimbalLogo from 'assets/img/logo/Rimbal-Logo.png'
 import PreferenceLogo from 'assets/img/logo/preferenceLogo.png'
+import {capitalizeAll} from '../../../utility/common'
 
 const UserEditPreview = (props, context) => {
   const [activeTab, setActiveTab] = useState("permissions")
@@ -125,6 +129,9 @@ const UserEditPreview = (props, context) => {
   }
 
   const handleOrganizationDelete = () => {
+    const org = userOrganizations.filter((org) => org.name === deletionData.orgName)[0];
+    console.log(org)
+    dispatch(removeUserOrganizationRequest({userId: manager.id, group_id: org.id, type: org.type}))
     setIsDeleteModalOpen(false);
   }
 
@@ -133,6 +140,24 @@ const UserEditPreview = (props, context) => {
       orgName, name: managerName
     })
     setIsDeleteModalOpen(true)
+  }
+
+  const toggleAbility = (userOrg, ability, isChecked) => {
+    console.log("sdf")
+    const data = {
+      ability,
+      organization_type:
+      userOrg.type,
+      organization_id: userOrg.id,
+      user_id: manager.id
+    }
+
+    if (isChecked) {
+      dispatch(disallowUserAbilityRequest(data))
+    } else {
+      dispatch(allowUserAbilityRequest(data))
+    }
+
   }
 
   const modalContainer = useRef();
@@ -154,8 +179,9 @@ const UserEditPreview = (props, context) => {
             M: {manager.number ? `${manager.number}` : "phone number is empty"}
           </CardText>
           <CardText>
-            {manager.roles && !!manager.roles.length && (manager.roles.map((role) => role + " ").join("")) + " at "}
-            {(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}
+            {/*{manager.roles && !!manager.roles.length && (manager.roles.map((role) => role + " ").join("")) + " at "}*/}
+            {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
+            {capitalizeAll(manager?.permissions?.ability.replace("_", " ")) + " at " + manager?.permissions?.organization}
           </CardText>
         </CardBody>
       </Card>
@@ -169,7 +195,8 @@ const UserEditPreview = (props, context) => {
             <div>
               <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
               <CardText style={{marginBottom: "5px"}}>
-                {manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}
+                {/*{manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}*/}
+                {capitalizeAll(manager?.permissions?.ability.replace("_", " "))}
               </CardText>
             </div>
             <div>
@@ -183,19 +210,20 @@ const UserEditPreview = (props, context) => {
           </div>
           <div className="user-card-body-right">
             <CardText>
-              {(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}
+              {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
+              {manager?.permissions?.organization}
             </CardText>
             <UncontrolledDropdown>
-              <DropdownToggle nav caret={true}>
+              <DropdownToggle nav caret={true} style={{fontSize: "18px"}}>
                 {activeTab}
               </DropdownToggle>
-              <DropdownMenu left>
+              <DropdownMenu right>
                 {selectItems.map((item) => (
                   <DropdownItem
                     onClick={() => {setActiveTab(item)}}
                     disabled={item !== "permissions"}
                   >
-                    <NavItem>
+                    <NavItem style={{fontSize: "16px"}}>
                       {item}
                     </NavItem>
                   </DropdownItem>
@@ -209,7 +237,7 @@ const UserEditPreview = (props, context) => {
         <Card className="tablet-hidden">
           <CardBody>
             <UncontrolledDropdown>
-              <DropdownToggle nav caret={true}>
+              <DropdownToggle style={{fontSize: "22px"}} nav caret={true}>
                 {activeTab}
               </DropdownToggle>
               <DropdownMenu left>
@@ -218,7 +246,7 @@ const UserEditPreview = (props, context) => {
                     onClick={() => {setActiveTab(item)}}
                     disabled={item !== "permissions"}
                   >
-                    <NavItem>
+                    <NavItem style={{fontSize: "18px"}}>
                       {item}
                     </NavItem>
                   </DropdownItem>
@@ -228,10 +256,10 @@ const UserEditPreview = (props, context) => {
           </CardBody>
         </Card>
         <div className="permissions-title">
-          <div style={{fontSize: "20px", marginTop: "15px", marginBottom: "15px"}} className={"text-center"}>
+          <div style={{fontSize: "20px", marginTop: "25px", marginBottom: "20px"}} className={"text-center"}>
             Organizations
           </div>
-          <div style={{fontSize: "20px", marginTop: "15px", marginBottom: "15px"}} className={"text-center"}>
+          <div style={{fontSize: "20px", marginTop: "25px", marginBottom: "20px"}} className={"text-center"}>
             Roles
           </div>
         </div>
@@ -251,9 +279,12 @@ const UserEditPreview = (props, context) => {
                       return (
                         <>
                           <Checkbox
+                            onClick={()=>{toggleAbility(userOrganization, ability, userOrganization.abilities[ability])}}
+                            checked={userOrganization.abilities[ability]}
                             color="white"
+                            className={userOrganization.abilities[ability] ? "checked" : ""}
                             icon={<X color={"#007BFF"}  size={16}/>}
-                            label={ability}
+                            label={capitalizeAll(ability.replace("_", " "))}
                           />
                         </>
                       )

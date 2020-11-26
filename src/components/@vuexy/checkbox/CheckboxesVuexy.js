@@ -23,7 +23,7 @@ class CheckBoxesVuexy extends React.Component {
         >
           <span className="vx-checkbox--check">{this.props.icon}</span>
         </span>
-        <span>{this.props.label}</span>
+        <span className="vx-checkbox--label">{this.props.label}</span>
       </div>
     )
   }

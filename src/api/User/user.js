@@ -279,8 +279,10 @@ const userApi = {
         method: "POST",
         data,
       })
+
+      return result.data.data;
     } catch (err) {
-      throw err;
+      return err;
     }
   },
 
@@ -291,6 +293,8 @@ const userApi = {
         method: "POST",
         data,
       })
+
+      return result.data.data;
     } catch (err) {
       throw err;
     }
@@ -300,7 +304,7 @@ const userApi = {
 
     try {
       const result = await instance({
-        url: `user/${id}/groups/add`,
+        url: `api/user/${id}/groups/add`,
         method: "PUT",
         data: {
           group_id: orgId,
@@ -310,14 +314,14 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      return err;
     }
   },
 
   async removeUserOrganization ({userId, group_id, type}) {
     try {
       const result = await instance({
-        url: `user/${userId}/groups/remove`,
+        url: `api/user/${userId}/groups/remove`,
         method: "PUT",
         data: {
           group_id,
@@ -325,8 +329,9 @@ const userApi = {
         }
       })
     } catch (err) {
-      throw err;
+      return err;
     }
+
   },
 
   async getUserOrganizations({payload}) {
@@ -339,7 +344,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      return err;
     }
   },
 };

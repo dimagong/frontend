@@ -4,6 +4,7 @@ import noneAvatar from 'assets/img/portrait/none-avatar.png'
 
 import useWindowSize from 'hooks/windowWidth'
 import './userCard.scss'
+import {capitalizeAll} from '../../../../utility/common'
 
 const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }) => (
   <div>
@@ -20,7 +21,7 @@ const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }
           <div>
             <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
             <CardText style={{marginBottom: "5px"}}>
-              {manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}
+              {manager?.permissions?.ability && capitalizeAll(manager.permissions.ability.replace("_", " "))}
             </CardText>
           </div>
           <div>
@@ -34,10 +35,11 @@ const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }
         </div>
         <div className="user-card-body-right">
           <CardText>
-            {(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getOrganizationName(group.group_id, group.group_type)}</span> ))}
+            {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getOrganizationName(group.group_id, group.group_type)}</span> ))}*/}
+            {manager.permissions?.organization}
           </CardText>
           <CardText className="user-card-body_last-seen">
-            Last seen 3 days ago
+            {/*Last seen 3 days ago*/}
           </CardText>
         </div>
       </CardBody>

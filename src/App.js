@@ -6,6 +6,8 @@ import { ConnectedRouter } from "connected-react-router";
 import { useDispatch } from "react-redux";
 import authService from "services/auth";
 import { getProfileRequest } from "app/slices/appSlice";
+import classnames from 'classnames'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 function App() {
   const dispatch = useDispatch();
@@ -16,7 +18,9 @@ function App() {
   return (
     <ConnectedRouter history={history}>
       <Router history={history}>
-        <Routes />
+        <PerfectScrollbar>
+          <Routes />
+        </PerfectScrollbar>
       </Router>
     </ConnectedRouter>
   );

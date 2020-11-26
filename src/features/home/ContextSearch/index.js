@@ -16,7 +16,8 @@ import {
   selectdForms, selectGroups,
   selectManager,
   selectManagers,
-  selectNotifications
+  selectNotifications,
+  selectContext,
 } from "app/selectors";
 
 import {
@@ -75,6 +76,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const vuexyUser = useSelector(selectVuexyUser)
   const preview = useSelector(selectPreview)
   const groups = useSelector(selectGroups)
+  const context = useSelector(selectContext)
 
   const [page, setPage] = useState(0);
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
@@ -105,7 +107,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     const getOrganizationName = (groupId, groupType) => {
       return getGroupName(groups, groupId, groupTypes[groupType])
     }
-
+    console.log(data)
     const templates = {
       dForms: <DFormCardTemplate oneColumn={oneColumn} onClick={(e, dForm) => {
                 if (e.ctrlKey) {
@@ -159,6 +161,12 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     handleContextChange("User")
   }
 
+  const handleContextSearchHide = () => {
+    if (context) {
+      onContextSearchHide()
+    }
+  }
+
   const data = {
     dForms,
     notifications,
@@ -181,7 +189,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   }, [])
 
 
-  if(!isShown) return null;
+
 
 
 
@@ -190,7 +198,8 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   }
 
   return (
-    <Row className="home mb-2 context-search">
+    <>
+    <Row className={`home context-search ${isShown ? "slide-in" : "slide-out"}`}>
       <Col sm="12" md="12" lg="12" xl="12">
         <div>
           <div className="">
@@ -271,7 +280,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                           <Plus size={28}/>
                         </Button>
 
-                        <Button color="primary" onClick={onContextSearchHide} className="hide-context-icon p-0">
+                        <Button color="primary" onClick={handleContextSearchHide} className="hide-context-icon p-0">
                           <ChevronUp size={28} />
                         </Button>
                       </div>
@@ -284,7 +293,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
         </div>
       </Col>
       <ToastContainer />
+
     </Row>
+    </>
   )
 }
 
