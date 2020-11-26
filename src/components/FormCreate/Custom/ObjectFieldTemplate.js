@@ -6,6 +6,7 @@ import {isElementProtected} from "../helper";
 import HelpText from "./HelpText";
 import Sections from '../Elements/Sections'
 import Groups from '../Elements/Groups'
+import Field from "../Elements/Field";
 
 export function ObjectFieldTemplate(props) {
 
@@ -108,11 +109,15 @@ export function ObjectFieldTemplate(props) {
             return isHidden;
           };
 
-          return (
-            <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
-                 key={element.name}>
-              {renderCustomFieldsComponents(element)}
-            </div>)
+          const fieldProps = {
+            key: element.name,
+            className: getColumnClass(element.name, element),
+            style: isElementHidden(element.name)
+          };
+
+          return <Field {...fieldProps}>
+            {renderCustomFieldsComponents(element)}
+          </Field>
         }
         return null;
       });
@@ -168,11 +173,16 @@ export function ObjectFieldTemplate(props) {
             }
             return isHidden;
           };
-          return (
-            <div style={isElementHidden(element.name)} className={getColumnClass(element.name, element)}
-                 key={element.name}>
+
+          const fieldProps = {
+            key: element.name,
+            className: getColumnClass(element.name, element),
+            style: isElementHidden(element.name)
+          };
+
+          return <Field {...fieldProps}>
               {element.content}
-            </div>)
+            </Field>
         }
         return null;
       });
