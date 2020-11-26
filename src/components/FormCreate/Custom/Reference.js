@@ -9,13 +9,10 @@ function OnboardingReference(props) {
 
   const [fieldValue, setFieldValue] = useState({});
 
-  const fieldId = props.schema.field_id;
-  const userId = this.state.onboardingUser.id;
-
   let onChangeFieldValue = useCallback(
     debounce(async (newValue) => {
       try {
-        const response = await masterSchemaService.changeFieldValue(fieldId, userId, newValue);
+        const response = await masterSchemaService.changeFieldValue(props.fieldId, props.userId, newValue);
         setFieldValue(response.data.data);
       } catch (exception) {
         console.log(exception);
@@ -24,7 +21,7 @@ function OnboardingReference(props) {
   );
 
   useEffect(() => {
-    getUserValueByFieldId(fieldId, userId);
+    getUserValueByFieldId(props.fieldId, props.userId);
   }, []);
 
 
@@ -55,7 +52,15 @@ function OnboardingReference(props) {
 
 export default function Reference(props) {
   // if user exist then that is onboarding not dFormTemplate
+  // bind to context FormCreate
   const user = this.state.onboardingUser;
 
-  return !isEmpty(user) ? <OnboardingReference {...props}></OnboardingReference> : <Input placeholder="Reference" disabled={true}></Input>
+  if(user) {
+    const fieldId = props.schema.field_id;
+    const userId = this.state.onboardingUser.id;
+    const data = {fieldId, userId};
+    return <OnboardingReference {...data}></OnboardingReference>
+  }
+
+  return <Input placeholder="Reference" disabled={true}></Input>
 }

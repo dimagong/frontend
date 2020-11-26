@@ -116,9 +116,9 @@ function MasterSchema() {
       cursor.active = false;
     }
     node.active = true;
-    if (node.children) {
-      node.toggled = toggled;
-    }
+    // if (node.children) {
+    //   node.toggled = toggled;
+    // }
     setCursor(node);
     setMasterSchemaTreebeard(Object.assign({}, masterSchemaTreebeard))
   };
