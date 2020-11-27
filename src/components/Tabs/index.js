@@ -52,8 +52,8 @@ const Tabs = ({tabs, onChange, active}) => {
 
   return (
     <Pagination className=" justify-content-center mt-1 custom-tabs">
-      <PaginationItem href="#" className="prev-item" onClick={handlePrevSelect}>
-        <PaginationLink href="#" first>
+      <PaginationItem href="#" className="prev-item">
+        <PaginationLink onClick={handlePrevSelect} first>
           <ChevronLeft />{" "}
         </PaginationLink>
       </PaginationItem>
@@ -62,17 +62,17 @@ const Tabs = ({tabs, onChange, active}) => {
           <span key={item} className="custom-tabs_tab" id={item}>
             <PaginationItem
               active={item === active}
-              onClick={() => {handleTabChange(item)}}
+
             >
-              <PaginationLink href={"#"}>
+              <PaginationLink onClick={() => {handleTabChange(item)}}>
                 {item}
               </PaginationLink>
             </PaginationItem>
           </span>
         ))}
       </div>
-      <PaginationItem href="#" className="next-item" onClick={handleNextSelect}>
-        <PaginationLink href="#" last>
+      <PaginationItem href="#" className="next-item">
+        <PaginationLink onClick={handleNextSelect} last>
           <ChevronRight />
         </PaginationLink>
       </PaginationItem>

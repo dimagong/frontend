@@ -24,20 +24,21 @@ import {debounce} from 'lodash';
 import {submitdFormRequest, submitdFormDataRequest, setProfileOnboarding,   getUserByIdRequest} from "app/slices/appSlice";
 import {CheckCircle, AlertCircle, Box, Clipboard, FileText} from 'react-feather';
 import moment from "moment";
+
+import Tabs from 'components/Tabs'
 import {getProfileRequest} from "../../app/slices/appSlice";
 
 const OnboardingUser = () => {
-  const [active, setActive] = useState(0);
+
   const dispatch = useDispatch();
   const profile = useSelector(selectProfile);
   const loading = useSelector(selectLoading);
-  const isInitialized = useRef(false);
+
   const [isDebounced, setDebounced] = useState(false);
 
   useEffect(() => {
-    if (profile && profile.onboardings && profile.onboardings.length && !isInitialized.current) {
-      isInitialized.current = true;
-      profile.onboarding && dispatch(setProfileOnboarding(profile.onboardings[0]))
+    if (profile && !profile.onboarding?.id) {
+      dispatch(setProfileOnboarding(profile.onboardings[0]))
     }
   }, [profile]);
 
@@ -55,15 +56,8 @@ const OnboardingUser = () => {
     dispatch(submitdFormRequest({dForm: profile.onboarding.d_form, data}))
   };
 
-  const toggle = tab => {
-    if (active !== tab) {
-      setActive(tab)
-    }
-  };
   const handleNavClick = onboarding => {
-    toggle(onboarding.id);
-
-    dispatch(setProfileOnboarding(onboarding))
+    dispatch(setProfileOnboarding({...onboarding}))
   };
 
   const getStatus = (id, status) => {
@@ -113,30 +107,15 @@ const OnboardingUser = () => {
           ? (
             <Row>
               <Col sm="12" md={{size: 10, offset: 1}}>
-                <Nav pills className="nav-justified">
-                  {
-                    profile.onboardings.map((onboarding, index) => {
-                      return (
-                        <NavItem>
-                          <NavLink
-                            disabled={isDebounced || loading}
-                            className={classnames({
-                              active: active === index
-                            })}
-                            onClick={() => {
-                              handleNavClick(onboarding)
-                            }}
-                          >
-                            {onboarding.d_form.name} {getStatus(onboarding.d_form.id, onboarding.d_form.status)}
-                          </NavLink>
-                        </NavItem>
-                      );
-                    })
-                  }
-                </Nav>
+                <Tabs
+                  active={profile.onboarding?.d_form?.name || profile.onboardings[0].d_form.name}
+                  tabs={profile.onboardings.map((item) => item.d_form.name)}
+                  onChange={(tabName) => {handleNavClick(profile.onboardings.filter((item)=>item.d_form.name === tabName)[0])}}
+                />
+
               </Col>
               <Col sm="12" md={{size: 10, offset: 1}}>
-                <Card>
+                <Card style={{background: "transparent", boxShadow: "none"}}>
                   {/*<CardHeader>*/}
                   {/*  <CardTitle>Onboarding</CardTitle>*/}
                   {/*</CardHeader>*/}
@@ -145,11 +124,11 @@ const OnboardingUser = () => {
                     {
                       profile && profile.onboardings && profile.onboardings.length ?
                         <div>
-                          <TabContent activeTab={active}>
+                          <TabContent activeTab={profile.onboarding.id}>
                             {
                               profile.onboardings.map((onboarding, index) => {
                                 return (
-                                  <TabPane tabId={index}>
+                                  <TabPane tabId={onboarding.id}>
                                     {!isEmpty(profile.onboarding)
                                       ? profile.onboarding.d_form.access_type === 'user-lock'
                                         ? <FormCreate

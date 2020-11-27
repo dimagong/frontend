@@ -90,7 +90,7 @@ class FormCreate extends React.Component {
         this.reInit();
       }
     }
-    console.log('FormCreate componentDidUpdate', this.state);
+    // console.log('FormCreate componentDidUpdate', this.state);
   };
 
   async componentDidMount() {
