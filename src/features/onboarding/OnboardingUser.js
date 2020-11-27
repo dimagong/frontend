@@ -21,11 +21,16 @@ import {toast, ToastContainer} from 'react-toastify';
 import {isEmpty} from 'lodash'
 import FormCreate from 'components/FormCreate/FormCreate'
 import {debounce} from 'lodash';
-import {submitdFormRequest, submitdFormDataRequest, setProfileOnboarding,   getUserByIdRequest} from "app/slices/appSlice";
+import {
+  submitdFormRequest,
+  submitdFormDataRequest,
+  setProfileOnboarding,
+  getUserByIdRequest
+} from "app/slices/appSlice";
 import {CheckCircle, AlertCircle, Box, Clipboard, FileText} from 'react-feather';
 import moment from "moment";
 
-import Tabs from 'components/Tabs'
+import TabsArrayOfObjects from 'components/Tabs/TabsArrayOfObjects'
 import {getProfileRequest} from "../../app/slices/appSlice";
 
 const OnboardingUser = () => {
@@ -57,6 +62,7 @@ const OnboardingUser = () => {
   };
 
   const handleNavClick = onboarding => {
+    console.log(onboarding);
     dispatch(setProfileOnboarding({...onboarding}))
   };
 
@@ -107,10 +113,14 @@ const OnboardingUser = () => {
           ? (
             <Row>
               <Col sm="12" md={{size: 10, offset: 1}}>
-                <Tabs
-                  active={profile.onboarding?.d_form?.name || profile.onboardings[0].d_form.name}
-                  tabs={profile.onboardings.map((item) => item.d_form.name)}
-                  onChange={(tabName) => {handleNavClick(profile.onboardings.filter((item)=>item.d_form.name === tabName)[0])}}
+                <TabsArrayOfObjects
+                  tabId="id"
+                  tabName={(onboarding) => onboarding.d_form.name}
+                  active={profile.onboarding?.id || profile.onboardings[0].id}
+                  tabs={profile.onboardings}
+                  onChange={(onboarding) => {
+                    handleNavClick(onboarding)
+                  }}
                 />
 
               </Col>
@@ -129,8 +139,9 @@ const OnboardingUser = () => {
                               profile.onboardings.map((onboarding, index) => {
                                 return (
                                   <TabPane tabId={onboarding.id}>
-                                    {!isEmpty(profile.onboarding)
-                                      ? profile.onboarding.d_form.access_type === 'user-lock'
+                                    {
+                                      !isEmpty(profile.onboarding)
+                                        ? profile.onboarding.d_form.access_type === 'user-lock'
                                         ? <FormCreate
                                           // reInit={(reInit, context) => {
                                           //   this.reInitForm = reInit.bind(context)
@@ -142,6 +153,7 @@ const OnboardingUser = () => {
                                           dForm={profile.onboarding.d_form}
                                           onSaveButtonHidden={isDisabledSubmit()}
                                           isStateConfig={false}
+                                          onboardingUser={profile}
                                         ></FormCreate>
                                         : <FormCreate
                                           // reInit={(reInit, context) => {
@@ -165,7 +177,8 @@ const OnboardingUser = () => {
                                           isStateConfig={false}
                                           onboardingUser={profile}
                                         ></FormCreate>
-                                      : null}
+                                        : null
+                                    }
                                   </TabPane>
                                 );
                               })
@@ -174,7 +187,6 @@ const OnboardingUser = () => {
                         </div>
                         : 'Onboarding not exist'
                     }
-
 
 
                     {/*{*/}
