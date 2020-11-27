@@ -1,3 +1,7 @@
+import rfdc from "rfdc";
+
+const clone = rfdc();
+
 const getdFormsSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
@@ -11,29 +15,52 @@ const getdFormsError = (state , {payload}) => {
   state.isError = payload;
 };
 
-const createdFormSuccess = (state) => {
+const createDFormTemplateSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
 };
-const createdFormRequest = (state, {payload}) => {
+const createDFormTemplateRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const createdFormError = (state , {payload}) => {
+const createDFormTemplateError = (state , {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
 
-const updatedFormSuccess = (state) => {
+const updateDFormTemplateSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
 };
 
-const updatedFormRequest = (state, {payload}) => {
+const updateDFormTemplateRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const updatedFormError = (state , {payload}) => {
+
+const updateDFormSuccess = (state, {payload}) => {
+
+  // todo user.manager? refactor
+  const onboardingFound = state.user.manager.onboardings.find(onboarding => onboarding.d_form.id === payload.id);
+
+  if(onboardingFound) {
+    onboardingFound.d_form = payload;
+  }
+
+  state.isLoading = false;
+  state.isError = null;
+};
+
+const updateDFormRequest = (state, {payload}) => {
+  state.isLoading = true;
+  state.isError = null;
+};
+const updateDFormError = (state , {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+};
+
+const updateDFormTemplateError = (state , {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -119,7 +146,14 @@ const submitdFormDataError = (state , {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
-const changedFormStatusSuccess = (state) => {
+const changedFormStatusSuccess = (state, {payload}) => {
+
+  state.user.manager.onboarding.d_form.status = payload.status;
+  const onboardingFound = state.user.manager.onboardings.find(onboarding => onboarding.d_form.id === payload.dForm.id);
+  if(onboardingFound) {
+    onboardingFound.d_form.status = payload.status;
+  }
+
   state.isLoading = false;
   state.isError = null;
 };
@@ -138,12 +172,17 @@ export default {
   getdFormsSuccess,
   getdFormsRequest,
   getdFormsError,
-  createdFormSuccess,
-  createdFormRequest,
-  createdFormError,
-  updatedFormSuccess,
-  updatedFormRequest,
-  updatedFormError,
+
+  updateDFormRequest,
+  updateDFormSuccess,
+  updateDFormError,
+
+  createDFormTemplateSuccess,
+  createDFormTemplateRequest,
+  createDFormTemplateError,
+  updateDFormTemplateSuccess,
+  updateDFormTemplateRequest,
+  updateDFormTemplateError,
   deletedFormSuccess,
   deletedFormRequest,
   deletedFormError,

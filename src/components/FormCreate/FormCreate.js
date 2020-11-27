@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import Form from "@rjsf/core";
+// import Form from "@rjsf/core";
+import Form from '@rjsf/material-ui';
 import ElementEditModal from "./ElementEditModal";
 import DependencyEditModal from "./DependencyEditModal";
 import classnames from "classnames"
@@ -29,13 +30,13 @@ import {ObjectFieldTemplate} from './Custom/ObjectFieldTemplate'
 import {FileWidget} from "./Custom/FileWidget";
 import {CheckboxesWidget} from "./Custom/CheckboxesWidget";
 import {CheckboxWidget} from "./Custom/CheckboxWidget";
-import HelpText from "./Custom/HelpText";
+import Reference from "./Custom/Reference";
 
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "./services/file.service";
 import Constants, {
   FIELD_TYPE_BOOLEAN, FIELD_TYPE_DATE, FIELD_TYPE_FILE, FIELD_TYPE_FILE_LIST,
-  FIELD_TYPE_MULTI_SELECT, FIELD_TYPE_NUMBER,
+  FIELD_TYPE_MULTI_SELECT, FIELD_TYPE_NUMBER, FIELD_TYPE_REFERENCE,
   FIELD_TYPE_SELECT, FIELD_TYPE_TEXT,
   FIELD_TYPE_TEXT_AREA
 } from './Parts/Constants'
@@ -48,8 +49,11 @@ import {getSpecificType, isElementProtected} from "./helper";
 import OrderingEditModal from './Ordering/OrderingEditModal'
 import Ordering from './Ordering/Ordering'
 import FormOrdering from './Ordering/index'
+import masterSchemaService from "../../views/pages/master-schema/services/masterSchema.service";
 
 const clone = rfdc();
+
+
 
 class FormCreate extends React.Component {
 
@@ -78,7 +82,7 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
-    if(!isEqual(prevProps, this.props)) {
+    if (!isEqual(prevProps, this.props)) {
       if (!isEqual(prevProps.dForm, this.props.dForm)) {
         // this.setState(this.initState(this.props));
         // this.groupedFiles();
@@ -86,6 +90,7 @@ class FormCreate extends React.Component {
         this.reInit();
       }
     }
+    console.log('FormCreate componentDidUpdate', this.state);
   };
 
   async componentDidMount() {
@@ -137,8 +142,8 @@ class FormCreate extends React.Component {
     this.disableAllInputs(propsDFormSchema, propsDFormUiSchema);
 
     const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
-
     return {
+      onboardingUser: props.onboardingUser,
       additionalData: {
         name: props.dForm.name,
         description: props.dForm.description,
@@ -154,10 +159,10 @@ class FormCreate extends React.Component {
       },
       onSaveButtonHidden: props.onSaveButtonHidden === true ? true : false,
       dFormActions: [
-        {value: "submitted", label: "Submitted"},
-        {value: "approved", label: "Approved"},
-        {value: "rejected", label: "Rejected"},
-        {value: "unsubmitted", label: "Unsubmitted"},
+        {value: "submitted", label: "submitted"},
+        {value: "approved", label: "approved"},
+        {value: "rejected", label: "rejected"},
+        {value: "unsubmitted", label: "unsubmitted"},
       ],
       fileLoading: fileLoading,
       dFormSelectedAction: this.getSelectedDFormAction(props.dForm.status),
@@ -188,6 +193,13 @@ class FormCreate extends React.Component {
         text: {
           type: "string",
           title: "Some Title",
+          default: '',
+        },
+        reference: {
+          type: Constants.FIELD_TYPE_REFERENCE,
+          title: "Reference",
+          field_id: null,
+          value_id: null,
           default: '',
         },
         textarea: {
@@ -298,6 +310,10 @@ class FormCreate extends React.Component {
           break;
         }
         case FIELD_TYPE_TEXT_AREA: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_REFERENCE: {
           formData[key] = '';
           break;
         }
@@ -1090,6 +1106,12 @@ class FormCreate extends React.Component {
     this.setState(state);
   };
 
+  changePropertyEditing = (property, value) => {
+    let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
+    schemaPropertyEdit[property] = value;
+    this.setState({schemaPropertyEdit});
+  };
+
   inputChangeHandler = (event, objKey, prop) => {
     const {target: {value}} = event;
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
@@ -1231,7 +1253,15 @@ class FormCreate extends React.Component {
     let uiSchema = clone(this.state.uiSchema);
     schema.properties[previousFieldKey] = clone(this.state.schemaPropertyEdit);
     uiSchema[previousFieldKey] = clone(this.state.uiSchemaPropertyEdit);
+
     schema.required = clone(this.state.schemaRequiredFields);
+
+    // todo set uiSchema type for reference or remove
+    if ('type' in schema.properties[previousFieldKey] && schema.properties[previousFieldKey]['type'] === Constants.RJSF_FIELD_TYPE_REFERENCE) {
+      uiSchema[previousFieldKey]["ui:field"] = Constants.FIELD_TYPE_REFERENCE;
+    } else {
+      delete uiSchema[previousFieldKey]['ui:field'];
+    }
 
     this.setState({schema, uiSchema}, () => {
       this.inputKeyObjectHandler(previousFieldKey);
@@ -1240,13 +1270,17 @@ class FormCreate extends React.Component {
     return true;
   }
 
+
+
   elementEditModalOpened = (column) => {
+
     let schemaPropertyEdit = clone(this.state.schema.properties[column]);
     let uiSchemaPropertyEdit = column in this.state.uiSchema ? clone(this.state.uiSchema[column]) : {};
     let schemaRequiredFields = clone(this.state.schema.required);
 
     const fieldEdit = clone(this.state.fieldEdit);
     fieldEdit.propertyKey = column;
+
     this.setState({fieldEdit, schemaPropertyEdit, uiSchemaPropertyEdit, schemaRequiredFields});
   };
 
@@ -1788,7 +1822,9 @@ class FormCreate extends React.Component {
                   CheckboxesWidget: CheckboxesWidget,
                   FileWidget: this.fileWidget
                 }}
-                fields={{}}
+                fields={{
+                  reference: Reference.bind(this)
+                }}
                 onChange={(event) => {
                   this.onChangeForm(event)
                 }}

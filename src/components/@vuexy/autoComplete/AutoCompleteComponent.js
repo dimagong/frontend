@@ -333,7 +333,7 @@ class Autocomplete extends React.Component {
       this.setState({ showSuggestions: true })
     }
     const recentSearches = JSON.parse(localStorage.getItem("recentSearches"))
-    console.log(recentSearches)
+
     if (recentSearches === null) {
       localStorage.setItem("recentSearches", JSON.stringify([]))
     } else {

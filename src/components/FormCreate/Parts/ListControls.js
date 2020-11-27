@@ -21,13 +21,18 @@ import ElementEditModal from "../ElementEditModal";
 import DependencyEditModal from "../DependencyEditModal";
 import {isEmpty} from "lodash";
 import classnames from "classnames";
-import React from "react";
+import React, {useState} from "react";
 import {getSpecificType} from "../helper";
 import WysiwygEditor from "../Custom/WysiwygEditor";
+import Select from 'react-select'
+import MasterSchemaField from "../Fields/MasterSchemaField";
 
 export function listControls(properties) {
+
   let keys = Object.keys(properties);
   let schemaPropertyEdit = this.state.schemaPropertyEdit;
+
+
   const renderConfigFields = ((objKey, index) => {
 
     // add collback for inputHandlerRequired and custom changes
@@ -143,6 +148,10 @@ export function listControls(properties) {
 
     const specificType = getSpecificType(schemaPropertyEdit);
 
+    const onChangeFieldId = (fieldId) => {
+      this.changePropertyEditing('field_id', fieldId);
+    };
+
     const renderSpecificType = () => {
 
       let labelForControls = <div>
@@ -153,6 +162,12 @@ export function listControls(properties) {
       </div>;
 
       switch (specificType) {
+        case Constants.FIELD_TYPE_REFERENCE: {
+          // todo make constant fieldId
+          return (
+            <MasterSchemaField onChangeFieldId={onChangeFieldId} fieldId={schemaPropertyEdit.field_id}/>
+          );
+        }
         case Constants.FIELD_TYPE_TEXT: {
           return (
             <Row>
@@ -457,6 +472,15 @@ export function listControls(properties) {
     let currentSpecificType = getSpecificType(this.state.schema.properties[objKey]);
 
 
+    const renderPropertyKey = () => {
+      return <React.Fragment>
+        {renderLabel('property-' + objKey, 'Property')}
+        <div className="form-group">
+          {renderKeyObjectEditColumn(objKey, 'Property')}
+        </div>
+      </React.Fragment>
+    };
+
     return (
       <div
         className={objKey in this.state.uiSchema.columnsClasses ? this.state.uiSchema.columnsClasses[objKey] : 'col-md-12'}
@@ -473,10 +497,7 @@ export function listControls(properties) {
             <div className="vertical-center dform-input">
               <ElementEditModal onOpen={() => this.elementEditModalOpened(objKey)}
                                 onSave={() => this.elementEditModalSave(objKey)}>
-                {renderLabel('property-' + objKey, 'Property')}
-                <div className="form-group">
-                  {renderKeyObjectEditColumn(objKey, 'Property')}
-                </div>
+
                 <div className="form-group">
                   {renderLabel('type', 'Type')}
                   <select
@@ -489,6 +510,7 @@ export function listControls(properties) {
                       key={indexType}>{type}</option>)}
                   </select>
                 </div>
+                {renderPropertyKey()}
                 {renderSpecificType()}
               </ElementEditModal>
             </div>
@@ -827,6 +849,7 @@ export function listControls(properties) {
       </TabContent>
     </div>);
   };
+
   return (
     <div>
       {renderObject()}

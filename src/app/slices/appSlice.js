@@ -108,17 +108,21 @@ export const {
   getdFormsRequest,
   getdFormsError,
 
-  createdFormSuccess,
-  createdFormRequest,
-  createdFormError,
+  createDFormTemplateSuccess,
+  createDFormTemplateRequest,
+  createDFormTemplateError,
 
-  updatedFormSuccess,
-  updatedFormRequest,
-  updatedFormError,
+  updateDFormTemplateSuccess,
+  updateDFormTemplateRequest,
+  updateDFormTemplateError,
 
   deletedFormSuccess,
   deletedFormRequest,
   deletedFormError,
+
+  updateDFormSuccess,
+  updateDFormRequest,
+  updateDFormError,
 
   submitdFormSuccess,
   submitdFormRequest,

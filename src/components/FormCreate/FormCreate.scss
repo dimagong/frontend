@@ -36,3 +36,10 @@
   -o-animation: rotating 2s linear infinite;
   animation: rotating 2s linear infinite;
 }
+
+.dform-type-badget {
+  position: absolute!important;
+  right: 10px;
+  top: 24%;
+  opacity: 0.8;
+}

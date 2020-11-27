@@ -24,7 +24,7 @@ const UserManagment = lazy(() => import("features/user-managment/UserManagment")
 const Invitation = lazy(() => import("features/invitation/Invitation"));
 const Home = lazy(() => import("features/home/Home"));
 const Error404 = lazy(() => import("components/misc/error/404"));
-const MasterSchema = lazy(() => import("components/misc/ComingSoon"));
+const MasterSchema = lazy(() => import("views/pages/master-schema/index"));
 
 const routes = [
 
@@ -43,27 +43,27 @@ const routes = [
     exact: true,
     redirect: homePath,
   },
-  // {
-  //   path: notificationsPath,
-  //   Component: Notifications,
-  //   isPrivate: true,
-  //   exact: false,
-  //   redirect: loginPath,
-  // },
-  // {
-  //   path: dformsPath,
-  //   Component: DForm,
-  //   isPrivate: true,
-  //   exact: false,
-  //   redirect: loginPath,
-  // },
-  // {
-  //   path: workflowsPath,
-  //   Component: Workflow,
-  //   isPrivate: true,
-  //   exact: false,
-  //   redirect: loginPath,
-  // },
+  {
+    path: notificationsPath,
+    Component: Notifications,
+    isPrivate: true,
+    exact: false,
+    redirect: loginPath,
+  },
+  {
+    path: dformsPath,
+    Component: DForm,
+    isPrivate: true,
+    exact: false,
+    redirect: loginPath,
+  },
+  {
+    path: workflowsPath,
+    Component: Workflow,
+    isPrivate: true,
+    exact: false,
+    redirect: loginPath,
+  },
   // {
   //   path: userManagmentPath,
   //   Component: UserManagment,
@@ -86,13 +86,13 @@ const routes = [
     redirect: loginPath,
     exact: true,
   },
-  // {
-  //   path: masterSchemaPath,
-  //   Component: MasterSchema,
-  //   isPrivate: true,
-  //   redirect: loginPath,
-  //   exact: true,
-  // },
+  {
+    path: masterSchemaPath,
+    Component: MasterSchema,
+    isPrivate: true,
+    redirect: loginPath,
+    exact: true,
+  },
   {
     path: onboardingProcessPath,
     Component: OnboardingUser,
