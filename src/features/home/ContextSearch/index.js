@@ -107,7 +107,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     const getOrganizationName = (groupId, groupType) => {
       return getGroupName(groups, groupId, groupTypes[groupType])
     }
-    console.log(data)
+
     const templates = {
       dForms: <DFormCardTemplate oneColumn={oneColumn} onClick={(e, dForm) => {
                 if (e.ctrlKey) {
@@ -117,7 +117,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                   handleContextChange("dForm")
                 }
               }} />,
-      managers: <UserCardTemplate getOrganizationName={getOrganizationName} oneColumn={oneColumn} onClick={(e, user) => {
+      managers: <UserCardTemplate oneColumn={oneColumn} onClick={(e, user) => {
                   if (e.ctrlKey) {
                     dispatch(setPreview({type: "user", id: user.id}))
                   } else {

@@ -6,11 +6,11 @@ import useWindowSize from 'hooks/windowWidth'
 import './userCard.scss'
 import {capitalizeAll} from '../../../../utility/common'
 
-const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }) => (
+const UserCardTemplate = ({className, oneColumn, onClick, ...manager }) => (
   <div>
     <Card
       key={manager.email}
-      className="flex-row home__card cursor-pointer user-card"
+      className={"flex-row home__card cursor-pointer user-card " + className}
       onClick={(e) => {
         onClick(e, manager)
       }}
@@ -35,7 +35,6 @@ const UserCardTemplate = ({getOrganizationName, oneColumn, onClick, ...manager }
         </div>
         <div className="user-card-body-right">
           <CardText>
-            {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getOrganizationName(group.group_id, group.group_type)}</span> ))}*/}
             {manager.permissions?.organization}
           </CardText>
           <CardText className="user-card-body_last-seen">

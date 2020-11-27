@@ -42,7 +42,7 @@ const OnboardingUser = () => {
   }, [profile]);
 
   const isOnboarding = () => {
-    // console.log('TEEEEEEST', profile, profile.user, profile.onboardings, profile.onboardings.length);
+
     return profile && profile.onboardings && profile.onboardings.length
   };
 
@@ -62,7 +62,7 @@ const OnboardingUser = () => {
   };
   const handleNavClick = onboarding => {
     toggle(onboarding.id);
-    console.log('onboarding', onboarding);
+
     dispatch(setProfileOnboarding(onboarding))
   };
 

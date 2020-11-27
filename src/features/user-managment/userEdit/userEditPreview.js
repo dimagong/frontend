@@ -130,7 +130,7 @@ const UserEditPreview = (props, context) => {
 
   const handleOrganizationDelete = () => {
     const org = userOrganizations.filter((org) => org.name === deletionData.orgName)[0];
-    console.log(org)
+
     dispatch(removeUserOrganizationRequest({userId: manager.id, group_id: org.id, type: org.type}))
     setIsDeleteModalOpen(false);
   }
@@ -143,7 +143,7 @@ const UserEditPreview = (props, context) => {
   }
 
   const toggleAbility = (userOrg, ability, isChecked) => {
-    console.log("sdf")
+
     const data = {
       ability,
       organization_type:

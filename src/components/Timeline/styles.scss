@@ -1,0 +1,111 @@
+.timeline-component {
+  padding-right: 80px;
+  padding-top: 45px;
+  padding-bottom: 40px;
+
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+  &_item {
+    display: grid;
+    grid-template-columns: 200px 20px 1fr;
+
+    &-delimiter {
+      .vertical-delimiter {
+        height: 60px;
+        border-right: 1px solid #707070;
+      }
+    }
+
+    .start {
+      display: flex;
+      width: 76px;
+      height: 76px;
+      background-color: #7367f0;
+      color: white;
+      border-radius: 100%;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translateX(50%);
+    }
+
+
+    .left, .center, .right {
+    }
+
+    .left {
+      min-width: 100px;
+      text-align: right;
+      color: #707070;
+      border-right: 1px solid #707070;
+      padding-top: 17px;
+      padding-right: 15px;
+    }
+
+    .center {
+      padding-top: 26px;
+      .horizontal-delimiter {
+        position: relative;
+        height: 1px;
+        width: 100%;
+        background-color: rgba(112,112,112, 0.51);
+        .status-circle {
+          position: absolute;
+          height: 16px;
+          width: 16px;
+          border-radius: 100%;
+          left: 0;
+          top: 0;
+          transform: translate(-50%, -50%);
+          &.status-success {
+            background-color: #28A745;
+          }
+        }
+      }
+    }
+
+    .right {
+      &-content {
+        display: inline-flex;
+        padding: 11px;
+        border: 1px solid rgba(112,112,112, 0.24);
+        border-radius: 10px;
+        .icon {
+          margin-right: 11px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 30px;
+          height: 30px;
+          width: 30px;
+          border-radius: 30px;
+          border: 1px solid rgba(112,112,112, 0.45);
+        }
+        .description {
+          padding-top: 6px;
+        }
+      }
+    }
+
+    &:first-child {
+      .left {
+        position: relative;
+        padding-bottom: 75px;
+      }
+
+    }
+  }
+
+
+}
