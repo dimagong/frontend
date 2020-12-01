@@ -1,22 +1,21 @@
 import React, {useState, useEffect} from 'react';
-import {Treebeard, decorators} from 'react-treebeard';
-import {styleLight} from "./styles/style"
-import {Card, CardBody, CardHeader, CardTitle, Row, Col, Button} from 'reactstrap'
+
+import {Card, CardBody, CardHeader, CardTitle, Row, Col, Button, Table} from 'reactstrap'
 import masterSchemaService from './services/masterSchema.service'
 import Select from "react-select"
-import {X} from "react-feather";
+import {X, Plus} from "react-feather";
 import rfdc from "rfdc";
 import FieldEdit from "./FieldEdit";
 import GroupEdit from "./GroupEdit";
 import './index.scss';
+import MasterSchemaTree from "./MasterSchemaTree/MasterSchemaTree";
+import Breadcrumbs from './Breadcrumbs/index'
+import {Treebeard} from "react-treebeard";
+import {styleLight} from "./MasterSchemaTree/styles/style";
+import {styleColumn} from "./MasterSchemaTree/styles/styleColumn";
+import Tabs from '../../../components/Tabs/index.js'
 
 const clone = rfdc();
-
-const organizationTypesData = [
-  {value: "corporation", label: "Corporation"},
-  {value: "network", label: "Network"},
-  {value: "member_firm", label: "Member firm"},
-];
 
 function MasterSchema() {
 
@@ -24,20 +23,17 @@ function MasterSchema() {
   const [organization, setOrganization] = useState();
   const [masterSchema, setMasterSchema] = useState();
   const [masterSchemaTreebeard, setMasterSchemaTreebeard] = useState();
-  const [organizationType, setOrganizationType] = useState();
   const [organizations, setOrganizations] = useState([]);
   const [cursor, setCursor] = useState(false);
 
-  decorators.Header = (props) => {
-    return <div onClick={() => {
-    }} style={props.style.base}>
-      <div style={props.style.title}>{props.node.name}</div>
-    </div>
-  };
 
   const getOrganizations = async () => {
     const response = await masterSchemaService.getOrganizations();
-    let organizations = response.data.data;
+    const organizationsByType = response.data.data;
+    let organizations = []
+      .concat(organizationsByType.corporation)
+      .concat(organizationsByType.network)
+      .concat(organizationsByType.member_firm);
     setOrganizations(organizations);
   };
 
@@ -46,6 +42,8 @@ function MasterSchema() {
   }, []);
 
   useEffect(() => {
+    setMasterSchemaTreebeard(null);
+    setCursor(null);
     getCurrentMasterSchema();
   }, [organization]);
 
@@ -65,12 +63,34 @@ function MasterSchema() {
 
   const recursiveMap = (node) => {
 
-    if(!node) return null;
+    if (!node) return null;
 
     node.children = [];
     node.children = node.fields;
     node.toggled = true;
+
+    if(cursor) {
+      if(
+        node.id === cursor.id && cursor.children && node.children
+      ) {
+        node.active = true;
+        setCursor(node);
+      }
+    }
+
+    node.children.forEach((child) => {
+      if(cursor) {
+        if(
+          child.id === cursor.id && !cursor.children && !child.children
+        ) {
+          child.active = true;
+          setCursor(child);
+        }
+      }
+    });
+
     if (node.groups.length) {
+
       for (let group of node.groups) {
         group = recursiveMap(group);
       }
@@ -89,22 +109,12 @@ function MasterSchema() {
     setMasterSchema(response.data.data);
   };
 
-  const getOrganizationsByType = () => {
-    if (!organizationType) return [];
-    return organizations[organizationType.value].map((organization) => {
-      return {
-        value: organization,
-        label: organization.name
-      }
-    });
-  };
-
   const getMasterSchemaByType = async (type, id) => {
     try {
       const response = await masterSchemaService.getByOrganization(type, id);
       setMasterSchema(response.data.data);
     } catch (exception) {
-
+      console.log(exception);
     } finally {
       setMasterSchemaIsLoading(false)
     }
@@ -112,13 +122,13 @@ function MasterSchema() {
 
 
   const onToggle = (node, toggled) => {
-    if (cursor) {
+    if(cursor) {
       cursor.active = false;
+      masterSchemaTreebeard.active = false;
     }
     node.active = true;
-    // if (node.children) {
-    //   node.toggled = toggled;
-    // }
+
+    console.log(node, masterSchemaTreebeard);
     setCursor(node);
     setMasterSchemaTreebeard(Object.assign({}, masterSchemaTreebeard))
   };
@@ -127,39 +137,34 @@ function MasterSchema() {
     return !masterSchema && organization;
   };
 
-  return (
+  const outputTreeColumn = (node, data = []) => {
+    data.push(node);
+    if(node.children) {
+      node.children.forEach(child => outputTreeColumn(child, data))
+    }
+    return data;
+  };
+
+ return (
     <Row>
       <Col md="6">
         <Card>
           <CardHeader>
-            <CardTitle>Master schema</CardTitle>
+            <CardTitle>
+              <Breadcrumbs list={['Master schema', 'Organization view']}></Breadcrumbs>
+            </CardTitle>
           </CardHeader>
           <CardBody>
             <Row>
               <Col md="3" sm="6">
-                <h5 className="my-1 text-bold-600">Organization type</h5>
-                <Select
-                  className="React"
-                  classNamePrefix="select"
-                  name="color"
-                  options={organizationTypesData}
-                  value={organizationType}
-                  onChange={(event) => {
-                    setOrganizationType(event);
-                    setOrganization(null);
-                    setMasterSchema(null);
-                  }}
-                />
-              </Col>
-
-              <Col md="3" sm="6">
-                <h5 className="my-1 text-bold-600">Organization</h5>
                 <Select
                   className="React"
                   classNamePrefix="select"
                   name="color"
                   value={organization}
-                  options={getOrganizationsByType()}
+                  options={organizations.map(organization => {
+                    return {label: organization.name, value: organization}
+                  })}
                   onChange={(event) => {
                     setMasterSchemaIsLoading(true);
                     setOrganization(event)
@@ -179,8 +184,42 @@ function MasterSchema() {
               </Col>
             </Row>
 
-            {!masterSchemaTreebeard ? null :
-              <Treebeard style={styleLight} data={masterSchemaTreebeard} onToggle={onToggle}/>}
+            {
+              !masterSchemaTreebeard ? null :
+                <div>
+                  <Table responsive bordered>
+                    <thead>
+                    <tr>
+                      <th>Element name</th>
+                      <th>Captured in</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td className="w-50">
+                        <MasterSchemaTree data={masterSchemaTreebeard} cursor={cursor} onToggle={onToggle}/>
+                      </td>
+                      <td className="w-50">
+                        {
+                          outputTreeColumn(masterSchemaTreebeard).map(element => <div className="ms-tree-column">
+                            <Tabs className="w-100" onChange={() => {}} tabs={[element.name, element.name]}></Tabs>
+                          </div>)
+                        }
+                      </td>
+                    </tr>
+                    </tbody>
+                  </Table>
+
+                  <Button
+                    onClick={() => {
+                    }}
+                    color="primary"
+                    className="add-icon btn-add-ms-element p-0"
+                  >
+                    <Plus size={28}/>
+                  </Button>
+                </div>
+            }
           </CardBody>
         </Card>
       </Col>

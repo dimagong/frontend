@@ -25,12 +25,12 @@ export default function MasterSchemaField(props) {
   }, [currentField]);
 
   const convertMasterSchemaToFieldsList = (node, list, path = '') => {
-    for(let group of node.groups) {
-      path += '.' + group.name;
-      convertMasterSchemaToFieldsList(group, list, path);
-    }
     for(let field of node.fields) {
       list[field.id] = path + '.' + field.name;
+    }
+
+    for(let group of node.groups) {
+      convertMasterSchemaToFieldsList(group, list, path + '.' + group.name);
     }
   };
 

@@ -1,0 +1,12 @@
+.breadcrumb .breadcrumb-item + .breadcrumb-item:before {
+  content: "|\00a0";
+  font-family: "feather";
+  color: #626262;
+  padding: 6px;
+  margin-left: 10px;
+}
+.breadcrumb {
+  padding: 0!important;
+  font-size: 34px;
+  margin-bottom: 0;
+}
