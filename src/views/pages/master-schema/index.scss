@@ -1,12 +1,14 @@
 // fix for card arrow toggle
 .card-header:after {
-  content: none!important;
+  content: none !important;
 }
+
 .btn-add-ms-element {
-  border-radius: 100%!important;
+  border-radius: 100% !important;
   width: 45px;
   height: 45px;
 }
+
 .ms-tree-column {
   padding: 10px;
   margin: 7px 7px;
