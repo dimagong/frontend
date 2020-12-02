@@ -1,12 +1,10 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
-import {Input} from 'reactstrap'
+import {Input} from '@material-ui/core'
 import {debounce, isEmpty} from 'lodash'
 
 
 function OnboardingReference(props) {
-  console.log('Reference', props);
-
   const {fieldId, userId} = props;
 
   const [fieldValue, setFieldValue] = useState({});
@@ -41,13 +39,15 @@ function OnboardingReference(props) {
     {
       !isEmpty(fieldValue) ?
         <Input
+          fullWidth
+          disabled={props.disabled}
           onChange={(event) => {
             setFieldValue({value: event.target.value});
             onChangeFieldValue(event.target.value);
           }}
           value={fieldValue.value}
         />
-        : <Input disabled={true}></Input>
+        : <Input fullWidth disabled={true}></Input>
     }
   </div>;
 }
@@ -61,8 +61,8 @@ export default function Reference(props) {
     const fieldId = props.schema.field_id;
     const userId = this.state.onboardingUser.id;
     const data = {fieldId, userId};
-    return <OnboardingReference {...data}></OnboardingReference>
+    return <OnboardingReference {...data} {...props}></OnboardingReference>
   }
 
-  return <Input placeholder="Reference" disabled={true}></Input>
+  return <Input fullWidth placeholder="Reference" disabled={true}></Input>
 }

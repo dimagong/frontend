@@ -1,4 +1,4 @@
-export const styleLight = {
+export const styleColumn = {
   tree: {
     base: {
       listStyle: "none",
@@ -67,7 +67,7 @@ export const styleLight = {
       },
       subtree: {
         listStyle: "none",
-        paddingLeft: "19px"
+        paddingLeft: "0px"
       },
       loading: {
         color: "#7367f0"
