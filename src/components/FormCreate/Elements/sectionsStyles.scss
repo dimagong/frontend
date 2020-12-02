@@ -22,13 +22,18 @@
         display: none;
       }
       // ---
+      &.nav-link {
+        padding-left: 0!important;
 
+      }
       &_title {
         display: flex;
         align-items: center;
         font-size: 16px;
         color: #707070;
         padding-right: 15px;
+
+        display: none;
       }
       &_index {
         display: flex;
@@ -43,7 +48,7 @@
 
       }
       &_delimiter{
-        width: 20px;
+        width: 26px;
         height: 1px;
         align-self: center;
         &.active {

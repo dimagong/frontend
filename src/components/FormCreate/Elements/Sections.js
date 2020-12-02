@@ -19,7 +19,7 @@ export default function Sections(props) {
 
   return (
     <div className="sections">
-      <Nav tabs className="mt-1 sections-nav">
+      <Nav tabs className="my-0 sections-nav">
         {
           sections.map((section, index) =>
             <NavItem style={isSectionHidden(section)} key={`tab-display-${section}`} {...isSectionDisabled(section)}>

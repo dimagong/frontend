@@ -120,7 +120,7 @@ const OnboardingUser = () => {
                   {/*  <CardTitle>Onboarding</CardTitle>*/}
                   {/*</CardHeader>*/}
 
-                  <CardBody className="pt-1">
+                  <CardBody className="pt-1 pl-0">
                     {
                       profile && profile.onboardings && profile.onboardings.length ?
                         <div>
@@ -158,10 +158,14 @@ const OnboardingUser = () => {
                                             setDebounced(true);
                                             debounceOnSave.current(data, profile.onboarding.d_form)
                                           }}
+                                          // updatedAtText={
+                                          //   loading
+                                          //     ? "Saving progress"
+                                          //     : `Progress saved: ${moment(profile.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`}
                                           updatedAtText={
                                             loading
-                                              ? "Saving progress"
-                                              : `Progress saved: ${moment(profile.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`}
+                                              ? "Saving"
+                                              : "Saved"}
                                           isStateConfig={false}
                                           onboardingUser={profile}
                                         ></FormCreate>
