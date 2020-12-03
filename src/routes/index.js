@@ -7,14 +7,15 @@ import { useSelector} from "react-redux"
 import { selectAuth} from "app/selectors/authSelectors"
 import {selectProfile} from 'app/selectors'
 import {userService} from 'services/user'
+import {selectUserAbility} from '../app/selectors/userSelectors'
 
 const Routes = ()=>{
     const isAuth = useSelector(selectAuth);
-    const profile = useSelector(selectProfile);
+    const userRole = useSelector(selectUserAbility);
 
-    const isOnboarding = userService.isOnboarding(profile)
+    const isOnboarding = userRole === "prospect"
 
-    if(isAuth && !profile) return null
+    // if(isAuth && !profile) return null
 
     return(
         <Switch>
