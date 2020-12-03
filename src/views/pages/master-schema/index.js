@@ -231,10 +231,17 @@ function MasterSchema() {
                       </td>
                       <td className="w-50">
                         {
-                          outputTreeColumn(masterSchemaTreebeard).map(element => <div className="ms-tree-column">
-                            <Tabs className="w-100" onChange={() => {
-                            }} tabs={[element.name, element.name]}></Tabs>
-                          </div>)
+                          outputTreeColumn(masterSchemaTreebeard).map(element => {
+                            if(element.children) {
+                              return <div className="ms-tree-column">
+                                <div></div>
+                              </div>
+                            }
+                            return <div className="ms-tree-column">
+                              <Tabs className="w-100" onChange={() => {
+                              }} tabs={['Onboarding']}></Tabs>
+                            </div>
+                          })
                         }
                       </td>
                     </tr>
@@ -242,7 +249,7 @@ function MasterSchema() {
                   </Table>
                   <div className="dropright mr-1 mb-1 d-inline-block">
                     <UncontrolledButtonDropdown direction="right">
-                      <DropdownToggle color="primary" className="add-icon btn-add-ms-element" caret>
+                      <DropdownToggle color="primary" className="add-icon btn-add-ms-element ms-btn-element">
                         <Plus size={28}/>
                       </DropdownToggle>
                       <DropdownMenu>
@@ -265,11 +272,10 @@ function MasterSchema() {
               </CardTitle>
               <X size={15} className="cursor-pointer mr-1" onClick={event => closeElement()}/>
             </CardHeader>
-            <CardBody>
+            <CardBody>  
               {
                 'children' in cursor ?
                   <GroupEdit data={cursor} onChange={(group) => {
-                    // setCursor(recursiveMap(group));
                     getCurrentMasterSchema();
                   }} onNewField={(newField) => {
                     getCurrentMasterSchema();
@@ -278,7 +284,6 @@ function MasterSchema() {
                   }}/>
                   :
                   <FieldEdit data={cursor} onChange={(field) => {
-                    setCursor(field);
                     getCurrentMasterSchema();
                   }}/>
               }
