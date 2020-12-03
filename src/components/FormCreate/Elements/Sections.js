@@ -54,6 +54,7 @@ export default function Sections(props) {
             <TabPane tabId={index} key={section} style={isSectionHidden(section)}>
               <Row className="mx-0" col="12">
                 <Col className="pl-0" sm="12">
+                  {/*<h1 className="px-2" style={{color: "#7367f0"}}>{section}</h1>*/}
                   {
                     renderElementsByGroupsAndSections(section)
                   }

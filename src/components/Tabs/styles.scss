@@ -1,6 +1,38 @@
 .custom-tabs {
   justify-content: space-between;
 
+  .icon-container {
+    //display: inline-block;
+    width: 21px;
+    height: 21px;
+
+    background: white;
+    border-radius: 40px;
+    margin-left: 10px;
+    margin-right: 5px;
+    border: 1px solid #707070;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page-item .page-link {
+    display: flex;
+    align-items: center;
+  }
+
+  .page-item.active {
+    .icon-container {
+      //width: 20px;
+      //height: 20px;
+      border: 0;
+      width: 20px;
+      height: 20px;
+      //padding: 1px;
+    }
+  }
+
   ul.pagination {
     width: 100%;
   }
@@ -10,8 +42,12 @@
       color: white;
     }
   }
+  .with-icon {
+    .page-item .page-link {
+      padding-left: 0;
+    }
+  }
   .page-item {
-
     &.prev-item, &.next-item {
       .page-link {
         background-color: #b1b1b1;

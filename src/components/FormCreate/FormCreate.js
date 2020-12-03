@@ -1867,20 +1867,14 @@ class FormCreate extends React.Component {
                   {/*}*/}
 
                   {this.props.updatedAtText && (
-                    <div className="saving" style={{
-                      color: "#7376f0",
-                      borderBottom: "1px solid #707070",
-                      marginBottom: "20px",
-                      marginLeft: "78px",
-                      paddingLeft: "30px",
-                      paddingBottom: "11px",
-                    }}>
+                    <div className="saving">
                       {this.props.updatedAtText}
                     </div>
                   )}
                   {this.props.onSubmit && (
-                    <div style={{float: "right"}}>
-                      <span style={{color: "#7367f0", paddingRight: "10px"}}>{this.state.additionalData.name}</span> <Button type="submit" className="ml-auto" color="primary">Submit for review</Button>
+                    <div style={{float: "right", paddingRight: "20px"}}>
+                      <span style={{color: "#7367f0", paddingRight: "10px"}}>{this.state.additionalData.name}</span>
+                      <Button type="submit" className="ml-auto submit-onboarding-button">Submit for review</Button>
                     </div>
                   )}
                 </div>

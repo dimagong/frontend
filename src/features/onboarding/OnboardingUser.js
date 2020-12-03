@@ -33,6 +33,8 @@ import moment from "moment";
 import TabsArrayOfObjects from 'components/Tabs/TabsArrayOfObjects'
 import {getProfileRequest} from "../../app/slices/appSlice";
 
+import Check from 'assets/img/icons/check.png'
+
 const OnboardingUser = () => {
 
   const dispatch = useDispatch();
@@ -106,23 +108,38 @@ const OnboardingUser = () => {
     return !roles.some(role => ['corporate_manager', 'member_firm_manager', 'adviser', 'admin'].indexOf(role) !== -1);
   };
 
+  useEffect(() => {
+    console.log("INITIALIZZED")
+  }, [])
+
   return (
     <div>
       {
         isOnboarding()
           ? (
             <Row>
-              <Col sm="12" md={{size: 10, offset: 1}}>
-                <TabsArrayOfObjects
-                  tabId="id"
-                  tabName={(onboarding) => onboarding.d_form.name}
-                  active={profile.onboarding?.id || profile.onboardings[0].id}
-                  tabs={profile.onboardings}
-                  onChange={(onboarding) => {
-                    handleNavClick(onboarding)
-                  }}
-                />
+              <Col sm={12} style={{borderBottom: "1px solid rgba(115,103,240, 0.03)", marginBottom: "20px"}}>
+                <Row>
+                  <Col sm="12" md={{size: 10, offset: 1}}>
+                    <div style={{marginLeft: "100px", marginRight: "100px", marginBottom: "20px"}}>
+                      <TabsArrayOfObjects
+                        withIcons
+                        tabId="id"
+                        tabName={(onboarding) => onboarding.d_form.name}
+                        active={profile?.onboarding?.id || profile.onboardings[0].id}
+                        tabs={profile?.onboardings.map((onboarding) => ({
+                          ...onboarding,
+                          icon: onboarding.d_form.status === "submitted" ? Check : "null",
+                          isHidden: onboarding.d_form.status === "approved",
+                        }))}
+                        onChange={(onboarding) => {
+                          handleNavClick(onboarding)
+                        }}
+                      />
+                    </div>
 
+                  </Col>
+                </Row>
               </Col>
               <Col sm="12" md={{size: 10, offset: 1}}>
                 <Card style={{background: "transparent", boxShadow: "none"}}>
@@ -133,12 +150,12 @@ const OnboardingUser = () => {
                   <CardBody className="pt-1 pl-0">
                     {
                       profile && profile.onboardings && profile.onboardings.length ?
-                        <div>
+                        <div style={{marginLeft: "-100px", marginRight: "100px"}}>
                           <TabContent activeTab={profile.onboarding.id}>
                             {
                               profile.onboardings.map((onboarding, index) => {
                                 return (
-                                  <TabPane tabId={onboarding.id}>
+                                  <TabPane key={index} tabId={onboarding.id}>
                                     {
                                       !isEmpty(profile.onboarding)
                                         ? profile.onboarding.d_form.access_type === 'user-lock'
@@ -154,7 +171,7 @@ const OnboardingUser = () => {
                                           onSaveButtonHidden={isDisabledSubmit()}
                                           isStateConfig={false}
                                           onboardingUser={profile}
-                                        ></FormCreate>
+                                        />
                                         : <FormCreate
                                           // reInit={(reInit, context) => {
                                           //   this.reInitForm = reInit.bind(context)
@@ -177,10 +194,10 @@ const OnboardingUser = () => {
                                           updatedAtText={
                                             loading
                                               ? "Saving"
-                                              : "Saved"}
+                                              : (<span><img style={{marginTop: "-2px", fontSize: "15px"}} src={Check} alt=""/> Saved</span>)}
                                           isStateConfig={false}
-                                          onboardingUser={profile}
-                                        ></FormCreate>
+                                          // onboardingUser={profile}
+                                        />
                                         : null
                                     }
                                   </TabPane>
