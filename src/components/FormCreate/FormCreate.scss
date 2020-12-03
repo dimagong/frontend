@@ -43,3 +43,23 @@
   top: 24%;
   opacity: 0.8;
 }
+
+.saving {
+  font-size: 11px;
+  color: rgb(115, 118, 240);
+  border-bottom: 1px solid rgb(112, 112, 112);
+  margin-bottom: 29px;
+  margin-left: 200px;
+  padding-left: 12px;
+  padding-bottom: 11px;
+  img {
+    width: 8px;
+  }
+}
+
+.submit-onboarding-button {
+  padding: 10px 28px;
+  border-radius: 10px;
+  background-color: #7367F0 !important;
+  color: white !important;
+}

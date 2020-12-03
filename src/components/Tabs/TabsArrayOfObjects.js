@@ -8,21 +8,21 @@ import {
 
 import './styles.scss'
 
-const Tabs = ({tabs, onChange, active, tabId = 'id', tabName}) => {
+const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false}) => {
 
   const tabsByKey = tabs.map((tab => tab[tabId]));
 
   const handlePrevSelect = () => {
     const tabIndex = tabsByKey.indexOf(active);
     if (~tabIndex && tabIndex !== 0) {
-      handleTabChange(tabsByKey[tabIndex - 1])
+      handleTabChange(tabs[tabIndex - 1])
     }
   };
 
   const handleNextSelect = () => {
     const tabIndex = tabsByKey.indexOf(active);
     if (~tabIndex && tabIndex !== tabsByKey.length - 1) {
-      handleTabChange(tabsByKey[tabIndex + 1])
+      handleTabChange(tabs[tabIndex + 1])
     }
   };
 
@@ -31,7 +31,6 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName}) => {
     const container = document.getElementById("tabs-container");
 
     const viewPosition = container.offsetWidth + container.scrollLeft;
-
     // container.offsetLeft is width from tabs container to pagination left border
     // (left arrow and gap between items and arrow)
     const elementLeftOffset = element.offsetLeft - container.offsetLeft;
@@ -52,16 +51,11 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName}) => {
     scrollIntoContainerView(tab[tabId])
   };
 
-  return (
-    <Pagination className=" justify-content-center mt-1 custom-tabs">
-      <PaginationItem href="#" className="prev-item">
-        <PaginationLink onClick={handlePrevSelect} first>
-          <ChevronLeft/>{" "}
-        </PaginationLink>
-      </PaginationItem>
-      <div className="custom-tabs_tabs" id={"tabs-container"}>
-        {tabs.map((item) => (
-          <span key={item[tabId]} className="custom-tabs_tab" id={item[tabId]}>
+  const renderTabsWithoutIcons = () => {
+
+    return (
+      tabs.map((item) => (
+        <span key={item[tabId]} className="custom-tabs_tab" id={item[tabId]}>
             <PaginationItem
               active={item[tabId] === active}
             >
@@ -72,7 +66,47 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName}) => {
               </PaginationLink>
             </PaginationItem>
           </span>
-        ))}
+      ))
+    )
+
+  }
+
+  const renderTabsWithIcons = () => {
+    return (
+      tabs.map((item) => (
+          !item.isHidden && (
+            <span key={item[tabId]} className="custom-tabs_tab with-icon" id={item[tabId]}>
+              <PaginationItem
+                active={item[tabId] === active}
+              >
+                <PaginationLink onClick={() => {
+                  handleTabChange(item)
+                }}>
+                  <div className="icon-container">
+                    <img src={item.icon} alt=""/>
+                  </div>
+                  <div>
+                    {tabName(item)}
+                  </div>
+                </PaginationLink>
+              </PaginationItem>
+            </span>
+          )
+        )
+      )
+    )
+  }
+
+  //** TODO add mt-1 to other sections
+  return (
+    <Pagination className=" justify-content-center custom-tabs">
+      <PaginationItem href="#" className="prev-item">
+        <PaginationLink onClick={handlePrevSelect} first>
+          <ChevronLeft/>{" "}
+        </PaginationLink>
+      </PaginationItem>
+      <div className="custom-tabs_tabs" id={"tabs-container"}>
+        {withIcons ? renderTabsWithIcons(tabs) : renderTabsWithoutIcons(tabs)}
       </div>
       <PaginationItem href="#" className="next-item">
         <PaginationLink onClick={handleNextSelect} last>

@@ -1,6 +1,7 @@
 .sections {
   display: flex;
   &-nav {
+
     display: flex;
     flex-direction: column;
     border-right: 2px solid #7367F0!important;
@@ -10,9 +11,10 @@
     margin-right: 3px;
     &_item {
       padding-right: 0!important;
+      margin-bottom: 23px;
       display: flex;
       flex-direction: row;
-      white-space: nowrap;
+      //white-space: nowrap;
       justify-content: flex-end;
 
       // override default styles
@@ -22,13 +24,25 @@
         display: none;
       }
       // ---
+      &.nav-link {
+        display: grid;
+        grid-template-columns: 139px 33px 26px;
+        padding-left: 0!important;
 
+      }
       &_title {
         display: flex;
         align-items: center;
         font-size: 16px;
         color: #707070;
-        padding-right: 15px;
+        padding-right: 7px;
+
+        span {
+          width: 100%;
+          text-align: right;
+          padding-top: 4px;
+        }
+        //display: none;
       }
       &_index {
         display: flex;
@@ -43,9 +57,10 @@
 
       }
       &_delimiter{
-        width: 20px;
+        width: 26px;
         height: 1px;
-        align-self: center;
+        //align-self: center;
+        margin-top: 16px;
         &.active {
           background: #7367f0;
         }

@@ -31,6 +31,7 @@ import {FileWidget} from "./Custom/FileWidget";
 import {CheckboxesWidget} from "./Custom/CheckboxesWidget";
 import {CheckboxWidget} from "./Custom/CheckboxWidget";
 import Reference from "./Custom/Reference";
+import TextWidget from './Custom/TextWidget';
 
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "./services/file.service";
@@ -1820,7 +1821,8 @@ class FormCreate extends React.Component {
                 widgets={{
                   CheckboxWidget: CheckboxWidget,
                   CheckboxesWidget: CheckboxesWidget,
-                  FileWidget: this.fileWidget
+                  FileWidget: this.fileWidget,
+                  TextWidget: TextWidget,
                 }}
                 fields={{
                   reference: Reference.bind(this)
@@ -1835,13 +1837,13 @@ class FormCreate extends React.Component {
                       this.onSave()
                     }}>Save</Button>
                   }
-                  {
-                    this.props.updatedAtText ?
-                      <div style={{'line-height': '38px'}}>
-                        {this.props.updatedAtText}
-                      </div>
-                      : null
-                  }
+                  {/*{*/}
+                  {/*  this.props.updatedAtText ?*/}
+                  {/*    <div style={{'line-height': '38px'}}>*/}
+                  {/*      {this.props.updatedAtText}*/}
+                  {/*    </div>*/}
+                  {/*    : null*/}
+                  {/*}*/}
 
                   {
                     this.props.statusChanged ?
@@ -1859,10 +1861,22 @@ class FormCreate extends React.Component {
                       </div>
                       : null
                   }
-                  {
-                    this.props.onSubmit ?
-                      <Button type="submit" className="ml-auto" color="primary">Submit</Button> : null
-                  }
+                  {/*{*/}
+                  {/*  this.props.onSubmit ?*/}
+                  {/*    <Button type="submit" className="ml-auto" color="primary">Submit</Button> : null*/}
+                  {/*}*/}
+
+                  {this.props.updatedAtText && (
+                    <div className="saving">
+                      {this.props.updatedAtText}
+                    </div>
+                  )}
+                  {this.props.onSubmit && (
+                    <div style={{float: "right", paddingRight: "20px"}}>
+                      <span style={{color: "#7367f0", paddingRight: "10px"}}>{this.state.additionalData.name}</span>
+                      <Button type="submit" className="ml-auto submit-onboarding-button">Submit for review</Button>
+                    </div>
+                  )}
                 </div>
               </Form>
 
