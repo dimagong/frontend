@@ -37,6 +37,8 @@ import {setdForms, setdFormActions, setdFormTriggers} from "app/slices/onboardin
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {selectdForms} from "app/selectors/onboardingSelectors";
 import _ from "lodash";
+import rfdc from "rfdc";
+const clone = rfdc();
 
 function* getdForms() {
   try {
@@ -97,7 +99,6 @@ function* updateDForm({payload}) {
     const response = yield call(dFormApi.updateDForm, {
       ...payload,
     });
-
     yield put(updateDFormSuccess(response));
   } catch (error) {
     console.log(error);

@@ -32,7 +32,8 @@ export function ObjectFieldTemplate(props) {
 
   const getColumnClass = (key, element) => {
     let classes = [];
-    classes.push(key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12');
+    let colClass = key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12';
+    classes.push(colClass);
     if (!checkUiOptionField(element.name, 'label')) {
       classes.push('label-hide');
     }

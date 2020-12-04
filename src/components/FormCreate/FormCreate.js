@@ -87,7 +87,6 @@ class FormCreate extends React.Component {
       if (!isEqual(prevProps.dForm, this.props.dForm)) {
         // this.setState(this.initState(this.props));
         // this.groupedFiles();
-        console.log('reinit', this.props);
         this.reInit();
       }
     }
@@ -116,6 +115,7 @@ class FormCreate extends React.Component {
     propsDFormSchema.properties = isEmpty(propsDFormSchema.properties) ? {} : propsDFormSchema.properties;
 
     propsDFormUiSchema.groups = isEmpty(propsDFormUiSchema.groups) ? {} : propsDFormUiSchema.groups;
+    propsDFormUiSchema.columnsClasses = isEmpty(propsDFormUiSchema.columnsClasses) ? {} : propsDFormUiSchema.columnsClasses;
     propsDFormUiSchema.sections = isEmpty(propsDFormUiSchema.sections) ? {} : propsDFormUiSchema.sections;
     propsDFormUiSchema.groupStates = isEmpty(propsDFormUiSchema.groupStates) ? {} : propsDFormUiSchema.groupStates;
     propsDFormUiSchema.onlySections = isEmpty(propsDFormUiSchema.onlySections) ? {} : propsDFormUiSchema.onlySections;
@@ -410,6 +410,7 @@ class FormCreate extends React.Component {
       schema: schema,
       uiSchema: uiSchema
     };
+
     let dForm = clone(this.state.dFormTemplate);
     dForm.schema = backendSchema;
     dForm.groups = this.props.dForm.groups;
@@ -829,6 +830,7 @@ class FormCreate extends React.Component {
     } else {
       delete state.uiSchema.columnsClasses[objKey];
     }
+
     if (this.state.uiSettings.group) {
       state.uiSchema.groups[objKey] = this.state.uiSettings.group;
     } else {
@@ -857,7 +859,6 @@ class FormCreate extends React.Component {
     this.dependencyChecker(state);
 
     this.setState(state);
-
     return true;
   };
 

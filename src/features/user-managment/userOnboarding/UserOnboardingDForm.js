@@ -54,6 +54,7 @@ const UserOnboardingDForm = () => {
 
 
   const submitDForm = (dForm, {name, description, protected_properties}) => {
+    console.log('dForm', dForm);
     dispatch(updateDFormRequest({...dForm, name, description, protected_properties}))
   };
 
