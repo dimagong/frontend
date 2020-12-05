@@ -1,0 +1,20 @@
+.custom-checkbox-container {
+  position: relative;
+  input {
+    position: absolute;
+    opacity: 0;
+  }
+  .custom-checkbox_check {
+    border: 2px solid #707070;
+  }
+
+  .custom-checkbox_label {
+    padding-left: 25px;
+    font-size: 18px;
+  }
+
+  &.multiselect-checkboxes {
+    margin-bottom: 20px;
+    margin-left: 30px;
+  }
+}

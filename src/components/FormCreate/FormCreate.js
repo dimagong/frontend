@@ -28,7 +28,7 @@ import {deepCompare, makeid, IsJsonString} from "./utils";
 
 import {ObjectFieldTemplate} from './Custom/ObjectFieldTemplate'
 import {FileWidget} from "./Custom/FileWidget";
-import {CheckboxesWidget} from "./Custom/CheckboxesWidget";
+import {CheckboxesWidget} from "./Custom/CheckboxesWidget/CheckboxesWidget";
 import {CheckboxWidget} from "./Custom/CheckboxWidget";
 import Reference from "./Custom/Reference";
 import TextWidget from './Custom/TextWidget';
@@ -116,6 +116,7 @@ class FormCreate extends React.Component {
     propsDFormSchema.properties = isEmpty(propsDFormSchema.properties) ? {} : propsDFormSchema.properties;
 
     propsDFormUiSchema.groups = isEmpty(propsDFormUiSchema.groups) ? {} : propsDFormUiSchema.groups;
+    propsDFormUiSchema.columnsClasses = isEmpty(propsDFormUiSchema.columnsClasses) ? {} : propsDFormUiSchema.columnsClasses;
     propsDFormUiSchema.sections = isEmpty(propsDFormUiSchema.sections) ? {} : propsDFormUiSchema.sections;
     propsDFormUiSchema.groupStates = isEmpty(propsDFormUiSchema.groupStates) ? {} : propsDFormUiSchema.groupStates;
     propsDFormUiSchema.onlySections = isEmpty(propsDFormUiSchema.onlySections) ? {} : propsDFormUiSchema.onlySections;
