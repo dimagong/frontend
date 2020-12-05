@@ -1,7 +1,3 @@
-import rfdc from "rfdc";
-
-const clone = rfdc();
-
 const getdFormsSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;

@@ -46,7 +46,10 @@ export const initialState = {
     dForms: [],
     reviewers: [],
   },
-}
+  masterSchema: {
+    fields: []
+  }
+};
 
 export const appSlice = createSlice({
   name: "app",
@@ -281,6 +284,10 @@ export const {
   disallowUserAbilityRequest,
   disallowUserAbilitySuccess,
   disallowUserAbilityError,
+
+  getMasterSchemaFieldsRequest,
+  getMasterSchemaFieldsSuccess,
+  getMasterSchemaFieldsError,
 
   resetAppSlice,
   logout,

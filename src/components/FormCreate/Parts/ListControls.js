@@ -63,27 +63,20 @@ export function listControls(properties) {
 
       return (
         <div>
-          <div className="row" key={index}>
-            <div className="col-md-12 form-group">
               <MasterSchemaProperty
                 onChangeFieldId={onChangeMasterSchemaProperty}
                 fieldId={schemaPropertyEdit.reference?.field_id}
+                invalid={errorPropertyNameAlreadyTaken}
               />
-              <Input id={`${index}-property-${column}`}
-                     value={this.state.fieldEdit.propertyKey} type="text"
-                     ref={this.refTitles}
-                     data-id={objKey}
-                     onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
-                     className="form-control"
-                     invalid={errorPropertyNameAlreadyTaken}
-                     placeholder={placeholder}
-              />
-              <FormFeedback>
-                {errorPropertyNameAlreadyTaken ? 'That property name is already taken' : null}
-              </FormFeedback>
-            </div>
-          </div>
-
+              {/*<Input id={`${index}-property-${column}`}*/}
+              {/*       value={this.state.fieldEdit.propertyKey} type="text"*/}
+              {/*       ref={this.refTitles}*/}
+              {/*       data-id={objKey}*/}
+              {/*       onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}*/}
+              {/*       className="form-control"*/}
+              {/*       invalid={errorPropertyNameAlreadyTaken}*/}
+              {/*       placeholder={placeholder}*/}
+              {/*/>*/}
         </div>)
     };
 
@@ -160,6 +153,7 @@ export function listControls(properties) {
 
     const onChangeMasterSchemaProperty = (fieldId) => {
       this.changeMasterSchemaFieldId(fieldId);
+      this.setState({fieldEdit: {propertyKey: fieldId}})
     };
 
     const renderSpecificType = () => {
@@ -484,7 +478,7 @@ export function listControls(properties) {
 
     const renderPropertyKey = () => {
       return <React.Fragment>
-        {renderLabel('property-' + objKey, 'Property')}
+        {/*{renderLabel('property-' + objKey, 'Property')}*/}
         <div className="form-group">
           {renderKeyObjectEditColumn(objKey, 'Property')}
         </div>

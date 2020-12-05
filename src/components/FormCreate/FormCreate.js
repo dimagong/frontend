@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 // import Form from "@rjsf/core";
 import Form from '@rjsf/material-ui';
 import ElementEditModal from "./ElementEditModal";
@@ -53,10 +54,21 @@ import OrderingEditModal from './Ordering/OrderingEditModal'
 import Ordering from './Ordering/Ordering'
 import FormOrdering from './Ordering/index'
 import masterSchemaService from "../../views/pages/master-schema/services/masterSchema.service";
+import {
+  getMasterSchemaFieldsRequest,
+} from "app/slices/appSlice";
+import {selectMasterSchemaFields} from "app/selectors";
 
 const clone = rfdc();
 
+function InitFormCreate() {
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getMasterSchemaFieldsRequest());
+  }, [])
+  return <div></div>
+}
 
 class FormCreate extends React.Component {
 
@@ -81,6 +93,8 @@ class FormCreate extends React.Component {
     this.dependencyChecker = dependencyChecker.bind(this);
 
     this.multiSelectRef = React.createRef();
+
+
   }
 
   // hooks
@@ -1658,6 +1672,7 @@ class FormCreate extends React.Component {
 
     return (
       <Row>
+        <InitFormCreate/>
         {
           this.props.isStateConfig ?
             <Col>

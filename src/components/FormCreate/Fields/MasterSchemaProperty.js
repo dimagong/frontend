@@ -1,13 +1,34 @@
 import React, {useEffect, useState} from "react";
-import {Col, FormGroup, Row} from "reactstrap";
+import {Col, FormFeedback, FormGroup, Row, Alert} from "reactstrap";
 import Select from "react-select";
 import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
-import { isEmpty } from 'lodash'
+import {isEmpty} from 'lodash'
+
+class CustomSelect extends React.Component {
+  render() {
+    const {
+      invalid
+    } = this.props;
+
+    const customStyles = {
+      control: (base, state) => ({
+        ...base,
+        // state.isFocused can display different borderColor if you need it
+        borderColor: state.isFocused ?
+          '#ddd' : !invalid ? '#ddd' : '#dc3545',
+        // overwrittes hover style
+        '&:hover': {
+          borderColor: state.isFocused ? '#ddd' : !invalid ? '#ddd' : 'red'
+        }
+      })
+    }
+    return <Select styles={ customStyles } {...this.props}/>
+  }
+}
 
 export default function MasterSchemaProperty(props) {
 
   const [organizations, setOrganizations] = useState([]);
-  const [currentOrganization, setCurrentOrganization] = useState({});
   const [currentField, setCurrentField] = useState({});
 
   useEffect(() => {
@@ -15,21 +36,17 @@ export default function MasterSchemaProperty(props) {
   }, []);
 
   useEffect(() => {
-    setCurrentField(null);
-  }, [currentOrganization]);
-
-  useEffect(() => {
-    if(!isEmpty(currentField)) {
-        props.onChangeFieldId(currentField.value);
+    if (!isEmpty(currentField)) {
+      props.onChangeFieldId(currentField.value);
     }
   }, [currentField]);
 
   const convertMasterSchemaToFieldsList = (node, list, path = '') => {
-    for(let field of node.fields) {
+    for (let field of node.fields) {
       list[field.id] = path + '.' + field.name;
     }
 
-    for(let group of node.groups) {
+    for (let group of node.groups) {
       convertMasterSchemaToFieldsList(group, list, path + '.' + group.name);
     }
   };
@@ -37,7 +54,7 @@ export default function MasterSchemaProperty(props) {
   const formatOrganizationMasterSchema = (organizations) => {
     return organizations.map((organization) => {
       let list = {};
-      if(organization.master_schema) {
+      if (organization.master_schema) {
         convertMasterSchemaToFieldsList(organization.master_schema.root, list, organization.master_schema.root.name);
       }
       return {
@@ -49,19 +66,16 @@ export default function MasterSchemaProperty(props) {
 
   const initCurrentStateField = (formattedOrganizations) => {
 
-    if(!isEmpty(props.fieldId)) {
-      const formattedOrganizaiton = formattedOrganizations.find((formattedOrganization) => {
+    if (!isEmpty(props.fieldId)) {
+      const formattedOrganization = formattedOrganizations.find((formattedOrganization) => {
         return parseInt(props.fieldId) in formattedOrganization.masterSchemaFields;
       });
 
-
-      setCurrentOrganization({
-        label: formattedOrganizaiton.organization.name,
-        value: formattedOrganizaiton
-      });
+      let label = 'MasterSchema';
+      label += '.' + formattedOrganization.masterSchemaFields[props.fieldId];
 
       setCurrentField({
-        label: formattedOrganizaiton.masterSchemaFields[props.fieldId],
+        label: label,
         value: props.fieldId
       });
     }
@@ -86,46 +100,45 @@ export default function MasterSchemaProperty(props) {
     }
   };
 
+  const getFieldsSelect = () => {
+    let masterSchemaFields = organizations.map((formattedOrganization) => {
+      return Object.keys(formattedOrganization.masterSchemaFields).map((masterSchemaFieldId) => {
+        let label = 'MasterSchema';
+        label += '.' + formattedOrganization.masterSchemaFields[masterSchemaFieldId];
+        return {
+          label: label,
+          value: masterSchemaFieldId
+        }
+      })
+    });
+
+    if (masterSchemaFields.length) {
+      masterSchemaFields = masterSchemaFields.reduce((state, next) => state.concat(next));
+    }
+    console.log('masterSchemaFields', masterSchemaFields);
+
+    return <FormGroup>
+      <CustomSelect
+        id="select-ms-property"
+        options={masterSchemaFields}
+        value={currentField}
+        onChange={(event) => {
+          setCurrentField(event);
+        }}
+        invalid={props.invalid}
+      ></CustomSelect>
+      {
+        !props.invalid ? null : <Alert className="mt-1" color="danger">
+          That property name is already taken
+        </Alert>
+      }
+    </FormGroup>
+  };
+
   return <Row>
     <Col md="12">
-      <FormGroup>
-        <label>Organization</label>
-        <Select
-          options={
-            organizations.map((formattedOrganization) => {
-              return {
-                label: formattedOrganization.organization.name,
-                value: formattedOrganization
-              }
-            })
-          }
-          value={currentOrganization}
-          onChange={(event) => {
-            setCurrentOrganization(event);
-          }}
-        ></Select>
-      </FormGroup>
-      {
-        !isEmpty(currentOrganization.value) ?
-          <FormGroup>
-            <label>Field</label>
-            <Select
-              options={
-                Object.keys(currentOrganization.value.masterSchemaFields).map((masterSchemaFieldId) => {
-                  return {
-                    label: currentOrganization.value.masterSchemaFields[masterSchemaFieldId],
-                    value: masterSchemaFieldId
-                  }
-                })
-              }
-              value={currentField}
-              onChange={(event) => {
-                setCurrentField(event);
-              }}
-            ></Select>
-          </FormGroup>
-          : null
-      }
+      <label for="select-ms-property">Property</label>
+      {getFieldsSelect()}
     </Col>
   </Row>
 
