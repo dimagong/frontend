@@ -26,6 +26,7 @@ import {getSpecificType} from "../helper";
 import WysiwygEditor from "../Custom/WysiwygEditor";
 import Select from 'react-select'
 import MasterSchemaField from "../Fields/MasterSchemaField";
+import MasterSchemaProperty from "../Fields/MasterSchemaProperty";
 
 export function listControls(properties) {
 
@@ -64,6 +65,10 @@ export function listControls(properties) {
         <div>
           <div className="row" key={index}>
             <div className="col-md-12 form-group">
+              <MasterSchemaProperty
+                onChangeFieldId={onChangeMasterSchemaProperty}
+                fieldId={schemaPropertyEdit.reference?.field_id}
+              />
               <Input id={`${index}-property-${column}`}
                      value={this.state.fieldEdit.propertyKey} type="text"
                      ref={this.refTitles}
@@ -71,7 +76,8 @@ export function listControls(properties) {
                      onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
                      className="form-control"
                      invalid={errorPropertyNameAlreadyTaken}
-                     placeholder={placeholder}/>
+                     placeholder={placeholder}
+              />
               <FormFeedback>
                 {errorPropertyNameAlreadyTaken ? 'That property name is already taken' : null}
               </FormFeedback>
@@ -152,6 +158,10 @@ export function listControls(properties) {
       this.changePropertyEditing('field_id', fieldId);
     };
 
+    const onChangeMasterSchemaProperty = (fieldId) => {
+      this.changeMasterSchemaFieldId(fieldId);
+    };
+
     const renderSpecificType = () => {
 
       let labelForControls = <div>
@@ -162,12 +172,12 @@ export function listControls(properties) {
       </div>;
 
       switch (specificType) {
-        case Constants.FIELD_TYPE_REFERENCE: {
-          // todo make constant fieldId
-          return (
-            <MasterSchemaField onChangeFieldId={onChangeFieldId} fieldId={schemaPropertyEdit.field_id}/>
-          );
-        }
+        // case Constants.FIELD_TYPE_REFERENCE: {
+        //   // todo make constant fieldId
+        //   return (
+        //     <MasterSchemaField onChangeFieldId={onChangeFieldId} fieldId={schemaPropertyEdit.field_id}/>
+        //   );
+        // }
         case Constants.FIELD_TYPE_TEXT: {
           return (
             <Row>

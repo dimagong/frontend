@@ -42,6 +42,8 @@ import Constants, {
   FIELD_TYPE_TEXT_AREA
 } from './Parts/Constants'
 
+import Controls, { referenceObject } from './Parts/Controls'
+
 import './FormCreate.scss';
 
 import {dependencyChecker} from './Parts/DependencyChecker'
@@ -185,94 +187,7 @@ class FormCreate extends React.Component {
       schemaPropertyEdit: {},
       schemaRequiredFields: [],
       schema: propsDFormSchema,
-      controls: {
-        default: {
-          type: "string",
-          title: "Some Title",
-          default: '',
-        },
-        text: {
-          type: "string",
-          title: "Some Title",
-          default: '',
-        },
-        reference: {
-          type: Constants.FIELD_TYPE_REFERENCE,
-          title: "Reference",
-          field_id: null,
-          value_id: null,
-          default: '',
-        },
-        textarea: {
-          type: "string",
-          format: 'textarea',
-          title: "Some Title",
-          default: '',
-        },
-        boolean: {
-          type: "boolean",
-          title: "Some Title",
-        },
-        fileList: {
-          "type": "array",
-          "title": "A list of files",
-          "items": {
-            "type": "string",
-            "format": "data-url"
-          }
-        },
-        [Constants.FIELD_TYPE_HELP_TEXT]: {
-          "title": "",
-          "description": "help text",
-          "type": Constants.RJSF_FIELD_TYPE_HELP_TEXT
-        },
-        number: {
-          type: "number",
-          title: "Some Title",
-          default: '',
-        },
-        file: {
-          title: "Some Title",
-          type: "string",
-          format: "data-url",
-        },
-        date: {
-          type: "string",
-          format: "date-time"
-        },
-        select: {
-          "type": "string",
-          "title": "Enum",
-          "enum": [
-            "test1",
-            "test2"
-          ]
-        },
-        multiSelect: {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "title": "Color",
-            "type": "string",
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "value1"
-                ],
-                "title": "key1"
-              },
-              {
-                "type": "string",
-                "enum": [
-                  "value2"
-                ],
-                "title": "key2"
-              }
-            ]
-          }
-        }
-      },
+      controls: Controls,
       controlTypes: Constants.FIELD_TYPES,
       type: Constants.FIELD_TYPE_TEXT,
       section: '',
@@ -1114,6 +1029,15 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit});
   };
 
+  changeMasterSchemaFieldId = (value) => {
+    let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
+    if(isEmpty(schemaPropertyEdit.reference)) {
+      schemaPropertyEdit.reference = {...referenceObject};
+    }
+    schemaPropertyEdit.reference.field_id = value;
+    this.setState({schemaPropertyEdit});
+  };
+
   inputChangeHandler = (event, objKey, prop) => {
     const {target: {value}} = event;
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
@@ -1268,7 +1192,7 @@ class FormCreate extends React.Component {
     this.setState({schema, uiSchema}, () => {
       this.inputKeyObjectHandler(previousFieldKey);
     });
-
+    console.log('schema', schema);
     return true;
   }
 
