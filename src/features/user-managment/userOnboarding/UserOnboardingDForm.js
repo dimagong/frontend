@@ -76,7 +76,7 @@ const UserOnboardingDForm = () => {
   };
   return (
     <Col md="12" className="mb-4">
-      <Card className="border">
+      <Card className="dform border">
         <CardHeader className="m-0">
           <CardTitle>
             Onboarding dForm
