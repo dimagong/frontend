@@ -86,14 +86,18 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
-  const handleContextChange = () => {
+  const handleContextChange = (context) => {
+    dispatch(setContext(context))
+  }
+
+  const handleAdd = () => {
     if (selectedNavItem.id === "managers") {
       dispatch(setContext("Create user"))
     } else {
       dispatch(setContext("Create dForm"))
     }
-
   }
+
   const closePreview = () => {
     dispatch(setPreview(null))
     setPage(0)
@@ -289,7 +293,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                       </Row>
                       <div className="search-content-footer">
                         <Button
-                          onClick={() => {handleContextChange()}}
+                          onClick={() => {handleAdd()}}
                           color="primary"
                           className="add-icon p-0"
                         >
