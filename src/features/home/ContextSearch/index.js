@@ -9,6 +9,8 @@ import {
   PaginationLink,
   Badge,
   Button,
+  TabContent,
+  TabPane,
 } from "reactstrap";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,6 +61,8 @@ import DFormFormPreview from 'features/onboarding/dForm/DFormFormPreview'
 import WorkflowFormPreview from 'features/onboarding/workflow/workflowPreview'
 import NotificationsFormPreview from 'features/onboarding/notifications/notificationPreview'
 
+import Applications from './Applications';
+
 import './styles.scss'
 import {getGroupName} from '../../../utility/select/prepareSelectData'
 import {groupTypes} from '../../../constants/group'
@@ -82,8 +86,13 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
-  const handleContextChange = (context) => {
-    dispatch(setContext(context))
+  const handleContextChange = () => {
+    if (selectedNavItem.id === "manager") {
+      dispatch(setContext("Create user"))
+    } else {
+      dispatch(setContext("Create dForm"))
+    }
+
   }
   const closePreview = () => {
     dispatch(setPreview(null))
@@ -188,11 +197,6 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     window.addEventListener("resize", handleResize);
   }, [])
 
-
-
-
-
-
   const handleResize = () => {
     setWindowWidth(window.innerWidth)
   }
@@ -217,63 +221,75 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                       />
 
                       <Row className={"contextual-search_wrapper"}>
-                        <Col className={`home__card-wrapper ${preview ? "preview-visible" : ""}`} sm={preview ? oneColumn ? "5" : "8" : "12"}>
-                          {data[selectedNavItem.id] && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
-                          {data[selectedNavItem.id] && getPagination().length > 1 && (
-                            <div className="search-context-pagination">
-                              <Button
-                                className="pagination-arrow"
-                                onClick={() => {
-                                  if (page !== 0) setPage(page - 1)
-                                }}
-                              >
-                                <ChevronLeft size={28} color="#707070"/>
-                              </Button>
-                              <Pagination aria-label="Page navigation">
-                                {getPagination().map( (_, index) => (
-                                  <PaginationItem key={index} active={page === index}>
-                                    <PaginationLink onClick={() => {
-                                      setPage(index)
-                                    }}>
-                                      {index + 1}
-                                    </PaginationLink>
-                                  </PaginationItem>
-                                ))}
-                              </Pagination>
-                              <Button
-                                className="pagination-arrow"
-                                onClick={() => {
-                                  if (page !== getPagination().length -1) setPage(page + 1)
-                                }}
-                              >
-                                <ChevronRight size={28} color="#707070"/>
-                              </Button>
-                            </div>
-                          )}
-                        </Col>
-                        {preview && (
-                          <Col sm={oneColumn ? "7" : "4"} className="preview">
-                            {{
-                              user: <UserEditPreview />,
-                              dForm: <DFormFormPreview />,
-                              workFlow: <WorkflowFormPreview />,
-                              notification: <NotificationsFormPreview />,
-                            }[preview.type]}
-                            <div className="preview-action-buttons">
-                              <Button style={{borderRadius: "5rem"}} onClick={onPreviewExpand}>
-                                Expand
-                              </Button>
-                              <Button style={{borderRadius: "5rem", paddingLeft: "10px", paddingRight: "10px"}} onClick={closePreview}>
-                                <X size={20}/>
-                              </Button>
-                            </div>
+                        <Col>
+                          <TabContent activeTab={selectedNavItem.id}>
+                            <TabPane tabId={NAV_OPTIONS[0].id}>
+                              <Row>
+                                <Col className={`home__card-wrapper ${preview ? "preview-visible" : ""}`} sm={preview ? oneColumn ? "5" : "8" : "12"}>
+                                  {data[selectedNavItem.id] && renderContent(data[selectedNavItem.id], selectedNavItem.id, page)}
+                                  {data[selectedNavItem.id] && getPagination().length > 1 && (
+                                    <div className="search-context-pagination">
+                                      <Button
+                                        className="pagination-arrow"
+                                        onClick={() => {
+                                          if (page !== 0) setPage(page - 1)
+                                        }}
+                                      >
+                                        <ChevronLeft size={28} color="#707070"/>
+                                      </Button>
+                                      <Pagination aria-label="Page navigation">
+                                        {getPagination().map( (_, index) => (
+                                          <PaginationItem key={index} active={page === index}>
+                                            <PaginationLink onClick={() => {
+                                              setPage(index)
+                                            }}>
+                                              {index + 1}
+                                            </PaginationLink>
+                                          </PaginationItem>
+                                        ))}
+                                      </Pagination>
+                                      <Button
+                                        className="pagination-arrow"
+                                        onClick={() => {
+                                          if (page !== getPagination().length -1) setPage(page + 1)
+                                        }}
+                                      >
+                                        <ChevronRight size={28} color="#707070"/>
+                                      </Button>
+                                    </div>
+                                  )}
+                                </Col>
+                                {preview && (
+                                  <Col sm={oneColumn ? "7" : "4"} className="preview">
+                                    {{
+                                      user: <UserEditPreview />,
+                                      dForm: <DFormFormPreview />,
+                                      workFlow: <WorkflowFormPreview />,
+                                      notification: <NotificationsFormPreview />,
+                                    }[preview.type]}
+                                    <div className="preview-action-buttons">
+                                      <Button style={{borderRadius: "5rem"}} onClick={onPreviewExpand}>
+                                        Expand
+                                      </Button>
+                                      <Button style={{borderRadius: "5rem", paddingLeft: "10px", paddingRight: "10px"}} onClick={closePreview}>
+                                        <X size={20}/>
+                                      </Button>
+                                    </div>
 
-                          </Col>
-                        )}
+                                  </Col>
+                                )}
+                              </Row>
+                            </TabPane>
+                            <TabPane tabId={NAV_OPTIONS[1].id}>
+                              <Applications />
+                            </TabPane>
+                          </TabContent>
+
+                        </Col>
                       </Row>
                       <div className="search-content-footer">
                         <Button
-                          onClick={() => {handleContextChange("Create user")}}
+                          onClick={() => {handleContextChange()}}
                           color="primary"
                           className="add-icon p-0"
                         >

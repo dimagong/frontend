@@ -42,7 +42,7 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChan
               {navOptions.map((navEl) => (
                 <DropdownItem
                   //*TODO Temp disabled, remove after masterSchema implement
-                  disabled={navEl.title === "Applications"}
+
                   onClick={() => handleNavItemSelect(navEl)}
                 >
                   <NavItem>
