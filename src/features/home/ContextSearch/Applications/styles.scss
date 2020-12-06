@@ -2,43 +2,45 @@
   flex: 0 0 46%;
   max-width: 46%!important;
   padding-top: 20px;
-  &_header {
+}
+
+.list-header {
+  display: grid;
+  grid-template-columns: 2fr 3fr 2fr;
+  font-size: 15px;
+  color: #707070;
+  font-weight: bold;
+  padding: 25px 48px 25px 20px;
+}
+
+.items-list {
+  padding: 0 28px 0 3px;
+  min-height: 400px;
+  .list_item {
+    cursor: pointer;
     display: grid;
     grid-template-columns: 2fr 3fr 2fr;
-    font-size: 15px;
+    margin-bottom: 17px;
+    background-color: white;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    padding: 10px 20px;
+    min-height: 70px;
+    font-size: 18px;
     color: #707070;
-    font-weight: bold;
-    padding: 25px 48px 25px 20px;
-  }
-  &_list {
-    padding: 0 28px 0 3px;
-    min-height: 400px;
-    .dform-list_item {
-      cursor: pointer;
-      display: grid;
-      grid-template-columns: 2fr 3fr 2fr;
-      margin-bottom: 17px;
-      background-color: white;
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-      padding: 10px 20px;
-      min-height: 70px;
-      font-size: 18px;
-      color: #707070;
-      align-items: center;
-      border-right: 3px solid white;
-      &.selected {
-        border-color: #7367F0;
-      }
-      &_name {
-
-      }
-      &_description {
-
-      }
-      &_organizations {
-        display: flex;
-        flex-direction: column;
-      }
+    align-items: center;
+    border-right: 3px solid white;
+    &.selected {
+      border-color: #7367F0;
+    }
+    &_name {
+      padding-right: 10px;
+    }
+    &_description {
+      padding-right: 10px;
+    }
+    &_organizations {
+      display: flex;
+      flex-direction: column;
     }
   }
 }

@@ -279,7 +279,6 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                                         <X size={20}/>
                                       </Button>
                                     </div>
-
                                   </Col>
                                 )}
                               </Row>

@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux'
-import {selectdForms} from '../../../../app/selectors'
+import {selectdForms, selectNotifications} from '../../../../app/selectors'
 
-import {setContext, setPreview} from 'app/slices/appSlice'
-import {setdForm} from 'app/slices/onboardingSlice'
+import { setContext } from 'app/slices/appSlice'
+import { setdForm, setNotification, setWorkflow } from 'app/slices/onboardingSlice'
 
 import { Scrollbars } from 'react-custom-scrollbars';
 import {
@@ -19,52 +19,72 @@ import {
 } from 'reactstrap'
 
 import './styles.scss'
+import {selectWorkflows} from '../../../../app/selectors/onboardingSelectors'
 
-const dependenciesList = ["Workflows", "Notifications"]
+const dependenciesList = [
+  {
+    title:"Workflows",
+    actionTitle: "Create Workflow",
+    context: "Create workflow"
+  },
+  {
+    title: "Notifications",
+    actionTitle: "Create Notification",
+    context: "Create notification"
+  }
+]
 
 const Applications = () => {
   const dispatch = useDispatch();
 
-  const [selectedDForm, setSelectedDForm] = useState(null)
+  const [selectedItem, setSelectedItem] = useState(null)
   const [dependenciesSelectActiveItem, setDependenciesSelectActiveItem] = useState(dependenciesList[0])
 
   const dForms = useSelector(selectdForms)
+  const notifications = useSelector(selectNotifications)
+  const workflows = useSelector(selectWorkflows)
 
-  const DFormListItem = ({ dForm, index, onClick }) => {
+  const ListItem = ({item, index, onClick }) => {
 
     return (
       <div
-        className={`dform-list_item ${selectedDForm && selectedDForm.id === dForm.id ? "selected" : ""}`}
-        key={`${dForm.name} ${index}`}
+        className={`list_item ${selectedItem && selectedItem.id === item.id ? "selected" : ""}`}
+        key={`${item.name} ${index}`}
         onClick={onClick}
       >
-        <div className="dform-list_item_name">
-          {dForm.name}
+        <div className="list_item_name">
+          {item.name}
         </div>
-        <div className="dform-list_item_description">
-          {dForm.description}
+        <div className="list_item_description">
+          {item.description}
         </div>
-        <div className="dform-list_item_organizations">
-          {dForm.groups && dForm.groups.map((group) => <div>{group.name}</div>)}
+        <div className="list_item_organizations">
+          {item.groups && item.groups.map((group) => <div>{group.name}</div>)}
         </div>
 
       </div>
     )
   }
 
-  const handleDFormSelect = (e, dForm) => {
-    if (e.ctrlKey) {
-      setSelectedDForm(dForm)
-    } else {
-      dispatch(setdForm(dForm));
-      dispatch(setContext("dForm"))
+  const changeContext = (context) => {
+    dispatch(setContext(context))
+  }
+
+  const handleItemSelect = (e, item, itemType) => {
+    setSelectedItem(item)
+    switch(itemType) {
+      case "dForm": dispatch(setdForm(item)); break;
+      case "Notification": dispatch(setNotification(item)); break;
+      case "WorkFlow": dispatch(setWorkflow(item)); break;
     }
+
+    changeContext(itemType)
   }
 
   return (
-    <Row>
+    <Row style={{marginBottom: "40px"}}>
       <Col className="applications">
-        <div className="applications_header">
+        <div className="list-header">
           <div>
             Name
           </div>
@@ -77,42 +97,75 @@ const Applications = () => {
         </div>
 
         <Scrollbars  autoHeight autoHeightMax={500}>
-          <div className="applications_list">
-            {dForms && dForms.map((dForm) => (
-              <DFormListItem dForm={dForm} onClick={(e) => {handleDFormSelect(e, dForm)}} />
+          <div className="items-list">
+            {dForms && dForms.map((item) => (
+              <ListItem item={item} onClick={(e) => {handleItemSelect(e, item, "dForm")}} />
             ))}
           </div>
         </Scrollbars>
       </Col>
-      {selectedDForm && (
-        <Col className="application-dependencies">
-          <Card className={"application-dependencies_header-container"}>
-            <CardBody className="application-dependencies_header">
-              <Navbar light expand="md" className="p-0">
-                <UncontrolledDropdown>
-                  <DropdownToggle nav caret={true} style={{fontSize: "18px", color: "#707070"}}>
-                    {dependenciesSelectActiveItem}
-                  </DropdownToggle>
-                  <DropdownMenu left>
-                    {dependenciesList.map((item) => (
-                      <DropdownItem
-                        onClick={() => {setDependenciesSelectActiveItem(item)}}
-                      >
-                        <NavItem style={{fontSize: "16px"}}>
-                          {item}
-                        </NavItem>
-                      </DropdownItem>
-                    ))}
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-                <div className="ml-auto">
-                  <span className="font-weight-bold" style={{color: "#707070"}}>{selectedDForm.name} dependencies</span>
-                </div>
-              </Navbar>
-            </CardBody>
-          </Card>
-        </Col>
-      )}
+
+      <Col className="application-dependencies">
+        <Card className={"application-dependencies_header-container"}>
+          <CardBody className="application-dependencies_header">
+            <Navbar light expand="md" className="p-0">
+              <UncontrolledDropdown>
+                <DropdownToggle nav caret={true} style={{fontSize: "18px", color: "#707070"}}>
+                  {dependenciesSelectActiveItem.title}
+                </DropdownToggle>
+                <DropdownMenu left>
+                  {dependenciesList.map((item) => (
+                    <DropdownItem
+                      onClick={() => {setDependenciesSelectActiveItem(item)}}
+                    >
+                      <NavItem style={{fontSize: "16px"}}>
+                        {item.title}
+                      </NavItem>
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </UncontrolledDropdown>
+              <div className="ml-auto">
+                <span
+                  className="font-weight-bold"
+                  style={{color: "#707070", cursor: "pointer"}}
+                  onClick={() => {
+                    setSelectedItem(null)
+                    changeContext(dependenciesSelectActiveItem.context)
+                  }}
+                >
+                  {dependenciesSelectActiveItem.actionTitle}
+                </span>
+              </div>
+            </Navbar>
+          </CardBody>
+        </Card>
+        <div className="list-header">
+          <div>
+            Name
+          </div>
+          <div>
+            Description
+          </div>
+          <div>
+            Organizations
+          </div>
+        </div>
+        <Scrollbars  autoHeight autoHeightMax={430}>
+          <div className="items-list">
+            {dependenciesSelectActiveItem.title === "Workflows" ? (
+              workflows && workflows.map((item) => (
+                <ListItem key={`${item.id}`} item={item} onClick={(e) => {handleItemSelect(e, item, "WorkFlow")}} />
+              ))
+            ) : (
+              notifications && notifications.map((item) => (
+                <ListItem key={`${item.id}`} item={item} onClick={(e) => {handleItemSelect(e, item, "Notification")}} />
+              ))
+            )}
+          </div>
+        </Scrollbars>
+
+      </Col>
     </Row>
   )
 }
