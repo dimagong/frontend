@@ -8,6 +8,7 @@ import groupSagas from "./group/groupSagas";
 import workflowSagas from "./onboarding/workflow/workflowSagas";
 import roleSagas from './role/roleSagas'
 import moduleSagas from './module/moduleSagas'
+import masterSchemaSagas from './masterSchema/masterSchemaSagas'
 import layoutSaga from './layout'
 
 export default function *rootSaga() {
@@ -21,5 +22,6 @@ export default function *rootSaga() {
     roleSagas(),
     moduleSagas(),
     layoutSaga(),
+    masterSchemaSagas()
   ]);
 }

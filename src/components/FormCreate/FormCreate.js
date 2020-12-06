@@ -57,7 +57,7 @@ import masterSchemaService from "../../views/pages/master-schema/services/master
 import {
   getMasterSchemaFieldsRequest,
 } from "app/slices/appSlice";
-import {selectMasterSchemaFields} from "app/selectors";
+
 
 const clone = rfdc();
 
@@ -65,8 +65,10 @@ function InitFormCreate() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('йццццццццццццццццц');
     dispatch(getMasterSchemaFieldsRequest());
-  }, [])
+  }, []);
+
   return <div></div>
 }
 
@@ -93,8 +95,6 @@ class FormCreate extends React.Component {
     this.dependencyChecker = dependencyChecker.bind(this);
 
     this.multiSelectRef = React.createRef();
-
-
   }
 
   // hooks

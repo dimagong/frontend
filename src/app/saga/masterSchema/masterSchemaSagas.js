@@ -1,6 +1,6 @@
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
-import masterSchemaApi from "api/masterSchema";
+import masterSchemaApi from "api/masterSchema/masterSchema";
 import {
   getMasterSchemaFieldsRequest,
   getMasterSchemaFieldsSuccess,
@@ -11,16 +11,29 @@ function makeMasterSchemaFields(organizationsByType) {
 
   const formattedOrganizations = formatMasterSchemaFieldsByOrganization(organizationsByType);
 
-  return formattedOrganizations.map((formattedOrganization) => {
-    return Object.keys(formattedOrganization.masterSchemaFields).map((masterSchemaFieldId) => {
+  let masterSchemaFields = formattedOrganizations.map((formattedOrganization) => {
+    let masterSchemaFields = Object.keys(formattedOrganization.masterSchemaFields).map((masterSchemaFieldId) => {
       let label = 'MasterSchema';
       label += '.' + formattedOrganization.masterSchemaFields[masterSchemaFieldId];
       return {
         label: label,
         value: masterSchemaFieldId
       }
-    })
+    });
+    return masterSchemaFields;
   });
+
+  if (masterSchemaFields.length) {
+    masterSchemaFields = masterSchemaFields.reduce((state, next) => state.concat(next));
+  }
+
+  let masterSchemaFieldsObject = {};
+  console.log(123123, masterSchemaFields);
+  for(let item of masterSchemaFields) {
+    masterSchemaFieldsObject[parseInt(item.value)] = item;
+  }
+
+  return masterSchemaFieldsObject;
 }
 
 const convertMasterSchemaToFieldsList = (node, list, path = '') => {
@@ -58,10 +71,11 @@ const formatOrganizationMasterSchema = (organizations) => {
 
 function* getMasterSchemaFields() {
   try {
+    console.log('getMasterSchemaFields 1');
     const organizationsByType = yield call(masterSchemaApi.getOrganizationsMasterSchema);
 
-    const fields = makeMasterSchemaFields(organizationsByType);
-    console.log('makeMasterSchemaFields', fields);
+   const fields = makeMasterSchemaFields(organizationsByType);
+    console.log('makeMasterSchemaFields 2', fields);
     yield put(getMasterSchemaFieldsSuccess(fields));
   } catch (error) {
     console.log(error);

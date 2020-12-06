@@ -27,6 +27,7 @@ import WysiwygEditor from "../Custom/WysiwygEditor";
 import Select from 'react-select'
 import MasterSchemaField from "../Fields/MasterSchemaField";
 import MasterSchemaProperty from "../Fields/MasterSchemaProperty";
+import MasterSchemaPropertyConfig from "../Fields/MasterSchemaPropertyConfig";
 
 export function listControls(properties) {
 
@@ -48,13 +49,14 @@ export function listControls(properties) {
     };
 
     const renderKeyObjectColumn = (column, placeholder) => {
-      return (<input readOnly={true} id={`${index}-${column}`}
-                     value={objKey} type="text"
-                     ref={this.refTitles}
-                     data-id={objKey}
-                     onChange={event => this.inputKeyObjectHandler(event, objKey)}
-                     className="form-control"
-                     placeholder={placeholder}/>)
+      return (<MasterSchemaPropertyConfig
+        readOnly={true} id={`${index}-${column}`}
+        value={objKey} type="text"
+        ref={this.refTitles}
+        data-id={objKey}
+        onChange={event => this.inputKeyObjectHandler(event, objKey)}
+        className="form-control"
+        placeholder={placeholder}/>)
     };
 
     const renderKeyObjectEditColumn = (column, placeholder) => {
@@ -63,20 +65,20 @@ export function listControls(properties) {
 
       return (
         <div>
-              <MasterSchemaProperty
-                onChangeFieldId={onChangeMasterSchemaProperty}
-                fieldId={schemaPropertyEdit.reference?.field_id}
-                invalid={errorPropertyNameAlreadyTaken}
-              />
-              {/*<Input id={`${index}-property-${column}`}*/}
-              {/*       value={this.state.fieldEdit.propertyKey} type="text"*/}
-              {/*       ref={this.refTitles}*/}
-              {/*       data-id={objKey}*/}
-              {/*       onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}*/}
-              {/*       className="form-control"*/}
-              {/*       invalid={errorPropertyNameAlreadyTaken}*/}
-              {/*       placeholder={placeholder}*/}
-              {/*/>*/}
+          <MasterSchemaProperty
+            onChangeFieldId={onChangeMasterSchemaProperty}
+            fieldId={schemaPropertyEdit.reference?.field_id}
+            invalid={errorPropertyNameAlreadyTaken}
+          />
+          {/*<Input id={`${index}-property-${column}`}*/}
+          {/*       value={this.state.fieldEdit.propertyKey} type="text"*/}
+          {/*       ref={this.refTitles}*/}
+          {/*       data-id={objKey}*/}
+          {/*       onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}*/}
+          {/*       className="form-control"*/}
+          {/*       invalid={errorPropertyNameAlreadyTaken}*/}
+          {/*       placeholder={placeholder}*/}
+          {/*/>*/}
         </div>)
     };
 
@@ -492,6 +494,7 @@ export function listControls(properties) {
         {this.state.schema.properties[objKey].title ? renderLabel('property-' + objKey, this.state.schema.properties[objKey].title) : 'Empty title'}
         <div className="form-group position-relative">
           <div className="pull-right-icons position-relative">
+
             {renderKeyObjectColumn('property-' + objKey, 'Property')}
             <Badge
               color="primary position-absolute dform-type-badget">{currentSpecificType}</Badge>
