@@ -155,11 +155,11 @@ const Applications = () => {
           <div className="items-list">
             {dependenciesSelectActiveItem.title === "Workflows" ? (
               workflows && workflows.map((item) => (
-                <ListItem item={item} onClick={(e) => {handleItemSelect(e, item, "WorkFlow")}} />
+                <ListItem key={`${item.id}`} item={item} onClick={(e) => {handleItemSelect(e, item, "WorkFlow")}} />
               ))
             ) : (
               notifications && notifications.map((item) => (
-                <ListItem item={item} onClick={(e) => {handleItemSelect(e, item, "Notification")}} />
+                <ListItem key={`${item.id}`} item={item} onClick={(e) => {handleItemSelect(e, item, "Notification")}} />
               ))
             )}
           </div>
