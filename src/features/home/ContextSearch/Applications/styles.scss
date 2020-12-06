@@ -1,0 +1,54 @@
+.applications {
+  flex: 0 0 46%;
+  max-width: 46%!important;
+  padding-top: 20px;
+  &_header {
+    display: grid;
+    grid-template-columns: 2fr 3fr 2fr;
+    font-size: 15px;
+    color: #707070;
+    font-weight: bold;
+    padding: 25px 20px;
+  }
+  &_list {
+    padding: 0 28px 0 3px;
+    min-height: 400px;
+    .dform-list_item {
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 2fr 3fr 2fr;
+      margin-bottom: 17px;
+      background-color: white;
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+      padding: 10px 20px;
+      min-height: 70px;
+      font-size: 18px;
+      color: #707070;
+      align-items: center;
+      border-right: 3px solid white;
+      &.selected {
+        border-color: #7367F0;
+      }
+      &_name {
+
+      }
+      &_description {
+
+      }
+      &_organizations {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+}
+
+.application-dependencies {
+
+  &_header {
+    padding: 14px 20px;
+    &-container {
+      margin-top: 17px!important;
+    }
+  }
+}

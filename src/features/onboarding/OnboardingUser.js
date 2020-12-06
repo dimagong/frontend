@@ -30,6 +30,8 @@ import {
 import {CheckCircle, AlertCircle, Box, Clipboard, FileText} from 'react-feather';
 import moment from "moment";
 
+import FileInput from 'components/FormCreate/Custom/FileInput'
+
 import TabsArrayOfObjects from 'components/Tabs/TabsArrayOfObjects'
 import {getProfileRequest} from "../../app/slices/appSlice";
 
@@ -148,6 +150,7 @@ const OnboardingUser = () => {
                   {/*</CardHeader>*/}
 
                   <CardBody className="pt-1 pl-0">
+
                     {
                       profile && profile.onboardings && profile.onboardings.length ?
                         <div style={{marginLeft: "-100px", marginRight: "100px"}}>

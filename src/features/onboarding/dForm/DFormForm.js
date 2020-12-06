@@ -49,7 +49,7 @@ const DFormForm = ({isCreate}) => {
 
   return (
     <Row>
-      <Col sm="12" md="12" lg="12" xl="7">
+      <Col sm="12" md="12" lg="12" xl="6">
         <Card className="dform">
           <CardHeader>
             <CardTitle className="font-weight-bold">DForm</CardTitle>

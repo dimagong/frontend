@@ -1,0 +1,40 @@
+.custom-checkbox-container {
+  position: relative;
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 20px;
+    height: 20px;
+    top: 1px;
+    left: 1px;
+    cursor: pointer;
+    z-index: 299;
+    &:checked {
+      ~.custom-checkbox_check {
+        .custom-checkbox_check-icon {
+          opacity: 0;
+        }
+      }
+    }
+  }
+  .custom-checkbox_check {
+    border: 2px solid #707070;
+    cursor: pointer;
+    &-icon {
+      padding-bottom: 2px;
+    }
+  }
+
+  .custom-checkbox_label {
+    padding-left: 25px;
+    padding-top: 2px;
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+  }
+
+  &.multiselect-checkboxes {
+    margin-bottom: 20px;
+    margin-left: 30px;
+  }
+}
