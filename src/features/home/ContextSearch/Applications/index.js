@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {selectdForms} from '../../../../app/selectors'
+
+import {setContext, setPreview} from 'app/slices/appSlice'
+import {setdForm} from 'app/slices/onboardingSlice'
 
 import { Scrollbars } from 'react-custom-scrollbars';
 import {
@@ -20,12 +23,12 @@ import './styles.scss'
 const dependenciesList = ["Workflows", "Notifications"]
 
 const Applications = () => {
+  const dispatch = useDispatch();
 
   const [selectedDForm, setSelectedDForm] = useState(null)
   const [dependenciesSelectActiveItem, setDependenciesSelectActiveItem] = useState(dependenciesList[0])
 
   const dForms = useSelector(selectdForms)
-  console.log(dForms)
 
   const DFormListItem = ({ dForm, index, onClick }) => {
 
@@ -49,6 +52,15 @@ const Applications = () => {
     )
   }
 
+  const handleDFormSelect = (e, dForm) => {
+    if (e.ctrlKey) {
+      setSelectedDForm(dForm)
+    } else {
+      dispatch(setdForm(dForm));
+      dispatch(setContext("dForm"))
+    }
+  }
+
   return (
     <Row>
       <Col className="applications">
@@ -67,7 +79,7 @@ const Applications = () => {
         <Scrollbars  autoHeight autoHeightMax={500}>
           <div className="applications_list">
             {dForms && dForms.map((dForm) => (
-              <DFormListItem dForm={dForm} onClick={() => {setSelectedDForm(dForm)}} />
+              <DFormListItem dForm={dForm} onClick={(e) => {handleDFormSelect(e, dForm)}} />
             ))}
           </div>
         </Scrollbars>
