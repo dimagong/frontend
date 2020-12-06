@@ -87,7 +87,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
   const handleContextChange = () => {
-    if (selectedNavItem.id === "manager") {
+    if (selectedNavItem.id === "managers") {
       dispatch(setContext("Create user"))
     } else {
       dispatch(setContext("Create dForm"))
