@@ -32,6 +32,8 @@ import {CheckboxesWidget} from "./Custom/CheckboxesWidget/CheckboxesWidget";
 import {CheckboxWidget} from "./Custom/CheckboxWidget";
 import Reference from "./Custom/Reference";
 import TextWidget from './Custom/TextWidget';
+import SelectWidget from './Custom/SelectWidget';
+import TextAreaWidget from './Custom/TextAreaWidget';
 
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "./services/file.service";
@@ -1824,6 +1826,8 @@ class FormCreate extends React.Component {
                   CheckboxesWidget: CheckboxesWidget,
                   FileWidget: this.fileWidget,
                   TextWidget: TextWidget,
+                  SelectWidget: SelectWidget,
+                  TextareaWidget: TextAreaWidget,
                 }}
                 fields={{
                   reference: Reference.bind(this)

@@ -7,12 +7,15 @@ import fileService from "../services/file.service";
 import moment from "moment";
 import {Badge, Spinner} from "reactstrap";
 
+import FieldLabel from './FieldLabel';
+
+import './fileWidget.scss'
+
 const clone = rfdc();
 
 
 export function FileWidget(props) {
 
-  let inputFileRef = React.createRef();
   const propertyKey = props.id.replace('root_', '');
 
   let [filesLoading, setFilesLoading] = useState([]);
@@ -32,7 +35,7 @@ export function FileWidget(props) {
     setFilesLoading(filesLoading.concat(dataUrl));
     const response = await fileService.sendFile(this.state.dFormTemplate.id, dataUrl, propertyKey);
     let files = response.data.data;
-    props.onChange(concat(files, oldValues));
+    props.onChange(concat(oldValues, files));
     setFilesLoading(filesLoading.filter((fileLoading, key) => key !== indexLoadingFile));
   };
 
@@ -88,27 +91,63 @@ export function FileWidget(props) {
   };
 
   const renderFile = (file, index = null) => {
-    return <div className="d-flex">
-      <div>
-        <a target="_blank" href={file.url}>{file.name}</a>
-      </div>
-      <div className="ml-1">
 
+    const isRemoving = Array.isArray(props.value) && ~filesRemoving.indexOf(props.value[index].file.id);
 
-        {
-          Array.isArray(props.value) && filesRemoving.indexOf(props.value[index].file.id) !== -1 ?
-            <span>
-                <Badge color="danger">
-                  removing
-                </Badge>
-                <Spinner color="danger" className="ml-1" size="sm"/>
-            </span>
-            :
-            <X size={15} className="cursor-pointer" onClick={event => removeFile(event, file, index)}/>
-        }
+    return (
+      <div className="file">
+        <div className="name">
+          <a target="_blank" href={file.url}>{file.name}</a>
+        </div>
+
+        <div className="actions">
+          <div className="upload-progress">
+            {isRemoving ? (
+              <Badge color="danger">
+                removing
+              </Badge>
+            ) : (
+              <>100%</>
+            )}
+
+          </div>
+          {/*<span>*/}
+
+          {/*  <Spinner color="danger" className="ml-1" size="sm"/>*/}
+          {/*</span>*/}
+          <div>
+            {
+              isRemoving ? (
+                <Spinner color="danger" className="" size="sm"/>
+              ) : (
+                <X size={15} className="cursor-pointer" onClick={event => removeFile(event, file, index)}/>
+              )
+            }
+          </div>
+
+        </div>
       </div>
-    </div>
+    )
   };
+
+  const FileItem = ({name, isLoading}) => {
+
+    return (
+      <div className={"file"}>
+        <div className="name">
+          {name}
+        </div>
+        <div>
+          <div className="upload-progress">
+
+          </div>
+          <div className="action">
+            <Spinner color="primary" className="ml-1" size="sm"/>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const renderSingleFile = (fileDataUrl) => {
     if (!fileDataUrl) return <div></div>;
@@ -145,23 +184,24 @@ export function FileWidget(props) {
         return loadingFile.file.group === propertyKey
       });
       return loadingFiles.map(loadingFile => {
-        return <div>{loadingFile.file.name}<Spinner color="primary" className="ml-1" size="sm"/></div>;
+        // return <div>{loadingFile.file.name}<Spinner color="primary" className="ml-1" size="sm"/></div>;
+        return <FileItem name={loadingFile.file.name} isLoading={true} />
       })
     }
 
 
     let mainFiles = props.multiple ? renderMultipleFile(props.value) : renderSingleFile(props.value);
 
-    return <div>
-      <div>
-        {
-          filesLoading.map((fileLoading) => {
-            return <div>{dataURItoBlob(fileLoading).name} <Spinner color="primary" size="sm"/></div>;
-          })
-        }
-      </div>
+    return <>
+
       {mainFiles}
-    </div>
+
+      {
+        filesLoading.map((fileLoading) => {
+          return <FileItem name={dataURItoBlob(fileLoading).name} isLoading={true} />
+        })
+      }
+    </>
   };
 
   let isSingleFileDisabled = () => {
@@ -174,16 +214,64 @@ export function FileWidget(props) {
     return false;
   };
 
-  return <div>
-    <input type="file"
-           ref={inputFileRef}
-           multiple={props.multiple}
-           required={props.required}
-           disabled={props.disabled || (props.multiple ? isMultipleFileDisabled() : isSingleFileDisabled())}
-           onChange={(event) => this.props.fileLoader && onChange(event)}/>
-    <div className="mt-1">
 
-      {renderFiles()}
+  // const onDragEnter = event => {
+  //   event.preventDefault();
+  //   setStatus('File Detected');
+  //
+  //
+  //   // event.stopPropagation();
+  // }
+  // const onDragLeave = event => {
+  //   event.preventDefault();
+  //   setStatus('Drop Here');
+  //
+  // }
+  //
+  // const onDragOver = event => {
+  //   event.preventDefault();
+  // }
+
+  const onDrop = event => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+
+    // migration: Make data format acceptable by all other methods
+    const formattedFiles = [];
+    if (props.multiple) {
+      for (let i = 0; i < files.length; i++) {
+        formattedFiles.push(files[i])
+      }
+    } else {
+      formattedFiles.push(files[0])
+    }
+
+
+    const migration = {target: {files: formattedFiles}}
+
+
+    this.props.fileLoader && onChange(migration)
+  }
+
+
+  const isDropZoneVisible = props.multiple ? true : (props.value && props.value.length) || filesLoading.length ? false : true;
+
+  return (
+    <div>
+      <FieldLabel label={props.schema.title} />
+
+      <div className="rendered-files">
+
+        {renderFiles()}
+      </div>
+      <div className="file-input">
+        {isDropZoneVisible && (
+          <div className="drop-zone" onDrop={onDrop}>
+            Drag 'n' Drop files here
+          </div>
+        )}
+
+      </div>
     </div>
-  </div>
-};
+  )
+}

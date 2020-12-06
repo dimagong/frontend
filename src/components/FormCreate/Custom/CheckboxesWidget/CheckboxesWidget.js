@@ -9,7 +9,7 @@ import './styles.scss'
 
 const clone = rfdc();
 
-const CustomCheckbox = ({
+export const CustomCheckbox = ({
   className,
   icon,
   label,
@@ -33,15 +33,18 @@ const CustomCheckbox = ({
         disabled={disabled}
         onClick={onClick ? onClick : null}
         onChange={onChange ? onChange : null}
+        id={label}
       />
-        <span>
-        <span className="custom-checkbox_check">
+
+      <span className="custom-checkbox_check">
+        <span className="custom-checkbox_check-icon">
           {icon}
         </span>
-        </span>
-        <span className="custom-checkbox_label">
-          {label}
-        </span>
+      </span>
+
+      <label htmlFor={label} className="custom-checkbox_label">
+        {label}
+      </label>
     </div>
   )
 }
