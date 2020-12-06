@@ -62,13 +62,23 @@ export function listControls(properties) {
     const renderKeyObjectEditColumn = (column, placeholder) => {
 
       const errorPropertyNameAlreadyTaken = this.isPropertyNameAlreadyTaken(column, this.state.fieldEdit.propertyKey);
+      const referenceIsEmpty = !schemaPropertyEdit.reference?.field_id;
+
+      let errorMsg = 'Error';
+      console.log('this.state.fieldEdit', this.state.fieldEdit);
+      if(errorPropertyNameAlreadyTaken) {
+        errorMsg = 'That property name is already taken'
+      } else if(referenceIsEmpty) {
+        errorMsg = 'Property can`t be empty'
+      }
 
       return (
         <div>
           <MasterSchemaProperty
             onChangeFieldId={onChangeMasterSchemaProperty}
             fieldId={schemaPropertyEdit.reference?.field_id}
-            invalid={errorPropertyNameAlreadyTaken}
+            invalid={errorPropertyNameAlreadyTaken || referenceIsEmpty}
+            errorMsg={errorMsg}
           />
           {/*<Input id={`${index}-property-${column}`}*/}
           {/*       value={this.state.fieldEdit.propertyKey} type="text"*/}

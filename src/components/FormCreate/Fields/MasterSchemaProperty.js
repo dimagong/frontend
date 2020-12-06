@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Col, FormFeedback, FormGroup, Row, Alert} from "reactstrap";
 import Select from "react-select";
 import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
-import {isEmpty} from 'lodash'
+import {isEmpty, isObject, first} from 'lodash'
 
 class CustomSelect extends React.Component {
   render() {
@@ -21,8 +21,8 @@ class CustomSelect extends React.Component {
           borderColor: state.isFocused ? '#ddd' : !invalid ? '#ddd' : 'red'
         }
       })
-    }
-    return <Select styles={ customStyles } {...this.props}/>
+    };
+    return <Select styles={customStyles} {...this.props}/>
   }
 }
 
@@ -30,6 +30,7 @@ export default function MasterSchemaProperty(props) {
 
   const [organizations, setOrganizations] = useState([]);
   const [currentField, setCurrentField] = useState({});
+  const [searchableValue, setSearchableValue] = useState('');
 
   useEffect(() => {
     getOrganizations();
@@ -100,6 +101,22 @@ export default function MasterSchemaProperty(props) {
     }
   };
 
+  const getAddNewOption = () => {
+    const masterSchemaName = organizations.find((formattedOrganization) => {
+      return formattedOrganization.organization.master_schema?.root?.name;
+    });
+
+    if(!masterSchemaName) return [];
+
+    const searchValue = searchableValue ? searchableValue : '<newField>';
+    return [{
+      label: 'MasterSchema.' + masterSchemaName.organization.master_schema.root.name + '.Unapproved.' + searchValue, value: {
+        isNew: true,
+        name: searchableValue
+      }
+    }]
+  };
+
   const getFieldsSelect = () => {
     let masterSchemaFields = organizations.map((formattedOrganization) => {
       return Object.keys(formattedOrganization.masterSchemaFields).map((masterSchemaFieldId) => {
@@ -117,19 +134,30 @@ export default function MasterSchemaProperty(props) {
     }
     console.log('masterSchemaFields', masterSchemaFields);
 
+
+
     return <FormGroup>
       <CustomSelect
         id="select-ms-property"
-        options={masterSchemaFields}
+        options={masterSchemaFields.concat(getAddNewOption())}
         value={currentField}
         onChange={(event) => {
+          if(isObject(event.value) && event.value.isNew) {
+            if(window.confirm(`Are you sure you want to create a field: "${event.label}"?`)) {
+              return;
+            }
+            return;
+          }
           setCurrentField(event);
         }}
         invalid={props.invalid}
+        onInputChange={(event) => {
+          setSearchableValue(event);
+        }}
       ></CustomSelect>
       {
         !props.invalid ? null : <Alert className="mt-1" color="danger">
-          That property name is already taken
+          {props.errorMsg}
         </Alert>
       }
     </FormGroup>
