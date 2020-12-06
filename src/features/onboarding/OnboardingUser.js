@@ -122,8 +122,8 @@ const OnboardingUser = () => {
             <Row>
               <Col sm={12} style={{borderBottom: "1px solid rgba(115,103,240, 0.03)", marginBottom: "20px"}}>
                 <Row>
-                  <Col sm="12" md={{size: 10, offset: 1}}>
-                    <div style={{marginLeft: "100px", marginRight: "100px", marginBottom: "20px"}}>
+                  <Col sm="12" md={{size: 12}}>
+                    <div style={{marginBottom: "20px"}}>
                       <TabsArrayOfObjects
                         withIcons
                         tabId="id"
