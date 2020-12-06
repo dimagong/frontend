@@ -15,6 +15,8 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  TabPane,
+  TabContent,
 } from "reactstrap"
 import {X} from "react-feather";
 

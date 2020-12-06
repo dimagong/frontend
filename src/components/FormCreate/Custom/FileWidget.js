@@ -215,22 +215,17 @@ export function FileWidget(props) {
   };
 
 
-  // const onDragEnter = event => {
-  //   event.preventDefault();
-  //   setStatus('File Detected');
-  //
-  //
-  //   // event.stopPropagation();
-  // }
-  // const onDragLeave = event => {
-  //   event.preventDefault();
-  //   setStatus('Drop Here');
-  //
-  // }
-  //
-  // const onDragOver = event => {
-  //   event.preventDefault();
-  // }
+  const onDragEnter = event => {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  const onDragLeave = event => {
+    event.preventDefault();
+  }
+
+  const onDragOver = event => {
+    event.preventDefault();
+  }
 
   const onDrop = event => {
     event.preventDefault();
@@ -266,7 +261,7 @@ export function FileWidget(props) {
       </div>
       <div className="file-input">
         {isDropZoneVisible && (
-          <div className="drop-zone" onDrop={onDrop}>
+          <div className="drop-zone" onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave} onDragEnter={onDragEnter}>
             Drag 'n' Drop files here
           </div>
         )}

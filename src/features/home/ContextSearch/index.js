@@ -211,7 +211,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
       <Col sm="12" md="12" lg="12" xl="12">
         <div>
           <div className="">
-            <Row className="app-user-list">
+            <Row className="app-user-list" style={{paddingBottom: "2px"}}>
               <Col sm="12">
                 <div>
                   <div>
@@ -275,7 +275,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                                       <Button style={{borderRadius: "5rem"}} onClick={onPreviewExpand}>
                                         Expand
                                       </Button>
-                                      <Button style={{borderRadius: "5rem", paddingLeft: "10px", paddingRight: "10px"}} onClick={closePreview}>
+                                      <Button style={{borderRadius: "5rem", padding: "10px"}} onClick={closePreview}>
                                         <X size={20}/>
                                       </Button>
                                     </div>
