@@ -1,0 +1,67 @@
+.user-roles {
+  .permissions-title {
+    div {
+      margin-top: 5px;
+    }
+  }
+  .card {
+    margin: 0;
+  }
+  .vx-checkbox-white input:checked ~ .vx-checkbox {
+    border-color: #b8c2cc!important;
+  }
+}
+
+.permissions-title {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  column-gap: 20px;
+  div {
+    font-size: 20px;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+}
+.permissions {
+  max-height: 380px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: minmax(100px, auto);
+  column-gap: 20px;
+  grid-row-gap: 18px;
+  padding: 0 1px 10px 1px;
+  .organization-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .abilities {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 10px;
+    .checked {
+      .vx-checkbox--label {
+        color: #007BFF;
+      }
+    }
+    .vx-checkbox--label {
+      white-space: nowrap;
+    }
+  }
+  .hot-fix {
+    grid-template-columns: 1fr;
+  }
+  .add-organization {
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    font-size: 26px;
+    color: #707070;
+    cursor: pointer;
+  }
+}

@@ -61,10 +61,13 @@ import UserOnboardingDForm from '../userOnboarding/UserOnboardingDForm'
 import UserCardTemplate from 'features/home/ContextSearch/CardTemplates/userCard'
 import CustomTabs from 'components/Tabs'
 import Timeline from 'components/Timeline'
+import UserRoles from 'components/UserRoles'
+import {selectUserOrganizations} from 'app/selectors/userSelectors'
+
 
 const UserEdit = (props, context) => {
 
-  const tabs = ["Activity", "Master Schema", "Applications", "Roles"];
+  const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
 
   const manager = useSelector(selectManager);
   const [editField, setEditField] = useState(null);
@@ -82,6 +85,7 @@ const UserEdit = (props, context) => {
   const dForms = useSelector(selectUserDForms)
   const workflows = useSelector(selectUserWorkfows)
   const reviewers = useSelector(selectUserReviewers)
+  const userOrganizations = useSelector(selectUserOrganizations(manager.id))
   const isCreate = useRef(false)
 
   const initOnboarding = {
@@ -197,8 +201,8 @@ const UserEdit = (props, context) => {
                 </CardBody>
               </Card>
             </TabPane>
-            <TabPane tabId="Roles">
-
+            <TabPane tabId="Permissions">
+              <UserRoles manager={manager} userOrganizations={userOrganizations} />
             </TabPane>
           </TabContent>
 

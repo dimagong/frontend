@@ -37,6 +37,9 @@
     display: grid;
     grid-template-columns: 200px 1fr;
     column-gap: 20px;
+    div {
+      margin-top: 25px
+    }
   }
   .permissions {
     max-height: 380px;

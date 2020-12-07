@@ -1,6 +1,6 @@
 export const NAV_OPTIONS = [
   {
-    title: "User management",
+    title: "User Management",
     id: "managers",
     actions: [
       {
