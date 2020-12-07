@@ -62,6 +62,7 @@ import WorkflowFormPreview from 'features/onboarding/workflow/workflowPreview'
 import NotificationsFormPreview from 'features/onboarding/notifications/notificationPreview'
 
 import Applications from './Applications';
+import MasterSchema from 'views/pages/master-schema'
 
 import './styles.scss'
 import {getGroupName} from '../../../utility/select/prepareSelectData'
@@ -285,6 +286,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                             </TabPane>
                             <TabPane tabId={NAV_OPTIONS[1].id}>
                               <Applications />
+                            </TabPane>
+                            <TabPane tabId={NAV_OPTIONS[2].id}>
+                              <MasterSchema />
                             </TabPane>
                           </TabContent>
 
