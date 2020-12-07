@@ -120,7 +120,8 @@ export function FileWidget(props) {
               isRemoving ? (
                 <Spinner color="danger" className="" size="sm"/>
               ) : (
-                <X size={15} className="cursor-pointer" onClick={event => removeFile(event, file, index)}/>
+                props.disabled ? null
+                  : <X size={15} className="cursor-pointer" onClick={event => removeFile(event, file, index)}/>
               )
             }
           </div>
