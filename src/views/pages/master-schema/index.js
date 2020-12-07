@@ -239,7 +239,7 @@ function MasterSchema() {
                             }
                             return <div className="ms-tree-column">
                               <Tabs className="w-100" onChange={() => {
-                              }} tabs={['Onboarding']}></Tabs>
+                              }} tabs={element.d_form_names}></Tabs>
                             </div>
                           })
                         }
@@ -272,7 +272,7 @@ function MasterSchema() {
               </CardTitle>
               <X size={15} className="cursor-pointer mr-1" onClick={event => closeElement()}/>
             </CardHeader>
-            <CardBody>  
+            <CardBody>
               {
                 'children' in cursor ?
                   <GroupEdit data={cursor} onChange={(group) => {

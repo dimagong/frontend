@@ -67,7 +67,6 @@ function InitFormCreate() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('йццццццццццццццццц');
     dispatch(getMasterSchemaFieldsRequest());
   }, []);
 
@@ -398,6 +397,7 @@ class FormCreate extends React.Component {
   }
 
   setLoadingFiles() {
+
     let loadingFiles = this.state.dFormTemplate.files.map((file) => {
       return {
         file,
@@ -859,18 +859,19 @@ class FormCreate extends React.Component {
   }
 
   inputHandlerRequired = (event, value) => {
-    this.setState((state) => {
-      let schemaRequiredFields = this.state.schemaRequiredFields;
-      let index = schemaRequiredFields.indexOf(value);
-      if (index === -1) {
-        schemaRequiredFields.push(value);
-      } else {
-        schemaRequiredFields.splice(index, 1);
-      }
-      return {
-        schemaRequiredFields
-      }
-    });
+    let schemaRequiredFields = clone(this.state.schemaRequiredFields);
+    let index = schemaRequiredFields.indexOf(value);
+    if (index === -1) {
+      schemaRequiredFields.push(value);
+    } else {
+      schemaRequiredFields.splice(index, 1);
+    }
+    this.setState({
+      schemaRequiredFields
+    })
+    // this.setState((state) => {
+    //
+    // });
   };
 
   removePropertyField(previousFieldKey, stateOut = false) {
@@ -1208,7 +1209,7 @@ class FormCreate extends React.Component {
     this.setState({schema, uiSchema}, () => {
       this.inputKeyObjectHandler(previousFieldKey);
     });
-    console.log('schema', schema);
+
     return true;
   }
 

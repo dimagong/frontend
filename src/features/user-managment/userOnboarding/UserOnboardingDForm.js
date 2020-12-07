@@ -54,7 +54,7 @@ const UserOnboardingDForm = () => {
 
 
   const submitDForm = (dForm, {name, description, protected_properties}) => {
-    console.log('dForm', dForm);
+
     dispatch(updateDFormRequest({...dForm, name, description, protected_properties}))
   };
 
@@ -83,14 +83,14 @@ const UserOnboardingDForm = () => {
             Onboarding dForm
           </CardTitle>
           <div>
-            {
-              isStateConfig ?
-                <EyeOff size={15} className="cursor-pointer mr-1"
-                        onClick={switchStateConfig}/>
-                :
-                <Eye size={15} className="cursor-pointer mr-1"
-                     onClick={switchStateConfig}/>
-            }
+            {/*{*/}
+            {/*  isStateConfig ?*/}
+            {/*    <EyeOff size={15} className="cursor-pointer mr-1"*/}
+            {/*            onClick={switchStateConfig}/>*/}
+            {/*    :*/}
+            {/*    <Eye size={15} className="cursor-pointer mr-1"*/}
+            {/*         onClick={switchStateConfig}/>*/}
+            {/*}*/}
             <RefreshCw
               className={refreshClassName}
               size={15} onClick={handleRefresh}/>

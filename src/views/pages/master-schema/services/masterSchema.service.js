@@ -61,11 +61,18 @@ class MasterSchemaService {
     });
   }
   changeFieldValue(fieldId, userId, value) {
-    console.log('changeFieldValue', fieldId, userId, value);
     return axios.put(`/api/master-schema-field-value`, {
       field_id: fieldId,
       user_id: userId,
       value: value
+    });
+  }
+
+  createUnapprovedField(organizationId, organizationType, fieldName) {
+    return axios.post(`/api/master-schema-field/create-unapproved`, {
+      name: fieldName,
+      organizationId,
+      organizationType
     });
   }
 }

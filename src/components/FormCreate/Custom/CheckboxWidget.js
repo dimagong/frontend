@@ -9,7 +9,6 @@ export function CheckboxWidget(props) {
     return props.onChange(event.target.checked);
   };
 
-  console.log("checkbox", props)
 
   return (
     <div>

@@ -1,8 +1,13 @@
 import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {Col, FormFeedback, FormGroup, Row, Alert} from "reactstrap";
 import Select from "react-select";
 import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
 import {isEmpty, isObject, first} from 'lodash'
+import {current} from "@reduxjs/toolkit";
+import {
+  getMasterSchemaFieldsRequest,
+} from "app/slices/appSlice";
 
 class CustomSelect extends React.Component {
   render() {
@@ -32,8 +37,10 @@ export default function MasterSchemaProperty(props) {
   const [currentField, setCurrentField] = useState({});
   const [searchableValue, setSearchableValue] = useState('');
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    getOrganizations();
+    initOrganizations();
   }, []);
 
   useEffect(() => {
@@ -83,16 +90,19 @@ export default function MasterSchemaProperty(props) {
   };
 
   const getOrganizations = async () => {
+    const response = await masterSchemaService.getOrganizations();
+    const organizationsByType = response.data.data;
+    let organizations = []
+      .concat(organizationsByType.corporation)
+      .concat(organizationsByType.network)
+      .concat(organizationsByType.member_firm);
+    return organizations;
+  };
+
+  const initOrganizations = async () => {
     try {
-      const response = await masterSchemaService.getOrganizations();
-      const organizationsByType = response.data.data;
-      let organizations = []
-        .concat(organizationsByType.corporation)
-        .concat(organizationsByType.network)
-        .concat(organizationsByType.member_firm);
-
+      const organizations = await getOrganizations();
       const formattedOrganizations = formatOrganizationMasterSchema(organizations);
-
 
       setOrganizations(formattedOrganizations);
       initCurrentStateField(formattedOrganizations);
@@ -102,23 +112,50 @@ export default function MasterSchemaProperty(props) {
   };
 
   const getAddNewOption = () => {
-    const masterSchemaName = organizations.find((formattedOrganization) => {
+    const formattedOrganization = organizations.find((formattedOrganization) => {
       return formattedOrganization.organization.master_schema?.root?.name;
     });
 
-    if(!masterSchemaName) return [];
+    if(!formattedOrganization) return [];
 
     const searchValue = searchableValue ? searchableValue : '<newField>';
     return [{
-      label: 'MasterSchema.' + masterSchemaName.organization.master_schema.root.name + '.Unapproved.' + searchValue, value: {
+      label: 'MasterSchema.' + formattedOrganization.organization.master_schema.root.name + '.Unapproved.' + searchValue, value: {
         isNew: true,
-        name: searchableValue
+        name: searchableValue,
+        organization: formattedOrganization.organization
       }
     }]
   };
 
-  const getFieldsSelect = () => {
-    let masterSchemaFields = organizations.map((formattedOrganization) => {
+  const createUnapprovedField = async (organization, fieldName) =>{
+    try {
+      const response = await masterSchemaService.createUnapprovedField(organization.id, organization.type, fieldName);
+      const field = response.data.data;
+
+      // setup
+      const organizations = await getOrganizations();
+      const formattedOrganizations = formatOrganizationMasterSchema(organizations);
+      setOrganizations(formattedOrganizations);
+
+      const masterSchemaFields = transformToSelectFields(formattedOrganizations);
+
+      masterSchemaFields.some((masterSchemaField) => {
+        if(parseInt(masterSchemaField.value) ===  parseInt(field.id)) {
+          setCurrentField(masterSchemaField);
+          dispatch(getMasterSchemaFieldsRequest());
+          return true;
+        }
+        return false;
+      });
+
+    } catch (exception) {
+      console.log(exception);
+    }
+  };
+
+  const transformToSelectFields = (organizationList) => {
+    let masterSchemaFields = organizationList.map((formattedOrganization) => {
       return Object.keys(formattedOrganization.masterSchemaFields).map((masterSchemaFieldId) => {
         let label = 'MasterSchema';
         label += '.' + formattedOrganization.masterSchemaFields[masterSchemaFieldId];
@@ -132,9 +169,12 @@ export default function MasterSchemaProperty(props) {
     if (masterSchemaFields.length) {
       masterSchemaFields = masterSchemaFields.reduce((state, next) => state.concat(next));
     }
-    console.log('masterSchemaFields', masterSchemaFields);
 
+    return masterSchemaFields;
+  }
 
+  const getFieldsSelect = () => {
+    const masterSchemaFields = transformToSelectFields(organizations);
 
     return <FormGroup>
       <CustomSelect
@@ -143,7 +183,12 @@ export default function MasterSchemaProperty(props) {
         value={currentField}
         onChange={(event) => {
           if(isObject(event.value) && event.value.isNew) {
+            if(!searchableValue) {
+              return;
+            }
             if(window.confirm(`Are you sure you want to create a field: "${event.label}"?`)) {
+              const {name, organization} = event.value;
+              createUnapprovedField(organization, name);
               return;
             }
             return;

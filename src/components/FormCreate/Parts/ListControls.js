@@ -65,7 +65,7 @@ export function listControls(properties) {
       const referenceIsEmpty = !schemaPropertyEdit.reference?.field_id;
 
       let errorMsg = 'Error';
-      console.log('this.state.fieldEdit', this.state.fieldEdit);
+
       if(errorPropertyNameAlreadyTaken) {
         errorMsg = 'That property name is already taken'
       } else if(referenceIsEmpty) {

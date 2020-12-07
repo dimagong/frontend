@@ -23,7 +23,6 @@ const FileInput = ({multiple}) => {
   const onDragEnter = event => {
     event.preventDefault();
     setStatus('File Detected');
-    console.log("detected")
 
     // event.stopPropagation();
   }
