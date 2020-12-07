@@ -20,6 +20,11 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  Table,
 } from "reactstrap"
 import DataTable from "react-data-table-component"
 import Flatpickr from "react-flatpickr";
@@ -63,7 +68,16 @@ import CustomTabs from 'components/Tabs'
 import Timeline from 'components/Timeline'
 import UserRoles from 'components/UserRoles'
 import {selectUserOrganizations} from 'app/selectors/userSelectors'
+import masterSchemaService from '../../../views/pages/master-schema/services/masterSchema.service'
+import Breadcrumbs from '../../../views/pages/master-schema/Breadcrumbs'
+import MasterSchemaTree from '../../../views/pages/master-schema/MasterSchemaTree/MasterSchemaTree'
+import GroupEdit from '../../../views/pages/master-schema/GroupEdit'
+import FieldEdit from '../../../views/pages/master-schema/FieldEdit'
 
+import Tabs from '../../../components/Tabs/index.js'
+import rfdc from 'rfdc'
+
+const clone = rfdc();
 
 const UserEdit = (props, context) => {
 
@@ -143,6 +157,157 @@ const UserEdit = (props, context) => {
       // dispatch(createUserOnboardingRequset())
   }
 
+
+  // Master schema data =================================================================================================================
+  const [masterSchemaIsLoading, setMasterSchemaIsLoading] = useState(false);
+  const [organization, setOrganization] = useState();
+  const [masterSchema, setMasterSchema] = useState();
+  const [masterSchemaTreebeard, setMasterSchemaTreebeard] = useState();
+  const [organizations, setOrganizations] = useState([]);
+  const [cursor, setCursor] = useState(false);
+
+
+  const getOrganizations = async () => {
+    const response = await masterSchemaService.getOrganizations();
+    const organizationsByType = response.data.data;
+    let organizations = []
+      .concat(organizationsByType.corporation)
+      .concat(organizationsByType.network)
+      .concat(organizationsByType.member_firm);
+    setOrganizations(organizations);
+  };
+
+  useEffect(() => {
+    getOrganizations();
+  }, []);
+
+  useEffect(() => {
+    setMasterSchemaTreebeard(null);
+    closeElement();
+    getCurrentMasterSchema();
+  }, [organization]);
+
+  useEffect(() => {
+    if (masterSchema) {
+      parseToFormatTreebeard();
+    }
+
+  }, [masterSchema]);
+
+
+  const getCurrentMasterSchema = () => {
+    if (organization && organization.value) {
+      getMasterSchemaByType(organization.value.type, organization.value.id);
+    }
+  };
+
+  const closeElement = () => {
+    if (cursor) {
+      cursor.active = false;
+      setMasterSchemaTreebeard(Object.assign({}, masterSchemaTreebeard));
+      setCursor(null);
+    }
+  };
+
+  const recursiveMap = (node, path = []) => {
+
+    if (!node) return null;
+
+    node.children = [];
+    node.children = node.fields;
+    node.toggled = true;
+
+    if (cursor) {
+      if (
+        node.id === cursor.id && cursor.children && node.children
+      ) {
+        node.active = true;
+        setCursor(node);
+      }
+    }
+
+    node.children.forEach((child) => {
+      let nodePath = path.slice();
+      nodePath.push(child.name);
+      child.path = nodePath;
+
+
+      // set previous cursor
+      if (cursor) {
+        if (
+          child.id === cursor.id && !cursor.children && !child.children
+        ) {
+          child.active = true;
+          setCursor(child);
+        }
+      }
+    });
+
+    if (node.groups.length) {
+
+      for (let group of node.groups) {
+        let nodePath = path.slice();
+        nodePath.push(group.name);
+        group.path = nodePath;
+        group = recursiveMap(group, nodePath);
+      }
+      node.children = node.children.concat(node.groups);
+    }
+
+    return node;
+  };
+  const parseToFormatTreebeard = () => {
+    const rootPath = [masterSchema.root.name];
+    const root = recursiveMap(clone(masterSchema.root), rootPath);
+    root.path = rootPath;
+    setMasterSchemaTreebeard(root);
+  };
+
+  const createMasterSchema = async () => {
+    const response = await masterSchemaService.create(organization.value.type, organization.value.id);
+    setMasterSchema(response.data.data);
+  };
+
+  const getMasterSchemaByType = async (type, id) => {
+    try {
+      const response = await masterSchemaService.getByOrganization(type, id);
+      setMasterSchema(response.data.data);
+    } catch (exception) {
+      console.log(exception);
+    } finally {
+      setMasterSchemaIsLoading(false)
+    }
+  };
+
+
+  const onToggle = (node, toggled) => {
+    if (cursor) {
+      cursor.active = false;
+      masterSchemaTreebeard.active = false;
+    }
+    node.active = true;
+
+    setCursor(node);
+    setMasterSchemaTreebeard(Object.assign({}, masterSchemaTreebeard))
+  };
+
+  const isNeedToCreateMS = () => {
+    return !masterSchema && organization;
+  };
+
+  const outputTreeColumn = (node, data = []) => {
+    data.push(node);
+    if (node.children) {
+      node.children.forEach(child => outputTreeColumn(child, data))
+    }
+    return data;
+  };
+
+  // ======================================================================================================================================
+
+
+
+
     return (
       <Row className="user-managment">
         <Col sm="12" md="12" lg="12" xl="6">
@@ -156,8 +321,130 @@ const UserEdit = (props, context) => {
             <TabPane tabId="Activity">
               <Timeline />
             </TabPane>
-            <TabPane tabId="Master schema">
+            <TabPane tabId="Master Schema">
+            {/* ========================================================================================================= */}
+              <Row>
+                <Col md="12">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>
+                        <Breadcrumbs list={['Master schema', 'Organization view']} />
+                      </CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                      <Row>
+                        <Col md="3" sm="6">
+                          <Select
+                            className="React"
+                            classNamePrefix="select"
+                            name="color"
+                            value={organization}
+                            options={organizations.map(organization => {
+                              return {label: organization.name, value: organization}
+                            })}
+                            onChange={(event) => {
+                              setMasterSchemaIsLoading(true);
+                              setOrganization(event)
+                            }}
+                          />
+                        </Col>
+                      </Row>
+                      <Row className="mt-1">
+                        <Col>
+                          {
+                            masterSchemaIsLoading || !isNeedToCreateMS() ? null :
+                              <div>
+                                <Button.Ripple onClick={() => createMasterSchema()} color="success">Create Master
+                                  Schema</Button.Ripple>
+                              </div>
+                          }
+                        </Col>
+                      </Row>
 
+                      {
+                        !masterSchemaTreebeard ? null :
+                          <div>
+                            <Table responsive bordered>
+                              <thead>
+                              <tr>
+                                <th>Element name</th>
+                                <th>Captured in</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr>
+                                <td className="w-50">
+                                  <MasterSchemaTree data={masterSchemaTreebeard} cursor={cursor} onToggle={onToggle}/>
+                                </td>
+                                <td className="w-50">
+                                  {
+                                    outputTreeColumn(masterSchemaTreebeard).map(element => {
+                                      if(element.children) {
+                                        return <div className="ms-tree-column">
+                                          <div></div>
+                                        </div>
+                                      }
+                                      return (
+                                        <div className="ms-tree-column">
+                                          <Tabs
+                                            className="w-100"
+                                            onChange={() => {}}
+                                            tabs={element.d_form_names}
+                                          />
+                                        </div>
+                                      )
+                                    })
+                                  }
+                                </td>
+                              </tr>
+                              </tbody>
+                            </Table>
+                            <div className="dropright mr-1 mb-1 d-inline-block">
+                              <UncontrolledButtonDropdown direction="right">
+                                <DropdownToggle color="primary" className="add-icon btn-add-ms-element ms-btn-element">
+                                  <Plus size={28}/>
+                                </DropdownToggle>
+                                <DropdownMenu>
+                                  <DropdownItem tag="a">Category</DropdownItem>
+                                  <DropdownItem tag="a">Element</DropdownItem>
+                                </DropdownMenu>
+                              </UncontrolledButtonDropdown>
+                            </div>
+                          </div>
+                      }
+                    </CardBody>
+                  </Card>
+                </Col>
+                {/*<Col md="6">*/}
+                {/*  {*/}
+                {/*    !cursor ? null : <Card>*/}
+                {/*      <CardHeader>*/}
+                {/*        <CardTitle>*/}
+                {/*          <Breadcrumbs list={cursor.path}/>*/}
+                {/*        </CardTitle>*/}
+                {/*        <X size={15} className="cursor-pointer mr-1" onClick={event => closeElement()}/>*/}
+                {/*      </CardHeader>*/}
+                {/*      <CardBody>*/}
+                {/*        {*/}
+                {/*          'children' in cursor ?*/}
+                {/*            <GroupEdit data={cursor} onChange={(group) => {*/}
+                {/*              getCurrentMasterSchema();*/}
+                {/*            }} onNewField={(newField) => {*/}
+                {/*              getCurrentMasterSchema();*/}
+                {/*            }} onNewGroup={(newGroup) => {*/}
+                {/*              getCurrentMasterSchema();*/}
+                {/*            }}/>*/}
+                {/*            :*/}
+                {/*            <FieldEdit data={cursor} onChange={(field) => {*/}
+                {/*              getCurrentMasterSchema();*/}
+                {/*            }}/>*/}
+                {/*        }*/}
+                {/*      </CardBody>*/}
+                {/*    </Card>*/}
+                {/*  }*/}
+                {/*</Col>*/}
+              </Row>
+            {/* ========================================================================================================= */}
             </TabPane>
             <TabPane tabId="Applications">
               <Card>
@@ -311,6 +598,39 @@ const UserEdit = (props, context) => {
                 ? <UserOnboardingDForm />
                 : null
             }
+
+            {activeModuleTab === "Master Schema" && (
+
+
+              cursor && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>
+                      <Breadcrumbs list={cursor.path}/>
+                    </CardTitle>
+                    <X size={15} className="cursor-pointer mr-1" onClick={event => closeElement()}/>
+                  </CardHeader>
+                  <CardBody>
+                    {
+                      'children' in cursor ?
+                        <GroupEdit data={cursor} onChange={(group) => {
+                          getCurrentMasterSchema();
+                        }} onNewField={(newField) => {
+                          getCurrentMasterSchema();
+                        }} onNewGroup={(newGroup) => {
+                          getCurrentMasterSchema();
+                        }}/>
+                        :
+                        <FieldEdit data={cursor} onChange={(field) => {
+                          getCurrentMasterSchema();
+                        }}/>
+                    }
+                  </CardBody>
+                </Card>
+              )
+
+
+            )}
           </Card>
         </Col>
       </Row>
