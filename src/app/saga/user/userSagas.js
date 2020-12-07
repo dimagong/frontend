@@ -122,7 +122,7 @@ function* getUserOrganizations(userId) {
   if (response?.message) {
     yield put(getUserOrganizationsError(response.message))
   } else {
-    yield put(getUserOrganizationsSuccess(response))
+    yield put(getUserOrganizationsSuccess({response, userId: userId.payload}))
   }
 }
 
@@ -132,7 +132,7 @@ function* addUserOrganization({payload}) {
   if (response?.message) {
     yield put(addUserOrganizationError(response.message))
   } else {
-    yield put(addUserOrganizationSuccess(response))
+    yield put(addUserOrganizationSuccess({response, userId: payload.id}))
   }
 }
 
@@ -142,7 +142,7 @@ function* removeUserOrganization({payload}) {
   if (response?.message) {
     yield put(removeUserOrganizationError(response.message))
   } else {
-    yield put(removeUserOrganizationSuccess(payload))
+    yield put(removeUserOrganizationSuccess({response: payload, userId: payload.userId}))
   }
 }
 

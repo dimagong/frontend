@@ -40,6 +40,7 @@ const NotificationsForm = ({isCreate}) => {
     e.preventDefault();
     if (isCreate) {
       dispatch(createNotificationRequest(notification))
+      closeNotification()
     } else {
       dispatch(updateNotificationRequest(notification))
     }

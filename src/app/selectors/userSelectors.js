@@ -11,7 +11,19 @@ export const selectInvitations = state => state?.app?.user?.invitations
 export const selectInvitation = state => state?.app?.user?.invitation
 export const selectProfile = state => state?.app?.user?.profile
 export const selectVuexyUser = state => state?.vuexy?.auth?.login?.values?.user
-export const selectUserOrganizations = state => [...state.app.user.organizations.corporation, ...state.app.user.organizations.network, ...state.app.user.organizations.member_firm]
-export const selectUserParentOrganizations = state => state.app.user.organizations.corporation
-export const selectUserChildOrganizations = state => state.app.user.organizations.network
+export const selectUserOrganizations = userId => state => {
+  const user = state.app.user.managers.filter(({id}) => id === userId)[0]
+  return [...(user?.organizations?.corporation || []), ...(user?.organizations?.network || []), ...(user?.organizations?.member_firm || [])]
+}
+export const selectUserParentOrganizations = userId => state => {
+  const user = state.app.user.managers.filter(({id}) => id === userId)[0]
+
+  return user?.organizations?.corporation || []
+}
+export const selectUserChildOrganizations = userId => state => {
+  const user = state.app.user.managers.filter(({id}) => id === userId)[0]
+
+  return user?.organizations?.network || []
+}
+
 export const selectUserAbility = state => state?.app?.user?.profile?.permissions?.ability

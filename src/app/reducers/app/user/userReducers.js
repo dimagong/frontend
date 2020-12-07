@@ -288,9 +288,17 @@ const getUserOrganizationsRequest = (state) => {
 
 const getUserOrganizationsSuccess = (state, {payload}) => {
   state.isLoading =  false;
-  state.user.organizations.corporation = payload.corporation;
-  state.user.organizations.member_firm = payload.member_firm;
-  state.user.organizations.network = payload.network;
+
+  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId)
+  const user = state.user.managers[userIndex]
+
+  user.organizations = {
+    corporation: payload.response.corporation,
+    member_firm: payload.response.member_firm,
+    network: payload.response.network,
+  }
+
+  state.user.managers[userIndex] = user;
 }
 
 const getUserOrganizationsError = (state, {payload}) => {
@@ -303,9 +311,15 @@ const addUserOrganizationRequest = (state) => {
   state.isError = null;
 }
 const addUserOrganizationSuccess = (state, {payload}) => {
-  state.isLoading = false;
 
-  state.user.organizations[payload.type] = [...state.user.organizations[payload.type], payload]
+  state.isLoading = false;
+  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId)
+  const user = state.user.managers[userIndex]
+
+  user.organizations[payload.response.type] = [...user.organizations[payload.response.type], payload.response]
+
+  state.user.managers[userIndex] = user;
+
 }
 const addUserOrganizationError = (state, {payload}) => {
   state.isLoading = false;
@@ -317,8 +331,14 @@ const removeUserOrganizationRequest = (state) => {
   state.isError = null;
 }
 const removeUserOrganizationSuccess = (state, {payload}) => {
-  state.user.organizations[payload.type] = state.user.organizations[payload.type].filter((org) => org.id !== payload.group_id)
   state.isLoading = false;
+
+  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId)
+  const user = state.user.managers[userIndex]
+
+  user.organizations[payload.response.type] = user.organizations[payload.response.type].filter((org) => org.id !== payload.response.group_id)
+
+  state.user.managers[userIndex] = user;
 }
 const removeUserOrganizationError = (state, {payload}) => {
   state.isLoading = false;
@@ -330,7 +350,13 @@ const allowUserAbilityRequest = (state) => {
   state.isError = null;
 }
 const allowUserAbilitySuccess = (state, {payload}) => {
-  state.user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response
+
+  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.data.user_id)
+  const user = state.user.managers[userIndex]
+
+  user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response
+
+  state.user.managers[userIndex] = user;
   state.isLoading = false;
 }
 const allowUserAbilityError = (state, {payload}) => {
@@ -344,7 +370,10 @@ const disallowUserAbilityRequest = (state) => {
   state.isError = null;
 }
 const disallowUserAbilitySuccess = (state, {payload}) => {
-  state.user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response
+  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.data.user_id)
+  const user = state.user.managers[userIndex]
+  user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response
+  state.user.managers[userIndex] = user;
   state.isLoading = false;
 }
 const disallowUserAbilityError = (state, {payload}) => {
