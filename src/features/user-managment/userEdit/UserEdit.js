@@ -322,129 +322,17 @@ const UserEdit = (props, context) => {
               <Timeline />
             </TabPane>
             <TabPane tabId="Master Schema">
-            {/* ========================================================================================================= */}
-              <Row>
-                <Col md="12">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>
-                        <Breadcrumbs list={['Master schema', 'Organization view']} />
-                      </CardTitle>
-                    </CardHeader>
-                    <CardBody>
-                      <Row>
-                        <Col md="3" sm="6">
-                          <Select
-                            className="React"
-                            classNamePrefix="select"
-                            name="color"
-                            value={organization}
-                            options={organizations.map(organization => {
-                              return {label: organization.name, value: organization}
-                            })}
-                            onChange={(event) => {
-                              setMasterSchemaIsLoading(true);
-                              setOrganization(event)
-                            }}
-                          />
-                        </Col>
-                      </Row>
-                      <Row className="mt-1">
-                        <Col>
-                          {
-                            masterSchemaIsLoading || !isNeedToCreateMS() ? null :
-                              <div>
-                                <Button.Ripple onClick={() => createMasterSchema()} color="success">Create Master
-                                  Schema</Button.Ripple>
-                              </div>
-                          }
-                        </Col>
-                      </Row>
-
-                      {
-                        !masterSchemaTreebeard ? null :
-                          <div>
-                            <Table responsive bordered>
-                              <thead>
-                              <tr>
-                                <th>Element name</th>
-                                <th>Captured in</th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <tr>
-                                <td className="w-50">
-                                  <MasterSchemaTree data={masterSchemaTreebeard} cursor={cursor} onToggle={onToggle}/>
-                                </td>
-                                <td className="w-50">
-                                  {
-                                    outputTreeColumn(masterSchemaTreebeard).map(element => {
-                                      if(element.children) {
-                                        return <div className="ms-tree-column">
-                                          <div></div>
-                                        </div>
-                                      }
-                                      return (
-                                        <div className="ms-tree-column">
-                                          <Tabs
-                                            className="w-100"
-                                            onChange={() => {}}
-                                            tabs={element.d_form_names}
-                                          />
-                                        </div>
-                                      )
-                                    })
-                                  }
-                                </td>
-                              </tr>
-                              </tbody>
-                            </Table>
-                            <div className="dropright mr-1 mb-1 d-inline-block">
-                              <UncontrolledButtonDropdown direction="right">
-                                <DropdownToggle color="primary" className="add-icon btn-add-ms-element ms-btn-element">
-                                  <Plus size={28}/>
-                                </DropdownToggle>
-                                <DropdownMenu>
-                                  <DropdownItem tag="a">Category</DropdownItem>
-                                  <DropdownItem tag="a">Element</DropdownItem>
-                                </DropdownMenu>
-                              </UncontrolledButtonDropdown>
-                            </div>
-                          </div>
-                      }
-                    </CardBody>
-                  </Card>
-                </Col>
-                {/*<Col md="6">*/}
-                {/*  {*/}
-                {/*    !cursor ? null : <Card>*/}
-                {/*      <CardHeader>*/}
-                {/*        <CardTitle>*/}
-                {/*          <Breadcrumbs list={cursor.path}/>*/}
-                {/*        </CardTitle>*/}
-                {/*        <X size={15} className="cursor-pointer mr-1" onClick={event => closeElement()}/>*/}
-                {/*      </CardHeader>*/}
-                {/*      <CardBody>*/}
-                {/*        {*/}
-                {/*          'children' in cursor ?*/}
-                {/*            <GroupEdit data={cursor} onChange={(group) => {*/}
-                {/*              getCurrentMasterSchema();*/}
-                {/*            }} onNewField={(newField) => {*/}
-                {/*              getCurrentMasterSchema();*/}
-                {/*            }} onNewGroup={(newGroup) => {*/}
-                {/*              getCurrentMasterSchema();*/}
-                {/*            }}/>*/}
-                {/*            :*/}
-                {/*            <FieldEdit data={cursor} onChange={(field) => {*/}
-                {/*              getCurrentMasterSchema();*/}
-                {/*            }}/>*/}
-                {/*        }*/}
-                {/*      </CardBody>*/}
-                {/*    </Card>*/}
-                {/*  }*/}
-                {/*</Col>*/}
-              </Row>
-            {/* ========================================================================================================= */}
+              <Card>
+                <CardBody style={{
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  color: "rgba(112,112,112,0.5)",
+                  textAlign: "center",
+                  padding: "50px 0",
+                }}>
+                  Coming soon
+                </CardBody>
+              </Card>
             </TabPane>
             <TabPane tabId="Applications">
               <Card>
@@ -599,38 +487,6 @@ const UserEdit = (props, context) => {
                 : null
             }
 
-            {activeModuleTab === "Master Schema" && (
-
-
-              cursor && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>
-                      <Breadcrumbs list={cursor.path}/>
-                    </CardTitle>
-                    <X size={15} className="cursor-pointer mr-1" onClick={event => closeElement()}/>
-                  </CardHeader>
-                  <CardBody>
-                    {
-                      'children' in cursor ?
-                        <GroupEdit data={cursor} onChange={(group) => {
-                          getCurrentMasterSchema();
-                        }} onNewField={(newField) => {
-                          getCurrentMasterSchema();
-                        }} onNewGroup={(newGroup) => {
-                          getCurrentMasterSchema();
-                        }}/>
-                        :
-                        <FieldEdit data={cursor} onChange={(field) => {
-                          getCurrentMasterSchema();
-                        }}/>
-                    }
-                  </CardBody>
-                </Card>
-              )
-
-
-            )}
           </Card>
         </Col>
       </Row>
