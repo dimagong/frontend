@@ -194,7 +194,7 @@ export function FileWidget(props) {
     let mainFiles = props.multiple ? renderMultipleFile(props.value) : renderSingleFile(props.value);
 
     return <>
-
+      {!props.value.length && props.disabled && (<div>No files uploaded</div>)}
       {mainFiles}
 
       {
@@ -261,7 +261,7 @@ export function FileWidget(props) {
         {renderFiles()}
       </div>
       <div className="file-input">
-        {isDropZoneVisible && (
+        {isDropZoneVisible && !props.disabled && (
           <div className="drop-zone" onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave} onDragEnter={onDragEnter}>
             Drag 'n' Drop files here
           </div>
