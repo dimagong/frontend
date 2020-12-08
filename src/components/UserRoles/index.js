@@ -103,6 +103,8 @@ const UserRoles = ({manager, userOrganizations, className}) => {
     dispatch(getUserOrganizationsRequest(manager.id))
   }, [manager.id])
 
+  console.log(userParentOrganizations, userChildOrganizations, addableParentOrganizations, addableChildOrganizations)
+
   return (
     <div className={`user-roles ${className ? className : ""}`}>
       <div className="permissions-title">
@@ -200,7 +202,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
                     {addableChildOrganizations.map((org) => (
                       <Card className="organizations-list_organization">
                         <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
-                          <img src={logos[org.name]} alt=""/>
+                          {logos[org.name] ? <img src={logos[org.name]} alt=""/> : org.name}
                         </CardBody>
                       </Card>
                     ))}
