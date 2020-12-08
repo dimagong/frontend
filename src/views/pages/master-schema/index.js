@@ -236,7 +236,6 @@ function MasterSchema() {
                           <div className="w-50 column">
                             {
                               outputTreeColumn(masterSchemaTreebeard).map(element => {
-                                console.log(element, element.d_form_names)
                                 if(element.children) {
                                   return <div className="ms-tree-column">
                                     <div></div>
