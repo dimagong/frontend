@@ -65,6 +65,7 @@ const SelectWidget = (props) => {
     <div>
       <FieldLabel label={props.schema.title} />
       <Select
+        isDisabled={props.disabled}
         styles={colourStyles}
         isMulti={props.multiple}
         name="colors"
