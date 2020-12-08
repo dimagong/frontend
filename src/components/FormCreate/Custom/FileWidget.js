@@ -194,7 +194,7 @@ export function FileWidget(props) {
     let mainFiles = props.multiple ? renderMultipleFile(props.value) : renderSingleFile(props.value);
 
     return <>
-      {!props.value.length && props.disabled && (<div>No files uploaded</div>)}
+      {(!props.value || !props.value.length) && props.disabled && (<div>No files uploaded</div>)}
       {mainFiles}
 
       {
