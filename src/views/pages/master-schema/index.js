@@ -25,6 +25,7 @@ import Breadcrumbs from './Breadcrumbs/index'
 import {Treebeard} from "react-treebeard";
 import {styleLight} from "./MasterSchemaTree/styles/style";
 import {styleColumn} from "./MasterSchemaTree/styles/styleColumn";
+import { Scrollbars } from 'react-custom-scrollbars'
 import Tabs from '../../../components/Tabs/index.js'
 
 const clone = rfdc();
@@ -217,36 +218,52 @@ function MasterSchema() {
             {
               !masterSchemaTreebeard ? null :
                 <div>
-                  <Table responsive bordered>
-                    <thead>
-                    <tr>
-                      <th>Element name</th>
-                      <th>Captured in</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                      <td className="w-50">
-                        <MasterSchemaTree data={masterSchemaTreebeard} cursor={cursor} onToggle={onToggle}/>
-                      </td>
-                      <td className="w-50">
-                        {
-                          outputTreeColumn(masterSchemaTreebeard).map(element => {
-                            if(element.children) {
-                              return <div className="ms-tree-column">
-                                <div></div>
-                              </div>
+                  <div className="dependencies-table">
+
+                    <div className="table-item table-header">
+                      <div className="w-50 column">Element name</div>
+                      <div className="w-50 column">Captured in</div>
+                    </div>
+
+                    <div style={{marginBottom: "20px"}}>
+                      <Scrollbars autoHeight autoHeightMax={500}>
+                        <div className="table-content">
+
+
+                          <div className="w-50 column">
+                            <MasterSchemaTree data={masterSchemaTreebeard} cursor={cursor} onToggle={onToggle}/>
+                          </div>
+                          <div className="w-50 column">
+                            {
+                              outputTreeColumn(masterSchemaTreebeard).map(element => {
+                                console.log(element, element.d_form_names)
+                                if(element.children) {
+                                  return <div className="ms-tree-column">
+                                    <div></div>
+                                  </div>
+                                }
+                                return (
+                                  <div className="ms-tree-column">
+                                    {element.d_form_names && !!element.d_form_names.length && (
+                                      <Tabs
+                                        className="w-100"
+                                        onChange={() => {}}
+                                        tabs={element.d_form_names}
+                                      />
+                                    )}
+                                  </div>
+                                )
+                              })
                             }
-                            return <div className="ms-tree-column">
-                              <Tabs className="w-100" onChange={() => {
-                              }} tabs={element.d_form_names}></Tabs>
-                            </div>
-                          })
-                        }
-                      </td>
-                    </tr>
-                    </tbody>
-                  </Table>
+                          </div>
+                        </div>
+
+                      </Scrollbars>
+                    </div>
+
+
+
+                  </div>
                   <div className="dropright mr-1 mb-1 d-inline-block">
                     <UncontrolledButtonDropdown direction="right">
                       <DropdownToggle color="primary" className="add-icon btn-add-ms-element ms-btn-element">
@@ -297,4 +314,5 @@ function MasterSchema() {
 
 
 export default MasterSchema;
+
 
