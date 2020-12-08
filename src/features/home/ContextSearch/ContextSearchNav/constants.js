@@ -16,6 +16,11 @@ export const NAV_OPTIONS = [
     id: "applications",
     actions: [],
   },
+  {
+    title: "Master Schema",
+    id: "MasterSchema",
+    actions: [],
+  }
   // {
   //   title: "Notifications",
   //   id: "notifications",

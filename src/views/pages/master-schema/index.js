@@ -176,7 +176,7 @@ function MasterSchema() {
   };
 
   return (
-    <Row>
+    <Row className="master-schema">
       <Col md="6">
         <Card>
           <CardHeader>
