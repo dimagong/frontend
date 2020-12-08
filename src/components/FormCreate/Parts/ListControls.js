@@ -656,11 +656,11 @@ export function listControls(properties) {
     return Object.keys(groupedElements).map((groupName, index) => {
 
       if (groupName.indexOf('WITHOUT_GROUP') !== -1) {
-        return groupedElements[groupName].map(element => {
-          if (element.content.key in this.state.uiSchema.sections) {
+        return Object.keys(groupedElements[groupName]).map((key) => {
+          if (key in this.state.uiSchema.sections) {
             return null;
           }
-          return renderConfigFields(element.content.key, index);
+          return renderConfigFields(key, index);
         });
       } else {
         return Object.keys(groupedElements[groupName]).map(key => {
