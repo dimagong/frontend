@@ -114,6 +114,13 @@ const OnboardingUser = () => {
     console.log("INITIALIZZED")
   }, [])
 
+  const formatTabs = (onboardings) => {
+    return onboardings.map((onboarding) => ({
+      ...onboarding,
+      icon: onboarding.d_form.status === "submitted" ? Check : "null"
+    })).filter((onBoarding) => onBoarding.d_form.status !== "approved")
+  }
+
   return (
     <div>
       {
@@ -129,11 +136,7 @@ const OnboardingUser = () => {
                         tabId="id"
                         tabName={(onboarding) => onboarding.d_form.name}
                         active={profile?.onboarding?.id || profile.onboardings[0].id}
-                        tabs={profile?.onboardings.map((onboarding) => ({
-                          ...onboarding,
-                          icon: onboarding.d_form.status === "submitted" ? Check : "null",
-                          isHidden: onboarding.d_form.status === "approved",
-                        }))}
+                        tabs={formatTabs(profile?.onboardings)}
                         onChange={(onboarding) => {
                           handleNavClick(onboarding)
                         }}
