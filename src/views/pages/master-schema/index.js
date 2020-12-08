@@ -193,6 +193,11 @@ function MasterSchema() {
                   classNamePrefix="select"
                   name="color"
                   value={organization}
+                  menuPortalTarget={document.body}
+                  styles={{
+                    menu: provided => ({ ...provided, zIndex: 9999 }),
+                    menuPortal: base => ({ ...base, zIndex: 9999 })
+                  }}
                   options={organizations.map(organization => {
                     return {label: organization.name, value: organization}
                   })}
