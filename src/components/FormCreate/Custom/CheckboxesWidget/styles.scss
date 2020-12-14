@@ -1,5 +1,6 @@
 .custom-checkbox-container {
   position: relative;
+  display: flex;
   input {
     position: absolute;
     opacity: 0;
@@ -11,8 +12,13 @@
     z-index: 299;
     &:checked {
       ~.custom-checkbox_check {
+        position: relative;
         .custom-checkbox_check-icon {
-          opacity: 0;
+          opacity: 1;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-48%, -55%);
         }
       }
     }
@@ -20,8 +26,12 @@
   .custom-checkbox_check {
     border: 2px solid #707070;
     cursor: pointer;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    min-width: 20px;
     &-icon {
-      padding-bottom: 2px;
+      opacity: 0;
     }
   }
 
