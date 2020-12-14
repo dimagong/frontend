@@ -26,7 +26,7 @@ const colourStyles = {
   },
   control: (styles, { selectProps }) => ({
     ...styles,
-    backgroundColor: "transparent",
+    backgroundColor: "#eee",
     border: '0 !important',
     borderBottom: "1px solid #707070!important",
     // This line disable the blue border
