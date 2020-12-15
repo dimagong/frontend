@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import masterSchemaService from "./services/masterSchema.service";
-import {Button, CardBody, Input, InputGroup, InputGroupAddon, Label} from "reactstrap";
+import {Button, CardBody, FormGroup, Input, InputGroup, InputGroupAddon, Label} from "reactstrap";
+import {isObject} from "lodash";
 
 export default function GroupCreate({data, onNewGroup}) {
 

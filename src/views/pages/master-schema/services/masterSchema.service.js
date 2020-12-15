@@ -75,6 +75,17 @@ class MasterSchemaService {
       organizationType
     });
   }
+
+  masterSchemaGroupMakeParent(groupId, parent_id) {
+    return axios.put(`/api/master-schema-group/${groupId}/make-parent`, {
+      parent_id
+    });
+  }
+  masterSchemaFieldMakeParent(fieldId, master_schema_group_id) {
+    return axios.put(`/api/master-schema-field/${fieldId}/make-parent`, {
+        master_schema_group_id
+    });
+  }
 }
 
 const masterSchemaService = new MasterSchemaService();

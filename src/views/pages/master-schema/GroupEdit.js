@@ -11,23 +11,36 @@ import {
   Card,
   InputGroup, InputGroupAddon
 } from "reactstrap";
+import Select from "react-select"
+import {isEmpty} from 'lodash'
 
-export default function GroupEdit({data, onChange}) {
+export default function GroupEdit({data, onChange, groupsList}) {
 
   const [group, setGroup] = useState({});
+  const [parentGroup, setParentGroup] = useState({});
 
   useEffect(() => {
     setGroup(data);
   }, [data]);
 
+  useEffect(() => {
+    let tempParentGroup = getGroupSelectOptions().find((nextGroup) => {
+      return nextGroup.value.id === group.parent_id;
+    });
+    setParentGroup(tempParentGroup);
+  }, [group]);
+
   const groupSave = async () => {
-    try {
-      const response = await masterSchemaService.updateGroup(group);
-      setGroup(response.data.data);
-      onChange(response.data.data);
-    } catch (exception) {
-      console.log(exception);
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await masterSchemaService.updateGroup(group);
+        setGroup(response.data.data);
+        resolve(response.data.data);
+      } catch (exception) {
+        reject();
+        console.log(exception);
+      }
+    });
   };
 
   const groupDelete = async () => {
@@ -37,6 +50,18 @@ export default function GroupEdit({data, onChange}) {
     } catch (exception) {
       console.log(exception);
     }
+  };
+
+  const handleChangeParent = async () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await masterSchemaService.masterSchemaGroupMakeParent(group.id, parentGroup.value.id);
+        resolve(response.data.data);
+      } catch (exception) {
+        reject();
+        console.log(exception);
+      }
+    });
   };
 
   const getElementDist = () => {
@@ -55,6 +80,21 @@ export default function GroupEdit({data, onChange}) {
     return <div></div>;
   }
 
+  const getGroupSelectOptions = () => {
+    return groupsList.map(group => {
+      return {
+        label: group.path.join('.'),
+        value: group
+      }
+    });
+  };
+
+  const saveData = async () => {
+    let updatedGroup = await groupSave();
+    updatedGroup = await handleChangeParent();
+    onChange(updatedGroup);
+  };
+
   return <div>
     <Label>Category name</Label>
     <InputGroup>
@@ -66,24 +106,33 @@ export default function GroupEdit({data, onChange}) {
         }}
       />
     </InputGroup>
-    {/*<div className="collapse-bordered vx-collapse collapse-icon accordion-icon-rotate collapse-border mt-1">*/}
-    {/*  <Card>*/}
-    {/*    <CardHeader id="item-2">*/}
-    {/*      <CardTitle className="collapse-title collapsed">*/}
-    {/*        Add field*/}
-    {/*      </CardTitle>*/}
-    {/*    </CardHeader>*/}
-    {/*    <UncontrolledCollapse toggler="#item-2">*/}
-    {/*      */}
-    {/*    </UncontrolledCollapse>*/}
-    {/*  </Card>*/}
-    {/*</div>*/}
+
+    {
+      group.parent_id ? <div>
+        <Label>Parent category</Label>
+        {
+          isEmpty(groupsList) || !group ? null :
+            <Select
+              id="select-ms-property"
+              options={getGroupSelectOptions()}
+              value={parentGroup}
+              onChange={(event) => setParentGroup(event)}
+              onInputChange={(event) => {
+
+              }}></Select>
+        }
+      </div> : null
+    }
+
+
     <div className="d-flex justify-content-between mt-1">
       <Button.Ripple outline onClick={() => {
         window.confirm('Are you sure?') && groupDelete()
       }} color="danger">Delete</Button.Ripple>
-      <Button.Ripple outline onClick={groupSave} color="primary">Save</Button.Ripple>
+      <Button.Ripple outline onClick={() => {
+        saveData();
+      }} color="primary">Save</Button.Ripple>
     </div>
 
   </div>
-}
+};
