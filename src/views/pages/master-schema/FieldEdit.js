@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Col, FormGroup, Input, Label, Button} from "reactstrap";
+import {Col, FormGroup, Input, Label, Button, InputGroup, InputGroupAddon} from "reactstrap";
 import masterSchemaService from './services/masterSchema.service'
 
 export default function FieldEdit({data, onChange}) {
@@ -30,23 +30,38 @@ export default function FieldEdit({data, onChange}) {
     }
   };
 
-  if(!field) {
+  if (!field) {
     return <div></div>;
   }
 
+  const getElementDist = () => {
+    if (!Array.isArray(field.path)) {
+      return '';
+    }
+    let path = field.path.slice();
+    path.pop();
+    return path.join('.') + '.';
+  };
+
   return <div>
-    <Label>Name</Label>
-    <Input
-      value={field.name}
-      onChange={(event) => {
-        setField({...field, name: event.target.value})
-      }}
-    />
+    <Label>Element name</Label>
+    <InputGroup>
+      <InputGroupAddon addonType="prepend">{getElementDist()}</InputGroupAddon>
+      <Input
+        value={field.name}
+        onChange={(event) => {
+          setField({...field, name: event.target.value})
+        }}
+      />
+    </InputGroup>
+
     <div className="d-flex justify-content-between mt-1">
-      <Button onClick={() => {fieldSave()}} color="primary">Save</Button>
-      <Button onClick={() => {
+      <Button.Ripple outline onClick={() => {
         window.confirm('Are you sure?') && fieldDelete()
-      }} color="danger">Delete</Button>
+      }} color="danger">Delete</Button.Ripple>
+      <Button.Ripple outline onClick={() => {
+        fieldSave()
+      }} color="primary">Save</Button.Ripple>
     </div>
 
   </div>

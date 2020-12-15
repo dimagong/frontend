@@ -40,6 +40,7 @@ function* getUserOnboarding({payload}) {
   try {
     const onboarding = yield call(groupRelations.getGroupsRelationsByUserId, payload);
     const reviewers = yield call(userApi.getUsersData);
+    // todo reviewers
     yield put(getUserOnboardingSuccess({...onboarding, reviewers}));
 
   } catch (error) {

@@ -27,6 +27,8 @@ import {styleLight} from "./MasterSchemaTree/styles/style";
 import {styleColumn} from "./MasterSchemaTree/styles/styleColumn";
 import { Scrollbars } from 'react-custom-scrollbars'
 import Tabs from '../../../components/Tabs/index.js'
+import GroupCreate from "./GroupCreate";
+import FieldCreate from "./FieldCreate";
 
 const clone = rfdc();
 
@@ -38,7 +40,7 @@ function MasterSchema() {
   const [masterSchemaTreebeard, setMasterSchemaTreebeard] = useState();
   const [organizations, setOrganizations] = useState([]);
   const [cursor, setCursor] = useState(false);
-
+  const [rightCardState, setRightCardState] = useState('');
 
   const getOrganizations = async () => {
     const response = await masterSchemaService.getOrganizations();
@@ -79,6 +81,7 @@ function MasterSchema() {
       cursor.active = false;
       setMasterSchemaTreebeard(Object.assign({}, masterSchemaTreebeard));
       setCursor(null);
+      setRightCardState('');
     }
   };
 
@@ -99,22 +102,24 @@ function MasterSchema() {
       }
     }
 
-    node.children.forEach((child) => {
-      let nodePath = path.slice();
-      nodePath.push(child.name);
-      child.path = nodePath;
+    if(Array.isArray(node.children)) {
+      node.children.forEach((child) => {
+        let nodePath = path.slice();
+        nodePath.push(child.name);
+        child.path = nodePath;
 
 
-      // set previous cursor
-      if (cursor) {
-        if (
-          child.id === cursor.id && !cursor.children && !child.children
-        ) {
-          child.active = true;
-          setCursor(child);
+        // set previous cursor
+        if (cursor) {
+          if (
+            child.id === cursor.id && !cursor.children && !child.children
+          ) {
+            child.active = true;
+            setCursor(child);
+          }
         }
-      }
-    });
+      });
+    }
 
     if (node.groups.length) {
 
@@ -159,7 +164,7 @@ function MasterSchema() {
       masterSchemaTreebeard.active = false;
     }
     node.active = true;
-
+    console.log('setCursor', node);
     setCursor(node);
     setMasterSchemaTreebeard(Object.assign({}, masterSchemaTreebeard))
   };
@@ -174,6 +179,44 @@ function MasterSchema() {
       node.children.forEach(child => outputTreeColumn(child, data))
     }
     return data;
+  };
+
+  const renderCreateElements = () => {
+    switch (rightCardState) {
+      case 'create-category': {
+
+        return <GroupCreate data={cursor} onNewGroup={(newGroup) => {
+          getCurrentMasterSchema();
+          setRightCardState('');
+          console.log('recursiveMap(newGroup)', recursiveMap(newGroup));
+          setCursor(recursiveMap(newGroup));
+        }}></GroupCreate>
+      }
+      case 'create-element': {
+
+        return <FieldCreate data={cursor} onNewField={(newField) => {
+          getCurrentMasterSchema();
+          setRightCardState('');
+          setCursor(newField);
+        }}></FieldCreate>
+      }
+      default: return false;
+    }
+  };
+
+  const renderOptionsEditForCurrentElement = () => {
+      return 'children' in cursor ?
+        <GroupEdit data={cursor} onChange={(group) => {
+          getCurrentMasterSchema();
+        }}/>
+        :
+        <FieldEdit data={cursor} onChange={(field) => {
+          getCurrentMasterSchema();
+        }}/>
+  };
+
+  const renderRightCard = () => {
+    return renderCreateElements() || renderOptionsEditForCurrentElement();
   };
 
   return (
@@ -270,12 +313,12 @@ function MasterSchema() {
                   </div>
                   <div className="dropright mr-1 mb-1 d-inline-block">
                     <UncontrolledButtonDropdown direction="right">
-                      <DropdownToggle color="primary" className="add-icon btn-add-ms-element ms-btn-element">
+                      <DropdownToggle disabled={!cursor} color="primary" className="add-icon btn-add-ms-element ms-btn-element">
                         <Plus size={28}/>
                       </DropdownToggle>
                       <DropdownMenu>
-                        <DropdownItem tag="a">Category</DropdownItem>
-                        <DropdownItem tag="a">Element</DropdownItem>
+                        <DropdownItem tag="a" onClick={() => {setRightCardState('create-category')}}>Category</DropdownItem>
+                        <DropdownItem tag="a" onClick={() => {setRightCardState('create-element')}}>Element</DropdownItem>
                       </DropdownMenu>
                     </UncontrolledButtonDropdown>
                   </div>
@@ -295,18 +338,7 @@ function MasterSchema() {
             </CardHeader>
             <CardBody>
               {
-                'children' in cursor ?
-                  <GroupEdit data={cursor} onChange={(group) => {
-                    getCurrentMasterSchema();
-                  }} onNewField={(newField) => {
-                    getCurrentMasterSchema();
-                  }} onNewGroup={(newGroup) => {
-                    getCurrentMasterSchema();
-                  }}/>
-                  :
-                  <FieldEdit data={cursor} onChange={(field) => {
-                    getCurrentMasterSchema();
-                  }}/>
+                renderRightCard()
               }
             </CardBody>
           </Card>
