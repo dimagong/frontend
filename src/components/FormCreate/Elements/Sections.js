@@ -12,7 +12,8 @@ export default function Sections(props) {
     isSectionHidden,
     isSectionDisabled,
     renderElementsByGroupsAndSections,
-    renderElementsWithNoGroupsAndSections
+    renderElementsWithNoGroupsAndSections,
+    getErrors,
   } = props;
 
   const [keyTab, setKeyTab] = useState(defaultTab);
@@ -31,7 +32,7 @@ export default function Sections(props) {
                   setKeyTab(index)
                 }}
               >
-                <div className="sections-nav_item_title">
+                <div className={`sections-nav_item_title ${(getErrors())[section] ? "with-errors" : ""}`}>
                   <span className="align-middle ml-50">{section}</span>
                 </div>
                 <div className="sections-nav_item_index">
