@@ -110,15 +110,20 @@ export function ObjectFieldTemplate(props) {
             return isHidden;
           };
 
+          let fieldClass = ~this.state.uiSchema?.errors?.field.indexOf(parseInt(element.name))
+
+          fieldClass = !!fieldClass ? `${getColumnClass(element.name, element)} field-with-error` : getColumnClass(element.name, element)
+
           const fieldProps = {
             key: element.name,
-            className: getColumnClass(element.name, element),
+            className: fieldClass,
             style: isElementHidden(element.name)
           };
 
           return <Field {...fieldProps}>
             {renderCustomFieldsComponents(element)}
           </Field>
+
         }
         return null;
       });
@@ -217,6 +222,10 @@ export function ObjectFieldTemplate(props) {
     return section in this.state.uiSchema.sectionStates && Constants.UI_DISABLED in this.state.uiSchema.sectionStates[section] && this.state.uiSchema.sectionStates[section][Constants.UI_DISABLED]
       ? {disabled: 'disabled'} : {};
   };
+  const getErrors = () => {
+
+    return this.state.uiSchema.errors || {};
+  }
 
   const renderObject = () => {
 
@@ -226,7 +235,8 @@ export function ObjectFieldTemplate(props) {
       isSectionHidden,
       isSectionDisabled,
       renderElementsByGroupsAndSections,
-      renderElementsWithNoGroupsAndSections
+      renderElementsWithNoGroupsAndSections,
+      getErrors
     };
 
     return (<div>
