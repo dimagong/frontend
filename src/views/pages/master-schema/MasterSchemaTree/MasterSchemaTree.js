@@ -22,7 +22,11 @@ class CustomContainer extends decorators.Container {
 export default function MasterSchemaTree(props) {
   decorators.Header = (props) => {
     return <div onClick={() => {}}>
-      <div>{props.node.name}</div>
+      <div style={{
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+      }}>{props.node.name}</div>
     </div>
   };
   decorators.Container = CustomContainer;
