@@ -68,7 +68,7 @@ const SelectWidget = (props) => {
   // } else {
   //   value = props.value ? {value: props.value, label: props.value} : null;
   // }
-  console.log(props.multiple, value, props);
+  // console.log(props.multiple, value, props);
   return (
     <div className={"custom-react-select"}>
       <FieldLabel label={props.schema.title}/>
