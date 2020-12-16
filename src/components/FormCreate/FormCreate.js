@@ -45,7 +45,7 @@ import Constants, {
   FIELD_TYPE_TEXT_AREA
 } from './Parts/Constants'
 
-import Controls, { referenceObject } from './Parts/Controls'
+import Controls, {referenceObject} from './Parts/Controls'
 
 import './FormCreate.scss';
 
@@ -59,7 +59,7 @@ import masterSchemaService from "../../views/pages/master-schema/services/master
 import {
   getMasterSchemaFieldsRequest,
 } from "app/slices/appSlice";
-
+import PropertyNameById from "./Parts/PropertyNameById";
 
 const clone = rfdc();
 
@@ -597,8 +597,8 @@ class FormCreate extends React.Component {
                         >
                           <option key="-1"></option>
                           {Object.keys(this.state.schema.properties).filter(nextFilterField => nextFilterField !== objKey).map((type, indexType) =>
-                            <option
-                              key={indexType}>{type}</option>)}
+                            <PropertyNameById
+                              key={indexType} fieldId={type} value={type}/>)}
                         </select>
                       </div>
 
@@ -629,9 +629,11 @@ class FormCreate extends React.Component {
                           value={fieldOperator.field}
                         >
                           <option key="-1"></option>
-                          {Object.keys(this.state.schema.properties).filter(nextFilterField => nextFilterField !== objKey).map((type, indexType) =>
-                            <option
-                              key={indexType}>{type}</option>)}
+                          {
+                            Object.keys(this.state.schema.properties)
+                              .filter(nextFilterField => nextFilterField !== objKey)
+                              .map((type, indexType) => <PropertyNameById  key={indexType} value={type} fieldId={type}/>)
+                          }
                         </select>
                       </div>
 
@@ -1048,7 +1050,7 @@ class FormCreate extends React.Component {
 
   changeMasterSchemaFieldId = (value) => {
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
-    if(isEmpty(schemaPropertyEdit.reference)) {
+    if (isEmpty(schemaPropertyEdit.reference)) {
       schemaPropertyEdit.reference = {...referenceObject};
     }
     schemaPropertyEdit.reference.field_id = value;
@@ -1212,7 +1214,6 @@ class FormCreate extends React.Component {
 
     return true;
   }
-
 
 
   elementEditModalOpened = (column) => {
