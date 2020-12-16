@@ -1,20 +1,20 @@
 import React from 'react';
-import { Input } from 'reactstrap';
+import {Input} from 'reactstrap';
 import Select from 'react-select'
 import './styles.scss'
 import FieldLabel from '../FieldLabel'
 
 const colourStyles = {
 
-  option: (styles, { isFocused, isSelected, ...rest }) => {
+  option: (styles, {isFocused, isSelected, ...rest}) => {
 
     return {
       ...styles,
       backgroundColor: isSelected
-          ? "#7367f0"
-          : isFocused
-            ? "rgba(0, 0, 0, 0.05)"
-            : null,
+        ? "#7367f0"
+        : isFocused
+          ? "rgba(0, 0, 0, 0.05)"
+          : null,
       cursor: 'pointer',
 
       ':active': {
@@ -24,7 +24,7 @@ const colourStyles = {
       },
     };
   },
-  control: (styles, { selectProps }) => ({
+  control: (styles, {selectProps}) => ({
     ...styles,
     backgroundColor: "#eee",
     border: '0 !important',
@@ -54,22 +54,30 @@ const colourStyles = {
       color: "inherit",
     },
   }),
-}
+};
 const SelectWidget = (props) => {
 
-  const handleChange = (values ) => {
+  const handleChange = (values) => {
     props.onChange(values.value || "")
-  }
+  };
 
+  // let value = null;
+
+  // if (props.multiple) {
+  //   value = props.value ? [{value: props.value, label: props.value}] : [];
+  // } else {
+  //   value = props.value ? {value: props.value, label: props.value} : null;
+  // }
+  console.log(props.multiple, value, props);
   return (
     <div className={"custom-react-select"}>
-      <FieldLabel label={props.schema.title} />
+      <FieldLabel label={props.schema.title}/>
       <Select
         isDisabled={props.disabled}
         styles={colourStyles}
         isMulti={props.multiple}
         name="colors"
-        value={props.value ? {value: props.value, label: props.value} : null}
+        value={props.value ? props.value : null}
         onChange={handleChange}
         options={props.options.enumOptions}
         className="React"
@@ -78,6 +86,6 @@ const SelectWidget = (props) => {
       />
     </div>
   )
-}
+};
 
 export default SelectWidget;
