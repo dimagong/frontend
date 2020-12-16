@@ -143,6 +143,33 @@ class FormCreate extends React.Component {
     propsDFormUiSchema.dependencies.groups = isEmpty(propsDFormUiSchema.dependencies.groups) ? {} : propsDFormUiSchema.dependencies.groups;
     propsDFormUiSchema.dependencies.fields = isEmpty(propsDFormUiSchema.dependencies.fields) ? {} : propsDFormUiSchema.dependencies.fields;
 
+    const errors = this.state?.uiSchema?.errors || {field: []};
+    let resultErrors = {field:[]};
+
+    const getFieldSection = (field) => this.state.uiSchema.sections[field]
+    const isFieldEmpty = (field) => (
+      formData[field] === ""
+      || (Array.isArray(formData[field]) && formData[field].length === 0)
+      || formData[field] === null
+    )
+
+    errors.field.map((field) => {
+      if (isFieldEmpty(field)) {
+        const section = getFieldSection(field);
+
+        if(!section) return;
+
+        if (!resultErrors[section]) {
+          resultErrors[section] = []
+        }
+
+        resultErrors[section].push(field)
+        resultErrors.field.push(field)
+      }
+    })
+
+    propsDFormUiSchema.errors = resultErrors;
+
     if (
       props.fill &&
       props.fill === true &&
@@ -280,6 +307,55 @@ class FormCreate extends React.Component {
   formSubmit = (event) => {
 
     let formData = event.formData;
+
+    let requiredFields = this.state.schema.required;
+
+    let getFieldSection = (field) => this.state.uiSchema.sections[field]
+
+    let isFieldEmpty = (field) => (
+      formData[field] === ""
+      || (Array.isArray(formData[field]) && formData[field].length === 0)
+      || formData[field] === null
+    )
+
+    // Check is required fields are filled. Stop submitting and show error if true
+    if (requiredFields?.length) {
+      let errors = {
+        field: []
+      };
+      requiredFields.map((field) => {
+        if (isFieldEmpty(field)) {
+
+          const section = getFieldSection(field);
+
+          if(!section) return;
+
+          if(this.state.uiSchema[field] && !(Constants.UI_HIDDEN in this.state.uiSchema[field])
+            || this.state.uiSchema[field] && !(this.state.uiSchema[field][Constants.UI_HIDDEN])) return;
+
+          if (!errors[section]) {
+            errors[section] = []
+          }
+
+          errors[section].push(field)
+          errors.field.push(field)
+        }
+      })
+
+      if (Object.keys(errors).length > 1) {
+        this.setState({
+          ...this.state,
+
+          uiSchema: {
+            ...this.state.uiSchema,
+            errors,
+          }
+        });
+
+        return;
+      }
+    }
+
 
     Object.keys(formData).forEach(key => {
       if (key in this.state.uiSchema &&
@@ -1672,7 +1748,7 @@ class FormCreate extends React.Component {
     const options = {
       selectOnLineNumbers: true
     };
-
+    console.log("test", this.state)
     return (
       <Row>
         <InitFormCreate/>

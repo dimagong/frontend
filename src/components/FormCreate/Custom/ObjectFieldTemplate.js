@@ -110,9 +110,20 @@ export function ObjectFieldTemplate(props) {
             return isHidden;
           };
 
+          // const fieldClass = this.state.uiSchema?.errors?.field.filter((id) => {
+          //
+          //   if(parseInt(id) === parseInt(element.name)) console.log(parseInt(id), parseInt(element.name));
+          //   return parseInt(id) === parseInt(element.name)
+          // })[0] ? `${getColumnClass(element.name, element)} field-with-error` : getColumnClass(element.name, element)
+
+
+          let fieldClass = ~this.state.uiSchema?.errors?.field.indexOf(parseInt(element.name))
+
+          fieldClass = !!fieldClass ? `${getColumnClass(element.name, element)} field-with-error` : getColumnClass(element.name, element)
+
           const fieldProps = {
             key: element.name,
-            className: getColumnClass(element.name, element),
+            className: fieldClass,
             style: isElementHidden(element.name)
           };
 
@@ -218,6 +229,11 @@ export function ObjectFieldTemplate(props) {
       ? {disabled: 'disabled'} : {};
   };
 
+  const getErrors = () => {
+
+    return this.state.uiSchema.errors || {};
+  }
+
   const renderObject = () => {
 
     const sectionsProps = {
@@ -226,7 +242,8 @@ export function ObjectFieldTemplate(props) {
       isSectionHidden,
       isSectionDisabled,
       renderElementsByGroupsAndSections,
-      renderElementsWithNoGroupsAndSections
+      renderElementsWithNoGroupsAndSections,
+      getErrors,
     };
 
     return (<div>
