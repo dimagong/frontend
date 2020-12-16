@@ -134,7 +134,7 @@ export function listControls(properties) {
             label="Is required"
             id={`${index}-${column}`}
             onChange={event => this.inputHandlerRequired(event, objKey)}
-            checked={this.state.schemaRequiredFields.indexOf(objKey) !== -1}
+            checked={this.state.schemaRequiredFields.some(objKey => +objKey === +column)}
           />
         </div>
       );
