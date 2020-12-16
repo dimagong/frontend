@@ -74,7 +74,7 @@ const SelectWidget = (props) => {
         return props.value.indexOf(nextValue.value) !== -1;
       }) : [];
     }
-    return typeof props.value ? {value: props.value, label: props.value} : ''
+    return  props.value ? {value: props.value, label: props.value} : null
   };
 
   return (
