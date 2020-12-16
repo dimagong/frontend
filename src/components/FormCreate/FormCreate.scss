@@ -57,6 +57,18 @@
   }
 }
 
+.submitted-form-status {
+  border-top: 1px solid rgb(112, 112, 112);
+  margin-top: 23px;
+  margin-left: 200px;
+  text-align: right;
+  padding: 29px 10px 11px 12px;
+  font-size: 14px;
+  span {
+    color: #7367f0;
+  }
+}
+
 .submit-onboarding-button {
   padding: 10px 28px;
   border-radius: 10px;

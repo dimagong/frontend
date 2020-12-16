@@ -3,7 +3,7 @@ import React from 'react';
 import './styles.scss'
 
 const Index = (props) => {
-
+  console.log(props)
   return (
     <div className="custom-form-filed form-create_custom-text-widget">
       <label htmlFor={props.id}>

@@ -60,8 +60,15 @@
         justify-content: center;
         border-radius: 100%;
         color: #707070!important;
-        background: url("../../../assets/img/background/navIndexBackground.png") no-repeat;
+        background-color: #dcd9f8;
+        position: relative;
 
+        div.index {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
       }
       &_delimiter{
         width: 26px;

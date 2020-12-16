@@ -7,6 +7,7 @@ import HelpText from "./HelpText";
 import Sections from '../Elements/Sections'
 import Groups from '../Elements/Groups'
 import Field from "../Elements/Field";
+import _ from 'lodash'
 
 export function ObjectFieldTemplate(props) {
 
@@ -227,6 +228,47 @@ export function ObjectFieldTemplate(props) {
     return this.state.uiSchema.errors || {};
   }
 
+  const getProgress = (section) => {
+
+
+    let isFieldEmpty = (data) => (
+      data === ""
+      || (Array.isArray(data) && data.length === 0)
+      || data === null
+      || data === false
+    )
+
+    const sections = this.state.uiSchema.sections;
+
+    const fields = Object.keys(sections)
+
+    const currentSectionFields = fields.filter((field) => (sections[field] === section))
+
+    let currentSectionRequiredFields = currentSectionFields.filter((field) => this.state.schema.required.indexOf(+field) !== -1)
+
+    currentSectionRequiredFields = currentSectionRequiredFields.filter((field) => {
+      if (field in this.state.uiSchema &&
+        (
+          (Constants.UI_DISABLED in this.state.uiSchema[field] && this.state.uiSchema[field][Constants.UI_DISABLED] && this.state.dFormTemplate.status !== "submitted")
+          ||
+          (Constants.UI_HIDDEN in this.state.uiSchema[field] && this.state.uiSchema[field][Constants.UI_HIDDEN])
+        )
+      ) {
+        return false
+      }
+
+      return true
+    })
+    console.log(section, currentSectionRequiredFields)
+    const total = currentSectionRequiredFields.length
+
+    const completed = currentSectionRequiredFields.filter((field) => !isFieldEmpty(this.state.formData[field])).length
+
+    if (total === 0) return 0;
+
+    return (completed / total) * 100;
+  }
+
   const renderObject = () => {
 
     const sectionsProps = {
@@ -236,7 +278,8 @@ export function ObjectFieldTemplate(props) {
       isSectionDisabled,
       renderElementsByGroupsAndSections,
       renderElementsWithNoGroupsAndSections,
-      getErrors
+      getErrors,
+      getProgress,
     };
 
     return (<div>

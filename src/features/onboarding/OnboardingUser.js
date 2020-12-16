@@ -177,6 +177,7 @@ const OnboardingUser = () => {
                                           onSaveButtonHidden={isDisabledSubmit()}
                                           isStateConfig={false}
                                           onboardingUser={profile}
+                                          showSubmittedStatus
                                         />
                                         : <FormCreate
                                           // reInit={(reInit, context) => {

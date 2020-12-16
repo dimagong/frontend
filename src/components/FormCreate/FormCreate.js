@@ -154,6 +154,7 @@ class FormCreate extends React.Component {
       formData[field] === ""
       || (Array.isArray(formData[field]) && formData[field].length === 0)
       || formData[field] === null
+      || formData[field] === false
     )
 
     errors.field.map((field) => {
@@ -323,6 +324,7 @@ class FormCreate extends React.Component {
       formData[field] === ""
       || (Array.isArray(formData[field]) && formData[field].length === 0)
       || formData[field] === null
+      || formData[field] === false
     )
 
     // Check is required fields are filled. Stop submitting and show error if true
@@ -337,8 +339,8 @@ class FormCreate extends React.Component {
 
           if(!section) return;
 
-          if(this.state.uiSchema[field] && !(Constants.UI_HIDDEN in this.state.uiSchema[field])
-            || this.state.uiSchema[field] && !(this.state.uiSchema[field][Constants.UI_HIDDEN])) return;
+          if(this.state.uiSchema[field] && (Constants.UI_HIDDEN in this.state.uiSchema[field])
+            || this.state.uiSchema[field] && (this.state.uiSchema[field][Constants.UI_HIDDEN])) return;
 
           if (!errors[section]) {
             errors[section] = []
@@ -1757,7 +1759,7 @@ class FormCreate extends React.Component {
     const options = {
       selectOnLineNumbers: true
     };
-
+    console.log(this.state)
     return (
       <Row>
         <InitFormCreate/>
@@ -1906,6 +1908,11 @@ class FormCreate extends React.Component {
                     <div style={{float: "right", paddingRight: "20px"}}>
                       <span style={{color: "#7367f0", paddingRight: "10px"}}>{this.state.additionalData.name}</span>
                       <Button type="submit" className="ml-auto submit-onboarding-button">Submit for review</Button>
+                    </div>
+                  )}
+                  {this.state.dFormTemplate.status === "submitted" && this.props.showSubmittedStatus && (
+                    <div className="submitted-form-status">
+                      <span>{this.state.additionalData.name}</span> submitted for review
                     </div>
                   )}
                 </div>

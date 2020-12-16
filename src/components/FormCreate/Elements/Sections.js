@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import {Col, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
 import classnames from "classnames";
 
+import ProgressBar from '../Custom/ProgressBar'
+
 import './sectionsStyles.scss'
 
 export default function Sections(props) {
@@ -14,6 +16,7 @@ export default function Sections(props) {
     renderElementsByGroupsAndSections,
     renderElementsWithNoGroupsAndSections,
     getErrors,
+    getProgress
   } = props;
 
   const [keyTab, setKeyTab] = useState(defaultTab);
@@ -36,7 +39,15 @@ export default function Sections(props) {
                   <span className="align-middle ml-50">{section}</span>
                 </div>
                 <div className="sections-nav_item_index">
-                  {index + 1}
+
+                  <ProgressBar
+                    progress={getProgress(section)}
+                    size={33}
+                    strokeWidth={2}
+                    circleOneStroke='transparent'
+                    circleTwoStroke={"#7367f0"}
+                    index={index + 1}
+                  />
                 </div>
                 <div
                   className={classnames({
