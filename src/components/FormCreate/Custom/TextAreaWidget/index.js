@@ -17,7 +17,7 @@ const TextAreaWidget = ({value, onChange, options, label, disabled, required}) =
         className="custom-textarea"
         rows="5"
         disabled={disabled}
-        required={required}
+        // required={required}
       />
     </div>
   )

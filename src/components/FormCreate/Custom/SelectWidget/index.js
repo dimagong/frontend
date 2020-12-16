@@ -58,19 +58,24 @@ const colourStyles = {
 const SelectWidget = (props) => {
 
   const handleChange = (values) => {
-    props.onChange(values.value || "")
+    if (props.multiple) {
+      const mappedSelectValuesToArray = values ? values.map(nextSelectValue => {
+        return nextSelectValue.value;
+      }) : [];
+      props.onChange(mappedSelectValuesToArray);
+    } else {
+      props.onChange(values.value || "")
+    }
   };
 
-  // let value = null;
-
-  // if (props.multiple) {
-  //   value = props.value ? [{value: props.value, label: props.value}] : [];
-  // } else {
-  //   value = props.value ? {value: props.value, label: props.value} : null;
-  // }
-  // console.log(props.multiple, value, props);
-
-  const value = typeof props.value === "string" ? {value: props.value, label: props.value} : props.value;
+  const getValue = () => {
+    if (props.multiple) {
+      return Array.isArray(props.value) ? props.options.enumOptions.filter(nextValue => {
+        return props.value.indexOf(nextValue.value) !== -1;
+      }) : [];
+    }
+    return typeof props.value ? {value: props.value, label: props.value} : ''
+  };
 
   return (
     <div className={"custom-react-select"}>
@@ -80,7 +85,7 @@ const SelectWidget = (props) => {
         styles={colourStyles}
         isMulti={props.multiple}
         name="colors"
-        value={value}
+        value={getValue()}
         onChange={handleChange}
         options={props.options.enumOptions}
         className="React"
