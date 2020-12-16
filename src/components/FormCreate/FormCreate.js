@@ -35,6 +35,7 @@ import Reference from "./Custom/Reference";
 import TextWidget from './Custom/TextWidget';
 import SelectWidget from './Custom/SelectWidget';
 import TextAreaWidget from './Custom/TextAreaWidget';
+import DateInput from './Custom/DateInput';
 
 import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
 import fileService from "./services/file.service";
@@ -1769,6 +1770,7 @@ class FormCreate extends React.Component {
                   TextWidget: TextWidget,
                   SelectWidget: SelectWidget,
                   TextareaWidget: TextAreaWidget,
+                  DateWidget: DateInput,
                 }}
                 fields={{
                   reference: Reference.bind(this)
