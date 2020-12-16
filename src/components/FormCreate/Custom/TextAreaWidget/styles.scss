@@ -1,7 +1,7 @@
 .custom-textarea {
   resize: none;
   width: 100%;
-  background: transparent;
+  background: #eee;
   border: 0;
   border-bottom: 1px solid #707070;
   padding: 12px 15px;
@@ -19,4 +19,9 @@
 
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+.field-with-error {
+  .custom-textarea {
+    border-right: 3px solid #dc3545;
+  }
 }

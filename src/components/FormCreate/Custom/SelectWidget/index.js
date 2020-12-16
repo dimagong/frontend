@@ -26,7 +26,7 @@ const colourStyles = {
   },
   control: (styles, { selectProps }) => ({
     ...styles,
-    backgroundColor: "transparent",
+    backgroundColor: "#eee",
     border: '0 !important',
     borderBottom: "1px solid #707070!important",
     // This line disable the blue border
@@ -37,7 +37,7 @@ const colourStyles = {
       borderBottom: "1px solid #707070!important",
     },
     cursor: 'pointer',
-    padding: selectProps.isMulti ? "0 0 8px 4px" : "0 0 5px 1px",
+    padding: selectProps.isMulti ? "0 0 8px 4px" : "0 0 0 1px",
   }),
   singleValue: styles => ({
     ...styles,
@@ -58,18 +58,18 @@ const colourStyles = {
 const SelectWidget = (props) => {
 
   const handleChange = (values ) => {
-    props.onChange(values || [])
+    props.onChange(values.value || "")
   }
 
   return (
-    <div>
+    <div className={"custom-react-select"}>
       <FieldLabel label={props.schema.title} />
       <Select
         isDisabled={props.disabled}
         styles={colourStyles}
         isMulti={props.multiple}
         name="colors"
-        value={props.value}
+        value={props.value ? {value: props.value, label: props.value} : null}
         onChange={handleChange}
         options={props.options.enumOptions}
         className="React"

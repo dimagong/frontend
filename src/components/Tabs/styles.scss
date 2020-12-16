@@ -51,7 +51,7 @@
     &.prev-item, &.next-item {
       .page-link {
         background-color: #b1b1b1;
-        padding: 6px 13px;
+        padding: 7px 9px!important;
         border-radius: 25px!important;
         color: white;
         &:hover {
@@ -84,7 +84,7 @@
     width: 100%;
     white-space: nowrap;
     overflow-x: auto;
-    padding-bottom: 5px;
+    padding-bottom: 7px;
     &::-webkit-scrollbar {
       display: none;
     }

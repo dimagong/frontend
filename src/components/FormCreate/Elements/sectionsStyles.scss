@@ -40,11 +40,18 @@
         span {
           width: 100%;
           text-align: right;
-          padding-top: 7px;
+          padding-top: 8px;
+        }
+
+        &.with-errors {
+          span {
+            color: #dc3545!important;
+          }
         }
         //display: none;
       }
       &_index {
+        padding-top: 1px;
         display: flex;
         width: 33px;
         height: 33px;
@@ -61,10 +68,16 @@
         height: 1px;
         //align-self: center;
         margin-top: 16px;
+        background: transparent;
+        transition: 400ms;
         &.active {
           background: #7367f0;
         }
       }
     }
   }
+  .tab-pane.active { animation-name: fadeIn; animation-duration: 300ms; animation-timing-function: linear; }
 }
+
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

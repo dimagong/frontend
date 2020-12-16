@@ -83,7 +83,7 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false}
                   handleTabChange(item)
                 }}>
                   <div className="icon-container">
-                    <img src={item.icon} alt=""/>
+                    <img src={item.icon} alt="" onError="this.style.display = 'none'"/>
                   </div>
                   <div>
                     {tabName(item)}
