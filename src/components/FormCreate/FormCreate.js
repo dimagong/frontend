@@ -45,7 +45,7 @@ import Constants, {
   FIELD_TYPE_TEXT_AREA
 } from './Parts/Constants'
 
-import Controls, { referenceObject } from './Parts/Controls'
+import Controls, {referenceObject} from './Parts/Controls'
 
 import './FormCreate.scss';
 
@@ -59,7 +59,7 @@ import masterSchemaService from "../../views/pages/master-schema/services/master
 import {
   getMasterSchemaFieldsRequest,
 } from "app/slices/appSlice";
-
+import PropertyNameById from "./Parts/PropertyNameById";
 
 const clone = rfdc();
 
@@ -142,33 +142,6 @@ class FormCreate extends React.Component {
     propsDFormUiSchema.dependencies.sections = isEmpty(propsDFormUiSchema.dependencies.sections) ? {} : propsDFormUiSchema.dependencies.sections;
     propsDFormUiSchema.dependencies.groups = isEmpty(propsDFormUiSchema.dependencies.groups) ? {} : propsDFormUiSchema.dependencies.groups;
     propsDFormUiSchema.dependencies.fields = isEmpty(propsDFormUiSchema.dependencies.fields) ? {} : propsDFormUiSchema.dependencies.fields;
-
-    const errors = this.state?.uiSchema?.errors || {field: []};
-    let resultErrors = {field:[]};
-
-    const getFieldSection = (field) => this.state.uiSchema.sections[field]
-    const isFieldEmpty = (field) => (
-      formData[field] === ""
-      || (Array.isArray(formData[field]) && formData[field].length === 0)
-      || formData[field] === null
-    )
-
-    errors.field.map((field) => {
-      if (isFieldEmpty(field)) {
-        const section = getFieldSection(field);
-
-        if(!section) return;
-
-        if (!resultErrors[section]) {
-          resultErrors[section] = []
-        }
-
-        resultErrors[section].push(field)
-        resultErrors.field.push(field)
-      }
-    })
-
-    propsDFormUiSchema.errors = resultErrors;
 
     if (
       props.fill &&
@@ -307,55 +280,6 @@ class FormCreate extends React.Component {
   formSubmit = (event) => {
 
     let formData = event.formData;
-
-    let requiredFields = this.state.schema.required;
-
-    let getFieldSection = (field) => this.state.uiSchema.sections[field]
-
-    let isFieldEmpty = (field) => (
-      formData[field] === ""
-      || (Array.isArray(formData[field]) && formData[field].length === 0)
-      || formData[field] === null
-    )
-
-    // Check is required fields are filled. Stop submitting and show error if true
-    if (requiredFields?.length) {
-      let errors = {
-        field: []
-      };
-      requiredFields.map((field) => {
-        if (isFieldEmpty(field)) {
-
-          const section = getFieldSection(field);
-
-          if(!section) return;
-
-          if(this.state.uiSchema[field] && !(Constants.UI_HIDDEN in this.state.uiSchema[field])
-            || this.state.uiSchema[field] && !(this.state.uiSchema[field][Constants.UI_HIDDEN])) return;
-
-          if (!errors[section]) {
-            errors[section] = []
-          }
-
-          errors[section].push(field)
-          errors.field.push(field)
-        }
-      })
-
-      if (Object.keys(errors).length > 1) {
-        this.setState({
-          ...this.state,
-
-          uiSchema: {
-            ...this.state.uiSchema,
-            errors,
-          }
-        });
-
-        return;
-      }
-    }
-
 
     Object.keys(formData).forEach(key => {
       if (key in this.state.uiSchema &&
@@ -673,8 +597,8 @@ class FormCreate extends React.Component {
                         >
                           <option key="-1"></option>
                           {Object.keys(this.state.schema.properties).filter(nextFilterField => nextFilterField !== objKey).map((type, indexType) =>
-                            <option
-                              key={indexType}>{type}</option>)}
+                            <PropertyNameById
+                              key={indexType} fieldId={type} value={type}/>)}
                         </select>
                       </div>
 
@@ -705,9 +629,11 @@ class FormCreate extends React.Component {
                           value={fieldOperator.field}
                         >
                           <option key="-1"></option>
-                          {Object.keys(this.state.schema.properties).filter(nextFilterField => nextFilterField !== objKey).map((type, indexType) =>
-                            <option
-                              key={indexType}>{type}</option>)}
+                          {
+                            Object.keys(this.state.schema.properties)
+                              .filter(nextFilterField => nextFilterField !== objKey)
+                              .map((type, indexType) => <PropertyNameById  key={indexType} value={type} fieldId={type}/>)
+                          }
                         </select>
                       </div>
 
@@ -1124,7 +1050,7 @@ class FormCreate extends React.Component {
 
   changeMasterSchemaFieldId = (value) => {
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
-    if(isEmpty(schemaPropertyEdit.reference)) {
+    if (isEmpty(schemaPropertyEdit.reference)) {
       schemaPropertyEdit.reference = {...referenceObject};
     }
     schemaPropertyEdit.reference.field_id = value;
@@ -1288,7 +1214,6 @@ class FormCreate extends React.Component {
 
     return true;
   }
-
 
 
   elementEditModalOpened = (column) => {
@@ -1748,7 +1673,7 @@ class FormCreate extends React.Component {
     const options = {
       selectOnLineNumbers: true
     };
-    console.log("test", this.state)
+
     return (
       <Row>
         <InitFormCreate/>

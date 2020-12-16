@@ -11,7 +11,7 @@ class CustomContainer extends decorators.Container {
       <div
         onClick={onClick}
         ref={ref => (this.clickableRef = ref)}
-        className={classnames('ms-element', {'active': node.active, 'ms-group': !terminal})}
+        className={classnames('ms-element', {'active': node.active, 'selected': node.selected, 'ms-group': !terminal})}
       >
         <decorators.Header node={node} />
       </div>

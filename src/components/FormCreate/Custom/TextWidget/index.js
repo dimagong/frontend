@@ -14,7 +14,7 @@ const Index = (props) => {
         type="text"
         disabled={props.disabled}
         value={props.value}
-        // required={props.required}
+        required={props.required}
         onChange={(event) => props.onChange(event.target.value)}
         placeholder={props.placeholder || "Enter your answer here"}
       />

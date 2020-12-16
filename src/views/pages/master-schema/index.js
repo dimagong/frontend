@@ -15,7 +15,7 @@ import {
 } from 'reactstrap'
 import masterSchemaService from './services/masterSchema.service'
 import Select from "react-select"
-import {X, Plus, ChevronDown } from "react-feather";
+import {X, Plus, ChevronDown} from "react-feather";
 import rfdc from "rfdc";
 import FieldEdit from "./FieldEdit";
 import GroupEdit from "./GroupEdit";
@@ -25,12 +25,17 @@ import Breadcrumbs from './Breadcrumbs/index'
 import {Treebeard} from "react-treebeard";
 import {styleLight} from "./MasterSchemaTree/styles/style";
 import {styleColumn} from "./MasterSchemaTree/styles/styleColumn";
-import { Scrollbars } from 'react-custom-scrollbars'
+import {Scrollbars} from 'react-custom-scrollbars'
 import Tabs from '../../../components/Tabs/index.js'
+import GroupCreate from "./GroupCreate";
+import FieldCreate from "./FieldCreate";
+import useEventListener from "../../../app/helpers/useEventListener";
 
 const clone = rfdc();
 
 function MasterSchema() {
+
+  const CTRL = 17;
 
   const [masterSchemaIsLoading, setMasterSchemaIsLoading] = useState(false);
   const [organization, setOrganization] = useState();
@@ -38,6 +43,11 @@ function MasterSchema() {
   const [masterSchemaTreebeard, setMasterSchemaTreebeard] = useState();
   const [organizations, setOrganizations] = useState([]);
   const [cursor, setCursor] = useState(false);
+  const [rightCardState, setRightCardState] = useState('');
+
+  const [ctrlState, setCtrlState] = useState(false);
+
+  const [groupsList, setGroupsList] = useState([]);
 
 
   const getOrganizations = async () => {
@@ -53,6 +63,15 @@ function MasterSchema() {
   useEffect(() => {
     getOrganizations();
   }, []);
+
+  useEffect(() => {
+    // let selectedNodes = [];
+    // getSelectedList(masterSchemaTreebeard, selectedNodes);
+
+    let groupsListBuffer = [];
+    createGroupsList(masterSchemaTreebeard, groupsListBuffer);
+    setGroupsList(groupsListBuffer);
+  }, [masterSchemaTreebeard]);
 
   useEffect(() => {
     setMasterSchemaTreebeard(null);
@@ -79,8 +98,37 @@ function MasterSchema() {
       cursor.active = false;
       setMasterSchemaTreebeard(Object.assign({}, masterSchemaTreebeard));
       setCursor(null);
+      setRightCardState('');
     }
   };
+
+  const getSelectedList = (node, selectedNodes = []) => {
+
+    if (!node) return null;
+    if (node.selected) {
+      selectedNodes.push(node);
+    }
+
+    if (node.children) {
+      for (let next of node.children) {
+        getSelectedList(next, selectedNodes);
+      }
+    }
+  };
+
+  const createGroupsList = (node, selectedNodes = []) => {
+    if (!node) return null;
+    if (node.children) {
+      selectedNodes.push(node);
+    }
+
+    if (node.children) {
+      for (let next of node.children) {
+        createGroupsList(next, selectedNodes);
+      }
+    }
+  };
+
 
   const recursiveMap = (node, path = []) => {
 
@@ -99,22 +147,24 @@ function MasterSchema() {
       }
     }
 
-    node.children.forEach((child) => {
-      let nodePath = path.slice();
-      nodePath.push(child.name);
-      child.path = nodePath;
+    if (Array.isArray(node.children)) {
+      node.children.forEach((child) => {
+        let nodePath = path.slice();
+        nodePath.push(child.name);
+        child.path = nodePath;
 
 
-      // set previous cursor
-      if (cursor) {
-        if (
-          child.id === cursor.id && !cursor.children && !child.children
-        ) {
-          child.active = true;
-          setCursor(child);
+        // set previous cursor
+        if (cursor) {
+          if (
+            child.id === cursor.id && !cursor.children && !child.children
+          ) {
+            child.active = true;
+            setCursor(child);
+          }
         }
-      }
-    });
+      });
+    }
 
     if (node.groups.length) {
 
@@ -159,7 +209,9 @@ function MasterSchema() {
       masterSchemaTreebeard.active = false;
     }
     node.active = true;
-
+    // if(ctrlState) {
+    //   node.selected = !node.selected;
+    // }
     setCursor(node);
     setMasterSchemaTreebeard(Object.assign({}, masterSchemaTreebeard))
   };
@@ -174,6 +226,74 @@ function MasterSchema() {
       node.children.forEach(child => outputTreeColumn(child, data))
     }
     return data;
+  };
+
+  const renderCreateElements = () => {
+    switch (rightCardState) {
+      case 'create-category': {
+
+        return <GroupCreate data={cursor} onNewGroup={(newGroup) => {
+          getCurrentMasterSchema();
+          setRightCardState('');
+          console.log('recursiveMap(newGroup)', recursiveMap(newGroup));
+          setCursor(recursiveMap(newGroup));
+        }}></GroupCreate>
+      }
+      case 'create-element': {
+
+        return <FieldCreate data={cursor} onNewField={(newField) => {
+          getCurrentMasterSchema();
+          setRightCardState('');
+          setCursor(newField);
+        }}></FieldCreate>
+      }
+      default:
+        return false;
+    }
+  };
+
+  const renderOptionsEditForCurrentElement = () => {
+    return 'children' in cursor ?
+      <GroupEdit
+        data={cursor}
+        onChange={(group) => {
+          getCurrentMasterSchema();
+        }}
+        groupsList={groupsList}
+      />
+      :
+      <FieldEdit
+        data={cursor}
+        onChange={(field) => {
+          getCurrentMasterSchema();
+        }}
+        groupsList={groupsList}
+      />
+  };
+
+  const renderRightCard = () => {
+    return renderCreateElements() || renderOptionsEditForCurrentElement();
+  };
+
+
+  useEventListener('keydown', (event) => {
+    if (event.keyCode === 17) {
+      setCtrlState(true);
+    }
+  });
+  useEventListener('keyup', (event) => {
+    if (event.keyCode === 17) {
+      setCtrlState(false);
+    }
+  });
+
+  const getBreadCrumbs = () => {
+    if (!cursor) return [];
+
+    if (rightCardState && cursor.path.length > 1) {
+      return cursor.path.slice(0, -1);
+    }
+    return cursor.path;
   };
 
   return (
@@ -195,8 +315,8 @@ function MasterSchema() {
                   value={organization}
                   menuPortalTarget={document.body}
                   styles={{
-                    menu: provided => ({ ...provided, zIndex: 9999 }),
-                    menuPortal: base => ({ ...base, zIndex: 9999 })
+                    menu: provided => ({...provided, zIndex: 9999}),
+                    menuPortal: base => ({...base, zIndex: 9999})
                   }}
                   options={organizations.map(organization => {
                     return {label: organization.name, value: organization}
@@ -241,7 +361,7 @@ function MasterSchema() {
                           <div className="w-50 column">
                             {
                               outputTreeColumn(masterSchemaTreebeard).map(element => {
-                                if(element.children) {
+                                if (element.children) {
                                   return <div className="ms-tree-column">
                                     <div></div>
                                   </div>
@@ -251,7 +371,8 @@ function MasterSchema() {
                                     {element.d_form_names && !!element.d_form_names.length && (
                                       <Tabs
                                         className="w-100"
-                                        onChange={() => {}}
+                                        onChange={() => {
+                                        }}
                                         tabs={element.d_form_names}
                                       />
                                     )}
@@ -266,16 +387,20 @@ function MasterSchema() {
                     </div>
 
 
-
                   </div>
                   <div className="dropright mr-1 mb-1 d-inline-block">
                     <UncontrolledButtonDropdown direction="right">
-                      <DropdownToggle color="primary" className="add-icon btn-add-ms-element ms-btn-element">
+                      <DropdownToggle disabled={!cursor} color="primary"
+                                      className="add-icon btn-add-ms-element ms-btn-element">
                         <Plus size={28}/>
                       </DropdownToggle>
                       <DropdownMenu>
-                        <DropdownItem tag="a">Category</DropdownItem>
-                        <DropdownItem tag="a">Element</DropdownItem>
+                        <DropdownItem tag="a" onClick={() => {
+                          setRightCardState('create-category')
+                        }}>Category</DropdownItem>
+                        <DropdownItem tag="a" onClick={() => {
+                          setRightCardState('create-element')
+                        }}>Element</DropdownItem>
                       </DropdownMenu>
                     </UncontrolledButtonDropdown>
                   </div>
@@ -289,24 +414,13 @@ function MasterSchema() {
           !cursor ? null : <Card>
             <CardHeader>
               <CardTitle>
-                <Breadcrumbs list={cursor.path}/>
+                <Breadcrumbs list={getBreadCrumbs()}/>
               </CardTitle>
               <X size={15} className="cursor-pointer mr-1" onClick={event => closeElement()}/>
             </CardHeader>
             <CardBody>
               {
-                'children' in cursor ?
-                  <GroupEdit data={cursor} onChange={(group) => {
-                    getCurrentMasterSchema();
-                  }} onNewField={(newField) => {
-                    getCurrentMasterSchema();
-                  }} onNewGroup={(newGroup) => {
-                    getCurrentMasterSchema();
-                  }}/>
-                  :
-                  <FieldEdit data={cursor} onChange={(field) => {
-                    getCurrentMasterSchema();
-                  }}/>
+                renderRightCard()
               }
             </CardBody>
           </Card>
