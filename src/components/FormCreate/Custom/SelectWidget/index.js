@@ -69,6 +69,9 @@ const SelectWidget = (props) => {
   //   value = props.value ? {value: props.value, label: props.value} : null;
   // }
   // console.log(props.multiple, value, props);
+
+  const value = typeof props.value === "string" ? {value: props.value, label: props.value} : props.value;
+
   return (
     <div className={"custom-react-select"}>
       <FieldLabel label={props.schema.title}/>
@@ -77,7 +80,7 @@ const SelectWidget = (props) => {
         styles={colourStyles}
         isMulti={props.multiple}
         name="colors"
-        value={props.value ? props.value : null}
+        value={value}
         onChange={handleChange}
         options={props.options.enumOptions}
         className="React"
