@@ -3,11 +3,6 @@ import React from 'react';
 import './styles.scss'
 
 const Index = (props) => {
-  let fieldType = 'text';
-
-  if(props.schema?.type === 'number') {
-    fieldType = 'number';
-  }
 
   return (
     <div className="custom-form-filed form-create_custom-text-widget">
@@ -16,7 +11,7 @@ const Index = (props) => {
       </label>
       <input
         id={props.id}
-        type={fieldType}
+        type="number"
         disabled={props.disabled}
         value={props.value}
         required={props.required}

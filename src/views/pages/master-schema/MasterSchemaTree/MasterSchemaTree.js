@@ -7,6 +7,9 @@ import classnames from "classnames"
 class CustomContainer extends decorators.Container {
   render() {
     const { style, decorators, terminal, onClick, node } = this.props;
+    if(!node.isVisible) {
+      return <></>;
+    }
     return (
       <div
         onClick={onClick}
@@ -21,6 +24,7 @@ class CustomContainer extends decorators.Container {
 
 export default function MasterSchemaTree(props) {
   decorators.Header = (props) => {
+
     return <div onClick={() => {}}>
       <div style={{
         textOverflow: "ellipsis",

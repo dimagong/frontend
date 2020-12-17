@@ -131,7 +131,7 @@ const submitdFormDataSuccess = (state, {payload}) => {
     }
     return false;
   });
-  state.user.profile.onboarding.d_form = payload;
+  state.user.manager.onboarding.d_form = payload;
 };
 
 const submitdFormDataRequest = (state, {payload}) => {

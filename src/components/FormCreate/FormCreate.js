@@ -33,6 +33,7 @@ import {CheckboxesWidget} from "./Custom/CheckboxesWidget/CheckboxesWidget";
 import {CheckboxWidget} from "./Custom/CheckboxWidget";
 import Reference from "./Custom/Reference";
 import TextWidget from './Custom/TextWidget';
+import NumberWidget from './Custom/NumberWidget';
 import SelectWidget from './Custom/SelectWidget';
 import TextAreaWidget from './Custom/TextAreaWidget';
 import DateInput from './Custom/DateInput';
@@ -1759,7 +1760,7 @@ class FormCreate extends React.Component {
     const options = {
       selectOnLineNumbers: true
     };
-    console.log(this.state)
+    console.log('>>', this.state)
     return (
       <Row>
         <InitFormCreate/>
@@ -1852,13 +1853,16 @@ class FormCreate extends React.Component {
                   CheckboxWidget: CheckboxWidget,
                   CheckboxesWidget: CheckboxesWidget,
                   FileWidget: this.fileWidget,
+
                   TextWidget: TextWidget,
                   SelectWidget: SelectWidget,
                   TextareaWidget: TextAreaWidget,
                   DateWidget: DateInput,
                 }}
                 fields={{
-                  reference: Reference.bind(this)
+                  reference: Reference.bind(this),
+                  // NumberField: NumberWidget,
+                  //
                 }}
                 onChange={(event) => {
                   this.onChangeForm(event)
