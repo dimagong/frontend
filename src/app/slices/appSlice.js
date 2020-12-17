@@ -5,7 +5,7 @@ const token = localStorage.getItem("token");
 
 export const initUser = {
   first_name: '',
-  last_name: 'surname',
+  last_name: '',
   email: '',
   number: '',
   valid_until: null,
