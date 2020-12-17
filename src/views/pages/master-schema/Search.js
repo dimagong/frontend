@@ -10,7 +10,7 @@ export default function Search(props) {
   let onChangeInput = useCallback(
     debounce((searchValue) => {
       props.onChange(searchValue);
-    }, 1000)
+    }, 500)
     ,[]);
 
   useEffect(() => {

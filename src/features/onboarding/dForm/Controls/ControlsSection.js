@@ -35,7 +35,7 @@ const ControlsSection = ({objKey, index, schemaPropertyEdit={}}) => {
                        className="form-control"
                        placeholder={placeholder}/>)
       };
-  
+
       const renderKeyObjectEditColumn = (column, placeholder) => {
         return (
           <div>
@@ -45,15 +45,15 @@ const ControlsSection = ({objKey, index, schemaPropertyEdit={}}) => {
                        value={this.state.fieldEdit.propertyKey} type="text"
                        ref={this.refTitles}
                        data-id={objKey}
-                       onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
+                       onChange={event => this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: event.target.value}})}
                        className="form-control"
                        placeholder={placeholder}/>
               </div>
             </div>
-  
+
           </div>)
       };
-  
+
       const renderInputColumn = (column, placeholder, inputType = "text", defaultValue = '') => {
         return (<input
             id={`${index}-${column}`}
@@ -63,16 +63,16 @@ const ControlsSection = ({objKey, index, schemaPropertyEdit={}}) => {
             className="form-control" placeholder={placeholder}/>
         );
       };
-  
+
       const renderLabel = (column, text) => {
         return (<label htmlFor={`${index}-${column}`}>{text}</label>)
       };
-  
+
       const specificType = getSpecificType(schemaPropertyEdit);
-  
-  
+
+
       let dependencyFields = this.renderDependencyPart('fields', objKey);
-  
+
       return (
         <div
           className={objKey in schema.uiSchema.columnsClasses ? schema.uiSchema.columnsClasses[objKey] : 'col-md-12'}
@@ -84,7 +84,7 @@ const ControlsSection = ({objKey, index, schemaPropertyEdit={}}) => {
               <Badge
                 color="primary position-absolute dform-type-badget">{getSpecificType(this.state.schema.properties[objKey])}</Badge>
             </div>
-  
+
             <div className="d-flex dform-input-setting">
               <div className="vertical-center dform-input">
                 <ElementEditModal onOpen={() => this.elementEditModalOpened(objKey)}

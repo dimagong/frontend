@@ -148,30 +148,30 @@ class FormCreate extends React.Component {
     // error handling
 
     const errors = this.state?.uiSchema?.errors || {field: []};
-    let resultErrors = {field:[]};
+    let resultErrors = {field: []};
 
-    const getFieldSection = (field) => this.state.uiSchema.sections[field]
+    const getFieldSection = (field) => this.state.uiSchema.sections[field];
     const isFieldEmpty = (field) => (
       formData[field] === ""
       || (Array.isArray(formData[field]) && formData[field].length === 0)
       || formData[field] === null
       || formData[field] === false
-    )
+    );
 
     errors.field.map((field) => {
       if (isFieldEmpty(field)) {
         const section = getFieldSection(field);
 
-        if(!section) return;
+        if (!section) return;
 
         if (!resultErrors[section]) {
           resultErrors[section] = []
         }
 
-        resultErrors[section].push(field)
+        resultErrors[section].push(field);
         resultErrors.field.push(field)
       }
-    })
+    });
 
     propsDFormUiSchema.errors = resultErrors;
 
@@ -319,14 +319,14 @@ class FormCreate extends React.Component {
 
     let requiredFields = this.state.schema.required;
 
-    let getFieldSection = (field) => this.state.uiSchema.sections[field]
+    let getFieldSection = (field) => this.state.uiSchema.sections[field];
 
     let isFieldEmpty = (field) => (
       formData[field] === ""
       || (Array.isArray(formData[field]) && formData[field].length === 0)
       || formData[field] === null
       || formData[field] === false
-    )
+    );
 
     // Check is required fields are filled. Stop submitting and show error if true
     if (requiredFields?.length) {
@@ -338,19 +338,19 @@ class FormCreate extends React.Component {
 
           const section = getFieldSection(field);
 
-          if(!section) return;
+          if (!section) return;
 
-          if(this.state.uiSchema[field] && (Constants.UI_HIDDEN in this.state.uiSchema[field])
+          if (this.state.uiSchema[field] && (Constants.UI_HIDDEN in this.state.uiSchema[field])
             || this.state.uiSchema[field] && (this.state.uiSchema[field][Constants.UI_HIDDEN])) return;
 
           if (!errors[section]) {
             errors[section] = []
           }
 
-          errors[section].push(field)
+          errors[section].push(field);
           errors.field.push(field)
         }
-      })
+      });
 
       if (Object.keys(errors).length > 1) {
         this.setState({
@@ -576,7 +576,7 @@ class FormCreate extends React.Component {
 
   dependencyModalOpen = (dependencyType, objKey) => {
     let dependencies = objKey in this.state.uiSchema.dependencies[dependencyType] ? this.state.uiSchema.dependencies[dependencyType][objKey] : {};
-    this.setState({fieldEdit: {propertyKey: objKey}});
+    this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: objKey}});
 
     this.setState({
       uiSettings: {
@@ -719,7 +719,7 @@ class FormCreate extends React.Component {
                           {
                             Object.keys(this.state.schema.properties)
                               .filter(nextFilterField => nextFilterField !== objKey)
-                              .map((type, indexType) => <PropertyNameById  key={indexType} value={type} fieldId={type}/>)
+                              .map((type, indexType) => <PropertyNameById key={indexType} value={type} fieldId={type}/>)
                           }
                         </select>
                       </div>
@@ -802,7 +802,7 @@ class FormCreate extends React.Component {
                    value={this.state.fieldEdit.propertyKey}
                    type="text"
                    data-id={objKey}
-                   onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}
+                   onChange={event => this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: event.target.value}})}
                    className="form-control"
                    placeholder="Name"
                    invalid={errorNameAlreadyTaken}
@@ -1286,7 +1286,25 @@ class FormCreate extends React.Component {
     schema.properties[previousFieldKey] = clone(this.state.schemaPropertyEdit);
     uiSchema[previousFieldKey] = clone(this.state.uiSchemaPropertyEdit);
 
-    schema.required = clone(this.state.schemaRequiredFields);
+    schema.required = schema.required.filter(nextRequired => {
+      if (this.state.fieldEdit.propertyKey === nextRequired || +this.state.fieldEdit.propertyKey === +nextRequired) {
+        return false;
+      }
+      return true;
+    });
+
+
+    if (this.state.fieldEdit.isRequired) {
+      schema.required.push(this.state.fieldEdit.propertyKey);
+    }
+
+    schema.required = schema.required.filter(nextRequired => {
+      if ((+nextRequired in schema.properties) || ((nextRequired in schema.properties))) {
+        return true;
+      }
+      return false;
+    });
+
 
     // todo set uiSchema type for reference or remove
     if ('type' in schema.properties[previousFieldKey] && schema.properties[previousFieldKey]['type'] === Constants.RJSF_FIELD_TYPE_REFERENCE) {
@@ -1307,12 +1325,14 @@ class FormCreate extends React.Component {
 
     let schemaPropertyEdit = clone(this.state.schema.properties[column]);
     let uiSchemaPropertyEdit = column in this.state.uiSchema ? clone(this.state.uiSchema[column]) : {};
-    let schemaRequiredFields = clone(this.state.schema.required);
+    // let schemaRequiredFields = clone(this.state.schema.required);
+
 
     const fieldEdit = clone(this.state.fieldEdit);
     fieldEdit.propertyKey = column;
+    fieldEdit.isRequired = this.state.schema.required.some(nextRequired => +nextRequired === +column || nextRequired === column);
 
-    this.setState({fieldEdit, schemaPropertyEdit, uiSchemaPropertyEdit, schemaRequiredFields});
+    this.setState({fieldEdit, schemaPropertyEdit, uiSchemaPropertyEdit});
   };
 
   changeUiSchemaTemplateMultiselect(event) {
@@ -1760,7 +1780,7 @@ class FormCreate extends React.Component {
     const options = {
       selectOnLineNumbers: true
     };
-    console.log('>>', this.state)
+    console.log('>>', this.state);
     return (
       <Row>
         <InitFormCreate/>

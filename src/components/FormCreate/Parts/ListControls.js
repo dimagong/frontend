@@ -75,20 +75,23 @@ export function listControls(properties) {
       return (
         <div>
           <MasterSchemaProperty
-            onChangeFieldId={onChangeMasterSchemaProperty}
+            onChangeFieldId={(fieldId) => {
+              onChangeMasterSchemaProperty(fieldId)
+            }}
             fieldId={schemaPropertyEdit.reference?.field_id}
             invalid={errorPropertyNameAlreadyTaken || referenceIsEmpty}
             errorMsg={errorMsg}
           />
-          {/*<Input id={`${index}-property-${column}`}*/}
-          {/*       value={this.state.fieldEdit.propertyKey} type="text"*/}
-          {/*       ref={this.refTitles}*/}
-          {/*       data-id={objKey}*/}
-          {/*       onChange={event => this.setState({fieldEdit: {propertyKey: event.target.value}})}*/}
-          {/*       className="form-control"*/}
-          {/*       invalid={errorPropertyNameAlreadyTaken}*/}
-          {/*       placeholder={placeholder}*/}
-          {/*/>*/}
+          old property output
+          <Input id={`${index}-property-${column}`}
+                 value={this.state.fieldEdit.propertyKey} type="text"
+                 ref={this.refTitles}
+                 data-id={objKey}
+                 onChange={event => this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: event.target.value}})}
+                 className="form-control"
+                 invalid={errorPropertyNameAlreadyTaken}
+                 placeholder={placeholder}
+          />
         </div>)
     };
 
@@ -133,8 +136,12 @@ export function listControls(properties) {
             icon={<Check className="vx-icon" size={16}/>}
             label="Is required"
             id={`${index}-${column}`}
-            onChange={event => this.inputHandlerRequired(event, objKey)}
-            checked={this.state.schemaRequiredFields.some(objKey => +objKey === +column)}
+            onChange={event => {
+              //this.inputHandlerRequired(event, this.state.fieldEdit.propertyKey);
+              this.setState({fieldEdit: {...this.state.fieldEdit, isRequired: !this.state.fieldEdit.isRequired}});
+              console.log(566666666666666666666, this.state.fieldEdit.propertyKey, this.state.schemaRequiredFields, event.target.checked);
+            }}
+            checked={this.state.fieldEdit.isRequired}
           />
         </div>
       );
@@ -165,7 +172,7 @@ export function listControls(properties) {
 
     const onChangeMasterSchemaProperty = (fieldId) => {
       this.changeMasterSchemaFieldId(fieldId);
-      this.setState({fieldEdit: {propertyKey: fieldId}})
+      this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: fieldId}})
     };
 
     const renderSpecificType = () => {
