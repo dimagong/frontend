@@ -128,26 +128,26 @@ const submitdFormError = (state , {payload}) => {
 const submitdFormDataSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
-  console.log(949494949494949, clone(state));
   // TODO SO STRANGE BUG FIRST FOR PROSPECT VIEW SECOND FOR DFORM VIEW FOR MANAGER (FIXED)
-  const result = state.user.profile.onboardings.some(onboarding => {
-    if(onboarding.d_form.id === payload.id) {
-      onboarding.d_form = payload;
-      return true;
-    }
-    return false;
-  });
-  state.user.manager.onboardings.some(onboarding => {
-    if(onboarding.d_form.id === payload.id) {
-      onboarding.d_form = payload;
-      return true;
-    }
-    return false;
-  });
 
   if(!isEmpty(state.user.profile.onboarding)) {
     state.user.profile.onboarding.d_form = payload;
+    const result = state.user.profile.onboardings.some(onboarding => {
+      if(onboarding.d_form.id === payload.id) {
+        onboarding.d_form = payload;
+        return true;
+      }
+      return false;
+    });
+
   } else {
+    state.user.manager.onboardings.some(onboarding => {
+      if(onboarding.d_form.id === payload.id) {
+        onboarding.d_form = payload;
+        return true;
+      }
+      return false;
+    });
     state.user.manager.onboarding.d_form = payload;
   }
 
