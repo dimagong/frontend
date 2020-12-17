@@ -82,16 +82,16 @@ export function listControls(properties) {
             invalid={errorPropertyNameAlreadyTaken || referenceIsEmpty}
             errorMsg={errorMsg}
           />
-          old property output
-          <Input id={`${index}-property-${column}`}
-                 value={this.state.fieldEdit.propertyKey} type="text"
-                 ref={this.refTitles}
-                 data-id={objKey}
-                 onChange={event => this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: event.target.value}})}
-                 className="form-control"
-                 invalid={errorPropertyNameAlreadyTaken}
-                 placeholder={placeholder}
-          />
+          {/*old property output*/}
+          {/*<Input id={`${index}-property-${column}`}*/}
+          {/*       value={this.state.fieldEdit.propertyKey} type="text"*/}
+          {/*       ref={this.refTitles}*/}
+          {/*       data-id={objKey}*/}
+          {/*       onChange={event => this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: event.target.value}})}*/}
+          {/*       className="form-control"*/}
+          {/*       invalid={errorPropertyNameAlreadyTaken}*/}
+          {/*       placeholder={placeholder}*/}
+          {/*/>*/}
         </div>)
     };
 
