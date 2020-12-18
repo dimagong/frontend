@@ -128,7 +128,7 @@
     margin-bottom: 45px;
   }
   &_all-addable-list {
-    max-height: 300px;
+    //max-height: 300px;
     overflow-y: auto;
   }
   .organizations-list {
@@ -138,7 +138,10 @@
     }
     &.parent-organizations {
       padding: 25px;
-      border-bottom: 1px solid #707070;
+
+      &.with-bottom-border {
+        border-bottom: 1px solid #707070;
+      }
     }
     &.child-organizations {
       padding: 25px;

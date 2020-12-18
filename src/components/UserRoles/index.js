@@ -52,8 +52,16 @@ const UserRoles = ({manager, userOrganizations, className}) => {
 
   const getUniq = (organizations, userOrganizations) => organizations.filter((org) => !userOrganizations.filter((userOrg) => userOrg.name === org.name).length);
 
+  // organization that are allowed to add to user
   const addableParentOrganizations = getUniq(parentOrganizations, userParentOrganizations)
-  const addableChildOrganizations = getUniq(childOrganizations, userChildOrganizations)
+  let addableChildOrganizations;
+
+  // Do not allow add more than one child organization if no parent organization added
+  if (!userParentOrganizations.length && userChildOrganizations.length >= 1) {
+    addableChildOrganizations = [];
+  } else {
+    addableChildOrganizations = getUniq(childOrganizations, userChildOrganizations);
+  }
 
   const onOrganizationAdd = (org) => {
 
@@ -103,8 +111,6 @@ const UserRoles = ({manager, userOrganizations, className}) => {
     dispatch(getUserOrganizationsRequest(manager.id))
   }, [manager.id])
 
-  console.log(userParentOrganizations, userChildOrganizations, addableParentOrganizations, addableChildOrganizations)
-
   return (
     <div className={`user-roles ${className ? className : ""}`}>
       <div className="permissions-title">
@@ -147,11 +153,20 @@ const UserRoles = ({manager, userOrganizations, className}) => {
           )
         })}
         {!!(addableChildOrganizations.length || addableParentOrganizations.length) && (
-          <Card>
-            <CardBody className="add-organization" onClick={() => {setIsAddOrganizationModalOpen(true)}}>
-              <span>+</span>
-            </CardBody>
-          </Card>
+          <>
+            <Card>
+              <CardBody className="add-organization" onClick={() => {setIsAddOrganizationModalOpen(true)}}>
+                <span>+</span>
+              </CardBody>
+            </Card>
+
+            {!userParentOrganizations.length && !userChildOrganizations.length && (
+              <div className="empty-organizations">
+                Please select which Organisation this user belongs to
+              </div>
+            )}
+          </>
+
         )}
       </div>
       <Modal className={"organization-remove-modal"} isOpen={isDeleteModalOpen} fade={false} toggle={()=>{setIsDeleteModalOpen(false)}}>
@@ -175,10 +190,10 @@ const UserRoles = ({manager, userOrganizations, className}) => {
       <Modal className="organization-add-modal" isOpen={isAddOrganizationModalOpen} fade={false} toggle={()=>{setIsAddOrganizationModalOpen(false)}}>
         <ModalBody>
           <h1 className="organization-add-modal_title">Organization select</h1>
-          <Scrollbars autoHeight autoHeightMax={300}>
+          <Scrollbars autoHeight autoHeightMax={500}>
             <div className="organization-add-modal_all-addable-list">
               {!!addableParentOrganizations.length && (
-                <div className="organizations-list parent-organizations">
+                <div className={`organizations-list parent-organizations ${addableChildOrganizations.length ? "with-bottom-border" : ''}`}>
                   <h6 className="organizations-list_title">
                     Parent organizations
                   </h6>
