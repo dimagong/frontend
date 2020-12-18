@@ -1,3 +1,7 @@
+import {isEmpty} from 'lodash'
+import rfdc from "rfdc";
+
+const clone = rfdc();
 const getdFormsSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
@@ -124,14 +128,29 @@ const submitdFormError = (state , {payload}) => {
 const submitdFormDataSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
-  const result = state.user.profile.onboardings.some(onboarding => {
-    if(onboarding.d_form.id === payload.id) {
-      onboarding.d_form = payload;
-      return true;
-    }
-    return false;
-  });
-  state.user.profile.onboarding.d_form = payload;
+  // TODO SO STRANGE BUG FIRST FOR PROSPECT VIEW SECOND FOR DFORM VIEW FOR MANAGER (FIXED)
+
+  if(!isEmpty(state.user.profile.onboarding)) {
+    state.user.profile.onboarding.d_form = payload;
+    const result = state.user.profile.onboardings.some(onboarding => {
+      if(onboarding.d_form.id === payload.id) {
+        onboarding.d_form = payload;
+        return true;
+      }
+      return false;
+    });
+
+  } else {
+    state.user.manager.onboardings.some(onboarding => {
+      if(onboarding.d_form.id === payload.id) {
+        onboarding.d_form = payload;
+        return true;
+      }
+      return false;
+    });
+    state.user.manager.onboarding.d_form = payload;
+  }
+
 };
 
 const submitdFormDataRequest = (state, {payload}) => {

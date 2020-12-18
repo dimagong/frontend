@@ -77,9 +77,17 @@ export default function FieldEdit({data, onChange, groupsList}) {
   };
 
   const saveData = async () =>{
-    let updatedField = await fieldSave();
-    updatedField = await handleChangeParent();
-    onChange(updatedField);
+    let updatedField;
+    try {
+      updatedField = await fieldSave();
+      updatedField = await handleChangeParent();
+      onChange(updatedField);
+    } catch (exception) {
+      if(updatedField) {
+        onChange(updatedField);
+      }
+      console.log(exception);
+    }
   };
 
   return <div>

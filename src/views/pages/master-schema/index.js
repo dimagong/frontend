@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {
+  Input,
   Card,
   CardBody,
   CardHeader,
@@ -30,6 +31,8 @@ import Tabs from '../../../components/Tabs/index.js'
 import GroupCreate from "./GroupCreate";
 import FieldCreate from "./FieldCreate";
 import useEventListener from "../../../app/helpers/useEventListener";
+import Search from "./Search";
+import {isEmpty} from 'lodash'
 
 const clone = rfdc();
 
@@ -46,9 +49,14 @@ function MasterSchema() {
   const [rightCardState, setRightCardState] = useState('');
 
   const [ctrlState, setCtrlState] = useState(false);
+  const [searchValue, setSearchValue] = useState(null);
 
   const [groupsList, setGroupsList] = useState([]);
 
+  useEffect(() => {
+    if (searchValue === null || isEmpty(masterSchemaTreebeard)) return;
+    parseToFormatTreebeard();
+  }, [searchValue]);
 
   const getOrganizations = async () => {
     const response = await masterSchemaService.getOrganizations();
@@ -129,6 +137,13 @@ function MasterSchema() {
     }
   };
 
+  const recursiveShowGroups = (node) => {
+    if (node.parent) {
+      recursiveShowGroups(node.parent);
+    }
+
+    node.isVisible = true;
+  };
 
   const recursiveMap = (node, path = []) => {
 
@@ -136,6 +151,28 @@ function MasterSchema() {
 
     node.children = [];
     node.children = node.fields;
+
+    node.children = node.children.map((nextNode) => {
+      nextNode.parent = node;
+      return nextNode;
+    });
+
+    if (searchValue && node.children && node.children.length) {
+      node.children = node.children.filter(nextNode => nextNode.name.indexOf(searchValue) !== -1);
+
+      node.children.forEach((nextNode) => {
+        nextNode.isVisible = true;
+        recursiveShowGroups(nextNode.parent);
+      });
+    } else if (node.children && node.children.length && !searchValue) {
+      node.children.forEach((nextNode) => {
+        nextNode.isVisible = true;
+        recursiveShowGroups(nextNode.parent);
+      });
+    } else if(!searchValue){
+      recursiveShowGroups(node);
+    }
+
     node.toggled = true;
 
     if (cursor) {
@@ -172,6 +209,7 @@ function MasterSchema() {
         let nodePath = path.slice();
         nodePath.push(group.name);
         group.path = nodePath;
+        group.parent = node;
         group = recursiveMap(group, nodePath);
       }
       node.children = node.children.concat(node.groups);
@@ -181,7 +219,9 @@ function MasterSchema() {
   };
   const parseToFormatTreebeard = () => {
     const rootPath = [masterSchema.root.name];
-    const root = recursiveMap(clone(masterSchema.root), rootPath);
+    let cloneRoot = clone(masterSchema.root);
+    const root = recursiveMap(cloneRoot, rootPath);
+    console.log('rooot', root);
     root.path = rootPath;
     setMasterSchemaTreebeard(root);
   };
@@ -307,7 +347,7 @@ function MasterSchema() {
           </CardHeader>
           <CardBody>
             <Row>
-              <Col md="3" sm="6">
+              <Col md={{ size: 6}} sm={{ size: 6}}>
                 <Select
                   className="React"
                   classNamePrefix="select"
@@ -326,6 +366,13 @@ function MasterSchema() {
                     setOrganization(event)
                   }}
                 />
+              </Col>
+              <Col md={{ size: 6}} sm={{ size: 6}}>
+              </Col>
+              <Col md="6" sm="6" className="mt-1">
+                <Search onChange={(value) => {
+                  setSearchValue(value)
+                }}/>
               </Col>
             </Row>
             <Row className="mt-1">
@@ -361,6 +408,7 @@ function MasterSchema() {
                           <div className="w-50 column">
                             {
                               outputTreeColumn(masterSchemaTreebeard).map(element => {
+                                if(!element.isVisible) return <></>;
                                 if (element.children) {
                                   return <div className="ms-tree-column">
                                     <div></div>
