@@ -164,11 +164,13 @@ function MasterSchema() {
         nextNode.isVisible = true;
         recursiveShowGroups(nextNode.parent);
       });
-    } else if (node.children && node.children.length) {
+    } else if (node.children && node.children.length && !searchValue) {
       node.children.forEach((nextNode) => {
         nextNode.isVisible = true;
         recursiveShowGroups(nextNode.parent);
       });
+    } else if(!searchValue){
+      recursiveShowGroups(node);
     }
 
     node.toggled = true;

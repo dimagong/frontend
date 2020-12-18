@@ -90,9 +90,17 @@ export default function GroupEdit({data, onChange, groupsList}) {
   };
 
   const saveData = async () => {
-    let updatedGroup = await groupSave();
-    updatedGroup = await handleChangeParent();
-    onChange(updatedGroup);
+    let updatedGroup;
+    try {
+      updatedGroup = await groupSave();
+      updatedGroup = await handleChangeParent();
+      onChange(updatedGroup);
+    } catch (exception) {
+      if(updatedGroup) {
+        onChange(updatedGroup);
+      }
+      console.log(exception);
+    }
   };
 
   return <div>
