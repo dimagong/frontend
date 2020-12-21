@@ -1,4 +1,5 @@
 import React from 'react';
+import FieldLabel from '../FieldLabel'
 
 import './styles.scss'
 
@@ -11,9 +12,7 @@ const Index = (props) => {
 
   return (
     <div className="custom-form-filed form-create_custom-text-widget">
-      <label htmlFor={props.id}>
-        {props.label}
-      </label>
+      <FieldLabel label={props.label} />
       <input
         id={props.id}
         type={fieldType}
