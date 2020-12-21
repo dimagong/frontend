@@ -4,3 +4,9 @@
   margin-bottom: 25px;
   font-weight: 300;
 }
+
+.required-field {
+  .field-label {
+    font-weight: bold;
+  }
+}

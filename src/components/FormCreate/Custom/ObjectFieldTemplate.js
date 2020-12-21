@@ -111,13 +111,19 @@ export function ObjectFieldTemplate(props) {
             return isHidden;
           };
 
-          let fieldClass = ~this.state.uiSchema?.errors?.field.indexOf(parseInt(element.name))
+          let fieldClasses = [getColumnClass(element.name, element)];
 
-          fieldClass = !!fieldClass ? `${getColumnClass(element.name, element)} field-with-error` : getColumnClass(element.name, element)
+          if (~this.state.uiSchema?.errors?.field.indexOf(parseInt(element.name))){
+            fieldClasses.push("field-with-error")
+          }
+
+          if (this.state.schema?.required.includes(parseInt(element.name))) {
+            fieldClasses.push("required-field")
+          }
 
           const fieldProps = {
             key: element.name,
-            className: fieldClass,
+            className: fieldClasses.join(" "),
             style: isElementHidden(element.name)
           };
 
