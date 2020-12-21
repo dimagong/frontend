@@ -1,4 +1,8 @@
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .user-card {
+  animation-name: fadeIn;
+  animation-duration: 400ms;
+  animation-timing-function: linear;
   color: #707070!important;
   * {
     white-space: nowrap;

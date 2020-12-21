@@ -55,6 +55,7 @@
     &.preview-visible {
       grid-template-columns: minmax(0, 1fr);
       min-height: 580px;
+      grid-template-rows: 1fr 1fr 1fr;
       @media (max-width: 1800px) {
         min-height: 538px;
       }
