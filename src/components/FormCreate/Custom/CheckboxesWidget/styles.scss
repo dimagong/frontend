@@ -48,3 +48,11 @@
     margin-left: 30px;
   }
 }
+
+.field-with-error {
+  .custom-checkbox-container {
+    .custom-checkbox_check {
+      border-color: #dc3545;
+    }
+  }
+}
