@@ -43,27 +43,29 @@ import Timeline from 'components/Timeline'
 import UserRoles from 'components/UserRoles'
 import {selectUserOrganizations} from 'app/selectors/userSelectors'
 
-const UserEdit = (props, context) => {
+const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
 
-  const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
+const UserEdit = (props, context) => {
+  const dispatch = useDispatch();
 
   const manager = useSelector(selectManager);
-  const [editField, setEditField] = useState(null);
-  const [errors, setErrors] = useState({});
-  const [activeTab, setActiveTab] = useState("1")
-  const [activeModuleTab, setActiveModuleTab] = useState(tabs[0])
-  const dispatch = useDispatch();
-  const titleRef = useRef(null);
-  const validUntilRef = useRef(null)
-  const numberRef = useRef(null)
-  const emailRef = useRef(null)
-
-
   const modules = useSelector(selectModules);
   const dForms = useSelector(selectUserDForms)
   const workflows = useSelector(selectUserWorkfows)
   const reviewers = useSelector(selectUserReviewers)
   const userOrganizations = useSelector(selectUserOrganizations(manager.id))
+
+
+  const [editField, setEditField] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [activeTab, setActiveTab] = useState("1")
+  const [activeModuleTab, setActiveModuleTab] = useState(userOrganizations.length ? tabs[0] : tabs[3])
+
+  const titleRef = useRef(null);
+  const validUntilRef = useRef(null)
+  const numberRef = useRef(null)
+  const emailRef = useRef(null)
+
   const isCreate = useRef(false)
 
   const initOnboarding = {

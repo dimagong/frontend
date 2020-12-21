@@ -35,6 +35,8 @@ import {
   disallowUserAbilityRequest,
   disallowUserAbilitySuccess,
   disallowUserAbilityError,
+  setManager,
+  setContext,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
@@ -89,6 +91,8 @@ function* createUser({payload}) {
   try {
     const user = yield call(userApi.createUser, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
     yield put(createUserSuccess(user));
+    yield put(setManager(user));
+    yield put(setContext("User"))
 
   } catch (error) {
     console.log(error)

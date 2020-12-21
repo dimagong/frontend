@@ -220,6 +220,7 @@ const createUserSuccess = (state, { payload }) => {
   state.isError = null;
   state.user.user = initUser;
   state.user.managers = [payload, ...state.user.managers];
+
 };
 
 const createUserRequest = (state, { payload }) => {
