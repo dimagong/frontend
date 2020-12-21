@@ -52,8 +52,15 @@
   margin-left: 200px;
   padding-left: 12px;
   padding-bottom: 11px;
+  padding-right: 12px;
   img {
     width: 8px;
+  }
+
+  display: flex;
+  justify-content: space-between;
+  .submit-error-message {
+    color: #dc3545;
   }
 }
 

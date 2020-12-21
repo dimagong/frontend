@@ -1780,7 +1780,7 @@ class FormCreate extends React.Component {
     const options = {
       selectOnLineNumbers: true
     };
-    console.log('>>', this.state);
+
     return (
       <Row>
         <InitFormCreate/>
@@ -1926,6 +1926,11 @@ class FormCreate extends React.Component {
                   {this.props.updatedAtText && (
                     <div className="saving">
                       {this.props.updatedAtText}
+                      {!!this.state?.uiSchema?.errors?.field.length && (
+                        <div className={"submit-error-message"}>
+                          Please fill in the missing fields highlighted in red!
+                        </div>
+                      )}
                     </div>
                   )}
                   {this.props.onSubmit && (

@@ -265,7 +265,7 @@ export function ObjectFieldTemplate(props) {
 
       return true
     })
-    console.log(section, currentSectionRequiredFields)
+
     const total = currentSectionRequiredFields.length
 
     const completed = currentSectionRequiredFields.filter((field) => !isFieldEmpty(this.state.formData[field])).length

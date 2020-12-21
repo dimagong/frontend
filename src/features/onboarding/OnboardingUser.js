@@ -66,7 +66,7 @@ const OnboardingUser = () => {
   };
 
   const handleNavClick = onboarding => {
-    console.log(onboarding);
+
     dispatch(setProfileOnboarding({...onboarding}))
   };
 
@@ -201,7 +201,7 @@ const OnboardingUser = () => {
                                           updatedAtText={
                                             loading
                                               ? "Saving"
-                                              : (<span><img style={{marginTop: "-2px", fontSize: "15px"}} src={Check} alt=""/> Saved</span>)}
+                                              : (<div><img style={{marginTop: "-2px", fontSize: "15px"}} src={Check} alt=""/> Saved</div>)}
                                           isStateConfig={false}
                                           // onboardingUser={profile}
                                         />
