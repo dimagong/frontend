@@ -89,17 +89,32 @@ const UserCreate = () => {
                 <Row>
                   <Col sm="6">
                     <FormGroup>
-                      <Label for="nameVertical">Name</Label>
+                      <Label for="nameVertical">First Name</Label>
                       <Input
                         type="text"
                         name="name"
                         id="nameVertical"
-                        placeholder="Name"
+                        placeholder="First Name"
                         value={user.first_name}
                         onChange={(event) => dispatch(setUser({...user,first_name: event.target.value}))}
                         {...{invalid:  errors['first_name']}}
                       />
                       <FormFeedback>{errors['first_name'] ? errors['first_name'] : ''}</FormFeedback>
+                    </FormGroup>
+                  </Col>
+                  <Col sm="6">
+                    <FormGroup>
+                      <Label for="lastNameVertical">Last Name</Label>
+                      <Input
+                        type="text"
+                        name="last_name"
+                        id="lastNameVertical"
+                        placeholder="Last Name"
+                        value={user.last_name}
+                        onChange={(event) => dispatch(setUser({...user, last_name: event.target.value}))}
+                        {...{invalid: errors['last_name']}}
+                      />
+                      <FormFeedback>{errors['last_name']  ? errors['last_name'] : ''}</FormFeedback>
                     </FormGroup>
                   </Col>
                   <Col sm="6">
@@ -132,21 +147,7 @@ const UserCreate = () => {
                       <FormFeedback>{errors['number'] ? errors['number'] : ''}</FormFeedback>
                     </FormGroup>
                   </Col>
-                  <Col sm="6">
-                    <FormGroup>
-                      <Label for="">Password</Label>
-                      <Input
-                        type="password"
-                        name="password"
-                        id="passwordVertical"
-                        placeholder="Password"
-                        value={user.password}
-                        onChange={(event) => dispatch(setUser({...user, password: event.target.value}))}
-                        {...{invalid: errors['password']}}
-                      />
-                      <FormFeedback>{errors['password']  ? errors['password'] : ''}</FormFeedback>
-                    </FormGroup>
-                  </Col>
+
                   <Col md="12" sm="12">
                     <FormGroup>
                       <div className="d-flex">
