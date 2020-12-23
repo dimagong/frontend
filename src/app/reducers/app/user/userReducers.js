@@ -69,7 +69,16 @@ const updateUserError = (state, { payload }) => {
 const updateUserAvatarSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.manager = {...state.user.manager,...payload};
+
+  state.user.managers = state.user.managers.map((manager) => {
+    if (manager.id === payload.managerId) {
+      manager.avatar = payload.avatar;
+    }
+
+    return manager;
+  })
+                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+  // state.user.manager = {...state.user.manager,...payload};
 };
 const updateUserAvatarRequest = (state, { payload }) => {
   state.isLoading = true;
@@ -80,10 +89,18 @@ const updateUserAvatarError = (state, { payload }) => {
   state.isError = payload;
 };
 
-const deleteUserAvatarSuccess = (state) => {
+const deleteUserAvatarSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.manager = {...state.user.manager, url : null, avatar: null};
+
+  state.user.managers = state.user.managers.map((manager) => {
+    if (manager.id === payload.managerId) {
+      manager.avatar = null;
+      manager.url = null;
+    }
+    return manager;
+  })
+  // state.user.manager = {...state.user.manager, url : null, avatar: null};
 };
 const deleteUserAvatarRequest = (state, { payload }) => {
   state.isLoading = true;
@@ -97,7 +114,14 @@ const deleteUserAvatarError = (state, { payload }) => {
 const getUserAvatarSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.manager = {...state.user.manager,url: payload.url.avatar};
+
+  state.user.managers = state.user.managers.map((manager) => {
+    if (manager.id === payload.managerId) {
+      manager.url = payload.url.avatar;
+    }
+
+    return manager;
+  })
 };
 const getUserAvatarRequest = (state, { payload }) => {
   state.isLoading = true;

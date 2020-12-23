@@ -1,5 +1,9 @@
 export const selectManagers = state => state?.app?.user?.managers
 export const selectManager = state => state?.app?.user?.manager
+
+//* TODO refactor selectManager to select manager by id from managers array
+export const selectCurrentManager = state => state?.app?.user?.managers.filter((manager) => manager.id === state?.app?.user?.manager.id)[0]
+
 export const selectUserWorkfows = state => state?.app?.user?.workflows
 export const selectUserDForms = state => state?.app?.user?.dForms
 export const selectUserReviewers = state => state?.app?.user?.reviewers

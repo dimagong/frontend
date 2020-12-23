@@ -90,7 +90,7 @@ const UserEditPreview = (props, context) => {
   return (
     <div className="user-managment user-edit-preview" ref={modalContainer}>
       <Card className="tablet-hidden">
-        <CardImg variant="top" src={noneAvatar} />
+        <CardImg variant="top" src={manager.url ? manager.url : noneAvatar} />
         <CardBody className="user-edit-preview_body">
           <CardTitle className="title">
             {`${manager.first_name} ${manager.last_name}`}
@@ -112,7 +112,7 @@ const UserEditPreview = (props, context) => {
         key={manager.email}
         className="flex-row home__card cursor-pointer tablet-visible preview-card"
       >
-        <CardImg variant="top" src={noneAvatar} className="user-card-img d-sm-flex d-none" />
+        <CardImg variant="top" src={manager.url ? manager.url : noneAvatar} className="user-card-img d-sm-flex d-none" />
         <CardBody className="user-card-body">
           <div className="user-card-body-left">
             <div>

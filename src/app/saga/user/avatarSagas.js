@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest } from "redux-saga/effects";
+import { all, put, call, takeLatest, takeEvery } from "redux-saga/effects";
 
 import userApi from "api/User/user";
 import {
@@ -11,7 +11,7 @@ import {
   getUserAvatarSuccess,
   getUserAvatarRequest,
   getUserAvatarError,
- 
+
 } from "app/slices/appSlice";
 
 
@@ -20,7 +20,7 @@ function* getUserAvatar({payload}) {
     const {managerId} = payload;
 
     const url = yield call(userApi.getUserAvatar, {managerId});
-    yield put(getUserAvatarSuccess({url}));
+    yield put(getUserAvatarSuccess({url, managerId}));
 
   } catch (error) {
     yield put(getUserAvatarError(error));
@@ -35,7 +35,7 @@ function* updateUserAvatar({payload}) {
     formData.set('avatar', files[0]);
 
     const avatar = yield call(userApi.updateUserAvatar, {formData, managerId});
-    yield put(updateUserAvatarSuccess({avatar}));
+    yield put(updateUserAvatarSuccess({avatar, managerId}));
 
   } catch (error) {
     yield put(updateUserAvatarError(error));
@@ -44,10 +44,10 @@ function* updateUserAvatar({payload}) {
 
 function* deleteUserAvatar({payload}) {
   try {
-    const {avatarId} = payload;
+    const {avatarId, managerId} = payload;
 
     yield call(userApi.deleteUserAvatar, {avatarId});
-    yield put(deleteUserAvatarSuccess());
+    yield put(deleteUserAvatarSuccess({managerId}));
 
   } catch (error) {
     yield put(deleteUserAvatarError(error));
@@ -60,6 +60,6 @@ export default function* () {
   yield all([
     yield takeLatest(updateUserAvatarRequest.type, updateUserAvatar),
     yield takeLatest(deleteUserAvatarRequest.type, deleteUserAvatar),
-    yield takeLatest(getUserAvatarRequest.type, getUserAvatar),
+    yield takeEvery(getUserAvatarRequest.type, getUserAvatar),
   ]);
 }

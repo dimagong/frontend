@@ -21,7 +21,8 @@ import {
   selectManager,
   selectModules,
   selectUserDForms,
-  selectUserWorkfows, selectUserReviewers
+  selectUserWorkfows,
+  selectUserReviewers,
 } from "app/selectors";
 import {
   setManager,
@@ -41,14 +42,18 @@ import UserCardTemplate from 'features/home/ContextSearch/CardTemplates/userCard
 import CustomTabs from 'components/Tabs'
 import Timeline from 'components/Timeline'
 import UserRoles from 'components/UserRoles'
-import {selectUserOrganizations} from 'app/selectors/userSelectors'
+import UserAvatar from './UserEditAvatar'
+import {
+  selectUserOrganizations,
+  selectCurrentManager,
+} from 'app/selectors/userSelectors'
 
 const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
 
 const UserEdit = (props, context) => {
   const dispatch = useDispatch();
 
-  const manager = useSelector(selectManager);
+  const manager = useSelector(selectCurrentManager);
   const modules = useSelector(selectModules);
   const dForms = useSelector(selectUserDForms)
   const workflows = useSelector(selectUserWorkfows)
@@ -126,7 +131,14 @@ const UserEdit = (props, context) => {
     return (
       <Row className="user-managment">
         <Col sm="12" md="12" lg="12" xl="6">
-          <UserCardTemplate className="mb-2" oneColumn={false} onClick={() => {}} {...manager}/>
+          <UserCardTemplate
+            className="mb-2"
+            oneColumn={false}
+            onClick={() => {}}
+            {...manager}
+            editable
+          />
+
           <CustomTabs
             active={activeModuleTab}
             onChange={setActiveModuleTab}

@@ -7,10 +7,46 @@
   * {
     white-space: nowrap;
   }
+  .user-avatar-management {
+    margin-right: 16px;
+    position: relative;
+    &_change-button {
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      background-color: white;
+      transform: translateX(-50%);
+      opacity: 0;
+    }
+    .x-closer {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      opacity: 0;
+      cursor: pointer;
+    }
+    &_change-button, .x-closer {
+      opacity: 0;
+      transition: 0.2s;
+    }
+
+    &:hover {
+      .user-avatar-management_change-button, .x-closer {
+        opacity: 1;
+        transition: 0.2s;
+      }
+    }
+
+    .user-edit__user-avatar_spinner-wrapper {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
   &-img {
     height: 150px!important;
     width: 150px!important;
-    margin-right: 16px;
     border-radius: 25px;
   }
   &-body {

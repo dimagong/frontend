@@ -131,7 +131,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                   handleContextChange("dForm")
                 }
               }} />,
-      managers: <UserCardTemplate oneColumn={oneColumn} onClick={(e, user) => {
+      managers: <UserCardTemplate className="cursor-pointer" oneColumn={oneColumn} onClick={(e, user) => {
                   if (e.ctrlKey) {
                     dispatch(setPreview({type: "user", id: user.id}))
                   } else {
