@@ -53,6 +53,9 @@ const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
 const UserEdit = (props, context) => {
   const dispatch = useDispatch();
 
+  //* TODO refactor, old manager is used
+  const selectedManager = useSelector(selectManager)
+
   const manager = useSelector(selectCurrentManager);
   const modules = useSelector(selectModules);
   const dForms = useSelector(selectUserDForms)
@@ -304,12 +307,12 @@ const UserEdit = (props, context) => {
         <Col xs="6">
           <Card>
             {
-              manager.onboarding
+              selectedManager.onboarding
                 ? <UserOnboardingForm isCreate={isCreate}/>
                 : null
             }
             {
-              manager.onboarding && !isCreate.current
+              selectedManager.onboarding && !isCreate.current
                 ? <UserOnboardingDForm />
                 : null
             }
