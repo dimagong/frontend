@@ -36,6 +36,32 @@
   src: local('Segoe UI Bold Italic'), url('../fonts/Segoe/Segoe UI Bold Italic.woff') format('woff');
 }
 
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Montserrat regular'), url("../fonts/Montserrat/Montserrat-Regular.ttf") format('ttf');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Montserrat medium'), url("../fonts/Montserrat/Montserrat-Medium.ttf") format('ttf');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: bold;
+  src: local('Montserrat bold'), url("../fonts/Montserrat/Montserrat-Bold.ttf") format('ttf');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Montserrat light'), url("../fonts/Montserrat/Montserrat-Light.ttf") format('ttf');
+}
+
+
 @import "./bootstrap.scss";
 @import "./components.scss";
 @import "./bootstrap-extended.scss";
