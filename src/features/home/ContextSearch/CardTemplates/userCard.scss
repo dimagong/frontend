@@ -1,7 +1,7 @@
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .user-card {
   animation-name: fadeIn;
-  animation-duration: 400ms;
+  animation-duration: 200ms;
   animation-timing-function: linear;
   color: #707070!important;
   * {
