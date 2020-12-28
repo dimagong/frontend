@@ -17,7 +17,7 @@ const createInvitationsSuccess = (state, {payload}) => {
   state.isError = null;
   // todo list invitations was deleted
   // state.user.invitations = [payload, ...state.user.invitations];
-  state.user.manager = {...state.user.manager, invited: payload}
+  state.user.manager.invited = payload;
 
 };
 const createInvitationsRequest = (state) => {
@@ -33,7 +33,7 @@ const deleteInvitationsSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
   state.user.invitations = state.user.invitations.filter( invitation => invitation.id === payload);
-  state.user.manager = {...state.user.manager, invited: null};
+  state.user.manager.invited = null;
 };
 const deleteInvitationsRequest = (state) => {
   state.isLoading = true;

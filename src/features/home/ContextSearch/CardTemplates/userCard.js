@@ -4,13 +4,13 @@ import {Button, Card, CardBody, CardImg, CardText, CardTitle, Col, Media, Spinne
 import noneAvatar from 'assets/img/portrait/none-avatar.png'
 
 import useWindowSize from 'hooks/windowWidth'
-import { X } from "react-feather";
+import { X, Edit } from "react-feather";
 import './userCard.scss'
 import {capitalizeAll} from '../../../../utility/common'
 import {selectLoading} from 'app/selectors'
 import {deleteUserAvatarRequest, getUserAvatarRequest, updateUserAvatarRequest} from '../../../../app/slices/appSlice'
 
-const UserCardTemplate = ({className, oneColumn, onClick, editable = false, ...manager }) => {
+const UserCardTemplate = ({className, oneColumn, onClick, editable = false, onEdit = () => {}, ...manager }) => {
   const isLoading = useSelector(selectLoading);
   const dispatch = useDispatch();
   const fileInputRef = useRef(null)
@@ -87,7 +87,10 @@ const UserCardTemplate = ({className, oneColumn, onClick, editable = false, ...m
         <CardBody className="user-card-body">
           <div className="user-card-body-left">
             <div>
-              <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
+              <CardTitle className="m-0 user-card-body_title">
+                {`${manager.first_name} ${manager.last_name}`}
+                {!!editable && <Edit onClick={() => {onEdit()}} style={{marginLeft: "5px", marginBottom: "3px", cursor: "pointer"}} size={15}/>}
+              </CardTitle>
               <CardText style={{marginBottom: "5px"}}>
                 {manager?.permissions?.ability && capitalizeAll(manager.permissions.ability.replace("_", " "))}
               </CardText>

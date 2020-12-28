@@ -16,7 +16,7 @@
       left: 50%;
       background-color: white;
       transform: translateX(-50%);
-      opacity: 0;
+      opacity: 0!important;
     }
     .x-closer {
       position: absolute;
@@ -32,7 +32,7 @@
 
     &:hover {
       .user-avatar-management_change-button, .x-closer {
-        opacity: 1;
+        opacity: 1!important;
         transition: 0.2s;
       }
       .user-avatar-management_change-button {

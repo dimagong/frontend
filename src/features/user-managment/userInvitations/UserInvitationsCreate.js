@@ -60,7 +60,7 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
 
   const onCopy = () => {
     toast.success("Invitation link copied successfully", {
-      position: toast.POSITION.TOP_CENTER,
+      position: toast.POSITION.TOP_RIGHT,
       autoClose: 2000
     })
   };
