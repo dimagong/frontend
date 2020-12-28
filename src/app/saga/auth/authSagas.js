@@ -1,4 +1,5 @@
 import { all, put, call, takeLatest } from "redux-saga/effects";
+import { toast } from "react-toastify";
 
 import authApi from "api/Auth/auth";
 import {
@@ -28,6 +29,13 @@ function* login({ payload }) {
     yield put(getProfileRequest())
   } catch (error) {
     yield put(loginError(error));
+    if(error?.response?.data?.error?.message === "Forbidden") {
+      toast.error("You are not allowed to login");
+    } else {
+      toast.error(error?.response?.data?.error?.message || "Something went wrong, try again later");
+    }
+
+
   }
 }
 

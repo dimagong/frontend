@@ -21,6 +21,7 @@ import { selectCurrentManager } from 'app/selectors/userSelectors'
 import { setUser, updateUserRequest, setContext } from "app/slices/appSlice";
 import { selectError } from "app/selectors";
 
+import UserInvitationsCreate from '../userInvitations/UserInvitationsCreate'
 
 const UserProfileEdit = ({ manager, onEditClose }) => {
   const errors = useSelector(selectError) || {};
@@ -123,7 +124,27 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                 <FormFeedback>{errors['number'] ? errors['number'] : ''}</FormFeedback>
               </FormGroup>
             </Col>
+            <Col sm="6">
+              <div className="font-weight-bold-lighter column-sizing-user-info" style={{marginBottom: "5px"}}>Portal access:</div>
+              <div>
+                {
+                  manager.invited && !manager.invited.revoked_at ?
+                    <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
+                                           invitationText="Resend invitation"/> :
+                    manager.invited && !manager.invited.accepted_at ?
+                      <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
+                                             invitationText="Resend invitation"/> :
+                      manager.invited && manager.invited.accepted_at ? 'Invitation accepted' :
+                        manager?.permissions?.ability !== "prospect" && manager.roles.length && manager.groups.length ?
+                          'Allowed'
+                          : manager?.permissions?.ability !== "prospect" && !manager.groups.length ?
+                          <UserInvitationsCreate send={true} resend={false} trash={false}
+                                                 user={manager}/>
+                          : 'User cannot be invited'
+                }
 
+              </div>
+            </Col>
             <Col className="d-flex justify-content-end flex-wrap" sm="12">
               <FormGroup>
                 <Button.Ripple

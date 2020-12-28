@@ -37,7 +37,7 @@ const authApi = {
       throw Error("Something is wrong");
     }
   },
-  
+
   async verifyPassword(data) {
     try {
       const result = await instance({
