@@ -11,13 +11,16 @@ const renderDefault = ({fullLayout, Component}) => props => {
   return (
     <ContextLayout.Consumer>
       {context => {
-
         let LayoutTag =
           fullLayout === true
             ? context.fullLayout
             : context.state.activeLayout === "horizontal"
               ? context.horizontalLayout
               : context.VerticalLayout
+
+        if(props.location.pathname === "/forgot-password") {
+          return <Component {...props} />
+        }
         return (
           <LayoutTag {...props} permission={props.user}>
               <Component {...props} />
