@@ -47,7 +47,7 @@ const ForgotPassword = () => {
   const recoveryPasswordSubmit  = e => {
     e.preventDefault();
     dispatch(verifyPasswordRequest({token: query.token, password, password_confirmation, email}))
-    setStep(STEP_VERYFI_SUCCESS)
+    // setStep(STEP_VERYFI_SUCCESS)
   }
 
   useEffect(() => {
