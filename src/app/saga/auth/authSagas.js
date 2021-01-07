@@ -29,13 +29,6 @@ function* login({ payload }) {
     yield put(getProfileRequest())
   } catch (error) {
     yield put(loginError(error));
-    if(error?.response?.data?.error?.message === "Forbidden") {
-      toast.error("You are not allowed to login");
-    } else {
-      toast.error(error?.response?.data?.error?.message || "Something went wrong, try again later");
-    }
-
-
   }
 }
 

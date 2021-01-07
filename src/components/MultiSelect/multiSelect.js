@@ -19,7 +19,7 @@ export const DropdownIndicator = props => {
   )
 };
 
-export const MultiSelect = ({groups: selectedGroups, setGroups}) => {
+export const MultiSelect = ({groups: selectedGroups, setGroups, single}) => {
   const initGroups = useSelector(selectGroups) || [];
   const groups = prepareSelectOptions(initGroups);
   const dispatch = useDispatch();
@@ -36,17 +36,20 @@ export const MultiSelect = ({groups: selectedGroups, setGroups}) => {
   }, []);
 // TODO: set groups in to parrent component
   const onSelectGroupsChange = (values) => {
+    if(single) {
+      values = [values]
+    }
     values ? dispatch(setGroups(normalizeGroups(initGroups).filter(group => values.some(value => value.label === group.name)))) : dispatch(setGroups([]))
   };
   return (
     <div className="d-flex mb-1">
-      <div className="font-weight-bold column-sizing" style={{padding: 5}}>Organisations</div>
+      <div className="font-weight-bold column-sizing" style={{padding: 4}}>Organisations</div>
       <div className="w-100">
         <Select
-          components={{DropdownIndicator}}
+          components={{DropdownIndicator: null,}}
           value={selectedGroups}
           maxMenuHeight={200}
-          isMulti
+          isMulti={!single}
           isClearable={false}
           styles={colourStyles}
           options={filtredSelectOptions()}
