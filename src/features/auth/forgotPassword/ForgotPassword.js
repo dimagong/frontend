@@ -9,7 +9,7 @@ import {
   Spinner,
 } from "reactstrap";
 import fgImg from "assets/img/pages/forgot-password.png";
-import { ToastContainer } from "react-toastify";
+
 import ForgotPasswordFactory from "./ForgotPasswordFactory";
 import PageTemplate from "templates/pageTemplate";
 import {
@@ -47,7 +47,7 @@ const ForgotPassword = () => {
   const recoveryPasswordSubmit  = e => {
     e.preventDefault();
     dispatch(verifyPasswordRequest({token: query.token, password, password_confirmation, email}))
-    setStep(STEP_VERYFI_SUCCESS)
+    // setStep(STEP_VERYFI_SUCCESS)
   }
 
   useEffect(() => {
@@ -110,7 +110,6 @@ const ForgotPassword = () => {
               </Col>
             </Row>
           </Card>
-          <ToastContainer />
         </Col>
       </Row>
     </PageTemplate>

@@ -110,7 +110,7 @@ export const getGroupName = (groups, groupId, groupType) => {
 export const prepareSelectManagers = (managers) => {
   return managers.map((manager) => ({
     value: manager,
-    label: manager.name + ` (${manager.id})`,
+    label: manager.first_name + " " + manager.last_name + ` (${manager.id})`,
     color: colorMultiSelect,
   }));
 };

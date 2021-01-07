@@ -18,6 +18,7 @@ import {
   getdFormTriggersRequest,
   getNotificationsRequest,
   getUsersRequest,
+  setContext,
 } from "app/slices/appSlice";
 import {
   setWorkflows,
@@ -33,7 +34,7 @@ import {
 function* getWorkflows() {
   try {
     const responce = yield call(workflowApi.getWorkflows);
-    
+
     yield put(getWorkflowsSuccess());
     yield put(setWorkflows(responce))
     yield put(getdFormActionsRequest())
@@ -52,11 +53,12 @@ function* getWorkflows() {
 function* createWorkflow({payload}) {
   try {
     const responce = yield call(workflowApi.createWorkflow, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
-    
+
     yield put(createWorkflowSuccess());
     const notifications = yield select(selectWorkflows)
     yield put(setWorkflows([...notifications, responce]))
     yield put(setWorkflow(null))
+    yield put(setContext(null))
   } catch (error) {
     yield put(createWorkflowError(error));
   }

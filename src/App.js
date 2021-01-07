@@ -6,6 +6,9 @@ import { ConnectedRouter } from "connected-react-router";
 import { useDispatch } from "react-redux";
 import authService from "services/auth";
 import { getProfileRequest } from "app/slices/appSlice";
+import {ToastContainer} from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css"
+import "assets/scss/plugins/extensions/toastr.scss"
 
 import { Scrollbars } from 'react-custom-scrollbars';
 
@@ -22,6 +25,7 @@ function App() {
           <Routes />
         </Scrollbars>
       </Router>
+      <ToastContainer />
     </ConnectedRouter>
   );
 }

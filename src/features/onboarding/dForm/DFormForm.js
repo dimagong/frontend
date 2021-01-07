@@ -77,7 +77,7 @@ const DFormForm = ({isCreate}) => {
           <CardBody className="card-top-padding">
             {isCreate ? (
               <div className="mt-2">
-                <MultiSelect setGroups={setdFormGroups} groups={prepareSelectGroups(dForm.groups)} single/>
+                <MultiSelect setGroups={setdFormGroups} groups={prepareSelectGroups(dForm.groups)} single noDropdownIndicator />
               </div>
             ) : (
               <div className="mt-2">

@@ -40,7 +40,6 @@ const NotificationsForm = ({isCreate}) => {
     e.preventDefault();
     if (isCreate) {
       dispatch(createNotificationRequest(notification))
-      closeNotification()
     } else {
       dispatch(updateNotificationRequest(notification))
     }
@@ -113,7 +112,7 @@ const NotificationsForm = ({isCreate}) => {
                   color="primary d-flex-left"
                   type="submit"
                 >
-                  Save
+                  {isCreate ? "Create" : "Save"}
                 </Button>
               </div>
             </Form>

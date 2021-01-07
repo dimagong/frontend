@@ -17,7 +17,6 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {selectProfile, selectLoading, selectManager} from "app/selectors";
 import classnames from "classnames"
-import {toast, ToastContainer} from 'react-toastify';
 import {isEmpty} from 'lodash'
 import FormCreate from 'components/FormCreate/FormCreate'
 import {debounce} from 'lodash';
@@ -229,7 +228,6 @@ const OnboardingUser = () => {
                   </CardBody>
                 </Card>
               </Col>
-              <ToastContainer></ToastContainer>
             </Row>
           )
           : 'Onboarding not exist'

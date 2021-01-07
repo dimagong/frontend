@@ -18,9 +18,7 @@ import "assets/scss/plugins/forms/flatpickr/flatpickr.scss"
 // import workflowService from 'services/workflow.service'
 
 import {toast} from "react-toastify"
-import {ToastContainer} from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import "assets/scss/plugins/extensions/toastr.scss"
+
 import {ContextLayout} from "utility/context/Layout"
 import {AgGridReact} from "ag-grid-react"
 import "assets/scss/plugins/tables/_agGridStyleOverride.scss"
@@ -128,7 +126,6 @@ const DForm = () => {
             <Col md="6">
               {dForm ? <DFormForm clearGridSelection={clearGridSelection} isCreate={isCreate}/>: null}
             </Col>
-            <ToastContainer/>
           </Row>
         </div>
 

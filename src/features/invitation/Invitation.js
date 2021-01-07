@@ -13,7 +13,6 @@ import {
     Label,
     FormFeedback
   } from "reactstrap";
-import {ToastContainer} from "react-toastify"
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { selectError, selectInvitation } from "app/selectors";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,7 +50,7 @@ const Invitation = () => {
             password_confirmation: event.target.value
         })
       }
-      
+
     const confirmCode = () => {
 
     }
@@ -67,7 +66,7 @@ const Invitation = () => {
           <Card className="bg-authentication login-card rounded-0 mb-0 w-100">
             <Row className="m-0">
               <Col lg="12" md="12" className="p-0">
-                <Card className="rounded-0 mb-0 px-2 login-tabs-container">
+                <Card className="rounded-0 mb-0 px-2">
                   <CardHeader className="pb-1">
                     <CardTitle>
                       <h4 className="mb-0">Invitation request form</h4>
@@ -88,7 +87,7 @@ const Invitation = () => {
                           {...{invalid: errors['password']}}
                         />
                         <Label>Password</Label>
-                        <FormFeedback>Oh noes! that name is already taken</FormFeedback>
+                        <FormFeedback>{errors['password']}</FormFeedback>
                       </FormGroup>
                       <FormGroup className="form-label-group position-relative">
                         <Input
@@ -101,7 +100,7 @@ const Invitation = () => {
                         />
 
                         <Label>Password confirmation</Label>
-                        <FormFeedback>Oh noes! that name is already taken</FormFeedback>
+                        <FormFeedback>{errors['password_confirmation']}</FormFeedback>
                       </FormGroup>
                       <div className="d-flex justify-content-end">
                         <Button color="primary" type="submit" onClick={onSubmit}>
@@ -116,7 +115,6 @@ const Invitation = () => {
             </Row>
           </Card>
         </Col>
-        <ToastContainer/>
         <SweetAlert title="Code Verification"
                     input
                     show={false}

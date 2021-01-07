@@ -45,6 +45,12 @@ function* verifyPassword({ payload }) {
   try {
     yield call(authApi.verifyPassword, payload);
     yield put(verifyPasswordSuccess());
+    yield put(loginRequest({
+      password: payload.password,
+      code: "",
+      device_name: "browser",
+      email: payload.email
+    }))
   } catch (error) {
     yield put(verifyPasswordError(error));
   }
