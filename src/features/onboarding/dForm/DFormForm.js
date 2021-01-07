@@ -8,7 +8,7 @@ import {
   Col,
 } from "reactstrap";
 import { X, Eye, EyeOff } from "react-feather";
-import MultiSelect from "components/MultiSelect/multiSelect";
+import MultiSelect, {DropdownIndicator} from "components/MultiSelect/multiSelect";
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { useDispatch, useSelector } from "react-redux";
 import { selectdForms, selectdForm} from "app/selectors/onboardingSelectors";
@@ -16,6 +16,8 @@ import FormCreate from "components/FormCreate/FormCreate"
 import { setdForm, setdFormGroups } from "app/slices/onboardingSlice";
 import {createDFormTemplateRequest, setContext, updateDFormTemplateRequest} from "app/slices/appSlice";
 import {initDForm} from './settings'
+import {colourStyles} from '../../../utility/select/selectSettigns'
+import Select from 'react-select'
 
 const DFormForm = ({isCreate}) => {
   const dForm = useSelector(selectdForm);
@@ -73,9 +75,20 @@ const DFormForm = ({isCreate}) => {
             </div>
           </CardHeader>
           <CardBody className="card-top-padding">
-            <div className="mt-2">
-              <MultiSelect setGroups={setdFormGroups} groups={prepareSelectGroups(dForm.groups)} />
-            </div>
+            {isCreate ? (
+              <div className="mt-2">
+                <MultiSelect setGroups={setdFormGroups} groups={prepareSelectGroups(dForm.groups)} single/>
+              </div>
+            ) : (
+              <div className="mt-2">
+                <div className="d-flex mb-1">
+                  <div className="font-weight-bold" style={{padding: 5}}>Organisation</div>
+                  <div className="w-100" style={{padding: 5}}>
+                    {dForm.groups[0]?.name}
+                  </div>
+                </div>
+              </div>
+            )}
             <FormCreate fileLoader={false}
                         submitDForm={submitDForm}
                         liveValidate={false}
