@@ -102,11 +102,13 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
+    console.log(this.state.uiSchema);
     if (!isEqual(prevProps, this.props)) {
       if (!isEqual(prevProps.dForm, this.props.dForm)) {
         // this.setState(this.initState(this.props));
         // this.groupedFiles();
         this.reInit();
+
       }
     }
     // console.log('FormCreate componentDidUpdate', this.state);
@@ -242,6 +244,7 @@ class FormCreate extends React.Component {
       section: '',
       uiSchema: propsDFormUiSchema
     };
+
   }
 
   disableAllInputs(dFormSchema, dFormUiSchema) {
@@ -459,6 +462,7 @@ class FormCreate extends React.Component {
   // refresh btn for dForm
   reInit = debounce(() => {
     let state = this.initState(this.props);
+
 
 
     //state.formData = isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data;
@@ -1805,7 +1809,7 @@ class FormCreate extends React.Component {
                 <FormOrdering
                   sections={this.state.uiSchema.onlySections}
                   groups={this.state.uiSchema.sectionGroups}
-                  fields={this.state.schema.properties}
+                  fields={this.state.uiSchema.fieldsOrdering || Object.keys(this.state.schema.properties)}
                   fieldsFilter={this.state.uiSchema.groups}
 
                   onChangeSections={(items) => {
@@ -1815,7 +1819,8 @@ class FormCreate extends React.Component {
                     this.setState({uiSchema: {...this.state.uiSchema, sectionGroups: items}})
                   }}
                   onChangeFields={(items) => {
-                    this.setState({schema: {...this.state.schema, properties: items}})
+                    this.setState({uiSchema: {...this.state.uiSchema, fieldsOrdering: items}})
+                    //this.setState({schema: {...this.state.schema, properties: items}})
                   }}
                 />
               </div>

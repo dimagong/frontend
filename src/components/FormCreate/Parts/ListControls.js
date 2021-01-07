@@ -694,8 +694,16 @@ export function listControls(properties) {
         if (!isSectionHaveOneElement(groupedElements[groupName], sectionName)) {
           return null;
         }
+        let elementContent = Object.keys(groupedElements[groupName]);
+        console.log(2222222222222, elementContent);
+        // todo ordering
+        if(this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
+          elementContent = this.state.uiSchema.fieldsOrdering.filter(elementName => elementContent.indexOf(elementName) !== -1);
+        }
+        // todo end ordering
 
-        const elementContent = Object.keys(groupedElements[groupName]).map(key => {
+
+        elementContent = elementContent.map(key => {
 
           if (isElementInSection(key, sectionName)) {
             return renderConfigFields(key, index);
