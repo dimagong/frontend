@@ -294,15 +294,17 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                         </Col>
                       </Row>
                       <div className="search-content-footer">
-                        <Button
-                          onClick={() => {handleAdd()}}
-                          color="primary"
-                          className="add-icon p-0"
-                        >
-                          <Plus size={28}/>
-                        </Button>
+                        {selectedNavItem.id !== "MasterSchema" ? (
+                          <Button
+                            onClick={() => {handleAdd()}}
+                            color="primary"
+                            className="add-icon p-0"
+                          >
+                            <Plus size={28}/>
+                          </Button>
+                        ) : <div />}
 
-                        <Button color="primary" onClick={handleContextSearchHide} className="hide-context-icon p-0">
+                        <Button style={{minHeight: "38px"}} color="primary" onClick={handleContextSearchHide} className="hide-context-icon p-0">
                           <ChevronUp size={28} />
                         </Button>
                       </div>
