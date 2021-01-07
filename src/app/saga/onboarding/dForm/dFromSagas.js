@@ -32,6 +32,7 @@ import {
   changedFormStatusSuccess,
   changedFormStatusRequest,
   changedFormStatusError,
+  setContext,
 } from "app/slices/appSlice";
 import {setdForms, setdFormActions, setdFormTriggers} from "app/slices/onboardingSlice";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
@@ -116,6 +117,7 @@ function* createDFormTemplate({payload}) {
     yield put(createDFormTemplateSuccess());
     const notifications = yield select(selectdForms);
     yield put(setdForms([...notifications, responce]));
+    yield put(setContext(null))
   } catch (error) {
     yield put(createDFormTemplateError(error));
   }

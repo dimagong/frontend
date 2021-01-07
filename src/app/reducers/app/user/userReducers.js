@@ -1,4 +1,5 @@
 import {initUser} from 'app/slices/appSlice';
+import {toast} from 'react-toastify'
 
 const getProfileSuccess = (state, { payload }) => {
   state.isLoading = false;
@@ -54,6 +55,7 @@ const updateUserSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.managers = state.user.managers.map( manager => manager.id === state.user.manager.id ? payload : manager );
+  toast.success("Saved")
 };
 
 const updateUserRequest = (state, { payload }) => {
@@ -77,7 +79,7 @@ const updateUserAvatarSuccess = (state, { payload }) => {
 
     return manager;
   })
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+
   // state.user.manager = {...state.user.manager,...payload};
 };
 const updateUserAvatarRequest = (state, { payload }) => {
@@ -244,7 +246,7 @@ const createUserSuccess = (state, { payload }) => {
   state.isError = null;
   state.user.user = initUser;
   state.user.managers = [payload, ...state.user.managers];
-
+  toast.success("User successfully created")
 };
 
 const createUserRequest = (state, { payload }) => {
