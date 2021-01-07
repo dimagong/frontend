@@ -85,10 +85,7 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
 
   const renderTime = () => {
     return <div>
-      <CopyToClipboard
-        onCopy={onCopy}
-        text={window.location.origin + '/invitation-accept/' + manager.invited.invitation_token}
-      >
+
         <Button
           color="primary"
           className="mr-1 mb-1"
@@ -99,6 +96,18 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
           {
             invitationExpiredTime ? invitationExpiredTime : <RefreshCcw size="15" className="rotating"/>
           }
+        </Button>
+      <CopyToClipboard
+        onCopy={onCopy}
+        text={window.location.origin + '/invitation-accept/' + manager.invited.invitation_token}
+      >
+        <Button
+          color="primary"
+          className="mr-1 mb-1"
+          size="sm"
+          style={{'font-size': '14px'}}
+        >
+          Copy link
         </Button>
       </CopyToClipboard>
       {/*<UncontrolledTooltip placement="top" target="resend-invitation-btn">*/}
