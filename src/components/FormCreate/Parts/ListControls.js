@@ -81,6 +81,7 @@ export function listControls(properties) {
             fieldId={schemaPropertyEdit.reference?.field_id}
             invalid={errorPropertyNameAlreadyTaken || referenceIsEmpty}
             errorMsg={errorMsg}
+            organizations={this.state.dFormTemplate.groups || []}
           />
           {/*old property output*/}
           {/*<Input id={`${index}-property-${column}`}*/}
@@ -139,7 +140,6 @@ export function listControls(properties) {
             onChange={event => {
               //this.inputHandlerRequired(event, this.state.fieldEdit.propertyKey);
               this.setState({fieldEdit: {...this.state.fieldEdit, isRequired: !this.state.fieldEdit.isRequired}});
-              console.log(566666666666666666666, this.state.fieldEdit.propertyKey, this.state.schemaRequiredFields, event.target.checked);
             }}
             checked={this.state.fieldEdit.isRequired}
           />
@@ -695,7 +695,6 @@ export function listControls(properties) {
           return null;
         }
         let elementContent = Object.keys(groupedElements[groupName]);
-        console.log(2222222222222, elementContent);
         // todo ordering
         if(this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
           elementContent = this.state.uiSchema.fieldsOrdering.filter(elementName => elementContent.indexOf(elementName) !== -1);

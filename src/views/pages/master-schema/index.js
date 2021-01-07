@@ -60,11 +60,9 @@ function MasterSchema() {
 
   const getOrganizations = async () => {
     const response = await masterSchemaService.getOrganizations();
-    const organizationsByType = response.data.data;
-    let organizations = []
-      .concat(organizationsByType.corporation)
-      .concat(organizationsByType.network)
-      .concat(organizationsByType.member_firm);
+    const organizationByType = response.data.data;
+    let organizations = [];
+    organizations.push(organizationByType);
     setOrganizations(organizations);
   };
 
@@ -234,7 +232,7 @@ function MasterSchema() {
   const getMasterSchemaByType = async (type, id) => {
     try {
       const response = await masterSchemaService.getByOrganization(type, id);
-      setMasterSchema(response.data.data);
+      setMasterSchema(response.data.data.master_schema);
     } catch (exception) {
       console.log(exception);
     } finally {

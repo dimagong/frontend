@@ -1,5 +1,27 @@
 const colorMultiSelect = "#007bff"; //#7367f0
 
+
+export const prepareNotNestedSelectOptions = (groups) => {
+  let groupsMultiSelect = [];
+
+  if (!groups) return groupsMultiSelect;
+
+  groupsMultiSelect = groups.map((corporation) => {
+    return {
+      value: {
+        group_id: corporation.id,
+        type: "corporation",
+      },
+      // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`,
+      label: `${corporation.name}`,
+      color: colorMultiSelect,
+    }
+  });
+
+  return groupsMultiSelect;
+};
+
+
 export const prepareSelectOptions = (groups) => {
   let groupsMultiSelect = [];
 
@@ -43,7 +65,7 @@ export const prepareSelectOptions = (groups) => {
 };
 
 export const prepareSelectGroups = (groups) => {
-  if(!groups) return []
+  if (!groups) return [];
   return groups.map((group) => {
     return {
       value: {

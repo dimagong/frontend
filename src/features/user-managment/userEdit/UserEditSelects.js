@@ -20,7 +20,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {selectGroups, selectRoles, selectModules, selectManager} from "app/selectors";
 import {groupTypes} from 'constants/group'
-import {prepareSelectOptions, normalizeGroups, getGroupName} from "utility/select/prepareSelectData";
+import {prepareSelectOptions,prepareNotNestedSelectOptions, normalizeGroups, getGroupName} from "utility/select/prepareSelectData";
 import {MultiSelectOrganization} from "../../../components/MultiSelect/MultiSelectOrganizations";
 import { isEmpty } from 'lodash'
 import OrganizationPermissionsModal from '../../../components/modals/OrganizationPermissionsModal'
@@ -158,7 +158,7 @@ const UserEditSelects = () => {
   };
 
   const filtredSelectOptions = () => {
-    return prepareSelectOptions(groups)
+    return prepareNotNestedSelectOptions(groups)
       .filter(groupSelect => !prepareSelectGroups(manager.groups)
         .some(group => group.value.group_id === groupSelect.value.group_id && group.value.type === groupSelect.value.type))
   };

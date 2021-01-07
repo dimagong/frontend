@@ -90,12 +90,15 @@ export default function MasterSchemaProperty(props) {
   };
 
   const getOrganizations = async () => {
-    const response = await masterSchemaService.getOrganizations();
-    const organizationsByType = response.data.data;
-    let organizations = []
-      .concat(organizationsByType.corporation)
-      .concat(organizationsByType.network)
-      .concat(organizationsByType.member_firm);
+    if(!props.organizations.length) return;
+
+    const organization = props.organizations[0];
+    const response = await masterSchemaService.getByOrganization(organization.type, organization.id);
+    const organizationResponse = response.data.data;
+
+    let organizations = [];
+    organizations.push(organizationResponse);
+
     return organizations;
   };
 
@@ -175,8 +178,8 @@ export default function MasterSchemaProperty(props) {
 
   const getFieldsSelect = () => {
     const masterSchemaFields = transformToSelectFields(organizations);
-
     return <FormGroup>
+
       <CustomSelect
         id="select-ms-property"
         options={masterSchemaFields.concat(getAddNewOption())}

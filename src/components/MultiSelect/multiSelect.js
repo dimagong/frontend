@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import Select, {components} from "react-select"
 import {Plus} from "react-feather"
 import {colourStyles} from "utility/select/selectSettigns";
-import {prepareSelectOptions, normalizeGroups} from "utility/select/prepareSelectData";
+import {prepareSelectOptions, prepareNotNestedSelectOptions, normalizeGroups} from "utility/select/prepareSelectData";
 import _ from "lodash";
 import {useDispatch, useSelector} from "react-redux";
 import {
@@ -21,7 +21,8 @@ export const DropdownIndicator = props => {
 
 export const MultiSelect = ({groups: selectedGroups, setGroups, single}) => {
   const initGroups = useSelector(selectGroups) || [];
-  const groups = prepareSelectOptions(initGroups);
+  // const groups = prepareSelectOptions(initGroups);
+   const groups = prepareNotNestedSelectOptions(initGroups);
   const dispatch = useDispatch();
 
 // TODO: remove choosen options for select options

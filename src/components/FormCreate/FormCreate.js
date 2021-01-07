@@ -125,6 +125,7 @@ class FormCreate extends React.Component {
     const propsDFormUiSchema = clone(props.dForm.schema.uiSchema);
     const formData = !isEmpty(this.props.dForm.submit_data) ? clone(this.props.dForm.submit_data) : {};
 
+    console.log('!!!!!!!!', props);
 
     let fileLoading = false;
     const protectedPropertiesDefault = {

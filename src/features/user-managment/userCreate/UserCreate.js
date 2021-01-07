@@ -23,7 +23,7 @@ import moment from 'moment';
 import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
 import { setUser, createUserRequest, setContext } from "app/slices/appSlice";
 import { selectGroups, selectRoles, selectError } from "app/selectors";
-import {prepareSelectOptions, normalizeGroups, getGroupName, prepareSelectGroups} from "utility/select/prepareSelectData";
+import {prepareSelectOptions,prepareNotNestedSelectOptions, normalizeGroups, getGroupName, prepareSelectGroups} from "utility/select/prepareSelectData";
 import {groupTypes} from 'constants/group'
 
 const UserCreate = () => {
@@ -34,7 +34,7 @@ const UserCreate = () => {
     const dispatch = useDispatch();
 
     const filtredSelectOptions = () => {
-        return prepareSelectOptions(groups)
+        return prepareNotNestedSelectOptions(groups)
         .filter( groupSelect => !prepareSelectGroups(user.groups)
           .some( group =>  group.value.group_id === groupSelect.value.group_id && group.value.type === groupSelect.value.type ))
       }
