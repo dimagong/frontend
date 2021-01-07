@@ -27,6 +27,7 @@ function FormOrdering(props) {
           </CardHeader>
           <CardBody>
             <Ordering
+              isItemsArray={false}
               selfKey={filterSectionName} items={props.sections}
               onChangeFilterKey={(filterKey) => {
                 setFilterSectionName(filterKey);
@@ -44,6 +45,7 @@ function FormOrdering(props) {
           </CardHeader>
           <CardBody>
             <Ordering
+              isItemsArray={false}
               selfKey={filterGroupName}
               filterControlled={true}
               filterKey={filterSectionName}
@@ -62,6 +64,7 @@ function FormOrdering(props) {
           </CardHeader>
           <CardBody>
             <Ordering
+              isItemsArray={true}
               filterControlled={true}
               filterKey={filterGroupName}
               filterItems={props.fieldsFilter}
@@ -69,6 +72,7 @@ function FormOrdering(props) {
               onDragEnd={(items) => {
                 props.onChangeFields(items);
               }}
+              isMsField={true}
             />
           </CardBody>
         </Card>

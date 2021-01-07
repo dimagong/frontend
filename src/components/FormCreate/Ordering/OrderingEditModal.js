@@ -25,7 +25,6 @@ function OrderingEditModal(props) {
         <div>
             <MoreVertical size={20} className="cursor-pointer" onClick={handleShow} />
 
-
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Ordering</Modal.Title>

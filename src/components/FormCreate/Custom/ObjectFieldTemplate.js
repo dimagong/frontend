@@ -99,7 +99,20 @@ export function ObjectFieldTemplate(props) {
         return null;
       }
 
-      const elementContent = groupedElements[groupName].map(element => {
+      let elementContent = groupedElements[groupName];
+
+      // todo ordering
+      if(this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
+
+        const elementNames = elementContent.map(element => element.name);
+        const filteredOrderingElementNames = this.state.uiSchema.fieldsOrdering.filter(elementName => elementNames.indexOf(elementName) !== -1);
+        elementContent = filteredOrderingElementNames.map(nextName => {
+          return elementContent.find(elementContentElement => elementContentElement.name === nextName);
+        });
+      }
+      // todo end ordering
+
+      elementContent = elementContent.map(element => {
         if (isElementInSection(element.name, sectionName)) {
           const isElementHidden = (elementKey) => {
             let isHidden = elementKey in this.state.uiSchema && Constants.UI_HIDDEN in this.state.uiSchema[elementKey] && this.state.uiSchema[elementKey][Constants.UI_HIDDEN]
