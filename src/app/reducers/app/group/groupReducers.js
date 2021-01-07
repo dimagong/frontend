@@ -19,9 +19,9 @@ const getOrganizationsRequest = (state) => {
 }
 
 const getOrganizationsSuccess = (state, {payload}) => {
-  state.organizations.network = payload.network;
-  state.organizations.corporation = payload.corporation;
-  state.organizations.member_firm = payload.member_firm;
+  state.organizations.network = payload.filter((org) =>  org.type === "network");
+  state.organizations.corporation = payload.filter((org) =>  org.type === "corporation");
+  state.organizations.member_firm = payload.filter((org) =>  org.type === "member_firm");
 }
 
 const getOrganizationsError = (state, {payload}) => {
