@@ -14,9 +14,11 @@ import {
   deleteNotificationSuccess,
   deleteNotificationRequest,
   deleteNotificationError,
+  setContext,
 } from "app/slices/appSlice";
 import {
-  setNotifications
+  setNotifications,
+  setNotification,
 } from "app/slices/onboardingSlice";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {
@@ -27,7 +29,7 @@ import _ from "lodash"
 function* getNotifications() {
   try {
     const responce = yield call(notificationApi.getNotifications);
-    
+
     yield put(getNotificationsSuccess());
     yield put(setNotifications(responce))
   } catch (error) {
@@ -38,10 +40,13 @@ function* getNotifications() {
 function* createNotification({payload}) {
   try {
     const responce = yield call(notificationApi.createNotification, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
-    
+
     yield put(createNotificationSuccess());
     const notifications = yield select(selectNotifications)
     yield put(setNotifications([...notifications, responce]))
+    yield put(setContext(null))
+    yield put(setNotification(null))
+
   } catch (error) {
     yield put(createNotificationError(error));
   }
