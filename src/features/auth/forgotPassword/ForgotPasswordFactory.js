@@ -37,15 +37,22 @@ const ForgotPasswordFactory = ({
     case STEP_FORGOT_SUCCESS:
       return (
         <Card className="rounded-0 mb-0 px-2 py-1 h-100">
-          <CardHeader className="pb-1">
-            <CardTitle>
-              <h4 className="mb-0">
-                Password recovery link was successfully sent to your email
-                address
-              </h4>
-            </CardTitle>
-          </CardHeader>
-          <CardBody className="pt-1 pb-0"></CardBody>
+          <CardBody className="pt-1 pb-0 recover-link-send">
+            <h4 className="mb-0">
+              Password recovery link was successfully sent to your email
+              address
+            </h4>
+            <div className="float-md-left d-block mb-1">
+              <Button
+                color="primary"
+                outline
+                className="px-75 btn-block"
+                onClick={goToLogin}
+              >
+                Back to Login
+              </Button>
+            </div>
+          </CardBody>
         </Card>
       );
     case STEP_VERYFI_SUCCESS:
@@ -56,7 +63,7 @@ const ForgotPasswordFactory = ({
               <h4 className="mb-0">Password changed successfully</h4>
             </CardTitle>
           </CardHeader>
-          <CardBody className="pt-1 pb-0">
+          <CardBody className="pt-1 pb-0 password-changed">
             <div className="float-md-left d-block mb-1">
               <Button
                 color="primary"
@@ -72,7 +79,7 @@ const ForgotPasswordFactory = ({
       );
     case STEP_VERYFI:
       return (
-        <Card className="rounded-0 mb-0 px-2 py-1">
+        <Card className="rounded-0 mb-0 px-2 py-1 h-100">
           <CardHeader className="pb-1">
             <CardTitle>
               <h4 className="mb-0">Recover your password</h4>
@@ -138,7 +145,7 @@ const ForgotPasswordFactory = ({
       );
     case STEP_FORGOT:
       return (
-        <Card className="rounded-0 mb-0 px-2 py-1">
+        <Card className="rounded-0 mb-0 px-2 py-1 h-100">
           <CardHeader className="pb-1">
             <CardTitle>
               <h4 className="mb-0">Recover your password</h4>

@@ -58,7 +58,7 @@ const ForgotPassword = () => {
 
   useEffect(() => {
     if(isError){
-      setStep(STEP_FORGOT)
+      // setStep(STEP_FORGOT)
     }
   },[isError])
 
@@ -76,7 +76,7 @@ const ForgotPassword = () => {
             <Row className="m-0">
               <Col
                 lg="6"
-                className="d-lg-block d-none text-center align-self-center"
+                className="d-lg-block d-none text-center align-self-center py-1"
               >
                 <img src={fgImg} alt="fgImg" />
               </Col>
