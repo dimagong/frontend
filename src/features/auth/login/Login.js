@@ -14,7 +14,6 @@ import {
   Label,
   FormFeedback,
 } from "reactstrap";
-import { ToastContainer } from "react-toastify";
 // import SweetAlert from "react-bootstrap-sweetalert";
 import { Mail, Lock, Check } from "react-feather";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
@@ -29,7 +28,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
-  const handleLogin = (e) =>{ 
+  const handleLogin = (e) =>{
     e.preventDefault();
     dispatch(loginRequest({email, password, device_name: "browser", code: ""}))};
 
@@ -131,7 +130,6 @@ const Login = () => {
             </Row>
           </Card>
         </Col>
-        <ToastContainer />
       </Row>
   );
 };

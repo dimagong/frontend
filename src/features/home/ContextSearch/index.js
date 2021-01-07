@@ -12,7 +12,6 @@ import {
   TabContent,
   TabPane,
 } from "reactstrap";
-import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectdForms, selectGroups,
@@ -315,8 +314,6 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
           </div>
         </div>
       </Col>
-      <ToastContainer />
-
     </Row>
     </>
   )

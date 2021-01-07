@@ -13,7 +13,6 @@ import {
     Label,
     FormFeedback
   } from "reactstrap";
-import {ToastContainer} from "react-toastify"
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { selectError, selectInvitation } from "app/selectors";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,7 +50,7 @@ const Invitation = () => {
             password_confirmation: event.target.value
         })
       }
-      
+
     const confirmCode = () => {
 
     }
@@ -116,7 +115,6 @@ const Invitation = () => {
             </Row>
           </Card>
         </Col>
-        <ToastContainer/>
         <SweetAlert title="Code Verification"
                     input
                     show={false}

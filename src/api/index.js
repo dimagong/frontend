@@ -34,7 +34,7 @@ instance.interceptors.response.use(
       error.response.data.error.status === 401 &&
       error.config.url.indexOf('login') === -1) {
       store.dispatch(logout())
-    } else if ('error' in error.response.data && error.response.data?.error?.message) {
+    } else if (error.response.data?.error?.message) {
       toast.error(error.response.data.error.message)
     }
 

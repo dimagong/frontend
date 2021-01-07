@@ -8,7 +8,6 @@ import {
 } from "reactstrap";
 // import { X } from "react-feather";
 // import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
 import "assets/scss/plugins/extensions/toastr.scss";
 import { ContextLayout } from "utility/context/Layout";
 import { AgGridReact } from "ag-grid-react";
@@ -116,7 +115,6 @@ const Notification = () => {
             </Card>
           </Col>
           {notification ? <NotificationsForm clearGridSelection={clearGridSelection} isCreate={isCreate}/> : null}
-          <ToastContainer />
         </Row>
       </div>
     </div>

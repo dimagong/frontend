@@ -9,7 +9,7 @@ import {
   Spinner,
 } from "reactstrap";
 import fgImg from "assets/img/pages/forgot-password.png";
-import { ToastContainer } from "react-toastify";
+
 import ForgotPasswordFactory from "./ForgotPasswordFactory";
 import PageTemplate from "templates/pageTemplate";
 import {
@@ -110,7 +110,6 @@ const ForgotPassword = () => {
               </Col>
             </Row>
           </Card>
-          <ToastContainer />
         </Col>
       </Row>
     </PageTemplate>

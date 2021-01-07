@@ -15,7 +15,6 @@ import classnames from "classnames";
 // import UserList from './UserList'
 // import InvitationList from '../invitation/InvitationList'
 // import UserEdit from './UserEdit'
-import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroups, selectRoles, selectManager, selectManagers } from "app/selectors";
 import { getUserManagment, setManager } from "app/slices/appSlice";
@@ -73,7 +72,6 @@ const UserManagment = () => {
       <Col sm="12" md="12" lg="12" xl="7">
         {manager ? <UserEdit /> : null}
       </Col>
-      <ToastContainer />
     </Row>
   );
 };

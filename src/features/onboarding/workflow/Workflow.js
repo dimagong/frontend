@@ -9,7 +9,6 @@ import {
 } from "reactstrap"
 import { setWorkflow } from "app/slices/onboardingSlice";
 
-import {ToastContainer} from "react-toastify"
 
 import {ContextLayout} from "utility/context/Layout"
 import {AgGridReact} from "ag-grid-react"
@@ -34,17 +33,17 @@ const Workflow = () => {
     useEffect(() => {
         !workflows.length && dispatch(getWorkflowsRequest());
       }, []);
-    
+
        // TODO: START - AG GRID API
        const  onGridReady = (params) => {
         setGridApi(params.api);
         params.api.sizeColumnsToFit();
-    
+
         window.addEventListener("resize", () => {
           params.api.sizeColumnsToFit();
         });
       }
-    
+
       const onSelectionChanged = () => {
         const [selectedRow] = gridApi.getSelectedRows();
         workflowModalType.current = "Edit";
@@ -54,7 +53,7 @@ const Workflow = () => {
         gridApi.deselectAll();
         gridApi.clearFocusedCell();
       };
-    
+
       // TODO: END - AG GRID API
 
       const deleteWorkflow = (params) => {
@@ -111,7 +110,6 @@ const Workflow = () => {
             }
           </Row>
         </div>
-        <ToastContainer/>
       </div>
     )
 }

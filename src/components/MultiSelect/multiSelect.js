@@ -19,7 +19,7 @@ export const DropdownIndicator = props => {
   )
 };
 
-export const MultiSelect = ({groups: selectedGroups, setGroups, single}) => {
+export const MultiSelect = ({groups: selectedGroups, setGroups, single, noDropdownIndicator = false}) => {
   const initGroups = useSelector(selectGroups) || [];
   const groups = prepareSelectOptions(initGroups);
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ export const MultiSelect = ({groups: selectedGroups, setGroups, single}) => {
       <div className="font-weight-bold column-sizing" style={{padding: 4}}>Organisations</div>
       <div className="w-100">
         <Select
-          components={{DropdownIndicator: null,}}
+          components={{DropdownIndicator: noDropdownIndicator ? null : DropdownIndicator,}}
           value={selectedGroups}
           maxMenuHeight={200}
           isMulti={!single}
