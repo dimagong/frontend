@@ -9,6 +9,7 @@ import {
   getGroupsRequest,
 } from "app/slices/appSlice";
 import {selectGroups} from 'app/selectors/groupSelector'
+import {normalizeNotNestedGroups} from "../../utility/select/prepareSelectData";
 
 export const DropdownIndicator = props => {
   return components.DropdownIndicator && (
@@ -40,7 +41,7 @@ export const MultiSelect = ({groups: selectedGroups, setGroups, single, noDropdo
     if(single) {
       values = [values]
     }
-    values ? dispatch(setGroups(normalizeGroups(initGroups).filter(group => values.some(value => value.label === group.name)))) : dispatch(setGroups([]))
+    values ? dispatch(setGroups(normalizeNotNestedGroups(initGroups).filter(group => values.some(value => value.label === group.name)))) : dispatch(setGroups([]))
   };
   return (
     <div className="d-flex mb-1">

@@ -115,6 +115,25 @@ export const prepareSelectManagers = (managers) => {
   }));
 };
 
+export const normalizeNotNestedGroups = (groups) => {
+  let groupsMultiSelect = [];
+
+  if (!groups) return groupsMultiSelect;
+
+  groupsMultiSelect = groups.map((corporation) => {
+    return {
+      id: corporation.id,
+      name: corporation.name,
+      type: corporation.type,
+      updated_at: corporation.updated_at,
+      created_at: corporation.created_at,
+    };
+  });
+
+  return groupsMultiSelect;
+};
+
+
 export const normalizeGroups = (groups) => {
   let groupsMultiSelect = [];
 
