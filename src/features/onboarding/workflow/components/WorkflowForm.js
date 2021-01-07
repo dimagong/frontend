@@ -118,7 +118,7 @@ const WorkflowForm = ({ workflowModalType }) => {
                     color="primary d-flex-left"
                     onClick={submitWorkflow}
                   >
-                    Save
+                    {workflowModalType === "Create" ? "Create" : "Save"}
                   </Button>
                 </div>
               </Col>
