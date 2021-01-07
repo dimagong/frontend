@@ -43,7 +43,7 @@ export const MultiSelect = ({groups: selectedGroups, setGroups, single, noDropdo
   };
   return (
     <div className="d-flex mb-1">
-      <div className="font-weight-bold column-sizing" style={{padding: 4}}>Organisations</div>
+      <div className="font-weight-bold column-sizing" style={{padding: 4}}>{single ? "Organization" : "Organisations"}</div>
       <div className="w-100">
         <Select
           components={{DropdownIndicator: noDropdownIndicator ? null : DropdownIndicator,}}
