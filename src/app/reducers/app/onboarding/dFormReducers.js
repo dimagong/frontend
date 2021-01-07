@@ -1,5 +1,6 @@
 import {isEmpty} from 'lodash'
 import rfdc from "rfdc";
+import {toast} from 'react-toastify'
 
 const clone = rfdc();
 const getdFormsSuccess = (state) => {
@@ -18,6 +19,7 @@ const getdFormsError = (state , {payload}) => {
 const createDFormTemplateSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
+  toast.success("Created")
 };
 const createDFormTemplateRequest = (state, {payload}) => {
   state.isLoading = true;
@@ -31,6 +33,7 @@ const createDFormTemplateError = (state , {payload}) => {
 const updateDFormTemplateSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
+  toast.success("Saved")
 };
 
 const updateDFormTemplateRequest = (state, {payload}) => {
@@ -115,6 +118,7 @@ const submitdFormSuccess = (state, {payload}) => {
     return false;
   });
   state.user.profile.onboarding.d_form = payload;
+  toast.success("Submitted for review")
 };
 
 const submitdFormRequest = (state, {payload}) => {

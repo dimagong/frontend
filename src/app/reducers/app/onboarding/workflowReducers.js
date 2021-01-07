@@ -1,3 +1,5 @@
+import {toast} from 'react-toastify'
+
 const getWorkflowsSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
@@ -14,6 +16,7 @@ const getWorkflowsError = (state , {payload}) => {
 const createWorkflowSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
+  toast.success("Created")
 };
 const createWorkflowRequest = (state, {payload}) => {
   state.isLoading = true;
@@ -27,6 +30,7 @@ const createWorkflowError = (state , {payload}) => {
 const updateWorkflowSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
+  toast.success("Saved")
 };
 const updateWorkflowRequest = (state, {payload}) => {
   state.isLoading = true;

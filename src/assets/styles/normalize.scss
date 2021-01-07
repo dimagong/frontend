@@ -48,7 +48,6 @@ a, a:hover, a:active, a:visited, a:focus {
 }
 .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active {
   border: none;
-  border-radius: 0;
   box-shadow: none;
 }
 .custom-button {
@@ -71,7 +70,6 @@ button{
 }
 .btn-primary:not(:disabled):not(.disabled).focus, .btn-primary:not(:disabled):not(.disabled):focus {
   border: none;
-  border-radius: 0;
   box-shadow: none;
 }
 .btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show>.btn-primary.dropdown-toggle:focus {

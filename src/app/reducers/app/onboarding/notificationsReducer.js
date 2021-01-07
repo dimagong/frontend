@@ -1,3 +1,5 @@
+import {toast} from 'react-toastify'
+
 const getNotificationsSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
@@ -15,6 +17,7 @@ const getNotificationsError = (state , {payload}) => {
 const createNotificationSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
+  toast.success("Created")
 };
 
 const createNotificationRequest = (state, {payload}) => {
@@ -29,6 +32,7 @@ const createNotificationError = (state , {payload}) => {
 const updateNotificationSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
+  toast.success("Saved")
 };
 
 const updateNotificationRequest = (state, {payload}) => {
