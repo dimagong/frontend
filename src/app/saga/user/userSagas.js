@@ -44,10 +44,10 @@ import { selectGroups, selectRoles } from "app/selectors";
 
 function* getProfile() {
   try {
-    const responce = yield call(userApi.getProfile);
+    const response = yield call(userApi.getProfile);
 
-    yield put(getProfileSuccess(responce));
-    yield put(loginWithJWT(responce))
+    yield put(getProfileSuccess(response));
+    yield put(loginWithJWT(response))
 
   } catch (error) {
     console.log(error)
@@ -57,18 +57,18 @@ function* getProfile() {
 
 function* getUsers() {
 
-    const responce = yield call(userApi.getUsers);
+    const response = yield call(userApi.getUsers);
 
-    yield put(getUsersSuccess(responce));
+    yield put(getUsersSuccess(response));
 
 
 }
 
 function* getUserById({payload}) {
   try {
-    const responce = yield call(userApi.getUserById, payload);
+    const response = yield call(userApi.getUserById, payload);
 
-    yield put(getUserByIdSuccess(responce));
+    yield put(getUserByIdSuccess(response));
 
   } catch (error) {
     console.log(error)
@@ -79,8 +79,8 @@ function* getUserById({payload}) {
 
 function* updateUser({payload}) {
   try {
-    const responce = yield call(userApi.updateUser, payload);
-    yield put(updateUserSuccess(responce));
+    const response = yield call(userApi.updateUser, payload);
+    yield put(updateUserSuccess(response));
   } catch (error) {
   yield put(updateUserError(error));
   }
@@ -104,8 +104,8 @@ function* getUserManagmentData() {
   const groups = yield select(selectGroups)
   const roles = yield select(selectRoles)
   try {
-    const responce = yield call(userApi.getUsers);
-    yield put(getUsersSuccess(responce));
+    const response = yield call(userApi.getUsers);
+    yield put(getUsersSuccess(response));
 
     if(!groups.length){
       yield put(getGroupsRequest())
