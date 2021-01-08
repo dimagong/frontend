@@ -104,10 +104,10 @@ export function ObjectFieldTemplate(props) {
       // todo ordering
       if(this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
 
-        const elementNames = elementContent.map(element => element.name);
-        const filteredOrderingElementNames = this.state.uiSchema.fieldsOrdering.filter(elementName => elementNames.indexOf(elementName) !== -1);
+        const elementNames = elementContent.map(element => String(element.name));
+        const filteredOrderingElementNames = this.state.uiSchema.fieldsOrdering.filter(elementName => elementNames.indexOf(String(elementName)) !== -1);
         elementContent = filteredOrderingElementNames.map(nextName => {
-          return elementContent.find(elementContentElement => elementContentElement.name === nextName);
+          return elementContent.find(elementContentElement => String(elementContentElement.name) === String(nextName));
         });
       }
       // todo end ordering

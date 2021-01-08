@@ -64,7 +64,6 @@ function Ordering(props) {
       return
     }
 
-    console.log('onDragEnd', items, result);
 
     if (props.isItemsArray) {
       setItems(reorderKeysArrayResult(

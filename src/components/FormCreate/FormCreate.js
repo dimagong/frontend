@@ -38,7 +38,7 @@ import SelectWidget from './Custom/SelectWidget';
 import TextAreaWidget from './Custom/TextAreaWidget';
 import DateInput from './Custom/DateInput';
 
-import {isEqual, debounce, concat, isObject, isEmpty} from 'lodash';
+import {isEqual, debounce, concat, isObject, isEmpty, difference} from 'lodash';
 import fileService from "./services/file.service";
 import Constants, {
   FIELD_TYPE_BOOLEAN, FIELD_TYPE_DATE, FIELD_TYPE_FILE, FIELD_TYPE_FILE_LIST,
@@ -102,7 +102,7 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(this.state.uiSchema);
+    console.log(this.state.schema, this.state.uiSchema);
     if (!isEqual(prevProps, this.props)) {
       if (!isEqual(prevProps.dForm, this.props.dForm)) {
         // this.setState(this.initState(this.props));
@@ -125,7 +125,6 @@ class FormCreate extends React.Component {
     const propsDFormUiSchema = clone(props.dForm.schema.uiSchema);
     const formData = !isEmpty(this.props.dForm.submit_data) ? clone(this.props.dForm.submit_data) : {};
 
-    console.log('!!!!!!!!', props);
 
     let fileLoading = false;
     const protectedPropertiesDefault = {
@@ -147,7 +146,9 @@ class FormCreate extends React.Component {
     propsDFormUiSchema.dependencies.sections = isEmpty(propsDFormUiSchema.dependencies.sections) ? {} : propsDFormUiSchema.dependencies.sections;
     propsDFormUiSchema.dependencies.groups = isEmpty(propsDFormUiSchema.dependencies.groups) ? {} : propsDFormUiSchema.dependencies.groups;
     propsDFormUiSchema.dependencies.fields = isEmpty(propsDFormUiSchema.dependencies.fields) ? {} : propsDFormUiSchema.dependencies.fields;
+    propsDFormUiSchema.fieldsOrdering = propsDFormUiSchema.fieldsOrdering && propsDFormUiSchema.fieldsOrdering.length ? propsDFormUiSchema.fieldsOrdering : Object.keys(propsDFormSchema.properties).map(next => String(next));
 
+    console.log('propsDFormUiSchema.fieldsOrdering', propsDFormUiSchema.fieldsOrdering);
     // error handling
 
     const errors = this.state?.uiSchema?.errors || {field: []};
@@ -974,6 +975,26 @@ class FormCreate extends React.Component {
     const properties = schema.properties;
     schema.properties = {};
 
+    if(Array.isArray(state.uiSchema.fieldsOrdering)) {
+      state.uiSchema.fieldsOrdering = state.uiSchema.fieldsOrdering.filter(nextField => {
+        // todo only fo numbers
+        if(String(nextField) === String(previousFieldKey)) {
+          return false;
+        }
+        return true;
+      });
+
+      const stringProps = Object.keys(properties).map(nextPropertyName => String(nextPropertyName));
+
+      state.uiSchema.fieldsOrdering = state.uiSchema.fieldsOrdering.filter(nextField => {
+        // todo only fo numbers
+        if(stringProps.indexOf(String(nextField)) === -1) {
+          return false;
+        }
+        return true;
+      });
+    }
+
     Object.keys(properties).forEach((deepIndex, deepCounter) => {
       if (previousFieldKey === deepIndex) {
         return;
@@ -1208,6 +1229,7 @@ class FormCreate extends React.Component {
       schema.properties[propertyName] = this.state.controls[this.state.type];
       uiSchema.sections[propertyName] = sectionName;
       uiSchema.groups[propertyName] = groupName;
+      uiSchema.fieldsOrdering.push(propertyName);
 
       return {
         schema,
@@ -1288,6 +1310,25 @@ class FormCreate extends React.Component {
 
     let schema = clone(this.state.schema);
     let uiSchema = clone(this.state.uiSchema);
+
+    if(Array.isArray(uiSchema.fieldsOrdering)) {
+      uiSchema.fieldsOrdering = uiSchema.fieldsOrdering.map(nextField => {
+        if(String(nextField) === String(previousFieldKey)) {
+          return newFieldKey;
+        }
+        return nextField;
+      });
+
+      // const stringProps = Object.keys(schema.properties).map(nextPropertyName => String(nextPropertyName));
+      //
+      // uiSchema.fieldsOrdering = uiSchema.fieldsOrdering.filter(nextField => {
+      //   if(stringProps.indexOf(String(nextField)) === -1) {
+      //     return false;
+      //   }
+      //   return true;
+      // });
+    }
+
     schema.properties[previousFieldKey] = clone(this.state.schemaPropertyEdit);
     uiSchema[previousFieldKey] = clone(this.state.uiSchemaPropertyEdit);
 
@@ -1779,6 +1820,12 @@ class FormCreate extends React.Component {
     return this.getUniqueValues(groups);
   };
 
+  getFieldsForFormOrdering = () => {
+    const allProps = Object.keys(this.state.schema.properties).map(next => String(next));
+    const orderedProps = this.state.uiSchema.fieldsOrdering;
+    return orderedProps;
+  }
+
   render() {
 
     let controls = this.getListControls(this.state.schema.properties);
@@ -1810,7 +1857,8 @@ class FormCreate extends React.Component {
                 <FormOrdering
                   sections={this.state.uiSchema.onlySections}
                   groups={this.state.uiSchema.sectionGroups}
-                  fields={this.state.uiSchema.fieldsOrdering || Object.keys(this.state.schema.properties)}
+                  fields={this.getFieldsForFormOrdering()}
+
                   fieldsFilter={this.state.uiSchema.groups}
 
                   onChangeSections={(items) => {
