@@ -38,7 +38,7 @@ const logos = {
 
 const UserRoles = ({manager, userOrganizations, className}) => {
   const dispatch = useDispatch()
-
+  console.log("DDD", userOrganizations)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isAddOrganizationModalOpen, setIsAddOrganizationModalOpen] = useState(false)
   const [deletionData, setDeletionData] = useState({name: "", orgName: ""})

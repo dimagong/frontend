@@ -315,14 +315,14 @@ const getUserOrganizationsRequest = (state) => {
 
 const getUserOrganizationsSuccess = (state, {payload}) => {
   state.isLoading =  false;
-
+  console.log("DDD",payload)
   const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId)
   const user = state.user.managers[userIndex]
 
   user.organizations = {
-    corporation: payload.response.corporation,
-    member_firm: payload.response.member_firm,
-    network: payload.response.network,
+    corporation: payload.response.filter((org) =>  org.type === "corporation"),
+    member_firm: payload.response.filter((org) =>  org.type === "member_firm"),
+    network: payload.response.filter((org) =>  org.type === "network"),
   }
 
   state.user.managers[userIndex] = user;
