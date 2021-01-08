@@ -98,7 +98,7 @@ const Applications = () => {
 
         <Scrollbars  autoHeight autoHeightMax={500}>
           <div className="items-list">
-            {dForms && dForms.map((item) => (
+            {!!dForms.length && dForms.map((item) => (
               <ListItem item={item} onClick={(e) => {handleItemSelect(e, item, "dForm")}} />
             ))}
           </div>
@@ -154,11 +154,11 @@ const Applications = () => {
         <Scrollbars  autoHeight autoHeightMax={430}>
           <div className="items-list">
             {dependenciesSelectActiveItem.title === "Workflows" ? (
-              workflows && workflows.map((item) => (
+              !!workflows.length && workflows.map((item) => (
                 <ListItem key={`${item.id}`} item={item} onClick={(e) => {handleItemSelect(e, item, "WorkFlow")}} />
               ))
             ) : (
-              notifications && notifications.map((item) => (
+              !!notifications.length && notifications.map((item) => (
                 <ListItem key={`${item.id}`} item={item} onClick={(e) => {handleItemSelect(e, item, "Notification")}} />
               ))
             )}
