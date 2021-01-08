@@ -60,9 +60,7 @@ function MasterSchema() {
 
   const getOrganizations = async () => {
     const response = await masterSchemaService.getOrganizations();
-    const organizationByType = response.data.data;
-    let organizations = [];
-    organizations.push(organizationByType);
+    const organizations = response.data.data;
     setOrganizations(organizations);
   };
 
@@ -273,7 +271,7 @@ function MasterSchema() {
         return <GroupCreate data={cursor} onNewGroup={(newGroup) => {
           getCurrentMasterSchema();
           setRightCardState('');
-          console.log('recursiveMap(newGroup)', recursiveMap(newGroup));
+
           setCursor(recursiveMap(newGroup));
         }}></GroupCreate>
       }

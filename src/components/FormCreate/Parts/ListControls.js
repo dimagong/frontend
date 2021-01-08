@@ -697,7 +697,8 @@ export function listControls(properties) {
         let elementContent = Object.keys(groupedElements[groupName]);
         // todo ordering
         if(this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
-          elementContent = this.state.uiSchema.fieldsOrdering.filter(elementName => elementContent.indexOf(elementName) !== -1);
+          const stringProps = elementContent.map(nextPropertyName => String(nextPropertyName));
+          elementContent = this.state.uiSchema.fieldsOrdering.filter(elementName => stringProps.indexOf(String(elementName)) !== -1);
         }
         // todo end ordering
 

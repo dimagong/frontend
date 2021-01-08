@@ -47,12 +47,12 @@ const convertMasterSchemaToFieldsList = (node, list, path = '') => {
 };
 
 function formatMasterSchemaFieldsByOrganization(organizationsByType) {
-  let organizations = []
-    .concat(organizationsByType.corporation)
-    .concat(organizationsByType.network)
-    .concat(organizationsByType.member_firm);
+  // let organizations = []
+  //   .concat(organizationsByType.corporation)
+  //   .concat(organizationsByType.network)
+  //   .concat(organizationsByType.member_firm);
 
-  return formatOrganizationMasterSchema(organizations);
+  return formatOrganizationMasterSchema(organizationsByType);
 }
 
 const formatOrganizationMasterSchema = (organizations) => {
