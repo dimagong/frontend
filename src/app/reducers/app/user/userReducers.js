@@ -54,7 +54,16 @@ const getUserByIdError = (state, { payload }) => {
 const updateUserSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.managers = state.user.managers.map( manager => manager.id === state.user.manager.id ? payload : manager );
+  // Currently organizations fetch with another request, and user update doesn't affect user orgs
+  // so to prevent user org lost and no to re-fetch it we are saving them here
+  state.user.managers = state.user.managers.map( manager => {
+    if (manager.id === state.user.manager.id) {
+      payload.organizations = manager.organizations
+      return payload;
+    } else {
+      return manager
+    }
+  } );
   toast.success("Saved")
 };
 
