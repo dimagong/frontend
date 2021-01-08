@@ -336,6 +336,7 @@ class Autocomplete extends React.Component {
 
     if (recentSearches === null) {
       localStorage.setItem("recentSearches", JSON.stringify([]))
+      this.setState({ recentSearches: [] })
     } else {
       this.setState({ recentSearches })
     }
