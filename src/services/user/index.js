@@ -1,10 +1,9 @@
-import {isEmpty} from 'lodash'
-
 export const userService = {
   isOnboarding(userProfile) {
-    if(isEmpty(userProfile)) return true;
 
-    return userProfile.permissions.ability === 'prospect'
+    // Fixing token issue when redux state isAuth = true and no token set
+    // if(isEmpty(userProfile)) return true;
+
+    return userProfile?.permissions?.ability === 'prospect'
   }
 }
-
