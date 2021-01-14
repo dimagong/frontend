@@ -1170,30 +1170,39 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit});
   };
 
-  inputChangeHandler = (event, objKey, prop) => {
+  elementTypeChange = (event, objKey, prop) => {
     const {target: {value}} = event;
+
+    console.log('>>>', value, objKey, prop);
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
+
+    delete schemaPropertyEdit['minimum'];
+    delete schemaPropertyEdit['maximum'];
+    delete schemaPropertyEdit['maxLength'];
+    delete schemaPropertyEdit['minLength'];
+    //schemaPropertyEdit.default = this.getDefaultValueByType(value);
+
+    schemaPropertyEdit = this.state.controls[value];
+
+    if (
+      objKey in this.state.schema.properties &&
+      'title' in this.state.schema.properties[objKey] &&
+      'title' in this.state.schemaPropertyEdit
+    ) {
+      schemaPropertyEdit.title = this.state.schemaPropertyEdit.title;
+    }
+    this.setState({schemaPropertyEdit});
+  };
+
+  inputChangeHandler = (event, objKey, prop) => {
     if (prop === 'type') {
-      delete schemaPropertyEdit['minimum'];
-      delete schemaPropertyEdit['maximum'];
-      delete schemaPropertyEdit['maxLength'];
-      delete schemaPropertyEdit['minLength'];
-      //schemaPropertyEdit.default = this.getDefaultValueByType(value);
-
-      schemaPropertyEdit = this.state.controls[value];
-
-      if (
-        objKey in this.state.schema.properties &&
-        'title' in this.state.schema.properties[objKey] &&
-        'title' in this.state.schemaPropertyEdit
-      ) {
-        schemaPropertyEdit.title = this.state.schemaPropertyEdit.title;
-      }
-
-    } else {
-      schemaPropertyEdit[prop] = value;
+      return this.elementTypeChange(event, objKey, prop);
     }
 
+    const {target: {value}} = event;
+    let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
+
+    schemaPropertyEdit[prop] = value;
 
     this.setState({schemaPropertyEdit});
   };
@@ -1310,6 +1319,12 @@ class FormCreate extends React.Component {
 
     let schema = clone(this.state.schema);
     let uiSchema = clone(this.state.uiSchema);
+
+    if(getSpecificType(this.state.fieldEdit) !== getSpecificType(this.state.schema.properties[previousFieldKey])) {
+        if(newFieldKey in uiSchema) {
+          delete uiSchema[newFieldKey];
+        }
+    }
 
     if(Array.isArray(uiSchema.fieldsOrdering)) {
       uiSchema.fieldsOrdering = uiSchema.fieldsOrdering.map(nextField => {
