@@ -8,7 +8,6 @@ const FileInput = ({multiple}) => {
   const [status, setStatus] = useState("Drop")
 
   const handleFile = (file) => {
-    console.log(file)
     const result = {};
 
     result.name = file.name;
@@ -29,7 +28,6 @@ const FileInput = ({multiple}) => {
   const onDragLeave = event => {
     event.preventDefault();
     setStatus('Drop Here');
-    console.log("drop here")
   }
 
   const onDragOver = event => {
@@ -46,7 +44,6 @@ const FileInput = ({multiple}) => {
       }
     }
   }
-  console.log(files)
   return (
     <div className="file-input">
       {files.map((file) => {

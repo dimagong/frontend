@@ -217,7 +217,6 @@ function MasterSchema() {
     const rootPath = [masterSchema.root.name];
     let cloneRoot = clone(masterSchema.root);
     const root = recursiveMap(cloneRoot, rootPath);
-    console.log('rooot', root);
     root.path = rootPath;
     setMasterSchemaTreebeard(root);
   };

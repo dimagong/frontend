@@ -23,7 +23,7 @@ const reorderKeysObjectResult = (list, startIndex, endIndex, draggableKey) => {
   result.splice(endIndex, 0, removed);
   const resultObject = {};
   result.forEach(keyValue => resultObject[keyValue] = list[keyValue]);
-  console.log(result);
+
   return resultObject;
 };
 

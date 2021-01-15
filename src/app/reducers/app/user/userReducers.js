@@ -324,7 +324,7 @@ const getUserOrganizationsRequest = (state) => {
 
 const getUserOrganizationsSuccess = (state, {payload}) => {
   state.isLoading =  false;
-  console.log("DDD",payload)
+
   const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId)
   const user = state.user.managers[userIndex]
 

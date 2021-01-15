@@ -102,7 +102,7 @@ export function ObjectFieldTemplate(props) {
       let elementContent = groupedElements[groupName];
 
       // todo ordering
-      if(this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
+      if (this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
 
         const elementNames = elementContent.map(element => String(element.name));
         const filteredOrderingElementNames = this.state.uiSchema.fieldsOrdering.filter(elementName => elementNames.indexOf(String(elementName)) !== -1);
@@ -126,7 +126,7 @@ export function ObjectFieldTemplate(props) {
 
           let fieldClasses = [getColumnClass(element.name, element)];
 
-          if (~this.state.uiSchema?.errors?.field.indexOf(parseInt(element.name))){
+          if (~this.state.uiSchema?.errors?.field.indexOf(parseInt(element.name))) {
             fieldClasses.push("field-with-error")
           }
 
@@ -166,7 +166,7 @@ export function ObjectFieldTemplate(props) {
         isHidden = {display: 'none'};
       }
 
-      const propsGroup ={
+      const propsGroup = {
         key: sectionName + '_' + groupName,
         GroupIsHidden: isHidden,
         groupName
@@ -207,8 +207,8 @@ export function ObjectFieldTemplate(props) {
           };
 
           return <Field {...fieldProps}>
-              {element.content}
-            </Field>
+            {element.content}
+          </Field>
         }
         return null;
       });
@@ -243,29 +243,32 @@ export function ObjectFieldTemplate(props) {
       ? {disabled: 'disabled'} : {};
   };
   const getErrors = () => {
-
     return this.state.uiSchema.errors || {};
-  }
+  };
 
   const getProgress = (section) => {
 
+    console.log('getProgress');
 
     let isFieldEmpty = (data) => (
       data === ""
       || (Array.isArray(data) && data.length === 0)
       || data === null
       || data === false
-    )
+    );
 
     const sections = this.state.uiSchema.sections;
 
-    const fields = Object.keys(sections)
+    const fields = Object.keys(sections);
 
-    const currentSectionFields = fields.filter((field) => (sections[field] === section))
+    const currentSectionFields = fields.filter((field) => (sections[field] === section));
 
-    let currentSectionRequiredFields = currentSectionFields.filter((field) => this.state.schema.required.indexOf(+field) !== -1)
+    const requiredFieldsToString = this.state.schema.required.map(field => String(field));
+
+    let currentSectionRequiredFields = currentSectionFields.filter((field) => requiredFieldsToString.some(rField => String(field) === rField));
 
     currentSectionRequiredFields = currentSectionRequiredFields.filter((field) => {
+
       if (field in this.state.uiSchema &&
         (
           (Constants.UI_DISABLED in this.state.uiSchema[field] && this.state.uiSchema[field][Constants.UI_DISABLED] && this.state.dFormTemplate.status !== "submitted")
@@ -275,18 +278,17 @@ export function ObjectFieldTemplate(props) {
       ) {
         return false
       }
-
       return true
-    })
+    });
 
-    const total = currentSectionRequiredFields.length
+    const total = currentSectionRequiredFields.length;
 
-    const completed = currentSectionRequiredFields.filter((field) => !isFieldEmpty(this.state.formData[field])).length
+    const completed = currentSectionRequiredFields.filter((field) => !isFieldEmpty(this.state.formData[field])).length;
 
     if (total === 0) return 0;
 
     return (completed / total) * 100;
-  }
+  };
 
   const renderObject = () => {
 

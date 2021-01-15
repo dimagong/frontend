@@ -19,7 +19,6 @@ export default function Search(props) {
 
 
   return <Input placeholder="Search" value={searchValue} onChange={(event) => {
-    console.log(event.target.value);
     setSearchValue(event.target.value || '')
   }}/>
 }

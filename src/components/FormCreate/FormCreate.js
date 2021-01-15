@@ -102,7 +102,6 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(this.state.schema, this.state.uiSchema);
     if (!isEqual(prevProps, this.props)) {
       if (!isEqual(prevProps.dForm, this.props.dForm)) {
         // this.setState(this.initState(this.props));
@@ -148,7 +147,6 @@ class FormCreate extends React.Component {
     propsDFormUiSchema.dependencies.fields = isEmpty(propsDFormUiSchema.dependencies.fields) ? {} : propsDFormUiSchema.dependencies.fields;
     propsDFormUiSchema.fieldsOrdering = propsDFormUiSchema.fieldsOrdering && propsDFormUiSchema.fieldsOrdering.length ? propsDFormUiSchema.fieldsOrdering : Object.keys(propsDFormSchema.properties).map(next => String(next));
 
-    console.log('propsDFormUiSchema.fieldsOrdering', propsDFormUiSchema.fieldsOrdering);
     // error handling
 
     const errors = this.state?.uiSchema?.errors || {field: []};
@@ -1173,7 +1171,6 @@ class FormCreate extends React.Component {
   elementTypeChange = (event, objKey, prop) => {
     const {target: {value}} = event;
 
-    console.log('>>>', value, objKey, prop);
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
 
     delete schemaPropertyEdit['minimum'];

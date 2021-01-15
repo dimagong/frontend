@@ -7,7 +7,6 @@ const getMasterSchemaFieldsSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
   state.masterSchema.fields = payload;
-  console.log(state);
 };
 
 const getMasterSchemaFieldsError = (state , {payload}) => {
