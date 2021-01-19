@@ -18,11 +18,7 @@ import {
 
 import './styles.scss'
 
-const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChange }) => {
-
-  const [isCollapsedNavBarOpen, setIsCollapsedNavBarOpen] = useState(false)
-
-  const toggle = () => setIsCollapsedNavBarOpen(!isCollapsedNavBarOpen);
+const ContextSearchNav = ({ onChange, selectedNavItem, navOptions }) => {
 
   const handleNavItemSelect = (navItem) => {
     onChange(navItem);
@@ -55,20 +51,6 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, onContextChan
           <div className="ml-auto">
             <span className="font-weight-bold" style={{color: "#707070"}}>Contextual Search</span>
           </div>
-
-          {/*<NavbarToggler onClick={toggle} />*/}
-          {/*<Collapse isOpen={isCollapsedNavBarOpen} navbar>*/}
-          {/*  <Nav className="ml-auto" navbar>*/}
-          {/*    {selectedNavItem.actions.map((navItemAction) => (*/}
-          {/*      <NavItem*/}
-          {/*        className="pr-2 cursor-pointer"*/}
-          {/*        onClick={() => {onContextChange(navItemAction.title)}}*/}
-          {/*      >*/}
-          {/*        {navItemAction.title}*/}
-          {/*      </NavItem>*/}
-          {/*    ))}*/}
-          {/*  </Nav>*/}
-          {/*</Collapse>*/}
         </Navbar>
       </Col>
     </Row>
