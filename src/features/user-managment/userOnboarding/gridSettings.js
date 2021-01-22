@@ -1,3 +1,8 @@
+import {RefreshCw} from "react-feather";
+import {Button} from "reactstrap"
+import React from "react";
+import RefreshDFormFromParent from "./parts/RefreshDFormFromParent";
+
 export const columnDefs = [
   {
     name: 'DForm',
@@ -8,7 +13,8 @@ export const columnDefs = [
   {
     name: 'Reviewers',
     cell: (onboarding) => {
-      return onboarding.reviewers.map(reviewer => reviewer.name).join(', ')
+      console.log('onboarding', onboarding);
+      return onboarding.reviewers.map(reviewer => reviewer.first_name + ' ' + reviewer.last_name).join(', ')
     }
   },
   {
@@ -26,4 +32,16 @@ export const columnDefs = [
       return ''
     }
   },
-]
+  {
+    name: 'Up to date',
+    cell: (onboarding) => {
+
+
+      // send api/dform/{id}/update-from-parent
+
+      return onboarding.d_form.up_to_date ?
+        'Yes' : <RefreshDFormFromParent id={onboarding.d_form.id} />
+
+    }
+  },
+];

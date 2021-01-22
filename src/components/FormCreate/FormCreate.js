@@ -102,7 +102,6 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
-    console.log('NEW STATE: ', this.state.schema.properties, this.state.schemaPropertyEdit, this.state);
     if (!isEqual(prevProps, this.props)) {
       if (!isEqual(prevProps.dForm, this.props.dForm)) {
         // this.setState(this.initState(this.props));
@@ -111,7 +110,6 @@ class FormCreate extends React.Component {
 
       }
     }
-    // console.log('FormCreate componentDidUpdate', this.state);
   };
 
   async componentDidMount() {
@@ -1183,9 +1181,15 @@ class FormCreate extends React.Component {
     schemaPropertyEdit = this.state.controls[value];
 
     // if integer then is ms reference
-    if(Number.isInteger(+objKey)) {
-      schemaPropertyEdit.reference.field_id = +objKey;
+    if(Number.isInteger(+this.state.fieldEdit.propertyKey)) {
+      schemaPropertyEdit.reference.field_id = +this.state.fieldEdit.propertyKey;
     }
+
+    // if(oldPropertyType && newPropertyType && oldPropertyType !== newPropertyType) {
+    //     if(newFieldKey in uiSchema) {
+    //       delete uiSchema[newFieldKey];
+    //     }
+    // }
 
     if (
       objKey in this.state.schema.properties &&
@@ -1194,7 +1198,7 @@ class FormCreate extends React.Component {
     ) {
       schemaPropertyEdit.title = this.state.schemaPropertyEdit.title;
     }
-    this.setState({schemaPropertyEdit});
+    this.setState({schemaPropertyEdit, uiSchemaPropertyEdit: Constants.UI_SCHEMA_PROPERTY_EDIT});
   };
 
   inputChangeHandler = (event, objKey, prop) => {
@@ -1214,7 +1218,6 @@ class FormCreate extends React.Component {
   wysiwygChange = (event, objKey, prop) => {
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit[prop] = event;
-    console.log(schemaPropertyEdit)
     this.setState({schemaPropertyEdit});
   };
 
@@ -1304,9 +1307,6 @@ class FormCreate extends React.Component {
 
   isPropertyNameAlreadyTaken(previousFieldKey, newFieldKey) {
     const check = String(newFieldKey) !== String(previousFieldKey) && Object.keys(this.state.schema.properties).some(next => String(next) === String(newFieldKey));
-    // console.log('previousFieldKey', previousFieldKey);
-    // console.log('newFieldKey', newFieldKey,);
-    // console.log('check', check);
     return check;
   }
 
@@ -1328,11 +1328,9 @@ class FormCreate extends React.Component {
     let schema = clone(this.state.schema);
     let uiSchema = clone(this.state.uiSchema);
 
-    if(getSpecificType(this.state.fieldEdit) !== getSpecificType(this.state.schema.properties[previousFieldKey])) {
-        if(newFieldKey in uiSchema) {
-          delete uiSchema[newFieldKey];
-        }
-    }
+
+    const oldPropertyType = getSpecificType(this.state.schema.properties[previousFieldKey]);
+    const newPropertyType = getSpecificType(this.state.schemaPropertyEdit);
 
     if(Array.isArray(uiSchema.fieldsOrdering)) {
       uiSchema.fieldsOrdering = uiSchema.fieldsOrdering.map(nextField => {
@@ -1353,7 +1351,7 @@ class FormCreate extends React.Component {
     }
 
     schema.properties[previousFieldKey] = clone(this.state.schemaPropertyEdit);
-    uiSchema[previousFieldKey] = clone(this.state.uiSchemaPropertyEdit);
+    uiSchema[newFieldKey] = clone(this.state.uiSchemaPropertyEdit);
 
     schema.required = schema.required.filter(nextRequired => {
       if (this.state.fieldEdit.propertyKey === nextRequired || +this.state.fieldEdit.propertyKey === +nextRequired) {
@@ -1375,12 +1373,13 @@ class FormCreate extends React.Component {
     });
 
 
-    // todo set uiSchema type for reference or remove
-    if ('type' in schema.properties[previousFieldKey] && schema.properties[previousFieldKey]['type'] === Constants.RJSF_FIELD_TYPE_REFERENCE) {
-      uiSchema[previousFieldKey]["ui:field"] = Constants.FIELD_TYPE_REFERENCE;
-    } else {
-      delete uiSchema[previousFieldKey]['ui:field'];
-    }
+    // todo set uiSchema type for reference or remove (legacy code not used)
+    // if ('type' in schema.properties[previousFieldKey] && schema.properties[previousFieldKey]['type'] === Constants.RJSF_FIELD_TYPE_REFERENCE) {
+    //   uiSchema[previousFieldKey]["ui:field"] = Constants.FIELD_TYPE_REFERENCE;
+    // } else {
+    //   delete uiSchema[previousFieldKey]['ui:field'];
+    // }
+    // -- end
 
     this.setState({schema, uiSchema}, () => {
       this.inputKeyObjectHandler(previousFieldKey);

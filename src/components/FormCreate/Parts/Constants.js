@@ -54,9 +54,12 @@ export const RJSF_FIELD_TYPE_STRING = 'string',
   RJSF_FIELD_TYPE_HELP_TEXT = 'helpText',
   RJSF_FIELD_TYPE_REFERENCE = 'reference';
 
-export default {
-  FIELD_TYPES,
+export const UI_SCHEMA_PROPERTY_EDIT = {};
 
+export default {
+  UI_SCHEMA_PROPERTY_EDIT,
+
+  FIELD_TYPES,
   FIELD_TYPE_REFERENCE,
   FIELD_TYPE_TEXT,
   FIELD_TYPE_TEXT_AREA,

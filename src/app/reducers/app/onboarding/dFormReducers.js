@@ -11,7 +11,7 @@ const getdFormsRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const getdFormsError = (state , {payload}) => {
+const getdFormsError = (state, {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -25,7 +25,7 @@ const createDFormTemplateRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const createDFormTemplateError = (state , {payload}) => {
+const createDFormTemplateError = (state, {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -46,7 +46,7 @@ const updateDFormSuccess = (state, {payload}) => {
   // todo user.manager? refactor
   const onboardingFound = state.user.manager.onboardings.find(onboarding => onboarding.d_form.id === payload.id);
 
-  if(onboardingFound) {
+  if (onboardingFound) {
     onboardingFound.d_form = payload;
   }
 
@@ -58,12 +58,12 @@ const updateDFormRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const updateDFormError = (state , {payload}) => {
+const updateDFormError = (state, {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
 
-const updateDFormTemplateError = (state , {payload}) => {
+const updateDFormTemplateError = (state, {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -77,7 +77,7 @@ const deletedFormRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const deletedFormError = (state , {payload}) => {
+const deletedFormError = (state, {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -90,7 +90,7 @@ const getdFormActionsRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const getdFormActionsError = (state , {payload}) => {
+const getdFormActionsError = (state, {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -111,7 +111,7 @@ const submitdFormSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
   const result = state.user.profile.onboardings.some(onboarding => {
-    if(onboarding.d_form.id === payload.id) {
+    if (onboarding.d_form.id === payload.id) {
       onboarding.d_form = payload;
       return true;
     }
@@ -125,7 +125,7 @@ const submitdFormRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const submitdFormError = (state , {payload}) => {
+const submitdFormError = (state, {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -134,10 +134,10 @@ const submitdFormDataSuccess = (state, {payload}) => {
   state.isError = null;
   // TODO SO STRANGE BUG FIRST FOR PROSPECT VIEW SECOND FOR DFORM VIEW FOR MANAGER (FIXED)
 
-  if(!isEmpty(state.user.profile.onboarding)) {
+  if (!isEmpty(state.user.profile.onboarding)) {
     state.user.profile.onboarding.d_form = payload;
     const result = state.user.profile.onboardings.some(onboarding => {
-      if(onboarding.d_form.id === payload.id) {
+      if (onboarding.d_form.id === payload.id) {
         onboarding.d_form = payload;
         return true;
       }
@@ -146,7 +146,7 @@ const submitdFormDataSuccess = (state, {payload}) => {
 
   } else {
     state.user.manager.onboardings.some(onboarding => {
-      if(onboarding.d_form.id === payload.id) {
+      if (onboarding.d_form.id === payload.id) {
         onboarding.d_form = payload;
         return true;
       }
@@ -161,7 +161,7 @@ const submitdFormDataRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const submitdFormDataError = (state , {payload}) => {
+const submitdFormDataError = (state, {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -169,7 +169,7 @@ const changedFormStatusSuccess = (state, {payload}) => {
 
   state.user.manager.onboarding.d_form.status = payload.status;
   const onboardingFound = state.user.manager.onboardings.find(onboarding => onboarding.d_form.id === payload.dForm.id);
-  if(onboardingFound) {
+  if (onboardingFound) {
     onboardingFound.d_form.status = payload.status;
   }
 
@@ -181,7 +181,34 @@ const changedFormStatusRequest = (state, {payload}) => {
   state.isLoading = true;
   state.isError = null;
 };
-const changedFormStatusError = (state , {payload}) => {
+const changedFormStatusError = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+};
+
+const updateDFormFromParentRequest = (state, {payload}) => {
+  state.isLoading = true;
+  state.isError = null;
+};
+
+const updateDFormFromParentSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+
+  // todo maybe refactor
+  state.user.manager.onboardings.some(onboarding => {
+    if (onboarding.d_form.id === payload.id) {
+      onboarding.d_form = payload;
+      return true;
+    }
+    return false;
+  });
+  if (state.user.manager.onboarding) {
+    state.user.manager.onboarding.d_form = payload;
+  }
+};
+
+const updateDFormFromParentError = (state, {payload}) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -220,4 +247,8 @@ export default {
   changedFormStatusSuccess,
   changedFormStatusRequest,
   changedFormStatusError,
-  };
+
+  updateDFormFromParentRequest,
+  updateDFormFromParentSuccess,
+  updateDFormFromParentError
+};
