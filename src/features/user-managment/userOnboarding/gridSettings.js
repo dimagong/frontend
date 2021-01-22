@@ -1,6 +1,7 @@
 import {RefreshCw} from "react-feather";
 import {Button} from "reactstrap"
 import React from "react";
+import RefreshDFormFromParent from "./parts/RefreshDFormFromParent";
 
 export const columnDefs = [
   {
@@ -35,19 +36,12 @@ export const columnDefs = [
     name: 'Up to date',
     cell: (onboarding) => {
 
-      const onRefresh = () => {
-        if (!window.confirm('Are you sure?')) {
-          return;
-        }
-      };
 
       // send api/dform/{id}/update-from-parent
 
       return onboarding.d_form.up_to_date ?
-        'Yes' :
-        <Button.Ripple outline color="primary">
-          <RefreshCw size={15} onClick={onRefresh}/>
-        </Button.Ripple>
+        'Yes' : <RefreshDFormFromParent id={onboarding.d_form.id} />
+
     }
   },
 ];

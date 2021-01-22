@@ -1,6 +1,7 @@
 import {all, put, call, takeLatest, select} from "redux-saga/effects";
 
 import userApi from "api/User/user";
+import dFormsApi from "api/Onboarding/dForms";
 import groupRelations from "api/groupRelations/groupRelations";
 import {
   getUsersRequest,
@@ -31,6 +32,11 @@ import {
   updateUserModulesSuccess,
   updateUserModulesRequest,
   updateUserModulesError,
+
+  updateDFormFromParentRequest,
+  updateDFormFromParentSuccess,
+  updateDFormFromParentError,
+
   setManager,
 } from "app/slices/appSlice";
 import {selectManager, selectManagers} from "app/selectors";
@@ -110,6 +116,16 @@ function* updateUserModules({payload}) {
   }
 }
 
+function* updateDFormFromParent({payload}) {
+  try {
+    const dForm = yield call(dFormsApi.updateDFormFromParent, payload);
+    yield put(updateDFormFromParentSuccess(dForm))
+  } catch (error) {
+    console.log("error", error);
+    yield put(updateDFormFromParentError(error));
+  }
+}
+
 
 export default function* () {
   yield all([
@@ -120,5 +136,6 @@ export default function* () {
     yield takeLatest(addUserGroupsRequest.type, addUserGroups),
     yield takeLatest(removeUserGroupsRequest.type, removeUserGroups),
     yield takeLatest(updateUserModulesRequest.type, updateUserModules),
+    yield takeLatest(updateDFormFromParentRequest.type, updateDFormFromParent),
   ]);
 }
