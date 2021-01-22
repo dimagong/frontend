@@ -1,3 +1,5 @@
+import {toast} from 'react-toastify'
+
 const getGroupsSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
@@ -30,8 +32,7 @@ const getOrganizationsError = (state, {payload}) => {
 }
 
 const setSelectedOrganizationIdAndType = (state, {payload}) => {
-  state.organizations.selectedOrganizationIdAndType.id = payload.id;
-  state.organizations.selectedOrganizationIdAndType.type = payload.type;
+  state.organizations.selectedOrganizationIdAndType = {id: payload.id, type: payload.type}
 }
 
 const createOrganizationRequest = (state) => {
@@ -40,6 +41,8 @@ const createOrganizationRequest = (state) => {
 }
 const createOrganizationSuccess = (state, {payload}) => {
   console.log(payload)
+
+  toast.success("Organization created")
 }
 const createOrganizationError = (state, {payload}) => {
   state.isLoading = false;
@@ -51,7 +54,11 @@ const updateOrganizationRequest = (state) => {
   state.isError = null;
 }
 const updateOrganizationSuccess = (state, {payload}) => {
-  console.log(payload)
+  state.isLoading = false;
+  const updatedOrgIndex = state.organizations[payload.type].findIndex((org) => payload.id === org.id && payload.type === org.type)
+  state.organizations[payload.type][updatedOrgIndex] = payload;
+
+  toast.success(`${payload.name} organization saved` )
 }
 const updateOrganizationError = (state, {payload}) => {
   state.isLoading = false;

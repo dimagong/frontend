@@ -94,8 +94,7 @@ const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onCh
             <div />
           )}
         </div>
-      )}
-      {isDropZoneVisible && !disabled && (
+      ) || (
         <div
           className="form-element_file-input_drop-zone"
           onClick={openFileManager}

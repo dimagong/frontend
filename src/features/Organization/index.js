@@ -9,8 +9,11 @@ import FileInput from 'components/formElements/FileInput'
 import TextArea from 'components/formElements/TextArea'
 
 import {
-  selectOrganizationEdit, selectSelectedOrganizationIdAndType
+  selectOrganizations,
+  selectSelectedOrganizationIdAndType,
 } from 'app/selectors/groupSelector'
+
+import {selectLoading} from 'app/selectors'
 
 import {
   createOrganizationRequest,
@@ -38,41 +41,19 @@ const organizationValidation = yup.object().shape({
 const Organization = ({ create = false }) => {
   const dispatch = useDispatch();
 
-  const test = useSelector(selectSelectedOrganizationIdAndType)
-  const selectedOrganizationData = useSelector(selectOrganizationEdit);
+  const selectedOrganizationIdAndType = useSelector(selectSelectedOrganizationIdAndType);
+  const organizations = useSelector(selectOrganizations);
+
+  const isLoading = useSelector(selectLoading)
+
+  let selectedOrganizationData = organizations.filter((org) => (
+    org.id === selectedOrganizationIdAndType.id &&
+    org.type === selectedOrganizationIdAndType.type
+  ))[0]
 
   const [organizationData, setOrganizationData] = useState( create ? organizationTemplate : selectedOrganizationData)
 
-  const [isFilesLoading, setIsFilesLoading] = useState(organizationData.logo !== null)
-
-  const handleSubmit = async () => {
-
-    const isValid = await organizationValidation.validate(organizationData).catch((err) => {toast.error(err.message)})
-
-    if (!isValid) {
-      return
-    }
-
-    const dataToSubmit = new FormData();
-
-    Object.keys(organizationTemplate).map((field) => {dataToSubmit.append(field, organizationData[field])})
-
-    if (create) {
-      dispatch(createOrganizationRequest(dataToSubmit))
-    } else {
-      dataToSubmit.append("id", organizationData.id)
-      dispatch(updateOrganizationRequest(dataToSubmit))
-    }
-  }
-
-  const handleFieldValueChange = (field, value) => {
-    console.log("filed" , organizationData)
-    setOrganizationData({
-      ...organizationData,
-      [field]: value,
-    })
-  }
-
+  const [isFilesLoading, setIsFilesLoading] = useState(false)
 
   const fetchFile = async (file) => {
     let response = await fetch(`${process.env.REACT_APP_API_URL}/api/file/${file.id}`, {
@@ -94,22 +75,49 @@ const Organization = ({ create = false }) => {
     const logoFile = await fetchFile(logo)
     const brochureFile = await fetchFile(brochure)
 
+    setIsFilesLoading(false)
+
+    return {logo: logoFile, brochure: brochureFile,}
+  }
+
+  const handleSubmit = async () => {
+
+    const isValid = await organizationValidation.validate(organizationData).catch((err) => {toast.error(err.message)})
+
+    if (!isValid) {
+      return
+    }
+
+    const dataToSubmit = new FormData();
+
+    Object.keys(organizationTemplate).map((field) => {dataToSubmit.append(field, organizationData[field])})
+
+    if (!(organizationData.logo instanceof File) && organizationData.logo?.name) {
+      const files = await createFiles(selectedOrganizationData.logo, selectedOrganizationData.brochure)
+      dataToSubmit.append("logo", files.logo)
+      dataToSubmit.append("brochure", files.brochure)
+    }
+
+    if (create) {
+      dispatch(createOrganizationRequest(dataToSubmit))
+    } else {
+      dataToSubmit.append("id", organizationData.id)
+      dispatch(updateOrganizationRequest(dataToSubmit))
+    }
+  }
+
+  const handleFieldValueChange = (field, value) => {
     setOrganizationData({
       ...organizationData,
-      logo: logoFile,
-      brochure: brochureFile,
+      [field]: value,
     })
-
-    setIsFilesLoading(false)
   }
 
   useEffect(() => {
-    if (!(organizationData.logo instanceof File) && organizationData.logo?.name) {
-      createFiles(organizationData.logo, organizationData.brochure)
-    }
-  }, [selectedOrganizationData])
+    setOrganizationData(selectedOrganizationData)
+    setIsFilesLoading(false)
+  }, [selectedOrganizationIdAndType])
 
-  console.log(organizationData)
 
   return (
     <Row>
@@ -128,7 +136,7 @@ const Organization = ({ create = false }) => {
               id={"title"}
               className={"text-input"}
               value={organizationData.name}
-              disabled={isFilesLoading}
+              disabled={isFilesLoading || isLoading}
               onChange={(e) => {handleFieldValueChange("name", e.target.value)}}
             />
           </div>
@@ -142,8 +150,8 @@ const Organization = ({ create = false }) => {
               acceptTypes={["image/png", "image/jpeg"]}
               value={organizationData.logo}
               onChange={(file) => {handleFieldValueChange("logo", file)}}
-              loading={isFilesLoading}
-              disabled={isFilesLoading}
+              loading={isFilesLoading || isLoading}
+              disabled={isFilesLoading || isLoading}
             />
           </div>
         </div>
@@ -155,7 +163,7 @@ const Organization = ({ create = false }) => {
             <TextArea
               value={organizationData.intro_text}
               onChange={(e) => {handleFieldValueChange("intro_text", e.target.value)}}
-              disabled={isFilesLoading}
+              disabled={isFilesLoading || isLoading}
             />
           </div>
         </div>
@@ -168,15 +176,15 @@ const Organization = ({ create = false }) => {
               acceptTypes={["application/pdf"]}
               value={organizationData.brochure}
               onChange={(file) => {handleFieldValueChange("brochure", file)}}
-              loading={isFilesLoading}
-              disabled={isFilesLoading}
+              loading={isFilesLoading || isLoading}
+              disabled={isFilesLoading || isLoading}
             />
           </div>
         </div>
         <div className="field">
           <div className="label" />
           <div className="form-element d-flex justify-content-end">
-            <Button disabled={isFilesLoading} onClick={handleSubmit} className={"organization-form_submit-button"} color="primary">
+            <Button disabled={isFilesLoading || isLoading} onClick={handleSubmit} className={"organization-form_submit-button"} color="primary">
               {create ? "Save new organization" : "Save" }
             </Button>
           </div>
