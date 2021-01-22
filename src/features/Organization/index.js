@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {toast} from "react-toastify"
 import * as yup from 'yup';
@@ -9,8 +9,11 @@ import FileInput from 'components/formElements/FileInput'
 import TextArea from 'components/formElements/TextArea'
 
 import {
-  selectOrganizationEdit,
+  selectOrganizations,
+  selectSelectedOrganizationIdAndType,
 } from 'app/selectors/groupSelector'
+
+import {selectLoading} from 'app/selectors'
 
 import {
   createOrganizationRequest,
@@ -38,13 +41,49 @@ const organizationValidation = yup.object().shape({
 const Organization = ({ create = false }) => {
   const dispatch = useDispatch();
 
-  const selectedOrganizationData = useSelector(selectOrganizationEdit);
+  const selectedOrganizationIdAndType = useSelector(selectSelectedOrganizationIdAndType);
+  const organizations = useSelector(selectOrganizations);
+
+  const isLoading = useSelector(selectLoading)
+
+  let selectedOrganizationData = organizations.filter((org) => (
+    org.id === selectedOrganizationIdAndType.id &&
+    org.type === selectedOrganizationIdAndType.type
+  ))[0]
 
   const [organizationData, setOrganizationData] = useState( create ? organizationTemplate : selectedOrganizationData)
 
+  const [isFilesLoading, setIsFilesLoading] = useState(false)
+
+  const fetchFile = async (file) => {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/file/${file.id}`, {
+      headers: new Headers({
+        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+      }),
+    });
+    let data = await response.blob();
+    let metadata = {
+      type: file.mime_type
+    };
+
+    return new File([data], file.name, metadata);
+  }
+
+  const createFiles = async (logo, brochure) => {
+    setIsFilesLoading(true)
+
+    const logoFile = await fetchFile(logo)
+    const brochureFile = await fetchFile(brochure)
+
+    setIsFilesLoading(false)
+
+    return {logo: logoFile, brochure: brochureFile,}
+  }
+
   const handleSubmit = async () => {
-    const isValid = await organizationValidation.isValid(organizationData)
-    console.log(isValid)
+
+    const isValid = await organizationValidation.validate(organizationData).catch((err) => {toast.error(err.message)})
+
     if (!isValid) {
       return
     }
@@ -52,6 +91,12 @@ const Organization = ({ create = false }) => {
     const dataToSubmit = new FormData();
 
     Object.keys(organizationTemplate).map((field) => {dataToSubmit.append(field, organizationData[field])})
+
+    if (!(organizationData.logo instanceof File) && organizationData.logo?.name) {
+      const files = await createFiles(selectedOrganizationData.logo, selectedOrganizationData.brochure)
+      dataToSubmit.append("logo", files.logo)
+      dataToSubmit.append("brochure", files.brochure)
+    }
 
     if (create) {
       dispatch(createOrganizationRequest(dataToSubmit))
@@ -67,6 +112,12 @@ const Organization = ({ create = false }) => {
       [field]: value,
     })
   }
+
+  useEffect(() => {
+    setOrganizationData(selectedOrganizationData)
+    setIsFilesLoading(false)
+  }, [selectedOrganizationIdAndType])
+
 
   return (
     <Row>
@@ -85,6 +136,7 @@ const Organization = ({ create = false }) => {
               id={"title"}
               className={"text-input"}
               value={organizationData.name}
+              disabled={isFilesLoading || isLoading}
               onChange={(e) => {handleFieldValueChange("name", e.target.value)}}
             />
           </div>
@@ -98,6 +150,8 @@ const Organization = ({ create = false }) => {
               acceptTypes={["image/png", "image/jpeg"]}
               value={organizationData.logo}
               onChange={(file) => {handleFieldValueChange("logo", file)}}
+              loading={isFilesLoading || isLoading}
+              disabled={isFilesLoading || isLoading}
             />
           </div>
         </div>
@@ -109,6 +163,7 @@ const Organization = ({ create = false }) => {
             <TextArea
               value={organizationData.intro_text}
               onChange={(e) => {handleFieldValueChange("intro_text", e.target.value)}}
+              disabled={isFilesLoading || isLoading}
             />
           </div>
         </div>
@@ -121,13 +176,15 @@ const Organization = ({ create = false }) => {
               acceptTypes={["application/pdf"]}
               value={organizationData.brochure}
               onChange={(file) => {handleFieldValueChange("brochure", file)}}
+              loading={isFilesLoading || isLoading}
+              disabled={isFilesLoading || isLoading}
             />
           </div>
         </div>
         <div className="field">
           <div className="label" />
           <div className="form-element d-flex justify-content-end">
-            <Button onClick={handleSubmit} className={"organization-form_submit-button"} color="primary">
+            <Button disabled={isFilesLoading || isLoading} onClick={handleSubmit} className={"organization-form_submit-button"} color="primary">
               {create ? "Save new organization" : "Save" }
             </Button>
           </div>
