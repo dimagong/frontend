@@ -1148,6 +1148,7 @@ class FormCreate extends React.Component {
     });
 
     if (previousFieldKey in state.uiSchema && !(previousFieldKey in state.schema.properties)) {
+      console.log('delete', previousFieldKey, state.uiSchema[previousFieldKey]);
       delete state.uiSchema[previousFieldKey];
     }
 
@@ -1183,9 +1184,15 @@ class FormCreate extends React.Component {
     schemaPropertyEdit = this.state.controls[value];
 
     // if integer then is ms reference
-    if(Number.isInteger(+objKey)) {
-      schemaPropertyEdit.reference.field_id = +objKey;
+    if(Number.isInteger(+this.state.fieldEdit.propertyKey)) {
+      schemaPropertyEdit.reference.field_id = +this.state.fieldEdit.propertyKey;
     }
+
+    // if(oldPropertyType && newPropertyType && oldPropertyType !== newPropertyType) {
+    //     if(newFieldKey in uiSchema) {
+    //       delete uiSchema[newFieldKey];
+    //     }
+    // }
 
     if (
       objKey in this.state.schema.properties &&
@@ -1194,7 +1201,7 @@ class FormCreate extends React.Component {
     ) {
       schemaPropertyEdit.title = this.state.schemaPropertyEdit.title;
     }
-    this.setState({schemaPropertyEdit});
+    this.setState({schemaPropertyEdit, uiSchemaPropertyEdit: Constants.UI_SCHEMA_PROPERTY_EDIT});
   };
 
   inputChangeHandler = (event, objKey, prop) => {
@@ -1328,11 +1335,9 @@ class FormCreate extends React.Component {
     let schema = clone(this.state.schema);
     let uiSchema = clone(this.state.uiSchema);
 
-    if(getSpecificType(this.state.fieldEdit) !== getSpecificType(this.state.schema.properties[previousFieldKey])) {
-        if(newFieldKey in uiSchema) {
-          delete uiSchema[newFieldKey];
-        }
-    }
+
+    const oldPropertyType = getSpecificType(this.state.schema.properties[previousFieldKey]);
+    const newPropertyType = getSpecificType(this.state.schemaPropertyEdit);
 
     if(Array.isArray(uiSchema.fieldsOrdering)) {
       uiSchema.fieldsOrdering = uiSchema.fieldsOrdering.map(nextField => {
@@ -1353,7 +1358,7 @@ class FormCreate extends React.Component {
     }
 
     schema.properties[previousFieldKey] = clone(this.state.schemaPropertyEdit);
-    uiSchema[previousFieldKey] = clone(this.state.uiSchemaPropertyEdit);
+    uiSchema[newFieldKey] = clone(this.state.uiSchemaPropertyEdit);
 
     schema.required = schema.required.filter(nextRequired => {
       if (this.state.fieldEdit.propertyKey === nextRequired || +this.state.fieldEdit.propertyKey === +nextRequired) {
@@ -1375,17 +1380,20 @@ class FormCreate extends React.Component {
     });
 
 
-    // todo set uiSchema type for reference or remove
-    if ('type' in schema.properties[previousFieldKey] && schema.properties[previousFieldKey]['type'] === Constants.RJSF_FIELD_TYPE_REFERENCE) {
-      uiSchema[previousFieldKey]["ui:field"] = Constants.FIELD_TYPE_REFERENCE;
-    } else {
-      delete uiSchema[previousFieldKey]['ui:field'];
-    }
+    // todo set uiSchema type for reference or remove (legacy code not used)
+    // if ('type' in schema.properties[previousFieldKey] && schema.properties[previousFieldKey]['type'] === Constants.RJSF_FIELD_TYPE_REFERENCE) {
+    //   uiSchema[previousFieldKey]["ui:field"] = Constants.FIELD_TYPE_REFERENCE;
+    // } else {
+    //   console.log('delete uiSchema[previousFieldKey]');
+    //   delete uiSchema[previousFieldKey]['ui:field'];
+    // }
+    // -- end
 
     this.setState({schema, uiSchema}, () => {
       this.inputKeyObjectHandler(previousFieldKey);
     });
 
+    console.log('this.state.uiSchemaPropertyEdit', this.state.uiSchemaPropertyEdit);
     return true;
   }
 
@@ -1410,6 +1418,7 @@ class FormCreate extends React.Component {
     if (suspendedValue === 'checkboxes') {
       uiSchemaPropertyEdit['ui:widget'] = suspendedValue;
     } else if ('ui:widget' in uiSchemaPropertyEdit) {
+      console.log('changeUiSchemaTemplateMultiselect DELETE ',  uiSchemaPropertyEdit['ui:widget']);
       delete uiSchemaPropertyEdit['ui:widget'];
     }
 
