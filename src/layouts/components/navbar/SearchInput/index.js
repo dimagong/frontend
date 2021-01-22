@@ -59,11 +59,9 @@ const SearchInput = ({ suggestions }) => {
             </div>
             <div className="d-flex flex-column justify-content-between">
               <span className="h4">{suggestion.name}</span>
-              {suggestion.groups && suggestion.groups.length !== 0 && suggestion.groups.map((group) => (
-                <span>
-                  {getGroupName(groups, group.group_id, groupTypes[group.group_type])}
-                </span>
-              ))}
+              <span>
+                {suggestion?.permissions?.organization || ""}
+              </span>
 
             </div>
           </div>

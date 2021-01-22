@@ -1,0 +1,16 @@
+.organizations-context-search {
+  padding: 40px 0;
+
+  &_organization-card {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      height: 57px;
+    }
+  }
+}

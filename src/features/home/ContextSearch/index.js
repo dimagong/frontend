@@ -60,8 +60,9 @@ import DFormFormPreview from 'features/onboarding/dForm/DFormFormPreview'
 import WorkflowFormPreview from 'features/onboarding/workflow/workflowPreview'
 import NotificationsFormPreview from 'features/onboarding/notifications/notificationPreview'
 
-import Applications from './Applications';
+import Applications from './Applications'
 import MasterSchema from 'views/pages/master-schema'
+import Organizations from './Organizations'
 
 import './styles.scss'
 import {getGroupName} from '../../../utility/select/prepareSelectData'
@@ -289,6 +290,10 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                             <TabPane tabId={NAV_OPTIONS[2].id}>
                               <MasterSchema />
                             </TabPane>
+                            <TabPane tabId={NAV_OPTIONS[3].id}>
+                              <Organizations />
+                            </TabPane>
+
                           </TabContent>
 
                         </Col>

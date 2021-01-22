@@ -10,6 +10,7 @@ import UserInvitations from 'features/user-managment/userInvitations/UserInvitat
 import NotificationsForm from 'features/onboarding/notifications/NotificationsForm'
 import DFormForm from 'features/onboarding/dForm/DFormForm'
 import WorkflowForm from 'features/onboarding/workflow/components/WorkflowForm'
+import Organization from 'features/Organization'
 
 const Context = ({ selectedContext }) => {
   const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible)
@@ -29,7 +30,8 @@ const Context = ({ selectedContext }) => {
           "dForm": <DFormForm isCreate={false} />,
           "Create workflow": <WorkflowForm workflowModalType="Create" />,
           "WorkFlow": <WorkflowForm workflowModalType="Edit" />,
-          // "MasterSchema":
+          "Organization": <Organization />,
+          "OrganizationCreate": <Organization create />,
         }[selectedContext]}
       </div>
     </>

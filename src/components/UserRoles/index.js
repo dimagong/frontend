@@ -5,10 +5,6 @@ import {Button, Card, CardBody, Modal, ModalBody} from 'reactstrap'
 import {X} from 'react-feather'
 import Checkbox from '../@vuexy/checkbox/CheckboxesVuexy'
 
-import VPlogo from 'assets/img/logo/VPlogo.png'
-import RimbalLogo from 'assets/img/logo/Rimbal-Logo.png'
-import PreferenceLogo from 'assets/img/logo/preferenceLogo.png'
-
 import {
   addUserOrganizationRequest, allowUserAbilityRequest,
   disallowUserAbilityRequest, getOrganizationsRequest, getUserOnboardingRequest, getUserOrganizationsRequest,
@@ -30,11 +26,7 @@ import {capitalizeAll} from '../../utility/common'
 
 import './styles.scss'
 
-const logos = {
-  "ValidPath" : VPlogo,
-  "Rimbal" : RimbalLogo,
-  "Preference": PreferenceLogo,
-}
+import { logos } from 'constants/organizations'
 
 const UserRoles = ({manager, userOrganizations, className}) => {
   const dispatch = useDispatch()

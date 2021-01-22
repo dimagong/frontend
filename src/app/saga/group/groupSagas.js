@@ -10,12 +10,20 @@ import {
   getOrganizationsRequest,
   getOrganizationsSuccess,
   getOrganizationsError,
+
+  createOrganizationRequest,
+  createOrganizationSuccess,
+  createOrganizationError,
+
+  updateOrganizationRequest,
+  updateOrganizationSuccess,
+  updateOrganizationError,
 } from "app/slices/appSlice";
 
 function* getGroups() {
   try {
-    const  responce = yield call(groupApi.getGroups);
-    yield put(getGroupsSuccess(responce));
+    const  response = yield call(groupApi.getGroups);
+    yield put(getGroupsSuccess(response));
   } catch (error) {
     console.log(error)
     yield put(getGroupsError(error));
@@ -31,10 +39,32 @@ function* getOrganizations() {
   }
 }
 
+function* createOrganization({payload}) {
+  try {
+    const  response = yield call(organizationApi.createOrganization, payload);
+    yield put(createOrganizationSuccess(response));
+  } catch (error) {
+    console.log(error)
+    yield put(createOrganizationError(error));
+  }
+}
+
+function* updateOrganization({payload}) {
+  try {
+    const  response = yield call(organizationApi.updateOrganization, payload);
+    yield put(updateOrganizationSuccess(response));
+  } catch (error) {
+    console.log(error)
+    yield put(updateOrganizationError(error));
+  }
+}
+
 
 export default function* () {
   yield all([
     yield takeLatest(getGroupsRequest.type, getGroups),
-    yield takeLatest(getOrganizationsRequest.type, getOrganizations)
+    yield takeLatest(getOrganizationsRequest.type, getOrganizations),
+    yield takeLatest(createOrganizationRequest.type, createOrganization),
+    yield takeLatest(updateOrganizationRequest.type, updateOrganization),
   ]);
 }

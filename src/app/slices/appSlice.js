@@ -23,6 +23,7 @@ export const initialState = {
   context: null,
   preview: null,
   organizations: {
+    selectedOrganizationIdAndType: {id: null, type: null},
     corporation: [],
     network: [],
     member_firm: [],
@@ -288,6 +289,16 @@ export const {
   getMasterSchemaFieldsRequest,
   getMasterSchemaFieldsSuccess,
   getMasterSchemaFieldsError,
+
+  createOrganizationRequest,
+  createOrganizationSuccess,
+  createOrganizationError,
+
+  updateOrganizationRequest,
+  updateOrganizationSuccess,
+  updateOrganizationError,
+
+  setSelectedOrganizationIdAndType,
 
   resetAppSlice,
   logout,

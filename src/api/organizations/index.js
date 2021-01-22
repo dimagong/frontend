@@ -14,6 +14,34 @@ const organizationApi = {
     }
   },
 
+  async createOrganization(data) {
+    try {
+      const result = await instance({
+        url: "api/organization",
+        method: "POST",
+        data
+      });
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  async updateOrganization(data) {
+    try {
+      const result = await instance({
+        url: "api/organization",
+        method: "PUT",
+        data
+      });
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
+
 };
 
 export default organizationApi;

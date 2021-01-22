@@ -1208,6 +1208,7 @@ class FormCreate extends React.Component {
   wysiwygChange = (event, objKey, prop) => {
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit[prop] = event;
+    console.log(schemaPropertyEdit)
     this.setState({schemaPropertyEdit});
   };
 

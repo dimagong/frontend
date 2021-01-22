@@ -1,0 +1,28 @@
+.form-element_file-input {
+  &_drop-zone {
+    display: flex;
+    height: 123px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+
+    color: #707070;
+    font-weight: 300;
+    font-size: 15px;
+    padding: 20px;
+  }
+  &_delete-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    transition: .3s;
+    color: #707070;
+    &:hover {
+      color: #7367F0;
+      transition: .3s;
+    }
+  }
+  &_hidden-input-file {
+    display: none;
+  }
+}
