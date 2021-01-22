@@ -19,7 +19,7 @@ const organizationApi = {
       const result = await instance({
         url: "api/organization",
         method: "POST",
-        data
+        data,
       });
 
       return result.data.data;
@@ -30,10 +30,11 @@ const organizationApi = {
 
   async updateOrganization(data) {
     try {
+      data.append('_method', 'PUT');
       const result = await instance({
         url: "api/organization",
-        method: "PUT",
-        data
+        method: "POST",
+        data,
       });
 
       return result.data.data;
