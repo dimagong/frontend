@@ -9,7 +9,7 @@ import FileInput from 'components/formElements/FileInput'
 import TextArea from 'components/formElements/TextArea'
 
 import {
-  selectOrganizationEdit,
+  selectOrganizationEdit, selectSelectedOrganizationIdAndType
 } from 'app/selectors/groupSelector'
 
 import {
@@ -38,6 +38,7 @@ const organizationValidation = yup.object().shape({
 const Organization = ({ create = false }) => {
   const dispatch = useDispatch();
 
+  const test = useSelector(selectSelectedOrganizationIdAndType)
   const selectedOrganizationData = useSelector(selectOrganizationEdit);
 
   const [organizationData, setOrganizationData] = useState( create ? organizationTemplate : selectedOrganizationData)
@@ -45,8 +46,9 @@ const Organization = ({ create = false }) => {
   const [isFilesLoading, setIsFilesLoading] = useState(organizationData.logo !== null)
 
   const handleSubmit = async () => {
-    const isValid = await organizationValidation.isValid(organizationData)
-    console.log(isValid)
+
+    const isValid = await organizationValidation.validate(organizationData).catch((err) => {toast.error(err.message)})
+
     if (!isValid) {
       return
     }
@@ -126,6 +128,7 @@ const Organization = ({ create = false }) => {
               id={"title"}
               className={"text-input"}
               value={organizationData.name}
+              disabled={isFilesLoading}
               onChange={(e) => {handleFieldValueChange("name", e.target.value)}}
             />
           </div>
@@ -140,6 +143,7 @@ const Organization = ({ create = false }) => {
               value={organizationData.logo}
               onChange={(file) => {handleFieldValueChange("logo", file)}}
               loading={isFilesLoading}
+              disabled={isFilesLoading}
             />
           </div>
         </div>
@@ -151,6 +155,7 @@ const Organization = ({ create = false }) => {
             <TextArea
               value={organizationData.intro_text}
               onChange={(e) => {handleFieldValueChange("intro_text", e.target.value)}}
+              disabled={isFilesLoading}
             />
           </div>
         </div>
@@ -164,13 +169,14 @@ const Organization = ({ create = false }) => {
               value={organizationData.brochure}
               onChange={(file) => {handleFieldValueChange("brochure", file)}}
               loading={isFilesLoading}
+              disabled={isFilesLoading}
             />
           </div>
         </div>
         <div className="field">
           <div className="label" />
           <div className="form-element d-flex justify-content-end">
-            <Button onClick={handleSubmit} className={"organization-form_submit-button"} color="primary">
+            <Button disabled={isFilesLoading} onClick={handleSubmit} className={"organization-form_submit-button"} color="primary">
               {create ? "Save new organization" : "Save" }
             </Button>
           </div>
