@@ -94,6 +94,8 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const handleAdd = () => {
     if (selectedNavItem.id === "managers") {
       dispatch(setContext("Create user"))
+    } else if (selectedNavItem.id === "organizations") {
+      dispatch(setContext("OrganizationCreate"))
     } else {
       dispatch(setContext("Create dForm"))
     }
