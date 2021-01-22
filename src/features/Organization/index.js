@@ -115,10 +115,11 @@ const Organization = ({ create = false }) => {
   }
 
   useEffect(() => {
-    setOrganizationData(selectedOrganizationData)
-    setIsFilesLoading(false)
+    if(!create) {
+      setOrganizationData(selectedOrganizationData)
+      setIsFilesLoading(false)
+    }
   }, [selectedOrganizationIdAndType])
-
 
   return (
     <Row>
