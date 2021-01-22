@@ -102,6 +102,7 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
+    console.log('NEW STATE: ', this.state.schema.properties, this.state.schemaPropertyEdit, this.state);
     if (!isEqual(prevProps, this.props)) {
       if (!isEqual(prevProps.dForm, this.props.dForm)) {
         // this.setState(this.initState(this.props));
@@ -1181,6 +1182,11 @@ class FormCreate extends React.Component {
 
     schemaPropertyEdit = this.state.controls[value];
 
+    // if integer then is ms reference
+    if(Number.isInteger(+objKey)) {
+      schemaPropertyEdit.reference.field_id = +objKey;
+    }
+
     if (
       objKey in this.state.schema.properties &&
       'title' in this.state.schema.properties[objKey] &&
@@ -1297,7 +1303,11 @@ class FormCreate extends React.Component {
   };
 
   isPropertyNameAlreadyTaken(previousFieldKey, newFieldKey) {
-    return newFieldKey !== previousFieldKey && newFieldKey in this.state.schema.properties;
+    const check = String(newFieldKey) !== String(previousFieldKey) && Object.keys(this.state.schema.properties).some(next => String(next) === String(newFieldKey));
+    // console.log('previousFieldKey', previousFieldKey);
+    // console.log('newFieldKey', newFieldKey,);
+    // console.log('check', check);
+    return check;
   }
 
   isSectionNameAlreadyTaken(previousFieldKey, newFieldKey) {
