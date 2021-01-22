@@ -102,7 +102,6 @@ class FormCreate extends React.Component {
 
   // hooks
   componentDidUpdate = (prevProps, prevState) => {
-    console.log('NEW STATE: ', this.state.schema.properties, this.state.schemaPropertyEdit, this.state);
     if (!isEqual(prevProps, this.props)) {
       if (!isEqual(prevProps.dForm, this.props.dForm)) {
         // this.setState(this.initState(this.props));
@@ -111,7 +110,6 @@ class FormCreate extends React.Component {
 
       }
     }
-    // console.log('FormCreate componentDidUpdate', this.state);
   };
 
   async componentDidMount() {
@@ -1148,7 +1146,6 @@ class FormCreate extends React.Component {
     });
 
     if (previousFieldKey in state.uiSchema && !(previousFieldKey in state.schema.properties)) {
-      console.log('delete', previousFieldKey, state.uiSchema[previousFieldKey]);
       delete state.uiSchema[previousFieldKey];
     }
 
@@ -1221,7 +1218,6 @@ class FormCreate extends React.Component {
   wysiwygChange = (event, objKey, prop) => {
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit[prop] = event;
-    console.log(schemaPropertyEdit)
     this.setState({schemaPropertyEdit});
   };
 
@@ -1311,9 +1307,6 @@ class FormCreate extends React.Component {
 
   isPropertyNameAlreadyTaken(previousFieldKey, newFieldKey) {
     const check = String(newFieldKey) !== String(previousFieldKey) && Object.keys(this.state.schema.properties).some(next => String(next) === String(newFieldKey));
-    // console.log('previousFieldKey', previousFieldKey);
-    // console.log('newFieldKey', newFieldKey,);
-    // console.log('check', check);
     return check;
   }
 
@@ -1384,7 +1377,6 @@ class FormCreate extends React.Component {
     // if ('type' in schema.properties[previousFieldKey] && schema.properties[previousFieldKey]['type'] === Constants.RJSF_FIELD_TYPE_REFERENCE) {
     //   uiSchema[previousFieldKey]["ui:field"] = Constants.FIELD_TYPE_REFERENCE;
     // } else {
-    //   console.log('delete uiSchema[previousFieldKey]');
     //   delete uiSchema[previousFieldKey]['ui:field'];
     // }
     // -- end
@@ -1393,7 +1385,6 @@ class FormCreate extends React.Component {
       this.inputKeyObjectHandler(previousFieldKey);
     });
 
-    console.log('this.state.uiSchemaPropertyEdit', this.state.uiSchemaPropertyEdit);
     return true;
   }
 
@@ -1418,7 +1409,6 @@ class FormCreate extends React.Component {
     if (suspendedValue === 'checkboxes') {
       uiSchemaPropertyEdit['ui:widget'] = suspendedValue;
     } else if ('ui:widget' in uiSchemaPropertyEdit) {
-      console.log('changeUiSchemaTemplateMultiselect DELETE ',  uiSchemaPropertyEdit['ui:widget']);
       delete uiSchemaPropertyEdit['ui:widget'];
     }
 

@@ -1,3 +1,7 @@
+import {RefreshCw} from "react-feather";
+import {Button} from "reactstrap"
+import React from "react";
+
 export const columnDefs = [
   {
     name: 'DForm',
@@ -8,7 +12,8 @@ export const columnDefs = [
   {
     name: 'Reviewers',
     cell: (onboarding) => {
-      return onboarding.reviewers.map(reviewer => reviewer.name).join(', ')
+      console.log('onboarding', onboarding);
+      return onboarding.reviewers.map(reviewer => reviewer.first_name + ' ' + reviewer.last_name).join(', ')
     }
   },
   {
@@ -26,4 +31,23 @@ export const columnDefs = [
       return ''
     }
   },
-]
+  {
+    name: 'Up to date',
+    cell: (onboarding) => {
+
+      const onRefresh = () => {
+        if (!window.confirm('Are you sure?')) {
+          return;
+        }
+      };
+
+      // send api/dform/{id}/update-from-parent
+
+      return onboarding.d_form.up_to_date ?
+        'Yes' :
+        <Button.Ripple outline color="primary">
+          <RefreshCw size={15} onClick={onRefresh}/>
+        </Button.Ripple>
+    }
+  },
+];
