@@ -66,6 +66,7 @@ export function listControls(properties) {
 
       let errorMsg = 'Error';
 
+      // console.log('errorPropertyNameAlreadyTaken', errorPropertyNameAlreadyTaken);
       if(errorPropertyNameAlreadyTaken) {
         errorMsg = 'That property name is already taken'
       } else if(referenceIsEmpty) {
