@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {toast} from "react-toastify"
 import * as yup from 'yup';
@@ -42,6 +42,8 @@ const Organization = ({ create = false }) => {
 
   const [organizationData, setOrganizationData] = useState( create ? organizationTemplate : selectedOrganizationData)
 
+  const [isFilesLoading, setIsFilesLoading] = useState(organizationData.logo !== null)
+
   const handleSubmit = async () => {
     const isValid = await organizationValidation.isValid(organizationData)
     console.log(isValid)
@@ -62,11 +64,50 @@ const Organization = ({ create = false }) => {
   }
 
   const handleFieldValueChange = (field, value) => {
+    console.log("filed" , organizationData)
     setOrganizationData({
       ...organizationData,
       [field]: value,
     })
   }
+
+
+  const fetchFile = async (file) => {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/file/${file.id}`, {
+      headers: new Headers({
+        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+      }),
+    });
+    let data = await response.blob();
+    let metadata = {
+      type: file.mime_type
+    };
+
+    return new File([data], file.name, metadata);
+  }
+
+  const createFiles = async (logo, brochure) => {
+    setIsFilesLoading(true)
+
+    const logoFile = await fetchFile(logo)
+    const brochureFile = await fetchFile(brochure)
+
+    setOrganizationData({
+      ...organizationData,
+      logo: logoFile,
+      brochure: brochureFile,
+    })
+
+    setIsFilesLoading(false)
+  }
+
+  useEffect(() => {
+    if (!(organizationData.logo instanceof File) && organizationData.logo?.name) {
+      createFiles(organizationData.logo, organizationData.brochure)
+    }
+  }, [selectedOrganizationData])
+
+  console.log(organizationData)
 
   return (
     <Row>
@@ -98,6 +139,7 @@ const Organization = ({ create = false }) => {
               acceptTypes={["image/png", "image/jpeg"]}
               value={organizationData.logo}
               onChange={(file) => {handleFieldValueChange("logo", file)}}
+              loading={isFilesLoading}
             />
           </div>
         </div>
@@ -121,6 +163,7 @@ const Organization = ({ create = false }) => {
               acceptTypes={["application/pdf"]}
               value={organizationData.brochure}
               onChange={(file) => {handleFieldValueChange("brochure", file)}}
+              loading={isFilesLoading}
             />
           </div>
         </div>

@@ -9,11 +9,11 @@ const dropZoneStatus = {
   drop: "Drop here",
 }
 
-const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onChange}) => {
+const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onChange, loading}) => {
 
   const inputFileRef = useRef( null );
   const [status, setStatus] = useState(dropZoneStatus.ready)
-  const [isDropZoneVisible, setIsDropZoneVisible] = useState(true)
+  const [isDropZoneVisible, setIsDropZoneVisible] = useState(value === null)
 
   const onDragEnter = event => {
     event.preventDefault();
@@ -67,6 +67,16 @@ const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onCh
       onChange(null)
       setIsDropZoneVisible(true)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className={"form-element_file-input"}>
+        <div className={"form-element_file-input_drop-zone"}>
+          Loading...
+        </div>
+      </div>
+    )
   }
 
   return (
