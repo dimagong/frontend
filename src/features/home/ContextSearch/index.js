@@ -18,7 +18,7 @@ import {
   selectManager,
   selectManagers,
   selectNotifications,
-  selectContext,
+  selectContext, selectProfile
 } from "app/selectors";
 
 import {
@@ -82,6 +82,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const preview = useSelector(selectPreview)
   const groups = useSelector(selectGroups)
   const context = useSelector(selectContext)
+  const profile = useSelector(selectProfile)
 
   const [page, setPage] = useState(0);
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
@@ -208,6 +209,14 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     setWindowWidth(window.innerWidth)
   }
 
+  let nav;
+
+  if(profile && profile?.permissions?.ability === "admin") {
+    nav = NAV_OPTIONS
+  } else {
+    nav = NAV_OPTIONS.filter((n) => n.id !== "organizations")
+  }
+
   return (
     <>
     <Row className={`home context-search ${isShown ? "slide-in" : "slide-out"}`}>
@@ -223,7 +232,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                       <ContextSearchNav
                         onChange={handleNavItemChange}
                         selectedNavItem={selectedNavItem}
-                        navOptions={NAV_OPTIONS}
+                        navOptions={nav}
                         onContextChange={handleContextChange}
                       />
 
