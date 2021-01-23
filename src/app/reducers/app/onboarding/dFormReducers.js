@@ -152,6 +152,17 @@ const submitdFormDataSuccess = (state, {payload}) => {
       }
       return false;
     });
+
+    state.user.managers.forEach(nextManager => {
+      nextManager.onboardings.some(onboarding => {
+        if (onboarding.d_form.id === payload.id) {
+          onboarding.d_form = payload;
+          return true;
+        }
+        return false;
+      });
+    });
+
     state.user.manager.onboarding.d_form = payload;
   }
 
@@ -171,7 +182,19 @@ const changedFormStatusSuccess = (state, {payload}) => {
   const onboardingFound = state.user.manager.onboardings.find(onboarding => onboarding.d_form.id === payload.dForm.id);
   if (onboardingFound) {
     onboardingFound.d_form.status = payload.status;
+
+    state.user.managers.forEach(nextManager => {
+      nextManager.onboardings.some(onboarding => {
+        if (onboarding.d_form.id === onboardingFound.d_form.id) {
+          onboarding.d_form.status = payload.status;
+          return true;
+        }
+        return false;
+      });
+    });
   }
+
+
 
   state.isLoading = false;
   state.isError = null;
@@ -196,12 +219,23 @@ const updateDFormFromParentSuccess = (state, {payload}) => {
   state.isError = null;
 
   // todo maybe refactor
+  state.user.manager.onboardings = [];
+
   state.user.manager.onboardings.some(onboarding => {
     if (onboarding.d_form.id === payload.id) {
       onboarding.d_form = payload;
       return true;
     }
     return false;
+  });
+  state.user.managers.forEach(nextManager => {
+    nextManager.onboardings.some(onboarding => {
+      if (onboarding.d_form.id === payload.id) {
+        onboarding.d_form = payload;
+        return true;
+      }
+      return false;
+    });
   });
   if (state.user.manager.onboarding) {
     state.user.manager.onboarding.d_form = payload;
