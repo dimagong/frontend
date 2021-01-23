@@ -37,7 +37,7 @@ const Organizations = () => {
       {organizationsData.map((org) => (
         <Card key={org.name} style={{ minHeight: "120px"}}>
           <CardBody className="organizations-context-search_organization-card" onClick={() => {selectOrganization(org.id, org.type)}}>
-            {(logos[org.name] && <img src={logos[org.name]} alt=""/>) || <div>{org.name}</div>}
+            {(logos[org.name] && <img src={logos[org.name]} alt=""/>) || <div><img src={`${process.env.REACT_APP_API_URL}/api/file/${org?.logo?.id}`} /></div>}
           </CardBody>
         </Card>
       ))}
