@@ -37,6 +37,9 @@ import {
   disallowUserAbilityError,
   setManager,
   setContext,
+  removeUserNotifyRequest,
+  removeUserNotifySuccess,
+  removeUserNotifyError,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
@@ -111,7 +114,7 @@ function* getUserManagmentData() {
       yield put(getGroupsRequest())
     }
     if(!roles.length){
-      yield put(getRolesRequest())
+      // yield put(getRolesRequest())
     }
 
   } catch (error) {
@@ -169,8 +172,16 @@ function* disallowUserAbility({payload}) {
     yield put(disallowUserAbilitySuccess({response, data: payload}))
   }
 
+}
 
+function* removeUserNotify() {
+  const response = yield call(userApi.removeUserNotify)
 
+  if (response?.message) {
+    yield put(removeUserNotifyError(response.message))
+  } else {
+    yield put(removeUserNotifySuccess())
+  }
 }
 
 export default function* () {
@@ -185,6 +196,7 @@ export default function* () {
     yield takeLatest(addUserOrganizationRequest.type, addUserOrganization),
     yield takeLatest(removeUserOrganizationRequest.type, removeUserOrganization),
     yield takeLatest(allowUserAbilityRequest.type, allowUserAbility),
-    yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility)
+    yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility),
+    yield takeLatest(removeUserNotifyRequest.type, removeUserNotify)
   ]);
 }

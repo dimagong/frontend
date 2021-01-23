@@ -18,6 +18,8 @@ import {
   updateOrganizationRequest,
   updateOrganizationSuccess,
   updateOrganizationError,
+
+  setContext,
 } from "app/slices/appSlice";
 
 function* getGroups() {
@@ -42,6 +44,7 @@ function* getOrganizations() {
 function* createOrganization({payload}) {
   try {
     const  response = yield call(organizationApi.createOrganization, payload);
+    yield put(setContext(null))
     yield put(createOrganizationSuccess(response));
   } catch (error) {
     console.log(error)

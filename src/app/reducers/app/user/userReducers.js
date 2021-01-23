@@ -417,6 +417,20 @@ const disallowUserAbilityError = (state, {payload}) => {
   state.isError = payload;
 }
 
+const removeUserNotifyRequest = (state) => {
+  state.isLoading = true;
+  state.isError = null;
+}
+const removeUserNotifySuccess  = (state, {payload}) => {
+  state.isLoading = false;
+  state.user.profile.notify = 0;
+}
+const removeUserNotifyError  = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+}
+
+
 
 export default {
   getProfileSuccess,
@@ -483,6 +497,10 @@ export default {
   disallowUserAbilityRequest,
   disallowUserAbilitySuccess,
   disallowUserAbilityError,
+
+  removeUserNotifyRequest,
+  removeUserNotifySuccess,
+  removeUserNotifyError,
 
   updateUserModulesSuccess,
   updateUserModulesRequest,

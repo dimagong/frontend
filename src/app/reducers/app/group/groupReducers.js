@@ -40,8 +40,9 @@ const createOrganizationRequest = (state) => {
   state.isError = null;
 }
 const createOrganizationSuccess = (state, {payload}) => {
+  state.isLoading = false;
   console.log(payload)
-
+  state.organizations[payload.type].push(payload)
   toast.success("Organization created")
 }
 const createOrganizationError = (state, {payload}) => {

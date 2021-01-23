@@ -347,6 +347,19 @@ const userApi = {
       return err;
     }
   },
+
+  async removeUserNotify() {
+    try {
+      const result = await instance({
+        url: `api/user/reset-notify`,
+        method: "POST",
+      })
+
+      return result.data.data;
+    } catch (err) {
+      return err;
+    }
+  },
 };
 
 export default userApi;

@@ -25,7 +25,8 @@ import {
   submitdFormRequest,
   submitdFormDataRequest,
   setProfileOnboarding,
-  getUserByIdRequest
+  getUserByIdRequest,
+  removeUserNotifyRequest,
 } from "app/slices/appSlice";
 import {CheckCircle, AlertCircle, Box, Clipboard, FileText, ChevronRight, ChevronDown} from 'react-feather';
 
@@ -155,6 +156,10 @@ const OnboardingUser = () => {
     }
   }
 
+  const proceedUserToOnboarding = () => {
+    dispatch(removeUserNotifyRequest())
+  }
+
   if (isOnboarding() && profile.notify) {
     return (
 
@@ -171,12 +176,14 @@ const OnboardingUser = () => {
             Download brochure <ChevronDown />
           </Button>
         </div>
-        <div className={"welcome-onboarding_join-button"}>
-          <Button className={"welcome-onboarding_join-button_button"}>
-            Join a community of<br/> Independent Financial Adviser
-            <ChevronRight className={"welcome-onboarding_join-button_button_chevron"} size={45} />
-          </Button>
-        </div>
+        {isOnboarding() && (
+          <div className={"welcome-onboarding_join-button"}>
+            <Button className={"welcome-onboarding_join-button_button"} onClick={proceedUserToOnboarding}>
+              Join a community of<br/> Independent Financial Adviser
+              <ChevronRight className={"welcome-onboarding_join-button_button_chevron"} size={45} />
+            </Button>
+          </div>
+        )}
       </div>
 
 
