@@ -6,7 +6,6 @@ import * as yup from 'yup';
 import {Row, Col, Button} from 'reactstrap'
 
 import FileInput from 'components/formElements/FileInput'
-import TextArea from 'components/formElements/TextArea'
 
 import {
   selectOrganizations,
@@ -21,6 +20,8 @@ import {
 } from 'app/slices/appSlice'
 
 import './styles.scss'
+
+import Editor from 'components/FormCreate/Custom/WysiwygEditor'
 
 const organizationTemplate = {
   type: "network",
@@ -114,10 +115,11 @@ const Organization = ({ create = false }) => {
   }
 
   useEffect(() => {
-    setOrganizationData(selectedOrganizationData)
-    setIsFilesLoading(false)
+    if(!create) {
+      setOrganizationData(selectedOrganizationData)
+      setIsFilesLoading(false)
+    }
   }, [selectedOrganizationIdAndType])
-
 
   return (
     <Row>
@@ -160,11 +162,12 @@ const Organization = ({ create = false }) => {
             Intro Text
           </div>
           <div className="form-element">
-            <TextArea
-              value={organizationData.intro_text}
-              onChange={(e) => {handleFieldValueChange("intro_text", e.target.value)}}
-              disabled={isFilesLoading || isLoading}
-            />
+            <div className="editor-wrapper">
+              <Editor id={`editor`}
+                      type={"text"}
+                      data={organizationData.intro_text}
+                      onChange={value => handleFieldValueChange("intro_text", value)} />
+            </div>
           </div>
         </div>
         <div className="field">

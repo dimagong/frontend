@@ -12,7 +12,8 @@ import {
   Nav,
   NavItem,
   NavLink,
-  UncontrolledTooltip
+  UncontrolledTooltip,
+  Button,
 } from 'reactstrap';
 import {useDispatch, useSelector} from "react-redux";
 import {selectProfile, selectLoading, selectManager} from "app/selectors";
@@ -26,7 +27,10 @@ import {
   setProfileOnboarding,
   getUserByIdRequest
 } from "app/slices/appSlice";
-import {CheckCircle, AlertCircle, Box, Clipboard, FileText} from 'react-feather';
+import {CheckCircle, AlertCircle, Box, Clipboard, FileText, ChevronRight, ChevronDown} from 'react-feather';
+
+import './styles.scss'
+
 import moment from "moment";
 
 import FileInput from 'components/FormCreate/Custom/FileInput'
@@ -118,6 +122,65 @@ const OnboardingUser = () => {
       ...onboarding,
       icon: onboarding.d_form.status === "submitted" ? Check : "null"
     })).filter((onBoarding) => onBoarding.d_form.status !== "approved")
+  }
+
+
+  const fetchFile = async (file) => {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/file/${file.id}`, {
+      headers: new Headers({
+        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+      }),
+    });
+    let data = await response.blob();
+    let metadata = {
+      type: file.mime_type
+    };
+
+    return new File([data], file.name, metadata);
+  }
+
+  const saveBrochure = async (brochure) => {
+    const file = await fetchFile(brochure)
+    const blob = new Blob([file], {type: 'application/pdf'});
+    if(window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveBlob(blob, brochure.name);
+    }
+    else{
+      const elem = window.document.createElement('a');
+      elem.href = window.URL.createObjectURL(blob);
+      elem.download = brochure.name;
+      document.body.appendChild(elem);
+      elem.click();
+      document.body.removeChild(elem);
+    }
+  }
+
+  if (isOnboarding() && profile.notify) {
+    return (
+
+      <div className={"welcome-onboarding"}>
+        <div>
+          <h1 className={"welcome-onboarding_title"}>
+            A Network of <br />
+            Independent Financial Advisers
+          </h1>
+        </div>
+        <div className={"welcome-onboarding_intro-text"} dangerouslySetInnerHTML={{__html: profile.notify_entity.intro_text}} />
+        <div className={"welcome-onboarding_download-button"}>
+          <Button className={"welcome-onboarding_download-button_button"} onClick={() => {saveBrochure(profile.notify_entity.brochure)}}>
+            Download brochure <ChevronDown />
+          </Button>
+        </div>
+        <div className={"welcome-onboarding_join-button"}>
+          <Button className={"welcome-onboarding_join-button_button"}>
+            Join a community of<br/> Independent Financial Adviser
+            <ChevronRight className={"welcome-onboarding_join-button_button_chevron"} size={45} />
+          </Button>
+        </div>
+      </div>
+
+
+    )
   }
 
   return (

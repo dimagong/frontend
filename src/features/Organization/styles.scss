@@ -26,6 +26,19 @@
         padding: 5px;
         color: #707070;
       }
+      .editor-wrapper {
+        border: 1px solid #eee;
+        .editorClassName {
+          padding: 0 15px;
+          min-height: 120px;
+        }
+
+        .wrapperClassName {
+          max-width: 100%;
+          background: transparent;
+        }
+      }
+
 
     }
     &:first-child {
