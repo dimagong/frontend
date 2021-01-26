@@ -71,15 +71,14 @@ const Organization = ({ create = false }) => {
     return new File([data], file.name, metadata);
   }
 
-  const createFiles = async (logo, brochure) => {
+  const createFiles = async (file) => {
     setIsFilesLoading(true)
 
-    const logoFile = await fetchFile(logo)
-    const brochureFile = await fetchFile(brochure)
+    const fetchedFile = await fetchFile(file)
 
     setIsFilesLoading(false)
 
-    return {logo: logoFile, brochure: brochureFile,}
+    return fetchedFile
   }
 
   const handleSubmit = async () => {
@@ -95,10 +94,16 @@ const Organization = ({ create = false }) => {
     Object.keys(organizationTemplate).map((field) => {dataToSubmit.append(field, organizationData[field])})
 
     if (!(organizationData.logo instanceof File) && organizationData.logo?.name) {
-      const files = await createFiles(selectedOrganizationData.logo, selectedOrganizationData.brochure)
-      dataToSubmit.append("logo", files.logo)
-      dataToSubmit.append("brochure", files.brochure)
+      const logo = await createFiles(selectedOrganizationData.logo)
+      dataToSubmit.append("logo", logo)
     }
+
+    if (!(organizationData.brochure instanceof File) && organizationData.brochure?.name) {
+      const brochure = await createFiles(selectedOrganizationData.brochure)
+      dataToSubmit.append("brochure", brochure)
+    }
+
+
 
     if (create) {
       dispatch(createOrganizationRequest(dataToSubmit))

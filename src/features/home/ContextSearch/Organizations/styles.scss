@@ -3,12 +3,11 @@
 
   &_organization-card {
     cursor: pointer;
-    font-weight: bold;
     font-size: 28px;
     display: flex;
     justify-content: center;
     align-items: center;
-
+    font-weight: bold;
     img {
       height: 57px;
     }

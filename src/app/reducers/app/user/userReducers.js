@@ -164,7 +164,12 @@ const createUserOnboardingSuccess = (state, { payload }) => {
   state.isError = null;
   state.user.manager.onboardings = [...state.user.manager.onboardings, payload];
   state.user.manager.onboarding = null;
-  state.user.managers = state.user.managers.map( manager => manager.id === state.user.manager.id ? {...manager, onboardings: [...manager.onboardings, payload]} : manager);
+
+  const currentManager = state.user.managers.findIndex((manager) => manager.id === state.user.manager.id)
+
+  state.user.managers[currentManager].onboardings = [...state.user.managers[currentManager].onboardings, payload]
+
+  // state.user.managers = state.user.managers.map( manager => manager.id === state.user.manager.id ? {...manager, onboardings: [...manager.onboardings, payload]} : manager);
 };
 const createUserOnboardingRequest = (state, { payload }) => {
   state.isLoading = true;
@@ -180,7 +185,12 @@ const deleteUserOnboardingSuccess = (state, { payload}) => {
   state.isError = null;
   state.user.manager.onboardings = state.user.manager.onboardings.filter(oboarding => oboarding.id !== payload.id);
   state.user.manager.onboarding = null;
-  state.user.managers = state.user.managers.map( manager => manager.id === state.user.manager.id ? {...manager, onboardings: manager.onboardings.filter(oboarding => oboarding.id !== payload.id)} : manager)
+
+  const currentManager = state.user.managers.findIndex((manager) => manager.id === state.user.manager.id)
+
+  state.user.managers[currentManager].onboardings = state.user.managers[currentManager].onboardings.filter((onboarding) => onboarding.id !== payload.id)
+
+  // state.user.managers = state.user.managers.map( manager => manager.id === state.user.manager.id ? {...manager, onboardings: manager.onboardings.filter(oboarding => oboarding.id !== payload.id)} : manager)
 };
 const deleteUserOnboardingRequest = (state, { payload }) => {
   state.isLoading = true;
