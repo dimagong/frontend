@@ -160,14 +160,13 @@ const OnboardingUser = () => {
     dispatch(removeUserNotifyRequest())
   }
 
-  if (isOnboarding() && profile.notify) {
+  if (profile.notify) {
     return (
 
       <div className={"welcome-onboarding"}>
         <div>
           <h1 className={"welcome-onboarding_title"}>
-            A Network of <br />
-            Independent Financial Advisers
+            {profile.notify_entity.intro_title}
           </h1>
         </div>
         <div className={"welcome-onboarding_intro-text"} dangerouslySetInnerHTML={{__html: profile.notify_entity.intro_text}} />
@@ -176,7 +175,7 @@ const OnboardingUser = () => {
             Download brochure <ChevronDown />
           </Button>
         </div>
-        {isOnboarding() && (
+        {!!isOnboarding() && (
           <div className={"welcome-onboarding_join-button"}>
             <Button className={"welcome-onboarding_join-button_button"} onClick={proceedUserToOnboarding}>
               Join a community of<br/> Independent Financial Adviser

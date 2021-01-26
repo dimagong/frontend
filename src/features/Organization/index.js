@@ -26,6 +26,7 @@ import Editor from 'components/FormCreate/Custom/WysiwygEditor'
 const organizationTemplate = {
   type: "network",
   name: "",
+  intro_title: "",
   intro_text: "",
   logo: null,
   brochure: null,
@@ -140,6 +141,24 @@ const Organization = ({ create = false }) => {
               value={organizationData.name}
               disabled={isFilesLoading || isLoading}
               onChange={(e) => {handleFieldValueChange("name", e.target.value)}}
+            />
+          </div>
+        </div>
+        <div className={"field"}>
+          <div className={"label"}>
+            <label htmlFor="title">
+              Intro title
+            </label>
+          </div>
+          <div className={"form-element"}>
+            <input
+              type="text"
+              name={"intro-title"}
+              id={"intro-title"}
+              className={"text-input"}
+              value={organizationData.intro_title}
+              disabled={isFilesLoading || isLoading}
+              onChange={(e) => {handleFieldValueChange("intro_title", e.target.value)}}
             />
           </div>
         </div>
