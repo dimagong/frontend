@@ -34,6 +34,7 @@ export default function WysiwygEditor(props) {
 
   return (
     <Editor
+      readOnly={props.disabled}
       editorState={editorState}
       toolbarClassName="toolbarClassName"
       wrapperClassName="wrapperClassName"
