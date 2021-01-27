@@ -193,7 +193,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
                     {addableParentOrganizations.map((org) => (
                       <Card className="organizations-list_organization">
                         <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
-                          <img src={logos[org.name]} alt=""/>
+                          {org.logo?.base64 ? <img src={org.logo.base64} alt=""/> : logos[org.name]}
                         </CardBody>
                       </Card>
                     ))}
@@ -209,7 +209,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
                     {addableChildOrganizations.map((org) => (
                       <Card className="organizations-list_organization">
                         <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
-                          {logos[org.name] ? <img src={logos[org.name]} alt=""/> : org.name}
+                          {org.logo?.base64 ? <img src={org.logo.base64} alt=""/> : org.name}
                         </CardBody>
                       </Card>
                     ))}

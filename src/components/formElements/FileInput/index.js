@@ -9,7 +9,7 @@ const dropZoneStatus = {
   drop: "Drop here",
 }
 
-const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onChange, loading}) => {
+const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onChange, loading, preview}) => {
 
   const inputFileRef = useRef( null );
   const [status, setStatus] = useState(dropZoneStatus.ready)
@@ -84,12 +84,21 @@ const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onCh
       {value && (
         <div className={"form-element_file-input_drop-zone"}>
           {!multiple && (
-            <>
-              <div>{value?.name}</div>
-              <div className={"form-element_file-input_delete-icon"}>
-                <Trash2 onClick={removeFile} size={18} />
-              </div>
-            </>
+            preview ? (
+              <>
+                <img src={preview} alt={`${value?.name} company logo`}/>
+                <div className={"form-element_file-input_delete-icon"}>
+                  <Trash2 onClick={removeFile} size={18} />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>{value?.name}</div>
+                <div className={"form-element_file-input_delete-icon"}>
+                  <Trash2 onClick={removeFile} size={18} />
+                </div>
+              </>
+            )
           ) || (
             <div />
           )}

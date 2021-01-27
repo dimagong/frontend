@@ -18,23 +18,39 @@ import { selectOrganizations } from 'app/selectors/groupSelector'
 import './styles.scss'
 
 
-const OrganizationCard = ({org, onSelect}) => (
-  <Card key={org.name} style={{ minHeight: "120px"}}>
-    <CardBody className="organizations-context-search_organization-card" onClick={() => {onSelect(org.id, org.type)}}>
-      {!!org.logo?.base64 && (
-        <img src={org.logo.base64} alt={org.logo.name} />
-      ) || org.logo?.isLoading && (
-        <div
-          className="user-edit__user-avatar_spinner-wrapper"
-        >
-          <Spinner color="primary" />
-        </div>
-      ) || (
-        <div>{org.name}</div>
-      )}
-    </CardBody>
-  </Card>
-)
+const OrganizationCard = ({org, onSelect}) => {
+
+  const handleOrgSelect = () => {
+    if(org.logo && !org.logo.isLoading){
+      onSelect(org.id, org.type)
+    }
+
+    //Some orgs currently have logo === null, that case would be impossible in future. remove it then
+    if(org.logo === null) {
+      onSelect(org.id, org.type)
+    }
+  }
+
+  return (
+    <Card key={org.name} style={{ minHeight: "120px"}}>
+      <CardBody className="organizations-context-search_organization-card" onClick={handleOrgSelect}>
+        {!!org.logo?.base64 && (
+          <img src={org.logo.base64} alt={org.logo.name} />
+        ) || org.logo?.isLoading && (
+          <div
+            className="user-edit__user-avatar_spinner-wrapper"
+          >
+            <Spinner color="primary" />
+          </div>
+        ) || (
+          <div>{org.name}</div>
+        )}
+      </CardBody>
+    </Card>
+  )
+}
+
+
 
 
 const Organizations = () => {
