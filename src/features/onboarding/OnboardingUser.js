@@ -41,7 +41,12 @@ import {getProfileRequest} from "../../app/slices/appSlice";
 
 import Check from 'assets/img/icons/check.png'
 
+import Approved from './approved.svg'
+import Submitted from './submitted.svg'
+import Review from './onReview.svg'
+
 const OnboardingUser = () => {
+  const [recentlySubmitted, setRecentlySubmitted] = useState(false)
 
   const dispatch = useDispatch();
   const profile = useSelector(selectProfile);
@@ -51,7 +56,7 @@ const OnboardingUser = () => {
 
   useEffect(() => {
     if (profile && !profile.onboarding?.id) {
-      const activeOnboarding = profile.onboardings.find(onboarding => onboarding.d_form.status === "in-progress") || profile.onboarding[0]
+      const activeOnboarding = profile.onboardings.find(onboarding => onboarding.d_form.status === "in-progress" || onboarding.d_form.status === "unsubmitted") || profile.onboardings[0]
       dispatch(setProfileOnboarding(activeOnboarding))
     }
   }, [profile]);
@@ -67,11 +72,12 @@ const OnboardingUser = () => {
   }, 1500));
 
   const submitOnboardingForm = data => {
+    setRecentlySubmitted(true);
     dispatch(submitdFormRequest({dForm: profile.onboarding.d_form, data}))
   };
 
   const handleNavClick = onboarding => {
-
+    setRecentlySubmitted(false)
     dispatch(setProfileOnboarding({...onboarding}))
   };
 
@@ -191,6 +197,96 @@ const OnboardingUser = () => {
     )
   }
 
+  const checkStatus = (status) => {
+    return status === "submitted" || status === "approved"
+  }
+
+  const renderStatus = (onboarding) => {
+    const status = onboarding.d_form.status;
+    const isApplicationsCompleted = !!profile.onboardings.filter(({d_form}) => !(d_form.status === "approved" || d_form.status === "submitted")).length
+
+    if (status === "submitted" && recentlySubmitted) {
+      return (
+        <div className={"status recent"}>
+          <div className={"status_image"}>
+            <img src={Submitted} alt="form recently submitted"/>
+          </div>
+          <div className={"status_description"}>
+            <h1>
+              Submitted
+            </h1>
+            <div>
+              Your application has been submitted for review successfully.
+            </div>
+            <div>
+              What happens next? <br />
+              We will review your application as soon as possible.
+            </div>
+            {isApplicationsCompleted && (
+              <div>
+                In the meantime, please continue with the remaining applications to complete your onboarding process.
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    }
+
+    if (status === "submitted") {
+      return (
+        <div className={"status submitted"}>
+          <div className={"status_image"}>
+            <img src={Review} alt="form submitted"/>
+          </div>
+          <div className={"status_description"}>
+            <h1>
+              Under Review
+            </h1>
+            <div>
+              You have successfully submitted this application, and it is currently under review.
+            </div>
+            <div>
+              What happens next?<br />
+              After review, we will be in touch with you on the progress of your application.
+            </div>
+            {isApplicationsCompleted && (
+              <div>
+                In the meantime, please continue with the remaining applications
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    } else if (status === "approved") {
+      return (
+        <div className={"status approved"}>
+          <div className={"status_image"}>
+            <img src={Approved} alt="form approved"/>
+          </div>
+          <div className={"status_description"}>
+            <h1>
+              Success!
+            </h1>
+            <div>
+              Your application review was successful!
+            </div>
+            <div>
+              What happens next? <br />
+              We will be in touch with you shortly with next steps, thank you for your patience.
+            </div>
+            {isApplicationsCompleted && (
+              <div>
+                Please continue with the remaining applications to complete your onboarding process.
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    }
+
+    return <div>You should see this, please check "checkStatus || renderStatus" function</div>
+   }
+
   return (
     <div>
       {
@@ -227,14 +323,16 @@ const OnboardingUser = () => {
                     {
                       profile && profile.onboardings && profile.onboardings.length ?
                         <div style={{marginLeft: "-100px", marginRight: "100px"}}>
-                          <TabContent activeTab={profile.onboarding.id}>
+                          <TabContent activeTab={profile.onboarding?.id}>
                             {
                               profile.onboardings.map((onboarding, index) => {
                                 return (
                                   <TabPane key={index} tabId={onboarding.id}>
                                     {
                                       !isEmpty(profile.onboarding)
-                                        ? profile.onboarding.d_form.access_type === 'user-lock'
+                                        ? checkStatus(onboarding.d_form.status) ? (
+                                          renderStatus(onboarding)
+                                        ) : profile.onboarding.d_form.access_type === 'user-lock'
                                         ? <FormCreate
                                           // reInit={(reInit, context) => {
                                           //   this.reInitForm = reInit.bind(context)

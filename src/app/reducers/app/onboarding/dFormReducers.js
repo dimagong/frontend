@@ -110,13 +110,9 @@ const getdFormTriggersError = (state, {payload}) => {
 const submitdFormSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
-  const result = state.user.profile.onboardings.some(onboarding => {
-    if (onboarding.d_form.id === payload.id) {
-      onboarding.d_form = payload;
-      return true;
-    }
-    return false;
-  });
+  const dFormIndex = state.user.profile.onboardings.findIndex(onboarding => onboarding.d_form.id === payload.id)
+  state.user.profile.onboardings[dFormIndex].d_form = payload;
+
   state.user.profile.onboarding.d_form = payload;
   toast.success("Submitted for review")
 };

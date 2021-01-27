@@ -71,5 +71,44 @@
     }
 
   }
+}
+
+.status {
+  display: flex;
+  max-width: 525px;
+  margin-left: 250px;
+  &_image {
+    margin-right: 36px;
+    margin-top: 28px;
+  }
+  &_description {
+    font-family: Montserrat, sans-serif;
+    color: #707070;
+    font-size: 16px;
+    h1 {
+      font-size: 30px;
+      font-weight: 600;
+      color: #62BE7B;
+      margin-bottom: 35px;
+    }
+    div {
+      font-weight: 500;
+      margin-bottom: 30px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &.submitted {
+    .status_description {
+      h1 {
+        color: #FFB350
+      }
+    }
+    .status_image {
+      margin-right: 20px
+    }
+  }
 
 }

@@ -1,12 +1,17 @@
 import React, {useState} from "react";
+import {useSelector} from 'react-redux'
+
 import {Col, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
 import classnames from "classnames";
 
 import ProgressBar from '../Custom/ProgressBar'
 
 import './sectionsStyles.scss'
+import {selectUserOnboarding} from 'app/selectors/userSelectors'
 
 export default function Sections(props) {
+
+  const onboarding = useSelector(selectUserOnboarding)
 
   const {
     defaultTab,
@@ -42,7 +47,7 @@ export default function Sections(props) {
                 <div className="sections-nav_item_index">
 
                   <ProgressBar
-                    completed={completed}
+                    completed={completed || onboarding.d_form?.status === "submitted" || onboarding.d_form?.status === "approved" }
                     progress={getProgress(section)}
                     size={33}
                     strokeWidth={2}
