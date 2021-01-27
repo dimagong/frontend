@@ -90,7 +90,7 @@ const Organizations = () => {
   return (
     <div className={"home__card-wrapper organizations-context-search"}>
       {organizationsData.map((org) => (
-        <OrganizationCard key={org.id} org={org} onSelect={() => {selectOrganization(org.id, org.type)}} />
+        <OrganizationCard key={org.id+org.type} org={org} onSelect={() => {selectOrganization(org.id, org.type)}} />
       ))}
     </div>
   )

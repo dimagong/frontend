@@ -35,10 +35,10 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions }) => {
               {selectedNavItem.title}
             </DropdownToggle>
             <DropdownMenu left>
-              {navOptions.map((navEl) => (
+              {navOptions.map((navEl, index) => (
                 <DropdownItem
                   //*TODO Temp disabled, remove after masterSchema implement
-
+                  key={index}
                   onClick={() => handleNavItemSelect(navEl)}
                 >
                   <NavItem>

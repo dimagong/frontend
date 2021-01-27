@@ -98,8 +98,8 @@ const Applications = () => {
 
         <Scrollbars  autoHeight autoHeightMax={500}>
           <div className="items-list">
-            {!!dForms.length && dForms.map((item) => (
-              <ListItem item={item} onClick={(e) => {handleItemSelect(e, item, "dForm")}} />
+            {!!dForms.length && dForms.map((item, index) => (
+              <ListItem key={index} item={item} onClick={(e) => {handleItemSelect(e, item, "dForm")}} />
             ))}
           </div>
         </Scrollbars>
@@ -114,8 +114,9 @@ const Applications = () => {
                   {dependenciesSelectActiveItem.title}
                 </DropdownToggle>
                 <DropdownMenu left>
-                  {dependenciesList.map((item) => (
+                  {dependenciesList.map((item, index) => (
                     <DropdownItem
+                      key={index}
                       onClick={() => {setDependenciesSelectActiveItem(item)}}
                     >
                       <NavItem style={{fontSize: "16px"}}>
