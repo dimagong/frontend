@@ -88,11 +88,17 @@
   );
   z-index: 1000;
   .brand-logo {
-    background: url("../../img/logo/logo_vp.jpg") no-repeat;
+    background: url("../../img/logo/VPlogo.png") no-repeat center center;
     //background-image: ;
     height: 40px;
     width: 140px;
     background-size:contain;
+  }
+  &.simplified-navbar {
+    .brand-logo {
+      height: 49px;
+      width: 231px;
+    }
   }
   &.fixed-top {
     left: $menu-expanded-width;

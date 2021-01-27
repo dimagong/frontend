@@ -1,5 +1,11 @@
 import React from "react"
-import { Navbar } from "reactstrap"
+import {
+  Navbar,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownMenu,
+} from "reactstrap"
 import { connect } from "react-redux"
 import classnames from "classnames"
 import { useDispatch } from 'react-redux'
@@ -14,7 +20,7 @@ import { history } from "../../../history";
 
 import {selectManager, selectProfile, selectManagers} from "app/selectors"
 import { NavLink } from "react-router-dom"
-import { ChevronDown, ChevronUp } from "react-feather"
+import {ChevronDown, ChevronUp, Power, Menu} from "react-feather"
 
 import { logout, showContextSearch, hideContextSearch } from 'app/slices/appSlice'
 
@@ -52,7 +58,7 @@ const ThemeNavbar = props => {
     }
 
   }
-
+  console.log("prof", userProfile)
   return userProfile
   ? (
     <React.Fragment>
@@ -84,7 +90,7 @@ const ThemeNavbar = props => {
               props.navbarType === "static" && !props.horizontal,
             "fixed-top": props.navbarType === "sticky" || props.horizontal,
             "scrolling": props.horizontal && props.scrolling,
-            // "is-onboarding": userService.isOnboarding(props.userProfile)
+            "simplified-navbar": userProfile.notify,
           }
         )}
       >
@@ -96,7 +102,7 @@ const ThemeNavbar = props => {
             >
               <div className="bookmark-wrapper">
                 <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
-                  <div className="brand-logo" />
+                  <div className="brand-logo " />
                 </NavLink>
                   {/* <NavbarBookmarks
                     sidebarVisibility={props.sidebarVisibility}
@@ -131,19 +137,41 @@ const ThemeNavbar = props => {
                 </div>
               ) : null} */}
 
-              <NavbarUser
-                handleAppOverlay={props.handleAppOverlay}
-                changeCurrentLang={props.changeCurrentLang}
-                userName={<UserName {...props} />}
-                email={`${userProfile.permissions.organization} ${capitalizeAll(userProfile.permissions.ability.replace("_", " "))}`}
-                userImg={manager && manager.ulr? manager.ulr : noneAvatar}
-                loggedType={null}
-                logoutWithJWT={logoutJWT}
-              />
+              {userProfile.notify ? (
+                <ul className="nav navbar-nav navbar-nav-user float-right">
+                  <UncontrolledDropdown tag="li" className="dropdown-user nav-item burger-menu">
+                    <DropdownToggle tag="a" className="nav-link dropdown-user-link">
+                      <Menu size={30} />
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem
+                        tag="a"
+                        onClick={logoutJWT}
+                      >
+                        <Power size={14} className="mr-50" />
+                        <span className="align-middle">Log Out</span>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </ul>
+              ) : (
+                <NavbarUser
+                  handleAppOverlay={props.handleAppOverlay}
+                  changeCurrentLang={props.changeCurrentLang}
+                  userName={<UserName {...props} />}
+                  email={`${userProfile.permissions.organization} ${capitalizeAll(userProfile.permissions.ability.replace("_", " "))}`}
+                  userImg={manager && manager.ulr? manager.ulr : noneAvatar}
+                  loggedType={null}
+                  logoutWithJWT={logoutJWT}
+                />
+              )}
+
+
             </div>
           </div>
         </div>
       </Navbar>
+      <div className={classnames("", {"simplified-navbar-overlay": userProfile.notify})} />
     </React.Fragment>
   ) : null
 }
