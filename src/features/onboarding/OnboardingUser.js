@@ -243,7 +243,7 @@ const OnboardingUser = () => {
                                           fileLoader={true}
                                           inputDisabled={true}
                                           fill={true}
-                                          dForm={profile.onboarding.d_form}
+                                          dForm={onboarding.d_form}
                                           onSaveButtonHidden={isDisabledSubmit()}
                                           isStateConfig={false}
                                           onboardingUser={profile}
@@ -258,7 +258,7 @@ const OnboardingUser = () => {
                                           fileLoader={true}
                                           inputDisabled={false}
                                           fill={true}
-                                          dForm={profile.onboarding.d_form}
+                                          dForm={onboarding.d_form}
                                           onSaveButtonHidden={true}
                                           onChange={(data) => {
                                             setDebounced(true);
