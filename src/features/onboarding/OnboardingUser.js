@@ -51,7 +51,8 @@ const OnboardingUser = () => {
 
   useEffect(() => {
     if (profile && !profile.onboarding?.id) {
-      dispatch(setProfileOnboarding(profile.onboardings[0]))
+      const activeOnboarding = profile.onboardings.find(onboarding => onboarding.d_form.status === "in-progress") || profile.onboarding[0]
+      dispatch(setProfileOnboarding(activeOnboarding))
     }
   }, [profile]);
 
