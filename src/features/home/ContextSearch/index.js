@@ -159,8 +159,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                     }
                     }} />,
     }
-
-    return sliceData(data, page).map((elData) => (React.cloneElement(templates[type], elData)))
+    return sliceData(data, page).map((elData) => (React.cloneElement(templates[type], {...elData, key: elData.id})))
   }
 
 

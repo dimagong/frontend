@@ -43,6 +43,21 @@ const organizationApi = {
     }
   },
 
+  async getOrganizationLogo(org) {
+    try {
+      const result = await instance({
+        url: "api/file/"+org.logo.id,
+        method: "GET",
+        responseType: 'arraybuffer'
+      });
+      const base64 = new Buffer(result.data, 'binary').toString('base64')
+
+      return  `data:${org.logo.mime_type};base64, ${base64}`
+    } catch (err) {
+      throw err;
+    }
+  }
+
 };
 
 export default organizationApi;

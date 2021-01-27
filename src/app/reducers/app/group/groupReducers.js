@@ -41,7 +41,6 @@ const createOrganizationRequest = (state) => {
 }
 const createOrganizationSuccess = (state, {payload}) => {
   state.isLoading = false;
-  console.log(payload)
   state.organizations[payload.type].push(payload)
   toast.success("Organization created")
 }
@@ -66,6 +65,27 @@ const updateOrganizationError = (state, {payload}) => {
   state.isError = payload;
 }
 
+const getOrganizationLogoRequest = (state, {payload}) => {
+  state.isLoading = true;
+
+  const orgIndex = state.organizations[payload.type].findIndex(org => org.id === payload.id)
+
+  state.organizations[payload.type][orgIndex].logo.isLoading = true
+
+  state.isError = null;
+}
+const getOrganizationLogoSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  const orgIndex = state.organizations[payload.orgType].findIndex(org => org.id === payload.orgId)
+
+  state.organizations[payload.orgType][orgIndex].logo.base64 = payload.logoBase64
+  state.organizations[payload.orgType][orgIndex].logo.isLoading = false
+}
+const getOrganizationLogoError = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = payload;
+}
+
 export default {
   getGroupsSuccess,
   getGroupsRequest,
@@ -82,6 +102,10 @@ export default {
   updateOrganizationRequest,
   updateOrganizationSuccess,
   updateOrganizationError,
+
+  getOrganizationLogoRequest,
+  getOrganizationLogoSuccess,
+  getOrganizationLogoError,
 
   setSelectedOrganizationIdAndType,
 };
