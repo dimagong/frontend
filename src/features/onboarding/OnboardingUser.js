@@ -123,7 +123,8 @@ const OnboardingUser = () => {
     return onboardings.map((onboarding) => ({
       ...onboarding,
       icon: onboarding.d_form.status === "submitted" ? Check : "null"
-    })).filter((onBoarding) => onBoarding.d_form.status !== "approved")
+    }))
+      // .filter((onBoarding) => onBoarding.d_form.status !== "approved")
   }
 
 
