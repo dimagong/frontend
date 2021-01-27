@@ -143,7 +143,7 @@ const Organization = ({ create = false }) => {
               name={"title"}
               id={"title"}
               className={"text-input"}
-              value={organizationData.name}
+              value={organizationData.name || ""}
               disabled={isFilesLoading || isLoading}
               onChange={(e) => {handleFieldValueChange("name", e.target.value)}}
             />
@@ -161,7 +161,7 @@ const Organization = ({ create = false }) => {
               name={"intro-title"}
               id={"intro-title"}
               className={"text-input"}
-              value={organizationData.intro_title}
+              value={organizationData.intro_title || ""}
               disabled={isFilesLoading || isLoading}
               onChange={(e) => {handleFieldValueChange("intro_title", e.target.value)}}
             />
@@ -189,7 +189,8 @@ const Organization = ({ create = false }) => {
             <div className="editor-wrapper">
               <Editor id={`editor`}
                       type={"text"}
-                      data={organizationData.intro_text}
+                      orgId={organizationData.id}
+                      data={organizationData.intro_text || ""}
                       onChange={value => handleFieldValueChange("intro_text", value)} />
             </div>
           </div>
