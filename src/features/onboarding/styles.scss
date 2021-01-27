@@ -93,9 +93,19 @@
     }
     div {
       font-weight: 500;
-      margin-bottom: 30px;
-      &:last-child {
-        margin-bottom: 0;
+      margin-top: 30px;
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+    &_action {
+      margin-top: 80px!important;
+      display: flex;
+      justify-content: flex-end;
+      &_show-button {
+        border-radius: 25px;
+        padding-left: 49px;
+        padding-right: 49px;
       }
     }
   }

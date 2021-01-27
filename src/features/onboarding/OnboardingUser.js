@@ -47,6 +47,8 @@ import Review from './onReview.svg'
 
 const OnboardingUser = () => {
   const [recentlySubmitted, setRecentlySubmitted] = useState(false)
+  const [forceAppShow, setForceAppShow] = useState([])
+
 
   const dispatch = useDispatch();
   const profile = useSelector(selectProfile);
@@ -201,6 +203,13 @@ const OnboardingUser = () => {
     return status === "submitted" || status === "approved"
   }
 
+  const showApplication = (onboardingId) => {
+    setForceAppShow([
+      ...forceAppShow,
+      onboardingId,
+    ])
+  }
+
   const renderStatus = (onboarding) => {
     const status = onboarding.d_form.status;
     const isApplicationsCompleted = !!profile.onboardings.filter(({d_form}) => !(d_form.status === "approved" || d_form.status === "submitted")).length
@@ -254,6 +263,11 @@ const OnboardingUser = () => {
                 In the meantime, please continue with the remaining applications
               </div>
             )}
+            <div className={"status_description_action"}>
+              <Button className={"status_description_action_show-button"} onClick={() => showApplication(onboarding.id)} color="primary">
+                View application
+              </Button>
+            </div>
           </div>
         </div>
       )
@@ -330,7 +344,7 @@ const OnboardingUser = () => {
                                   <TabPane key={index} tabId={onboarding.id}>
                                     {
                                       !isEmpty(profile.onboarding)
-                                        ? checkStatus(onboarding.d_form.status) ? (
+                                        ? checkStatus(onboarding.d_form.status) && !~forceAppShow.indexOf(onboarding.id) ? (
                                           renderStatus(onboarding)
                                         ) : profile.onboarding.d_form.access_type === 'user-lock'
                                         ? <FormCreate
