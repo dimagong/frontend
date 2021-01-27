@@ -13,6 +13,7 @@ const ProgressBar = props => {
     circleOneStroke,
     circleTwoStroke,
     index,
+    completed,
   } = props;
 
   const center = size / 2;
@@ -28,7 +29,7 @@ const ProgressBar = props => {
   }, [setOffset, progress, circumference, offset]);
 
   return (
-    <div className={`section-progress-bar ${progress >= 100 ? "complete" : ""}`}>
+    <div className={`section-progress-bar ${(progress >= 100 || completed) ? "complete" : ""}`}>
       <svg
         className="svg"
         width={size}
@@ -46,7 +47,7 @@ const ProgressBar = props => {
           strokeDashoffset={offset}
           transform={`rotate(-90 ${center} ${center})`}
         />
-        {progress < 100 && (
+        {progress < 100 && !completed && (
           <text
             x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
             className="svg-circle-text">

@@ -122,7 +122,7 @@ const OnboardingUser = () => {
   const formatTabs = (onboardings) => {
     return onboardings.map((onboarding) => ({
       ...onboarding,
-      icon: onboarding.d_form.status === "submitted" ? Check : "null"
+      icon: (onboarding.d_form.status === "submitted" || onboarding.d_form.status === "approved") ? Check : "null"
     }))
       // .filter((onBoarding) => onBoarding.d_form.status !== "approved")
   }

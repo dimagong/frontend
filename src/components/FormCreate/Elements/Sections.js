@@ -16,7 +16,8 @@ export default function Sections(props) {
     renderElementsByGroupsAndSections,
     renderElementsWithNoGroupsAndSections,
     getErrors,
-    getProgress
+    getProgress,
+    completed
   } = props;
 
   const [keyTab, setKeyTab] = useState(defaultTab);
@@ -41,6 +42,7 @@ export default function Sections(props) {
                 <div className="sections-nav_item_index">
 
                   <ProgressBar
+                    completed={completed}
                     progress={getProgress(section)}
                     size={33}
                     strokeWidth={2}

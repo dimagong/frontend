@@ -248,8 +248,6 @@ export function ObjectFieldTemplate(props) {
 
   const getProgress = (section) => {
 
-    console.log('getProgress');
-
     let isFieldEmpty = (data) => (
       data === ""
       || (Array.isArray(data) && data.length === 0)
@@ -301,6 +299,7 @@ export function ObjectFieldTemplate(props) {
       renderElementsWithNoGroupsAndSections,
       getErrors,
       getProgress,
+      completed: this.state.dFormTemplate.status === "submitted" || this.state.dFormTemplate.status === "approved"
     };
 
     return (<div>
