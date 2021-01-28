@@ -75,11 +75,11 @@
 
 .status {
   display: flex;
-  max-width: 525px;
-  margin-left: 250px;
+  max-width: 575px;
+  margin-left: 230px;
   &_image {
     margin-right: 36px;
-    margin-top: 28px;
+    margin-top: 7px;
   }
   &_description {
     font-family: Montserrat, sans-serif;
@@ -89,17 +89,17 @@
       font-size: 30px;
       font-weight: 600;
       color: #62BE7B;
-      margin-bottom: 35px;
+
     }
     div {
       font-weight: 500;
-      margin-top: 30px;
-      &:first-child {
-        margin-top: 0;
+      margin-top: 25px;
+      &:first-of-type {
+        margin-top: 10px;
       }
     }
     &_action {
-      margin-top: 80px!important;
+      margin-top: 45px!important;
       display: flex;
       justify-content: flex-end;
       &_show-button {
