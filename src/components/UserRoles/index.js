@@ -42,10 +42,20 @@ const UserRoles = ({manager, userOrganizations, className}) => {
   const userParentOrganizations = useSelector(selectUserParentOrganizations(manager.id));
   const userChildOrganizations = useSelector(selectUserChildOrganizations(manager.id));
 
+
+  // WILL BE REFACTORED AFTER STORE REFACTOR AND API REFACTORE
+  // correct user organizations are orgs that links to state.app.organizations object,
+  // here we just select same orgs but with fresh data.
+  // After that we get back abilities object that exist only in user orgs but not in state.app.organizations
+  let correctUserOrganizations = organizations.filter((org) => !!userOrganizations.filter((userOrg) => userOrg.id === org.id && userOrg.type === userOrg.type).length)
+  correctUserOrganizations = correctUserOrganizations.map((userOrg, index) => ({...userOrg, abilities: userOrganizations[index].abilities}))
+
   const getUniq = (organizations, userOrganizations) => organizations.filter((org) => !userOrganizations.filter((userOrg) => userOrg.name === org.name).length);
+
 
   // organization that are allowed to add to user
   const addableParentOrganizations = getUniq(parentOrganizations, userParentOrganizations)
+  console.log("parent", addableParentOrganizations)
   let addableChildOrganizations;
 
   // Do not allow add more than one child organization if no parent organization added
@@ -62,7 +72,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
   }
 
   const handleOrganizationDelete = () => {
-    const org = userOrganizations.filter((org) => org.name === deletionData.orgName)[0];
+    const org = correctUserOrganizations.filter((org) => org.name === deletionData.orgName)[0];
 
     dispatch(removeUserOrganizationRequest({userId: manager.id, group_id: org.id, type: org.type}))
     setIsDeleteModalOpen(false);
@@ -115,12 +125,12 @@ const UserRoles = ({manager, userOrganizations, className}) => {
       </div>
       <div className="permissions">
 
-        {!!userOrganizations.length && userOrganizations.map((userOrganization) => {
+        {!!correctUserOrganizations.length && correctUserOrganizations.map((userOrganization) => {
           return (
             <>
               <Card style={{ minHeight: "100px"}}>
                 <CardBody className="organization-name" onClick={() => {onOrganizationDelete(userOrganization.name, manager.first_name + " " +manager.last_name)}}>
-                  {(logos[userOrganization.name] && <img src={logos[userOrganization.name]} alt=""/>) || userOrganization.name}
+                  {userOrganization.logo?.base64 ? <img src={userOrganization.logo.base64} alt=""/> : userOrganization.name}
                 </CardBody>
               </Card>
               <Card style={{ minHeight: "100px"}}>
@@ -193,7 +203,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
                     {addableParentOrganizations.map((org) => (
                       <Card className="organizations-list_organization">
                         <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
-                          {org.logo?.base64 ? <img src={org.logo.base64} alt=""/> : logos[org.name]}
+                          {org.logo?.base64 ? <img src={org.logo.base64} alt=""/> : org.name}
                         </CardBody>
                       </Card>
                     ))}
