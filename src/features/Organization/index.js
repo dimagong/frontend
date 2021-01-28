@@ -191,7 +191,7 @@ const Organization = ({ create = false }) => {
               <Editor id={`editor`}
                       disabled={isLoading}
                       type={"text"}
-                      orgId={organizationData.id}
+                      orgId={create ? "create" : organizationData.id}
                       data={organizationData.intro_text || ""}
                       onChange={value => handleFieldValueChange("intro_text", value)} />
             </div>
