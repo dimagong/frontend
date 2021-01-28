@@ -36,6 +36,7 @@ const organizationValidation = yup.object().shape({
   type: yup.string().required("Corporation type is required. Please contact tech support if you see this message"),
   name: yup.string().required("Name is required"),
   intro_text: yup.string().required("Intro text is required"),
+  intro_title: yup.string().required("Intro title is required"),
   logo: yup.mixed().required("Logo is required"),
   brochure: yup.mixed().required("Brochure is required"),
 })
@@ -114,6 +115,7 @@ const Organization = ({ create = false }) => {
   }
 
   const handleFieldValueChange = (field, value) => {
+
     setOrganizationData({
       ...organizationData,
       [field]: value,
@@ -126,6 +128,13 @@ const Organization = ({ create = false }) => {
       setIsFilesLoading(false)
     }
   }, [selectedOrganizationIdAndType])
+
+  useEffect(() => {
+    if(create) {
+      setOrganizationData(organizationTemplate)
+      setIsFilesLoading(false)
+    }
+  }, [create])
 
   return (
     <Row>
@@ -191,9 +200,9 @@ const Organization = ({ create = false }) => {
               <Editor id={`editor`}
                       disabled={isLoading}
                       type={"text"}
-                      orgId={create ? "create" : organizationData.id}
+                      orgId={create ? "create" : organizationData.name+organizationData.id}
                       data={organizationData.intro_text || ""}
-                      onChange={value => handleFieldValueChange("intro_text", value)} />
+                      onChange={({rich, raw}) => handleFieldValueChange("intro_text", raw === "" ? "" : rich)} />
             </div>
           </div>
         </div>

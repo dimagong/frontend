@@ -23,7 +23,14 @@ export default function WysiwygEditor(props) {
 
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
-    props.onChange(draftToHtml(convertToRaw(editorState.getCurrentContent())));
+
+    // If editor have only whitespaces etc. (empty)
+    if (!!editorState.getCurrentContent().getPlainText().trim()) {
+      props.onChange({
+        rich: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+        raw: editorState.getCurrentContent().getPlainText().trim(),
+      });
+    }
   };
 
   useEffect(() => {
