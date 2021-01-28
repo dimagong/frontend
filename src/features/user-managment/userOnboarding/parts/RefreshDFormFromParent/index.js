@@ -17,7 +17,7 @@ export default function RefreshDFormFromParent({id}) {
     dispatch(updateDFormFromParentRequest({id}));
   };
 
-  return <Button.Ripple outline color="primary" onClick={onRefresh}>
+  return <Button.Ripple outline color="primary"  className={"bg-white"} onClick={onRefresh}>
     <RefreshCw size={15} />
   </Button.Ripple>
 }
