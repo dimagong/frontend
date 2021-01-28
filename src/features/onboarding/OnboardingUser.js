@@ -230,17 +230,17 @@ const OnboardingUser = () => {
           {{submitted: <>
               <h1>Under Review</h1>
               <div>You have successfully submitted this application, and it is currently under review.</div>
-              <div>What happens next?<br />After review, we will be in touch with you on the progress of your application.</div>
+              <div><span className="font-weight-bold">What happens next?</span><br />After review, we will be in touch with you on the progress of your application.</div>
             </>,
             approved: <>
               <h1>Success!</h1>
               <div>Your application review was successful!</div>
-              <div>What happens next? <br />We will be in touch with you shortly with next steps, thank you for your patience.</div>
+              <div><span className="font-weight-bold">What happens next?</span><br />We will be in touch with you shortly with next steps, thank you for your patience.</div>
             </> ,
             recent: <>
               <h1>Submitted</h1>
               <div>Your application has been submitted for review successfully.</div>
-              <div> What happens next? <br />We will review your application as soon as possible.</div>
+              <div><span className="font-weight-bold">What happens next?</span><br />We will review your application as soon as possible.</div>
             </>,
           }[status]}
 
