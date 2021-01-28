@@ -57,45 +57,49 @@ const DFormForm = ({isCreate}) => {
             <CardTitle className="font-weight-bold">DForm</CardTitle>
             <div>
               {
-                isStateConfig ? (
-                  <EyeOff
-                    size={15}
-                    className="cursor-pointer mr-1"
-                    onClick={changeStateConfig}
-                  />
-                ) : (
-                  <Eye
-                    size={15}
-                    className="cursor-pointer mr-1"
-                    onClick={changeStateConfig}
-                  />
+                !!dForm.groups.length && (
+                  isStateConfig ? (
+                    <EyeOff
+                      size={15}
+                      className="cursor-pointer mr-1"
+                      onClick={changeStateConfig}
+                    />
+                  ) : (
+                    <Eye
+                      size={15}
+                      className="cursor-pointer mr-1"
+                      onClick={changeStateConfig}
+                    />
+                  )
                 )
               }
               <X size={15} className="cursor-pointer mr-1" onClick={closeDForm} />
             </div>
           </CardHeader>
           <CardBody className="card-top-padding">
-            {isCreate ? (
+            {isCreate && !dForm.groups.length ? (
               <div className="mt-2">
                 <MultiSelect setGroups={setdFormGroups} groups={prepareSelectGroups(dForm.groups)} single noDropdownIndicator />
               </div>
             ) : (
               <div className="mt-2">
                 <div className="d-flex mb-1">
-                  <div className="font-weight-bold" style={{padding: 5}}>Organisation</div>
-                  <div className="w-100" style={{padding: 5}}>
+                  <div className="font-weight-bold" style={{padding: 4}}>Organization</div>
+                  <div className="w-100" style={{padding: "4px 4px 4px 0"}}>
                     {dForm.groups[0]?.name}
                   </div>
                 </div>
               </div>
             )}
-            <FormCreate fileLoader={false}
-                        submitDForm={submitDForm}
-                        liveValidate={false}
-                        isShowToggleProtectedProperties={true}
-                        dForm={dForm}
-                        isStateConfig={isStateConfig}
-            />
+            {!!dForm.groups.length && (
+              <FormCreate fileLoader={false}
+                          submitDForm={submitDForm}
+                          liveValidate={false}
+                          isShowToggleProtectedProperties={true}
+                          dForm={dForm}
+                          isStateConfig={isStateConfig}
+              />
+            )}
           </CardBody>
         </Card>
       </Col>
