@@ -153,6 +153,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        .organization-img {
+          height: 57px;
+          max-width: 180px;
+        }
       }
     }
   }

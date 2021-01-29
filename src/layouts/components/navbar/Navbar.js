@@ -171,7 +171,6 @@ const ThemeNavbar = props => {
           </div>
         </div>
       </Navbar>
-      <div className={classnames("", {"simplified-navbar-overlay": userProfile.notify})} />
     </React.Fragment>
   ) : null
 }

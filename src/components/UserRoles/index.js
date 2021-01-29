@@ -137,7 +137,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
             <>
               <Card style={{ minHeight: "100px"}}>
                 <CardBody className="organization-name" onClick={() => {onOrganizationDelete(userOrganization.name, manager.first_name + " " +manager.last_name)}}>
-                  {userOrganization.logo?.base64 ? <img src={userOrganization.logo.base64} alt=""/> : userOrganization.name}
+                  {userOrganization.logo?.base64 ? <img className={"organization-img"} src={userOrganization.logo.base64} alt=""/> : userOrganization.name}
                 </CardBody>
               </Card>
               <Card style={{ minHeight: "100px"}}>
@@ -210,7 +210,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
                     {addableParentOrganizations.map((org) => (
                       <Card className="organizations-list_organization">
                         <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
-                          {org.logo?.base64 ? <img src={org.logo.base64} alt=""/> : org.name}
+                          {org.logo?.base64 ? <img className={"organization-img"} src={org.logo.base64} alt=""/> : org.name}
                         </CardBody>
                       </Card>
                     ))}
@@ -226,7 +226,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
                     {addableChildOrganizations.map((org) => (
                       <Card className="organizations-list_organization">
                         <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
-                          {org.logo?.base64 ? <img src={org.logo.base64} alt=""/> : org.name}
+                          {org.logo?.base64 ? <img className={"organization-img"} src={org.logo.base64} alt=""/> : org.name}
                         </CardBody>
                       </Card>
                     ))}

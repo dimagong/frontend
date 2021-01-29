@@ -5,11 +5,13 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs'
 
-export default function WysiwygEditor(props) {
+import './wysiwygEditor.scss';
+
+export default function WysiwygEditor({orgId = "default", disabled, data, onChange, orgPage = false}) {
   const [editorState, setEditorState] = useState(false);
 
   const init = () => {
-    const blocksFromHTML = htmlToDraft(props.data ||'<div></div>');
+    const blocksFromHTML = htmlToDraft(data ||'<div></div>');
     let initValue = EditorState.createEmpty();
     if (blocksFromHTML) {
       const contentState = ContentState.createFromBlockArray(
@@ -24,24 +26,30 @@ export default function WysiwygEditor(props) {
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
 
-    // If editor have only whitespaces etc. (empty)
-    if (!!editorState.getCurrentContent().getPlainText().trim()) {
-      props.onChange({
-        rich: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-        raw: editorState.getCurrentContent().getPlainText().trim(),
-      });
+    if(!orgPage) {
+      onChange(draftToHtml(convertToRaw(editorState.getCurrentContent())))
+    } else {
+      // If editor have only whitespaces etc. (empty)
+      if (!!editorState.getCurrentContent().getPlainText().trim()) {
+        onChange({
+          rich: draftToHtml(convertToRaw(editorState.getCurrentContent())),
+          raw: editorState.getCurrentContent().getPlainText().trim(),
+        });
+      }
     }
+
+
   };
 
   useEffect(() => {
     init()
-  }, [props.orgId])
+  }, [orgId])
 
-  if(!props.orgId || !editorState) return null;
+  if(!orgId || !editorState) return null;
 
   return (
     <Editor
-      readOnly={props.disabled}
+      readOnly={disabled}
       editorState={editorState}
       toolbarClassName="toolbarClassName"
       wrapperClassName="wrapperClassName"
