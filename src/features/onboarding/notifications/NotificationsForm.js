@@ -20,11 +20,11 @@ import {MultiSelect} from "components/MultiSelect/multiSelect";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {createNotificationRequest, setContext, updateNotificationRequest} from "app/slices/appSlice";
 
-const initNotification = {name: '', description: "", content: "", groups: []};
+const initNotification = {name: '', subject: '', description: "", content: "", groups: []};
 
 const NotificationsForm = ({isCreate}) => {
   const notification = useSelector(selectNotification);
-  const {name, description, content} = notification || {};
+  const {name, description, content, subject} = notification || {};
   const dispatch = useDispatch();
 
   const closeNotification = () => {
@@ -89,6 +89,18 @@ const NotificationsForm = ({isCreate}) => {
                   type="textarea"
                   name="description"
                   placeholder="Description"
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>Subject</Label>
+                <Input
+                  value={subject}
+                  onChange={(event) =>
+                    handleNotification({subject: event.target.value})
+                  }
+                  type="text"
+                  name="subject"
+                  placeholder="Subject"
                 />
               </FormGroup>
               <FormGroup>
