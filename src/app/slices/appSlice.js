@@ -310,6 +310,10 @@ export const {
   getOrganizationLogoSuccess,
   getOrganizationLogoError,
 
+  getUserOrganizationLogoRequest,
+  getUserOrganizationLogoSuccess,
+  getUserOrganizationLogoError,
+
   setSelectedOrganizationIdAndType,
 
   resetAppSlice,

@@ -40,10 +40,14 @@ import {
   removeUserNotifyRequest,
   removeUserNotifySuccess,
   removeUserNotifyError,
+  getUserOrganizationLogoRequest,
+  getUserOrganizationLogoSuccess,
+  getUserOrganizationLogoError,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import { selectGroups, selectRoles } from "app/selectors";
+import organizationApi from '../../../api/organizations'
 
 function* getProfile() {
   try {
@@ -51,6 +55,7 @@ function* getProfile() {
 
     yield put(getProfileSuccess(response));
     yield put(loginWithJWT(response))
+    yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}))
 
   } catch (error) {
     console.log(error)
@@ -184,6 +189,16 @@ function* removeUserNotify() {
   }
 }
 
+function* getUserOrganizationLogo({payload}) {
+  try {
+    const logoBase64 = yield call(organizationApi.getOrganizationLogo, payload)
+    yield put(getUserOrganizationLogoSuccess(logoBase64))
+
+  } catch (error) {
+    yield put(getUserOrganizationLogoError(error))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getProfileRequest.type, getProfile),
@@ -197,6 +212,7 @@ export default function* () {
     yield takeLatest(removeUserOrganizationRequest.type, removeUserOrganization),
     yield takeLatest(allowUserAbilityRequest.type, allowUserAbility),
     yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility),
-    yield takeLatest(removeUserNotifyRequest.type, removeUserNotify)
+    yield takeLatest(removeUserNotifyRequest.type, removeUserNotify),
+    yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
   ]);
 }

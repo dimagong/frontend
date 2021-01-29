@@ -440,6 +440,19 @@ const removeUserNotifyError  = (state, {payload}) => {
   state.isError = payload;
 }
 
+const getUserOrganizationLogoRequest = (state) => {
+  state.user.profile.permissions.logo.isLoading = true;
+  state.isError = null;
+}
+const getUserOrganizationLogoSuccess  = (state, {payload}) => {
+  state.user.profile.permissions.logo.isLoading = false;
+  state.user.profile.permissions.logo.base64 = payload;
+}
+const getUserOrganizationLogoError  = (state, {payload}) => {
+  state.user.profile.permissions.logo.isLoading = false;
+  state.isError = payload;
+}
+
 
 
 export default {
@@ -511,6 +524,10 @@ export default {
   removeUserNotifyRequest,
   removeUserNotifySuccess,
   removeUserNotifyError,
+
+  getUserOrganizationLogoRequest,
+  getUserOrganizationLogoSuccess,
+  getUserOrganizationLogoError,
 
   updateUserModulesSuccess,
   updateUserModulesRequest,
