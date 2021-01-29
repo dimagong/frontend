@@ -198,6 +198,7 @@ const Organization = ({ create = false }) => {
           <div className="form-element">
             <div className="editor-wrapper">
               <Editor id={`editor`}
+                      orgPage
                       disabled={isLoading}
                       type={"text"}
                       orgId={create ? "create" : organizationData.name+organizationData.id}
