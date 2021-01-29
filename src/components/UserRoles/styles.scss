@@ -32,6 +32,10 @@
   column-gap: 20px;
   grid-row-gap: 18px;
   padding: 0 1px 10px 1px;
+  .organization-img {
+    height: 57px;
+    max-width: 170px;
+  }
   .organization-name {
     display: flex;
     align-items: center;
