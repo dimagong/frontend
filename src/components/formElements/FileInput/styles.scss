@@ -11,6 +11,10 @@
     font-weight: 300;
     font-size: 15px;
     padding: 20px;
+
+    &_preview-img {
+      height: 57px;
+    }
   }
   &_delete-icon {
     cursor: pointer;

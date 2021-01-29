@@ -86,7 +86,7 @@ const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onCh
           {!multiple && (
             preview ? (
               <>
-                <img src={preview} alt={`${value?.name} company logo`}/>
+                <img className={"form-element_file-input_drop-zone_preview-img"} src={preview} alt={`${value?.name} company logo`}/>
                 <div className={"form-element_file-input_delete-icon"}>
                   <Trash2 onClick={removeFile} size={18} />
                 </div>
