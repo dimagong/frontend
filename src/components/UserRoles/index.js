@@ -48,7 +48,14 @@ const UserRoles = ({manager, userOrganizations, className}) => {
   // here we just select same orgs but with fresh data.
   // After that we get back abilities object that exist only in user orgs but not in state.app.organizations
   let correctUserOrganizations = organizations.filter((org) => !!userOrganizations.filter((userOrg) => userOrg.id === org.id && userOrg.type === userOrg.type).length)
-  correctUserOrganizations = correctUserOrganizations.map((userOrg, index) => ({...userOrg, abilities: userOrganizations[index].abilities}))
+  correctUserOrganizations = correctUserOrganizations.map((userOrg, index) => {
+
+    const sameOrg = userOrganizations.filter((org) => userOrg.id === org.id && userOrg.type === org.type)[0]
+
+    if (sameOrg !== undefined) return {...userOrg, abilities: sameOrg.abilities}
+  })
+
+  correctUserOrganizations = correctUserOrganizations.filter((org) => org !== undefined)
 
   const getUniq = (organizations, userOrganizations) => organizations.filter((org) => !userOrganizations.filter((userOrg) => userOrg.name === org.name).length);
 
