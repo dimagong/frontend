@@ -380,6 +380,9 @@ class FormCreate extends React.Component {
       ) {
         delete formData[key];
       }
+      if (key in this.state.schema.properties && this.state.schema.properties[key]?.type === Constants.FIELD_TYPE_HELP_TEXT) {
+        delete formData[key];
+      }
     });
 
     document.querySelectorAll('.error-detail').forEach(nextElement => {
@@ -440,6 +443,15 @@ class FormCreate extends React.Component {
     this.props.onSave && this.props.onSave(this.state.formData);
   }
 
+  removeRudimentFormData(formData) {
+    Object.keys(formData).forEach(key => {
+      if (key in this.state.schema.properties && this.state.schema.properties[key]?.type === Constants.FIELD_TYPE_HELP_TEXT) {
+        delete formData[key];
+      }
+    });
+    return formData;
+  }
+
   onChangeSaving = debounce((previousFormData, formData) => {
     if ((!previousFormData || !formData)) {
       return;
@@ -452,7 +464,7 @@ class FormCreate extends React.Component {
 
     if (this.props.onChange) {
       if (!deepCompare(previousFormDataFormatted, formDataFormatted)) {
-        this.props.onChange(formDataFormatted)
+        this.props.onChange(this.removeRudimentFormData(formDataFormatted))
       }
     }
   }, 0);
@@ -1305,9 +1317,22 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit})
   };
 
-  isPropertyNameAlreadyTaken(previousFieldKey, newFieldKey) {
+  isValidPropertyName(previousFieldKey, newFieldKey) {
     const check = String(newFieldKey) !== String(previousFieldKey) && Object.keys(this.state.schema.properties).some(next => String(next) === String(newFieldKey));
-    return check;
+    const propertyKeyIsEmpty = !this.state.schemaPropertyEdit.reference?.field_id || !this.state.fieldEdit.propertyKey;
+    let errorMessage = 'The field must not be duplicated or empty';
+    let isError = false;
+
+
+    if(Constants.NOT_MASTER_SCHEMA_FIELDS.indexOf(this.state.schemaPropertyEdit?.type) !== -1 && Number.isInteger(+this.state.fieldEdit.propertyKey)) {
+      errorMessage = 'The field must have at least one character';
+      isError = true;
+    }
+
+    return {
+      isError: check || propertyKeyIsEmpty || isError,
+      message: errorMessage
+    };
   }
 
   isSectionNameAlreadyTaken(previousFieldKey, newFieldKey) {
@@ -1321,7 +1346,7 @@ class FormCreate extends React.Component {
   elementEditModalSave(previousFieldKey) {
     const newFieldKey = this.state.fieldEdit.propertyKey;
 
-    if (this.isPropertyNameAlreadyTaken(previousFieldKey, newFieldKey)) {
+    if (this.isValidPropertyName(previousFieldKey, newFieldKey).isError) {
       return;
     }
 

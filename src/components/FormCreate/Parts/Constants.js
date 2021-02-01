@@ -56,7 +56,13 @@ export const RJSF_FIELD_TYPE_STRING = 'string',
 
 export const UI_SCHEMA_PROPERTY_EDIT = {};
 
+export const NOT_MASTER_SCHEMA_FIELDS = [
+  FIELD_TYPE_HELP_TEXT
+];
+
 export default {
+  NOT_MASTER_SCHEMA_FIELDS,
+
   UI_SCHEMA_PROPERTY_EDIT,
 
   FIELD_TYPES,

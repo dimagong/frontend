@@ -13,7 +13,6 @@ export const columnDefs = [
   {
     name: 'Reviewers',
     cell: (onboarding) => {
-      console.log('onboarding', onboarding);
       return onboarding.reviewers.map(reviewer => reviewer.first_name + ' ' + reviewer.last_name).join(', ')
     }
   },
