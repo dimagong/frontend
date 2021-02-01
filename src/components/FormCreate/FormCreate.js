@@ -475,7 +475,6 @@ class FormCreate extends React.Component {
     let state = this.initState(this.props);
 
 
-
     //state.formData = isEmpty(this.props.dForm.submit_data) ? {} : this.props.dForm.submit_data;
     this.dependencyChecker(state);
     this.setState(state, async () => {
@@ -817,7 +816,12 @@ class FormCreate extends React.Component {
                    value={this.state.fieldEdit.propertyKey}
                    type="text"
                    data-id={objKey}
-                   onChange={event => this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: event.target.value}})}
+                   onChange={event => this.setState({
+                     fieldEdit: {
+                       ...this.state.fieldEdit,
+                       propertyKey: event.target.value
+                     }
+                   })}
                    className="form-control"
                    placeholder="Name"
                    invalid={errorNameAlreadyTaken}
@@ -984,10 +988,10 @@ class FormCreate extends React.Component {
     const properties = schema.properties;
     schema.properties = {};
 
-    if(Array.isArray(state.uiSchema.fieldsOrdering)) {
+    if (Array.isArray(state.uiSchema.fieldsOrdering)) {
       state.uiSchema.fieldsOrdering = state.uiSchema.fieldsOrdering.filter(nextField => {
         // todo only fo numbers
-        if(String(nextField) === String(previousFieldKey)) {
+        if (String(nextField) === String(previousFieldKey)) {
           return false;
         }
         return true;
@@ -997,7 +1001,7 @@ class FormCreate extends React.Component {
 
       state.uiSchema.fieldsOrdering = state.uiSchema.fieldsOrdering.filter(nextField => {
         // todo only fo numbers
-        if(stringProps.indexOf(String(nextField)) === -1) {
+        if (stringProps.indexOf(String(nextField)) === -1) {
           return false;
         }
         return true;
@@ -1193,7 +1197,7 @@ class FormCreate extends React.Component {
     schemaPropertyEdit = this.state.controls[value];
 
     // if integer then is ms reference
-    if(Number.isInteger(+this.state.fieldEdit.propertyKey)) {
+    if (Number.isInteger(+this.state.fieldEdit.propertyKey)) {
       schemaPropertyEdit.reference.field_id = +this.state.fieldEdit.propertyKey;
     }
 
@@ -1202,6 +1206,10 @@ class FormCreate extends React.Component {
     //       delete uiSchema[newFieldKey];
     //     }
     // }
+
+    if(value === Constants.FIELD_TYPE_HELP_TEXT) {
+      this.setState({...this.state, fieldEdit: {...this.state.fieldEdit, propertyKey: ''}})
+    }
 
     if (
       objKey in this.state.schema.properties &&
@@ -1318,19 +1326,29 @@ class FormCreate extends React.Component {
   };
 
   isValidPropertyName(previousFieldKey, newFieldKey) {
-    const check = String(newFieldKey) !== String(previousFieldKey) && Object.keys(this.state.schema.properties).some(next => String(next) === String(newFieldKey));
-    const propertyKeyIsEmpty = !this.state.schemaPropertyEdit.reference?.field_id || !this.state.fieldEdit.propertyKey;
+    const check = String(newFieldKey) !== String(previousFieldKey) && Object
+      .keys(this.state.schema.properties)
+      .some(next => String(next) === String(newFieldKey));
+
+    let isEmpty = false;
     let errorMessage = 'The field must not be duplicated or empty';
     let isError = false;
 
+    const isNotRelatedToMasterSchema = Constants.NOT_MASTER_SCHEMA_FIELDS.indexOf(this.state.schemaPropertyEdit?.type) !== -1;
 
-    if(Constants.NOT_MASTER_SCHEMA_FIELDS.indexOf(this.state.schemaPropertyEdit?.type) !== -1 && Number.isInteger(+this.state.fieldEdit.propertyKey)) {
-      errorMessage = 'The field must have at least one character';
-      isError = true;
+    if (isNotRelatedToMasterSchema) {
+      if (Number.isInteger(+this.state.fieldEdit.propertyKey)) {
+        errorMessage = 'The field must have at least one character';
+        isError = true;
+      }
+      isEmpty = !this.state.fieldEdit.propertyKey;
+    } else {
+      isEmpty = !this.state.schemaPropertyEdit.reference?.field_id;
     }
 
+
     return {
-      isError: check || propertyKeyIsEmpty || isError,
+      isError: check || isEmpty || isError,
       message: errorMessage
     };
   }
@@ -1357,9 +1375,9 @@ class FormCreate extends React.Component {
     const oldPropertyType = getSpecificType(this.state.schema.properties[previousFieldKey]);
     const newPropertyType = getSpecificType(this.state.schemaPropertyEdit);
 
-    if(Array.isArray(uiSchema.fieldsOrdering)) {
+    if (Array.isArray(uiSchema.fieldsOrdering)) {
       uiSchema.fieldsOrdering = uiSchema.fieldsOrdering.map(nextField => {
-        if(String(nextField) === String(previousFieldKey)) {
+        if (String(nextField) === String(previousFieldKey)) {
           return newFieldKey;
         }
         return nextField;
@@ -1871,7 +1889,7 @@ class FormCreate extends React.Component {
     const allProps = Object.keys(this.state.schema.properties).map(next => String(next));
     const orderedProps = this.state.uiSchema.fieldsOrdering;
     return orderedProps;
-  }
+  };
 
   render() {
 

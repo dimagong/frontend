@@ -69,6 +69,7 @@ export function listControls(properties) {
 
       if (Constants.NOT_MASTER_SCHEMA_FIELDS.indexOf(schemaPropertyEdit?.type) !== -1) {
         return (<div>
+            <label htmlFor={`${index}-property-${column}`}>Property name</label>
             <Input id={`${index}-property-${column}`}
                    value={this.state.fieldEdit.propertyKey}
                    type="text"
