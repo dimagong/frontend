@@ -55,11 +55,11 @@ const Login = () => {
                 <Card className="rounded-0 mb-0 px-2 login-tabs-container">
                   <CardHeader className="pb-1">
                     <CardTitle>
-                      <h4 className="mb-0">Login</h4>
+                      <h4 className="mb-0">Welcome to ValidPath Portal</h4>
                     </CardTitle>
                   </CardHeader>
                   <p className="px-2 auth-title">
-                    Welcome back, please login to your account.
+                    Please login to proceed.
                   </p>
                   <CardBody className="pt-1">
                     <Form
