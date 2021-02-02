@@ -1,6 +1,6 @@
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import {Check, Plus} from "react-feather";
-import Constants from "./Constants";
+import Constants, {FIELD_TYPE_HELP_TEXT} from "./Constants";
 import {
   Badge,
   Card,
@@ -61,16 +61,36 @@ export function listControls(properties) {
 
     const renderKeyObjectEditColumn = (column, placeholder) => {
 
-      const errorPropertyNameAlreadyTaken = this.isPropertyNameAlreadyTaken(column, this.state.fieldEdit.propertyKey);
-      const referenceIsEmpty = !schemaPropertyEdit.reference?.field_id;
+      const errorPropertyNameAlreadyTaken = this.isValidPropertyName(column, this.state.fieldEdit.propertyKey);
 
       let errorMsg = 'Error';
 
       // console.log('errorPropertyNameAlreadyTaken', errorPropertyNameAlreadyTaken);
-      if(errorPropertyNameAlreadyTaken) {
-        errorMsg = 'That property name is already taken'
-      } else if(referenceIsEmpty) {
-        errorMsg = 'Property can`t be empty'
+
+      if (Constants.NOT_MASTER_SCHEMA_FIELDS.indexOf(schemaPropertyEdit?.type) !== -1) {
+        return (<div>
+            <label htmlFor={`${index}-property-${column}`}>Property name</label>
+            <Input id={`${index}-property-${column}`}
+                   value={this.state.fieldEdit.propertyKey}
+                   type="text"
+                   ref={this.refTitles}
+                   data-id={objKey}
+                   onChange={event => this.setState({
+                     fieldEdit: {
+                       ...this.state.fieldEdit,
+                       propertyKey: event.target.value
+                     }
+                   })}
+                   className="form-control"
+                   invalid={errorPropertyNameAlreadyTaken.isError}
+                   placeholder={placeholder}
+            />
+            <FormFeedback>
+              {errorPropertyNameAlreadyTaken.isError ? errorPropertyNameAlreadyTaken.message : null}
+            </FormFeedback>
+          </div>
+        );
+
       }
 
       return (
@@ -80,20 +100,10 @@ export function listControls(properties) {
               onChangeMasterSchemaProperty(fieldId)
             }}
             fieldId={schemaPropertyEdit.reference?.field_id}
-            invalid={errorPropertyNameAlreadyTaken || referenceIsEmpty}
-            errorMsg={errorMsg}
+            invalid={errorPropertyNameAlreadyTaken.isError}
+            errorMsg={errorPropertyNameAlreadyTaken.message}
             organizations={this.state.dFormTemplate.groups || []}
           />
-          {/*old property output*/}
-          {/*<Input id={`${index}-property-${column}`}*/}
-          {/*       value={this.state.fieldEdit.propertyKey} type="text"*/}
-          {/*       ref={this.refTitles}*/}
-          {/*       data-id={objKey}*/}
-          {/*       onChange={event => this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: event.target.value}})}*/}
-          {/*       className="form-control"*/}
-          {/*       invalid={errorPropertyNameAlreadyTaken}*/}
-          {/*       placeholder={placeholder}*/}
-          {/*/>*/}
         </div>)
     };
 
@@ -514,8 +524,7 @@ export function listControls(properties) {
           <div className="pull-right-icons position-relative">
 
             {renderKeyObjectColumn('property-' + objKey, 'Property')}
-            <Badge
-              color="primary position-absolute dform-type-badget">{currentSpecificType}</Badge>
+            <Badge color="primary position-absolute dform-type-badget">{currentSpecificType}</Badge>
           </div>
 
           <div className="d-flex dform-input-setting">
@@ -697,7 +706,7 @@ export function listControls(properties) {
         }
         let elementContent = Object.keys(groupedElements[groupName]);
         // todo ordering
-        if(this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
+        if (this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
           const stringProps = elementContent.map(nextPropertyName => String(nextPropertyName));
           elementContent = this.state.uiSchema.fieldsOrdering.filter(elementName => stringProps.indexOf(String(elementName)) !== -1);
         }
