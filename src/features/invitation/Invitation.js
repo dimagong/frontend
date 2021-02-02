@@ -18,13 +18,10 @@ import { selectError, selectInvitation } from "app/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { getInvitationRequest, sendInvitationAcceptRequest } from 'app/slices/appSlice'
 import { useRouter } from 'hooks/useRouter';
-import {Check} from 'react-feather'
-import Checkbox from '../../components/@vuexy/checkbox/CheckboxesVuexy'
 
 const Invitation = () => {
     const errors = useSelector(selectError) || {};
     const invitation = useSelector(selectInvitation);
-    const [agreeToConditions, setAgreeToConditions] = useState(false);
     const [invitationAccept, setInvitationAccept] = useState({});
     const dispatch = useDispatch();
     const {query} = useRouter()
@@ -106,14 +103,10 @@ const Invitation = () => {
                         <FormFeedback>{errors['password_confirmation']}</FormFeedback>
                       </FormGroup>
                       <div className="d-flex justify-content-between">
-                        <Checkbox
-                          color="primary"
-                          icon={<Check className="vx-icon" size={16} />}
-                          label="I agree to Rimbal's terms and conditions"
-                          value={agreeToConditions}
-                          onClick={() => { setAgreeToConditions(!agreeToConditions)}}
-                        />
-                        <Button color="primary" type="submit" disabled={!agreeToConditions} onClick={onSubmit}>
+                        <p style={{margin: "auto 0"}}>
+                          By entering this website you agree to the Terms and Conditions
+                        </p>
+                        <Button color="primary" type="submit" onClick={onSubmit}>
                           Submit
                         </Button>
                       </div>
