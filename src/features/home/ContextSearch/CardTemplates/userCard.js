@@ -99,9 +99,11 @@ const UserCardTemplate = ({className, oneColumn, onClick, editable = false, onEd
               <CardText>
                 <span style={{paddingRight: "6px"}}>E:</span> {manager.email ? `${manager.email}` : "email is empty"}
               </CardText>
-              <CardText>
-                M: {manager.number ? `${manager.number}` : "phone number is empty"}
-              </CardText>
+              {!!manager.number && (
+                <CardText>
+                  M: {manager.number}
+                </CardText>
+              )}
             </div>
           </div>
           <div className="user-card-body-right">
