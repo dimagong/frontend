@@ -62,7 +62,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
 
   // organization that are allowed to add to user
   const addableParentOrganizations = getUniq(parentOrganizations, userParentOrganizations)
-  console.log("parent", addableParentOrganizations)
+
   let addableChildOrganizations;
 
   // Do not allow add more than one child organization if no parent organization added
