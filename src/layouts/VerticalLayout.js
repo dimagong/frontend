@@ -37,6 +37,13 @@ class VerticalLayout extends PureComponent {
     customizer: false,
     currRoute: this.props.location.pathname
   };
+
+  constructor(props) {
+    super(props)
+
+    this.wrapperRef = React.createRef()
+  }
+
   collapsedPaths = [];
   mounted = false;
   updateWidth = () => {
@@ -90,7 +97,9 @@ class VerticalLayout extends PureComponent {
         customizer: { theme, sidebarCollapsed }
       }
     } = this.props;
-
+    if(prevProps.isContextSearchVisible === false &&  this.props.isContextSearchVisible === true) {
+      this.wrapperRef.current.scrollIntoView(true)
+    }
     let layout = theme;
     if (this.mounted) {
       if (layout === "dark") {
@@ -263,7 +272,7 @@ class VerticalLayout extends PureComponent {
       sidebarState: appProps.sidebarCollapsed
     };
     return (
-      <div
+      <div ref={this.wrapperRef}
         className={classnames(
           `wrapper vertical-layout theme-${appProps.menuTheme}`,
           {
