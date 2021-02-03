@@ -14,14 +14,15 @@ import {
   Card,
 } from "reactstrap";
 
-import {useDispatch, useSelector} from "react-redux";
-import {X} from "react-feather"
+import { useDispatch, useSelector } from "react-redux";
+import { X, Check } from "react-feather"
 import {selectCurrentManager} from 'app/selectors/userSelectors'
 
 import {setUser, updateUserRequest, setContext} from "app/slices/appSlice";
 import {selectError} from "app/selectors";
 
 import UserInvitationsCreate from '../userInvitations/UserInvitationsCreate'
+import Checkbox from 'components/@vuexy/checkbox/CheckboxesVuexy'
 
 const UserProfileEdit = ({manager, onEditClose}) => {
   const errors = useSelector(selectError) || {};
@@ -126,25 +127,38 @@ const UserProfileEdit = ({manager, onEditClose}) => {
                 <FormFeedback>{errors['number'] ? errors['number'] : ''}</FormFeedback>
               </FormGroup>
             </Col>
+            <Col sm="12">
+              <FormGroup>
+                <Checkbox
+                  color="primary"
+                  icon={<Check className="vx-icon" size={16} />}
+                  label="Show intro page"
+                  value={!!managerState.notify}
+                  onClick={() => {
+                    handleFieldChange("notify", Number(!managerState.notify));
+                  }}
+                />
+              </FormGroup>
+            </Col>
             <Col sm="6">
-              <div className="font-weight-bold-lighter column-sizing-user-info" style={{marginBottom: "5px"}}>Portal
-                access:
-              </div>
-              <div>
-                {
-                  manager.invited && !manager.invited.revoked_at ?
-                    <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
-                                           invitationText="Resend invitation"/> :
-                    manager.invited && !manager.invited.accepted_at ?
+              <FormGroup>
+                <Label for="" style={{marginBottom: 5}}>Portal access:</Label>
+                <div>
+                  {
+                    manager.invited && !manager.invited.revoked_at ?
                       <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
                                              invitationText="Resend invitation"/> :
-                      manager?.permissions?.ability !== "lead" && manager?.permissions?.ability !== "suspect" && manager.groups.length ?
-                        <UserInvitationsCreate send={true} resend={false} trash={false}
-                                               user={manager}/>
-                        : 'User cannot be invited'
-                }
+                      manager.invited && !manager.invited.accepted_at ?
+                        <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
+                                               invitationText="Resend invitation"/> :
+                        manager?.permissions?.ability !== "lead" && manager?.permissions?.ability !== "suspect" && manager.groups.length ?
+                          <UserInvitationsCreate send={true} resend={false} trash={false}
+                                                 user={manager}/>
+                          : <p style={{paddingLeft: "0.2rem"}}>User cannot be invited</p>
+                  }
 
-              </div>
+                </div>
+              </FormGroup>
             </Col>
             <Col className="d-flex justify-content-end flex-wrap" sm="12">
               <FormGroup>
