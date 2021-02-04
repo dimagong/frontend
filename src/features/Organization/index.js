@@ -96,11 +96,15 @@ const Organization = ({ create = false }) => {
 
     if (!(organizationData.logo instanceof File) && organizationData.logo?.name) {
       const logo = await createFiles(selectedOrganizationData.logo)
+      // todo bug with formData repeated key
+      dataToSubmit.delete("logo");
       dataToSubmit.append("logo", logo)
     }
 
     if (!(organizationData.brochure instanceof File) && organizationData.brochure?.name) {
       const brochure = await createFiles(selectedOrganizationData.brochure)
+      // todo bug with formData repeated key
+      dataToSubmit.delete("brochure");
       dataToSubmit.append("brochure", brochure)
     }
 
