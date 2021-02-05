@@ -188,13 +188,13 @@ const OnboardingUser = () => {
         <div className={"welcome-onboarding_intro-text"} dangerouslySetInnerHTML={{__html: profile.notify_entity.intro_text}} />
         <div className={"welcome-onboarding_download-button"}>
           <Button className={"welcome-onboarding_download-button_button"} onClick={() => {saveBrochure(profile.notify_entity.brochure)}}>
-            Download brochure <ChevronDown />
+            Download the Welcome to {profile.permissions.organization} brochure <ChevronDown />
           </Button>
         </div>
         {!!isOnboarding() && (
           <div className={"welcome-onboarding_join-button"}>
             <Button className={"welcome-onboarding_join-button_button"} onClick={proceedUserToOnboarding}>
-              Join a community of<br/> Independent Financial Adviser
+              Let's get started
               <ChevronRight className={"welcome-onboarding_join-button_button_chevron"} size={45} />
             </Button>
           </div>

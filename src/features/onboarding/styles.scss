@@ -52,7 +52,7 @@
   }
   &_join-button {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     &_button {
       cursor: pointer;
       text-align: right;
