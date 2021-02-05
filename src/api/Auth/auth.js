@@ -6,10 +6,10 @@ const authApi = {
   async login(data) {
     try {
 
-      await instance({
-        url: '/sanctum/csrf-cookie',
-        method: 'GET'
-      });
+      // await instance({
+      //   url: '/sanctum/csrf-cookie',
+      //   method: 'GET'
+      // });
 
       const result = await instance({
         url: loginPath,
