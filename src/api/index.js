@@ -9,6 +9,7 @@ const instance = axios.create({
   headers: {"Content-Type": "application/json"},
 });
 
+instance.defaults.withCredentials = true;
 
 instance.interceptors.request.use(
   config => {
@@ -31,8 +32,10 @@ instance.interceptors.response.use(
   error => {
     if ('error' in error.response.data &&
       error.response.data.error.status === 401 &&
-      error.config.url.indexOf('login') === -1) {
-      store.dispatch(logout())
+      error.config.url.indexOf('login') === -1 &&
+      error.config.url.indexOf('logout') === -1
+    ) {
+      store.dispatch(logout());
     } else if (error.response.data?.error?.message) {
       toast.error(error.response.data.error.message)
     }

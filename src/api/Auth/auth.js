@@ -5,6 +5,12 @@ import { loginPath, resetPasswordPath, verifyPasswordPath } from "constants/auth
 const authApi = {
   async login(data) {
     try {
+
+      await instance({
+        url: '/sanctum/csrf-cookie',
+        method: 'GET'
+      });
+
       const result = await instance({
         url: loginPath,
         method: "POST",
@@ -52,8 +58,19 @@ const authApi = {
     }
   },
 
-  logout() {
+
+
+  async logout() {
     authService.logout();
+
+    try {
+      await instance({
+        url: '/api/logout',
+        method: 'POST'
+      });
+    } catch (e) {
+        return false;
+    }
 
     return true;
   },
