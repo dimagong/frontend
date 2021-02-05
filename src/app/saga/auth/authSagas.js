@@ -57,6 +57,7 @@ function* verifyPassword({ payload }) {
 }
 
 function* onLogout() {
+  yield call(authApi.logout);
   yield put(resetAppSlice())
   yield put(resetOnboardingSlice());
 }

@@ -133,7 +133,7 @@ const UserProfileEdit = ({manager, onEditClose}) => {
                   color="primary"
                   icon={<Check className="vx-icon" size={16} />}
                   label="Show intro page"
-                  value={!!managerState.notify}
+                  checked={+managerState.notify === 1 ? true : false}
                   onClick={() => {
                     handleFieldChange("notify", Number(!managerState.notify));
                   }}
