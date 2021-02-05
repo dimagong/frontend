@@ -229,18 +229,18 @@ const OnboardingUser = () => {
 
           {{submitted: <>
               <h1>Under Review</h1>
-              <div>You have successfully submitted this application, and it is currently under review.</div>
-              <div><span className="font-weight-bold">What happens next?</span><br />After review, we will be in touch with you on the progress of your application.</div>
+              <div>You have successfully submitted your information, and it is currently under review.</div>
+              <div><span className="font-weight-bold">What happens next?</span><br />After our review, we will be in touch with next steps.</div>
             </>,
             approved: <>
               <h1>Success!</h1>
-              <div>Your application review was successful!</div>
-              <div><span className="font-weight-bold">What happens next?</span><br />We will be in touch with you shortly with next steps, thank you for your patience.</div>
+              <div>Our review of your information has completed.</div>
+              <div>You can now continue via the ValidPath Portal and we will be in touch with you shortly to discuss  next steps.</div>
             </> ,
             recent: <>
               <h1>Submitted</h1>
-              <div>Your application has been submitted for review successfully.</div>
-              <div><span className="font-weight-bold">What happens next?</span><br />We will review your application as soon as possible.</div>
+              <div>Thank you.<br/><br/>Your information has been submitted.</div>
+              <div>We will review your application and get back shortly.</div>
             </>,
           }[status]}
 
@@ -251,6 +251,11 @@ const OnboardingUser = () => {
                 recent: "In the meantime, please continue with the remaining applications to complete your onboarding process.",
               }[status]}
             </div>
+          )}
+          { status === "approved" ? (
+            <div><br/>Thank you,<br/>The ValidPath Team</div>
+          ) : (
+            <div><br/>Sincerely,<br/>The ValidPath Team</div>
           )}
           <div className={"status_description_action"}>
             <Button className={"status_description_action_show-button"} onClick={() => showApplication(onboarding.id)} color="primary">
