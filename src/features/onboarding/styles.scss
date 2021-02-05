@@ -2,6 +2,9 @@
   font-family: Montserrat;
   max-width: 746px;
   margin: 0 auto;
+  strong {
+    font-weight: 600!important;
+  }
   &_title {
     font-size: 53px;
     color: #90349F;
