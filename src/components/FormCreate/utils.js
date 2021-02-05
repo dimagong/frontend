@@ -35,7 +35,7 @@ export function dataURItoBlob(dataURI) {
     });
 
   } catch (e) {
-    throw new Error("Empty file")
+    throw new Error(e)
   }
 
   return {

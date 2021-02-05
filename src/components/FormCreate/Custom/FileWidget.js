@@ -167,6 +167,7 @@ export function FileWidget(props) {
     if (!filesDataUrl || !filesDataUrl.length) return <div></div>;
 
     return filesDataUrl.map((fileDataUrl, index) => {
+      if(!fileDataUrl.property_value) return <></>
       let file = dataURItoBlob(fileDataUrl.property_value);
       let fileUrl = window.URL.createObjectURL(
         new Blob([file.blob], {type: file.blob.type})
