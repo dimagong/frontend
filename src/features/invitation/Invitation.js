@@ -18,6 +18,7 @@ import { selectError, selectInvitation } from "app/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { getInvitationRequest, sendInvitationAcceptRequest } from 'app/slices/appSlice'
 import { useRouter } from 'hooks/useRouter';
+import TermsAndConditions from 'assets/ValidPath-privacy-policy.pdf'
 
 const Invitation = () => {
     const errors = useSelector(selectError) || {};
@@ -104,7 +105,7 @@ const Invitation = () => {
                       </FormGroup>
                       <div className="d-flex justify-content-between">
                         <p style={{margin: "auto 0"}}>
-                          By entering this website you agree to the Terms and Conditions
+                          By clicking Submit, you agree to our <a href={TermsAndConditions} target="_blank" rel='noopener noreferrer'>Privacy and Terms</a>
                         </p>
                         <Button color="primary" type="submit" onClick={onSubmit}>
                           Submit

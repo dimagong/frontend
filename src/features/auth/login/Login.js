@@ -23,6 +23,8 @@ import { useDispatch } from "react-redux";
 import {loginRequest} from "app/slices/appSlice"
 import { push } from "connected-react-router"
 
+import TermsAndConditions from 'assets/ValidPath-privacy-policy.pdf'
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -107,7 +109,10 @@ const Login = () => {
                           <Link to="/forgot-password">Forgot Password?</Link>
                         </div>
                       </FormGroup>
-                      <div className="d-flex justify-content-end">
+                      <div className="d-flex justify-content-between align-items-end">
+                        <div>
+                          <a href={TermsAndConditions} target="_blank" rel='noopener noreferrer'>Privacy & Terms</a>
+                        </div>
                         <Button color="primary" type="submit">
                           Login
                         </Button>
