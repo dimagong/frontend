@@ -400,7 +400,12 @@ const allowUserAbilitySuccess = (state, {payload}) => {
   const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.data.user_id)
   const user = state.user.managers[userIndex]
 
-  user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response
+  const editedOrg = user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0]
+  editedOrg.abilities = payload.response
+
+  if (state.user.managers[userIndex].permissions.organization === editedOrg.name) {
+    user.permissions.ability = payload.data.ability
+  }
 
   state.user.managers[userIndex] = user;
   state.isLoading = false;
