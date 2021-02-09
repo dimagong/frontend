@@ -10,3 +10,9 @@
     font-weight: bold;
   }
 }
+
+.field-with-error {
+  .field-label_asterix {
+    color: #dc3545;
+  }
+}

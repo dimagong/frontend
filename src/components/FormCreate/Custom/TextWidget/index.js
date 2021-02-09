@@ -12,13 +12,12 @@ const Index = (props) => {
 
   return (
     <div className="custom-form-filed form-create_custom-text-widget">
-      <FieldLabel label={props.label} />
+      <FieldLabel label={props.label} required={props.required}/>
       <input
         id={props.id}
         type={fieldType}
         disabled={props.disabled}
         value={props.value}
-        required={props.required}
         onChange={(event) => props.onChange(event.target.value)}
         placeholder={props.placeholder || "Enter your answer here"}
       />

@@ -64,7 +64,7 @@ export function CheckboxesWidget(props) {
 
   return (
     <div>
-      <FieldLabel label={props.schema.title} />
+      <FieldLabel label={props.schema.title} required={props.required} />
       {props.options.enumOptions.map((option, key) => {
         return (
           <CustomCheckbox

@@ -12,7 +12,7 @@ export function CheckboxWidget(props) {
 
   return (
     <div>
-      {props.options.label !== false ? <FieldLabel label={props.label} />  : null}
+      {props.options.label !== false ? <FieldLabel label={props.label} required={props.required} />  : null}
       <div style={{
         marginBottom: "20px",
         marginLeft: "30px",

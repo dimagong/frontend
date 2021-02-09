@@ -125,12 +125,11 @@ export function ObjectFieldTemplate(props) {
           };
 
           let fieldClasses = [getColumnClass(element.name, element)];
-
-          if (~this.state.uiSchema?.errors?.field.indexOf(parseInt(element.name))) {
+          if (~this.state.uiSchema?.errors?.field.indexOf(String(element.name))) {
             fieldClasses.push("field-with-error")
           }
 
-          if (this.state.schema?.required.includes(parseInt(element.name))) {
+          if (this.state.schema?.required.includes(String(element.name))) {
             fieldClasses.push("required-field")
           }
 

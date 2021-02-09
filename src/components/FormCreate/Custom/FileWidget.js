@@ -252,10 +252,10 @@ export function FileWidget(props) {
 
 
   const isDropZoneVisible = props.multiple ? true : (props.value && props.value.length) || filesLoading.length ? false : true;
-
+  console.log("files", props)
   return (
     <div>
-      <FieldLabel label={props.schema.title} />
+      <FieldLabel label={props.schema.title} required={props.required}/>
 
       <div className="rendered-files">
 

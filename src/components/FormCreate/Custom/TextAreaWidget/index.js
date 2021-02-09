@@ -9,7 +9,7 @@ const TextAreaWidget = ({value, onChange, options, label, disabled, required}) =
 
   return (
     <div>
-      {options.label !== false ? <FieldLabel label={label} /> : null}
+      {options.label !== false ? <FieldLabel label={label} required={required}/> : null}
       <textarea
         placeholder={"Enter your answer here"}
         value={value}
