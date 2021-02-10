@@ -30,7 +30,7 @@ export const columnDefs = ({handleDelete}) => [
     width: 250
   },
   {
-    headerName: "Organizations",
+    headerName: "Organisations",
     field: "groups",
     suppressSizeToFit: false,
     width: 250,

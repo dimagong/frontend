@@ -124,7 +124,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
     <div className={`user-roles ${className ? className : ""}`}>
       <div className="permissions-title">
         <div>
-          Organizations
+          Organisations
         </div>
         <div>
           Roles

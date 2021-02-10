@@ -92,7 +92,7 @@ const Applications = () => {
             Description
           </div>
           <div>
-            Organizations
+            Organisations
           </div>
         </div>
 
@@ -149,7 +149,7 @@ const Applications = () => {
             Description
           </div>
           <div>
-            Organizations
+            Organisations
           </div>
         </div>
         <Scrollbars  autoHeight autoHeightMax={430}>
