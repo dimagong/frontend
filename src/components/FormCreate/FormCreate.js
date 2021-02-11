@@ -195,6 +195,9 @@ class FormCreate extends React.Component {
     this.disableAllInputs(propsDFormSchema, propsDFormUiSchema);
 
     const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
+
+    const loadingFiles = this.getFormatLoadingFiles(props.dForm.files);
+
     return {
       onboardingUser: props.onboardingUser,
       additionalData: {
@@ -230,7 +233,7 @@ class FormCreate extends React.Component {
           label: true
         }
       },
-      loadingFiles: [],
+      loadingFiles: loadingFiles,
       formData: formData,
       sumbitFormData: {},
       dFormTemplate: props.dForm,
@@ -497,15 +500,17 @@ class FormCreate extends React.Component {
     return formDataFormatted;
   }
 
-  setLoadingFiles() {
-
-    let loadingFiles = this.state.dFormTemplate.files.map((file) => {
+  getFormatLoadingFiles(files) {
+    return files.map((file) => {
       return {
         file,
         property_value: null
       }
     });
-    this.setState({loadingFiles})
+  }
+
+  setLoadingFiles() {
+    this.setState({loadingFiles: this.getFormatLoadingFiles(this.state.dFormTemplate.files)})
   }
 
   async groupedFiles() {

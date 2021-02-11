@@ -97,10 +97,15 @@ export function FileWidget(props) {
     return (
       <div className="file">
         <div className="name">
-          <a target="_blank" href={file.url}>{file.name}</a>
+          <a target="_blank" href={file.url}>{decodeURIComponent(file.name)}</a>
         </div>
 
         <div className="actions">
+          {
+            !isRemoving ? <Badge color="primary cursor-pointer ml-1 mr-1" onClick={() => saveFile(file.blob, file.name)} >
+              download
+            </Badge> : null
+          }
           <div className="upload-progress">
             {isRemoving ? (
               <Badge color="danger">
@@ -109,7 +114,6 @@ export function FileWidget(props) {
             ) : (
               <>100%</>
             )}
-
           </div>
           {/*<span>*/}
 
@@ -136,7 +140,7 @@ export function FileWidget(props) {
     return (
       <div className={"file"}>
         <div className="name">
-          {name}
+          {decodeURIComponent(name)}
         </div>
         <div>
           <div className="upload-progress">
@@ -160,7 +164,24 @@ export function FileWidget(props) {
     let fileUrl = window.URL.createObjectURL(
       new Blob([file.blob], {type: file.blob.type})
     );
-    return renderFile({name: file.name, url: fileUrl}, 0);
+    return renderFile({name: file.name, url: fileUrl, blob: file.blob}, 0);
+  };
+
+  const saveFile = (blob, filename) => {
+    if (window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = filename;
+      a.click();
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, 0)
+    }
   };
 
   const renderMultipleFile = (filesDataUrl) => {
@@ -170,7 +191,7 @@ export function FileWidget(props) {
       if(!fileDataUrl.property_value) return <></>
       let file = dataURItoBlob(fileDataUrl.property_value);
       let fileUrl = window.URL.createObjectURL(
-        new Blob([file.blob], {type: file.blob.type})
+        new Blob([file.blob], {type: file.blob.type, name: 'test'})
       );
 
       return renderFile({name: file.name, url: fileUrl}, index);
@@ -179,8 +200,6 @@ export function FileWidget(props) {
   };
 
   const renderFiles = () => {
-
-
     if(this.state.loadingFiles.length) {
       let loadingFiles = this.state.loadingFiles.filter(loadingFile => {
         return loadingFile.file.group === propertyKey
@@ -190,8 +209,6 @@ export function FileWidget(props) {
         return <FileItem name={loadingFile.file.name} isLoading={true} />
       })
     }
-
-
     let mainFiles = props.multiple ? renderMultipleFile(props.value) : renderSingleFile(props.value);
 
     return <>
@@ -200,7 +217,7 @@ export function FileWidget(props) {
 
       {
         filesLoading.map((fileLoading) => {
-          return <FileItem name={dataURItoBlob(fileLoading).name} isLoading={true} />
+          return <FileItem name={decodeURIComponent(dataURItoBlob(fileLoading).name)} isLoading={true} />
         })
       }
     </>
@@ -255,14 +272,13 @@ export function FileWidget(props) {
   }
 
 
-  const isDropZoneVisible = props.multiple ? true : (props.value && props.value.length) || filesLoading.length ? false : true;
+  const isDropZoneVisible = props.multiple ? true : (props.value && props.value.length) || this.state.loadingFiles?.length ? false : true;
 
   return (
     <div>
       <FieldLabel label={props.schema.title} required={props.required}/>
 
       <div className="rendered-files">
-
         {renderFiles()}
       </div>
       <div className="file-input">
@@ -278,7 +294,6 @@ export function FileWidget(props) {
             />
           </div>
         )}
-
       </div>
     </div>
   )
