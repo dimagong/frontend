@@ -61,13 +61,12 @@ const authApi = {
 
 
   async logout() {
-    authService.logout();
-
     try {
       await instance({
         url: '/api/logout',
         method: 'POST'
       });
+      authService.logout();
     } catch (e) {
         return false;
     }

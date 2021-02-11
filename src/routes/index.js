@@ -1,41 +1,42 @@
 import React from "react";
 import routes from "./routes";
-import { v4 } from "uuid";
-import { Switch } from "react-router-dom";
-import { PrivateRoute, PublicRoute } from "./RouteProvider";
-import { useSelector} from "react-redux"
-import { selectAuth} from "app/selectors/authSelectors"
+import {v4} from "uuid";
+import {Switch} from "react-router-dom";
+import {PrivateRoute, PublicRoute} from "./RouteProvider";
+import {useSelector} from "react-redux"
+import {selectAuth} from "app/selectors/authSelectors"
 import {selectProfile} from 'app/selectors'
 import {userService} from 'services/user'
 import {selectUserAbility} from '../app/selectors/userSelectors'
 
-const Routes = ()=>{
-    const isAuth = useSelector(selectAuth);
-    const userRole = useSelector(selectUserAbility);
+const Routes = () => {
+  const isAuth = useSelector(selectAuth);
+  const userRole = useSelector(selectUserAbility);
 
-    const isOnboarding = userRole === "prospect"
+  const isOnboarding = userRole === "prospect";
 
-    // if(isAuth && !profile) return null
+  // if(isAuth && !profile) return null
 
-    return(
-        <Switch>
-                {routes.map((route) => {
-                    const {  path, Component, exact, isPrivate, redirect, ...rest } = route;
+  return (
+    <Switch>
+      {routes.map((route) => {
+        const {path, Component, exact, isPrivate, redirect, ...rest} = route;
 
 
+        if (isPrivate) {
 
-                    if (isPrivate) {
+          return (
+            <PrivateRoute isOnboarding={isOnboarding} path={path} exact={exact} key={v4()} redirect={redirect}
+                          isAuth={isAuth} Component={Component} {...rest}/>
+          );
+        }
 
-                        return (
-                            <PrivateRoute isOnboarding={isOnboarding} path={path} exact={exact} key={v4()} redirect={redirect} isAuth={isAuth} Component={Component} {...rest}/>
-                        );
-                    }
-
-                    return (
-                        <PublicRoute path={path} exact={exact} key={v4()} redirect={redirect} isAuth={isAuth} Component={Component} {...rest}/>
-                    );
-                })}
-            </Switch>
-    )
-}
+        return (
+          <PublicRoute path={path} exact={exact} key={v4()} redirect={redirect} isAuth={isAuth}
+                       Component={Component} {...rest}/>
+        );
+      })}
+    </Switch>
+  )
+};
 export default Routes;

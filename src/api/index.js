@@ -35,7 +35,12 @@ instance.interceptors.response.use(
       error.config.url.indexOf('login') === -1 &&
       error.config.url.indexOf('logout') === -1
     ) {
-      store.dispatch(logout());
+      if(authService.isLoggedIn()) {
+        store.dispatch(logout());
+        authService.logout();
+      } else {
+        authService.logout();
+      }
     } else if (error.response.data?.error?.message) {
       toast.error(error.response.data.error.message)
     }

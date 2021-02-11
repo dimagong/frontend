@@ -19,7 +19,7 @@ const loginError = (state , {payload}) => {
 };
 
 const logout = (state) => {
-  logoutService();
+  // logoutService();
 
   state.isAuth = false;
   state.isLoading = false;

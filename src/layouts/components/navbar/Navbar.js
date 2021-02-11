@@ -20,6 +20,7 @@ import { history } from "../../../history";
 
 import {selectManager, selectProfile, selectManagers} from "app/selectors"
 import { NavLink } from "react-router-dom"
+import store from "app/store"
 import {ChevronDown, ChevronUp, Power, Menu} from "react-feather"
 
 import { logout, showContextSearch, hideContextSearch } from 'app/slices/appSlice'
@@ -28,6 +29,7 @@ import {userService} from 'services/user'
 
 import SearchInput from './SearchInput'
 import {capitalizeAll} from '../../../utility/common'
+import authApi from "../../../api/Auth/auth";
 
 const UserName = ({userProfile}) => {
   if (Object.keys(userProfile).length && userProfile.constructor === Object) {
@@ -43,8 +45,9 @@ const ThemeNavbar = props => {
   const navbarTypes = ["floating", "static", "sticky", "hidden"]
 
   const logoutJWT = async () => {
-    props.logout();
-    props.logoutWithJWT();
+    store.dispatch(logout());
+    // props.logout();
+    // props.logoutWithJWT();
     history.push("/login");
   }
 
