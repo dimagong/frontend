@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {dataURItoBlob, extractFileInfo, processFiles} from "../utils";
 import {concat, isEmpty} from "lodash";
 import {X} from "react-feather";
@@ -17,7 +17,7 @@ const clone = rfdc();
 export function FileWidget(props) {
 
   const propertyKey = props.id.replace('root_', '');
-
+  const inputFileRef = useRef( null );
   let [filesLoading, setFilesLoading] = useState([]);
   let [filesRemoving, setFilesRemoving] = useState([]);
 
@@ -248,7 +248,7 @@ export function FileWidget(props) {
 
   const onDrop = event => {
     event.preventDefault();
-    const files = event.dataTransfer.files;
+    const files = event.dataTransfer?.files || event.target.files;
 
     // migration: Make data format acceptable by all other methods
     const formattedFiles = [];
@@ -267,6 +267,10 @@ export function FileWidget(props) {
     this.props.fileLoader && onChange(migration)
   }
 
+  const openFileManager = () => {
+    inputFileRef.current.click();
+  }
+
 
   const isDropZoneVisible = props.multiple ? true : (props.value && props.value.length) || this.state.loadingFiles?.length ? false : true;
 
@@ -279,8 +283,15 @@ export function FileWidget(props) {
       </div>
       <div className="file-input">
         {isDropZoneVisible && !props.disabled && (
-          <div className="drop-zone" onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave} onDragEnter={onDragEnter}>
-            Drag 'n' Drop files here
+          <div className="drop-zone" onClick={openFileManager} onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave} onDragEnter={onDragEnter}>
+            Drag 'n' Drop files here or click to open file manager
+
+            <input className={"form-element_file-input_hidden-input-file"}
+                   onChange={onDrop}
+                   type="file"
+                   multiple={!!props.multiple}
+                   ref={inputFileRef}
+            />
           </div>
         )}
       </div>
