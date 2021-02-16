@@ -8,10 +8,14 @@ import ProgressBar from '../Custom/ProgressBar'
 
 import './sectionsStyles.scss'
 import {selectUserOnboarding} from 'app/selectors/userSelectors'
+import {
+  selectProfile
+} from "app/selectors"
 
 export default function Sections(props) {
 
-  const onboarding = useSelector(selectUserOnboarding)
+  const onboarding = useSelector(selectUserOnboarding);
+  const profile = useSelector(selectProfile);
 
   const {
     defaultTab,
@@ -22,10 +26,20 @@ export default function Sections(props) {
     renderElementsWithNoGroupsAndSections,
     getErrors,
     getProgress,
-    completed
+    completed,
+    setSectionViewState
   } = props;
 
   const [keyTab, setKeyTab] = useState(defaultTab);
+
+  const changeSectionViewState = (sectionName) => {
+    // todo make some central permission decision service, need add checks for dForm only editing (not template)
+    const isProspect = profile.permissions.ability === 'prospect';
+
+    if(isProspect) {
+      setSectionViewState(sectionName);
+    }
+  };
 
   return (
     <div className="sections">
@@ -38,7 +52,8 @@ export default function Sections(props) {
                   active: keyTab == index
                 }, "sections-nav_item")}
                 onClick={() => {
-                  setKeyTab(index)
+                  setKeyTab(index);
+                  changeSectionViewState(section);
                 }}
               >
                 <div className={`sections-nav_item_title ${(getErrors())[section] ? "with-errors" : ""}`}>

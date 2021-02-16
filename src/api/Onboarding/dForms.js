@@ -148,6 +148,22 @@ const dFormApi = {
       throw err;
     }
   },
+  async updateViewedSections(id, isViewedSectionsList) {
+    console.log(isViewedSectionsList);
+    try {
+      const result = await instance({
+        url: `api/dform/${id}/viewed-sections`,
+        method: "PUT",
+        data: {
+          is_viewed_sections: isViewedSectionsList
+        }
+      });
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
 };
 
 export default dFormApi;

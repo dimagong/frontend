@@ -196,7 +196,7 @@ class FormCreate extends React.Component {
 
     const protectedProperties = isEmpty(props.dForm.protected_properties) ? protectedPropertiesDefault : props.dForm.protected_properties;
 
-    const loadingFiles = this.getFormatLoadingFiles(props.dForm.files);
+    const loadingFiles = props.dForm.files ? this.getFormatLoadingFiles(props.dForm.files) : [];
 
     return {
       onboardingUser: props.onboardingUser,
