@@ -98,10 +98,13 @@ const UserEditPreview = (props, context) => {
           <CardText className="mb-0 email">
             <span style={{paddingRight: "6px"}}>E:</span> {manager.email ? `${manager.email}` : "email is empty"}
           </CardText>
-          <CardText className="mb-3">
-            M: {manager.number ? `${manager.number}` : "phone number is empty"}
-          </CardText>
-          <CardText>
+          {!!manager.number && (
+            <CardText>
+              M: {manager.number}
+            </CardText>
+          )}
+
+          <CardText className="mt-3">
             {/*{manager.roles && !!manager.roles.length && (manager.roles.map((role) => role + " ").join("")) + " at "}*/}
             {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
             {(manager?.permissions?.ability && manager?.permissions?.organization) ? capitalizeAll(manager?.permissions?.ability.replace("_", " ")) + " at " + manager?.permissions?.organization : ""}
@@ -126,9 +129,11 @@ const UserEditPreview = (props, context) => {
               <CardText>
                 <span style={{paddingRight: "6px"}}>E:</span> {manager.email ? `${manager.email}` : "email is empty"}
               </CardText>
-              <CardText>
-                M: {manager.number ? `${manager.number}` : "phone number is empty"}
-              </CardText>
+              {!!manager.number && (
+                <CardText>
+                  M: {manager.number}
+                </CardText>
+              )}
             </div>
           </div>
           <div className="user-card-body-right">
