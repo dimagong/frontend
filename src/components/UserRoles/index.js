@@ -182,7 +182,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
         <ModalBody>
           <div>
             <span style={{fontSize: "22px"}}>
-            Are you sure you want to remove {deletionData.name} from {deletionData.orgName} organization ?
+            Are you sure you want to remove {deletionData.name} from {deletionData.orgName} organisation ?
           </span>
           </div>
           <div className={"organization-remove-modal_action-buttons"}>
@@ -198,13 +198,13 @@ const UserRoles = ({manager, userOrganizations, className}) => {
 
       <Modal className="organization-add-modal" isOpen={isAddOrganizationModalOpen} fade={false} toggle={()=>{setIsAddOrganizationModalOpen(false)}}>
         <ModalBody>
-          <h1 className="organization-add-modal_title">Organization select</h1>
+          <h1 className="organization-add-modal_title">Organisation select</h1>
           <Scrollbars autoHeight autoHeightMax={500}>
             <div className="organization-add-modal_all-addable-list">
               {!!addableParentOrganizations.length && (
                 <div className={`organizations-list parent-organizations ${addableChildOrganizations.length ? "with-bottom-border" : ''}`}>
                   <h6 className="organizations-list_title">
-                    Parent organizations
+                    Parent organisations
                   </h6>
                   <div className="organizations-list_list">
                     {addableParentOrganizations.map((org) => (
@@ -220,7 +220,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
               {!!addableChildOrganizations.length && (
                 <div className="organizations-list child-organizations">
                   <h6 className="organizations-list_title">
-                    Child organizations
+                    Child organisations
                   </h6>
                   <div className="organizations-list_list">
                     {addableChildOrganizations.map((org) => (
