@@ -86,6 +86,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
   let nav;
 
+  // users without role admin shouldn't see organisations tab
   if(profile && profile?.permissions?.ability === "admin") {
     nav = NAV_OPTIONS
   } else {
@@ -141,7 +142,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                           </Button>
                         ) : <div />}
 
-                        <Button style={{minHeight: "38px"}} color="primary" onClick={handleContextSearchHide} className="hide-context-icon p-0">
+                        <Button color="primary" onClick={handleContextSearchHide} className="hide-context-icon p-0">
                           <ChevronUp size={28} />
                         </Button>
                       </div>

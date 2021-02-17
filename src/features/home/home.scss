@@ -150,6 +150,7 @@
     .hide-context-icon {
       background-color: #7367F0!important;
       border-radius: 25px;
+      min-height: 38px;
       &:hover, &:active, &:focus {
         border-radius: 25px;
       }
