@@ -15,8 +15,23 @@ import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
 import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import { useDispatch, useSelector } from "react-redux";
-import { selectManager, selectUserDForms, selectUserWorkfows, selectUserReviewers } from "app/selectors";
-import {setManagerOnboardingProperty, setManagerOnboarding , setUserDForms, setUserWorkflows, setUserReviewers, createUserOnboardingRequest, deleteUserOnboardingRequest} from 'app/slices/appSlice'
+import {
+  selectManager,
+  selectUserDForms,
+  selectUserWorkfows,
+  selectUserReviewers,
+} from "app/selectors";
+import {
+  setManagerOnboardingProperty,
+  setManagerOnboarding,
+  setUserDForms,
+  setUserWorkflows,
+  setUserReviewers,
+  createUserOnboardingRequest,
+  deleteUserOnboardingRequest,
+  updateUserOnboardingReviewersRequest,
+  updateUserOnboardingWorkflowRequest,
+} from 'app/slices/appSlice'
 
 const prepareSelect = (data) => {
   return data.map((value) => {
@@ -38,13 +53,12 @@ const prepareDFormSelect = (data) => {
 }
 
 const UserOnboardingCreate = ({isCreate}) => {
+  const dispatch = useDispatch();
+
   const manager = useSelector(selectManager);
   const dForms = useSelector(selectUserDForms)
   const workflows = useSelector(selectUserWorkfows)
   const reviewers = useSelector(selectUserReviewers)
-  const dispatch = useDispatch();
-
-
 
   const closeCreateOnboarding = () => {
     dispatch(setManagerOnboarding(null))
@@ -56,10 +70,26 @@ const UserOnboardingCreate = ({isCreate}) => {
 
   const onSelectReviewersChange = (values) => {
     values ? dispatch(setUserReviewers(reviewers.filter( group => values.some( value => value.label === group.first_name)))) : dispatch(setUserReviewers([]))
+
+    if(!isCreate.current && values) {
+      dispatch(updateUserOnboardingReviewersRequest({
+        reviewersIds: values.map(reviewer => reviewer.value.id),
+        onboardingId: manager.onboarding.id,
+        managerId: manager.id,
+      }))
+    }
   }
 
   const onSelectWorkflowChange = (values) => {
-    values ? dispatch(setUserWorkflows(values[0].value)) : dispatch(setUserWorkflows(null))
+    values ? dispatch(setUserWorkflows(values[values.length-1].value)) : dispatch(setUserWorkflows(null))
+
+    if(!isCreate.current && values) {
+      dispatch(updateUserOnboardingWorkflowRequest({
+        workflowId: values[values.length-1].value.id,
+        onboardingId: manager.onboarding.id,
+        managerId: manager.id
+      }))
+    }
   }
 
   const createOnboarding = () => {
@@ -108,14 +138,15 @@ const UserOnboardingCreate = ({isCreate}) => {
                 <div className="font-weight-bold column-sizing">Reviewer</div>
                 <div className="full-width">
                   <Select
-                    isDisabled={!isCreate.current}
                     components={{DropdownIndicator}}
                     value={prepareSelect(manager.onboarding.reviewers)}
                     maxMenuHeight={200}
                     isMulti
+                    isSearchable={manager.onboarding.reviewers && manager.onboarding.reviewers.length < 5}
                     isClearable={false}
                     styles={colourStyles}
-                    options={prepareSelect(reviewers)}
+                    options={(manager.onboarding.reviewers && manager.onboarding.reviewers.length < 5) ? prepareSelect(reviewers) : []}
+                    noOptionsMessage={() => (manager.onboarding.reviewers && manager.onboarding.reviewers.length < 5) ? "No options" : "Maximum reviewers count is 5"}
                     onChange={(values) => {
                       onSelectReviewersChange(values)
                     }}
@@ -130,10 +161,10 @@ const UserOnboardingCreate = ({isCreate}) => {
                 <div className="full-width">
 
                   <Select
-                    isDisabled={!isCreate.current}
                     components={{DropdownIndicator: null}}
                     value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
                     maxMenuHeight={200}
+                    isSearchable={!manager.onboarding.workflow}
                     isMulti
                     isClearable={false}
                     styles={colourStyles}

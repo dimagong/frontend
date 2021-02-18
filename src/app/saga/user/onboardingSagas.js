@@ -37,6 +37,14 @@ import {
   updateDFormFromParentSuccess,
   updateDFormFromParentError,
 
+  updateUserOnboardingReviewersRequest,
+  updateUserOnboardingReviewersSuccess,
+  updateUserOnboardingReviewersError,
+
+  updateUserOnboardingWorkflowRequest,
+  updateUserOnboardingWorkflowSuccess,
+  updateUserOnboardingWorkflowError,
+
   setManager,
 } from "app/slices/appSlice";
 import {selectManager, selectManagers} from "app/selectors";
@@ -126,6 +134,27 @@ function* updateDFormFromParent({payload}) {
   }
 }
 
+function* updateUserOnboardingReviewers({payload}) {
+  const {managerId, onboardingId} = payload
+  try {
+    const response = yield call(userApi.updateUserOnboardingReviewers, payload);
+    yield put(updateUserOnboardingReviewersSuccess({response, managerId, onboardingId}))
+  } catch (error) {
+    console.log("error", error);
+    yield put(updateUserOnboardingReviewersError(error));
+  }
+}
+
+function* updateUserOnboardingWorkflow({payload}) {
+  const {managerId, onboardingId} = payload
+  try {
+    const response = yield call(userApi.updateUserOnboardingWorkflow, payload);
+    yield put(updateUserOnboardingWorkflowSuccess({response, managerId, onboardingId}))
+  } catch (error) {
+    console.log("error", error);
+    yield put(updateUserOnboardingWorkflowError(error));
+  }
+}
 
 export default function* () {
   yield all([
@@ -137,5 +166,7 @@ export default function* () {
     yield takeLatest(removeUserGroupsRequest.type, removeUserGroups),
     yield takeLatest(updateUserModulesRequest.type, updateUserModules),
     yield takeLatest(updateDFormFromParentRequest.type, updateDFormFromParent),
+    yield takeLatest(updateUserOnboardingReviewersRequest.type, updateUserOnboardingReviewers),
+    yield takeLatest(updateUserOnboardingWorkflowRequest.type, updateUserOnboardingWorkflow),
   ]);
 }

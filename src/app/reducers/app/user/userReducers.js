@@ -278,6 +278,41 @@ const createUserError = (state, { payload }) => {
   state.isError = payload;
 };
 
+const updateUserOnboardingReviewersRequest = (state) => {
+  state.isLoading = true;
+  state.isError = null;
+}
+const updateUserOnboardingReviewersSuccess = (state, { payload }) => {
+  state.isLoading = false;
+
+  const managerIndex = state.user.managers.findIndex(manager => manager.id === payload.managerId);
+  const onboardingIndex = state.user.managers[managerIndex].onboardings.findIndex(onboarding => onboarding.id === payload.onboardingId);
+
+  state.user.managers[managerIndex].onboardings[onboardingIndex] = payload.response
+
+}
+const updateUserOnboardingReviewersError = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = payload;
+}
+
+const updateUserOnboardingWorkflowRequest = (state) => {
+  state.isLoading = true;
+  state.isError = null;
+}
+const updateUserOnboardingWorkflowSuccess = (state, { payload }) => {
+  state.isLoading = false;
+
+  const managerIndex = state.user.managers.findIndex(manager => manager.id === payload.managerId);
+  const onboardingIndex = state.user.managers[managerIndex].onboardings.findIndex(onboarding => onboarding.id === payload.onboardingId);
+
+  state.user.managers[managerIndex].onboardings[onboardingIndex] = payload.response
+}
+const updateUserOnboardingWorkflowError = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = payload;
+}
+
 // TODO: SETTERS
 
 const setUser = (state, { payload }) => {
@@ -537,6 +572,15 @@ export default {
   updateUserModulesSuccess,
   updateUserModulesRequest,
   updateUserModulesError,
+
+  updateUserOnboardingReviewersRequest,
+  updateUserOnboardingReviewersSuccess,
+  updateUserOnboardingReviewersError,
+
+  updateUserOnboardingWorkflowRequest,
+  updateUserOnboardingWorkflowSuccess,
+  updateUserOnboardingWorkflowError,
+
   setUser,
   setManager,
   setUserGroups,

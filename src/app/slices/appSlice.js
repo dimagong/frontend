@@ -314,6 +314,14 @@ export const {
   getUserOrganizationLogoSuccess,
   getUserOrganizationLogoError,
 
+  updateUserOnboardingReviewersRequest,
+  updateUserOnboardingReviewersSuccess,
+  updateUserOnboardingReviewersError,
+
+  updateUserOnboardingWorkflowRequest,
+  updateUserOnboardingWorkflowSuccess,
+  updateUserOnboardingWorkflowError,
+
   setSelectedOrganizationIdAndType,
 
   resetAppSlice,

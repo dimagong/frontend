@@ -123,6 +123,29 @@ const userApi = {
       return result ? result.data.data : result;
     } catch (error) {}
   },
+
+  async updateUserOnboardingReviewers({reviewersIds, onboardingId}) {
+    try {
+      const result = await instance({
+        url: "api/onboarding/" + onboardingId +  "/update-reviewers",
+        method: "PUT",
+        data:  {reviewer_ids: reviewersIds}
+      });
+      return result ? result.data : result;
+    } catch (error) {}
+  },
+
+  async updateUserOnboardingWorkflow({workflowId, onboardingId}) {
+    try {
+      const result = await instance({
+        url: "api/onboarding/" + onboardingId +  "/update-workflow",
+        method: "PUT",
+        data:  {workflow_id: workflowId}
+      });
+      return result ? result.data : result;
+    } catch (error) {}
+  },
+
   async deleteUserOnboarding({ id }) {
     try {
       const result = await instance({
