@@ -56,17 +56,19 @@ export const colourStyles = {
         backgroundColor: color.alpha(0.1).css()
       }
     },
-    multiValueLabel: (styles, {data}) => ({
+    multiValueLabel: (styles, {data, isDisabled}) => ({
       ...styles,
       color: data.color ? data.color : colorMultiSelect,
+      paddingRight: isDisabled ? "6px" : styles["paddingRight"],
       ":hover": {
         cursor: 'pointer',
         backgroundColor: data.color ? data.color : colorMultiSelect,
         color: "white"
       }
     }),
-    multiValueRemove: (styles, {data}) => ({
+    multiValueRemove: (styles, {data, isDisabled}) => ({
       ...styles,
+      display: isDisabled ? "none" : styles["display"],
       color: data.color,
       ":hover": {
         backgroundColor: data.color ? data.color : colorMultiSelect,
