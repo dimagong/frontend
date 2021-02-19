@@ -20,6 +20,10 @@ class FileService {
     return axios.get('/api/file/user/' + userId + '/avatar');
   }
 
+  getFile(fileId) {
+    return axios.get('/api/file/' + fileId);
+  }
+
   deleteFile(fileId) {
     return axios.delete('/api/file/' + fileId);
   }

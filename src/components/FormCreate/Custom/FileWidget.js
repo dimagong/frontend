@@ -93,7 +93,7 @@ export function FileWidget(props) {
   const renderFile = (file, index = null) => {
 
     const isRemoving = Array.isArray(props.value) && ~filesRemoving.indexOf(props.value[index].file.id);
-
+    console.log(file);
     return (
       <div className="file">
         <div className="name">
@@ -102,7 +102,7 @@ export function FileWidget(props) {
 
         <div className="actions">
           {
-            !isRemoving ? <Badge color="primary cursor-pointer ml-1 mr-1" onClick={() => saveFile(file.blob, file.name)} >
+            !isRemoving ? <Badge color="primary cursor-pointer ml-1 mr-1" onClick={() => downloadFile(file)} >
               download
             </Badge> : null
           }
@@ -167,21 +167,17 @@ export function FileWidget(props) {
     return renderFile({name: file.name, url: fileUrl, blob: file.blob}, 0);
   };
 
-  const saveFile = (blob, filename) => {
-    if (window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, filename);
-    } else {
-      const a = document.createElement('a');
-      document.body.appendChild(a);
-      const url = window.URL.createObjectURL(blob);
-      a.href = url;
-      a.download = filename;
-      a.click();
-      setTimeout(() => {
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      }, 0)
-    }
+  const downloadFile = (file) => {
+    console.log('>>', file);
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.href = file.url;
+    a.download = file.name;
+    a.click();
+    setTimeout(() => {
+      window.URL.revokeObjectURL(file.url);
+      document.body.removeChild(a);
+    }, 0)
   };
 
   const renderMultipleFile = (filesDataUrl) => {
