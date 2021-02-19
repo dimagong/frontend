@@ -168,7 +168,6 @@ export function FileWidget(props) {
   };
 
   const downloadFile = (file) => {
-    console.log('>>', file);
     const a = document.createElement('a');
     document.body.appendChild(a);
     a.href = file.url;
