@@ -7,7 +7,7 @@ const DateInput = ({value, onChange, options, label, disabled, required}) => {
 
   return (
     <div className={"custom-date-input-widget"}>
-      {options.label !== false ? <FieldLabel label={label} /> : null}
+      {options.label !== false ? <FieldLabel label={label} required={required} /> : null}
       <input
         value={value}
         type="date"
