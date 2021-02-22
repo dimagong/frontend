@@ -1,3 +1,5 @@
+import * as _ from 'lodash'
+
 export function dataURItoBlob(dataURI) {
   try {
     // Split metadata from data

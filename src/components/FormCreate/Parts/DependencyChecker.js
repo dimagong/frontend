@@ -63,6 +63,11 @@ export function dependencyChecker(state) {
           continue;
         }
 
+        if(!(fieldOperator.field in this.state.schema.properties)) {
+          console.log('Property ' + fieldOperator.field + ' not existing in properties');
+          return;
+        }
+
         const fieldValue = state.formData[fieldOperator.field];
 
         if (
@@ -139,6 +144,10 @@ export function dependencyChecker(state) {
         }
 
         const fieldValue = state.formData[fieldOperator.field];
+        if(!(fieldOperator.field in this.state.schema.properties)) {
+          console.log('Property ' + fieldOperator.field + ' not existing in properties');
+          return;
+        }
         const isDisabled = operatorResult(this.state.schema.properties[fieldOperator.field], fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
 
         const setStateForFieldsCurrGroup = () => {
@@ -243,6 +252,12 @@ export function dependencyChecker(state) {
         }
 
         const fieldValue = state.formData[fieldOperator.field];
+        // todo "fieldOperator.field" is field name, bug: some times not existing in properties
+        if(!(fieldOperator.field in this.state.schema.properties)) {
+          console.log('Property ' + fieldOperator.field + ' not existing in properties');
+          return;
+        }
+
         const isDisabled = operatorResult(this.state.schema.properties[fieldOperator.field], fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
 
         const setStateForFieldsCurrSection = () => {
