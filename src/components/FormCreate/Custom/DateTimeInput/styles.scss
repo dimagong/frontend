@@ -1,5 +1,5 @@
-.custom-date-input-widget {
-  input[type="date"] {
+.custom-date-time-input-widget {
+  input[type="datetime-local"] {
     background-color: #eee;
     border: 0;
     border-bottom: 1px solid #707070;
@@ -15,7 +15,7 @@
 }
 
 .field-with-error {
-  .custom-date-input-widget {
+  .custom-date-time-input-widget {
     input {
       border-right: 3px solid #dc3545;
     }

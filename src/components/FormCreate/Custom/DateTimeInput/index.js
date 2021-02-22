@@ -3,14 +3,14 @@ import FieldLabel from '../FieldLabel'
 
 import './styles.scss'
 
-const DateInput = ({value, onChange, options, label, disabled, required}) => {
+const DateTimeInput = ({value, onChange, options, label, disabled, required}) => {
 
   return (
-    <div className={"custom-date-input-widget"}>
+    <div className={"custom-date-time-input-widget"}>
       {options.label !== false ? <FieldLabel label={label} required={required} /> : null}
       <input
         value={value}
-        type="date"
+        type="datetime-local"
         onChange={(e) => {onChange(e.target.value)}}
         disabled={disabled}
       />
@@ -18,4 +18,4 @@ const DateInput = ({value, onChange, options, label, disabled, required}) => {
   )
 }
 
-export default DateInput;
+export default DateTimeInput;
