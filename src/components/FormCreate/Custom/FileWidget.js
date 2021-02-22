@@ -93,7 +93,6 @@ export function FileWidget(props) {
   const renderFile = (file, index = null) => {
 
     const isRemoving = Array.isArray(props.value) && ~filesRemoving.indexOf(props.value[index].file.id);
-    console.log(file);
     return (
       <div className="file">
         <div className="name">
