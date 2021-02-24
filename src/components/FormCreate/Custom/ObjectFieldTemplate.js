@@ -316,7 +316,7 @@ export function ObjectFieldTemplate(props) {
 
     this.setState({
         dFormTemplate: {
-          ...dForm,
+          ...this.state.dFormTemplate,
           is_viewed_sections: [...isViewedSections, sectionName],
         },
       }, () => {
