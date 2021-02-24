@@ -248,10 +248,6 @@ export function ObjectFieldTemplate(props) {
 
   const getProgress = (section) => {
 
-    if (isSectionAlreadyViewed(section) && isSectionHasNoRequiredFields(section)) {
-      return 100;
-    }
-
     let isFieldEmpty = (data) => (
       data === ""
       || (Array.isArray(data) && data.length === 0)
@@ -287,28 +283,30 @@ export function ObjectFieldTemplate(props) {
 
     const completed = currentSectionRequiredFields.filter((field) => !isFieldEmpty(this.state.formData[field])).length;
 
-    if (total === 0) return 0;
+    if (total === 0) {
+      if(isSectionAlreadyViewed(section)) {
+        return 100;
+      } else {
+        return 0;
+      }
+    }
 
     return (completed / total) * 100;
   };
 
-  const isSectionAlreadyViewed = (sectionName) => {
-    const isViewedSections = Array.isArray(this.state.dFormTemplate.is_viewed_sections) ? this.state.dFormTemplate.is_viewed_sections : [];
-    return isViewedSections.indexOf(sectionName) !== -1;
-  };
+  const getSectionViewStateCopy = () => {
+    const dForm = this.state.dFormTemplate;
 
-  const isSectionHasNoRequiredFields = (sectionName) => {
-    const fieldNames = Object.keys(this.state.uiSchema.sections)
-      .filter((fieldName) => this.state.uiSchema.sections[fieldName] === sectionName);
-    const isSomeFieldInListIsRequired = fieldNames
-      .some(fieldName => this.state.schema.required.some((requiredFieldName) => String(requiredFieldName) === String(fieldName)));
-    return !isSomeFieldInListIsRequired;
+    return Array.isArray(dForm.is_viewed_sections) ? [...dForm.is_viewed_sections] : []
+  }
+
+  const isSectionAlreadyViewed = (sectionName) => {
+    return getSectionViewStateCopy().indexOf(sectionName) !== -1;
   };
 
   const setSectionViewState = (sectionName) => {
-    const dForm = this.state.dFormTemplate;
 
-    const isViewedSections = Array.isArray(dForm.is_viewed_sections) ? dForm.is_viewed_sections.slice() : [];
+    const isViewedSections = getSectionViewStateCopy()
 
     if (isViewedSections.indexOf(sectionName) !== -1) {
       return;
@@ -316,8 +314,13 @@ export function ObjectFieldTemplate(props) {
 
     isViewedSections.push(sectionName);
 
-    this.setState({dFormTemplate: {...dForm, is_viewed_sections: isViewedSections}}, () => {
-      dFormApi.updateViewedSections(this.state.dFormTemplate.id, this.state.dFormTemplate.is_viewed_sections);
+    this.setState({
+        dFormTemplate: {
+          ...dForm,
+          is_viewed_sections: [...isViewedSections, sectionName],
+        },
+      }, () => {
+        dFormApi.updateViewedSections(this.state.dFormTemplate.id, this.state.dFormTemplate.is_viewed_sections);
     });
   };
 
