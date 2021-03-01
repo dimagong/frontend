@@ -18,6 +18,7 @@ import {
   revokeInvitationsPath,
   getInvitationPath,
   sendInvitationAcceptPath,
+  getOnboardingsByUserPath
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
 
@@ -66,6 +67,18 @@ const userApi = {
     try {
       const result = await instance({
         url: `${getUserAvatarPath}/${managerId}/avatar`,
+        method: "GET",
+      });
+
+      return result ? result.data.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getOnboradingsByUser({id}) {
+    try {
+      const result = await instance({
+        url: getOnboardingsByUserPath(id),
         method: "GET",
       });
 

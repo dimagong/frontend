@@ -39,7 +39,8 @@ function* getWorkflows() {
     yield put(setWorkflows(responce))
     yield put(getdFormActionsRequest())
     yield put(getdFormTriggersRequest())
-    yield put(getUsersRequest())
+    // todo double request
+    // yield put(getUsersRequest())
     const notifications = yield select(selectNotifications);
     if(!notifications.length){
       yield put(getNotificationsRequest())

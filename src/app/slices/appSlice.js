@@ -322,6 +322,10 @@ export const {
   updateUserOnboardingWorkflowSuccess,
   updateUserOnboardingWorkflowError,
 
+  getOnboardingsByUserRequest,
+  getOnboardingsByUserSuccess,
+  getOnboardingsByUserError,
+
   setSelectedOrganizationIdAndType,
 
   resetAppSlice,

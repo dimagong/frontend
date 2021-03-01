@@ -35,6 +35,28 @@ const getUsersError = (state, { payload }) => {
   state.isError = payload;
 };
 
+const getOnboardingsByUserSuccess = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = null;
+  if(state.user?.managers) {
+    state.user.managers = state.user.managers.map((nextUser) => {
+      if(nextUser.id === payload.user.id) {
+        nextUser.onboardings = payload.onboardings;
+      }
+      return nextUser;
+    });
+  }
+};
+
+const getOnboardingsByUserRequest = (state, { payload }) => {
+  state.isLoading = true;
+  state.isError = null;
+};
+const getOnboardingsByUserError = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = payload;
+};
+
 const getUserByIdSuccess = (state, { payload }) => {
 
   state.isLoading = false;
@@ -143,6 +165,7 @@ const getUserAvatarError = (state, { payload }) => {
   state.isError = payload;
 };
 
+// may be getUserOnboardings
 const getUserOnboardingSuccess = (state, { payload: {dForms, workflows, reviewers} }) => {
   state.isLoading = false;
   state.isError = null;
@@ -499,36 +522,47 @@ export default {
   getProfileSuccess,
   getProfileRequest,
   getProfileError,
+
   getUsersSuccess,
   getUsersRequest,
   getUsersError,
+
   getUserByIdSuccess,
   getUserByIdRequest,
   getUserByIdError,
+
   updateUserSuccess,
   updateUserRequest,
   updateUserError,
+
   createUserSuccess,
   createUserRequest,
   createUserError,
+
   updateUserAvatarSuccess,
   updateUserAvatarRequest,
   updateUserAvatarError,
+
   deleteUserAvatarSuccess,
   deleteUserAvatarRequest,
   deleteUserAvatarError,
+
   getUserAvatarSuccess,
   getUserAvatarRequest,
   getUserAvatarError,
+
   getUserOnboardingSuccess,
   getUserOnboardingRequest,
   getUserOnboardingError,
+
   createUserOnboardingSuccess,
   createUserOnboardingRequest,
   createUserOnboardingError,
+
   deleteUserOnboardingSuccess,
   deleteUserOnboardingRequest,
   deleteUserOnboardingError,
+
   updateUserRolesSuccess,
   updateUserRolesRequest,
   updateUserRolesError,
@@ -580,6 +614,10 @@ export default {
   updateUserOnboardingWorkflowRequest,
   updateUserOnboardingWorkflowSuccess,
   updateUserOnboardingWorkflowError,
+
+  getOnboardingsByUserRequest,
+  getOnboardingsByUserSuccess,
+  getOnboardingsByUserError,
 
   setUser,
   setManager,

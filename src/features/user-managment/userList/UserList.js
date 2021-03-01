@@ -10,7 +10,7 @@ import { ChangeDetectionStrategyType } from 'ag-grid-react/lib/changeDetectionSe
 import {ContextLayout} from "utility/context/Layout"
 import {AgGridReact} from "ag-grid-react"
 import { columnDefs } from "./gridSettings";
-import { getUsersRequest, setManager } from "app/slices/appSlice";
+import { setManager } from "app/slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
     selectManager,
@@ -51,7 +51,7 @@ const UserList = () => {
       const  onGridReady = (params) => {
         setGridApi(params.api);
         params.api.sizeColumnsToFit();
-    
+
         window.addEventListener("resize", () => {
           params.api.sizeColumnsToFit();
         });
@@ -85,7 +85,7 @@ const UserList = () => {
       <p>No Rows to Show</p>
     </div>
       )
-    
+
       // TODO: END - AG GRID API
 
     return (
@@ -121,7 +121,7 @@ const UserList = () => {
                           customNoRowsOverlay: CustomNoRowsOverlay,
                         }}
                         loadingOverlayComponent={'customLoadingOverlay'}
-                        
+
                         noRowsOverlayComponent={'customNoRowsOverlay'}
                         onSelectionChanged={onSelectionChanged}
                         enableRtl={context.state.direction === "rtl"}
