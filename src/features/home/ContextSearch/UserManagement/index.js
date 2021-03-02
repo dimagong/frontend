@@ -15,7 +15,7 @@ import {
   PaginationLink,
   Button,
 } from 'reactstrap'
-import { setManager, setPreview } from 'app/slices/appSlice'
+import { setManager, setPreview, getOnboardingsByUserRequest } from 'app/slices/appSlice'
 import useWindowSize from 'hooks/windowWidth'
 import UserCardTemplate from '../CardTemplates/userCard'
 import { selectPreview } from 'app/selectors/layoutSelector'
@@ -51,6 +51,7 @@ const UserManagement = ({ managers, handleContextChange }) => {
             dispatch(setPreview({type: "user", id: user.id}))
           } else {
             dispatch(setManager(user));
+            dispatch(getOnboardingsByUserRequest(user));
             handleContextChange("User")
           }
         }}

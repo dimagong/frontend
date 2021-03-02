@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest, select, takeEvery } from "redux-saga/effects";
+import {all, put, call, takeLatest, select, takeEvery} from "redux-saga/effects";
 
 import userApi from "api/User/user";
 import {
@@ -43,10 +43,14 @@ import {
   getUserOrganizationLogoRequest,
   getUserOrganizationLogoSuccess,
   getUserOrganizationLogoError,
+
+  getOnboardingsByUserRequest,
+  getOnboardingsByUserSuccess,
+  getOnboardingsByUserError,
 } from "app/slices/appSlice";
 import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
-import { selectGroups, selectRoles } from "app/selectors";
+import {selectGroups, selectRoles} from "app/selectors";
 import organizationApi from '../../../api/organizations'
 
 function* getProfile() {
@@ -54,22 +58,18 @@ function* getProfile() {
     const response = yield call(userApi.getProfile);
 
     yield put(getProfileSuccess(response));
-    yield put(loginWithJWT(response))
+    yield put(loginWithJWT(response));
     yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}))
 
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(getProfileError(error));
   }
 }
 
 function* getUsers() {
-
-    const response = yield call(userApi.getUsers);
-
-    yield put(getUsersSuccess(response));
-
-
+  const response = yield call(userApi.getUsers);
+  yield put(getUsersSuccess(response));
 }
 
 function* getUserById({payload}) {
@@ -79,7 +79,7 @@ function* getUserById({payload}) {
     yield put(getUserByIdSuccess(response));
 
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(getUserByIdError(error));
   }
 }
@@ -90,35 +90,38 @@ function* updateUser({payload}) {
     const response = yield call(userApi.updateUser, payload);
     yield put(updateUserSuccess(response));
   } catch (error) {
-  yield put(updateUserError(error));
+    yield put(updateUserError(error));
   }
 }
 
 
 function* createUser({payload}) {
   try {
-    const user = yield call(userApi.createUser, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
+    const user = yield call(userApi.createUser, {
+      ...payload,
+      groups: prepareSelectGroups(payload.groups).map(group => group.value)
+    });
     yield put(createUserSuccess(user));
     yield put(setManager(user));
     yield put(setContext("User"))
 
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(createUserError(error));
   }
 }
 
 function* getUserManagmentData() {
-  const groups = yield select(selectGroups)
-  const roles = yield select(selectRoles)
+  const groups = yield select(selectGroups);
+  const roles = yield select(selectRoles);
   try {
     const response = yield call(userApi.getUsers);
     yield put(getUsersSuccess(response));
 
-    if(!groups.length){
+    if (!groups.length) {
       yield put(getGroupsRequest())
     }
-    if(!roles.length){
+    if (!roles.length) {
       // yield put(getRolesRequest())
     }
 
@@ -139,7 +142,7 @@ function* getUserOrganizations(userId) {
 }
 
 function* addUserOrganization({payload}) {
-  const response = yield call(userApi.addUserOrganization, payload)
+  const response = yield call(userApi.addUserOrganization, payload);
 
   if (response?.message) {
     yield put(addUserOrganizationError(response.message))
@@ -149,7 +152,7 @@ function* addUserOrganization({payload}) {
 }
 
 function* removeUserOrganization({payload}) {
-  const response = yield call(userApi.removeUserOrganization, payload)
+  const response = yield call(userApi.removeUserOrganization, payload);
 
   if (response?.message) {
     yield put(removeUserOrganizationError(response.message))
@@ -159,7 +162,7 @@ function* removeUserOrganization({payload}) {
 }
 
 function* allowUserAbility({payload}) {
-  const response = yield call(userApi.userAbilityAllow, payload)
+  const response = yield call(userApi.userAbilityAllow, payload);
 
   if (response?.message) {
     yield put(allowUserAbilityError(response.message))
@@ -169,7 +172,7 @@ function* allowUserAbility({payload}) {
 }
 
 function* disallowUserAbility({payload}) {
-  const response = yield call(userApi.userAbilityDisallow, payload)
+  const response = yield call(userApi.userAbilityDisallow, payload);
 
   if (response?.message) {
     yield put(disallowUserAbilityError(response.message))
@@ -180,7 +183,7 @@ function* disallowUserAbility({payload}) {
 }
 
 function* removeUserNotify() {
-  const response = yield call(userApi.removeUserNotify)
+  const response = yield call(userApi.removeUserNotify);
 
   if (response?.message) {
     yield put(removeUserNotifyError(response.message))
@@ -191,7 +194,7 @@ function* removeUserNotify() {
 
 function* getUserOrganizationLogo({payload}) {
   try {
-    const logoBase64 = yield call(organizationApi.getOrganizationLogo, payload)
+    const logoBase64 = yield call(organizationApi.getOrganizationLogo, payload);
     yield put(getUserOrganizationLogoSuccess(logoBase64))
 
   } catch (error) {
@@ -199,8 +202,18 @@ function* getUserOrganizationLogo({payload}) {
   }
 }
 
+function* getOnboardingsByUser({payload}) {
+  try {
+    const onboardings = yield call(userApi.getOnboradingsByUser, payload);
+    yield put(getOnboardingsByUserSuccess({user: payload, onboardings}));
+  } catch (error) {
+    yield put(getOnboardingsByUserError(error));
+  }
+}
+
 export default function* () {
   yield all([
+    yield takeLatest(getOnboardingsByUserRequest.type, getOnboardingsByUser),
     yield takeLatest(getProfileRequest.type, getProfile),
     yield takeLatest(getUsersRequest.type, getUsers),
     yield takeLatest(getUserByIdRequest.type, getUserById),

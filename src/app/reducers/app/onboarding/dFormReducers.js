@@ -150,7 +150,7 @@ const submitdFormDataSuccess = (state, {payload}) => {
     });
 
     state.user.managers.forEach(nextManager => {
-      nextManager.onboardings.some(onboarding => {
+      nextManager.onboardings && nextManager.onboardings.some(onboarding => {
         if (onboarding.d_form.id === payload.id) {
           onboarding.d_form = payload;
           return true;
@@ -180,7 +180,7 @@ const changedFormStatusSuccess = (state, {payload}) => {
     onboardingFound.d_form.status = payload.status;
 
     state.user.managers.forEach(nextManager => {
-      nextManager.onboardings.some(onboarding => {
+      nextManager.onboardings && nextManager.onboardings.some(onboarding => {
         if (onboarding.d_form.id === onboardingFound.d_form.id) {
           onboarding.d_form.status = payload.status;
           return true;
@@ -225,7 +225,7 @@ const updateDFormFromParentSuccess = (state, {payload}) => {
     return false;
   });
   state.user.managers.forEach(nextManager => {
-    nextManager.onboardings.some(onboarding => {
+    nextManager.onboardings && nextManager.onboardings.some(onboarding => {
       if (onboarding.d_form.id === payload.id) {
         onboarding.d_form = payload;
         return true;
