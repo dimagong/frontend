@@ -1,0 +1,72 @@
+.user-edit{
+    &__user-avatar{
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        &_button-wrapper{
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+        }
+        &_spinner-wrapper{
+           position: absolute;
+           top: 50%;
+           left: 50%;
+           transform: translate(-50%, -50%);
+        }
+        .x-closer{
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            border: 1px;
+            border-radius: 10px;
+            color: #000;
+            background: #FFF;
+        }
+    }
+
+}
+
+.onboarding-create {
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='%23707070FF' stroke-width='2' stroke-dasharray='8%2c 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+  .action-button {
+    border-radius: 100px;
+    padding: 0;
+    background: #7367F0!important;
+    margin-bottom: 10px;
+  }
+}
+
+// fix for card arrow toggle
+.card-header:after {
+  content: none !important;
+}
+
+.btn-add-ms-element {
+  border-radius: 100% !important;
+  width: 45px;
+  height: 45px;
+}
+
+.ms-tree-column {
+  padding: 10px;
+  margin: 7px 7px;
+  height: 44px;
+  font-size: 14px;
+  width: 100%;
+  cursor: pointer;
+  transform: translate(0, -50%);
+}
+.ms-btn-element {
+  display:flex;
+  justify-content: center;
+  align-items:center;
+  padding: 0!important;
+}

@@ -1,0 +1,205 @@
+.home {
+  justify-content: center;
+  .grid {
+    display: flex;
+    flex-direction: column;
+    .row:first-child {
+      flex: 0 0 auto;
+    }
+    .row:nth-child(2) {
+      flex: 1 0 auto;
+    }
+    .row:last-child {
+      flex: 0 0 auto;
+    }
+
+    color: #707070;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: normal;
+  }
+  .contextual-search_wrapper {
+    .preview {
+      padding-top: 40px;
+      padding-bottom: 40px;
+      .preview-action-buttons {
+
+
+        position: absolute;
+        bottom: -38px;
+        left: 50%;
+        transform: translate(-50%);
+
+        button.btn.btn-secondary {
+          background-color: #f0f0f0!important;
+          color: #707070;
+          margin-right: 10px;
+          &:hover, &:active, &:focus {
+            color: #707070!important;
+          }
+        }
+      }
+    }
+  }
+
+  &__card-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-column-gap: 45px;
+    grid-row-gap: 25px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    //grid-template-rows: repeat(3, max-content);
+
+    &.preview-visible {
+      grid-template-columns: minmax(0, 1fr);
+      min-height: 580px;
+      grid-template-rows: 1fr 1fr 1fr;
+      @media (max-width: 1800px) {
+        min-height: 538px;
+      }
+
+      @media (max-width: 1600px) {
+        min-height: 496px;
+      }
+
+      @media (max-width: 1400px) {
+        max-width: unset;
+        margin: unset;
+      }
+
+      @media (max-width: 1280px) {
+        min-height: 440px;
+      }
+    }
+  }
+  &__card {
+
+
+    .card-body {
+      padding: 0;
+      .card-text {
+        margin: 0;
+      }
+    }
+  }
+  &__card:nth-child(7) {
+    margin: 0;
+  }
+  &__card:last-child {
+    margin: 0;
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+  }
+  .pagination .page-item.active .page-link {
+    background-color: #7367F0!important;
+  }
+  .nav-item {
+    .nav-link {
+      color: #000000;
+    }
+    .nav-link:hover {
+        color: #000000;
+      }
+  }
+  .card {
+    margin: 0;
+    .round {
+      border-radius: 50%;
+    }
+    .user-nav {
+      margin: 8px 26px;
+      width: 40px;
+      height: 40px;
+    }
+  }
+  .dropdown-toggle::after {
+    display: inline-block;
+    transition: 0.5s;
+    margin-left: 10px;
+    vertical-align: middle;
+    content: "";
+    background: url("../../assets/img/icons/arrow-down.png") no-repeat;
+    border: 0;
+    width: 16px;
+    height: 10px;
+    //border-top: 0.3em solid;
+    //border-right: 0.3em solid transparent;
+    //border-bottom: 0;
+    //border-left: 0.3em solid transparent;
+  }
+  .dropdown-toggle[aria-expanded="true"]:after {
+    transform: rotate(180deg);
+  }
+
+  .search-content-footer {
+    display: flex;
+    justify-content: space-between;
+    .add-icon {
+      padding: 5px!important;
+      background-color: #7367F0!important;
+      border-radius: 25px;
+      &:hover, &:active, &:focus {
+        border-radius: 25px;
+      }
+    }
+    .hide-context-icon {
+      background-color: #7367F0!important;
+      border-radius: 25px;
+      min-height: 38px;
+      &:hover, &:active, &:focus {
+        border-radius: 25px;
+      }
+    }
+  }
+  .search-context-pagination {
+    display: flex;
+    position: absolute;
+    bottom: -38px;
+    left: 50%;
+    transform: translate(-50%);
+
+    .pagination-arrow {
+      border-radius: 25px;
+      padding: 0;
+      background-color: #f0f0f0!important;
+      &:first-child {
+        margin-right: 16px;
+      }
+      &:last-child {
+        margin-left: 16px;
+      }
+    }
+  }
+}
+
+@media (max-width: 1800px) {
+  .home {
+    .contextual-search_wrapper {
+      .preview {
+        padding-top: 24px;
+        padding-bottom: 32px;
+      }
+    }
+    &__card-wrapper {
+      grid-column-gap: 18px;
+      grid-row-gap: 16px;
+      padding-top: 24px;
+      padding-bottom: 32px;
+    }
+  }
+}
+
+@media (max-width: 1400px) {
+  .home {
+    &__card-wrapper {
+      max-width: 1050px;
+      margin: 0 auto;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}

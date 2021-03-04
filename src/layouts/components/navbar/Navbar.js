@@ -1,41 +1,74 @@
 import React from "react"
-import {Navbar} from "reactstrap"
-import {connect} from "react-redux"
+import {
+  Navbar,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownMenu,
+} from "reactstrap"
+import { connect } from "react-redux"
 import classnames from "classnames"
+import { useDispatch } from 'react-redux'
 import {
   logoutWithJWT,
-} from "../../../redux/actions/auth/loginActions"
-import NavbarBookmarks from "./NavbarBookmarks"
-import NavbarUser from "./NavbarUser"
-import userImg from "../../../assets/img/portrait/small/avatar-s-11.jpg"
-import {bindActionCreators} from "redux"
-import AuthService from '../../../services/auth.service'
-import {history} from "../../../history";
-import userService from "../../../services/user.service";
+} from "app/actions/vuexy/auth/loginActions"
 
-const UserName = props => {
-  if (Object.keys(props.user.profile).length && props.user.profile.constructor === Object) {
-    return props.user.profile.first_name + ' ' + props.user.profile.last_name;
+import NavbarUser from "./NavbarUser"
+import noneAvatar from "assets/img/portrait/none-avatar.png";
+import { bindActionCreators } from "redux"
+import { history } from "../../../history";
+
+import {selectManager, selectProfile, selectManagers} from "app/selectors"
+import { NavLink } from "react-router-dom"
+import store from "app/store"
+import {ChevronDown, ChevronUp, Power, Menu} from "react-feather"
+
+import { logout, showContextSearch, hideContextSearch } from 'app/slices/appSlice'
+
+import {userService} from 'services/user'
+
+import SearchInput from './SearchInput'
+import {capitalizeAll} from '../../../utility/common'
+import authApi from "../../../api/Auth/auth";
+
+const UserName = ({userProfile}) => {
+  if (Object.keys(userProfile).length && userProfile.constructor === Object) {
+    return userProfile.first_name;
   }
   return '';
 }
 
 const ThemeNavbar = props => {
-
+  const dispatch = useDispatch();
+  const {manager, managers, userProfile} = props;
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"]
   const navbarTypes = ["floating", "static", "sticky", "hidden"]
 
   const logoutJWT = async () => {
-    await AuthService.logout();
-    AuthService.removeToken();
+    store.dispatch(logout());
+    // props.logout();
+    // props.logoutWithJWT();
     history.push("/login");
-    props.logoutWithJWT();
   }
-  return (
+
+  const handleContextSearchToggle = () => {
+    if(props.isContextSearchVisible) {
+      if (props.context) {
+        dispatch(hideContextSearch())
+      }
+    } else {
+      dispatch(showContextSearch())
+    }
+
+  }
+
+  return userProfile
+  ? (
     <React.Fragment>
-      <div className="content-overlay"/>
-      <div className="header-navbar-shadow"/>
+      <div className="content-overlay" />
+      {/*<div className="header-navbar-shadow" />*/}
       <Navbar
+        style={{width: "100%", margin: 0, borderRadius: 0 }}
         className={classnames(
           "header-navbar navbar-expand-lg navbar navbar-with-menu navbar-shadow",
           {
@@ -60,7 +93,7 @@ const ThemeNavbar = props => {
               props.navbarType === "static" && !props.horizontal,
             "fixed-top": props.navbarType === "sticky" || props.horizontal,
             "scrolling": props.horizontal && props.scrolling,
-            "is-onboarding": userService.isOnboarding(props.userProfile)
+            "simplified-navbar": userProfile.notify,
           }
         )}
       >
@@ -70,64 +103,101 @@ const ThemeNavbar = props => {
               className="navbar-collapse d-flex justify-content-between align-items-center"
               id="navbar-mobile"
             >
-
               <div className="bookmark-wrapper">
-                <NavbarBookmarks
-                  className=""
-                  sidebarVisibility={props.sidebarVisibility}
-                  handleAppOverlay={props.handleAppOverlay}
-                />
-                {
-                  props.navbar.navConfig.headTitle ?
-                    <div className="float-left"><h4
-                      style={{'line-height': '60px', height: '100%'}}>{props.navbar.navConfig.headTitle}</h4></div>
-                    : null
-                }
+                <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
+                  {/*If logo is not loaded yet, show temp image by path that is valid about 5 mins*/}
+                  {userProfile.permissions.logo?.isLoading ? (
+                    <img className="brand-logo " src={userProfile.permissions.logo_path} alt="main org logo"/>
+                  ) : (
+                    <img className="brand-logo " src={userProfile.permissions.logo?.base64} alt="main org logo"/>
+                  )}
 
+                </NavLink>
+                  {/* <NavbarBookmarks
+                    sidebarVisibility={props.sidebarVisibility}
+                    handleAppOverlay={props.handleAppOverlay}
+                  /> */}
               </div>
 
+              {!userService.isOnboarding(userProfile) && (
+                <div className="search-input_container">
+                  <SearchInput suggestions={managers.map(({ first_name, ...rest }) => ({ name: first_name, ...rest }))}/>
+                  {props.isContextSearchVisible ? (
+                    <ChevronUp
+                      className="autocomplete-expand-icon"
+                      onClick={handleContextSearchToggle}
+                    />
+                  ) : (
+                    <ChevronDown
+                      className="autocomplete-expand-icon"
+                      onClick={handleContextSearchToggle}
+                    />
+                  )}
 
-              {props.horizontal ? (
+                </div>
+              )}
+
+
+
+              {/* {props.horizontal ? (
                 <div className="logo d-flex align-items-center">
                   <div className="brand-logo mr-50"></div>
                   <h2 className="text-primary brand-text mb-0">Vuexy</h2>
                 </div>
-              ) : null}
-              {
-                props.userProfile && props.userProfile.id > 0 ?
-                  <NavbarUser
-                    handleAppOverlay={props.handleAppOverlay}
-                    changeCurrentLang={props.changeCurrentLang}
-                    userName={<UserName {...props} />}
-                    email={props.user.profile.email}
-                    userId={props.userProfile.id}
-                    avatar={props.userProfile.avatar}
-                    loggedType={null}
-                    logoutWithJWT={logoutJWT}
-                  />
-                  : null
-              }
+              ) : null} */}
+
+              {userProfile.notify ? (
+                <ul className="nav navbar-nav navbar-nav-user float-right">
+                  <UncontrolledDropdown tag="li" className="dropdown-user nav-item burger-menu">
+                    <DropdownToggle tag="a" className="nav-link dropdown-user-link">
+                      <Menu size={30} />
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem
+                        tag="a"
+                        onClick={logoutJWT}
+                      >
+                        <Power size={14} className="mr-50" />
+                        <span className="align-middle">Log Out</span>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </ul>
+              ) : (
+                <NavbarUser
+                  handleAppOverlay={props.handleAppOverlay}
+                  changeCurrentLang={props.changeCurrentLang}
+                  userName={<UserName {...props} />}
+                  email={`${userProfile.permissions.organization}`}
+                  userImg={manager && manager.ulr? manager.ulr : noneAvatar}
+                  loggedType={null}
+                  logoutWithJWT={logoutJWT}
+                />
+              )}
+
 
             </div>
           </div>
         </div>
       </Navbar>
     </React.Fragment>
-  )
+  ) : null
 }
 
 const mapStateToProps = state => {
   return {
-    user: state.user,
-    userProfile: state.user.profile,
-    navbar: state.navbar
+    userProfile: selectProfile(state),
+    manager: selectManager(state),
+    managers: selectManagers(state),
+    isContextSearchVisible: state.app.isContextSearchVisible,
+    context: state.app.context,
   }
 }
 
 const mapActionsToProps = (dispatch) => {
   return {
     logoutWithJWT: bindActionCreators(logoutWithJWT, dispatch),
-
+    logout: bindActionCreators(logout, dispatch),
   }
 }
 

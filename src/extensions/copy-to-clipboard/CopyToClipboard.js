@@ -11,7 +11,7 @@ import {
   Input
 } from "reactstrap"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import "../../assets/scss/plugins/extensions/toastr.scss"
 
@@ -62,7 +62,6 @@ class Clipboard extends React.Component {
                     >
                       <Button.Ripple color="primary">Copy!</Button.Ripple>
                     </CopyToClipboard>
-                    <ToastContainer />
                   </Col>
                 </Row>
               </CardBody>

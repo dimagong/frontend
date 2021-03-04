@@ -4,7 +4,7 @@ import Customizer from "../components/@vuexy/customizer/Customizer"
 import Sidebar from "./components/menu/horizontal-menu/HorizontalMenu"
 import Navbar from "./components/navbar/Navbar"
 import Footer from "./components/footer/Footer"
-import themeConfig from "../configs/themeConfig"
+import themeConfig from "configs/themeConfig"
 import { connect } from "react-redux"
 import {
   changeNavbarColor,
@@ -13,7 +13,7 @@ import {
   changeMenuColor,
   hideScrollToTop,
   changeMode
-} from "../redux/actions/customizer/index"
+} from "app/actions/vuexy/customizer"
 
 class HorizontalLayout extends PureComponent {
   state = {

@@ -12,14 +12,43 @@ import Chip from "../../components/@vuexy/chips/ChipComponent"
 import {isEmpty, capitalize} from 'lodash'
 import {Check} from 'react-feather'
 import Checkbox from "../../components/@vuexy/checkbox/CheckboxesVuexy"
+import axios from 'api';
 
-import abilityService from "../../services/ability.service";
+class AbilityService {
+  allow({user_id, organization_type, organization_id, ability}) {
+    return axios.post("/api/ability/allow", {
+      ability,
+      organization_type,
+      organization_id,
+      user_id,
+    });
+  }
+
+  disallow({user_id, organization_type, organization_id, ability}) {
+    return axios.post("/api/ability/disallow", {
+      ability,
+      organization_type,
+      organization_id,
+      user_id,
+    });
+  }
+
+  getList({user_id, organization_type, organization_id}) {
+    return axios.post("/api/ability/organization", {
+      organization_type,
+      organization_id,
+      user_id,
+    });
+  }
+}
 
 export default function OrganizationPermissionsModal(props) {
 
   const [isModalOpen, setModalOpenState] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [abilities, setAbilities] = useState([]);
+
+  const abilityService = new AbilityService();
 
   useEffect(() => {
     if (isEmpty(props.organization)) {

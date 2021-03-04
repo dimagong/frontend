@@ -6,8 +6,9 @@ import SidebarHeader from "./SidebarHeader"
 import Hammer from "react-hammerjs"
 import SideMenuContent from "./sidemenu/SideMenuContent"
 import PerfectScrollbar from "react-perfect-scrollbar"
-import UserService from '../../../../services/user.service'
+// import UserService from '../../../../services/user.service'
 import {User} from "react-feather";
+import { selectProfile } from "app/selectors"
 
 class Sidebar extends Component {
 
@@ -145,9 +146,9 @@ class Sidebar extends Component {
       }
     }
 
-    if (UserService.isOnboarding(this.props.userProfile)) {
-      return null;
-    }
+    // if (UserService.isOnboarding(this.props.userProfile)) {
+    //   return null;
+    // }
     //UserService.isOnboarding(this.props.userProfile, true)
     return (
       <ContextLayout.Consumer>
@@ -173,7 +174,7 @@ class Sidebar extends Component {
                   {
                     collapsed: sidebarState === true,
                     "hide-sidebar": this.state.width < 1200 && visibilityState === false,
-                    'd-none': UserService.isOnboarding(this.props.userProfile, true),
+                    // 'd-none': UserService.isOnboarding(this.props.userProfile, true),
                   },
                 )}
                 onMouseEnter={() => sidebarHover(false)}
@@ -241,8 +242,8 @@ class Sidebar extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.auth.login.userRole,
-    userProfile: state.user.profile
+    currentUser: state.vuexy.auth.login.userRole,
+    userProfile: selectProfile(state)
   }
 };
 

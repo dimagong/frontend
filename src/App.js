@@ -1,29 +1,33 @@
-import React from "react"
-import Router from "./Router"
-import "./components/@vuexy/rippleButton/RippleButton"
-import "react-perfect-scrollbar/dist/css/styles.css"
-import "prismjs/themes/prism-tomorrow.css"
-import UserService from './services/user.service';
-import { store } from './redux/storeConfig/store'
-import { setUserProfile } from './redux/actions/user/userActions'
-import AuthService from './services/auth.service'
+import React, { useEffect } from "react";
+import { Router } from "react-router-dom";
+import Routes from "routes";
+import { history } from "./history";
+import { ConnectedRouter } from "connected-react-router";
+import { useDispatch } from "react-redux";
+import authService from "services/auth";
+import { getProfileRequest } from "app/slices/appSlice";
+import {ToastContainer} from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css"
+import "assets/scss/plugins/extensions/toastr.scss"
 
-class App extends React.Component {
+import { Scrollbars } from 'react-custom-scrollbars';
 
-  async componentDidMount() {
-    if(AuthService.isAuth()) {
-      this.getUserData();
-    }
-  }
+function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    authService.getToken() && dispatch(getProfileRequest());
+  }, []);
 
-  getUserData = async () => {
-    const response = await UserService.getProfile();
-    store.dispatch(setUserProfile(response.data.data));
-  };
-
-  render = () => {
-    return <Router />;
-  }
+  return (
+    <ConnectedRouter history={history}>
+      <Router history={history}>
+        <Scrollbars>
+          <Routes />
+        </Scrollbars>
+      </Router>
+      <ToastContainer />
+    </ConnectedRouter>
+  );
 }
 
-export default App
+export default App;

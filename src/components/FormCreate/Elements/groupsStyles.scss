@@ -1,0 +1,13 @@
+.group {
+  padding-left: 35px;
+  &-title {
+    font-size: 25px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid #707070;
+    color: #707070;
+  }
+
+  &-content {
+    padding: 30px 10px;
+  }
+}

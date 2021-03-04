@@ -1,0 +1,23 @@
+.custom-date-input-widget {
+  input[type="date"] {
+    background-color: #eee;
+    border: 0;
+    border-bottom: 1px solid #707070;
+    padding: 10px 15px 9px 15px;
+    color: #707070;
+    width: 100%;
+
+    &::-webkit-clear-button { /* Removes blue cross */
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.field-with-error {
+  .custom-date-input-widget {
+    input {
+      border-right: 3px solid #dc3545;
+    }
+  }
+}

@@ -6,9 +6,8 @@ import {
   DropdownToggle,
 } from "reactstrap"
 import * as Icon from "react-feather"
-import noneAvatar from "../../../assets/img/portrait/none-avatar.png"
+
 import { history } from "../../../history"
-import UserNavAvatar from "../../../views/pages/user-management/User/UserNavAvatar";
 
 
 const handleNavigation = (e, path) => {
@@ -49,37 +48,30 @@ const UserDropdown = props => {
   )
 }
 
-class NavbarUser extends React.PureComponent {
-  state = {
-    navbarSearch: false,
-    langDropdown: false,
-    suggestions: []
-  }
-
-  componentDidMount() {
-
-  }
-
-  render() {
-    return (
+const NavbarUser = ({userImg, userName, email, ...props}) => (
 
       <ul className="nav navbar-nav navbar-nav-user float-right">
         <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
           <DropdownToggle tag="a" className="nav-link dropdown-user-link">
             <div className="user-nav d-sm-flex d-none">
-              <span className="user-name text-bold-600">
-                {this.props.userName}
+              <span className="user-name">
+                {userName}
               </span>
-              <span className="user-status">{this.props.email}</span>
+              <span className="user-status">{email}</span>
             </div>
             <span data-tour="user">
-              <UserNavAvatar userId={this.props.userId} avatar={this.props.avatar}/>
+              <img
+                src={userImg}
+                className="round"
+                height="40"
+                width="40"
+                alt="avatar"
+              />
             </span>
           </DropdownToggle>
-          <UserDropdown {...this.props} />
+          <UserDropdown {...props} />
         </UncontrolledDropdown>
       </ul>
     )
-  }
-}
+
 export default NavbarUser

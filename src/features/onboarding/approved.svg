@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="141" height="141" viewBox="0 0 141 141">
+  <g id="Ellipse_1" data-name="Ellipse 1" fill="rgba(255,255,255,0)" stroke="#62be7b" stroke-width="15">
+    <circle cx="70.5" cy="70.5" r="70.5" stroke="none"/>
+    <circle cx="70.5" cy="70.5" r="63" fill="none"/>
+  </g>
+  <path id="checkmark" d="M14.022,22.7,0,36.719,28.045,64.763,74.785,18.022,60.763,4,28.045,36.719Z" transform="translate(32.504 35.516)" fill="#62be7b"/>
+</svg>

@@ -1,5 +1,4 @@
 # Logs
-.idea
 logs
 *.log
 npm-debug.log*
@@ -96,8 +95,5 @@ yarn-error.log*
 
 /react-shell-scripts
 
+.elasticbeanstalk/config.yml
 
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml

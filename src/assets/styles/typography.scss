@@ -1,0 +1,63 @@
+h1,
+h2,
+h3{
+  color: $primary-fg-color;
+  
+}
+
+
+h1 {
+  font-size: 65px;
+}
+h2 {
+  font-size: 54px;
+}
+h3 {
+  font-size: 46px;
+}
+
+h4 {
+  font-size: 46px;
+}
+
+.text {
+  font-size: 21px;
+  letter-spacing: 0.8px;
+  color: $primary-fg-color;
+  line-height: 1.52;
+}
+.error-message {
+  color: red;
+  margin-top: 4px;
+  font-size: 13px;
+  display: flex;
+  justify-content: left;
+  width: 100%;
+}
+
+@media all and (max-width: 1320px) {
+  h1 {
+    font-size: 55px;
+  }
+  h2 {
+    font-size: 46px;
+  }
+  h3 {
+    font-size: 32px;
+  }
+
+  h4 {
+    font-size: 32px;
+  }
+}
+@media all and (min-width: 1720px) {
+  h1 {
+    font-size: 75px;
+    line-height: 100px;
+  }
+  h2 {
+    font-size: 64px;
+    line-height: 72px;
+  }
+}
+

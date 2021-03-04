@@ -1,0 +1,213 @@
+.user-edit-preview {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 277px 1fr;
+  column-gap: 16px;
+  .user-card-body_title {
+    color: #7367F0!important;
+    font-weight: bold;
+  }
+  .vx-checkbox-white input:checked ~ .vx-checkbox {
+    border-color: #b8c2cc!important;
+  }
+  a.dropdown-toggle.nav-link {
+    color: #707070!important;
+  }
+  .title {
+    color: #7367F0!important;
+    font-weight: bold!important;
+    font-size: 22px!important;
+  }
+
+  &_body {
+    padding: 10px 20px!important;
+    .card-text {
+      color: #707070 !important;
+    }
+    .email {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+  .tablet-visible {
+    display: none;
+  }
+  .permissions-title {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    column-gap: 20px;
+    div {
+      margin-top: 25px
+    }
+  }
+  .permissions {
+    max-height: 380px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: minmax(100px, auto);
+    column-gap: 20px;
+    grid-row-gap: 18px;
+    padding-bottom: 10px;
+    .organization-name {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .abilities {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      column-gap: 10px;
+      .checked {
+        .vx-checkbox--label {
+          color: #007BFF;
+        }
+      }
+      .vx-checkbox--label {
+        white-space: nowrap;
+      }
+    }
+    .hot-fix {
+      grid-template-columns: 1fr;
+    }
+    .add-organization {
+      height: 100px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      display: flex;
+      font-size: 26px;
+      color: #707070;
+      cursor: pointer;
+    }
+  }
+}
+
+.organization-remove-modal {
+  width: 346px!important;
+  &_action-buttons {
+    display: flex;
+    font-size: 15px!important;
+    justify-content: space-between;
+    margin-top: 26px;
+  }
+  .modal-body{
+    padding: 38px!important;
+
+    button {
+      width: 127px;
+      border-radius: 25px!important;
+      &.remove-button {
+        background-color: #7367F0!important;
+        -webkit-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16)!important;
+        -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16)!important;
+        box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16)!important;
+      }
+      &.cancel-button {
+        background-color: white!important;
+        color: #707070!important;
+        -webkit-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16)!important;
+        -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16)!important;
+        box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16)!important;
+      }
+    }
+  }
+}
+
+.organization-add-modal {
+  width: 346px!important;
+  .modal-body {
+    padding: 25px!important;
+  }
+  &_title {
+    color: #707070!important;
+    font-weight: bold;
+    font-size: 22px!important;
+    margin-bottom: 45px;
+  }
+  &_all-addable-list {
+    //max-height: 300px;
+    overflow-y: auto;
+  }
+  .organizations-list {
+    &_title {
+      font-size: 15px;
+      color: #707070;
+    }
+    &.parent-organizations {
+      padding: 25px;
+
+      &.with-bottom-border {
+        border-bottom: 1px solid #707070;
+      }
+    }
+    &.child-organizations {
+      padding: 25px;
+    }
+    &_organization {
+      min-height: 100px;
+      margin: 15px 0;
+      &-body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .organization-img {
+          height: 57px;
+          max-width: 180px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1800px) {
+  .user-edit-preview {
+    .permissions {
+      max-height: 360px;
+    }
+  }
+}
+
+@media (max-width: 1600px) {
+  .user-edit-preview {
+    grid-template-columns: 244px 1fr;
+    .permissions {
+      max-height: 320px;
+    }
+  }
+}
+
+@media (max-width: 1500px) {
+  .user-edit-preview {
+    grid-template-columns: 1fr;
+    grid-template-rows: 128px 1fr;
+    .permissions {
+      max-height: 260px;
+    }
+    .tablet-hidden {
+      display: none;
+    }
+    .tablet-visible {
+      display: flex;
+      &.preview-card {
+        .user-card-img.card-img {
+          margin-right: 16px;
+          height: 128px!important;
+          width: 128px!important;
+        }
+      }
+
+    }
+
+  }
+}
+
+@media (max-width: 1280px) {
+  .user-edit-preview {
+    .permissions {
+      max-height: 203px;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+.notifications{
+    .plus-select {
+        &:hover {
+            color: $cyan;
+        }
+        color: #007bffa8;
+        stroke-width: 5;
+        cursor: pointer;
+    }
+    .ag-row-selected {
+        background-color: rgba(0, 123, 255, 0.2)!important;
+    }
+    .ag-row-hover {
+        background-color: rgba(0, 123, 255, 0.1)!important;
+    }
+}

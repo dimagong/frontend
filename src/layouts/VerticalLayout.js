@@ -12,10 +12,18 @@ import {
   changeNavbarType,
   changeFooterType,
   changeMenuColor,
-  hideScrollToTop
-} from "../redux/actions/customizer/index";
+  hideScrollToTop,
+  onContextSearchHide,
+} from "app/actions/vuexy/customizer/index";
+import { selectProfile } from "app/selectors";
 
-import UserService from '../services/user.service';
+import { userService } from 'services/user'
+
+import {hideContextSearch} from 'app/slices/appSlice'
+
+import ContextSearch from 'features/home/ContextSearch'
+
+// import UserService from '../services/user.service';
 
 class VerticalLayout extends PureComponent {
   state = {
@@ -29,6 +37,13 @@ class VerticalLayout extends PureComponent {
     customizer: false,
     currRoute: this.props.location.pathname
   };
+
+  constructor(props) {
+    super(props)
+
+    this.wrapperRef = React.createRef()
+  }
+
   collapsedPaths = [];
   mounted = false;
   updateWidth = () => {
@@ -82,7 +97,9 @@ class VerticalLayout extends PureComponent {
         customizer: { theme, sidebarCollapsed }
       }
     } = this.props;
-
+    if(prevProps.isContextSearchVisible === false &&  this.props.isContextSearchVisible === true) {
+      this.wrapperRef.current.scrollIntoView(true)
+    }
     let layout = theme;
     if (this.mounted) {
       if (layout === "dark") {
@@ -191,6 +208,8 @@ class VerticalLayout extends PureComponent {
     });
   };
 
+
+
   render() {
     let appProps = this.props.app.customizer;
     let menuThemeArr = [
@@ -253,7 +272,7 @@ class VerticalLayout extends PureComponent {
       sidebarState: appProps.sidebarCollapsed
     };
     return (
-      <div
+      <div ref={this.wrapperRef}
         className={classnames(
           `wrapper vertical-layout theme-${appProps.menuTheme}`,
           {
@@ -268,16 +287,22 @@ class VerticalLayout extends PureComponent {
           }
         )}
       >
-        <Sidebar {...sidebarProps} />
+        {/* <Sidebar {...sidebarProps} /> */}
         <div
           className={classnames("app-content content", {
             "show-overlay": this.state.appOverlay === true,
-            "is-onboarding": UserService.isOnboarding(this.props.userProfile)
+            // "is-onboarding": UserService.isOnboarding(this.props.userProfile)
           })}
           onClick={this.handleAppOverlayClick}
         >
           <Navbar {...navbarProps} />
-          <div className="content-wrapper">{this.props.children}</div>
+          <div className="content-wrapper" style={{marginTop: "4rem"}}>
+            {!userService.isOnboarding(this.props.userProfile) && (
+              <ContextSearch isShown={this.props.isContextSearchVisible} onContextSearchHide={this.props.onContextSearchHide} />
+            )}
+            {this.props.children}
+          </div>
+
         </div>
 
         <Footer {...footerProps} />
@@ -294,11 +319,14 @@ class VerticalLayout extends PureComponent {
 }
 const mapStateToProps = state => {
   return {
-    app: state.customizer,
-    userProfile: state.user.profile
+    app: state.vuexy.customizer,
+    userProfile: selectProfile(state),
+    isContextSearchVisible: state.app.isContextSearchVisible,
   };
 };
+
 export default connect(mapStateToProps, {
+  onContextSearchHide: () => ({type: 'app/hideContextSearch'}),
   changeMode,
   collapseSidebar,
   changeNavbarColor,

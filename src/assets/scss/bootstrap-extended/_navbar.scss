@@ -87,6 +87,19 @@
     hsla(0, 0%, 100%, 0)
   );
   z-index: 1000;
+  .brand-logo {
+    //background: url("../../img/logo/VPlogo.png") no-repeat center center;
+    //background-image: ;
+    height: 40px;
+    max-width: 140px;
+    //background-size:contain;
+  }
+  &.simplified-navbar {
+    .brand-logo {
+      height: 49px;
+      max-width: 231px;
+    }
+  }
   &.fixed-top {
     left: $menu-expanded-width;
   }
@@ -274,10 +287,11 @@
             margin-bottom: 0.435rem;
             margin-left: 0.2rem;
             line-height: 1;
+            font-size: 18px;
           }
 
           .user-status {
-            font-size: smaller;
+            font-size: 13px;
           }
           img {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.12),

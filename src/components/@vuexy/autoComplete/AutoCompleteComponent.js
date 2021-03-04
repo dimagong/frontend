@@ -2,9 +2,9 @@ import React from "react"
 import ReactDOM from "react-dom"
 import PropTypes from "prop-types"
 import classnames from "classnames"
-import { history } from "../../../history"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { AlertTriangle } from "react-feather"
+import {withRouter} from "react-router-dom"
 class Autocomplete extends React.Component {
   constructor(props) {
     super(props)
@@ -18,7 +18,9 @@ class Autocomplete extends React.Component {
     }
 
     this.filteredData = []
-    document.body.addEventListener("click", this.handleExtenalClick)
+    this.wrapperRef = React.createRef();
+    this.containerRef = React.createRef();
+    this.handleExternalClick = this.handleExternalClick.bind(this)
   }
 
   // Suggestion Click Event
@@ -26,12 +28,24 @@ class Autocomplete extends React.Component {
     if (this.props.onSuggestionClick) {
       this.props.onSuggestionClick(e)
     }
+
+    // If user input not equal to empty string and user input haven't been already remembered, then remember
+    if (this.state.userInput !== "" && this.state.userInput.length > 2) {
+      const repeats = this.state.recentSearches.filter((el) => el.toLowerCase() === this.state.userInput.toLowerCase())
+      if(!repeats.length) {
+        localStorage.setItem("recentSearches", JSON.stringify([this.state.userInput, ...this.state.recentSearches.slice(0,2)]))
+        this.setState({
+          recentSearches: [this.state.userInput, ...this.state.recentSearches.slice(0,2)]
+        })
+      }
+    }
+
     this.setState({
       activeSuggestion: 0,
       showSuggestions: false,
-      userInput: e.currentTarget.innerText
+      userInput: ""
     })
-    if (url) history.push(url)
+    if (url) this.props.history.push(url)
   }
 
   // Suggestion Hover Event
@@ -42,16 +56,36 @@ class Autocomplete extends React.Component {
   // Input Change
   onChange = e => {
     const userInput = e.currentTarget.value
+
     this.setState({
-      activeSuggestion: 0,
-      showSuggestions: true,
-      userInput
+      userInput: userInput || "",
     })
-    if (e.target.value < 1) {
+
+    if (this.state.showSuggestions === true && !userInput) {
       this.setState({
-        showSuggestions: false
+        showSuggestions: false,
       })
     }
+
+    if (this.state.showSuggestions === true && userInput && userInput.length < 3) {
+      this.setState({
+        showSuggestions: false,
+      })
+    }
+
+    if(this.state.showSuggestions === false && userInput && userInput.length > 2) {
+      this.setState({
+        activeSuggestion: 0,
+        showSuggestions: true,
+        userInput: userInput || ""
+      })
+    }
+    //
+    // if (e.target.value && e.target.value.length < 3) {
+    //   this.setState({
+    //     showSuggestions: false
+    //   })
+    // }
   }
 
   // Input Click Event
@@ -103,7 +137,11 @@ class Autocomplete extends React.Component {
 
     // User Pressed ENTER
     else if (e.keyCode === 13 && showSuggestions) {
-      this.onSuggestionItemClick(this.filteredData[activeSuggestion].link, e)
+      // this.onSuggestionItemClick(this.filteredData[activeSuggestion].link, e)
+      if (this.filteredData[activeSuggestion]) {
+        this.props.onEnter(this.filteredData[activeSuggestion])
+      }
+
       this.setState({
         userInput: this.filteredData[activeSuggestion][filterKey],
         showSuggestions: false
@@ -122,61 +160,11 @@ class Autocomplete extends React.Component {
     }
   }
 
-  // Grouped Suggestions
-  renderGroupedSuggestion = arr => {
-    const { filterKey, customRender } = this.props
-    const {
-      onSuggestionItemClick,
-      onSuggestionItemHover,
-      state: { activeSuggestion, userInput }
-    } = this
+  filterSuggestions = (suggestions, suggestionsLimit) => {
+    const {filterKey} = this.props;
+    const {userInput} = this.state;
 
-    let renderSuggestion = (item, i) => {
-      if (!customRender) {
-        return (
-          <li
-            className={classnames("suggestion-item", {
-              active: this.filteredData.indexOf(item) === activeSuggestion
-            })}
-            key={item[filterKey]}
-            onClick={e => onSuggestionItemClick(item.link, e)}
-            onMouseEnter={() => {
-              this.onSuggestionItemHover(this.filteredData.indexOf(item))
-            }}>
-            {item[filterKey]}
-          </li>
-        )
-      } else if (customRender) {
-        return customRender(
-          item,
-          i,
-          this.filteredData,
-          activeSuggestion,
-          onSuggestionItemClick,
-          onSuggestionItemHover,
-          userInput
-        )
-      } else {
-        return null
-      }
-    }
-
-    return arr.map((item, i) => {
-      return renderSuggestion(item, i)
-    })
-  }
-
-  // Ungrouped Suggestions
-  renderUngroupedSuggestions = () => {
-    const { filterKey, suggestions, customRender, suggestionLimit } = this.props
-    const {
-      onSuggestionItemClick,
-      onSuggestionItemHover,
-      state: { activeSuggestion, userInput }
-    } = this
-
-    this.filteredData = []
-    let sortSingleData = suggestions
+    return suggestions
       .filter(i => {
         let startCondition = i[filterKey]
             .toLowerCase()
@@ -184,98 +172,95 @@ class Autocomplete extends React.Component {
           includeCondition = i[filterKey]
             .toLowerCase()
             .includes(userInput.toLowerCase())
-        if (startCondition) {
-          return startCondition
-        } else if (!startCondition && includeCondition) {
-          return includeCondition
-        } else {
-          return null
-        }
+
+        return startCondition || includeCondition;
       })
-      .slice(0, suggestionLimit)
-    this.filteredData.push(...sortSingleData)
-    return sortSingleData.map((suggestion, index) => {
-      if (!customRender) {
-        return (
-          <li
-            className={classnames("suggestion-item", {
-              active: this.filteredData.indexOf(suggestion) === activeSuggestion
-            })}
-            key={suggestion[filterKey]}
-            onClick={e =>
-              onSuggestionItemClick(suggestion.link ? suggestion.link : null, e)
-            }
-            onMouseEnter={() =>
-              this.onSuggestionItemHover(this.filteredData.indexOf(suggestion))
-            }>
-            {suggestion[filterKey]}
-          </li>
-        )
-      } else if (customRender) {
+      .slice(0, suggestionsLimit)
+  }
+
+  // suggestion template
+  renderSuggestion = (suggestion, filterKey, filteredData, activeSuggestion) => (
+    <li
+      className={classnames("suggestion-item", {
+        active: this.filteredData.indexOf(suggestion) === activeSuggestion
+      })}
+      key={suggestion[filterKey]}
+      onClick={e =>
+        this.onSuggestionItemClick(suggestion.link ? suggestion.link : null, e)
+      }
+      onMouseEnter={() =>
+        this.onSuggestionItemHover(this.filteredData.indexOf(suggestion))
+      }>
+      {suggestion[filterKey]}
+    </li>
+  )
+
+  // Render list of suggestions
+  renderSingleSuggestionsGroup = (suggestionsGroup, groupSuggestionsLimit) => {
+    const { filterKey, customRender, suggestionLimit } = this.props
+    const {
+      onSuggestionItemClick,
+      onSuggestionItemHover,
+      state: { activeSuggestion, userInput }
+    } = this
+
+    let filteredSuggestions = this.filterSuggestions(suggestionsGroup, groupSuggestionsLimit || suggestionLimit)
+
+    this.filteredData = filteredSuggestions
+
+    if (!filteredSuggestions.length) {
+      return (
+        <li className="suggestion-item no-result">
+          <AlertTriangle size={15} />{" "}
+          <span className="align-middle ml-50">No Result</span>
+        </li>
+      )
+    }
+
+    return filteredSuggestions.map((suggestion, index) => {
+      if (customRender) {
         return customRender(
           suggestion,
           index,
-          this.filteredData,
+          filteredSuggestions,
           activeSuggestion,
           onSuggestionItemClick,
           onSuggestionItemHover,
           userInput
         )
       } else {
-        return null
+        return this.renderSuggestion(suggestion, filterKey, filteredSuggestions, activeSuggestion)
       }
     })
   }
 
-  // Renders Suggestions
+  // render groups of suggestions
+  renderSuggestionsGroups = (suggestionsGroup) => {
+    const { filterHeaderKey } = this.props
+
+    return (
+      <React.Fragment key={suggestionsGroup[filterHeaderKey]}>
+        <li className="suggestion-item suggestion-title text-primary text-bold-600">
+          {suggestionsGroup[filterHeaderKey]}
+        </li>
+        {suggestionsGroup.map((suggestion) => (
+          this.renderSingleSuggestionsGroup(suggestion.data)
+        ))}
+      </React.Fragment>
+    )
+  }
+
+  // Render suggestions or groups of suggestions
   renderSuggestions = () => {
-    const { filterKey, grouped, filterHeaderKey, suggestions } = this.props
-    const {
-      renderUngroupedSuggestions,
-      state: { userInput }
-    } = this
+    const { grouped, suggestions } = this.props
 
     // Checks if suggestions are grouped or not.
     if (grouped === undefined || grouped === null || !grouped) {
-      return renderUngroupedSuggestions()
+      return this.renderSingleSuggestionsGroup(suggestions)
     } else {
-      this.filteredData = []
-      return suggestions.map(suggestion => {
-        let sortData = suggestion.data
-          .filter(i => {
-            let startCondition = i[filterKey]
-                .toLowerCase()
-                .startsWith(userInput.toLowerCase()),
-              includeCondition = i[filterKey]
-                .toLowerCase()
-                .includes(userInput.toLowerCase())
-            if (startCondition) {
-              return startCondition
-            } else if (!startCondition && includeCondition) {
-              return includeCondition
-            } else {
-              return null
-            }
-          })
-          .slice(0, suggestion.searchLimit)
-
-        this.filteredData.push(...sortData)
-        return (
-          <React.Fragment key={suggestion[filterHeaderKey]}>
-            <li className="suggestion-item suggestion-title text-primary text-bold-600">
-              {suggestion[filterHeaderKey]}
-            </li>
-            {sortData.length ? (
-              this.renderGroupedSuggestion(sortData)
-            ) : (
-              <li className="suggestion-item no-result">
-                <AlertTriangle size={15} />{" "}
-                <span className="align-middle ml-50">No Result</span>
-              </li>
-            )}
-          </React.Fragment>
-        )
-      })
+      return suggestions.map(suggestion => (
+        this.renderSuggestionsGroups(suggestion)
+      ))
     }
   }
 
@@ -289,10 +274,9 @@ class Autocomplete extends React.Component {
   }
 
   // Closes Suggestions if clicked outside container (On Blur Basically)
-  handleExtenalClick = e => {
-    let { container } = this.refs
+  handleExternalClick = e => {
     const { target } = e
-    if (target !== container && !container.contains(target)) {
+    if (this.containerRef.current && !this.containerRef.current.contains(target)) {
       this.setState({
         showSuggestions: false
       })
@@ -301,15 +285,21 @@ class Autocomplete extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let textInput = ReactDOM.findDOMNode(this.input)
     let { autoFocus, onSuggestionsShown, clearInput } = this.props
     // For searchbar focus
-    if (textInput !== null && autoFocus) {
-      textInput.focus()
+    if (this.wrapperRef.current && autoFocus) {
+      this.wrapperRef.current.focus()
     }
 
     if (
       this.props.defaultSuggestions &&
+      prevState.showSuggestions === false &&
+      this.state.focused
+    ) {
+      this.setState({ showSuggestions: true })
+    }
+
+    if ( this.state.userInput && this.state.userInput.length > 2 &&
       prevState.showSuggestions === false &&
       this.state.focused
     ) {
@@ -325,7 +315,7 @@ class Autocomplete extends React.Component {
 
     // Function on Suggestions Shown
     if (onSuggestionsShown && this.state.showSuggestions) {
-      onSuggestionsShown(this.state.userInput)
+    onSuggestionsShown(this.state.userInput)
     }
 
     if (
@@ -338,13 +328,22 @@ class Autocomplete extends React.Component {
   }
 
   componentDidMount() {
+    document.addEventListener('mousedown', this.handleExternalClick);
     if (this.props.defaultSuggestions && this.state.focused) {
       this.setState({ showSuggestions: true })
+    }
+    const recentSearches = JSON.parse(localStorage.getItem("recentSearches"))
+
+    if (recentSearches === null) {
+      localStorage.setItem("recentSearches", JSON.stringify([]))
+      this.setState({ recentSearches: [] })
+    } else {
+      this.setState({ recentSearches })
     }
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener("click", this.handleExtenalClick)
+    document.body.removeEventListener("click", this.handleExternalClick)
   }
 
   render() {
@@ -364,14 +363,38 @@ class Autocomplete extends React.Component {
           ref={el => (this.suggestionList = el)}
           component="ul"
           options={{ wheelPropagation: false }}>
+          <div className="d-flex justify-content-between p-1">
+            <span>Suggestions</span>
+            <span>View all</span>
+          </div>
           {this.renderSuggestions()}
+          <div className="text-right px-1 pt-1">
+            <span>Tip: Hold CTRL or CONTROL while clicking to show preview</span>
+          </div>
+          {!!this.state.recentSearches.length && (
+            <div className="m-1 border-top-secondary ">
+              <div className="py-1">Recent searches</div>
+              {this.state.recentSearches.map((rs) => (
+                <div
+                  className="h5 cursor-pointer"
+                  onClick={() => this.setState({userInput: rs})}
+                >
+                  {rs}
+                </div>
+              ))}
+            </div>
+          )}
         </PerfectScrollbar>
       )
     }
 
     return (
-      <div className="vx-autocomplete-container" ref="container">
+      <div
+        className="vx-autocomplete-container"
+        ref={this.containerRef}
+      >
         <input
+          ref={this.wrapperRef}
           type="text"
           onChange={e => {
             onChange(e)
@@ -381,14 +404,12 @@ class Autocomplete extends React.Component {
           }}
           onKeyDown={e => onKeyDown(e)}
           value={userInput}
+          style={{borderColor: "#707070"}}
           className={`vx-autocomplete-search ${
             this.props.className ? this.props.className : ""
           }`}
           placeholder={this.props.placeholder}
           onClick={this.onInputClick}
-          ref={el => {
-            return (this.input = el)
-          }}
           onFocus={e => {
             this.setState({ focused: true })
           }}
@@ -405,7 +426,7 @@ class Autocomplete extends React.Component {
   }
 }
 
-export default Autocomplete
+export default withRouter(Autocomplete)
 
 Autocomplete.propTypes = {
   suggestions: PropTypes.array.isRequired,
@@ -418,5 +439,6 @@ Autocomplete.propTypes = {
   onKeyDown: PropTypes.func,
   onChange: PropTypes.func,
   onSuggestionsShown: PropTypes.func,
-  onSuggestionItemClick: PropTypes.func
+  onSuggestionItemClick: PropTypes.func,
+
 }

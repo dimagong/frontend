@@ -417,13 +417,12 @@ html {
   }
 }
 
-@media (max-width: 1200px) {
   .vertical-layout {
     .app-content {
       margin-left: 0;
 
       .header-navbar.floating-nav {
-        width: calc(100% - 4.4rem) !important;
+        //width: calc(100% - 4.4rem) !important;
       }
     }
 
@@ -437,7 +436,6 @@ html {
       }
     }
   }
-}
 
 @media (max-width: 576px) {
   .vertical-layout {

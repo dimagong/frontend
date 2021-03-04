@@ -1,0 +1,99 @@
+.custom-tabs {
+  justify-content: space-between;
+
+  .icon-container {
+    //display: inline-block;
+    width: 21px;
+    height: 21px;
+
+    background: white;
+    border-radius: 40px;
+    margin-left: 10px;
+    margin-right: 5px;
+    border: 1px solid #707070;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page-item .page-link {
+    display: flex;
+    align-items: center;
+  }
+
+  .page-item.active {
+    .icon-container {
+      //width: 20px;
+      //height: 20px;
+      border: 0;
+      width: 20px;
+      height: 20px;
+      //padding: 1px;
+    }
+  }
+
+  ul.pagination {
+    width: 100%;
+  }
+  .page-item.active .page-link {
+    background: #7367f0;
+    &:hover {
+      color: white;
+    }
+  }
+  .with-icon {
+    .page-item .page-link {
+      padding-left: 0;
+    }
+  }
+  .page-item {
+    &.prev-item, &.next-item {
+      .page-link {
+        background-color: #b1b1b1;
+        padding: 7px 9px!important;
+        border-radius: 25px!important;
+        color: white;
+        &:hover {
+          background-color: #7367f0;
+        }
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+
+    &.prev-item .page-link svg,
+    &.next-item .page-link svg {
+      width: 18px;
+      height: 18px;
+    }
+    .page-link {
+      padding: 6px 25px;
+      font-weight: normal;
+      background-color: white;
+      box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+      &:hover {
+        color: #7367f0;
+      }
+    }
+  }
+  &_tabs {
+    display: flex;
+    width: 100%;
+    white-space: nowrap;
+    overflow-x: auto;
+    padding-bottom: 7px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  &_tab {
+    padding: 0 5px;
+    font-size: 18px;
+  }
+}
