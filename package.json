@@ -95,9 +95,10 @@
     "yup": "^0.28.1"
   },
   "scripts": {
-    "start": "node server.js",
-    "start-default": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start-local": "dotenv -e .env react-app-rewired start",
+    "start-default": "dotenv -e .env.development react-app-rewired start",
+    "build-dev": "dotenv -e .env.staging react-app-rewired build",
+    "build-prod": "dotenv -e .env.production react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
@@ -105,6 +106,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "dotenv-cli": "^4.0.0",
     "react-app-rewire-postcss": "^3.0.2",
     "react-app-rewired": "^2.1.5"
   },
