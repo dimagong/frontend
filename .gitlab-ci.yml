@@ -43,6 +43,8 @@ deploy to production:
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build
     - cd build
-    - eb deploy NmpFeProdV1-env
+    - git init
+    - git add .
+    - eb deploy NmpFeProdV1-env --staged
   only:
     - master
