@@ -43,7 +43,8 @@ deploy to production:
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build
     - cd build
-    - git init
+    - touch .ebignore
+    - echo ".git/" >> .ebignore
     - eb deploy NmpFeProdV1-env
   only:
     - master
