@@ -39,7 +39,7 @@ deploy to production:
     - git checkout master
     - cat .ebenviroments/https.production.conf >> .platform/nginx/conf.d/https.conf
     - npm i
-    - npm run build-prod
+    - CI=false npm run build-prod
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build
     - cd build
