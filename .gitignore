@@ -95,3 +95,5 @@ yarn-error.log*
 
 /react-shell-scripts
 
+.elasticbeanstalk/config.yml
+
