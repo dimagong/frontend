@@ -106,7 +106,7 @@ const ThemeNavbar = props => {
               <div className="bookmark-wrapper">
                 <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
                   {/*If logo is not loaded yet, show temp image by path that is valid about 5 mins*/}
-                  {userProfile.permissions.logo?.isLoading ? (
+                  {!userProfile.permissions.logo?.base64 ? (
                     <img className="brand-logo " src={userProfile.permissions.logo_path} alt="main org logo"/>
                   ) : (
                     <img className="brand-logo " src={userProfile.permissions.logo?.base64} alt="main org logo"/>
