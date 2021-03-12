@@ -20,10 +20,15 @@ import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import { Link } from "react-router-dom";
 import PageTemplate from "templates/pageTemplate";
 import { useDispatch } from "react-redux";
-import {loginRequest} from "app/slices/appSlice"
 import { push } from "connected-react-router"
 
 import TermsAndConditions from 'assets/ValidPath-privacy-policy.pdf'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  loginRequest,
+}  = appSlice.actions;
 
 const Login = () => {
   const [email, setEmail] = useState("");

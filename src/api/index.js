@@ -1,8 +1,11 @@
 import axios from "axios";
 import authService from "services/auth"
 import store from "app/store"
-import {logout} from 'app/slices/appSlice'
 import { toast } from "react-toastify";
+
+import appSlice from 'app/slices/appSlice'
+
+const { logout } = appSlice.actions;
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,

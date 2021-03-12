@@ -19,12 +19,22 @@ import MultiSelect from "components/MultiSelect/multiSelect";
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { selectWorkflow } from "app/selectors/onboardingSelectors";
 import { useDispatch, useSelector } from "react-redux";
-import { setWorkflow, setWorkflowGroups } from "app/slices/onboardingSlice";
-import { createWorkflowRequest, updateWorkflowRequest } from "app/slices/appSlice";
 import WorkflowTriggers from './WorkflowTriggers'
 import {initWorkflow} from './constants'
 
-import {setContext} from 'app/slices/appSlice'
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setWorkflow,
+  setWorkflowGroups,
+} = onboardingSlice.actions;
+
+const {
+  setContext,
+  createWorkflowRequest,
+  updateWorkflowRequest,
+} = appSlice.actions;
 
 const WorkflowForm = ({ workflowModalType }) => {
   const workflow = useSelector(selectWorkflow);

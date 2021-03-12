@@ -12,12 +12,17 @@ import {
 import { X, ChevronDown } from "react-feather";
 import WorkflowAction from "./WorkflowAction";
 import { useDispatch, useSelector } from "react-redux";
-import { setWorkflowTriggers } from "app/slices/onboardingSlice";
 import {
   selectWorkflow,
   selectdFormTriggers,
 } from "app/selectors/onboardingSelectors";
 import { triggerTypes, types } from "./constants";
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+
+const {
+  setWorkflowTriggers,
+} = onboardingSlice.actions
 
 const WorkflowTrigger = ({ keyTrigger, trigger }) => {
   const workflow = useSelector(selectWorkflow);

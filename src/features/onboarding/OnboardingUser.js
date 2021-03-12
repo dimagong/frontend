@@ -21,13 +21,6 @@ import classnames from "classnames"
 import {isEmpty} from 'lodash'
 import FormCreate from 'components/FormCreate/FormCreate'
 import {debounce} from 'lodash';
-import {
-  submitdFormRequest,
-  submitdFormDataRequest,
-  setProfileOnboarding,
-  getUserByIdRequest,
-  removeUserNotifyRequest,
-} from "app/slices/appSlice";
 import {CheckCircle, AlertCircle, Box, Clipboard, FileText, ChevronRight, ChevronDown} from 'react-feather';
 
 import './styles.scss'
@@ -37,13 +30,22 @@ import moment from "moment";
 import FileInput from 'components/FormCreate/Custom/FileInput'
 
 import TabsArrayOfObjects from 'components/Tabs/TabsArrayOfObjects'
-import {getProfileRequest} from "../../app/slices/appSlice";
 
 import Check from 'assets/img/icons/check.png'
 
 import Approved from './approved.svg'
 import Submitted from './submitted.svg'
 import Review from './onReview.svg'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  submitdFormRequest,
+  submitdFormDataRequest,
+  setProfileOnboarding,
+  getUserByIdRequest,
+  removeUserNotifyRequest,
+} = appSlice.actions;
 
 const statusImages = {
   approved: {img: Approved, alt: "form approved"},

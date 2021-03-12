@@ -15,10 +15,17 @@ import {
   PaginationLink,
   Button,
 } from 'reactstrap'
-import { setManager, setPreview, getOnboardingsByUserRequest } from 'app/slices/appSlice'
 import useWindowSize from 'hooks/windowWidth'
 import UserCardTemplate from '../CardTemplates/userCard'
 import { selectPreview } from 'app/selectors/layoutSelector'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setManager,
+  setPreview,
+  getOnboardingsByUserRequest,
+} = appSlice.actions;
 
 const UserManagement = ({ managers, handleContextChange }) => {
 

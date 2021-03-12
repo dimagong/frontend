@@ -21,7 +21,10 @@ import {
   selectUserWorkfows,
   selectUserReviewers,
 } from "app/selectors";
-import {
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   setManagerOnboardingProperty,
   setManagerOnboarding,
   setUserDForms,
@@ -31,7 +34,7 @@ import {
   deleteUserOnboardingRequest,
   updateUserOnboardingReviewersRequest,
   updateUserOnboardingWorkflowRequest,
-} from 'app/slices/appSlice'
+} = appSlice.actions;
 
 const prepareSelect = (data) => {
   return data.map((value) => {

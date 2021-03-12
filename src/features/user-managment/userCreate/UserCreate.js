@@ -21,10 +21,17 @@ import {Check, Eye, EyeOff, Lock, X} from "react-feather"
 import Flatpickr from "react-flatpickr";
 import moment from 'moment';
 import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
-import { setUser, createUserRequest, setContext } from "app/slices/appSlice";
 import { selectGroups, selectRoles, selectError } from "app/selectors";
 import {prepareSelectOptions,prepareNotNestedSelectOptions, normalizeGroups, getGroupName, prepareSelectGroups} from "utility/select/prepareSelectData";
 import {groupTypes} from 'constants/group'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setUser,
+  createUserRequest,
+  setContext,
+} = appSlice.actions;
 
 const UserCreate = () => {
     const user = useSelector(selectUser);

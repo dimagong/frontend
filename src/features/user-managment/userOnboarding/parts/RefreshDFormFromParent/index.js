@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
-import {
-  updateDFormFromParentRequest
-} from 'app/slices/appSlice'
 import {RefreshCw} from "react-feather";
 import {Button} from "reactstrap";
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  updateDFormFromParentRequest
+} = appSlice.actions;
 
 export default function RefreshDFormFromParent({id}) {
   const dispatch = useDispatch();

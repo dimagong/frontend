@@ -22,7 +22,13 @@ import { useSelector } from "react-redux";
 import { selectLoading, selectError } from "app/selectors/authSelectors";
 import { useRouter } from "hooks/useRouter";
 import { useDispatch } from "react-redux";
-import {resetPasswordRequest, verifyPasswordRequest} from 'app/slices/appSlice'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  resetPasswordRequest,
+  verifyPasswordRequest
+} = appSlice.actions;
 
 const ForgotPassword = () => {
   const {query} = useRouter();

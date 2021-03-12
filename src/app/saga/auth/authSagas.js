@@ -3,6 +3,17 @@ import { toast } from "react-toastify";
 
 import authApi from "api/Auth/auth";
 import {
+
+} from 'app/slices/onboardingSlice'
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  resetOnboardingSlice,
+} = onboardingSlice.actions;
+
+const {
   resetPasswordRequest,
   resetPasswordSuccess,
   resetPasswordError,
@@ -15,12 +26,7 @@ import {
   getProfileRequest,
   logout,
   resetAppSlice,
-} from "app/slices/appSlice";
-
-import {
-  resetOnboardingSlice,
-} from 'app/slices/onboardingSlice'
-
+} = appSlice.actions;
 
 function* login({ payload }) {
   try {

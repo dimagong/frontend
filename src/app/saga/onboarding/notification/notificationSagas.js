@@ -1,7 +1,20 @@
 import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import notificationApi from "api/Onboarding/notification";
+import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {
+  selectNotifications,
+} from "app/selectors/onboardingSelectors";
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setNotifications,
+  setNotification,
+} = onboardingSlice.actions;
+
+const {
   getNotificationsRequest,
   getNotificationsSuccess,
   getNotificationsError,
@@ -15,16 +28,8 @@ import {
   deleteNotificationRequest,
   deleteNotificationError,
   setContext,
-} from "app/slices/appSlice";
-import {
-  setNotifications,
-  setNotification,
-} from "app/slices/onboardingSlice";
-import {prepareSelectGroups} from "utility/select/prepareSelectData";
-import {
-  selectNotifications,
-} from "app/selectors/onboardingSelectors";
-import _ from "lodash"
+} = appSlice.actions;
+
 
 function* getNotifications() {
   try {

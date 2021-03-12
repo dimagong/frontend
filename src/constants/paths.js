@@ -11,3 +11,5 @@ export const userManagmentOptionsPath = id => `${userManagmentPath}?${qs.stringi
 export const invitationPath = "/invitation-accept/:invitationId";
 export const masterSchemaPath = "/master-schema";
 export const onboardingProcessPath = "/onboarding-process";
+
+export const userProfilePath = `/user-profile/:id`;

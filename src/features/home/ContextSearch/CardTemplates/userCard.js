@@ -8,7 +8,14 @@ import { X, Edit } from "react-feather";
 import './userCard.scss'
 import {capitalizeAll} from '../../../../utility/common'
 import {selectLoading} from 'app/selectors'
-import {deleteUserAvatarRequest, getUserAvatarRequest, updateUserAvatarRequest} from '../../../../app/slices/appSlice'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  deleteUserAvatarRequest,
+  getUserAvatarRequest,
+  updateUserAvatarRequest,
+} = appSlice.actions;
 
 const UserCardTemplate = ({className, oneColumn, onClick, editable = false, onEdit = () => {}, ...manager }) => {
   const isLoading = useSelector(selectLoading);

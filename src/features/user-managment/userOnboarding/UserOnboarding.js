@@ -24,8 +24,14 @@ import DataTable, {createTheme} from "react-data-table-component"
 import {User, X, Check, Plus, Edit2, RefreshCw, EyeOff, Eye} from "react-feather"
 import {columnDefs} from './gridSettings';
 import UserOnboardingForm from './UserOnboardingForm';
-import {setManagerOnboarding, getUserOnboardingRequest} from 'app/slices/appSlice'
 import UserOnboardingDForm from './UserOnboardingDForm';
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setManagerOnboarding,
+  getUserOnboardingRequest,
+} = appSlice.actions;
 
 
 const UserOnboarding = () => {

@@ -5,7 +5,6 @@ import {
 } from "reactstrap"
 import {RefreshCcw, Trash, Save} from "react-feather"
 import {useDispatch, useSelector} from "react-redux";
-import {createInvitationsRequest, deleteInvitationsRequest} from "app/slices/appSlice";
 import {selectManager} from "app/selectors";
 import moment from "moment";
 import './UserInvitationsCreate.scss'
@@ -13,6 +12,13 @@ import {CopyToClipboard} from "react-copy-to-clipboard"
 import {toast} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import "../../../assets/scss/plugins/extensions/toastr.scss"
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  createInvitationsRequest,
+  deleteInvitationsRequest,
+} = appSlice.actions;
 
 const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
   const dispatch = useDispatch();

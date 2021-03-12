@@ -59,10 +59,13 @@ import OrderingEditModal from './Ordering/OrderingEditModal'
 import Ordering from './Ordering/Ordering'
 import FormOrdering from './Ordering/index'
 import masterSchemaService from "../../views/pages/master-schema/services/masterSchema.service";
-import {
-  getMasterSchemaFieldsRequest,
-} from "app/slices/appSlice";
 import PropertyNameById from "./Parts/PropertyNameById";
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  getMasterSchemaFieldsRequest,
+} = appSlice.actions;
 
 const clone = rfdc();
 
