@@ -24,7 +24,6 @@ import appSlice from 'app/slices/appSlice'
 const {
   setManager,
   setPreview,
-  getOnboardingsByUserRequest,
 } = appSlice.actions;
 
 const UserManagement = ({ managers, handleContextChange }) => {
@@ -58,7 +57,6 @@ const UserManagement = ({ managers, handleContextChange }) => {
             dispatch(setPreview({type: "user", id: user.id}))
           } else {
             dispatch(setManager(user));
-            dispatch(getOnboardingsByUserRequest(user));
             handleContextChange("User")
           }
         }}

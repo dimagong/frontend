@@ -214,6 +214,11 @@ function* getOnboardingsByUser({payload}) {
   }
 }
 
+function* handleSetManager({payload}) {
+
+  yield put(getOnboardingsByUserRequest(payload))
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getOnboardingsByUserRequest.type, getOnboardingsByUser),
@@ -230,5 +235,6 @@ export default function* () {
     yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility),
     yield takeLatest(removeUserNotifyRequest.type, removeUserNotify),
     yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
+    yield takeLatest(setManager.type, handleSetManager),
   ]);
 }
