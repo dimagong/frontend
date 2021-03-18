@@ -5,18 +5,6 @@ import {
 import Select, {components} from "react-select"
 import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
-import {
-  getRolesRequest,
-  getGroupsRequest,
-  getModulesRequest,
-  setUserGroups,
-  setUserModules,
-  updateUserRolesRequest,
-  setUserRoles,
-  addUserGroupsRequest,
-  removeUserGroupsRequest,
-  updateUserModulesRequest
-} from "app/slices/appSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectGroups, selectRoles, selectModules, selectManager} from "app/selectors";
 import {groupTypes} from 'constants/group'
@@ -24,6 +12,16 @@ import {prepareSelectOptions,prepareNotNestedSelectOptions, normalizeGroups, get
 import {MultiSelectOrganization} from "../../../components/MultiSelect/MultiSelectOrganizations";
 import { isEmpty } from 'lodash'
 import OrganizationPermissionsModal from '../../../components/modals/OrganizationPermissionsModal'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  getModulesRequest,
+  updateUserRolesRequest,
+  addUserGroupsRequest,
+  removeUserGroupsRequest,
+  updateUserModulesRequest,
+} = appSlice.actions;
 
 const UserEditSelects = () => {
   const groups = useSelector(selectGroups);

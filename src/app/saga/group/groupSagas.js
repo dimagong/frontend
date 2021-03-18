@@ -2,7 +2,9 @@ import { all, put, call, takeLatest, takeEvery } from "redux-saga/effects";
 
 import groupApi from "api/Group/group";
 import organizationApi from 'api/organizations'
-import {
+import appSlice from 'app/slices/appSlice'
+
+const {
   getGroupsSuccess,
   getGroupsRequest,
   getGroupsError,
@@ -24,7 +26,8 @@ import {
   getOrganizationLogoError,
 
   setContext,
-} from "app/slices/appSlice";
+}  = appSlice.actions;
+
 
 function* getGroups() {
   try {

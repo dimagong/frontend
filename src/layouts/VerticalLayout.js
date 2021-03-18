@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import classnames from "classnames";
 import Customizer from "../components/@vuexy/customizer/Customizer";
-import Sidebar from "./components/menu/vertical-menu/Sidebar";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import { connect } from "react-redux";
@@ -13,17 +12,12 @@ import {
   changeFooterType,
   changeMenuColor,
   hideScrollToTop,
-  onContextSearchHide,
 } from "app/actions/vuexy/customizer/index";
 import { selectProfile } from "app/selectors";
 
 import { userService } from 'services/user'
 
-import {hideContextSearch} from 'app/slices/appSlice'
-
 import ContextSearch from 'features/home/ContextSearch'
-
-// import UserService from '../services/user.service';
 
 class VerticalLayout extends PureComponent {
   state = {

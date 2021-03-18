@@ -19,18 +19,11 @@ import {
   selectGroups,
   selectManagers
 } from "app/selectors";
-import {
-  getUserOnboardingRequest,
-  getOrganizationsRequest,
-  getUserOrganizationsRequest,
-} from "app/slices/appSlice";
-
 
 import {
   selectOrganizations,
 } from 'app/selectors/groupSelector'
 
-import {setPreview} from 'app/slices/appSlice'
 import {selectPreview} from '../../../app/selectors/layoutSelector'
 import noneAvatar from '../../../assets/img/portrait/none-avatar.png'
 
@@ -40,6 +33,15 @@ import {
 } from 'app/selectors/userSelectors'
 
 import {capitalizeAll} from '../../../utility/common'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  getUserOnboardingRequest,
+  getOrganizationsRequest,
+  getUserOrganizationsRequest,
+  setPreview,
+} = appSlice.actions;
 
 const UserEditPreview = (props, context) => {
   const [activeTab, setActiveTab] = useState("Permissions")

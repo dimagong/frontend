@@ -1,6 +1,5 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { hideContextSearch } from "app/slices/appSlice"
 import {
   selectContextSearchVisibility,
   selectContext,
@@ -9,6 +8,11 @@ import {
 import ContextSearch from './ContextSearch'
 import Context from './Context'
 
+import appSlice from 'app/slices/appSlice'
+
+const {
+  hideContextSearch,
+} = appSlice.actions;
 
 const Home = () => {
   const dispatch = useDispatch();

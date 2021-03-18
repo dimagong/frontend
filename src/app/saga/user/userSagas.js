@@ -1,7 +1,14 @@
 import {all, put, call, takeLatest, select, takeEvery} from "redux-saga/effects";
 
 import userApi from "api/User/user";
-import {
+import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
+import {prepareSelectGroups} from "utility/select/prepareSelectData";
+import {selectGroups, selectRoles} from "app/selectors";
+import organizationApi from '../../../api/organizations'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   getProfileSuccess,
   getProfileRequest,
   getProfileError,
@@ -47,11 +54,7 @@ import {
   getOnboardingsByUserRequest,
   getOnboardingsByUserSuccess,
   getOnboardingsByUserError,
-} from "app/slices/appSlice";
-import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
-import {prepareSelectGroups} from "utility/select/prepareSelectData";
-import {selectGroups, selectRoles} from "app/selectors";
-import organizationApi from '../../../api/organizations'
+} = appSlice.actions;
 
 function* getProfile() {
   try {

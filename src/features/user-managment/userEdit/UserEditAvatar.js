@@ -5,7 +5,14 @@ import { X } from "react-feather";
 import { selectLoading } from "app/selectors/authSelectors";
 import { selectManager } from "app/selectors/userSelectors";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserAvatarRequest, deleteUserAvatarRequest, getUserAvatarRequest } from "app/slices/appSlice";
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  updateUserAvatarRequest,
+  deleteUserAvatarRequest,
+  getUserAvatarRequest,
+} = appSlice.actions;
 
 const UserAvatar = () => {
   const isLoading = useSelector(selectLoading);
@@ -30,14 +37,14 @@ const UserAvatar = () => {
   const removeAvatar = () => {
         dispatch(deleteUserAvatarRequest({avatarId: manager.avatar.id}))
   }
-  
+
   return (
     <Media left className="user-edit__user-avatar mt-md-1 mt-0 mr-1">
       <Media
         className="rounded"
         object
         src={
-            manager.url 
+            manager.url
             ?  manager.url
             : noneAvatar
         }

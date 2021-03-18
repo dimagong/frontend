@@ -14,13 +14,16 @@ import { AgGridReact } from "ag-grid-react"
 import { useDispatch, useSelector } from "react-redux";
 import { selectInvitations } from "app/selectors";
 import { columnDefs } from "./gridSettings";
-import {
+import { toast } from "react-toastify"
+import {X} from 'react-feather'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   getInvitationsRequest,
   revokeInvitationsRequest,
   setContext,
-} from "app/slices/appSlice";
-import { toast } from "react-toastify"
-import {X} from 'react-feather'
+}  = appSlice.actions;
 
 const UserInvitations = ({activeTab}) => {
     const gridApi = useRef(null);

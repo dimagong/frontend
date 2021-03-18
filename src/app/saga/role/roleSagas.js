@@ -1,13 +1,14 @@
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import roleApi from "api/role/role";
-import {
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   getRolesSuccess,
   getRolesRequest,
   getRolesError,
-} from "app/slices/appSlice";
-
-
+}  = appSlice.actions;
 
 function* getRoles() {
   try {

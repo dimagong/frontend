@@ -13,14 +13,6 @@ import {
 } from "app/selectors";
 
 import {
-  getUserManagment,
-  getdFormsRequest,
-  getNotificationsRequest,
-  getWorkflowsRequest,
-  setContext,
-} from "app/slices/appSlice";
-
-import {
   ChevronUp,
   Plus,
 } from 'react-feather'
@@ -38,22 +30,36 @@ import UserManagement from './UserManagement'
 
 import './styles.scss'
 
+import { createLoadingSelector } from 'app/selectors/loadingSelector'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  getUserManagment,
+  getdFormsRequest,
+  getNotificationsRequest,
+  getWorkflowsRequest,
+  setContext,
+} = appSlice.actions;
+
 const ContextSearch = ({isShown, onContextSearchHide}) => {
   const dispatch = useDispatch();
-
   const managers = useSelector(selectManagers);
 
-  const isAuth = useSelector(selectAuth)
-  const vuexyUser = useSelector(selectVuexyUser)
-  const context = useSelector(selectContext)
-  const profile = useSelector(selectProfile)
+  const isAuth = useSelector(selectAuth);
+  const vuexyUser = useSelector(selectVuexyUser);
+  const context = useSelector(selectContext);
+  const profile = useSelector(selectProfile);
 
-  const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0])
+  const test = useSelector(createLoadingSelector([getdFormsRequest.type, getNotificationsRequest.type, getWorkflowsRequest.type]));
+  console.log("test loadinig", test);
+
+  const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0]);
 
 
   const handleContextChange = (context) => {
     dispatch(setContext(context))
-  }
+  };
 
   const handleAdd = () => {
     if (selectedNavItem.id === "managers") {
@@ -63,23 +69,23 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     } else {
       dispatch(setContext("Create dForm"))
     }
-  }
+  };
 
   const handleNavItemChange = (navItem) => {
     setSelectedNavItem(navItem)
-  }
+  };
 
   const handleContextSearchHide = () => {
     if (context) {
       onContextSearchHide()
     }
-  }
+  };
 
   useEffect(() => {
     if (isAuth && vuexyUser) {
-      dispatch(getUserManagment())
-      dispatch(getWorkflowsRequest())
-      dispatch(getdFormsRequest())
+      dispatch(getUserManagment());
+      dispatch(getWorkflowsRequest());
+      dispatch(getdFormsRequest());
       dispatch(getNotificationsRequest())
     }
   }, [isAuth, vuexyUser]);

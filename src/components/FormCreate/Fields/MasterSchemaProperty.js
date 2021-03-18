@@ -5,9 +5,12 @@ import Select from "react-select";
 import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
 import {isEmpty, isObject, first} from 'lodash'
 import {current} from "@reduxjs/toolkit";
-import {
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   getMasterSchemaFieldsRequest,
-} from "app/slices/appSlice";
+}  = appSlice.actions;
 
 class CustomSelect extends React.Component {
   render() {

@@ -7,8 +7,6 @@ import {
   Col,
   Button,
 } from "reactstrap"
-import { setWorkflow } from "app/slices/onboardingSlice";
-
 
 import {ContextLayout} from "utility/context/Layout"
 import {AgGridReact} from "ag-grid-react"
@@ -17,11 +15,22 @@ import { columnDefs } from "./gridSettings";
 import { useDispatch, useSelector } from "react-redux";
 import { ChangeDetectionStrategyType } from 'ag-grid-react/lib/changeDetectionService'
 import {
-    selectWorkflows,
-    selectWorkflow,
-  } from "app/selectors/onboardingSelectors";
-  import { getWorkflowsRequest, deleteWorkflowRequest } from "app/slices/appSlice";
+  selectWorkflows,
+  selectWorkflow,
+} from "app/selectors/onboardingSelectors";
 import {initWorkflow} from './components/constants';
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setWorkflow,
+} = onboardingSlice.actions;
+
+const {
+  getWorkflowsRequest,
+  deleteWorkflowRequest,
+} = appSlice.actions;
 
 const Workflow = () => {
     const [gridApi, setGridApi] = useState(null);

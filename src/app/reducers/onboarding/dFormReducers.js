@@ -1,9 +1,6 @@
 const createSections = ({dForm}) => {
-  const sections = Object.keys(dForm.schema.uiSchema.sectionGroups).map( section => ({type: section}))
-
-  return sections;
-}
-
+  return Object.keys(dForm.schema.uiSchema.sectionGroups).map( section => ({type: section}));
+};
 
 const setdForms = (state , {payload}) => {
   state.dForm.dForms = payload.map( dForm => ({...dForm, sections: createSections({dForm})}));
@@ -26,9 +23,9 @@ const setdFormTriggers = (state, {payload}) => {
 };
 
 export default {
-    setdForms,
-    setdForm,
-    setdFormGroups,
-    setdFormActions,
-    setdFormTriggers,
-  };
+  setdForms,
+  setdForm,
+  setdFormGroups,
+  setdFormActions,
+  setdFormTriggers,
+};

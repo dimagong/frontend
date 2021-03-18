@@ -15,8 +15,6 @@ import { AgGridReact } from "ag-grid-react";
 // import MultiSelect from "components/MultiSelect/multiSelect";
 // import { prepareTableGroupData } from "utility/table/prepareTableGroupData";
 import { columnDefs } from "./gridSettings";
-import { getNotificationsRequest, deleteNotificationRequest } from "app/slices/appSlice";
-import { setNotification } from "app/slices/onboardingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectNotifications,
@@ -24,6 +22,18 @@ import {
 } from "app/selectors/onboardingSelectors";
 import NotificationsForm from "./NotificationsForm";
 import { ChangeDetectionStrategyType } from 'ag-grid-react/lib/changeDetectionService'
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setNotification,
+} = onboardingSlice.actions;
+
+const {
+  getNotificationsRequest,
+  deleteNotificationRequest,
+} = appSlice.actions;
 
 const initNotification = {name: '',description:"", content: "", groups: []};
 

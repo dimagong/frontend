@@ -1,13 +1,14 @@
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import moduleApi from "api/module/module";
-import {
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   getModulesSuccess,
   getModulesRequest,
   getModulesError,
-} from "app/slices/appSlice";
-
-
+} = appSlice.actions;
 
 function* getModules() {
   try {

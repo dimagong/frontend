@@ -5,11 +5,14 @@ import {colourStyles} from "utility/select/selectSettigns";
 import {prepareSelectOptions, prepareNotNestedSelectOptions, normalizeGroups} from "utility/select/prepareSelectData";
 import _ from "lodash";
 import {useDispatch, useSelector} from "react-redux";
-import {
-  getGroupsRequest,
-} from "app/slices/appSlice";
 import {selectGroups} from 'app/selectors/groupSelector'
 import {normalizeNotNestedGroups} from "../../utility/select/prepareSelectData";
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  getGroupsRequest,
+} = appSlice.actions;
 
 export const DropdownIndicator = props => {
   return components.DropdownIndicator && (

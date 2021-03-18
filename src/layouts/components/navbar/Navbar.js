@@ -22,14 +22,19 @@ import {selectManager, selectProfile, selectManagers} from "app/selectors"
 import { NavLink } from "react-router-dom"
 import store from "app/store"
 import {ChevronDown, ChevronUp, Power, Menu} from "react-feather"
-
-import { logout, showContextSearch, hideContextSearch } from 'app/slices/appSlice'
-
 import {userService} from 'services/user'
 
 import SearchInput from './SearchInput'
 import {capitalizeAll} from '../../../utility/common'
 import authApi from "../../../api/Auth/auth";
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  logout,
+  showContextSearch,
+  hideContextSearch,
+} = appSlice.actions;
 
 const UserName = ({userProfile}) => {
   if (Object.keys(userProfile).length && userProfile.constructor === Object) {
@@ -106,7 +111,7 @@ const ThemeNavbar = props => {
               <div className="bookmark-wrapper">
                 <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
                   {/*If logo is not loaded yet, show temp image by path that is valid about 5 mins*/}
-                  {userProfile.permissions.logo?.isLoading ? (
+                  {!userProfile.permissions.logo?.base64 ? (
                     <img className="brand-logo " src={userProfile.permissions.logo_path} alt="main org logo"/>
                   ) : (
                     <img className="brand-logo " src={userProfile.permissions.logo?.base64} alt="main org logo"/>

@@ -3,7 +3,11 @@ import {all, put, call, takeLatest, select} from "redux-saga/effects";
 import userApi from "api/User/user";
 import dFormsApi from "api/Onboarding/dForms";
 import groupRelations from "api/groupRelations/groupRelations";
-import {
+import {selectManager, selectManagers} from "app/selectors";
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   getUsersRequest,
   getUserOnboardingSuccess,
   getUserOnboardingRequest,
@@ -46,9 +50,7 @@ import {
   updateUserOnboardingWorkflowError,
 
   setManager,
-} from "app/slices/appSlice";
-import {selectManager, selectManagers} from "app/selectors";
-
+} = appSlice.actions;
 
 function* getUserOnboarding({payload}) {
   try {
