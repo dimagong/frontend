@@ -27,10 +27,9 @@ import Applications from './Applications'
 import MasterSchema from 'views/pages/master-schema'
 import Organizations from './Organizations'
 import UserManagement from './UserManagement'
+import Surveys from './Surveys'
 
 import './styles.scss'
-
-import { createLoadingSelector } from 'app/selectors/loadingSelector'
 
 import appSlice from 'app/slices/appSlice'
 
@@ -50,9 +49,6 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const vuexyUser = useSelector(selectVuexyUser);
   const context = useSelector(selectContext);
   const profile = useSelector(selectProfile);
-
-  const test = useSelector(createLoadingSelector([getdFormsRequest.type, getNotificationsRequest.type, getWorkflowsRequest.type]));
-  console.log("test loadinig", test);
 
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0]);
 
@@ -133,6 +129,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                             <TabPane tabId={NAV_OPTIONS[3].id}>
                               <Organizations />
                             </TabPane>
+                            <TabPane tabId={NAV_OPTIONS[4].id}>
+                              <Surveys />
+                            </TabPane>
                           </TabContent>
 
                         </Col>
@@ -163,6 +162,6 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     </Row>
     </>
   )
-}
+};
 
 export default ContextSearch;
