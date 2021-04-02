@@ -24,7 +24,7 @@ const getFilterSuccess = (state, { payload }) => {
     item.data.roles = new Set(item.data.roles);
     item.data.organizations = new Set(item.data.organizations);
   });
-  //TODO filter profile
+  filters.filter(item => item.user_id === state.user.profile.id);
   state.user.filters = filters;
 };
 
@@ -41,12 +41,14 @@ const postFilterSuccess = (state, { payload }) => {
   }
 };
 
-const patchFilterSuccess = (state, { response }) => {
-  console.log('response', response);
+const patchFilterSuccess = (state, { payload }) => {
+  console.log('response', payload);
   state.isLoading = false;
   state.isError = null;
-  //let index = state.user.filters.findIndex(item => item.id === payload.id);
-  //state.user.filters[index].data = payload.newFilter;
+  let index = state.user.filters.findIndex(item => item.id === payload.payload.id);
+  console.log('index', index);
+  console.log('state.user.filters[index]', state.user.filters[index]);
+  state.user.filters[index].data = payload.payload.newFilter;
 };
 
 const getOnboardingsByUserSuccess = (state, { payload }) => {

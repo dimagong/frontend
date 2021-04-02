@@ -22,14 +22,10 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   const handleSave = () => {
     let filter_name = document.getElementById('filter-set-name').value;
     if (activeFilter && activeFilter.filter_name === filter_name) {
-      //TODO FIX patchFilterRequest
       try{
         dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
                                      newFilter: filter}));
       } catch (err) { console.log(err) }
-      let newFilter = activeFilter;
-      newFilter.data = filter;
-      setActiveFilter(newFilter);
     } else {
       if (!filter_name) {
         filter_name = 'saved filter'

@@ -117,7 +117,7 @@ function* patchFilter({payload}) {
   console.log('payload', payload);
   try {
     const response = yield call(userApi.patchFilter, payload);
-    yield put(patchFilterSuccess({response}))
+    yield put(patchFilterSuccess({payload}))
   } catch (error) {
     console.log("error", error);
     yield put(patchFilterError(error));
