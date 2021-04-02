@@ -18,11 +18,25 @@ import {
   revokeInvitationsPath,
   getInvitationPath,
   sendInvitationAcceptPath,
-  getOnboardingsByUserPath
+  getOnboardingsByUserPath,
+  getFilterPath,
+  getFilterPathByID
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
 
 const userApi = {
+  async getFilter() {
+    try {
+      const result = await instance({
+        url: getFilterPath,
+        method: "GET",
+      });
+
+      return result ? result.data.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
   async getProfile() {
     try {
       const result = await instance({
@@ -145,6 +159,42 @@ const userApi = {
         data:  {reviewer_ids: reviewersIds}
       });
       return result ? result.data : result;
+    } catch (error) {}
+  },
+  async postFilter(filter) {
+    try {
+      const result = await instance({
+        url: getFilterPath,
+        method: "POST",
+        data: {filter_name: filter.filter_name,
+          data: {roles: Array.from(filter.data.roles),
+                 organizations: Array.from(filter.data.organizations)}
+                }
+      });
+      return result ? result.data : result;
+    } catch (error) {console.log('ERROR POST FILTER')}
+  },
+  async patchFilter(payload) {
+    try {
+      const result = await instance({
+        url: getFilterPathByID(payload.id),
+        method: "PATCH",
+        data: { filter_name: payload.filter_name,
+          data: {roles: Array.from(payload.newFilter.roles),
+            organizations: Array.from(payload.newFilter.organizations)}
+        }
+      });
+      console.log('result', result)
+      return result ? result.data : result;
+    } catch (error) {console.log('ERROR POST FILTER')}
+  },
+  async deleteFilter(id) {
+    try {
+      const result = await instance({
+        url: getFilterPathByID(id),
+        method: "DELETE",
+      });
+      return result ? result.data.data : result;
     } catch (error) {}
   },
 
