@@ -95,6 +95,7 @@ function* getFilter() {
 
 function* postFilter({payload}) {
   try {
+    console.log('payload', payload);
     const response = yield call(userApi.postFilter, payload);
     yield put(postFilterSuccess({response}))
   } catch (error) {

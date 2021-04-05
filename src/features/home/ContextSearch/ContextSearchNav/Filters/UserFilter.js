@@ -33,7 +33,7 @@ const UserFilter = ({ handleFilter, managers }) => {
     document.getElementById('filter-options-right').style.overflowY = 'scroll'
     document.getElementById('filter-options-right').style.paddingRight = '35px'
   }
-  const [filter, setFilter] = useState({roles: roles, organizations: organizations});
+  const [filter, setFilter] = useState({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});
   const [footerText, setFooterText] = useState({roles: '', organizations: ''});
 
   const handleFilterBox = () => {
@@ -48,26 +48,49 @@ const UserFilter = ({ handleFilter, managers }) => {
   const handleFilterOptions = (type, option) => {
     let newFilter = filter;
     newFilter = {roles: new Set(Array.from(newFilter.roles)),
-                 organizations: new Set (Array.from(newFilter.organizations))};
-    switch (curr) {
-      case 'roles': type === 'add' ? newFilter.roles.add(option) : newFilter.roles.delete(option); break;
-      case 'organizations': type === 'add' ? newFilter.organizations.add(option) : newFilter.organizations.delete(option); break;
+                 organizations: new Set (Array.from(newFilter.organizations)),
+                  type: filter.type
+    };
+    if (type === 'add') {
+      if (newFilter.type[curr] === 'check') {
+        if (newFilter[curr].has(option)) {
+          newFilter[curr].delete(option);
+        } else {
+          newFilter[curr].add(option);
+        }
+      } else {
+        newFilter.type[curr] = 'check';
+        newFilter[curr] = new Set();
+        newFilter[curr].add(option);
+      }
+    } else {
+      if (newFilter.type[curr] === 'cross') {
+        if (newFilter[curr].has(option)) {
+          newFilter[curr].delete(option);
+        } else {
+          newFilter[curr].add(option);
+        }
+      } else {
+        newFilter.type[curr] = 'cross';
+        newFilter[curr] = curr === 'roles' ? roles : organizations;
+        newFilter[curr].delete(option);
+      }
     }
     setFilter(newFilter);
     setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
   }
 
   const applyFilters = (newFilter, newSort) => {
-    if (!newFilter?.roles?.size) {
+    if (!newFilter.hasOwnProperty('roles')) {
       newFilter = filter;
     }
     if (newSort === undefined || newSort < 0) {
       newSort = currSort;
     }
     let newManagers = managers;
-    newManagers = newManagers.filter(item => newFilter.roles.has(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1))
+    newManagers = newManagers.filter(item => (newFilter.roles.size === 0 || newFilter.roles.has(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
                                              &&
-                                             newFilter.organizations.has(item?.permissions?.organization.replace('_', ' ')));
+                                             (newFilter.organizations.size === 0 || newFilter.organizations.has(item?.permissions?.organization.replace('_', ' '))));
 
     switch (newSort) {
       case 0: newManagers.sort((lhs, rhs) => lhs.first_name.localeCompare(rhs.first_name)); break;
@@ -95,7 +118,7 @@ const UserFilter = ({ handleFilter, managers }) => {
   }
 
   const initialFilter = () => {
-    setFilter({roles: roles, organizations: organizations});
+    setFilter({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});
     setFooterText({roles: setToString(roles), organizations: setToString(organizations)});
   }
 
@@ -104,14 +127,35 @@ const UserFilter = ({ handleFilter, managers }) => {
   }
 
   const handleCloseTab = (newFilter) => {
+    if ( document.getElementsByClassName('filter-box')[0].style.display === 'block') return;
+    newFilter.type = filter.type;
+    newFilter.type[curr] = 'initial';
     setFilter(newFilter);
     setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
     applyFilters(newFilter);
   }
 
+  const footer = () => {
+    if (filter.roles.size > 0 && filter.organizations.size > 0) {
+      return <p className={'filter-text'}>
+        Filtering by
+        <span className={'blue'}>{footerText.roles}</span>
+        from
+        <span className={'blue'}>{footerText.organizations}</span>
+      </p>
+    } else if (filter.roles.size === 0 && filter.organizations.size === 0) {
+      return <p/>
+    } else {
+      return <p className={'filter-text'}>
+        Filtering by
+        <span className={'blue'}>{filter.roles.size > 0 ? footerText.roles : footerText.organizations}</span>
+      </p>
+    }
+  }
+
   if (!filtered && managers.length !== 0 && userFilters) {
     handleFilter(managers);
-    setFilter({roles: roles, organizations: organizations});
+    setFilter({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}});
     setFiltered(true);
     setFooterText({roles: setToString(roles), organizations: setToString(organizations)});
   }
@@ -122,14 +166,14 @@ const UserFilter = ({ handleFilter, managers }) => {
           <span onClick={handleFilterBox}>
             <HighlightIcon/>
           </span>
-          {filter.roles.size !== roles.size && filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
+          {filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.roles}</span>
-            <span onClick={() => handleCloseTab({roles:roles, organizations: filter.organizations})}
+            <span onClick={() => handleCloseTab({roles:new Set(), organizations: filter.organizations})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
-          {filter.organizations.size !== organizations.size && filter.organizations.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
+          {filter.organizations.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.organizations}</span>
-            <span onClick={() => handleCloseTab({roles:filter.roles, organizations: organizations})}
+            <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set()})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
           <span className={'filter-box'}>
@@ -164,12 +208,7 @@ const UserFilter = ({ handleFilter, managers }) => {
                   <SavedFilters userFilters={userFilters} filter={filter} setFilter={setFilter} initialFilter={initialFilter} changeFooter={changeFooter}/>
                 </ListGroupItem>
                 <ListGroupItem>
-                  <p className={'filter-text'}>
-                    Filtering by
-                    <span className={'blue'}>{footerText.roles}</span>
-                    from
-                    <span className={'blue'}>{footerText.organizations}</span>
-                  </p>
+                  {footer()}
                   <div className={'filter-footer'}>
                     <Button variat="success" onClick={applyFilters}>Apply filter</Button>
                   </div>

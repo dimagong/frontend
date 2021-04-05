@@ -168,7 +168,8 @@ const userApi = {
         method: "POST",
         data: {filter_name: filter.filter_name,
           data: {roles: Array.from(filter.data.roles),
-                 organizations: Array.from(filter.data.organizations)}
+                 organizations: Array.from(filter.data.organizations),
+                  type: filter.data.type}
                 }
       });
       return result ? result.data : result;
@@ -181,7 +182,8 @@ const userApi = {
         method: "PATCH",
         data: { filter_name: payload.filter_name,
           data: {roles: Array.from(payload.newFilter.roles),
-            organizations: Array.from(payload.newFilter.organizations)}
+            organizations: Array.from(payload.newFilter.organizations),
+            type: payload.newFilter.type}
         }
       });
       console.log('result', result)

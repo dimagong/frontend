@@ -18,7 +18,7 @@ const FilterOptions = ({ filter, curr, roles, organizations, handleFilterOptions
   }
 
   const handleFilter = (option, item) => {
-    handleFilterOptions(option, item)
+    handleFilterOptions(option, item);
     update(!upd);
   }
 
@@ -27,8 +27,8 @@ const FilterOptions = ({ filter, curr, roles, organizations, handleFilterOptions
     <span className={'filter-name'}>{item}</span>
     <span className={'filter-right'}>
         <span>
-          <span className={'filter-check' + ((!filter.roles.has(item) && !filter.organizations.has(item)) ? ' remove' : '')} onClick={() => handleFilter('remove', item)}><CloseIcon/></span>
-          <span className={'filter-check' + ((filter.roles.has(item) || filter.organizations.has(item)) ? ' add' : '')} onClick={() => handleFilter('add', item)}><CheckIcon/></span>
+          <span className={'filter-check' + ((filter.type[curr] === 'cross' && !filter[curr].has(item)) ? ' remove' : '')} onClick={() => handleFilter('remove', item)}><CloseIcon/></span>
+          <span className={'filter-check' + ((filter.type[curr] === 'check' && filter[curr].has(item)) ? ' add' : '')} onClick={() => handleFilter('add', item)}><CheckIcon/></span>
         </span>
       </span>
   </Button>)

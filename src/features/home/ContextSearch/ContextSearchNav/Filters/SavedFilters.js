@@ -25,10 +25,11 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       try{
         dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
                                      newFilter: filter}));
-      } catch (err) { console.log(err) }
+      } catch (err) { dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
+        newFilter: filter})); }
     } else {
       if (!filter_name) {
-        filter_name = 'saved filter'
+        filter_name = 'saved filter';
       }
       try {
         dispatch(postFilterRequest({filter_name: filter_name, data: filter}));
