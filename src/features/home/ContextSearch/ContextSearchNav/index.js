@@ -17,9 +17,9 @@ import {
 } from 'reactstrap'
 
 import './styles.scss'
+import UserFilter from "./Filters/UserFilter";
 
-const ContextSearchNav = ({ onChange, selectedNavItem, navOptions }) => {
-
+const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, handleFilter, managers }) => {
   const handleNavItemSelect = (navItem) => {
     onChange(navItem);
   }
@@ -48,6 +48,7 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions }) => {
               ))}
             </DropdownMenu>
           </UncontrolledDropdown>
+          <UserFilter handleFilter={handleFilter} managers={managers}/>
           <div className="ml-auto">
             <span className="font-weight-bold" style={{color: "#707070"}}>Contextual Search</span>
           </div>

@@ -55,6 +55,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   console.log("test loadinig", test);
 
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0]);
+  const [showManagers, setShowManagers] = useState(managers);
 
 
   const handleContextChange = (context) => {
@@ -80,6 +81,10 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
       onContextSearchHide()
     }
   };
+
+  const handleFilter = (filteredManagers) => {
+    setShowManagers(filteredManagers);
+  }
 
   useEffect(() => {
     if (isAuth && vuexyUser) {
@@ -116,13 +121,15 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                         selectedNavItem={selectedNavItem}
                         navOptions={nav}
                         onContextChange={handleContextChange}
+                        handleFilter={handleFilter}
+                        managers={managers}
                       />
 
                       <Row className={"contextual-search_wrapper"}>
                         <Col>
                           <TabContent activeTab={selectedNavItem.id}>
                             <TabPane tabId={NAV_OPTIONS[0].id}>
-                              <UserManagement managers={managers} handleContextChange={handleContextChange} />
+                              <UserManagement managers={showManagers} handleContextChange={handleContextChange} />
                             </TabPane>
                             <TabPane tabId={NAV_OPTIONS[1].id}>
                               <Applications />
