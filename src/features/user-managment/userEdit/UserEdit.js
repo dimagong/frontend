@@ -12,6 +12,8 @@ import DataTable from "react-data-table-component"
 
 import { Plus } from "react-feather"
 
+import { handleMasterSchemaDataExport } from "services/files.service";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectManager,
@@ -52,7 +54,6 @@ const UserEdit = (props, context) => {
   const { id } = useParams();
 
   const newManager = useSelector(selectManagerById(id))
-  console.log("new manager",newManager);
 
   //* TODO refactor, old manager is used
   const selectedManager = useSelector(selectManager);
@@ -60,8 +61,6 @@ const UserEdit = (props, context) => {
   //* TODO add fetch user by id since we are going to add pagination and wouldn't have all users fetched
 
   const manager = useSelector(selectCurrentManager);
-
-  console.log(selectedManager, manager);
 
   const dForms = useSelector(selectUserDForms);
   const workflows = useSelector(selectUserWorkfows);
@@ -110,6 +109,15 @@ const UserEdit = (props, context) => {
     setContextFeature('')
   };
 
+  const handleUserMasterSchemaExport = () => {
+    handleMasterSchemaDataExport(
+      `${manager.first_name} ${manager.last_name}`,
+      manager.permissions.organization_type,
+      manager.permissions.organization_id,
+      manager.id
+    ).then(() => {})
+  };
+
   return (
     <Row className="user-managment">
       <Col sm="12" md="12" lg="12" xl="6">
@@ -140,7 +148,16 @@ const UserEdit = (props, context) => {
                 textAlign: "center",
                 padding: "50px 0",
               }}>
-                Coming soon
+                <div style={{marginBottom: "15px"}}>
+                  Coming soon
+                </div>
+                {!!userOrganizations.length && (
+                  <div>
+                    <Button color={"primary"} onClick={handleUserMasterSchemaExport}>
+                      Export MS Data in csv
+                    </Button>
+                  </div>
+                )}
               </CardBody>
             </Card>
           </TabPane>

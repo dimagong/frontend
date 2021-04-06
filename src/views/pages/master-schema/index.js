@@ -33,6 +33,7 @@ import FieldCreate from "./FieldCreate";
 import useEventListener from "../../../app/helpers/useEventListener";
 import Search from "./Search";
 import {isEmpty} from 'lodash'
+import { handleMasterSchemaDataExport } from "services/files.service";
 
 const clone = rfdc();
 
@@ -331,6 +332,14 @@ function MasterSchema() {
     return cursor.path;
   };
 
+  const handleOrganizationMasterSchemaExport = () => {
+    handleMasterSchemaDataExport(
+      organization.value.name,
+      organization.value.type,
+      organization.value.id
+    ).then(() => {})
+  };
+
   return (
     <Row className="master-schema">
       <Col md="6">
@@ -363,6 +372,11 @@ function MasterSchema() {
                 />
               </Col>
               <Col md={{ size: 6}} sm={{ size: 6}}>
+                {!!organization && (
+                  <Button color={"primary"} onClick={handleOrganizationMasterSchemaExport}>
+                    Export MS Data in csv
+                  </Button>
+                )}
               </Col>
               <Col md="6" sm="6" className="mt-1">
                 <Search onChange={(value) => {
