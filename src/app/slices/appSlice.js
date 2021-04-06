@@ -47,6 +47,7 @@ export const initialState = {
     workflows: [],
     dForms: [],
     reviewers: [],
+    filters: []
   },
   masterSchema: {
     fields: []

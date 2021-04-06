@@ -4,3 +4,211 @@
     font-size: 18px;
   }
 }
+
+.filter-box {
+  border: #eeeeee 1px solid;
+  border-radius: 10px;
+  display: none;
+  width: 510px;
+  position: absolute;
+  left: 235px;
+  top: 38px;
+  z-index: 10;
+  .right {
+    overflow-x: hidden;
+    max-height: 200px;
+  }
+  .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active, .show > .btn-secondary.dropdown-toggle {
+    color: #fff!important;
+  }
+  .filter-header {
+    font-size: 13px;
+  }
+  .card {
+    background: #FFFFFF;
+  }
+  .not-active {
+    background: #cccccc!important;
+  }
+  .active {
+    padding-top: 20px!important;
+    color: #FFFFFF!important;
+    background: #707070!important;
+  }
+  .filter-remove-save {
+    cursor: pointer;
+    margin-left: 5px;
+    background: #dc3545;
+    padding: 0 1px 1px 1px;
+    font-size: small;
+    border-radius: 4px;
+    svg {
+      color: #FFFFFF!important;
+      font-size: small;
+    }
+  }
+  .filter-save {
+    cursor: pointer;
+    margin-left: 20px;
+    padding: 0 1px 1px 1px;
+    font-size: small;
+    border-radius: 4px;
+    svg {
+      color: blue!important;
+      font-size: 22px;
+      padding-bottom: 2px;
+    }
+  }
+  .btn-secondary {
+    color: #919191!important;
+    margin-bottom: 10px;
+    padding: 15px 10px;
+    width: 220px;
+    text-align: left;
+  }
+  .filter-option {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    cursor: unset!important;
+    .filter-check {
+      cursor: pointer;
+      margin-left: 10px;
+      background: #95989a;
+      padding: 0 1px 1px 1px;
+      font-size: small;
+      border-radius: 4px;
+      svg {
+        color: #FFFFFF!important;
+        /*width: 15px;*/
+        font-size: small;
+      }
+    }
+    .add {
+      background: #7367f0;
+    }
+    .remove {
+      background: #dc3545;
+    }
+  }
+  .filter-name {
+    float: left;
+  }
+  .filter-right {
+    float: right;
+  }
+  #dropdown-basic {
+    border: 0;
+    color: #1e1e1e;
+  }
+  .dropdown {
+    display: inline-block;
+  }
+  .filter-footer {
+    .btn {
+      float: right;
+      background-color: #7367f0!important;
+      text-align: center;
+      color: white!important;
+    }
+  }
+  .filter-text {
+    font-size: 16px;
+    .blue {
+      color: blue;
+    }
+  }
+  .saved-filters {
+    .btn-primary {
+      background: white!important;
+      cursor: unset!important;
+      input {
+        border: 0;
+      }
+    }
+    .dropdown-toggle {
+      cursor: pointer!important;
+    }
+  }
+  .dropdown-item {
+    cursor: unset;
+    .right-col {
+      float: right;
+      .delete-filter {
+        cursor: pointer;
+        background: #dc3545;
+        padding: 0 1px 1px 1px;
+        font-size: small;
+        border-radius: 4px;
+        svg {
+          color: #FFFFFF!important;
+          font-size: small;
+        }
+      }
+    }
+    .filter-name {
+      float: left;
+      cursor: pointer;
+      padding-right: 30px;
+    }
+  }
+}
+
+.filters {
+  .filter-tab {
+    font-size: small;
+    margin-left: 15px;
+    padding: 10px;
+    cursor: unset!important;
+    .nav-text {
+      margin-right: 10px;
+      float: left;
+    }
+    .close-nav {
+      cursor: pointer;
+      float: right;
+      margin-left: 10px;
+      background: #FFFFFF!important;
+      padding: 0 1px 1px 1px;
+      font-size: small;
+      border-radius: 10px;
+      svg {
+        color: #95989a!important;
+        font-size: small;
+      }
+    }
+  }
+}
+
+.sorting-filter {
+  .sorting-filter-box {
+    color: black;
+    background: #cccccc;
+    padding: 2px;
+    border-radius: 4px;
+    margin: 5px 3px;
+    svg {
+      cursor: pointer;
+    }
+  }
+  .sorting-filter-title {
+    margin-left: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  .sorting-box {
+    display: none;
+    width: 36px;
+    position: absolute;
+    top: 40px;
+    left: 190px;
+    z-index: 10;
+    background: white;
+    border: #cccccc 1px solid;
+    padding: 0 2px 1px 2px;
+    border-radius: 4px;
+  }
+  .active {
+    color: white;
+    background: #95989a;
+  }
+}

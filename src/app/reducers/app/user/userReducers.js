@@ -16,6 +16,41 @@ const getUsersSuccess = (state, { payload }) => {
   state.user.managers = payload;
 };
 
+const getFilterSuccess = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = null;
+  let filters = payload;
+  filters.forEach(item => {
+    item.data.roles = new Set(item.data.roles);
+    item.data.organizations = new Set(item.data.organizations);
+  });
+  filters.filter(item => item.user_id === state.user.profile.id);
+  state.user.filters = filters;
+};
+
+const postFilterSuccess = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = null;
+  const newFilter = payload.response.data;
+  newFilter.data.roles = new Set(newFilter.data.roles)
+  newFilter.data.organizations = new Set(newFilter.data.organizations)
+  let filters = state.user.filters;
+  if (Array.isArray(filters)) {
+    filters.push(newFilter);
+    state.user.filters = filters;
+  }
+};
+
+const patchFilterSuccess = (state, { payload }) => {
+  console.log('response', payload);
+  state.isLoading = false;
+  state.isError = null;
+  let index = state.user.filters.findIndex(item => item.id === payload.payload.id);
+  console.log('index', index);
+  console.log('state.user.filters[index]', state.user.filters[index]);
+  state.user.filters[index].data = payload.payload.newFilter;
+};
+
 const getOnboardingsByUserSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
@@ -77,6 +112,14 @@ const deleteUserAvatarSuccess = (state, { payload }) => {
     return manager;
   })
 };
+
+const deleteFilterSuccess = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = null;
+  let filters = state.user.filters;
+  filters = filters.filter(item => item.id !== payload);
+  state.user.filters = filters;
+}
 
 const getUserAvatarSuccess = (state, { payload }) => {
   state.isLoading = false;
@@ -321,6 +364,10 @@ export default {
   updateUserOnboardingReviewersSuccess,
   updateUserOnboardingWorkflowSuccess,
   getOnboardingsByUserSuccess,
+  getFilterSuccess,
+  postFilterSuccess,
+  deleteFilterSuccess,
+  patchFilterSuccess,
 
   setUser,
   setManager,

@@ -13,6 +13,18 @@ const {
   getProfileRequest,
   getProfileError,
   getUsersSuccess,
+  getFilterRequest,
+  getFilterSuccess,
+  getFilterError,
+  postFilterRequest,
+  postFilterSuccess,
+  postFilterError,
+  deleteFilterRequest,
+  deleteFilterSuccess,
+  deleteFilterError,
+  patchFilterRequest,
+  patchFilterSuccess,
+  patchFilterError,
   getUsersRequest,
   getUsersError,
   createUserSuccess,
@@ -62,7 +74,8 @@ function* getProfile() {
 
     yield put(getProfileSuccess(response));
     yield put(loginWithJWT(response));
-    yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}))
+    yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}));
+    yield put(getFilterRequest());
 
   } catch (error) {
     console.log(error);
@@ -73,6 +86,43 @@ function* getProfile() {
 function* getUsers() {
   const response = yield call(userApi.getUsers);
   yield put(getUsersSuccess(response));
+}
+
+function* getFilter() {
+  const response = yield call(userApi.getFilter);
+  yield put(getFilterSuccess(response));
+}
+
+function* postFilter({payload}) {
+  try {
+    console.log('payload', payload);
+    const response = yield call(userApi.postFilter, payload);
+    yield put(postFilterSuccess({response}))
+  } catch (error) {
+    console.log("error", error);
+    yield put(postFilterError(error));
+  }
+}
+
+function* deleteFilter({payload}) {
+  try {
+    const response = yield call(userApi.deleteFilter, payload);
+    yield put(deleteFilterSuccess(payload))
+  } catch (error) {
+    console.log("error", error);
+    yield put(deleteFilterError(error));
+  }
+}
+
+function* patchFilter({payload}) {
+  console.log('payload', payload);
+  try {
+    const response = yield call(userApi.patchFilter, payload);
+    yield put(patchFilterSuccess({payload}))
+  } catch (error) {
+    console.log("error", error);
+    yield put(patchFilterError(error));
+  }
 }
 
 function* getUserById({payload}) {
@@ -224,6 +274,10 @@ export default function* () {
     yield takeLatest(getOnboardingsByUserRequest.type, getOnboardingsByUser),
     yield takeLatest(getProfileRequest.type, getProfile),
     yield takeLatest(getUsersRequest.type, getUsers),
+    yield takeLatest(getFilterRequest.type, getFilter),
+    yield takeLatest(postFilterRequest.type, postFilter),
+    yield takeLatest(deleteFilterRequest.type, deleteFilter),
+    yield takeLatest(patchFilterRequest.type, patchFilter),
     yield takeLatest(getUserByIdRequest.type, getUserById),
     yield takeLatest(updateUserRequest.type, updateUser),
     yield takeLatest(createUserRequest.type, createUser),
