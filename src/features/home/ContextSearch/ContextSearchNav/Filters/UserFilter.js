@@ -16,7 +16,6 @@ import {selectFilters} from "app/selectors/userSelectors";
 import {selectOrganizations} from "app/selectors/groupSelector";
 import SavedFilters from "./SavedFilters";
 import SortingFilters from "./SortingFilters";
-import 'src/assets/img/svg/filter.svg';
 
 const UserFilter = ({ handleFilter, managers }) => {
   const userFilters = useSelector(selectFilters);
