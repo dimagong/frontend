@@ -8,42 +8,28 @@ import {
   ListGroup,
   ListGroupItem,
 } from 'reactstrap';
-import HighlightIcon  from '@material-ui/icons/Highlight';
 import CloseIcon from '@material-ui/icons/Close';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import FilterOptions from "./FilterOptions";
 import {useSelector} from "react-redux";
 import {selectFilters} from "app/selectors/userSelectors";
+import {selectOrganizations} from "app/selectors/groupSelector";
 import SavedFilters from "./SavedFilters";
 import SortingFilters from "./SortingFilters";
+import 'src/assets/img/svg/filter.svg';
 
 const UserFilter = ({ handleFilter, managers }) => {
   const userFilters = useSelector(selectFilters);
+  const organizationsObjects = useSelector(selectOrganizations);
 
+  const [isFilterBoxOpened, setIsFilterBoxOpened] = useState(false);
   const [currSort, setCurrSort] = useState(-1);
   const [filtered, setFiltered] = useState(false);
-  let roles = new Set(), organizations = new Set(), reps = new Set();
+  let roles = new Set(['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Network manager', 'Adviser', 'Lead']), organizations = new Set(), reps = new Set();
+  organizationsObjects.forEach(item => {organizations.add(item.name.replace('_', ' '))})
   const [curr, setCurr] = useState('roles');
-  managers.forEach(item => {
-    item?.permissions?.ability && roles.add(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1));
-    item?.permissions?.organization && organizations.add(item?.permissions?.organization.replace('_', ' '));
-    //item?.permissions?.reps && organizations.add(item?.permissions?.reps.replace('_', ' ')); //TODO Add reps
-  });
-  if (roles.size > 4 || organizations.size > 4) {
-    document.getElementById('filter-options-right').style.overflowY = 'scroll'
-    document.getElementById('filter-options-right').style.paddingRight = '35px'
-  }
   const [filter, setFilter] = useState({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});
   const [footerText, setFooterText] = useState({roles: '', organizations: ''});
-
-  const handleFilterBox = () => {
-    let filtexBox = document.getElementsByClassName('filter-box');
-    if (filtexBox[0].style.display === "none") {
-      filtexBox[0].style.display = "block";
-    } else {
-      filtexBox[0].style.display = "none";
-    }
-  }
 
   const handleFilterOptions = (type, option) => {
     let newFilter = filter;
@@ -100,8 +86,7 @@ const UserFilter = ({ handleFilter, managers }) => {
     }
 
     handleFilter(newManagers);
-    let filtexBox = document.getElementsByClassName('filter-box');
-    filtexBox[0].style.display = "none";
+    setIsFilterBoxOpened(false);
   }
 
   const setToString = (set) => {
@@ -122,12 +107,12 @@ const UserFilter = ({ handleFilter, managers }) => {
     setFooterText({roles: setToString(roles), organizations: setToString(organizations)});
   }
 
-  const changeFooter = (filter) => {
+  const changeFooterText = (filter) => {
     setFooterText({roles: setToString(filter.roles), organizations: setToString(filter.organizations)});
   }
 
   const handleCloseTab = (newFilter) => {
-    if ( document.getElementsByClassName('filter-box')[0].style.display === 'block') return;
+    if (isFilterBoxOpened) return;
     newFilter.type = filter.type;
     newFilter.type[curr] = 'initial';
     setFilter(newFilter);
@@ -136,15 +121,17 @@ const UserFilter = ({ handleFilter, managers }) => {
   }
 
   const footer = () => {
-    if (filter.roles.size > 0 && filter.organizations.size > 0) {
+    if ((filter.roles.size === 0 && filter.organizations.size === 0)
+         ||
+        (filter.roles.size === roles.size && filter.organizations.size === organizations.size)) {
+      return <p/>
+    } else if (filter.roles.size > 0 && filter.organizations.size > 0) {
       return <p className={'filter-text'}>
         Filtering by
         <span className={'blue'}>{footerText.roles}</span>
         from
         <span className={'blue'}>{footerText.organizations}</span>
       </p>
-    } else if (filter.roles.size === 0 && filter.organizations.size === 0) {
-      return <p/>
     } else {
       return <p className={'filter-text'}>
         Filtering by
@@ -163,20 +150,23 @@ const UserFilter = ({ handleFilter, managers }) => {
   return (
     <span className={'filters'}>
           <SortingFilters currSort={currSort} setCurrSort={setCurrSort} applyFilters={applyFilters}/>
-          <span onClick={handleFilterBox}>
-            <HighlightIcon/>
+          <span onClick={() => setIsFilterBoxOpened(!isFilterBoxOpened)}>
+            <svg style={{whiteSpace: 'pre', fill: '#aeaeae', cursor: 'pointer'}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 17" width="16" height="17">
+              <path id="filter" fill-rule="evenodd" className="shp0"
+                    d="M15.74 3.14C15.74 4.97 10.84 9.25 9.92 11.08L9.92 14.87C9.92 14.88 9.91 14.88 9.91 14.89L9.91 15.33C9.91 15.87 9.48 16.3 8.94 16.3L7 16.3C6.46 16.3 6.03 15.87 6.03 15.33L6.03 14.89C6.03 14.88 6.02 14.88 6.02 14.87L6.02 11.08C5.11 9.25 0.2 4.97 0.2 3.14L0.21 3.14C0.21 3.12 0.2 3.1 0.2 3.08C0.2 2.04 3.68 0.76 7.97 0.76C12.26 0.76 15.74 2.04 15.74 3.08C15.74 3.1 15.73 3.12 15.73 3.14L15.74 3.14ZM1.16 3.43C1.16 4.54 4.29 5.62 8.05 5.62C11.82 5.62 14.76 4.54 14.76 3.43C14.76 2.32 11.82 1.72 8.05 1.72C4.29 1.72 1.16 2.32 1.16 3.43Z"/>
+            </svg>
           </span>
-          {filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
-            <span className={'nav-text'}>{footerText.roles}</span>
+          {filter.roles.size !== roles.size && filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
+            <span className={'nav-text'}>{footerText.roles.length <= 40 ? footerText.roles : `${filter.roles.size} roles`}</span>
             <span onClick={() => handleCloseTab({roles:new Set(), organizations: filter.organizations})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
-          {filter.organizations.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
+          {filter.organizations.size !== organizations.size &&filter.organizations.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.organizations}</span>
             <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set()})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
-          <span className={'filter-box'}>
+          <span className={'filter-box ' + (isFilterBoxOpened ? ' opened' : ' closed')}>
             <Card>
               <ListGroup variant="flush">
                 <ListGroupItem className={'filter-header'}>Filter design</ListGroupItem>
@@ -199,13 +189,13 @@ const UserFilter = ({ handleFilter, managers }) => {
                     </Col>
                     <Col className={'right'} id={'filter-options-right'}>
                       <span>
-                        {<FilterOptions filter={filter} curr={curr} roles={roles} organizations={organizations} handleFilterOptions={handleFilterOptions}/>}
+                        {/*Temporary*/ curr !== 'reps' && <FilterOptions filter={filter} curr={curr} roles={roles} organizations={organizations} handleFilterOptions={handleFilterOptions}/>}
                       </span>
                     </Col>
                   </Row>
                 </ListGroupItem>
                 <ListGroupItem>
-                  <SavedFilters userFilters={userFilters} filter={filter} setFilter={setFilter} initialFilter={initialFilter} changeFooter={changeFooter}/>
+                  <SavedFilters userFilters={userFilters} filter={filter} setFilter={setFilter} initialFilter={initialFilter} changeFooter={changeFooterText}/>
                 </ListGroupItem>
                 <ListGroupItem>
                   {footer()}
