@@ -8,15 +8,15 @@ import appSlice from "app/slices/appSlice";
 const {postFilterRequest, deleteFilterRequest, patchFilterRequest} = appSlice.actions;
 
 const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter }) => {
-  const [initialization, setInitialization] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [savedFilters, setSavedFilters] = useState([]);
   const [activeFilter, setActiveFilter] = useState();
   const profile = useSelector(selectProfile);
   const dispatch = useDispatch();
-  if (!initialization && userFilters.length > 0 && userFilters.length !== savedFilters.length) {
+  if (!isInitialized && userFilters.length > 0 && userFilters.length !== savedFilters.length) {
     let filters = userFilters.filter(item => item.user_id === profile.id);
     setSavedFilters(filters);
-    setInitialization(true);
+    setIsInitialized(true);
   }
 
   const handleSave = () => {
@@ -25,8 +25,11 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       try{
         dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
                                      newFilter: filter}));
-      } catch (err) { dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
-        newFilter: filter})); }
+      } catch (err) {
+        //TODO temporary fix
+        dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
+        newFilter: filter}));
+      }
     } else {
       if (!filter_name) {
         filter_name = 'saved filter';
@@ -34,7 +37,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       try {
         dispatch(postFilterRequest({filter_name: filter_name, data: filter}));
       } catch (err) { console.log(err) }
-      setInitialization(false);
+      setIsInitialized(false);
     }
   }
 
@@ -52,14 +55,13 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   }
 
   const handleDelete = (del) => {
-    console.log('del', del);
     try {
       dispatch(deleteFilterRequest(del.id))
     } catch (err) { console.log(err) }
     if (savedFilters.length === 1) {
       setSavedFilters([]);
     } else {
-      setInitialization(false);
+      setIsInitialized(false);
     }
   }
 
@@ -68,14 +70,24 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
                  title={<input id={'filter-set-name'} type={'text'} placeholder={'Name of the filter set'}/>}>
       {savedFilters.length > 0 ?
         savedFilters.map(item => <Dropdown.Item>
-          <span className={'filter-name'} onClick={() => makeActive(item)}>{item.filter_name}</span>
-          <span className={'right-col'}><span className={'delete-filter'} onClick={() => handleDelete(item)}><CloseIcon/></span></span>
+          <span className={'filter-name'} onClick={() => makeActive(item)}>
+            {item.filter_name}
+          </span>
+          <span className={'right-col'}>
+            <span className={'delete-filter'} onClick={() => handleDelete(item)}>
+              <CloseIcon/>
+            </span>
+          </span>
         </Dropdown.Item>) :
         <Dropdown.Item>You do not have any saved filter sets</Dropdown.Item>
       }
     </SplitButton>
-    <span onClick={handleSave} className={'filter-save'}><SaveIcon/></span>
-    <span onClick={handleDisable} className={'filter-remove-save'}><CloseIcon/></span>
+    <span onClick={handleSave} className={'filter-save'}>
+      <SaveIcon/>
+    </span>
+    <span onClick={handleDisable} className={'filter-remove-save'}>
+      <CloseIcon/>
+    </span>
   </span>
 }
 

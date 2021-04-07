@@ -95,11 +95,9 @@ function* getFilter() {
 
 function* postFilter({payload}) {
   try {
-    console.log('payload', payload);
     const response = yield call(userApi.postFilter, payload);
     yield put(postFilterSuccess({response}))
   } catch (error) {
-    console.log("error", error);
     yield put(postFilterError(error));
   }
 }
@@ -109,18 +107,15 @@ function* deleteFilter({payload}) {
     const response = yield call(userApi.deleteFilter, payload);
     yield put(deleteFilterSuccess(payload))
   } catch (error) {
-    console.log("error", error);
     yield put(deleteFilterError(error));
   }
 }
 
 function* patchFilter({payload}) {
-  console.log('payload', payload);
   try {
     const response = yield call(userApi.patchFilter, payload);
     yield put(patchFilterSuccess({payload}))
   } catch (error) {
-    console.log("error", error);
     yield put(patchFilterError(error));
   }
 }

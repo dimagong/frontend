@@ -186,7 +186,6 @@ const userApi = {
             type: payload.newFilter.type}
         }
       });
-      console.log('result', result)
       return result ? result.data : result;
     } catch (error) {console.log('ERROR POST FILTER')}
   },
@@ -197,7 +196,7 @@ const userApi = {
         method: "DELETE",
       });
       return result ? result.data.data : result;
-    } catch (error) {}
+    } catch (error) { console.log(error)}
   },
 
   async updateUserOnboardingWorkflow({workflowId, onboardingId}) {

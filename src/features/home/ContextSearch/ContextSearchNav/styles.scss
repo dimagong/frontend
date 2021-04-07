@@ -11,7 +11,7 @@
   display: none;
   width: 510px;
   position: absolute;
-  left: 235px;
+  left: 265px;
   top: 38px;
   z-index: 10;
   .right {
@@ -72,22 +72,14 @@
     cursor: unset!important;
     .filter-check {
       cursor: pointer;
-      margin-left: 10px;
-      background: #95989a;
+      margin-left: 2px;
       padding: 0 1px 1px 1px;
       font-size: small;
       border-radius: 4px;
       svg {
         color: #FFFFFF!important;
-        /*width: 15px;*/
         font-size: small;
       }
-    }
-    .add {
-      background: #7367f0;
-    }
-    .remove {
-      background: #dc3545;
     }
   }
   .filter-name {
@@ -154,6 +146,7 @@
 }
 
 .filters {
+  margin-left: 30px;
   .filter-tab {
     font-size: small;
     margin-left: 15px;
@@ -200,7 +193,7 @@
     width: 36px;
     position: absolute;
     top: 40px;
-    left: 190px;
+    left: 220px;
     z-index: 10;
     background: white;
     border: #cccccc 1px solid;
@@ -211,4 +204,11 @@
     color: white;
     background: #95989a;
   }
+}
+
+.closed {
+  display: none!important;
+}
+.opened {
+  display: block!important;
 }
