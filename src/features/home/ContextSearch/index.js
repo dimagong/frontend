@@ -129,7 +129,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                         <Col>
                           <TabContent activeTab={selectedNavItem.id}>
                             <TabPane tabId={NAV_OPTIONS[0].id}>
-                              <UserManagement managers={showManagers} handleContextChange={handleContextChange} />
+                              <UserManagement allManagers={managers} managers={showManagers} handleContextChange={handleContextChange} />
                             </TabPane>
                             <TabPane tabId={NAV_OPTIONS[1].id}>
                               <Applications />

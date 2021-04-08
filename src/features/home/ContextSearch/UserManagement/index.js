@@ -26,7 +26,7 @@ const {
   setPreview,
 } = appSlice.actions;
 
-const UserManagement = ({ managers, handleContextChange }) => {
+const UserManagement = ({ allManagers, managers, handleContextChange }) => {
 
   const dispatch = useDispatch()
   const preview = useSelector(selectPreview)
@@ -45,7 +45,7 @@ const UserManagement = ({ managers, handleContextChange }) => {
   const oneColumn = !!preview
 
   const renderContent = (data, page) => {
-    if (data.length === 0) {
+    if (data.length === 0 && data.length !== allManagers.length) {
       return <h1 className={'no-managers'}>There are no such managers</h1>
     }
 
