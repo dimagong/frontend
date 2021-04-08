@@ -45,9 +45,11 @@ const UserManagement = ({ managers, handleContextChange }) => {
   const oneColumn = !!preview
 
   const renderContent = (data, page) => {
+    if (data.length === 0) {
+      return <h1 className={'no-managers'}>There are no such managers</h1>
+    }
 
     const pageData = data.slice(itemsPerPage * page, itemsPerPage * (page + 1))
-
     return pageData.map((elData) => (
       <UserCardTemplate
         className="cursor-pointer"
