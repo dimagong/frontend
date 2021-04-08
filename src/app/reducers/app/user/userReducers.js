@@ -307,8 +307,17 @@ const allowUserAbilitySuccess = (state, {payload}) => {
   const editedOrg = user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0];
   editedOrg.abilities = payload.response;
 
-  if (state.user.managers[userIndex].permissions.organization === editedOrg.name) {
+  if (state.user.managers[userIndex]?.permissions?.organization === editedOrg.name) {
     user.permissions.ability = payload.data.ability
+  } else if (!state.user.managers[userIndex].permissions) {
+    user.permissions = {
+      organization: editedOrg.name,
+      organization_id: payload.data.organization_id,
+      organization_type: payload.data.organization_type,
+      ability: payload.data.ability,
+      logo_path: editedOrg.logo_path,
+      logo: editedOrg.logo
+    }
   }
 
   state.user.managers[userIndex] = user;
