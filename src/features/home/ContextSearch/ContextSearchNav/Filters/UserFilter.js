@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 
 import {
   Row,
@@ -16,6 +16,8 @@ import {selectFilters} from "app/selectors/userSelectors";
 import {selectOrganizations} from "app/selectors/groupSelector";
 import SavedFilters from "./SavedFilters";
 import SortingFilters from "./SortingFilters";
+import {useOutsideAlerter} from "hooks/useOutsideAlerter";
+import FilterIcon from 'assets/img/svg/filter.svg';
 
 const UserFilter = ({ handleFilter, managers }) => {
   const userFilters = useSelector(selectFilters);
@@ -29,6 +31,9 @@ const UserFilter = ({ handleFilter, managers }) => {
   const [curr, setCurr] = useState('roles');
   const [filter, setFilter] = useState({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});
   const [footerText, setFooterText] = useState({roles: '', organizations: ''});
+
+  const wrapperRefFilterBox = useRef(null), wrapperRefFilterButton = useRef(null)
+  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => setIsFilterBoxOpened(false));
 
   const handleFilterOptions = (type, option) => {
     let newFilter = filter;
@@ -149,11 +154,8 @@ const UserFilter = ({ handleFilter, managers }) => {
   return (
     <span className={'filters'}>
           <SortingFilters currSort={currSort} setCurrSort={setCurrSort} applyFilters={applyFilters}/>
-          <span onClick={() => setIsFilterBoxOpened(!isFilterBoxOpened)}>
-            <svg style={{whiteSpace: 'pre', fill: '#aeaeae', cursor: 'pointer'}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 17" width="16" height="17">
-              <path id="filter" fill-rule="evenodd" className="shp0"
-                    d="M15.74 3.14C15.74 4.97 10.84 9.25 9.92 11.08L9.92 14.87C9.92 14.88 9.91 14.88 9.91 14.89L9.91 15.33C9.91 15.87 9.48 16.3 8.94 16.3L7 16.3C6.46 16.3 6.03 15.87 6.03 15.33L6.03 14.89C6.03 14.88 6.02 14.88 6.02 14.87L6.02 11.08C5.11 9.25 0.2 4.97 0.2 3.14L0.21 3.14C0.21 3.12 0.2 3.1 0.2 3.08C0.2 2.04 3.68 0.76 7.97 0.76C12.26 0.76 15.74 2.04 15.74 3.08C15.74 3.1 15.73 3.12 15.73 3.14L15.74 3.14ZM1.16 3.43C1.16 4.54 4.29 5.62 8.05 5.62C11.82 5.62 14.76 4.54 14.76 3.43C14.76 2.32 11.82 1.72 8.05 1.72C4.29 1.72 1.16 2.32 1.16 3.43Z"/>
-            </svg>
+          <span onClick={() => setIsFilterBoxOpened(!isFilterBoxOpened)} ref={wrapperRefFilterButton} id={'filter-btn'}>
+            <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
           </span>
           {filter.roles.size !== roles.size && filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.roles.length <= 40 ? footerText.roles : `${filter.roles.size} roles`}</span>
@@ -165,7 +167,7 @@ const UserFilter = ({ handleFilter, managers }) => {
             <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set()})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
-          <span className={'filter-box ' + (isFilterBoxOpened ? ' opened' : ' closed')}>
+          <span ref={wrapperRefFilterBox} className={'filter-box ' + (isFilterBoxOpened ? ' opened' : ' closed')}>
             <Card>
               <ListGroup variant="flush">
                 <ListGroupItem className={'filter-header'}>Filter design</ListGroupItem>
