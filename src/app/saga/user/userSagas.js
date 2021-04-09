@@ -66,6 +66,10 @@ const {
   getOnboardingsByUserRequest,
   getOnboardingsByUserSuccess,
   getOnboardingsByUserError,
+
+  getUserPermissionsRequest,
+  getUserPermissionsSuccess,
+  getUserPermissionsError,
 } = appSlice.actions;
 
 function* getProfile() {
@@ -195,7 +199,8 @@ function* addUserOrganization({payload}) {
   if (response?.message) {
     yield put(addUserOrganizationError(response.message))
   } else {
-    yield put(addUserOrganizationSuccess({response, userId: payload.id}))
+    yield put(addUserOrganizationSuccess({response, userId: payload.id}));
+    yield put(getUserPermissionsRequest(payload.id))
   }
 }
 
@@ -205,7 +210,8 @@ function* removeUserOrganization({payload}) {
   if (response?.message) {
     yield put(removeUserOrganizationError(response.message))
   } else {
-    yield put(removeUserOrganizationSuccess({response: payload, userId: payload.userId}))
+    yield put(removeUserOrganizationSuccess({response: payload, userId: payload.userId}));
+    yield put(getUserPermissionsRequest(payload.userId));
   }
 }
 
@@ -215,7 +221,8 @@ function* allowUserAbility({payload}) {
   if (response?.message) {
     yield put(allowUserAbilityError(response.message))
   } else {
-    yield put(allowUserAbilitySuccess({response, data: payload}))
+    yield put(allowUserAbilitySuccess({response, data: payload}));
+    yield put(getUserPermissionsRequest(payload.user_id))
   }
 }
 
@@ -264,6 +271,17 @@ function* handleSetManager({payload}) {
   yield put(getOnboardingsByUserRequest(payload))
 }
 
+function* getUserPermissions({payload}) {
+
+  try {
+    const result = yield call(userApi.getUserPermissions, payload);
+
+    yield put(getUserPermissionsSuccess({payload, result}))
+  } catch (error) {
+    yield put(getUserPermissionsError(error))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getOnboardingsByUserRequest.type, getOnboardingsByUser),
@@ -285,5 +303,6 @@ export default function* () {
     yield takeLatest(removeUserNotifyRequest.type, removeUserNotify),
     yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
     yield takeLatest(setManager.type, handleSetManager),
+    yield takeLatest(getUserPermissionsRequest.type, getUserPermissions),
   ]);
 }
