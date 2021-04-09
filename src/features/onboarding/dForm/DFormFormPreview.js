@@ -11,11 +11,14 @@ import { X } from "react-feather";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { setPreview } from "app/slices/appSlice";
-
-
 import {selectPreview} from 'app/selectors/layoutSelector'
 import {selectdForms} from '../../../app/selectors'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setPreview,
+} = appSlice.actions;
 
 const DFormFormPreview = () => {
   const preview = useSelector(selectPreview);

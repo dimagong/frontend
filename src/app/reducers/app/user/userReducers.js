@@ -1,5 +1,10 @@
 import {initUser} from 'app/slices/appSlice';
-import {toast} from 'react-toastify'
+import {toast} from 'react-toastify';
+import {
+  getUserAndUserIndex,
+  getIndexById,
+} from "utility/common";
+
 
 const getProfileSuccess = (state, { payload }) => {
   state.isLoading = false;
@@ -10,29 +15,40 @@ const getProfileSuccess = (state, { payload }) => {
   };
 };
 
-const getProfileRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-
-const getProfileError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
-};
-
 const getUsersSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.managers = payload;
 };
 
-const getUsersRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const getUsersError = (state, { payload }) => {
+const getFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
-  state.isError = payload;
+  state.isError = null;
+  let filters = payload;
+  filters.forEach(item => {
+    item.data.roles = new Set(item.data.roles);
+    item.data.organizations = new Set(item.data.organizations);
+  });
+  filters = filters.filter(item => item.user_id === state.user.profile.id);
+  state.user.filters = filters;
+};
+
+const postFilterSuccess = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = null;
+  const newFilter = payload.response.data;
+  newFilter.data.roles = new Set(newFilter.data.roles)
+  newFilter.data.organizations = new Set(newFilter.data.organizations)
+  let filters = state.user.filters;
+  filters.push(newFilter);
+  state.user.filters = filters;
+};
+
+const patchFilterSuccess = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = null;
+  let index = state.user.filters.findIndex(item => item.id === payload.payload.id);
+  state.user.filters[index].data = payload.payload.newFilter;
 };
 
 const getOnboardingsByUserSuccess = (state, { payload }) => {
@@ -48,29 +64,11 @@ const getOnboardingsByUserSuccess = (state, { payload }) => {
   }
 };
 
-const getOnboardingsByUserRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const getOnboardingsByUserError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
-};
-
 const getUserByIdSuccess = (state, { payload }) => {
 
   state.isLoading = false;
   state.isError = null;
   state.user.manager = {...payload, onboarding: payload.onboardings.find( onboarding => onboarding.id === state.user.manager.onboarding.id)}
-};
-
-const getUserByIdRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const getUserByIdError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
 };
 
 const updateUserSuccess = (state, { payload }) => {
@@ -80,23 +78,13 @@ const updateUserSuccess = (state, { payload }) => {
   // so to prevent user org lost and no to re-fetch it we are saving them here
   state.user.managers = state.user.managers.map( manager => {
     if (manager.id === state.user.manager.id) {
-      payload.organizations = manager.organizations
+      payload.organizations = manager.organizations;
       return payload;
     } else {
       return manager
     }
   } );
   toast.success("Saved")
-};
-
-const updateUserRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-
-const updateUserError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
 };
 
 const updateUserAvatarSuccess = (state, { payload }) => {
@@ -110,16 +98,6 @@ const updateUserAvatarSuccess = (state, { payload }) => {
 
     return manager;
   })
-
-  // state.user.manager = {...state.user.manager,...payload};
-};
-const updateUserAvatarRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const updateUserAvatarError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
 };
 
 const deleteUserAvatarSuccess = (state, { payload }) => {
@@ -133,16 +111,15 @@ const deleteUserAvatarSuccess = (state, { payload }) => {
     }
     return manager;
   })
-  // state.user.manager = {...state.user.manager, url : null, avatar: null};
 };
-const deleteUserAvatarRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const deleteUserAvatarError = (state, { payload }) => {
+
+const deleteFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
-  state.isError = payload;
-};
+  state.isError = null;
+  let filters = state.user.filters;
+  filters = filters.filter(item => item.id !== payload);
+  state.user.filters = filters;
+}
 
 const getUserAvatarSuccess = (state, { payload }) => {
   state.isLoading = false;
@@ -156,14 +133,6 @@ const getUserAvatarSuccess = (state, { payload }) => {
     return manager;
   })
 };
-const getUserAvatarRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const getUserAvatarError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
-};
 
 // may be getUserOnboardings
 const getUserOnboardingSuccess = (state, { payload: {dForms, workflows, reviewers} }) => {
@@ -173,14 +142,6 @@ const getUserOnboardingSuccess = (state, { payload: {dForms, workflows, reviewer
   state.user.dForms = dForms;
   state.user.reviewers = reviewers;
 };
-const getUserOnboardingRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const getUserOnboardingError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
-};
 
 const createUserOnboardingSuccess = (state, { payload }) => {
   state.isLoading = false;
@@ -188,19 +149,9 @@ const createUserOnboardingSuccess = (state, { payload }) => {
   state.user.manager.onboardings = [...state.user.manager.onboardings, payload];
   state.user.manager.onboarding = null;
 
-  const currentManager = state.user.managers.findIndex((manager) => manager.id === state.user.manager.id)
+  const currentManager = state.user.managers.findIndex((manager) => manager.id === state.user.manager.id);
 
   state.user.managers[currentManager].onboardings = [...state.user.managers[currentManager].onboardings, payload]
-
-  // state.user.managers = state.user.managers.map( manager => manager.id === state.user.manager.id ? {...manager, onboardings: [...manager.onboardings, payload]} : manager);
-};
-const createUserOnboardingRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const createUserOnboardingError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
 };
 
 const deleteUserOnboardingSuccess = (state, { payload}) => {
@@ -209,33 +160,15 @@ const deleteUserOnboardingSuccess = (state, { payload}) => {
   state.user.manager.onboardings = state.user.manager.onboardings.filter(oboarding => oboarding.id !== payload.id);
   state.user.manager.onboarding = null;
 
-  const currentManager = state.user.managers.findIndex((manager) => manager.id === state.user.manager.id)
+  const currentManager = state.user.managers.findIndex((manager) => manager.id === state.user.manager.id);
 
   state.user.managers[currentManager].onboardings = state.user.managers[currentManager].onboardings.filter((onboarding) => onboarding.id !== payload.id)
-
-  // state.user.managers = state.user.managers.map( manager => manager.id === state.user.manager.id ? {...manager, onboardings: manager.onboardings.filter(oboarding => oboarding.id !== payload.id)} : manager)
-};
-const deleteUserOnboardingRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const deleteUserOnboardingError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
 };
 
 const updateUserRolesSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.manager = {...state.user.manager,...payload};
-};
-const updateUserRolesRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const updateUserRolesError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
 };
 
 const addUserGroupsSuccess = (state, { payload }) => {
@@ -244,43 +177,16 @@ const addUserGroupsSuccess = (state, { payload }) => {
   state.user.manager = {...state.user.manager,...payload};
 };
 
-const addUserGroupsRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const addUserGroupsError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
-};
-
-
 const removeUserGroupsSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.manager = {...state.user.manager,...payload};
 };
 
-const removeUserGroupsRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const removeUserGroupsError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
-};
-
 const updateUserModulesSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.manager = {...state.user.manager,...payload};
-};
-const updateUserModulesRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-const updateUserModulesError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
 };
 
 const createUserSuccess = (state, { payload }) => {
@@ -291,20 +197,6 @@ const createUserSuccess = (state, { payload }) => {
   toast.success("User successfully created")
 };
 
-const createUserRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
-};
-
-const createUserError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
-};
-
-const updateUserOnboardingReviewersRequest = (state) => {
-  state.isLoading = true;
-  state.isError = null;
-}
 const updateUserOnboardingReviewersSuccess = (state, { payload }) => {
   state.isLoading = false;
 
@@ -313,16 +205,9 @@ const updateUserOnboardingReviewersSuccess = (state, { payload }) => {
 
   state.user.managers[managerIndex].onboardings[onboardingIndex] = payload.response
 
-}
-const updateUserOnboardingReviewersError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
-}
+};
 
-const updateUserOnboardingWorkflowRequest = (state) => {
-  state.isLoading = true;
-  state.isError = null;
-}
+
 const updateUserOnboardingWorkflowSuccess = (state, { payload }) => {
   state.isLoading = false;
 
@@ -330,13 +215,9 @@ const updateUserOnboardingWorkflowSuccess = (state, { payload }) => {
   const onboardingIndex = state.user.managers[managerIndex].onboardings.findIndex(onboarding => onboarding.id === payload.onboardingId);
 
   state.user.managers[managerIndex].onboardings[onboardingIndex] = payload.response
-}
-const updateUserOnboardingWorkflowError = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = payload;
-}
+};
 
-// TODO: SETTERS
+// SETTERS
 
 const setUser = (state, { payload }) => {
 
@@ -355,269 +236,135 @@ const setUserGroups = (state, {payload}) => {
 };
 const setUserModules = (state, {payload}) => {
   state.user.modules = payload;
-}
+};
 const setUserRoles = (state, {payload}) => {
   state.user.roles = payload;
-}
+};
 
 const setManagerOnboarding = (state, {payload}) => {
   state.user.manager.onboarding = payload;
-}
+};
 
 const setProfileOnboarding = (state, {payload}) => {
   state.user.profile.onboarding = payload;
-}
+};
 
 const setManagerOnboardingProperty = (state, {payload}) => {
   state.user.manager.onboarding = {...state.user.manager.onboarding, ...payload};
-}
+};
 const setUserDForms = (state, {payload}) => {
   state.user.manager.onboarding.d_form = payload;
-}
+};
 
 const setUserWorkflows = (state, {payload}) => {
   state.user.manager.onboarding.workflow = payload;
-}
+};
 
 const setUserReviewers = (state, {payload}) => {
   state.user.manager.onboarding.reviewers = payload;
-}
+};
 
-const getUserManagment = (state) => {}
-
-const getUserOrganizationsRequest = (state) => {
-  state.isLoading = true;
-  state.isError = null;
-}
+const getUserManagment = () => {};
 
 const getUserOrganizationsSuccess = (state, {payload}) => {
   state.isLoading =  false;
 
-  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId)
-  const user = state.user.managers[userIndex]
+  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId);
+  const user = state.user.managers[userIndex];
 
   user.organizations = {
     corporation: payload.response.filter((org) =>  org.type === "corporation"),
     member_firm: payload.response.filter((org) =>  org.type === "member_firm"),
     network: payload.response.filter((org) =>  org.type === "network"),
-  }
+  };
 
   state.user.managers[userIndex] = user;
-}
+};
 
-const getUserOrganizationsError = (state, {payload}) => {
-  state.isLoading = false;
-  state.isError = payload;
-}
-
-const addUserOrganizationRequest = (state) => {
-  state.isLoading = true;
-  state.isError = null;
-}
 const addUserOrganizationSuccess = (state, {payload}) => {
-
   state.isLoading = false;
-  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId)
-  const user = state.user.managers[userIndex]
 
-  user.organizations[payload.response.type] = [...user.organizations[payload.response.type], payload.response]
+  const {userIndex, user} = getUserAndUserIndex(state.user.managers, payload.userId);
+
+  user.organizations[payload.response.type] = [...user.organizations[payload.response.type], payload.response];
 
   state.user.managers[userIndex] = user;
+};
 
-}
-const addUserOrganizationError = (state, {payload}) => {
-  state.isLoading = false;
-  state.isError = payload;
-}
-
-const removeUserOrganizationRequest = (state) => {
-  state.isLoading = true;
-  state.isError = null;
-}
 const removeUserOrganizationSuccess = (state, {payload}) => {
   state.isLoading = false;
+  const {userIndex, user} = getUserAndUserIndex(state.user.managers, payload.userId);
 
-  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId)
-  const user = state.user.managers[userIndex]
-
-  user.organizations[payload.response.type] = user.organizations[payload.response.type].filter((org) => org.id !== payload.response.group_id)
+  user.organizations[payload.response.type] = user.organizations[payload.response.type].filter((org) => org.id !== payload.response.group_id);
 
   state.user.managers[userIndex] = user;
-}
-const removeUserOrganizationError = (state, {payload}) => {
-  state.isLoading = false;
-  state.isError = payload;
-}
+};
 
-const allowUserAbilityRequest = (state) => {
-  state.isLoading = true;
-  state.isError = null;
-}
 const allowUserAbilitySuccess = (state, {payload}) => {
+  const {userIndex, user} = getUserAndUserIndex(state.user.managers, payload.data.user_id);
 
-  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.data.user_id)
-  const user = state.user.managers[userIndex]
-
-  const editedOrg = user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0]
-  editedOrg.abilities = payload.response
-
-  if (state.user.managers[userIndex].permissions.organization === editedOrg.name) {
-    user.permissions.ability = payload.data.ability
-  }
+  const editedOrg = user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0];
+  editedOrg.abilities = payload.response;
 
   state.user.managers[userIndex] = user;
   state.isLoading = false;
-}
-const allowUserAbilityError = (state, {payload}) => {
-  state.isLoading = false;
-  state.isError = payload;
-}
+};
 
-
-const disallowUserAbilityRequest = (state) => {
-  state.isLoading = true;
-  state.isError = null;
-}
 const disallowUserAbilitySuccess = (state, {payload}) => {
-  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.data.user_id)
-  const user = state.user.managers[userIndex]
-  user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response
+  const {userIndex, user} = getUserAndUserIndex(state.user.managers, payload.data.user_id);
+
+  user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response;
   state.user.managers[userIndex] = user;
   state.isLoading = false;
-}
-const disallowUserAbilityError = (state, {payload}) => {
-  state.isLoading = false;
-  state.isError = payload;
-}
+};
 
-const removeUserNotifyRequest = (state) => {
-  state.isLoading = true;
-  state.isError = null;
-}
-const removeUserNotifySuccess  = (state, {payload}) => {
+const removeUserNotifySuccess = (state) => {
   state.isLoading = false;
   state.user.profile.notify = 0;
-}
-const removeUserNotifyError  = (state, {payload}) => {
-  state.isLoading = false;
-  state.isError = payload;
-}
+};
 
-const getUserOrganizationLogoRequest = (state) => {
-  state.user.profile.permissions.logo.isLoading = true;
-  state.isError = null;
-}
-const getUserOrganizationLogoSuccess  = (state, {payload}) => {
+const getUserOrganizationLogoSuccess = (state, {payload}) => {
   state.user.profile.permissions.logo.isLoading = false;
   state.user.profile.permissions.logo.base64 = payload;
-}
-const getUserOrganizationLogoError  = (state, {payload}) => {
-  state.user.profile.permissions.logo.isLoading = false;
-  state.isError = payload;
-}
+};
 
-
+const getUserPermissionsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  const userIndex = getIndexById(state.user.managers, payload.payload);
+  state.user.managers[userIndex].permissions = payload.result;
+};
 
 export default {
   getProfileSuccess,
-  getProfileRequest,
-  getProfileError,
-
   getUsersSuccess,
-  getUsersRequest,
-  getUsersError,
-
   getUserByIdSuccess,
-  getUserByIdRequest,
-  getUserByIdError,
-
   updateUserSuccess,
-  updateUserRequest,
-  updateUserError,
-
   createUserSuccess,
-  createUserRequest,
-  createUserError,
-
   updateUserAvatarSuccess,
-  updateUserAvatarRequest,
-  updateUserAvatarError,
-
   deleteUserAvatarSuccess,
-  deleteUserAvatarRequest,
-  deleteUserAvatarError,
-
   getUserAvatarSuccess,
-  getUserAvatarRequest,
-  getUserAvatarError,
-
   getUserOnboardingSuccess,
-  getUserOnboardingRequest,
-  getUserOnboardingError,
-
   createUserOnboardingSuccess,
-  createUserOnboardingRequest,
-  createUserOnboardingError,
-
   deleteUserOnboardingSuccess,
-  deleteUserOnboardingRequest,
-  deleteUserOnboardingError,
-
   updateUserRolesSuccess,
-  updateUserRolesRequest,
-  updateUserRolesError,
-
   addUserGroupsSuccess,
-  addUserGroupsRequest,
-  addUserGroupsError,
-
   removeUserGroupsSuccess,
-  removeUserGroupsRequest,
-  removeUserGroupsError,
-
-  getUserOrganizationsRequest,
   getUserOrganizationsSuccess,
-  getUserOrganizationsError,
-
-  addUserOrganizationRequest,
   addUserOrganizationSuccess,
-  addUserOrganizationError,
-
-  removeUserOrganizationRequest,
   removeUserOrganizationSuccess,
-  removeUserOrganizationError,
-
-  allowUserAbilityRequest,
   allowUserAbilitySuccess,
-  allowUserAbilityError,
-
-  disallowUserAbilityRequest,
   disallowUserAbilitySuccess,
-  disallowUserAbilityError,
-
-  removeUserNotifyRequest,
   removeUserNotifySuccess,
-  removeUserNotifyError,
-
-  getUserOrganizationLogoRequest,
   getUserOrganizationLogoSuccess,
-  getUserOrganizationLogoError,
-
   updateUserModulesSuccess,
-  updateUserModulesRequest,
-  updateUserModulesError,
-
-  updateUserOnboardingReviewersRequest,
   updateUserOnboardingReviewersSuccess,
-  updateUserOnboardingReviewersError,
-
-  updateUserOnboardingWorkflowRequest,
   updateUserOnboardingWorkflowSuccess,
-  updateUserOnboardingWorkflowError,
-
-  getOnboardingsByUserRequest,
   getOnboardingsByUserSuccess,
-  getOnboardingsByUserError,
+  getFilterSuccess,
+  postFilterSuccess,
+  deleteFilterSuccess,
+  patchFilterSuccess,
+  getUserPermissionsSuccess,
 
   setUser,
   setManager,

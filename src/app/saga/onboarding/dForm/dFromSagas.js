@@ -1,7 +1,20 @@
 import {all, put, call, takeLatest, select} from "redux-saga/effects";
 
 import dFormApi from "api/Onboarding/dForms";
-import {
+import {prepareSelectGroups} from "utility/select/prepareSelectData";
+import {selectdForms} from "app/selectors/onboardingSelectors";
+import rfdc from "rfdc";
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setdForms,
+  setdFormActions,
+  setdFormTriggers
+} = onboardingSlice.actions;
+
+const {
   getdFormsRequest,
   getdFormsSuccess,
   getdFormsError,
@@ -33,12 +46,8 @@ import {
   changedFormStatusRequest,
   changedFormStatusError,
   setContext,
-} from "app/slices/appSlice";
-import {setdForms, setdFormActions, setdFormTriggers} from "app/slices/onboardingSlice";
-import {prepareSelectGroups} from "utility/select/prepareSelectData";
-import {selectdForms} from "app/selectors/onboardingSelectors";
-import _ from "lodash";
-import rfdc from "rfdc";
+} = appSlice.actions;
+
 const clone = rfdc();
 
 function* getdForms() {

@@ -1,7 +1,21 @@
 import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import workflowApi from "api/Onboarding/workflow";
+import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {
+  selectWorkflows,
+  selectNotifications
+} from "app/selectors/onboardingSelectors";
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setWorkflows,
+  setWorkflow
+} = onboardingSlice.actions;
+
+const {
   getWorkflowsRequest,
   getWorkflowsSuccess,
   getWorkflowsError,
@@ -19,17 +33,7 @@ import {
   getNotificationsRequest,
   getUsersRequest,
   setContext,
-} from "app/slices/appSlice";
-import {
-  setWorkflows,
-  setWorkflow
-} from "app/slices/onboardingSlice";
-import {prepareSelectGroups} from "utility/select/prepareSelectData";
-import {
-  selectWorkflows,
-  selectNotifications
-} from "app/selectors/onboardingSelectors";
-
+} = appSlice.actions;
 
 function* getWorkflows() {
   try {

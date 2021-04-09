@@ -5,12 +5,16 @@ import { history } from "./history";
 import { ConnectedRouter } from "connected-react-router";
 import { useDispatch } from "react-redux";
 import authService from "services/auth";
-import { getProfileRequest } from "app/slices/appSlice";
 import {ToastContainer} from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
 import "assets/scss/plugins/extensions/toastr.scss"
 
 import { Scrollbars } from 'react-custom-scrollbars';
+
+import appSlice from 'app/slices/appSlice'
+
+const {getProfileRequest} = appSlice.actions;
+
 
 function App() {
   const dispatch = useDispatch();

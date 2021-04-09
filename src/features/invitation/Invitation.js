@@ -16,9 +16,15 @@ import {
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { selectError, selectInvitation } from "app/selectors";
 import { useDispatch, useSelector } from "react-redux";
-import { getInvitationRequest, sendInvitationAcceptRequest } from 'app/slices/appSlice'
 import { useRouter } from 'hooks/useRouter';
 import TermsAndConditions from 'assets/ValidPath-privacy-policy.pdf'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  getInvitationRequest,
+  sendInvitationAcceptRequest,
+} = appSlice.actions;
 
 const Invitation = () => {
     const errors = useSelector(selectError) || {};

@@ -14,14 +14,16 @@ import {
 
 import {selectLoading} from 'app/selectors'
 
-import {
-  createOrganizationRequest,
-  updateOrganizationRequest,
-} from 'app/slices/appSlice'
-
 import './styles.scss'
 
 import Editor from 'components/FormCreate/Custom/WysiwygEditor'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  createOrganizationRequest,
+  updateOrganizationRequest,
+} = appSlice.actions;
 
 const organizationTemplate = {
   type: "network",

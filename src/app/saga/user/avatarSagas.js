@@ -1,19 +1,22 @@
 import { all, put, call, takeLatest, takeEvery } from "redux-saga/effects";
 
 import userApi from "api/User/user";
-import {
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   updateUserAvatarSuccess,
   updateUserAvatarRequest,
   updateUserAvatarError,
+
   deleteUserAvatarSuccess,
   deleteUserAvatarRequest,
   deleteUserAvatarError,
+
   getUserAvatarSuccess,
   getUserAvatarRequest,
   getUserAvatarError,
-
-} from "app/slices/appSlice";
-
+} = appSlice.actions;
 
 function* getUserAvatar({payload}) {
   try {

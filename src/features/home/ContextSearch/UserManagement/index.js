@@ -15,12 +15,18 @@ import {
   PaginationLink,
   Button,
 } from 'reactstrap'
-import { setManager, setPreview, getOnboardingsByUserRequest } from 'app/slices/appSlice'
 import useWindowSize from 'hooks/windowWidth'
 import UserCardTemplate from '../CardTemplates/userCard'
 import { selectPreview } from 'app/selectors/layoutSelector'
 
-const UserManagement = ({ managers, handleContextChange }) => {
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setManager,
+  setPreview,
+} = appSlice.actions;
+
+const UserManagement = ({ allManagers, managers, handleContextChange }) => {
 
   const dispatch = useDispatch()
   const preview = useSelector(selectPreview)
@@ -39,9 +45,11 @@ const UserManagement = ({ managers, handleContextChange }) => {
   const oneColumn = !!preview
 
   const renderContent = (data, page) => {
+    if (data.length === 0 && data.length !== allManagers.length) {
+      return <h1 className={'no-managers'}>There are no such managers</h1>
+    }
 
     const pageData = data.slice(itemsPerPage * page, itemsPerPage * (page + 1))
-
     return pageData.map((elData) => (
       <UserCardTemplate
         className="cursor-pointer"
@@ -51,7 +59,6 @@ const UserManagement = ({ managers, handleContextChange }) => {
             dispatch(setPreview({type: "user", id: user.id}))
           } else {
             dispatch(setManager(user));
-            dispatch(getOnboardingsByUserRequest(user));
             handleContextChange("User")
           }
         }}

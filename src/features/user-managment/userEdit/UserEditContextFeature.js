@@ -17,12 +17,16 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { X, Check } from "react-feather"
 import {selectCurrentManager} from 'app/selectors/userSelectors'
-
-import {setUser, updateUserRequest, setContext} from "app/slices/appSlice";
 import {selectError} from "app/selectors";
 
 import UserInvitationsCreate from '../userInvitations/UserInvitationsCreate'
 import Checkbox from 'components/@vuexy/checkbox/CheckboxesVuexy'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  updateUserRequest,
+} = appSlice.actions;
 
 const UserProfileEdit = ({manager, onEditClose}) => {
   const errors = useSelector(selectError) || {};

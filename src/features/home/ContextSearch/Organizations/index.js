@@ -7,16 +7,17 @@ import {
   Spinner,
 } from 'reactstrap'
 
-import {
-  getOrganizationsRequest,
-  setContext,
-  setSelectedOrganizationIdAndType,
-} from 'app/slices/appSlice'
-
 import { selectOrganizations } from 'app/selectors/groupSelector'
 
 import './styles.scss'
 
+import appSlice from 'app/slices/appSlice'
+
+const {
+  getOrganizationsRequest,
+  setContext,
+  setSelectedOrganizationIdAndType,
+} = appSlice.actions;
 
 const OrganizationCard = ({org, onSelect}) => {
 

@@ -8,7 +8,6 @@ import {
   deleteUserAvatarPath,
   getUsersDataPath,
   createUserOnboarding,
-  deleteUserOnboarding,
   updateUserPath,
   updateUserRolesPath,
   createUserPath,
@@ -18,11 +17,25 @@ import {
   revokeInvitationsPath,
   getInvitationPath,
   sendInvitationAcceptPath,
-  getOnboardingsByUserPath
+  getOnboardingsByUserPath,
+  getFilterPath,
+  getFilterPathByID
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
 
 const userApi = {
+  async getFilter() {
+    try {
+      const result = await instance({
+        url: getFilterPath,
+        method: "GET",
+      });
+
+      return result ? result.data.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
   async getProfile() {
     try {
       const result = await instance({
@@ -146,6 +159,43 @@ const userApi = {
       });
       return result ? result.data : result;
     } catch (error) {}
+  },
+  async postFilter(filter) {
+    try {
+      const result = await instance({
+        url: getFilterPath,
+        method: "POST",
+        data: {filter_name: filter.filter_name,
+          data: {roles: Array.from(filter.data.roles),
+                 organizations: Array.from(filter.data.organizations),
+                  type: filter.data.type}
+                }
+      });
+      return result ? result.data : result;
+    } catch (error) {console.log('ERROR POST FILTER')}
+  },
+  async patchFilter(payload) {
+    try {
+      const result = await instance({
+        url: getFilterPathByID(payload.id),
+        method: "PATCH",
+        data: { filter_name: payload.filter_name,
+          data: {roles: Array.from(payload.newFilter.roles),
+            organizations: Array.from(payload.newFilter.organizations),
+            type: payload.newFilter.type}
+        }
+      });
+      return result ? result.data : result;
+    } catch (error) {console.log('ERROR POST FILTER')}
+  },
+  async deleteFilter(id) {
+    try {
+      const result = await instance({
+        url: getFilterPathByID(id),
+        method: "DELETE",
+      });
+      return result ? result.data.data : result;
+    } catch (error) { console.log(error)}
   },
 
   async updateUserOnboardingWorkflow({workflowId, onboardingId}) {
@@ -314,7 +364,7 @@ const userApi = {
         url: "api/ability/allow",
         method: "POST",
         data,
-      })
+      });
 
       return result.data.data;
     } catch (err) {
@@ -328,7 +378,7 @@ const userApi = {
         url: "api/ability/disallow",
         method: "POST",
         data,
-      })
+      });
 
       return result.data.data;
     } catch (err) {
@@ -346,7 +396,7 @@ const userApi = {
           group_id: orgId,
           type: type,
         }
-      })
+      });
 
       return result.data.data;
     } catch (err) {
@@ -356,7 +406,7 @@ const userApi = {
 
   async removeUserOrganization ({userId, group_id, type}) {
     try {
-      const result = await instance({
+      await instance({
         url: `api/user/${userId}/groups/remove`,
         method: "PUT",
         data: {
@@ -376,7 +426,7 @@ const userApi = {
       const result = await instance({
         url: `api/organization/user/${payload}`,
         method: "GET",
-      })
+      });
 
       return result.data.data;
     } catch (err) {
@@ -389,13 +439,26 @@ const userApi = {
       const result = await instance({
         url: `api/user/reset-notify`,
         method: "POST",
-      })
+      });
 
       return result.data.data;
     } catch (err) {
       return err;
     }
   },
+
+  async getUserPermissions(userId) {
+    try {
+      const result = await instance({
+        url: `/api/user/${userId}/main-permissions`,
+        method: "GET",
+      });
+
+      return result.data.data;
+    } catch (err) {
+      return err;
+    }
+  }
 };
 
 export default userApi;

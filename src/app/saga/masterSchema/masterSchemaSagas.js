@@ -1,11 +1,14 @@
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import masterSchemaApi from "api/masterSchema/masterSchema";
-import {
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   getMasterSchemaFieldsRequest,
   getMasterSchemaFieldsSuccess,
   getMasterSchemaFieldsError,
-} from "app/slices/appSlice";
+}  = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
 

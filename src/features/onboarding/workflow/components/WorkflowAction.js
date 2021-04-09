@@ -20,12 +20,16 @@ import {
   selectNotifications,
   selectdFormActions,
 } from "app/selectors/onboardingSelectors";
-import { setWorkflowTriggers } from "app/slices/onboardingSlice";
 import { selectManagers } from "app/selectors/userSelectors";
 import Select from "react-select";
 import { colourStyles } from "utility/select/selectSettigns";
 import {prepareSelectManagers} from "utility/select/prepareSelectData";
 
+import onboardingSlice from 'app/slices/onboardingSlice';
+
+const {
+  setWorkflowTriggers,
+} = onboardingSlice.actions;
 
 const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
   const dispatch = useDispatch();

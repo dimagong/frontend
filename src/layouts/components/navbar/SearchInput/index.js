@@ -9,7 +9,16 @@ import {groupTypes} from '../../../../constants/group'
 import {useSelector} from 'react-redux'
 import {selectGroups} from 'app/selectors'
 import {useDispatch} from 'react-redux'
-import {showContextSearch, setContext, setManager, setPreview} from 'app/slices/appSlice'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  showContextSearch,
+  setContext,
+  setManager,
+  setPreview,
+} = appSlice.actions;
+
 
 const SearchInput = ({ suggestions }) => {
 

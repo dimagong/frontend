@@ -10,7 +10,6 @@ import { ChangeDetectionStrategyType } from 'ag-grid-react/lib/changeDetectionSe
 import {ContextLayout} from "utility/context/Layout"
 import {AgGridReact} from "ag-grid-react"
 import { columnDefs } from "./gridSettings";
-import { setManager } from "app/slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
     selectManager,
@@ -18,6 +17,13 @@ import {
   } from "app/selectors/userSelectors";
 import { useRouter } from "hooks/useRouter";
 import { userManagmentOptionsPath, userManagmentPath } from "constants/paths"
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setManager,
+} = appSlice.actions;
+
 
 const UserList = () => {
     const [gridApi, setGridApi] = useState(null);

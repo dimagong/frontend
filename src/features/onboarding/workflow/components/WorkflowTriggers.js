@@ -3,7 +3,12 @@ import { Col, Button } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { selectWorkflow } from "app/selectors/onboardingSelectors";
 import WorkflowTrigger from "./WorkflowTrigger";
-import { setWorkflowTriggers } from "app/slices/onboardingSlice";
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+
+const {
+  setWorkflowTriggers,
+} = onboardingSlice.actions;
 
 const WorkflowTriggers = () => {
   const workflow = useSelector(selectWorkflow);

@@ -17,10 +17,16 @@ import classnames from "classnames";
 // import UserEdit from './UserEdit'
 import { useDispatch, useSelector } from "react-redux";
 import { selectGroups, selectRoles, selectManager, selectManagers } from "app/selectors";
-import { getUserManagment, setManager } from "app/slices/appSlice";
 import { navItemFactory } from "./contants";
 import UserEdit from './userEdit/UserEdit'
 import { useRouter } from "hooks/useRouter";
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  getUserManagment,
+  setManager,
+} = appSlice.actions;
 
 const UserManagment = () => {
   const manager = useSelector(selectManager);

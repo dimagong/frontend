@@ -11,14 +11,17 @@ import {RefreshCw, EyeOff, Eye} from "react-feather"
 import FormCreate from 'components/FormCreate/FormCreate'
 import {useDispatch, useSelector} from "react-redux";
 import {selectManager, selectLoading} from "app/selectors";
-import {
+import {debounce} from 'lodash';
+import moment from 'moment';
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   updateDFormRequest,
   submitdFormDataRequest,
   changedFormStatusRequest,
-  getUserByIdRequest
-} from "app/slices/appSlice";
-import {debounce} from 'lodash';
-import moment from 'moment';
+  getUserByIdRequest,
+} = appSlice.actions;
 
 const initRefreshClassName = "bg-hover-icon";
 

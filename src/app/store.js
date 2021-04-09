@@ -7,6 +7,8 @@ import vuexyReducer from 'app/reducers/vuexy/rootReducer'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import {history} from '../history'
 
+import loadingReducer from './loadingReducer.js'
+
 const sagaMiddleware = createSagaMiddleware();
 
 
@@ -18,10 +20,11 @@ const middleware = [
 
 const store = configureStore({
   reducer: {
-    app: appSlice,
-    onboarding: onboardingSlice,
+    app: appSlice.reducer,
+    onboarding: onboardingSlice.reducer,
     vuexy: vuexyReducer,
-    router: connectRouter(history)
+    router: connectRouter(history),
+    loading: loadingReducer,
   },
   middleware
 });

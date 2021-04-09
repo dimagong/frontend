@@ -6,12 +6,6 @@ import {X} from 'react-feather'
 import Checkbox from '../@vuexy/checkbox/CheckboxesVuexy'
 
 import {
-  addUserOrganizationRequest, allowUserAbilityRequest,
-  disallowUserAbilityRequest, getOrganizationsRequest, getUserOnboardingRequest, getUserOrganizationsRequest,
-  removeUserOrganizationRequest
-} from 'app/slices/appSlice'
-
-import {
   selectChildOrganizations, selectOrganizations,
   selectParentOrganizations
 } from 'app/selectors/groupSelector'
@@ -27,6 +21,18 @@ import {capitalizeAll} from '../../utility/common'
 import './styles.scss'
 
 import { logos } from 'constants/organizations'
+
+import appSlice from 'app/slices/appSlice'
+
+const {
+  addUserOrganizationRequest,
+  allowUserAbilityRequest,
+  disallowUserAbilityRequest,
+  getOrganizationsRequest,
+  getUserOnboardingRequest,
+  getUserOrganizationsRequest,
+  removeUserOrganizationRequest
+} = appSlice.actions;
 
 const UserRoles = ({manager, userOrganizations, className}) => {
   const dispatch = useDispatch()

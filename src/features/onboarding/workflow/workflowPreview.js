@@ -1,29 +1,25 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardBody,
-  FormGroup,
   Row,
   Col,
-  Input,
-  Button,
-  Label,
-  FormFeedback,
   Badge,
 } from "reactstrap";
 import "flatpickr/dist/themes/light.css";
 import { X } from "react-feather";
-import MultiSelect from "components/MultiSelect/multiSelect";
-import { prepareSelectGroups } from "utility/select/prepareSelectData";
-import {selectWorkflow, selectWorkflows} from "app/selectors/onboardingSelectors";
+import { selectWorkflows } from "app/selectors/onboardingSelectors";
 import { useDispatch, useSelector } from "react-redux";
-import { setWorkflow, setWorkflowGroups } from "app/slices/onboardingSlice";
-import { createWorkflowRequest, updateWorkflowRequest, setPreview } from "app/slices/appSlice";
 
 import {selectPreview} from 'app/selectors/layoutSelector'
 
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setPreview,
+} = appSlice.actions;
 
 const WorkflowFormPreview = ({ workflowModalType }) => {
   const preview = useSelector(selectPreview);

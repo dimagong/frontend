@@ -15,10 +15,22 @@ import {
 import {X} from "react-feather";
 import {useDispatch, useSelector} from "react-redux";
 import {selectNotification} from "app/selectors/onboardingSelectors";
-import {setNotification, setNotificationGroups} from "app/slices/onboardingSlice";
 import {MultiSelect} from "components/MultiSelect/multiSelect";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
-import {createNotificationRequest, setContext, updateNotificationRequest} from "app/slices/appSlice";
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setNotification,
+  setNotificationGroups,
+} = onboardingSlice.actions;
+
+const {
+  createNotificationRequest,
+  setContext,
+  updateNotificationRequest,
+} = appSlice.actions;
 
 const initNotification = {name: '', subject: '', description: "", content: "", groups: []};
 

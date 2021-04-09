@@ -1,10 +1,12 @@
 import { all, put, takeLatest } from "redux-saga/effects";
 
-import {
+import appSlice from 'app/slices/appSlice'
+
+const {
   setContext,
   hideContextSearch,
   showContextSearch,
-} from "app/slices/appSlice";
+}  = appSlice.actions;
 
 function* onSetContext({payload}) {
   if (payload !== null) {

@@ -36,9 +36,19 @@ import {
   selectdForm,
 } from "app/selectors/onboardingSelectors";
 import DFormForm from './DFormForm'
-import { getdFormsRequest, deletedFormRequest } from "app/slices/appSlice";
-import { setdForm } from "app/slices/onboardingSlice";
 import {initDForm} from "./settings"
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setdForm,
+} = onboardingSlice.actions;
+
+const {
+  getdFormsRequest,
+  deletedFormRequest,
+} = appSlice.actions;
 
 const DForm = () => {
   const [gridApi, setGridApi] = useState(null);

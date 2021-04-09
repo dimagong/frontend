@@ -2,9 +2,6 @@ import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux'
 import {selectdForms, selectNotifications} from '../../../../app/selectors'
 
-import { setContext } from 'app/slices/appSlice'
-import { setdForm, setNotification, setWorkflow } from 'app/slices/onboardingSlice'
-
 import { Scrollbars } from 'react-custom-scrollbars';
 import {
   Row,
@@ -20,6 +17,19 @@ import {
 
 import './styles.scss'
 import {selectWorkflows} from '../../../../app/selectors/onboardingSelectors'
+
+import onboardingSlice from 'app/slices/onboardingSlice';
+import appSlice from 'app/slices/appSlice'
+
+const {
+  setdForm,
+  setNotification,
+  setWorkflow,
+} = onboardingSlice.actions
+
+const {
+  setContext,
+} = appSlice.actions;
 
 const dependenciesList = [
   {

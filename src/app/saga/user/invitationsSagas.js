@@ -1,7 +1,11 @@
 import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import userApi from "api/User/user";
-import {
+import { selectInvitation } from "app/selectors";
+
+import appSlice from 'app/slices/appSlice'
+
+const {
   getInvitationsSuccess,
   getInvitationsRequest,
   getInvitationsError,
@@ -21,8 +25,7 @@ import {
   sendInvitationAcceptRequest,
   sendInvitationAcceptError,
   loginRequest
-} from "app/slices/appSlice";
-import { selectInvitation } from "app/selectors";
+} = appSlice.actions;
 
 function* getInvitations() {
     try {
