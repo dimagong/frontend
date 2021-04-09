@@ -23,6 +23,8 @@ const UserFilter = ({ handleFilter, managers }) => {
   const userFilters = useSelector(selectFilters);
   const organizationsObjects = useSelector(selectOrganizations);
 
+  const [appliedFilters, setAppliedFilters] = useState({roles: new Set(), organizations: new Set(), sort: -1});
+
   const [isFilterBoxOpened, setIsFilterBoxOpened] = useState(false);
   const [currSort, setCurrSort] = useState(-1);
   const [filtered, setFiltered] = useState(false);
@@ -77,10 +79,24 @@ const UserFilter = ({ handleFilter, managers }) => {
     if (newSort === undefined || newSort < 0) {
       newSort = currSort;
     }
+
+    setAppliedFilters({
+      roles: newFilter.roles,
+      organizations: newFilter.organizations,
+      sort: newSort,
+    });
+
+    filterAndSortManagers(newFilter, newSort);
+    setIsFilterBoxOpened(false);
+  };
+
+  const filterAndSortManagers = (newFilter, newSort) => {
+
     let newManagers = managers;
-    newManagers = newManagers.filter(item => (newFilter.roles.size === 0 || newFilter.roles.has(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
-                                             &&
-                                             (newFilter.organizations.size === 0 || newFilter.organizations.has(item?.permissions?.organization.replace('_', ' '))));
+    newManagers = newManagers.filter(item => (
+      newFilter.roles.size === 0
+      || newFilter.roles.has(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
+      && (newFilter.organizations.size === 0 || newFilter.organizations.has(item?.permissions?.organization.replace('_', ' '))));
 
     switch (newSort) {
       case 0: newManagers.sort((lhs, rhs) => lhs.first_name.localeCompare(rhs.first_name)); break;
@@ -90,7 +106,6 @@ const UserFilter = ({ handleFilter, managers }) => {
     }
 
     handleFilter(newManagers);
-    setIsFilterBoxOpened(false);
   }
 
   const setToString = (set) => {
@@ -150,7 +165,10 @@ const UserFilter = ({ handleFilter, managers }) => {
   }
 
   useEffect(() => {
-    applyFilters({})
+    filterAndSortManagers(
+      {roles: appliedFilters.roles, organizations: appliedFilters.organizations},
+      appliedFilters.sort
+    )
   }, [managers]);
 
   return (
