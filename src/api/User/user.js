@@ -8,7 +8,6 @@ import {
   deleteUserAvatarPath,
   getUsersDataPath,
   createUserOnboarding,
-  deleteUserOnboarding,
   updateUserPath,
   updateUserRolesPath,
   createUserPath,
@@ -365,7 +364,7 @@ const userApi = {
         url: "api/ability/allow",
         method: "POST",
         data,
-      })
+      });
 
       return result.data.data;
     } catch (err) {
@@ -379,7 +378,7 @@ const userApi = {
         url: "api/ability/disallow",
         method: "POST",
         data,
-      })
+      });
 
       return result.data.data;
     } catch (err) {
@@ -397,7 +396,7 @@ const userApi = {
           group_id: orgId,
           type: type,
         }
-      })
+      });
 
       return result.data.data;
     } catch (err) {
@@ -407,7 +406,7 @@ const userApi = {
 
   async removeUserOrganization ({userId, group_id, type}) {
     try {
-      const result = await instance({
+      await instance({
         url: `api/user/${userId}/groups/remove`,
         method: "PUT",
         data: {
@@ -427,7 +426,7 @@ const userApi = {
       const result = await instance({
         url: `api/organization/user/${payload}`,
         method: "GET",
-      })
+      });
 
       return result.data.data;
     } catch (err) {
@@ -440,13 +439,26 @@ const userApi = {
       const result = await instance({
         url: `api/user/reset-notify`,
         method: "POST",
-      })
+      });
 
       return result.data.data;
     } catch (err) {
       return err;
     }
   },
+
+  async getUserPermissions(userId) {
+    try {
+      const result = await instance({
+        url: `/api/user/${userId}/main-permissions`,
+        method: "GET",
+      });
+
+      return result.data.data;
+    } catch (err) {
+      return err;
+    }
+  }
 };
 
 export default userApi;

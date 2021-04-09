@@ -1,5 +1,10 @@
 import {initUser} from 'app/slices/appSlice';
-import {toast} from 'react-toastify'
+import {toast} from 'react-toastify';
+import {
+  getUserAndUserIndex,
+  getIndexById,
+} from "utility/common";
+
 
 const getProfileSuccess = (state, { payload }) => {
   state.isLoading = false;
@@ -277,22 +282,18 @@ const getUserOrganizationsSuccess = (state, {payload}) => {
 };
 
 const addUserOrganizationSuccess = (state, {payload}) => {
-
   state.isLoading = false;
-  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId);
-  const user = state.user.managers[userIndex];
+
+  const {userIndex, user} = getUserAndUserIndex(state.user.managers, payload.userId);
 
   user.organizations[payload.response.type] = [...user.organizations[payload.response.type], payload.response];
 
   state.user.managers[userIndex] = user;
-
 };
 
 const removeUserOrganizationSuccess = (state, {payload}) => {
   state.isLoading = false;
-
-  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.userId);
-  const user = state.user.managers[userIndex];
+  const {userIndex, user} = getUserAndUserIndex(state.user.managers, payload.userId);
 
   user.organizations[payload.response.type] = user.organizations[payload.response.type].filter((org) => org.id !== payload.response.group_id);
 
@@ -300,37 +301,37 @@ const removeUserOrganizationSuccess = (state, {payload}) => {
 };
 
 const allowUserAbilitySuccess = (state, {payload}) => {
-
-  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.data.user_id);
-  const user = state.user.managers[userIndex];
+  const {userIndex, user} = getUserAndUserIndex(state.user.managers, payload.data.user_id);
 
   const editedOrg = user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0];
   editedOrg.abilities = payload.response;
-
-  if (state.user.managers[userIndex].permissions.organization === editedOrg.name) {
-    user.permissions.ability = payload.data.ability
-  }
 
   state.user.managers[userIndex] = user;
   state.isLoading = false;
 };
 
 const disallowUserAbilitySuccess = (state, {payload}) => {
-  const userIndex = state.user.managers.findIndex((manager) => manager.id === payload.data.user_id);
-  const user = state.user.managers[userIndex];
+  const {userIndex, user} = getUserAndUserIndex(state.user.managers, payload.data.user_id);
+
   user.organizations[payload.data.organization_type].filter(({id}) => id === payload.data.organization_id)[0].abilities = payload.response;
   state.user.managers[userIndex] = user;
   state.isLoading = false;
 };
 
-const removeUserNotifySuccess  = (state) => {
+const removeUserNotifySuccess = (state) => {
   state.isLoading = false;
   state.user.profile.notify = 0;
 };
 
-const getUserOrganizationLogoSuccess  = (state, {payload}) => {
+const getUserOrganizationLogoSuccess = (state, {payload}) => {
   state.user.profile.permissions.logo.isLoading = false;
   state.user.profile.permissions.logo.base64 = payload;
+};
+
+const getUserPermissionsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  const userIndex = getIndexById(state.user.managers, payload.payload);
+  state.user.managers[userIndex].permissions = payload.result;
 };
 
 export default {
@@ -363,6 +364,7 @@ export default {
   postFilterSuccess,
   deleteFilterSuccess,
   patchFilterSuccess,
+  getUserPermissionsSuccess,
 
   setUser,
   setManager,
