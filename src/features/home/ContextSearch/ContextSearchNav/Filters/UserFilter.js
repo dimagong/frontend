@@ -117,8 +117,6 @@ const UserFilter = ({ handleFilter, managers }) => {
 
   const handleCloseTab = (newFilter) => {
     if (isFilterBoxOpened) return;
-    newFilter.type = filter.type;
-    newFilter.type[curr] = 'initial';
     setFilter(newFilter);
     setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
     applyFilters(newFilter);
@@ -159,12 +157,12 @@ const UserFilter = ({ handleFilter, managers }) => {
           </span>
           {filter.roles.size !== roles.size && filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.roles.length <= 40 ? footerText.roles : `${filter.roles.size} roles`}</span>
-            <span onClick={() => handleCloseTab({roles:new Set(), organizations: filter.organizations})}
+            <span onClick={() => handleCloseTab({roles:new Set(), organizations: filter.organizations, type: filter.type})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
           {filter.organizations.size !== organizations.size &&filter.organizations.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.organizations}</span>
-            <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set()})}
+            <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set(), type: filter.type})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
           <span ref={wrapperRefFilterBox} className={'filter-box ' + (isFilterBoxOpened ? ' opened' : ' closed')}>
