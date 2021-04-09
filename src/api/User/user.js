@@ -446,6 +446,19 @@ const userApi = {
       return err;
     }
   },
+
+  async getUserPermissions(userId) {
+    try {
+      const result = await instance({
+        url: `/api/user/${userId}/main-permissions`,
+        method: "GET",
+      });
+
+      return result.data.data;
+    } catch (err) {
+      return err;
+    }
+  }
 };
 
 export default userApi;
