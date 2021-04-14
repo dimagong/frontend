@@ -24,6 +24,7 @@ const UserFilter = ({ handleFilter, managers }) => {
   const organizationsObjects = useSelector(selectOrganizations);
 
   const [appliedFilters, setAppliedFilters] = useState({roles: new Set(), organizations: new Set(), sort: -1});
+  const [activeFilter, setActiveFilter] = useState();
 
   const [isFilterBoxOpened, setIsFilterBoxOpened] = useState(false);
   const [currSort, setCurrSort] = useState(-1);
@@ -135,6 +136,8 @@ const UserFilter = ({ handleFilter, managers }) => {
     setFilter(newFilter);
     setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
     applyFilters(newFilter);
+    setActiveFilter(null);
+    document.getElementById('filter-set-name').value = null;
   }
 
   const footer = () => {
@@ -210,13 +213,28 @@ const UserFilter = ({ handleFilter, managers }) => {
                     </Col>
                     <Col className={'right'} id={'filter-options-right'}>
                       <span>
-                        {/*Temporary*/ curr !== 'reps' && <FilterOptions filter={filter} curr={curr} roles={roles} organizations={organizations} handleFilterOptions={handleFilterOptions}/>}
+                        {/*Temporary*/ curr !== 'reps' &&
+                        <FilterOptions
+                          filter={filter}
+                          curr={curr}
+                          roles={roles}
+                          organizations={organizations}
+                          handleFilterOptions={handleFilterOptions}
+                        />}
                       </span>
                     </Col>
                   </Row>
                 </ListGroupItem>
                 <ListGroupItem>
-                  <SavedFilters userFilters={userFilters} filter={filter} setFilter={setFilter} initialFilter={initialFilter} changeFooter={changeFooterText}/>
+                  <SavedFilters
+                    userFilters={userFilters}
+                    filter={filter}
+                    setFilter={setFilter}
+                    initialFilter={initialFilter}
+                    changeFooter={changeFooterText}
+                    activeFilter={activeFilter}
+                    setActiveFilter={setActiveFilter}
+                  />
                 </ListGroupItem>
                 <ListGroupItem>
                   {footer()}

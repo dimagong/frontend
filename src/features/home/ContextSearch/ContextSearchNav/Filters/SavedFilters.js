@@ -5,12 +5,12 @@ import SaveIcon from "@material-ui/icons/Save";
 import {useDispatch, useSelector} from "react-redux";
 import {selectProfile} from "app/selectors";
 import appSlice from "app/slices/appSlice";
+import {toast} from "react-toastify";
 const {postFilterRequest, deleteFilterRequest, patchFilterRequest} = appSlice.actions;
 
-const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter }) => {
+const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter }) => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [savedFilters, setSavedFilters] = useState([]);
-  const [activeFilter, setActiveFilter] = useState();
   const profile = useSelector(selectProfile);
   const dispatch = useDispatch();
   if (!isInitialized && userFilters.length > 0 && userFilters.length !== savedFilters.length) {
@@ -30,12 +30,23 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
         dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
         newFilter: filter}));
       }
+      toast.success(`The filter set '${filter_name}' was updated`);
     } else {
       if (!filter_name) {
         filter_name = 'saved filter';
       }
       try {
-        dispatch(postFilterRequest({filter_name: filter_name, data: filter}));
+        let isUnique = !!filter;
+        userFilters.forEach(item => {
+          if (filter.roles.size === item.data.roles.size && [...filter.roles].every(value => item.data.roles.has(value)) &&
+            filter.organizations.size === item.data.organizations.size && [...filter.organizations].every(value => item.data.rolesorganizations.has(value))) {
+            isUnique = false;
+          }
+        })
+        if (isUnique) {
+          dispatch(postFilterRequest({filter_name: filter_name, data: filter}));
+          toast.success(`The filter set '${filter_name}' was added`);
+        }
       } catch (err) { console.log(err) }
       setIsInitialized(false);
     }
@@ -55,6 +66,14 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   }
 
   const handleDelete = (del) => {
+    if (!window.confirm(`Are you sure you want to delete filter set: ${del.filter_name}?`)) {
+      return;
+    }
+    if (activeFilter && del.id === activeFilter.id) {
+      setActiveFilter(null);
+      document.getElementById('filter-set-name').value = null;
+      initialFilter();
+    }
     try {
       dispatch(deleteFilterRequest(del.id))
     } catch (err) { console.log(err) }
