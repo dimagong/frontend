@@ -13,6 +13,18 @@ const {
   getProfileRequest,
   getProfileError,
   getUsersSuccess,
+  getFilterRequest,
+  getFilterSuccess,
+  getFilterError,
+  postFilterRequest,
+  postFilterSuccess,
+  postFilterError,
+  deleteFilterRequest,
+  deleteFilterSuccess,
+  deleteFilterError,
+  patchFilterRequest,
+  patchFilterSuccess,
+  patchFilterError,
   getUsersRequest,
   getUsersError,
   createUserSuccess,
@@ -54,6 +66,10 @@ const {
   getOnboardingsByUserRequest,
   getOnboardingsByUserSuccess,
   getOnboardingsByUserError,
+
+  getUserPermissionsRequest,
+  getUserPermissionsSuccess,
+  getUserPermissionsError,
 } = appSlice.actions;
 
 function* getProfile() {
@@ -62,7 +78,8 @@ function* getProfile() {
 
     yield put(getProfileSuccess(response));
     yield put(loginWithJWT(response));
-    yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}))
+    yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}));
+    yield put(getFilterRequest());
 
   } catch (error) {
     console.log(error);
@@ -73,6 +90,38 @@ function* getProfile() {
 function* getUsers() {
   const response = yield call(userApi.getUsers);
   yield put(getUsersSuccess(response));
+}
+
+function* getFilter() {
+  const response = yield call(userApi.getFilter);
+  yield put(getFilterSuccess(response));
+}
+
+function* postFilter({payload}) {
+  try {
+    const response = yield call(userApi.postFilter, payload);
+    yield put(postFilterSuccess({response}))
+  } catch (error) {
+    yield put(postFilterError(error));
+  }
+}
+
+function* deleteFilter({payload}) {
+  try {
+    const response = yield call(userApi.deleteFilter, payload);
+    yield put(deleteFilterSuccess(payload))
+  } catch (error) {
+    yield put(deleteFilterError(error));
+  }
+}
+
+function* patchFilter({payload}) {
+  try {
+    const response = yield call(userApi.patchFilter, payload);
+    yield put(patchFilterSuccess({payload}))
+  } catch (error) {
+    yield put(patchFilterError(error));
+  }
 }
 
 function* getUserById({payload}) {
@@ -150,7 +199,8 @@ function* addUserOrganization({payload}) {
   if (response?.message) {
     yield put(addUserOrganizationError(response.message))
   } else {
-    yield put(addUserOrganizationSuccess({response, userId: payload.id}))
+    yield put(addUserOrganizationSuccess({response, userId: payload.id}));
+    yield put(getUserPermissionsRequest(payload.id))
   }
 }
 
@@ -160,7 +210,8 @@ function* removeUserOrganization({payload}) {
   if (response?.message) {
     yield put(removeUserOrganizationError(response.message))
   } else {
-    yield put(removeUserOrganizationSuccess({response: payload, userId: payload.userId}))
+    yield put(removeUserOrganizationSuccess({response: payload, userId: payload.userId}));
+    yield put(getUserPermissionsRequest(payload.userId));
   }
 }
 
@@ -170,7 +221,8 @@ function* allowUserAbility({payload}) {
   if (response?.message) {
     yield put(allowUserAbilityError(response.message))
   } else {
-    yield put(allowUserAbilitySuccess({response, data: payload}))
+    yield put(allowUserAbilitySuccess({response, data: payload}));
+    yield put(getUserPermissionsRequest(payload.user_id))
   }
 }
 
@@ -219,11 +271,26 @@ function* handleSetManager({payload}) {
   yield put(getOnboardingsByUserRequest(payload))
 }
 
+function* getUserPermissions({payload}) {
+
+  try {
+    const result = yield call(userApi.getUserPermissions, payload);
+
+    yield put(getUserPermissionsSuccess({payload, result}))
+  } catch (error) {
+    yield put(getUserPermissionsError(error))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getOnboardingsByUserRequest.type, getOnboardingsByUser),
     yield takeLatest(getProfileRequest.type, getProfile),
     yield takeLatest(getUsersRequest.type, getUsers),
+    yield takeLatest(getFilterRequest.type, getFilter),
+    yield takeLatest(postFilterRequest.type, postFilter),
+    yield takeLatest(deleteFilterRequest.type, deleteFilter),
+    yield takeLatest(patchFilterRequest.type, patchFilter),
     yield takeLatest(getUserByIdRequest.type, getUserById),
     yield takeLatest(updateUserRequest.type, updateUser),
     yield takeLatest(createUserRequest.type, createUser),
@@ -236,5 +303,6 @@ export default function* () {
     yield takeLatest(removeUserNotifyRequest.type, removeUserNotify),
     yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
     yield takeLatest(setManager.type, handleSetManager),
+    yield takeLatest(getUserPermissionsRequest.type, getUserPermissions),
   ]);
 }

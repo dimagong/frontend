@@ -35,3 +35,5 @@ export const selectUserChildOrganizations = userId => state => {
 export const selectUserAbility = state => state?.app?.user?.profile?.permissions?.ability
 
 export const selectUserOnboarding = state => state?.app?.user?.profile?.onboarding;
+
+export const selectFilters = state => state?.app?.user?.filters;
