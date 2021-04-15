@@ -136,15 +136,17 @@ class Autocomplete extends React.Component {
     }
 
     // User Pressed ENTER
-    else if (e.keyCode === 13 && showSuggestions) {
+    else if (e.keyCode === 13) {
       // this.onSuggestionItemClick(this.filteredData[activeSuggestion].link, e)
-      if (this.filteredData[activeSuggestion]) {
+      /*if (this.filteredData[activeSuggestion]) {
         this.props.onEnter(this.filteredData[activeSuggestion])
-      }
+      }*/
+      this.props.onEnter(this.state.userInput);
 
       this.setState({
-        userInput: this.filteredData[activeSuggestion][filterKey],
-        showSuggestions: false
+        //userInput: this.filteredData[activeSuggestion][filterKey],
+        showSuggestions: false,
+        focused: false
       })
     } else {
       return

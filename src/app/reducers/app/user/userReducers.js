@@ -231,6 +231,13 @@ const setManager = (state, { payload }) => {
   state.isError = null;
   state.user.manager = payload;
 };
+
+const setSearch = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.searchText = payload;
+};
+
 const setUserGroups = (state, {payload}) => {
   state.user.groups = payload;
 };
@@ -365,6 +372,7 @@ export default {
   deleteFilterSuccess,
   patchFilterSuccess,
   getUserPermissionsSuccess,
+  setSearch,
 
   setUser,
   setManager,
