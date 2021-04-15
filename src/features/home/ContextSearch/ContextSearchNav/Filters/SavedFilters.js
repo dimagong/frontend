@@ -21,17 +21,9 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   }
   const handleSave = () => {
     if (activeFilter && activeFilter.filter_name === filterName) {
-      try{
-        dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
+      dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
                                      newFilter: filter}));
-        setActiveFilter(filter);
-      } catch (err) {
-        //TODO temporary fix
-        dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
-        newFilter: filter}));
-        setActiveFilter(filter);
-      }
-      toast.success(`The filter set '${filterName}' was updated`);
+      setActiveFilter(filter);
     } else {
       postFilter(filterName ? filterName : 'filter set');
     }

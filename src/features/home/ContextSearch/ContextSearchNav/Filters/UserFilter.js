@@ -43,7 +43,7 @@ const UserFilter = ({ handleFilter, managers }) => {
     let newFilter = filter;
     newFilter = {roles: new Set(Array.from(newFilter.roles)),
                  organizations: new Set (Array.from(newFilter.organizations)),
-                  type: filter.type
+                  type: {roles: filter.type.roles, organizations: filter.type.organizations}
     };
     if (type === 'add') {
       if (newFilter.type[curr] === 'check') {

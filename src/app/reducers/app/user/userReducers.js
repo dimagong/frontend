@@ -50,6 +50,7 @@ const patchFilterSuccess = (state, { payload }) => {
   state.isError = null;
   let index = state.user.filters.findIndex(item => item.id === payload.payload.id);
   state.user.filters[index].data = payload.payload.newFilter;
+  toast.success(`The filter set '${payload.payload.filter_name}' was updated`);
 };
 
 const getOnboardingsByUserSuccess = (state, { payload }) => {
