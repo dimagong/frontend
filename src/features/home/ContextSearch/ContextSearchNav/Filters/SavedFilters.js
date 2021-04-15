@@ -1,111 +1,115 @@
-import React, {useState} from 'react'
+import React from 'react'
 import CloseIcon from '@material-ui/icons/Close';
-import {Dropdown, SplitButton} from "react-bootstrap";
 import SaveIcon from "@material-ui/icons/Save";
-import {useDispatch, useSelector} from "react-redux";
-import {selectProfile} from "app/selectors";
+import {useDispatch} from "react-redux";
 import appSlice from "app/slices/appSlice";
 import {toast} from "react-toastify";
+import CreatableSelect from "react-select/creatable";
 const {postFilterRequest, deleteFilterRequest, patchFilterRequest} = appSlice.actions;
 
-const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter }) => {
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [savedFilters, setSavedFilters] = useState([]);
-  const profile = useSelector(selectProfile);
+const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter, filterName, setFilterName }) => {
   const dispatch = useDispatch();
-  if (!isInitialized && userFilters.length > 0 && userFilters.length !== savedFilters.length) {
-    let filters = userFilters.filter(item => item.user_id === profile.id);
-    setSavedFilters(filters);
-    setIsInitialized(true);
+  if (activeFilter && !activeFilter.hasOwnProperty('id')) {
+    userFilters.forEach(item => {
+      if (activeFilter.roles.size === item.data.roles.size && [...activeFilter.roles].every(value => item.data.roles.has(value)) &&
+        activeFilter.organizations.size === item.data.organizations.size && [...activeFilter.organizations].every(value => item.data.organizations.has(value))) {
+        setActiveFilter(item);
+      }
+    })
   }
-
   const handleSave = () => {
-    let filter_name = document.getElementById('filter-set-name').value;
-    if (activeFilter && activeFilter.filter_name === filter_name) {
+    if (activeFilter && activeFilter.filter_name === filterName) {
       try{
         dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
                                      newFilter: filter}));
+        setActiveFilter(filter);
       } catch (err) {
         //TODO temporary fix
         dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
         newFilter: filter}));
+        setActiveFilter(filter);
       }
-      toast.success(`The filter set '${filter_name}' was updated`);
+      toast.success(`The filter set '${filterName}' was updated`);
     } else {
-      if (!filter_name) {
-        filter_name = 'saved filter';
+      postFilter(filterName ? filterName : 'filter set');
+    }
+  }
+
+  const postFilter = (newFilterName) => {
+    try {
+      let isUnique = !!filter;
+      userFilters.forEach(item => {
+        if (filter.roles.size === item.data.roles.size && [...filter.roles].every(value => item.data.roles.has(value)) &&
+          filter.organizations.size === item.data.organizations.size && [...filter.organizations].every(value => item.data.organizations.has(value))) {
+          isUnique = false;
+        }
+      })
+      if (isUnique) {
+        dispatch(postFilterRequest({filter_name: newFilterName, data: filter}));
+        toast.success(`The filter set '${newFilterName}' was added`);
+        setActiveFilter(filter);
+      }
+    } catch (err) { console.log(err) }
+  }
+
+  const handleDelete = () => {
+    if (activeFilter) {
+      if (!window.confirm(`Are you sure you want to delete filter set: ${activeFilter.filter_name}?`)) {
+        return;
       }
       try {
-        let isUnique = !!filter;
-        userFilters.forEach(item => {
-          if (filter.roles.size === item.data.roles.size && [...filter.roles].every(value => item.data.roles.has(value)) &&
-            filter.organizations.size === item.data.organizations.size && [...filter.organizations].every(value => item.data.rolesorganizations.has(value))) {
-            isUnique = false;
-          }
-        })
-        if (isUnique) {
-          dispatch(postFilterRequest({filter_name: filter_name, data: filter}));
-          toast.success(`The filter set '${filter_name}' was added`);
-        }
-      } catch (err) { console.log(err) }
-      setIsInitialized(false);
+        dispatch(deleteFilterRequest(activeFilter.id))
+      } catch (err) {
+        console.log(err)
+      }
+      handleChange(null, {action: 'clear'});
     }
   }
 
-  const handleDisable = () => {
-    document.getElementById('filter-set-name').value = null;
-    setActiveFilter(null);
-    initialFilter();
-  }
-
-  const makeActive = (newFilter) => {
-    document.getElementById('filter-set-name').value = newFilter.filter_name;
-    setActiveFilter(newFilter);
-    setFilter(newFilter.data);
-    changeFooter(newFilter.data);
-  }
-
-  const handleDelete = (del) => {
-    if (!window.confirm(`Are you sure you want to delete filter set: ${del.filter_name}?`)) {
-      return;
+  const handleChange = (newValue, actionMeta) => {
+    if (actionMeta.action === 'select-option') {
+      if (newValue) {
+        setActiveFilter(newValue.value);
+        setFilter(newValue.value.data);
+        changeFooter(newValue.value.data);
+        setFilterName(newValue.value.filter_name);
+      } else {
+        setActiveFilter(null);
+        initialFilter();
+      }
     }
-    if (activeFilter && del.id === activeFilter.id) {
+
+    if (actionMeta.action === 'create-option') {
+      setFilterName(newValue.label);
+      postFilter(newValue.label);
+    }
+
+    if (actionMeta.action === 'clear') {
       setActiveFilter(null);
-      document.getElementById('filter-set-name').value = null;
+      setFilterName('');
       initialFilter();
     }
-    try {
-      dispatch(deleteFilterRequest(del.id))
-    } catch (err) { console.log(err) }
-    if (savedFilters.length === 1) {
-      setSavedFilters([]);
-    } else {
-      setIsInitialized(false);
-    }
-  }
+  };
 
+  let options = [];
+  userFilters.forEach(item => options.push({value: item, label: item.filter_name}));
   return <span className={'saved-filters'}>
-    <SplitButton drop='down' id={`dropdown-button-drop-down`}
-                 title={<input id={'filter-set-name'} type={'text'} placeholder={'Name of the filter set'}/>}>
-      {savedFilters.length > 0 ?
-        savedFilters.map(item => <Dropdown.Item>
-          <span className={'filter-name'} onClick={() => makeActive(item)}>
-            {item.filter_name}
-          </span>
-          <span className={'right-col'}>
-            <span className={'delete-filter'} onClick={() => handleDelete(item)}>
-              <CloseIcon/>
-            </span>
-          </span>
-        </Dropdown.Item>) :
-        <Dropdown.Item>You do not have any saved filter sets</Dropdown.Item>
-      }
-    </SplitButton>
+    <CreatableSelect
+      isClearable
+      onChange={handleChange}
+      options={options}
+      value={filterName !== '' ? {label: filterName} : null}
+    />
     <span onClick={handleSave} className={'filter-save'}>
       <SaveIcon/>
     </span>
-    <span onClick={handleDisable} className={'filter-remove-save'}>
+    <span onClick={handleDelete} className={'filter-remove-save'}>
       <CloseIcon/>
+    </span>
+    <span className={'unsaved'}>
+      {activeFilter && activeFilter.data && !(activeFilter.data.roles.size === filter.roles.size && [...activeFilter.data.roles].every(value => filter.roles.has(value)) &&
+      activeFilter.data.organizations.size === filter.organizations.size && [...activeFilter.data.organizations].every(value => filter.organizations.has(value)))
+      && 'Unsaved'}
     </span>
   </span>
 }
