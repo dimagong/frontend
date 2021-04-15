@@ -36,8 +36,8 @@ const UserFilter = ({ handleFilter, managers }) => {
   const [filter, setFilter] = useState({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});
   const [footerText, setFooterText] = useState({roles: '', organizations: ''});
 
-  const wrapperRefFilterBox = useRef(null), wrapperRefFilterButton = useRef(null)
-  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => setIsFilterBoxOpened(false));
+  const wrapperRefFilterBox = useRef(null), wrapperRefFilterButton = useRef(null), wrapperModal = useRef(null);
+  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton, wrapperModal], () => setIsFilterBoxOpened(false));
 
   const handleFilterOptions = (type, option) => {
     let newFilter = filter;
@@ -237,6 +237,7 @@ const UserFilter = ({ handleFilter, managers }) => {
                     setActiveFilter={setActiveFilter}
                     filterName={filterName}
                     setFilterName={setFilterName}
+                    wrapperModal={wrapperModal}
                   />
                 </ListGroupItem>
                 <ListGroupItem>

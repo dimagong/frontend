@@ -42,6 +42,7 @@ const postFilterSuccess = (state, { payload }) => {
   let filters = state.user.filters;
   filters.push(newFilter);
   state.user.filters = filters;
+  toast.success(`The filter set '${payload.response.data.filter_name}' was added`);
 };
 
 const patchFilterSuccess = (state, { payload }) => {
@@ -233,8 +234,6 @@ const setManager = (state, { payload }) => {
 };
 
 const setSearch = (state, { payload }) => {
-  state.isLoading = false;
-  state.isError = null;
   state.user.searchText = payload;
 };
 

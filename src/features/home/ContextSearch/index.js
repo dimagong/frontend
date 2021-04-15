@@ -59,7 +59,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     setCurrSearch(searchText);
     setSearchedManagers(managersWithName);
   } else
-  if (searchText && searchText.length > 0 && searchedManagers.length > 0 && currSearch !== searchText) {
+  if (searchText && searchText.length > 0 && currSearch !== searchText) {
     newManagers = managersWithName.filter(i => {
       let startCondition = i['name']
           .toLowerCase()
@@ -70,10 +70,8 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
       return startCondition || includeCondition;
     })
-    if (newManagers !== searchedManagers) {
-      setCurrSearch(searchText);
-      setSearchedManagers(newManagers);
-    }
+    setCurrSearch(searchText);
+    setSearchedManagers(newManagers);
   }
 
   const isAuth = useSelector(selectAuth);

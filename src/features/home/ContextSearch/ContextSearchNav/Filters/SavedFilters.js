@@ -1,14 +1,16 @@
-import React from 'react'
+import React, {useState} from 'react'
 import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from "@material-ui/icons/Save";
 import {useDispatch} from "react-redux";
 import appSlice from "app/slices/appSlice";
 import {toast} from "react-toastify";
 import CreatableSelect from "react-select/creatable";
+import {Button, Modal, ModalBody} from "reactstrap";
 const {postFilterRequest, deleteFilterRequest, patchFilterRequest} = appSlice.actions;
 
-const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter, filterName, setFilterName }) => {
+const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter, filterName, setFilterName, wrapperModal }) => {
   const dispatch = useDispatch();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   if (activeFilter && !activeFilter.hasOwnProperty('id')) {
     userFilters.forEach(item => {
       if (activeFilter.roles.size === item.data.roles.size && [...activeFilter.roles].every(value => item.data.roles.has(value)) &&
@@ -36,7 +38,6 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   }
 
   const postFilter = (newFilterName) => {
-    try {
       let isUnique = !!filter;
       userFilters.forEach(item => {
         if (filter.roles.size === item.data.roles.size && [...filter.roles].every(value => item.data.roles.has(value)) &&
@@ -46,25 +47,22 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       })
       if (isUnique) {
         dispatch(postFilterRequest({filter_name: newFilterName, data: filter}));
-        toast.success(`The filter set '${newFilterName}' was added`);
         setActiveFilter(filter);
         setFilterName(newFilterName);
       }
-    } catch (err) { console.log(err) }
   }
 
   const handleDelete = () => {
     if (activeFilter) {
-      if (!window.confirm(`Are you sure you want to delete filter set: ${activeFilter.filter_name}?`)) {
-        return;
-      }
-      try {
-        dispatch(deleteFilterRequest(activeFilter.id))
-      } catch (err) {
-        console.log(err)
-      }
-      handleChange(null, {action: 'clear'});
+      setIsDeleteModalOpen(true);
     }
+  }
+
+  const handleFilterDelete = () => {
+    toast.success(`The filter set '${activeFilter.filter_name}' was deleted`);
+    dispatch(deleteFilterRequest(activeFilter.id))
+    handleChange(null, {action: 'clear'});
+    setIsDeleteModalOpen(false);
   }
 
   const handleChange = (newValue, actionMeta) => {
@@ -94,12 +92,19 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
 
   let options = [];
   userFilters.forEach(item => options.push({value: item, label: item.filter_name}));
+
+  const selectStyles = {
+    container: styles => ({ ...styles, width: '320px', display: 'inline-block' }),
+    menuList: styles => ({ ...styles, maxHeight: '165px' }),
+  };
+
   return <span className={'saved-filters'}>
     <CreatableSelect
       isClearable
       onChange={handleChange}
       options={options}
       value={filterName !== '' ? {label: filterName} : null}
+      styles={selectStyles}
     />
     <span onClick={handleSave} className={'filter-save'}>
       <SaveIcon/>
@@ -112,6 +117,24 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       activeFilter.data.organizations.size === filter.organizations.size && [...activeFilter.data.organizations].every(value => filter.organizations.has(value)))
       && 'Unsaved'}
     </span>
+
+    <Modal innerRef={wrapperModal} className={"organization-remove-modal"} isOpen={isDeleteModalOpen} fade={false} toggle={()=>{setIsDeleteModalOpen(false)}}>
+        <ModalBody>
+          <div>
+            <span style={{fontSize: "22px"}}>
+            Are you sure you want to delete filter set: {activeFilter && activeFilter.filter_name}?
+          </span>
+          </div>
+          <div className={"organization-remove-modal_action-buttons"}>
+            <Button className={"remove-button"} onClick={() => {handleFilterDelete()}}>
+              Remove
+            </Button>
+            <Button className={"cancel-button"} onClick={() => {setIsDeleteModalOpen(false)}}>
+              Cancel
+            </Button>
+          </div>
+        </ModalBody>
+      </Modal>
   </span>
 }
 
