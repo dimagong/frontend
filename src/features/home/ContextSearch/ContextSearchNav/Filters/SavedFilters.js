@@ -48,6 +48,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
         dispatch(postFilterRequest({filter_name: newFilterName, data: filter}));
         toast.success(`The filter set '${newFilterName}' was added`);
         setActiveFilter(filter);
+        setFilterName(newFilterName);
       }
     } catch (err) { console.log(err) }
   }
