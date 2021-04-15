@@ -108,7 +108,7 @@ function* postFilter({payload}) {
 
 function* deleteFilter({payload}) {
   try {
-    const response = yield call(userApi.deleteFilter, payload);
+    const response = yield call(userApi.deleteFilter, payload.id);
     yield put(deleteFilterSuccess(payload))
   } catch (error) {
     yield put(deleteFilterError(error));

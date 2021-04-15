@@ -59,8 +59,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   }
 
   const handleFilterDelete = () => {
-    toast.success(`The filter set '${activeFilter.filter_name}' was deleted`);
-    dispatch(deleteFilterRequest(activeFilter.id))
+    dispatch(deleteFilterRequest(activeFilter))
     handleChange(null, {action: 'clear'});
     setIsDeleteModalOpen(false);
   }
@@ -105,6 +104,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       options={options}
       value={filterName !== '' ? {label: filterName} : null}
       styles={selectStyles}
+      placeholder={'Name of filter set'}
     />
     <span onClick={handleSave} className={'filter-save'}>
       <SaveIcon/>

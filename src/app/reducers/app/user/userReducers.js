@@ -118,8 +118,9 @@ const deleteFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   let filters = state.user.filters;
-  filters = filters.filter(item => item.id !== payload);
+  filters = filters.filter(item => item.id !== payload.id);
   state.user.filters = filters;
+  toast.success(`The filter set '${payload.filter_name}' was deleted`);
 }
 
 const getUserAvatarSuccess = (state, { payload }) => {
