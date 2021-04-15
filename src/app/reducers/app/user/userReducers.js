@@ -42,6 +42,7 @@ const postFilterSuccess = (state, { payload }) => {
   let filters = state.user.filters;
   filters.push(newFilter);
   state.user.filters = filters;
+  toast.success(`The filter set '${payload.response.data.filter_name}' was added`);
 };
 
 const patchFilterSuccess = (state, { payload }) => {
@@ -49,6 +50,7 @@ const patchFilterSuccess = (state, { payload }) => {
   state.isError = null;
   let index = state.user.filters.findIndex(item => item.id === payload.payload.id);
   state.user.filters[index].data = payload.payload.newFilter;
+  toast.success(`The filter set '${payload.payload.filter_name}' was updated`);
 };
 
 const getOnboardingsByUserSuccess = (state, { payload }) => {
@@ -117,8 +119,9 @@ const deleteFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   let filters = state.user.filters;
-  filters = filters.filter(item => item.id !== payload);
+  filters = filters.filter(item => item.id !== payload.id);
   state.user.filters = filters;
+  toast.success(`The filter set '${payload.filter_name}' was deleted`);
 }
 
 const getUserAvatarSuccess = (state, { payload }) => {
@@ -231,6 +234,11 @@ const setManager = (state, { payload }) => {
   state.isError = null;
   state.user.manager = payload;
 };
+
+const setSearch = (state, { payload }) => {
+  state.user.searchText = payload;
+};
+
 const setUserGroups = (state, {payload}) => {
   state.user.groups = payload;
 };
@@ -365,6 +373,7 @@ export default {
   deleteFilterSuccess,
   patchFilterSuccess,
   getUserPermissionsSuccess,
+  setSearch,
 
   setUser,
   setManager,

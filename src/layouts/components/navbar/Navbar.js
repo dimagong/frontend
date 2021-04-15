@@ -126,7 +126,7 @@ const ThemeNavbar = props => {
 
               {!userService.isOnboarding(userProfile) && (
                 <div className="search-input_container">
-                  <SearchInput suggestions={managers.map(({ first_name, ...rest }) => ({ name: first_name, ...rest }))}/>
+                  <SearchInput suggestions={managers.map(({ first_name, last_name, ...rest }) => ({ name: first_name + ' ' + last_name, ...rest }))}/>
                   {props.isContextSearchVisible ? (
                     <ChevronUp
                       className="autocomplete-expand-icon"

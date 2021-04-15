@@ -29,20 +29,21 @@ const UserFilter = ({ handleFilter, managers }) => {
   const [isFilterBoxOpened, setIsFilterBoxOpened] = useState(false);
   const [currSort, setCurrSort] = useState(-1);
   const [filtered, setFiltered] = useState(false);
+  const [filterName, setFilterName] = useState('');
   let roles = new Set(['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Network manager', 'Adviser', 'Lead']), organizations = new Set(), reps = new Set();
   organizationsObjects.forEach(item => {organizations.add(item.name.replace('_', ' '))})
   const [curr, setCurr] = useState('roles');
   const [filter, setFilter] = useState({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});
   const [footerText, setFooterText] = useState({roles: '', organizations: ''});
 
-  const wrapperRefFilterBox = useRef(null), wrapperRefFilterButton = useRef(null)
-  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => setIsFilterBoxOpened(false));
+  const wrapperRefFilterBox = useRef(null), wrapperRefFilterButton = useRef(null), wrapperModal = useRef(null);
+  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton, wrapperModal], () => setIsFilterBoxOpened(false));
 
   const handleFilterOptions = (type, option) => {
     let newFilter = filter;
     newFilter = {roles: new Set(Array.from(newFilter.roles)),
                  organizations: new Set (Array.from(newFilter.organizations)),
-                  type: filter.type
+                  type: {roles: filter.type.roles, organizations: filter.type.organizations}
     };
     if (type === 'add') {
       if (newFilter.type[curr] === 'check') {
@@ -137,7 +138,7 @@ const UserFilter = ({ handleFilter, managers }) => {
     setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
     applyFilters(newFilter);
     setActiveFilter(null);
-    document.getElementById('filter-set-name').value = null;
+    setFilterName('');
   }
 
   const footer = () => {
@@ -182,12 +183,12 @@ const UserFilter = ({ handleFilter, managers }) => {
           </span>
           {filter.roles.size !== roles.size && filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.roles.length <= 40 ? footerText.roles : `${filter.roles.size} roles`}</span>
-            <span onClick={() => handleCloseTab({roles:new Set(), organizations: filter.organizations, type: filter.type})}
+            <span onClick={() => handleCloseTab({roles:new Set(), organizations: filter.organizations, type: {roles: 'initial', organizations: filter.type.organizations}})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
           {filter.organizations.size !== organizations.size &&filter.organizations.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.organizations}</span>
-            <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set(), type: filter.type})}
+            <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set(), type: {roles: filter.type.roles, organizations: 'initial'}})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
           <span ref={wrapperRefFilterBox} className={'filter-box ' + (isFilterBoxOpened ? ' opened' : ' closed')}>
@@ -206,10 +207,10 @@ const UserFilter = ({ handleFilter, managers }) => {
                         <span className={'filter-name'}>Organizations ({organizations.size})</span>
                         {curr === 'organizations' && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
                       </Button>
-                      <Button onClick={() => {setCurr('reps')}} variant="secondary" className={curr === 'reps' ? 'active' : 'not-active'}>
+                      {/*<Button onClick={() => {setCurr('reps')}} variant="secondary" className={curr === 'reps' ? 'active' : 'not-active'}>
                         <span className={'filter-name'}>Authorized Reps ({reps.size})</span>
                         {curr === 'reps' && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
-                      </Button>
+                      </Button>*/}
                     </Col>
                     <Col className={'right'} id={'filter-options-right'}>
                       <span>
@@ -234,6 +235,9 @@ const UserFilter = ({ handleFilter, managers }) => {
                     changeFooter={changeFooterText}
                     activeFilter={activeFilter}
                     setActiveFilter={setActiveFilter}
+                    filterName={filterName}
+                    setFilterName={setFilterName}
+                    wrapperModal={wrapperModal}
                   />
                 </ListGroupItem>
                 <ListGroupItem>
