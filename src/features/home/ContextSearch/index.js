@@ -54,12 +54,23 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   if (managers.length > 0 && searchText.length === 0 && searchedManagers.length === 0) {
     setSearchedManagers(managersWithName);
   }
+  let isNotUpdated = false;
+  if (searchedManagers.length > 0 && managers.length > 0) {
+    for (let manager of managers) {
+      let searchedManager = searchedManagers.find(item => item.id === manager.id);
+      if (searchedManager && manager.url && searchedManager.url !== manager.url) {
+        isNotUpdated = true;
+        break;
+      }
+    }
+  }
+
   let newManagers = [];
   if (currSearch !== searchText && searchText.length === 0) {
     setCurrSearch(searchText);
     setSearchedManagers(managersWithName);
   } else
-  if (searchText && searchText.length > 0 && currSearch !== searchText) {
+  if (isNotUpdated || (searchText && searchText.length > 0 && currSearch !== searchText)) {
     newManagers = managersWithName.filter(i => {
       let startCondition = i['name']
           .toLowerCase()
