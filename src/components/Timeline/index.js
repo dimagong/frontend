@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
   Card,
   CardBody,
@@ -10,6 +10,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import ArrowBoldUp from 'assets/img/icons/arrow-bold-up.png'
 import CheckMarkSuccess from 'assets/img/icons/checkmark3.png'
 import { Scrollbars } from 'react-custom-scrollbars'
+import InfiniteScroll from "react-infinite-scroll-component";
 
 
 const Timeline = () => {
@@ -32,7 +33,7 @@ const Timeline = () => {
     }
   }
 
-  const data = [
+  const [data, setData] = useState([
     {
       status: "success",
       message: "Updated something",
@@ -57,12 +58,28 @@ const Timeline = () => {
       icon: "upload",
       time: "4 days ago"
     }
-  ]
+  ]);
+
+  const addData = (scroll) => {
+    if (scroll.top > 0.95) {
+      console.log('added');
+      let newData = [];
+      data.forEach(item => newData.push(item));
+      newData.push({
+        status: "success",
+        message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
+        icon: "upload",
+        time: "5 days ago"
+      });
+      console.log('newData', newData);
+      setData(newData);
+    }
+  }
 
   return (
     <Card>
       <CardBody>
-        <Scrollbars autoHeight autoHeightMax={500}>
+        <Scrollbars autoHeight autoHeightMax={500} onScrollFrame={addData}>
           <div className="timeline-component">
 
             <div className="timeline-component_item">
