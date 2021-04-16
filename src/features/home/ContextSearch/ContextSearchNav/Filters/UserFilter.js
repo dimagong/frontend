@@ -25,6 +25,7 @@ const UserFilter = ({ handleFilter, managers }) => {
 
   const [appliedFilters, setAppliedFilters] = useState({roles: new Set(), organizations: new Set(), sort: -1});
   const [activeFilter, setActiveFilter] = useState();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [isFilterBoxOpened, setIsFilterBoxOpened] = useState(false);
   const [currSort, setCurrSort] = useState(-1);
@@ -36,8 +37,8 @@ const UserFilter = ({ handleFilter, managers }) => {
   const [filter, setFilter] = useState({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});
   const [footerText, setFooterText] = useState({roles: '', organizations: ''});
 
-  const wrapperRefFilterBox = useRef(null), wrapperRefFilterButton = useRef(null), wrapperModal = useRef(null);
-  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton, wrapperModal], () => setIsFilterBoxOpened(false));
+  const wrapperRefFilterBox = useRef(null), wrapperRefFilterButton = useRef(null);
+  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (!isDeleteModalOpen) setIsFilterBoxOpened(false)});
 
   const handleFilterOptions = (type, option) => {
     let newFilter = filter;
@@ -237,7 +238,8 @@ const UserFilter = ({ handleFilter, managers }) => {
                     setActiveFilter={setActiveFilter}
                     filterName={filterName}
                     setFilterName={setFilterName}
-                    wrapperModal={wrapperModal}
+                    isDeleteModalOpen={isDeleteModalOpen}
+                    setIsDeleteModalOpen={setIsDeleteModalOpen}
                   />
                 </ListGroupItem>
                 <ListGroupItem>

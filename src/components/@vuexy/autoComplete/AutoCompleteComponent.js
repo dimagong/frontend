@@ -367,7 +367,12 @@ class Autocomplete extends React.Component {
           options={{ wheelPropagation: false }}>
           <div className="d-flex justify-content-between p-1">
             <span>Suggestions</span>
-            <span>View all</span>
+            <span style={{cursor: 'pointer'}} onClick={() => {
+              this.props.onEnter(this.state.userInput);
+              this.setState({
+                showSuggestions: false,
+                focused: false
+              })}}>View all</span>
           </div>
           {this.renderSuggestions()}
           <div className="text-right px-1 pt-1">

@@ -88,6 +88,7 @@ const SearchInput = ({ suggestions }) => {
     //dispatch(setManager({first_name: suggestion.name, ...suggestion}))
     //dispatch(setContext("User"))
     dispatch(setSearch(inputText))
+    dispatch(showContextSearch())
   }
 
   return (

@@ -8,9 +8,8 @@ import CreatableSelect from "react-select/creatable";
 import {Button, Modal, ModalBody} from "reactstrap";
 const {postFilterRequest, deleteFilterRequest, patchFilterRequest} = appSlice.actions;
 
-const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter, filterName, setFilterName, wrapperModal }) => {
+const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter, filterName, setFilterName, isDeleteModalOpen, setIsDeleteModalOpen }) => {
   const dispatch = useDispatch();
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   if (activeFilter && !activeFilter.hasOwnProperty('id')) {
     userFilters.forEach(item => {
       if (activeFilter.roles.size === item.data.roles.size && [...activeFilter.roles].every(value => item.data.roles.has(value)) &&
@@ -21,8 +20,12 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   }
   const handleSave = () => {
     if (activeFilter && activeFilter.filter_name === filterName) {
-      dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
-                                     newFilter: filter}));
+      if (!(filter.roles.size === activeFilter.data.roles.size && [...filter.roles].every(value => activeFilter.data.roles.has(value)) &&
+        filter.organizations.size === activeFilter.data.organizations.size && [...filter.organizations].every(value => activeFilter.data.organizations.has(value)))) {
+          dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
+            newFilter: filter}));
+      }
+
       setActiveFilter(filter);
     } else {
       postFilter(filterName ? filterName : 'filter set');
@@ -97,7 +100,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       isClearable
       onChange={handleChange}
       options={options}
-      value={filterName !== '' ? {label: filterName} : null}
+      value={activeFilter ? undefined : filterName !== '' ? {label: filterName} : null}
       styles={selectStyles}
       placeholder={'Name of filter set'}
     />
@@ -113,7 +116,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       && 'Unsaved'}
     </span>
 
-    <Modal innerRef={wrapperModal} className={"organization-remove-modal"} isOpen={isDeleteModalOpen} fade={false} toggle={()=>{setIsDeleteModalOpen(false)}}>
+    <Modal className={"organization-remove-modal"} isOpen={isDeleteModalOpen} fade={false} toggle={()=>{setIsDeleteModalOpen(false)}}>
         <ModalBody>
           <div>
             <span style={{fontSize: "22px"}}>
