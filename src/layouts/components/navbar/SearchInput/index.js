@@ -101,6 +101,7 @@ const SearchInput = ({ suggestions }) => {
       suggestionLimit={4}
       defaultSuggestions={false}
       customRender={SearchInputSuggestionsLayout}
+      showClear={true}
     />
   )
 }
