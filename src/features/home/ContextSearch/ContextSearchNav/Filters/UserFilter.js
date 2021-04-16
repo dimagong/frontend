@@ -124,8 +124,8 @@ const UserFilter = ({ handleFilter, managers }) => {
   }
 
   const initialFilter = () => {
-    setFilter({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});
-    setFooterText({roles: setToString(roles), organizations: setToString(organizations)});
+    setFilter({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}});
+    setFooterText({roles: setToString(new Set()), organizations: setToString(new Set())});
   }
 
   const changeFooterText = (filter) => {

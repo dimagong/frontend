@@ -41,6 +41,9 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
         dispatch(postFilterRequest({filter_name: newFilterName, data: filter}));
         setActiveFilter(filter);
         setFilterName(newFilterName);
+      } else {
+        toast.success(`You already have this filter set`);
+        setFilterName('');
       }
   }
 
