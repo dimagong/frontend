@@ -33,6 +33,7 @@ import './styles.scss'
 import { createLoadingSelector } from 'app/selectors/loadingSelector'
 
 import appSlice from 'app/slices/appSlice'
+import {selectSearchText} from "../../../app/selectors/userSelectors";
 
 const {
   getUserManagment,
@@ -46,6 +47,33 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const dispatch = useDispatch();
   const managers = useSelector(selectManagers);
 
+  const searchText = useSelector(selectSearchText);
+  const [searchedManagers, setSearchedManagers] = useState([]);
+  const [currSearch, setCurrSearch] = useState('');
+  let managersWithName = managers.map(({ first_name, last_name, ...rest }) => ({ name: first_name + ' ' + last_name, first_name, last_name, ...rest }));
+  if (managers.length > 0 && searchText.length === 0 && searchedManagers.length === 0) {
+    setSearchedManagers(managersWithName);
+  }
+  let newManagers = [];
+  if (currSearch !== searchText && searchText.length === 0) {
+    setCurrSearch(searchText);
+    setSearchedManagers(managersWithName);
+  } else
+  if (searchText && searchText.length > 0 && currSearch !== searchText) {
+    newManagers = managersWithName.filter(i => {
+      let startCondition = i['name']
+          .toLowerCase()
+          .startsWith(searchText.toLowerCase()),
+        includeCondition = i['name']
+          .toLowerCase()
+          .includes(searchText.toLowerCase())
+
+      return startCondition || includeCondition;
+    })
+    setCurrSearch(searchText);
+    setSearchedManagers(newManagers);
+  }
+
   const isAuth = useSelector(selectAuth);
   const vuexyUser = useSelector(selectVuexyUser);
   const context = useSelector(selectContext);
@@ -55,7 +83,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   console.log("test loadinig", test);
 
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0]);
-  const [showManagers, setShowManagers] = useState(managers);
+  const [showManagers, setShowManagers] = useState(searchedManagers);
 
 
   const handleContextChange = (context) => {
@@ -122,7 +150,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                         navOptions={nav}
                         onContextChange={handleContextChange}
                         handleFilter={handleFilter}
-                        managers={managers}
+                        managers={searchedManagers}
                       />
 
                       <Row className={"contextual-search_wrapper"}>

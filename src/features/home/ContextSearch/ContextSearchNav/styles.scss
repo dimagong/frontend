@@ -16,7 +16,7 @@
   z-index: 10;
   .right {
     overflow-x: hidden;
-    max-height: 200px;
+    height: 200px;
   }
   .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active, .show > .btn-secondary.dropdown-toggle {
     color: #fff!important;
@@ -214,4 +214,16 @@
 }
 .filter-icon {
   cursor: pointer;
+}
+
+.dropdown {
+  border-bottom: 1px inset;
+  .btn:hover {
+    box-shadow: 0 0 0;
+  }
+}
+
+.unsaved {
+  margin-left: 24px;
+  font-size: small;
 }
