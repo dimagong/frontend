@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   Card,
   CardBody,
@@ -6,21 +6,24 @@ import {
 
 import './styles.scss'
 
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import ArrowBoldUp from 'assets/img/icons/arrow-bold-up.png'
 import CheckMarkSuccess from 'assets/img/icons/checkmark3.png'
 import { Scrollbars } from 'react-custom-scrollbars'
-import InfiniteScroll from "react-infinite-scroll-component";
+import {useDispatch, useSelector} from "react-redux";
+import appSlice from "app/slices/appSlice";
+import {selectUserActivity} from "../../app/selectors/userSelectors";
+
+const { getActivitiesRequest } = appSlice.actions;
 
 
-const Timeline = () => {
+const Timeline = ({managerId}) => {
+  const dispatch = useDispatch();
 
   const Delimiter = () => (
     <div className="timeline-component_item timeline-component_item-delimiter">
       <div className="vertical-delimiter"/>
     </div>
   )
-
 
   const icons = {
     success: {
@@ -33,37 +36,12 @@ const Timeline = () => {
     }
   }
 
-  const [data, setData] = useState([
-    {
-      status: "success",
-      message: "Updated something",
-      icon: "success",
-      time: "3 days ago"
-    },
-    {
-      status: "success",
-      message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
-      icon: "upload",
-      time: "4 days ago"
-    },
-    {
-      status: "success",
-      message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
-      icon: "upload",
-      time: "4 days ago"
-    },
-    {
-      status: "success",
-      message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
-      icon: "upload",
-      time: "4 days ago"
-    }
-  ]);
+  const data = useSelector(selectUserActivity(managerId));
+  const [showedActivitiesSize, setShowedActivitiesSize] = useState(4);
 
   const addData = (scroll) => {
     if (scroll.top > 0.95) {
-      console.log('added');
-      let newData = [];
+      /*let newData = [];
       data.forEach(item => newData.push(item));
       newData.push({
         status: "success",
@@ -72,10 +50,27 @@ const Timeline = () => {
         time: "5 days ago"
       });
       console.log('newData', newData);
-      setData(newData);
+      setData(newData);*/
+      if (data.length > showedActivitiesSize) {
+        setShowedActivitiesSize(showedActivitiesSize + 1);
+      }
     }
   }
 
+  useEffect(() => {
+    dispatch(getActivitiesRequest(managerId))
+    setShowedActivitiesSize(4);
+  }, [managerId]);
+
+  if (data && data.length < showedActivitiesSize) {
+    setShowedActivitiesSize(data.length);
+  }
+
+  if (data && data.length === 0) {
+    return <h1 className={'no-activities'}>This manager has no activities yet</h1>
+  }
+
+  console.log('showedActivitiesSize', showedActivitiesSize);
   return (
     <Card>
       <CardBody>
@@ -88,7 +83,7 @@ const Timeline = () => {
               </div>
             </div>
             <Delimiter />
-            {data.map((item, index) => {
+            {data && data.slice(0, showedActivitiesSize).map((item, index) => {
               return (
                 <>
                   <div key={index} className="timeline-component_item">

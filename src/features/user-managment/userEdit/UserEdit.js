@@ -137,7 +137,7 @@ const UserEdit = (props, context) => {
         />
         <TabContent activeTab={activeModuleTab}>
           <TabPane tabId="Activity">
-            <Timeline />
+            <Timeline managerId={manager.id}/>
           </TabPane>
           <TabPane tabId="Master Schema">
             <Card>

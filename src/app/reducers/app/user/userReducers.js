@@ -33,6 +33,12 @@ const getFilterSuccess = (state, { payload }) => {
   state.user.filters = filters;
 };
 
+const getActivitiesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.managers[state.user.managers.findIndex(item => item.id === payload.user_id)].activity = payload.response;
+};
+
 const postFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
@@ -370,6 +376,7 @@ export default {
   getOnboardingsByUserSuccess,
   getFilterSuccess,
   postFilterSuccess,
+  getActivitiesSuccess,
   deleteFilterSuccess,
   patchFilterSuccess,
   getUserPermissionsSuccess,

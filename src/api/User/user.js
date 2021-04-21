@@ -36,6 +36,42 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
+  async getActivities(id) {
+    try {
+      const result = await instance({
+        url: '/api/user/activities',
+        method: "GET",
+        user_id: id
+      });
+
+      console.log('result', result);
+      //return result;
+
+      return [{
+        status: "success",
+        message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
+        icon: "upload",
+        time: "2 days ago"
+      },{
+        status: "success",
+        message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
+        icon: "upload",
+        time: "3 days ago"
+      },{
+        status: "success",
+        message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
+        icon: "upload",
+        time: "4 days ago"
+      },{
+        status: "success",
+        message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
+        icon: "upload",
+        time: "5 days ago"
+      }];
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
   async getProfile() {
     try {
       const result = await instance({
