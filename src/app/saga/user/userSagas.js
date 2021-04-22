@@ -13,6 +13,8 @@ const {
   getProfileRequest,
   getProfileError,
   getUsersSuccess,
+  getActivitiesSuccess,
+  getActivitiesRequest,
   getFilterRequest,
   getFilterSuccess,
   getFilterError,
@@ -95,6 +97,11 @@ function* getUsers() {
 function* getFilter() {
   const response = yield call(userApi.getFilter);
   yield put(getFilterSuccess(response));
+}
+
+function* getActivities({payload}) {
+  const response = yield call(userApi.getActivities, payload);
+  yield put(getActivitiesSuccess({response, user_id: payload}));
 }
 
 function* postFilter({payload}) {
@@ -288,6 +295,7 @@ export default function* () {
     yield takeLatest(getProfileRequest.type, getProfile),
     yield takeLatest(getUsersRequest.type, getUsers),
     yield takeLatest(getFilterRequest.type, getFilter),
+    yield takeLatest(getActivitiesRequest.type, getActivities),
     yield takeLatest(postFilterRequest.type, postFilter),
     yield takeLatest(deleteFilterRequest.type, deleteFilter),
     yield takeLatest(patchFilterRequest.type, patchFilter),

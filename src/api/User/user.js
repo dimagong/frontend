@@ -36,6 +36,22 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
+  async getActivities(id) {
+    try {
+      const result = await instance({
+        url: '/api/user/activities',
+        method: "GET",
+        params: {
+          user_id: id
+        },
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
   async getProfile() {
     try {
       const result = await instance({
