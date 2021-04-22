@@ -11,7 +11,7 @@ import CheckMarkSuccess from 'assets/img/icons/checkmark3.png'
 import { Scrollbars } from 'react-custom-scrollbars'
 import {useDispatch, useSelector} from "react-redux";
 import appSlice from "app/slices/appSlice";
-import {selectUserActivity} from "../../app/selectors/userSelectors";
+import {selectUserActivity} from "app/selectors/userSelectors";
 
 const { getActivitiesRequest } = appSlice.actions;
 
@@ -41,19 +41,33 @@ const Timeline = ({managerId}) => {
 
   const addData = (scroll) => {
     if (scroll.top > 0.95) {
-      /*let newData = [];
-      data.forEach(item => newData.push(item));
-      newData.push({
-        status: "success",
-        message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
-        icon: "upload",
-        time: "5 days ago"
-      });
-      console.log('newData', newData);
-      setData(newData);*/
-      if (data.length > showedActivitiesSize) {
+     if (data.length > showedActivitiesSize) {
         setShowedActivitiesSize(showedActivitiesSize + 1);
       }
+    }
+  }
+
+  const getTimePassed = (inputTime) => {
+    let time = new Date(inputTime);
+    let seconds = Math.floor((Date.now() - time) / 1000);
+    if (seconds < 60) {
+      return `${seconds} seconds ago`;
+    }
+    else if (seconds < 3600) {
+      return `${Math.floor((seconds) / 60)} minute` + (Math.floor((seconds) / 60) > 1 ? `s` : ``) + ` ago`;
+    }
+    else if (seconds < 86400) {
+      return `${Math.floor((seconds) / 3600)} hour` + (Math.floor((seconds) / 3600) > 1 ? `s` : ``) + ` ago`;
+    }
+    else {
+      let days = Math.floor((seconds) / 86400);
+      if (days < 30) {
+        return `${days} day` + (days > 1 ? `s` : ``) + ` ago`;
+      }
+      else if (days < 365) {
+        return `${Math.floor((days) / 30)} month` + (Math.floor((days) / 30) > 1 ? `s` : ``) + ` ago`;
+      }
+      else return time.toDateString().split(' ').slice(1).join(' ');
     }
   }
 
@@ -70,7 +84,6 @@ const Timeline = ({managerId}) => {
     return <h1 className={'no-activities'}>This manager has no activities yet</h1>
   }
 
-  console.log('showedActivitiesSize', showedActivitiesSize);
   return (
     <Card>
       <CardBody>
@@ -83,25 +96,25 @@ const Timeline = ({managerId}) => {
               </div>
             </div>
             <Delimiter />
-            {data && data.slice(0, showedActivitiesSize).map((item, index) => {
+            {data && data.slice(0).reverse().slice(0, showedActivitiesSize).map((item, index) => {
               return (
                 <>
                   <div key={index} className="timeline-component_item">
                     <div className="left">
-                      {item.time}
+                      {getTimePassed(item.created_at)}
                     </div>
                     <div className="center">
                       <div className="horizontal-delimiter">
-                        <div className={`status-circle status-${item.status || "success"}`} />
+                        <div className={`status-circle status-success`} />
                       </div>
                     </div>
                     <div className="right">
                       <div className="right-content">
                         <div className="icon">
-                          <img src={icons[item.icon].icon} alt="icon"/>
+                          <img src={icons['success'].icon} alt="icon"/>
                         </div>
                         <div className="description">
-                          {item.message}
+                          {item.description}
                         </div>
                       </div>
                     </div>
