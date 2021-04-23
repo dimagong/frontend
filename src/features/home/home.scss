@@ -46,6 +46,7 @@
   &__card-wrapper {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
     grid-column-gap: 45px;
     grid-row-gap: 25px;
     padding-top: 40px;
