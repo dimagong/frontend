@@ -148,6 +148,7 @@ function* updateUser({payload}) {
   try {
     const response = yield call(userApi.updateUser, payload);
     yield put(updateUserSuccess(response));
+    yield put(getActivitiesRequest(payload.id));
   } catch (error) {
     yield put(updateUserError(error));
   }

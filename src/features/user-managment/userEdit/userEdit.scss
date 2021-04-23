@@ -75,3 +75,21 @@
   text-align: center;
   margin-top: 15vh;
 }
+
+.activity-table {
+  th {
+    padding: 10px;
+  }
+  td {
+    padding: 10px;
+  }
+  .activity-date {
+    width: 180px;
+  }
+  .activity-action {
+    width: 550px;
+  }
+  .activity-by {
+    width: 150px;
+  }
+}
