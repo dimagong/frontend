@@ -87,6 +87,7 @@ const updateUserSuccess = (state, { payload }) => {
   state.user.managers = state.user.managers.map( manager => {
     if (manager.id === state.user.manager.id) {
       payload.organizations = manager.organizations;
+      payload.activity = manager.activity;
       return payload;
     } else {
       return manager
