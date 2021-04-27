@@ -66,7 +66,6 @@ const Timeline = ({managerId}) => {
     return <td>
       {messageParts.splice(0, index - 1).join(' ') + ' '}
       {newMessage}
-      {' ' + messageParts.splice(index, messageParts.length - 1).join(' ')}
     </td>
   }
 
@@ -90,7 +89,6 @@ const Timeline = ({managerId}) => {
             <tr>
               <th className={'activity-date'}>Date time</th>
               <th className={'activity-action'}>Action</th>
-              <th className={'activity-by'}>Action caused by</th>
             </tr>
             {data && data.slice(0).reverse().map((item, index) => {
               return <tr>
@@ -98,7 +96,6 @@ const Timeline = ({managerId}) => {
                 {item.action_type_id === 6
                   ? getEditMessage(item)
                   : <td>{item.description}</td>}
-                <td>{item.recipient.first_name + ' ' + item.recipient.last_name}</td>
               </tr>
             })
             }
