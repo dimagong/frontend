@@ -78,9 +78,11 @@
 
 .activity-table {
   th {
+    vertical-align: top;
     padding: 10px;
   }
   td {
+    vertical-align: top;
     padding: 10px;
   }
   .activity-date {
@@ -91,5 +93,9 @@
   }
   .activity-by {
     width: 150px;
+  }
+  .activity-profile-update {
+    cursor: pointer;
+    font-weight: bold;
   }
 }
