@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest, select } from "redux-saga/effects";
+import {all, put, call, takeLatest, select} from "redux-saga/effects";
 
 import workflowApi from "api/Onboarding/workflow";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
@@ -31,6 +31,7 @@ const {
   getdFormActionsRequest,
   getdFormTriggersRequest,
   getNotificationsRequest,
+  getSurveyTriggersRequest,
   getUsersRequest,
   setContext,
 } = appSlice.actions;
@@ -40,11 +41,13 @@ function* getWorkflows() {
     const responce = yield call(workflowApi.getWorkflows);
 
     yield put(getWorkflowsSuccess());
-    yield put(setWorkflows(responce))
-    yield put(getdFormActionsRequest())
-    yield put(getdFormTriggersRequest())
+    yield put(setWorkflows(responce));
+    yield put(getdFormActionsRequest());
+    yield put(getdFormTriggersRequest());
+
+    yield put(getSurveyTriggersRequest());
     const notifications = yield select(selectNotifications);
-    if(!notifications.length){
+    if (!notifications.length) {
       yield put(getNotificationsRequest())
     }
 
@@ -55,12 +58,15 @@ function* getWorkflows() {
 
 function* createWorkflow({payload}) {
   try {
-    const responce = yield call(workflowApi.createWorkflow, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
+    const responce = yield call(workflowApi.createWorkflow, {
+      ...payload,
+      groups: prepareSelectGroups(payload.groups).map(group => group.value)
+    });
 
     yield put(createWorkflowSuccess());
-    const notifications = yield select(selectWorkflows)
-    yield put(setWorkflows([...notifications, responce]))
-    yield put(setWorkflow(null))
+    const notifications = yield select(selectWorkflows);
+    yield put(setWorkflows([...notifications, responce]));
+    yield put(setWorkflow(null));
     yield put(setContext(null))
   } catch (error) {
     yield put(createWorkflowError(error));
@@ -69,12 +75,15 @@ function* createWorkflow({payload}) {
 
 function* updateWorkflow({payload}) {
   try {
-    const responce = yield call(workflowApi.updateWorkflow, {...payload, groups: prepareSelectGroups(payload.groups).map(group => group.value)});
+    const responce = yield call(workflowApi.updateWorkflow, {
+      ...payload,
+      groups: prepareSelectGroups(payload.groups).map(group => group.value)
+    });
     yield put(updateWorkflowSuccess());
     const notifications = yield select(selectWorkflows);
-    yield put(setWorkflows(notifications.map( notification => notification.id === responce.id ? responce : notification)))
+    yield put(setWorkflows(notifications.map(notification => notification.id === responce.id ? responce : notification)))
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(updateWorkflowError(error));
   }
 }
@@ -84,15 +93,12 @@ function* deleteWorkflow({payload}) {
     yield call(workflowApi.deleteWorkflow, payload);
     yield put(deleteWorkflowSuccess());
     const notifications = yield select(selectWorkflows);
-    yield put(setWorkflows(notifications.filter( notification => notification.id !== payload.id )))
+    yield put(setWorkflows(notifications.filter(notification => notification.id !== payload.id)))
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(deleteWorkflowError(error));
   }
 }
-
-
-
 
 
 export default function* () {
