@@ -10,6 +10,7 @@ import moment from "moment";
 import {useDispatch, useSelector} from "react-redux";
 import appSlice from "app/slices/appSlice";
 import {selectUserActivity} from "app/selectors/userSelectors";
+import {OverlayTrigger, Tooltip, Button} from "react-bootstrap";
 
 const { getActivitiesRequest } = appSlice.actions;
 
@@ -23,6 +24,50 @@ const Timeline = ({managerId}) => {
   const getTimePassed = (inputTime) => {
     let time = moment(inputTime);
     return time.format('L') + ' ' + time.format('LT');
+  }
+
+  const getEditMessage = (editData) => {
+    if (!editData.options) {
+      return <td>{editData.description}</td>
+    }
+
+    let messageParts = editData.description.split(' ');
+    let index = messageParts.findIndex(item => item[0] === '%');
+    let changedOptions = editData.options.filter(item => (item.old !== item.new) && (item.old || item.new));
+
+    let newMessage = [];
+    for (let i = 0; i < changedOptions.length; ++i) {
+      let addBreaker = '';
+      switch (i) {
+        case changedOptions.length - 2: {
+          addBreaker = ' and '
+          break;
+        }
+        case changedOptions.length - 1: {
+          addBreaker = ' '
+          break;
+        }
+        default: addBreaker = ', '
+      }
+      newMessage.push(<span><OverlayTrigger
+        key={'top'}
+        placement={'top'}
+        overlay={
+          <Tooltip id={`tooltip-top`}>
+            Changed from <strong>{(changedOptions[i].old ? changedOptions[i].old : 'null') + ' '}</strong>
+            to <strong>{changedOptions[i].new ? changedOptions[i].new: 'null'}</strong>
+          </Tooltip>
+        }
+      >
+        <span className={'activity-profile-update'}>{changedOptions[i].name.toLowerCase()}</span>
+      </OverlayTrigger>{addBreaker}</span>)
+      }
+
+    return <td>
+      {messageParts.splice(0, index - 1).join(' ') + ' '}
+      {newMessage}
+      {' ' + messageParts.splice(index, messageParts.length - 1).join(' ')}
+    </td>
   }
 
   useEffect(() => {
@@ -50,7 +95,9 @@ const Timeline = ({managerId}) => {
             {data && data.slice(0).reverse().map((item, index) => {
               return <tr>
                 <td>{getTimePassed(item.created_at)}</td>
-                <td>{item.description}</td>
+                {item.action_type_id === 6
+                  ? getEditMessage(item)
+                  : <td>{item.description}</td>}
                 <td>{item.recipient.first_name + ' ' + item.recipient.last_name}</td>
               </tr>
             })
