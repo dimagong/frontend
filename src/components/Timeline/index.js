@@ -19,7 +19,6 @@ const Timeline = ({managerId}) => {
   const dispatch = useDispatch();
 
   const data = useSelector(selectUserActivity(managerId));
-  const [showedActivitiesSize, setShowedActivitiesSize] = useState(4);
 
   const getTimePassed = (inputTime) => {
     let time = moment(inputTime);
@@ -71,12 +70,8 @@ const Timeline = ({managerId}) => {
 
   useEffect(() => {
     dispatch(getActivitiesRequest(managerId))
-    setShowedActivitiesSize(4);
   }, [managerId]);
 
-  if (data && data.length < showedActivitiesSize) {
-    setShowedActivitiesSize(data.length);
-  }
 
   if (data && data.length === 0) {
     return <h1 className={'no-activities'}>This manager has no activities yet</h1>

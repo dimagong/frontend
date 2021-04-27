@@ -44,7 +44,8 @@ import appSlice from 'app/slices/appSlice'
 
 const {
   setManagerOnboarding,
-  getUserOnboardingRequest
+  getUserOnboardingRequest,
+  getActivitiesRequest
 }  = appSlice.actions;
 
 const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
@@ -118,6 +119,13 @@ const UserEdit = (props, context) => {
     ).then(() => {})
   };
 
+  const handleChangeTab = (data) => {
+    setActiveModuleTab(data)
+    if (data === 'Activity') {
+      dispatch(getActivitiesRequest(manager.id))
+    }
+  }
+
   return (
     <Row className="user-managment">
       <Col sm="12" md="12" lg="12" xl="6">
@@ -132,7 +140,7 @@ const UserEdit = (props, context) => {
 
         <CustomTabs
           active={activeModuleTab}
-          onChange={setActiveModuleTab}
+          onChange={handleChangeTab}
           tabs={tabs}
         />
         <TabContent activeTab={activeModuleTab}>
