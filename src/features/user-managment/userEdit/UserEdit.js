@@ -70,7 +70,7 @@ const UserEdit = (props, context) => {
 
   const [contextFeature, setContextFeature] = useState("");
 
-  const [activeModuleTab, setActiveModuleTab] = useState(userOrganizations.length ? tabs[0] : tabs[3]);
+  const [activeModuleTab, setActiveModuleTab] = useState(tabs[0]);
   const [activeOnboardingId, setActiveOnboardingId] = useState(-1);
   const isCreate = useRef(false);
 
