@@ -70,7 +70,7 @@ const UserEdit = (props, context) => {
 
   const [contextFeature, setContextFeature] = useState("");
 
-  const [activeModuleTab, setActiveModuleTab] = useState(tabs[0]);
+  const [activeModuleTab, setActiveModuleTab] = useState(manager.permissions ? tabs[0] : tabs[3]);
   const [activeOnboardingId, setActiveOnboardingId] = useState(-1);
   const isCreate = useRef(false);
 
@@ -100,6 +100,10 @@ const UserEdit = (props, context) => {
     // user onboarding
     dispatch(getUserOnboardingRequest({userId: manager.id}))
   }, [manager.groups]);
+
+  useEffect(() => {
+    setActiveModuleTab(manager.permissions ? tabs[0] : tabs[3]);
+  }, [manager.id])
 
 
   const handleEdit = () => {

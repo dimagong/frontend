@@ -14,6 +14,36 @@ import {OverlayTrigger, Tooltip, Button} from "react-bootstrap";
 
 const { getActivitiesRequest } = appSlice.actions;
 
+const parseTextToComponent = (text) => {
+  let indexes = [];
+  let currIndex = -1;
+  for (let i = 0; i < text.length; ++i) {
+    if (text[i] === '<') {
+      if (i + 1 < text.length && text[i + 1] === '/') {
+        indexes[indexes.length - 1].finish = i;
+      } else {
+        indexes.push({start: i, finish: -1});
+      }
+    }
+  }
+
+  if (indexes.length === 0) {
+    return <span>{text}</span>
+  }
+
+  return <span>
+    {text.substring(0, indexes[0].start)}
+    {indexes.map(i => {
+      ++currIndex;
+      return <span>
+        <strong>{text.substring(i.start + 3, i.finish)}</strong>
+        {text.substring(i.finish + 4, currIndex + 1 === indexes.length ? text.length : indexes[currIndex + 1].start)}
+      </span>
+    })}
+  </span>
+
+}
+
 
 const Timeline = ({managerId}) => {
   const dispatch = useDispatch();
@@ -32,7 +62,8 @@ const Timeline = ({managerId}) => {
 
     let messageParts = editData.description.split(' ');
     let index = messageParts.findIndex(item => item[0] === '%');
-    let changedOptions = editData.options.filter(item => (item.old !== item.new) && (item.old || item.new));
+    let changedOptions = editData.options.filter(item => (item.old !== item.new) && (item.old || item.new) &&
+      (item.type === 'first_name' || item.type === 'last_name' || item.type === 'email' || item.type === 'number'));
 
     let newMessage = [];
     for (let i = 0; i < changedOptions.length; ++i) {
@@ -63,7 +94,7 @@ const Timeline = ({managerId}) => {
       }
 
     return <td>
-      {messageParts.splice(0, index - 1).join(' ') + ' '}
+      {parseTextToComponent(messageParts.splice(0, index).join(' ') + ' ')}
       {newMessage}
     </td>
   }
@@ -76,7 +107,6 @@ const Timeline = ({managerId}) => {
   if (data && data.length === 0) {
     return <h1 className={'no-activities'}>This manager has no activities yet</h1>
   }
-
   return (
     <Card>
       <CardBody>
@@ -90,7 +120,7 @@ const Timeline = ({managerId}) => {
                 <td>{getTimePassed(item.created_at)}</td>
                 {item.action_type_id === 6
                   ? getEditMessage(item)
-                  : <td>{item.description}</td>}
+                  : <td>{parseTextToComponent(item.description)}</td>}
               </tr>
             })
             }
