@@ -347,6 +347,9 @@ const getUserPermissionsSuccess = (state, {payload}) => {
   state.isLoading = false;
   const userIndex = getIndexById(state.user.managers, payload.payload);
   state.user.managers[userIndex].permissions = payload.result;
+  if (state.user.managers[userIndex].id === state.user.manager.id) {
+    state.user.manager.permissions = payload.result;
+  }
 };
 
 export default {
