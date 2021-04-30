@@ -72,6 +72,8 @@ const {
   getUserPermissionsRequest,
   getUserPermissionsSuccess,
   getUserPermissionsError,
+
+  getUserOnboardingRequest
 } = appSlice.actions;
 
 function* getProfile() {
@@ -209,6 +211,7 @@ function* addUserOrganization({payload}) {
   } else {
     yield put(addUserOrganizationSuccess({response, userId: payload.id}));
     yield put(getUserPermissionsRequest(payload.id))
+    yield put(getUserOnboardingRequest({userId: payload.id}))
   }
 }
 
