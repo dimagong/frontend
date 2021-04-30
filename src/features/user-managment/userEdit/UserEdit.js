@@ -44,7 +44,8 @@ import appSlice from 'app/slices/appSlice'
 
 const {
   setManagerOnboarding,
-  getUserOnboardingRequest
+  getUserOnboardingRequest,
+  getActivitiesRequest
 }  = appSlice.actions;
 
 const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
@@ -69,7 +70,7 @@ const UserEdit = (props, context) => {
 
   const [contextFeature, setContextFeature] = useState("");
 
-  const [activeModuleTab, setActiveModuleTab] = useState(userOrganizations.length ? tabs[0] : tabs[3]);
+  const [activeModuleTab, setActiveModuleTab] = useState(manager.permissions ? tabs[0] : tabs[3]);
   const [activeOnboardingId, setActiveOnboardingId] = useState(-1);
   const isCreate = useRef(false);
 
@@ -100,6 +101,10 @@ const UserEdit = (props, context) => {
     dispatch(getUserOnboardingRequest({userId: manager.id}))
   }, [manager.groups]);
 
+  useEffect(() => {
+    setActiveModuleTab(manager.permissions ? tabs[0] : tabs[3]);
+  }, [manager.id])
+
 
   const handleEdit = () => {
     setContextFeature("edit")
@@ -118,6 +123,13 @@ const UserEdit = (props, context) => {
     ).then(() => {})
   };
 
+  const handleChangeTab = (data) => {
+    setActiveModuleTab(data)
+    if (data === 'Activity') {
+      dispatch(getActivitiesRequest(manager.id))
+    }
+  }
+
   return (
     <Row className="user-managment">
       <Col sm="12" md="12" lg="12" xl="6">
@@ -132,12 +144,12 @@ const UserEdit = (props, context) => {
 
         <CustomTabs
           active={activeModuleTab}
-          onChange={setActiveModuleTab}
+          onChange={handleChangeTab}
           tabs={tabs}
         />
         <TabContent activeTab={activeModuleTab}>
           <TabPane tabId="Activity">
-            <Timeline />
+            <Timeline managerId={manager.id}/>
           </TabPane>
           <TabPane tabId="Master Schema">
             <Card>

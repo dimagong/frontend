@@ -70,3 +70,29 @@
   align-items:center;
   padding: 0!important;
 }
+
+.no-activities {
+  text-align: center;
+  margin-top: 15vh;
+}
+
+.activity-table {
+  th {
+    vertical-align: top;
+    padding: 10px;
+  }
+  td {
+    vertical-align: top;
+    padding: 10px;
+  }
+  .activity-date {
+    width: 180px;
+  }
+  .activity-action {
+    width: 700px;
+  }
+  .activity-profile-update {
+    cursor: pointer;
+    font-weight: bold;
+  }
+}

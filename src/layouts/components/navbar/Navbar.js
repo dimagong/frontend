@@ -98,7 +98,7 @@ const ThemeNavbar = props => {
               props.navbarType === "static" && !props.horizontal,
             "fixed-top": props.navbarType === "sticky" || props.horizontal,
             "scrolling": props.horizontal && props.scrolling,
-            "simplified-navbar": userProfile.notify,
+            "simplified-navbar": userProfile.notify && userProfile?.permissions?.ability === "prospect",
           }
         )}
       >
@@ -151,7 +151,7 @@ const ThemeNavbar = props => {
                 </div>
               ) : null} */}
 
-              {userProfile.notify ? (
+              {userProfile.notify && userProfile?.permissions?.ability === "prospect" ? (
                 <ul className="nav navbar-nav navbar-nav-user float-right">
                   <UncontrolledDropdown tag="li" className="dropdown-user nav-item burger-menu">
                     <DropdownToggle tag="a" className="nav-link dropdown-user-link">

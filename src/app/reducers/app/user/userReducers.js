@@ -33,6 +33,12 @@ const getFilterSuccess = (state, { payload }) => {
   state.user.filters = filters;
 };
 
+const getActivitiesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.managers[state.user.managers.findIndex(item => item.id === payload.user_id)].activity = payload.response;
+};
+
 const postFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
@@ -81,6 +87,7 @@ const updateUserSuccess = (state, { payload }) => {
   state.user.managers = state.user.managers.map( manager => {
     if (manager.id === state.user.manager.id) {
       payload.organizations = manager.organizations;
+      payload.activity = manager.activity;
       return payload;
     } else {
       return manager
@@ -370,6 +377,7 @@ export default {
   getOnboardingsByUserSuccess,
   getFilterSuccess,
   postFilterSuccess,
+  getActivitiesSuccess,
   deleteFilterSuccess,
   patchFilterSuccess,
   getUserPermissionsSuccess,
