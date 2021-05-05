@@ -206,7 +206,7 @@ const UserOnboardingCreate = ({isCreate}) => {
               {
                 isCreate.current
                   ?<div className="d-flex justify-content-end flex-wrap mt-2">
-                    <Button className="mt-1" color="primary" onClick={createOnboarding}>Save</Button>
+                    <Button className="mt-1" color="primary" onClick={createOnboarding}>Create</Button>
                   </div>
                   : <div className="d-flex justify-content-end flex-wrap mt-2">
                     <Button disabled={!!!manager.onboarding.id} className="mt-1" color="danger" onClick={deleteOnboarding}>Delete onboarding</Button>
