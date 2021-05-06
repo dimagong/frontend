@@ -54,16 +54,20 @@ const Timeline = ({managerId}) => {
     let time = moment(inputTime);
     return time.format('L') + ' ' + time.format('LT');
   }
-
   const getEditMessage = (editData) => {
-    if (!editData.options) {
-      return <td>{editData.description}</td>
-    }
-
     let messageParts = editData.description.split(' ');
     let index = messageParts.findIndex(item => item[0] === '%');
+
+    if (!editData.options) {
+      return <td>{parseTextToComponent(messageParts.splice(0, index).join(' ') + ' profile')}</td>
+    }
+
     let changedOptions = editData.options.filter(item => (item.old !== item.new) && (item.old || item.new) &&
       (item.type === 'first_name' || item.type === 'last_name' || item.type === 'email' || item.type === 'number'));
+
+    if (changedOptions.length === 0) {
+      return <td>{parseTextToComponent(messageParts.splice(0, index).join(' ') + ' profile')}</td>
+    }
 
     let newMessage = [];
     for (let i = 0; i < changedOptions.length; ++i) {
@@ -118,7 +122,7 @@ const Timeline = ({managerId}) => {
             {data && data.slice(0).reverse().map((item, index) => {
               return <tr>
                 <td>{getTimePassed(item.created_at)}</td>
-                {item.action_type_id === 6
+                {item.action_type.name === 'User profile updated'
                   ? getEditMessage(item)
                   : <td>{parseTextToComponent(item.description)}</td>}
               </tr>
