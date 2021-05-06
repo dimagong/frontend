@@ -1653,6 +1653,9 @@ class FormCreate extends React.Component {
       let onlySectionTemp = {};
       Object.keys(state.uiSchema.onlySections).forEach((sectionName) => {
         if (previousFieldKey === sectionName) {
+          if (state.tabConfig === Object.keys(this.state.uiSchema.onlySections).length - 1) {
+            --state.tabConfig;
+          }
           return;
         }
         onlySectionTemp[sectionName] = state.uiSchema.onlySections[previousFieldKey];
