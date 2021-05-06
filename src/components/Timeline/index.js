@@ -11,6 +11,7 @@ import {useDispatch, useSelector} from "react-redux";
 import appSlice from "app/slices/appSlice";
 import {selectUserActivity} from "app/selectors/userSelectors";
 import {OverlayTrigger, Tooltip, Button} from "react-bootstrap";
+import {userProfileUpdated} from "constants/activity";
 
 const { getActivitiesRequest } = appSlice.actions;
 
@@ -59,14 +60,14 @@ const Timeline = ({managerId}) => {
     let index = messageParts.findIndex(item => item[0] === '%');
 
     if (!editData.options) {
-      return <td>{parseTextToComponent(messageParts.splice(0, index).join(' ') + ' profile')}</td>
+      return null;
     }
 
     let changedOptions = editData.options.filter(item => (item.old !== item.new) && (item.old || item.new) &&
       (item.type === 'first_name' || item.type === 'last_name' || item.type === 'email' || item.type === 'number'));
 
     if (changedOptions.length === 0) {
-      return <td>{parseTextToComponent(messageParts.splice(0, index).join(' ') + ' profile')}</td>
+      return null;
     }
 
     let newMessage = [];
@@ -119,13 +120,16 @@ const Timeline = ({managerId}) => {
               <th className={'activity-date'}>Date time</th>
               <th className={'activity-action'}>Action</th>
             </tr>
-            {data && data.slice(0).reverse().map((item, index) => {
-              return <tr>
-                <td>{getTimePassed(item.created_at)}</td>
-                {item.action_type.name === 'User profile updated'
-                  ? getEditMessage(item)
-                  : <td>{parseTextToComponent(item.description)}</td>}
-              </tr>
+            {data && data.slice().sort((lhs, rhs) => new Date(lhs.created_at) > new Date(rhs.created_at) ? -1 : 1).map((item, index) => {
+              let message = getEditMessage(item)
+              if (item.action_type.name !== userProfileUpdated || message) {
+                return <tr>
+                  <td>{getTimePassed(item.created_at)}</td>
+                  {item.action_type.name === userProfileUpdated
+                    ? message
+                    : <td>{parseTextToComponent(item.description)}</td>}
+                </tr>
+              }
             })
             }
         </table>
