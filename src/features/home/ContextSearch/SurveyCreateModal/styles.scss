@@ -1,0 +1,12 @@
+.survey-create-modal {
+  min-width: 560px;
+  &_select {
+    margin-bottom: 25px;
+    label {
+      font-size: 22px;
+      color: #4B484D;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+  }
+}

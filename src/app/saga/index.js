@@ -10,6 +10,7 @@ import roleSagas from './role/roleSagas'
 import moduleSagas from './module/moduleSagas'
 import masterSchemaSagas from './masterSchema/masterSchemaSagas'
 import layoutSaga from './layout'
+import surveysSaga from './surveys'
 
 export default function *rootSaga() {
   yield all([
@@ -22,6 +23,7 @@ export default function *rootSaga() {
     roleSagas(),
     moduleSagas(),
     layoutSaga(),
-    masterSchemaSagas()
+    masterSchemaSagas(),
+    surveysSaga(),
   ]);
 }

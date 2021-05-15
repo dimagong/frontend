@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectManager,
   selectUserDForms,
-  selectUserWorkfows,
+  selectUserWorkflows,
   selectUserReviewers,
 } from "app/selectors";
 
@@ -64,7 +64,7 @@ const UserEdit = (props, context) => {
   const manager = useSelector(selectCurrentManager);
 
   const dForms = useSelector(selectUserDForms);
-  const workflows = useSelector(selectUserWorkfows);
+  const workflows = useSelector(selectUserWorkflows);
   const reviewers = useSelector(selectUserReviewers);
   const userOrganizations = useSelector(selectUserOrganizations(manager.id));
 

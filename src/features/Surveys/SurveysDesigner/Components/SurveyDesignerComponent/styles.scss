@@ -1,0 +1,46 @@
+.survey-designer {
+  padding-top: 20px;
+  &_header{
+    padding-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    &_title {
+      display: flex;
+      font-family: Montserrat;
+      font-weight: bold;
+      font-size: 34px;
+      color: #707070;
+      padding-right: 30px;
+      border-right: 1px solid rgba(112,112,112, 0.5);
+    }
+    &_survey-name {
+      display: flex;
+      font-family: Montserrat;
+      font-size: 34px;
+      color: #707070;
+      padding-left: 30px;
+    }
+    &_edit-icon {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+
+  &_no-questions {
+    font-size: 18px;
+    line-height: 30px;
+    color: #4B484D;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    margin: 0 auto;
+    max-width: 500px;
+    text-align: center;
+  }
+
+  &_save-button {
+    float: right;
+    margin-top: 50px;
+    padding: 13px 78px;
+  }
+}
