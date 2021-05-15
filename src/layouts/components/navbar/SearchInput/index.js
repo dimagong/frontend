@@ -17,6 +17,7 @@ const {
   setContext,
   setManager,
   setPreview,
+  setSearch,
 } = appSlice.actions;
 
 
@@ -83,9 +84,11 @@ const SearchInput = ({ suggestions }) => {
     )
   }
 
-  const handleEnter = (suggestion) =>{
-    dispatch(setManager({first_name: suggestion.name, ...suggestion}))
-    dispatch(setContext("User"))
+  const handleEnter = (inputText) =>{
+    //dispatch(setManager({first_name: suggestion.name, ...suggestion}))
+    //dispatch(setContext("User"))
+    dispatch(setSearch(inputText))
+    dispatch(showContextSearch())
   }
 
   return (
@@ -98,6 +101,7 @@ const SearchInput = ({ suggestions }) => {
       suggestionLimit={4}
       defaultSuggestions={false}
       customRender={SearchInputSuggestionsLayout}
+      showClear={true}
     />
   )
 }

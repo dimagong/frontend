@@ -5,6 +5,7 @@ import classnames from "classnames"
 import PerfectScrollbar from "react-perfect-scrollbar"
 import { AlertTriangle } from "react-feather"
 import {withRouter} from "react-router-dom"
+import ClearIcon from "@material-ui/icons/Clear";
 class Autocomplete extends React.Component {
   constructor(props) {
     super(props)
@@ -136,15 +137,17 @@ class Autocomplete extends React.Component {
     }
 
     // User Pressed ENTER
-    else if (e.keyCode === 13 && showSuggestions) {
+    else if (e.keyCode === 13) {
       // this.onSuggestionItemClick(this.filteredData[activeSuggestion].link, e)
-      if (this.filteredData[activeSuggestion]) {
+      /*if (this.filteredData[activeSuggestion]) {
         this.props.onEnter(this.filteredData[activeSuggestion])
-      }
+      }*/
+      this.props.onEnter(this.state.userInput);
 
       this.setState({
-        userInput: this.filteredData[activeSuggestion][filterKey],
-        showSuggestions: false
+        //userInput: this.filteredData[activeSuggestion][filterKey],
+        showSuggestions: false,
+        focused: false
       })
     } else {
       return
@@ -365,7 +368,12 @@ class Autocomplete extends React.Component {
           options={{ wheelPropagation: false }}>
           <div className="d-flex justify-content-between p-1">
             <span>Suggestions</span>
-            <span>View all</span>
+            <span style={{cursor: 'pointer'}} onClick={() => {
+              this.props.onEnter(this.state.userInput);
+              this.setState({
+                showSuggestions: false,
+                focused: false
+              })}}>View all</span>
           </div>
           {this.renderSuggestions()}
           <div className="text-right px-1 pt-1">
@@ -420,6 +428,17 @@ class Autocomplete extends React.Component {
             this.setState({ focused: false })
           }}
         />
+        {this.props.hasOwnProperty('showClear') && this.props.showClear && this.state.userInput.length > 0 &&
+          <span className={'clear-input'} onClick={() => {
+            this.props.onEnter('');
+
+            this.setState({
+              userInput: '',
+              showSuggestions: false,
+              focused: false
+            })
+          }}><ClearIcon/></span>
+        }
         {suggestionsListComponent}
       </div>
     )

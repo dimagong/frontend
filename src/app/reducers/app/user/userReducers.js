@@ -33,6 +33,12 @@ const getFilterSuccess = (state, { payload }) => {
   state.user.filters = filters;
 };
 
+const getActivitiesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.managers[state.user.managers.findIndex(item => item.id === payload.user_id)].activity = payload.response;
+};
+
 const postFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
@@ -42,6 +48,7 @@ const postFilterSuccess = (state, { payload }) => {
   let filters = state.user.filters;
   filters.push(newFilter);
   state.user.filters = filters;
+  toast.success(`The filter set '${payload.response.data.filter_name}' was added`);
 };
 
 const patchFilterSuccess = (state, { payload }) => {
@@ -49,6 +56,7 @@ const patchFilterSuccess = (state, { payload }) => {
   state.isError = null;
   let index = state.user.filters.findIndex(item => item.id === payload.payload.id);
   state.user.filters[index].data = payload.payload.newFilter;
+  toast.success(`The filter set '${payload.payload.filter_name}' was updated`);
 };
 
 const getOnboardingsByUserSuccess = (state, { payload }) => {
@@ -79,6 +87,7 @@ const updateUserSuccess = (state, { payload }) => {
   state.user.managers = state.user.managers.map( manager => {
     if (manager.id === state.user.manager.id) {
       payload.organizations = manager.organizations;
+      payload.activity = manager.activity;
       return payload;
     } else {
       return manager
@@ -117,8 +126,9 @@ const deleteFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   let filters = state.user.filters;
-  filters = filters.filter(item => item.id !== payload);
+  filters = filters.filter(item => item.id !== payload.id);
   state.user.filters = filters;
+  toast.success(`The filter set '${payload.filter_name}' was deleted`);
 }
 
 const getUserAvatarSuccess = (state, { payload }) => {
@@ -231,6 +241,11 @@ const setManager = (state, { payload }) => {
   state.isError = null;
   state.user.manager = payload;
 };
+
+const setSearch = (state, { payload }) => {
+  state.user.searchText = payload;
+};
+
 const setUserGroups = (state, {payload}) => {
   state.user.groups = payload;
 };
@@ -332,6 +347,9 @@ const getUserPermissionsSuccess = (state, {payload}) => {
   state.isLoading = false;
   const userIndex = getIndexById(state.user.managers, payload.payload);
   state.user.managers[userIndex].permissions = payload.result;
+  if (state.user.managers[userIndex].id === state.user.manager.id) {
+    state.user.manager.permissions = payload.result;
+  }
 };
 
 export default {
@@ -362,9 +380,11 @@ export default {
   getOnboardingsByUserSuccess,
   getFilterSuccess,
   postFilterSuccess,
+  getActivitiesSuccess,
   deleteFilterSuccess,
   patchFilterSuccess,
   getUserPermissionsSuccess,
+  setSearch,
 
   setUser,
   setManager,

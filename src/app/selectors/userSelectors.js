@@ -44,6 +44,10 @@ export const selectUserOnboarding = state => state?.app?.user?.profile?.onboardi
 
 export const selectFilters = state => state?.app?.user?.filters;
 
+export const selectSearchText = state => state?.app?.user?.searchText;
+
+export const selectUserActivity = userId => state => state?.app?.user?.managers.find(item => item.id === userId).activity;
+
 export const selectSurveys = state => state?.app?.surveys;
 export const selectSelectedSurveyId = state => state?.app?.selectedSurveyId;
 export const selectFolders = state => state?.app?.folders;

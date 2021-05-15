@@ -1,106 +1,138 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   Card,
   CardBody,
 } from 'reactstrap'
 
 import './styles.scss'
+import moment from "moment";
 
-import PerfectScrollbar from 'react-perfect-scrollbar'
-import ArrowBoldUp from 'assets/img/icons/arrow-bold-up.png'
-import CheckMarkSuccess from 'assets/img/icons/checkmark3.png'
-import { Scrollbars } from 'react-custom-scrollbars'
+import {useDispatch, useSelector} from "react-redux";
+import appSlice from "app/slices/appSlice";
+import {selectUserActivity} from "app/selectors/userSelectors";
+import {OverlayTrigger, Tooltip, Button} from "react-bootstrap";
+import {userProfileUpdated} from "constants/activity";
 
+const { getActivitiesRequest } = appSlice.actions;
 
-const Timeline = () => {
-
-  const Delimiter = () => (
-    <div className="timeline-component_item timeline-component_item-delimiter">
-      <div className="vertical-delimiter"/>
-    </div>
-  )
-
-
-  const icons = {
-    success: {
-      icon: CheckMarkSuccess,
-      iconStyles: {},
-    },
-    upload: {
-      icon: ArrowBoldUp,
-      iconStyles: {},
+const parseTextToComponent = (text) => {
+  let indexes = [];
+  let currIndex = -1;
+  for (let i = 0; i < text.length; ++i) {
+    if (text[i] === '<') {
+      if (i + 1 < text.length && text[i + 1] === '/') {
+        indexes[indexes.length - 1].finish = i;
+      } else {
+        indexes.push({start: i, finish: -1});
+      }
     }
   }
 
-  const data = [
-    {
-      status: "success",
-      message: "Updated something",
-      icon: "success",
-      time: "3 days ago"
-    },
-    {
-      status: "success",
-      message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
-      icon: "upload",
-      time: "4 days ago"
-    },
-    {
-      status: "success",
-      message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
-      icon: "upload",
-      time: "4 days ago"
-    },
-    {
-      status: "success",
-      message: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste magni obcaecati quos? Aliquid animi architecto corporis cupiditate dolor dolorem eligendi eos eveniet ex iste non, omnis optio perspiciatis rerum tenetur. ",
-      icon: "upload",
-      time: "4 days ago"
-    }
-  ]
+  if (indexes.length === 0) {
+    return <span>{text}</span>
+  }
 
+  return <span>
+    {text.substring(0, indexes[0].start)}
+    {indexes.map(i => {
+      ++currIndex;
+      return <span>
+        <strong>{text.substring(i.start + 3, i.finish)}</strong>
+        {text.substring(i.finish + 4, currIndex + 1 === indexes.length ? text.length : indexes[currIndex + 1].start)}
+      </span>
+    })}
+  </span>
+
+}
+
+
+const Timeline = ({managerId}) => {
+  const dispatch = useDispatch();
+
+  const data = useSelector(selectUserActivity(managerId));
+
+  const getTimePassed = (inputTime) => {
+    let time = moment(inputTime);
+    return time.format('L') + ' ' + time.format('LT');
+  }
+  const getEditMessage = (editData) => {
+    let messageParts = editData.description.split(' ');
+    let index = messageParts.findIndex(item => item[0] === '%');
+
+    if (!editData.options) {
+      return null;
+    }
+
+    let changedOptions = editData.options.filter(item => (item.old !== item.new) && (item.old || item.new) &&
+      (item.type === 'first_name' || item.type === 'last_name' || item.type === 'email' || item.type === 'number'));
+
+    if (changedOptions.length === 0) {
+      return null;
+    }
+
+    let newMessage = [];
+    for (let i = 0; i < changedOptions.length; ++i) {
+      let addBreaker = '';
+      switch (i) {
+        case changedOptions.length - 2: {
+          addBreaker = ' and '
+          break;
+        }
+        case changedOptions.length - 1: {
+          addBreaker = ' '
+          break;
+        }
+        default: addBreaker = ', '
+      }
+      newMessage.push(<span><OverlayTrigger
+        key={'top'}
+        placement={'top'}
+        overlay={
+          <Tooltip id={`tooltip-top`}>
+            Changed from <strong>{(changedOptions[i].old ? changedOptions[i].old : 'null') + ' '}</strong>
+            to <strong>{changedOptions[i].new ? changedOptions[i].new: 'null'}</strong>
+          </Tooltip>
+        }
+      >
+        <span className={'activity-profile-update'}>{changedOptions[i].name.toLowerCase()}</span>
+      </OverlayTrigger>{addBreaker}</span>)
+      }
+
+    return <td>
+      {parseTextToComponent(messageParts.splice(0, index).join(' ') + ' ')}
+      {newMessage}
+    </td>
+  }
+
+  useEffect(() => {
+    dispatch(getActivitiesRequest(managerId))
+  }, [managerId]);
+
+
+  if (data && data.length === 0) {
+    return <h1 className={'no-activities'}>This manager has no activities yet</h1>
+  }
   return (
     <Card>
       <CardBody>
-        <Scrollbars autoHeight autoHeightMax={500}>
-          <div className="timeline-component">
-
-            <div className="timeline-component_item">
-              <div className="left">
-                <div className="start" >Now</div>
-              </div>
-            </div>
-            <Delimiter />
-            {data.map((item, index) => {
-              return (
-                <>
-                  <div key={index} className="timeline-component_item">
-                    <div className="left">
-                      {item.time}
-                    </div>
-                    <div className="center">
-                      <div className="horizontal-delimiter">
-                        <div className={`status-circle status-${item.status || "success"}`} />
-                      </div>
-                    </div>
-                    <div className="right">
-                      <div className="right-content">
-                        <div className="icon">
-                          <img src={icons[item.icon].icon} alt="icon"/>
-                        </div>
-                        <div className="description">
-                          {item.message}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <Delimiter />
-                </>
-              )
-            })}
-
-          </div>
-        </Scrollbars>
+          <table className={'activity-table'}>
+            <tr>
+              <th className={'activity-date'}>Date time</th>
+              <th className={'activity-action'}>Action</th>
+            </tr>
+            {data && data.slice().sort((lhs, rhs) => new Date(lhs.created_at) > new Date(rhs.created_at) ? -1 : 1).map((item, index) => {
+              let message = getEditMessage(item)
+              if (item.action_type.name !== userProfileUpdated || message) {
+                return <tr>
+                  <td>{getTimePassed(item.created_at)}</td>
+                  {item.action_type.name === userProfileUpdated
+                    ? message
+                    : <td>{parseTextToComponent(item.description)}</td>}
+                </tr>
+              }
+            })
+            }
+        </table>
       </CardBody>
     </Card>
   )

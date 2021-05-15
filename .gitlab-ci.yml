@@ -32,9 +32,9 @@ deploy to production:
     - touch ~/.aws/config
     - printf "[profile nmpdev]\nregion=eu-west-2\noutput=json" >> ~/.aws/config
     - cp .ebenviroments/config.production.yml .elasticbeanstalk/config.yml
-    - sudo apt install curl
-    - curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-    - sudo apt install nodejs
+    - apt-get --yes --force-yes install curl
+    - curl -sL https://deb.nodesource.com/setup_10.x | bash
+    - apt-get --yes --force-yes install --yes --force-yes nodejs
   script:
     - git checkout master
     - cat .ebenviroments/https.production.conf >> .platform/nginx/conf.d/https.conf
@@ -43,6 +43,8 @@ deploy to production:
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build
     - cd build
+    - touch .ebignore
+    - echo ".git/" >> .ebignore
     - eb deploy NmpFeProdV1-env
   only:
     - master
