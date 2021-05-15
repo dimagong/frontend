@@ -10,7 +10,7 @@ import {
 import {
   selectManagers,
   selectManager,
-  selectUserWorkfows,
+  selectUserWorkflows,
   selectUserDForms,
   selectUserReviewers,
   selectModules,
@@ -47,7 +47,7 @@ export {
   selectManagers,
   selectManager,
   selectModules,
-  selectUserWorkfows,
+  selectUserWorkflows,
   selectUserDForms,
   selectUserReviewers,
   selectUser,
