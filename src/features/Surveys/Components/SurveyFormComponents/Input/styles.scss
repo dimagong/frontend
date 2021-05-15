@@ -1,0 +1,21 @@
+.survey-input-component {
+
+  font-family: Montserrat;
+  font-weight: 500;
+  margin-bottom: 25px;
+  &_label {
+    font-size: 22px;
+    color: #4B484D;
+    margin-bottom: 5px;
+  }
+
+  &_input {
+    width: 100%;
+    font-size: 16px;
+    color: #4B484D;
+    padding: 12px;
+    border-radius: 0.5rem;
+    border: 1px solid #EEE;
+  }
+
+}
