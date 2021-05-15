@@ -22,12 +22,12 @@
   .contextual-search_wrapper {
     .preview {
       padding-top: 40px;
-      padding-bottom: 40px;
+      padding-bottom: 20px;
       .preview-action-buttons {
 
 
         position: absolute;
-        bottom: -38px;
+        bottom: -48px;
         left: 50%;
         transform: translate(-50%);
 
@@ -140,6 +140,7 @@
   .search-content-footer {
     display: flex;
     justify-content: space-between;
+    padding: 10px 5px;
     .add-icon {
       padding: 5px!important;
       background-color: #7367F0!important;
@@ -160,7 +161,7 @@
   .search-context-pagination {
     display: flex;
     position: absolute;
-    bottom: -38px;
+    bottom: -48px;
     left: 50%;
     transform: translate(-50%);
 
