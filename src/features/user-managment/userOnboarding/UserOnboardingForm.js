@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectManager,
   selectUserDForms,
-  selectUserWorkfows,
+  selectUserWorkflows,
   selectUserReviewers,
 } from "app/selectors";
 
@@ -60,7 +60,7 @@ const UserOnboardingCreate = ({isCreate}) => {
 
   const manager = useSelector(selectManager);
   const dForms = useSelector(selectUserDForms)
-  const workflows = useSelector(selectUserWorkfows)
+  const workflows = useSelector(selectUserWorkflows)
   const reviewers = useSelector(selectUserReviewers)
 
   const closeCreateOnboarding = () => {
