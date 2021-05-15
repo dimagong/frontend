@@ -256,8 +256,8 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
 
 
     if (isEdit) {
-      questionData.question_version.question_id = editQuestion.latest_version.id;
-      dispatch(updateQuestionRequest({data: questionData, questionId: editQuestion.id}))
+      questionData.question_version.question_id = editQuestion.id;
+      dispatch(updateQuestionRequest({data: questionData, questionId: editQuestion.latest_version.id}))
     } else {
       dispatch(createQuestionRequest(questionData))
     }
