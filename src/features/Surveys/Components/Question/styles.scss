@@ -1,0 +1,121 @@
+.question {
+  position: relative;
+  background: white;
+  border-radius: 0.5rem;
+  width: 100%;
+  padding: 38px 66px 20px 66px;
+  box-shadow: 0 3px 6px 0 rgba(0,0,0, 0.16);
+
+  margin-bottom: 40px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &-title {
+    font-weight: bold;
+    color: #4B484D;
+    font-size: 22px;
+    font-family: Montserrat;
+    margin-bottom: 21px;
+  }
+
+  &-action {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    cursor: pointer;
+  }
+
+  &-description {
+    color: #4B484D;
+    font-size: 20px;
+    font-family: Montserrat;
+    font-weight: 300;
+  }
+
+  &-points {
+    font-weight: 500;
+    font-family: Montserrat;
+    color: #4B484D;
+    font-size: 20px;
+    text-align: right;
+    margin-top: 35px;
+  }
+
+  .answer {
+    margin-top: 77px;
+    .title {
+      font-weight: 400;
+      font-family: Montserrat;
+      font-size: 15px;
+      padding-bottom: 20px;
+      color: #4B484D;
+    }
+  }
+
+  .free-text {
+    textarea:disabled {
+      background: transparent;
+    }
+  }
+
+  .multiple-choice {
+
+    .options {
+      .option {
+        box-shadow: 0 3px 6px 0 rgba(0,0,0, 0.16);
+        margin-bottom: 25px;
+        border-radius: 0.5rem;
+        padding: 12px 20px;
+        color: #4B484D;
+        font-size: 16px;
+        font-weight: 300;
+        font-family: Montserrat;
+        display: flex;
+        &-circle {
+          border-radius: 100px;
+          border: 2px solid #4B484D;
+          width: 14px;
+          height: 14px;
+          margin-top: 2px;
+        }
+
+        &-text {
+          padding-left: 10px;
+        }
+
+
+        &.selected {
+          color: #7367F0;
+
+          .option-circle {
+            border-color: #7367F0;
+            background: #7367F0;
+          }
+        }
+      }
+    }
+  }
+
+  &.question-designer {
+
+  }
+
+  &.question-onboarding {
+    .options.option {
+      cursor: pointer;
+
+      &:hover {
+        .option-circle {
+          border-color: #7367F0;
+        }
+      }
+    }
+  }
+
+  &.question-review {
+
+  }
+
+}
