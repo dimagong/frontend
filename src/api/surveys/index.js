@@ -7,11 +7,16 @@ import {
   getFolders,
   createQuestion,
   getQuestionUpdateUrl,
+  getSurveyUrl,
 } from "./constants";
 
 const surveysApi = {
   async getSurveys() {
     return await requestLayout(surveysGetUrl, "GET")
+  },
+
+  async getSurvey({ payload }) {
+    return await requestLayout(getSurveyUrl(payload), "GET")
   },
 
   async createSurvey({ payload }) {

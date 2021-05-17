@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 
 import {
-  Row,
   Col,
   Button,
+  Spinner,
 } from 'reactstrap';
 
 import { Edit } from 'react-feather'
@@ -12,9 +12,9 @@ import SurveysDesignerQuestionsList from "./Components/SurveysDesignerQuestionsL
 
 import "./styles.scss";
 
-const SurveysDesignerComponent = ({ survey, }) => {
+const SurveysDesignerComponent = ({ survey, isSurveyLoading }) => {
 
-  const {latest_version: {title, description, questions} } = survey;
+  const {latest_version} = survey || {};
 
   return (
     <Col className={"survey-designer"} xs={6} >
@@ -24,7 +24,7 @@ const SurveysDesignerComponent = ({ survey, }) => {
             Survey Designer
           </div>
           <div className={"survey-designer_header_survey-name"}>
-            {title}
+            {!isSurveyLoading && latest_version.title}
           </div>
         </div>
         <div className={"survey-designer_header_edit-icon"}>
@@ -32,9 +32,9 @@ const SurveysDesignerComponent = ({ survey, }) => {
         </div>
       </div>
 
-      {questions && !!questions.length ? (
+      {!isSurveyLoading ? (
         <>
-          <SurveysDesignerQuestionsList questions={questions} />
+          <SurveysDesignerQuestionsList questions={latest_version.questions} />
           <Button
             className={"survey-designer_save-button"}
             color="primary"
@@ -44,10 +44,8 @@ const SurveysDesignerComponent = ({ survey, }) => {
           </Button>
         </>
       ) : (
-        <div className="survey-designer_no-questions">
-          There are no questions in this survey currently.
-          Please, design a new question or click on existing question
-          to select and insert question in this survey
+        <div className="survey-designer_loading">
+          <Spinner color="primary" size={40} />
         </div>
       )}
     </Col>

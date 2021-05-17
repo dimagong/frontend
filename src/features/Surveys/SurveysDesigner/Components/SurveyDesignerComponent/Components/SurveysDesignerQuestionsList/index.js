@@ -33,9 +33,17 @@ const SurveysDesignerQuestionsList = ({ questions = [] }) => {
 
   return (
     <div className="survey-designer_question-list">
-      {questions.map((question) => (
-        <SurveyDesignerQuestionListItem question={question} />
-      ))}
+      {questions && !questions.length ? (
+        <div className="survey-designer_no-questions">
+          There are no questions in this survey currently.
+          Please, design a new question or click on existing question
+          to select and insert question in this survey
+        </div>
+      ) : (
+        questions.map((question) => (
+          <SurveyDesignerQuestionListItem question={question} />
+        ))
+      )}
     </div>
   )
 };

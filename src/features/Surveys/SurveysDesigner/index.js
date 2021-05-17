@@ -5,9 +5,8 @@ import { Row } from 'reactstrap'
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  selectSelectedSurveyId,
-  selectSurveys,
   selectFolders,
+  selectSelectedSurvey,
 } from "app/selectors/userSelectors";
 
 import { createLoadingSelector } from "app/selectors/loadingSelector";
@@ -19,6 +18,7 @@ import appSlice from "app/slices/appSlice";
 
 const {
   getFoldersRequest,
+  getSurveyRequest,
 } = appSlice.actions;
 
 const SurveysDesigner = () => {
@@ -27,9 +27,14 @@ const SurveysDesigner = () => {
 
   const [selectedFolderId, setSelectedFolderId] = useState(-1);
 
-  const surveys = useSelector(selectSurveys);
-  const selectedSurveyId = useSelector(selectSelectedSurveyId);
+
   const folders = useSelector(selectFolders);
+
+
+
+  const selectedSurvey = useSelector(selectSelectedSurvey);
+
+  const isSurveyLoading = useSelector(createLoadingSelector([getSurveyRequest.type]));
   const isFoldersLoading = useSelector(createLoadingSelector([getFoldersRequest.type]));
 
 
@@ -42,13 +47,12 @@ const SurveysDesigner = () => {
   }, []);
 
 
-  if (selectedSurveyId === null) return;
-  const selectedSurvey = surveys.filter((survey) => survey.id === selectedSurveyId)[0];
 
   return (
     <Row>
       <SurveysDesignerComponent
         survey={selectedSurvey}
+        isSurveyLoading={isSurveyLoading}
       />
       <QuestionDesignerComponent
         folders={folders}

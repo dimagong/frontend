@@ -14,8 +14,10 @@ const surveysReducer = {
 
   },
 
-  selectSurvey: (state, { payload }) => {
-    state.selectedSurveyId = payload;
+  getSurveySuccess: (state, { payload }) => {
+    state.selectedSurvey = payload;
+    state.isLoading = false;
+    state.error = null;
   },
 
   createFolderSuccess: (state, { payload }) => {
@@ -52,7 +54,7 @@ const surveysReducer = {
 
     state.isLoading = false;
     state.error = null;
-  }
+  },
 };
 
 export default surveysReducer;

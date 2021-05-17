@@ -43,4 +43,11 @@
     margin-top: 50px;
     padding: 13px 78px;
   }
+
+  &_loading {
+    display: flex;
+    height: 90px;
+    align-items: center;
+    justify-content: center;
+  }
 }

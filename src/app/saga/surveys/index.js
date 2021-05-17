@@ -28,6 +28,10 @@ const {
   updateQuestionSuccess,
   updateQuestionRequest,
   updateQuestionError,
+
+  getSurveySuccess,
+  getSurveyRequest,
+  getSurveyError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -91,6 +95,17 @@ function* updateQuestion(payload) {
   }
 }
 
+function* getSurvey(payload) {
+
+  const response = yield call(surveysApi.getSurvey, payload);
+
+  if(response?.message) {
+    yield put(getSurveyError(response.message))
+  } else {
+    yield put(getSurveySuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -99,5 +114,6 @@ export default function* () {
     yield takeLatest(getFoldersRequest.type, getFolders),
     yield takeLatest(createQuestionRequest.type, createQuestion),
     yield takeLatest(updateQuestionRequest.type, updateQuestion),
+    yield takeLatest(getSurveyRequest.type, getSurvey),
   ]);
 }
