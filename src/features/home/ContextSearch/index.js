@@ -34,6 +34,7 @@ import { createLoadingSelector } from 'app/selectors/loadingSelector'
 
 import appSlice from 'app/slices/appSlice'
 import {selectSearchText} from "../../../app/selectors/userSelectors";
+import Dashboard from "./Dashboard";
 
 const {
   getUserManagment,
@@ -198,6 +199,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                           <ChevronUp size={28} />
                         </Button>
                       </div>
+                      {selectedNavItem.id === 'managers' && <Dashboard/>}
                     </div>
                   </div>
                 </div>

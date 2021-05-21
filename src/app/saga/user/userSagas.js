@@ -65,6 +65,9 @@ const {
   getUserOrganizationLogoSuccess,
   getUserOrganizationLogoError,
 
+  updateActivitiesSuccess,
+  updateActivitiesRequest,
+
   getOnboardingsByUserRequest,
   getOnboardingsByUserSuccess,
   getOnboardingsByUserError,
@@ -103,7 +106,12 @@ function* getFilter() {
 
 function* getActivities({payload}) {
   const response = yield call(userApi.getActivities, payload);
-  yield put(getActivitiesSuccess({response, user_id: payload}));
+  yield put(getActivitiesSuccess({response, user_id: payload.managerId, shouldUpdate: payload.shouldUpdate}));
+}
+
+function* updateActivities({payload}) {
+  const response = yield call(userApi.getActivities, payload);
+  yield put(updateActivitiesSuccess({response, user_id: payload.managerId}));
 }
 
 function* postFilter({payload}) {
@@ -150,7 +158,7 @@ function* updateUser({payload}) {
   try {
     const response = yield call(userApi.updateUser, payload);
     yield put(updateUserSuccess(response));
-    yield put(getActivitiesRequest(payload.id));
+    yield put(updateActivitiesRequest({managerId: payload.id, page: 1}))
   } catch (error) {
     yield put(updateUserError(error));
   }
@@ -300,6 +308,7 @@ export default function* () {
     yield takeLatest(getUsersRequest.type, getUsers),
     yield takeLatest(getFilterRequest.type, getFilter),
     yield takeLatest(getActivitiesRequest.type, getActivities),
+    yield takeLatest(updateActivitiesRequest.type, updateActivities),
     yield takeLatest(postFilterRequest.type, postFilter),
     yield takeLatest(deleteFilterRequest.type, deleteFilter),
     yield takeLatest(patchFilterRequest.type, patchFilter),

@@ -12,6 +12,8 @@ import appSlice from "app/slices/appSlice";
 import {selectUserActivity} from "app/selectors/userSelectors";
 import {OverlayTrigger, Tooltip, Button} from "react-bootstrap";
 import {userProfileUpdated} from "constants/activity";
+import SpinnerIcon from 'assets/img/svg/spinner.svg';
+import {selectLoading} from 'app/selectors';
 
 const { getActivitiesRequest } = appSlice.actions;
 
@@ -51,6 +53,8 @@ const Timeline = ({managerId}) => {
 
   const activity = useSelector(selectUserActivity(managerId));
   let data = activity?.data
+
+  const isLoadingData = useSelector(selectLoading)
 
   const getTimePassed = (inputTime) => {
     let time = moment(inputTime);
@@ -105,8 +109,12 @@ const Timeline = ({managerId}) => {
     </td>
   }
 
+  const loadMoreData = () => {
+    dispatch(getActivitiesRequest({managerId: managerId, page: activity.current_page + 1, shouldUpdate: true}))
+  }
+
   useEffect(() => {
-    dispatch(getActivitiesRequest(managerId))
+    dispatch(getActivitiesRequest({managerId: managerId, page: 1, shouldUpdate: false}))
   }, [managerId]);
 
 
@@ -134,6 +142,14 @@ const Timeline = ({managerId}) => {
             })
             }
         </table>
+        {activity?.next_page_url &&
+        <div className={'activity-load-more'}>
+          {isLoadingData ?
+            <img src={SpinnerIcon} alt={'spinner'}/> :
+            <Button onClick={loadMoreData}>Load more</Button>
+          }
+
+        </div>}
       </CardBody>
     </Card>
   )

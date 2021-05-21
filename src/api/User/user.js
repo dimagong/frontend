@@ -36,13 +36,14 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async getActivities(id) {
+  async getActivities(payload) {
     try {
       const result = await instance({
         url: '/api/user/activities',
         method: "GET",
         params: {
-          user_id: id
+          user_id: payload.managerId,
+          page: payload.page
         },
       });
 
