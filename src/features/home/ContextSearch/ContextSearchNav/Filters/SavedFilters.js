@@ -12,20 +12,19 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   const dispatch = useDispatch();
   if (activeFilter && !activeFilter.hasOwnProperty('id')) {
     userFilters.forEach(item => {
-      if (activeFilter.roles.size === item.data.roles.size && [...activeFilter.roles].every(value => item.data.roles.has(value)) &&
-        activeFilter.organizations.size === item.data.organizations.size && [...activeFilter.organizations].every(value => item.data.organizations.has(value))) {
+      if (activeFilter.roles.size === item.value.roles.size && [...activeFilter.roles].every(value => item.value.roles.has(value)) &&
+        activeFilter.organizations.size === item.value.organizations.size && [...activeFilter.organizations].every(value => item.value.organizations.has(value))) {
         setActiveFilter(item);
       }
     })
   }
   const handleSave = () => {
-    if (activeFilter && activeFilter.filter_name === filterName) {
-      if (!(filter.roles.size === activeFilter.data.roles.size && [...filter.roles].every(value => activeFilter.data.roles.has(value)) &&
-        filter.organizations.size === activeFilter.data.organizations.size && [...filter.organizations].every(value => activeFilter.data.organizations.has(value)))) {
-          dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.filter_name,
+    if (activeFilter && activeFilter.value.filter_name === filterName) {
+      if (!(filter.roles.size === activeFilter.value.roles.size && [...filter.roles].every(value => activeFilter.value.roles.has(value)) &&
+        filter.organizations.size === activeFilter.value.organizations.size && [...filter.organizations].every(value => activeFilter.value.organizations.has(value)))) {
+          dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.value.filter_name,
             newFilter: filter}));
       }
-
       setActiveFilter(filter);
     } else {
       postFilter(filterName ? filterName : 'filter set');
@@ -35,8 +34,8 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   const postFilter = (newFilterName) => {
       let isUnique = !!filter;
       userFilters.forEach(item => {
-        if (filter.roles.size === item.data.roles.size && [...filter.roles].every(value => item.data.roles.has(value)) &&
-          filter.organizations.size === item.data.organizations.size && [...filter.organizations].every(value => item.data.organizations.has(value))) {
+        if (filter.roles.size === item.value.roles.size && [...filter.roles].every(value => item.value.roles.has(value)) &&
+          filter.organizations.size === item.value.organizations.size && [...filter.organizations].every(value => item.value.organizations.has(value))) {
           isUnique = false;
         }
       })
@@ -66,8 +65,8 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
     if (actionMeta.action === 'select-option') {
       if (newValue) {
         setActiveFilter(newValue.value);
-        setFilter(newValue.value.data);
-        changeFooter(newValue.value.data);
+        setFilter(newValue.value);
+        changeFooter(newValue.value);
         setFilterName(newValue.value.filter_name);
       } else {
         setActiveFilter(null);
@@ -88,7 +87,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   };
 
   let options = [];
-  userFilters.forEach(item => options.push({value: item, label: item.filter_name}));
+  userFilters.forEach(item => options.push({value: item.value, label: item.value.filter_name}));
 
   const selectStyles = {
     container: styles => ({ ...styles, width: '320px', display: 'inline-block' }),
@@ -111,8 +110,8 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       <CloseIcon/>
     </span>
     <span className={'unsaved'}>
-      {activeFilter && activeFilter.data && !(activeFilter.data.roles.size === filter.roles.size && [...activeFilter.data.roles].every(value => filter.roles.has(value)) &&
-      activeFilter.data.organizations.size === filter.organizations.size && [...activeFilter.data.organizations].every(value => filter.organizations.has(value)))
+      {activeFilter && activeFilter.value && !(activeFilter.value.roles.size === filter.roles.size && [...activeFilter.value.roles].every(value => filter.roles.has(value)) &&
+      activeFilter.value.organizations.size === filter.organizations.size && [...activeFilter.value.organizations].every(value => filter.organizations.has(value)))
       && 'Unsaved'}
     </span>
 
@@ -120,7 +119,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
         <ModalBody>
           <div>
             <span style={{fontSize: "22px"}}>
-            Are you sure you want to delete filter set: {activeFilter && activeFilter.filter_name}?
+            Are you sure you want to delete filter set: {activeFilter?.value?.filter_name}?
           </span>
           </div>
           <div className={"organization-remove-modal_action-buttons"}>

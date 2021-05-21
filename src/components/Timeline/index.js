@@ -49,7 +49,8 @@ const parseTextToComponent = (text) => {
 const Timeline = ({managerId}) => {
   const dispatch = useDispatch();
 
-  const data = useSelector(selectUserActivity(managerId));
+  const activity = useSelector(selectUserActivity(managerId));
+  let data = activity?.data
 
   const getTimePassed = (inputTime) => {
     let time = moment(inputTime);
