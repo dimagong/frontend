@@ -41,6 +41,7 @@ const {
   getNotificationsRequest,
   getWorkflowsRequest,
   setContext,
+  getFilterRequest
 } = appSlice.actions;
 
 const ContextSearch = ({isShown, onContextSearchHide}) => {
@@ -127,10 +128,11 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
   useEffect(() => {
     if (isAuth && vuexyUser) {
+      dispatch(getFilterRequest());
       dispatch(getUserManagment());
       dispatch(getWorkflowsRequest());
       dispatch(getdFormsRequest());
-      dispatch(getNotificationsRequest())
+      dispatch(getNotificationsRequest());
     }
   }, [isAuth, vuexyUser]);
 

@@ -84,12 +84,6 @@ function* getProfile() {
     yield put(loginWithJWT(response));
     yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}));
 
-    // todo refactor (requested in prospect view), add constants for each ability (adviser, prospect)
-    const isManagerView = ['adviser', 'prospect'].indexOf(response.permissions.ability) === -1;
-    if(isManagerView) {
-      yield put(getFilterRequest());
-    }
-
   } catch (error) {
     console.log(error);
     yield put(getProfileError(error));
