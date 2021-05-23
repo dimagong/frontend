@@ -32,7 +32,15 @@ const FolderTemplate = ({ folderData, isSelected, onClick }) => {
   )
 };
 
-const QuestionDesignerComponent = ({ folders, selectedFolderId, onFolderSelect, isFoldersLoading, onSetSelectedQuestion }) => {
+const QuestionDesignerComponent = ({
+  folders,
+  selectedFolderId,
+  onFolderSelect,
+  isFoldersLoading,
+  onQuestionSelect,
+  selectedQuestionId,
+  questionsInSurvey = [],
+}) => {
   const [isCreateFolderModalVisible, setIsCreateFolderModalVisible] = useState(false);
   const [isCreateQuestionModalVisible, setIsCreateQuestionModalVisible] = useState(false);
 
@@ -45,7 +53,7 @@ const QuestionDesignerComponent = ({ folders, selectedFolderId, onFolderSelect, 
   };
 
   const handleQuestionEdit = (questionId) => {
-    setQuestionForEdit(selectedFolder.questions.filter((question) => question.latest_version.id === questionId)[0]);
+    setQuestionForEdit(selectedFolder.questions.filter((question) => question.latest_version.question_id === questionId)[0]);
     setIsCreateQuestionModalVisible(true)
   };
 
@@ -58,7 +66,7 @@ const QuestionDesignerComponent = ({ folders, selectedFolderId, onFolderSelect, 
   };
 
   const handleQuestionSelect = (questionData) => {
-    console.log(questionData)
+    onQuestionSelect(questionData);
   };
 
   useEffect(() => {
@@ -127,9 +135,11 @@ const QuestionDesignerComponent = ({ folders, selectedFolderId, onFolderSelect, 
                     questionNumber={index + 1}
                     onEdit={handleQuestionEdit}
                     onClick={handleQuestionSelect}
+                    isInSurvey={~questionsInSurvey.findIndex((questionId) => question.latest_version.question_id === questionId)}
+                    isSelected={question.latest_version.question_id === selectedQuestionId}
                   />
-                ))
-              )}
+                )
+              ))}
             </div>
           </>
         )}

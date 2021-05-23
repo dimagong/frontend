@@ -33,7 +33,7 @@
     color: #4B484D;
     font-family: 'Montserrat';
     font-weight: 500;
-    margin: 0 auto;
+    margin: 105px auto;
     max-width: 500px;
     text-align: center;
   }
@@ -49,5 +49,9 @@
     height: 90px;
     align-items: center;
     justify-content: center;
+  }
+
+  .question {
+    cursor: default;
   }
 }

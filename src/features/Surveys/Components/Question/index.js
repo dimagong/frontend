@@ -4,12 +4,12 @@ import DesignerQuestion from "./Components/DesignerQuestion";
 
 import './styles.scss'
 
-const Question = ({ displayType, question, questionNumber, isSurveyDesigner, onEdit, onClick }) => {
+const Question = ({ displayType, question, questionNumber, isSurveyDesigner, onEdit, onClick, isInSurvey, isSelected, handleRemoveQuestionFromSurvey }) => {
 
   const commonProps = {
     displayType,
     questionNumber,
-    questionData: question.latest_version,
+    questionData: question,
   };
 
   return {
@@ -18,6 +18,9 @@ const Question = ({ displayType, question, questionNumber, isSurveyDesigner, onE
                   isSurveyDesigner={isSurveyDesigner}
                   onEdit={onEdit}
                   onClick={onClick}
+                  isInSurvey={isInSurvey}
+                  isSelected={isSelected}
+                  onRemove={handleRemoveQuestionFromSurvey}
                 />
   }[displayType]
 };
