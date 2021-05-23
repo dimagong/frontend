@@ -7,11 +7,17 @@ import {
   getFolders,
   createQuestion,
   getQuestionUpdateUrl,
+  getSurveyUrl,
+  getSurveyUpdateUrl,
 } from "./constants";
 
 const surveysApi = {
   async getSurveys() {
     return await requestLayout(surveysGetUrl, "GET")
+  },
+
+  async getSurvey({ payload }) {
+    return await requestLayout(getSurveyUrl(payload), "GET")
   },
 
   async createSurvey({ payload }) {
@@ -34,6 +40,10 @@ const surveysApi = {
     return await requestLayout(getQuestionUpdateUrl(payload.questionId), "PUT", payload.data)
   },
 
+  async updateSurvey({ payload }) {
+    console.log("test", payload);
+    return await requestLayout(getSurveyUpdateUrl(payload.surveyId), "PUT", payload.data)
+  },
 };
 
 export default surveysApi;

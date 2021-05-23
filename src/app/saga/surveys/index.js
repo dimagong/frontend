@@ -28,6 +28,14 @@ const {
   updateQuestionSuccess,
   updateQuestionRequest,
   updateQuestionError,
+
+  getSurveySuccess,
+  getSurveyRequest,
+  getSurveyError,
+
+  updateSurveySuccess,
+  updateSurveyRequest,
+  updateSurveyError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -81,13 +89,32 @@ function* createQuestion(payload) {
 }
 
 function* updateQuestion(payload) {
-  console.log("update question payload", payload);
   const response = yield call(surveysApi.updateQuestion, payload);
 
   if(response?.message) {
     yield put(updateQuestionError(response.message))
   } else {
     yield put(updateQuestionSuccess({response, folderId: payload.payload.data.folder_id}))
+  }
+}
+
+function* getSurvey(payload) {
+  const response = yield call(surveysApi.getSurvey, payload);
+
+  if(response?.message) {
+    yield put(getSurveyError(response.message))
+  } else {
+    yield put(getSurveySuccess(response))
+  }
+}
+
+function* updateSurvey(payload) {
+  const response = yield call(surveysApi.updateSurvey, payload);
+
+  if(response?.message) {
+    yield put(updateSurveyError(response.message))
+  } else {
+    yield put(updateSurveySuccess(response))
   }
 }
 
@@ -99,5 +126,7 @@ export default function* () {
     yield takeLatest(getFoldersRequest.type, getFolders),
     yield takeLatest(createQuestionRequest.type, createQuestion),
     yield takeLatest(updateQuestionRequest.type, updateQuestion),
+    yield takeLatest(getSurveyRequest.type, getSurvey),
+    yield takeLatest(updateSurveyRequest.type, updateSurvey),
   ]);
 }

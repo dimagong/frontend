@@ -5,8 +5,10 @@
   width: 100%;
   padding: 38px 66px 20px 66px;
   box-shadow: 0 3px 6px 0 rgba(0,0,0, 0.16);
-
+  border: 2px solid transparent;
   margin-bottom: 40px;
+  cursor: pointer;
+
 
   &:last-child {
     margin-bottom: 0;
@@ -25,6 +27,26 @@
     right: 10px;
     top: 12px;
     cursor: pointer;
+  }
+
+  &.selected {
+    border-color: #7367F0;
+  }
+
+  &.added {
+    background: #f5f5f5;
+    cursor: default;
+    .question-added-icon {
+      display: block;
+    }
+  }
+
+  &-added-icon {
+    color: green;
+    position: absolute;
+    top: 22px;
+    left: 23px;
+    display: none;
   }
 
   &-description {

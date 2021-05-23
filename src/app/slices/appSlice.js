@@ -25,7 +25,7 @@ export const initialState = {
   preview: null,
   surveys: [],
   folders: null,
-  selectedSurveyId: null,
+  selectedSurvey: null,
   organizations: {
     selectedOrganizationIdAndType: {id: null, type: null},
     corporation: [],

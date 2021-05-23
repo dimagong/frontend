@@ -16,7 +16,7 @@ import appSlice from "app/slices/appSlice";
 
 const {
   setContext,
-  selectSurvey,
+  getSurveyRequest,
 } = appSlice.actions;
 
 const Surveys = () => {
@@ -35,7 +35,7 @@ const Surveys = () => {
   };
 
   const handleSurveySelect = (selectedSurveyId) => {
-    dispatch(selectSurvey(selectedSurveyId));
+    dispatch(getSurveyRequest(selectedSurveyId));
     setSelectedItemId(selectedSurveyId);
     dispatch(setContext("Survey"))
   };
