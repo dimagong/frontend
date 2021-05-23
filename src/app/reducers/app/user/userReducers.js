@@ -62,6 +62,18 @@ const updateActivitiesSuccess = (state, {payload}) => {
   }
 };
 
+const getDashboardDataSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  if (state.user.dashboard.hasOwnProperty('usersActivities') && payload.usersActivities.current_page > state.user.dashboard.usersActivities.current_page) {
+    let newData = state.user.dashboard.usersActivities.data.concat(payload.usersActivities.data)
+    state.user.dashboard = payload;
+    state.user.dashboard.usersActivities.data = newData;
+  } else {
+    state.user.dashboard = payload
+  }
+}
+
 const postFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
@@ -409,6 +421,7 @@ export default {
   getUserPermissionsSuccess,
   setSearch,
   updateActivitiesSuccess,
+  getDashboardDataSuccess,
 
   setUser,
   setManager,

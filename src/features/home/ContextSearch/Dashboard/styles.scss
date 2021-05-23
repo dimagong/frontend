@@ -1,15 +1,109 @@
 .activity-dashboard {
   margin-top: 7vh;
   .dashboard-charts {
-    border: black solid 1px;
+    width: 95vw;
     text-align: center;
+    .arrow-open-activities {
+      position: absolute;
+      right: 4vw;
+      bottom: 15px;
+      cursor: pointer;
+    }
+    .arrow-left {
+      position: absolute;
+      left: 35px;
+      margin-top: 229px;
+      cursor: pointer;
+    }
+    .dashboard-one-chart {
+      border: #7367f0 solid 1px;
+      padding-bottom: 20px;
+      width: 100%;
+    }
+    .dashboard-chart-parts {
+      display: inline-flex;
+      position: relative;
+      width: 49%;
+      border: #7367f0 solid 1px;
+      padding-bottom: 20px;
+    }
+    .change-chart-days {
+      position: absolute;
+      right: 80px;
+      margin-top: 5px;
+      .chart-days {
+        width: 34px;
+        height: 25px;
+        line-height: 25px;
+        margin-right: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+        display: inline-block;
+        background: #f0f0f0;
+      }
+      .active-days {
+        background: #7367f0;
+        color: white;
+      }
+    }
+    .multiple-change-chart-days {
+      right: 40px;
+    }
+
   }
+
   .dashboard-activities {
-    border: black solid 1px;
-  }
-  .dashboard-chart {
-    width: 600px!important;
-    height: 300px!important;
+    padding-left: 10px;
+    width: 95vw;
+    border: #7367f0 solid 1px;
+    .users-activities-title {
+        position: absolute;
+        margin-top: 8px;
+        color: rgb(112, 112, 112);
+        left: 25px;
+      }
+    .arrow-close-activities {
+      position: absolute;
+      right: 4vw;
+      margin-top: -30px;
+      cursor: pointer;
+    }
+    .action-date {
+      margin-bottom: 1vh;
+      margin-top: 1vh;
+    }
+    .dashboard-action:hover {
+      border-right: #7367F0 solid 3px;
+    }
+    .dashboard-action {
+      height: 40px;
+      line-height: 40px;
+      margin: 10px 1vw;
+      box-shadow: 0 1px 2px grey;
+      border-right: #9aa9b7 solid 3px;
+      .action-user-avatar {
+        width: 40px;
+        height: 40px;
+        padding-bottom: 1px;
+        margin-right: 10px;
+      }
+      .action-user-name {
+        width: 150px;
+        display: inline-block;
+      }
+      .action-user-org {
+        display: inline-block;
+        width: 150px;
+      }
+      .action-user-description {
+        display: inline-block;
+      }
+      .action-user-time {
+        display: inline-block;
+        float: right;
+        padding-right: 20px;
+      }
+    }
   }
 }
 
