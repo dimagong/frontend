@@ -1,0 +1,12 @@
+.loading-button {
+
+  &_spinner {
+    position: relative;
+    left: calc(50% - calc(1rem / 2));
+  }
+  &_value {
+    font-weight: 500;
+    margin-left: -1rem;
+  }
+}
+

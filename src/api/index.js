@@ -52,4 +52,19 @@ instance.interceptors.response.use(
   }
 );
 
+export const requestLayout = async (url, method, data) => {
+
+  try {
+    const result = await instance({
+      url,
+      method,
+      data,
+    });
+
+    return result.data.data;
+  } catch (err) {
+    return err.response.data.error;
+  }
+};
+
 export default instance;

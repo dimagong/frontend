@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {  lazy } from "react"
 // import Login from "features/auth/login/Login";
 // import ResetPassword from "features/auth/ResetPassword";
@@ -12,7 +14,9 @@ import {
   invitationPath,
   onboardingProcessPath,
   masterSchemaPath,
-  userProfilePath
+  userProfilePath,
+  surveysDesignerExplore,
+  surveysDesignerCreate,
 } from "constants/paths";
 
 const Login = lazy(() => import("features/auth/login/Login"));
@@ -26,10 +30,22 @@ const Invitation = lazy(() => import("features/invitation/Invitation"));
 const Home = lazy(() => import("features/home/Home"));
 const Error404 = lazy(() => import("components/misc/error/404"));
 const MasterSchema = lazy(() => import("views/pages/master-schema/index"));
-
+// const SurveysDesigner = lazy(() => import("features/Surveys/SurveysDesigner/index"));
 const UserProfile = lazy(() => import("features/user-managment/userEdit/UserEdit"));
 
 const routes = [
+  // {
+  //   path: surveysDesignerExplore,
+  //   Component: SurveysDesigner,
+  //   isPrivate: true,
+  //   redirect: loginPath,
+  // },
+  // {
+  //   path: surveysDesignerCreate,
+  //   Component: () => <SurveysDesigner isCreate />,
+  //   isPrivate: true,
+  //   redirect: loginPath,
+  // },
   {
     path: userProfilePath,
     Component: UserProfile,

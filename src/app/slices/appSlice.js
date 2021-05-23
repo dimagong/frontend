@@ -23,6 +23,9 @@ export const initialState = {
   isContextSearchVisible: true,
   context: null,
   preview: null,
+  surveys: [],
+  folders: null,
+  selectedSurvey: null,
   organizations: {
     selectedOrganizationIdAndType: {id: null, type: null},
     corporation: [],
