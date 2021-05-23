@@ -10,7 +10,8 @@ import ArrowLeft from "assets/img/svg/arrow_left.svg";
 import ArrowRight from "assets/img/svg/arrow_right.svg";
 
 const {
-  getDashboardDataRequest
+  getDashboardDataRequest,
+  getActivityTypesRequest
 } = appSlice.actions;
 
 const Dashboard = ({ }) => {
@@ -21,7 +22,8 @@ const Dashboard = ({ }) => {
   const [daysNumber, setDaysNumber] = useState([7, 7])
 
   useEffect(() => {
-    dispatch(getDashboardDataRequest({page: 1}))
+    dispatch(getDashboardDataRequest({page: 1}));
+    dispatch(getActivityTypesRequest());
   }, []);
 
   return (<div className={'activity-dashboard'}>
@@ -44,7 +46,6 @@ const Dashboard = ({ }) => {
               chartId={'one-chart'}
               data={dashboardData?.usersActivitiesSchedule}
               aspectRatio={4}
-              width={'1000'}
               daysNumber={daysNumber[0]}
             />
           </div>
@@ -70,7 +71,6 @@ const Dashboard = ({ }) => {
                   chartId={'chart-' + item.toString()}
                   data={dashboardData?.usersActivitiesSchedule}
                   aspectRatio={2}
-                  width={'500'}
                   daysNumber={daysNumber[item]}
                 />
               </div>)}

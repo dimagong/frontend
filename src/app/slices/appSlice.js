@@ -50,6 +50,7 @@ export const initialState = {
     filters: [],
     searchText: '',
     dashboard: {},
+    activityTypes: [],
   },
   masterSchema: {
     fields: []

@@ -86,6 +86,12 @@ const postFilterSuccess = (state, { payload }) => {
   toast.success(`The filter set '${payload.response.data.value.filter_name}' was added`);
 };
 
+const getActivityTypesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.activityTypes = payload
+}
+
 const patchFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
@@ -422,6 +428,7 @@ export default {
   setSearch,
   updateActivitiesSuccess,
   getDashboardDataSuccess,
+  getActivityTypesSuccess,
 
   setUser,
   setManager,

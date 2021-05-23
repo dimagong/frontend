@@ -3,7 +3,7 @@ import Chart from 'chart.js/auto';
 import moment from "moment";
 
 
-const LineChart = ({ data, chartId, aspectRatio, width, daysNumber}) => {
+const LineChart = ({ data, chartId, aspectRatio, daysNumber}) => {
   const [chartIsCreated, setChartIsCreated] = useState(false);
   const [currChart, setCurrChart] = useState(null);
   let pointsY = [];
@@ -39,6 +39,9 @@ const LineChart = ({ data, chartId, aspectRatio, width, daysNumber}) => {
         }
         default: {
           let currMonth = moment().subtract(daysNumber - i, 'days').format('MMM');
+          if (currMonth === moment().format('MMM') && labels.length === 0) {
+            break;
+          }
           if (labels.length ===0 || currMonth !== labels[labels.length - 1]) {
            labels.push(currMonth);
            if (data[currDate]) {
@@ -70,7 +73,7 @@ const config = {
   data: dataToShow,
   options: {
     animated: true,
-    responsive: false,
+    responsive: true,
     aspectRatio: aspectRatio,
     plugins: {
       legend: {
@@ -80,6 +83,10 @@ const config = {
         display: true,
         text: 'Activities'
       }
+    },
+    interaction: {
+      mode: 'index',
+      intersect: false
     },
   },
 };
@@ -109,14 +116,11 @@ const config = {
     }
   }, [daysNumber])
 
-  return (
+  return ( <div style={{width: '100%', height: "auto", position: 'relative', zIndex: 10}}>
     <canvas
-      height='250'
-      width={width}
-      style={{margin: 'auto'}}
       id={chartId}
       className={'dashboard-chart'}
-    />
+    /></div>
   )
 }
 

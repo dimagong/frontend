@@ -80,6 +80,9 @@ const {
   getDashboardDataSuccess,
   getDashboardDataError,
 
+  getActivityTypesRequest,
+  getActivityTypesSuccess,
+
   getUserOnboardingRequest
 } = appSlice.actions;
 
@@ -121,6 +124,11 @@ function* updateActivities({payload}) {
 function* getDashboardData({payload}) {
   const response = yield call(userApi.getDashboardData, payload);
   yield put(getDashboardDataSuccess(response));
+}
+
+function* getActivityTypes() {
+  const response = yield call(userApi.getActivityTypes);
+  yield put(getActivityTypesSuccess(response));
 }
 
 function* postFilter({payload}) {
@@ -319,6 +327,7 @@ export default function* () {
     yield takeLatest(getActivitiesRequest.type, getActivities),
     yield takeLatest(updateActivitiesRequest.type, updateActivities),
     yield takeLatest(getDashboardDataRequest.type, getDashboardData),
+    yield takeLatest(getActivityTypesRequest.type, getActivityTypes),
     yield takeLatest(postFilterRequest.type, postFilter),
     yield takeLatest(deleteFilterRequest.type, deleteFilter),
     yield takeLatest(patchFilterRequest.type, patchFilter),
