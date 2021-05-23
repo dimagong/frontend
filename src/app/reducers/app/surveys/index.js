@@ -17,6 +17,9 @@ const surveysReducer = {
   },
 
   getSurveySuccess: (state, { payload }) => {
+
+    const survey = payload;
+    survey.latest_version.latest_questions = survey.latest_version.latest_questions.map((question, index) => ({...question, order: index}));
     state.selectedSurvey = payload;
     state.isLoading = false;
     state.error = null;
