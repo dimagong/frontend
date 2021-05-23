@@ -36,16 +36,53 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async getActivities(id) {
+  async getActivities(payload) {
     try {
       const result = await instance({
         url: '/api/user/activities',
         method: "GET",
         params: {
-          user_id: id
+          user_id: payload.managerId,
+          page: payload.page
         },
       });
 
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getDashboardData(payload) {
+    let params = payload.filter?.type
+      ? {
+        page: payload.page,
+        'filter[type]': payload.filter.type,
+        'filter[value]': payload.filter.value,
+      }
+      : {
+        page: payload.page,
+      }
+    try {
+      const result = await instance({
+        url: '/api/user/activities-dashboard',
+        method: "GET",
+        params: params
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getActivityTypes() {
+    try {
+      const result = await instance({
+        url: '/api/user/activity-types',
+        method: "GET",
+      });
+      console.log('result', result);
       return result.data.data;
 
     } catch (err) {

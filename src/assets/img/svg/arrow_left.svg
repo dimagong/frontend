@@ -1,0 +1,14 @@
+<svg version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 24" width="24" height="32">
+	<title>Dashboard</title>
+	<style>
+		tspan { white-space:pre }
+		.shp0 { fill: #f0f0f0 }
+		.shp1 { fill: #707070 }
+	</style>
+	<g id="Dashboard">
+		<g id="Group 199">
+			<path id="Rectangle 50" class="shp0" d="M9 0L9 0C13.98 0 18 4.02 18 9L18 15C18 19.98 13.98 24 9 24L9 24C4.02 24 0 19.98 0 15L0 9C0 4.02 4.02 0 9 0Z" />
+			<path id="chevron-small-down" class="shp1" d="M11.59 16.29C11.9 16.6 11.9 17.1 11.59 17.41C11.29 17.72 10.79 17.72 10.48 17.41L6.08 12.92C5.78 12.61 5.78 12.11 6.08 11.8L10.48 7.31C10.79 7 11.29 7 11.59 7.31C11.9 7.62 11.9 8.13 11.59 8.43L7.99 12.36L11.59 16.29L11.59 16.29Z" />
+		</g>
+	</g>
+</svg>

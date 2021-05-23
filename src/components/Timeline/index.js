@@ -12,10 +12,12 @@ import appSlice from "app/slices/appSlice";
 import {selectUserActivity} from "app/selectors/userSelectors";
 import {OverlayTrigger, Tooltip, Button} from "react-bootstrap";
 import {userProfileUpdated} from "constants/activity";
+import SpinnerIcon from 'assets/img/svg/spinner.svg';
+import {selectLoading} from 'app/selectors';
 
 const { getActivitiesRequest } = appSlice.actions;
 
-const parseTextToComponent = (text) => {
+export const parseTextToComponent = (text) => {
   let indexes = [];
   let currIndex = -1;
   for (let i = 0; i < text.length; ++i) {
@@ -42,21 +44,9 @@ const parseTextToComponent = (text) => {
       </span>
     })}
   </span>
-
 }
 
-
-const Timeline = ({managerId}) => {
-  const dispatch = useDispatch();
-
-  const activity = useSelector(selectUserActivity(managerId));
-  let data = activity?.data
-
-  const getTimePassed = (inputTime) => {
-    let time = moment(inputTime);
-    return time.format('L') + ' ' + time.format('LT');
-  }
-  const getEditMessage = (editData) => {
+export const getEditMessage = (editData) => {
     let messageParts = editData.description.split(' ');
     let index = messageParts.findIndex(item => item[0] === '%');
 
@@ -95,18 +85,36 @@ const Timeline = ({managerId}) => {
           </Tooltip>
         }
       >
-        <span className={'activity-profile-update'}>{changedOptions[i].name.toLowerCase()}</span>
+        <span className={'activity-profile-update'}><strong>{changedOptions[i].name.toLowerCase()}</strong></span>
       </OverlayTrigger>{addBreaker}</span>)
       }
 
-    return <td>
+    return <span>
       {parseTextToComponent(messageParts.splice(0, index).join(' ') + ' ')}
       {newMessage}
-    </td>
+    </span>
+  }
+
+
+const Timeline = ({managerId}) => {
+  const dispatch = useDispatch();
+
+  const activity = useSelector(selectUserActivity(managerId));
+  let data = activity?.data
+
+  const isLoadingData = useSelector(selectLoading)
+
+  const getTimePassed = (inputTime) => {
+    let time = moment(inputTime);
+    return time.format('L') + ' ' + time.format('LT');
+  }
+
+  const loadMoreData = () => {
+    dispatch(getActivitiesRequest({managerId: managerId, page: activity.current_page + 1, shouldUpdate: true}))
   }
 
   useEffect(() => {
-    dispatch(getActivitiesRequest(managerId))
+    dispatch(getActivitiesRequest({managerId: managerId, page: 1, shouldUpdate: false}))
   }, [managerId]);
 
 
@@ -127,13 +135,21 @@ const Timeline = ({managerId}) => {
                 return <tr>
                   <td>{getTimePassed(item.created_at)}</td>
                   {item.action_type.name === userProfileUpdated
-                    ? message
+                    ? <td>{message}</td>
                     : <td>{parseTextToComponent(item.description)}</td>}
                 </tr>
               }
             })
             }
         </table>
+        {activity?.next_page_url &&
+        <div className={'activity-load-more'}>
+          {isLoadingData ?
+            <img src={SpinnerIcon} alt={'spinner'}/> :
+            <Button onClick={loadMoreData}>Load more</Button>
+          }
+
+        </div>}
       </CardBody>
     </Card>
   )

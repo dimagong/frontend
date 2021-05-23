@@ -1,0 +1,160 @@
+.activity-dashboard {
+  margin-top: 7vh;
+  .dashboard-charts {
+    width: 95vw;
+    text-align: center;
+    .arrow-open-activities {
+      z-index: 10;
+      position: absolute;
+      right: 4vw;
+      bottom: 15px;
+      cursor: pointer;
+    }
+    .arrow-left {
+      position: absolute;
+      left: 35px;
+      bottom: 15px;
+      z-index: 100;
+      cursor: pointer;
+    }
+    .dashboard-one-chart {
+      position: relative;
+      border: #7367f0 solid 1px;
+      padding-bottom: 20px;
+      width: 100%;
+    }
+    .dashboard-chart-parts {
+      display: inline-flex;
+      position: relative;
+      width: 49%;
+      border: #7367f0 solid 1px;
+      padding-bottom: 20px;
+    }
+    .change-chart-days {
+      position: absolute;
+      right: 80px;
+      margin-top: 5px;
+      z-index: 100;
+      .chart-days {
+        width: 34px;
+        height: 25px;
+        line-height: 25px;
+        margin-right: 10px;
+        cursor: pointer;
+        border-radius: 50%;
+        display: inline-block;
+        background: #f0f0f0;
+      }
+      .active-days {
+        background: #7367f0;
+        color: white;
+      }
+    }
+    .multiple-change-chart-days {
+      right: 40px;
+    }
+
+  }
+
+  .dashboard-activities {
+    padding-left: 10px;
+    width: 95vw;
+    border: #7367f0 solid 1px;
+    position: relative;
+    .filter-icon-box {
+      left: 185px;
+      position: absolute;
+      top: 18px;
+    }
+    .filter-tab {
+      top: 30px;
+      position: absolute;
+      right: 200px;
+      font-size: small;
+      cursor: unset!important;
+      border-color: #9aa9b7 !important;
+      background-color: #b8c2cc !important;
+      z-index: 100;
+      .nav-text {
+        margin-right: 10px;
+        float: left;
+      }
+      .close-nav {
+        cursor: pointer;
+        float: right;
+        margin-left: 10px;
+        background: #FFFFFF!important;
+        padding: 0 1px 1px 1px;
+        font-size: small;
+        border-radius: 10px;
+        svg {
+          color: #95989a!important;
+          font-size: small;
+        }
+      }
+    }
+    span h5 {
+      font-weight: bold;
+      color: #707070
+    }
+    .dashboard-titles {
+      position: absolute;
+      margin-top: -25px;
+      .dashboard-column-title {
+        display: inline-block;
+      }
+    }
+
+    .users-activities-title {
+        position: absolute;
+        margin-top: 15px;
+        color: rgb(112, 112, 112);
+        left: 25px;
+      }
+    .arrow-close-activities {
+      position: absolute;
+      right: 4vw;
+      margin-top: -30px;
+      cursor: pointer;
+    }
+    .action-date {
+      margin-bottom: 1vh;
+    }
+    .dashboard-action:hover {
+      border-right: #7367F0 solid 3px;
+    }
+    .dashboard-action {
+      height: 40px;
+      line-height: 40px;
+      margin: 10px 1vw;
+      box-shadow: 0 1px 2px grey;
+      border-right: #9aa9b7 solid 3px;
+      .action-user-avatar {
+        width: 40px;
+        height: 40px;
+        padding-bottom: 1px;
+        margin-right: 10px;
+      }
+      .action-user-name {
+        width: 150px;
+        display: inline-block;
+        span {
+          cursor: pointer;
+        }
+      }
+      .action-user-org {
+        display: inline-block;
+        width: 150px;
+      }
+      .action-user-description {
+        display: inline-block;
+      }
+      .action-user-time {
+        display: inline-block;
+        float: right;
+        padding-right: 20px;
+      }
+    }
+  }
+}
+
