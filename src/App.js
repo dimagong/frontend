@@ -25,7 +25,7 @@ function App() {
   return (
     <ConnectedRouter history={history}>
       <Router history={history}>
-        <Scrollbars>
+        <Scrollbars className={"scrollbar-container"}>
           <Routes />
         </Scrollbars>
       </Router>
