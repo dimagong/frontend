@@ -35,7 +35,7 @@ const Dashboard = ({ }) => {
   return (<div className={'activity-dashboard'}>
     <h1 style={{fontWeight: 'bolder', color: '#707070'}}>Dashboard</h1>
     {isChartShown && <div className={'dashboard-charts'}>
-      <div style={isOneChartShown ? {width: '45%'} : {width: '22.5%'}} className={'dashboard-one-chart'}>
+      <div style={isOneChartShown ? {width: '45%', background: 'white'} : {width: '22.5%', background: 'white'}} className={'dashboard-one-chart'}>
             <span className={'arrow-left'}>
               <img src={isOneChartShown ? ArrowLeft : ArrowRight} onClick={() => setIsOneChartShown(!isOneChartShown)}/>
               <img src={CloseChart} className={'close-chart'} onClick={() => setIsChartShown(false)}/>
@@ -61,7 +61,7 @@ const Dashboard = ({ }) => {
       </div>
     </div>}
     {isActivitiesShown &&
-    <div style={isChartShown ? {borderTopColor: '#7367f0'} : {borderTopColor: '#707070'}} className={'dashboard-activities'}>
+    <div style={isChartShown ? {borderTopColor: '#7367f0', background: 'white'} : {borderTopColor: '#707070', background: 'white'}} className={'dashboard-activities'}>
       <h3 className={'users-activities-title'}>Users activities</h3>
       <ActivitiesDashboard
         usersActivities={dashboardData?.usersActivities}
