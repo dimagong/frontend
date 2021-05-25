@@ -1,6 +1,7 @@
 .activity-dashboard {
   margin-top: 7vh;
   .dashboard-charts {
+    z-index: 2;
     text-align: center;
     .arrow-open-activities {
       z-index: 100;
@@ -68,9 +69,11 @@
   }
 
   .dashboard-activities {
+    top: -1px;
+    z-index: 1;
     padding-left: 10px;
     width: 45%;
-    border: #7367f0 solid 1px;
+    border: #707070 solid 1px;
     position: relative;
     .filter-icon-box {
       left: 185px;
@@ -129,7 +132,8 @@
       cursor: pointer;
     }
     .action-date {
-      margin-bottom: 1vh;
+      margin-bottom: 20px;
+      margin-top: 20px;
     }
     .dashboard-action:hover {
       border-right: #7367F0 solid 3px;
@@ -138,8 +142,8 @@
       font-size: smaller;
       height: 40px;
       line-height: 40px;
-      margin: 10px 1vw;
-      box-shadow: 0 1px 2px grey;
+      margin: 10px 1vw 10px 0;
+      box-shadow: 0 2px 5px #dfdfdf;
       border-right: #9aa9b7 solid 3px;
       .action-user-avatar {
         width: 40px;

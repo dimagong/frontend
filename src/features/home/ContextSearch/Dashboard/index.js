@@ -61,7 +61,7 @@ const Dashboard = ({ }) => {
       </div>
     </div>}
     {isActivitiesShown &&
-    <div className={'dashboard-activities'}>
+    <div style={isChartShown ? {borderTopColor: '#7367f0'} : {borderTopColor: '#707070'}} className={'dashboard-activities'}>
       <h3 className={'users-activities-title'}>Users activities</h3>
       <ActivitiesDashboard
         usersActivities={dashboardData?.usersActivities}
