@@ -17,7 +17,7 @@ const FilterBox = ({ managers, filter, setFilter, setIsFilterBoxOpen, setIsFilte
     top: '45px',
     left: '185px',
     zIndex: 10,
-    width: '30%',
+    width: '20vw',
   }
 
   const handleChange = (newValue, actionMeta) => {
