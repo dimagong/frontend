@@ -8,6 +8,7 @@ const LineChart = ({ data, chartId, aspectRatio, daysNumber}) => {
   const [currChart, setCurrChart] = useState(null);
   let pointsY = [];
   let labels = [];
+  let isSmall = aspectRatio === 1.5;
 
   if (data) {
     for (let i = 1; i <= daysNumber; ++i) {
@@ -78,16 +79,33 @@ const config = {
     plugins: {
       legend: {
         position: 'bottom',
+        align: isSmall ? 'end' : 'center',
+        labels: {
+          usePointStyle: true
+        }
       },
       title: {
         display: true,
-        text: 'Activities'
+        text: '       Activities',
+        align: 'start',
       }
     },
     interaction: {
       mode: 'index',
       intersect: false
     },
+    scales: {
+      x: {
+        grid: {
+          display: null,
+        }
+      },
+      y: {
+        grid: {
+          display: null,
+        }
+      },
+    }
   },
 };
 
@@ -114,7 +132,7 @@ const config = {
       );
       setCurrChart(myChart)
     }
-  }, [daysNumber])
+  }, [daysNumber, aspectRatio])
 
   return ( <div style={{width: '100%', height: "auto", position: 'relative', zIndex: 10}}>
     <canvas
