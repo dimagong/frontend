@@ -118,7 +118,14 @@ const surveysReducer = {
 
     state.isLoading = false;
     state.error = null;
-  }
+  },
+
+  getSelectedQuestionVersionsSuccess: (state, { payload }) => {
+    state.selectedQuestionVersions = payload;
+
+    state.isLoading = false;
+    state.error = null;
+  },
 };
 
 export default surveysReducer;

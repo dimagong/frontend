@@ -14,6 +14,7 @@ import { Cancel } from '@material-ui/icons'
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { usePrevious } from "hooks/common";
 import { selectError } from "app/selectors";
+import { selectQuestionVersions } from "app/selectors/userSelectors";
 
 import * as yup from 'yup';
 
@@ -24,6 +25,7 @@ import appSlice from "app/slices/appSlice";
 const {
   createQuestionRequest,
   updateQuestionRequest,
+  getSelectedQuestionVersionsRequest,
 } = appSlice.actions;
 
 const questionTypes = [
@@ -134,6 +136,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
 
   const dispatch = useDispatch();
 
+  const [questionVersion, setQuestionVersion] = useState(null);
   const [questionType, setQuestionType] = useState(questionTypes[0]);
   const [questionFolder, setQuestionFolder] = useState({label: selectedFolder.name, value: selectedFolder});
   const [isHintEnabled, setIsHintEnabled] = useState(true);
@@ -143,9 +146,11 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
   const [answerOptions, setAnswerOptions] = useState([]);
   const [questionWeight, setQuestionWeight] = useState("10");
 
-
+  const questionVersions = useSelector(selectQuestionVersions);
   const isQuestionCreateLoading = useSelector(createLoadingSelector([createQuestionRequest.type], true));
   const isQuestionUpdateLoading = useSelector(createLoadingSelector([updateQuestionRequest.type], true));
+  const isQuestionVersionsLoading = useSelector(createLoadingSelector([getSelectedQuestionVersionsRequest.type]));
+
   const error = useSelector(selectError);
 
   const prevCreationLoadingValue = usePrevious(isQuestionCreateLoading);
@@ -215,6 +220,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
     if (!isQuestionCreateLoading && !isQuestionUpdateLoading) {
       onClose();
 
+      setQuestionVersion(null);
       setQuestionType(questionTypes[0]);
       setIsHintEnabled(true);
       setHint("");
@@ -264,6 +270,39 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
 
   };
 
+  const handleQuestionVersionApply = (questionData) => {
+    const {
+      current_version,
+      version,
+      question: {
+        body,
+        hint,
+        points,
+        marking_notes,
+        answer_structure: {
+          type,
+          options
+        }
+      }
+    } = questionData.latest_version;
+
+    const questionType = questionTypes.filter((item) => item.type === type)[0];
+
+    setQuestionVersion({value: version, label: current_version});
+    setQuestionType(questionType);
+    setIsHintEnabled(!!hint);
+    setHint(hint || "");
+    setQuestionBody(body);
+    setMarkingNotes(marking_notes);
+    setAnswerOptions(type === "multiple_choice" ? options : []);
+    setQuestionWeight(String(points));
+  };
+
+  const handleQuestionVersionChange = ({ value: version }) => {
+    const selectedVersion = questionVersions.filter((question) => question.version === version)[0];
+    handleQuestionVersionApply({latest_version: selectedVersion})
+  };
+
   useEffect(() => {
     setQuestionFolder({label: selectedFolder.name, value: selectedFolder})
   }, [selectedFolder]);
@@ -281,40 +320,18 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
 
   }, [isQuestionUpdateLoading]);
 
-
-
   useEffect(() => {
     if (isEdit) {
+      dispatch(getSelectedQuestionVersionsRequest(editQuestion.latest_version.question_id));
 
-      const {
-        question: {
-          body,
-          hint,
-          points,
-          marking_notes,
-          answer_structure: {
-            type,
-            options
-          }
-        }
-      } = editQuestion.latest_version;
-
-      const questionType = questionTypes.filter((item) => item.type === type)[0];
-
-      setQuestionType(questionType);
-      setIsHintEnabled(!!hint);
-      setHint(hint || "");
-      setQuestionBody(body);
-      setMarkingNotes(marking_notes);
-      setAnswerOptions(type === "multiple_choice" ? options : []);
-      setQuestionWeight(String(points));
+      handleQuestionVersionApply(editQuestion)
     }
   }, [isEdit]);
 
   return (
     <SurveyModal
       className="question-create-modal"
-      title={"New question"}
+      title={isEdit ? "Edit question" : "New question"}
       isOpen={isOpen}
       onClose={handleModalClose}
       submitBtnText={isEdit ? "Save" : "Create"}
@@ -322,6 +339,18 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
       isSubmitProceed={isEdit ? isQuestionUpdateLoading : isQuestionCreateLoading}
     >
       <div className="question-form">
+        {isEdit && (
+          <div className="question-form_version-select">
+            <Select
+              value={questionVersion}
+              displayType="versionSelect"
+              isSearchable={false}
+              onChange={handleQuestionVersionChange}
+              isLoading={isQuestionVersionsLoading}
+              options={questionVersions && questionVersions.map(version => ({value: version.version, label: version.current_version})).reverse()}
+            />
+          </div>
+        )}
         <div className="question-form_header">
           <div className="question-form_header_title">
             {`Question ${questionFolder?.value?.questions?.length + 1}`}

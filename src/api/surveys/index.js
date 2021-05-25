@@ -10,6 +10,7 @@ import {
   getSurveyUrl,
   getSurveyUpdateUrl,
   getFolderDeleteUrl,
+  getQuestionVersionsFetchUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -47,6 +48,10 @@ const surveysApi = {
 
   async deleteFolder({ payload }) {
     return await requestLayout(getFolderDeleteUrl(payload), "DELETE")
+  },
+
+  async getQuestionVersions({ payload }) {
+    return await requestLayout(getQuestionVersionsFetchUrl(payload), "GET")
   },
 };
 
