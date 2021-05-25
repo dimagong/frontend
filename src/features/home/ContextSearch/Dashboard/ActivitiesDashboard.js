@@ -85,11 +85,6 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
       <span className={'arrow-close-activities'} onClick={() => setIsActivitiesShown(false)}>
         <img src={ArrowUp}/>
       </span>
-      {managers?.length > 0 && activities?.length > 0 && <div className={'dashboard-titles'}>
-        <span style={{width: '150px', marginLeft: '35px', paddingLeft: '35px'}} className={'dashboard-column-title'}><h5>Name</h5></span>
-        <span style={{width: '250px'}} className={'dashboard-column-title'}><h5>Organization</h5></span>
-        <span className={'dashboard-column-title'}><h5>Action</h5></span>
-      </div>}
       <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
         <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
       </span>
@@ -114,7 +109,7 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
       }
       {(!activities || activities.length === 0)
         ? <h1 style={{margin: '50px 0px 20px 15px'}}>No activities found</h1>
-        : <Scrollbars style={{height: 450, width: window.innerWidth * 0.94, marginTop: 80}}>
+        : <Scrollbars style={{height: 450, width: Math.round(window.innerWidth * 0.43), marginTop: 50, fontsize: 'small'}}>
           {managers.length > 0 && activities.map(item =>
             <div>
               <div className={'action-date'}>{item.date}</div>
