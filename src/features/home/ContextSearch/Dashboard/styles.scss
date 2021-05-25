@@ -1,21 +1,23 @@
 .activity-dashboard {
   margin-top: 7vh;
   .dashboard-charts {
-    width: 95vw;
     text-align: center;
     .arrow-open-activities {
-      z-index: 10;
+      z-index: 100;
       position: absolute;
-      right: 4vw;
-      bottom: 15px;
+      right: 15px;
+      bottom: 10px;
       cursor: pointer;
     }
     .arrow-left {
       position: absolute;
-      left: 35px;
-      bottom: 15px;
+      left: 15px;
+      bottom: 10px;
       z-index: 100;
       cursor: pointer;
+      .close-chart {
+        padding-left: 7px;
+      }
     }
     .dashboard-one-chart {
       position: relative;
@@ -32,16 +34,17 @@
     }
     .change-chart-days {
       position: absolute;
-      right: 80px;
+      right: 15px;
+      font-size: small;
       margin-top: 5px;
       z-index: 100;
       .chart-days {
-        width: 34px;
-        height: 25px;
-        line-height: 25px;
-        margin-right: 10px;
+        width: 26px;
+        height: 20px;
+        line-height: 20px;
+        margin-left: 10px;
         cursor: pointer;
-        border-radius: 50%;
+        border-radius: 45%;
         display: inline-block;
         background: #f0f0f0;
       }
@@ -53,12 +56,20 @@
     .multiple-change-chart-days {
       right: 40px;
     }
-
+  }
+  .change-chart-days-smaller {
+    top: 3px;
+    font-size: smaller!important;
+    .chart-days {
+      width: 21px!important;
+      height: 15px!important;
+      line-height: 14px!important;
+    }
   }
 
   .dashboard-activities {
     padding-left: 10px;
-    width: 95vw;
+    width: 45%;
     border: #7367f0 solid 1px;
     position: relative;
     .filter-icon-box {
@@ -113,8 +124,8 @@
       }
     .arrow-close-activities {
       position: absolute;
-      right: 4vw;
-      margin-top: -30px;
+      right: 15px;
+      margin-top: -40px;
       cursor: pointer;
     }
     .action-date {
@@ -124,6 +135,7 @@
       border-right: #7367F0 solid 3px;
     }
     .dashboard-action {
+      font-size: smaller;
       height: 40px;
       line-height: 40px;
       margin: 10px 1vw;
@@ -136,7 +148,7 @@
         margin-right: 10px;
       }
       .action-user-name {
-        width: 150px;
+        width: 100px;
         display: inline-block;
         span {
           cursor: pointer;
@@ -144,7 +156,7 @@
       }
       .action-user-org {
         display: inline-block;
-        width: 150px;
+        width: 75px;
       }
       .action-user-description {
         display: inline-block;
@@ -152,7 +164,7 @@
       .action-user-time {
         display: inline-block;
         float: right;
-        padding-right: 20px;
+        padding-right: 10px;
       }
     }
   }
