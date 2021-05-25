@@ -324,7 +324,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
       <div className="question-form">
         <div className="question-form_header">
           <div className="question-form_header_title">
-            {`Question ${questionFolder.value.questions.length + 1}`}
+            {`Question ${questionFolder?.value?.questions?.length + 1}`}
           </div>
           <div className="question-form_header_folder-select">
             <Select

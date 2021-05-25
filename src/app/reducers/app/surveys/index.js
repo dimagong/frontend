@@ -112,6 +112,13 @@ const surveysReducer = {
     state.isLoading = false;
     state.error = null;
   },
+
+  deleteFolderSuccess: (state, { payload }) => {
+    state.folders = state.folders.filter((folder) => folder.id !== payload.payload);
+
+    state.isLoading = false;
+    state.error = null;
+  }
 };
 
 export default surveysReducer;

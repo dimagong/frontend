@@ -4,6 +4,9 @@ import { Row } from 'reactstrap'
 
 import { useSelector, useDispatch } from "react-redux";
 
+import { usePrevious } from "hooks/common";
+import { toast } from "react-toastify";
+
 import {
   selectFolders,
   selectSelectedSurvey,
@@ -16,6 +19,8 @@ import QuestionDesignerComponent from './Components/QuestionDesignerComponent';
 
 import appSlice from "app/slices/appSlice";
 
+import {selectError} from "app/selectors";
+
 const {
   getFoldersRequest,
   getSurveyRequest,
@@ -23,6 +28,7 @@ const {
   swapQuestions,
   removeQuestionFromSurvey,
   updateSurveyRequest,
+  deleteFolderRequest,
 } = appSlice.actions;
 
 const SurveysDesigner = () => {
@@ -31,6 +37,7 @@ const SurveysDesigner = () => {
 
   const [selectedFolderId, setSelectedFolderId] = useState(-1);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [deletingFolderIndex, setDeletingFolderIndex] = useState(-1);
 
   const folders = useSelector(selectFolders);
 
@@ -41,6 +48,11 @@ const SurveysDesigner = () => {
   const isSurveyLoading = useSelector(createLoadingSelector([getSurveyRequest.type]));
   const isFoldersLoading = useSelector(createLoadingSelector([getFoldersRequest.type]));
   const isSurveyUpdateProceed = useSelector(createLoadingSelector([updateSurveyRequest.type], true));
+  const isFolderDeleteProceed = useSelector(createLoadingSelector([deleteFolderRequest.type], true));
+
+  const prevFolderDeleteState = usePrevious(isFolderDeleteProceed);
+
+  const errors = useSelector(selectError);
 
   const handleFolderSelect = (folderId) => {
     setSelectedFolderId(folderId);
@@ -88,6 +100,32 @@ const SurveysDesigner = () => {
     dispatch(updateSurveyRequest({data: surveyData, surveyId: selectedSurvey.latest_version.id}))
   };
 
+  const handleFolderDelete = (folderId) => {
+    const folder = folders.filter((item) => item.id === folderId)[0];
+    if (folder.questions.length > 0) {
+      toast.warn("You cannot delete folder while it has questions. Please delete all questions and try again");
+
+      return;
+    }
+
+    const folderIndex = folders.findIndex(folder => folder.id === folderId);
+    setDeletingFolderIndex(folderIndex);
+
+    dispatch(deleteFolderRequest(folderId))
+  };
+
+  useEffect(() => {
+    if (prevFolderDeleteState === true && !errors) {
+      if (deletingFolderIndex !== 0) {
+        setSelectedFolderId(folders[deletingFolderIndex - 1].id)
+      } else if (folders.length >= 1) {
+        setSelectedFolderId(folders[deletingFolderIndex].id)
+      } else {
+        setSelectedFolderId(-1);
+      }
+    }
+  }, [isFolderDeleteProceed]);
+
   useEffect(() => {
     dispatch(getFoldersRequest())
   }, []);
@@ -106,12 +144,14 @@ const SurveysDesigner = () => {
       />
       <QuestionDesignerComponent
         folders={folders}
+        onFolderDelete={handleFolderDelete}
         selectedFolderId={selectedFolderId}
         onFolderSelect={handleFolderSelect}
         isFoldersLoading={isFoldersLoading}
         onQuestionSelect={handleQuestionSelectToggle}
         selectedQuestionId={selectedQuestion?.latest_version.question_id}
         questionsInSurvey={surveyAddedQuestionIds}
+        isFolderDeleteProceed={isFolderDeleteProceed}
       />
     </Row>
 

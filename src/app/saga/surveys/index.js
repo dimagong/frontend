@@ -36,6 +36,10 @@ const {
   updateSurveySuccess,
   updateSurveyRequest,
   updateSurveyError,
+
+  deleteFolderSuccess,
+  deleteFolderRequest,
+  deleteFolderError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -118,6 +122,16 @@ function* updateSurvey(payload) {
   }
 }
 
+function* deleteFolder(payload) {
+  const response = yield call(surveysApi.deleteFolder, payload);
+
+  if (response?.message) {
+    yield put(deleteFolderError(response.message))
+  } else {
+    yield put(deleteFolderSuccess(payload))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -128,5 +142,6 @@ export default function* () {
     yield takeLatest(updateQuestionRequest.type, updateQuestion),
     yield takeLatest(getSurveyRequest.type, getSurvey),
     yield takeLatest(updateSurveyRequest.type, updateSurvey),
+    yield takeLatest(deleteFolderRequest.type, deleteFolder),
   ]);
 }
