@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectManager,
   selectUserDForms,
-  selectUserWorkfows,
+  selectUserWorkflows,
   selectUserReviewers,
 } from "app/selectors";
 
@@ -45,7 +45,7 @@ import appSlice from 'app/slices/appSlice'
 const {
   setManagerOnboarding,
   getUserOnboardingRequest,
-  getActivitiesRequest
+  updateActivitiesRequest
 }  = appSlice.actions;
 
 const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
@@ -64,7 +64,7 @@ const UserEdit = (props, context) => {
   const manager = useSelector(selectCurrentManager);
 
   const dForms = useSelector(selectUserDForms);
-  const workflows = useSelector(selectUserWorkfows);
+  const workflows = useSelector(selectUserWorkflows);
   const reviewers = useSelector(selectUserReviewers);
   const userOrganizations = useSelector(selectUserOrganizations(manager.id));
 
@@ -126,7 +126,7 @@ const UserEdit = (props, context) => {
   const handleChangeTab = (data) => {
     setActiveModuleTab(data)
     if (data === 'Activity') {
-      dispatch(getActivitiesRequest(manager.id))
+      dispatch(updateActivitiesRequest({managerId: manager.id, page: 1}))
     }
   }
 

@@ -81,6 +81,7 @@ const SelectWidget = (props) => {
     <div className={"custom-react-select"}>
       <FieldLabel label={props.schema.title} required={props.required}/>
       <Select
+        maxMenuHeight={175}
         isDisabled={props.disabled}
         styles={colourStyles}
         isMulti={props.multiple}

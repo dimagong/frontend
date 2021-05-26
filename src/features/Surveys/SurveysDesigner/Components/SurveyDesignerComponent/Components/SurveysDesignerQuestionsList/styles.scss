@@ -1,0 +1,49 @@
+.survey-designer_question-list {
+
+  .question-insert-button {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  &_item {
+    display: flex;
+
+    margin-bottom: 40px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+    &_order-buttons {
+      display: flex;
+      flex-direction: column;
+      margin-right: 10px;
+      button {
+        background: #4B484D;
+        width: 33px;
+        height: 57px;
+        border-radius: 10px;
+        outline: none;
+
+        &:disabled {
+          background: #A7A2A9;
+          cursor: default;
+        }
+
+        &:first-child {
+          margin-bottom: 10px;
+
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+
+        }
+        &:last-child {
+          display: flex;
+          justify-content: center;
+          align-items: flex-end;
+        }
+      }
+    }
+  }
+}

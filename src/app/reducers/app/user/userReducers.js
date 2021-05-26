@@ -26,8 +26,8 @@ const getFilterSuccess = (state, { payload }) => {
   state.isError = null;
   let filters = payload;
   filters.forEach(item => {
-    item.data.roles = new Set(item.data.roles);
-    item.data.organizations = new Set(item.data.organizations);
+    item.value.roles = new Set(item.value.roles);
+    item.value.organizations = new Set(item.value.organizations);
   });
   filters = filters.filter(item => item.user_id === state.user.profile.id);
   state.user.filters = filters;
@@ -36,27 +36,68 @@ const getFilterSuccess = (state, { payload }) => {
 const getActivitiesSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.managers[state.user.managers.findIndex(item => item.id === payload.user_id)].activity = payload.response;
+  let managerIndex = state.user.managers.findIndex(item => item.id === payload.user_id);
+
+  if (state.user.managers[managerIndex].activity && state.user.managers[managerIndex].activity.current_page < payload.response.current_page) {
+    let newData = state.user.managers[managerIndex].activity.data = state.user.managers[managerIndex].activity.data.concat(payload.response.data);
+    state.user.managers[managerIndex].activity = payload.response;
+    state.user.managers[managerIndex].activity.data = newData;
+  } else if (!state.user.managers[managerIndex].activity || payload.shouldUpdate) {
+    state.user.managers[managerIndex].activity = payload.response;
+  }
 };
+
+const updateActivitiesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  let managerIndex = state.user.managers.findIndex(item => item.id === payload.user_id);
+
+  if (!state.user.managers[managerIndex].activity) {
+    state.user.managers[managerIndex].activity = payload.response;
+  } else {
+    let startingIndex = payload.response.data.findIndex(item => item.id ===  state.user.managers[managerIndex].activity.data[0].id)
+    for (let i = startingIndex - 1; i > -1; --i) {
+      state.user.managers[managerIndex].activity.data.splice(0, 0, payload.response.data[i]);
+    }
+  }
+};
+
+const getDashboardDataSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  if (state.user.dashboard.hasOwnProperty('usersActivities') && payload.usersActivities.current_page > state.user.dashboard.usersActivities.current_page) {
+    let newData = state.user.dashboard.usersActivities.data.concat(payload.usersActivities.data)
+    state.user.dashboard = payload;
+    state.user.dashboard.usersActivities.data = newData;
+  } else {
+    state.user.dashboard = payload
+  }
+}
 
 const postFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   const newFilter = payload.response.data;
-  newFilter.data.roles = new Set(newFilter.data.roles)
-  newFilter.data.organizations = new Set(newFilter.data.organizations)
+  newFilter.value.roles = new Set(newFilter.value.roles)
+  newFilter.value.organizations = new Set(newFilter.value.organizations)
   let filters = state.user.filters;
   filters.push(newFilter);
   state.user.filters = filters;
-  toast.success(`The filter set '${payload.response.data.filter_name}' was added`);
+  toast.success(`The filter set '${payload.response.data.value.filter_name}' was added`);
 };
+
+const getActivityTypesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.activityTypes = payload
+}
 
 const patchFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   let index = state.user.filters.findIndex(item => item.id === payload.payload.id);
   state.user.filters[index].data = payload.payload.newFilter;
-  toast.success(`The filter set '${payload.payload.filter_name}' was updated`);
+  toast.success(`The filter set '${payload.payload.value.filter_name}' was updated`);
 };
 
 const getOnboardingsByUserSuccess = (state, { payload }) => {
@@ -128,7 +169,7 @@ const deleteFilterSuccess = (state, { payload }) => {
   let filters = state.user.filters;
   filters = filters.filter(item => item.id !== payload.id);
   state.user.filters = filters;
-  toast.success(`The filter set '${payload.filter_name}' was deleted`);
+  toast.success(`The filter set '${payload.value.filter_name}' was deleted`);
 }
 
 const getUserAvatarSuccess = (state, { payload }) => {
@@ -385,6 +426,9 @@ export default {
   patchFilterSuccess,
   getUserPermissionsSuccess,
   setSearch,
+  updateActivitiesSuccess,
+  getDashboardDataSuccess,
+  getActivityTypesSuccess,
 
   setUser,
   setManager,
