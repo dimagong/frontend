@@ -8,3 +8,4 @@ export const getSurveyUrl = (surveyId) => `api/survey-interaction/${surveyId}`;
 export const getSurveyUpdateUrl = (surveyId) => `api/survey-interaction/${surveyId}`;
 export const getFolderDeleteUrl = (folderId) => `api/survey-folder/${folderId}`;
 export const getQuestionVersionsFetchUrl = (questionId) => `api/survey-question/${questionId}/versions`;
+export const getQuestionVersionDeleteUrl = (questionVersionId) => `api/survey-question-version/${questionVersionId}`;

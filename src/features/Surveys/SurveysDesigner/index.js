@@ -101,12 +101,15 @@ const SurveysDesigner = () => {
   };
 
   const handleFolderDelete = (folderId) => {
+
     const folder = folders.filter((item) => item.id === folderId)[0];
     if (folder.questions.length > 0) {
       toast.warn("You cannot delete folder while it has questions. Please delete all questions and try again");
 
       return;
     }
+
+    if(!window.confirm("Are you sure you want to delete this folder?")) return;
 
     const folderIndex = folders.findIndex(folder => folder.id === folderId);
     setDeletingFolderIndex(folderIndex);

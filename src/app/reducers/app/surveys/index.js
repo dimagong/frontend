@@ -64,7 +64,10 @@ const surveysReducer = {
 
     state.selectedSurvey.latest_version.latest_questions = state.selectedSurvey.latest_version.latest_questions.map(surveyQuestion => {
       if(surveyQuestion.latest_version.question_id === payload.response.latest_version.question_id) {
-        return payload.response;
+        const updatedQuestion = payload.response;
+        updatedQuestion.latest_version.question.order = surveyQuestion.latest_version.question.order;
+
+        return updatedQuestion;
       } else {
         return surveyQuestion;
       }
@@ -97,7 +100,16 @@ const surveysReducer = {
   },
 
   removeQuestionFromSurvey: (state, { payload }) => {
-    state.selectedSurvey.latest_version.latest_questions = state.selectedSurvey.latest_version.latest_questions.filter(question => question.latest_version.question_id !== payload)
+    let latestQuestions = state.selectedSurvey.latest_version.latest_questions.filter(question => question.latest_version.question_id !== payload)
+
+    latestQuestions.map((question, index) => {
+      const temp = question;
+      temp.latest_version.question.order = index;
+
+      return temp;
+    });
+
+    state.selectedSurvey.latest_version.latest_questions = latestQuestions;
   },
 
   changeSurveyTitleAndDescription: (state, { payload }) => {
@@ -122,6 +134,66 @@ const surveysReducer = {
 
   getSelectedQuestionVersionsSuccess: (state, { payload }) => {
     state.selectedQuestionVersions = payload;
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  deleteQuestionVersionSuccess: (state, { payload }) => {
+
+    state.selectedQuestionVersions = state.selectedQuestionVersions.filter(version => version.id !== payload.payload);
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  deleteLatestQuestionVersionSuccess: (state, { payload }) => {
+    state.selectedQuestionVersions = payload.newVersions;
+
+    const latestVersion = payload.newVersions.filter(version => version.is_latest_version)[0];
+
+    const folderIndex = getIndexById(state.folders, payload.folderId);
+    const folder = state.folders[folderIndex];
+
+    const questionIndex = folder.questions.findIndex((question) => (
+      question.latest_version.question_id === latestVersion.question_id
+    ));
+
+    const newVersionOfQuestion = {...state.folders[folderIndex].questions[questionIndex], latest_version: latestVersion};
+
+    state.folders[folderIndex].questions[questionIndex] = newVersionOfQuestion;
+
+    state.selectedSurvey.latest_version.latest_questions = state.selectedSurvey.latest_version.latest_questions.map(surveyQuestion => {
+      if(surveyQuestion.latest_version.question_id === latestVersion.question_id) {
+
+        newVersionOfQuestion.latest_version.question.order = surveyQuestion.latest_version.question.order;
+
+        return newVersionOfQuestion;
+      } else {
+        return surveyQuestion;
+      }
+    });
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  deleteQuestionSuccess: (state, { payload }) => {
+    const folderIndex = getIndexById(state.folders, payload.folderId);
+    const folder = state.folders[folderIndex];
+
+    state.folders[folderIndex].questions = folder.questions.filter(question => question.latest_version.question_id !== payload.questionId);
+
+    state.selectedSurvey.latest_version.latest_questions = state.selectedSurvey.latest_version.latest_questions.filter(surveyQuestion => (
+      surveyQuestion.latest_version.question_id !== payload.questionId
+    ));
+
+    state.selectedSurvey.latest_version.latest_questions = state.selectedSurvey.latest_version.latest_questions.map((question, index) => {
+      const temp = question;
+      temp.latest_version.question.order = index;
+
+      return temp;
+    });
 
     state.isLoading = false;
     state.error = null;

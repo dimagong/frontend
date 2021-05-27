@@ -50,7 +50,7 @@ const SurveyModal = (props) => {
             {!!deleteBtnText && !!onDelete && (
               <LoadingButton
                 onClick={onDelete}
-                className={"survey-modal_actions_delete-btn"}
+                className={"survey-modal_actions_delete-btn px-4"}
                 isLoading={isDeleteProceed}
                 value={deleteBtnText}
               />
@@ -58,6 +58,7 @@ const SurveyModal = (props) => {
           </div>
           <div>
             <LoadingButton
+              className={"px-4"}
               onClick={onSubmit}
               color="primary"
               isLoading={isSubmitProceed}

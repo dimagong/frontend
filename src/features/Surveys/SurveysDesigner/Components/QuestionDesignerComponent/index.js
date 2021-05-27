@@ -65,11 +65,11 @@ const QuestionDesignerComponent = ({
   };
 
   const handleQuestionCreateModalClose = () => {
+    setIsCreateQuestionModalVisible(false);
+
     if (questionForEdit) {
       setQuestionForEdit(null)
     }
-
-    setIsCreateQuestionModalVisible(false)
   };
 
   const handleQuestionSelect = (questionData) => {
@@ -94,7 +94,7 @@ const QuestionDesignerComponent = ({
           </div>
         </div>
         <div className="question-designer_folders">
-          {!isFoldersLoading ? folders.map((folder) => (
+          {!isFoldersLoading ? folders && folders.map((folder) => (
             <FolderTemplate
               onClick={() => handleFolderSelect(folder.id)}
               folderData={folder}
@@ -138,12 +138,12 @@ const QuestionDesignerComponent = ({
                   click "Design new question" button to create a new question
                 </div>
               ) : (
-                selectedFolder.questions.map((question, index) => (
+                [...selectedFolder.questions].reverse().map((question, index) => (
                   <Question
                     key={index}
                     question={question}
                     displayType="designer"
-                    questionNumber={index + 1}
+                    questionNumber={selectedFolder.questions.length - index}
                     onEdit={handleQuestionEdit}
                     onClick={handleQuestionSelect}
                     isInSurvey={~questionsInSurvey.findIndex((questionId) => question.latest_version.question_id === questionId)}

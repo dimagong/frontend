@@ -44,6 +44,18 @@ const {
   getSelectedQuestionVersionsSuccess,
   getSelectedQuestionVersionsRequest,
   getSelectedQuestionVersionsError,
+
+  deleteQuestionVersionSuccess,
+  deleteQuestionVersionRequest,
+  deleteQuestionVersionError,
+
+  deleteLatestQuestionVersionSuccess,
+  deleteLatestQuestionVersionRequest,
+  deleteLatestQuestionVersionError,
+
+  deleteQuestionSuccess,
+  deleteQuestionRequest,
+  deleteQuestionError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -146,6 +158,42 @@ function* getSelectedQuestionVersions(payload) {
   }
 }
 
+function* deleteQuestionVersion(payload) {
+  const response = yield call(surveysApi.deleteQuestionVersion, payload);
+
+  if (response?.message) {
+    yield put(deleteQuestionVersionError(response.message))
+  } else {
+    yield put(deleteQuestionVersionSuccess(payload))
+  }
+}
+
+function* deleteLatestQuestionVersion(payload) {
+  const response = yield call(surveysApi.deleteQuestionVersion, {payload: payload.payload.questionVersion});
+
+  if (response?.message) {
+    yield put(deleteLatestQuestionVersionError(response.message));
+  } else {
+    const newVersions = yield call(surveysApi.getQuestionVersions, {payload: payload.payload.questionId});
+
+    if (newVersions?.message) {
+      yield put(deleteLatestQuestionVersionError(response.message))
+    } else {
+      yield put(deleteLatestQuestionVersionSuccess({newVersions, folderId: payload.payload.folderId}))
+    }
+  }
+}
+
+function* deleteQuestion(payload) {
+  const response = yield call(surveysApi.deleteQuestionVersion, {payload: payload.payload.questionVersion});
+
+  if (response?.message) {
+    yield put(deleteQuestionError(response.message))
+  } else {
+    yield put(deleteQuestionSuccess({folderId: payload.payload.folderId, questionId: payload.payload.questionId}))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -158,5 +206,8 @@ export default function* () {
     yield takeLatest(updateSurveyRequest.type, updateSurvey),
     yield takeLatest(deleteFolderRequest.type, deleteFolder),
     yield takeLatest(getSelectedQuestionVersionsRequest.type, getSelectedQuestionVersions),
+    yield takeLatest(deleteQuestionVersionRequest.type, deleteQuestionVersion),
+    yield takeLatest(deleteLatestQuestionVersionRequest.type, deleteLatestQuestionVersion),
+    yield takeLatest(deleteQuestionRequest.type, deleteQuestion)
   ]);
 }
