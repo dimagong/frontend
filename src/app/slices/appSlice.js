@@ -52,6 +52,8 @@ export const initialState = {
     reviewers: [],
     filters: [],
     searchText: '',
+    dashboard: {},
+    activityTypes: [],
   },
   masterSchema: {
     fields: []

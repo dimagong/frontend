@@ -34,6 +34,7 @@ import './styles.scss'
 import appSlice from 'app/slices/appSlice'
 import SurveyCreateModal from "./SurveyCreateModal";
 import {selectSearchText} from "../../../app/selectors/userSelectors";
+import Dashboard from "./Dashboard";
 
 const {
   getUserManagment,
@@ -146,6 +147,18 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     nav = NAV_OPTIONS.filter((n) => n.id !== "organizations")
   }
 
+  //extending .home for dashboard component
+  const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible)
+  let a = document.getElementsByClassName('home');
+  if (a.length) {
+    if (selectedNavItem.id === 'managers' && isCSshown) {
+      a[0].setAttribute('style', 'max-height: 2000px !important');
+    } else {
+      a[0].setAttribute('style', 'max-height: unset');
+    }
+  }
+
+
   return (
     <>
       <Row className={`home context-search ${isShown ? "slide-in" : "slide-out"}`}>
@@ -205,6 +218,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                           </Button>
                         </div>
                       </div>
+                      {selectedNavItem.id === 'managers' && <Dashboard/>}
                     </div>
                   </div>
                 </Col>

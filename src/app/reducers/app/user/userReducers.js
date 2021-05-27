@@ -36,8 +36,43 @@ const getFilterSuccess = (state, { payload }) => {
 const getActivitiesSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.managers[state.user.managers.findIndex(item => item.id === payload.user_id)].activity = payload.response;
+  let managerIndex = state.user.managers.findIndex(item => item.id === payload.user_id);
+
+  if (state.user.managers[managerIndex].activity && state.user.managers[managerIndex].activity.current_page < payload.response.current_page) {
+    let newData = state.user.managers[managerIndex].activity.data = state.user.managers[managerIndex].activity.data.concat(payload.response.data);
+    state.user.managers[managerIndex].activity = payload.response;
+    state.user.managers[managerIndex].activity.data = newData;
+  } else if (!state.user.managers[managerIndex].activity || payload.shouldUpdate) {
+    state.user.managers[managerIndex].activity = payload.response;
+  }
 };
+
+const updateActivitiesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  let managerIndex = state.user.managers.findIndex(item => item.id === payload.user_id);
+
+  if (!state.user.managers[managerIndex].activity) {
+    state.user.managers[managerIndex].activity = payload.response;
+  } else {
+    let startingIndex = payload.response.data.findIndex(item => item.id ===  state.user.managers[managerIndex].activity.data[0].id)
+    for (let i = startingIndex - 1; i > -1; --i) {
+      state.user.managers[managerIndex].activity.data.splice(0, 0, payload.response.data[i]);
+    }
+  }
+};
+
+const getDashboardDataSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  if (state.user.dashboard.hasOwnProperty('usersActivities') && payload.usersActivities.current_page > state.user.dashboard.usersActivities.current_page) {
+    let newData = state.user.dashboard.usersActivities.data.concat(payload.usersActivities.data)
+    state.user.dashboard = payload;
+    state.user.dashboard.usersActivities.data = newData;
+  } else {
+    state.user.dashboard = payload
+  }
+}
 
 const postFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
@@ -50,6 +85,12 @@ const postFilterSuccess = (state, { payload }) => {
   state.user.filters = filters;
   toast.success(`The filter set '${payload.response.data.value.filter_name}' was added`);
 };
+
+const getActivityTypesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.activityTypes = payload
+}
 
 const patchFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
@@ -385,6 +426,9 @@ export default {
   patchFilterSuccess,
   getUserPermissionsSuccess,
   setSearch,
+  updateActivitiesSuccess,
+  getDashboardDataSuccess,
+  getActivityTypesSuccess,
 
   setUser,
   setManager,

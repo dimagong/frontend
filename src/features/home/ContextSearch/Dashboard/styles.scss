@@ -1,0 +1,176 @@
+.activity-dashboard {
+  margin-top: 7vh;
+  .dashboard-charts {
+    z-index: 2;
+    text-align: center;
+    .arrow-open-activities {
+      z-index: 100;
+      position: absolute;
+      right: 15px;
+      bottom: 10px;
+      cursor: pointer;
+    }
+    .arrow-left {
+      position: absolute;
+      left: 15px;
+      bottom: 10px;
+      z-index: 100;
+      cursor: pointer;
+      .close-chart {
+        padding-left: 7px;
+      }
+    }
+    .dashboard-one-chart {
+      position: relative;
+      border: #7367f0 solid 1px;
+      padding-bottom: 20px;
+      width: 100%;
+    }
+    .dashboard-chart-parts {
+      display: inline-flex;
+      position: relative;
+      width: 49%;
+      border: #7367f0 solid 1px;
+      padding-bottom: 20px;
+    }
+    .change-chart-days {
+      position: absolute;
+      right: 15px;
+      font-size: small;
+      margin-top: 5px;
+      z-index: 100;
+      .chart-days {
+        width: 26px;
+        height: 20px;
+        line-height: 20px;
+        margin-left: 10px;
+        cursor: pointer;
+        border-radius: 45%;
+        display: inline-block;
+        background: #f0f0f0;
+      }
+      .active-days {
+        background: #7367f0;
+        color: white;
+      }
+    }
+    .multiple-change-chart-days {
+      right: 40px;
+    }
+  }
+  .change-chart-days-smaller {
+    top: 3px;
+    font-size: smaller!important;
+    .chart-days {
+      width: 21px!important;
+      height: 15px!important;
+      line-height: 14px!important;
+    }
+  }
+
+  .dashboard-activities {
+    top: -1px;
+    z-index: 1;
+    padding-left: 10px;
+    width: 45%;
+    border: #707070 solid 1px;
+    position: relative;
+    .filter-icon-box {
+      left: 185px;
+      position: absolute;
+      top: 18px;
+    }
+    .filter-tab {
+      position: absolute;
+      left: 220px;
+      top: 10px;
+      font-size: small;
+      cursor: unset!important;
+      border-color: #9aa9b7 !important;
+      background-color: #b8c2cc !important;
+      z-index: 100;
+      .nav-text {
+        margin-right: 10px;
+        float: left;
+      }
+      .close-nav {
+        cursor: pointer;
+        float: right;
+        margin-left: 10px;
+        background: #FFFFFF!important;
+        padding: 0 1px 1px 1px;
+        font-size: small;
+        border-radius: 10px;
+        svg {
+          color: #95989a!important;
+          font-size: small;
+        }
+      }
+    }
+    span h5 {
+      font-weight: bold;
+      color: #707070
+    }
+    .dashboard-titles {
+      position: absolute;
+      margin-top: -25px;
+      .dashboard-column-title {
+        display: inline-block;
+      }
+    }
+
+    .users-activities-title {
+        position: absolute;
+        margin-top: 15px;
+        color: rgb(112, 112, 112);
+        left: 25px;
+      }
+    .arrow-close-activities {
+      position: absolute;
+      right: 15px;
+      margin-top: -40px;
+      cursor: pointer;
+    }
+    .action-date {
+      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+    .dashboard-action:hover {
+      border-right: #7367F0 solid 3px;
+    }
+    .dashboard-action {
+      font-size: smaller;
+      height: 40px;
+      line-height: 40px;
+      margin: 10px 1vw 10px 0;
+      box-shadow: 0 2px 5px #dfdfdf;
+      border-right: #9aa9b7 solid 3px;
+      .action-user-avatar {
+        width: 40px;
+        height: 40px;
+        padding-bottom: 1px;
+        margin-right: 10px;
+      }
+      .action-user-name {
+        width: 100px;
+        display: inline-block;
+        span {
+          cursor: pointer;
+        }
+      }
+      .action-user-org {
+        display: inline-block;
+        width: 75px;
+      }
+      .action-user-description {
+        display: inline-block;
+      }
+      .action-user-time {
+        display: inline-block;
+        float: right;
+        padding-right: 10px;
+      }
+    }
+  }
+}
+
