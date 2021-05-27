@@ -9,6 +9,11 @@ import {
   getQuestionUpdateUrl,
   getSurveyUrl,
   getSurveyUpdateUrl,
+  getFolderDeleteUrl,
+  getQuestionVersionsFetchUrl,
+  getQuestionVersionDeleteUrl,
+  getSurveyVersionsFetchUrl,
+  getSurveyVersionDeleteUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -41,8 +46,27 @@ const surveysApi = {
   },
 
   async updateSurvey({ payload }) {
-    console.log("test", payload);
     return await requestLayout(getSurveyUpdateUrl(payload.surveyId), "PUT", payload.data)
+  },
+
+  async deleteFolder({ payload }) {
+    return await requestLayout(getFolderDeleteUrl(payload), "DELETE")
+  },
+
+  async getQuestionVersions({ payload }) {
+    return await requestLayout(getQuestionVersionsFetchUrl(payload), "GET")
+  },
+
+  async deleteQuestionVersion({ payload }) {
+    return await requestLayout(getQuestionVersionDeleteUrl(payload), "DELETE")
+  },
+
+  async getSurveyVersions({ payload }) {
+    return await requestLayout(getSurveyVersionsFetchUrl(payload), "GET")
+  },
+
+  async deleteSurveyVersion({ payload }) {
+    return await requestLayout(getSurveyVersionDeleteUrl(payload), "DELETE")
   },
 };
 

@@ -48,7 +48,7 @@ const SurveysDesignerQuestionListNoQuestionsComponent = ({ isQuestionSelected, o
   return (
     <div className="survey-designer_no-questions">
       {isQuestionSelected ? (
-        <Button className="px-5" color="primary" onClick={onQuestionInsert}>
+        <Button className="px-5" color="primary" onClick={() => {onQuestionInsert(0)}}>
           Insert here
         </Button>
       ) : (
