@@ -13,16 +13,12 @@ import Dashboard from "../ContextSearch/Dashboard";
 
 const Context = ({ selectedContext }) => {
   const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible);
-  if(!selectedContext) return <div>
-    {!!isCSshown && (<div style={{marginBottom: '30px'}} className="delimiter"/>)}
-    <Dashboard/>
-  </div>;
+  if(!selectedContext) return null;
+
   return (
     <>
       {!!isCSshown && (<div className="delimiter"/>)}
       <div style={{paddingTop: isCSshown ? "30px" : "0"}}>
-        {isCSshown && <Dashboard/>}
-        {!!isCSshown && (<div style={{marginBottom: '30px'}} className="delimiter"/>)}
         {{
           "User": <UserEdit />,
           "Create user": <UserCreate />,
@@ -35,7 +31,8 @@ const Context = ({ selectedContext }) => {
           "WorkFlow": <WorkflowForm workflowModalType="Edit" />,
           "Organization": <Organization />,
           "OrganizationCreate": <Organization create />,
-          "Survey": <SurveysDesigner />
+          "Survey": <SurveysDesigner />,
+          "Dashboard": <Dashboard/>,
         }[selectedContext]}
       </div>
     </>

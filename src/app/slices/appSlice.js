@@ -21,7 +21,7 @@ export const initialState = {
   isLoading: false,
   isError: null,
   isContextSearchVisible: false,
-  context: null,
+  context: 'Dashboard',
   preview: null,
   surveys: [],
   folders: null,
