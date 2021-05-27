@@ -54,3 +54,4 @@ export const selectSurveys = state => state?.app?.surveys;
 export const selectSelectedSurvey = state => state?.app?.selectedSurvey;
 export const selectFolders = state => state?.app?.folders;
 export const selectQuestionVersions = state => state?.app?.selectedQuestionVersions;
+export const selectSurveyVersions = state => state?.app?.selectedSurveyVersions;

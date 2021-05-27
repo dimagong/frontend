@@ -29,6 +29,9 @@ const {
   removeQuestionFromSurvey,
   updateSurveyRequest,
   deleteFolderRequest,
+  deleteSurveyLatestVersionRequest,
+  handleSurveyVersionSelect,
+  deleteSurveyVersionRequest,
 } = appSlice.actions;
 
 const SurveysDesigner = () => {
@@ -49,13 +52,21 @@ const SurveysDesigner = () => {
   const isFoldersLoading = useSelector(createLoadingSelector([getFoldersRequest.type]));
   const isSurveyUpdateProceed = useSelector(createLoadingSelector([updateSurveyRequest.type], true));
   const isFolderDeleteProceed = useSelector(createLoadingSelector([deleteFolderRequest.type], true));
+  const isSurveyDeleteLatestVersionProceed = useSelector(createLoadingSelector([deleteSurveyLatestVersionRequest.type], true));
+  const isSurveyDeleteVersionProceed = useSelector(createLoadingSelector([deleteSurveyVersionRequest.type], true));
 
   const prevFolderDeleteState = usePrevious(isFolderDeleteProceed);
+  const prevSurveyDeleteLatestVersionValue = usePrevious(isSurveyDeleteLatestVersionProceed);
 
   const errors = useSelector(selectError);
 
   const handleFolderSelect = (folderId) => {
     setSelectedFolderId(folderId);
+  };
+
+  const handleSurveyVersionChange = (surveyVersion) => {
+
+    dispatch(handleSurveyVersionSelect(surveyVersion))
   };
 
   const handleQuestionSelectToggle = (questionData) => {
@@ -118,6 +129,12 @@ const SurveysDesigner = () => {
   };
 
   useEffect(() => {
+    if (!isSurveyDeleteLatestVersionProceed && prevSurveyDeleteLatestVersionValue && !errors) {
+      dispatch(getSurveyRequest(selectedSurvey.id));
+    }
+  }, [isSurveyDeleteLatestVersionProceed]);
+
+  useEffect(() => {
     if (prevFolderDeleteState === true && !errors) {
       if (deletingFolderIndex !== 0) {
         setSelectedFolderId(folders[deletingFolderIndex - 1].id)
@@ -144,6 +161,7 @@ const SurveysDesigner = () => {
         handleRemoveQuestionFromSurvey={handleRemoveQuestionFromSurvey}
         onSurveyUpdate={handleSurveyUpdate}
         isSurveyUpdateProceed={isSurveyUpdateProceed}
+        onSurveyVersionChange={handleSurveyVersionChange}
       />
       <QuestionDesignerComponent
         folders={folders}

@@ -198,6 +198,61 @@ const surveysReducer = {
     state.isLoading = false;
     state.error = null;
   },
+
+  getSurveyVersionsSuccess: (state, { payload }) => {
+    state.selectedSurveyVersions = payload;
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  deleteSurveySuccess: (state, { payload }) => {
+    state.surveys = state.surveys.filter(survey => survey.latest_version.id !== payload.payload);
+    state.selectedSurveyVersions = null;
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  deleteSurveyLatestVersionSuccess: (state, { payload }) => {
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  deleteSurveyVersionSuccess: (state, { payload }) => {
+    let newVersion = state.selectedSurveyVersions.filter((version) => version.id < payload.payload)[0];
+
+    if (!newVersion) {
+      newVersion = [...state.selectedSurveyVersions].reverse().filter(version => version.id > payload.payload)[0];
+    }
+
+    state.selectedSurveyVersions = state.selectedSurveyVersions.filter(version => version.id !== payload.payload);
+
+    newVersion.latest_questions = newVersion.latest_questions.map((question, index) => {
+      const temp = {...question};
+      temp.latest_version.question.order = index;
+      return temp;
+    });
+
+    state.selectedSurvey.latest_version = newVersion;
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  handleSurveyVersionSelect: (state, { payload }) => {
+    let newVersion = JSON.parse(JSON.stringify(payload));
+
+    newVersion.latest_questions = newVersion.latest_questions.map((question, index) => {
+      const temp = {...question};
+      temp.latest_version.question.order = index;
+      return temp;
+    });
+
+    state.selectedSurvey.latest_version = newVersion;
+  },
+
+
 };
 
 export default surveysReducer;

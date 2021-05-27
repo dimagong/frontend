@@ -27,6 +27,12 @@
     }
   }
 
+  &_version-select {
+    max-width: 260px;
+    margin-left: auto;
+    margin-bottom: 25px;
+  }
+
   &_no-questions {
     font-size: 18px;
     line-height: 30px;
@@ -37,12 +43,19 @@
     max-width: 500px;
     text-align: center;
   }
-
-  &_save-button {
-    float: right;
+  &_action-buttons {
+    display: flex;
+    justify-content: space-between;
     margin-top: 50px;
-    padding: 13px 78px;
+    &_save-button {
+      padding: 13px 78px;
+    }
+    &_delete-button.btn-secondary {
+      background-color: #4b484d !important;
+      margin-left: 43px;
+    }
   }
+
 
   &_loading {
     display: flex;

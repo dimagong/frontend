@@ -12,6 +12,8 @@ import {
   getFolderDeleteUrl,
   getQuestionVersionsFetchUrl,
   getQuestionVersionDeleteUrl,
+  getSurveyVersionsFetchUrl,
+  getSurveyVersionDeleteUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -57,6 +59,14 @@ const surveysApi = {
 
   async deleteQuestionVersion({ payload }) {
     return await requestLayout(getQuestionVersionDeleteUrl(payload), "DELETE")
+  },
+
+  async getSurveyVersions({ payload }) {
+    return await requestLayout(getSurveyVersionsFetchUrl(payload), "GET")
+  },
+
+  async deleteSurveyVersion({ payload }) {
+    return await requestLayout(getSurveyVersionDeleteUrl(payload), "DELETE")
   },
 };
 

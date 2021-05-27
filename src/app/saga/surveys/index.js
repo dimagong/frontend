@@ -5,6 +5,8 @@ import surveysApi from "api/surveys";
 import appSlice from 'app/slices/appSlice';
 
 const {
+  setContext,
+
   getSurveysSuccess,
   getSurveysRequest,
   getSurveysError,
@@ -56,6 +58,22 @@ const {
   deleteQuestionSuccess,
   deleteQuestionRequest,
   deleteQuestionError,
+
+  getSurveyVersionsSuccess,
+  getSurveyVersionsRequest,
+  getSurveyVersionsError,
+
+  deleteSurveySuccess,
+  deleteSurveyRequest,
+  deleteSurveyError,
+
+  deleteSurveyLatestVersionSuccess,
+  deleteSurveyLatestVersionRequest,
+  deleteSurveyLatestVersionError,
+
+  deleteSurveyVersionSuccess,
+  deleteSurveyVersionRequest,
+  deleteSurveyVersionError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -194,6 +212,48 @@ function* deleteQuestion(payload) {
   }
 }
 
+function* getSurveyVersions(payload) {
+  const response = yield call(surveysApi.getSurveyVersions, payload);
+
+  if (response?.message) {
+    yield put(getSurveyVersionsError(response.message))
+  } else {
+    yield put(getSurveyVersionsSuccess(response))
+  }
+}
+
+function* deleteSurvey(payload) {
+  const response = yield call(surveysApi.deleteSurveyVersion, payload);
+
+  if (response?.message) {
+    yield put(deleteSurveyError(response.message))
+  } else {
+
+    yield put(setContext(null));
+    yield put(deleteSurveySuccess(payload))
+  }
+}
+
+function* deleteSurveyLatestVersion(payload) {
+  const response = yield call(surveysApi.deleteSurveyVersion, payload);
+
+  if (response?.message) {
+    yield put(deleteSurveyLatestVersionError(response.message));
+  } else {
+    yield put(deleteSurveyLatestVersionSuccess())
+  }
+}
+
+function* deleteSurveyVersion(payload) {
+  const response = yield call(surveysApi.deleteSurveyVersion, payload);
+
+  if (response?.message) {
+    yield put(deleteSurveyVersionError(response.message));
+  } else {
+    yield put(deleteSurveyVersionSuccess(payload))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -208,6 +268,10 @@ export default function* () {
     yield takeLatest(getSelectedQuestionVersionsRequest.type, getSelectedQuestionVersions),
     yield takeLatest(deleteQuestionVersionRequest.type, deleteQuestionVersion),
     yield takeLatest(deleteLatestQuestionVersionRequest.type, deleteLatestQuestionVersion),
-    yield takeLatest(deleteQuestionRequest.type, deleteQuestion)
+    yield takeLatest(deleteQuestionRequest.type, deleteQuestion),
+    yield takeLatest(getSurveyVersionsRequest.type, getSurveyVersions),
+    yield takeLatest(deleteSurveyRequest.type, deleteSurvey),
+    yield takeLatest(deleteSurveyLatestVersionRequest.type, deleteSurveyLatestVersion),
+    yield takeLatest(deleteSurveyVersionRequest.type, deleteSurveyVersion),
   ]);
 }
