@@ -34,6 +34,7 @@ const {
   logout,
   showContextSearch,
   hideContextSearch,
+  setContext,
 } = appSlice.actions;
 
 const UserName = ({userProfile}) => {
@@ -65,6 +66,10 @@ const ThemeNavbar = props => {
       dispatch(showContextSearch())
     }
 
+  }
+
+  const handleOrgPictureClick = () => {
+    dispatch(setContext('Dashboard'))
   }
 
   return userProfile
@@ -112,9 +117,9 @@ const ThemeNavbar = props => {
                 <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
                   {/*If logo is not loaded yet, show temp image by path that is valid about 5 mins*/}
                   {!userProfile.permissions.logo?.base64 ? (
-                    <img className="brand-logo " src={userProfile.permissions.logo_path} alt="main org logo"/>
+                    <img onClick={handleOrgPictureClick} className="brand-logo " src={userProfile.permissions.logo_path} alt="main org logo"/>
                   ) : (
-                    <img className="brand-logo " src={userProfile.permissions.logo?.base64} alt="main org logo"/>
+                    <img onClick={handleOrgPictureClick} className="brand-logo " src={userProfile.permissions.logo?.base64} alt="main org logo"/>
                   )}
 
                 </NavLink>

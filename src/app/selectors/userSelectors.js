@@ -3,7 +3,7 @@ export const selectManager = state => state?.app?.user?.manager;
 
 //* TODO refactor selectManager to select manager by id from managers array
 export const selectCurrentManager = state => {
-  return state?.app?.user?.managers.filter((manager) => manager.id === state?.app?.user?.manager.id)[0];
+  return state?.app?.user?.managers.filter((manager) => manager.id === state?.app?.user?.manager?.id)[0];
 };
 
 export const selectManagerById = id => state => state?.app?.user?.managers.filter(manager => manager.id === id)[0];

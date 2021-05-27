@@ -69,6 +69,7 @@ const UserEdit = (props, context) => {
   const userOrganizations = useSelector(selectUserOrganizations(manager.id));
 
   const [contextFeature, setContextFeature] = useState("");
+  const [openOnboarding, setOpenOnboarding] = useState('');
 
   const [activeModuleTab, setActiveModuleTab] = useState(manager.permissions ? tabs[0] : tabs[3]);
   const [activeOnboardingId, setActiveOnboardingId] = useState(-1);
@@ -129,6 +130,37 @@ const UserEdit = (props, context) => {
       dispatch(updateActivitiesRequest({managerId: manager.id, page: 1}))
     }
   }
+
+  useEffect(() => {
+    switch (selectedManager.selectedInfo?.type) {
+      case 'onboarding': {
+        setActiveModuleTab(tabs[2]);
+        if (selectedManager.selectedInfo?.value) {
+          setContextFeature('onboarding');
+          setOpenOnboarding(selectedManager.selectedInfo.value);
+        }
+        break;
+      }
+      case 'userEdit': {
+        setContextFeature('edit');
+        setActiveModuleTab(tabs[0]);
+        break;
+      }
+      default: {
+        setContextFeature('');
+        setOpenOnboarding('');
+        setActiveModuleTab(tabs[0]);
+      }
+    }
+  }, [selectedManager.selectedInfo]);
+
+  useEffect(() => {
+    if (!selectedManager.onboarding && openOnboarding && manager.onboardings.length > 0) {
+      dispatch(setManagerOnboarding(manager.onboardings.find(item => item.d_form.name === selectedManager.selectedInfo.value)));
+    }
+  }, [manager.onboardings, openOnboarding]);
+
+
 
   return (
     <Row className="user-managment">
