@@ -61,19 +61,18 @@ const LineChart = ({ data, chartId, aspectRatio, daysNumber, title}) => {
   //labels = ['inProgress', '', '', '']
 
   //test data
-  if (title === 'Applications') {
+  if (title === 'Actions') {
     switch (daysNumber) {
       case 7: {
-        pointsY = [[5, 3, 4, 4, 7, 5, 3], [4, 4, 6, 5, 2, 4, 2]]
+        pointsY = [5, 3, 4, 4, 7, 5, 6]
         break;
       }
       case 28: {
-        pointsY = [[5, 12, 9, 22, 21, 19, 28], [30, 24, 22, 26, 25, 17, 32]]
+        pointsY = [5, 12, 9, 22, 21, 19, 28]
         break;
       }
       default: {
-        pointsY = [[18, 24, 35, 30, 59, 66, 49, 51, 122, 132, 96, 85],
-                   [25, 22, 41, 19, 57, 70, 34, 55, 109, 98, 78, 65]]
+        pointsY = [18, 24, 35, 30, 59, 66, 49, 51, 122, 132, 96, 85]
       }
     }
   }
