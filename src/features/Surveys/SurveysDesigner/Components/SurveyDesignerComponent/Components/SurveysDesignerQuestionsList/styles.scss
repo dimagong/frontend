@@ -1,4 +1,11 @@
 .survey-designer_question-list {
+
+  .question-insert-button {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
   &_item {
     display: flex;
 
