@@ -20,7 +20,7 @@ export const initialState = {
   isAuth: !!token,
   isLoading: false,
   isError: null,
-  isContextSearchVisible: true,
+  isContextSearchVisible: false,
   context: null,
   preview: null,
   surveys: [],

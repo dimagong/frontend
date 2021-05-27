@@ -58,9 +58,7 @@ const ThemeNavbar = props => {
 
   const handleContextSearchToggle = () => {
     if(props.isContextSearchVisible) {
-      if (props.context) {
-        dispatch(hideContextSearch())
-      }
+      dispatch(hideContextSearch())
     } else {
       dispatch(showContextSearch())
     }

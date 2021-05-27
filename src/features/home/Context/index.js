@@ -9,15 +9,20 @@ import DFormForm from 'features/onboarding/dForm/DFormForm'
 import WorkflowForm from 'features/onboarding/workflow/components/WorkflowForm'
 import Organization from 'features/Organization'
 import SurveysDesigner from "features/Surveys/SurveysDesigner";
+import Dashboard from "../ContextSearch/Dashboard";
 
 const Context = ({ selectedContext }) => {
   const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible);
-  if(!selectedContext) return null;
-
+  if(!selectedContext) return <div>
+    {!!isCSshown && (<div style={{marginBottom: '30px'}} className="delimiter"/>)}
+    <Dashboard/>
+  </div>;
   return (
     <>
       {!!isCSshown && (<div className="delimiter"/>)}
       <div style={{paddingTop: isCSshown ? "30px" : "0"}}>
+        {isCSshown && <Dashboard/>}
+        {!!isCSshown && (<div style={{marginBottom: '30px'}} className="delimiter"/>)}
         {{
           "User": <UserEdit />,
           "Create user": <UserCreate />,
