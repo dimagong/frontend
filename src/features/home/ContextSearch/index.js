@@ -147,17 +147,6 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     nav = NAV_OPTIONS.filter((n) => n.id !== "organizations")
   }
 
-  //extending .home for dashboard component
-  const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible)
-  let a = document.getElementsByClassName('home');
-  if (a.length) {
-    if (selectedNavItem.id === 'managers' && isCSshown) {
-      a[0].setAttribute('style', 'max-height: 2000px !important');
-    } else {
-      a[0].setAttribute('style', 'max-height: unset');
-    }
-  }
-
 
   return (
     <>
@@ -218,7 +207,6 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                           </Button>
                         </div>
                       </div>
-                      {selectedNavItem.id === 'managers' && <Dashboard/>}
                     </div>
                   </div>
                 </Col>
