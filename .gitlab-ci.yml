@@ -46,7 +46,7 @@ deploy to staging:
     - cd build
     - touch .ebignore
     - echo ".git/" >> .ebignore
-    - eb deploy NmpFeStageV1-env-1
+    - eb deploy NmpFeStageV1-env
   only:
     - staging
 

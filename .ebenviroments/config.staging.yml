@@ -1,14 +1,14 @@
 branch-defaults:
   staging:
-    environment: NmpFeStageV1-env-1
+    environment: NmpFeStageV1-env
 environment-defaults:
-  NmpFeStageV1-env-1:
+  NmpFeStageV1-env:
     branch: null
     repository: null
 global:
   application_name: nmp-fe-stage-v1
   default_ec2_keyname: null
-  default_platform: PHP 7.4 running on 64bit Amazon Linux 2
+  default_platform: Node.js 14 running on 64bit Amazon Linux 2
   default_region: eu-west-2
   include_git_submodules: true
   instance_profile: null
