@@ -14,10 +14,15 @@ import CloseIcon from "@material-ui/icons/Close";
 import FilterIcon from "assets/img/svg/filter.svg";
 import FilterBox from "./FilterBox";
 import {useOutsideAlerter} from "hooks/useOutsideAlerter";
+import {selectCurrentManager} from "app/selectors/userSelectors";
 
 const dateFormat = 'DD/MM/YYYY';
 
-const { getDashboardDataRequest } = appSlice.actions;
+const {
+  getDashboardDataRequest,
+  setManager,
+  setContext,
+} = appSlice.actions;
 
 const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActivitiesShown }) => {
   const dispatch = useDispatch();
@@ -77,6 +82,34 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
     setIsFilterBoxOpen(!isFilterBoxOpen);
   }
 
+  const parseOnboardingName = (description) => {
+    let results = [];
+    for (let i = 1; i < description.length; ++i) {
+      if (description[i] === '>' && description[i - 1] === 'b') {
+        results.push(i);
+      }
+    }
+    return description.slice(results[2] + 1, results[3] - 3);
+  }
+
+  const handleActionClick = (manager, currAction) => {
+    let selectedInfo = undefined;
+    if ( currAction.action_type.name === 'Application was updated'
+      || currAction.action_type.name === 'Application state change'
+      || currAction.action_type.name === 'New application added to user') {
+      selectedInfo = {type: 'onboarding', value: parseOnboardingName(currAction.description)};
+    } else if (currAction.action_type.name === 'Application was deleted') {
+      selectedInfo = {type: 'onboarding'};
+    } else if (currAction.action_type.name === userProfileUpdated) {
+      selectedInfo = {type: 'userEdit'};
+    }
+    let newManager = selectedInfo
+      ? {selectedInfo: selectedInfo, ...manager}
+      : {...manager}
+    dispatch(setManager(newManager));
+    dispatch(setContext('User'));
+  }
+
   if (!isActivitiesShown) return null;
 
 
@@ -108,7 +141,7 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
         </span>
       }
       {(!activities || activities.length === 0)
-        ? <h1 style={{margin: '50px 0px 20px 15px'}}>No activities found</h1>
+        ? <h1 style={{margin: '50px 0px 20px 15px', padding: '5vh 0'}}>No activities found</h1>
         : <Scrollbars style={{height: 450, width: Math.round(window.innerWidth * 0.43), marginTop: 50, fontsize: 'small'}}>
           {managers.length > 0 && activities.map(item =>
             <div>
@@ -119,7 +152,7 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
                   ? getEditMessage(currAction)
                   : parseTextToComponent(currAction.description)
                 if (description) {
-                  return <div className={'dashboard-action'}>
+                  return <div onClick={() => handleActionClick(manager, currAction)} className={'dashboard-action'}>
                     <img src={manager.url ? manager.url : noneAvatar} className={"action-user-avatar"}/>
                     <span className={'action-user-name'}>
                       {manager.first_name + ' ' + manager.last_name}

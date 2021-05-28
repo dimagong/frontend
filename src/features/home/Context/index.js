@@ -9,6 +9,7 @@ import DFormForm from 'features/onboarding/dForm/DFormForm'
 import WorkflowForm from 'features/onboarding/workflow/components/WorkflowForm'
 import Organization from 'features/Organization'
 import SurveysDesigner from "features/Surveys/SurveysDesigner";
+import Dashboard from "../ContextSearch/Dashboard";
 
 const Context = ({ selectedContext }) => {
   const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible);
@@ -30,7 +31,8 @@ const Context = ({ selectedContext }) => {
           "WorkFlow": <WorkflowForm workflowModalType="Edit" />,
           "Organization": <Organization />,
           "OrganizationCreate": <Organization create />,
-          "Survey": <SurveysDesigner />
+          "Survey": <SurveysDesigner />,
+          "Dashboard": <Dashboard/>,
         }[selectedContext]}
       </div>
     </>

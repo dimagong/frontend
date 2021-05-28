@@ -3,12 +3,12 @@ import Chart from 'chart.js/auto';
 import moment from "moment";
 
 
-const LineChart = ({ data, chartId, aspectRatio, daysNumber}) => {
+const LineChart = ({ data, chartId, aspectRatio, daysNumber, title}) => {
   const [chartIsCreated, setChartIsCreated] = useState(false);
   const [currChart, setCurrChart] = useState(null);
   let pointsY = [];
   let labels = [];
-  let isSmall = aspectRatio === 1.5;
+  let isSmall = aspectRatio === 1.46;
 
   if (data) {
     for (let i = 1; i <= daysNumber; ++i) {
@@ -58,16 +58,52 @@ const LineChart = ({ data, chartId, aspectRatio, daysNumber}) => {
     }
 
   }
+  //labels = ['inProgress', '', '', '']
 
-  const dataToShow = {
-  labels: labels,
-  datasets: [{
-    label: 'Number of activities',
-    borderColor: 'red',
-    backgroundColor: 'red',
-    data: pointsY,
-  }]
-};
+  //test data
+  if (title === 'Actions') {
+    switch (daysNumber) {
+      case 7: {
+        pointsY = [5, 3, 4, 4, 7, 5, 6]
+        break;
+      }
+      case 28: {
+        pointsY = [5, 12, 9, 22, 21, 19, 28]
+        break;
+      }
+      default: {
+        pointsY = [18, 24, 35, 30, 59, 66, 49, 51, 122, 132, 96, 85]
+      }
+    }
+  }
+
+  const dataToShow = title === 'Actions'
+    ? {
+        labels: labels,
+        datasets: [{
+          label: `Number of ${title.toLowerCase()}`,
+          borderColor: '#d96f6f',
+          backgroundColor: '#d96f6f',
+          data: pointsY,
+        }]
+      }
+    : {
+        labels: labels,
+      datasets: [
+        {
+          label: `DForm-1`,
+          borderColor: '#d96f6f',
+          backgroundColor: '#d96f6f',
+          data: pointsY[0],
+        },
+        {
+          label: `DForm-2`,
+          borderColor: 'grey',
+          backgroundColor: 'grey',
+          data: pointsY[1],
+        }
+      ]
+    }
 
 const config = {
   type: 'line',
@@ -78,15 +114,26 @@ const config = {
     aspectRatio: aspectRatio,
     plugins: {
       legend: {
+        title: {
+          color: '#1FF204',
+          text: 'TITLE'
+        },
         position: 'bottom',
         align: isSmall ? 'end' : 'center',
         labels: {
-          usePointStyle: true
-        }
+          usePointStyle: true,
+        },
       },
       title: {
+        padding: {
+          bottom: 25
+        },
+        font: {
+          size: 18
+        },
+        color: '#707070',
         display: true,
-        text: '       Activities',
+        text: `     ${title}`,
         align: 'start',
       }
     },
@@ -105,6 +152,13 @@ const config = {
           display: null,
         }
       },
+    },
+    layout: {
+      padding: {
+        left: 5,
+        top: 10,
+        right: 20
+      }
     }
   },
 };

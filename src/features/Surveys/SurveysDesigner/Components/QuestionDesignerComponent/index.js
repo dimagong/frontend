@@ -11,6 +11,7 @@ import {
 import FolderCreateModal from "./Components/FolderCreateModal";
 import QuestionCreateModal from "./Components/QuestionCreateModal";
 import Question from "features/Surveys/Components/Question";
+import LoadingButton from "components/LoadingButton";
 
 import './styles.scss'
 
@@ -40,6 +41,8 @@ const QuestionDesignerComponent = ({
   onQuestionSelect,
   selectedQuestionId,
   questionsInSurvey = [],
+  onFolderDelete,
+  isFolderDeleteProceed,
 }) => {
   const [isCreateFolderModalVisible, setIsCreateFolderModalVisible] = useState(false);
   const [isCreateQuestionModalVisible, setIsCreateQuestionModalVisible] = useState(false);
@@ -47,6 +50,10 @@ const QuestionDesignerComponent = ({
   const [questionForEdit, setQuestionForEdit] = useState(null);
 
   const selectedFolder = folders?.filter((folder) => folder.id === selectedFolderId)[0] || [];
+
+  const handleFolderDelete = () => {
+    onFolderDelete(selectedFolderId);
+  };
 
   const handleFolderSelect = (folderId) => {
     onFolderSelect(folderId)
@@ -58,11 +65,11 @@ const QuestionDesignerComponent = ({
   };
 
   const handleQuestionCreateModalClose = () => {
+    setIsCreateQuestionModalVisible(false);
+
     if (questionForEdit) {
       setQuestionForEdit(null)
     }
-
-    setIsCreateQuestionModalVisible(false)
   };
 
   const handleQuestionSelect = (questionData) => {
@@ -87,7 +94,7 @@ const QuestionDesignerComponent = ({
           </div>
         </div>
         <div className="question-designer_folders">
-          {!isFoldersLoading ? folders.map((folder) => (
+          {!isFoldersLoading ? folders && folders.map((folder) => (
             <FolderTemplate
               onClick={() => handleFolderSelect(folder.id)}
               folderData={folder}
@@ -113,9 +120,13 @@ const QuestionDesignerComponent = ({
         {selectedFolderId !== -1 && (
           <>
             <div className="question-designer_actions">
-              <Button className="question-designer_actions_delete-btn" color="secondary">
-                Delete folder
-              </Button>
+              <LoadingButton
+                className="question-designer_actions_delete-btn"
+                color="secondary"
+                onClick={handleFolderDelete}
+                value="Delete folder"
+                isLoading={isFolderDeleteProceed}
+              />
               <Button onClick={() => setIsCreateQuestionModalVisible(true)} color="primary">
                 Design new question
               </Button>
@@ -127,12 +138,12 @@ const QuestionDesignerComponent = ({
                   click "Design new question" button to create a new question
                 </div>
               ) : (
-                selectedFolder.questions.map((question, index) => (
+                [...selectedFolder.questions].reverse().map((question, index) => (
                   <Question
                     key={index}
                     question={question}
                     displayType="designer"
-                    questionNumber={index + 1}
+                    questionNumber={selectedFolder.questions.length - index}
                     onEdit={handleQuestionEdit}
                     onClick={handleQuestionSelect}
                     isInSurvey={~questionsInSurvey.findIndex((questionId) => question.latest_version.question_id === questionId)}
