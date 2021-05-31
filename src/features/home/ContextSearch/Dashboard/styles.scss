@@ -22,7 +22,7 @@
     .dashboard-one-chart {
       display: inline-block;
       position: relative;
-      border-radius: 0.5rem;
+      border-radius: 1rem;
       border: none;
       box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
       padding-bottom: 20px;
@@ -75,20 +75,19 @@
     top: -10px;
     z-index: 1;
     padding-left: 10px;
-    width: 45%;
-    border-radius: 0.5rem;
+    width: 100%;
+    border-radius: 1rem;
     border: none;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
     position: relative;
     .filter-icon-box {
-      left: 195px;
-      position: absolute;
-      top: 28px;
+      margin-left: 15px;
+      .filter-icon {
+        padding-bottom: 3px;
+      }
     }
     .filter-tab {
-      position: absolute;
-      left: 220px;
-      top: 15px;
+      margin-left: 30px;
       font-size: small;
       cursor: unset!important;
       border-color: #9aa9b7 !important;
@@ -186,3 +185,7 @@
   }
 }
 
+.combined-dashboard-component {
+  display: inline-block;
+  vertical-align: top;
+}

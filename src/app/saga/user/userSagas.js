@@ -123,7 +123,7 @@ function* updateActivities({payload}) {
 
 function* getDashboardData({payload}) {
   const response = yield call(userApi.getDashboardData, payload);
-  yield put(getDashboardDataSuccess(response));
+  yield put(getDashboardDataSuccess({response: response, type: payload.title}));
 }
 
 function* getActivityTypes() {

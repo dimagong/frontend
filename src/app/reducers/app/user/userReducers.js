@@ -63,14 +63,21 @@ const updateActivitiesSuccess = (state, {payload}) => {
 };
 
 const getDashboardDataSuccess = (state, {payload}) => {
+  let actions = 'usersActivities', chart = 'usersActivitiesSchedule';
+  if (payload.type === 'application') {
+    actions = 'userDFormActivities';
+    chart = 'userDFormActivitiesSchedule';
+  }
   state.isLoading = false;
   state.isError = null;
-  if (state.user.dashboard.hasOwnProperty('usersActivities') && payload.usersActivities.current_page > state.user.dashboard.usersActivities.current_page) {
-    let newData = state.user.dashboard.usersActivities.data.concat(payload.usersActivities.data)
-    state.user.dashboard = payload;
-    state.user.dashboard.usersActivities.data = newData;
+  if (state.user.dashboard.hasOwnProperty(actions) && payload.response[actions].current_page > state.user.dashboard[actions].current_page) {
+    let newData = state.user.dashboard[actions].data.concat(payload.response[actions].data)
+    state.user.dashboard[chart] = payload.response[chart];
+    state.user.dashboard[actions] = payload.response[actions];
+    state.user.dashboard[actions].data = newData;
   } else {
-    state.user.dashboard = payload
+    state.user.dashboard[chart] = payload.response[chart];
+    state.user.dashboard[actions] = payload.response[actions];
   }
 }
 

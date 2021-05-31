@@ -53,7 +53,9 @@ export const getEditMessage = (editData) => {
     if (!editData.options) {
       return null;
     }
-
+    if (!Array.isArray(editData.options)) {
+      return <span>message</span>
+    }
     let changedOptions = editData.options.filter(item => (item.old !== item.new) && (item.old || item.new) &&
       (item.type === 'first_name' || item.type === 'last_name' || item.type === 'email' || item.type === 'number'));
 
