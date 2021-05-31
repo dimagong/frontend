@@ -14,7 +14,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import FilterIcon from "assets/img/svg/filter.svg";
 import FilterBox from "./FilterBox";
 import {useOutsideAlerter} from "hooks/useOutsideAlerter";
-import {selectCurrentManager} from "app/selectors/userSelectors";
+import {selectActivityTypes, selectCurrentManager} from "app/selectors/userSelectors";
 
 const dateFormat = 'DD/MM/YYYY';
 
@@ -24,17 +24,15 @@ const {
   setContext,
 } = appSlice.actions;
 
-const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActivitiesShown }) => {
+const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActivitiesShown, wrapperRefFilterButton, filter, setFilter, isFilterBoxOpen, setIsFilterBoxOpen, tabLabel, setTabLabel, isFilterTagOpen, setIsFilterTagOpen }) => {
   const dispatch = useDispatch();
-  const isLoadingData = useSelector(selectLoading)
-  const managers = useSelector(selectManagers)
-  const wrapperRefFilterBox = useRef(null), wrapperRefFilterButton = useRef(null);
+  const isLoadingData = useSelector(selectLoading);
+  const managers = useSelector(selectManagers);
+  const activityTypes = useSelector(selectActivityTypes);
+
+  const wrapperRefFilterBox = useRef(null);
   useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (isFilterBoxOpen) setIsFilterBoxOpen(false)});
 
-  const [filter, setFilter] = useState({type: undefined, value: undefined})
-  const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false)
-  const [isFilterTagOpen, setIsFilterTagOpen] = useState(false)
-  const [tabLabel, setTabLabel] = useState('')
 
   let activities = []
   let data = usersActivities?.data
@@ -66,20 +64,6 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
 
   const loadMoreData = () => {
     dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, filter: filter}))
-  }
-
-  const removeFilter = () => {
-    setFilter({type: undefined, value: undefined})
-    dispatch(getDashboardDataRequest({page: 1}))
-    setIsFilterTagOpen(false);
-    setTabLabel('')
-  }
-
-  const handleFilterBox = () => {
-    if (!isFilterBoxOpen) {
-      setFilter({type: filter?.type, value: filter?.value, label: tabLabel})
-    }
-    setIsFilterBoxOpen(!isFilterBoxOpen);
   }
 
   const parseOnboardingName = (description) => {
@@ -118,16 +102,6 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
       <span className={'arrow-close-activities'} onClick={() => setIsActivitiesShown(false)}>
         <img src={ArrowUp}/>
       </span>
-      <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
-        <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
-      </span>
-      {isFilterTagOpen && <Button className={'filter-tab'} variant={'dark'}>
-            <span className={'nav-text'}>{tabLabel}</span>
-            <span onClick={removeFilter}
-                  className={'close-nav'}><CloseIcon/></span>
-          </Button>}
-      <span>
-      </span>
       {isFilterBoxOpen &&
         <span ref={wrapperRefFilterBox}>
           <FilterBox
@@ -148,7 +122,7 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
               <div className={'action-date'}>{item.date}</div>
               {item.data.map(currAction => {
                 let manager = managers.find(item => item.id === currAction.user_id);
-                let description = currAction.action_type.name === userProfileUpdated
+                let description = activityTypes.find(item => item === currAction.action_type_id)?.name === userProfileUpdated
                   ? getEditMessage(currAction)
                   : parseTextToComponent(currAction.description)
                 if (description) {

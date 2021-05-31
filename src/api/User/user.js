@@ -65,11 +65,10 @@ const userApi = {
       }
     try {
       const result = await instance({
-        url: '/api/user/activities-dashboard',
+        url: `/api/user/${payload.title}-dashboard`,
         method: "GET",
         params: params
       });
-
       return result.data.data;
 
     } catch (err) {
@@ -239,7 +238,9 @@ const userApi = {
         }
       });
       return result ? result.data : result;
-    } catch (error) {console.log('ERROR POST FILTER')}
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
   },
   async deleteFilter(id) {
     try {
