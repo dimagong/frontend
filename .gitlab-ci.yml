@@ -26,7 +26,7 @@ deploy to dev:
     - git checkout dev
     - cat .ebenviroments/https.dev.conf >> .platform/nginx/conf.d/https.conf
     - npm i
-    - CI=false npm run build-stage
+    - CI=false npm run build-dev
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build
     - cd build
