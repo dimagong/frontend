@@ -1,6 +1,7 @@
 import moment from "moment";
 
 export const getChartConfig = ({ type, data }) => {
+  return configApplicationChart(data);
   switch (type) {
     case 'applications': return configApplicationChart(data);
     default: return configDefaultChart(data);
@@ -51,6 +52,9 @@ const configDefaultChart = ({dataToShow, isSmall, title}) => {
           }
         },
         y: {
+          ticks: {
+            stepSize: 2
+          },
           grid: {
             display: null,
           }
@@ -71,13 +75,32 @@ const getDate = (index) => {
   return moment().subtract(7 - index, 'days').format('ddd');
 }
 
-const configApplicationChart = ({dataToShow, isSmall, title}) => {
+const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
   if (!dataToShow) {
     return null;
   }
 
+  const getTicks = (val, index) => {
+    switch (daysNumber) {
+      case 7: {
+        return moment().subtract(daysNumber - index, 'days').format('ddd');
+      }
+      case 28: {
+        if (val?.show || index % 4 === 2) {
+          return moment().subtract(daysNumber - index, 'days').format('MMM DD');
+        } else return;
+      }
+      case 365: {
+        let format = val?.show ? 'MMM DD' : 'MMM';
+        if (val?.show || index % 15 === 2) {
+          return moment().subtract(daysNumber - index * 2, 'days').format(format);
+        }
+      }
+    }
+  }
+
   return {
-    type: 'scatter',
+    type: 'line',
     data: dataToShow,
     options: {
       animated: true,
@@ -89,8 +112,10 @@ const configApplicationChart = ({dataToShow, isSmall, title}) => {
           align: isSmall ? 'end' : 'center',
           labels: {
             usePointStyle: true,
+            padding: 15
           },
         },
+
         title: {
           padding: {
             bottom: 25
@@ -102,7 +127,13 @@ const configApplicationChart = ({dataToShow, isSmall, title}) => {
           display: true,
           text: `     ${title}`,
           align: 'start',
-        }
+        },
+
+        tooltip: {
+          callbacks: {
+            title: (info) => title === 'Applications' ? 'Number of users' : getTicks({show: true}, info[0].dataIndex)
+          }
+        },
       },
       interaction: {
         mode: 'index',
@@ -111,17 +142,18 @@ const configApplicationChart = ({dataToShow, isSmall, title}) => {
       scales: {
         x: {
           ticks: {
-          // For a category axis, the val is the index so the lookup via getLabelForValue is needed
-          callback: function(val, index) {
-            // Hide the label of every 2nd dataset
-            return getDate(index);
-          },
+            callback: getTicks,
+            align: 'end',
         },
           grid: {
             display: null,
           }
         },
         y: {
+          max: 12,
+          ticks: {
+            stepSize: title === 'Applications' ? undefined : 2
+          },
           title: {
             display: true,
           },
@@ -134,7 +166,6 @@ const configApplicationChart = ({dataToShow, isSmall, title}) => {
       },
       layout: {
         padding: {
-          left: 5,
           top: 10,
           right: 20
         }

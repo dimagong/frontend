@@ -53,6 +53,52 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
+  async getSettings() {
+    try {
+      const result = await instance({
+        url: '/api/settings',
+        method: "GET",
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async postSettings(payload) {
+    try {
+      const result = await instance({
+        url: '/api/settings',
+        method: "POST",
+        params: {
+          key: 'dashboard',
+          value: payload
+        }
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async patchSettings(payload) {
+    try {
+      const result = await instance({
+        url: `/api/settings/${payload.id}`,
+        method: "PATCH",
+        params: {
+          value: payload.value
+        }
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
   async getDashboardData(payload) {
     let params = payload.filter?.type
       ? {
