@@ -33,6 +33,30 @@ const getFilterSuccess = (state, { payload }) => {
   state.user.filters = filters;
 };
 
+const getSettingsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  let dashboardSettings = payload.find(item => item.key === 'dashboard');
+  if (dashboardSettings) {
+    state.user.dashboard.settings = {
+      value: dashboardSettings.value.map(item => JSON.parse(item)),
+      id: dashboardSettings.id
+    };
+  }
+}
+
+const postSettingsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.dashboard.settings = {id: payload.response.id, value: payload.payload};
+}
+
+const patchSettingsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.dashboard.settings = payload;
+}
+
 const getActivitiesSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
@@ -63,14 +87,21 @@ const updateActivitiesSuccess = (state, {payload}) => {
 };
 
 const getDashboardDataSuccess = (state, {payload}) => {
+  let actions = 'usersActivities', chart = 'usersActivitiesSchedule';
+  if (payload.type === 'application') {
+    actions = 'userDFormActivities';
+    chart = 'userDFormActivitiesSchedule';
+  }
   state.isLoading = false;
   state.isError = null;
-  if (state.user.dashboard.hasOwnProperty('usersActivities') && payload.usersActivities.current_page > state.user.dashboard.usersActivities.current_page) {
-    let newData = state.user.dashboard.usersActivities.data.concat(payload.usersActivities.data)
-    state.user.dashboard = payload;
-    state.user.dashboard.usersActivities.data = newData;
+  if (state.user.dashboard.data.hasOwnProperty(actions) && payload.response[actions].current_page > state.user.dashboard.data[actions].current_page) {
+    let newData = state.user.dashboard.data[actions].data.concat(payload.response[actions].data)
+    state.user.dashboard.data[chart] = payload.response[chart];
+    state.user.dashboard.data[actions] = payload.response[actions];
+    state.user.dashboard.data[actions].data = newData;
   } else {
-    state.user.dashboard = payload
+    state.user.dashboard.data[chart] = payload.response[chart];
+    state.user.dashboard.data[actions] = payload.response[actions];
   }
 }
 
@@ -429,6 +460,9 @@ export default {
   updateActivitiesSuccess,
   getDashboardDataSuccess,
   getActivityTypesSuccess,
+  getSettingsSuccess,
+  postSettingsSuccess,
+  patchSettingsSuccess,
 
   setUser,
   setManager,

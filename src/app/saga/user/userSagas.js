@@ -80,6 +80,15 @@ const {
   getDashboardDataSuccess,
   getDashboardDataError,
 
+  getSettingsRequest,
+  getSettingsSuccess,
+
+  postSettingsRequest,
+  postSettingsSuccess,
+
+  patchSettingsRequest,
+  patchSettingsSuccess,
+
   getActivityTypesRequest,
   getActivityTypesSuccess,
 
@@ -111,6 +120,21 @@ function* getFilter() {
   yield put(getFilterSuccess(response));
 }
 
+function* getSettings() {
+  const response = yield call(userApi.getSettings);
+  yield put(getSettingsSuccess(response));
+}
+
+function* postSettings({payload}) {
+  const response = yield call(userApi.postSettings, payload);
+  yield put(postSettingsSuccess({payload, response}));
+}
+
+function* patchSettings({payload}) {
+  const response = yield call(userApi.patchSettings, payload);
+  yield put(patchSettingsSuccess(payload));
+}
+
 function* getActivities({payload}) {
   const response = yield call(userApi.getActivities, payload);
   yield put(getActivitiesSuccess({response, user_id: payload.managerId, shouldUpdate: payload.shouldUpdate}));
@@ -123,7 +147,7 @@ function* updateActivities({payload}) {
 
 function* getDashboardData({payload}) {
   const response = yield call(userApi.getDashboardData, payload);
-  yield put(getDashboardDataSuccess(response));
+  yield put(getDashboardDataSuccess({response: response, type: payload.title}));
 }
 
 function* getActivityTypes() {
@@ -324,6 +348,9 @@ export default function* () {
     yield takeLatest(getProfileRequest.type, getProfile),
     yield takeLatest(getUsersRequest.type, getUsers),
     yield takeLatest(getFilterRequest.type, getFilter),
+    yield takeLatest(getSettingsRequest.type, getSettings),
+    yield takeLatest(postSettingsRequest.type, postSettings),
+    yield takeLatest(patchSettingsRequest.type, patchSettings),
     yield takeLatest(getActivitiesRequest.type, getActivities),
     yield takeLatest(updateActivitiesRequest.type, updateActivities),
     yield takeLatest(getDashboardDataRequest.type, getDashboardData),
