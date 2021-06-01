@@ -78,7 +78,7 @@ const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrap
 
   const handleActionClick = (manager, currAction) => {
     let selectedInfo = undefined;
-    let name = activityTypes.find(item => item === currAction.action_type_id)?.name;
+    let name = activityTypes.find(item => item.id === currAction.action_type_id)?.name;
     if ( name === 'Application was updated'
       || name === 'Application state change'
       || name === 'New application added to user') {
@@ -122,6 +122,9 @@ const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrap
             <div>
               <div className={'action-date'}>{item.date}</div>
               {item.data.map(currAction => {
+                if (!currAction.options.hasOwnProperty('show_in_dashboard') || !currAction.options.show_in_dashboard) {
+                  return;
+                }
                 let manager = managers.find(item => item.id === currAction.user_id);
                 let description = activityTypes.find(item => item === currAction.action_type_id)?.name === userProfileUpdated
                   ? getEditMessage(currAction)

@@ -72,7 +72,6 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
 
   useEffect(() => {
     dispatch(getDashboardDataRequest({page: 1, title: chartType === 'Activities' ? chartType.toLowerCase(): 'application'}));
-    dispatch(getActivityTypesRequest());
   }, []);
 
   if (!isChartShown) {

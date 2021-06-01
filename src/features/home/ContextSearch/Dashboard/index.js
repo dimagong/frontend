@@ -9,6 +9,7 @@ const {
   getSettingsRequest,
   postSettingsRequest,
   patchSettingsRequest,
+  getActivityTypesRequest,
 } = appSlice.actions;
 
 const Dashboard = ({ }) => {
@@ -32,6 +33,7 @@ const Dashboard = ({ }) => {
 
   useEffect(() => {
     dispatch(getSettingsRequest());
+    dispatch(getActivityTypesRequest());
   }, []);
 
   return (<div className={'activity-dashboard'}>
