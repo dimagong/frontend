@@ -21,7 +21,8 @@ const LineChart = ({ data, chartId, isSmall, daysNumber, title}) => {
     data: {
       dataToShow: dataToShow,
       isSmall: isSmall,
-      title: title
+      title: title,
+      daysNumber: daysNumber
     },
     type: title.toLowerCase()
   });

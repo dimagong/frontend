@@ -52,7 +52,10 @@ export const initialState = {
     reviewers: [],
     filters: [],
     searchText: '',
-    dashboard: {},
+    dashboard: {
+      data: {},
+      settings: {},
+    },
     activityTypes: [],
   },
   masterSchema: {

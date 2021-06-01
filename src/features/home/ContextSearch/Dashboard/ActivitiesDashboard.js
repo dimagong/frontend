@@ -24,7 +24,7 @@ const {
   setContext,
 } = appSlice.actions;
 
-const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActivitiesShown, wrapperRefFilterButton, filter, setFilter, isFilterBoxOpen, setIsFilterBoxOpen, tabLabel, setTabLabel, isFilterTagOpen, setIsFilterTagOpen }) => {
+const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrapperRefFilterButton, filter, setFilter, isFilterBoxOpen, setIsFilterBoxOpen, tabLabel, setTabLabel, isFilterTagOpen, setIsFilterTagOpen }) => {
   const dispatch = useDispatch();
   const isLoadingData = useSelector(selectLoading);
   const managers = useSelector(selectManagers);
@@ -78,13 +78,14 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
 
   const handleActionClick = (manager, currAction) => {
     let selectedInfo = undefined;
-    if ( currAction.action_type.name === 'Application was updated'
-      || currAction.action_type.name === 'Application state change'
-      || currAction.action_type.name === 'New application added to user') {
+    let name = activityTypes.find(item => item === currAction.action_type_id)?.name;
+    if ( name === 'Application was updated'
+      || name === 'Application state change'
+      || name === 'New application added to user') {
       selectedInfo = {type: 'onboarding', value: parseOnboardingName(currAction.description)};
-    } else if (currAction.action_type.name === 'Application was deleted') {
+    } else if (name === 'Application was deleted') {
       selectedInfo = {type: 'onboarding'};
-    } else if (currAction.action_type.name === userProfileUpdated) {
+    } else if (name === userProfileUpdated) {
       selectedInfo = {type: 'userEdit'};
     }
     let newManager = selectedInfo
@@ -94,12 +95,12 @@ const ActivitiesDashboard = ({ usersActivities, isActivitiesShown, setIsActiviti
     dispatch(setContext('User'));
   }
 
-  if (!isActivitiesShown) return null;
+  if (settings.state !== 'large') return null;
 
 
   return (
     <div>
-      <span className={'arrow-close-activities'} onClick={() => setIsActivitiesShown(false)}>
+      <span className={'arrow-close-activities'} onClick={handleChangeList}>
         <img src={ArrowUp}/>
       </span>
       {isFilterBoxOpen &&
