@@ -79,13 +79,13 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
       }
       default: {
         pointsY = []
-        for (let i = 0; i < 182 - 28; ++i) {
+        for (let i = 0; i < 91 - 28; ++i) {
           pointsY.push({x: i + 1, y : 0})
         }
-        let last = [{x:153 + 1, y: 5}, {x:153 + 2,y:3}, {x:153 + 3,y:4}, {x:153 + 4,y:4}, {x:153 + 5,y:7}, {x:153 + 6,y:5}, {x:153 + 7,y:6},
-                   {x:153 + 8, y: 5}, {x:153 + 9,y:3}, {x:153 + 10,y:4}, {x:153 + 11,y:4}, {x:153 + 12,y:7}, {x:153 + 13,y:5}, {x:153 + 14,y:6},
-                   {x:153 + 15, y: 5}, {x:153 + 16,y:3}, {x:153 + 17,y:4}, {x:153 + 18,y:4}, {x:153 + 19,y:7}, {x:153 + 20,y:5}, {x:153 + 21,y:6},
-                   {x:153 + 22, y: 5}, {x:153 + 23,y:3}, {x:153 + 24,y:4}, {x:153 + 25,y:4}, {x:153 + 26,y:7}, {x:153 + 27,y:5}, {x:153 + 28,y:6}]
+        let last = [{x:63 + 1, y: 5}, {x:63 + 2,y:3}, {x:63 + 3,y:4}, {x:63 + 4,y:4}, {x:63 + 5,y:7}, {x:63 + 6,y:5}, {x:63 + 7,y:6},
+                   {x:63 + 8, y: 5}, {x:63 + 9,y:3}, {x:63 + 10,y:4}, {x:63 + 11,y:4}, {x:63 + 12,y:7}, {x:63 + 13,y:5}, {x:63 + 14,y:6},
+                   {x:63 + 15, y: 5}, {x:63 + 16,y:3}, {x:63 + 17,y:4}, {x:63 + 18,y:4}, {x:63 + 19,y:7}, {x:63 + 20,y:5}, {x:63 + 21,y:6},
+                   {x:63 + 22, y: 5}, {x:63 + 23,y:3}, {x:63 + 24,y:4}, {x:63 + 25,y:4}, {x:63 + 26,y:7}, {x:63 + 27,y:5}, {x:63 + 28,y:6}]
         pointsY = pointsY.concat(last);
       }
     }
@@ -93,7 +93,7 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
 
 
   return {
-        labels: daysNumber === 365 ? new Array(182) : new Array(daysNumber),
+        labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
         datasets: [{
           label: `Number of ${title.toLowerCase()}`,
           borderColor: '#d96f6f',
@@ -186,7 +186,7 @@ const dataApplicationChart = ({data, daysNumber, title}) => {
       }
       default: {
         let start = [];
-        for (let i = 0; i < 182 - 28; ++i) {
+        for (let i = 0; i < 91 - 28; ++i) {
           start.push({x: i + 1, y : 0})
         }
         for (let i = 0; i < 21; ++i) {
@@ -200,7 +200,7 @@ const dataApplicationChart = ({data, daysNumber, title}) => {
         }
         let start2 = start.concat(pointsY2)
         start = start.concat(pointsY)
-        for (let i = 1; i < 183; ++i) {
+        for (let i = 1; i < 91; ++i) {
           start[i - 1].x = i;
           //if (!pointsY[i - 1].hasOwnProperty('y')) pointsY[i - 1].y = 0;
           start2[i - 1].x = i;
@@ -213,7 +213,7 @@ const dataApplicationChart = ({data, daysNumber, title}) => {
   }
 
   return {
-        labels: daysNumber === 365 ? new Array(182) : new Array(daysNumber),
+        labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
         datasets: [{
           label: `DForm-1`,
           borderColor: colors[0],

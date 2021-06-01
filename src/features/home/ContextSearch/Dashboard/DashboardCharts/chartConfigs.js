@@ -92,8 +92,8 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
       }
       case 365: {
         let format = val?.show ? 'MMM DD' : 'MMM';
-        if (val?.show || index % 15 === 2) {
-          return moment().subtract(daysNumber - index * 2, 'days').format(format);
+        if (val?.show || index % 7 === 2) {
+          return moment().subtract(daysNumber - index * 4, 'days').format(format);
         }
       }
     }
