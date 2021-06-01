@@ -43,7 +43,9 @@
     justify-content: space-between;
 
     &_delete-btn {
-      background: #4B484D!important;
+      &.btn-secondary {
+        background: #4B484D!important;
+      }
     }
   }
 }

@@ -14,6 +14,13 @@
     padding-bottom: 32px;
     font-family: Montserrat;
 
+    &_version-select {
+      position: absolute;
+      left: 200px;
+      top: 5px;
+      width: 260px;
+    }
+
     &_header {
       display: flex;
       justify-content: space-between;
