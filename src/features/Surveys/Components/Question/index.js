@@ -13,7 +13,7 @@ const Question = ({ displayType, question, questionNumber, isSurveyDesigner, onE
   };
 
   return {
-    "designer": <DesignerQuestion
+    "designer-view": <DesignerQuestion
                   {...commonProps}
                   isSurveyDesigner={isSurveyDesigner}
                   onEdit={onEdit}
