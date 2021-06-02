@@ -31,7 +31,7 @@ const SurveyDesignerQuestionListItem = ({ question, handleReorder, questionsCoun
         </button>
       </div>
       <Question
-        displayType={"designer"}
+        displayType={"designer-view"}
         question={question}
         isSurveyDesigner={true}
         questionNumber={questionOrder + 1}

@@ -142,7 +142,7 @@ const QuestionDesignerComponent = ({
                   <Question
                     key={index}
                     question={question}
-                    displayType="designer"
+                    displayType="designer-view"
                     questionNumber={selectedFolder.questions.length - index}
                     onEdit={handleQuestionEdit}
                     onClick={handleQuestionSelect}
