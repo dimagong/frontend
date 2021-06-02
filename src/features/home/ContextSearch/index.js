@@ -42,6 +42,7 @@ const {
   getNotificationsRequest,
   getWorkflowsRequest,
   setContext,
+  getFilterRequest,
   getSurveysRequest,
 } = appSlice.actions;
 
@@ -130,11 +131,12 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
   useEffect(() => {
     if (isAuth && vuexyUser) {
+      dispatch(getFilterRequest());
       dispatch(getUserManagment());
       dispatch(getWorkflowsRequest());
       dispatch(getdFormsRequest());
       dispatch(getNotificationsRequest());
-      // dispatch(getSurveysRequest());
+      dispatch(getSurveysRequest());
     }
   }, [isAuth, vuexyUser]);
 
@@ -184,9 +186,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                               <TabPane tabId={NAV_OPTIONS[3].id}>
                                 <Organizations />
                               </TabPane>
-                              {/*<TabPane tabId={NAV_OPTIONS[4].id}>*/}
-                              {/*  <Surveys />*/}
-                              {/*</TabPane>*/}
+                              <TabPane tabId={NAV_OPTIONS[4].id}>
+                                <Surveys />
+                              </TabPane>
                             </TabContent>
 
                           </Col>

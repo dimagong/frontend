@@ -178,7 +178,7 @@ const OnboardingUser = () => {
     dispatch(removeUserNotifyRequest())
   }
 
-  if (profile.notify) {
+  if (profile.notify && profile.notify_entity) {
     return (
 
       <div className={"welcome-onboarding"}>

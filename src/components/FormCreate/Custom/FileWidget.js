@@ -17,7 +17,7 @@ const clone = rfdc();
 export function FileWidget(props) {
 
   const propertyKey = props.id.replace('root_', '');
-  const inputFileRef = useRef( null );
+  const inputFileRef = useRef(null);
   let [filesLoading, setFilesLoading] = useState([]);
   let [filesRemoving, setFilesRemoving] = useState([]);
 
@@ -101,7 +101,7 @@ export function FileWidget(props) {
 
         <div className="actions">
           {
-            !isRemoving ? <Badge color="primary cursor-pointer ml-1 mr-1" onClick={() => downloadFile(file)} >
+            !isRemoving ? <Badge color="primary cursor-pointer ml-1 mr-1" onClick={() => downloadFile(file)}>
               download
             </Badge> : null
           }
@@ -151,14 +151,19 @@ export function FileWidget(props) {
         </div>
       </div>
     )
-  }
+  };
 
   const renderSingleFile = (fileDataUrl) => {
     if (!fileDataUrl) return <div></div>;
 
+    // if (!fileDataUrl.property_value) {
+    //   return <div></div>;
+    // }
+
     if (Array.isArray(fileDataUrl) && fileDataUrl.length) {
       fileDataUrl = fileDataUrl[0];
     }
+
     let file = dataURItoBlob(fileDataUrl.property_value);
     let fileUrl = window.URL.createObjectURL(
       new Blob([file.blob], {type: file.blob.type})
@@ -182,7 +187,7 @@ export function FileWidget(props) {
     if (!filesDataUrl || !filesDataUrl.length) return <div></div>;
 
     return filesDataUrl.map((fileDataUrl, index) => {
-      if(!fileDataUrl.property_value) return <></>
+      if (!fileDataUrl.property_value) return <></>;
       let file = dataURItoBlob(fileDataUrl.property_value);
       let fileUrl = window.URL.createObjectURL(
         new Blob([file.blob], {type: file.blob.type, name: 'test'})
@@ -194,13 +199,13 @@ export function FileWidget(props) {
   };
 
   const renderFiles = () => {
-    if(this.state.loadingFiles.length) {
+    if (this.state.loadingFiles.length) {
       let loadingFiles = this.state.loadingFiles.filter(loadingFile => {
         return loadingFile.file.group === propertyKey
       });
       return loadingFiles.map(loadingFile => {
         // return <div>{loadingFile.file.name}<Spinner color="primary" className="ml-1" size="sm"/></div>;
-        return <FileItem name={loadingFile.file.name} isLoading={true} />
+        return <FileItem name={loadingFile.file.name} isLoading={true}/>
       })
     }
     let mainFiles = props.multiple ? renderMultipleFile(props.value) : renderSingleFile(props.value);
@@ -211,7 +216,7 @@ export function FileWidget(props) {
 
       {
         filesLoading.map((fileLoading) => {
-          return <FileItem name={decodeURIComponent(dataURItoBlob(fileLoading).name)} isLoading={true} />
+          return <FileItem name={decodeURIComponent(dataURItoBlob(fileLoading).name)} isLoading={true}/>
         })
       }
     </>
@@ -231,14 +236,14 @@ export function FileWidget(props) {
   const onDragEnter = event => {
     event.preventDefault();
     event.stopPropagation();
-  }
+  };
   const onDragLeave = event => {
     event.preventDefault();
-  }
+  };
 
   const onDragOver = event => {
     event.preventDefault();
-  }
+  };
 
   const onDrop = event => {
     event.preventDefault();
@@ -255,15 +260,15 @@ export function FileWidget(props) {
     }
 
 
-    const migration = {target: {files: formattedFiles}}
+    const migration = {target: {files: formattedFiles}};
 
 
     this.props.fileLoader && onChange(migration)
-  }
+  };
 
   const openFileManager = () => {
     inputFileRef.current.click();
-  }
+  };
 
 
   const isDropZoneVisible = props.multiple ? true : (props.value && props.value.length) || this.state.loadingFiles?.length ? false : true;
@@ -277,7 +282,8 @@ export function FileWidget(props) {
       </div>
       <div className="file-input">
         {isDropZoneVisible && !props.disabled && (
-          <div className="drop-zone" onClick={openFileManager} onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave} onDragEnter={onDragEnter}>
+          <div className="drop-zone" onClick={openFileManager} onDrop={onDrop} onDragOver={onDragOver}
+               onDragLeave={onDragLeave} onDragEnter={onDragEnter}>
             Drag 'n' Drop files here or click to open file manager
 
             <input className={"form-element_file-input_hidden-input-file"}
