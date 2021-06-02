@@ -12,10 +12,12 @@ import appSlice from "app/slices/appSlice";
 import {selectUserActivity} from "app/selectors/userSelectors";
 import {OverlayTrigger, Tooltip, Button} from "react-bootstrap";
 import {userProfileUpdated} from "constants/activity";
+import SpinnerIcon from 'assets/img/svg/spinner.svg';
+import {selectLoading} from 'app/selectors';
 
 const { getActivitiesRequest } = appSlice.actions;
 
-const parseTextToComponent = (text) => {
+export const parseTextToComponent = (text) => {
   let indexes = [];
   let currIndex = -1;
   for (let i = 0; i < text.length; ++i) {
@@ -42,28 +44,30 @@ const parseTextToComponent = (text) => {
       </span>
     })}
   </span>
-
 }
 
-
-const Timeline = ({managerId}) => {
-  const dispatch = useDispatch();
-
-  const data = useSelector(selectUserActivity(managerId));
-
-  const getTimePassed = (inputTime) => {
-    let time = moment(inputTime);
-    return time.format('L') + ' ' + time.format('LT');
-  }
-  const getEditMessage = (editData) => {
+export const getEditMessage = (editData) => {
     let messageParts = editData.description.split(' ');
     let index = messageParts.findIndex(item => item[0] === '%');
 
     if (!editData.options) {
       return null;
     }
-
-    let changedOptions = editData.options.filter(item => (item.old !== item.new) && (item.old || item.new) &&
+    let optionsData = [];
+    if (!Array.isArray(editData.options)) {
+      if (editData.options.hasOwnProperty('data')) {
+        optionsData = editData.options.data
+      } else {
+        for (let i = 0; i < Object.keys(editData.options).length - 1; ++i) {
+          if (editData.options[i]) {
+            optionsData.push(editData.options[i])
+          }
+        }
+      }
+    } else {
+      optionsData = [editData.options]
+    }
+    let changedOptions = optionsData.filter(item => (item.old !== item.new) && (item.old || item.new) &&
       (item.type === 'first_name' || item.type === 'last_name' || item.type === 'email' || item.type === 'number'));
 
     if (changedOptions.length === 0) {
@@ -94,18 +98,36 @@ const Timeline = ({managerId}) => {
           </Tooltip>
         }
       >
-        <span className={'activity-profile-update'}>{changedOptions[i].name.toLowerCase()}</span>
+        <span className={'activity-profile-update'}><strong>{changedOptions[i].name.toLowerCase()}</strong></span>
       </OverlayTrigger>{addBreaker}</span>)
       }
 
-    return <td>
+    return <span>
       {parseTextToComponent(messageParts.splice(0, index).join(' ') + ' ')}
       {newMessage}
-    </td>
+    </span>
+  }
+
+
+const Timeline = ({managerId}) => {
+  const dispatch = useDispatch();
+
+  const activity = useSelector(selectUserActivity(managerId));
+  let data = activity?.data
+
+  const isLoadingData = useSelector(selectLoading)
+
+  const getTimePassed = (inputTime) => {
+    let time = moment(inputTime);
+    return time.format('L') + ' ' + time.format('LT');
+  }
+
+  const loadMoreData = () => {
+    dispatch(getActivitiesRequest({managerId: managerId, page: activity.current_page + 1, shouldUpdate: true}))
   }
 
   useEffect(() => {
-    dispatch(getActivitiesRequest(managerId))
+    dispatch(getActivitiesRequest({managerId: managerId, page: 1, shouldUpdate: false}))
   }, [managerId]);
 
 
@@ -126,13 +148,21 @@ const Timeline = ({managerId}) => {
                 return <tr>
                   <td>{getTimePassed(item.created_at)}</td>
                   {item.action_type.name === userProfileUpdated
-                    ? message
+                    ? <td>{message}</td>
                     : <td>{parseTextToComponent(item.description)}</td>}
                 </tr>
               }
             })
             }
         </table>
+        {activity?.next_page_url &&
+        <div className={'activity-load-more'}>
+          {isLoadingData ?
+            <img src={SpinnerIcon} alt={'spinner'}/> :
+            <Button onClick={loadMoreData}>Load more</Button>
+          }
+
+        </div>}
       </CardBody>
     </Card>
   )

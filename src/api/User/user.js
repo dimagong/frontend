@@ -36,16 +36,119 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async getActivities(id) {
+  async getActivities(payload) {
     try {
       const result = await instance({
         url: '/api/user/activities',
         method: "GET",
         params: {
-          user_id: id
+          user_id: payload.managerId,
+          page: payload.page
         },
       });
 
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getSettings() {
+    try {
+      const result = await instance({
+        url: '/api/settings',
+        method: "GET",
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async postSettings(payload) {
+    try {
+      const result = await instance({
+        url: '/api/settings',
+        method: "POST",
+        params: {
+          key: 'dashboard',
+          value: payload
+        }
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async patchSettings(payload) {
+    try {
+      const result = await instance({
+        url: `/api/settings/${payload.id}`,
+        method: "PATCH",
+        params: {
+          value: payload.value
+        }
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getDashboardData(payload) {
+    let params = payload.filter?.type
+      ? {
+        page: payload.page,
+        'filter[type]': payload.filter.type,
+        'filter[value]': payload.filter.value,
+      }
+      : {
+        page: payload.page,
+      }
+    try {
+      const result = await instance({
+        url: `/api/user/application-dashboard`,
+        method: "GET",
+        params: params
+      });
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getDashboardActivity(payload) {
+    let params = payload.filter?.type
+      ? {
+        page: payload.page,
+        'filter[type]': payload.filter.type,
+        'filter[value]': payload.filter.value,
+      }
+      : {
+        page: payload.page,
+      }
+    try {
+      const result = await instance({
+        url: `/api/user/activities-dashboard`,
+        method: "GET",
+        params: params
+      });
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getActivityTypes() {
+    try {
+      const result = await instance({
+        url: '/api/user/activity-types',
+        method: "GET",
+      });
       return result.data.data;
 
     } catch (err) {
@@ -202,7 +305,9 @@ const userApi = {
         }
       });
       return result ? result.data : result;
-    } catch (error) {console.log('ERROR POST FILTER')}
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
   },
   async deleteFilter(id) {
     try {

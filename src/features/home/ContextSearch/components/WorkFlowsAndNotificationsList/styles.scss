@@ -1,0 +1,25 @@
+.workflows-and-notifications {
+
+  &_header-container {
+    margin-top: 17px!important;
+  }
+  &_header {
+    padding: 14px 20px;
+
+    &_dropdown {
+      font-size: 18px;
+      color: #707070;
+
+      &_nav-item {
+        font-size: 16px;
+      }
+    }
+
+    &_selected-item {
+      cursor: pointer;
+      color: #707070;
+      font-weight: bold;
+    }
+  }
+
+}

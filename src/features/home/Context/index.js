@@ -1,9 +1,6 @@
 import React from 'react'
 import {useSelector} from 'react-redux'
 
-
-import {Card, CardBody, Col, Row} from 'reactstrap'
-
 import UserEdit from 'features/user-managment/userEdit/UserEdit'
 import UserCreate from 'features/user-managment/userCreate/UserCreate'
 import UserInvitations from 'features/user-managment/userInvitations/UserInvitations'
@@ -11,9 +8,11 @@ import NotificationsForm from 'features/onboarding/notifications/NotificationsFo
 import DFormForm from 'features/onboarding/dForm/DFormForm'
 import WorkflowForm from 'features/onboarding/workflow/components/WorkflowForm'
 import Organization from 'features/Organization'
+import SurveysDesigner from "features/Surveys/SurveysDesigner";
+import Dashboard from "../ContextSearch/Dashboard";
 
 const Context = ({ selectedContext }) => {
-  const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible)
+  const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible);
   if(!selectedContext) return null;
 
   return (
@@ -32,10 +31,12 @@ const Context = ({ selectedContext }) => {
           "WorkFlow": <WorkflowForm workflowModalType="Edit" />,
           "Organization": <Organization />,
           "OrganizationCreate": <Organization create />,
+          "Survey": <SurveysDesigner />,
+          "Dashboard": <Dashboard/>,
         }[selectedContext]}
       </div>
     </>
   )
-}
+};
 
 export default Context;
