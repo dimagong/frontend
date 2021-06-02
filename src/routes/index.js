@@ -13,7 +13,7 @@ const Routes = () => {
   const isAuth = useSelector(selectAuth);
   const userRole = useSelector(selectUserAbility);
 
-  const isOnboarding = userRole === "prospect";
+  const isOnboarding = ["prospect", "adviser"].indexOf(userRole) !== -1;
 
   // if(isAuth && !profile) return null
 
@@ -21,7 +21,6 @@ const Routes = () => {
     <Switch>
       {routes.map((route) => {
         const {path, Component, exact, isPrivate, redirect, ...rest} = route;
-
 
         if (isPrivate) {
 
