@@ -80,6 +80,9 @@ const {
   getDashboardDataSuccess,
   getDashboardDataError,
 
+  getDashboardActivityRequest,
+  getDashboardActivitySuccess,
+
   getSettingsRequest,
   getSettingsSuccess,
 
@@ -148,6 +151,11 @@ function* updateActivities({payload}) {
 function* getDashboardData({payload}) {
   const response = yield call(userApi.getDashboardData, payload);
   yield put(getDashboardDataSuccess({response: response, type: payload.title}));
+}
+
+function* getDashboardActivity({payload}) {
+  const response = yield call(userApi.getDashboardActivity, payload);
+  yield put(getDashboardActivitySuccess({response: response, type: payload.title}));
 }
 
 function* getActivityTypes() {
@@ -354,6 +362,7 @@ export default function* () {
     yield takeLatest(getActivitiesRequest.type, getActivities),
     yield takeLatest(updateActivitiesRequest.type, updateActivities),
     yield takeLatest(getDashboardDataRequest.type, getDashboardData),
+    yield takeLatest(getDashboardActivityRequest.type, getDashboardActivity),
     yield takeLatest(getActivityTypesRequest.type, getActivityTypes),
     yield takeLatest(postFilterRequest.type, postFilter),
     yield takeLatest(deleteFilterRequest.type, deleteFilter),

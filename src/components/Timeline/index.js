@@ -53,10 +53,21 @@ export const getEditMessage = (editData) => {
     if (!editData.options) {
       return null;
     }
+    let optionsData = [];
     if (!Array.isArray(editData.options)) {
-      return <span>message</span>
+      if (editData.options.hasOwnProperty('data')) {
+        optionsData = editData.options.data
+      } else {
+        for (let i = 0; i < Object.keys(editData.options).length - 1; ++i) {
+          if (editData.options[i]) {
+            optionsData.push(editData.options[i])
+          }
+        }
+      }
+    } else {
+      optionsData = [editData.options]
     }
-    let changedOptions = editData.options.filter(item => (item.old !== item.new) && (item.old || item.new) &&
+    let changedOptions = optionsData.filter(item => (item.old !== item.new) && (item.old || item.new) &&
       (item.type === 'first_name' || item.type === 'last_name' || item.type === 'email' || item.type === 'number'));
 
     if (changedOptions.length === 0) {
