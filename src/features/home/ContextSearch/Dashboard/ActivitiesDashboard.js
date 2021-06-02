@@ -100,10 +100,7 @@ const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrap
 
   return (
     <div>
-      <span className={'arrow-close-activities'} onClick={handleChangeList}>
-        <img src={ArrowUp}/>
-      </span>
-      {isFilterBoxOpen &&
+      {false && isFilterBoxOpen &&
         <span ref={wrapperRefFilterBox}>
           <FilterBox
             managers={managers}
@@ -117,16 +114,22 @@ const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrap
       }
       {(!activities || activities.length === 0)
         ? <h1 style={{margin: '50px 0px 20px 15px', padding: '5vh 0'}}>No activities found</h1>
-        : <Scrollbars style={{height: 450, width: Math.round(window.innerWidth * 0.43), marginTop: 50, fontsize: 'small'}}>
-          {managers.length > 0 && activities.map(item =>
+        : <Scrollbars style={{height: 350, width: Math.round(window.innerWidth * 0.43), paddingLeft: 5, fontsize: 'small'}}>
+          {managers.length > 0 && activities.map((item, key) =>
             <div>
-              <div className={'action-date'}>{item.date}</div>
+              <div className={'action-date'} style={{position: 'relative'}}>
+                {item.date}
+                {key === 0 &&
+                  <span className={'arrow-close-activities'} onClick={handleChangeList}>
+                    <img src={ArrowUp}/>
+                  </span>}
+              </div>
               {item.data.map(currAction => {
                 if (!currAction.options.hasOwnProperty('show_in_dashboard') || !currAction.options.show_in_dashboard) {
                   return;
                 }
                 let manager = managers.find(item => item.id === currAction.user_id);
-                let description = activityTypes.find(item => item === currAction.action_type_id)?.name === userProfileUpdated
+                let description = activityTypes.find(item => item.id === currAction.action_type_id)?.name === userProfileUpdated
                   ? getEditMessage(currAction)
                   : parseTextToComponent(currAction.description)
                 if (description) {

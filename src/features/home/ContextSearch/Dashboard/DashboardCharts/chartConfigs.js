@@ -167,7 +167,8 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
       layout: {
         padding: {
           top: 10,
-          right: 20
+          right: 20,
+          left: -11
         }
       }
     },

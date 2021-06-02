@@ -87,21 +87,30 @@ const updateActivitiesSuccess = (state, {payload}) => {
 };
 
 const getDashboardDataSuccess = (state, {payload}) => {
-  let actions = 'usersActivities', chart = 'usersActivitiesSchedule';
-  if (payload.type === 'application') {
-    actions = 'userDFormActivities';
-    chart = 'userDFormActivitiesSchedule';
-  }
   state.isLoading = false;
   state.isError = null;
-  if (state.user.dashboard.data.hasOwnProperty(actions) && payload.response[actions].current_page > state.user.dashboard.data[actions].current_page) {
-    let newData = state.user.dashboard.data[actions].data.concat(payload.response[actions].data)
-    state.user.dashboard.data[chart] = payload.response[chart];
-    state.user.dashboard.data[actions] = payload.response[actions];
-    state.user.dashboard.data[actions].data = newData;
+  if (state?.user?.dashboard?.data?.userDFormActivities && payload.response.userDFormActivities.current_page > state.user.dashboard.data.userDFormActivities.current_page) {
+    let newData = state.user.dashboard.data.userDFormActivities.data.concat(payload.response.userDFormActivities.data)
+    state.user.dashboard.data.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+    state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
+    state.user.dashboard.data.userDFormActivities.data = newData;
   } else {
-    state.user.dashboard.data[chart] = payload.response[chart];
-    state.user.dashboard.data[actions] = payload.response[actions];
+    state.user.dashboard.data.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+    state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
+  }
+}
+
+const getDashboardActivitySuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  if (state?.user?.dashboard?.data?.usersActivities && payload.response.usersActivities.current_page > state.user.dashboard.data.usersActivities.current_page) {
+    let newData = state.user.dashboard.data.usersActivities.data.concat(payload.response.usersActivities.data)
+    state.user.dashboard.data.usersActivitiesSchedule = payload.response.usersActivitiesSchedule;
+    state.user.dashboard.data.usersActivities = payload.response.usersActivities;
+    state.user.dashboard.data.usersActivities.data = newData;
+  } else {
+    state.user.dashboard.data.usersActivitiesSchedule = payload.response.usersActivitiesSchedule;
+    state.user.dashboard.data.usersActivities = payload.response.usersActivities;
   }
 }
 
@@ -460,6 +469,7 @@ export default {
   updateActivitiesSuccess,
   getDashboardDataSuccess,
   getActivityTypesSuccess,
+  getDashboardActivitySuccess,
   getSettingsSuccess,
   postSettingsSuccess,
   patchSettingsSuccess,

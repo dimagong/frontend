@@ -15,7 +15,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 const {
   getDashboardDataRequest,
-  getActivityTypesRequest
+  getDashboardActivityRequest
 } = appSlice.actions;
 
 const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings }) => {
@@ -71,7 +71,17 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   }
 
   useEffect(() => {
-    dispatch(getDashboardDataRequest({page: 1, title: chartType === 'Activities' ? chartType.toLowerCase(): 'application'}));
+    if (chartType === 'Activities') {
+      dispatch(getDashboardActivityRequest({
+        page: 1,
+        title: chartType.toLowerCase()
+      }));
+    } else {
+      dispatch(getDashboardDataRequest({
+        page: 1,
+        title: 'application'
+      }));
+    }
   }, []);
 
   if (!isChartShown) {
@@ -114,7 +124,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
       borderTopColor: '#707070',
       background: 'white'
     }} className={'dashboard-activities'}>
-      <h3 className={'users-activities-title'}>
+      {false && <h3 className={'users-activities-title'}>
         Users {chartType.toLowerCase()}
         <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
           <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
@@ -126,9 +136,9 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                     className={'close-nav'}><CloseIcon/></span>
             </Button>
         }
-      </h3>
+      </h3>}
       <ActivitiesDashboard
-        usersActivities={dashboardData?.userDFormActivities}
+        usersActivities={chartType === 'Applications' ? dashboardData?.userDFormActivities : dashboardData?.usersActivities}
         settings={dashboardSettings}
         handleChangeList={handleChangeList}
         wrapperRefFilterButton={wrapperRefFilterButton}
