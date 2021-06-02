@@ -134,7 +134,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
       dispatch(getWorkflowsRequest());
       dispatch(getdFormsRequest());
       dispatch(getNotificationsRequest());
-      // dispatch(getSurveysRequest());
+      dispatch(getSurveysRequest());
     }
   }, [isAuth, vuexyUser]);
 
@@ -184,9 +184,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                               <TabPane tabId={NAV_OPTIONS[3].id}>
                                 <Organizations />
                               </TabPane>
-                              {/*<TabPane tabId={NAV_OPTIONS[4].id}>*/}
-                              {/*  <Surveys />*/}
-                              {/*</TabPane>*/}
+                              <TabPane tabId={NAV_OPTIONS[4].id}>
+                                <Surveys />
+                              </TabPane>
                             </TabContent>
 
                           </Col>
