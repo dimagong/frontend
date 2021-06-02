@@ -18,6 +18,7 @@ import { Edit } from 'react-feather'
 import SurveysDesignerQuestionsList from "./Components/SurveysDesignerQuestionsList";
 import SurveyCreateModal from "features/home/ContextSearch/SurveyCreateModal";
 import LoadingButton from "components/LoadingButton";
+import ChevronUpButton from "components/ChevronUpButton";
 
 import "./styles.scss";
 
@@ -29,6 +30,7 @@ const {
   deleteSurveyRequest,
   deleteSurveyLatestVersionRequest,
   deleteSurveyVersionRequest,
+  setContext,
 } = appSlice.actions;
 
 const SurveysDesignerComponent = ({
@@ -93,6 +95,10 @@ const SurveysDesignerComponent = ({
     }
   };
 
+  const handleSurveyHide = () => {
+    dispatch(setContext(null))
+  };
+
   useEffect(() => {
     if (!isSurveyUpdateProceed && prevSurveyUpdateProceed && !error) {
       dispatch(getSurveyVersionsRequest(survey.id));
@@ -113,6 +119,10 @@ const SurveysDesignerComponent = ({
 
   return (
     <Col className={"survey-designer"} xs={6} >
+      <div className={"survey-designer_hide-survey"}>
+        <ChevronUpButton onClick={handleSurveyHide} />
+      </div>
+
       <div className={"survey-designer_header"}>
         <div className={"d-flex"}>
           <div className={"survey-designer_header_title"}>

@@ -1,5 +1,13 @@
 .survey-designer {
   padding-top: 20px;
+  padding-right: 45px;
+  &_hide-survey {
+    position: absolute;
+    right: -17px;
+    top: -10px;
+    z-index: 10;
+  }
+
   &_header{
     padding-bottom: 40px;
     display: flex;
