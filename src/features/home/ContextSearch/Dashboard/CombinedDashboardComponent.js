@@ -12,6 +12,7 @@ import {title} from "react-bootstrap-sweetalert/dist/styles/SweetAlertStyles";
 import FilterIcon from "../../../../assets/img/svg/filter.svg";
 import {Button} from "react-bootstrap";
 import CloseIcon from "@material-ui/icons/Close";
+import moment from "moment";
 
 const {
   getDashboardDataRequest,
@@ -24,7 +25,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     settings = {...dashboardSettings}
   } else {
     settings = {
-      daysNumber: 7,
+      daysNumber: -1,
       state: 'large',
       filter: null,
       title: chartType
@@ -70,7 +71,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     setTabLabel('')
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (chartType === 'Activities') {
       dispatch(getDashboardActivityRequest({
         page: 1,
@@ -82,7 +83,15 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
         title: 'application'
       }));
     }
-  }, []);
+  }, []);*/
+
+  useEffect(() => {
+    if (chartType === 'Applications') {
+        dispatch(getDashboardDataRequest({page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      } else {
+        dispatch(getDashboardActivityRequest({page: 1,'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      }
+  }, [settings.daysNumber, settings.nothing]);
 
   if (!isChartShown) {
     return null
@@ -90,8 +99,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
 
   return (<div className={'combined-dashboard-component'} style={settings.state === 'small'
                                                 ? {width: '22%', marginRight: '1%'}
-                   : settings.state !== 'large' ? {width: '45%', marginRight: '1%'}
-                                                : {width: '45%',background: 'white', marginRight: '1%'}}>
+                                                : {width: '45%', marginRight: '1%'}}>
     <div className={'dashboard-charts'} style={settings.state === 'large' ? {background: 'white'} : {}}>
       <div style={{width: '100%'}}
            className={'dashboard-one-chart'}>

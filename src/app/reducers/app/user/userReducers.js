@@ -42,6 +42,20 @@ const getSettingsSuccess = (state, {payload}) => {
       value: dashboardSettings.value.map(item => JSON.parse(item)),
       id: dashboardSettings.id
     };
+  } else {
+    state.user.dashboard.settings = {
+      value: [{
+        daysNumber: 7,
+        state: 'large',
+        filter: null,
+        title: 'Activities'
+      },{
+        daysNumber: 7,
+        state: 'large',
+        filter: null,
+        title: 'Application'
+      }]
+    }
   }
 }
 
@@ -89,6 +103,7 @@ const updateActivitiesSuccess = (state, {payload}) => {
 const getDashboardDataSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
+
   if (state?.user?.dashboard?.data?.userDFormActivities && payload.response.userDFormActivities.current_page > state.user.dashboard.data.userDFormActivities.current_page) {
     let newData = state.user.dashboard.data.userDFormActivities.data.concat(payload.response.userDFormActivities.data)
     //temporary
@@ -96,14 +111,17 @@ const getDashboardDataSuccess = (state, {payload}) => {
     state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
     state.user.dashboard.data.userDFormActivities.data = newData;
   } else {
+    if (!state?.user?.dashboard?.data?.userDFormActivities) {
+     state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
+    }
     state.user.dashboard.data.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
-    state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
   }
 }
 
 const getDashboardActivitySuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
+
   if (state?.user?.dashboard?.data?.usersActivities && payload.response.usersActivities.current_page > state.user.dashboard.data.usersActivities.current_page) {
     let newData = state.user.dashboard.data.usersActivities.data.concat(payload.response.usersActivities.data)
     //temporary
@@ -111,8 +129,10 @@ const getDashboardActivitySuccess = (state, {payload}) => {
     state.user.dashboard.data.usersActivities = payload.response.usersActivities;
     state.user.dashboard.data.usersActivities.data = newData;
   } else {
+    if (!state?.user?.dashboard?.data?.usersActivities) {
+      state.user.dashboard.data.usersActivities = payload.response.usersActivities;
+    }
     state.user.dashboard.data.usersActivitiesSchedule = payload.response.usersActivitiesSchedule;
-    state.user.dashboard.data.usersActivities = payload.response.usersActivities;
   }
 }
 

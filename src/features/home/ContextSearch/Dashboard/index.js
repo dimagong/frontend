@@ -17,7 +17,7 @@ const Dashboard = ({ }) => {
   const dashboardSettings = useSelector(selectDashboardSettings)
 
   const updateSettings = (newSettings) => {
-    if (dashboardSettings.hasOwnProperty('value')) {
+    if (dashboardSettings.hasOwnProperty('id')) {
       let changeSettingsIndex = dashboardSettings.value.findIndex(item => item.title === newSettings.title);
       let newDashboardSettings = [...dashboardSettings.value];
       newDashboardSettings[changeSettingsIndex] = newSettings;

@@ -54,8 +54,8 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
         labels: new Array(daysNumber),
         datasets: [{
           label: `Number of ${title.toLowerCase()}`,
-          borderColor: '#d96f6f',
-          backgroundColor: '#d96f6f',
+          borderColor: colors[1],
+          backgroundColor: colors[1],
           radius: 0,
           hoverRadius: 0,
           data: pointsY,
