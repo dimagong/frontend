@@ -88,15 +88,18 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     return null
   }
 
-  return (<div className={'combined-dashboard-component'} style={settings.state !== 'small' ? {width: '45%', background: 'white', marginRight: '1%'} : {width: '22%', background: 'white', marginRight: '1%'}}>
-    <div className={'dashboard-charts'}>
+  return (<div className={'combined-dashboard-component'} style={settings.state === 'small'
+                                                ? {width: '22%', marginRight: '1%'}
+                   : settings.state !== 'large' ? {width: '45%', marginRight: '1%'}
+                                                : {width: '45%',background: 'white', marginRight: '1%'}}>
+    <div className={'dashboard-charts'} style={settings.state === 'large' ? {background: 'white'} : {}}>
       <div style={{width: '100%'}}
            className={'dashboard-one-chart'}>
             <span className={'arrow-left'}>
               <img src={settings.state !== 'small' ? ArrowLeft : ArrowRight}
                    onClick={handleChangeChart}/>
-              <img src={CloseChart} className={'close-chart'}
-                   onClick={() => setIsChartShown(false)}/>
+              {false && <img src={CloseChart} className={'close-chart'}
+                   onClick={() => setIsChartShown(false)}/>}
             </span>
         <span className={'change-chart-days ' + (settings.state === 'small' ? ' change-chart-days-smaller' : '')}>
               {[{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map(item => {
@@ -113,7 +116,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
         <LineChart
           title={chartType}
           chartId={chartId}
-          data={dashboardData?.userDFormActivitiesSchedule}
+          data={chartType === 'Activities' ? dashboardData?.usersActivitiesSchedule : dashboardData?.userDFormActivitiesSchedule}
           isSmall={settings.state === 'small'}
           daysNumber={settings.daysNumber}
         />

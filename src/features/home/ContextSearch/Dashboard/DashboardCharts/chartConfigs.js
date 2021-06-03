@@ -92,8 +92,8 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
       }
       case 365: {
         let format = val?.show ? 'MMM DD' : 'MMM';
-        if (val?.show || index % 7 === 2) {
-          return moment().subtract(daysNumber - index * 4, 'days').format(format);
+        if (val?.show || index % 30 === 1) {
+          return moment().subtract(daysNumber - index, 'days').format(format);
         }
       }
     }
@@ -112,7 +112,7 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
           align: isSmall ? 'end' : 'center',
           labels: {
             usePointStyle: true,
-            padding: 15
+            padding: 15,
           },
         },
 
@@ -150,7 +150,6 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
           }
         },
         y: {
-          max: 12,
           ticks: {
             stepSize: title === 'Applications' ? undefined : 2
           },
@@ -166,7 +165,7 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
       },
       layout: {
         padding: {
-          top: 10,
+          top: 15,
           right: 20,
           left: -11
         }
