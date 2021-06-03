@@ -20,6 +20,7 @@ const dateFormat = 'DD/MM/YYYY';
 
 const {
   getDashboardDataRequest,
+  getDashboardActivityRequest,
   setManager,
   setContext,
 } = appSlice.actions;
@@ -63,7 +64,11 @@ const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrap
   }
 
   const loadMoreData = () => {
-    dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, filter: filter}))
+    if (settings.title === 'Activities') {
+      dispatch(getDashboardActivityRequest({page: usersActivities.current_page + 1, filter: filter}))
+    } else {
+      dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, filter: filter}))
+    }
   }
 
   const parseOnboardingName = (description) => {
