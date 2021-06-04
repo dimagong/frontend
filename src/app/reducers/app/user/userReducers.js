@@ -111,7 +111,7 @@ const getDashboardDataSuccess = (state, {payload}) => {
     state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
     state.user.dashboard.data.userDFormActivities.data = newData;
   } else {
-    if (!state?.user?.dashboard?.data?.userDFormActivities) {
+    if (!state?.user?.dashboard?.data?.userDFormActivities?.data?.length > 0) {
      state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
     }
     state.user.dashboard.data.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
@@ -129,7 +129,7 @@ const getDashboardActivitySuccess = (state, {payload}) => {
     state.user.dashboard.data.usersActivities = payload.response.usersActivities;
     state.user.dashboard.data.usersActivities.data = newData;
   } else {
-    if (!state?.user?.dashboard?.data?.usersActivities) {
+    if (!state?.user?.dashboard?.data?.usersActivities?.data?.length > 0) {
       state.user.dashboard.data.usersActivities = payload.response.usersActivities;
     }
     state.user.dashboard.data.usersActivitiesSchedule = payload.response.usersActivitiesSchedule;

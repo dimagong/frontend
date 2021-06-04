@@ -76,7 +76,7 @@ const getDate = (index) => {
 }
 
 const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
-  if (!dataToShow) {
+  if (!dataToShow || daysNumber === -1) {
     return null;
   }
 

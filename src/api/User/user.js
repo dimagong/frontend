@@ -100,11 +100,10 @@ const userApi = {
     }
   },
   async getDashboardData(payload) {
-    let params = payload.filter?.type
+    let params = payload?.from
       ? {
         page: payload.page,
-        'filter[type]': payload.filter.type,
-        'filter[value]': payload.filter.value,
+        'created_at[from]': payload.from
       }
       : {
         page: payload.page,

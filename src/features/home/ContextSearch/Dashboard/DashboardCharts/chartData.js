@@ -10,7 +10,7 @@ export const getChartData = ({type, data}) => {
 }
 
 const dataDefaultChart = ({data, daysNumber, title}) => {
-  if (!data) {
+  if (!data || daysNumber === -1) {
     return null;
   }
   let pointsY = [];
@@ -65,7 +65,7 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
 
 
 const dataApplicationChart = ({data, daysNumber, title, isSmall}) => {
-  if (!data) {
+  if (!data || daysNumber === -1) {
     return null;
   }
   let pointsY = {'in-progress': [],  'submitted': [], 'approved': [], "rejected": [] };
@@ -181,7 +181,6 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall}) => {
   if (isSmall) {
     datasets.splice(1, 1);
   }
-
   return {
         //labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
         labels: new Array(daysNumber),
