@@ -13,13 +13,14 @@ import FilterIcon from "../../../../assets/img/svg/filter.svg";
 import {Button} from "react-bootstrap";
 import CloseIcon from "@material-ui/icons/Close";
 import moment from "moment";
+import FilterBox from "./FilterBox";
 
 const {
   getDashboardDataRequest,
   getDashboardActivityRequest
 } = appSlice.actions;
 
-const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings }) => {
+const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, dForms }) => {
   let settings;
   if (dashboardSettings) {
     settings = {...dashboardSettings}
@@ -28,7 +29,8 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
       daysNumber: -1,
       state: 'large',
       filter: null,
-      title: chartType
+      title: chartType,
+      dForm: 'Unselected application'
     }
   }
   const dispatch = useDispatch();
@@ -39,6 +41,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   const wrapperRefFilterButton = useRef(null);
   const [filter, setFilter] = useState({type: undefined, value: undefined});
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
+  const [isMapFilterBoxOpen, setIsMapFilterBoxOpen] = useState(false);
   const [tabLabel, setTabLabel] = useState('')
   const [isFilterTagOpen, setIsFilterTagOpen] = useState(false)
 
@@ -87,11 +90,11 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
 
   useEffect(() => {
     if (chartType === 'Applications') {
-        dispatch(getDashboardDataRequest({page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+        dispatch(getDashboardDataRequest({page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), dForm: settings.dForm?.id}))
       } else {
         dispatch(getDashboardActivityRequest({page: 1,'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
       }
-  }, [settings.daysNumber, settings.nothing]);
+  }, [settings.daysNumber, settings.dForm]);
 
   if (!isChartShown) {
     return null
@@ -110,6 +113,19 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                    onClick={() => setIsChartShown(false)}/>}
             </span>
         <span className={'change-chart-days ' + (settings.state === 'small' ? ' change-chart-days-smaller' : '')}>
+          {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.name &&
+                    <span>
+                      <span style={{marginRight: '20px'}} className={'filter-icon-box'} onClick={() => setIsMapFilterBoxOpen(!isMapFilterBoxOpen)} ref={wrapperRefFilterButton}>
+                        <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
+                      </span>
+                      {isMapFilterBoxOpen && <FilterBox
+                        setIsFilterBoxOpen={setIsMapFilterBoxOpen}
+                        dForms={dForms}
+                        updateSettings={updateSettings}
+                        settings={settings}
+                        isMap={true}
+                      />}
+                    </span>}
               {[{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map(item => {
                 return <span onClick={() => handleChangeDate(item.daysNumber)}
                              className={'chart-days ' + (settings.daysNumber === item.daysNumber ? 'active-days' : '')}>
@@ -117,11 +133,16 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                 </span>
               })}
             </span>
+        {chartType === 'Applications' && (settings.dForm === 'Unselected application' || !settings.dForm) &&
+          <span className={'no-application ' + (settings.state === 'small' ? 'no-application-small' : '')}>
+            Please select an application to see the info about it
+          </span>}
         {settings.state === 'middle' &&
         <span className={'arrow-open-activities'} onClick={handleChangeList}>
                 <img src={ArrowDown}/>
               </span>}
         <LineChart
+          settings={settings}
           title={chartType}
           chartId={chartId}
           data={chartType === 'Activities' ? dashboardData?.usersActivitiesSchedule : dashboardData?.userDFormActivitiesSchedule}
@@ -136,7 +157,6 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
       background: 'white'
     }} className={'dashboard-activities'}>
       {false && <h3 className={'users-activities-title'}>
-        Users {chartType.toLowerCase()}
         <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
           <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
         </span>
@@ -150,7 +170,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
       </h3>}
       <ActivitiesDashboard
         usersActivities={chartType === 'Applications' ? dashboardData?.userDFormActivities : dashboardData?.usersActivities}
-        settings={dashboardSettings}
+        settings={settings}
         handleChangeList={handleChangeList}
         wrapperRefFilterButton={wrapperRefFilterButton}
         filter={filter}
@@ -161,6 +181,9 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
         setTabLabel={setTabLabel}
         isFilterTagOpen={isFilterTagOpen}
         setIsFilterTagOpen={setIsFilterTagOpen}
+        handleFilterBox={handleFilterBox}
+        dForms={dForms}
+        updateSettings={updateSettings}
       />
     </div>}
   </div>)

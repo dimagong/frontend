@@ -104,10 +104,14 @@ const getDashboardDataSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
 
+  if (payload.payload.page === 1) {
+    state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
+    state.user.dashboard.data.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+    return;
+  }
+
   if (state?.user?.dashboard?.data?.userDFormActivities && payload.response.userDFormActivities.current_page > state.user.dashboard.data.userDFormActivities.current_page) {
     let newData = state.user.dashboard.data.userDFormActivities.data.concat(payload.response.userDFormActivities.data)
-    //temporary
-    //state.user.dashboard.data.userDFormActivitiesSchedule = mergeObjects(state.user.dashboard.data.userDFormActivitiesSchedule, payload.response.userDFormActivitiesSchedule);
     state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
     state.user.dashboard.data.userDFormActivities.data = newData;
   } else {
@@ -118,19 +122,23 @@ const getDashboardDataSuccess = (state, {payload}) => {
   }
 }
 
+const getDashboardDFormsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.dashboard.dForms = payload;
+}
+
 const getDashboardActivitySuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
 
   if (state?.user?.dashboard?.data?.usersActivities && payload.response.usersActivities.current_page > state.user.dashboard.data.usersActivities.current_page) {
     let newData = state.user.dashboard.data.usersActivities.data.concat(payload.response.usersActivities.data)
-    //temporary
-    //state.user.dashboard.data.usersActivitiesSchedule = mergeObjects(state.user.dashboard.data.usersActivitiesSchedule, payload.response.usersActivitiesSchedule);
     state.user.dashboard.data.usersActivities = payload.response.usersActivities;
     state.user.dashboard.data.usersActivities.data = newData;
   } else {
     if (!state?.user?.dashboard?.data?.usersActivities?.data?.length > 0) {
-      state.user.dashboard.data.usersActivities = payload.response.usersActivities;
+      state.user.dashboard.data.usersActivities = payload.response.usersActivities
     }
     state.user.dashboard.data.usersActivitiesSchedule = payload.response.usersActivitiesSchedule;
   }
@@ -495,6 +503,7 @@ export default {
   getSettingsSuccess,
   postSettingsSuccess,
   patchSettingsSuccess,
+  getDashboardDFormsSuccess,
 
   setUser,
   setManager,

@@ -64,7 +64,7 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
 }
 
 
-const dataApplicationChart = ({data, daysNumber, title, isSmall}) => {
+const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
   if (!data || daysNumber === -1) {
     return null;
   }
@@ -78,13 +78,13 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall}) => {
         //if (!currDForm) {
         //  currDForm = item.application_name;
         //}
-        //if (currDForm === item.application_name) {
+        if (dForm === item.application_name) {
           if (item.application_status === 'unsubmitted') {
             ++currInfo['in-progress'];
           } else {
             ++currInfo[item.application_status];
           }
-       // }
+        }
       });
       Object.keys(pointsY).forEach(item => pointsY[item].push({x: i, y: currInfo[item]}));
     } else {
@@ -145,6 +145,10 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall}) => {
       }
     }
   }*/
+
+  if (!dForm || dForm === 'Unselected application') {
+    pointsY = {'in-progress' : [], 'submitted' : [], 'approved': [], 'rejected': []}
+  }
 
   let datasets= [{
           label: 'In progress',

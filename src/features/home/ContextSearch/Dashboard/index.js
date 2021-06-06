@@ -3,18 +3,20 @@ import './styles.scss'
 import CombinedDashboardComponent from "./CombinedDashboardComponent";
 import {useDispatch, useSelector} from "react-redux";
 import appSlice from "app/slices/appSlice";
-import {selectDashboardSettings} from "../../../../app/selectors/userSelectors";
+import {selectDashboardDForms, selectDashboardSettings} from "app/selectors/userSelectors";
 
 const {
   getSettingsRequest,
   postSettingsRequest,
   patchSettingsRequest,
   getActivityTypesRequest,
+  getDashboardDFormsRequest,
 } = appSlice.actions;
 
 const Dashboard = ({ }) => {
   const dispatch = useDispatch();
   const dashboardSettings = useSelector(selectDashboardSettings)
+  const dashboardDForms = useSelector(selectDashboardDForms)
 
   const updateSettings = (newSettings) => {
     if (dashboardSettings.hasOwnProperty('id')) {
@@ -34,6 +36,7 @@ const Dashboard = ({ }) => {
   useEffect(() => {
     dispatch(getSettingsRequest());
     dispatch(getActivityTypesRequest());
+    dispatch(getDashboardDFormsRequest());
   }, []);
 
   return (<div className={'activity-dashboard'}>
@@ -49,6 +52,7 @@ const Dashboard = ({ }) => {
       chartType={'Applications'}
       dashboardSettings={dashboardSettings.hasOwnProperty('value') && dashboardSettings.value[1]}
       updateSettings={updateSettings}
+      dForms={dashboardDForms}
     />
   </div>)
 }
