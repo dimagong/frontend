@@ -10,7 +10,7 @@ export const getChartData = ({type, data}) => {
 }
 
 const dataDefaultChart = ({data, daysNumber, title}) => {
-  if (!data) {
+  if (!data || daysNumber === -1) {
     return null;
   }
   let pointsY = [];
@@ -54,8 +54,8 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
         labels: new Array(daysNumber),
         datasets: [{
           label: `Number of ${title.toLowerCase()}`,
-          borderColor: '#d96f6f',
-          backgroundColor: '#d96f6f',
+          borderColor: colors[1],
+          backgroundColor: colors[1],
           radius: 0,
           hoverRadius: 0,
           data: pointsY,
@@ -64,21 +64,21 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
 }
 
 
-const dataApplicationChart = ({data, daysNumber, title, isSmall}) => {
-  if (!data) {
+const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
+  if (!data || daysNumber === -1) {
     return null;
   }
   let pointsY = {'in-progress': [],  'submitted': [], 'approved': [], "rejected": [] };
-  let currDForm = undefined;
+  //let currDForm = undefined;
   for (let i = 1; i < daysNumber + 1; ++i) {
     let currDay = moment().subtract(daysNumber - i, 'days').format('YYYY-MM-DD')
     if (data[currDay]) {
       let currInfo = {'in-progress': 0,  'submitted': 0, 'approved': 0, "rejected": 0};
       Object.values(data[currDay]).forEach(item => {
-        if (!currDForm) {
-          currDForm = item.application_name;
-        }
-        if (currDForm === item.application_name) {
+        //if (!currDForm) {
+        //  currDForm = item.application_name;
+        //}
+        if (dForm === item.application_name) {
           if (item.application_status === 'unsubmitted') {
             ++currInfo['in-progress'];
           } else {
@@ -146,6 +146,10 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall}) => {
     }
   }*/
 
+  if (!dForm || dForm === 'Unselected application') {
+    pointsY = {'in-progress' : [], 'submitted' : [], 'approved': [], 'rejected': []}
+  }
+
   let datasets= [{
           label: 'In progress',
           borderColor: colors[1],
@@ -181,7 +185,6 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall}) => {
   if (isSmall) {
     datasets.splice(1, 1);
   }
-
   return {
         //labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
         labels: new Array(daysNumber),

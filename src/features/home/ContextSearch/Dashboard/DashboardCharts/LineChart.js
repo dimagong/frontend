@@ -4,7 +4,7 @@ import {getChartConfig} from "./chartConfigs";
 import {getChartData} from "./chartData";
 
 
-const LineChart = ({ data, chartId, isSmall, daysNumber, title}) => {
+const LineChart = ({ settings, data, chartId, isSmall, daysNumber, title}) => {
   const [chartIsCreated, setChartIsCreated] = useState(false);
   const [currChart, setCurrChart] = useState(null);
 
@@ -13,7 +13,8 @@ const LineChart = ({ data, chartId, isSmall, daysNumber, title}) => {
       data: data,
       title: title,
       daysNumber: daysNumber,
-      isSmall: isSmall
+      isSmall: isSmall,
+      dForm: settings.dForm?.name
     },
     type: title.toLowerCase()
   });
@@ -23,7 +24,8 @@ const LineChart = ({ data, chartId, isSmall, daysNumber, title}) => {
       dataToShow: dataToShow,
       isSmall: isSmall,
       title: title,
-      daysNumber: daysNumber
+      daysNumber: daysNumber,
+      dForm: settings.dForm?.name
     },
     type: title.toLowerCase()
   });
@@ -49,7 +51,7 @@ const LineChart = ({ data, chartId, isSmall, daysNumber, title}) => {
       );
       setCurrChart(myChart)
     }
-  }, [daysNumber, isSmall, data])
+  }, [daysNumber, isSmall, data, settings])
 
   return ( <div style={{width: '100%', height: "auto", position: 'relative', zIndex: 10}}>
     <canvas

@@ -74,6 +74,7 @@
 
   .dashboard-activities {
     padding-top: 10px;
+    padding-bottom: 10px;
     top: -10px;
     z-index: 1;
     padding-left: 10px;
@@ -192,4 +193,14 @@
 .combined-dashboard-component {
   display: inline-block;
   vertical-align: top;
+  .no-application {
+    top: 40%;
+    position: absolute;
+    left: 25%;
+    font-size: large;
+  }
+  .no-application-small {
+    left: 15%;
+    font-size: small;
+  }
 }

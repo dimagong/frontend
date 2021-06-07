@@ -49,6 +49,7 @@ export const selectSearchText = state => state?.app?.user?.searchText;
 export const selectUserActivity = userId => state => state?.app?.user?.managers.find(item => item.id === userId).activity;
 export const selectDashboardData = state => state?.app?.user?.dashboard?.data;
 export const selectDashboardSettings = state => state?.app?.user?.dashboard?.settings;
+export const selectDashboardDForms = state => state?.app?.user?.dashboard?.dForms;
 export const selectActivityTypes = state => state?.app?.user?.activityTypes;
 
 export const selectSurveys = state => state?.app?.surveys;

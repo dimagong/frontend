@@ -75,8 +75,8 @@ const getDate = (index) => {
   return moment().subtract(7 - index, 'days').format('ddd');
 }
 
-const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
-  if (!dataToShow) {
+const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm}) => {
+  if (!dataToShow || daysNumber === -1) {
     return null;
   }
 
@@ -125,7 +125,7 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber}) => {
           },
           color: '#707070',
           display: true,
-          text: `     ${title}`,
+          text: `     ${title === 'Activities' ? title : dForm ? dForm : 'Unselected application'}`,
           align: 'start',
         },
 
