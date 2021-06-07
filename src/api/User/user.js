@@ -1,4 +1,5 @@
 import instance from "api";
+import qs from 'qs'
 import {
   getProfilePath,
   getUsersPath,
@@ -126,10 +127,11 @@ const userApi = {
       }
     try {
       const result = await instance({
-        url: `/api/user/application-dashboard`,
+        url: `/api/user/application-dashboard?` + qs.stringify(params),
         method: "GET",
-        params: params
+        //params: params
       });
+      console.log('result', result)
       return result.data.data;
 
     } catch (err) {
