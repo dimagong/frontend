@@ -147,7 +147,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                       {manager.first_name + ' ' + manager.last_name}
                     </span>
                     <span className={'action-user-org'}>{manager?.permissions?.organization}</span>
-                    <span style={{width: window.innerWidth * 0.43 - 360}} className={'action-user-description'}>{description}</span>
+                    <span style={{width: window.innerWidth * 0.43 - 370}} className={'action-user-description'}>{description}</span>
                     <span className={'action-user-time'}>
                   {item.date === 'Today'
                     ? moment(currAction.created_at).fromNow() === 'a few seconds ago' ? 'now' : moment(currAction.created_at).fromNow()
