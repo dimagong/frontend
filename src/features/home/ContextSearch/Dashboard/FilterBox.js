@@ -50,7 +50,7 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen}
    useEffect(() => {
     setSelectDForm(settings.dForm);
   }, [settings]);
-  const options = dForms.map(item => {return {label: item.d_form.name, value: item.d_form}});
+  const options = dForms ? dForms.map(item => {return {label: item.d_form.name, value: item.d_form}}) : [];
   return (
     <Card
       style={styles}
