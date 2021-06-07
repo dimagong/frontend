@@ -67,7 +67,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
     if (settings.title === 'Activities') {
       dispatch(getDashboardActivityRequest({page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
     } else {
-      dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, dForm: settings.dForm, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, dForm: settings?.dForm?.id, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
     }
   }
 
