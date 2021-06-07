@@ -54,7 +54,7 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen}
   const options = [];
   if (dForms) {
     Object.keys(dForms).forEach(item => {
-      options.push({label: dForms[item], value: {id: item, name: dForms[item]}})
+      options.push({label: item, value: {id: dForms[item], name: item}})
     })
   }
 

@@ -118,7 +118,7 @@ const userApi = {
       ? {
         page: payload.page,
         'created_at[from]': payload.from,
-        app_ids: [payload.dForm]
+        app_ids: payload.dForm
       }
       : {
         page: payload.page,

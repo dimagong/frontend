@@ -78,13 +78,13 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
         //if (!currDForm) {
         //  currDForm = item.application_name;
         //}
-        if (dForm === item.application_name) {
+        //if (dForm === item.application_name) {
           if (item.application_status === 'unsubmitted') {
             ++currInfo['in-progress'];
           } else {
             ++currInfo[item.application_status];
           }
-        }
+        //}
       });
       Object.keys(pointsY).forEach(item => pointsY[item].push({x: i, y: currInfo[item]}));
     } else {
