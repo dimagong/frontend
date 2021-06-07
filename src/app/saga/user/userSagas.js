@@ -95,6 +95,9 @@ const {
   getActivityTypesRequest,
   getActivityTypesSuccess,
 
+  getDashboardDFormsRequest,
+  getDashboardDFormsSuccess,
+
   getUserOnboardingRequest
 } = appSlice.actions;
 
@@ -149,17 +152,22 @@ function* updateActivities({payload}) {
 
 function* getDashboardData({payload}) {
   const response = yield call(userApi.getDashboardData, payload);
-  yield put(getDashboardDataSuccess({response: response, type: payload.title}));
+  yield put(getDashboardDataSuccess({response: response, payload: payload}));
 }
 
 function* getDashboardActivity({payload}) {
   const response = yield call(userApi.getDashboardActivity, payload);
-  yield put(getDashboardActivitySuccess({response: response, type: payload.title}));
+  yield put(getDashboardActivitySuccess({response: response, payload: payload}));
 }
 
 function* getActivityTypes() {
   const response = yield call(userApi.getActivityTypes);
   yield put(getActivityTypesSuccess(response));
+}
+
+function* getDashboardDForms() {
+  const response = yield call(userApi.getDashboardDForms);
+  yield put(getDashboardDFormsSuccess(response));
 }
 
 function* postFilter({payload}) {
@@ -363,6 +371,7 @@ export default function* () {
     yield takeLatest(getDashboardDataRequest.type, getDashboardData),
     yield takeLatest(getDashboardActivityRequest.type, getDashboardActivity),
     yield takeLatest(getActivityTypesRequest.type, getActivityTypes),
+    yield takeLatest(getDashboardDFormsRequest.type, getDashboardDForms),
     yield takeLatest(postFilterRequest.type, postFilter),
     yield takeLatest(deleteFilterRequest.type, deleteFilter),
     yield takeLatest(patchFilterRequest.type, patchFilter),

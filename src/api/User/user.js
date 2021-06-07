@@ -66,6 +66,18 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
+  async getDashboardDForms() {
+    try {
+      const result = await instance({
+        url: '/api/user/dforms-dashboard',
+        method: "GET",
+      });
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
   async postSettings(payload) {
     try {
       const result = await instance({
@@ -100,14 +112,15 @@ const userApi = {
     }
   },
   async getDashboardData(payload) {
-    let params = payload.filter?.type
+    let params = payload?.dForm
       ? {
         page: payload.page,
-        'filter[type]': payload.filter.type,
-        'filter[value]': payload.filter.value,
+        'created_at[from]': payload.from,
+        app_ids: [payload.dForm]
       }
       : {
         page: payload.page,
+        'created_at[from]': payload.from,
       }
     try {
       const result = await instance({
@@ -122,11 +135,10 @@ const userApi = {
     }
   },
   async getDashboardActivity(payload) {
-    let params = payload.filter?.type
+    let params = payload?.from
       ? {
         page: payload.page,
-        'filter[type]': payload.filter.type,
-        'filter[value]': payload.filter.value,
+        'created_at[from]': payload.from
       }
       : {
         page: payload.page,

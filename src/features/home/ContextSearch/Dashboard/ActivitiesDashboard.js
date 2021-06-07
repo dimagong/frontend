@@ -20,11 +20,12 @@ const dateFormat = 'DD/MM/YYYY';
 
 const {
   getDashboardDataRequest,
+  getDashboardActivityRequest,
   setManager,
   setContext,
 } = appSlice.actions;
 
-const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrapperRefFilterButton, filter, setFilter, isFilterBoxOpen, setIsFilterBoxOpen, tabLabel, setTabLabel, isFilterTagOpen, setIsFilterTagOpen }) => {
+const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings, usersActivities, handleChangeList, wrapperRefFilterButton, filter, setFilter, isFilterBoxOpen, setIsFilterBoxOpen, tabLabel, setTabLabel, isFilterTagOpen, setIsFilterTagOpen }) => {
   const dispatch = useDispatch();
   const isLoadingData = useSelector(selectLoading);
   const managers = useSelector(selectManagers);
@@ -63,7 +64,11 @@ const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrap
   }
 
   const loadMoreData = () => {
-    dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, filter: filter}))
+    if (settings.title === 'Activities') {
+      dispatch(getDashboardActivityRequest({page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+    } else {
+      dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, dForm: settings.dForm, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+    }
   }
 
   const parseOnboardingName = (description) => {
@@ -100,15 +105,13 @@ const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrap
 
   return (
     <div>
-      {false && isFilterBoxOpen &&
+      {isFilterBoxOpen &&
         <span ref={wrapperRefFilterBox}>
           <FilterBox
-            managers={managers}
-            filter={filter}
-            setFilter={setFilter}
             setIsFilterBoxOpen={setIsFilterBoxOpen}
-            setIsFilterTagOpen={setIsFilterTagOpen}
-            setTabLabel={setTabLabel}
+            dForms={dForms}
+            updateSettings={updateSettings}
+            settings={settings}
           />
         </span>
       }
@@ -120,8 +123,13 @@ const ActivitiesDashboard = ({ settings, usersActivities, handleChangeList, wrap
               <div className={'action-date'} style={{position: 'relative'}}>
                 {item.date}
                 {key === 0 &&
-                  <span className={'arrow-close-activities'} onClick={handleChangeList}>
-                    <img src={ArrowUp}/>
+                  <span>
+                    {settings.title !== 'Activities' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                      <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
+                    </span>}
+                    <span className={'arrow-close-activities'} onClick={handleChangeList}>
+                      <img src={ArrowUp}/>
+                    </span>
                   </span>}
               </div>
               {item.data.map(currAction => {

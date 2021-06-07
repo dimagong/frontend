@@ -1,6 +1,6 @@
 import moment from "moment";
 
-const colors = ['#d96f6f', '#add8e6', '#35F58F', '#BE35F5', '#F5F535', '#35E7F5']
+const colors = ['#d96f6f', '#add8e6', '#6FD98D', '#F0D46E', '#F5F535', '#35E7F5']
 
 export const getChartData = ({type, data}) => {
   switch (type) {
@@ -10,58 +10,15 @@ export const getChartData = ({type, data}) => {
 }
 
 const dataDefaultChart = ({data, daysNumber, title}) => {
-  if (!data) {
+  if (!data || daysNumber === -1) {
     return null;
   }
-
   let pointsY = [];
-  let labels = [];
-  for (let i = 1; i <= daysNumber; ++i) {
-        let currDate = moment().subtract(daysNumber - i, 'days').format('YYYY-MM-DD');
-        switch (daysNumber) {
-          case 7: {
-            labels.push(moment().add(i, 'days').format('ddd'));
-            if (data[currDate]) {
-              pointsY.push(data[currDate]?.total)
-            } else {
-              pointsY.push(0)
-            }
-            break;
-          }
-          case 28: {
-            if (i % 4 === 1) {
-              labels.push(moment().subtract(daysNumber - i, 'days').format('DD/MM')
-                + ' - '
-                + moment().subtract(daysNumber - i - 3, 'days').format('DD/MM'));
-              if (data[currDate]) {
-                pointsY.push(data[currDate]?.total)
-              } else {
-                pointsY.push(0)
-              }
-            } else {
-              if (data[currDate]) pointsY[pointsY.length - 1] += data[currDate]?.total
-            }
-            break;
-          }
-          default: {
-            let currMonth = moment().subtract(daysNumber - i, 'days').format('MMM');
-            if (currMonth === moment().format('MMM') && labels.length === 0) {
-              break;
-            }
-            if (labels.length ===0 || currMonth !== labels[labels.length - 1]) {
-             labels.push(currMonth);
-             if (data[currDate]) {
-                pointsY.push(data[currDate]?.total)
-              } else {
-                pointsY.push(0)
-              }
-            } else {
-              if (data[currDate]) pointsY[pointsY.length - 1] += data[currDate]?.total
-            }
-          }
-        }
-      }
-
+  for (let i = 1; i < daysNumber + 1; ++i) {
+    let currDay = moment().subtract(daysNumber - i, 'days').format('YYYY-MM-DD')
+    pointsY.push({x: i, y: data[currDay] ? data[currDay].total : 0});
+  }
+  /*
   //test data
   //if (title === 'Actions') {
     switch (daysNumber) {
@@ -90,14 +47,15 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
       }
     }
   //}
-
+*/
 
   return {
-        labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
+        //labels: daysNumber === 365 ? new Array(92) : new Array(daysNumber),
+        labels: new Array(daysNumber),
         datasets: [{
           label: `Number of ${title.toLowerCase()}`,
-          borderColor: '#d96f6f',
-          backgroundColor: '#d96f6f',
+          borderColor: colors[1],
+          backgroundColor: colors[1],
           radius: 0,
           hoverRadius: 0,
           data: pointsY,
@@ -106,59 +64,35 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
 }
 
 
-const dataApplicationChart = ({data, daysNumber, title}) => {
-  if (!data) {
+const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
+  if (!data || daysNumber === -1) {
     return null;
   }
-
-  let pointsY = [];
-  let labels = [];
-  for (let i = 1; i <= daysNumber; ++i) {
-        let currDate = moment().subtract(daysNumber - i, 'days').format('YYYY-MM-DD');
-        switch (daysNumber) {
-          case 7: {
-            labels.push(moment().add(i, 'days').format('ddd'));
-            if (data[currDate]) {
-              pointsY.push(data[currDate]?.total)
-            } else {
-              pointsY.push(0)
-            }
-            break;
-          }
-          case 28: {
-            if (i % 4 === 1) {
-              labels.push(moment().subtract(daysNumber - i, 'days').format('DD/MM')
-                + ' - '
-                + moment().subtract(daysNumber - i - 3, 'days').format('DD/MM'));
-              if (data[currDate]) {
-                pointsY.push(data[currDate]?.total)
-              } else {
-                pointsY.push(0)
-              }
-            } else {
-              if (data[currDate]) pointsY[pointsY.length - 1] += data[currDate]?.total
-            }
-            break;
-          }
-          default: {
-            let currMonth = moment().subtract(daysNumber - i, 'days').format('MMM');
-            if (currMonth === moment().format('MMM') && labels.length === 0) {
-              break;
-            }
-            if (labels.length ===0 || currMonth !== labels[labels.length - 1]) {
-             labels.push(currMonth);
-             if (data[currDate]) {
-                pointsY.push(data[currDate]?.total)
-              } else {
-                pointsY.push(0)
-              }
-            } else {
-              if (data[currDate]) pointsY[pointsY.length - 1] += data[currDate]?.total
-            }
+  let pointsY = {'in-progress': [],  'submitted': [], 'approved': [], "rejected": [] };
+  //let currDForm = undefined;
+  for (let i = 1; i < daysNumber + 1; ++i) {
+    let currDay = moment().subtract(daysNumber - i, 'days').format('YYYY-MM-DD')
+    if (data[currDay]) {
+      let currInfo = {'in-progress': 0,  'submitted': 0, 'approved': 0, "rejected": 0};
+      Object.values(data[currDay]).forEach(item => {
+        //if (!currDForm) {
+        //  currDForm = item.application_name;
+        //}
+        if (dForm === item.application_name) {
+          if (item.application_status === 'unsubmitted') {
+            ++currInfo['in-progress'];
+          } else {
+            ++currInfo[item.application_status];
           }
         }
-      }
+      });
+      Object.keys(pointsY).forEach(item => pointsY[item].push({x: i, y: currInfo[item]}));
+    } else {
+      Object.values(pointsY).forEach(item => {item.push({x: i, y: 0})});
+    }
+  }
 
+  /*
   //test data
   pointsY = [{x: 1, y: 4}, {x: 2, y: 3}, {x: 3, y: 8}, {x: 4, y: 10},
                    {x: 5, y: 6}, {x: 6, y: 7}, {x: 7, y: 5}]
@@ -210,26 +144,50 @@ const dataApplicationChart = ({data, daysNumber, title}) => {
         pointsY2 = start2
       }
     }
+  }*/
+
+  if (!dForm || dForm === 'Unselected application') {
+    pointsY = {'in-progress' : [], 'submitted' : [], 'approved': [], 'rejected': []}
   }
 
-  return {
-        labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
-        datasets: [{
-          label: `DForm-1`,
+  let datasets= [{
+          label: 'In progress',
+          borderColor: colors[1],
+          backgroundColor: colors[1],
+          radius: 0,
+          hoverRadius: 0,
+          data: pointsY['in-progress'],
+        },
+          {
+          label: 'Submitted',
+          borderColor: colors[3],
+          backgroundColor: colors[3],
+          radius: 0,
+          hoverRadius: 0,
+          data: pointsY['submitted'],
+        },
+        {
+          label: 'Approved',
+          borderColor: colors[2],
+          backgroundColor: colors[2],
+          radius: 0,
+          hoverRadius: 0,
+          data: pointsY['approved'],
+        },
+        {
+          label: 'Rejected',
           borderColor: colors[0],
           backgroundColor: colors[0],
           radius: 0,
           hoverRadius: 0,
-          data: pointsY,
-
-        },
-          {
-            label: `DForm-2`,
-            borderColor: colors[1],
-            backgroundColor: colors[1],
-            radius: 0,
-            hoverRadius: 0,
-            data: pointsY2,
-          }]
+          data: pointsY['rejected'],
+        },]
+  if (isSmall) {
+    datasets.splice(1, 1);
+  }
+  return {
+        //labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
+        labels: new Array(daysNumber),
+        datasets: datasets
       }
 }
