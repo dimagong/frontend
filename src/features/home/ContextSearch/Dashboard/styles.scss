@@ -152,6 +152,7 @@
       border-right: #7367F0 solid 3px;
     }
     .dashboard-action {
+      position: relative;
       font-size: smaller;
       cursor: pointer;
       height: 40px;
@@ -164,22 +165,29 @@
       .action-user-avatar {
         width: 40px;
         height: 40px;
-        padding-bottom: 1px;
-        margin-right: 10px;
+        position: absolute;
+        top: 0;
       }
       .action-user-name {
+        margin-left: 50px;
         width: 120px;
         display: inline-block;
         span {
           cursor: pointer;
         }
+        overflow: hidden;
       }
       .action-user-org {
         display: inline-block;
         width: 75px;
+        overflow: hidden;
       }
       .action-user-description {
         display: inline-block;
+        //width: 40%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
       .action-user-time {
         display: inline-block;

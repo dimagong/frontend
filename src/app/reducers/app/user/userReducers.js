@@ -39,7 +39,7 @@ const getSettingsSuccess = (state, {payload}) => {
   let dashboardSettings = payload.find(item => item.key === 'dashboard');
   if (dashboardSettings) {
     state.user.dashboard.settings = {
-      value: dashboardSettings.value.map(item => JSON.parse(item)),
+      value: dashboardSettings.value,
       id: dashboardSettings.id
     };
   } else {
