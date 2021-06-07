@@ -96,7 +96,7 @@
     "yup": "^0.28.1"
   },
   "scripts": {
-    "start-local": "dotenv -e .env react-app-rewired start",
+    "start-local": "dotenv -e .env.local react-app-rewired start",
     "start-default": "dotenv -e .env.development react-app-rewired start",
     "build-dev": "dotenv -e .env.dev react-app-rewired build",
     "build-stage": "dotenv -e .env.staging react-app-rewired build",
