@@ -85,6 +85,8 @@ const userApi = {
         method: "POST",
         params: {
           key: 'dashboard',
+        },
+        data: {
           value: payload
         }
       });
@@ -100,7 +102,7 @@ const userApi = {
       const result = await instance({
         url: `/api/settings/${payload.id}`,
         method: "PATCH",
-        params: {
+        data: {
           value: payload.value
         }
       });
