@@ -69,23 +69,19 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
     return null;
   }
   let pointsY = {'in-progress': [],  'submitted': [], 'approved': [], "rejected": [] };
-  //let currDForm = undefined;
   for (let i = 1; i < daysNumber + 1; ++i) {
     let currDay = moment().subtract(daysNumber - i, 'days').format('YYYY-MM-DD')
     if (data[currDay]) {
       let currInfo = {'in-progress': 0,  'submitted': 0, 'approved': 0, "rejected": 0};
-      Object.values(data[currDay]).forEach(item => {
-        //if (!currDForm) {
-        //  currDForm = item.application_name;
-        //}
-        //if (dForm === item.application_name) {
-          if (item.application_status === 'unsubmitted') {
-            ++currInfo['in-progress'];
+      if (data[currDay][dForm]) {
+        Object.keys(data[currDay][dForm]).forEach(item => {
+          if (item === 'unsubmitted') {
+            currInfo['in-progress'] += data[currDay][dForm][item]
           } else {
-            ++currInfo[item.application_status];
+            currInfo[item] += data[currDay][dForm][item]
           }
-        //}
-      });
+        })
+      }
       Object.keys(pointsY).forEach(item => pointsY[item].push({x: i, y: currInfo[item]}));
     } else {
       Object.values(pointsY).forEach(item => {item.push({x: i, y: 0})});
@@ -145,6 +141,7 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
       }
     }
   }*/
+  console.log('pointsY',pointsY)
 
   if (!dForm || dForm === 'Unselected application') {
     pointsY = {'in-progress' : [], 'submitted' : [], 'approved': [], 'rejected': []}
