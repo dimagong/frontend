@@ -141,7 +141,6 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
       }
     }
   }*/
-  console.log('pointsY',pointsY)
 
   if (!dForm || dForm === 'Unselected application') {
     pointsY = {'in-progress' : [], 'submitted' : [], 'approved': [], 'rejected': []}
