@@ -83,17 +83,17 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm})
   const getTicks = (val, index) => {
     switch (daysNumber) {
       case 7: {
-        return moment().subtract(daysNumber - index, 'days').format('ddd');
+        return moment().subtract(daysNumber - index - 1, 'days').format('ddd');
       }
       case 28: {
         if (val?.show || index % 4 === 2) {
-          return moment().subtract(daysNumber - index, 'days').format('MMM DD');
+          return moment().subtract(daysNumber - index - 1, 'days').format('MMM DD');
         } else return;
       }
       case 365: {
         let format = val?.show ? 'MMM DD' : 'MMM';
         if (val?.show || index % 30 === 1) {
-          return moment().subtract(daysNumber - index, 'days').format(format);
+          return moment().subtract(daysNumber - index - 1, 'days').format(format);
         }
       }
     }
