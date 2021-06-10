@@ -13,7 +13,7 @@ const navigationConfig = [
     title: "User management",
     type: "item",
     icon: <Icon.Users size={20} />,
-    permissions: ["admin", "corporation_manager", "network_manager", "adviser", "member_firm_manager"],
+    permissions: ["admin", "corporation_manager", "network_manager", "member", "member_firm_manager"],
     navLink: "/user-management"
   },
   {
@@ -21,14 +21,14 @@ const navigationConfig = [
     title: "Onboarding",
     type: "collapse",
     icon: <Icon.Zap size={20} />,
-    permissions: ["admin", "corporation_manager", "network_manager", "adviser", "member_firm_manager"],
+    permissions: ["admin", "corporation_manager", "network_manager", "member", "member_firm_manager"],
     children: [
       {
         id: "onboarding.notification",
         title: "Notifications",
         type: "item",
         icon: <Icon.Circle size={12} />,
-        permissions: ["admin", "corporation_manager", "network_manager", "adviser", "member_firm_manager"],
+        permissions: ["admin", "corporation_manager", "network_manager", "member", "member_firm_manager"],
         navLink: "/onboarding/notifications"
       },
       {
@@ -36,7 +36,7 @@ const navigationConfig = [
         title: "dForms",
         type: "item",
         icon: <Icon.Circle size={12} />,
-        permissions: ["admin", "corporation_manager", "network_manager", "adviser", "member_firm_manager"],
+        permissions: ["admin", "corporation_manager", "network_manager", "member", "member_firm_manager"],
         navLink: "/onboarding/dforms"
       },
       {
@@ -44,7 +44,7 @@ const navigationConfig = [
         title: "Workflows",
         type: "item",
         icon: <Icon.Circle size={12} />,
-        permissions: ["admin", "corporation_manager", "network_manager", "adviser", "member_firm_manager"],
+        permissions: ["admin", "corporation_manager", "network_manager", "member", "member_firm_manager"],
         navLink: "/onboarding/workflows"
       },
     ]
