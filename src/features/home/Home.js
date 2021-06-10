@@ -23,7 +23,7 @@ const Home = () => {
   const userRole = useSelector(selectUserAbility);
   const context = useSelector(selectContext)
 
-  const isOnboarding = ["prospect", "adviser"].indexOf(userRole) !== -1;
+  const isOnboarding = ["prospect", "member"].indexOf(userRole) !== -1;
 
   const handleContextSearchHide = () => {
     dispatch(hideContextSearch())

@@ -31,7 +31,7 @@ const UserFilter = ({ handleFilter, managers }) => {
   const [currSort, setCurrSort] = useState(-1);
   const [filtered, setFiltered] = useState(false);
   const [filterName, setFilterName] = useState('');
-  let roles = new Set(['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Network manager', 'Adviser', 'Lead']), organizations = new Set(), reps = new Set();
+  let roles = new Set(['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Network manager', 'Member', 'Lead']), organizations = new Set(), reps = new Set();
   organizationsObjects.forEach(item => {organizations.add(item.name.replace('_', ' '))})
   const [curr, setCurr] = useState('roles');
   const [filter, setFilter] = useState({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});

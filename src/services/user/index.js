@@ -5,6 +5,6 @@ export const userService = {
 
     if(isEmpty(userProfile)) return true;
 
-    return ['prospect', 'adviser'].indexOf(userProfile?.permissions?.ability) !== -1;
+    return ['prospect', 'member'].indexOf(userProfile?.permissions?.ability) !== -1;
   }
 }

@@ -128,7 +128,7 @@ const OnboardingUser = () => {
   };
 
   const isShowProtectedElements = (roles) => {
-    return !roles.some(role => ['corporate_manager', 'member_firm_manager', 'adviser', 'admin'].indexOf(role) !== -1);
+    return !roles.some(role => ['corporate_manager', 'member_firm_manager', 'member', 'admin'].indexOf(role) !== -1);
   };
 
   useEffect(() => {
