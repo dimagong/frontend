@@ -579,6 +579,10 @@ class FormCreate extends React.Component {
 
 
   dependecyModalSave = (dependencyType, objKey) => {
+    if (typeof this.state.fieldEdit.propertyKey === "string" && this.state.fieldEdit.propertyKey.trim() === "") {
+      toast.error("Name should not be empty");
+      return;
+    }
     if (
       dependencyType === 'sections' &&
       this.isSectionNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey)
