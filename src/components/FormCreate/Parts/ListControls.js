@@ -61,8 +61,6 @@ export function listControls(properties) {
 
     const renderKeyObjectEditColumn = (column, placeholder) => {
 
-      const errorPropertyNameAlreadyTaken = this.isValidPropertyName(column, this.state.fieldEdit.propertyKey);
-
       let errorMsg = 'Error';
 
       // console.log('errorPropertyNameAlreadyTaken', errorPropertyNameAlreadyTaken);
@@ -82,12 +80,8 @@ export function listControls(properties) {
                      }
                    })}
                    className="form-control"
-                   invalid={errorPropertyNameAlreadyTaken.isError}
                    placeholder={placeholder}
             />
-            <FormFeedback>
-              {errorPropertyNameAlreadyTaken.isError ? errorPropertyNameAlreadyTaken.message : null}
-            </FormFeedback>
           </div>
         );
 
@@ -100,8 +94,6 @@ export function listControls(properties) {
               onChangeMasterSchemaProperty(fieldId)
             }}
             fieldId={schemaPropertyEdit.reference?.field_id}
-            invalid={errorPropertyNameAlreadyTaken.isError}
-            errorMsg={errorPropertyNameAlreadyTaken.message}
             organizations={this.state.dFormTemplate.groups || []}
           />
         </div>)
