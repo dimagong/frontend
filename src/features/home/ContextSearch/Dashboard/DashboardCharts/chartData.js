@@ -74,12 +74,14 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
     if (data[currDay]) {
       let currInfo = {'in-progress': 0,  'submitted': 0, 'approved': 0, "rejected": 0};
       if (data[currDay][dForm]) {
-        Object.keys(data[currDay][dForm]).forEach(item => {
-          if (item === 'unsubmitted') {
-            currInfo['in-progress'] += data[currDay][dForm][item]
-          } else {
-            currInfo[item] += data[currDay][dForm][item]
-          }
+        Object.values(data[currDay][dForm]).forEach(item => {
+          Object.keys(item).forEach(key => {
+            if (key === 'unsubmitted') {
+              currInfo['in-progress'] += item[key]
+            } else {
+              currInfo[key] += item[key]
+            }
+          })
         })
       }
       Object.keys(pointsY).forEach(item => pointsY[item].push({x: i, y: currInfo[item]}));
