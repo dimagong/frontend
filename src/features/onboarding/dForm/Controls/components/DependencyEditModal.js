@@ -37,7 +37,7 @@ function DependencyEditModal(props) {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>2UI settings</Modal.Title>
+          <Modal.Title>UI settings</Modal.Title>
         </Modal.Header>
         <Modal.Body>{props.children}</Modal.Body>
         <Modal.Footer className="justify-content-between">

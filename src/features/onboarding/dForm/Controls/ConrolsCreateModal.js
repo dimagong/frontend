@@ -40,7 +40,7 @@ const DFormCreateModal = () => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>1UI settings</Modal.Title>
+          <Modal.Title>UI settings</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="row" key={v4()}>
