@@ -4,7 +4,9 @@ import {getChartConfig} from "./chartConfigs";
 import {getChartData} from "./chartData";
 
 
-const LineChart = ({ settings, data, chartId, isSmall, daysNumber, title}) => {
+const LineChart = ({ settings, data, chartId, title}) => {
+  let isSmall= settings.state === 'small'
+  let daysNumber = settings.daysNumber
   const [chartIsCreated, setChartIsCreated] = useState(false);
   const [currChart, setCurrChart] = useState(null);
 
@@ -51,7 +53,7 @@ const LineChart = ({ settings, data, chartId, isSmall, daysNumber, title}) => {
       );
       setCurrChart(myChart)
     }
-  }, [daysNumber, isSmall, data, settings])
+  }, [data, settings])
 
   return ( <div style={{width: '100%', height: "auto", position: 'relative', zIndex: 10}}>
     <canvas

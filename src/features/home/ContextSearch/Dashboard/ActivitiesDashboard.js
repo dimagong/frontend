@@ -65,9 +65,9 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
 
   const loadMoreData = () => {
     if (settings.title === 'Activities') {
-      dispatch(getDashboardActivityRequest({page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      dispatch(getDashboardActivityRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
     } else {
-      dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, dForm: settings?.dForm?.id, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      dispatch(getDashboardDataRequest({key: settings.key, page: usersActivities.current_page + 1, dForm: settings?.dForm?.id, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
     }
   }
 
@@ -86,6 +86,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
     let name = activityTypes.find(item => item.id === currAction.action_type_id)?.name;
     if ( name === 'Application was updated'
       || name === 'Application state change'
+      || name === 'User submitted Dform'
       || name === 'New application added to user') {
       selectedInfo = {type: 'onboarding', value: parseOnboardingName(currAction.description)};
     } else if (name === 'Application was deleted') {
@@ -120,7 +121,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
             <div className={'action-date'} style={{position: 'relative', paddingLeft: 5}}>
                 {'Today'}
                   <span>
-                    {settings.title !== 'Activities' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                    {settings.title !== 'Activities' && settings?.dForm?.name !== 'Applications Snapshot' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>
@@ -137,7 +138,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                 {item.date}
                 {key === 0 &&
                   <span>
-                    {settings.title !== 'Activities' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                    {settings.title !== 'Activities' && settings?.dForm?.name !== 'Applications Snapshot' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>

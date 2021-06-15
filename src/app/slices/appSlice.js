@@ -53,7 +53,7 @@ export const initialState = {
     filters: [],
     searchText: '',
     dashboard: {
-      data: {},
+      data: [],
       settings: {},
     },
     activityTypes: [],

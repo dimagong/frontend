@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import LineChart from "./DashboardCharts/LineChart";
 import appSlice from "app/slices/appSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {selectDashboardData, selectDashboardSettings} from "app/selectors/userSelectors";
+import {selectDashboardDataByKey, selectDashboardSettings} from "app/selectors/userSelectors";
 import ActivitiesDashboard from "./ActivitiesDashboard";
 import ArrowDown from "assets/img/svg/arrow_down.svg";
 import ArrowLeft from "assets/img/svg/arrow_left.svg";
@@ -20,7 +20,7 @@ const {
   getDashboardActivityRequest
 } = appSlice.actions;
 
-const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, dForms }) => {
+const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, deleteComponent, dForms, allApplications }) => {
   let settings;
   if (dashboardSettings) {
     settings = {...dashboardSettings}
@@ -34,9 +34,8 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     }
   }
   const dispatch = useDispatch();
-  const dashboardData = useSelector(selectDashboardData)
-
-  const [isChartShown, setIsChartShown] = useState(true);
+  //const dashboardData = useSelector(selectDashboardData)
+  const dashboardData = useSelector(selectDashboardDataByKey(settings.key))
 
   const wrapperRefFilterButton = useRef(null);
   const [filter, setFilter] = useState({type: undefined, value: undefined});
@@ -69,7 +68,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
 
   const removeFilter = () => {
     setFilter({type: undefined, value: undefined})
-    dispatch(getDashboardDataRequest({page: 1, title: chartType === 'Activities' ? chartType.toLowerCase(): 'application'}))
+    dispatch(getDashboardDataRequest({key: settings.key, page: 1, title: chartType === 'Activities' ? chartType.toLowerCase(): 'application'}))
     setIsFilterTagOpen(false);
     setTabLabel('')
   }
@@ -90,30 +89,27 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
 
   useEffect(() => {
     if (chartType === 'Applications') {
-        dispatch(getDashboardDataRequest({page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), dForm: settings.dForm?.id}))
+        dispatch(getDashboardDataRequest({key: settings.key, page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), dForm: settings.dForm, allApplications: allApplications}))
       } else {
-        dispatch(getDashboardActivityRequest({page: 1,'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+        dispatch(getDashboardActivityRequest({key: settings.key, page: 1,'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
       }
   }, [settings.daysNumber, settings.dForm]);
 
-  if (!isChartShown) {
-    return null
-  }
 
   return (<div className={'combined-dashboard-component'} style={settings.state === 'small'
                                                 ? {width: '22%', marginRight: '1%'}
                                                 : {width: '45%', marginRight: '1%'}}>
-    <div className={'dashboard-charts'} style={settings.state === 'large' ? {background: 'white'} : {}}>
+    <div className={'dashboard-charts'} style={settings.state === 'large' ? {backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 20%, white 20%)'} : {}}>
       <div style={{width: '100%'}}
            className={'dashboard-one-chart'}>
             <span className={'arrow-left'}>
               <img src={settings.state !== 'small' ? ArrowLeft : ArrowRight}
                    onClick={handleChangeChart}/>
-              {false && <img src={CloseChart} className={'close-chart'}
-                   onClick={() => setIsChartShown(false)}/>}
+              <img src={CloseChart} className={'close-chart'}
+                   onClick={() => deleteComponent(settings.key)}/>
             </span>
         <span className={'change-chart-days ' + (settings.state === 'small' ? ' change-chart-days-smaller' : '')}>
-          {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.name &&
+          {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.name && settings?.dForm?.name !== 'Applications Snapshot' &&
                     <span>
                       <span style={{marginRight: '20px'}} className={'filter-icon-box'} onClick={() => setIsMapFilterBoxOpen(!isMapFilterBoxOpen)} ref={wrapperRefFilterButton}>
                         <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
@@ -126,7 +122,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                         isMap={true}
                       />}
                     </span>}
-              {[{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map(item => {
+              {settings?.dForm?.name !== 'Applications Snapshot' && [{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map(item => {
                 return <span onClick={() => handleChangeDate(item.daysNumber)}
                              className={'chart-days ' + (settings.daysNumber === item.daysNumber ? 'active-days' : '')}>
                   {item.label}
@@ -146,16 +142,11 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
           title={chartType}
           chartId={chartId}
           data={chartType === 'Activities' ? dashboardData?.usersActivitiesSchedule : dashboardData?.userDFormActivitiesSchedule}
-          isSmall={settings.state === 'small'}
-          daysNumber={settings.daysNumber}
         />
       </div>
     </div>
     {settings.state === 'large' &&
-    <div style={isChartShown ? {borderTopColor: '#7367f0', background: 'white'} : {
-      borderTopColor: '#707070',
-      background: 'white'
-    }} className={'dashboard-activities'}>
+    <div style={{background: 'white'}} className={'dashboard-activities'}>
       {false && <h3 className={'users-activities-title'}>
         <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
           <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
