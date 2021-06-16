@@ -120,7 +120,7 @@ const SurveysDesignerQuestionsList = ({ questions = [], isQuestionSelected, onQu
   const debouncedMouseMoveHandler = _.debounce(handleInsertButtonAppearance, 10);
 
   const handleQuestionInsert = () => {
-    onQuestionInsert(insertButtonPosition)
+    onQuestionInsert(questions && !questions.length ? 0 : insertButtonPosition)
   };
 
   const sortQuestions = (questions) => {

@@ -252,6 +252,27 @@ const surveysReducer = {
     state.selectedSurvey.latest_version = newVersion;
   },
 
+  getSurveyWorkFlowsAndReviewersSuccess: (state, { payload }) => {
+    state.surveyWorkFlowsAndReviewers = payload;
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  assignSurveySuccess: (state, { payload }) => {
+
+    // state.selectedManagerAssignedSurveys = [...state.selectedManagerAssignedSurveys, payload];
+
+    state.isLoading = false;
+    state.error = null;
+
+    toast.success("Survey added successfully")
+  },
+
+  getAssignedSurveysSuccess: (state, { payload }) => {
+    state.selectedManagerAssignedSurveys = payload;
+    state.isLoading = false;
+    state.error = null;
+  }
 
 };
 
