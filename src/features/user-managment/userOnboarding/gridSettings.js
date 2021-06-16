@@ -5,42 +5,49 @@ import RefreshDFormFromParent from "./parts/RefreshDFormFromParent";
 
 export const columnDefs = [
   {
-    name: 'DForm',
-    cell: (onboarding) => {
-      return onboarding.d_form.name
+    name: 'Name',
+    cell: (application) => {
+      if (application.questions) {
+        return <div>{application.title} <b>Survey</b></div>
+      } else {
+        return `${application.d_form.name} Application`
+      }
+
     }
   },
   {
     name: 'Reviewers',
-    cell: (onboarding) => {
-      return onboarding.reviewers.map(reviewer => reviewer.first_name + ' ' + reviewer.last_name).join(', ')
+    cell: (application) => {
+      return application.reviewers.map(reviewer => reviewer.first_name + ' ' + reviewer.last_name).join(', ')
     }
   },
   {
-    name: 'Workflow',
-    cell: (onboarding) => {
-      return onboarding.workflow.name;
+    name: 'Workflows',
+    cell: (application) => {
+      return application.workflow.name;
     }
   },
   {
     name: 'Private',
-    cell: (onboarding) => {
-      if (onboarding.is_internal) {
+    cell: (application) => {
+      if (application.is_internal) {
         return 'For reviewers only'
       }
-      return ''
+      return 'No'
     }
   },
   {
     name: 'Up to date',
-    cell: (onboarding) => {
+    cell: (application) => {
 
 
       // send api/dform/{id}/update-from-parent
-
-      return onboarding.d_form.up_to_date ?
-        'Yes' : <RefreshDFormFromParent id={onboarding.d_form.id} />
-
+      if (application.questions) {
+        return "-"
+      } else {
+        return application.d_form.up_to_date ?
+          'Yes' : <RefreshDFormFromParent id={application.d_form.id} />
+      }
     }
   },
 ];

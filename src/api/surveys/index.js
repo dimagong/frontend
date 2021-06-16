@@ -14,6 +14,9 @@ import {
   getQuestionVersionDeleteUrl,
   getSurveyVersionsFetchUrl,
   getSurveyVersionDeleteUrl,
+  getSurveyWorkFlowsAndReviewersUrl,
+  assignSurvey,
+  getAssignedSurveysGetUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -68,6 +71,19 @@ const surveysApi = {
   async deleteSurveyVersion({ payload }) {
     return await requestLayout(getSurveyVersionDeleteUrl(payload), "DELETE")
   },
+
+  async getSurveyWorkFlowsAndReviewers() {
+    return await requestLayout(getSurveyWorkFlowsAndReviewersUrl, "GET")
+  },
+
+  async assignNewSurvey({ payload }) {
+    return await requestLayout(assignSurvey, "POST", payload)
+  },
+
+  async getAssignedSurveys({ payload }) {
+    return await requestLayout(getAssignedSurveysGetUrl(payload), "GET")
+  },
+
 };
 
 export default surveysApi;

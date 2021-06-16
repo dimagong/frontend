@@ -11,3 +11,6 @@ export const getQuestionVersionsFetchUrl = (questionId) => `api/survey-question/
 export const getQuestionVersionDeleteUrl = (questionVersionId) => `api/survey-question-version/${questionVersionId}`;
 export const getSurveyVersionsFetchUrl = (surveyId) => `api/survey-interaction/${surveyId}/versions`;
 export const getSurveyVersionDeleteUrl = (versionId) => `api/survey-interaction-version/${versionId}`;
+export const getSurveyWorkFlowsAndReviewersUrl = 'api/survey-assigned-interaction/relations';
+export const assignSurvey = `api/survey-assigned-interaction`;
+export const getAssignedSurveysGetUrl = (userId) => `api/survey-assigned-interaction/${userId}`;

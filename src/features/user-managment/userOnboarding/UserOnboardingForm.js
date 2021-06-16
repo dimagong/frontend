@@ -44,7 +44,7 @@ const prepareSelect = (data) => {
       color: colorMultiSelect
     };
   });
-}
+};
 const prepareDFormSelect = (data) => {
   return data.map((value) => {
     return {
@@ -53,26 +53,26 @@ const prepareDFormSelect = (data) => {
       color: colorMultiSelect
     };
   });
-}
+};
 
 const UserOnboardingCreate = ({isCreate}) => {
   const dispatch = useDispatch();
 
   const manager = useSelector(selectManager);
-  const dForms = useSelector(selectUserDForms)
-  const workflows = useSelector(selectUserWorkflows)
-  const reviewers = useSelector(selectUserReviewers)
+  const dForms = useSelector(selectUserDForms);
+  const workflows = useSelector(selectUserWorkflows);
+  const reviewers = useSelector(selectUserReviewers);
 
-  const closeCreateOnboarding = () => {
+  const closeCreateOnBoarding = () => {
     dispatch(setManagerOnboarding(null))
-  }
+  };
 
   const onSelectDFormChange = (values) => {
     values ? dispatch(setUserDForms(values[0].value)) : dispatch(setUserDForms(null))
-  }
+  };
 
   const onSelectReviewersChange = (values) => {
-    values ? dispatch(setUserReviewers(reviewers.filter(group => values.some( value => value.value.id === group.id)))) : dispatch(setUserReviewers([]))
+    values ? dispatch(setUserReviewers(reviewers.filter(group => values.some( value => value.value.id === group.id)))) : dispatch(setUserReviewers([]));
 
     if(!isCreate.current && values) {
       dispatch(updateUserOnboardingReviewersRequest({
@@ -81,10 +81,10 @@ const UserOnboardingCreate = ({isCreate}) => {
         managerId: manager.id,
       }))
     }
-  }
+  };
 
   const onSelectWorkflowChange = (values) => {
-    values ? dispatch(setUserWorkflows(values[values.length-1].value)) : dispatch(setUserWorkflows(null))
+    values ? dispatch(setUserWorkflows(values[values.length-1].value)) : dispatch(setUserWorkflows(null));
 
     if(!isCreate.current && values) {
       dispatch(updateUserOnboardingWorkflowRequest({
@@ -93,17 +93,17 @@ const UserOnboardingCreate = ({isCreate}) => {
         managerId: manager.id
       }))
     }
-  }
+  };
 
   const createOnboarding = () => {
     dispatch(createUserOnboardingRequest(manager.onboarding))
-  }
+  };
 
   const deleteOnboarding = () => {
     if(window.confirm("Are you sure?")){
       dispatch(deleteUserOnboardingRequest(manager.onboarding))
     }
-  }
+  };
   return (
     <Col md="12" lg="12" className="p-0 ml-0">
       <Card className="border-0 mb-0">
@@ -111,7 +111,7 @@ const UserOnboardingCreate = ({isCreate}) => {
           <CardTitle>
             Onboarding create
           </CardTitle>
-          <X size={15} onClick={closeCreateOnboarding}/>
+          <X size={15} onClick={closeCreateOnBoarding}/>
         </CardHeader>
         <CardBody className="pt-0">
           <hr/>
@@ -219,6 +219,6 @@ const UserOnboardingCreate = ({isCreate}) => {
       </Card>
     </Col>
   )
-}
+};
 
 export default UserOnboardingCreate

@@ -74,6 +74,18 @@ const {
   deleteSurveyVersionSuccess,
   deleteSurveyVersionRequest,
   deleteSurveyVersionError,
+
+  getSurveyWorkFlowsAndReviewersSuccess,
+  getSurveyWorkFlowsAndReviewersRequest,
+  getSurveyWorkFlowsAndReviewersError,
+
+  assignSurveySuccess,
+  assignSurveyRequest,
+  assignSurveyError,
+
+  getAssignedSurveysSuccess,
+  getAssignedSurveysRequest,
+  getAssignedSurveysError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -254,6 +266,36 @@ function* deleteSurveyVersion(payload) {
   }
 }
 
+function* getSurveyWorkFlowsAndReviewers() {
+  const response = yield call(surveysApi.getSurveyWorkFlowsAndReviewers);
+
+  if (response?.message) {
+    yield put(getSurveyWorkFlowsAndReviewersError(response.message));
+  } else {
+    yield put(getSurveyWorkFlowsAndReviewersSuccess(response))
+  }
+}
+
+function* assignSurvey(payload) {
+  const response = yield call(surveysApi.assignNewSurvey, payload);
+
+  if (response?.message) {
+    yield put(assignSurveyError(response.message));
+  } else {
+    yield put(assignSurveySuccess(response))
+  }
+}
+
+function* getAssignedSurveys(payload) {
+  const response = yield call(surveysApi.getAssignedSurveys, payload);
+
+  if (response?.message) {
+    yield put(getAssignedSurveysError(response.message));
+  } else {
+    yield put(getAssignedSurveysSuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -273,5 +315,8 @@ export default function* () {
     yield takeLatest(deleteSurveyRequest.type, deleteSurvey),
     yield takeLatest(deleteSurveyLatestVersionRequest.type, deleteSurveyLatestVersion),
     yield takeLatest(deleteSurveyVersionRequest.type, deleteSurveyVersion),
+    yield takeLatest(getSurveyWorkFlowsAndReviewersRequest.type, getSurveyWorkFlowsAndReviewers),
+    yield takeLatest(assignSurveyRequest.type, assignSurvey),
+    yield takeLatest(getAssignedSurveysRequest.type, getAssignedSurveys),
   ]);
 }
