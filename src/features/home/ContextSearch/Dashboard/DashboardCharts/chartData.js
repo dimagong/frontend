@@ -3,6 +3,9 @@ import moment from "moment";
 const colors = ['#d96f6f', '#add8e6', '#6FD98D', '#F0D46E', '#F5F535', '#35E7F5']
 
 export const getChartData = ({type, data}) => {
+  if (type === 'applications' && data?.dForm === 'Applications Snapshot') {
+    return dataApplicationSnapshotChart(data)
+  }
   switch (type) {
     case 'applications': return dataApplicationChart(data);
     default: return dataDefaultChart(data);
@@ -69,23 +72,21 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
     return null;
   }
   let pointsY = {'in-progress': [],  'submitted': [], 'approved': [], "rejected": [] };
-  //let currDForm = undefined;
   for (let i = 1; i < daysNumber + 1; ++i) {
     let currDay = moment().subtract(daysNumber - i, 'days').format('YYYY-MM-DD')
     if (data[currDay]) {
       let currInfo = {'in-progress': 0,  'submitted': 0, 'approved': 0, "rejected": 0};
-      Object.values(data[currDay]).forEach(item => {
-        //if (!currDForm) {
-        //  currDForm = item.application_name;
-        //}
-        if (dForm === item.application_name) {
-          if (item.application_status === 'unsubmitted') {
-            ++currInfo['in-progress'];
-          } else {
-            ++currInfo[item.application_status];
-          }
-        }
-      });
+      if (data[currDay][dForm]) {
+        Object.values(data[currDay][dForm]).forEach(item => {
+          Object.keys(item).forEach(key => {
+            if (key === 'unsubmitted') {
+              currInfo['in-progress'] += item[key]
+            } else {
+              currInfo[key] += item[key]
+            }
+          })
+        })
+      }
       Object.keys(pointsY).forEach(item => pointsY[item].push({x: i, y: currInfo[item]}));
     } else {
       Object.values(pointsY).forEach(item => {item.push({x: i, y: 0})});
@@ -188,6 +189,48 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
   return {
         //labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
         labels: new Array(daysNumber),
+        datasets: datasets
+      }
+};
+
+const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm}) => {
+  if (!data || daysNumber === -1) {
+    return null;
+  }
+  let currData = data[moment().format('YYYY-MM-DD')];
+  let results = {};
+  Object.keys(currData).forEach(application => {
+      let currInfo = {'approved': 0, 'in-progress': 0, "rejected": 0, 'submitted': 0,};
+      Object.values(currData[application]).forEach(item => {
+        Object.keys(item).forEach(key => {
+          if (key === 'unsubmitted') {
+            currInfo['in-progress'] += item[key];
+          } else {
+            currInfo[key] += item[key];
+          }
+          let parsedInfo = []
+        })
+      })
+
+      let parsedInfo = [];
+      Object.keys(currInfo).forEach(item => parsedInfo.push({x: item, y: currInfo[item]}))
+      results[application] = parsedInfo;
+  });
+
+  let datasets = []
+  Object.keys(results).forEach((item, key) => {
+    datasets.push({
+      label: item,
+      borderColor: colors[(key + 1) % 6],
+      backgroundColor: colors[(key + 1) % 6],
+      radius: 0,
+      hoverRadius: 0,
+      data: results[item],
+    })
+  })
+
+  return {
+        labels: ['approved', 'in-progress', "rejected", 'submitted'],
         datasets: datasets
       }
 }

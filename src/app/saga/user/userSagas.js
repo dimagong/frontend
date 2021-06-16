@@ -7,6 +7,7 @@ import {selectGroups, selectRoles} from "app/selectors";
 import organizationApi from '../../../api/organizations'
 
 import appSlice from 'app/slices/appSlice'
+import moment from "moment";
 
 const {
   getProfileSuccess,
@@ -368,8 +369,8 @@ export default function* () {
     yield takeLatest(patchSettingsRequest.type, patchSettings),
     yield takeLatest(getActivitiesRequest.type, getActivities),
     yield takeLatest(updateActivitiesRequest.type, updateActivities),
-    yield takeLatest(getDashboardDataRequest.type, getDashboardData),
-    yield takeLatest(getDashboardActivityRequest.type, getDashboardActivity),
+    yield takeEvery(getDashboardDataRequest.type, getDashboardData),
+    yield takeEvery(getDashboardActivityRequest.type, getDashboardActivity),
     yield takeLatest(getActivityTypesRequest.type, getActivityTypes),
     yield takeLatest(getDashboardDFormsRequest.type, getDashboardDForms),
     yield takeLatest(postFilterRequest.type, postFilter),

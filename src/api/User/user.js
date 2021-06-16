@@ -1,4 +1,5 @@
 import instance from "api";
+import qs from 'qs'
 import {
   getProfilePath,
   getUsersPath,
@@ -22,6 +23,7 @@ import {
   getFilterPathByID
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
+import moment from "moment";
 
 const userApi = {
   async getFilter() {
@@ -114,21 +116,27 @@ const userApi = {
     }
   },
   async getDashboardData(payload) {
-    let params = payload?.dForm
+    let params = payload?.dForm?.id
       ? {
         page: payload.page,
         'created_at[from]': payload.from,
-        app_ids: [payload.dForm]
+        app_ids: payload.dForm?.id
       }
       : {
         page: payload.page,
         'created_at[from]': payload.from,
       }
+    if (payload?.dForm?.name === 'Applications Snapshot') {
+      params = {
+        page: payload.page,
+        'created_at[from]': moment().subtract(30, 'days').format('YYYY-MM-DD'),
+        app_ids: payload?.allApplications,
+      }
+    }
     try {
       const result = await instance({
-        url: `/api/user/application-dashboard`,
+        url: `/api/user/application-dashboard?` + qs.stringify(params),
         method: "GET",
-        params: params
       });
       return result.data.data;
 

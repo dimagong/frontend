@@ -65,9 +65,9 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
 
   const loadMoreData = () => {
     if (settings.title === 'Activities') {
-      dispatch(getDashboardActivityRequest({page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      dispatch(getDashboardActivityRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
     } else {
-      dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, dForm: settings.dForm, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      dispatch(getDashboardDataRequest({key: settings.key, page: usersActivities.current_page + 1, dForm: settings?.dForm?.id, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
     }
   }
 
@@ -86,6 +86,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
     let name = activityTypes.find(item => item.id === currAction.action_type_id)?.name;
     if ( name === 'Application was updated'
       || name === 'Application state change'
+      || name === 'User submitted Dform'
       || name === 'New application added to user') {
       selectedInfo = {type: 'onboarding', value: parseOnboardingName(currAction.description)};
     } else if (name === 'Application was deleted') {
@@ -116,7 +117,20 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
         </span>
       }
       {(!activities || activities.length === 0)
-        ? <h1 style={{margin: '50px 0px 20px 15px', padding: '5vh 0'}}>No activities found</h1>
+        ? <span style={{position: 'relative'}}>
+            <div className={'action-date'} style={{position: 'relative', paddingLeft: 5}}>
+                {'Today'}
+                  <span>
+                    {settings.title !== 'Activities' && settings?.dForm?.name !== 'Applications Snapshot' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                      <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
+                    </span>}
+                    <span className={'arrow-close-activities'} onClick={handleChangeList}>
+                      <img src={ArrowUp}/>
+                    </span>
+                  </span>
+              </div>
+          <h1 style={{padding: '5vh 5px'}}>No activities found</h1>
+          </span>
         : <Scrollbars style={{height: 350, width: Math.round(window.innerWidth * 0.43), fontsize: 'small'}}>
           {managers.length > 0 && activities.map((item, key) =>
             <div style={{paddingLeft: '5px'}}>
@@ -124,7 +138,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                 {item.date}
                 {key === 0 &&
                   <span>
-                    {settings.title !== 'Activities' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                    {settings.title !== 'Activities' && settings?.dForm?.name !== 'Applications Snapshot' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>
@@ -147,7 +161,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                       {manager.first_name + ' ' + manager.last_name}
                     </span>
                     <span className={'action-user-org'}>{manager?.permissions?.organization}</span>
-                    <span style={{width: window.innerWidth * 0.43 - 360}} className={'action-user-description'}>{description}</span>
+                    <span style={{width: window.innerWidth * 0.43 - 370}} className={'action-user-description'}>{description}</span>
                     <span className={'action-user-time'}>
                   {item.date === 'Today'
                     ? moment(currAction.created_at).fromNow() === 'a few seconds ago' ? 'now' : moment(currAction.created_at).fromNow()

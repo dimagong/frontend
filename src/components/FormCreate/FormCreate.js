@@ -61,6 +61,8 @@ import FormOrdering from './Ordering/index'
 import masterSchemaService from "../../views/pages/master-schema/services/masterSchema.service";
 import PropertyNameById from "./Parts/PropertyNameById";
 
+import { toast } from "react-toastify";
+
 import appSlice from 'app/slices/appSlice'
 
 const {
@@ -577,6 +579,10 @@ class FormCreate extends React.Component {
 
 
   dependecyModalSave = (dependencyType, objKey) => {
+    if (typeof this.state.fieldEdit.propertyKey === "string" && this.state.fieldEdit.propertyKey.trim() === "") {
+      toast.error("Name should not be empty");
+      return;
+    }
     if (
       dependencyType === 'sections' &&
       this.isSectionNameAlreadyTaken(objKey, this.state.fieldEdit.propertyKey)
@@ -1356,14 +1362,14 @@ class FormCreate extends React.Component {
       .some(next => String(next) === String(newFieldKey));
 
     let isEmpty = false;
-    let errorMessage = 'The field must not be duplicated or empty';
+    let errorMessage = 'Property field must not be duplicated or empty';
     let isError = false;
 
     const isNotRelatedToMasterSchema = Constants.NOT_MASTER_SCHEMA_FIELDS.indexOf(this.state.schemaPropertyEdit?.type) !== -1;
 
     if (isNotRelatedToMasterSchema) {
       if (Number.isInteger(+this.state.fieldEdit.propertyKey)) {
-        errorMessage = 'The field must have at least one character';
+        errorMessage = 'Property field must have at least one character';
         isError = true;
       }
       isEmpty = !this.state.fieldEdit.propertyKey;
@@ -1389,7 +1395,19 @@ class FormCreate extends React.Component {
   elementEditModalSave(previousFieldKey) {
     const newFieldKey = this.state.fieldEdit.propertyKey;
 
-    if (this.isValidPropertyName(previousFieldKey, newFieldKey).isError) {
+    const {message, isError} = this.isValidPropertyName(previousFieldKey, newFieldKey);
+
+    if (isError) {
+      toast.error(message);
+
+      return;
+    }
+
+
+    const title = this.state.schemaPropertyEdit.title;
+    if (typeof title === "string" && title.trim() === "" && this.state.schemaPropertyEdit.type !== "helpText") {
+      toast.error("Title should not be empty");
+
       return;
     }
 

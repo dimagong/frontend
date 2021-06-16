@@ -13,7 +13,7 @@ const Routes = () => {
   const isAuth = useSelector(selectAuth);
   const userRole = useSelector(selectUserAbility);
 
-  const isOnboarding = ["prospect", "adviser"].indexOf(userRole) !== -1;
+  const isOnboarding = ["prospect", "member"].indexOf(userRole) !== -1;
 
   // if(isAuth && !profile) return null
 

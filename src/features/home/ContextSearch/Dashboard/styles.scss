@@ -199,6 +199,7 @@
 }
 
 .combined-dashboard-component {
+  margin-bottom: 1%;
   display: inline-block;
   vertical-align: top;
   .no-application {
@@ -210,5 +211,25 @@
   .no-application-small {
     left: 15%;
     font-size: small;
+  }
+}
+
+.dashboard-header {
+  h1 {
+    display: inline-block;
+    height: 50px;
+  }
+  justify-content: space-between;
+  .add-dashboard-component {
+    float: right;
+    .add-icon {
+      padding: 5px !important;
+      background-color: #7367F0 !important;
+      border-radius: 25px;
+
+      &:hover, &:active, &:focus {
+        border-radius: 25px;
+      }
+    }
   }
 }
