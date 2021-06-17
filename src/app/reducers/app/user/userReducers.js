@@ -42,6 +42,12 @@ const getSettingsSuccess = (state, {payload}) => {
       value: dashboardSettings.value,
       id: dashboardSettings.id
     };
+    //migration to new data format
+    for (let i = 0; i < state.user.dashboard.settings.value.length; ++i) {
+      if (!state.user.dashboard.settings.value[i].hasOwnProperty('key')) {
+        state.user.dashboard.settings.value[i].key = i;
+      }
+    }
   } else {
     state.user.dashboard.settings = {
       value: [{
