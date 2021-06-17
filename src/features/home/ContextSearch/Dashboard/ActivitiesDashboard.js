@@ -125,7 +125,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
             <div className={'action-date'} style={{position: 'relative', paddingLeft: 5}}>
                 {'Today'}
                   <span>
-                    {settings?.dForm?.name !== 'Applications Snapshot' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                    {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
                     {settings['filter[value]'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
@@ -154,7 +154,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                 {item.date}
                 {key === 0 &&
                   <span>
-                    {settings?.dForm?.name !== 'Applications Snapshot' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                    {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
                     {settings['filter[value]'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>

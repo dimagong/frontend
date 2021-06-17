@@ -127,10 +127,10 @@ const userApi = {
         'created_at[from]': payload.from,
       }
     if (payload?.dForm?.name === 'Applications Snapshot') {
-      params = {
-        page: payload.page,
-        'created_at[from]': moment().subtract(30, 'days').format('YYYY-MM-DD'),
-        app_ids: payload?.allApplications,
+      if (payload?.allApplications && payload?.settings?.dForm.id) {
+        params.app_ids = payload.settings.dForm.id;
+      } else {
+        params.app_ids = [];
       }
     }
     ['filter[type]', 'filter[value]', 'user_groups'].forEach(item => {

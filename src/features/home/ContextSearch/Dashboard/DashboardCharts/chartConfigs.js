@@ -111,6 +111,7 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm})
       aspectRatio: isSmall ? 1.46 : 3,
       plugins: {
         legend: {
+          display: title === 'Activities' || !isSmall,
           position: 'bottom',
           align: isSmall ? 'end' : 'center',
           labels: {
@@ -170,7 +171,8 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm})
         padding: {
           top: 15,
           right: 20,
-          left: -11
+          left: -11,
+          bottom: !(title === 'Activities' || !isSmall) ? 30 : 0
         }
       }
     },

@@ -89,7 +89,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
 
   useEffect(() => {
     if (chartType === 'Applications') {
-        dispatch(getDashboardDataRequest({key: settings.key, page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), dForm: settings.dForm, allApplications: allApplications}))
+        dispatch(getDashboardDataRequest({key: settings.key, page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), dForm: settings.dForm, allApplications: allApplications, settings: settings}))
       } else {
         dispatch(getDashboardActivityRequest({key: settings.key, page: 1,'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
       }
@@ -109,7 +109,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                    onClick={() => deleteComponent(settings.key)}/>
             </span>
         <span className={'change-chart-days ' + (settings.state === 'small' ? ' change-chart-days-smaller' : '')}>
-          {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.name && settings?.dForm?.name !== 'Applications Snapshot' &&
+          {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.name &&
                     <span>
                       <span style={{marginRight: '20px'}} className={'filter-icon-box'} onClick={() => setIsMapFilterBoxOpen(!isMapFilterBoxOpen)} ref={wrapperRefFilterButton}>
                         <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
@@ -150,7 +150,8 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     {settings.state === 'large' &&
     <div style={{background: 'white'}} className={'dashboard-activities'}>
       <ActivitiesDashboard
-        usersActivities={chartType === 'Applications' ? dashboardData?.userDFormActivities : dashboardData?.usersActivities}
+        usersActivities={(chartType === 'Applications' && (!settings.dForm || settings.dForm === 'Unselected application')) ? []
+          : chartType === 'Applications' ? dashboardData?.userDFormActivities : dashboardData?.usersActivities}
         settings={settings}
         handleChangeList={handleChangeList}
         wrapperRefFilterButton={wrapperRefFilterButton}
