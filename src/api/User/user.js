@@ -133,6 +133,11 @@ const userApi = {
         app_ids: payload?.allApplications,
       }
     }
+    ['filter[type]', 'filter[value]', 'user_groups'].forEach(item => {
+      if (payload.settings && payload.settings[item]) {
+        params[item] = payload.settings[item];
+      }
+    })
     try {
       const result = await instance({
         url: `/api/user/application-dashboard?` + qs.stringify(params),
@@ -145,19 +150,20 @@ const userApi = {
     }
   },
   async getDashboardActivity(payload) {
-    let params = payload?.from
-      ? {
+    let params = {
         page: payload.page,
         'created_at[from]': payload.from
+      };
+    ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
+      if (payload.settings[item]) {
+        params[item] = payload.settings[item];
       }
-      : {
-        page: payload.page,
-      }
+    })
     try {
       const result = await instance({
-        url: `/api/user/activities-dashboard`,
+        url: `/api/user/activities-dashboard?` + qs.stringify(params),
         method: "GET",
-        params: params
+        //params: params
       });
       return result.data.data;
 
