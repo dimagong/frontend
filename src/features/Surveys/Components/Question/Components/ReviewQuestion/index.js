@@ -3,7 +3,7 @@ import React from 'react';
 import { CheckCircle } from 'react-feather';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 
-const MultipleChoice = ({ options }) => {
+const MultipleChoice = ({ options, correctAnswerId }) => {
 
   return (
     <div className={"answer multiple-choice"}>
@@ -12,7 +12,7 @@ const MultipleChoice = ({ options }) => {
       </div>
       <div className="options">
         {options.map((answer, index) => (
-          <div key={index} className={`option ${answer.is_correct ? "selected" : ""}`}>
+          <div key={index} className={`option ${answer.id === correctAnswerId ? "selected" : ""}`}>
             <div className={"option-circle"} />
             <div className={"option-text"}>
               {answer.text}
@@ -51,8 +51,7 @@ const ReviewQuestion = ({
 
   const {
     body,
-    points,
-    answer_structure: {type, options}
+    answer_structure: {type, options, points, max_points}
   } = questionData;
 
 
@@ -69,12 +68,12 @@ const ReviewQuestion = ({
       </div>
 
       {{
-        "multiple_choice": <MultipleChoice options={options} />,
+        "multiple_choice": <MultipleChoice options={options} correctAnswerId={questionData.correct_answer} />,
         "text": <FreeText />
       }[type]}
 
       <div className={"question-points"}>
-        {/*{points} Points*/}
+        {points || max_points} Points
       </div>
     </div>
   );

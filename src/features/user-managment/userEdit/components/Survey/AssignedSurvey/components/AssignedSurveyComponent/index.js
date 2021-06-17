@@ -18,8 +18,8 @@ const AssignedSurveyComponent = ({ surveyData, status }) => {
             {surveyData.title}
           </div>
         </div>
-        <div className="assigned-survey_header_version">
-          Latest v03.03.2021:0 By Brad Powar
+        <div className="assigned-survey_header_survey-version">
+          {surveyData.intersection_version.current_version}
         </div>
       </div>
       <div className={"assigned-survey_body"}>
