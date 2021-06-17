@@ -46,6 +46,7 @@
 .application-create-container {
   display: flex;
   justify-content: flex-end;
+  padding-top: 20px;
   &_select {
     width: 180px;
     margin-right: 9px;
@@ -108,5 +109,30 @@
   .activity-profile-update {
     cursor: pointer;
     font-weight: bold;
+  }
+}
+
+.onboarding-create-feature {
+  &_header {
+    font-family: Montserrat;
+    font-size: 34px;
+    color: #707070;
+    padding-bottom: 40px;
+    display: flex;
+    &_title {
+      font-weight: bold;
+      padding-right: 30px;
+    }
+    &_name {
+      display: flex;
+      font-family: Montserrat;
+      font-size: 34px;
+      color: #707070;
+      padding-left: 30px;
+      border-left: 1px solid rgba(112,112,112, 0.5);
+    }
+  }
+  &_body {
+    padding-top: 20px;
   }
 }
