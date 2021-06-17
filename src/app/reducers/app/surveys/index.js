@@ -260,7 +260,7 @@ const surveysReducer = {
 
   assignSurveySuccess: (state, { payload }) => {
 
-    // state.selectedManagerAssignedSurveys = [...state.selectedManagerAssignedSurveys, payload];
+    state.selectedManagerAssignedSurveys = [...state.selectedManagerAssignedSurveys, payload];
 
     state.isLoading = false;
     state.error = null;

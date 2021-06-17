@@ -10,7 +10,7 @@ export const columnDefs = [
       if (application.questions) {
         return <div>{application.title} <b>Survey</b></div>
       } else {
-        return `${application.d_form.name} Application`
+        return <div>{application.d_form.name} <b>Application</b></div>
       }
 
     }
