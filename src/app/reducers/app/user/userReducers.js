@@ -128,9 +128,9 @@ const getDashboardDataSuccess = (state, {payload}) => {
     currData.userDFormActivities = payload.response.userDFormActivities;
     currData.userDFormActivities.data = newData;
   } else {
-    if (!currData?.userDFormActivities?.data?.length > 0) {
+    //if (!currData?.userDFormActivities?.data?.length > 0) {
      currData.userDFormActivities = payload.response.userDFormActivities;
-    }
+    //}
     currData.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
   }
 
@@ -161,9 +161,9 @@ const getDashboardActivitySuccess = (state, {payload}) => {
     currData.usersActivities = payload.response.usersActivities;
     currData.usersActivities.data = newData;
   } else {
-    if (!currData?.usersActivities?.data?.length > 0) {
+    //if (!currData?.usersActivities?.data?.length > 0) {
       currData.usersActivities = payload.response.usersActivities
-    }
+    //}
     currData.usersActivitiesSchedule = payload.response.usersActivitiesSchedule;
   }
   currData.key = payload.payload.key;
