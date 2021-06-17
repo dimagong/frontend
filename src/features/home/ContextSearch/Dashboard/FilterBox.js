@@ -3,13 +3,11 @@ import {Button, Card} from "react-bootstrap";
 import Select from "react-select";
 import {Col, ListGroup, ListGroupItem, Row} from "reactstrap";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
-import FilterOptions from "../ContextSearchNav/Filters/FilterOptions";
-import SavedFilters from "../ContextSearchNav/Filters/SavedFilters";
 import FilterOptionsDashboard from "./FilterOptionsDashboard";
 import '../ContextSearchNav/styles.scss'
 import {useSelector} from "react-redux";
 import {selectOrganizations} from "app/selectors/groupSelector";
-import {selectActivityTypes, selectManagers} from "app/selectors/userSelectors";
+import {selectActivityTypes, selectDashboardDForms, selectManagers} from "app/selectors/userSelectors";
 
 const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen, isApplication, removeFilterPart, isFilterBoxOpen}) => {
   let roles = ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Network manager', 'Member', 'Lead'].map(item => {return {name: item}})
@@ -21,6 +19,7 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
   const organizationsObjects = useSelector(selectOrganizations);
   const activityTypes = useSelector(selectActivityTypes);
   const managers = useSelector(selectManagers);
+  const dashboardDForms = useSelector(selectDashboardDForms)
   const filterOptions = {Application: [], 'Activity types': activityTypes, Roles: roles, Organizations: organizationsObjects,}
   const styles = {
     marginBottom: 0
@@ -31,7 +30,13 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
       //setSelectDForm(newValue.value)
       let newFilter = {...filter}
       if (currTab === 'Application') {
-        newFilter.Application = [newValue.value]
+        if (settings?.dForm?.name !== 'Applications Snapshot') {
+          newFilter.Application = [newValue.value]
+        } else {
+          if (filter[currTab].findIndex(curr => curr.name === newValue.value.name) === -1) {
+            newFilter[currTab].push(newValue.value)
+          }
+        }
       }
       else if (currTab === 'Activity types') {
         if (filter[currTab].findIndex(curr => curr.name === newValue.value.name) === -1) {
@@ -55,19 +60,6 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
     menuList: styles => ({ ...styles, maxHeight: '165px' }),
     container: styles => ({...styles, marginBottom: '20px'}),
   };
-
-  const handleApply = () => {
-    settings.dForm = selectedDForm;
-    updateSettings(settings);
-    setIsFilterBoxOpen(false);
-  }
-
-  const handleChangeType = (newType) => {
-    if (newType !== selectedOption) {
-      setSelectedOption(newType);
-      setSelectValue({active: !selectValue.active, label: selectValue.label})
-    }
-  }
 
   const handleApplyFilter = () => {
     Object.keys(filter).forEach(item => {
@@ -114,10 +106,19 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
         }
 
         case 'Application': {
-          if (filter['Application'].length > 0) {
-            settings.dForm = filter['Application'][0];
+          if (settings?.dForm?.name !== 'Applications Snapshot') {
+            if (filter['Application'].length > 0) {
+              settings.dForm = filter['Application'][0];
+            } else {
+              settings.dForm = null;
+            }
           } else {
-            settings.dForm = null;
+            let res = [];
+            filter['Application'].forEach(item => {
+              if (item.name !== 'Applications Snapshot')  {
+                res = item.id.concat(res)
+              }})
+            settings.dForm = {name: 'Applications Snapshot', id: res}
           }
 
         }
@@ -148,7 +149,23 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
        })
      }
      if (settings.dForm) {
-       newFilter.Application = [settings.dForm]
+       if (settings?.dForm?.name !== 'Applications Snapshot') {
+         newFilter.Application = [settings.dForm]
+       } else {
+          let chosenDForms = [];
+          if (settings.dForm?.id && dashboardDForms) {
+            settings.dForm.id.forEach(dform => {
+              Object.keys(dashboardDForms).forEach(key => {
+                if (dashboardDForms[key].findIndex(item => item === dform) !== -1) {
+                  if (chosenDForms.findIndex(chosen => chosen.name === key) === -1) {
+                    chosenDForms.push({name: key, id: dashboardDForms[key]})
+                  }
+                }
+              })
+            });
+          }
+          newFilter.Application = chosenDForms
+       }
      }
      setFilter(newFilter);
 
@@ -187,7 +204,9 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
 
   if (!isFilterBoxOpen) return <span/>;
 
-  return ( <span style={ !isMap ? {left: 110, top: 65} : {top: 30, right: 125, left: "unset"}} className={'filter-box'}>
+  return ( <span style={ !isMap ? {left: 110, top: 65} :
+      settings?.dForm?.name !== 'Applications Snapshot' ? {top: 30, right: 125, left: "unset"}
+        : {top: 30, right: 40, left: "unset"}} className={'filter-box'}>
           <Card style={styles}>
               <ListGroup variant="flush">
                 <ListGroupItem style={{textAlign: 'left'}} className={'filter-header'}>{isApplication ? 'Application filter' : 'Activities filter'}</ListGroupItem>
@@ -203,7 +222,7 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
                       )}
 
                     </Col>
-                    <Col className={'right'} id={'filter-options-right'}>
+                    <Col className={'right'} id={'filter-options-right'} style={{paddingLeft: 0}}>
                       <span>
                         {currTab === 'Application'
                           && <Select
@@ -215,7 +234,6 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
                               options={dForms ? options : []}
                               onChange={handleChange}
                               styles={selectStyles}
-                              value={filter['Application'].length > 0 ? {label: filter['Application'][0].name} : undefined}
                               placeholder={'Choose application'}
                             />}
                         {currTab === 'Activity types'
@@ -236,6 +254,7 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
                             list={currTab !== 'Application' ? filterOptions[currTab] : options.map(item => item.value)}
                             filter={filter}
                             setFilter={setFilter}
+                            isSnapshot={!(settings?.dForm?.name !== 'Applications Snapshot')}
                           />
                       </span>
                     </Col>

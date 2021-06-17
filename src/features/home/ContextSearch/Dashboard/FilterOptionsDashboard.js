@@ -3,12 +3,12 @@ import {
   Button,
 } from 'reactstrap';
 
-const FilterOptionsDashboard = ({ currTab, list, filter, setFilter }) => {
+const FilterOptionsDashboard = ({ currTab, list, filter, setFilter, isSnapshot }) => {
 
   const handleAddFilterOption = (option) => {
     let newFilter = {...filter};
     if (filter[currTab].findIndex(curr => curr.name === option.name) === -1) {
-      if (currTab === 'Application') {
+      if (currTab === 'Application' && !isSnapshot) {
         newFilter[currTab] = [option]
       }
       else {
@@ -21,7 +21,7 @@ const FilterOptionsDashboard = ({ currTab, list, filter, setFilter }) => {
   }
   return <span>
       {list.map(item => <Button className={'filter-option not-active'} variant="primary">
-      <span className={'filter-name'}>{item.name}</span>
+      <span style={{width: 180}} className={'filter-name'}>{item.name}</span>
       <span className={'filter-right'}>
           <span>
             <span className={'filter-check'} onClick={() => {handleAddFilterOption(item)}}>

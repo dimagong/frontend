@@ -183,9 +183,6 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
           hoverRadius: 0,
           data: pointsY['rejected'],
         },]
-  if (isSmall) {
-    datasets.splice(1, 1);
-  }
   return {
         //labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
         labels: new Array(daysNumber),
