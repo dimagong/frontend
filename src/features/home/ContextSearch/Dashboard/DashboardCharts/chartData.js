@@ -183,9 +183,6 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
           hoverRadius: 0,
           data: pointsY['rejected'],
         },]
-  if (isSmall) {
-    datasets.splice(1, 1);
-  }
   return {
         //labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
         labels: new Array(daysNumber),
@@ -199,7 +196,8 @@ const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm})
   }
   let currData = data[moment().format('YYYY-MM-DD')];
   let results = {};
-  Object.keys(currData).forEach(application => {
+  if (currData)
+    Object.keys(currData).forEach(application => {
       let currInfo = {'approved': 0, 'in-progress': 0, "rejected": 0, 'submitted': 0,};
       Object.values(currData[application]).forEach(item => {
         Object.keys(item).forEach(key => {

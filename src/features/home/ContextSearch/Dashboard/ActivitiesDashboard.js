@@ -1,4 +1,5 @@
 import React, {useRef, useState} from 'react'
+import '../ContextSearchNav/styles.scss'
 import moment from "moment";
 import {useDispatch, useSelector} from "react-redux";
 import {selectLoading, selectManagers} from "app/selectors";
@@ -31,8 +32,9 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
   const managers = useSelector(selectManagers);
   const activityTypes = useSelector(selectActivityTypes);
 
+  const [removeFilterPart, setRemoveFilterPart] = useState('');
   const wrapperRefFilterBox = useRef(null);
-  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (isFilterBoxOpen) setIsFilterBoxOpen(false)});
+  //useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (isFilterBoxOpen) setIsFilterBoxOpen(false)});
 
 
   let activities = []
@@ -65,9 +67,9 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
 
   const loadMoreData = () => {
     if (settings.title === 'Activities') {
-      dispatch(getDashboardActivityRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      dispatch(getDashboardActivityRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
     } else {
-      dispatch(getDashboardDataRequest({key: settings.key, page: usersActivities.current_page + 1, dForm: settings?.dForm?.id, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      dispatch(getDashboardDataRequest({key: settings.key, page: usersActivities.current_page + 1, dForm: settings?.dForm?.id, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
     }
   }
 
@@ -106,13 +108,15 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
 
   return (
     <div>
-      {isFilterBoxOpen &&
-        <span ref={wrapperRefFilterBox}>
+      { <span ref={wrapperRefFilterBox}>
           <FilterBox
             setIsFilterBoxOpen={setIsFilterBoxOpen}
             dForms={dForms}
             updateSettings={updateSettings}
             settings={settings}
+            isApplication={settings.title === 'Applications'}
+            removeFilterPart={removeFilterPart}
+            isFilterBoxOpen={isFilterBoxOpen}
           />
         </span>
       }
@@ -121,9 +125,21 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
             <div className={'action-date'} style={{position: 'relative', paddingLeft: 5}}>
                 {'Today'}
                   <span>
-                    {settings.title !== 'Activities' && settings?.dForm?.name !== 'Applications Snapshot' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                    {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
+                    {settings['filter[value]'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                      <span className={'nav-text'}>Activity types</span>
+                      <span onClick={() => setRemoveFilterPart('Activity types')} className={'close-nav'}><CloseIcon/></span>
+                    </Button>}
+                    {settings['user_groups'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                      <span className={'nav-text'}>Organizations</span>
+                      <span onClick={() => setRemoveFilterPart('Organizations')} className={'close-nav'}><CloseIcon/></span>
+                    </Button>}
+                    {settings['ability_user_ids'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                      <span className={'nav-text'}>Roles</span>
+                      <span onClick={() => setRemoveFilterPart('Roles')} className={'close-nav'}><CloseIcon/></span>
+                    </Button>}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>
                       <img src={ArrowUp}/>
                     </span>
@@ -138,9 +154,21 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                 {item.date}
                 {key === 0 &&
                   <span>
-                    {settings.title !== 'Activities' && settings?.dForm?.name !== 'Applications Snapshot' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                    {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
+                    {settings['filter[value]'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                      <span className={'nav-text'}>Activity types</span>
+                      <span onClick={() => setRemoveFilterPart('Activity types')} className={'close-nav'}><CloseIcon/></span>
+                    </Button>}
+                    {settings['user_groups'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                      <span className={'nav-text'}>Organizations</span>
+                      <span onClick={() => setRemoveFilterPart('Organizations')} className={'close-nav'}><CloseIcon/></span>
+                    </Button>}
+                    {settings['ability_user_ids'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                      <span className={'nav-text'}>Roles</span>
+                      <span onClick={() => setRemoveFilterPart('Roles')} className={'close-nav'}><CloseIcon/></span>
+                    </Button>}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>
                       <img src={ArrowUp}/>
                     </span>

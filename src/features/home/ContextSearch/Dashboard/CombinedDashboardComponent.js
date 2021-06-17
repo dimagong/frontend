@@ -38,7 +38,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   const dashboardData = useSelector(selectDashboardDataByKey(settings.key))
 
   const wrapperRefFilterButton = useRef(null);
-  const [filter, setFilter] = useState({type: undefined, value: undefined});
+  //const [filter, setFilter] = useState({Roles: [], Organizations: [], 'Activity types': [], Application: []})
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
   const [isMapFilterBoxOpen, setIsMapFilterBoxOpen] = useState(false);
   const [tabLabel, setTabLabel] = useState('')
@@ -61,13 +61,13 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
 
   const handleFilterBox = () => {
     if (!isFilterBoxOpen) {
-      setFilter({type: filter?.type, value: filter?.value, label: tabLabel})
+      //setFilter({type: filter?.type, value: filter?.value, label: tabLabel})
     }
     setIsFilterBoxOpen(!isFilterBoxOpen);
   }
 
   const removeFilter = () => {
-    setFilter({type: undefined, value: undefined})
+    //setFilter({type: undefined, value: undefined})
     dispatch(getDashboardDataRequest({key: settings.key, page: 1, title: chartType === 'Activities' ? chartType.toLowerCase(): 'application'}))
     setIsFilterTagOpen(false);
     setTabLabel('')
@@ -89,11 +89,11 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
 
   useEffect(() => {
     if (chartType === 'Applications') {
-        dispatch(getDashboardDataRequest({key: settings.key, page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), dForm: settings.dForm, allApplications: allApplications}))
+        dispatch(getDashboardDataRequest({key: settings.key, page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), dForm: settings.dForm, allApplications: allApplications, settings: settings}))
       } else {
-        dispatch(getDashboardActivityRequest({key: settings.key, page: 1,'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+        dispatch(getDashboardActivityRequest({key: settings.key, page: 1,'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
       }
-  }, [settings.daysNumber, settings.dForm]);
+  }, [settings.daysNumber, settings['filter[value]'], settings.dForm, settings.user_groups, settings.ability_user_ids]);
 
 
   return (<div className={'combined-dashboard-component'} style={settings.state === 'small'
@@ -109,7 +109,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                    onClick={() => deleteComponent(settings.key)}/>
             </span>
         <span className={'change-chart-days ' + (settings.state === 'small' ? ' change-chart-days-smaller' : '')}>
-          {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.name && settings?.dForm?.name !== 'Applications Snapshot' &&
+          {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.name &&
                     <span>
                       <span style={{marginRight: '20px'}} className={'filter-icon-box'} onClick={() => setIsMapFilterBoxOpen(!isMapFilterBoxOpen)} ref={wrapperRefFilterButton}>
                         <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
@@ -120,6 +120,8 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                         updateSettings={updateSettings}
                         settings={settings}
                         isMap={true}
+                        isApplication={settings.title === 'Applications'}
+                        isFilterBoxOpen={isMapFilterBoxOpen}
                       />}
                     </span>}
               {settings?.dForm?.name !== 'Applications Snapshot' && [{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map(item => {
@@ -147,25 +149,12 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     </div>
     {settings.state === 'large' &&
     <div style={{background: 'white'}} className={'dashboard-activities'}>
-      {false && <h3 className={'users-activities-title'}>
-        <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
-          <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
-        </span>
-
-        {isFilterTagOpen && <Button className={'filter-tab'} variant={'dark'}>
-              <span className={'nav-text'}>{tabLabel}</span>
-              <span onClick={removeFilter}
-                    className={'close-nav'}><CloseIcon/></span>
-            </Button>
-        }
-      </h3>}
       <ActivitiesDashboard
-        usersActivities={chartType === 'Applications' ? dashboardData?.userDFormActivities : dashboardData?.usersActivities}
+        usersActivities={(chartType === 'Applications' && (!settings.dForm || settings.dForm === 'Unselected application')) ? []
+          : chartType === 'Applications' ? dashboardData?.userDFormActivities : dashboardData?.usersActivities}
         settings={settings}
         handleChangeList={handleChangeList}
         wrapperRefFilterButton={wrapperRefFilterButton}
-        filter={filter}
-        setFilter={setFilter}
         isFilterBoxOpen={isFilterBoxOpen}
         setIsFilterBoxOpen={setIsFilterBoxOpen}
         tabLabel={tabLabel}
