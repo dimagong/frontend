@@ -234,9 +234,12 @@ const UserEdit = (props, context) => {
     }
   }, [manager.onboardings, openOnboarding]);
 
+  const tableData = [...manager.onboardings, ...assignedSurveys].sort((a, b) => {
+    const firstItem = a.title || a?.d_form?.name;
+    const secondItem = b.title || b?.d_form?.name;
 
-
-  const tableData = [...manager.onboardings, ...assignedSurveys].sort((a, b) => a.title.localeCompare(b.title));
+    return firstItem.localeCompare(secondItem)
+  });
 
   return (
     <Row className="user-managment">
