@@ -111,3 +111,28 @@
     font-weight: bold;
   }
 }
+
+.onboarding-create-feature {
+  &_header {
+    font-family: Montserrat;
+    font-size: 34px;
+    color: #707070;
+    padding-bottom: 40px;
+    display: flex;
+    &_title {
+      font-weight: bold;
+      padding-right: 30px;
+    }
+    &_name {
+      display: flex;
+      font-family: Montserrat;
+      font-size: 34px;
+      color: #707070;
+      padding-left: 30px;
+      border-left: 1px solid rgba(112,112,112, 0.5);
+    }
+  }
+  &_body {
+    padding-top: 20px;
+  }
+}

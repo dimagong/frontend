@@ -366,16 +366,34 @@ const UserEdit = (props, context) => {
         {{
           'edit': <UserProfileEdit manager={manager} onEditClose={handleEditClose} />,
           'onboarding': (
-            <Card>
-              {selectedManager.onboarding && (
-                <>
-                  <UserOnboardingForm isCreate={isCreate}/>
-                  {!isCreate.current && (
-                    <UserOnboardingDForm />
-                  )}
-                </>
-              )}
-            </Card>
+              selectedManager.onboarding && (
+                <div className="onboarding-create-feature">
+                  <div className="onboarding-create-feature_header">
+                    {isCreate.current ? (
+                      <div className="onboarding-create-feature_header_title">
+                        Onboarding Create
+                      </div>
+                    ) : (
+                      <>
+                        <div className="onboarding-create-feature_header_title">
+                          Application
+                        </div>
+                        <div className="onboarding-create-feature_header_name">
+                          {selectedManager?.onboarding?.d_form?.name || ""}
+                        </div>
+                      </>
+
+                    )}
+                  </div>
+                  <Card>
+                    <UserOnboardingForm isCreate={isCreate}/>
+                    {!isCreate.current && (
+                      <UserOnboardingDForm />
+                    )}
+                  </Card>
+
+                </div>
+              )
           ),
           'surveyCreate': <SurveyAssign userId={manager.id} />,
           'assignedSurvey': <AssignedSurvey surveyData={selectedAssignedSurvey} />
