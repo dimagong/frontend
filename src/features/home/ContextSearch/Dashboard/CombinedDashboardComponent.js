@@ -134,7 +134,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                    onClick={() => deleteComponent(settings.key)}/>
             </span>
         <span className={'change-chart-days ' + (settings.state === 'small' ? ' change-chart-days-smaller' : '')}>
-          {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.name &&
+          {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.id &&
                     <span>
                       <span style={{marginRight: '20px'}} className={'filter-icon-box'} onClick={() => setIsMapFilterBoxOpen(!isMapFilterBoxOpen)} ref={wrapperRefFilterButton}>
                         <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
@@ -158,7 +158,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                 </span>
               })}
             </span>
-        {chartType === 'Applications' && (settings.dForm === 'Unselected application' || !settings.dForm) &&
+        {chartType === 'Applications' && (settings.dForm === 'Unselected application' || !settings.dForm?.id) &&
           <span className={'no-application ' + (settings.state === 'small' ? 'no-application-small' : '')}>
             Please select an application to see the info about it
           </span>}
@@ -177,7 +177,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     {settings.state === 'large' &&
     <div style={{background: 'white'}} className={'dashboard-activities'}>
       <ActivitiesDashboard
-        usersActivities={(chartType === 'Applications' && (!settings.dForm || settings.dForm === 'Unselected application')) ? []
+        usersActivities={(chartType === 'Applications' && !(settings.dForm?.id)) ? []
           : chartType === 'Applications' ? dashboardData?.userDFormActivities : dashboardData?.usersActivities}
         settings={settings}
         handleChangeList={handleChangeList}
