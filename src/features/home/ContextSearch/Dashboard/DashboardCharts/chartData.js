@@ -217,6 +217,7 @@ const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm, 
       results[application] = parsedInfo;
   });
 
+
   let datasets = []
   Object.keys(results).forEach((item, key) => {
     datasets.push({
@@ -228,6 +229,10 @@ const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm, 
       data: results[item],
     })
   })
+
+  if (!dFormIds) {
+    datasets = []
+  }
 
   let chosenDForms = [];
   if (dFormIds && dashboardDForms) {

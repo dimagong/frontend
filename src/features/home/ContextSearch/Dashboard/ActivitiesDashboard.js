@@ -120,9 +120,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
           break;
         }
         case 'Application': {
-          if (settings?.dForm?.id) {
-            settings.dForm = {name: settings.dForm.name, id: []};
-          }
+            settings.dForm = {name: settings.dForm?.name, id: null};
           break;
         }
       }
