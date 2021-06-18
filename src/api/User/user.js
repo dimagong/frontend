@@ -133,7 +133,7 @@ const userApi = {
         params.app_ids = [];
       }
     }
-    ['filter[type]', 'filter[value]', 'user_groups'].forEach(item => {
+    ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
       if (payload.settings && payload.settings[item]) {
         params[item] = payload.settings[item];
       }
