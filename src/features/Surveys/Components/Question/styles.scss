@@ -124,6 +124,11 @@
 
   }
 
+  &.question-review {
+    cursor: default!important;
+    padding-top: 40px;
+  }
+
   &.question-onboarding {
     .options.option {
       cursor: pointer;

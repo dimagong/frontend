@@ -1,4 +1,5 @@
 import React, {useRef, useState} from 'react'
+import '../ContextSearchNav/styles.scss'
 import moment from "moment";
 import {useDispatch, useSelector} from "react-redux";
 import {selectLoading, selectManagers} from "app/selectors";
@@ -30,9 +31,8 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
   const isLoadingData = useSelector(selectLoading);
   const managers = useSelector(selectManagers);
   const activityTypes = useSelector(selectActivityTypes);
-
   const wrapperRefFilterBox = useRef(null);
-  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (isFilterBoxOpen) setIsFilterBoxOpen(false)});
+  //useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (isFilterBoxOpen) setIsFilterBoxOpen(false)});
 
 
   let activities = []
@@ -65,9 +65,9 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
 
   const loadMoreData = () => {
     if (settings.title === 'Activities') {
-      dispatch(getDashboardActivityRequest({page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      dispatch(getDashboardActivityRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
     } else {
-      dispatch(getDashboardDataRequest({page: usersActivities.current_page + 1, dForm: settings?.dForm?.id, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD')}))
+      dispatch(getDashboardDataRequest({key: settings.key, page: usersActivities.current_page + 1, dForm: settings?.dForm?.id, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
     }
   }
 
@@ -86,6 +86,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
     let name = activityTypes.find(item => item.id === currAction.action_type_id)?.name;
     if ( name === 'Application was updated'
       || name === 'Application state change'
+      || name === 'User submitted Dform'
       || name === 'New application added to user') {
       selectedInfo = {type: 'onboarding', value: parseOnboardingName(currAction.description)};
     } else if (name === 'Application was deleted') {
@@ -100,18 +101,70 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
     dispatch(setContext('User'));
   }
 
+  const removeFilterPart = (key) => {
+    let newFilter = {...filter}
+    newFilter[key] = []
+    setFilter(newFilter);
+    switch (key) {
+        case 'Activity types': {
+          settings['filter[type]'] = null;
+          settings['filter[value]'] = null;
+          break;
+        }
+        case 'Organizations': {
+          settings.user_groups = null;
+          break;
+        }
+        case 'Roles': {
+          settings.ability_user_ids = null;
+          break;
+        }
+        case 'Application': {
+            settings.dForm = {name: settings.dForm?.name, id: null};
+          break;
+        }
+      }
+    updateSettings(settings);
+  }
+
+  const checkDate = (date) => {
+    let checkDateData = activities.find(item => item.date === date)
+    if (checkDateData && checkDateData.hasOwnProperty('data')) {
+      for (let i = 0; i < checkDateData.data.length; ++i) {
+        if (checkDateData.data[i]?.options?.show_in_dashboard === 1) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  const getFirstCheckedDate = () => {
+    for (let i = 0; i < activities.length; ++i) {
+      if (checkDate(activities[i].date)) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+
   if (settings.state !== 'large') return null;
 
 
   return (
     <div>
-      {isFilterBoxOpen &&
-        <span ref={wrapperRefFilterBox}>
+      { <span ref={wrapperRefFilterBox}>
           <FilterBox
             setIsFilterBoxOpen={setIsFilterBoxOpen}
             dForms={dForms}
             updateSettings={updateSettings}
             settings={settings}
+            isApplication={settings.title === 'Applications'}
+            //removeFilterPart={removeFilterPart}
+            isFilterBoxOpen={isFilterBoxOpen}
+            filter={filter}
+            setFilter={setFilter}
           />
         </span>
       }
@@ -120,26 +173,48 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
             <div className={'action-date'} style={{position: 'relative', paddingLeft: 5}}>
                 {'Today'}
                   <span>
-                    {settings.title !== 'Activities' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                    {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
+                    {Object.keys(filter).map(key => {
+                      if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(filter[key]) && filter[key].length > 0) {
+                        return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                          {key === 'Application'
+                            ? <span className={'nav-text'}>{filter[key].length} {filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
+                            : <span className={'nav-text'}>{filter[key].length} {filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
+                      <span onClick={() => removeFilterPart(key)} className={'close-nav'}><CloseIcon/></span>
+                    </Button>
+                      }
+                    })}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>
                       <img src={ArrowUp}/>
                     </span>
                   </span>
               </div>
-          <h1 style={{padding: '5vh 5px'}}>No activities found</h1>
+          <div style={{textAlign: "center", paddingTop: 50}}>
+            <h1 style={{padding: '5vh 5px'}}>No activities found</h1>
+          </div>
           </span>
         : <Scrollbars style={{height: 350, width: Math.round(window.innerWidth * 0.43), fontsize: 'small'}}>
           {managers.length > 0 && activities.map((item, key) =>
             <div style={{paddingLeft: '5px'}}>
               <div className={'action-date'} style={{position: 'relative'}}>
-                {item.date}
-                {key === 0 &&
+                {checkDate(item.date) && item.date}
+                {key === getFirstCheckedDate() &&
                   <span>
-                    {settings.title !== 'Activities' && <span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                    {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
+                    {Object.keys(filter).map(key => {
+                     if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(filter[key]) && filter[key].length > 0) {
+                        return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                      {key === 'Application'
+                            ? <span className={'nav-text'}>{filter[key].length} {filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
+                            : <span className={'nav-text'}>{filter[key].length} {filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
+                      <span onClick={() => removeFilterPart(key)} className={'close-nav'}><CloseIcon/></span>
+                    </Button>
+                      }
+                    })}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>
                       <img src={ArrowUp}/>
                     </span>

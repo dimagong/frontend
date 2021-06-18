@@ -23,6 +23,7 @@ import {
   getFilterPathByID
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
+import moment from "moment";
 
 const userApi = {
   async getFilter() {
@@ -115,23 +116,33 @@ const userApi = {
     }
   },
   async getDashboardData(payload) {
-    let params = payload?.dForm
+    let params = payload?.dForm?.id
       ? {
         page: payload.page,
         'created_at[from]': payload.from,
-        app_ids: payload.dForm
+        app_ids: payload.dForm?.id
       }
       : {
         page: payload.page,
         'created_at[from]': payload.from,
       }
+    if (payload?.dForm?.name === 'Applications Snapshot') {
+      if (payload?.allApplications && payload?.settings?.dForm.id) {
+        params.app_ids = payload.settings.dForm.id;
+      } else {
+        params.app_ids = [];
+      }
+    }
+    ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
+      if (payload.settings && payload.settings[item]) {
+        params[item] = payload.settings[item];
+      }
+    })
     try {
       const result = await instance({
         url: `/api/user/application-dashboard?` + qs.stringify(params),
         method: "GET",
-        //params: params
       });
-      console.log('result', result)
       return result.data.data;
 
     } catch (err) {
@@ -139,19 +150,20 @@ const userApi = {
     }
   },
   async getDashboardActivity(payload) {
-    let params = payload?.from
-      ? {
+    let params = {
         page: payload.page,
         'created_at[from]': payload.from
+      };
+    ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
+      if (payload.settings[item]) {
+        params[item] = payload.settings[item];
       }
-      : {
-        page: payload.page,
-      }
+    })
     try {
       const result = await instance({
-        url: `/api/user/activities-dashboard`,
+        url: `/api/user/activities-dashboard?` + qs.stringify(params),
         method: "GET",
-        params: params
+        //params: params
       });
       return result.data.data;
 

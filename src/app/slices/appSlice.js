@@ -26,6 +26,8 @@ export const initialState = {
   surveys: [],
   folders: null,
   selectedSurvey: null,
+  surveyWorkFlowsAndReviewers: null,
+  selectedManagerAssignedSurveys: null,
   organizations: {
     selectedOrganizationIdAndType: {id: null, type: null},
     corporation: [],
@@ -53,7 +55,7 @@ export const initialState = {
     filters: [],
     searchText: '',
     dashboard: {
-      data: {},
+      data: [],
       settings: {},
     },
     activityTypes: [],

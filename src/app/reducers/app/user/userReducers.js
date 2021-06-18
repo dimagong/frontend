@@ -42,18 +42,27 @@ const getSettingsSuccess = (state, {payload}) => {
       value: dashboardSettings.value,
       id: dashboardSettings.id
     };
+    //migration to new data format
+    for (let i = 0; i < state.user.dashboard.settings.value.length; ++i) {
+      if (!state.user.dashboard.settings.value[i].hasOwnProperty('key')) {
+        state.user.dashboard.settings.value[i].key = i;
+      }
+    }
   } else {
     state.user.dashboard.settings = {
       value: [{
         daysNumber: 7,
         state: 'large',
         filter: null,
-        title: 'Activities'
+        title: 'Activities',
+        key: 0,
       },{
         daysNumber: 7,
         state: 'large',
         filter: null,
-        title: 'Application'
+        title: 'Applications',
+        dForm: null,
+        key: 1,
       }]
     }
   }
@@ -103,22 +112,39 @@ const updateActivitiesSuccess = (state, {payload}) => {
 const getDashboardDataSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
+  let currDataIndex = state?.user?.dashboard?.data?.length > 0
+    ? state?.user?.dashboard?.data.findIndex(item => item.key === payload.payload.key)
+    : -1;
+  let currData = currDataIndex === -1 ? {} : {...state?.user?.dashboard?.data[currDataIndex]}
 
   if (payload.payload.page === 1) {
-    state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
-    state.user.dashboard.data.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+    currData.userDFormActivities = payload.response.userDFormActivities;
+    currData.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+    currData.key = payload.payload.key;
+    if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
+    }
     return;
   }
 
-  if (state?.user?.dashboard?.data?.userDFormActivities && payload.response.userDFormActivities.current_page > state.user.dashboard.data.userDFormActivities.current_page) {
-    let newData = state.user.dashboard.data.userDFormActivities.data.concat(payload.response.userDFormActivities.data)
-    state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
-    state.user.dashboard.data.userDFormActivities.data = newData;
+  if (currData?.userDFormActivities && payload.response.userDFormActivities.current_page > currData.userDFormActivities.current_page) {
+    let newData = currData.userDFormActivities.data.concat(payload.response.userDFormActivities.data)
+    currData.userDFormActivities = payload.response.userDFormActivities;
+    currData.userDFormActivities.data = newData;
   } else {
-    if (!state?.user?.dashboard?.data?.userDFormActivities?.data?.length > 0) {
-     state.user.dashboard.data.userDFormActivities = payload.response.userDFormActivities;
-    }
-    state.user.dashboard.data.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+    //if (!currData?.userDFormActivities?.data?.length > 0) {
+     currData.userDFormActivities = payload.response.userDFormActivities;
+    //}
+    currData.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+  }
+
+  currData.key = payload.payload.key;
+  if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
   }
 }
 
@@ -131,16 +157,26 @@ const getDashboardDFormsSuccess = (state, {payload}) => {
 const getDashboardActivitySuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
+  let currDataIndex = state?.user?.dashboard?.data?.length > 0
+    ? state?.user?.dashboard?.data.findIndex(item => item.key === payload.payload.key)
+    : -1;
+  let currData = currDataIndex === -1 ? {} : {...state?.user?.dashboard?.data[currDataIndex]}
 
-  if (state?.user?.dashboard?.data?.usersActivities && payload.response.usersActivities.current_page > state.user.dashboard.data.usersActivities.current_page) {
-    let newData = state.user.dashboard.data.usersActivities.data.concat(payload.response.usersActivities.data)
-    state.user.dashboard.data.usersActivities = payload.response.usersActivities;
-    state.user.dashboard.data.usersActivities.data = newData;
+  if (currData?.usersActivities && payload.response.usersActivities.current_page > currData.usersActivities.current_page) {
+    let newData = currData.usersActivities.data.concat(payload.response.usersActivities.data)
+    currData.usersActivities = payload.response.usersActivities;
+    currData.usersActivities.data = newData;
   } else {
-    if (!state?.user?.dashboard?.data?.usersActivities?.data?.length > 0) {
-      state.user.dashboard.data.usersActivities = payload.response.usersActivities
-    }
-    state.user.dashboard.data.usersActivitiesSchedule = payload.response.usersActivitiesSchedule;
+    //if (!currData?.usersActivities?.data?.length > 0) {
+      currData.usersActivities = payload.response.usersActivities
+    //}
+    currData.usersActivitiesSchedule = payload.response.usersActivitiesSchedule;
+  }
+  currData.key = payload.payload.key;
+  if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
   }
 }
 
