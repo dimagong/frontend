@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react'
 import Chart from 'chart.js/auto';
 import {getChartConfig} from "./chartConfigs";
 import {getChartData} from "./chartData";
+import {useSelector} from "react-redux";
+import {selectDashboardDForms} from "../../../../../app/selectors/userSelectors";
 
 
 const LineChart = ({ settings, data, chartId, title}) => {
@@ -9,6 +11,7 @@ const LineChart = ({ settings, data, chartId, title}) => {
   let daysNumber = settings.daysNumber
   const [chartIsCreated, setChartIsCreated] = useState(false);
   const [currChart, setCurrChart] = useState(null);
+  const dashboardDForms = useSelector(selectDashboardDForms)
 
   const dataToShow = getChartData({
     data: {
@@ -16,7 +19,9 @@ const LineChart = ({ settings, data, chartId, title}) => {
       title: title,
       daysNumber: daysNumber,
       isSmall: isSmall,
-      dForm: settings.dForm?.name
+      dForm: settings.dForm?.name,
+      dFormIds: settings.dForm?.id,
+      dashboardDForms: dashboardDForms
     },
     type: title.toLowerCase()
   });

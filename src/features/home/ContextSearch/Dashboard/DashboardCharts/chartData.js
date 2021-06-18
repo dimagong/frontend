@@ -1,4 +1,6 @@
 import moment from "moment";
+import {useSelector} from "react-redux";
+import {selectDashboardDForms} from "../../../../../app/selectors/userSelectors";
 
 const colors = ['#d96f6f', '#add8e6', '#6FD98D', '#F0D46E', '#F5F535', '#35E7F5']
 
@@ -190,7 +192,7 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
       }
 };
 
-const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm}) => {
+const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm, dFormIds, dashboardDForms}) => {
   if (!data || daysNumber === -1) {
     return null;
   }
@@ -226,6 +228,32 @@ const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm})
       data: results[item],
     })
   })
+
+  let chosenDForms = [];
+  if (dFormIds && dashboardDForms) {
+    dFormIds.forEach(dForm => {
+      Object.keys(dashboardDForms).forEach(key => {
+        if (dashboardDForms[key].findIndex(item => item === dForm) !== -1) {
+          if (chosenDForms.findIndex(chosen => chosen.name === key) === -1) {
+            chosenDForms.push({name: key, id: dashboardDForms[key]})
+          }
+        }
+      })
+    });
+  }
+
+  chosenDForms.forEach(dForm => {
+    if (datasets.findIndex(set => set.label === dForm.name) === -1) {
+      datasets.push({
+      label: dForm.name,
+      borderColor: colors[(datasets.length + 1) % 6],
+      backgroundColor: colors[(datasets.length + 1) % 6],
+      radius: 0,
+      hoverRadius: 0,
+      data: [{x: 'approved', y: 0}, {x: 'in-progress', y: 0}, {x: 'rejected', y: 0}, {x: 'submitted', y: 0}],
+    });
+    }
+  });
 
   return {
         labels: ['approved', 'in-progress', "rejected", 'submitted'],
