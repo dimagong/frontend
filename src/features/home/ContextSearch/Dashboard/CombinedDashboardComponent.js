@@ -72,46 +72,9 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   }
 
   useEffect(() => {
-    let newFilter = {...filter}
-     let changed = false;
-     if (settings['filter[value]']) {
-       newFilter['Activity types'] = [];
-       settings['filter[value]'].forEach(item => newFilter['Activity types'].push(activityTypes.find(type => type.id === item)))
-     }
-     if (settings.user_groups) {
-       newFilter['Organizations'] = [];
-       settings.user_groups.forEach(item => newFilter['Organizations'].push(organizationsObjects.find(org =>
-         org.id === item.group_id && org.type === item.group_type.slice(4).toLowerCase())))
-     }
-     if (settings.ability_user_ids) {
-       newFilter['Roles'] = [];
-       settings.ability_user_ids.forEach(item => {
-         let roleToAdd = managers.find(manager => manager.id === item)?.permissions?.ability;
-         if (roleToAdd && newFilter['Roles'].findIndex(role => role.name === (roleToAdd.charAt(0).toUpperCase() + roleToAdd.slice(1)).replace('_', ' ')) === -1) {
-           newFilter['Roles'].push({name: (roleToAdd.charAt(0).toUpperCase() + roleToAdd.slice(1)).replace('_', ' ')})
-         }
-       })
-     }
-     if (settings.dForm) {
-       if (settings?.dForm?.name !== 'Applications Snapshot') {
-         newFilter.Application = [settings.dForm]
-       } else {
-          let chosenDForms = [];
-          if (settings.dForm?.id && dashboardDForms) {
-            settings.dForm.id.forEach(dform => {
-              Object.keys(dashboardDForms).forEach(key => {
-                if (dashboardDForms[key].findIndex(item => item === dform) !== -1) {
-                  if (chosenDForms.findIndex(chosen => chosen.name === key) === -1) {
-                    chosenDForms.push({name: key, id: dashboardDForms[key]})
-                  }
-                }
-              })
-            });
-          }
-          newFilter.Application = chosenDForms
-       }
-     }
-     setFilter(newFilter);
+    if (settings.filter) {
+      setFilter(JSON.parse(JSON.stringify(settings.filter)));
+    }
 
     if (chartType === 'Applications') {
         dispatch(getDashboardDataRequest({key: settings.key, page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), dForm: settings.dForm, allApplications: allApplications, settings: settings}))
