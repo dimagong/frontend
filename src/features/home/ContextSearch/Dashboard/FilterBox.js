@@ -118,12 +118,16 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
               if (item.name !== 'Applications Snapshot')  {
                 res = item.id.concat(res)
               }})
+            if (res.length === 0) {
+              res = null
+            }
             settings.dForm = {name: 'Applications Snapshot', id: res}
           }
 
         }
       }
     });
+    settings.filter = JSON.parse(JSON.stringify(filter));
     updateSettings(settings);
     setIsFilterBoxOpen(false);
   }
