@@ -12,7 +12,7 @@ const FilterOptionsDashboard = ({ currTab, list, filter, setFilter, isSnapshot }
         newFilter[currTab] = [option]
       }
       else {
-        newFilter[currTab].push(option)
+        newFilter[currTab] = [...newFilter[currTab], option]
       }
     } else {
       newFilter[currTab] = newFilter[currTab].filter(item => item.name !== option.name)

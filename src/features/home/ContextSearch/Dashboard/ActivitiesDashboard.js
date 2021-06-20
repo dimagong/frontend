@@ -32,7 +32,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
   const managers = useSelector(selectManagers);
   const activityTypes = useSelector(selectActivityTypes);
   const wrapperRefFilterBox = useRef(null);
-  //useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (isFilterBoxOpen) setIsFilterBoxOpen(false)});
+  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (isFilterBoxOpen) setIsFilterBoxOpen(false)});
 
 
   let activities = []
@@ -124,6 +124,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
           break;
         }
       }
+    settings.filter = JSON.parse(JSON.stringify(newFilter));
     updateSettings(settings);
   }
 
@@ -161,7 +162,6 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
             updateSettings={updateSettings}
             settings={settings}
             isApplication={settings.title === 'Applications'}
-            //removeFilterPart={removeFilterPart}
             isFilterBoxOpen={isFilterBoxOpen}
             filter={filter}
             setFilter={setFilter}
@@ -176,12 +176,12 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                     {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
-                    {Object.keys(filter).map(key => {
-                      if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(filter[key]) && filter[key].length > 0) {
+                    {settings.filter && Object.keys(settings.filter).map(key => {
+                      if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(settings.filter[key]) && settings.filter[key].length > 0) {
                         return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
                           {key === 'Application'
-                            ? <span className={'nav-text'}>{filter[key].length} {filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
-                            : <span className={'nav-text'}>{filter[key].length} {filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
+                            ? <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
+                            : <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
                       <span onClick={() => removeFilterPart(key)} className={'close-nav'}><CloseIcon/></span>
                     </Button>
                       }
@@ -205,12 +205,12 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                     {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
-                    {Object.keys(filter).map(key => {
-                     if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(filter[key]) && filter[key].length > 0) {
+                    {settings.filter && Object.keys(settings.filter).map(key => {
+                     if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(settings.filter[key]) && settings.filter[key].length > 0) {
                         return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
                       {key === 'Application'
-                            ? <span className={'nav-text'}>{filter[key].length} {filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
-                            : <span className={'nav-text'}>{filter[key].length} {filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
+                            ? <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
+                            : <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
                       <span onClick={() => removeFilterPart(key)} className={'close-nav'}><CloseIcon/></span>
                     </Button>
                       }

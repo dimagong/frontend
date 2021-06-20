@@ -50,7 +50,7 @@ const LineChart = ({ settings, data, chartId, title}) => {
   }, [data]);
 
   useEffect(() => {
-    if (currChart) {
+    if (currChart && data) {
       currChart.destroy()
       let myChart = new Chart(
         document.getElementById(chartId),
@@ -58,7 +58,7 @@ const LineChart = ({ settings, data, chartId, title}) => {
       );
       setCurrChart(myChart)
     }
-  }, [data, settings])
+  }, [data, settings.state])
 
   return ( <div style={{width: '100%', height: "auto", position: 'relative', zIndex: 10}}>
     <canvas

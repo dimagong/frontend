@@ -124,6 +124,7 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
         }
       }
     });
+    settings.filter = JSON.parse(JSON.stringify(filter));
     updateSettings(settings);
     setIsFilterBoxOpen(false);
   }
