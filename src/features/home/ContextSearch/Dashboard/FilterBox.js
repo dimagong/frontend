@@ -9,12 +9,12 @@ import {useSelector} from "react-redux";
 import {selectOrganizations} from "app/selectors/groupSelector";
 import {selectActivityTypes, selectDashboardDForms, selectManagers} from "app/selectors/userSelectors";
 
-const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen, isApplication, removeFilterPart, isFilterBoxOpen}) => {
+const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen, isApplication, removeFilterPart, isFilterBoxOpen, filter, setFilter}) => {
   let roles = ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Network manager', 'Member', 'Lead'].map(item => {return {name: item}})
   const [selectedOption, setSelectedOption] = useState('managers');
   const [selectValue, setSelectValue] = useState({active: false, label: ''});
   const [selectedDForm, setSelectDForm] = useState('');
-  const [filter, setFilter] = useState({Roles: [], Organizations: [], 'Activity types': [], Application: []})
+  //const [filter, setFilter] = useState({Roles: [], Organizations: [], 'Activity types': [], Application: []})
   const [currTab, setCurrTab] = useState(isApplication ? 'Application': 'Activity types');
   const organizationsObjects = useSelector(selectOrganizations);
   const activityTypes = useSelector(selectActivityTypes);
@@ -118,82 +118,19 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
               if (item.name !== 'Applications Snapshot')  {
                 res = item.id.concat(res)
               }})
+            if (res.length === 0) {
+              res = null
+            }
             settings.dForm = {name: 'Applications Snapshot', id: res}
           }
 
         }
       }
     });
+    settings.filter = JSON.parse(JSON.stringify(filter));
     updateSettings(settings);
     setIsFilterBoxOpen(false);
   }
-
-   useEffect(() => {
-     let newFilter = {...filter}
-     if (settings['filter[value]']) {
-       newFilter['Activity types'] = [];
-       settings['filter[value]'].forEach(item => newFilter['Activity types'].push(activityTypes.find(type => type.id === item)))
-     }
-     if (settings.user_groups) {
-       newFilter['Organizations'] = [];
-       settings.user_groups.forEach(item => newFilter['Organizations'].push(organizationsObjects.find(org =>
-         org.id === item.group_id && org.type === item.group_type.slice(4).toLowerCase())))
-     }
-     if (settings.ability_user_ids) {
-       newFilter['Roles'] = [];
-       settings.ability_user_ids.forEach(item => {
-         let roleToAdd = managers.find(manager => manager.id === item)?.permissions?.ability;
-         if (roleToAdd && newFilter['Roles'].findIndex(role => role.name === (roleToAdd.charAt(0).toUpperCase() + roleToAdd.slice(1)).replace('_', ' ')) === -1) {
-           newFilter['Roles'].push({name: (roleToAdd.charAt(0).toUpperCase() + roleToAdd.slice(1)).replace('_', ' ')})
-         }
-       })
-     }
-     if (settings.dForm) {
-       if (settings?.dForm?.name !== 'Applications Snapshot') {
-         newFilter.Application = [settings.dForm]
-       } else {
-          let chosenDForms = [];
-          if (settings.dForm?.id && dashboardDForms) {
-            settings.dForm.id.forEach(dform => {
-              Object.keys(dashboardDForms).forEach(key => {
-                if (dashboardDForms[key].findIndex(item => item === dform) !== -1) {
-                  if (chosenDForms.findIndex(chosen => chosen.name === key) === -1) {
-                    chosenDForms.push({name: key, id: dashboardDForms[key]})
-                  }
-                }
-              })
-            });
-          }
-          newFilter.Application = chosenDForms
-       }
-     }
-     setFilter(newFilter);
-
-  }, [settings]);
-
-  useEffect(() => {
-    if (removeFilterPart) {
-      switch (removeFilterPart) {
-        case 'Activity types': {
-          settings['filter[type]'] = null;
-          settings['filter[value]'] = null;
-          break;
-        }
-        case 'Organizations': {
-          settings.user_groups = null;
-          break;
-        }
-        case 'Roles': {
-          settings.ability_user_ids = null;
-          break;
-        }
-      }
-      let newFilter = {...filter}
-        newFilter[removeFilterPart] = []
-        setFilter(newFilter);
-      updateSettings(settings);
-    }
-  }, [removeFilterPart]);
 
   const options = [];
   if (dForms) {
@@ -228,25 +165,26 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
                           && <Select
                               className="basic-single"
                               classNamePrefix="select"
-                              isClearable
                               isSearchable
                               name="Choose application"
                               options={dForms ? options : []}
                               onChange={handleChange}
                               styles={selectStyles}
+                              value={(isApplication && settings?.dForm?.name !== 'Applications Snapshot')
+                                ? filter['Application'].length > 0 ?{label: filter['Application'][0].name} : undefined
+                                : {label: settings.dForm.name}}
                               placeholder={'Choose application'}
                             />}
                         {currTab === 'Activity types'
                           && <Select
                               className="basic-single"
                               classNamePrefix="select"
-                              isClearable
                               isSearchable
                               name="Choose activity type"
                               options={activityTypes ? activityTypes.map(item => {return {label: item.name, value: item}}) : []}
                               onChange={handleChange}
                               styles={selectStyles}
-                              value={filter['Activity types'].length > 0 ? undefined : undefined}
+                              value={{label: 'Choose activity type'}}
                               placeholder={'Choose activity type'}
                             />}
                           <FilterOptionsDashboard

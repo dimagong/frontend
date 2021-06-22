@@ -31,10 +31,8 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
   const isLoadingData = useSelector(selectLoading);
   const managers = useSelector(selectManagers);
   const activityTypes = useSelector(selectActivityTypes);
-
-  const [removeFilterPart, setRemoveFilterPart] = useState('');
   const wrapperRefFilterBox = useRef(null);
-  //useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (isFilterBoxOpen) setIsFilterBoxOpen(false)});
+  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (isFilterBoxOpen) setIsFilterBoxOpen(false)});
 
 
   let activities = []
@@ -103,6 +101,55 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
     dispatch(setContext('User'));
   }
 
+  const removeFilterPart = (key) => {
+    let newFilter = {...filter}
+    newFilter[key] = []
+    setFilter(newFilter);
+    switch (key) {
+        case 'Activity types': {
+          settings['filter[type]'] = null;
+          settings['filter[value]'] = null;
+          break;
+        }
+        case 'Organizations': {
+          settings.user_groups = null;
+          break;
+        }
+        case 'Roles': {
+          settings.ability_user_ids = null;
+          break;
+        }
+        case 'Application': {
+            settings.dForm = {name: settings.dForm?.name, id: null};
+          break;
+        }
+      }
+    settings.filter = JSON.parse(JSON.stringify(newFilter));
+    updateSettings(settings);
+  }
+
+  const checkDate = (date) => {
+    let checkDateData = activities.find(item => item.date === date)
+    if (checkDateData && checkDateData.hasOwnProperty('data')) {
+      for (let i = 0; i < checkDateData.data.length; ++i) {
+        if (checkDateData.data[i]?.options?.show_in_dashboard === 1) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  const getFirstCheckedDate = () => {
+    for (let i = 0; i < activities.length; ++i) {
+      if (checkDate(activities[i].date)) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+
   if (settings.state !== 'large') return null;
 
 
@@ -115,8 +162,9 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
             updateSettings={updateSettings}
             settings={settings}
             isApplication={settings.title === 'Applications'}
-            removeFilterPart={removeFilterPart}
             isFilterBoxOpen={isFilterBoxOpen}
+            filter={filter}
+            setFilter={setFilter}
           />
         </span>
       }
@@ -128,47 +176,45 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                     {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
-                    {settings['filter[value]'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
-                      <span className={'nav-text'}>Activity types</span>
-                      <span onClick={() => setRemoveFilterPart('Activity types')} className={'close-nav'}><CloseIcon/></span>
-                    </Button>}
-                    {settings['user_groups'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
-                      <span className={'nav-text'}>Organizations</span>
-                      <span onClick={() => setRemoveFilterPart('Organizations')} className={'close-nav'}><CloseIcon/></span>
-                    </Button>}
-                    {settings['ability_user_ids'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
-                      <span className={'nav-text'}>Roles</span>
-                      <span onClick={() => setRemoveFilterPart('Roles')} className={'close-nav'}><CloseIcon/></span>
-                    </Button>}
+                    {settings.filter && Object.keys(settings.filter).map(key => {
+                      if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(settings.filter[key]) && settings.filter[key].length > 0) {
+                        return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                          {key === 'Application'
+                            ? <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
+                            : <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
+                      <span onClick={() => removeFilterPart(key)} className={'close-nav'}><CloseIcon/></span>
+                    </Button>
+                      }
+                    })}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>
                       <img src={ArrowUp}/>
                     </span>
                   </span>
               </div>
-          <h1 style={{padding: '5vh 5px'}}>No activities found</h1>
+          <div style={{textAlign: "center", paddingTop: 50}}>
+            <h1 style={{padding: '5vh 5px'}}>No activities found</h1>
+          </div>
           </span>
         : <Scrollbars style={{height: 350, width: Math.round(window.innerWidth * 0.43), fontsize: 'small'}}>
           {managers.length > 0 && activities.map((item, key) =>
             <div style={{paddingLeft: '5px'}}>
               <div className={'action-date'} style={{position: 'relative'}}>
-                {item.date}
-                {key === 0 &&
+                {checkDate(item.date) && item.date}
+                {key === getFirstCheckedDate() &&
                   <span>
                     {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
-                    {settings['filter[value]'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
-                      <span className={'nav-text'}>Activity types</span>
-                      <span onClick={() => setRemoveFilterPart('Activity types')} className={'close-nav'}><CloseIcon/></span>
-                    </Button>}
-                    {settings['user_groups'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
-                      <span className={'nav-text'}>Organizations</span>
-                      <span onClick={() => setRemoveFilterPart('Organizations')} className={'close-nav'}><CloseIcon/></span>
-                    </Button>}
-                    {settings['ability_user_ids'] && <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
-                      <span className={'nav-text'}>Roles</span>
-                      <span onClick={() => setRemoveFilterPart('Roles')} className={'close-nav'}><CloseIcon/></span>
-                    </Button>}
+                    {settings.filter && Object.keys(settings.filter).map(key => {
+                     if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(settings.filter[key]) && settings.filter[key].length > 0) {
+                        return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                      {key === 'Application'
+                            ? <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
+                            : <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
+                      <span onClick={() => removeFilterPart(key)} className={'close-nav'}><CloseIcon/></span>
+                    </Button>
+                      }
+                    })}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>
                       <img src={ArrowUp}/>
                     </span>
