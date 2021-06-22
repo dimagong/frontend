@@ -17,6 +17,10 @@ import {
   getSurveyWorkFlowsAndReviewersUrl,
   assignSurvey,
   getAssignedSurveysGetUrl,
+  getAssignedSurveysForOnboarding,
+  getBeginSurveyUrl,
+  getCurrentQuestionForAssignedSurveyUrl,
+  getSurveyAnswerPushUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -83,6 +87,22 @@ const surveysApi = {
   async getAssignedSurveys({ payload }) {
     return await requestLayout(getAssignedSurveysGetUrl(payload), "GET")
   },
+
+  async getAssignedSurveysForOnboarding() {
+    return await requestLayout(getAssignedSurveysForOnboarding, "GET")
+  },
+
+  async getCurrentQuestionForAssignedSurvey({ payload }) {
+    return await requestLayout(getCurrentQuestionForAssignedSurveyUrl(payload), "GET")
+  },
+
+  async beginSurvey({ payload }) {
+    return await requestLayout(getBeginSurveyUrl(payload), "GET")
+  },
+
+  async pushSurveyQuestionAnswer({ payload }) {
+    return await requestLayout(getSurveyAnswerPushUrl(payload.surveyId), "PUT", payload.data)
+  }
 
 };
 

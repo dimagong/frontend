@@ -86,6 +86,22 @@ const {
   getAssignedSurveysSuccess,
   getAssignedSurveysRequest,
   getAssignedSurveysError,
+
+  getAssignedSurveysForOnboardingSuccess,
+  getAssignedSurveysForOnboardingRequest,
+  getAssignedSurveysForOnboardingError,
+
+  getCurrentQuestionForAssignedSurveySuccess,
+  getCurrentQuestionForAssignedSurveyRequest,
+  getCurrentQuestionForAssignedSurveyError,
+
+  beginSurveySuccess,
+  beginSurveyRequest,
+  beginSurveyError,
+
+  pushAnswerSuccess,
+  pushAnswerRequest,
+  pushAnswerError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -296,6 +312,50 @@ function* getAssignedSurveys(payload) {
   }
 }
 
+function* getAssignedSurveysForOnboarding() {
+  const response = yield call(surveysApi.getAssignedSurveysForOnboarding);
+
+  if (response?.message) {
+    yield put(getAssignedSurveysForOnboardingError(response.message));
+  } else {
+    yield put(getAssignedSurveysForOnboardingSuccess(response))
+  }
+}
+
+function* getCurrentQuestionForAssignedSurvey(payload) {
+  const response = yield call(surveysApi.getCurrentQuestionForAssignedSurvey, payload);
+
+  if (response?.message) {
+    yield put(getCurrentQuestionForAssignedSurveyError(response.message))
+  } else {
+    yield put(getCurrentQuestionForAssignedSurveySuccess(response))
+  }
+}
+
+function* beginSurvey(payload) {
+  const response = yield call(surveysApi.beginSurvey, payload);
+
+  if (response?.message) {
+    yield put(beginSurveyError(response.message))
+  } else {
+
+    yield put(getCurrentQuestionForAssignedSurveyRequest(payload.payload));
+
+    yield put(beginSurveySuccess(response))
+  }
+}
+
+function* pushAnswer(payload) {
+  const response = yield call(surveysApi.pushSurveyQuestionAnswer, payload);
+
+  if (response?.message) {
+    yield put(pushAnswerError(response.message))
+  } else {
+    yield put(getCurrentQuestionForAssignedSurveyRequest(payload.payload.surveyId));
+    yield put(pushAnswerSuccess())
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -318,5 +378,9 @@ export default function* () {
     yield takeLatest(getSurveyWorkFlowsAndReviewersRequest.type, getSurveyWorkFlowsAndReviewers),
     yield takeLatest(assignSurveyRequest.type, assignSurvey),
     yield takeLatest(getAssignedSurveysRequest.type, getAssignedSurveys),
+    yield takeLatest(getAssignedSurveysForOnboardingRequest.type, getAssignedSurveysForOnboarding),
+    yield takeLatest(getCurrentQuestionForAssignedSurveyRequest.type, getCurrentQuestionForAssignedSurvey),
+    yield takeLatest(beginSurveyRequest.type, beginSurvey),
+    yield takeLatest(pushAnswerRequest.type, pushAnswer),
   ]);
 }

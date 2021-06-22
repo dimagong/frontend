@@ -14,3 +14,7 @@ export const getSurveyVersionDeleteUrl = (versionId) => `api/survey-interaction-
 export const getSurveyWorkFlowsAndReviewersUrl = 'api/survey-assigned-interaction/relations';
 export const assignSurvey = `api/survey-assigned-interaction`;
 export const getAssignedSurveysGetUrl = (userId) => `api/survey-assigned-interaction/${userId}`;
+export const getAssignedSurveysForOnboarding = 'api/survey-passing';
+export const getBeginSurveyUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId}/begin`;
+export const getCurrentQuestionForAssignedSurveyUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId}/current-question`;
+export const getSurveyAnswerPushUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId} `;
