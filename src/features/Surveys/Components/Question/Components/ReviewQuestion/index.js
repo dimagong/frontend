@@ -1,6 +1,4 @@
 import React from 'react';
-
-import { CheckCircle } from 'react-feather';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 
 const MultipleChoice = ({ options, correctAnswerId }) => {
@@ -59,9 +57,6 @@ const ReviewQuestion = ({
     <div className={`question question-${displayType}`}>
       <div className={"question-title"}>
         {`Question ${questionNumber}`}
-      </div>
-      <div className={`question-added-icon`}>
-        <CheckCircle />
       </div>
       <div className={"question-description"}>
         {body}
