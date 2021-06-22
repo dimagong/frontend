@@ -200,7 +200,7 @@ const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm, 
   let results = {};
   if (currData)
     Object.keys(currData).forEach(application => {
-      let currInfo = {'approved': 0, 'in-progress': 0, "rejected": 0, 'submitted': 0,};
+      let currInfo = {'in-progress': 0, 'submitted': 0, 'approved': 0,  "rejected": 0};
       Object.values(currData[application]).forEach(item => {
         Object.keys(item).forEach(key => {
           if (key === 'unsubmitted') {
@@ -255,13 +255,13 @@ const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm, 
       backgroundColor: colors[(datasets.length + 1) % 6],
       radius: 0,
       hoverRadius: 0,
-      data: [{x: 'approved', y: 0}, {x: 'in-progress', y: 0}, {x: 'rejected', y: 0}, {x: 'submitted', y: 0}],
+      data: [{x: 'in-progress', y: 0}, {x: 'submitted', y: 0}, {x: 'approved', y: 0},  {x: 'rejected', y: 0}],
     });
     }
   });
 
   return {
-        labels: ['approved', 'in-progress', "rejected", 'submitted'],
+        labels: ['in-progress', 'submitted', 'approved', "rejected"],
         datasets: datasets
       }
 }

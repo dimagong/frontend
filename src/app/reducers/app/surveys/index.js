@@ -272,6 +272,47 @@ const surveysReducer = {
     state.selectedManagerAssignedSurveys = payload;
     state.isLoading = false;
     state.error = null;
+  },
+
+  getAssignedSurveysForOnboardingSuccess: (state, { payload }) => {
+    state.onboardingSurveys = payload;
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  getCurrentQuestionForAssignedSurveySuccess: (state, { payload }) => {
+    state.user.profile.onboarding = { ...state.user.profile.onboarding, ...payload };
+
+    //** todo handle when backend will be updated
+    if (payload?.status === "done") {
+      const currentSurveyId = state.user.profile.onboarding.id;
+
+      const surveyIndex = state.onboardingSurveys.findIndex((survey) => survey.id === currentSurveyId);
+
+      state.onboardingSurveys[surveyIndex] = {...state.onboardingSurveys[surveyIndex], finished_at: "something"};
+
+    }
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  beginSurveySuccess: (state) => {
+    //** TODO fix that ****
+    const currentSurveyId = state.user.profile.onboarding.id;
+
+    const surveyIndex = state.onboardingSurveys.findIndex((survey) => survey.id === currentSurveyId);
+
+    state.onboardingSurveys[surveyIndex] = {...state.onboardingSurveys[surveyIndex], started_at: "something"};
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  pushAnswerSuccess: (state) => {
+    state.isLoading = false;
+    state.error = null;
   }
 
 };
