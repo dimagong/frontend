@@ -353,6 +353,14 @@ const OnboardingUser = () => {
   if (isOnboarding()) {
     userApplications = [...(profile?.onboardings || []), ...(onboardingSurveys || [])];
 
+    // Onboardings and surveys may have Id collisions, we add tabId property to prevent bugs
+    userApplications = userApplications.map((application) => {
+      return {
+        ...application,
+        tabId: `${application.id} ${application.d_form ? "onboarding" : "survey"}`
+      };
+    });
+
     userApplications = userApplications.sort((a, b) => {
       const firstArg = a?.d_form?.name || a.title;
       const secondArg = b?.d_form?.name || b.title;
@@ -360,6 +368,15 @@ const OnboardingUser = () => {
       return firstArg.localeCompare(secondArg);
     });
   }
+
+  const getActiveTab = () => {
+    const availableApplicaiton = profile?.onboarding || profile.onboardings[0];
+    if (availableApplicaiton.d_form) {
+      return availableApplicaiton.id + " onboarding"
+    } else {
+      return availableApplicaiton.id + " survey"
+    }
+  };
 
   return (
     <div>
@@ -373,9 +390,9 @@ const OnboardingUser = () => {
                     <div style={{marginBottom: "20px", marginLeft: "100px", marginRight: "100px"}}>
                       <TabsArrayOfObjects
                         withIcons
-                        tabId="id"
+                        tabId="tabId"
                         tabName={(application) => application?.d_form?.name || application.title}
-                        active={profile?.onboarding?.id || profile.onboardings[0].id} // TODO** handle set of active application
+                        active={getActiveTab()} // TODO** handle set of active application
                         tabs={formatTabs(userApplications)}
                         onChange={(application) => {
                           handleNavClick(application)
@@ -392,14 +409,14 @@ const OnboardingUser = () => {
                   <CardBody className="pt-0 pl-0">
 
                     {
-                      profile && profile.onboardings && profile.onboardings.length ?
+                      profile && userApplications && userApplications.length ?
 
-                        <TabContent activeTab={profile.onboarding?.id}>
+                        <TabContent activeTab={getActiveTab()}>
                           {
                             userApplications.map((application, index) => {
                               if (application.d_form) {
                                 return (
-                                  <TabPane key={index} tabId={application.id}>
+                                  <TabPane key={index} tabId={application.tabId}>
                                     <div style={{marginLeft: "-100px", marginRight: "100px"}}>
                                       {
                                         !isEmpty(application)
@@ -443,7 +460,7 @@ const OnboardingUser = () => {
                                 );
                               } else {
                                 return (
-                                  <TabPane key={index} tabId={application.id}>
+                                  <TabPane key={index} tabId={application.tabId}>
                                     {application.id === profile.onboarding.id && (
                                       application.finished_at ? (
                                         renderSurveyStatus(application)
