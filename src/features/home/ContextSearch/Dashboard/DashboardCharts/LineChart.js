@@ -58,7 +58,7 @@ const LineChart = ({ settings, data, chartId, title}) => {
       );
       setCurrChart(myChart)
     }
-  }, [data, settings.state])
+  }, [data, settings.state, settings?.dForm])
 
   return ( <div style={{width: '100%', height: "auto", position: 'relative', zIndex: 10}}>
     <canvas

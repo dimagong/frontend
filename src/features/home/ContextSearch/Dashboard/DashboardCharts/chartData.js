@@ -193,29 +193,24 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
 };
 
 const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm, dFormIds, dashboardDForms}) => {
+  if (!dFormIds) {
+    return {
+        labels: ['in-progress', 'submitted', 'approved', "rejected"],
+        datasets: []
+      }
+  }
   if (!data || daysNumber === -1) {
     return null;
   }
-  let currData = data[moment().format('YYYY-MM-DD')];
   let results = {};
-  if (currData)
-    Object.keys(currData).forEach(application => {
-      let currInfo = {'in-progress': 0, 'submitted': 0, 'approved': 0,  "rejected": 0};
-      Object.values(currData[application]).forEach(item => {
-        Object.keys(item).forEach(key => {
-          if (key === 'unsubmitted') {
-            currInfo['in-progress'] += item[key];
-          } else {
-            currInfo[key] += item[key];
-          }
-          let parsedInfo = []
-        })
-      })
-
-      let parsedInfo = [];
-      Object.keys(currInfo).forEach(item => parsedInfo.push({x: item, y: currInfo[item]}))
-      results[application] = parsedInfo;
-  });
+  if (data) {
+    data.forEach(application => {
+      if (!results[application.name]) {
+         results[application.name] = {'in-progress': 0, 'submitted': 0, 'approved': 0,  "rejected": 0};
+      }
+      ++results[application.name][application.status === 'unsubmitted' ? 'in-progress' : application.status];
+    })
+  }
 
 
   let datasets = []

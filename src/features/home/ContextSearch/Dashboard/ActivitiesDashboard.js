@@ -22,6 +22,7 @@ const dateFormat = 'DD/MM/YYYY';
 const {
   getDashboardDataRequest,
   getDashboardActivityRequest,
+  getDashboardSnapshotDataRequest,
   setManager,
   setContext,
 } = appSlice.actions;
@@ -65,7 +66,11 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
 
   const loadMoreData = () => {
     if (settings.title === 'Activities') {
-      dispatch(getDashboardActivityRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
+      if (settings?.dForm?.name === 'Applications Snapshot') {
+        dispatch(getDashboardSnapshotDataRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
+      } else {
+        dispatch(getDashboardActivityRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
+      }
     } else {
       dispatch(getDashboardDataRequest({key: settings.key, page: usersActivities.current_page + 1, dForm: settings?.dForm?.id, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
     }

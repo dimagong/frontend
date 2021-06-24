@@ -99,6 +99,9 @@ const {
   getDashboardDFormsRequest,
   getDashboardDFormsSuccess,
 
+  getDashboardSnapshotDataRequest,
+  getDashboardSnapshotDataSuccess,
+
   getUserOnboardingRequest
 } = appSlice.actions;
 
@@ -152,8 +155,18 @@ function* updateActivities({payload}) {
 }
 
 function* getDashboardData({payload}) {
-  const response = yield call(userApi.getDashboardData, payload);
+  const response = yield call(userApi.getDashboardData, payload, '/api/user/application-dashboard');
   yield put(getDashboardDataSuccess({response: response, payload: payload}));
+}
+
+function* getDashboardSnapshotData({payload}) {
+  const responseChartData = yield call(userApi.getDashboardData, payload, '/api/user/activity-current-state');
+  const responseActivityList = yield call(userApi.getDashboardData, payload, '/api/user/application-dashboard');
+  yield put(getDashboardSnapshotDataSuccess({response: {
+      userDFormActivities: responseActivityList?.userDFormActivities,
+      userDFormActivitiesSchedule: responseChartData?.userDFormCurrentStateSchedule?.data
+    }, payload: payload}));
+
 }
 
 function* getDashboardActivity({payload}) {
@@ -370,6 +383,7 @@ export default function* () {
     yield takeLatest(getActivitiesRequest.type, getActivities),
     yield takeLatest(updateActivitiesRequest.type, updateActivities),
     yield takeEvery(getDashboardDataRequest.type, getDashboardData),
+    yield takeEvery(getDashboardSnapshotDataRequest.type, getDashboardSnapshotData),
     yield takeEvery(getDashboardActivityRequest.type, getDashboardActivity),
     yield takeLatest(getActivityTypesRequest.type, getActivityTypes),
     yield takeLatest(getDashboardDFormsRequest.type, getDashboardDForms),
