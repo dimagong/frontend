@@ -205,7 +205,7 @@ const configApplicationSnapshotChart = ({dataToShow, isSmall, title, daysNumber,
   }
 
   return {
-    type: 'line',
+    type: 'bar',
     data: dataToShow,
     options: {
       animated: true,
@@ -246,6 +246,7 @@ const configApplicationSnapshotChart = ({dataToShow, isSmall, title, daysNumber,
       scales: {
         x: {
           type: 'category',
+          stacked: true,
          // ticks: {
             //callback: getTicks,
             //align: 'end',
@@ -255,6 +256,7 @@ const configApplicationSnapshotChart = ({dataToShow, isSmall, title, daysNumber,
           }
         },
         y: {
+          stacked: true,
           ticks: {
             stepSize: title === 'Applications' ? undefined : 2
           },
