@@ -20,7 +20,8 @@ import {selectOrganizations} from "../../../../app/selectors/groupSelector";
 
 const {
   getDashboardDataRequest,
-  getDashboardActivityRequest
+  getDashboardActivityRequest,
+  getDashboardSnapshotDataRequest
 } = appSlice.actions;
 
 const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, deleteComponent, dForms, allApplications }) => {
@@ -77,9 +78,31 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     }
 
     if (chartType === 'Applications') {
-        dispatch(getDashboardDataRequest({key: settings.key, page: 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), dForm: settings.dForm, allApplications: allApplications, settings: settings}))
+        if (settings.dForm?.name === 'Applications Snapshot') {
+          dispatch(getDashboardSnapshotDataRequest({
+            key: settings.key,
+            page: 1,
+            'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'),
+            dForm: settings.dForm,
+            allApplications: allApplications,
+            settings: settings
+          }))
+        } else {
+          dispatch(getDashboardDataRequest({
+            key: settings.key,
+            page: 1,
+            'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'),
+            dForm: settings.dForm,
+            allApplications: allApplications,
+            settings: settings
+          }))
+        }
       } else {
-        dispatch(getDashboardActivityRequest({key: settings.key, page: 1,'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
+        dispatch(getDashboardActivityRequest({
+          key: settings.key,
+          page: 1,
+          'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'),
+          settings: settings}))
       }
   }, [settings.daysNumber, settings['filter[value]'], settings.dForm, settings.user_groups, settings.ability_user_ids, dashboardDForms, managers]);
 

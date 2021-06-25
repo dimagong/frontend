@@ -148,6 +148,45 @@ const getDashboardDataSuccess = (state, {payload}) => {
   }
 }
 
+const getDashboardSnapshotDataSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  let currDataIndex = state?.user?.dashboard?.data?.length > 0
+    ? state?.user?.dashboard?.data.findIndex(item => item.key === payload.payload.key)
+    : -1;
+  let currData = currDataIndex === -1 ? {} : {...state?.user?.dashboard?.data[currDataIndex]}
+
+  if (payload.payload.page === 1) {
+    currData.userDFormActivities = payload.response.userDFormActivities;
+    currData.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule ? payload.response.userDFormActivitiesSchedule : [];
+    currData.key = payload.payload.key;
+    if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
+    }
+    return;
+  }
+
+  if (currData?.userDFormActivities && payload.response.userDFormActivities.current_page > currData.userDFormActivities.current_page) {
+    let newData = currData.userDFormActivities.data.concat(payload.response.userDFormActivities.data)
+    currData.userDFormActivities = payload.response.userDFormActivities;
+    currData.userDFormActivities.data = newData;
+  } else {
+    //if (!currData?.userDFormActivities?.data?.length > 0) {
+     currData.userDFormActivities = payload.response.userDFormActivities;
+    //}
+    currData.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+  }
+
+  currData.key = payload.payload.key;
+  if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
+  }
+}
+
 const getDashboardDFormsSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
@@ -540,6 +579,7 @@ export default {
   postSettingsSuccess,
   patchSettingsSuccess,
   getDashboardDFormsSuccess,
+  getDashboardSnapshotDataSuccess,
 
   setUser,
   setManager,
