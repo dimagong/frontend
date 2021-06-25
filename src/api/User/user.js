@@ -115,7 +115,7 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async getDashboardData(payload) {
+  async getDashboardData(payload, path) {
     let params = payload?.dForm?.id
       ? {
         page: payload.page,
@@ -140,7 +140,7 @@ const userApi = {
     })
     try {
       const result = await instance({
-        url: `/api/user/application-dashboard?` + qs.stringify(params),
+        url: `${path}?` + qs.stringify(params),
         method: "GET",
       });
       return result.data.data;
