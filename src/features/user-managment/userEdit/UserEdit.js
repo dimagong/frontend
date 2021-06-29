@@ -396,7 +396,7 @@ const UserEdit = (props, context) => {
               )
           ),
           'surveyCreate': <SurveyAssign userId={manager.id} />,
-          'assignedSurvey': <AssignedSurvey surveyData={selectedAssignedSurvey} />
+          'assignedSurvey': <AssignedSurvey selectedSurveyId={selectedAssignedSurvey?.id} />
         }[contextFeature]}
 
 
