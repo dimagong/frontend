@@ -3,6 +3,7 @@ import React from 'react';
 import DesignerQuestion from "./Components/DesignerQuestion";
 import ReviewQuestion from "./Components/ReviewQuestion";
 import OnboardingQuestion from './Components/OnboardingQuestion';
+import GradingQuestion from "./Components/GradingQuestion";
 
 import './styles.scss'
 
@@ -18,6 +19,10 @@ const Question = ({
   handleRemoveQuestionFromSurvey,
   onAnswerChange,
   selectedAnswer,
+  answer,
+  onGradingAnswerSave,
+  onFinishButtonDisableStateChange,
+  isGradingReview,
 }) => {
 
   const commonProps = {
@@ -37,7 +42,16 @@ const Question = ({
                   onRemove={handleRemoveQuestionFromSurvey}
                 />,
     "review": <ReviewQuestion {...commonProps} />,
-    "onboarding": <OnboardingQuestion {...commonProps} onAnswerChange={onAnswerChange} answer={selectedAnswer} />
+    "onboarding": <OnboardingQuestion {...commonProps} onAnswerChange={onAnswerChange} answer={selectedAnswer} />,
+    "grading": (
+      <GradingQuestion
+        {...commonProps}
+        answer={answer}
+        onGradingAnswerSave={onGradingAnswerSave}
+        onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
+        isGradingReview={isGradingReview}
+      />
+    )
   }[displayType]
 };
 

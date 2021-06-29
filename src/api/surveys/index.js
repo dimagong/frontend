@@ -21,6 +21,8 @@ import {
   getBeginSurveyUrl,
   getCurrentQuestionForAssignedSurveyUrl,
   getSurveyAnswerPushUrl,
+  getGradeSurveyQuestionAnswerUrl,
+  getFinishGradingUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -102,7 +104,15 @@ const surveysApi = {
 
   async pushSurveyQuestionAnswer({ payload }) {
     return await requestLayout(getSurveyAnswerPushUrl(payload.surveyId), "PUT", payload.data)
-  }
+  },
+
+  async gradeSurveyQuestionAnswer({ payload }) {
+    return await requestLayout(getGradeSurveyQuestionAnswerUrl(payload.surveyId), "PUT", payload.data)
+  },
+
+  async finishGrading({ payload }) {
+    return await requestLayout(getFinishGradingUrl(payload), "PUT")
+  },
 
 };
 

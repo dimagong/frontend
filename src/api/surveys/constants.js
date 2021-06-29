@@ -18,3 +18,6 @@ export const getAssignedSurveysForOnboarding = 'api/survey-passing';
 export const getBeginSurveyUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId}/begin`;
 export const getCurrentQuestionForAssignedSurveyUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId}/current-question`;
 export const getSurveyAnswerPushUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId} `;
+export const getGradeSurveyQuestionAnswerUrl = (assignedSurveyId) => `api/survey-assigned-interaction/${assignedSurveyId}/update-grade`;
+export const getFinishGradingUrl = (assignedSurveyId) => `api/survey-assigned-interaction/${assignedSurveyId}/finish-grade`;
+
