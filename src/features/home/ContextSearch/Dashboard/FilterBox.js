@@ -10,7 +10,7 @@ import {selectOrganizations} from "app/selectors/groupSelector";
 import {selectActivityTypes, selectDashboardDForms, selectManagers} from "app/selectors/userSelectors";
 
 const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen, isApplication, removeFilterPart, isFilterBoxOpen, filter, setFilter}) => {
-  let roles = ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Network manager', 'Member', 'Lead'].map(item => {return {name: item}})
+  let roles = ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead'].map(item => {return {name: item}})
   const [selectedOption, setSelectedOption] = useState('managers');
   const [selectValue, setSelectValue] = useState({active: false, label: ''});
   const [selectedDForm, setSelectDForm] = useState('');
