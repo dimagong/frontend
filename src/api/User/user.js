@@ -1,4 +1,5 @@
 import instance from "api";
+import qs from 'qs'
 import {
   getProfilePath,
   getUsersPath,
@@ -22,6 +23,7 @@ import {
   getFilterPathByID
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
+import moment from "moment";
 
 const userApi = {
   async getFilter() {
@@ -36,16 +38,145 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async getActivities(id) {
+  async getActivities(payload) {
     try {
       const result = await instance({
         url: '/api/user/activities',
         method: "GET",
         params: {
-          user_id: id
+          user_id: payload.managerId,
+          page: payload.page
         },
       });
 
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getSettings() {
+    try {
+      const result = await instance({
+        url: '/api/settings',
+        method: "GET",
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getDashboardDForms() {
+    try {
+      const result = await instance({
+        url: '/api/user/dforms-dashboard',
+        method: "GET",
+      });
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async postSettings(payload) {
+    try {
+      const result = await instance({
+        url: '/api/settings',
+        method: "POST",
+        params: {
+          key: 'dashboard',
+        },
+        data: {
+          value: payload
+        }
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async patchSettings(payload) {
+    try {
+      const result = await instance({
+        url: `/api/settings/${payload.id}`,
+        method: "PATCH",
+        data: {
+          value: payload.value
+        }
+      });
+
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getDashboardData(payload, path) {
+    let params = payload?.dForm?.id
+      ? {
+        page: payload.page,
+        'created_at[from]': payload.from,
+        app_ids: payload.dForm?.id
+      }
+      : {
+        page: payload.page,
+        'created_at[from]': payload.from,
+      }
+    if (payload?.dForm?.name === 'Applications Snapshot') {
+      if (payload?.allApplications && payload?.settings?.dForm.id) {
+        params.app_ids = payload.settings.dForm.id;
+      } else {
+        params.app_ids = [];
+      }
+    }
+    ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
+      if (payload.settings && payload.settings[item]) {
+        params[item] = payload.settings[item];
+      }
+    })
+    try {
+      const result = await instance({
+        url: `${path}?` + qs.stringify(params),
+        method: "GET",
+      });
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getDashboardActivity(payload) {
+    let params = {
+        page: payload.page,
+        'created_at[from]': payload.from
+      };
+    ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
+      if (payload.settings[item]) {
+        params[item] = payload.settings[item];
+      }
+    })
+    try {
+      const result = await instance({
+        url: `/api/user/activities-dashboard?` + qs.stringify(params),
+        method: "GET",
+        //params: params
+      });
+      return result.data.data;
+
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getActivityTypes() {
+    try {
+      const result = await instance({
+        url: '/api/user/activity-types',
+        method: "GET",
+      });
       return result.data.data;
 
     } catch (err) {
@@ -202,7 +333,9 @@ const userApi = {
         }
       });
       return result ? result.data : result;
-    } catch (error) {console.log('ERROR POST FILTER')}
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
   },
   async deleteFilter(id) {
     try {

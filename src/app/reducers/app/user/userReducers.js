@@ -26,37 +26,223 @@ const getFilterSuccess = (state, { payload }) => {
   state.isError = null;
   let filters = payload;
   filters.forEach(item => {
-    item.data.roles = new Set(item.data.roles);
-    item.data.organizations = new Set(item.data.organizations);
+    item.value.roles = new Set(item.value.roles);
+    item.value.organizations = new Set(item.value.organizations);
   });
   filters = filters.filter(item => item.user_id === state.user.profile.id);
   state.user.filters = filters;
 };
 
+const getSettingsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  let dashboardSettings = payload.find(item => item.key === 'dashboard');
+  if (dashboardSettings) {
+    state.user.dashboard.settings = {
+      value: dashboardSettings.value,
+      id: dashboardSettings.id
+    };
+    //migration to new data format
+    for (let i = 0; i < state.user.dashboard.settings.value.length; ++i) {
+      if (!state.user.dashboard.settings.value[i].hasOwnProperty('key')) {
+        state.user.dashboard.settings.value[i].key = i;
+      }
+    }
+  } else {
+    state.user.dashboard.settings = {
+      value: [{
+        daysNumber: 7,
+        state: 'large',
+        filter: null,
+        title: 'Activities',
+        key: 0,
+      },{
+        daysNumber: 7,
+        state: 'large',
+        filter: null,
+        title: 'Applications',
+        dForm: null,
+        key: 1,
+      }]
+    }
+  }
+}
+
+const postSettingsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.dashboard.settings = {id: payload.response.id, value: payload.payload};
+}
+
+const patchSettingsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.dashboard.settings = payload;
+}
+
 const getActivitiesSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.managers[state.user.managers.findIndex(item => item.id === payload.user_id)].activity = payload.response;
+  let managerIndex = state.user.managers.findIndex(item => item.id === payload.user_id);
+
+  if (state.user.managers[managerIndex].activity && state.user.managers[managerIndex].activity.current_page < payload.response.current_page) {
+    let newData = state.user.managers[managerIndex].activity.data = state.user.managers[managerIndex].activity.data.concat(payload.response.data);
+    state.user.managers[managerIndex].activity = payload.response;
+    state.user.managers[managerIndex].activity.data = newData;
+  } else if (!state.user.managers[managerIndex].activity || payload.shouldUpdate) {
+    state.user.managers[managerIndex].activity = payload.response;
+  }
 };
+
+const updateActivitiesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  let managerIndex = state.user.managers.findIndex(item => item.id === payload.user_id);
+
+  if (!state.user.managers[managerIndex].activity) {
+    state.user.managers[managerIndex].activity = payload.response;
+  } else {
+    let startingIndex = payload.response.data.findIndex(item => item.id ===  state.user.managers[managerIndex].activity.data[0].id)
+    for (let i = startingIndex - 1; i > -1; --i) {
+      state.user.managers[managerIndex].activity.data.splice(0, 0, payload.response.data[i]);
+    }
+  }
+};
+
+const getDashboardDataSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  let currDataIndex = state?.user?.dashboard?.data?.length > 0
+    ? state?.user?.dashboard?.data.findIndex(item => item.key === payload.payload.key)
+    : -1;
+  let currData = currDataIndex === -1 ? {} : {...state?.user?.dashboard?.data[currDataIndex]}
+
+  if (payload.payload.page === 1) {
+    currData.userDFormActivities = payload.response.userDFormActivities;
+    currData.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+    currData.key = payload.payload.key;
+    if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
+    }
+    return;
+  }
+
+  if (currData?.userDFormActivities && payload.response.userDFormActivities.current_page > currData.userDFormActivities.current_page) {
+    let newData = currData.userDFormActivities.data.concat(payload.response.userDFormActivities.data)
+    currData.userDFormActivities = payload.response.userDFormActivities;
+    currData.userDFormActivities.data = newData;
+  } else {
+    //if (!currData?.userDFormActivities?.data?.length > 0) {
+     currData.userDFormActivities = payload.response.userDFormActivities;
+    //}
+    currData.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+  }
+
+  currData.key = payload.payload.key;
+  if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
+  }
+}
+
+const getDashboardSnapshotDataSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  let currDataIndex = state?.user?.dashboard?.data?.length > 0
+    ? state?.user?.dashboard?.data.findIndex(item => item.key === payload.payload.key)
+    : -1;
+  let currData = currDataIndex === -1 ? {} : {...state?.user?.dashboard?.data[currDataIndex]}
+
+  if (payload.payload.page === 1) {
+    currData.userDFormActivities = payload.response.userDFormActivities;
+    currData.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule ? payload.response.userDFormActivitiesSchedule : [];
+    currData.key = payload.payload.key;
+    if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
+    }
+    return;
+  }
+
+  if (currData?.userDFormActivities && payload.response.userDFormActivities.current_page > currData.userDFormActivities.current_page) {
+    let newData = currData.userDFormActivities.data.concat(payload.response.userDFormActivities.data)
+    currData.userDFormActivities = payload.response.userDFormActivities;
+    currData.userDFormActivities.data = newData;
+  } else {
+    //if (!currData?.userDFormActivities?.data?.length > 0) {
+     currData.userDFormActivities = payload.response.userDFormActivities;
+    //}
+    currData.userDFormActivitiesSchedule = payload.response.userDFormActivitiesSchedule;
+  }
+
+  currData.key = payload.payload.key;
+  if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
+  }
+}
+
+const getDashboardDFormsSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.dashboard.dForms = payload;
+}
+
+const getDashboardActivitySuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  let currDataIndex = state?.user?.dashboard?.data?.length > 0
+    ? state?.user?.dashboard?.data.findIndex(item => item.key === payload.payload.key)
+    : -1;
+  let currData = currDataIndex === -1 ? {} : {...state?.user?.dashboard?.data[currDataIndex]}
+
+  if (currData?.usersActivities && payload.response.usersActivities.current_page > currData.usersActivities.current_page) {
+    let newData = currData.usersActivities.data.concat(payload.response.usersActivities.data)
+    currData.usersActivities = payload.response.usersActivities;
+    currData.usersActivities.data = newData;
+  } else {
+    //if (!currData?.usersActivities?.data?.length > 0) {
+      currData.usersActivities = payload.response.usersActivities
+    //}
+    currData.usersActivitiesSchedule = payload.response.usersActivitiesSchedule;
+  }
+  currData.key = payload.payload.key;
+  if (currDataIndex === -1) {
+      state.user.dashboard.data.push(currData);
+    } else {
+      state.user.dashboard.data[currDataIndex] = currData;
+  }
+}
 
 const postFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   const newFilter = payload.response.data;
-  newFilter.data.roles = new Set(newFilter.data.roles)
-  newFilter.data.organizations = new Set(newFilter.data.organizations)
+  newFilter.value.roles = new Set(newFilter.value.roles)
+  newFilter.value.organizations = new Set(newFilter.value.organizations)
   let filters = state.user.filters;
   filters.push(newFilter);
   state.user.filters = filters;
-  toast.success(`The filter set '${payload.response.data.filter_name}' was added`);
+  toast.success(`The filter set '${payload.response.data.value.filter_name}' was added`);
 };
+
+const getActivityTypesSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+  state.user.activityTypes = payload
+}
 
 const patchFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   let index = state.user.filters.findIndex(item => item.id === payload.payload.id);
   state.user.filters[index].data = payload.payload.newFilter;
-  toast.success(`The filter set '${payload.payload.filter_name}' was updated`);
+  toast.success(`The filter set '${payload.payload.value.filter_name}' was updated`);
 };
 
 const getOnboardingsByUserSuccess = (state, { payload }) => {
@@ -128,7 +314,7 @@ const deleteFilterSuccess = (state, { payload }) => {
   let filters = state.user.filters;
   filters = filters.filter(item => item.id !== payload.id);
   state.user.filters = filters;
-  toast.success(`The filter set '${payload.filter_name}' was deleted`);
+  toast.success(`The filter set '${payload.value.filter_name}' was deleted`);
 }
 
 const getUserAvatarSuccess = (state, { payload }) => {
@@ -347,6 +533,9 @@ const getUserPermissionsSuccess = (state, {payload}) => {
   state.isLoading = false;
   const userIndex = getIndexById(state.user.managers, payload.payload);
   state.user.managers[userIndex].permissions = payload.result;
+  if (state.user.managers[userIndex].id === state.user.manager.id) {
+    state.user.manager.permissions = payload.result;
+  }
 };
 
 export default {
@@ -382,6 +571,15 @@ export default {
   patchFilterSuccess,
   getUserPermissionsSuccess,
   setSearch,
+  updateActivitiesSuccess,
+  getDashboardDataSuccess,
+  getActivityTypesSuccess,
+  getDashboardActivitySuccess,
+  getSettingsSuccess,
+  postSettingsSuccess,
+  patchSettingsSuccess,
+  getDashboardDFormsSuccess,
+  getDashboardSnapshotDataSuccess,
 
   setUser,
   setManager,

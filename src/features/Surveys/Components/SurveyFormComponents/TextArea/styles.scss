@@ -1,0 +1,22 @@
+
+
+.survey-textarea-component {
+  textarea {
+    width: 100%;
+    resize: none;
+    border: 1px solid #707070;
+    border-radius: 5px;
+    outline: none;
+    color: #4B484D;
+    font-family: Montserrat;
+    font-weight: 400;
+    padding: 10px 12px;
+    font-size: 18px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}

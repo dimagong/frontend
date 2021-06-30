@@ -14,5 +14,9 @@ export const NAV_OPTIONS = [
   {
     title: "Organizations",
     id: "organizations",
+  },
+  {
+    title: "Surveys",
+    id: "surveys",
   }
-]
+];

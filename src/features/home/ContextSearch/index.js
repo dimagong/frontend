@@ -27,13 +27,14 @@ import Applications from './Applications'
 import MasterSchema from 'views/pages/master-schema'
 import Organizations from './Organizations'
 import UserManagement from './UserManagement'
+import Surveys from './Surveys'
 
 import './styles.scss'
 
-import { createLoadingSelector } from 'app/selectors/loadingSelector'
-
 import appSlice from 'app/slices/appSlice'
+import SurveyCreateModal from "./SurveyCreateModal";
 import {selectSearchText} from "../../../app/selectors/userSelectors";
+import Dashboard from "./Dashboard";
 
 const {
   getUserManagment,
@@ -41,6 +42,8 @@ const {
   getNotificationsRequest,
   getWorkflowsRequest,
   setContext,
+  getFilterRequest,
+  getSurveysRequest,
 } = appSlice.actions;
 
 const ContextSearch = ({isShown, onContextSearchHide}) => {
@@ -90,10 +93,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const context = useSelector(selectContext);
   const profile = useSelector(selectProfile);
 
-  const test = useSelector(createLoadingSelector([getdFormsRequest.type, getNotificationsRequest.type, getWorkflowsRequest.type]));
-  console.log("test loadinig", test);
-
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0]);
+
+  const [isSurveyCreateModalVisible, setIsSurveyCreateModalVisible] = useState(false);
   const [showManagers, setShowManagers] = useState(searchedManagers);
 
 
@@ -106,8 +108,10 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
       dispatch(setContext("Create user"))
     } else if (selectedNavItem.id === "organizations") {
       dispatch(setContext("OrganizationCreate"))
-    } else {
+    } else if (selectedNavItem.id === "applications") {
       dispatch(setContext("Create dForm"))
+    } else {
+      setIsSurveyCreateModalVisible(true);
     }
   };
 
@@ -127,10 +131,12 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
   useEffect(() => {
     if (isAuth && vuexyUser) {
+      dispatch(getFilterRequest());
       dispatch(getUserManagment());
       dispatch(getWorkflowsRequest());
       dispatch(getdFormsRequest());
-      dispatch(getNotificationsRequest())
+      dispatch(getNotificationsRequest());
+      dispatch(getSurveysRequest());
     }
   }, [isAuth, vuexyUser]);
 
@@ -143,17 +149,18 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
     nav = NAV_OPTIONS.filter((n) => n.id !== "organizations")
   }
 
+
   return (
     <>
-    <Row className={`home context-search ${isShown ? "slide-in" : "slide-out"}`}>
-      <Col sm="12" md="12" lg="12" xl="12">
-        <div>
-          <div className="">
-            <Row className="app-user-list" style={{paddingBottom: "2px"}}>
-              <Col sm="12">
-                <div>
+      <Row className={`home context-search ${isShown ? "slide-in" : "slide-out"}`}>
+        <Col sm="12" md="12" lg="12" xl="12">
+          <div>
+            <div className="">
+              <Row className="app-user-list" style={{paddingBottom: "2px"}}>
+                <Col sm="12">
                   <div>
-                    <div className="grid">
+                    <div>
+                      <div className="grid">
 
                       <ContextSearchNav
                         onChange={handleNavItemChange}
@@ -164,51 +171,58 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                         managers={searchedManagers}
                       />
 
-                      <Row className={"contextual-search_wrapper"}>
-                        <Col>
-                          <TabContent activeTab={selectedNavItem.id}>
-                            <TabPane tabId={NAV_OPTIONS[0].id}>
-                              <UserManagement allManagers={managers} managers={showManagers} handleContextChange={handleContextChange} />
-                            </TabPane>
-                            <TabPane tabId={NAV_OPTIONS[1].id}>
-                              <Applications />
-                            </TabPane>
-                            <TabPane tabId={NAV_OPTIONS[2].id}>
-                              <MasterSchema />
-                            </TabPane>
-                            <TabPane tabId={NAV_OPTIONS[3].id}>
-                              <Organizations />
-                            </TabPane>
-                          </TabContent>
+                        <Row className={"contextual-search_wrapper"}>
+                          <Col>
+                            <TabContent activeTab={selectedNavItem.id}>
+                              <TabPane tabId={NAV_OPTIONS[0].id}>
+                                <UserManagement allManagers={managers} managers={showManagers} handleContextChange={handleContextChange} />
+                              </TabPane>
+                              <TabPane tabId={NAV_OPTIONS[1].id}>
+                                <Applications />
+                              </TabPane>
+                              <TabPane tabId={NAV_OPTIONS[2].id}>
+                                <MasterSchema />
+                              </TabPane>
+                              <TabPane tabId={NAV_OPTIONS[3].id}>
+                                <Organizations />
+                              </TabPane>
+                              <TabPane tabId={NAV_OPTIONS[4].id}>
+                                <Surveys />
+                              </TabPane>
+                            </TabContent>
 
-                        </Col>
-                      </Row>
-                      <div className="search-content-footer">
-                        {selectedNavItem.id !== "MasterSchema" ? (
-                          <Button
-                            onClick={() => {handleAdd()}}
-                            color="primary"
-                            className="add-icon p-0"
-                          >
-                            <Plus size={28}/>
+                          </Col>
+                        </Row>
+                        <div className="search-content-footer">
+                          {selectedNavItem.id !== "MasterSchema" ? (
+                            <Button
+                              onClick={() => {handleAdd()}}
+                              color="primary"
+                              className="add-icon p-0"
+                            >
+                              <Plus size={28}/>
+                            </Button>
+                          ) : <div />}
+
+                          <Button color="primary" onClick={handleContextSearchHide} className="hide-context-icon p-0">
+                            <ChevronUp size={28} />
                           </Button>
-                        ) : <div />}
-
-                        <Button color="primary" onClick={handleContextSearchHide} className="hide-context-icon p-0">
-                          <ChevronUp size={28} />
-                        </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Col>
-            </Row>
+                </Col>
+              </Row>
+            </div>
           </div>
-        </div>
-      </Col>
-    </Row>
+        </Col>
+      </Row>
+      <SurveyCreateModal
+        isOpen={isSurveyCreateModalVisible}
+        onClose={() => setIsSurveyCreateModalVisible(false)}
+      />
     </>
   )
-}
+};
 
 export default ContextSearch;

@@ -9,6 +9,7 @@ import dFormReducer from "./onboarding/dFormReducers"
 import workflowReducer from "./onboarding/workflowReducers"
 import layoutReducer from './layout/layoutReducer'
 import masterSchemaReducer from './masterSchema/masterSchemaReducer'
+import surveysReducer from "./surveys";
 
 const appReducer = {
   ...authReducer,
@@ -22,6 +23,7 @@ const appReducer = {
   ...invitationReducers,
   ...layoutReducer,
   ...masterSchemaReducer,
-}
+  ...surveysReducer,
+};
 
 export default appReducer;

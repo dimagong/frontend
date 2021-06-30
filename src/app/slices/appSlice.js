@@ -20,9 +20,14 @@ export const initialState = {
   isAuth: !!token,
   isLoading: false,
   isError: null,
-  isContextSearchVisible: true,
+  isContextSearchVisible: false,
   context: null,
   preview: null,
+  surveys: [],
+  folders: null,
+  selectedSurvey: null,
+  surveyWorkFlowsAndReviewers: null,
+  selectedManagerAssignedSurveys: null,
   organizations: {
     selectedOrganizationIdAndType: {id: null, type: null},
     corporation: [],
@@ -49,6 +54,11 @@ export const initialState = {
     reviewers: [],
     filters: [],
     searchText: '',
+    dashboard: {
+      data: [],
+      settings: {},
+    },
+    activityTypes: [],
   },
   masterSchema: {
     fields: []

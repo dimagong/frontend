@@ -7,6 +7,7 @@ import {selectGroups, selectRoles} from "app/selectors";
 import organizationApi from '../../../api/organizations'
 
 import appSlice from 'app/slices/appSlice'
+import moment from "moment";
 
 const {
   getProfileSuccess,
@@ -65,6 +66,9 @@ const {
   getUserOrganizationLogoSuccess,
   getUserOrganizationLogoError,
 
+  updateActivitiesSuccess,
+  updateActivitiesRequest,
+
   getOnboardingsByUserRequest,
   getOnboardingsByUserSuccess,
   getOnboardingsByUserError,
@@ -72,6 +76,33 @@ const {
   getUserPermissionsRequest,
   getUserPermissionsSuccess,
   getUserPermissionsError,
+
+  getDashboardDataRequest,
+  getDashboardDataSuccess,
+  getDashboardDataError,
+
+  getDashboardActivityRequest,
+  getDashboardActivitySuccess,
+
+  getSettingsRequest,
+  getSettingsSuccess,
+
+  postSettingsRequest,
+  postSettingsSuccess,
+
+  patchSettingsRequest,
+  patchSettingsSuccess,
+
+  getActivityTypesRequest,
+  getActivityTypesSuccess,
+
+  getDashboardDFormsRequest,
+  getDashboardDFormsSuccess,
+
+  getDashboardSnapshotDataRequest,
+  getDashboardSnapshotDataSuccess,
+
+  getUserOnboardingRequest
 } = appSlice.actions;
 
 function* getProfile() {
@@ -81,7 +112,6 @@ function* getProfile() {
     yield put(getProfileSuccess(response));
     yield put(loginWithJWT(response));
     yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}));
-    yield put(getFilterRequest());
 
   } catch (error) {
     console.log(error);
@@ -99,9 +129,59 @@ function* getFilter() {
   yield put(getFilterSuccess(response));
 }
 
+function* getSettings() {
+  const response = yield call(userApi.getSettings);
+  yield put(getSettingsSuccess(response));
+}
+
+function* postSettings({payload}) {
+  const response = yield call(userApi.postSettings, payload);
+  yield put(postSettingsSuccess({payload, response}));
+}
+
+function* patchSettings({payload}) {
+  const response = yield call(userApi.patchSettings, payload);
+  yield put(patchSettingsSuccess(payload));
+}
+
 function* getActivities({payload}) {
   const response = yield call(userApi.getActivities, payload);
-  yield put(getActivitiesSuccess({response, user_id: payload}));
+  yield put(getActivitiesSuccess({response, user_id: payload.managerId, shouldUpdate: payload.shouldUpdate}));
+}
+
+function* updateActivities({payload}) {
+  const response = yield call(userApi.getActivities, payload);
+  yield put(updateActivitiesSuccess({response, user_id: payload.managerId}));
+}
+
+function* getDashboardData({payload}) {
+  const response = yield call(userApi.getDashboardData, payload, '/api/user/application-dashboard');
+  yield put(getDashboardDataSuccess({response: response, payload: payload}));
+}
+
+function* getDashboardSnapshotData({payload}) {
+  const responseChartData = yield call(userApi.getDashboardData, payload, '/api/user/activity-current-state');
+  const responseActivityList = yield call(userApi.getDashboardData, payload, '/api/user/application-dashboard');
+  yield put(getDashboardSnapshotDataSuccess({response: {
+      userDFormActivities: responseActivityList?.userDFormActivities,
+      userDFormActivitiesSchedule: responseChartData?.userDFormCurrentStateSchedule?.data
+    }, payload: payload}));
+
+}
+
+function* getDashboardActivity({payload}) {
+  const response = yield call(userApi.getDashboardActivity, payload);
+  yield put(getDashboardActivitySuccess({response: response, payload: payload}));
+}
+
+function* getActivityTypes() {
+  const response = yield call(userApi.getActivityTypes);
+  yield put(getActivityTypesSuccess(response));
+}
+
+function* getDashboardDForms() {
+  const response = yield call(userApi.getDashboardDForms);
+  yield put(getDashboardDFormsSuccess(response));
 }
 
 function* postFilter({payload}) {
@@ -148,7 +228,7 @@ function* updateUser({payload}) {
   try {
     const response = yield call(userApi.updateUser, payload);
     yield put(updateUserSuccess(response));
-    yield put(getActivitiesRequest(payload.id));
+    yield put(updateActivitiesRequest({managerId: payload.id, page: 1}))
   } catch (error) {
     yield put(updateUserError(error));
   }
@@ -209,6 +289,7 @@ function* addUserOrganization({payload}) {
   } else {
     yield put(addUserOrganizationSuccess({response, userId: payload.id}));
     yield put(getUserPermissionsRequest(payload.id))
+    yield put(getUserOnboardingRequest({userId: payload.id}))
   }
 }
 
@@ -296,7 +377,16 @@ export default function* () {
     yield takeLatest(getProfileRequest.type, getProfile),
     yield takeLatest(getUsersRequest.type, getUsers),
     yield takeLatest(getFilterRequest.type, getFilter),
+    yield takeLatest(getSettingsRequest.type, getSettings),
+    yield takeLatest(postSettingsRequest.type, postSettings),
+    yield takeLatest(patchSettingsRequest.type, patchSettings),
     yield takeLatest(getActivitiesRequest.type, getActivities),
+    yield takeLatest(updateActivitiesRequest.type, updateActivities),
+    yield takeEvery(getDashboardDataRequest.type, getDashboardData),
+    yield takeEvery(getDashboardSnapshotDataRequest.type, getDashboardSnapshotData),
+    yield takeEvery(getDashboardActivityRequest.type, getDashboardActivity),
+    yield takeLatest(getActivityTypesRequest.type, getActivityTypes),
+    yield takeLatest(getDashboardDFormsRequest.type, getDashboardDForms),
     yield takeLatest(postFilterRequest.type, postFilter),
     yield takeLatest(deleteFilterRequest.type, deleteFilter),
     yield takeLatest(patchFilterRequest.type, patchFilter),

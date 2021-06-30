@@ -27,13 +27,13 @@ export function generateRequestAndErrorActions(actions) {
 
     // Check if action is already exists, otherwise add template for that action
     if (!~actionTypes.findIndex(a => a === verifiableAction)) {
-      generatedActions[action] = suffix === "Error" ? errorActionTemplate : requestActionTemplate;
+      generatedActions[verifiableAction] = suffix === "Error" ? errorActionTemplate : requestActionTemplate;
     }
   };
 
   successActions.forEach((action) => {
-    generateActionIfNotExist(action.replace("Success", "Error"));
-    generateActionIfNotExist(action.replace("Success", "Request"));
+    generateActionIfNotExist(action, "Error");
+    generateActionIfNotExist(action, "Request");
   });
 
   return {...actions, ...generatedActions}

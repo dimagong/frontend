@@ -1,0 +1,215 @@
+.question {
+  position: relative;
+  background: white;
+  border-radius: 0.5rem;
+  width: 100%;
+  padding: 20px 66px 20px 66px;
+  box-shadow: 0 3px 6px 0 rgba(0,0,0, 0.16);
+  border: 2px solid transparent;
+  margin-bottom: 40px;
+  cursor: pointer;
+
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &-title {
+    font-weight: bold;
+    color: #4B484D;
+    font-size: 22px;
+    font-family: Montserrat;
+    margin-bottom: 21px;
+  }
+
+  &-action {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    cursor: pointer;
+  }
+
+  &.selected {
+    border-color: #7367F0;
+  }
+
+  &.added {
+    background: #f5f5f5;
+    cursor: default;
+    .question-added-icon {
+      display: block;
+    }
+  }
+
+  &-added-icon {
+    color: green;
+    position: absolute;
+    top: 22px;
+    left: 23px;
+    display: none;
+  }
+
+  &-description {
+    color: #4B484D;
+    font-size: 20px;
+    font-family: Montserrat;
+    font-weight: 300;
+  }
+
+  &-points {
+    font-weight: 500;
+    font-family: Montserrat;
+    color: #4B484D;
+    font-size: 20px;
+    text-align: right;
+    margin-top: 35px;
+  }
+
+  .answer {
+    margin-top: 77px;
+    .title {
+      font-weight: 400;
+      font-family: Montserrat;
+      font-size: 15px;
+      padding-bottom: 20px;
+      color: #4B484D;
+    }
+  }
+
+  .free-text {
+    textarea:disabled {
+      background: transparent;
+    }
+  }
+
+  .multiple-choice {
+
+    .options {
+      .option {
+        box-shadow: 0 3px 6px 0 rgba(0,0,0, 0.16);
+        margin-bottom: 25px;
+        border-radius: 0.5rem;
+        padding: 12px 20px;
+        color: #4B484D;
+        font-size: 16px;
+        font-weight: 300;
+        font-family: Montserrat;
+        display: flex;
+        &-circle {
+          border-radius: 100px;
+          border: 2px solid #4B484D;
+          width: 14px;
+          height: 14px;
+          margin-top: 2px;
+          flex-shrink: 0;
+        }
+
+        &-text {
+          padding-left: 10px;
+        }
+
+
+        &.selected {
+          color: #7367F0;
+
+          .option-circle {
+            border-color: #7367F0;
+            background: #7367F0;
+          }
+        }
+      }
+    }
+  }
+
+  &.question-designer {
+
+  }
+
+  &.question-grading {
+    background: transparent;
+    box-shadow: none;
+    padding: 0 0 35px 0;
+    border-bottom: 1px solid #EEEEEE;
+    cursor: default;
+    .options {
+      display: flex;
+      .option {
+        min-width: 200px;
+        max-width: 70%;
+      }
+    }
+    .answer {
+      &.free-text {
+        .answer-review {
+          .score {
+            font-size: 16px;
+            color: #4B484D;
+            padding-top: 5px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 5px;
+            &_input {
+              width: 115px;
+              margin: 0 8px 0 10px;
+              text-align: center;
+            }
+          }
+          &_notes {
+            &_label {
+              color: #4b484d;
+              font-size: 16px;
+              padding-bottom: 5px;
+              padding-top: 18px;
+            }
+            &_tip {
+              font-size: 12px;
+              color: #4b484d;
+              padding-top: 5px;
+              padding-left: 40px;
+            }
+          }
+        }
+      }
+      &.multiple-choice {
+        .answer-correctness {
+          padding: 8px 10px;
+          .correct-answer {
+            &_label {
+              font-size: 16px;
+              color: #7367F0;
+              padding-left: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.question-review {
+    cursor: default!important;
+    padding-top: 40px;
+  }
+
+  &.question-onboarding {
+    cursor: default;
+    box-shadow: none;
+    padding: 0 6px 0 6px;
+    .options{
+      .option {
+        cursor: pointer;
+
+        &:hover {
+          .option-circle {
+            border-color: #7367F0;
+          }
+        }
+      }
+    }
+  }
+
+  &.question-review {
+
+  }
+
+}

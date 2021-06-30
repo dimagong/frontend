@@ -1,0 +1,33 @@
+.onboarding-progress-bar {
+  height: 31px;
+  width: 100%;
+  border-radius: 5px;
+  background: white;
+  overflow: hidden;
+
+  &_filler {
+    min-width: 2px;
+    background: #7367F0;
+    position: relative;
+    height: 100%;
+  }
+
+  &_percentages {
+    position: absolute;
+    right: 0;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    font-size: 12px;
+    color: #7367F0;
+    &.display-on-right {
+      padding-left: 7px;
+      transform: translate(100%, 0px);
+    }
+
+    &.display-on-left {
+      color: white;
+      padding-right: 5px;
+    }
+  }
+}

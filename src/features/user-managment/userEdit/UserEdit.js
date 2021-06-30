@@ -7,8 +7,11 @@ import {
   TabPane,
   Button,
   TabContent,
+  Spinner,
 } from "reactstrap"
 import DataTable from "react-data-table-component"
+
+import Select from 'react-select';
 
 import { Plus } from "react-feather"
 
@@ -18,9 +21,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectManager,
   selectUserDForms,
-  selectUserWorkfows,
+  selectUserWorkflows,
   selectUserReviewers,
 } from "app/selectors";
+
+import { createLoadingSelector } from "app/selectors/loadingSelector";
 
 import {columnDefs} from '../userOnboarding/gridSettings'
 import UserOnboardingForm from '../userOnboarding/UserOnboardingForm'
@@ -31,6 +36,8 @@ import CustomTabs from 'components/Tabs'
 import Timeline from 'components/Timeline'
 import UserRoles from 'components/UserRoles'
 import UserProfileEdit from './UserEditContextFeature'
+import SurveyAssign from './components/Survey/SurveyAssign'
+import AssignedSurvey from './components/Survey/AssignedSurvey';
 
 import { useParams } from 'react-router-dom'
 
@@ -38,16 +45,58 @@ import {
   selectUserOrganizations,
   selectCurrentManager,
   selectManagerById,
+  selectSelectedManagerAssignedSurveys,
 } from 'app/selectors/userSelectors'
 
 import appSlice from 'app/slices/appSlice'
 
 const {
   setManagerOnboarding,
-  getUserOnboardingRequest
+  getUserOnboardingRequest,
+  updateActivitiesRequest,
+  getAssignedSurveysRequest,
 }  = appSlice.actions;
 
 const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
+
+const selectStyles = {
+  control: styles => ({
+    ...styles,
+    backgroundColor: "white",
+    border: "1px solid rgba(34, 60, 80, 0.2)",
+    borderRadius: "8px",
+    // This line disable the blue border
+    boxShadow: "none",
+    minHeight: "auto",
+    cursor: "pointer",
+    padding: "0 0 0 7px",
+    fontSize: "11px",
+    fontFamily: "Montserrat",
+  }),
+  menu: provided => ({ ...provided, zIndex: 9999 }),
+  placeholder: (styles) => ({
+    ...styles,
+    color: "#4B484D",
+  }),
+  input: (styles) => ({
+    ...styles,
+
+    padding: "6px 7px 6px 0",
+  }),
+
+  indicatorSeparator: () => ({display: 'none'}),
+};
+
+const selectOptions = [
+  {
+    label:"Onboarding",
+    value:"onboarding",
+  },
+  {
+    label:"Survey",
+    value:"survey",
+  },
+];
 
 const UserEdit = (props, context) => {
   const dispatch = useDispatch();
@@ -63,13 +112,18 @@ const UserEdit = (props, context) => {
   const manager = useSelector(selectCurrentManager);
 
   const dForms = useSelector(selectUserDForms);
-  const workflows = useSelector(selectUserWorkfows);
+  const workflows = useSelector(selectUserWorkflows);
   const reviewers = useSelector(selectUserReviewers);
   const userOrganizations = useSelector(selectUserOrganizations(manager.id));
+  const assignedSurveys = useSelector(selectSelectedManagerAssignedSurveys) || [];
+  const isAssignedSurveysLoading = useSelector(createLoadingSelector([getAssignedSurveysRequest.type], true));
 
   const [contextFeature, setContextFeature] = useState("");
+  const [openOnboarding, setOpenOnboarding] = useState('');
+  const [selectedAssignedSurvey, setSelectedAssignedSurvey] = useState(null);
+  const [applicationAddSelectValue, setApplicationAddSelectValue] = useState(selectOptions[0]);
 
-  const [activeModuleTab, setActiveModuleTab] = useState(userOrganizations.length ? tabs[0] : tabs[3]);
+  const [activeModuleTab, setActiveModuleTab] = useState(manager.permissions ? tabs[0] : tabs[3]);
   const [activeOnboardingId, setActiveOnboardingId] = useState(-1);
   const isCreate = useRef(false);
 
@@ -87,10 +141,17 @@ const UserEdit = (props, context) => {
     setContextFeature("onboarding")
   };
 
-  const handleRowClick = (onboarding) => {
-    dispatch(setManagerOnboarding(onboarding));
-    isCreate.current = false;
-    setContextFeature("onboarding")
+  const handleRowClick = (application) => {
+    if (application.questions) {
+      setSelectedAssignedSurvey(application);
+      dispatch(setManagerOnboarding(null));
+      setContextFeature("assignedSurvey")
+    } else {
+      setSelectedAssignedSurvey(null);
+      dispatch(setManagerOnboarding(application));
+      isCreate.current = false;
+      setContextFeature("onboarding")
+    }
   };
 
   useEffect(() => {
@@ -100,6 +161,13 @@ const UserEdit = (props, context) => {
     dispatch(getUserOnboardingRequest({userId: manager.id}))
   }, [manager.groups]);
 
+  useEffect(() => {
+    setActiveModuleTab(manager.permissions ? tabs[0] : tabs[3]);
+  }, [manager.id]);
+
+  useEffect(() => {
+    dispatch(getAssignedSurveysRequest(manager.id))
+  }, [manager.id]);
 
   const handleEdit = () => {
     setContextFeature("edit")
@@ -118,9 +186,64 @@ const UserEdit = (props, context) => {
     ).then(() => {})
   };
 
+  const handleChangeTab = (data) => {
+    setActiveModuleTab(data);
+    if (data === 'Activity') {
+      dispatch(updateActivitiesRequest({managerId: manager.id, page: 1}))
+    }
+  };
+
+  const handleSurveyAssign = () => {
+    setContextFeature("surveyCreate")
+  };
+
+  const handleApplicationAdd = () => {
+    if (applicationAddSelectValue.value === "survey") {
+      handleSurveyAssign()
+    } else {
+      createViewOnboarding()
+    }
+  };
+
+  useEffect(() => {
+    switch (selectedManager.selectedInfo?.type) {
+      case 'onboarding': {
+        setActiveModuleTab(tabs[2]);
+        if (selectedManager.selectedInfo?.value) {
+          setContextFeature('onboarding');
+          setOpenOnboarding(selectedManager.selectedInfo.value);
+        }
+        break;
+      }
+      case 'userEdit': {
+        setContextFeature('edit');
+        setActiveModuleTab(tabs[0]);
+        break;
+      }
+      default: {
+        setContextFeature('');
+        setOpenOnboarding('');
+        setActiveModuleTab(tabs[0]);
+      }
+    }
+  }, [selectedManager.selectedInfo]);
+
+  useEffect(() => {
+    if (!selectedManager.onboarding && openOnboarding && manager.onboardings.length > 0) {
+      dispatch(setManagerOnboarding(manager.onboardings.find(item => item.d_form.name === selectedManager.selectedInfo.value)));
+    }
+  }, [manager.onboardings, openOnboarding]);
+
+  const tableData = [...manager.onboardings, ...assignedSurveys].sort((a, b) => {
+    const firstItem = a.title || a?.d_form?.name;
+    const secondItem = b.title || b?.d_form?.name;
+
+    return firstItem.localeCompare(secondItem)
+  });
+
   return (
     <Row className="user-managment">
-      <Col sm="12" md="12" lg="12" xl="6">
+      <Col sm="12" md="12" lg="12" xl="6" className="pb-3">
         <UserCardTemplate
           className="mb-2"
           oneColumn={false}
@@ -132,7 +255,7 @@ const UserEdit = (props, context) => {
 
         <CustomTabs
           active={activeModuleTab}
-          onChange={setActiveModuleTab}
+          onChange={handleChangeTab}
           tabs={tabs}
         />
         <TabContent activeTab={activeModuleTab}>
@@ -167,7 +290,9 @@ const UserEdit = (props, context) => {
                 <Row className="mx-0" col="12">
                   <Col md="12" className="ml-0 pl-0">
                     <DataTable
-                      data={manager.onboardings}
+                      progressComponent={<Spinner className={"my-4"} color={"primary"} />}
+                      progressPending={isAssignedSurveysLoading}
+                      data={tableData}
                       columns={columnDefs}
                       Clicked
                       onRowClicked={handleRowClick}
@@ -176,25 +301,55 @@ const UserEdit = (props, context) => {
                           when: row => selectedManager.onboarding ? row.id === selectedManager.onboarding.id : false,
                           style: () => ({
                             backgroundColor: '#7367f0',
-                            color: 'white'
+                            color: 'white',
+                            cursor: "pointer"
                           }),
+                        },
+                        {
+                          when: row => selectedAssignedSurvey ? row.id === selectedAssignedSurvey.id : false,
+                          style: () => ({
+                            backgroundColor: '#7367f0',
+                            color: 'white',
+                            cursor: "pointer"
+                          }),
+                        },
+                        {
+                          when: () => !selectedAssignedSurvey && !selectedManager.onboarding,
+                          style: () => ({
+                            cursor: "pointer"
+                          })
                         }
                       ]}
                       noHeader
                     />
                   </Col>
                   <Col md="12" className="ml-0 pl-0">
-                    <div className="onboarding-create" onClick={createViewOnboarding}>
-                      <Button
-                        onClick={() => {}}
-                        className="action-button"
-                      >
-                        <Plus size={22}/>
-                      </Button>
-                      <div>
-                        Create new onboarding
+                    {!!tableData.length ? (
+                      <div className="application-create-container">
+                        <div className="application-create-container_select">
+                          <Select
+                            options={selectOptions}
+                            value={applicationAddSelectValue}
+                            onChange={setApplicationAddSelectValue}
+                            styles={selectStyles}
+                            isSearchable={false}
+                          />
+                        </div>
+                        <button onClick={handleApplicationAdd}>
+                          <Plus />
+                        </button>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="onboarding-create">
+                        <div>
+                          Create new&nbsp;
+                          <a onClick={createViewOnboarding} href="javascript:void(0);">onboarding</a>
+                          &nbsp;or&nbsp;
+                          <a onClick={handleSurveyAssign} href="javascript:void(0);">survey</a>
+                        </div>
+                      </div>
+                    )}
+
                   </Col>
                 </Row>
               </CardBody>
@@ -207,22 +362,41 @@ const UserEdit = (props, context) => {
       </Col>
 
 
-      <Col xs="6">
+      <Col sm="12" md="12" lg="12" xl="6">
         {{
           'edit': <UserProfileEdit manager={manager} onEditClose={handleEditClose} />,
           'onboarding': (
-            <Card>
-              {selectedManager.onboarding && (
-                <>
-                  <UserOnboardingForm isCreate={isCreate}/>
-                  {!isCreate.current && (
-                    <UserOnboardingDForm />
-                  )}
-                </>
-              )}
-            </Card>
-          ),
+              selectedManager.onboarding && (
+                <div className="onboarding-create-feature">
+                  <div className="onboarding-create-feature_header">
+                    {isCreate.current ? (
+                      <div className="onboarding-create-feature_header_title">
+                        Onboarding Create
+                      </div>
+                    ) : (
+                      <>
+                        <div className="onboarding-create-feature_header_title">
+                          Application
+                        </div>
+                        <div className="onboarding-create-feature_header_name">
+                          {selectedManager?.onboarding?.d_form?.name || ""}
+                        </div>
+                      </>
 
+                    )}
+                  </div>
+                  <Card>
+                    <UserOnboardingForm isCreate={isCreate}/>
+                    {!isCreate.current && (
+                      <UserOnboardingDForm />
+                    )}
+                  </Card>
+
+                </div>
+              )
+          ),
+          'surveyCreate': <SurveyAssign userId={manager.id} />,
+          'assignedSurvey': <AssignedSurvey selectedSurveyId={selectedAssignedSurvey?.id} />
         }[contextFeature]}
 
 

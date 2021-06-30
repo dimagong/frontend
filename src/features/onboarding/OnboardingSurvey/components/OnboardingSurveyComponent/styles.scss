@@ -1,0 +1,61 @@
+.onboarding-survey {
+  //max-width: 620px;
+  //margin: 0 auto;
+  margin: 0 0 0 15px;
+  display: flex;
+  font-family: Montserrat;
+  &_card {
+    margin-bottom: 10px;
+  }
+
+  &_loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+  }
+
+  &_begin {
+    min-height: 300px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &_note {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      font-weight: bold;
+      font-size: 15px;
+      color: #707070;
+    }
+    &_survey-name {
+      font-weight: bold;
+      font-size: 30px;
+      color: #7367F0;
+    }
+  }
+
+  &_action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+
+    &_button {
+      border-radius: 10px;
+      position: relative;
+      &_value {
+        display: inline-block;
+        padding: 0 40px;
+        font-size: 15px;
+
+        &_icon {
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translate(0, -50%);
+        }
+      }
+    }
+  }
+}

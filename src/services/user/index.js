@@ -5,6 +5,6 @@ export const userService = {
 
     if(isEmpty(userProfile)) return true;
 
-    return userProfile?.permissions?.ability === 'prospect'
+    return ['prospect', 'member'].indexOf(userProfile?.permissions?.ability) !== -1;
   }
 }
