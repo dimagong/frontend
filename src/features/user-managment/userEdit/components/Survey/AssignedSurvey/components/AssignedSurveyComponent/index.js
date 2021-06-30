@@ -2,10 +2,11 @@ import React from 'react';
 
 import SurveyReviewComponent from "./components/SurveyReviewComponent";
 import SurveyGradingComponent from "./components/SurveyGradingComponent";
+import CompletedSurveyComponent from "./components/CompletedSurveyComponent";
 
 import './styles.scss'
 
-const AssignedSurveyComponent = ({ surveyData, status, onQuestionAnswerGradingSave, onFinishGrading, onFinishButtonDisableStateChange, isGradingReview }) => {
+const AssignedSurveyComponent = ({ surveyData, status, onQuestionAnswerGradingSave, onFinishGrading, onFinishButtonDisableStateChange, isGradingReview, onForceSurveyReviewShow }) => {
 
 
   return (
@@ -34,6 +35,9 @@ const AssignedSurveyComponent = ({ surveyData, status, onQuestionAnswerGradingSa
               onFinishGrading={onFinishGrading}
               onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
             />
+          ),
+          "results": (
+            <CompletedSurveyComponent surveyData={surveyData} onForceSurveyReviewShow={onForceSurveyReviewShow}/>
           )
         }[status]}
       </div>
