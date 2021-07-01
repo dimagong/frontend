@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
 import AssignedSurveyComponent from "./components/AssignedSurveyComponent";
@@ -16,7 +16,7 @@ const {
 const AssignedSurvey = ({ selectedSurveyId }) => {
   const dispatch = useDispatch();
 
-  const [isGradingReview, setIsGradingReview] = useState(true);
+  const [isGradingReview, setIsGradingReview] = useState(false);
   const [isFinishButtonBlocked, setIsFinishButtonBlocked] = useState(false);
 
   const surveyData = useSelector(selectAssignedSurveyById(selectedSurveyId));
@@ -55,6 +55,10 @@ const AssignedSurvey = ({ selectedSurveyId }) => {
     setIsFinishButtonBlocked(newState)
   };
 
+  const handleForceSurveyReviewShowToggle = () => {
+    setIsGradingReview(!isGradingReview)
+  };
+
   let surveyStatus;
 
   if (!surveyData.finished_at) {
@@ -65,6 +69,10 @@ const AssignedSurvey = ({ selectedSurveyId }) => {
     surveyStatus = "results"
   }
 
+  useEffect(() => {
+    setIsGradingReview(false)
+  }, [selectedSurveyId]);
+
   return (
     <AssignedSurveyComponent
       surveyData={surveyData}
@@ -74,6 +82,7 @@ const AssignedSurvey = ({ selectedSurveyId }) => {
       onFinishGrading={handleFinishGrading}
       isFinishButtonDisabled={isFinishButtonBlocked}
       onFinishButtonDisableStateChange={handleFinishButtonDisableStateChange}
+      onForceSurveyReviewShow={handleForceSurveyReviewShowToggle}
     />
   )
 };
