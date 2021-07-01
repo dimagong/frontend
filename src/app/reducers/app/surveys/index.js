@@ -268,6 +268,7 @@ const surveysReducer = {
     toast.success("Survey added successfully")
   },
 
+
   getAssignedSurveysSuccess: (state, { payload }) => {
     state.selectedManagerAssignedSurveys = payload;
     state.isLoading = false;
@@ -311,6 +312,24 @@ const surveysReducer = {
   },
 
   pushAnswerSuccess: (state) => {
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  gradeSurveyQuestionAnswerSuccess: (state, {payload}) => {
+    const surveyIndex = state.selectedManagerAssignedSurveys.findIndex(survey => survey.id === payload.id);
+
+    state.selectedManagerAssignedSurveys[surveyIndex] = payload;
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  finishGradingSuccess: (state, {payload}) => {
+    const surveyIndex = state.selectedManagerAssignedSurveys.findIndex(survey => survey.id === payload.id);
+
+    state.selectedManagerAssignedSurveys[surveyIndex] = payload;
+
     state.isLoading = false;
     state.error = null;
   }

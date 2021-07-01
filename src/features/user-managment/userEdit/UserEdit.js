@@ -298,7 +298,7 @@ const UserEdit = (props, context) => {
                       onRowClicked={handleRowClick}
                       conditionalRowStyles={[
                         {
-                          when: row => selectedManager.onboarding ? row.id === selectedManager.onboarding.id : false,
+                          when: row => selectedManager.onboarding ? row.id === selectedManager.onboarding.id && !row.questions : false,
                           style: () => ({
                             backgroundColor: '#7367f0',
                             color: 'white',
@@ -306,7 +306,7 @@ const UserEdit = (props, context) => {
                           }),
                         },
                         {
-                          when: row => selectedAssignedSurvey ? row.id === selectedAssignedSurvey.id : false,
+                          when: row => selectedAssignedSurvey ? row.id === selectedAssignedSurvey.id && !row.d_form : false,
                           style: () => ({
                             backgroundColor: '#7367f0',
                             color: 'white',
@@ -396,7 +396,7 @@ const UserEdit = (props, context) => {
               )
           ),
           'surveyCreate': <SurveyAssign userId={manager.id} />,
-          'assignedSurvey': <AssignedSurvey surveyData={selectedAssignedSurvey} />
+          'assignedSurvey': <AssignedSurvey selectedSurveyId={selectedAssignedSurvey?.id} />
         }[contextFeature]}
 
 

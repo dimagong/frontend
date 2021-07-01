@@ -1,4 +1,4 @@
-import {all, put, call, takeLatest, select} from "redux-saga/effects";
+import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import userApi from "api/User/user";
 
@@ -35,6 +35,8 @@ const {
     getdFormTriggersRequest,
     getNotificationsRequest,
 
+    getSurveyTriggersRequest,
+
     getAllowedUserListSuccess,
     getAllowedUserListRequest,
     getAllowedUserListError,
@@ -51,6 +53,7 @@ function* getWorkflows() {
         yield put(setWorkflows(response));
         yield put(getdFormActionsRequest());
         yield put(getdFormTriggersRequest());
+        yield put(getSurveyTriggersRequest());
         yield put(getAllowedUserListRequest());
         const notifications = yield select(selectNotifications);
 
@@ -116,7 +119,6 @@ function* getAllowedUserList() {
         yield put(getAllowedUserListError(error));
     }
 }
-
 export default function* () {
     yield all([
         yield takeLatest(getWorkflowsRequest.type, getWorkflows),

@@ -11,7 +11,8 @@ import appSlice from 'app/slices/appSlice'
 const {
   setdForms,
   setdFormActions,
-  setdFormTriggers
+  setdFormTriggers,
+  setSurveyTriggers,
 } = onboardingSlice.actions;
 
 const {
@@ -33,9 +34,15 @@ const {
   getdFormActionsSuccess,
   getdFormActionsRequest,
   getdFormActionsError,
+
   getdFormTriggersSuccess,
   getdFormTriggersRequest,
   getdFormTriggersError,
+
+  getSurveyTriggersSuccess,
+  getSurveyTriggersRequest,
+  getSurveyTriggersError,
+
   submitdFormSuccess,
   submitdFormRequest,
   submitdFormError,
@@ -192,6 +199,17 @@ function* getdFormTriggers() {
   }
 }
 
+function* getSurveyTriggers() {
+  try {
+    const response = yield call(dFormApi.getSurveyTriggers);
+    yield put(getSurveyTriggersSuccess());
+    yield put(setSurveyTriggers(response))
+  } catch (error) {
+    console.log(error);
+    yield put(getSurveyTriggersError());
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getdFormsRequest.type, getdForms),
@@ -201,6 +219,9 @@ export default function* () {
     yield takeLatest(deletedFormRequest.type, deleteDFormTemplate),
     yield takeLatest(getdFormActionsRequest.type, getdFormActions),
     yield takeLatest(getdFormTriggersRequest.type, getdFormTriggers),
+
+    yield takeLatest(getSurveyTriggersRequest.type, getSurveyTriggers),
+
     yield takeLatest(submitdFormDataRequest.type, submitdFormData),
     yield takeLatest(submitdFormRequest.type, submitdForm),
     yield takeLatest(changedFormStatusRequest.type, changedFormStatus),

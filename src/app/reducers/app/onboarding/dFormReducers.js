@@ -46,6 +46,12 @@ const getdFormTriggersSuccess = (state) => {
   state.isError = null;
 };
 
+const getSurveyTriggersSuccess = (state) => {
+  state.isLoading = false;
+  state.isError = null;
+};
+
+
 const submitdFormSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
@@ -157,4 +163,6 @@ export default {
   submitdFormDataSuccess,
   changedFormStatusSuccess,
   updateDFormFromParentSuccess,
+
+  getSurveyTriggersSuccess
 };

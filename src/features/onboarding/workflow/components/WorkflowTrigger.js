@@ -9,28 +9,33 @@ import {
   UncontrolledButtonDropdown,
   DropdownMenu,
 } from "reactstrap";
-import { X, ChevronDown } from "react-feather";
+import {X, ChevronDown} from "react-feather";
 import WorkflowAction from "./WorkflowAction";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
   selectWorkflow,
   selectdFormTriggers,
 } from "app/selectors/onboardingSelectors";
-import { triggerTypes, types } from "./constants";
+import {triggerTypes, types, triggerByTriggerType, triggerTypesStrings, actionTypesByTriggerType} from "./constants";
 
 import onboardingSlice from 'app/slices/onboardingSlice';
+import {selectSurveyTriggers} from "../../../../app/selectors/onboardingSelectors";
 
 const {
   setWorkflowTriggers,
-} = onboardingSlice.actions
+} = onboardingSlice.actions;
 
-const WorkflowTrigger = ({ keyTrigger, trigger }) => {
+const WorkflowTrigger = ({keyTrigger, trigger}) => {
   const workflow = useSelector(selectWorkflow);
   const triggers = useSelector(selectdFormTriggers);
+  const surveyTriggers = useSelector(selectSurveyTriggers);
   const dispatch = useDispatch();
 
   const isTriggerDisabled = (type) => {
     if (type === types.dform.trigger) {
+      return false;
+    }
+    if (type === types.survey.trigger) {
       return false;
     }
     return true;
@@ -41,10 +46,23 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
     return trigger ? trigger.label : "none";
   };
   const getTriggerNameById = (id, type) => {
-    const trigger =
-      type === types.dform.trigger
-        ? triggers.find((trigger) => trigger.id === id)
-        : null;
+    if (!(type in triggerByTriggerType)) {
+      return 'none';
+    }
+    let trigger;
+    console.log(triggerByTriggerType[type].trigger, surveyTriggers);
+    if (type === 'survey_trigger') {
+      trigger =
+        type === triggerByTriggerType[type].trigger
+          ? surveyTriggers.find((trigger) => trigger.id === id)
+          : null;
+    } else {
+      trigger =
+        type === triggerByTriggerType[type].trigger
+          ? triggers.find((trigger) => trigger.id === id)
+          : null;
+    }
+    console.log(type, trigger);
     return trigger ? trigger.trigger : "none";
   };
 
@@ -63,11 +81,49 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
       setWorkflowTriggers(
         workflow.triggers.map((element) =>
           element.id === trigger.id
-            ? { ...element, ...triggerProperty }
+            ? {...element, ...triggerProperty}
             : element
         )
       )
     );
+  };
+
+  const getListTriggers = () => {
+    if (!trigger.trigger_type) {
+      return null;
+    }
+
+    if (
+      trigger.trigger_type === triggerTypesStrings.dForm &&
+      triggerByTriggerType[trigger.trigger_type].trigger === trigger.trigger_type
+    ) {
+      return triggers.map((trigger) => (
+        <DropdownItem
+          onClick={() =>
+            setTriggerProperty({trigger_id: trigger.id})
+          }
+          tag="button"
+        >
+          {trigger.trigger}
+        </DropdownItem>
+      ));
+    } else if (
+      trigger.trigger_type === triggerTypesStrings.survey
+      && triggerByTriggerType[trigger.trigger_type].trigger === trigger.trigger_type
+    ) {
+      return surveyTriggers.map((trigger) => (
+        <DropdownItem
+          onClick={() =>
+            setTriggerProperty({trigger_id: trigger.id})
+          }
+          tag="button"
+        >
+          {trigger.trigger}
+        </DropdownItem>
+      ));
+    }
+
+    return null;
   };
 
   const createAction = () => {
@@ -76,15 +132,15 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
         workflow.triggers.map((element) =>
           element.id === trigger.id
             ? {
-                ...element,
-                actions: [
-                  ...element.actions,
-                  {
-                    action_users: [],
-                    id: element.actions.length ? element.actions[element.actions.length - 1].id + 1 : 0  ,
-                  },
-                ],
-              }
+              ...element,
+              actions: [
+                ...element.actions,
+                {
+                  action_users: [],
+                  id: element.actions.length ? element.actions[element.actions.length - 1].id + 1 : 0,
+                },
+              ],
+            }
             : element
         )
       )
@@ -94,7 +150,7 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
   return (
     <ListGroupItem>
       <ListGroupItemHeading className="d-flex workflow-edit-font-trigger-head">
-        <X size="15" className="x-closer" onClick={removeTrigger} />
+        <X size="15" className="x-closer" onClick={removeTrigger}/>
         <div className="d-flex flex-wrap justify-content-center align-items-center w-100">
           <div className="mb-1 w-100 text-center text-primary">
             Trigger #{keyTrigger + 1}
@@ -102,13 +158,13 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
           <div className="text-center w-100">
             <UncontrolledButtonDropdown>
               <DropdownToggle
-                style={{ "border-radius": 0 }}
+                style={{"border-radius": 0}}
                 color="primary"
                 size="sm"
                 caret
               >
                 Onboarding
-                <ChevronDown size={15} />
+                <ChevronDown size={15}/>
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem tag="button">Onboarding</DropdownItem>
@@ -116,13 +172,13 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
             </UncontrolledButtonDropdown>
             <UncontrolledButtonDropdown>
               <DropdownToggle
-                style={{ "border-radius": 0 }}
+                style={{"border-radius": 0}}
                 color="primary"
                 size="sm"
                 caret
               >
                 {getTriggerTypeName(trigger.trigger_type)}
-                <ChevronDown size={15} />
+                <ChevronDown size={15}/>
               </DropdownToggle>
               <DropdownMenu>
                 {triggerTypes.map((trigger) => (
@@ -143,27 +199,18 @@ const WorkflowTrigger = ({ keyTrigger, trigger }) => {
             <UncontrolledButtonDropdown>
               <DropdownToggle
                 disabled={isTriggerDisabled(trigger.trigger_type)}
-                style={{ "border-radius": 0 }}
+                style={{"border-radius": 0}}
                 color="primary"
                 size="sm"
                 caret
               >
                 {getTriggerNameById(trigger.trigger_id, trigger.trigger_type)}
-                <ChevronDown size={15} />
+                <ChevronDown size={15}/>
               </DropdownToggle>
               <DropdownMenu>
-                {types.dform.trigger === trigger.trigger_type
-                  ? triggers.map((trigger) => (
-                      <DropdownItem
-                        onClick={() =>
-                          setTriggerProperty({ trigger_id: trigger.id })
-                        }
-                        tag="button"
-                      >
-                        {trigger.trigger}
-                      </DropdownItem>
-                    ))
-                  : null}
+                {
+                  getListTriggers()
+                }
               </DropdownMenu>
             </UncontrolledButtonDropdown>
           </div>

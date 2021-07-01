@@ -4,6 +4,7 @@ export const selectNotification = (state) => state.onboarding.notification.notif
 export const selectdForms = (state) => state.onboarding.dForm.dForms;
 export const selectdForm = (state) => state.onboarding.dForm.dForm;
 export const selectdFormTriggers = (state) =>  state.onboarding.dForm.triggers;
+export const selectSurveyTriggers = (state) =>  state.onboarding.survey.triggers;
 export const selectdFormActions = (state) =>  state.onboarding.dForm.actions;
 
 export const selectWorkflows = (state) => state.onboarding.workflow.workflows;

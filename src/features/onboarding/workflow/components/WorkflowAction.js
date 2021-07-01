@@ -12,7 +12,7 @@ import {
   actionTypes,
   types,
   userTypeOptions,
-  userTargetTypes,
+  userTargetTypes, actionTypesByTriggerType,
 } from "./constants";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -145,7 +145,8 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
               <ChevronDown size={15} />
             </DropdownToggle>
             <DropdownMenu>
-              {actionTypes.map((action, label) => (
+              {
+                actionTypesByTriggerType[trigger.trigger_type].map((action, label) => (
                 <DropdownItem
                   onClick={() =>
                     setActionProperty({
@@ -157,7 +158,8 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
                 >
                   {action.label}
                 </DropdownItem>
-              ))}
+              ))
+              }
             </DropdownMenu>
           </UncontrolledButtonDropdown>
           <UncontrolledButtonDropdown>
