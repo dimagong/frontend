@@ -138,6 +138,13 @@
         max-width: 70%;
       }
     }
+    .question-time {
+      position: absolute;
+      right: 10px;
+      top: 5px;
+      font-size: 15px;
+      color: #4b484d;
+    }
     .answer {
       &.free-text {
         .answer-review {
@@ -195,6 +202,13 @@
     cursor: default;
     box-shadow: none;
     padding: 0 6px 0 6px;
+    .question-time {
+      position: absolute;
+      right: 10px;
+      top: 5px;
+      font-size: 15px;
+      color: #4b484d;
+    }
     .options{
       .option {
         cursor: pointer;

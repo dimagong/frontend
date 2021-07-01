@@ -1,6 +1,7 @@
 import React, {useState, useMemo, useEffect} from 'react';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 import { CheckCircleOutline, HighlightOff } from '@material-ui/icons'
+import { getTimeDifference } from "utility/common";
 
 import _ from 'lodash'
 
@@ -151,6 +152,9 @@ const GradingQuestion = ({
     <div className={`question question-${displayType}`}>
       <div className={"question-title"}>
         {`Question ${questionNumber}`}
+      </div>
+      <div className="question-time">
+        {getTimeDifference(answer.started_at, answer.finished_at)}
       </div>
       <div className={"question-description"}>
         {body}
