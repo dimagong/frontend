@@ -3,7 +3,6 @@ import LineChart from "./DashboardCharts/LineChart";
 import appSlice from "app/slices/appSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectActivityTypes,
   selectDashboardDataByKey,
   selectDashboardDForms,
   selectManagers
@@ -16,7 +15,6 @@ import CloseChart from "assets/img/svg/closeChart.svg";
 import FilterIcon from "assets/img/svg/filter.svg";
 import moment from "moment";
 import FilterBox from "./FilterBox";
-import {selectOrganizations} from "../../../../app/selectors/groupSelector";
 
 const {
   getDashboardDataRequest,
@@ -24,7 +22,7 @@ const {
   getDashboardSnapshotDataRequest
 } = appSlice.actions;
 
-const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, deleteComponent, dForms, allApplications }) => {
+const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, deleteComponent, dForms }) => {
   let settings;
   if (dashboardSettings) {
     settings = {...dashboardSettings}
@@ -38,18 +36,14 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     }
   }
   const dispatch = useDispatch();
-  //const dashboardData = useSelector(selectDashboardData)
   const dashboardData = useSelector(selectDashboardDataByKey(settings.key))
 
   const wrapperRefFilterButton = useRef(null);
-  //const [filter, setFilter] = useState({Roles: [], Organizations: [], 'Activity types': [], Application: []})
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
   const [isMapFilterBoxOpen, setIsMapFilterBoxOpen] = useState(false);
   const [tabLabel, setTabLabel] = useState('')
   const [isFilterTagOpen, setIsFilterTagOpen] = useState(false)
   const [filter, setFilter] = useState({Roles: [], Organizations: [], 'Activity types': [], Application: []})
-  const organizationsObjects = useSelector(selectOrganizations);
-  const activityTypes = useSelector(selectActivityTypes);
   const managers = useSelector(selectManagers);
   const dashboardDForms = useSelector(selectDashboardDForms)
 
@@ -84,7 +78,6 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
             page: 1,
             'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'),
             dForm: settings.dForm,
-            allApplications: allApplications,
             settings: settings
           }))
         } else {
@@ -93,7 +86,6 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
             page: 1,
             'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'),
             dForm: settings.dForm,
-            allApplications: allApplications,
             settings: settings
           }))
         }
@@ -114,9 +106,9 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
       <div style={{width: '100%'}}
            className={'dashboard-one-chart'}>
             <span className={'arrow-left'}>
-              <img src={settings.state !== 'small' ? ArrowLeft : ArrowRight}
+              <img src={settings.state !== 'small' ? ArrowLeft : ArrowRight} alt={'arrow'}
                    onClick={handleChangeChart}/>
-              <img src={CloseChart} className={'close-chart'}
+              <img src={CloseChart} className={'close-chart'} alt={'cross'}
                    onClick={() => deleteComponent(settings.key)}/>
             </span>
         <span className={'change-chart-days ' + (settings.state === 'small' ? ' change-chart-days-smaller' : '')}>
@@ -150,7 +142,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
           </span>}
         {settings.state === 'middle' &&
         <span className={'arrow-open-activities'} onClick={handleChangeList}>
-                <img src={ArrowDown}/>
+                <img src={ArrowDown} alt={'arrow-down'}/>
               </span>}
         <LineChart
           settings={settings}
@@ -170,10 +162,6 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
         wrapperRefFilterButton={wrapperRefFilterButton}
         isFilterBoxOpen={isFilterBoxOpen}
         setIsFilterBoxOpen={setIsFilterBoxOpen}
-        tabLabel={tabLabel}
-        setTabLabel={setTabLabel}
-        isFilterTagOpen={isFilterTagOpen}
-        setIsFilterTagOpen={setIsFilterTagOpen}
         handleFilterBox={handleFilterBox}
         dForms={dForms}
         updateSettings={updateSettings}

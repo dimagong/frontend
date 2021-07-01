@@ -5,77 +5,6 @@ export const getChartConfig = ({ type, data }) => {
     return configApplicationSnapshotChart(data);
   }
   return configApplicationChart(data);
-  switch (type) {
-    case 'applications': return configApplicationChart(data);
-    default: return configDefaultChart(data);
-  }
-}
-
-const configDefaultChart = ({dataToShow, isSmall, title}) => {
-  if (!dataToShow) {
-    return null;
-  }
-
-  return {
-    type: 'line',
-    data: dataToShow,
-    options: {
-      animated: true,
-      responsive: true,
-      aspectRatio: isSmall ? 1.46 : 3,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          align: isSmall ? 'end' : 'center',
-          labels: {
-            usePointStyle: true,
-          },
-        },
-        title: {
-          padding: {
-            bottom: 25
-          },
-          font: {
-            size: 18
-          },
-          color: '#707070',
-          display: true,
-          text: `     ${title}`,
-          align: 'start',
-        }
-      },
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
-      scales: {
-        x: {
-          grid: {
-            display: null,
-          }
-        },
-        y: {
-          ticks: {
-            stepSize: 2
-          },
-          grid: {
-            display: null,
-          }
-        },
-      },
-      layout: {
-        padding: {
-          left: 5,
-          top: 10,
-          right: 20
-        }
-      }
-    },
-  };
-}
-
-const getDate = (index) => {
-  return moment().subtract(7 - index, 'days').format('ddd');
 }
 
 const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm}) => {
@@ -160,8 +89,6 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm})
           title: {
             display: true,
           },
-          //type: 'category',
-          //labels: ['Approved', 'Rejected', 'Submitted', 'Unsubmitted', 'In progress'],
           grid: {
             display: null,
           }
@@ -247,10 +174,6 @@ const configApplicationSnapshotChart = ({dataToShow, isSmall, title, daysNumber,
         x: {
           type: 'category',
           stacked: true,
-         // ticks: {
-            //callback: getTicks,
-            //align: 'end',
-        //},
           grid: {
             display: null,
           }
@@ -263,8 +186,6 @@ const configApplicationSnapshotChart = ({dataToShow, isSmall, title, daysNumber,
           title: {
             display: true,
           },
-          //type: 'category',
-          //labels: ['Approved', 'Rejected', 'Submitted', 'Unsubmitted', 'In progress'],
           grid: {
             display: null,
           }

@@ -126,6 +126,15 @@ const UserRoles = ({manager, userOrganizations, className}) => {
     dispatch(getUserOrganizationsRequest(manager.id))
   }, [manager.id])
 
+  useEffect(() => {
+    console.log('manager', manager)
+    if (manager?.organizations?.corporation?.length > 0 && manager?.organizations?.network?.length > 1) {
+      manager.organizations.network.forEach(item => {
+
+      })
+    }
+  }, [manager.organizations])
+
   return (
     <div className={`user-roles ${className ? className : ""}`}>
       <div className="permissions-title">

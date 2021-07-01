@@ -15,7 +15,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import FilterIcon from "assets/img/svg/filter.svg";
 import FilterBox from "./FilterBox";
 import {useOutsideAlerter} from "hooks/useOutsideAlerter";
-import {selectActivityTypes, selectCurrentManager} from "app/selectors/userSelectors";
+import {selectActivityTypes} from "app/selectors/userSelectors";
 
 const dateFormat = 'DD/MM/YYYY';
 
@@ -27,7 +27,7 @@ const {
   setContext,
 } = appSlice.actions;
 
-const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings, usersActivities, handleChangeList, wrapperRefFilterButton, filter, setFilter, isFilterBoxOpen, setIsFilterBoxOpen, tabLabel, setTabLabel, isFilterTagOpen, setIsFilterTagOpen }) => {
+const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings, usersActivities, handleChangeList, wrapperRefFilterButton, filter, setFilter, isFilterBoxOpen, setIsFilterBoxOpen}) => {
   const dispatch = useDispatch();
   const isLoadingData = useSelector(selectLoading);
   const managers = useSelector(selectManagers);
@@ -154,6 +154,28 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
     return 0;
   }
 
+  const FilterIconAndTabsBox = () => {
+    return <span>
+                    {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
+                      <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
+                    </span>}
+                    {settings.filter && Object.keys(settings.filter).map(key => {
+                      if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(settings.filter[key]) && settings.filter[key].length > 0) {
+                        return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
+                          {key === 'Application'
+                            ? <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
+                            : <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
+                      <span onClick={() => removeFilterPart(key)} className={'close-nav'}><CloseIcon/></span>
+                    </Button>
+                      }
+                    })}
+                    <span className={'arrow-close-activities'} onClick={handleChangeList}>
+                      <img src={ArrowUp}/>
+                    </span>
+                  </span>
+
+  }
+
 
   if (settings.state !== 'large') return null;
 
@@ -177,24 +199,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
         ? <span style={{position: 'relative'}}>
             <div className={'action-date'} style={{position: 'relative', paddingLeft: 5}}>
                 {'Today'}
-                  <span>
-                    {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
-                      <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
-                    </span>}
-                    {settings.filter && Object.keys(settings.filter).map(key => {
-                      if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(settings.filter[key]) && settings.filter[key].length > 0) {
-                        return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
-                          {key === 'Application'
-                            ? <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
-                            : <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
-                      <span onClick={() => removeFilterPart(key)} className={'close-nav'}><CloseIcon/></span>
-                    </Button>
-                      }
-                    })}
-                    <span className={'arrow-close-activities'} onClick={handleChangeList}>
-                      <img src={ArrowUp}/>
-                    </span>
-                  </span>
+                <FilterIconAndTabsBox/>
               </div>
           <div style={{textAlign: "center", paddingTop: 50}}>
             <h1 style={{padding: '5vh 5px'}}>No activities found</h1>
@@ -206,24 +211,8 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
               <div className={'action-date'} style={{position: 'relative'}}>
                 {checkDate(item.date) && item.date}
                 {key === getFirstCheckedDate() &&
-                  <span>
-                    {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
-                      <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
-                    </span>}
-                    {settings.filter && Object.keys(settings.filter).map(key => {
-                     if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(settings.filter[key]) && settings.filter[key].length > 0) {
-                        return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
-                      {key === 'Application'
-                            ? <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() + 's' : key.toLowerCase()}</span>
-                            : <span className={'nav-text'}>{settings.filter[key].length} {settings.filter[key].length > 1 ? key.toLowerCase() : key.toLowerCase().slice(0, -1)}</span>}
-                      <span onClick={() => removeFilterPart(key)} className={'close-nav'}><CloseIcon/></span>
-                    </Button>
-                      }
-                    })}
-                    <span className={'arrow-close-activities'} onClick={handleChangeList}>
-                      <img src={ArrowUp}/>
-                    </span>
-                  </span>}
+                  <FilterIconAndTabsBox/>
+                }
               </div>
               {item.data.map(currAction => {
                 if (!currAction.options.hasOwnProperty('show_in_dashboard') || !currAction.options.show_in_dashboard) {

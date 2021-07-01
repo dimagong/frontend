@@ -127,7 +127,7 @@ const userApi = {
         'created_at[from]': payload.from,
       }
     if (payload?.dForm?.name === 'Applications Snapshot') {
-      if (payload?.allApplications && payload?.settings?.dForm.id) {
+      if (payload?.settings?.dForm.id) {
         params.app_ids = payload.settings.dForm.id;
       } else {
         params.app_ids = [];
