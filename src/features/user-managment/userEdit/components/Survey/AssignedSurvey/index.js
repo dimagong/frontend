@@ -55,9 +55,15 @@ const AssignedSurvey = ({ selectedSurveyId }) => {
     setIsFinishButtonBlocked(newState)
   };
 
-  const handleForceSurveyReviewShowToggle = () => {
-    setIsGradingReview(!isGradingReview)
+  const handleForceSurveyReviewShow = () => {
+    setIsGradingReview(true)
   };
+
+  const handleForceSurveyReviewHide = () => {
+    setIsGradingReview(false)
+  };
+
+
 
   let surveyStatus;
 
@@ -68,6 +74,8 @@ const AssignedSurvey = ({ selectedSurveyId }) => {
   } else if (surveyData.graded_at && !isGradingReview) {
     surveyStatus = "results"
   }
+
+  console.log("IS GRADING", isGradingReview);
 
   useEffect(() => {
     setIsGradingReview(false)
@@ -82,7 +90,8 @@ const AssignedSurvey = ({ selectedSurveyId }) => {
       onFinishGrading={handleFinishGrading}
       isFinishButtonDisabled={isFinishButtonBlocked}
       onFinishButtonDisableStateChange={handleFinishButtonDisableStateChange}
-      onForceSurveyReviewShow={handleForceSurveyReviewShowToggle}
+      onForceSurveyReviewShow={handleForceSurveyReviewShow}
+      onForceSurveyReviewHide={handleForceSurveyReviewHide}
     />
   )
 };
