@@ -25,6 +25,7 @@ export const onboardingInitialState = {
   workflow: {
     workflows: [],
     workflow: null,
+    allowedUserList: []
   },
 };
 

@@ -19,6 +19,7 @@ import {
   selectWorkflow,
   selectNotifications,
   selectdFormActions,
+  selectAllowedUserList
 } from "app/selectors/onboardingSelectors";
 import { selectManagers } from "app/selectors/userSelectors";
 import Select from "react-select";
@@ -36,7 +37,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
   const workflow = useSelector(selectWorkflow);
   const actions = useSelector(selectdFormActions);
   const notification = useSelector(selectNotifications);
-  const managers = useSelector(selectManagers);
+  const managers = useSelector(selectAllowedUserList);
   const [actionData, setActionData] = useState([]);
 
   useEffect(() => {
