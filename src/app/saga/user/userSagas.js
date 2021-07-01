@@ -102,7 +102,12 @@ const {
   getDashboardSnapshotDataRequest,
   getDashboardSnapshotDataSuccess,
 
-  getUserOnboardingRequest
+  getUserOnboardingRequest,
+  getUserOnboardingRequest,
+
+  switchUserOrganizationRequest,
+  switchUserOrganizationSuccess,
+  switchUserOrganizationError
 } = appSlice.actions;
 
 function* getProfile() {
@@ -112,6 +117,7 @@ function* getProfile() {
     yield put(getProfileSuccess(response));
     yield put(loginWithJWT(response));
     yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}));
+    yield put(getFilterRequest());
 
   } catch (error) {
     console.log(error);
@@ -304,6 +310,17 @@ function* removeUserOrganization({payload}) {
   }
 }
 
+function* switchUserOrganization({payload}) {
+  const response = yield call(userApi.removeUserOrganization, payload.delOrg);
+  if (response?.message) {
+    yield put(switchUserOrganizationError(response.message))
+  }
+  else {
+    yield put(removeUserOrganizationSuccess({response: payload.delOrg, userId: payload.delOrg.userId}));
+    yield put(addUserOrganizationRequest(payload.addOrg));
+  }
+}
+
 function* allowUserAbility({payload}) {
   const response = yield call(userApi.userAbilityAllow, payload);
 
@@ -397,6 +414,7 @@ export default function* () {
     yield takeLatest(getUserOrganizationsRequest.type, getUserOrganizations),
     yield takeLatest(addUserOrganizationRequest.type, addUserOrganization),
     yield takeLatest(removeUserOrganizationRequest.type, removeUserOrganization),
+    yield takeLatest(switchUserOrganizationRequest.type, switchUserOrganization),
     yield takeLatest(allowUserAbilityRequest.type, allowUserAbility),
     yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility),
     yield takeLatest(removeUserNotifyRequest.type, removeUserNotify),
