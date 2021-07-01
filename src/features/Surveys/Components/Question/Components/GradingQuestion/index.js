@@ -20,12 +20,12 @@ const MultipleChoice = ({ options, correctAnswerId, answer, points }) => {
         <div className="answer-correctness">
           {selectedAnswer.id === correctAnswerId ? (
             <div className="correct-answer">
-              <CheckCircleOutline style={{"font-size": "30px", color: "#00BF00"}} />
+              <CheckCircleOutline style={{fontSize: "30px", color: "#00BF00"}} />
               <span className="correct-answer_label">+ {points} points</span>
             </div>
           ) : (
             <div className="wrong-answer">
-              <HighlightOff style={{"font-size": "30px", color: "#D42D2D"}} />
+              <HighlightOff style={{fontSize: "30px", color: "#D42D2D"}} />
             </div>
           )}
         </div>

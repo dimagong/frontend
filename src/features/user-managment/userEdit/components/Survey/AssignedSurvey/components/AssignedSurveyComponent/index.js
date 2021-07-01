@@ -6,7 +6,7 @@ import CompletedSurveyComponent from "./components/CompletedSurveyComponent";
 
 import './styles.scss'
 
-const AssignedSurveyComponent = ({ surveyData, status, onQuestionAnswerGradingSave, onFinishGrading, onFinishButtonDisableStateChange, isGradingReview, onForceSurveyReviewShow }) => {
+const AssignedSurveyComponent = ({ surveyData, status, onQuestionAnswerGradingSave, onFinishGrading, onFinishButtonDisableStateChange, isGradingReview, onForceSurveyReviewShow, onForceSurveyReviewHide }) => {
 
 
   return (
@@ -34,6 +34,7 @@ const AssignedSurveyComponent = ({ surveyData, status, onQuestionAnswerGradingSa
               onQuestionAnswerGradingSave={onQuestionAnswerGradingSave}
               onFinishGrading={onFinishGrading}
               onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
+              onForceSurveyReviewHide={onForceSurveyReviewHide}
             />
           ),
           "results": (
