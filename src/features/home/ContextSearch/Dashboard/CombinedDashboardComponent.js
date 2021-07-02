@@ -96,7 +96,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
           'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'),
           settings: settings}))
       }
-  }, [settings.daysNumber, settings['filter[value]'], settings.dForm, settings.user_groups, settings.ability_user_ids, dashboardDForms, managers]);
+  }, [settings.daysNumber, settings['filter[value]'], settings.dForm, settings.user_groups, settings.ability_user_ids, dashboardDForms, managers?.length]);
 
 
   return (<div className={'combined-dashboard-component'} style={settings.state === 'small'
