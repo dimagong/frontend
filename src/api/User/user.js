@@ -8,6 +8,7 @@ import {
   getUserAvatarPath,
   deleteUserAvatarPath,
   getUsersDataPath,
+  getAllowedUserListPath,
   createUserOnboarding,
   updateUserPath,
   updateUserRolesPath,
@@ -280,6 +281,17 @@ const userApi = {
         params: {
           page: 1,
         },
+      });
+      return result ? result.data.data : result;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async getAllowedUserListData() {
+    try {
+      const result = await instance({
+        url: getAllowedUserListPath,
+        method: "GET",
       });
       return result ? result.data.data : result;
     } catch (err) {

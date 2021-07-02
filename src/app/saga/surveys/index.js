@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest } from "redux-saga/effects";
+import { all, put, call, takeLatest, takeEvery } from "redux-saga/effects";
 
 import surveysApi from "api/surveys";
 
@@ -102,6 +102,14 @@ const {
   pushAnswerSuccess,
   pushAnswerRequest,
   pushAnswerError,
+
+  gradeSurveyQuestionAnswerSuccess,
+  gradeSurveyQuestionAnswerRequest,
+  gradeSurveyQuestionAnswerError,
+
+  finishGradingSuccess,
+  finishGradingRequest,
+  finishGradingError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -356,6 +364,26 @@ function* pushAnswer(payload) {
   }
 }
 
+function* gradeSurveyQuestionAnswer(payload) {
+  const response = yield call(surveysApi.gradeSurveyQuestionAnswer, payload);
+
+  if (response?.message) {
+    yield put(gradeSurveyQuestionAnswerError(response.message))
+  } else {
+    yield put(gradeSurveyQuestionAnswerSuccess(response))
+  }
+}
+
+function* finishGrading(payload) {
+  const response = yield call(surveysApi.finishGrading, payload);
+
+  if (response?.message) {
+    yield put(finishGradingError(response.message))
+  } else {
+    yield put(finishGradingSuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -382,5 +410,7 @@ export default function* () {
     yield takeLatest(getCurrentQuestionForAssignedSurveyRequest.type, getCurrentQuestionForAssignedSurvey),
     yield takeLatest(beginSurveyRequest.type, beginSurvey),
     yield takeLatest(pushAnswerRequest.type, pushAnswer),
+    yield takeEvery(gradeSurveyQuestionAnswerRequest.type, gradeSurveyQuestionAnswer),
+    yield takeLatest(finishGradingRequest.type, finishGrading),
   ]);
 }

@@ -4,10 +4,10 @@ import classNames from "classnames";
 
 import './styles.scss'
 
-const LoadingButton = ({ onClick, isLoading, value, className, color, ...rest }) => {
+const LoadingButton = ({ onClick, isLoading, value, className, color, disabled, ...rest }) => {
   return (
     <Button
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       onClick={onClick}
       className={classNames("loading-button", className)}
       color={color}

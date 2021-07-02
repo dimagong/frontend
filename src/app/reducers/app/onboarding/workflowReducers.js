@@ -5,6 +5,11 @@ const getWorkflowsSuccess = (state) => {
   state.isError = null;
 };
 
+const getAllowedUserListSuccess = (state, {payload}) => {
+  state.isLoading = false;
+  state.isError = null;
+};
+
 const createWorkflowSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
@@ -27,4 +32,5 @@ export default {
   createWorkflowSuccess,
   updateWorkflowSuccess,
   deleteWorkflowSuccess,
+  getAllowedUserListSuccess
 };

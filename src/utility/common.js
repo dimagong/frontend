@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -34,3 +36,30 @@ export function mergeObjects(obj1, obj2) {
   });
   return obj1;
 }
+
+export const getTimeDifference = (from, to ) => {
+
+  const addZero = (number) => {
+    let toString = number.toString();
+
+    if (toString.length < 2) {
+      return "0" + toString;
+    } else {
+      return toString;
+    }
+  };
+
+  const endTime = to ? moment.utc(to) : moment();
+  const startTime = moment.utc(from);
+
+  const diffDuration = moment.duration(endTime.diff(startTime));
+  let result;
+
+  if (diffDuration.asMinutes() > 59) {
+    result = addZero(Math.floor(diffDuration.asHours())) + ":" + addZero(diffDuration.minutes()) + ":" + addZero(diffDuration.seconds())
+  } else {
+    result = addZero(diffDuration.minutes()) + ":" + addZero(diffDuration.seconds())
+  }
+
+  return result;
+};

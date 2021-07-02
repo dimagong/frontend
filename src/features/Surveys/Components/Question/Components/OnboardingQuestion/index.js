@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
+import { getTimeDifference } from "utility/common";
 
 const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
 
@@ -48,16 +49,22 @@ const OnboardingQuestion = ({
   answer,
 }) => {
 
+  const [stopwatchTime, setStopwatchTime] = useState(getTimeDifference(questionData.started_at));
+
   const {
     body,
     answer_structure: {type, options}
   } = questionData;
 
+  setInterval(() => setStopwatchTime(getTimeDifference(questionData.started_at)), 1000);
 
   return (
     <div className={`question question-${displayType}`}>
       <div className={"question-title"}>
         {`Question ${questionNumber}`}
+      </div>
+      <div className="question-time">
+        {stopwatchTime}
       </div>
       <div className={"question-description"}>
         {body}
