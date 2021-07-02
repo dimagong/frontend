@@ -14,6 +14,15 @@ import {
   getQuestionVersionDeleteUrl,
   getSurveyVersionsFetchUrl,
   getSurveyVersionDeleteUrl,
+  getSurveyWorkFlowsAndReviewersUrl,
+  assignSurvey,
+  getAssignedSurveysGetUrl,
+  getAssignedSurveysForOnboarding,
+  getBeginSurveyUrl,
+  getCurrentQuestionForAssignedSurveyUrl,
+  getSurveyAnswerPushUrl,
+  getGradeSurveyQuestionAnswerUrl,
+  getFinishGradingUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -68,6 +77,43 @@ const surveysApi = {
   async deleteSurveyVersion({ payload }) {
     return await requestLayout(getSurveyVersionDeleteUrl(payload), "DELETE")
   },
+
+  async getSurveyWorkFlowsAndReviewers() {
+    return await requestLayout(getSurveyWorkFlowsAndReviewersUrl, "GET")
+  },
+
+  async assignNewSurvey({ payload }) {
+    return await requestLayout(assignSurvey, "POST", payload)
+  },
+
+  async getAssignedSurveys({ payload }) {
+    return await requestLayout(getAssignedSurveysGetUrl(payload), "GET")
+  },
+
+  async getAssignedSurveysForOnboarding() {
+    return await requestLayout(getAssignedSurveysForOnboarding, "GET")
+  },
+
+  async getCurrentQuestionForAssignedSurvey({ payload }) {
+    return await requestLayout(getCurrentQuestionForAssignedSurveyUrl(payload), "GET")
+  },
+
+  async beginSurvey({ payload }) {
+    return await requestLayout(getBeginSurveyUrl(payload), "GET")
+  },
+
+  async pushSurveyQuestionAnswer({ payload }) {
+    return await requestLayout(getSurveyAnswerPushUrl(payload.surveyId), "PUT", payload.data)
+  },
+
+  async gradeSurveyQuestionAnswer({ payload }) {
+    return await requestLayout(getGradeSurveyQuestionAnswerUrl(payload.surveyId), "PUT", payload.data)
+  },
+
+  async finishGrading({ payload }) {
+    return await requestLayout(getFinishGradingUrl(payload), "PUT")
+  },
+
 };
 
 export default surveysApi;

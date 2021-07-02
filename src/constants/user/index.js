@@ -12,6 +12,7 @@ export const getUserAvatarPath =  "/api/file/user";
 export const updateUserAvatarPath = (id) => `/api/file/user/${id}/avatar`;
 export const deleteUserAvatarPath = (id) => `/api/file/${id}`;
 export const getUsersDataPath = "api/user";
+export const getAllowedUserListPath = "api/user/allowed-user-list";
 export const createUserOnboarding = "api/onboarding";
 export const deleteUserOnboarding = "api/onboarding";
 export const createUserPath = "/api/user"

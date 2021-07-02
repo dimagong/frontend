@@ -155,7 +155,10 @@ const UserProfileEdit = ({manager, onEditClose}) => {
                       manager.invited && !manager.invited.accepted_at ?
                         <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
                                                invitationText="Resend invitation"/> :
-                        manager?.permissions?.ability !== "lead" && manager?.permissions?.ability !== "suspect" && manager.groups.length ?
+                        manager?.permissions?.ability !== "lead" &&
+                        manager?.permissions?.ability !== "suspect" &&
+                        manager?.permissions?.ability !== "archived" &&
+                        manager.groups.length ?
                           <UserInvitationsCreate send={true} resend={false} trash={false}
                                                  user={manager}/>
                           : <p style={{paddingLeft: "0.2rem"}}>User cannot be invited</p>

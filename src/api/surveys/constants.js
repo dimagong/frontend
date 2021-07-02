@@ -11,3 +11,13 @@ export const getQuestionVersionsFetchUrl = (questionId) => `api/survey-question/
 export const getQuestionVersionDeleteUrl = (questionVersionId) => `api/survey-question-version/${questionVersionId}`;
 export const getSurveyVersionsFetchUrl = (surveyId) => `api/survey-interaction/${surveyId}/versions`;
 export const getSurveyVersionDeleteUrl = (versionId) => `api/survey-interaction-version/${versionId}`;
+export const getSurveyWorkFlowsAndReviewersUrl = 'api/survey-assigned-interaction/relations';
+export const assignSurvey = `api/survey-assigned-interaction`;
+export const getAssignedSurveysGetUrl = (userId) => `api/survey-assigned-interaction/${userId}`;
+export const getAssignedSurveysForOnboarding = 'api/survey-passing';
+export const getBeginSurveyUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId}/begin`;
+export const getCurrentQuestionForAssignedSurveyUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId}/current-question`;
+export const getSurveyAnswerPushUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId} `;
+export const getGradeSurveyQuestionAnswerUrl = (assignedSurveyId) => `api/survey-assigned-interaction/${assignedSurveyId}/update-grade`;
+export const getFinishGradingUrl = (assignedSurveyId) => `api/survey-assigned-interaction/${assignedSurveyId}/finish-grade`;
+

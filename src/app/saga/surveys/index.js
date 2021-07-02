@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest } from "redux-saga/effects";
+import { all, put, call, takeLatest, takeEvery } from "redux-saga/effects";
 
 import surveysApi from "api/surveys";
 
@@ -74,6 +74,42 @@ const {
   deleteSurveyVersionSuccess,
   deleteSurveyVersionRequest,
   deleteSurveyVersionError,
+
+  getSurveyWorkFlowsAndReviewersSuccess,
+  getSurveyWorkFlowsAndReviewersRequest,
+  getSurveyWorkFlowsAndReviewersError,
+
+  assignSurveySuccess,
+  assignSurveyRequest,
+  assignSurveyError,
+
+  getAssignedSurveysSuccess,
+  getAssignedSurveysRequest,
+  getAssignedSurveysError,
+
+  getAssignedSurveysForOnboardingSuccess,
+  getAssignedSurveysForOnboardingRequest,
+  getAssignedSurveysForOnboardingError,
+
+  getCurrentQuestionForAssignedSurveySuccess,
+  getCurrentQuestionForAssignedSurveyRequest,
+  getCurrentQuestionForAssignedSurveyError,
+
+  beginSurveySuccess,
+  beginSurveyRequest,
+  beginSurveyError,
+
+  pushAnswerSuccess,
+  pushAnswerRequest,
+  pushAnswerError,
+
+  gradeSurveyQuestionAnswerSuccess,
+  gradeSurveyQuestionAnswerRequest,
+  gradeSurveyQuestionAnswerError,
+
+  finishGradingSuccess,
+  finishGradingRequest,
+  finishGradingError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -254,6 +290,100 @@ function* deleteSurveyVersion(payload) {
   }
 }
 
+function* getSurveyWorkFlowsAndReviewers() {
+  const response = yield call(surveysApi.getSurveyWorkFlowsAndReviewers);
+
+  if (response?.message) {
+    yield put(getSurveyWorkFlowsAndReviewersError(response.message));
+  } else {
+    yield put(getSurveyWorkFlowsAndReviewersSuccess(response))
+  }
+}
+
+function* assignSurvey(payload) {
+  const response = yield call(surveysApi.assignNewSurvey, payload);
+
+  if (response?.message) {
+    yield put(assignSurveyError(response.message));
+  } else {
+    yield put(assignSurveySuccess(response))
+  }
+}
+
+function* getAssignedSurveys(payload) {
+  const response = yield call(surveysApi.getAssignedSurveys, payload);
+
+  if (response?.message) {
+    yield put(getAssignedSurveysError(response.message));
+  } else {
+    yield put(getAssignedSurveysSuccess(response))
+  }
+}
+
+function* getAssignedSurveysForOnboarding() {
+  const response = yield call(surveysApi.getAssignedSurveysForOnboarding);
+
+  if (response?.message) {
+    yield put(getAssignedSurveysForOnboardingError(response.message));
+  } else {
+    yield put(getAssignedSurveysForOnboardingSuccess(response))
+  }
+}
+
+function* getCurrentQuestionForAssignedSurvey(payload) {
+  const response = yield call(surveysApi.getCurrentQuestionForAssignedSurvey, payload);
+
+  if (response?.message) {
+    yield put(getCurrentQuestionForAssignedSurveyError(response.message))
+  } else {
+    yield put(getCurrentQuestionForAssignedSurveySuccess(response))
+  }
+}
+
+function* beginSurvey(payload) {
+  const response = yield call(surveysApi.beginSurvey, payload);
+
+  if (response?.message) {
+    yield put(beginSurveyError(response.message))
+  } else {
+
+    yield put(getCurrentQuestionForAssignedSurveyRequest(payload.payload));
+
+    yield put(beginSurveySuccess(response))
+  }
+}
+
+function* pushAnswer(payload) {
+  const response = yield call(surveysApi.pushSurveyQuestionAnswer, payload);
+
+  if (response?.message) {
+    yield put(pushAnswerError(response.message))
+  } else {
+    yield put(getCurrentQuestionForAssignedSurveyRequest(payload.payload.surveyId));
+    yield put(pushAnswerSuccess())
+  }
+}
+
+function* gradeSurveyQuestionAnswer(payload) {
+  const response = yield call(surveysApi.gradeSurveyQuestionAnswer, payload);
+
+  if (response?.message) {
+    yield put(gradeSurveyQuestionAnswerError(response.message))
+  } else {
+    yield put(gradeSurveyQuestionAnswerSuccess(response))
+  }
+}
+
+function* finishGrading(payload) {
+  const response = yield call(surveysApi.finishGrading, payload);
+
+  if (response?.message) {
+    yield put(finishGradingError(response.message))
+  } else {
+    yield put(finishGradingSuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -273,5 +403,14 @@ export default function* () {
     yield takeLatest(deleteSurveyRequest.type, deleteSurvey),
     yield takeLatest(deleteSurveyLatestVersionRequest.type, deleteSurveyLatestVersion),
     yield takeLatest(deleteSurveyVersionRequest.type, deleteSurveyVersion),
+    yield takeLatest(getSurveyWorkFlowsAndReviewersRequest.type, getSurveyWorkFlowsAndReviewers),
+    yield takeLatest(assignSurveyRequest.type, assignSurvey),
+    yield takeLatest(getAssignedSurveysRequest.type, getAssignedSurveys),
+    yield takeLatest(getAssignedSurveysForOnboardingRequest.type, getAssignedSurveysForOnboarding),
+    yield takeLatest(getCurrentQuestionForAssignedSurveyRequest.type, getCurrentQuestionForAssignedSurvey),
+    yield takeLatest(beginSurveyRequest.type, beginSurvey),
+    yield takeLatest(pushAnswerRequest.type, pushAnswer),
+    yield takeEvery(gradeSurveyQuestionAnswerRequest.type, gradeSurveyQuestionAnswer),
+    yield takeLatest(finishGradingRequest.type, finishGrading),
   ]);
 }

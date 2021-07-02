@@ -1405,7 +1405,7 @@ class FormCreate extends React.Component {
 
 
     const title = this.state.schemaPropertyEdit.title;
-    if (typeof title === "string" && title.trim() === "") {
+    if (typeof title === "string" && title.trim() === "" && this.state.schemaPropertyEdit.type !== "helpText") {
       toast.error("Title should not be empty");
 
       return;

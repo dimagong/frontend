@@ -14,10 +14,14 @@ const setWorkflowTriggers = (state, {payload}) => {
   state.workflow.workflow.triggers = payload;
 };
 
+const setAllowedUserList = (state, {payload}) => {
+  state.workflow.allowedUserList = payload;
+};
 
 export default {
   setWorkflows,
   setWorkflow,
   setWorkflowGroups,
   setWorkflowTriggers,
+  setAllowedUserList
 };

@@ -252,6 +252,87 @@ const surveysReducer = {
     state.selectedSurvey.latest_version = newVersion;
   },
 
+  getSurveyWorkFlowsAndReviewersSuccess: (state, { payload }) => {
+    state.surveyWorkFlowsAndReviewers = payload;
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  assignSurveySuccess: (state, { payload }) => {
+
+    state.selectedManagerAssignedSurveys = [...state.selectedManagerAssignedSurveys, payload];
+
+    state.isLoading = false;
+    state.error = null;
+
+    toast.success("Survey added successfully")
+  },
+
+
+  getAssignedSurveysSuccess: (state, { payload }) => {
+    state.selectedManagerAssignedSurveys = payload;
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  getAssignedSurveysForOnboardingSuccess: (state, { payload }) => {
+    state.onboardingSurveys = payload;
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  getCurrentQuestionForAssignedSurveySuccess: (state, { payload }) => {
+    state.user.profile.onboarding = { ...state.user.profile.onboarding, ...payload };
+
+    //** todo handle when backend will be updated
+    if (payload?.status === "done") {
+      const currentSurveyId = state.user.profile.onboarding.id;
+
+      const surveyIndex = state.onboardingSurveys.findIndex((survey) => survey.id === currentSurveyId);
+
+      state.onboardingSurveys[surveyIndex] = {...state.onboardingSurveys[surveyIndex], finished_at: "something"};
+
+    }
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  beginSurveySuccess: (state) => {
+    //** TODO fix that ****
+    const currentSurveyId = state.user.profile.onboarding.id;
+
+    const surveyIndex = state.onboardingSurveys.findIndex((survey) => survey.id === currentSurveyId);
+
+    state.onboardingSurveys[surveyIndex] = {...state.onboardingSurveys[surveyIndex], started_at: "something"};
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  pushAnswerSuccess: (state) => {
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  gradeSurveyQuestionAnswerSuccess: (state, {payload}) => {
+    const surveyIndex = state.selectedManagerAssignedSurveys.findIndex(survey => survey.id === payload.id);
+
+    state.selectedManagerAssignedSurveys[surveyIndex] = payload;
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  finishGradingSuccess: (state, {payload}) => {
+    const surveyIndex = state.selectedManagerAssignedSurveys.findIndex(survey => survey.id === payload.id);
+
+    state.selectedManagerAssignedSurveys[surveyIndex] = payload;
+
+    state.isLoading = false;
+    state.error = null;
+  }
 
 };
 

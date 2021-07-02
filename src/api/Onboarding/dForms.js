@@ -5,6 +5,7 @@ import {
   submitdFormDataPath,
   changedFormStatusPath,
   submitdFormPath,
+  surveyTriggersPath,
   updateDFormFromParent
 } from "constants/onboarding";
 import {dFormPath, dFormTemplatePath} from "../../constants/onboarding";
@@ -128,6 +129,18 @@ const dFormApi = {
     try {
       const result = await instance({
         url: dFormTriggersPath,
+        method: "GET",
+      });
+
+      return result.data.data;
+    } catch (err) {
+      throw err;
+    }
+  },
+  async getSurveyTriggers() {
+    try {
+      const result = await instance({
+        url: surveyTriggersPath,
         method: "GET",
       });
 

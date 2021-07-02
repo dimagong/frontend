@@ -60,3 +60,7 @@ export const selectSelectedSurvey = state => state?.app?.selectedSurvey;
 export const selectFolders = state => state?.app?.folders;
 export const selectQuestionVersions = state => state?.app?.selectedQuestionVersions;
 export const selectSurveyVersions = state => state?.app?.selectedSurveyVersions;
+export const selectSurveyWorkFlowsAndReviewers = state => state?.app?.surveyWorkFlowsAndReviewers;
+export const selectSelectedManagerAssignedSurveys = state => state?.app?.selectedManagerAssignedSurveys;
+export const selectOnboardingSurveys = state => state?.app?.onboardingSurveys;
+export const selectAssignedSurveyById = (id) => state => state?.app?.selectedManagerAssignedSurveys.filter(survey => survey.id === id)[0];

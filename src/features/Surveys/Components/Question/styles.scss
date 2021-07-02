@@ -101,6 +101,7 @@
           width: 14px;
           height: 14px;
           margin-top: 2px;
+          flex-shrink: 0;
         }
 
         &-text {
@@ -124,13 +125,100 @@
 
   }
 
-  &.question-onboarding {
-    .options.option {
-      cursor: pointer;
+  &.question-grading {
+    background: transparent;
+    box-shadow: none;
+    padding: 0 0 35px 0;
+    border-bottom: 1px solid #EEEEEE;
+    cursor: default;
+    .options {
+      display: flex;
+      .option {
+        min-width: 200px;
+        max-width: 70%;
+      }
+    }
+    .question-time {
+      position: absolute;
+      right: 10px;
+      top: 5px;
+      font-size: 15px;
+      color: #4b484d;
+      display: flex;
+      align-items: center;
+    }
+    .answer {
+      &.free-text {
+        .answer-review {
+          .score {
+            font-size: 16px;
+            color: #4B484D;
+            padding-top: 5px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 5px;
+            &_input {
+              width: 115px;
+              margin: 0 8px 0 10px;
+              text-align: center;
+            }
+          }
+          &_notes {
+            &_label {
+              color: #4b484d;
+              font-size: 16px;
+              padding-bottom: 5px;
+              padding-top: 18px;
+            }
+            &_tip {
+              font-size: 12px;
+              color: #4b484d;
+              padding-top: 5px;
+              padding-left: 40px;
+            }
+          }
+        }
+      }
+      &.multiple-choice {
+        .answer-correctness {
+          padding: 8px 10px;
+          .correct-answer {
+            &_label {
+              font-size: 16px;
+              color: #7367F0;
+              padding-left: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
 
-      &:hover {
-        .option-circle {
-          border-color: #7367F0;
+  &.question-review {
+    cursor: default!important;
+    padding-top: 40px;
+  }
+
+  &.question-onboarding {
+    cursor: default;
+    box-shadow: none;
+    padding: 0 6px 0 6px;
+    .question-time {
+      position: absolute;
+      right: 10px;
+      top: 5px;
+      font-size: 15px;
+      color: #4b484d;
+    }
+    .options{
+      .option {
+        cursor: pointer;
+
+        &:hover {
+          .option-circle {
+            border-color: #7367F0;
+          }
         }
       }
     }

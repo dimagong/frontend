@@ -12,13 +12,14 @@ import {
   actionTypes,
   types,
   userTypeOptions,
-  userTargetTypes,
+  userTargetTypes, actionTypesByTriggerType,
 } from "./constants";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectWorkflow,
   selectNotifications,
   selectdFormActions,
+  selectAllowedUserList
 } from "app/selectors/onboardingSelectors";
 import { selectManagers } from "app/selectors/userSelectors";
 import Select from "react-select";
@@ -36,7 +37,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
   const workflow = useSelector(selectWorkflow);
   const actions = useSelector(selectdFormActions);
   const notification = useSelector(selectNotifications);
-  const managers = useSelector(selectManagers);
+  const managers = useSelector(selectAllowedUserList);
   const [actionData, setActionData] = useState([]);
 
   useEffect(() => {
@@ -144,7 +145,8 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
               <ChevronDown size={15} />
             </DropdownToggle>
             <DropdownMenu>
-              {actionTypes.map((action, label) => (
+              {
+                actionTypesByTriggerType[trigger.trigger_type].map((action, label) => (
                 <DropdownItem
                   onClick={() =>
                     setActionProperty({
@@ -156,7 +158,8 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
                 >
                   {action.label}
                 </DropdownItem>
-              ))}
+              ))
+              }
             </DropdownMenu>
           </UncontrolledButtonDropdown>
           <UncontrolledButtonDropdown>

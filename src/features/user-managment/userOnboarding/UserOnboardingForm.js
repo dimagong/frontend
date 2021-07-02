@@ -1,5 +1,4 @@
-
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Card,
   CardHeader,
@@ -7,12 +6,10 @@ import {
   CardBody,
   Col,
   Button,
-  UncontrolledTooltip
+  UncontrolledTooltip, Row
 } from "reactstrap"
-import {X, Check} from "react-feather"
-import Select from "react-select"
-import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
-import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
+import {X, Check, Plus, ChevronDown} from "react-feather"
+import Select, {components} from "react-select"
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,6 +18,8 @@ import {
   selectUserWorkflows,
   selectUserReviewers,
 } from "app/selectors";
+
+import {toast} from "react-toastify";
 
 import appSlice from 'app/slices/appSlice'
 
@@ -36,180 +35,253 @@ const {
   updateUserOnboardingWorkflowRequest,
 } = appSlice.actions;
 
+const selectStyles = {
+  control: styles => ({
+    ...styles,
+    backgroundColor: "white",
+    border: "1px solid rgba(34, 60, 80, 0.2)",
+    borderRadius: "8px",
+    // This line disable the blue border
+    boxShadow: "none",
+    minHeight: "auto",
+    cursor: "pointer",
+    padding: "0 0 0 7px",
+    fontSize: "11px",
+    fontFamily: "Montserrat",
+  }),
+  placeholder: (styles) => ({
+    ...styles,
+    color: "#4B484D",
+  }),
+  input: (styles) => ({
+    ...styles,
+
+    padding: "6px 7px 6px 0",
+  }),
+
+  indicatorSeparator: () => ({display: 'none'}),
+};
+
 const prepareSelect = (data) => {
-  return data.map((value) => {
-    return {
-      value: value,
-      label: value["first_name"],
-      color: colorMultiSelect
-    };
-  });
-}
+  return data.map((value) => ({
+    value: value,
+    label: value["first_name"] + " " + value["last_name"]
+  }));
+};
 const prepareDFormSelect = (data) => {
-  return data.map((value) => {
-    return {
-      value: value,
-      label: value["name"],
-      color: colorMultiSelect
-    };
-  });
-}
+  return data.map((value) => ({
+    value: value,
+    label: value["name"]
+  }));
+};
+
+const DropdownIndicator = props => {
+  return (
+    <components.DropdownIndicator {...props}>
+      <ChevronDown />
+    </components.DropdownIndicator>
+  );
+};
 
 const UserOnboardingCreate = ({isCreate}) => {
   const dispatch = useDispatch();
 
   const manager = useSelector(selectManager);
-  const dForms = useSelector(selectUserDForms)
-  const workflows = useSelector(selectUserWorkflows)
-  const reviewers = useSelector(selectUserReviewers)
+  const dForms = useSelector(selectUserDForms);
+  const workflows = useSelector(selectUserWorkflows);
+  const reviewers = useSelector(selectUserReviewers);
 
-  const closeCreateOnboarding = () => {
-    dispatch(setManagerOnboarding(null))
-  }
+  const [selectedReviewer, setSelectedReviewer] = useState(null);
 
-  const onSelectDFormChange = (values) => {
-    values ? dispatch(setUserDForms(values[0].value)) : dispatch(setUserDForms(null))
-  }
+  const onSelectDFormChange = (value) => {
+    value ? dispatch(setUserDForms(value.value)) : dispatch(setUserDForms(null))
+  };
 
   const onSelectReviewersChange = (values) => {
-    values ? dispatch(setUserReviewers(reviewers.filter(group => values.some( value => value.value.id === group.id)))) : dispatch(setUserReviewers([]))
 
+    if (values && !values.length && !isCreate.current) {
+      toast.error("You cannot delete last reviewer");
+
+      return;
+    }
+
+    values ? (
+      dispatch(setUserReviewers(values))
+    ) : (
+      dispatch(setUserReviewers([]))
+    );
+
+    // update reviewers for existing onboarding
     if(!isCreate.current && values) {
       dispatch(updateUserOnboardingReviewersRequest({
-        reviewersIds: values.map(reviewer => reviewer.value.id),
+        reviewersIds: values.map(reviewer => reviewer.id),
         onboardingId: manager.onboarding.id,
         managerId: manager.id,
       }))
     }
-  }
+  };
 
-  const onSelectWorkflowChange = (values) => {
-    values ? dispatch(setUserWorkflows(values[values.length-1].value)) : dispatch(setUserWorkflows(null))
+  const onSelectWorkflowChange = (value) => {
+    value ? dispatch(setUserWorkflows(value.value)) : dispatch(setUserWorkflows(null));
 
-    if(!isCreate.current && values) {
+    if(!isCreate.current && value) {
       dispatch(updateUserOnboardingWorkflowRequest({
-        workflowId: values[values.length-1].value.id,
+        workflowId: value.value.id,
         onboardingId: manager.onboarding.id,
         managerId: manager.id
       }))
     }
-  }
+  };
 
   const createOnboarding = () => {
     dispatch(createUserOnboardingRequest(manager.onboarding))
-  }
+  };
 
   const deleteOnboarding = () => {
     if(window.confirm("Are you sure?")){
       dispatch(deleteUserOnboardingRequest(manager.onboarding))
     }
-  }
+  };
+
+  const handleReviewerAdd = () => {
+    if (selectedReviewer) {
+      const newReviewers = [...manager.onboarding.reviewers, selectedReviewer.value];
+      setSelectedReviewer(null);
+      onSelectReviewersChange(newReviewers)
+
+    }
+  };
+
+  const handleReviewerRemove = (reviewer) => {
+    const newReviewers = manager.onboarding.reviewers.filter(selectedReviewer => selectedReviewer.id !== reviewer.id);
+    onSelectReviewersChange(newReviewers);
+  };
+
+  const isReviewersLimitNotExceed = manager.onboarding.reviewers && manager.onboarding.reviewers.length < 5;
+
+  const availableReviewers = reviewers.filter(reviewer => !manager.onboarding.reviewers.filter(onboardingReviewer => onboardingReviewer.id === reviewer.id).length);
+
   return (
     <Col md="12" lg="12" className="p-0 ml-0">
       <Card className="border-0 mb-0">
-        <CardHeader className="m-0">
-          <CardTitle>
-            Onboarding create
-          </CardTitle>
-          <X size={15} onClick={closeCreateOnboarding}/>
-        </CardHeader>
-        <CardBody className="pt-0">
-          <hr/>
-          <div className="mt-3">
-            <div className="users-page-view-table">
-              <div className="d-flex mb-1">
-                <div className="font-weight-bold column-sizing">dForm</div>
-                <div className="full-width">
+        <CardBody className="onboarding-create-feature_body">
+
+
+          <Row>
+            <Col md={4}>
+              <Row className="mb-2">
+                <Col>
+                  <div className="survey-assign_body_select-label">
+                    Select dForm
+                  </div>
                   <Select
                     isDisabled={!isCreate.current}
-                    components={{DropdownIndicator: null}}
+                    styles={selectStyles}
+                    components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])}
-                    maxMenuHeight={200}
-                    isMulti
-                    isClearable={false}
-                    styles={colourStyles}
                     options={prepareDFormSelect(dForms)}
-                    className="fix-margin-select"
-                    onChange={(values) => {
-                      onSelectDFormChange(values)
+                    onChange={(value) => {
+                      onSelectDFormChange(value)
                     }}
-                    classNamePrefix="select"
                   />
-                </div>
-              </div>
-              <div className="d-flex mb-1">
-                <div className="font-weight-bold column-sizing">Reviewer</div>
-                <div className="full-width">
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div className="survey-assign_body_select-label">
+                    Select workflow
+                  </div>
                   <Select
-                    components={{DropdownIndicator}}
-                    value={prepareSelect(manager.onboarding.reviewers)}
-                    maxMenuHeight={200}
-                    isMulti
-                    isSearchable={manager.onboarding.reviewers && manager.onboarding.reviewers.length < 5}
-                    isClearable={false}
-                    styles={colourStyles}
-                    options={(manager.onboarding.reviewers && manager.onboarding.reviewers.length < 5) ? prepareSelect(reviewers) : []}
-                    noOptionsMessage={() => (manager.onboarding.reviewers && manager.onboarding.reviewers.length < 5) ? "No options" : "Maximum reviewers count is 5"}
-                    onChange={(values) => {
-                      onSelectReviewersChange(values)
-                    }}
-                    className="fix-margin-select"
-                    classNamePrefix="select"
-                  />
-
-                </div>
-              </div>
-              <div className="d-flex mb-1">
-                <div className="font-weight-bold column-sizing">Workflow</div>
-                <div className="full-width">
-
-                  <Select
-                    components={{DropdownIndicator: null}}
+                    isDisabled={!isCreate.current}
+                    styles={selectStyles}
+                    components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
-                    maxMenuHeight={200}
-                    isSearchable={!manager.onboarding.workflow}
-                    isMulti
-                    isClearable={false}
-                    styles={colourStyles}
                     options={prepareDFormSelect(workflows)}
-                    onChange={(values) => {
-                      onSelectWorkflowChange(values)
+                    onChange={(value) => {
+                      onSelectWorkflowChange(value)
                     }}
-                    className="fix-margin-select"
-                    classNamePrefix="select"
                   />
+                </Col>
 
-                </div>
-              </div>
-              <div className="d-flex">
-                <div className="font-weight-bold column-sizing">Private</div>
-                <div className="" id="onboarding-create-config-is-internal">
-                  <Checkbox
-                    disabled={!isCreate.current}
-                    size="sm"
-                    color="primary"
-                    icon={<Check className="vx-icon" size={12}/>}
-                    label=""
-                    checked={manager.onboarding.is_internal}
-                    onChange={(event) => dispatch(setManagerOnboardingProperty({
-                      is_internal: event.target.checked
-                    }))}
-                  />
+              </Row>
+            </Col>
+            <Col>
+              <Row className="mb-2">
+                <Col md={6}>
+                  <div className="survey-assign_body_select-label">
+                    Who will review the results?
+                  </div>
+                  <div className="survey-assign_body_reviewers-select_container">
+                    <div className="survey-assign_body_reviewers-select_container_select">
+                      <Select
+                        components={{DropdownIndicator}}
+                        value={selectedReviewer}
+                        styles={selectStyles}
+                        options={isReviewersLimitNotExceed ? prepareSelect(availableReviewers) : []}
+                        noOptionsMessage={() => isReviewersLimitNotExceed ? "No options" : "Maximum reviewers count is 5"}
+                        onChange={(value) => {
+                          setSelectedReviewer(value)
+                        }}
+                      />
+                    </div>
+                    <button onClick={() =>{handleReviewerAdd()}}>
+                      <Plus />
+                    </button>
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div className="survey-assign_body_reviewers">
+                    {manager.onboarding.reviewers.map(reviewer => (
+                      <div className="reviewer-tile">
+                        <div className="reviewer-tile_name">
+                          {`${reviewer.first_name} ${reviewer.last_name}`}
+                        </div>
+                        <div className="reviewer-tile_cross" onClick={() => {handleReviewerRemove(reviewer)}}>
+                          <X color="white" size={15} />
+                        </div>
 
-                </div>
-                <UncontrolledTooltip placement="right" target="onboarding-create-config-is-internal">
-                  For reviewers only
-                </UncontrolledTooltip>
+                      </div>
+                    ))}
+                  </div>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+
+
+          <div className="mt-4 d-flex justify-content-between align-items-center">
+
+            <div className="d-flex align-items-center">
+              <div className="font-weight-bold mr-1">Private</div>
+              <div className="" id="onboarding-create-config-is-internal">
+                <Checkbox
+                  disabled={!isCreate.current}
+                  size="sm"
+                  color="primary"
+                  icon={<Check className="vx-icon" size={12}/>}
+                  label=""
+                  checked={manager.onboarding.is_internal}
+                  onChange={(event) => dispatch(setManagerOnboardingProperty({
+                    is_internal: event.target.checked
+                  }))}
+                />
+
               </div>
+              <UncontrolledTooltip placement="right" target="onboarding-create-config-is-internal">
+                For reviewers only
+              </UncontrolledTooltip>
             </div>
+
             <div>
               {
                 isCreate.current
-                  ?<div className="d-flex justify-content-end flex-wrap mt-2">
-                    <Button className="mt-1" color="primary" onClick={createOnboarding}>Create</Button>
+                  ?<div>
+                    <Button className="px-4" color="primary" onClick={createOnboarding}>Create</Button>
                   </div>
-                  : <div className="d-flex justify-content-end flex-wrap mt-2">
-                    <Button disabled={!!!manager.onboarding.id} className="mt-1" color="danger" onClick={deleteOnboarding}>Delete onboarding</Button>
+                  : <div>
+                    <Button disabled={!!!manager.onboarding.id} color="danger" onClick={deleteOnboarding}>Delete onboarding</Button>
                   </div>
               }
             </div>
@@ -219,6 +291,6 @@ const UserOnboardingCreate = ({isCreate}) => {
       </Card>
     </Col>
   )
-}
+};
 
 export default UserOnboardingCreate
