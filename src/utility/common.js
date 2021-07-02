@@ -37,7 +37,7 @@ export function mergeObjects(obj1, obj2) {
   return obj1;
 }
 
-export const getTimeDifference = (from, to = moment()) => {
+export const getTimeDifference = (from, to ) => {
 
   const addZero = (number) => {
     let toString = number.toString();
@@ -49,7 +49,10 @@ export const getTimeDifference = (from, to = moment()) => {
     }
   };
 
-  const diffDuration = moment.duration(moment(to).diff(from));
+  const endTime = to ? moment.utc(to) : moment();
+  const startTime = moment.utc(from);
+
+  const diffDuration = moment.duration(endTime.diff(startTime));
   let result;
 
   if (diffDuration.asMinutes() > 59) {

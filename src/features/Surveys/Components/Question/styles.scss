@@ -144,6 +144,8 @@
       top: 5px;
       font-size: 15px;
       color: #4b484d;
+      display: flex;
+      align-items: center;
     }
     .answer {
       &.free-text {

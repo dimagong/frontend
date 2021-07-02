@@ -2,6 +2,7 @@ import React, {useState, useMemo, useEffect} from 'react';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 import { CheckCircleOutline, HighlightOff } from '@material-ui/icons'
 import { getTimeDifference } from "utility/common";
+import { QueryBuilder } from "@material-ui/icons";
 
 import _ from 'lodash'
 
@@ -154,7 +155,7 @@ const GradingQuestion = ({
         {`Question ${questionNumber}`}
       </div>
       <div className="question-time">
-        {getTimeDifference(answer.started_at, answer.finished_at)}
+        <QueryBuilder style={{fontSize: "18px", color: "#444", marginRight: "5px", paddingTop: "1px"}} /> {getTimeDifference(answer.started_at, answer.finished_at)}
       </div>
       <div className={"question-description"}>
         {body}
