@@ -288,6 +288,7 @@ const OnboardingUser = () => {
                         onChange={(onboarding) => {
                           handleNavClick(onboarding)
                         }}
+                        scrollOnStart
                       />
                     </div>
 

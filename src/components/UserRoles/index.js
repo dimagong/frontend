@@ -23,6 +23,7 @@ import './styles.scss'
 import { logos } from 'constants/organizations'
 
 import appSlice from 'app/slices/appSlice'
+import {toast} from "react-toastify";
 
 const {
   addUserOrganizationRequest,
@@ -83,11 +84,23 @@ const UserRoles = ({manager, userOrganizations, className}) => {
   const handleOrganizationClick = (org) => {
     if (isDeletingOrganization) {
       const delOrg = correctUserOrganizations.filter((currOrg) => currOrg.name === deletionData.orgName)[0];
-      dispatch(switchUserOrganizationRequest({delOrg: {userId: manager.id, group_id: delOrg.id, type: delOrg.type},
-                                          addOrg: {id: manager.id, orgId: org.id, type: org.type}}))
+      dispatch(switchUserOrganizationRequest({
+        delOrg: {
+          userId: manager.id,
+          group_id: delOrg.id,
+          type: delOrg.type},
+        addOrg: {
+          id: manager.id,
+          orgId: org.id,
+          type: org.type}
+      }))
     }
     else {
-      dispatch(addUserOrganizationRequest({id: manager.id, orgId: org.id, type: org.type}))
+      dispatch(addUserOrganizationRequest({
+        id: manager.id,
+        orgId: org.id,
+        type: org.type
+      }))
       setIsAddOrganizationModalOpen(false)
     }
     setIsDeletingOrganization(false)
@@ -97,7 +110,11 @@ const UserRoles = ({manager, userOrganizations, className}) => {
   const handleOrganizationDelete = () => {
     const org = correctUserOrganizations.filter((org) => org.name === deletionData.orgName)[0];
 
-    dispatch(removeUserOrganizationRequest({userId: manager.id, group_id: org.id, type: org.type}))
+    dispatch(removeUserOrganizationRequest({
+      userId: manager.id,
+      group_id: org.id,
+      type: org.type
+    }))
     setIsDeleteModalOpen(false);
     setIsAddOrganizationModalOpen(false)
     setIsDeletingOrganization(false)
@@ -112,6 +129,12 @@ const UserRoles = ({manager, userOrganizations, className}) => {
   }
 
   const toggleAbility = (userOrg, ability, isChecked) => {
+    if (manager?.organizations?.corporation?.length > 0 && manager?.organizations?.network?.length > 0) {
+      if (userOrg.type !== "corporation" && userOrg.abilities.network_manager) {
+        toast.error('This user can only be a network manager in ' + userOrg.name);
+        return;
+      }
+    }
 
     const data = {
       ability,
@@ -129,7 +152,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
 
   }
 
-  const modalOrganization = () => {
+  const ModalOrganization = () => {
     let currChildOrganizations = isDeletingOrganization ? getUniq(childOrganizations, userChildOrganizations) : addableChildOrganizations
 
     return <Modal className="organization-add-modal" isOpen={isAddOrganizationModalOpen} fade={false} toggle={()=>{setIsAddOrganizationModalOpen(false); setIsDeletingOrganization(false)}}>
@@ -173,7 +196,10 @@ const UserRoles = ({manager, userOrganizations, className}) => {
         </Scrollbars>
 
         {correctUserOrganizations && correctUserOrganizations.length > 1 && isDeletingOrganization &&
-          <Button onClick={() => {setIsDeleteModalOpen(true)}} className={'remove-button remove-org-btn'}>Remove organization</Button>
+          <Button onClick={() => {
+            setIsDeleteModalOpen(true);
+            setIsAddOrganizationModalOpen(false)
+          }} className={'remove-button remove-org-btn'}>Remove organization</Button>
         }
 
       </ModalBody>
@@ -191,10 +217,15 @@ const UserRoles = ({manager, userOrganizations, className}) => {
   }, [manager.id])
 
   useEffect(() => {
-    console.log('manager', manager)
-    if (manager?.organizations?.corporation?.length > 0 && manager?.organizations?.network?.length > 1) {
+    if (manager?.organizations?.corporation?.length > 0 && manager?.organizations?.network?.length > 0) {
       manager.organizations.network.forEach(item => {
-
+        if (!item.abilities.network_manager) {
+          let currRole = Object.keys(item.abilities).find(role => item.abilities[role]);
+          if (currRole) {
+            toggleAbility(item, currRole, true);
+          }
+          toggleAbility(item, 'network_manager', false)
+        }
       })
     }
   }, [manager.organizations])
@@ -269,14 +300,17 @@ const UserRoles = ({manager, userOrganizations, className}) => {
             <Button className={"remove-button"} onClick={() => {handleOrganizationDelete()}}>
               Remove
             </Button>
-            <Button className={"cancel-button"} onClick={() => {setIsDeleteModalOpen(false)}}>
+            <Button className={"cancel-button"} onClick={() => {
+              setIsDeleteModalOpen(false);
+              setIsAddOrganizationModalOpen(true)
+            }}>
               Cancel
             </Button>
           </div>
         </ModalBody>
       </Modal>
 
-      {modalOrganization()}
+      <ModalOrganization/>
     </div>
   )
 }
