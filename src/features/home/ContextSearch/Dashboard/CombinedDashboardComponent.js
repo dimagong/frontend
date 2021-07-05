@@ -67,7 +67,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   }
 
   useEffect(() => {
-    if (!(settings && dashboardDForms && managers)) {
+    if (!(settings && dashboardDForms && managers?.length > 0)) {
       return;
     }
     if (settings.filter) {
