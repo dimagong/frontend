@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {ChevronLeft, ChevronRight} from 'react-feather'
 import {
   Pagination,
@@ -8,8 +8,9 @@ import {
 
 import './styles.scss'
 
-const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false}) => {
+const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false, scrollOnStart = false}) => {
 
+  const [isScrolled, setIsScrolled] = useState(false);
   const tabsByKey = tabs.map((tab => tab[tabId]));
 
   const handlePrevSelect = () => {
@@ -96,6 +97,13 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false}
       )
     )
   }
+
+  useEffect(() => {
+    if (scrollOnStart && tabs[0].id !== active && !isScrolled && document.getElementById(active)) {
+      scrollIntoContainerView(active)
+      setIsScrolled(true);
+    }
+  }, [active, document.getElementById(active)])
 
   //** TODO add mt-1 to other sections
   return (

@@ -21,9 +21,6 @@ const Dashboard = ({ }) => {
   const dashboardSettings = useSelector(selectDashboardSettings)
   const dashboardDForms = useSelector(selectDashboardDForms)
   const [componentToAdd, setComponentToAdd] = useState(null);
-  let allApplications = [];
-  if (dashboardDForms)
-    Object.values(dashboardDForms).forEach(item => {allApplications = item.concat(allApplications)});
 
   const updateSettings = (newSettings) => {
     if (dashboardSettings.hasOwnProperty('id')) {
@@ -145,7 +142,6 @@ const Dashboard = ({ }) => {
           updateSettings={updateSettings}
           dForms={dashboardDForms}
           deleteComponent={deleteComponent}
-          allApplications={allApplications}
         />
       )
     }

@@ -538,6 +538,10 @@ const getUserPermissionsSuccess = (state, {payload}) => {
   }
 };
 
+const switchUserOrganizationSuccess = (state, {payload}) => {
+  state.isLoading = false;
+}
+
 export default {
   getProfileSuccess,
   getUsersSuccess,
@@ -593,4 +597,5 @@ export default {
   setUserReviewers,
   getUserManagment,
   setProfileOnboarding,
+  switchUserOrganizationSuccess
 };

@@ -23,6 +23,7 @@ import './styles.scss'
 import { logos } from 'constants/organizations'
 
 import appSlice from 'app/slices/appSlice'
+import {toast} from "react-toastify";
 
 const {
   addUserOrganizationRequest,
@@ -31,13 +32,15 @@ const {
   getOrganizationsRequest,
   getUserOnboardingRequest,
   getUserOrganizationsRequest,
-  removeUserOrganizationRequest
+  removeUserOrganizationRequest,
+  switchUserOrganizationRequest
 } = appSlice.actions;
 
 const UserRoles = ({manager, userOrganizations, className}) => {
   const dispatch = useDispatch()
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDeletingOrganization, setIsDeletingOrganization] = useState(false)
   const [isAddOrganizationModalOpen, setIsAddOrganizationModalOpen] = useState(false)
   const [deletionData, setDeletionData] = useState({name: "", orgName: ""})
 
@@ -78,27 +81,60 @@ const UserRoles = ({manager, userOrganizations, className}) => {
     addableChildOrganizations = getUniq(childOrganizations, userChildOrganizations);
   }
 
-  const onOrganizationAdd = (org) => {
-
-    dispatch(addUserOrganizationRequest({id: manager.id, orgId: org.id, type: org.type}))
+  const handleOrganizationClick = (org) => {
+    if (isDeletingOrganization) {
+      const delOrg = correctUserOrganizations.filter((currOrg) => currOrg.name === deletionData.orgName)[0];
+      dispatch(switchUserOrganizationRequest({
+        delOrg: {
+          userId: manager.id,
+          group_id: delOrg.id,
+          type: delOrg.type},
+        addOrg: {
+          id: manager.id,
+          orgId: org.id,
+          type: org.type}
+      }))
+    }
+    else {
+      dispatch(addUserOrganizationRequest({
+        id: manager.id,
+        orgId: org.id,
+        type: org.type
+      }))
+      setIsAddOrganizationModalOpen(false)
+    }
+    setIsDeletingOrganization(false)
     setIsAddOrganizationModalOpen(false)
   }
 
   const handleOrganizationDelete = () => {
     const org = correctUserOrganizations.filter((org) => org.name === deletionData.orgName)[0];
 
-    dispatch(removeUserOrganizationRequest({userId: manager.id, group_id: org.id, type: org.type}))
+    dispatch(removeUserOrganizationRequest({
+      userId: manager.id,
+      group_id: org.id,
+      type: org.type
+    }))
     setIsDeleteModalOpen(false);
+    setIsAddOrganizationModalOpen(false)
+    setIsDeletingOrganization(false)
   }
 
   const onOrganizationDelete = (orgName, managerName) => {
     setDeletionData({
       orgName, name: managerName
     })
-    setIsDeleteModalOpen(true)
+    setIsAddOrganizationModalOpen(true);
+    setIsDeletingOrganization(true);
   }
 
   const toggleAbility = (userOrg, ability, isChecked) => {
+    if (manager?.organizations?.corporation?.length > 0 && manager?.organizations?.network?.length > 0) {
+      if (userOrg.type !== "corporation" && userOrg.abilities.network_manager) {
+        toast.error('This user can only be a network manager in ' + userOrg.name);
+        return;
+      }
+    }
 
     const data = {
       ability,
@@ -116,6 +152,60 @@ const UserRoles = ({manager, userOrganizations, className}) => {
 
   }
 
+  const ModalOrganization = () => {
+    let currChildOrganizations = isDeletingOrganization ? getUniq(childOrganizations, userChildOrganizations) : addableChildOrganizations
+
+    return <Modal className="organization-add-modal" isOpen={isAddOrganizationModalOpen} fade={false} toggle={()=>{setIsAddOrganizationModalOpen(false); setIsDeletingOrganization(false)}}>
+      <ModalBody>
+        <h1 className="organization-add-modal_title">{isDeletingOrganization ? 'Change organization' : 'Organisation select'}</h1>
+        <Scrollbars autoHeight autoHeightMax={500}>
+          <div className="organization-add-modal_all-addable-list">
+            {!!addableParentOrganizations.length && (
+              <div className={`organizations-list parent-organizations ${addableChildOrganizations.length ? "with-bottom-border" : ''}`}>
+                <h6 className="organizations-list_title">
+                  Parent organisations
+                </h6>
+                <div className="organizations-list_list">
+                  {addableParentOrganizations.map((org) => (
+                    <Card className="organizations-list_organization">
+                      <CardBody className="organizations-list_organization-body" onClick={() => {handleOrganizationClick(org)}}>
+                        {org.logo?.base64 ? <img className={"organization-img"} src={org.logo.base64} alt=""/> : org.name}
+                      </CardBody>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+            {!!currChildOrganizations.length && (
+              <div className="organizations-list child-organizations">
+                <h6 className="organizations-list_title">
+                  Child organisations
+                </h6>
+                <div className="organizations-list_list">
+                  {currChildOrganizations.map((org) => (
+                    <Card className="organizations-list_organization">
+                      <CardBody className="organizations-list_organization-body" onClick={() => {handleOrganizationClick(org)}}>
+                        {org.logo?.base64 ? <img className={"organization-img"} src={org.logo.base64} alt=""/> : org.name}
+                      </CardBody>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </Scrollbars>
+
+        {correctUserOrganizations && correctUserOrganizations.length > 1 && isDeletingOrganization &&
+          <Button onClick={() => {
+            setIsDeleteModalOpen(true);
+            setIsAddOrganizationModalOpen(false)
+          }} className={'remove-button remove-org-btn'}>Remove organization</Button>
+        }
+
+      </ModalBody>
+    </Modal>
+  }
+
   useEffect(()=>{
     if(organizations.length === 0) {
       dispatch(getOrganizationsRequest())
@@ -125,6 +215,20 @@ const UserRoles = ({manager, userOrganizations, className}) => {
   useEffect(() => {
     dispatch(getUserOrganizationsRequest(manager.id))
   }, [manager.id])
+
+  useEffect(() => {
+    if (manager?.organizations?.corporation?.length > 0 && manager?.organizations?.network?.length > 0) {
+      manager.organizations.network.forEach(item => {
+        if (!item.abilities.network_manager) {
+          let currRole = Object.keys(item.abilities).find(role => item.abilities[role]);
+          if (currRole) {
+            toggleAbility(item, currRole, true);
+          }
+          toggleAbility(item, 'network_manager', false)
+        }
+      })
+    }
+  }, [manager.organizations])
 
   return (
     <div className={`user-roles ${className ? className : ""}`}>
@@ -167,7 +271,8 @@ const UserRoles = ({manager, userOrganizations, className}) => {
             </>
           )
         })}
-        {!!(addableChildOrganizations.length || addableParentOrganizations.length) && (
+        {!!(addableChildOrganizations.length || addableParentOrganizations.length) &&
+        !(correctUserOrganizations && correctUserOrganizations.length === 1 && correctUserOrganizations[0].type !== "corporation" ) &&  (
           <>
             <Card>
               <CardBody className="add-organization" onClick={() => {setIsAddOrganizationModalOpen(true)}}>
@@ -195,55 +300,17 @@ const UserRoles = ({manager, userOrganizations, className}) => {
             <Button className={"remove-button"} onClick={() => {handleOrganizationDelete()}}>
               Remove
             </Button>
-            <Button className={"cancel-button"} onClick={() => {setIsDeleteModalOpen(false)}}>
+            <Button className={"cancel-button"} onClick={() => {
+              setIsDeleteModalOpen(false);
+              setIsAddOrganizationModalOpen(true)
+            }}>
               Cancel
             </Button>
           </div>
         </ModalBody>
       </Modal>
 
-      <Modal className="organization-add-modal" isOpen={isAddOrganizationModalOpen} fade={false} toggle={()=>{setIsAddOrganizationModalOpen(false)}}>
-        <ModalBody>
-          <h1 className="organization-add-modal_title">Organisation select</h1>
-          <Scrollbars autoHeight autoHeightMax={500}>
-            <div className="organization-add-modal_all-addable-list">
-              {!!addableParentOrganizations.length && (
-                <div className={`organizations-list parent-organizations ${addableChildOrganizations.length ? "with-bottom-border" : ''}`}>
-                  <h6 className="organizations-list_title">
-                    Parent organisations
-                  </h6>
-                  <div className="organizations-list_list">
-                    {addableParentOrganizations.map((org) => (
-                      <Card className="organizations-list_organization">
-                        <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
-                          {org.logo?.base64 ? <img className={"organization-img"} src={org.logo.base64} alt=""/> : org.name}
-                        </CardBody>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {!!addableChildOrganizations.length && (
-                <div className="organizations-list child-organizations">
-                  <h6 className="organizations-list_title">
-                    Child organisations
-                  </h6>
-                  <div className="organizations-list_list">
-                    {addableChildOrganizations.map((org) => (
-                      <Card className="organizations-list_organization">
-                        <CardBody className="organizations-list_organization-body" onClick={() => {onOrganizationAdd(org)}}>
-                          {org.logo?.base64 ? <img className={"organization-img"} src={org.logo.base64} alt=""/> : org.name}
-                        </CardBody>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </Scrollbars>
-
-        </ModalBody>
-      </Modal>
+      <ModalOrganization/>
     </div>
   )
 }

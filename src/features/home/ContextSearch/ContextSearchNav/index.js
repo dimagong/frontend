@@ -48,7 +48,7 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, handleFilter,
               ))}
             </DropdownMenu>
           </UncontrolledDropdown>
-          <UserFilter handleFilter={handleFilter} managers={managers}/>
+          {selectedNavItem.title === 'User Management' && <UserFilter handleFilter={handleFilter} managers={managers}/>}
           <div className="ml-auto">
             <span className="font-weight-bold" style={{color: "#707070"}}>Contextual Search</span>
           </div>
