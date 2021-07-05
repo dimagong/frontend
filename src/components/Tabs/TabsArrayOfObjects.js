@@ -99,11 +99,11 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
   }
 
   useEffect(() => {
-    if (scrollOnStart && tabs[0].id !== active && !isScrolled) {
+    if (scrollOnStart && tabs[0].id !== active && !isScrolled && document.getElementById(active)) {
       scrollIntoContainerView(active)
       setIsScrolled(true);
     }
-  }, [active])
+  }, [active, document.getElementById(active)])
 
   //** TODO add mt-1 to other sections
   return (
