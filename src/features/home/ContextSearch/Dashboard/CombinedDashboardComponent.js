@@ -67,6 +67,9 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   }
 
   useEffect(() => {
+    if (!(settings && dashboardDForms && managers)) {
+      return;
+    }
     if (settings.filter) {
       setFilter(JSON.parse(JSON.stringify(settings.filter)));
     }
