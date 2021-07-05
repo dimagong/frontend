@@ -23,7 +23,6 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
   }
 
   return {
-        //labels: daysNumber === 365 ? new Array(92) : new Array(daysNumber),
         labels: new Array(daysNumber),
         datasets: [{
           label: `Number of ${title.toLowerCase()}`,
@@ -100,7 +99,6 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
           data: pointsY['rejected'],
         },]
   return {
-        //labels: daysNumber === 365 ? new Array(91) : new Array(daysNumber),
         labels: new Array(daysNumber),
         datasets: datasets
       }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {Button, Card} from "react-bootstrap";
 import Select from "react-select";
 import {Col, ListGroup, ListGroupItem, Row} from "reactstrap";
@@ -7,19 +7,14 @@ import FilterOptionsDashboard from "./FilterOptionsDashboard";
 import '../ContextSearchNav/styles.scss'
 import {useSelector} from "react-redux";
 import {selectOrganizations} from "app/selectors/groupSelector";
-import {selectActivityTypes, selectDashboardDForms, selectManagers} from "app/selectors/userSelectors";
+import {selectActivityTypes, selectManagers} from "app/selectors/userSelectors";
 
-const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen, isApplication, removeFilterPart, isFilterBoxOpen, filter, setFilter}) => {
-  let roles = ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead'].map(item => {return {name: item}})
-  const [selectedOption, setSelectedOption] = useState('managers');
-  const [selectValue, setSelectValue] = useState({active: false, label: ''});
-  const [selectedDForm, setSelectDForm] = useState('');
-  //const [filter, setFilter] = useState({Roles: [], Organizations: [], 'Activity types': [], Application: []})
+const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen, isApplication, isFilterBoxOpen, filter, setFilter}) => {
+  let roles = ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Network manager', 'Member', 'Lead'].map(item => {return {name: item}})
   const [currTab, setCurrTab] = useState(isApplication ? 'Application': 'Activity types');
   const organizationsObjects = useSelector(selectOrganizations);
   const activityTypes = useSelector(selectActivityTypes);
   const managers = useSelector(selectManagers);
-  const dashboardDForms = useSelector(selectDashboardDForms)
   const filterOptions = {Application: [], 'Activity types': activityTypes, Roles: roles, Organizations: organizationsObjects,}
   const styles = {
     marginBottom: 0
@@ -27,7 +22,6 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
 
   const handleChange = (newValue, actionMeta) => {
     if (actionMeta.action === 'select-option') {
-      //setSelectDForm(newValue.value)
       let newFilter = {...filter}
       if (currTab === 'Application') {
         if (settings?.dForm?.name !== 'Applications Snapshot') {
@@ -47,7 +41,6 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
     }
 
     if (actionMeta.action === 'clear') {
-      setSelectDForm(null)
       let newFilter = {...filter}
       if (currTab === 'Application') {
         newFilter.Application = []
