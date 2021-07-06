@@ -238,3 +238,21 @@
 .filter-option {
   position: relative;
 }
+
+.edit-chart-icon {
+  cursor: pointer;
+  svg {
+    color: #aeaeae
+  }
+}
+
+.chart-rename-modal_action-buttons {
+  .cancel-button {
+    width: 110px;
+  }
+  .rename-button {
+    background-color: #7367F0 !important;
+    float: right;
+    width: 110px;
+  }
+}

@@ -32,7 +32,8 @@ const LineChart = ({ settings, data, chartId, title}) => {
       isSmall: isSmall,
       title: title,
       daysNumber: daysNumber,
-      dForm: settings.dForm?.name
+      dForm: settings.dForm?.name,
+      titleName: settings.titleName
     },
     type: title.toLowerCase()
   });
@@ -58,7 +59,7 @@ const LineChart = ({ settings, data, chartId, title}) => {
       );
       setCurrChart(myChart)
     }
-  }, [data, settings.state, settings?.dForm])
+  }, [data, settings.state, settings?.dForm, settings.titleName])
 
   return ( <div style={{width: '100%', height: "auto", position: 'relative', zIndex: 10}}>
     <canvas
