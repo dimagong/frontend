@@ -110,6 +110,10 @@ const {
   finishGradingSuccess,
   finishGradingRequest,
   finishGradingError,
+
+  updateAssignedSurveyToLatestVersionSuccess,
+  updateAssignedSurveyToLatestVersionRequest,
+  updateAssignedSurveyToLatestVersionError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -384,6 +388,16 @@ function* finishGrading(payload) {
   }
 }
 
+function* updateAssignedSurveyToLatestVersion(payload) {
+  const response = yield call(surveysApi.updateAssignedSurveyToLatestVersion, payload);
+
+  if (response?.message) {
+    yield put(updateAssignedSurveyToLatestVersionError(response.message))
+  } else {
+    yield put(updateAssignedSurveyToLatestVersionSuccess(response));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -412,5 +426,6 @@ export default function* () {
     yield takeLatest(pushAnswerRequest.type, pushAnswer),
     yield takeEvery(gradeSurveyQuestionAnswerRequest.type, gradeSurveyQuestionAnswer),
     yield takeLatest(finishGradingRequest.type, finishGrading),
+    yield takeLatest(updateAssignedSurveyToLatestVersionRequest.type, updateAssignedSurveyToLatestVersion),
   ]);
 }

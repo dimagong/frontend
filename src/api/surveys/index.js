@@ -23,6 +23,7 @@ import {
   getSurveyAnswerPushUrl,
   getGradeSurveyQuestionAnswerUrl,
   getFinishGradingUrl,
+  getUpdateAssignedSurveyToLatestVersionUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -112,6 +113,10 @@ const surveysApi = {
 
   async finishGrading({ payload }) {
     return await requestLayout(getFinishGradingUrl(payload), "PUT")
+  },
+
+  async updateAssignedSurveyToLatestVersion({ payload }) {
+    return await requestLayout(getUpdateAssignedSurveyToLatestVersionUrl(payload.surveyId), "PUT");
   },
 
 };

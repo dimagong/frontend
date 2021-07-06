@@ -1,7 +1,6 @@
-import {RefreshCw} from "react-feather";
-import {Button} from "reactstrap"
 import React from "react";
-import RefreshDFormFromParent from "./parts/RefreshDFormFromParent";
+
+import UpdateApplicationToLatestVersion from "./parts/UpdateApplicationToLatestVersion";
 
 export const columnDefs = [
   {
@@ -40,14 +39,9 @@ export const columnDefs = [
     name: 'Up to date',
     cell: (application) => {
 
-
       // send api/dform/{id}/update-from-parent
-      if (application.questions) {
-        return "-"
-      } else {
-        return application.d_form.up_to_date ?
-          'Yes' : <RefreshDFormFromParent id={application.d_form.id} />
-      }
+      return application?.d_form?.up_to_date || application?.intersection_version?.is_latest_version ?
+        'Yes' : <UpdateApplicationToLatestVersion application={application} />
     }
   },
 ];
