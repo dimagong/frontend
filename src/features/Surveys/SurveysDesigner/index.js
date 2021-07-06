@@ -41,6 +41,7 @@ const SurveysDesigner = () => {
   const [selectedFolderId, setSelectedFolderId] = useState(-1);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [deletingFolderIndex, setDeletingFolderIndex] = useState(-1);
+  const [searchValue, setSearchValue] = useState("");
 
   const folders = useSelector(selectFolders);
 
@@ -128,6 +129,10 @@ const SurveysDesigner = () => {
     dispatch(deleteFolderRequest(folderId))
   };
 
+  const handleSearchValueChange = (e) => {
+    setSearchValue(e.target.value);
+  };
+
   useEffect(() => {
     if (!isSurveyDeleteLatestVersionProceed && prevSurveyDeleteLatestVersionValue && !errors) {
       dispatch(getSurveyRequest(selectedSurvey.id));
@@ -173,6 +178,8 @@ const SurveysDesigner = () => {
         selectedQuestionId={selectedQuestion?.latest_version.question_id}
         questionsInSurvey={surveyAddedQuestionIds}
         isFolderDeleteProceed={isFolderDeleteProceed}
+        onSearchValueChange={handleSearchValueChange}
+        searchValue={searchValue}
       />
     </Row>
 

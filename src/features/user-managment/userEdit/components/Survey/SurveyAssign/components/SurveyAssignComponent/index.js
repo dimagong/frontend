@@ -53,8 +53,10 @@ const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surv
   const [reviewerSelectValue, setReviewerSelectValue] = useState(null);
 
   const handleReviewerAdd = () => {
-    setSelectedReviewers([...selectedReviewers, reviewerSelectValue.value]);
-    setReviewerSelectValue(null);
+    if (reviewerSelectValue?.value) {
+      setSelectedReviewers([...selectedReviewers, reviewerSelectValue.value]);
+      setReviewerSelectValue(null);
+    }
   };
 
   const handleReviewerRemove = (reviewer) => {

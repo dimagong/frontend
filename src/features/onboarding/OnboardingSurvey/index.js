@@ -21,6 +21,7 @@ const OnboardingSurvey = ({ applicationData }) => {
 
   const isSurveyLoading = useSelector(createLoadingSelector([getCurrentQuestionForAssignedSurveyRequest.type]));
   const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
+  const isSurveyBeginProceed = useSelector(createLoadingSelector([beginSurveyRequest.type], true));
 
   const survey = useSelector(selectUserOnboarding);
 
@@ -80,6 +81,8 @@ const OnboardingSurvey = ({ applicationData }) => {
       question={question}
       isLoading={started_at && isSurveyLoading || (started_at && !question) || isAnswerPushProceed}
       onSurveyStart={handleSurveyStart}
+      isSurveyBeginProceed={isSurveyBeginProceed}
+      isAnswerPushProceed={isAnswerPushProceed}
       status={surveyStatus}
       startedAt={started_at}
       surveyName={title}

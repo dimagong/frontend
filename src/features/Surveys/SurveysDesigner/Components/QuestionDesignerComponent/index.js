@@ -8,6 +8,8 @@ import {
   Spinner,
 } from 'reactstrap';
 
+import { Search } from "@material-ui/icons";
+
 import FolderCreateModal from "./Components/FolderCreateModal";
 import QuestionCreateModal from "./Components/QuestionCreateModal";
 import Question from "features/Surveys/Components/Question";
@@ -43,6 +45,8 @@ const QuestionDesignerComponent = ({
   questionsInSurvey = [],
   onFolderDelete,
   isFolderDeleteProceed,
+  onSearchValueChange,
+  searchValue,
 }) => {
   const [isCreateFolderModalVisible, setIsCreateFolderModalVisible] = useState(false);
   const [isCreateQuestionModalVisible, setIsCreateQuestionModalVisible] = useState(false);
@@ -76,6 +80,47 @@ const QuestionDesignerComponent = ({
     onQuestionSelect(questionData);
   };
 
+
+  const renderQuestionsInFolder = () => {
+
+    const questions = [...selectedFolder.questions].reverse();
+
+    const isQuestionBodyMatchSearchQuery = (question) => {
+      if (!searchValue) return true;
+
+      return !!~question.latest_version.question.body.toLowerCase().search(searchValue.toLowerCase());
+    };
+
+    const questionsThatMatchSearch = questions.filter(question => isQuestionBodyMatchSearchQuery(question));
+
+    if (!questionsThatMatchSearch.length) {
+      return (
+        <div className="question-designer_folder-questions_no-questions">
+          There are no questions for that search query
+        </div>
+      )
+    }
+
+    // We separate question filtering and render because we want to leave correct question numbers that
+    // depends on question index
+    return questions.map((question, index) => {
+      if (!isQuestionBodyMatchSearchQuery((question))) return null;
+
+      return (
+        <Question
+          key={index}
+          question={question}
+          displayType="designer-view"
+          questionNumber={selectedFolder.questions.length - index}
+          onEdit={handleQuestionEdit}
+          onClick={handleQuestionSelect}
+          isInSurvey={~questionsInSurvey.findIndex((questionId) => question.latest_version.question_id === questionId)}
+          isSelected={question.latest_version.question_id === selectedQuestionId}
+        />
+      )
+    })
+  };
+
   useEffect(() => {
     if(folders && folders[0] && selectedFolderId === -1) {
       onFolderSelect(folders[0].id)
@@ -90,12 +135,14 @@ const QuestionDesignerComponent = ({
             Question designer
           </div>
           <div className="question-designer_header_search">
-
+            <input type="text" onChange={onSearchValueChange} value={searchValue} />
+            <Search style={{color: "#95989A", fontSize: "28px"}} />
           </div>
         </div>
         <div className="question-designer_folders">
-          {!isFoldersLoading ? folders && folders.map((folder) => (
+          {!isFoldersLoading ? folders && folders.map((folder, index) => (
             <FolderTemplate
+              key={index}
               onClick={() => handleFolderSelect(folder.id)}
               folderData={folder}
               isSelected={folder.id === selectedFolder.id}
@@ -138,19 +185,8 @@ const QuestionDesignerComponent = ({
                   click "Design new question" button to create a new question
                 </div>
               ) : (
-                [...selectedFolder.questions].reverse().map((question, index) => (
-                  <Question
-                    key={index}
-                    question={question}
-                    displayType="designer-view"
-                    questionNumber={selectedFolder.questions.length - index}
-                    onEdit={handleQuestionEdit}
-                    onClick={handleQuestionSelect}
-                    isInSurvey={~questionsInSurvey.findIndex((questionId) => question.latest_version.question_id === questionId)}
-                    isSelected={question.latest_version.question_id === selectedQuestionId}
-                  />
-                )
-              ))}
+                renderQuestionsInFolder()
+              )}
             </div>
           </>
         )}
