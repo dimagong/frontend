@@ -7,7 +7,7 @@ export const getChartConfig = ({ type, data }) => {
   return configApplicationChart(data);
 }
 
-const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm}) => {
+const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm, titleName}) => {
   if (!dataToShow || daysNumber === -1) {
     return null;
   }
@@ -58,7 +58,7 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm})
           },
           color: '#707070',
           display: true,
-          text: `     ${title === 'Activities' ? title : dForm ? dForm : 'Unselected application'}`,
+          text: `     ${titleName ? titleName : title === 'Activities' ? title : dForm ? dForm : 'Unselected application'}`,
           align: 'start',
         },
 
@@ -107,7 +107,7 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm})
   };
 }
 
-const configApplicationSnapshotChart = ({dataToShow, isSmall, title, daysNumber, dForm}) => {
+const configApplicationSnapshotChart = ({dataToShow, isSmall, title, daysNumber, dForm, titleName}) => {
   if (!dataToShow || daysNumber === -1) {
     return null;
   }
@@ -156,7 +156,7 @@ const configApplicationSnapshotChart = ({dataToShow, isSmall, title, daysNumber,
           },
           color: '#707070',
           display: true,
-          text: `     ${title === 'Activities' ? title : dForm ? dForm : 'Unselected application'}`,
+          text: `     ${titleName ? titleName : title === 'Activities' ? title : dForm ? dForm : 'Unselected application'}`,
           align: 'start',
         },
 
