@@ -27,7 +27,7 @@ const {
   getDashboardSnapshotDataRequest
 } = appSlice.actions;
 
-const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, deleteComponent, dForms }) => {
+const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, deleteComponent, dForms, allTitleNames }) => {
   let settings;
   if (dashboardSettings) {
     settings = {...dashboardSettings}
@@ -76,6 +76,10 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   const handleRenameChart = () => {
     if (newChartTitle.length === 0) {
       toast.warn("Please input the new title for the chart");
+      return;
+    }
+    if (allTitleNames.findIndex(item => item === newChartTitle) !== -1) {
+      toast.error("This title is already in use. Please input another one");
       return;
     }
     settings.titleName = newChartTitle;
