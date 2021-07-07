@@ -306,7 +306,9 @@ const userApi = {
         data,
       });
       return result ? result.data.data : result;
-    } catch (error) {}
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
   },
 
   async updateUserOnboardingReviewers({reviewersIds, onboardingId}) {

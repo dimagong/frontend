@@ -20,6 +20,7 @@ import {
 } from "app/selectors";
 
 import {toast} from "react-toastify";
+import * as yup from "yup";
 
 import appSlice from 'app/slices/appSlice'
 
@@ -83,6 +84,12 @@ const DropdownIndicator = props => {
   );
 };
 
+const onboardingCreateValidationSchema = yup.object().shape({
+  reviewers: yup.array().of(yup.object()).min(1, 'Please, select reviewer and click plus button to add at least one reviewer'),
+  workflow: yup.object().typeError('Please, select workflow'),
+  d_form: yup.object().typeError('Please, select dForm'),
+});
+
 const UserOnboardingCreate = ({isCreate}) => {
   const dispatch = useDispatch();
 
@@ -133,8 +140,14 @@ const UserOnboardingCreate = ({isCreate}) => {
     }
   };
 
-  const createOnboarding = () => {
-    dispatch(createUserOnboardingRequest(manager.onboarding))
+  const createOnboarding = async () => {
+    const isValid = await onboardingCreateValidationSchema
+      .validate(manager.onboarding)
+      .catch((err) => { toast.error(err.message) });
+
+    if (isValid) {
+      dispatch(createUserOnboardingRequest(manager.onboarding))
+    }
   };
 
   const deleteOnboarding = () => {
