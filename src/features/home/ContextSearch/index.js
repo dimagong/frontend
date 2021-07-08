@@ -35,6 +35,7 @@ import appSlice from 'app/slices/appSlice'
 import SurveyCreateModal from "./SurveyCreateModal";
 import {selectSearchText} from "../../../app/selectors/userSelectors";
 import Dashboard from "./Dashboard";
+import MemberFirmsList from "./MemberFirms/MemberFirmsList";
 
 const {
   getUserManagment,
@@ -188,6 +189,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                               </TabPane>
                               <TabPane tabId={NAV_OPTIONS[4].id}>
                                 <Surveys />
+                              </TabPane>
+                              <TabPane tabId={NAV_OPTIONS[5].id}>
+                                <MemberFirmsList />
                               </TabPane>
                             </TabContent>
 
