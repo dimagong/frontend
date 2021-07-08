@@ -332,7 +332,14 @@ const surveysReducer = {
 
     state.isLoading = false;
     state.error = null;
-  }
+  },
+
+  updateAssignedSurveyToLatestVersionSuccess: (state, {payload}) => {
+    state.selectedManagerAssignedSurveys = state.selectedManagerAssignedSurveys.map(survey => survey.id === payload.id ? payload : survey);
+
+    state.isLoading = false;
+    state.error = null;
+  },
 
 };
 

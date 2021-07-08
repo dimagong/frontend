@@ -3,6 +3,29 @@
 
   &_header {
     padding-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &_search {
+      position: relative;
+      svg {
+        position: absolute;
+        top: 10px;
+        right: 0px;
+      }
+      input {
+        width: 200px;
+        background: transparent;
+        border: 0;
+        color: #4B484D;
+        font-size: 20px;
+        font-family: Montserrat;
+        font-weight: 300;
+        border-bottom: 1px solid #EEE;
+        padding: 10px 30px 5px 0;
+      }
+    }
+
     &_title {
       font-size: 34px;
       font-weight: bold;

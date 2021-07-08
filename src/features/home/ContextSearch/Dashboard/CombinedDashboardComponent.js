@@ -8,6 +8,7 @@ import {
   selectManagers
 } from "app/selectors/userSelectors";
 import ActivitiesDashboard from "./ActivitiesDashboard";
+import CreateIcon from '@material-ui/icons/Create';
 import ArrowDown from "assets/img/svg/arrow_down.svg";
 import ArrowLeft from "assets/img/svg/arrow_left.svg";
 import ArrowRight from "assets/img/svg/arrow_right.svg";
@@ -15,6 +16,10 @@ import CloseChart from "assets/img/svg/closeChart.svg";
 import FilterIcon from "assets/img/svg/filter.svg";
 import moment from "moment";
 import FilterBox from "./FilterBox";
+import {Button, Modal, ModalBody} from "reactstrap";
+import {InputGroup, FormControl} from "react-bootstrap";
+import {toast} from "react-toastify";
+
 
 const {
   getDashboardDataRequest,
@@ -22,7 +27,7 @@ const {
   getDashboardSnapshotDataRequest
 } = appSlice.actions;
 
-const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, deleteComponent, dForms }) => {
+const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, updateSettings, deleteComponent, dForms, allTitleNames }) => {
   let settings;
   if (dashboardSettings) {
     settings = {...dashboardSettings}
@@ -44,6 +49,8 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   const [tabLabel, setTabLabel] = useState('')
   const [isFilterTagOpen, setIsFilterTagOpen] = useState(false)
   const [filter, setFilter] = useState({Roles: [], Organizations: [], 'Activity types': [], Application: []})
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const [newChartTitle, setNewChartTitle] = useState('');
   const managers = useSelector(selectManagers);
   const dashboardDForms = useSelector(selectDashboardDForms)
 
@@ -64,6 +71,21 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
 
   const handleFilterBox = () => {
     setIsFilterBoxOpen(!isFilterBoxOpen);
+  }
+
+  const handleRenameChart = () => {
+    if (newChartTitle.length === 0) {
+      toast.warn("Please input the new title for the chart");
+      return;
+    }
+    if (allTitleNames.findIndex(item => item === newChartTitle) !== -1) {
+      toast.error("This title is already in use. Please input another one");
+      return;
+    }
+    settings.titleName = newChartTitle;
+    updateSettings(settings);
+    setNewChartTitle('');
+    setIsRenameModalOpen(false);
   }
 
   useEffect(() => {
@@ -117,6 +139,9 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
         <span className={'change-chart-days ' + (settings.state === 'small' ? ' change-chart-days-smaller' : '')}>
           {chartType === 'Applications' && settings.dForm !== 'Unselected application' && settings.dForm?.id &&
                     <span>
+                      <span style={{marginRight: '20px'}} className={'edit-chart-icon'} onClick={() => {setIsRenameModalOpen(!isRenameModalOpen)}}>
+                        <CreateIcon/>
+                      </span>
                       <span style={{marginRight: '20px'}} className={'filter-icon-box'} onClick={() => setIsMapFilterBoxOpen(!isMapFilterBoxOpen)} ref={wrapperRefFilterButton}>
                         <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                       </span>
@@ -132,6 +157,13 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
                         setFilter={setFilter}
                       />}
                     </span>}
+          {chartType === 'Activities' &&
+            <span>
+              <span style={{marginRight: '20px'}} className={'edit-chart-icon'} onClick={() => {setIsRenameModalOpen(!isRenameModalOpen)}}>
+                <CreateIcon/>
+              </span>
+            </span>
+          }
               {settings?.dForm?.name !== 'Applications Snapshot' && [{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map(item => {
                 return <span onClick={() => handleChangeDate(item.daysNumber)}
                              className={'chart-days ' + (settings.daysNumber === item.daysNumber ? 'active-days' : '')}>
@@ -172,6 +204,38 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
         setFilter={setFilter}
       />
     </div>}
+
+    <Modal className={"chart-rename-modal"} isOpen={isRenameModalOpen} fade={false} toggle={()=>{setIsRenameModalOpen(false)}}>
+        <ModalBody>
+          <div style={{marginTop: '2vh', textAlign: 'center'}}>
+            <span style={{fontSize: "22px"}}>
+            Input a new title to the "{settings.titleName ? settings.titleName : settings.title}" chart
+          </span>
+          </div>
+          <div style={{marginTop: '5vh'}}>
+            <InputGroup className="mb-3">
+              <FormControl
+                id={`${chartId}-rename-input`}
+                placeholder={settings.titleName ? settings.titleName : settings.title}
+                aria-label="Title"
+                aria-describedby="basic-addon1"
+                onChange={e => setNewChartTitle(e.target.value)}
+              />
+            </InputGroup>
+          </div>
+          <div className={"chart-rename-modal_action-buttons"}>
+            <Button className={"cancel-button"} onClick={() => {
+              setIsRenameModalOpen(false);
+              setNewChartTitle('');
+            }}>
+              Cancel
+            </Button>
+            <Button className={"rename-button"} onClick={handleRenameChart}>
+              Rename
+            </Button>
+          </div>
+        </ModalBody>
+      </Modal>
   </div>)
 }
 

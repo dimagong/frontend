@@ -48,8 +48,10 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
   };
 
   const handleTabChange = (tab) => {
-    onChange(tab);
-    scrollIntoContainerView(tab[tabId])
+    if (tab[tabId] !== active) {
+      onChange(tab);
+      scrollIntoContainerView(tab[tabId])
+    }
   };
 
   const renderTabsWithoutIcons = () => {

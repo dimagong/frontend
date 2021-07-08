@@ -101,6 +101,9 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
         case 'Application': {
           if (settings?.dForm?.name !== 'Applications Snapshot') {
             if (filter['Application'].length > 0) {
+              if (settings.dForm?.name !== filter['Application'][0]?.name) {
+                settings.titleName = undefined;
+              }
               settings.dForm = filter['Application'][0];
             } else {
               settings.dForm = null;
