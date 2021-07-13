@@ -1,0 +1,23 @@
+.member-firm-table-title {
+  margin-left: 50px;
+  span {
+    cursor: pointer;
+    width: 135px;
+    display: inline-block;
+    font-size: smaller;
+    font-weight: bold;
+  }
+}
+
+.member-firm-table-icons {
+  position: absolute;
+  top: 14px;
+  img {
+    cursor: pointer;
+    height: 20px;
+  }
+}
+
+.member-firm-table-icons-remove {
+  right: 0;
+}
