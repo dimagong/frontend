@@ -19,7 +19,7 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser})
       <div style={{position: 'relative'}}>
         <div onClick={() => {handleCardClick(manager)}} className={'dashboard-action'} style={{display: 'inline-block', marginBottom: 0, marginTop: 5}}>
           <img src={manager.url ? manager.url : noneAvatar} className={"action-user-avatar"} alt={'profile-img'}/>
-          <span style={{width: 135}} className={'action-user-name'}>
+          <span style={{width: 130}} className={'action-user-name'}>
             {manager.first_name + ' ' + manager.last_name}
           </span>
           <span className={'action-user'}>

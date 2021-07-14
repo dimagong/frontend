@@ -2,7 +2,7 @@
   margin-left: 50px;
   span {
     cursor: pointer;
-    width: 135px;
+    width: 130px;
     display: inline-block;
     font-size: smaller;
     font-weight: bold;
@@ -19,5 +19,12 @@
 }
 
 .member-firm-table-icons-remove {
-  right: 0;
+  right: 3px;
+}
+
+.member-firm-filter-icon {
+  float: right;
+  position: absolute;
+  right: 30px;
+  top: 35px;
 }
