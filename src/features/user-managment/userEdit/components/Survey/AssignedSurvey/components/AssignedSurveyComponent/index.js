@@ -21,7 +21,7 @@ const AssignedSurveyComponent = ({ surveyData, status, onQuestionAnswerGradingSa
           </div>
         </div>
         <div className="assigned-survey_header_survey-version">
-          {surveyData.intersection_version.current_version}
+          {surveyData.interaction_version.current_version}
         </div>
       </div>
       <div className={"assigned-survey_body"}>
