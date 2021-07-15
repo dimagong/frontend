@@ -142,6 +142,7 @@ const Dashboard = ({ }) => {
           updateSettings={updateSettings}
           dForms={dashboardDForms}
           deleteComponent={deleteComponent}
+          allTitleNames={dashboardSettings ? dashboardSettings.value.map(item => item.titleName) : []}
         />
       )
     }
