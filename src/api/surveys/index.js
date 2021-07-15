@@ -115,10 +115,6 @@ const surveysApi = {
     return await requestLayout(getFinishGradingUrl(payload), "PUT")
   },
 
-  async updateAssignedSurveyToLatestVersion({ payload }) {
-    return await requestLayout(getUpdateAssignedSurveyToLatestVersionUrl(payload.surveyId), "PUT");
-  },
-
 };
 
 export default surveysApi;

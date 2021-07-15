@@ -20,4 +20,3 @@ export const getCurrentQuestionForAssignedSurveyUrl = (assignedSurveyId) => `api
 export const getSurveyAnswerPushUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId} `;
 export const getGradeSurveyQuestionAnswerUrl = (assignedSurveyId) => `api/survey-assigned-interaction/${assignedSurveyId}/update-grade`;
 export const getFinishGradingUrl = (assignedSurveyId) => `api/survey-assigned-interaction/${assignedSurveyId}/finish-grade`;
-export const getUpdateAssignedSurveyToLatestVersionUrl = (assignedInteractionId) => `api/survey-assigned-interaction/${assignedInteractionId}/make-latest-version`;
