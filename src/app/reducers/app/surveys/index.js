@@ -334,12 +334,12 @@ const surveysReducer = {
     state.error = null;
   },
 
-  updateAssignedSurveyToLatestVersionSuccess: (state, {payload}) => {
-    state.selectedManagerAssignedSurveys = state.selectedManagerAssignedSurveys.map(survey => survey.id === payload.id ? payload : survey);
+  deleteAssignedSurveySuccess: (state, {payload}) => {
+    state.selectedManagerAssignedSurveys = state.selectedManagerAssignedSurveys.filter(survey => survey.id !== payload);
 
     state.isLoading = false;
     state.error = null;
-  },
+  }
 
 };
 

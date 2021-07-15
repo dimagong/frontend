@@ -1,11 +1,18 @@
 import React from 'react';
 
+import LoadingButton from "components/LoadingButton";
 import Question from "features/Surveys/Components/Question";
 
-const SurveyReviewComponent = ({ surveyData }) => {
+import './styles.scss'
+
+const SurveyReviewComponent = ({
+  surveyData,
+  onAssignedSurveyDelete,
+  isSurveyDeleteProceeding,
+}) => {
 
   return (
-    <div>
+    <div className="survey-review-component">
       {surveyData.questions.map((question, index) => (
         <Question
           displayType="review"
@@ -13,6 +20,13 @@ const SurveyReviewComponent = ({ surveyData }) => {
           questionNumber={index + 1}
         />
       ))}
+      <LoadingButton
+        onClick={onAssignedSurveyDelete}
+        className="survey-review-component_delete-survey"
+        value="Delete survey"
+        color="danger"
+        isLoading={isSurveyDeleteProceeding}
+      />
     </div>
   )
 };

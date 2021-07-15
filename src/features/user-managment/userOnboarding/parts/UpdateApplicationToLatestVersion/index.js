@@ -11,7 +11,6 @@ import './styles.scss'
 
 const {
   updateDFormFromParentRequest,
-  updateAssignedSurveyToLatestVersionRequest,
 } = appSlice.actions;
 
 export default function UpdateApplicationToLatestVersion({ application }) {
@@ -21,7 +20,6 @@ export default function UpdateApplicationToLatestVersion({ application }) {
   const [isCurrentApplicationUpdateStarted, setIsCurrentApplicationUpdateStarted] = useState(false);
 
   const isDFormUpdateProcessing = useSelector(createLoadingSelector([updateDFormFromParentRequest.type], true));
-  const isSurveyUpdateProcessing = useSelector(createLoadingSelector([updateAssignedSurveyToLatestVersionRequest.type], true));
 
   const onRefresh = () => {
     if (!window.confirm('Are you sure?')) {
@@ -29,17 +27,10 @@ export default function UpdateApplicationToLatestVersion({ application }) {
     }
 
     setIsCurrentApplicationUpdateStarted(true);
-
-    // update dForm, otherwise update survey
-    if (application.d_form) {
-      dispatch(updateDFormFromParentRequest({id: application.d_form.id}));
-    } else {
-      dispatch(updateAssignedSurveyToLatestVersionRequest({surveyId: application.id}))
-    }
-
+    dispatch(updateDFormFromParentRequest({id: application.d_form.id}));
   };
 
-  const isLoading = isDFormUpdateProcessing || isSurveyUpdateProcessing;
+  const isLoading = isDFormUpdateProcessing;
 
   useEffect(() => {
     if (!isLoading) {

@@ -205,6 +205,11 @@ const UserEdit = (props, context) => {
     }
   };
 
+  const handleSurveyClose = () => {
+    setContextFeature(null);
+    setSelectedAssignedSurvey(null)
+  };
+
   useEffect(() => {
     switch (selectedManager.selectedInfo?.type) {
       case 'onboarding': {
@@ -396,7 +401,7 @@ const UserEdit = (props, context) => {
               )
           ),
           'surveyCreate': <SurveyAssign userId={manager.id} />,
-          'assignedSurvey': <AssignedSurvey selectedSurveyId={selectedAssignedSurvey?.id} />
+          'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />
         }[contextFeature]}
 
 
