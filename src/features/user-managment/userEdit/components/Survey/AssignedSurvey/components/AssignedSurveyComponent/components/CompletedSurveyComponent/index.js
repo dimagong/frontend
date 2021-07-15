@@ -2,6 +2,7 @@ import React from 'react';
 
 import {Card, Button} from 'reactstrap';
 import moment from "moment";
+import LoadingButton from "components/LoadingButton";
 
 import "./styles.scss";
 
@@ -26,7 +27,12 @@ const stats = [
   },
 ];
 
-const CompletedSurveyComponent = ({ surveyData, onForceSurveyReviewShow}) => {
+const CompletedSurveyComponent = ({
+  surveyData,
+  onForceSurveyReviewShow,
+  onAssignedSurveyDelete,
+  isSurveyDeleteProceeding,
+}) => {
 
   return (
     <Card className="survey-results">
@@ -66,7 +72,14 @@ const CompletedSurveyComponent = ({ surveyData, onForceSurveyReviewShow}) => {
           {`Graded: ${moment(surveyData.graded_at).format('MM/DD/YYYY')} at ${moment(surveyData.graded_at).format('h:mm')}`}
         </div>
         <div>
-          <Button color="primary px-4" onClick={onForceSurveyReviewShow}>
+          <LoadingButton
+            value="Delete survey"
+            color="danger"
+            isLoading={isSurveyDeleteProceeding}
+            className="mr-2"
+            onClick={onAssignedSurveyDelete}
+          />
+          <Button color="primary px-3" onClick={onForceSurveyReviewShow}>
             View Survey
           </Button>
         </div>

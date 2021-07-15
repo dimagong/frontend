@@ -334,6 +334,13 @@ const surveysReducer = {
     state.error = null;
   },
 
+  deleteAssignedSurveySuccess: (state, {payload}) => {
+    state.selectedManagerAssignedSurveys = state.selectedManagerAssignedSurveys.filter(survey => survey.id !== payload);
+
+    state.isLoading = false;
+    state.error = null;
+  }
+
 };
 
 export default surveysReducer;

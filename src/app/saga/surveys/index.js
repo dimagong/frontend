@@ -111,9 +111,9 @@ const {
   finishGradingRequest,
   finishGradingError,
 
-  updateAssignedSurveyToLatestVersionSuccess,
-  updateAssignedSurveyToLatestVersionRequest,
-  updateAssignedSurveyToLatestVersionError,
+  deleteAssignedSurveySuccess,
+  deleteAssignedSurveyRequest,
+  deleteAssignedSurveyError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -388,6 +388,16 @@ function* finishGrading(payload) {
   }
 }
 
+function* deleteAssignedSurvey({ payload }) {
+  const response = yield call(surveysApi.deleteAssignedSurvey, payload);
+
+  if (response?.message) {
+    yield put(deleteAssignedSurveyError(response.message))
+  } else {
+    yield put(deleteAssignedSurveySuccess(payload))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -416,5 +426,6 @@ export default function* () {
     yield takeLatest(pushAnswerRequest.type, pushAnswer),
     yield takeEvery(gradeSurveyQuestionAnswerRequest.type, gradeSurveyQuestionAnswer),
     yield takeLatest(finishGradingRequest.type, finishGrading),
+    yield takeLatest(deleteAssignedSurveyRequest.type, deleteAssignedSurvey),
   ]);
 }
