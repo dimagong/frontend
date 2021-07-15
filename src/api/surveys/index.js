@@ -23,7 +23,7 @@ import {
   getSurveyAnswerPushUrl,
   getGradeSurveyQuestionAnswerUrl,
   getFinishGradingUrl,
-  getUpdateAssignedSurveyToLatestVersionUrl,
+  getDeleteAssignedSurveyUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -115,9 +115,9 @@ const surveysApi = {
     return await requestLayout(getFinishGradingUrl(payload), "PUT")
   },
 
-  async updateAssignedSurveyToLatestVersion({ payload }) {
-    return await requestLayout(getUpdateAssignedSurveyToLatestVersionUrl(payload.surveyId), "PUT");
-  },
+  async deleteAssignedSurvey(surveyId) {
+    return await requestLayout(getDeleteAssignedSurveyUrl(surveyId), "DELETE")
+  }
 
 };
 

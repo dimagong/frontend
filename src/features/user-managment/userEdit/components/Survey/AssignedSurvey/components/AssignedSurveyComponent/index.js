@@ -6,8 +6,24 @@ import CompletedSurveyComponent from "./components/CompletedSurveyComponent";
 
 import './styles.scss'
 
-const AssignedSurveyComponent = ({ surveyData, status, onQuestionAnswerGradingSave, onFinishGrading, onFinishButtonDisableStateChange, isGradingReview, onForceSurveyReviewShow, onForceSurveyReviewHide }) => {
+const AssignedSurveyComponent = ({
+  surveyData,
+  status,
+  onQuestionAnswerGradingSave,
+  onFinishGrading,
+  onFinishButtonDisableStateChange,
+  isGradingReview,
+  onForceSurveyReviewShow,
+  onForceSurveyReviewHide,
+  onAssignedSurveyDelete,
+  isSurveyDeleteProceeding,
+}) => {
 
+  const commonAssignedSurveyComponentsProps = {
+    isSurveyDeleteProceeding,
+    surveyData,
+    onAssignedSurveyDelete,
+  };
 
   return (
     <div className={"assigned-survey"}>
@@ -26,19 +42,26 @@ const AssignedSurveyComponent = ({ surveyData, status, onQuestionAnswerGradingSa
       </div>
       <div className={"assigned-survey_body"}>
         {{
-          "review": <SurveyReviewComponent surveyData={surveyData} />,
+          "review": (
+            <SurveyReviewComponent
+              {...commonAssignedSurveyComponentsProps}
+            />
+          ),
           "grading": (
             <SurveyGradingComponent
-              surveyData={surveyData}
               isGradingReview={isGradingReview}
               onQuestionAnswerGradingSave={onQuestionAnswerGradingSave}
               onFinishGrading={onFinishGrading}
               onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
               onForceSurveyReviewHide={onForceSurveyReviewHide}
+              {...commonAssignedSurveyComponentsProps}
             />
           ),
           "results": (
-            <CompletedSurveyComponent surveyData={surveyData} onForceSurveyReviewShow={onForceSurveyReviewShow}/>
+            <CompletedSurveyComponent
+              onForceSurveyReviewShow={onForceSurveyReviewShow}
+              {...commonAssignedSurveyComponentsProps}
+            />
           )
         }[status]}
       </div>
