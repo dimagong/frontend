@@ -28,3 +28,19 @@
   right: 30px;
   top: 35px;
 }
+
+.member-firm-filter-tab {
+  background: #818181!important;
+  background-color: #818181!important;
+  height: 30px;
+  padding: 0 12px 0 15px;
+  font-size: smaller;
+  cursor: unset!important;
+  .close-nav {
+    margin-left: 5px;
+    svg {
+      width: 15px;
+      cursor: pointer;
+    }
+  }
+}

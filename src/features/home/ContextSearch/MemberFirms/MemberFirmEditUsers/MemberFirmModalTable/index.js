@@ -11,7 +11,7 @@ const {
   setContext,
 } = appSlice.actions;
 
-const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser}) => {
+const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser, editUser}) => {
   const dispatch = useDispatch();
 
   const TableCard = ({ manager }) => {
@@ -23,8 +23,8 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser})
             {manager.first_name + ' ' + manager.last_name}
           </span>
           <span className={'action-user'}>
-            {manager.permissions.ability.charAt(0).toUpperCase()
-            + manager.permissions.ability.slice(1).replace('_', ' ')}
+            {manager?.permissions?.ability ? manager.permissions.ability.charAt(0).toUpperCase()
+            + manager.permissions.ability.slice(1).replace('_', ' ') : 'none'}
           </span>
           <span className={'action-user'}>{manager.email}</span>
           <span className={'action-user'}>Newcastle</span>
@@ -35,7 +35,7 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser})
             <img src={AddUserIcon} alt={'add-user'} onClick={() => {changeUser(manager)}}/>
           </span>
           : <span className={'member-firm-table-icons member-firm-table-icons-remove'}>
-            <img src={SettingsIcon} alt={'remove-user'} style={{marginRight: 8}}/>
+            <img src={SettingsIcon} alt={'remove-user'} onClick={editUser} style={{marginRight: 8}}/>
             <img src={RemoveUserIcon} alt={'settings'} onClick={() => {changeUser(manager)}}/>
           </span>}
       </div>
@@ -56,7 +56,7 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser})
     let newArray;
     switch (parameter) {
       case 'role': {
-        newArray = [...array].sort((lhs, rhs) => lhs.permissions.ability >= rhs.permissions.ability ? 1 : -1)
+        newArray = [...array].sort((lhs, rhs) => lhs.permissions?.ability >= rhs.permissions?.ability ? 1 : -1)
         break;
       }
       default: newArray = [...array].sort((lhs, rhs) => lhs[parameter] >= rhs[parameter] ? 1 : -1)
@@ -80,7 +80,7 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser})
         ? array.map(item =>
             <TableCard manager={item}/>
           )
-        : <div style={{textAlign: 'center', fontSize: 'large'}}>No user found</div>
+        : <div style={{textAlign: 'center', fontSize: 'large', marginTop: 25}}>No user found</div>
       }
     </div>
   )
