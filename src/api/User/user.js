@@ -621,7 +621,34 @@ const userApi = {
     } catch (err) {
       return err;
     }
-  }
-};
+  },
 
+
+  async addMemberFirmUser(userId) {
+      try {
+        const result = await instance({
+          url: ``,
+          method: "PUT",
+        });
+
+        return result.data.data;
+      } catch (err) {
+        return err;
+      }
+    },
+
+
+  async removeMemberFirmUser(userId) {
+      try {
+        const result = await instance({
+          url: ``,
+          method: "PUT",
+        });
+
+        return result.data.data;
+      } catch (err) {
+        return err;
+      }
+    }
+  };
 export default userApi;
