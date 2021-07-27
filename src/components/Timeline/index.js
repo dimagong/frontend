@@ -117,15 +117,6 @@ const Timeline = ({activity, loadMoreData}) => {
     return time.format('L') + ' ' + time.format('LT');
   }
 
-  /*const loadMoreData = () => {
-    dispatch(getActivitiesRequest({managerId: managerId, page: activity.current_page + 1, shouldUpdate: true}))
-  }*/
-
-  useEffect(() => {
-    //dispatch(getActivitiesRequest({managerId: managerId, page: 1, shouldUpdate: false}))
-  }, []);
-
-
   if (data && data.length === 0) {
     return <h1 className={'no-activities'}>This manager has no activities yet</h1>
   }
