@@ -45,7 +45,7 @@ import {
   selectUserOrganizations,
   selectCurrentManager,
   selectManagerById,
-  selectSelectedManagerAssignedSurveys,
+  selectSelectedManagerAssignedSurveys, selectUserActivity,
 } from 'app/selectors/userSelectors'
 
 import appSlice from 'app/slices/appSlice'
@@ -55,6 +55,7 @@ const {
   getUserOnboardingRequest,
   updateActivitiesRequest,
   getAssignedSurveysRequest,
+  getActivitiesRequest
 }  = appSlice.actions;
 
 const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
@@ -117,6 +118,7 @@ const UserEdit = (props, context) => {
   const userOrganizations = useSelector(selectUserOrganizations(manager.id));
   const assignedSurveys = useSelector(selectSelectedManagerAssignedSurveys) || [];
   const isAssignedSurveysLoading = useSelector(createLoadingSelector([getAssignedSurveysRequest.type], true));
+  const activity = useSelector(selectUserActivity(manager.id));
 
   const [contextFeature, setContextFeature] = useState("");
   const [openOnboarding, setOpenOnboarding] = useState('');
@@ -205,6 +207,15 @@ const UserEdit = (props, context) => {
     }
   };
 
+  const loadMoreData = () => {
+    dispatch(getActivitiesRequest({managerId: manager.id, page: activity.current_page + 1, shouldUpdate: true}))
+  }
+
+  const handleSurveyClose = () => {
+    setContextFeature(null);
+    setSelectedAssignedSurvey(null)
+  };
+
   useEffect(() => {
     switch (selectedManager.selectedInfo?.type) {
       case 'onboarding': {
@@ -241,6 +252,10 @@ const UserEdit = (props, context) => {
     return firstItem.localeCompare(secondItem)
   });
 
+  useEffect(() => {
+    dispatch(getActivitiesRequest({managerId: manager.id, page: 1, shouldUpdate: false}))
+  }, [manager?.id]);
+
   return (
     <Row className="user-managment">
       <Col sm="12" md="12" lg="12" xl="6" className="pb-3">
@@ -260,7 +275,11 @@ const UserEdit = (props, context) => {
         />
         <TabContent activeTab={activeModuleTab}>
           <TabPane tabId="Activity">
-            <Timeline managerId={manager.id}/>
+            <Timeline
+              managerId={manager.id}
+              loadMoreData={loadMoreData}
+              activity={activity}
+            />
           </TabPane>
           <TabPane tabId="Master Schema">
             <Card>
@@ -396,7 +415,7 @@ const UserEdit = (props, context) => {
               )
           ),
           'surveyCreate': <SurveyAssign userId={manager.id} />,
-          'assignedSurvey': <AssignedSurvey selectedSurveyId={selectedAssignedSurvey?.id} />
+          'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />
         }[contextFeature]}
 
 

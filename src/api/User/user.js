@@ -383,11 +383,12 @@ const userApi = {
   },
   async updateUser(payload) {
     const { id, ...data } = payload;
+    let dataToSend = {first_name: data.first_name, last_name: data.last_name, email: data.email, number: data.number}
     try {
       const result = await instance({
         url: `${updateUserPath}/${id}`,
         method: "PUT",
-        data,
+        params: dataToSend,
       });
 
       return result ? result.data.data : result;
@@ -621,7 +622,34 @@ const userApi = {
     } catch (err) {
       return err;
     }
-  }
-};
+  },
 
+
+  async addMemberFirmUser(userId) {
+      try {
+        const result = await instance({
+          url: ``,
+          method: "PUT",
+        });
+
+        return result.data.data;
+      } catch (err) {
+        return err;
+      }
+    },
+
+
+  async removeMemberFirmUser(userId) {
+      try {
+        const result = await instance({
+          url: ``,
+          method: "PUT",
+        });
+
+        return result.data.data;
+      } catch (err) {
+        return err;
+      }
+    }
+  };
 export default userApi;

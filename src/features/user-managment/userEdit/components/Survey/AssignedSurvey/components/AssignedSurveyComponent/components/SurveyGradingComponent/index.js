@@ -6,7 +6,17 @@ import LoadingButton from "components/LoadingButton";
 
 import './styles.scss'
 
-const SurveyGradingComponent = ({ surveyData, onQuestionAnswerGradingSave, onFinishGrading, onFinishButtonDisableStateChange, isFinishButtonDisabled, isGradingReview, onForceSurveyReviewHide }) => {
+const SurveyGradingComponent = ({
+  surveyData,
+  onQuestionAnswerGradingSave,
+  onFinishGrading,
+  onFinishButtonDisableStateChange,
+  isFinishButtonDisabled,
+  isGradingReview,
+  onForceSurveyReviewHide,
+  onAssignedSurveyDelete,
+  isSurveyDeleteProceeding,
+}) => {
 
   const handleFinishGrading = () => {
 
@@ -33,22 +43,32 @@ const SurveyGradingComponent = ({ surveyData, onQuestionAnswerGradingSave, onFin
           isGradingReview={isGradingReview}
         />
       ))}
-      {!surveyData.graded_at ? (
+      <div className="survey-grading-component_action-buttons">
         <LoadingButton
-          className="survey-grading-component_finish-grading"
-          value="Finish grading"
-          color="primary"
-          onClick={handleFinishGrading}
-          disabled={isFinishButtonDisabled}
+          className="survey-grading-component_action-buttons_action-button"
+          value="Delete survey"
+          color="danger"
+          isLoading={isSurveyDeleteProceeding}
+          onClick={onAssignedSurveyDelete}
         />
-      ) : (
-        <LoadingButton
-          className="survey-grading-component_finish-grading"
-          value="View results"
-          color="primary"
-          onClick={onForceSurveyReviewHide}
-        />
-      )}
+        {!surveyData.graded_at ? (
+          <LoadingButton
+            className="survey-grading-component_action-buttons_action-button"
+            value="Finish grading"
+            color="primary"
+            onClick={handleFinishGrading}
+            disabled={isFinishButtonDisabled}
+          />
+        ) : (
+          <LoadingButton
+            className="survey-grading-component_action-buttons_action-button"
+            value="View results"
+            color="primary"
+            onClick={onForceSurveyReviewHide}
+          />
+        )}
+      </div>
+
     </div>
   )
 };

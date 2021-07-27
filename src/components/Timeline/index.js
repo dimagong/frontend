@@ -7,15 +7,12 @@ import {
 import './styles.scss'
 import moment from "moment";
 
-import {useDispatch, useSelector} from "react-redux";
-import appSlice from "app/slices/appSlice";
-import {selectUserActivity} from "app/selectors/userSelectors";
+import {useSelector} from "react-redux";
 import {OverlayTrigger, Tooltip, Button} from "react-bootstrap";
 import {userProfileUpdated} from "constants/activity";
 import SpinnerIcon from 'assets/img/svg/spinner.svg';
 import {selectLoading} from 'app/selectors';
 
-const { getActivitiesRequest } = appSlice.actions;
 
 export const parseTextToComponent = (text) => {
   let indexes = [];
@@ -109,10 +106,8 @@ export const getEditMessage = (editData) => {
   }
 
 
-const Timeline = ({managerId}) => {
-  const dispatch = useDispatch();
-
-  const activity = useSelector(selectUserActivity(managerId));
+const Timeline = ({activity, loadMoreData}) => {
+  console.log('activity', activity)
   let data = activity?.data
 
   const isLoadingData = useSelector(selectLoading)
@@ -121,15 +116,6 @@ const Timeline = ({managerId}) => {
     let time = moment(inputTime);
     return time.format('L') + ' ' + time.format('LT');
   }
-
-  const loadMoreData = () => {
-    dispatch(getActivitiesRequest({managerId: managerId, page: activity.current_page + 1, shouldUpdate: true}))
-  }
-
-  useEffect(() => {
-    dispatch(getActivitiesRequest({managerId: managerId, page: 1, shouldUpdate: false}))
-  }, [managerId]);
-
 
   if (data && data.length === 0) {
     return <h1 className={'no-activities'}>This manager has no activities yet</h1>

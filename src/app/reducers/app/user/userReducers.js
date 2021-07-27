@@ -542,6 +542,14 @@ const switchUserOrganizationSuccess = (state, {payload}) => {
   state.isLoading = false;
 }
 
+const addMemberFirmUserSuccess = (state, {payload}) => {
+  state.isLoading = false;
+}
+
+const removeMemberFirmUserSuccess = (state, {payload}) => {
+  state.isLoading = false;
+}
+
 export default {
   getProfileSuccess,
   getUsersSuccess,
@@ -597,5 +605,7 @@ export default {
   setUserReviewers,
   getUserManagment,
   setProfileOnboarding,
-  switchUserOrganizationSuccess
+  switchUserOrganizationSuccess,
+  addMemberFirmUserSuccess,
+  removeMemberFirmUserSuccess
 };

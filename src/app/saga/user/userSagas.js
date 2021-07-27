@@ -106,7 +106,15 @@ const {
 
   switchUserOrganizationRequest,
   switchUserOrganizationSuccess,
-  switchUserOrganizationError
+  switchUserOrganizationError,
+
+  addMemberFirmUserRequest,
+  addMemberFirmUserSuccess,
+  addMemberFirmUserError,
+
+  removeMemberFirmUserRequest,
+  removeMemberFirmUserSuccess,
+  removeMemberFirmUserError
 } = appSlice.actions;
 
 function* getProfile() {
@@ -386,6 +394,26 @@ function* getUserPermissions({payload}) {
   }
 }
 
+function* addMemberFirmUser({payload}) {
+  try {
+    const result = yield call(userApi.addMemberFirmUser, payload);
+
+    yield put(addMemberFirmUserSuccess({payload, result}))
+  } catch (error) {
+    yield put(addMemberFirmUserError(error))
+  }
+}
+
+function* removeMemberFirmUser({payload}) {
+  try {
+    const result = yield call(userApi.removeMemberFirmUser, payload);
+
+    yield put(removeMemberFirmUserSuccess({payload, result}))
+  } catch (error) {
+    yield put(removeMemberFirmUserError(error))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getOnboardingsByUserRequest.type, getOnboardingsByUser),
@@ -419,5 +447,7 @@ export default function* () {
     yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
     yield takeLatest(setManager.type, handleSetManager),
     yield takeLatest(getUserPermissionsRequest.type, getUserPermissions),
+    yield takeLatest(addMemberFirmUserRequest.type, addMemberFirmUser),
+    yield takeLatest(removeMemberFirmUserRequest.type, removeMemberFirmUser),
   ]);
 }
