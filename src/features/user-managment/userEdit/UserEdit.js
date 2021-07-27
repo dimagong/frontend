@@ -211,6 +211,11 @@ const UserEdit = (props, context) => {
     dispatch(getActivitiesRequest({managerId: manager.id, page: activity.current_page + 1, shouldUpdate: true}))
   }
 
+  const handleSurveyClose = () => {
+    setContextFeature(null);
+    setSelectedAssignedSurvey(null)
+  };
+
   useEffect(() => {
     switch (selectedManager.selectedInfo?.type) {
       case 'onboarding': {
@@ -410,7 +415,7 @@ const UserEdit = (props, context) => {
               )
           ),
           'surveyCreate': <SurveyAssign userId={manager.id} />,
-          'assignedSurvey': <AssignedSurvey selectedSurveyId={selectedAssignedSurvey?.id} />
+          'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />
         }[contextFeature]}
 
 

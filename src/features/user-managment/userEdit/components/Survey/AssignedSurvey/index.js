@@ -4,23 +4,30 @@ import { useDispatch, useSelector } from "react-redux";
 import AssignedSurveyComponent from "./components/AssignedSurveyComponent";
 
 import { selectAssignedSurveyById } from "app/selectors/userSelectors";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { selectError } from "app/selectors";
+import { usePrevious } from "hooks/common";
+import {toast} from "react-toastify";
 
 import {appSlice} from "app/slices/appSlice";
-import {toast} from "react-toastify";
 
 const {
   gradeSurveyQuestionAnswerRequest,
   finishGradingRequest,
+  deleteAssignedSurveyRequest,
 } = appSlice.actions;
 
-const AssignedSurvey = ({ selectedSurveyId }) => {
+const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
   const dispatch = useDispatch();
 
   const [isGradingReview, setIsGradingReview] = useState(false);
   const [isFinishButtonBlocked, setIsFinishButtonBlocked] = useState(false);
 
+  const error = useSelector(selectError);
   const surveyData = useSelector(selectAssignedSurveyById(selectedSurveyId));
+  const isSurveyDeleteProceeding = useSelector(createLoadingSelector([deleteAssignedSurveyRequest.type], true));
 
+  const prevSurveyDeleteLoadingState = usePrevious(isSurveyDeleteProceeding);
 
   const handleQuestionAnswerGradingSave = (data) => {
     dispatch(gradeSurveyQuestionAnswerRequest({ surveyId: surveyData.id ,data}))
@@ -33,8 +40,7 @@ const AssignedSurvey = ({ selectedSurveyId }) => {
     const answersWithoutGrade = questionsWithTextType.filter(question => {
       const isGraded = surveyData.answers.some(answer => {
         if(!answer.grade_structure) return false;
-        // console.log(answer.grade_structure.grade, typeof answer.grade_structure.grade, answer.question_id === question.id && !answer.grade_structure.grade);
-        console.log(answer.question_id === question.id, answer.grade_structure.grade);
+
         return answer.question_id === question.id && answer.grade_structure.grade !== null
       });
 
@@ -63,23 +69,36 @@ const AssignedSurvey = ({ selectedSurveyId }) => {
     setIsGradingReview(false)
   };
 
+  const handleAssignedSurveyDelete = () => {
+    if(!window.confirm("Are you sure you want to delete this survey?")) return;
 
+    dispatch(deleteAssignedSurveyRequest(selectedSurveyId))
+  };
 
   let surveyStatus;
 
-  if (!surveyData.finished_at) {
+  if (!surveyData?.finished_at) {
     surveyStatus = "review"
-  } else if (!surveyData.graded_at || isGradingReview) {
+  } else if (!surveyData?.graded_at || isGradingReview) {
     surveyStatus = 'grading'
-  } else if (surveyData.graded_at && !isGradingReview) {
+  } else if (surveyData?.graded_at && !isGradingReview) {
     surveyStatus = "results"
   }
 
-  console.log("IS GRADING", isGradingReview);
+  useEffect(() => {
+    if (!isSurveyDeleteProceeding && prevSurveyDeleteLoadingState && !error) {
+      onSurveyClose();
+
+      toast.success("Survey deleted successfully");
+    }
+  }, [isSurveyDeleteProceeding]);
 
   useEffect(() => {
     setIsGradingReview(false)
   }, [selectedSurveyId]);
+
+
+  if (!surveyData) return null;
 
   return (
     <AssignedSurveyComponent
@@ -92,6 +111,8 @@ const AssignedSurvey = ({ selectedSurveyId }) => {
       onFinishButtonDisableStateChange={handleFinishButtonDisableStateChange}
       onForceSurveyReviewShow={handleForceSurveyReviewShow}
       onForceSurveyReviewHide={handleForceSurveyReviewHide}
+      onAssignedSurveyDelete={handleAssignedSurveyDelete}
+      isSurveyDeleteProceeding={isSurveyDeleteProceeding}
     />
   )
 };

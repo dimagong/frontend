@@ -38,10 +38,14 @@ export const columnDefs = [
   {
     name: 'Up to date',
     cell: (application) => {
-
+      if (application.d_form) {
+        return application.d_form?.up_to_date ?
+          'Yes' : <UpdateApplicationToLatestVersion application={application} />
+      } else {
+        return "-"
+      }
       // send api/dform/{id}/update-from-parent
-      return application?.d_form?.up_to_date || application?.intersection_version?.is_latest_version ?
-        'Yes' : <UpdateApplicationToLatestVersion application={application} />
+
     }
   },
 ];
