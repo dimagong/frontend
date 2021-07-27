@@ -33,6 +33,7 @@ import './styles.scss'
 
 import appSlice from 'app/slices/appSlice'
 import SurveyCreateModal from "./SurveyCreateModal";
+import MemberFirmCreateModal from "./MemberFirmCreateModal";
 import {selectSearchText} from "../../../app/selectors/userSelectors";
 import Dashboard from "./Dashboard";
 import MemberFirmsList from "./MemberFirms/MemberFirmsList";
@@ -97,6 +98,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   const [selectedNavItem, setSelectedNavItem] = useState(NAV_OPTIONS[0]);
 
   const [isSurveyCreateModalVisible, setIsSurveyCreateModalVisible] = useState(false);
+  const [isMemberFirmCreateModalVisible, setIsMemberFirmCreateModalVisible] = useState(false);
   const [showManagers, setShowManagers] = useState(searchedManagers);
 
 
@@ -111,6 +113,8 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
       dispatch(setContext("OrganizationCreate"))
     } else if (selectedNavItem.id === "applications") {
       dispatch(setContext("Create dForm"))
+    } else if (selectedNavItem.id === "memberFirms") {
+      setIsMemberFirmCreateModalVisible(true);
     } else {
       setIsSurveyCreateModalVisible(true);
     }
@@ -224,6 +228,10 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
       <SurveyCreateModal
         isOpen={isSurveyCreateModalVisible}
         onClose={() => setIsSurveyCreateModalVisible(false)}
+      />
+      <MemberFirmCreateModal
+        isOpen={isMemberFirmCreateModalVisible}
+        onClose={() => setIsMemberFirmCreateModalVisible(false)}
       />
     </>
   )

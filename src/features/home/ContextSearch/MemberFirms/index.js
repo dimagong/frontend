@@ -1,17 +1,42 @@
-import React, { Fragment } from 'react';
+import React, { useEffect } from 'react';
 import MemberFirmsContent from "./MemberFirmsContent";
 import {selectManagers} from "app/selectors";
-import {useSelector} from "react-redux";
+
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { getSelectedMemberFirm } from "app/selectors/memberFirmsSelector";
+import {
+  useSelector,
+  useDispatch,
+} from "react-redux";
 import './index.scss';
 
+import MemberFirmMembersContainer from "./Containers/MemberFirmMembersContainer";
+import MemberFirmMembersComponent from "./Containers/MemberFirmMembersContainer/Components/MemberFirmMembersComponent";
+
+import {Row} from 'reactstrap';
+
+import appSlice from "app/slices/appSlice";
+
+const {
+
+} = appSlice.actions;
+
 const MemberFirmsContainer = () => {
-  const managers = useSelector(selectManagers)
+  const dispatch = useDispatch();
+
+  const managers = useSelector(selectManagers);
+
+  const memberFirmData = useSelector(getSelectedMemberFirm);
+
   return (
-    <Fragment>
-      <MemberFirmsContent
-        managers={managers}
-      />
-    </Fragment>
+    <Row>
+
+      <MemberFirmMembersComponent />
+      <MemberFirmMembersContainer memberFirmId={memberFirmData.id} />
+      {/*<MemberFirmsContent*/}
+      {/*  managers={managers}*/}
+      {/*/>*/}
+    </Row>
   )
 };
 

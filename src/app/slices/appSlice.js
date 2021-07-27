@@ -28,6 +28,8 @@ export const initialState = {
   selectedSurvey: null,
   surveyWorkFlowsAndReviewers: null,
   selectedManagerAssignedSurveys: null,
+  memberFirms: [],
+  selectedMemberFirmId: null,
   organizations: {
     selectedOrganizationIdAndType: {id: null, type: null},
     corporation: [],
