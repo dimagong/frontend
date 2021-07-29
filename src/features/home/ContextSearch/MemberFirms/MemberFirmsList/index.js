@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 import {useDispatch, useSelector} from "react-redux";
 import appSlice from "app/slices/appSlice";
-
+import MemberFirmsListEmptyComponent from "./Components/MemberFirmsListEmptyComponent";
 import noneAvatar from "../../../../../assets/img/portrait/none-avatar.png";
 
 import { createLoadingSelector } from "app/selectors/loadingSelector";
@@ -100,6 +100,10 @@ const MemberFirmsList = () => {
         </Col>
       </Row>
     )
+  }
+
+  if (!memberFirms.data.length) {
+    return <MemberFirmsListEmptyComponent isLoading={isMemberFirmsLoading} />
   }
 
   return (

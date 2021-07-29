@@ -11,7 +11,7 @@ import {
 import './index.scss';
 
 import MemberFirmMembersContainer from "./Containers/MemberFirmMembersContainer";
-import MemberFirmMembersComponent from "./Containers/MemberFirmMembersContainer/Components/MemberFirmMembersComponent";
+import MemberFirmProfileComponent from "./Components/MemberFirmProfileComponent";
 
 import {Row} from 'reactstrap';
 
@@ -30,8 +30,7 @@ const MemberFirmsContainer = () => {
 
   return (
     <Row>
-
-      <MemberFirmMembersComponent />
+      <MemberFirmProfileComponent data={memberFirmData} />
       <MemberFirmMembersContainer memberFirmId={memberFirmData.id} />
       {/*<MemberFirmsContent*/}
       {/*  managers={managers}*/}
