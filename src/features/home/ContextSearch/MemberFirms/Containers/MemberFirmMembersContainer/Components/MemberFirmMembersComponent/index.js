@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
@@ -6,6 +6,7 @@ import { Button } from 'reactstrap'
 import {Settings} from 'react-feather';
 import UserCardTemplate from "../../../../../CardTemplates/userCard";
 import "./styles.scss"
+import MemberFirmEditUsers from "../../../../MemberFirmEditUsers";
 
 
 const userCardUserTemplateData = {
@@ -44,10 +45,15 @@ const MemberFirmUsersList = ({ className, label, users = [] }) => {
   )
 };
 
-const MemberFirmMembersComponent = () => {
+const MemberFirmMembersComponent = ({members, potentialMembers, memberFirm}) => {
+
+  const [isEditUserModalOpened, setIsEditUserModalOpened] = useState(false)
 
   const principals = Array.from(Array.from({length: 2}), () => userCardUserTemplateData);
-  const members = Array.from(Array.from({length: 3}), () => userCardUserTemplateData);
+  const membersToShow = Array.from(Array.from({length: 3}), () => userCardUserTemplateData);
+
+  const allMembers = members ? [].concat.apply([], Object.values(members).map(item => item)) : [];
+  console.log('allMmeber', allMembers)
 
   return (
     <ContextFeatureTemplate contextFeatureTitle="Associated members" isSearchEnabled onSearchValueChange={() => {}} searchValue={""}>
@@ -61,15 +67,26 @@ const MemberFirmMembersComponent = () => {
 
         <MemberFirmUsersList
           className={"members"}
-          users={members}
+          users={membersToShow}
           label="Members"
         />
 
       </div>
 
-      <Button className="member-firm-associated-members_settings-button" color="primary">
+      <Button className="member-firm-associated-members_settings-button" color="primary"
+              onClick={() => setIsEditUserModalOpened(true)}>
         <Settings />
       </Button>
+
+      <MemberFirmEditUsers
+        isModalOpen={isEditUserModalOpened}
+        setIsModalOpen={setIsEditUserModalOpened}
+        members={allMembers}
+        potentialMembers={potentialMembers
+          ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) === -1)
+          : []}
+        memberFirm={memberFirm}
+      />
     </ContextFeatureTemplate>
   )
 };
