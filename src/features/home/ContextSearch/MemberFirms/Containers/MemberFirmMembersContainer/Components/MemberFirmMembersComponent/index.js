@@ -53,7 +53,6 @@ const MemberFirmMembersComponent = ({members, potentialMembers, memberFirm}) => 
   const membersToShow = Array.from(Array.from({length: 3}), () => userCardUserTemplateData);
 
   const allMembers = members ? [].concat.apply([], Object.values(members).map(item => item)) : [];
-  console.log('allMmeber', allMembers)
 
   return (
     <ContextFeatureTemplate contextFeatureTitle="Associated members" isSearchEnabled onSearchValueChange={() => {}} searchValue={""}>
@@ -81,7 +80,8 @@ const MemberFirmMembersComponent = ({members, potentialMembers, memberFirm}) => 
       <MemberFirmEditUsers
         isModalOpen={isEditUserModalOpened}
         setIsModalOpen={setIsEditUserModalOpened}
-        members={allMembers}
+        allMembers={members}
+        members={(potentialMembers && allMembers) ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) !== -1) : []}
         potentialMembers={potentialMembers
           ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) === -1)
           : []}
