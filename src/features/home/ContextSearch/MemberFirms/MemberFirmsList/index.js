@@ -49,7 +49,7 @@ const UserCardTemplate = ({className, onClick, data }) => {
           <div className="user-card-body-left">
             <div>
               <CardTitle className="m-0 user-card-body_title">
-                {data.name}
+                {data.main_fields.name}
               </CardTitle>
             </div>
             {/*<div>*/}

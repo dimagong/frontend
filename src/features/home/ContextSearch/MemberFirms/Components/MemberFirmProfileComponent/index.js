@@ -21,7 +21,7 @@ const MemberFirmProfileComponent = ({ data }) => {
             <img src={noneAvatar} alt="member firm logo"/>
           </div>
           <div className="member-firm-profile_header_name">
-            {data.name}
+            {data.main_fields.name}
           </div>
         </div>
         <div className="member-firm-profile_info">
