@@ -106,7 +106,7 @@ export const getEditMessage = (editData) => {
   }
 
 
-const Timeline = ({activity, loadMoreData}) => {
+const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager has no activities yet"}) => {
   console.log('activity', activity)
   let data = activity?.data
 
@@ -117,8 +117,12 @@ const Timeline = ({activity, loadMoreData}) => {
     return time.format('L') + ' ' + time.format('LT');
   }
 
-  if (data && data.length === 0) {
-    return <h1 className={'no-activities'}>This manager has no activities yet</h1>
+  if ((data && data.length === 0) || !activity) {
+    return (
+      <h1 className={'no-activities'}>
+        {noActivitiesMessage}
+      </h1>
+    )
   }
   return (
     <Card>
