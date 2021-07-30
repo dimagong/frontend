@@ -19,11 +19,13 @@ const {
 } = appSlice.actions;
 
 
-const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm}) => {
+const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm, allMembers}) => {
   const dispatch = useDispatch()
   const [searchedMembers, setSearchedMembers] = useState([])
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
   const [isChangeRoleModalOpen, setIsChangeRoleModalOpen] = useState(false);
+  const [isFiltered, setIsFiltered] = useState(false);
+  const [currUser, setCurrUser] = useState({});
   const [filter, setFilter] = useState({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}});
   const wrapperRefFilterButton = useRef(null);
   const [curr, setCurr] = useState('roles');
@@ -31,7 +33,6 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
   const [filterName, setFilterName] = useState('');
 
   const addUser = (user) => {
-    console.log('user', user)
     dispatch(addMemberFirmUsersRequest({
       memberFirmId: memberFirm.id,
       users: [{
@@ -52,11 +53,6 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
     setSearchedMembers(potentialMembers.filter(item =>
       (item.first_name + item.last_name).toLowerCase().search(inputText.toLowerCase()) !== -1))
   }
-
-  console.log('potentialMembers', potentialMembers)
-  console.log('searchedMembers', searchedMembers)
-  console.log('memberFirm', memberFirm)
-  console.log({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm})
 
   return (
     <Modal
@@ -100,7 +96,14 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
           {isFilterBoxOpen && <FilterModal
             // Temporary using constant managersOut
             managers={potentialMembers}
-            handleFilter={(newManagers) => {setSearchedMembers(newManagers)}}
+            handleFilter={(newManagers) => {
+              setSearchedMembers(newManagers)
+              if (filter.roles.size > 0) {
+                setIsFiltered(true);
+              } else {
+                setIsFiltered(false);
+              }
+            }}
             wrapperRefFilterButton={wrapperRefFilterButton}
             style={{left: 220, top: 50, marginBottom: 0}}
             filterTypes={['roles']}
@@ -121,27 +124,38 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
               <span onClick={() => {
                 setFilter({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}})
                 setSearchedMembers([]);
+                setIsFiltered(false)
               }}
                     className={'close-nav'}><CloseIcon/></span>
             </Button>}
           </div>
 
           <MemberFirmModalTable
-            array={searchedMembers?.length > 0 ? searchedMembers : potentialMembers}
+            array={(searchedMembers?.length > 0 || isFiltered) ? searchedMembers : potentialMembers}
             setArray={setSearchedMembers}
             changeUser={addUser}
+            editUser={(user) => {
+              setIsChangeRoleModalOpen(true);
+              setCurrUser(user)
+            }}
             isTitle
             isAddUser
+            allMembers={allMembers}
           />
           <div style={{fontWeight: 'bold'}}>Existing</div>
           <MemberFirmModalTable
             array={members}
             changeUser={removeUser}
-            editUser={() => {setIsChangeRoleModalOpen(true)}}
+            editUser={(user) => {
+              setIsChangeRoleModalOpen(true);
+              setCurrUser(user)
+            }}
           />
           <MemberFirmsChangeRoleModal
             isOpen={isChangeRoleModalOpen}
             setIsOpen={setIsChangeRoleModalOpen}
+            user={currUser}
+            memberFirm={memberFirm}
           />
         </ModalBody>
       </Modal>

@@ -27,15 +27,15 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser, 
             + manager.permissions.ability.slice(1).replace('_', ' ') : 'none'}
           </span>
           <span className={'action-user'}>{manager.email}</span>
-          <span className={'action-user'}>Newcastle</span>
-          <span className={'action-user'} style={{width: 120, paddingRight: 0}}>-</span>
+          <span className={'action-user'}>-</span>
+          <span className={'action-user'} style={{width: 120, paddingRight: 0}}>{manager.member_firm?.main_fields?.name || '-'}</span>
         </div>
         {isAddUser
           ? <span className={'member-firm-table-icons member-firm-table-icons-add'}>
-            <img src={AddUserIcon} alt={'add-user'} onClick={() => {changeUser(manager)}}/>
+            <img src={AddUserIcon} alt={'add-user'} onClick={() => {editUser(manager)}}/>
           </span>
           : <span className={'member-firm-table-icons member-firm-table-icons-remove'}>
-            <img src={SettingsIcon} alt={'remove-user'} onClick={editUser} style={{marginRight: 8}}/>
+            <img src={SettingsIcon} alt={'remove-user'} onClick={() => editUser(manager)} style={{marginRight: 8}}/>
             <img src={RemoveUserIcon} alt={'settings'} onClick={() => {changeUser(manager)}}/>
           </span>}
       </div>
@@ -80,7 +80,7 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser, 
         ? array.map(item =>
             <TableCard manager={item}/>
           )
-        : <div style={{textAlign: 'center', fontSize: 'large', marginTop: 25}}>No user found</div>
+        : <div style={{textAlign: 'center', fontSize: 'large', marginTop: 30}}>No user found</div>
       }
     </div>
   )
