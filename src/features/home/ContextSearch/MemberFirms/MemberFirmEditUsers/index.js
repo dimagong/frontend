@@ -19,7 +19,7 @@ const {
 } = appSlice.actions;
 
 
-const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm, allMembers}) => {
+const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm, allMembers, principals}) => {
   const dispatch = useDispatch()
   const [searchedMembers, setSearchedMembers] = useState([])
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
@@ -169,6 +169,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
             allMembers={allMembers}
             isEdit={isEdit}
             setIsEdit={setIsEdit}
+            principals={principals}
           />
 
           <Modal className={"organization-remove-modal"} isOpen={userToDelete.hasOwnProperty('id')} fade={false} toggle={()=>{setUserToDelete({})}}>

@@ -10,7 +10,7 @@ const {
   addMemberFirmUsersRequest
 } = appSlice.actions;
 
-const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, allMembers, isEdit, setIsEdit}) => {
+const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, principals, isEdit, setIsEdit}) => {
   const dispatch = useDispatch()
   const [currRole, setCurrRole] = useState('')
 
@@ -21,10 +21,10 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, allMem
   };
 
   useEffect(() => {
-    if (allMembers && user.hasOwnProperty('id')) {
-      setCurrRole(Object.keys(allMembers).find(item => allMembers[item].findIndex(elem => elem.id === user.id) !== -1))
+    if (isEdit && principals && user.hasOwnProperty('id')) {
+      setCurrRole(principals.find(item => item.id === user.id) ? 'principal' : 'member')
     }
-  }, [user?.id, allMembers])
+  }, [user?.id, principals])
 
 
   return <SurveyModal
@@ -38,7 +38,7 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, allMem
           toast.error("Please choose the role of the user")
           return;
         }
-        if (currRole !== Object.keys(allMembers).find(item => allMembers[item].findIndex(elem => elem.id === user.id) !== -1)) {
+        if (isEdit && currRole !== principals.find(item => item.id === user.id) ? 'principal' : 'member') {
           dispatch(addMemberFirmUsersRequest({
             users: [{
                id: user.id,

@@ -49,6 +49,7 @@ const MemberFirmMembersComponent = ({members, principals, potentialMembers, memb
           ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) === -1)
           : []}
         memberFirm={memberFirm}
+        principals={principals}
       />
     </ContextFeatureTemplate>
   )
