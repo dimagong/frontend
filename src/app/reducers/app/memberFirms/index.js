@@ -1,3 +1,5 @@
+import {toast} from "react-toastify";
+
 const memberFirmsReducer = {
   createMemberFirmSuccess: (state, { payload }) => {
     console.log(payload);
@@ -20,7 +22,6 @@ const memberFirmsReducer = {
   },
 
   getMemberFirmUsersSuccess: (state, { payload }) => {
-    console.log('current', payload);
 
     state.selectedMemberFirmUsers = payload;
 
@@ -29,7 +30,6 @@ const memberFirmsReducer = {
   },
 
   getMemberFirmPotentialUsersSuccess: (state, { payload }) => {
-    console.log('potential', payload);
 
     state.selectedMemberFirmPotentialUsers = payload
 
@@ -38,18 +38,16 @@ const memberFirmsReducer = {
   },
 
   addMemberFirmUsersSuccess: (state, { payload }) => {
-    console.log('add', payload);
-
-    state.selectedMemberFirmUsers = payload
+    state.selectedMemberFirmUsers = payload.response
+    toast.success(payload.isEdit ? "The user role was successfully changed" : "The user was successfully added")
 
     state.isLoading = false;
     state.error = null;
   },
 
   removeMemberFirmUsersSuccess: (state, { payload }) => {
-    console.log('remove', payload);
-
-    state.selectedMemberFirmUsers = payload
+    state.selectedMemberFirmUsers = payload.response
+    toast.success("The user was successfully removed")
 
     state.isLoading = false;
     state.error = null;

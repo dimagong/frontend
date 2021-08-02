@@ -77,7 +77,7 @@ function* addMemberFirmUsers({payload}) {
   if (response?.message) {
     yield put(addMemberFirmUsersError(response.message))
   } else {
-    yield put(addMemberFirmUsersSuccess(response))
+    yield put(addMemberFirmUsersSuccess({response, isEdit: payload.isEdit}))
   }
 }
 
@@ -87,7 +87,7 @@ function* removeMemberFirmUsers({payload}) {
   if (response?.message) {
     yield put(removeMemberFirmUsersError(response.message))
   } else {
-    yield put(removeMemberFirmUsersSuccess(response))
+    yield put(removeMemberFirmUsersSuccess({response, isEdit: payload.isEdit}))
   }
 }
 

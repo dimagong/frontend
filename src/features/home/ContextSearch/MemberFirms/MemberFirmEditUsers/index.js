@@ -25,6 +25,8 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
   const [isChangeRoleModalOpen, setIsChangeRoleModalOpen] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [userToDelete, setUserToDelete] = useState({});
   const [currUser, setCurrUser] = useState({});
   const [filter, setFilter] = useState({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}});
   const wrapperRefFilterButton = useRef(null);
@@ -134,29 +136,60 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
             array={(searchedMembers?.length > 0 || isFiltered) ? searchedMembers : potentialMembers}
             setArray={setSearchedMembers}
             changeUser={addUser}
-            editUser={(user) => {
+            editUser={(user, newIsEdit) => {
               setIsChangeRoleModalOpen(true);
               setCurrUser(user)
+              setIsEdit(newIsEdit)
             }}
             isTitle
             isAddUser
             allMembers={allMembers}
+            notFindMessage={'There are no potential users to add'}
           />
           <div style={{fontWeight: 'bold'}}>Existing</div>
           <MemberFirmModalTable
             array={members}
-            changeUser={removeUser}
-            editUser={(user) => {
+            changeUser={(user) => setUserToDelete(user)}
+            editUser={(user, newIsEdit) => {
               setIsChangeRoleModalOpen(true);
               setCurrUser(user)
+              setIsEdit(newIsEdit)
             }}
+            notFindMessage={'There are no users in member firm'}
           />
           <MemberFirmsChangeRoleModal
             isOpen={isChangeRoleModalOpen}
             setIsOpen={setIsChangeRoleModalOpen}
             user={currUser}
             memberFirm={memberFirm}
+            allMembers={allMembers}
+            isEdit={isEdit}
+            setIsEdit={setIsEdit}
           />
+
+          <Modal className={"organization-remove-modal"} isOpen={userToDelete.hasOwnProperty('id')} fade={false} toggle={()=>{setUserToDelete({})}}>
+            <ModalBody>
+              <div>
+                <span style={{fontSize: "22px"}}>
+                Are you sure you want to remove {userToDelete.first_name + ' ' + userToDelete.last_name} from {memberFirm?.main_fields?.name}?
+              </span>
+              </div>
+              <div className={"organization-remove-modal_action-buttons"}>
+                <Button className={"remove-button"} onClick={() => {
+                  removeUser(userToDelete)
+                  setUserToDelete({})
+                }}>
+                  Remove
+                </Button>
+                <Button className={"cancel-button"} onClick={() => {
+                  setUserToDelete({});
+                }}>
+                  Cancel
+                </Button>
+              </div>
+            </ModalBody>
+          </Modal>
+
         </ModalBody>
       </Modal>
   )
