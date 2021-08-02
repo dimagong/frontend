@@ -35,6 +35,8 @@ const memberFirmsReducer = {
 
   addMemberFirmUsersSuccess: (state, { payload }) => {
     state.selectedMemberFirmUsers = payload;
+    state.selectedMemberFirmUsers = payload.response
+    toast.success(payload.isEdit ? "The user role was successfully changed" : "The user was successfully added")
 
     state.isLoading = false;
     state.error = null;
@@ -42,7 +44,7 @@ const memberFirmsReducer = {
 
   removeMemberFirmUsersSuccess: (state, { payload }) => {
     state.selectedMemberFirmUsers = payload;
-
+    toast.success("The user was successfully removed")
     state.isLoading = false;
     state.error = null;
   },

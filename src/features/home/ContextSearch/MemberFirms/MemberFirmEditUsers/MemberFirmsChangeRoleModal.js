@@ -4,12 +4,13 @@ import React, {useEffect, useState} from "react";
 import SurveyModal from "../../../../Surveys/Components/SurveyModal";
 import {useDispatch} from "react-redux";
 import appSlice from "../../../../../app/slices/appSlice";
+import {toast} from "react-toastify";
 
 const {
   addMemberFirmUsersRequest
 } = appSlice.actions;
 
-const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, allMembers}) => {
+const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, allMembers, isEdit, setIsEdit}) => {
   const dispatch = useDispatch()
   const [currRole, setCurrRole] = useState('')
 
@@ -20,11 +21,10 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, allMem
   };
 
   useEffect(() => {
-    if (allMembers) {
+    if (allMembers && user.hasOwnProperty('id')) {
       setCurrRole(Object.keys(allMembers).find(item => allMembers[item].findIndex(elem => elem.id === user.id) !== -1))
     }
-  }, [user?.id])
-
+  }, [user?.id, allMembers])
 
 
   return <SurveyModal
@@ -34,14 +34,22 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, allMem
       onClose={() => setIsOpen(false)}
       submitBtnText={"Save"}
       onSubmit={() => {
+        if (!currRole) {
+          toast.error("Please choose the role of the user")
+          return;
+        }
+        if (currRole !== Object.keys(allMembers).find(item => allMembers[item].findIndex(elem => elem.id === user.id) !== -1)) {
+          dispatch(addMemberFirmUsersRequest({
+            users: [{
+               id: user.id,
+               type: currRole
+           }],
+           memberFirmId: memberFirm.id,
+           isEdit: isEdit
+          }))
+        }
         setIsOpen(false)
-        dispatch(addMemberFirmUsersRequest({
-          users: [{
-             id: user.id,
-             type: currRole
-         }],
-         memberFirmId: memberFirm.id
-      }))
+        setIsEdit(false)
       }}
     >
       <div style={{paddingBottom: 50}}>

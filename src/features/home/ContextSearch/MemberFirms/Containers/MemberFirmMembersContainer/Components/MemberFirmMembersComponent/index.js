@@ -41,6 +41,7 @@ const MemberFirmMembersComponent = ({members, principals, potentialMembers, memb
       </Button>
 
       <MemberFirmEditUsers
+        allMembers={allMembers}
         isModalOpen={isEditUserModalOpened}
         setIsModalOpen={setIsEditUserModalOpened}
         members={(potentialMembers && allMembers) ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) !== -1) : []}
