@@ -1,0 +1,21 @@
+.member_firm-form_component {
+  &-loader {
+    display: flex;
+    justify-content: center;
+  }
+
+  &-fields {
+    &-actions {
+      display: flex;
+      justify-content: flex-end;
+      &-save {
+        margin-top: 50px;
+        border-color: #4839eb !important;
+        background-color: #7367f0 !important;
+        padding: 0.9rem 3rem;
+        font-size: 18px;
+        border-radius: 0.4285rem;
+      }
+    }
+  }
+}

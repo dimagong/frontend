@@ -28,6 +28,18 @@ const {
   removeMemberFirmUsersSuccess,
   removeMemberFirmUsersRequest,
   removeMemberFirmUsersError,
+
+  getMasterSchemaFieldsForMemberFirmSuccess,
+  getMasterSchemaFieldsForMemberFirmRequest,
+  getMasterSchemaFieldsForMemberFirmError,
+
+  getMemberFirmFormFieldsSuccess,
+  getMemberFirmFormFieldsRequest,
+  getMemberFirmFormFieldsError,
+
+  updateMemberFirmFormValuesSuccess,
+  updateMemberFirmFormValuesRequest,
+  updateMemberFirmFormValuesError,
 } = appSlice.actions;
 
 
@@ -91,6 +103,37 @@ function* removeMemberFirmUsers({payload}) {
   }
 }
 
+function* getMasterSchemaFieldsForMemberFirm({payload}) {
+  const response = yield call(memberFirmsApi.getMasterSchemaFieldsForMemberFirm, payload);
+
+  if (response?.message) {
+    yield put(getMasterSchemaFieldsForMemberFirmError(response.message))
+  } else {
+    yield put(getMasterSchemaFieldsForMemberFirmSuccess(response))
+  }
+}
+
+function* getMemberFirmFormFields({payload}) {
+  const response = yield call(memberFirmsApi.getMemberFirmFormFields, payload);
+
+  if (response?.message) {
+    yield put(getMemberFirmFormFieldsError(response.message))
+  } else {
+    yield put(getMemberFirmFormFieldsSuccess(response))
+  }
+}
+
+function* updateMemberFirmFormValues({payload}) {
+  const response = yield call(memberFirmsApi.updateMemberFirmFormValues, payload);
+
+  if (response?.message) {
+    yield put(updateMemberFirmFormValuesError(response.message))
+  } else {
+    yield put(getMemberFirmFormFieldsRequest(payload.memberFirmId));
+    yield put(updateMemberFirmFormValuesSuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     takeLatest(createMemberFirmRequest.type, createMemberFirm),
@@ -99,5 +142,8 @@ export default function* () {
     takeLatest(getMemberFirmPotentialUsersRequest.type, getMemberFirmPotentialUsers),
     takeLatest(addMemberFirmUsersRequest.type, addMemberFirmUsers),
     takeLatest(removeMemberFirmUsersRequest.type, removeMemberFirmUsers),
+    takeLatest(getMasterSchemaFieldsForMemberFirmRequest.type, getMasterSchemaFieldsForMemberFirm),
+    takeLatest(getMemberFirmFormFieldsRequest.type, getMemberFirmFormFields),
+    takeLatest(updateMemberFirmFormValuesRequest.type, updateMemberFirmFormValues),
   ]);
 }

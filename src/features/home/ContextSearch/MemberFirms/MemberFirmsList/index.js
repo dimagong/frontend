@@ -21,6 +21,7 @@ import { createLoadingSelector } from "app/selectors/loadingSelector";
 import {
   getMemberFirms,
 } from "app/selectors/memberFirmsSelector";
+import {capitalizeAll} from "../../../../../utility/common";
 
 const {
   setContext,
@@ -51,6 +52,9 @@ const UserCardTemplate = ({className, onClick, data }) => {
               <CardTitle className="m-0 user-card-body_title">
                 {data.main_fields.name}
               </CardTitle>
+              <CardText style={{marginBottom: "5px"}}>
+                {`${data.numberOfMembers} member${data.numberOfMembers === 1 ? "" : "s"}`}
+              </CardText>
             </div>
             {/*<div>*/}
             {/*  <CardText>*/}

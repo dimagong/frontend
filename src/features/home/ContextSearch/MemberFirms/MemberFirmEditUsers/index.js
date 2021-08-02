@@ -19,7 +19,7 @@ const {
 } = appSlice.actions;
 
 
-const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm, allMembers}) => {
+const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm}) => {
   const dispatch = useDispatch()
   const [searchedMembers, setSearchedMembers] = useState([])
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
@@ -140,7 +140,6 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
             }}
             isTitle
             isAddUser
-            allMembers={allMembers}
           />
           <div style={{fontWeight: 'bold'}}>Existing</div>
           <MemberFirmModalTable

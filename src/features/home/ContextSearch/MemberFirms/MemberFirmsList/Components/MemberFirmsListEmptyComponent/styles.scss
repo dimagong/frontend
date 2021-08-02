@@ -1,7 +1,14 @@
-.member_firm_list-empty {
+.member_firms_list-empty {
   max-width: 435px;
-  font-size: 24px;
   text-align: center;
   margin: 0 auto;
   padding: 100px 0;
+
+  &-loading {
+
+  }
+
+  &-firms_absent {
+    font-size: 24px;
+  }
 }

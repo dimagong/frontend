@@ -2,8 +2,14 @@ import { requestLayout } from "../index";
 
 import {
   attachUsersToMemberFirmUrl,
-  createMemberFirm, detachUsersFromMemberFirmUrl, getMemberFirmMembersUrl,
-  getMemberFirms, getPotentialMembers
+  createMemberFirm,
+  detachUsersFromMemberFirmUrl,
+  getMemberFirmMembersUrl,
+  getMemberFirms,
+  getPotentialMembers,
+  getMasterSchemaFieldsForMemberFirmUrl,
+  getMemberFirmFormFieldsUrl,
+  updateMemberFirmFormValuesUrl,
 } from "./constants";
 
 const memberFirmsApi = {
@@ -31,6 +37,17 @@ const memberFirmsApi = {
     return await requestLayout(detachUsersFromMemberFirmUrl(memberFirmId), "PUT", {users})
   },
 
+  async getMasterSchemaFieldsForMemberFirm(memberFirmId) {
+    return await requestLayout(getMasterSchemaFieldsForMemberFirmUrl(memberFirmId), "GET")
+  },
+
+  async getMemberFirmFormFields(memberFirmId) {
+    return await requestLayout(getMemberFirmFormFieldsUrl(memberFirmId), "GET")
+  },
+
+  async updateMemberFirmFormValues(payload) {
+    return await requestLayout(updateMemberFirmFormValuesUrl(payload.memberFirmId), "PUT", payload.data)
+  }
 
 };
 

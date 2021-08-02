@@ -5,8 +5,12 @@ import {useDispatch, useSelector} from "react-redux";
 import {
   getSelectedMemberFirm,
   getSelectedMemberFirmPotentialUsers,
-  getSelectedMemberFirmUsers
+  getSelectedMemberFirmMembers,
+  getSelectedMemberFirmPrincipals,
 } from "app/selectors/memberFirmsSelector";
+
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+
 import appSlice from "app/slices/appSlice";
 
 const {
@@ -15,20 +19,26 @@ const {
 } = appSlice.actions;
 
 const MemberFirmMembersContainer = () => {
-  const dispatch = useDispatch()
-  const selectedMemberFirm = useSelector(getSelectedMemberFirm)
-  const members = useSelector(getSelectedMemberFirmUsers)
-  const potentialMembers = useSelector(getSelectedMemberFirmPotentialUsers)
+  const dispatch = useDispatch();
+  const selectedMemberFirm = useSelector(getSelectedMemberFirm);
+  const potentialMembers = useSelector(getSelectedMemberFirmPotentialUsers);
+
+  const memberFirmMembers = useSelector(getSelectedMemberFirmMembers);
+  const memberFirmPrincipals = useSelector(getSelectedMemberFirmPrincipals);
+
+  const isMemberFirmMembersLoading = useSelector(createLoadingSelector([getMemberFirmUsersRequest.type], true));
 
   useEffect(() => {
-    dispatch(getMemberFirmUsersRequest(selectedMemberFirm.id))
+    dispatch(getMemberFirmUsersRequest(selectedMemberFirm.id));
+    dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id));
     dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id))
-    dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id))
-  }, [selectedMemberFirm])
+  }, [selectedMemberFirm]);
 
   return (
     <MemberFirmMembersComponent
-      members={members}
+      isMemberFirmMembersLoading={isMemberFirmMembersLoading}
+      members={memberFirmMembers}
+      principals={memberFirmPrincipals}
       potentialMembers={potentialMembers}
       memberFirm={selectedMemberFirm}
     />

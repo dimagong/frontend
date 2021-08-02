@@ -32,6 +32,7 @@ export const initialState = {
   selectedMemberFirmId: null,
   selectedMemberFirmUsers: [],
   selectedMemberFirmPotentialUsers: [],
+  selectedMemberFirmMSFields: null,
   organizations: {
     selectedOrganizationIdAndType: {id: null, type: null},
     corporation: [],

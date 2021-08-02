@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import ContextTemplate from "components/ContextTemplate";
 import {AtSign} from "react-feather";
@@ -7,11 +7,23 @@ import {PhoneEnabled} from "@material-ui/icons";
 import {Button} from 'reactstrap';
 import './styles.scss'
 
+import Timeline from "components/Timeline";
+import FormComponent from "./Components/FormComponent";
 
 import noneAvatar from "../../../../../../assets/img/portrait/none-avatar.png";
 
 
-const MemberFirmProfileComponent = ({ data }) => {
+const memberFirmProfileTabs = ["Activity", "Info"];
+
+const MemberFirmProfileComponent = ({
+  data,
+  isMemberFirmFormFieldsLoading,
+  isMasterSchemaFieldsForMemberFirmLoading,
+  memberFirmFormFields,
+  masterSchemaMemberFirmFields,
+  memberFirmId,
+}) => {
+  const [selectedTab, setSelectedTab] = useState(memberFirmProfileTabs[0]);
 
   return (
     <ContextTemplate contextTitle={"Member firm"}>
@@ -36,14 +48,25 @@ const MemberFirmProfileComponent = ({ data }) => {
           </div>
         </div>
         <div className="member-firm-profile_tabs">
-          {["Activity", "Info"].map(tab => (
-            <Button className="member-firm-profile_tabs_tab" color="white">
+          {memberFirmProfileTabs.map(tab => (
+            <Button className="member-firm-profile_tabs_tab" color={selectedTab === tab ? "primary" : "default"} onClick={() => setSelectedTab(tab)}>
               {tab}
             </Button>
           ))}
         </div>
         <div className="member-firm-profile_tab-content">
-
+          {{
+            Activity: <Timeline noActivitiesMessage={"There was no activity in that member firm"} loadMoreData={() => {}} />,
+            Info: (
+              <FormComponent
+                memberFirmId={memberFirmId}
+                isMemberFirmFormFieldsLoading={isMemberFirmFormFieldsLoading}
+                isMasterSchemaFieldsForMemberFirmLoading={isMasterSchemaFieldsForMemberFirmLoading}
+                memberFirmFormFields={memberFirmFormFields}
+                masterSchemaMemberFirmFields={masterSchemaMemberFirmFields}
+              />
+            )
+          }[selectedTab]}
         </div>
       </div>
     </ContextTemplate>

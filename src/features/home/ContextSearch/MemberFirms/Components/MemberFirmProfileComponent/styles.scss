@@ -49,13 +49,21 @@
       margin-right: 20px;
       min-width: 150px;
       text-align: center;
-      color: #707070;
+      //color: #707070;
+      //background: white!important;
       font-weight: 500;
-      box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+      &:hover {
+        background: #7367F0!important;
+        color: white !important;
+      }
       &.active {
         background: #7367F0!important;
         color: white!important;
       }
     }
+  }
+  &_tab-content {
+    padding: 60px 45px;
   }
 }
