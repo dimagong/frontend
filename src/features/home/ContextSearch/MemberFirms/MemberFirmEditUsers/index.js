@@ -54,6 +54,11 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
   const handleSearch = (inputText) => {
     setSearchedMembers(potentialMembers.filter(item =>
       (item.first_name + item.last_name).toLowerCase().search(inputText.toLowerCase()) !== -1))
+    if (inputText.length > 0) {
+      setIsFiltered(true)
+    } else {
+      setIsFiltered(false)
+    }
   }
 
   return (
