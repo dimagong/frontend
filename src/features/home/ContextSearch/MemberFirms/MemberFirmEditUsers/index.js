@@ -51,10 +51,10 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
     }))
   }
 
-  const handleSearch = (inputText) => {
+  const handleSearch = (e) => {
     setSearchedMembers(potentialMembers.filter(item =>
-      (item.first_name + item.last_name).toLowerCase().search(inputText.toLowerCase()) !== -1))
-    if (inputText.length > 0) {
+      (item.first_name + item.last_name).toLowerCase().search(e.target.value.toLowerCase()) !== -1))
+    if (e.target.value.length > 0) {
       setIsFiltered(true)
     } else {
       setIsFiltered(false)
@@ -87,7 +87,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
               suggestions={[]}
               className="form-control"
               filterKey="name"
-              onEnter={handleSearch}
+              onChange={handleSearch}
               suggestionLimit={4}
               defaultSuggestions={false}
               customRender={() => {}}
@@ -148,7 +148,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
             }}
             isTitle
             isAddUser
-            notFindMessage={'There are no potential users to add'}
+            notFindMessage={isEdit ? 'There are no potential users to add' : 'No user was found for your query'}
           />
           <div style={{fontWeight: 'bold'}}>Existing</div>
           <MemberFirmModalTable

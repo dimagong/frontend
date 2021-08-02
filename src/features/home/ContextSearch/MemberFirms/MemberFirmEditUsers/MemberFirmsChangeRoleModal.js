@@ -48,6 +48,7 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, princi
            isEdit: isEdit
           }))
         }
+        setCurrRole('');
         setIsOpen(false)
         setIsEdit(false)
       }}
