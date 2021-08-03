@@ -35,7 +35,7 @@ const MemberFirmProfileComponent = ({
       <div className="member-firm-profile">
         <div className="member-firm-profile_header">
           <div className="member-firm-profile_header_logo">
-            <img src={noneAvatar} alt="member firm logo" />
+            <img src={data.logo_path || noneAvatar} alt="member firm logo" />
 
             {/*<Button*/}
             {/*  className="user-avatar-management_change-button"*/}
