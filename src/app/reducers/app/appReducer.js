@@ -10,6 +10,7 @@ import workflowReducer from "./onboarding/workflowReducers"
 import layoutReducer from './layout/layoutReducer'
 import masterSchemaReducer from './masterSchema/masterSchemaReducer'
 import surveysReducer from "./surveys";
+import memberFirmsReducer from "./memberFirms";
 
 const appReducer = {
   ...authReducer,
@@ -24,6 +25,7 @@ const appReducer = {
   ...layoutReducer,
   ...masterSchemaReducer,
   ...surveysReducer,
+  ...memberFirmsReducer,
 };
 
 export default appReducer;

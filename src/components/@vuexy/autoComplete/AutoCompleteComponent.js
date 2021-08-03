@@ -439,7 +439,7 @@ class Autocomplete extends React.Component {
             })
           }}><ClearIcon/></span>
         }
-        {suggestionsListComponent}
+        {!this.props.hideSuggestions && suggestionsListComponent}
       </div>
     )
   }

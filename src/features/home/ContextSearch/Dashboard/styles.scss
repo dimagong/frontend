@@ -149,53 +149,7 @@
       color: #707070;
       font-weight: bold;
     }
-    .dashboard-action:hover {
-      border-right: #7367F0 solid 3px;
-    }
-    .dashboard-action {
-      position: relative;
-      font-size: smaller;
-      cursor: pointer;
-      height: 40px;
-      line-height: 40px;
-      margin: 10px 21px 10px 0;
-      //box-shadow: 0 2px 5px #dfdfdf;
-      border: none;
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-      border-right: #9aa9b7 solid 3px;
-      .action-user-avatar {
-        width: 40px;
-        height: 40px;
-        position: absolute;
-        top: 0;
-      }
-      .action-user-name {
-        margin-left: 50px;
-        width: 120px;
-        display: inline-block;
-        span {
-          cursor: pointer;
-        }
-        overflow: hidden;
-      }
-      .action-user-org {
-        display: inline-block;
-        width: 75px;
-        overflow: hidden;
-      }
-      .action-user-description {
-        display: inline-block;
-        //width: 40%;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-      .action-user-time {
-        display: inline-block;
-        float: right;
-        padding-right: 10px;
-      }
-    }
+
   }
 }
 
@@ -256,3 +210,59 @@
     width: 110px;
   }
 }
+
+.dashboard-action:hover {
+      border-right: #7367F0 solid 3px;
+    }
+    .dashboard-action {
+      position: relative;
+      font-size: smaller;
+      cursor: pointer;
+      height: 40px;
+      line-height: 40px;
+      margin: 10px 21px 10px 0;
+      //box-shadow: 0 2px 5px #dfdfdf;
+      border: none;
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+      border-right: #9aa9b7 solid 3px;
+      .action-user-avatar {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: 0;
+      }
+      .action-user-name {
+        margin-left: 50px;
+        width: 120px;
+        display: inline-block;
+        span {
+          cursor: pointer;
+        }
+        overflow: hidden;
+      }
+      .action-user-org {
+        display: inline-block;
+        width: 75px;
+        overflow: hidden;
+      }
+      .action-user-description {
+        display: inline-block;
+        //width: 40%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .action-user-time {
+        display: inline-block;
+        float: right;
+        padding-right: 10px;
+      }
+      .action-user {
+        padding-right: 10px;
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 130px;
+      }
+    }
