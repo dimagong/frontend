@@ -43,7 +43,7 @@ const memberFirmsReducer = {
   },
 
   removeMemberFirmUsersSuccess: (state, { payload }) => {
-    state.selectedMemberFirmUsers = payload;
+    state.selectedMemberFirmUsers = payload.response;
     toast.success("The user was successfully removed")
     state.isLoading = false;
     state.error = null;
