@@ -37,3 +37,15 @@
     }
   }
 }
+
+@media screen and (max-width: 1200px){
+  .context-feature-template {
+    &_header {
+      align-items: flex-start;
+      &_title {
+        font-size: 30px;
+      }
+
+    }
+  }
+}

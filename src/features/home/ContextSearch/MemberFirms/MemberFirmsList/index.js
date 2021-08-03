@@ -21,7 +21,6 @@ import { createLoadingSelector } from "app/selectors/loadingSelector";
 import {
   getMemberFirms,
 } from "app/selectors/memberFirmsSelector";
-import {capitalizeAll} from "../../../../../utility/common";
 
 const {
   setContext,
@@ -31,7 +30,7 @@ const {
 
 
 const UserCardTemplate = ({className, onClick, data }) => {
-
+  console.log("MFD", data);
   return (
     <div>
       <Card
@@ -56,14 +55,18 @@ const UserCardTemplate = ({className, onClick, data }) => {
                 {`${data.numberOfMembers} member${data.numberOfMembers === 1 ? "" : "s"}`}
               </CardText>
             </div>
-            {/*<div>*/}
-            {/*  <CardText>*/}
-            {/*    <span style={{paddingRight: "6px"}}>E:</span> jane.doe@citycapital.co.uk*/}
-            {/*  </CardText>*/}
-            {/*    <CardText>*/}
-            {/*      M: +49 332 423 2344*/}
-            {/*    </CardText>*/}
-            {/*</div>*/}
+            <div>
+              {!!data.main_fields.email && (
+                <CardText>
+                  <span style={{paddingRight: "6px"}}>E:</span> {data.main_fields.email}
+                </CardText>
+              )}
+              {!!data.main_fields.contactNumber && (
+                <CardText>
+                  M: {data.main_fields.contactNumber}
+                </CardText>
+              )}
+            </div>
           </div>
           <div className="user-card-body-right">
             {/*<CardText>*/}

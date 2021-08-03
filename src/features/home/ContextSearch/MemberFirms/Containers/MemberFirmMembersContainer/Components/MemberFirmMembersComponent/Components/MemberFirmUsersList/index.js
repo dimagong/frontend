@@ -6,10 +6,7 @@ import { Spinner } from "reactstrap";
 import './styles.scss';
 
 
-const MemberFirmUsersList = ({ className, label, users = [], isLoading }) => {
-
-  //** TODO handle when search will be ready
-  const isSearch = false;
+const MemberFirmUsersList = ({ className, label, users = [], isLoading, isSearch }) => {
 
   const Loader = () => (
     <div className="member-firm-users-list_list_loader">

@@ -40,6 +40,10 @@ const {
   updateMemberFirmFormValuesSuccess,
   updateMemberFirmFormValuesRequest,
   updateMemberFirmFormValuesError,
+
+  updateMemberFirmProfileImageSuccess,
+  updateMemberFirmProfileImageRequest,
+  updateMemberFirmProfileImageError,
 } = appSlice.actions;
 
 
@@ -134,6 +138,16 @@ function* updateMemberFirmFormValues({payload}) {
   }
 }
 
+function* updateMemberFirmProfileImage({payload}) {
+  const response = yield call(memberFirmsApi.updateMemberFirmLogo, payload);
+
+  if (response?.message) {
+    yield put(updateMemberFirmProfileImageError(response.message))
+  } else {
+    yield put(updateMemberFirmProfileImageSuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     takeLatest(createMemberFirmRequest.type, createMemberFirm),
@@ -145,5 +159,6 @@ export default function* () {
     takeLatest(getMasterSchemaFieldsForMemberFirmRequest.type, getMasterSchemaFieldsForMemberFirm),
     takeLatest(getMemberFirmFormFieldsRequest.type, getMemberFirmFormFields),
     takeLatest(updateMemberFirmFormValuesRequest.type, updateMemberFirmFormValues),
+    takeLatest(updateMemberFirmProfileImageRequest.type, updateMemberFirmProfileImage),
   ]);
 }

@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import ContextTemplate from "components/ContextTemplate";
-import {AtSign} from "react-feather";
+import {AtSign, X} from "react-feather";
 import {PhoneEnabled} from "@material-ui/icons";
 
-import {Button} from 'reactstrap';
-import './styles.scss'
-
+import {Button, Spinner} from 'reactstrap';
 import Timeline from "components/Timeline";
-import FormComponent from "./Components/FormComponent";
 
+import FormComponent from "./Components/FormComponent";
 import noneAvatar from "../../../../../../assets/img/portrait/none-avatar.png";
+
+import './styles.scss'
 
 
 const memberFirmProfileTabs = ["Activity", "Info"];
@@ -22,30 +22,74 @@ const MemberFirmProfileComponent = ({
   memberFirmFormFields,
   masterSchemaMemberFirmFields,
   memberFirmId,
+  logoFileInputRef,
+  onFileInputDialogOpen,
+  onLogoChange,
 }) => {
   const [selectedTab, setSelectedTab] = useState(memberFirmProfileTabs[0]);
+
+  const isProfilePhotoChangeProceeding = false;
 
   return (
     <ContextTemplate contextTitle={"Member firm"}>
       <div className="member-firm-profile">
         <div className="member-firm-profile_header">
           <div className="member-firm-profile_header_logo">
-            <img src={noneAvatar} alt="member firm logo"/>
+            <img src={noneAvatar} alt="member firm logo" />
+
+            {/*<Button*/}
+            {/*  className="user-avatar-management_change-button"*/}
+            {/*  disabled={isProfilePhotoChangeProceeding}*/}
+            {/*  onClick={(event) => onFileInputDialogOpen(event)}*/}
+            {/*  outline*/}
+            {/*  size="sm"*/}
+            {/*  color="primary"*/}
+            {/*>*/}
+            {/*  Change*/}
+            {/*</Button>*/}
+            {/*<input*/}
+            {/*  id="input-user-edit-avatar"*/}
+            {/*  ref={logoFileInputRef}*/}
+            {/*  type="file"*/}
+            {/*  hidden*/}
+            {/*  onChange={(event) => onLogoChange(event)}*/}
+            {/*/>*/}
+
+            {/*HANDLE HERE DELETING OF AVATAR*/}
+
+            {/*{!!data.logo && !isProfilePhotoChangeProceeding && (*/}
+            {/*  <X*/}
+            {/*    className="x-closer"*/}
+            {/*    onClick={removeAvatar}*/}
+            {/*    size={15}*/}
+            {/*  />*/}
+            {/*)}*/}
+
+            {isProfilePhotoChangeProceeding && (
+              <div
+                className="user-edit__user-avatar_spinner-wrapper"
+              >
+                <Spinner color="primary" />
+              </div>
+            )}
           </div>
           <div className="member-firm-profile_header_name">
             {data.main_fields.name}
           </div>
         </div>
         <div className="member-firm-profile_info">
-          <div className="member-firm-profile_info_tile">
-            <AtSign className="member-firm-profile_info_tile_icon" /> info@citycapital.co.uk
-          </div>
-          {/*<div className="member-firm-profile_info_tile">*/}
-          {/*  info@citycapital.co.uk*/}
-          {/*</div>*/}
-          <div className="member-firm-profile_info_tile">
-            <PhoneEnabled className="member-firm-profile_info_tile_icon" /> 815 474 125 53
-          </div>
+          {!!data.main_fields.email && (
+            <div className="member-firm-profile_info_tile">
+              <AtSign className="member-firm-profile_info_tile_icon" /> {data.main_fields.email}
+            </div>
+          )}
+
+          {!!data.main_fields.contactNumber && (
+            <div className="member-firm-profile_info_tile">
+              <PhoneEnabled className="member-firm-profile_info_tile_icon" /> {data.main_fields.contactNumber}
+            </div>
+          )}
+
         </div>
         <div className="member-firm-profile_tabs">
           {memberFirmProfileTabs.map(tab => (

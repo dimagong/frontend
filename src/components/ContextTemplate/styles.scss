@@ -36,3 +36,16 @@
   }
 
 }
+
+@media screen and (max-width: 1200px){
+  .context-template {
+    &_header {
+      &_title {
+        font-size: 30px;
+      }
+      &_survey-name {
+        font-size: 30px;
+      }
+    }
+  }
+}

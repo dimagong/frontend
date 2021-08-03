@@ -68,7 +68,14 @@ const memberFirmsReducer = {
 
     state.isLoading = false;
     state.error = null;
-  }
+  },
+
+  updateMemberFirmProfileImageSuccess: (state, {payload}) => {
+    console.log("UMFPIS", payload);
+
+    state.isLoading = false;
+    state.error = null;
+  },
 };
 
 export default memberFirmsReducer;

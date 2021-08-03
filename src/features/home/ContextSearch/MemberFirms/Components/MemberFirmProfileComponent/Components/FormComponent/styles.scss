@@ -7,9 +7,16 @@
   &-fields {
     &-actions {
       display: flex;
+      //justify-content: space-between;
       justify-content: flex-end;
+      padding-top: 50px;
+      align-items: center;
+      &-add_field {
+        border-radius: 40px;
+        padding: 15px;
+      }
+
       &-save {
-        margin-top: 50px;
         border-color: #4839eb !important;
         background-color: #7367f0 !important;
         padding: 0.9rem 3rem;

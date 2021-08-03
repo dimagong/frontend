@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import appSlice from "../../../../../../../../app/slices/appSlice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {createLoadingSelector} from "app/selectors/loadingSelector";
 import {
   Spinner,
   Button,
@@ -13,6 +14,7 @@ import {
   InputEmail,
 } from "../../../formComponents";
 
+import {Plus} from "react-feather";
 import './styles.scss';
 
 const {
@@ -36,6 +38,16 @@ const FormComponent = ({
 
   const [formData, setFormData] = useState({});
 
+  const isSubmitProceeding = useSelector(createLoadingSelector([updateMemberFirmFormValuesRequest.type], true));
+
+  // Each field store with structure:
+  // - id - id of master schema field id
+  // - value - value of input
+  // - validationSchema - yup validation schema for that exact field
+  // - isRequired - used for conditional validation in yup validation schema
+  // - dataPushPrepare - function that prepare input value to common format
+  //
+  // Each of this properties should be passed on field initialization
   const handleInputChange = (value, id) => {
     setFormData({
       ...formData,
@@ -72,7 +84,7 @@ const FormComponent = ({
       // Handle different default values for different field types here
       const defaultValue = "";
 
-      initialData[formField.id] = {
+      initialData[formField.master_schema_field_id] = {
         id: formField.master_schema_field_id,
         value: formField.master_schema_field?.value?.value || defaultValue,
       };
@@ -92,7 +104,7 @@ const FormComponent = ({
 
   return (
     <div className="member_firm-form_component">
-      {isMemberFirmFormFieldsLoading ? (
+      {isMemberFirmFormFieldsLoading && !isSubmitProceeding && !memberFirmFormFields.length ? (
         <div className="member_firm-form_component-loader">
           <Spinner size={40} color="primary"/>
         </div>
@@ -108,8 +120,8 @@ const FormComponent = ({
                 isRequired={formField.is_required}
                 key={formField.id}
                 name={formField.master_schema_field.name}
-                label={formField.master_schema_field.name}
-                value={formData[formField.id]?.value || ""}
+                label={formField.title}
+                value={formData[formField.master_schema_field_id]?.value || ""}
                 onChange={handleInputChange}
                 disabled={IS_SUBMIT_PROCESSING}
               />
@@ -117,14 +129,14 @@ const FormComponent = ({
           })}
 
           <div className="member_firm-form_component-fields-actions">
-            {/*<Button color="primary">*/}
-            {/*  +*/}
+            {/*<Button className="member_firm-form_component-fields-actions-add_field" color="primary">*/}
+            {/*  <Plus size={28}/>*/}
             {/*</Button>*/}
 
             <LoadingButton
               className="member_firm-form_component-fields-actions-save"
               value="Save"
-              isLoading={false}
+              isLoading={isSubmitProceeding}
               onClick={handleSave}
             />
           </div>

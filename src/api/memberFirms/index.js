@@ -10,6 +10,7 @@ import {
   getMasterSchemaFieldsForMemberFirmUrl,
   getMemberFirmFormFieldsUrl,
   updateMemberFirmFormValuesUrl,
+  updateMemberFirmLogo,
 } from "./constants";
 
 const memberFirmsApi = {
@@ -47,6 +48,10 @@ const memberFirmsApi = {
 
   async updateMemberFirmFormValues(payload) {
     return await requestLayout(updateMemberFirmFormValuesUrl(payload.memberFirmId), "PUT", payload.data)
+  },
+
+  async updateMemberFirmLogo(payload) {
+    return await requestLayout(updateMemberFirmLogo(payload.memberFirmId), "PUT", payload.logo)
   }
 
 };

@@ -19,19 +19,26 @@
       font-size: 32px;
       color: #707070;
       font-family: Montserrat;
+      padding: 0 30px;
+      text-align: center;
     }
   }
 
   &_info {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     margin-bottom: 30px;
+    padding: 0 5px;
+    flex-wrap: wrap;
     &_tile {
       display: flex;
-      align-items: center;
+      //align-items: center;
       font-size: 18px;
       color: #707070;
       font-family: Montserrat;
+      padding: 5px 10px;
+      word-break: break-all;
+      text-align: center;
 
       &_icon {
         margin-right: 5px;
@@ -53,6 +60,11 @@
       //background: white!important;
       font-weight: 500;
       box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+      &:last-child {
+        margin-right: 0;
+      }
+
       &:hover {
         background: #7367F0!important;
         color: white !important;
@@ -65,5 +77,20 @@
   }
   &_tab-content {
     padding: 60px 45px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .member-firm-profile {
+    &_header {
+      &_logo {
+        img {
+          width: 260px;
+        }
+      }
+      &_name {
+        font-size: 28px;
+      }
+    }
   }
 }

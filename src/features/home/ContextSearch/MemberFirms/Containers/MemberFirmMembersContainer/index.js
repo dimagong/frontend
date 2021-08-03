@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import MemberFirmMembersComponent from "./Components/MemberFirmMembersComponent";
 import {useDispatch, useSelector} from "react-redux";
@@ -20,6 +20,9 @@ const {
 
 const MemberFirmMembersContainer = () => {
   const dispatch = useDispatch();
+
+  const [searchQuery, setSearchQuery] = useState("");
+
   const selectedMemberFirm = useSelector(getSelectedMemberFirm);
   const potentialMembers = useSelector(getSelectedMemberFirmPotentialUsers);
 
@@ -27,6 +30,14 @@ const MemberFirmMembersContainer = () => {
   const memberFirmPrincipals = useSelector(getSelectedMemberFirmPrincipals);
 
   const isMemberFirmMembersLoading = useSelector(createLoadingSelector([getMemberFirmUsersRequest.type], true));
+  console.log(memberFirmMembers, memberFirmPrincipals);
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filterUsersByName = (users) => {
+
+  };
 
   useEffect(() => {
     dispatch(getMemberFirmUsersRequest(selectedMemberFirm.id));
@@ -36,6 +47,8 @@ const MemberFirmMembersContainer = () => {
 
   return (
     <MemberFirmMembersComponent
+      searchQuery={searchQuery}
+      onSearch={handleSearch}
       isMemberFirmMembersLoading={isMemberFirmMembersLoading}
       members={memberFirmMembers}
       principals={memberFirmPrincipals}
