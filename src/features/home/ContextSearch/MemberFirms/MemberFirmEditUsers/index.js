@@ -16,6 +16,7 @@ import memberFirmsApi from "../../../../../api/memberFirms";
 const {
   addMemberFirmUsersRequest,
   removeMemberFirmUsersRequest,
+  getMemberFirmPotentialUsersRequest
 } = appSlice.actions;
 
 
@@ -60,6 +61,10 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
       setIsFiltered(false)
     }
   }
+
+  useEffect(() => {
+    dispatch(getMemberFirmPotentialUsersRequest(memberFirm.id));
+  }, [members?.length])
 
   return (
     <Modal
@@ -148,7 +153,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
             }}
             isTitle
             isAddUser
-            notFindMessage={isEdit ? 'There are no potential users to add' : 'No user was found for your query'}
+            notFindMessage={isFiltered ? 'No user was found for your query' : 'There are no potential users to add'}
           />
           <div style={{fontWeight: 'bold'}}>Existing</div>
           <MemberFirmModalTable

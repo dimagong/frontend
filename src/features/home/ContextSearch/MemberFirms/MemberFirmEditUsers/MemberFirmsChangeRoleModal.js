@@ -1,18 +1,20 @@
-//import {Input, Select} from "../../../../Surveys/Components/SurveyFormComponents";
 import Select from "react-select"
 import React, {useEffect, useState} from "react";
 import SurveyModal from "../../../../Surveys/Components/SurveyModal";
-import {useDispatch} from "react-redux";
-import appSlice from "../../../../../app/slices/appSlice";
+import {useDispatch, useSelector} from "react-redux";
+import appSlice from "app/slices/appSlice";
 import {toast} from "react-toastify";
+import {createLoadingSelector} from "app/selectors/loadingSelector";
 
 const {
   addMemberFirmUsersRequest
 } = appSlice.actions;
 
 const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, principals, isEdit, setIsEdit}) => {
+  const isLoading = useSelector(createLoadingSelector([addMemberFirmUsersRequest.type], true));
   const dispatch = useDispatch()
   const [currRole, setCurrRole] = useState('')
+  const [wasLoading, setWasLoading] = useState(false)
 
   const handleChange = (newValue, actionMeta) => {
     if (actionMeta.action === 'select-option') {
@@ -20,25 +22,12 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, princi
     }
   };
 
-  useEffect(() => {
-    if (isEdit && principals && user.hasOwnProperty('id')) {
-      setCurrRole(principals.find(item => item.id === user.id) ? 'principal' : 'member')
-    }
-  }, [user?.id, principals])
-
-
-  return <SurveyModal
-      className="survey-create-modal"
-      title={"Member firm role"}
-      isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
-      submitBtnText={"Save"}
-      onSubmit={() => {
+  const handleApplyChange = () => {
         if (!currRole) {
           toast.error("Please choose the role of the user")
           return;
         }
-        if (isEdit && currRole !== principals.find(item => item.id === user.id) ? 'principal' : 'member') {
+        if (!isEdit || (isEdit && currRole !== (principals.find(item => item.id === user.id) ? 'principal' : 'member'))) {
           dispatch(addMemberFirmUsersRequest({
             users: [{
                id: user.id,
@@ -48,10 +37,37 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, princi
            isEdit: isEdit
           }))
         }
-        setCurrRole('');
+      }
+
+  useEffect(() => {
+    if (!isEdit) {
+      setCurrRole('')
+    } else if (isEdit && user.hasOwnProperty('id')) {
+      setCurrRole(principals.find(item => item.id === user.id) ? 'principal' : 'member')
+    }
+  }, [user?.id, isEdit])
+
+  useEffect(() => {
+    if (isLoading) {
+      setWasLoading(true);
+    } else {
+      if (wasLoading) {
         setIsOpen(false)
         setIsEdit(false)
-      }}
+        setWasLoading(false)
+      }
+    }
+  }, [isLoading])
+
+
+  return <SurveyModal
+      className="survey-create-modal"
+      title={"Member firm role"}
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+      submitBtnText={"Save"}
+      onSubmit={handleApplyChange}
+      isSubmitProceed={isLoading}
     >
       <div style={{paddingBottom: 50}}>
         <h2 style={{marginBottom: 20}}>Role member within Member Firm</h2>
