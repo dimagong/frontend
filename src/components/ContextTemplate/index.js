@@ -12,7 +12,7 @@ import {useDispatch} from "react-redux";
 import appSlice from "app/slices/appSlice";
 
 const {
-  setContext,
+  showContextSearch,
 } = appSlice.actions;
 
 const ContextTemplate = ({
@@ -20,14 +20,12 @@ const ContextTemplate = ({
   contextName,
   contextHeaderIcon,
   children,
-  onContextHide,
 }) => {
 
   const dispatch = useDispatch();
 
   const handleContextHide = () => {
-    onContextHide && onContextHide();
-    dispatch(setContext(null));
+    dispatch(showContextSearch());
   };
 
   return (
