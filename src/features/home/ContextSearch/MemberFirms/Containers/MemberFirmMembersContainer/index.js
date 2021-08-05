@@ -18,7 +18,7 @@ const {
   getMemberFirmPotentialUsersRequest,
 } = appSlice.actions;
 
-const MemberFirmMembersContainer = () => {
+const MemberFirmMembersContainer = ({ onNavigateToUserProfile }) => {
   const dispatch = useDispatch();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,6 +47,7 @@ const MemberFirmMembersContainer = () => {
 
   return (
     <MemberFirmMembersComponent
+      onNavigateToUserProfile={onNavigateToUserProfile}
       searchQuery={searchQuery}
       onSearch={handleSearch}
       isMemberFirmMembersLoading={isMemberFirmMembersLoading}
