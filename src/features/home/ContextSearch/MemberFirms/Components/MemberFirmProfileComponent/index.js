@@ -25,6 +25,7 @@ const MemberFirmProfileComponent = ({
   logoFileInputRef,
   onFileInputDialogOpen,
   onLogoChange,
+  onLogoRemove,
 }) => {
   const [selectedTab, setSelectedTab] = useState(memberFirmProfileTabs[0]);
 
@@ -35,35 +36,34 @@ const MemberFirmProfileComponent = ({
       <div className="member-firm-profile">
         <div className="member-firm-profile_header">
           <div className="member-firm-profile_header_logo">
-            <img src={noneAvatar} alt="member firm logo" />
+            <img src={data.logo_path || noneAvatar} alt="member firm logo" />
 
-            {/*<Button*/}
-            {/*  className="user-avatar-management_change-button"*/}
-            {/*  disabled={isProfilePhotoChangeProceeding}*/}
-            {/*  onClick={(event) => onFileInputDialogOpen(event)}*/}
-            {/*  outline*/}
-            {/*  size="sm"*/}
-            {/*  color="primary"*/}
-            {/*>*/}
-            {/*  Change*/}
-            {/*</Button>*/}
-            {/*<input*/}
-            {/*  id="input-user-edit-avatar"*/}
-            {/*  ref={logoFileInputRef}*/}
-            {/*  type="file"*/}
-            {/*  hidden*/}
-            {/*  onChange={(event) => onLogoChange(event)}*/}
-            {/*/>*/}
+            <Button
+              className="member-firm-profile_header_logo-change_button"
+              disabled={isProfilePhotoChangeProceeding}
+              onClick={(event) => onFileInputDialogOpen(event)}
+              outline
+              size="sm"
+              color="primary"
+            >
+              Change
+            </Button>
+            <input
+              ref={logoFileInputRef}
+              type="file"
+              hidden
+              onChange={(event) => onLogoChange(event)}
+            />
 
             {/*HANDLE HERE DELETING OF AVATAR*/}
 
-            {/*{!!data.logo && !isProfilePhotoChangeProceeding && (*/}
-            {/*  <X*/}
-            {/*    className="x-closer"*/}
-            {/*    onClick={removeAvatar}*/}
-            {/*    size={15}*/}
-            {/*  />*/}
-            {/*)}*/}
+            {!!data.logo_path && !isProfilePhotoChangeProceeding && (
+              <X
+                className="x-closer"
+                onClick={onLogoRemove}
+                size={25}
+              />
+            )}
 
             {isProfilePhotoChangeProceeding && (
               <div

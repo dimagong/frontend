@@ -4,15 +4,18 @@ import {
   Col,
 } from 'reactstrap';
 
-import ChevronUpButton from "components/ChevronUpButton";
+import ArrowButton from "components/ArrowButton";
 
 import "./styles.scss";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+
+import {selectContextSearchVisibility} from "app/selectors";
 
 import appSlice from "app/slices/appSlice";
 
 const {
-  setContext,
+  showContextSearch,
+  hideContextSearch,
 } = appSlice.actions;
 
 const ContextTemplate = ({
@@ -20,20 +23,20 @@ const ContextTemplate = ({
   contextName,
   contextHeaderIcon,
   children,
-  onContextHide,
 }) => {
 
   const dispatch = useDispatch();
 
-  const handleContextHide = () => {
-    onContextHide && onContextHide();
-    dispatch(setContext(null));
+  const isContextSearchVisible = useSelector(selectContextSearchVisibility);
+
+  const handleContextToggle = () => {
+    dispatch(isContextSearchVisible ? hideContextSearch() : showContextSearch());
   };
 
   return (
     <Col className={"context-template"} xs={6} >
       <div className={"context-template_hide-context"}>
-        <ChevronUpButton onClick={handleContextHide} />
+        <ArrowButton onClick={handleContextToggle} direction={isContextSearchVisible ? "up" : "down"} />
       </div>
 
       <div className={"context-template_header"}>

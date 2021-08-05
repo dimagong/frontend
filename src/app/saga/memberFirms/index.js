@@ -44,6 +44,10 @@ const {
   updateMemberFirmProfileImageSuccess,
   updateMemberFirmProfileImageRequest,
   updateMemberFirmProfileImageError,
+
+  removeMemberFirmLogoSuccess,
+  removeMemberFirmLogoRequest,
+  removeMemberFirmLogoError,
 } = appSlice.actions;
 
 
@@ -148,6 +152,16 @@ function* updateMemberFirmProfileImage({payload}) {
   }
 }
 
+function* removeMemberFirmLogo({payload}) {
+  const response = yield call(memberFirmsApi.removeMemberFirmLogo, payload);
+
+  if (response?.message) {
+    yield put(removeMemberFirmLogoError(response.message))
+  } else {
+    yield put(removeMemberFirmLogoSuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     takeLatest(createMemberFirmRequest.type, createMemberFirm),
@@ -160,5 +174,6 @@ export default function* () {
     takeLatest(getMemberFirmFormFieldsRequest.type, getMemberFirmFormFields),
     takeLatest(updateMemberFirmFormValuesRequest.type, updateMemberFirmFormValues),
     takeLatest(updateMemberFirmProfileImageRequest.type, updateMemberFirmProfileImage),
+    takeLatest(removeMemberFirmLogoRequest.type, removeMemberFirmLogo),
   ]);
 }

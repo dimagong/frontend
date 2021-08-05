@@ -11,6 +11,7 @@ import {
   getMemberFirmFormFieldsUrl,
   updateMemberFirmFormValuesUrl,
   updateMemberFirmLogo,
+  removeMemberFirmLogoUrl,
 } from "./constants";
 
 const memberFirmsApi = {
@@ -51,8 +52,14 @@ const memberFirmsApi = {
   },
 
   async updateMemberFirmLogo(payload) {
-    return await requestLayout(updateMemberFirmLogo(payload.memberFirmId), "PUT", payload.logo)
-  }
+    // laravel can`t see form data values when method PUT, so
+    payload.logo.append('_method', 'put');
+    return await requestLayout(updateMemberFirmLogo(payload.memberFirmId), "POST", payload.logo)
+  },
+
+  async removeMemberFirmLogo(payload) {
+    return await requestLayout(removeMemberFirmLogoUrl(payload), "DELETE")
+  },
 
 };
 

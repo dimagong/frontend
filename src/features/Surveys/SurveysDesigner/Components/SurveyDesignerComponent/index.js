@@ -18,7 +18,7 @@ import { Edit } from 'react-feather'
 import SurveysDesignerQuestionsList from "./Components/SurveysDesignerQuestionsList";
 import SurveyCreateModal from "features/home/ContextSearch/SurveyCreateModal";
 import LoadingButton from "components/LoadingButton";
-import ChevronUpButton from "components/ChevronUpButton";
+import ChevronUpButton from "components/ArrowButton";
 
 import "./styles.scss";
 
