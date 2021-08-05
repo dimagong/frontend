@@ -6,7 +6,7 @@ import { Spinner } from "reactstrap";
 import './styles.scss';
 
 
-const MemberFirmUsersList = ({ className, label, users = [], isLoading, isSearch }) => {
+const MemberFirmUsersList = ({ className, label, users = [], isLoading, isSearch, onUserClick }) => {
 
   const Loader = () => (
     <div className="member-firm-users-list_list_loader">
@@ -20,7 +20,7 @@ const MemberFirmUsersList = ({ className, label, users = [], isLoading, isSearch
          <UserCardTemplate
            className="cursor-pointer mb-2"
            oneColumn={false}
-           onClick={() => {}}
+           onClick={() => {onUserClick(user)}}
            {...user}
          />
        ))

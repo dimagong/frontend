@@ -9,7 +9,17 @@ import MemberFirmUsersList from "./Components/MemberFirmUsersList";
 
 import "./styles.scss"
 
-const MemberFirmMembersComponent = ({members, principals, potentialMembers, memberFirm, isMemberFirmMembersLoading, searchQuery, onSearch}) => {
+const MemberFirmMembersComponent = ({
+                                      members,
+                                      principals,
+                                      potentialMembers,
+                                      memberFirm,
+                                      isMemberFirmMembersLoading,
+                                      searchQuery,
+                                      onSearch,
+                                      onNavigateToUserProfile,
+}) => {
+
 
   const [isEditUserModalOpened, setIsEditUserModalOpened] = useState(false);
 
@@ -31,6 +41,7 @@ const MemberFirmMembersComponent = ({members, principals, potentialMembers, memb
           label="Principals"
           isLoading={isMemberFirmMembersLoading}
           isSearch={!!searchQuery}
+          onUserClick={onNavigateToUserProfile}
         />
         <MemberFirmUsersList
           className={"members"}
@@ -38,6 +49,7 @@ const MemberFirmMembersComponent = ({members, principals, potentialMembers, memb
           label="Members"
           isLoading={isMemberFirmMembersLoading}
           isSearch={!!searchQuery}
+          onUserClick={onNavigateToUserProfile}
         />
       </div>
 

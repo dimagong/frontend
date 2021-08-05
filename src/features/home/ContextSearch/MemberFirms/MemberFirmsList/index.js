@@ -5,9 +5,9 @@ import {
   CardBody,
   CardImg, CardText, CardTitle,
   Col,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
+  // Pagination,
+  // PaginationItem,
+  // PaginationLink,
   Row,
   Spinner
 } from "reactstrap";
@@ -18,9 +18,12 @@ import noneAvatar from "../../../../../assets/img/portrait/none-avatar.png";
 
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 
+import CustomPagination from 'components/Pagination';
+
 import {
   getMemberFirms,
 } from "app/selectors/memberFirmsSelector";
+import {ChevronLeft, ChevronRight} from "react-feather";
 
 const {
   setContext,
@@ -123,6 +126,11 @@ const MemberFirmsList = () => {
             onClick={handleMemberFirmSelect}
           />
         ))}
+
+        {/*<CustomPagination*/}
+        {/*  totalPages={memberFirms.total}*/}
+        {/*  currentPage={memberFirms.from}*/}
+        {/*/>*/}
       </Col>
     </Row>
   );
