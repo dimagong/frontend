@@ -8,6 +8,6 @@ export const getMemberFirmMembersUrl = (memberFirmId) => `/api/member-firm/${mem
 export const getMasterSchemaFieldsForMemberFirmUrl = (memberFirmId) => `/api/member-firm/${memberFirmId}/master-schema-fields`;
 export const getMemberFirmFormFieldsUrl = (memberFirmId) => `/api/member-firm/${memberFirmId}/field-structure`;
 export const updateMemberFirmFormValuesUrl = (memberFirmId) => `/api/member-firm/${memberFirmId}/master-schema-field-values`;
-
+export const removeMemberFirmLogoUrl = (memberFirmId) => `/api/member-firm/${memberFirmId}/logo`;
 
 export const addFormFieldToMemberFirmUrl = (memberFirmId) => `/api/member-firm/${memberFirmId}/field-structure`;

@@ -43,7 +43,7 @@ const MemberFirmMembersContainer = () => {
     dispatch(getMemberFirmUsersRequest(selectedMemberFirm.id));
     dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id));
     dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id))
-  }, [selectedMemberFirm]);
+  }, [selectedMemberFirm.id]);
 
   return (
     <MemberFirmMembersComponent

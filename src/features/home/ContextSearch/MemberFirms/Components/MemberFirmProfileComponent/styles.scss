@@ -38,8 +38,24 @@
         }
       }
 
+      .x-closer {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 5px;
+        border-radius: 25px;
+        opacity: 0;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
       &:hover {
         .member-firm-profile_header_logo-change_button {
+          opacity: 1;
+          transition: 0.2s;
+        }
+        .x-closer {
           opacity: 1;
           transition: 0.2s;
         }

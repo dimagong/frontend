@@ -78,6 +78,15 @@ const memberFirmsReducer = {
     state.isLoading = false;
     state.error = null;
   },
+
+  removeMemberFirmLogoSuccess: (state, {payload}) => {
+    state.memberFirms.data = state.memberFirms.data.map((memberFirm) => (
+      memberFirm.id === payload.id ? {...memberFirm, logo_path: null} : memberFirm
+    ));
+
+    state.isLoading = false;
+    state.error = null;
+  },
 };
 
 export default memberFirmsReducer;

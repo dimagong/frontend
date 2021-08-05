@@ -24,6 +24,7 @@ const {
   getMasterSchemaFieldsForMemberFirmRequest,
   getMemberFirmFormFieldsRequest,
   updateMemberFirmProfileImageRequest,
+  removeMemberFirmLogoRequest,
 } = appSlice.actions;
 
 const MemberFirmsContainer = () => {
@@ -54,6 +55,10 @@ const MemberFirmsContainer = () => {
     }
   };
 
+  const handleLogoRemove = () => {
+    dispatch(removeMemberFirmLogoRequest(memberFirmData.id))
+  };
+
   useEffect(() => {
     dispatch(getMasterSchemaFieldsForMemberFirmRequest(memberFirmData.id));
     dispatch(getMemberFirmFormFieldsRequest(memberFirmData.id));
@@ -71,6 +76,7 @@ const MemberFirmsContainer = () => {
         onLogoChange={handleLogoChange}
         onFileInputDialogOpen={handleFileInputDialogOpen}
         logoFileInputRef={logoFileInputRef}
+        onLogoRemove={handleLogoRemove}
       />
       <MemberFirmMembersContainer memberFirmId={memberFirmData.id} />
     </Row>

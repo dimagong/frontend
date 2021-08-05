@@ -25,6 +25,7 @@ const MemberFirmProfileComponent = ({
   logoFileInputRef,
   onFileInputDialogOpen,
   onLogoChange,
+  onLogoRemove,
 }) => {
   const [selectedTab, setSelectedTab] = useState(memberFirmProfileTabs[0]);
 
@@ -56,13 +57,13 @@ const MemberFirmProfileComponent = ({
 
             {/*HANDLE HERE DELETING OF AVATAR*/}
 
-            {/*{!!data.logo && !isProfilePhotoChangeProceeding && (*/}
-            {/*  <X*/}
-            {/*    className="x-closer"*/}
-            {/*    onClick={removeAvatar}*/}
-            {/*    size={15}*/}
-            {/*  />*/}
-            {/*)}*/}
+            {!!data.logo_path && !isProfilePhotoChangeProceeding && (
+              <X
+                className="x-closer"
+                onClick={onLogoRemove}
+                size={25}
+              />
+            )}
 
             {isProfilePhotoChangeProceeding && (
               <div
