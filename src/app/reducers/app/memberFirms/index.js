@@ -71,7 +71,9 @@ const memberFirmsReducer = {
   },
 
   updateMemberFirmProfileImageSuccess: (state, {payload}) => {
-    console.log("UMFPIS", payload);
+    state.memberFirms.data = state.memberFirms.data.map((memberFirm) => (
+      memberFirm.id === payload.id ? {...memberFirm, logo_path: payload.logo_path} : memberFirm
+    ));
 
     state.isLoading = false;
     state.error = null;
