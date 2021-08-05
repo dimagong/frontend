@@ -93,6 +93,15 @@
           padding-right: 0;
         }
       }
+      &-member_firm_name {
+        font-size: 12px;
+        transition: 0.2s;
+        cursor: pointer;
+        &:hover {
+          transition: 0.2s;
+          color: hsl(0, 0%, 24%);
+        }
+      }
     }
     &_last-seen {
       font-size: 13px !important;
