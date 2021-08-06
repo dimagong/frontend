@@ -3,7 +3,7 @@ import {
   Button,
 } from 'reactstrap';
 
-const FilterOptions = ({ filter, curr, roles, organizations, handleFilterOptions }) => {
+const FilterOptions = ({ filter, curr, roles, memberFirms, organizations, handleFilterOptions }) => {
   let currFilters, currFiltersSet;
   if (curr === 'reps') {
     return; //Temporary
@@ -11,6 +11,7 @@ const FilterOptions = ({ filter, curr, roles, organizations, handleFilterOptions
   switch (curr) {
     case 'roles': currFilters = Array.from(roles); currFiltersSet = roles; break;
     case 'organizations': currFilters = Array.from(organizations); currFiltersSet = organizations; break;
+    case 'memberFirms': currFilters = Array.from(memberFirms); currFiltersSet = memberFirms; break;
     case 'reps': currFilters = []; /*TODO*/ break;
   }
 
