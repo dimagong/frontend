@@ -106,7 +106,6 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
                onClick={() => {setIsFilterBoxOpen(!isFilterBoxOpen)}}
           />
           {isFilterBoxOpen && <FilterModal
-            // Temporary using constant managersOut
             managers={potentialMembers}
             handleFilter={(newManagers) => {
               setSearchedMembers(newManagers)
