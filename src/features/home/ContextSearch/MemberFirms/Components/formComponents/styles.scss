@@ -19,4 +19,15 @@
       color: #c6c6c6;
     }
   }
+
+  &-validation_error {
+    padding-top: 5px;
+    color: hsl(0, 82%, 67%);
+  }
+
+  &.field_with_error {
+    .member_firm-form_field-label {
+      color: hsl(0, 82%, 67%);
+    }
+  }
 }

@@ -12,6 +12,7 @@ const InputText = ({
   isSystemField,
   placeholder,
   fieldId,
+  error,
 }) => {
 
 
@@ -20,7 +21,7 @@ const InputText = ({
   };
 
   return (
-    <div className="member_firm-form_field">
+    <div className={`member_firm-form_field ${error ? "field_with_error" : ""}`}>
       <label
         htmlFor={name || label}
         className="member_firm-form_field-label"
@@ -36,6 +37,11 @@ const InputText = ({
         value={value}
         placeholder={placeholder || `Type ${name}`}
       />
+      {error && (
+        <div className="member_firm-form_field-validation_error">
+          {error}
+        </div>
+      )}
     </div>
   )
 };
@@ -50,6 +56,7 @@ const InputEmail = ({
                       isSystemField,
   placeholder,
   fieldId,
+  error,
                     }) => {
 
   const handleInputChange = (e) => {
@@ -57,7 +64,7 @@ const InputEmail = ({
   };
 
   return (
-    <div className="member_firm-form_field">
+    <div className={`member_firm-form_field ${error ? "field_with_error" : ""}`}>
       <label
         htmlFor={name || label}
         className="member_firm-form_field-label"
@@ -73,6 +80,11 @@ const InputEmail = ({
         value={value}
         placeholder={placeholder || "example@email.com"}
       />
+      {error && (
+        <div className="member_firm-form_field-validation_error">
+          {error}
+        </div>
+      )}
     </div>
   )
 };
@@ -108,8 +120,7 @@ const InputNumber = ({
   )
 };
 
-export {
-  InputText,
-  InputEmail,
-  InputNumber,
+export default {
+  text: InputText,
+  email: InputEmail,
 };
