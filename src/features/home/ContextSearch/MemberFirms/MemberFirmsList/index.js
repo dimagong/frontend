@@ -112,14 +112,14 @@ const MemberFirmsList = () => {
     )
   }
 
-  if (!memberFirms.data.length) {
+  if (!memberFirms.length) {
     return <MemberFirmsListEmptyComponent isLoading={isMemberFirmsLoading} />
   }
 
   return (
     <Row>
       <Col className={`home__card-wrapper`}>
-        {memberFirms.data.map(memberFirm => (
+        {memberFirms.map(memberFirm => (
           <UserCardTemplate
             data={memberFirm}
             className="cursor-pointer"
