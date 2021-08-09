@@ -93,7 +93,14 @@ const memberFirmsReducer = {
 
     state.isLoading = false;
     state.error = null;
-  }
+  },
+
+  getMemberFirmActivitiesSuccess: (state, {payload}) => {
+    state.memberFirmActivities = payload.memberFirmActivities;
+
+    state.isLoading = false;
+    state.error = false;
+  },
 };
 
 export default memberFirmsReducer;

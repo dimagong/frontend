@@ -16,3 +16,4 @@ export const getSelectedMemberFirmAllUsers = (state) => (
 
 export const getSelectedMemberFirmMSFields = (state) => state?.app?.selectedMemberFirmMSFields || [];
 export const getSelectedMemberFirmFormFields = (state) => state?.app?.selectedMemberFirmFormFields || [];
+export const getSelectedMemberFirmActivities = (state) => state?.app?.memberFirmActivities;

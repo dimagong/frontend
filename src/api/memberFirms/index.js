@@ -13,6 +13,7 @@ import {
   updateMemberFirmLogo,
   removeMemberFirmLogoUrl,
   getMemberFirm,
+  getMemberFirmActivitiesUrl,
 } from "./constants";
 
 const memberFirmsApi = {
@@ -64,7 +65,11 @@ const memberFirmsApi = {
 
   async getMemberFirm(payload) {
     return await requestLayout(getMemberFirm(payload), "GET")
-  }
+  },
+
+  async getMemberFirmActivities(payload) {
+    return await requestLayout(getMemberFirmActivitiesUrl(payload.memberFirmId),"GET", {page: payload.page})
+  },
 
 };
 

@@ -26,6 +26,9 @@ const MemberFirmProfileComponent = ({
   onFileInputDialogOpen,
   onLogoChange,
   onLogoRemove,
+  isMemberFirmActivitiesLoading,
+  onLoadMoreDataForActivities,
+  memberFirmActivities,
 }) => {
   const [selectedTab, setSelectedTab] = useState(memberFirmProfileTabs[0]);
 
@@ -100,7 +103,13 @@ const MemberFirmProfileComponent = ({
         </div>
         <div className="member-firm-profile_tab-content">
           {{
-            Activity: <Timeline noActivitiesMessage={"There was no activity in that member firm"} loadMoreData={() => {}} />,
+            Activity: (
+              <Timeline
+                noActivitiesMessage={"There was no activity in that member firm"}
+                loadMoreData={onLoadMoreDataForActivities}
+                activity={memberFirmActivities}
+              />
+            ),
             Info: (
               <FormComponent
                 memberFirmId={memberFirmId}
