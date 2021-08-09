@@ -2,7 +2,7 @@ import {toast} from "react-toastify";
 
 const memberFirmsReducer = {
   createMemberFirmSuccess: (state, { payload }) => {
-    state.memberFirms = [...state.memberFirms.data, payload];
+    state.memberFirms = [...state.memberFirms, payload];
 
     state.isLoading = false;
     state.error = null;
