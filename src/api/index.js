@@ -54,12 +54,21 @@ instance.interceptors.response.use(
 
 export const requestLayout = async (url, method, data) => {
 
+  const getRequestInstancePayload = {
+    url,
+    method,
+    params: data,
+  };
+
+  const defaultRequestInstancePayload = {
+    url,
+    method,
+    data,
+  };
+
+
   try {
-    const result = await instance({
-      url,
-      method,
-      data,
-    });
+    const result = await instance(method === "GET" ? getRequestInstancePayload : defaultRequestInstancePayload);
 
     return result.data.data;
   } catch (err) {
