@@ -147,9 +147,13 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
   let nav;
 
+  const userAbility = profile && profile?.permissions?.ability;
+
   // users without role admin shouldn't see organisations tab
-  if(profile && profile?.permissions?.ability === "admin") {
+  if(userAbility === "admin") {
     nav = NAV_OPTIONS
+  } else if (userAbility === "network_manager" || userAbility === "corporation_manager"){
+    nav = NAV_OPTIONS.filter((n) => n.id !== "organizations")
   } else {
     nav = NAV_OPTIONS.filter((n) => n.id !== "organizations" && n.id !== "memberFirms")
   }
