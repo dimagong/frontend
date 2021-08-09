@@ -18,10 +18,12 @@ import SavedFilters from "./SavedFilters";
 import SortingFilters from "./SortingFilters";
 import {useOutsideAlerter} from "hooks/useOutsideAlerter";
 import FilterIcon from 'assets/img/svg/filter.svg';
+import {getMemberFirms} from "app/selectors/memberFirmsSelector";
 
 const UserFilter = ({ handleFilter, managers }) => {
   const userFilters = useSelector(selectFilters);
   const organizationsObjects = useSelector(selectOrganizations);
+  const [memberFirms, setMemberFirms] = useState(new Set())
 
   const [appliedFilters, setAppliedFilters] = useState({roles: new Set(), organizations: new Set(), sort: -1});
   const [activeFilter, setActiveFilter] = useState();
@@ -33,9 +35,10 @@ const UserFilter = ({ handleFilter, managers }) => {
   const [filterName, setFilterName] = useState('');
   let roles = new Set(['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']), organizations = new Set(), reps = new Set();
   organizationsObjects.forEach(item => {organizations.add(item.name.replace('_', ' '))})
+  const memberFirmsObjects = useSelector(getMemberFirms);
   const [curr, setCurr] = useState('roles');
-  const [filter, setFilter] = useState({roles: roles, organizations: organizations, type: {roles: 'initial', organizations: 'initial'}});
-  const [footerText, setFooterText] = useState({roles: '', organizations: ''});
+  const [filter, setFilter] = useState({roles: roles, organizations: organizations, memberFirms: memberFirms, type: {roles: 'initial', organizations: 'initial', memberFirms: 'initial'}});
+  const [footerText, setFooterText] = useState({roles: '', organizations: '', memberFirms: ''});
 
   const wrapperRefFilterBox = useRef(null), wrapperRefFilterButton = useRef(null);
   useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (!isDeleteModalOpen) setIsFilterBoxOpened(false)});
@@ -44,7 +47,8 @@ const UserFilter = ({ handleFilter, managers }) => {
     let newFilter = filter;
     newFilter = {roles: new Set(Array.from(newFilter.roles)),
                  organizations: new Set (Array.from(newFilter.organizations)),
-                  type: {roles: filter.type.roles, organizations: filter.type.organizations}
+                  memberFirms: new Set (Array.from(newFilter.memberFirms)),
+                  type: {roles: filter.type.roles, organizations: filter.type.organizations, memberFirms: filter.type.memberFirms}
     };
     if (type === 'add') {
       if (newFilter.type[curr] === 'check') {
@@ -67,12 +71,12 @@ const UserFilter = ({ handleFilter, managers }) => {
         }
       } else {
         newFilter.type[curr] = 'cross';
-        newFilter[curr] = curr === 'roles' ? roles : organizations;
+        newFilter[curr] = curr === 'roles' ? roles : curr === 'organizations' ? organizations : memberFirms;
         newFilter[curr].delete(option);
       }
     }
     setFilter(newFilter);
-    setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
+    setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations), memberFirms: setToString(newFilter.memberFirms)});
   }
 
   const applyFilters = (newFilter, newSort) => {
@@ -98,8 +102,13 @@ const UserFilter = ({ handleFilter, managers }) => {
     let newManagers = managers;
     newManagers = newManagers.filter(item => (
       newFilter.roles.size === 0
-      || newFilter.roles.has(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
-      && (newFilter.organizations.size === 0 || newFilter.organizations.has(item?.permissions?.organization.replace('_', ' '))));
+      || (newFilter.roles.has(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
+      && (newFilter.organizations.size === 0 || newFilter.organizations.has(item?.permissions?.organization.replace('_', ' ')))));
+    if (newFilter?.memberFirms && newFilter?.memberFirms?.size !== 0) {
+      newManagers = newManagers.filter(item => {
+        return newFilter.memberFirms.has(item?.member_firm?.main_fields?.name)
+      })
+    }
 
     switch (newSort) {
       case 0: newManagers.sort((lhs, rhs) => lhs.first_name.localeCompare(rhs.first_name)); break;
@@ -125,18 +134,18 @@ const UserFilter = ({ handleFilter, managers }) => {
   }
 
   const initialFilter = () => {
-    setFilter({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}});
-    setFooterText({roles: setToString(new Set()), organizations: setToString(new Set())});
+    setFilter({roles: new Set(), organizations: new Set(), memberFirms: new Set(), type: {roles: 'initial', organizations: 'initial', memberFirms: "initial"}});
+    setFooterText({roles: setToString(new Set()), organizations: setToString(new Set()), memberFirms: setToString(new Set())});
   }
 
   const changeFooterText = (filter) => {
-    setFooterText({roles: setToString(filter.roles), organizations: setToString(filter.organizations)});
+    setFooterText({roles: setToString(filter.roles), organizations: setToString(filter.organizations), memberFirms: setToString(filter.memberFirms)});
   }
 
   const handleCloseTab = (newFilter) => {
     if (isFilterBoxOpened) return;
     setFilter(newFilter);
-    setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
+    setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations), memberFirms: setToString(newFilter.memberFirms)});
     applyFilters(newFilter);
     setActiveFilter(null);
     setFilterName('');
@@ -164,9 +173,9 @@ const UserFilter = ({ handleFilter, managers }) => {
 
   if (!filtered && managers.length !== 0 && userFilters) {
     handleFilter(managers);
-    setFilter({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}});
+    setFilter({roles: new Set(), organizations: new Set(), memberFirms: new Set(), type: {roles: 'initial', organizations: 'initial', memberFirms:'initial'}});
     setFiltered(true);
-    setFooterText({roles: setToString(roles), organizations: setToString(organizations)});
+    setFooterText({roles: setToString(roles), organizations: setToString(organizations), memberFirms: setToString(memberFirms)});
   }
 
   useEffect(() => {
@@ -176,6 +185,34 @@ const UserFilter = ({ handleFilter, managers }) => {
     )
   }, [managers]);
 
+  useEffect(() => {
+    let newMemberFirms = [...filter.memberFirms]
+    newMemberFirms = newMemberFirms.filter(item => Array.from(memberFirms).find(elem => item === elem))
+    if (filter.memberFirms.size !== newMemberFirms.length) {
+      let newFilter = {roles: new Set([...filter.roles]), organizations: new Set([...filter.organizations]), memberFirms: new Set([...filter.memberFirms]),
+        type: {roles: filter.type.roles, organizations: filter.type.organizations, memberFirms: filter.type.memberFirms}}
+      newFilter.memberFirms = new Set(newMemberFirms);
+      setFilter(newFilter)
+    }
+
+  }, [memberFirms?.size]);
+
+   useEffect(() => {
+    setMemberFirms(new Set(memberFirmsObjects?.data ? memberFirmsObjects.data.map(item => item?.main_fields.name) : []))
+  }, [memberFirmsObjects?.length]);
+
+  useEffect(() => {
+    if (filter.organizations.size === 0) {
+      setMemberFirms(new Set(memberFirmsObjects?.data ? memberFirmsObjects.data.map(item => item?.main_fields.name) : []))
+    } else {
+      setMemberFirms(new Set(memberFirmsObjects?.data
+        ? memberFirmsObjects.data.filter(item =>
+          Array.from(filter.organizations).findIndex(elem => elem === item.network.name) !== -1)
+          .map(item => item?.main_fields.name)
+        : []))
+    }
+  }, [filter.organizations]);
+
   return (
     <span className={'filters'}>
           <SortingFilters currSort={currSort} setCurrSort={setCurrSort} applyFilters={applyFilters}/>
@@ -184,12 +221,17 @@ const UserFilter = ({ handleFilter, managers }) => {
           </span>
           {filter.roles.size !== roles.size && filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.roles.length <= 40 ? footerText.roles : `${filter.roles.size} roles`}</span>
-            <span onClick={() => handleCloseTab({roles:new Set(), organizations: filter.organizations, type: {roles: 'initial', organizations: filter.type.organizations}})}
+            <span onClick={() => handleCloseTab({roles:new Set(), organizations: filter.organizations, memberFirms: filter.memberFirms, type: {roles: 'initial', organizations: filter.type.organizations, memberFirms: filter.type.memberFirms}})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
           {filter.organizations.size !== organizations.size &&filter.organizations.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.organizations}</span>
-            <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set(), type: {roles: filter.type.roles, organizations: 'initial'}})}
+            <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set(), memberFirms: filter.memberFirms, type: {roles: filter.type.roles, organizations: 'initial', memberFirms: filter.type.memberFirms}})}
+                  className={'close-nav'}><CloseIcon/></span>
+          </Button>}
+          {filter.memberFirms.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
+            <span className={'nav-text'}>{footerText.memberFirms}</span>
+            <span onClick={() => handleCloseTab({roles:filter.roles, organizations: filter.organizations, memberFirms: new Set(), type: {roles: filter.type.roles, organizations: filter.type.organizations, memberFirms: 'initial'}})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
           <span ref={wrapperRefFilterBox} className={'filter-box ' + (isFilterBoxOpened ? ' opened' : ' closed')}>
@@ -208,10 +250,10 @@ const UserFilter = ({ handleFilter, managers }) => {
                         <span className={'filter-name'}>Organizations ({organizations.size})</span>
                         {curr === 'organizations' && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
                       </Button>
-                      {/*<Button onClick={() => {setCurr('reps')}} variant="secondary" className={curr === 'reps' ? 'active' : 'not-active'}>
-                        <span className={'filter-name'}>Authorized Reps ({reps.size})</span>
-                        {curr === 'reps' && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
-                      </Button>*/}
+                      {<Button onClick={() => {setCurr('memberFirms')}} variant="secondary" className={curr === 'memberFirms' ? 'active' : 'not-active'}>
+                        <span className={'filter-name'}>Member Firms ({memberFirms.size})</span>
+                        {curr === 'memberFirms' && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
+                      </Button>}
                     </Col>
                     <Col className={'right'} id={'filter-options-right'}>
                       <span>
@@ -220,6 +262,7 @@ const UserFilter = ({ handleFilter, managers }) => {
                           filter={filter}
                           curr={curr}
                           roles={roles}
+                          memberFirms={memberFirms}
                           organizations={organizations}
                           handleFilterOptions={handleFilterOptions}
                         />}
