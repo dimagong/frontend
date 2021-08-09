@@ -122,6 +122,7 @@ function* removeMemberFirmUsers({payload}) {
   if (response?.message) {
     yield put(removeMemberFirmUsersError(response.message))
   } else {
+    yield put(getMemberFirmRequest(payload.memberFirmId));
     yield put(removeMemberFirmUsersSuccess({response, isEdit: payload.isEdit}))
   }
 }
