@@ -151,7 +151,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   if(profile && profile?.permissions?.ability === "admin") {
     nav = NAV_OPTIONS
   } else {
-    nav = NAV_OPTIONS.filter((n) => n.id !== "organizations")
+    nav = NAV_OPTIONS.filter((n) => n.id !== "organizations" && n.id !== "memberFirms")
   }
 
 
