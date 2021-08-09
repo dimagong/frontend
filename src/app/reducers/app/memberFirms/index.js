@@ -2,7 +2,7 @@ import {toast} from "react-toastify";
 
 const memberFirmsReducer = {
   createMemberFirmSuccess: (state, { payload }) => {
-    state.memberFirms = [...state.memberFirms.data, payload];
+    state.memberFirms = [...state.memberFirms, payload];
 
     state.isLoading = false;
     state.error = null;
@@ -86,6 +86,20 @@ const memberFirmsReducer = {
 
     state.isLoading = false;
     state.error = null;
+  },
+
+  getMemberFirmSuccess: (state, {payload}) => {
+    state.memberFirms = state.memberFirms.map(memberFirm => memberFirm.id === payload.id ? payload : memberFirm );
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  getMemberFirmActivitiesSuccess: (state, {payload}) => {
+    state.memberFirmActivities = payload.memberFirmActivities;
+
+    state.isLoading = false;
+    state.error = false;
   },
 };
 

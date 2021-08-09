@@ -11,6 +11,7 @@ import './index.scss';
 import {
   getSelectedMemberFirmMSFields,
   getSelectedMemberFirmFormFields,
+  getSelectedMemberFirmActivities,
 } from "app/selectors/memberFirmsSelector";
 
 import MemberFirmMembersContainer from "./Containers/MemberFirmMembersContainer";
@@ -24,6 +25,7 @@ const {
   getMasterSchemaFieldsForMemberFirmRequest,
   getMemberFirmFormFieldsRequest,
   updateMemberFirmProfileImageRequest,
+  getMemberFirmActivitiesRequest,
   removeMemberFirmLogoRequest,
   setContext,
   setManager,
@@ -37,10 +39,11 @@ const MemberFirmsContainer = () => {
   const memberFirmData = useSelector(getSelectedMemberFirm);
   const memberFirmFormFields = useSelector(getSelectedMemberFirmFormFields);
   const masterSchemaMemberFirmFields = useSelector(getSelectedMemberFirmMSFields);
+  const memberFirmActivities = useSelector(getSelectedMemberFirmActivities);
 
   const isMemberFirmFormFieldsLoading = useSelector(createLoadingSelector([getMemberFirmFormFieldsRequest.type], true));
   const isMasterSchemaFieldsForMemberFirmLoading = useSelector(createLoadingSelector([getMasterSchemaFieldsForMemberFirmRequest.type], true));
-
+  const isMemberFirmActivitiesLoading = useSelector(createLoadingSelector([getMemberFirmActivitiesRequest.type], true));
 
   const handleFileInputDialogOpen = () => {
     logoFileInputRef.current.click()
@@ -66,9 +69,14 @@ const MemberFirmsContainer = () => {
     dispatch(setContext("User"))
   };
 
+  const handleLoadMoreDataForActivities = () => {
+
+  };
+
   useEffect(() => {
     dispatch(getMasterSchemaFieldsForMemberFirmRequest(memberFirmData.id));
     dispatch(getMemberFirmFormFieldsRequest(memberFirmData.id));
+    dispatch(getMemberFirmActivitiesRequest({memberFirmId: memberFirmData.id, page: 1}))
   }, [memberFirmData.id]);
 
   return (
@@ -78,12 +86,15 @@ const MemberFirmsContainer = () => {
         data={memberFirmData}
         isMemberFirmFormFieldsLoading={isMemberFirmFormFieldsLoading}
         isMasterSchemaFieldsForMemberFirmLoading={isMasterSchemaFieldsForMemberFirmLoading}
+        isMemberFirmActivitiesLoading={isMemberFirmActivitiesLoading}
+        onLoadMoreDataForActivities={handleLoadMoreDataForActivities}
         memberFirmFormFields={memberFirmFormFields}
         masterSchemaMemberFirmFields={masterSchemaMemberFirmFields}
         onLogoChange={handleLogoChange}
         onFileInputDialogOpen={handleFileInputDialogOpen}
         logoFileInputRef={logoFileInputRef}
         onLogoRemove={handleLogoRemove}
+        memberFirmActivities={memberFirmActivities}
       />
       <MemberFirmMembersContainer
         memberFirmId={memberFirmData.id}

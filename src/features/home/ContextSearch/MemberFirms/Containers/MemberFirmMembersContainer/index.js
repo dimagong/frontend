@@ -30,7 +30,7 @@ const MemberFirmMembersContainer = ({ onNavigateToUserProfile }) => {
   const memberFirmPrincipals = useSelector(getSelectedMemberFirmPrincipals);
 
   const isMemberFirmMembersLoading = useSelector(createLoadingSelector([getMemberFirmUsersRequest.type], true));
-  console.log(memberFirmMembers, memberFirmPrincipals);
+
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };

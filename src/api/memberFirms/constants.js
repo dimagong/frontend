@@ -9,5 +9,7 @@ export const getMasterSchemaFieldsForMemberFirmUrl = (memberFirmId) => `/api/mem
 export const getMemberFirmFormFieldsUrl = (memberFirmId) => `/api/member-firm/${memberFirmId}/field-structure`;
 export const updateMemberFirmFormValuesUrl = (memberFirmId) => `/api/member-firm/${memberFirmId}/master-schema-field-values`;
 export const removeMemberFirmLogoUrl = (memberFirmId) => `/api/member-firm/${memberFirmId}/logo`;
+export const getMemberFirm = (memberFirmId) => `/api/member-firm/${memberFirmId}`;
+export const getMemberFirmActivitiesUrl = (memberFirmId) => `/api/user/member-firm-dashboard?member_firm_ids[]=${memberFirmId}`;
 
 export const addFormFieldToMemberFirmUrl = (memberFirmId) => `/api/member-firm/${memberFirmId}/field-structure`;
