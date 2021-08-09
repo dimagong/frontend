@@ -107,7 +107,6 @@ export const getEditMessage = (editData) => {
 
 
 const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager has no activities yet"}) => {
-  console.log('activity', activity)
   let data = activity?.data
 
   const isLoadingData = useSelector(selectLoading)
@@ -133,7 +132,7 @@ const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager h
               <th className={'activity-action'}>Action</th>
             </tr>
             {data && data.slice().sort((lhs, rhs) => new Date(lhs.created_at) > new Date(rhs.created_at) ? -1 : 1).map((item, index) => {
-              let message = getEditMessage(item)
+              let message = item.action_type.name === userProfileUpdated ? getEditMessage(item) : '';
               if (item.action_type.name !== userProfileUpdated || message) {
                 return <tr>
                   <td>{getTimePassed(item.created_at)}</td>
