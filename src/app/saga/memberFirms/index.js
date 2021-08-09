@@ -153,6 +153,7 @@ function* updateMemberFirmFormValues({payload}) {
   if (response?.message) {
     yield put(updateMemberFirmFormValuesError(response.message))
   } else {
+    yield put(getMemberFirmRequest(payload.memberFirmId));
     yield put(getMemberFirmFormFieldsRequest(payload.memberFirmId));
     yield put(updateMemberFirmFormValuesSuccess(response))
   }
