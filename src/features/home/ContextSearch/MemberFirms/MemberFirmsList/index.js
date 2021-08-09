@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -33,7 +33,7 @@ const {
 
 
 const UserCardTemplate = ({className, onClick, data }) => {
-  console.log("MFD", data);
+
   return (
     <div>
       <Card
@@ -90,6 +90,8 @@ const UserCardTemplate = ({className, onClick, data }) => {
 const MemberFirmsList = () => {
   const dispatch = useDispatch();
 
+  const [currentPage, setCurrentPage] = useState(0);
+
   const memberFirms = useSelector(getMemberFirms);
   const isMemberFirmsLoading = useSelector(createLoadingSelector([getMemberFirmsRequest.type]));
 
@@ -116,10 +118,16 @@ const MemberFirmsList = () => {
     return <MemberFirmsListEmptyComponent isLoading={isMemberFirmsLoading} />
   }
 
+  const ITEMS_PER_PAGE = 9;
+
+  const totalPages = Math.ceil(memberFirms.length / ITEMS_PER_PAGE);
+
+  const currentPageMemberFirms = memberFirms.slice(currentPage * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE);
+
   return (
     <Row>
       <Col className={`home__card-wrapper`}>
-        {memberFirms.map(memberFirm => (
+        {currentPageMemberFirms.map(memberFirm => (
           <UserCardTemplate
             data={memberFirm}
             className="cursor-pointer"
@@ -127,10 +135,13 @@ const MemberFirmsList = () => {
           />
         ))}
 
-        {/*<CustomPagination*/}
-        {/*  totalPages={memberFirms.total}*/}
-        {/*  currentPage={memberFirms.from}*/}
-        {/*/>*/}
+        {memberFirms.length > 9 && (
+          <CustomPagination
+            setPage={setCurrentPage}
+            totalPages={totalPages}
+            currentPage={currentPage}
+          />
+        )}
       </Col>
     </Row>
   );

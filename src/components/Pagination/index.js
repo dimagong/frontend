@@ -4,7 +4,7 @@ import './styles.scss'
 import {Button, PaginationItem, PaginationLink, Pagination} from "reactstrap";
 import {ChevronLeft, ChevronRight} from "react-feather";
 
-const CustomPagination = ({ totalPages, currentPage }) => {
+const CustomPagination = ({ totalPages, currentPage, setPage }) => {
 
   const getPagination = () => {
     return Array.from(Array(totalPages))
@@ -15,16 +15,16 @@ const CustomPagination = ({ totalPages, currentPage }) => {
       <Button
         className="custom_pagination-arrow"
         onClick={() => {
-          // if (page !== 0) setPage(page - 1)
+          if (currentPage !== 0) setPage(currentPage - 1)
         }}
       >
         <ChevronLeft size={28} color="#707070"/>
       </Button>
       <Pagination aria-label="Page navigation">
         {getPagination().map( (_, index) => (
-          <PaginationItem key={index} active={currentPage - 1 === index}>
+          <PaginationItem key={index} active={currentPage === index}>
             <PaginationLink onClick={() => {
-              // setPage(index)
+              setPage(index)
             }}>
               {index + 1}
             </PaginationLink>
@@ -34,7 +34,7 @@ const CustomPagination = ({ totalPages, currentPage }) => {
       <Button
         className="custom_pagination-arrow"
         onClick={() => {
-          // if (page !== getPagination().length -1) setPage(page + 1)
+          if (currentPage !== getPagination().length -1) setPage(currentPage + 1)
         }}
       >
         <ChevronRight size={28} color="#707070"/>
