@@ -87,6 +87,13 @@ const memberFirmsReducer = {
     state.isLoading = false;
     state.error = null;
   },
+
+  getMemberFirmSuccess: (state, {payload}) => {
+    state.memberFirms = state.memberFirms.map(memberFirm => memberFirm.id === payload.id ? payload : memberFirm );
+
+    state.isLoading = false;
+    state.error = null;
+  }
 };
 
 export default memberFirmsReducer;

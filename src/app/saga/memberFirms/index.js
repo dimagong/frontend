@@ -48,6 +48,10 @@ const {
   removeMemberFirmLogoSuccess,
   removeMemberFirmLogoRequest,
   removeMemberFirmLogoError,
+
+  getMemberFirmSuccess,
+  getMemberFirmRequest,
+  getMemberFirmError,
 } = appSlice.actions;
 
 
@@ -68,6 +72,16 @@ function* getMemberFirms() {
     yield put(getMemberFirmsError(response.message))
   } else {
     yield put(getMemberFirmsSuccess(response))
+  }
+}
+
+function* getMemberFirm({ payload }) {
+  const response = yield call(memberFirmsApi.getMemberFirm, payload);
+
+  if (response?.message) {
+    yield put(getMemberFirmError(response.message))
+  } else {
+    yield put(getMemberFirmSuccess(response))
   }
 }
 
@@ -97,6 +111,7 @@ function* addMemberFirmUsers({payload}) {
   if (response?.message) {
     yield put(addMemberFirmUsersError(response.message))
   } else {
+    yield put(getMemberFirmRequest(payload.memberFirmId));
     yield put(addMemberFirmUsersSuccess({response, isEdit: payload.isEdit}))
   }
 }
@@ -175,5 +190,6 @@ export default function* () {
     takeLatest(updateMemberFirmFormValuesRequest.type, updateMemberFirmFormValues),
     takeLatest(updateMemberFirmProfileImageRequest.type, updateMemberFirmProfileImage),
     takeLatest(removeMemberFirmLogoRequest.type, removeMemberFirmLogo),
+    takeLatest(getMemberFirmRequest.type, getMemberFirm),
   ]);
 }
