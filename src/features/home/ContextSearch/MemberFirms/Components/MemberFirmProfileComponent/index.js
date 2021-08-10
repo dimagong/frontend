@@ -105,6 +105,7 @@ const MemberFirmProfileComponent = ({
           {{
             Activity: (
               <Timeline
+                className="member-firm-profile-activities"
                 noActivitiesMessage={"There was no activity in that member firm"}
                 loadMoreData={onLoadMoreDataForActivities}
                 activity={memberFirmActivities}
