@@ -107,7 +107,7 @@ const MemberFirmProfileComponent = ({
               <Timeline
                 noActivitiesMessage={"There was no activity in that member firm"}
                 loadMoreData={onLoadMoreDataForActivities}
-                // activity={memberFirmActivities}
+                activity={memberFirmActivities}
               />
             ),
             Info: (

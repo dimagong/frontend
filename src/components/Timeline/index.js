@@ -132,11 +132,11 @@ const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager h
               <th className={'activity-action'}>Action</th>
             </tr>
             {data && data.slice().sort((lhs, rhs) => new Date(lhs.created_at) > new Date(rhs.created_at) ? -1 : 1).map((item, index) => {
-              let message = item.action_type.name === userProfileUpdated ? getEditMessage(item) : '';
-              if (item.action_type.name !== userProfileUpdated || message) {
+              let message = item?.action_type?.name === userProfileUpdated ? getEditMessage(item) : '';
+              if (item?.action_type?.name !== userProfileUpdated || message) {
                 return <tr>
                   <td>{getTimePassed(item.created_at)}</td>
-                  {item.action_type.name === userProfileUpdated
+                  {item?.action_type?.name === userProfileUpdated
                     ? <td>{message}</td>
                     : <td>{parseTextToComponent(item.description)}</td>}
                 </tr>
