@@ -235,6 +235,8 @@
         margin-left: 50px;
         width: 120px;
         display: inline-block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         span {
           cursor: pointer;
         }
