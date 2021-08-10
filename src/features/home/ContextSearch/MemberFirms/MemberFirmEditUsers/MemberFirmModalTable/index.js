@@ -15,6 +15,7 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser, 
   const dispatch = useDispatch();
 
   const TableCard = ({ manager }) => {
+    console.log("test", manager);
     return (
       <div style={{position: 'relative'}}>
         <div className={'dashboard-action'} style={{cursor: 'unset', display: 'inline-block', marginBottom: 0, marginTop: 5}}>
@@ -30,14 +31,18 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser, 
           <span className={'action-user'}>-</span>
           <span className={'action-user'} style={{width: 120, paddingRight: 0}}>{manager.member_firm?.main_fields?.name || '-'}</span>
         </div>
-        {isAddUser
-          ? <span className={'member-firm-table-icons member-firm-table-icons-add'}>
-            <img src={AddUserIcon} alt={'add-user'} onClick={() => {editUser(manager, false)}}/>
-          </span>
-          : <span className={'member-firm-table-icons member-firm-table-icons-remove'}>
+        {isAddUser ? (
+          !manager.member_firm && (
+            <span className={'member-firm-table-icons member-firm-table-icons-add'}>
+              <img src={AddUserIcon} alt={'add-user'} onClick={() => {editUser(manager, false)}}/>
+            </span>
+          )
+        ) : (
+          <span className={'member-firm-table-icons member-firm-table-icons-remove'}>
             <img src={SettingsIcon} alt={'remove-user'} onClick={() => editUser(manager, true)} style={{marginRight: 8}}/>
             <img src={RemoveUserIcon} alt={'settings'} onClick={() => {changeUser(manager)}}/>
-          </span>}
+          </span>
+        )}
       </div>
     )
   }

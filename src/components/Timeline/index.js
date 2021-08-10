@@ -106,7 +106,7 @@ export const getEditMessage = (editData) => {
   }
 
 
-const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager has no activities yet"}) => {
+const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager has no activities yet", className}) => {
   let data = activity?.data
 
   const isLoadingData = useSelector(selectLoading)
@@ -124,7 +124,7 @@ const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager h
     )
   }
   return (
-    <Card>
+    <Card className={className ? className : ""}>
       <CardBody>
           <table className={'activity-table'}>
             <tr>

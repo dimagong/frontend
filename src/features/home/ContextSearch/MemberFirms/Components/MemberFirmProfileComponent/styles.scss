@@ -124,6 +124,14 @@
   &_tab-content {
     padding: 60px 45px;
   }
+  &-activities {
+    &.card {
+      box-shadow: none!important;
+    }
+    .card-body {
+      padding: 0!important;
+    }
+  }
 }
 
 @media screen and (max-width: 1200px) {
