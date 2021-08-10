@@ -99,7 +99,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
   const [isSurveyCreateModalVisible, setIsSurveyCreateModalVisible] = useState(false);
   const [isMemberFirmCreateModalVisible, setIsMemberFirmCreateModalVisible] = useState(false);
-  const [showManagers, setShowManagers] = useState(searchedManagers);
+  const [showManagers, setShowManagers] = useState([]);
 
 
   const handleContextChange = (context) => {
@@ -131,7 +131,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
   };
 
   const handleFilter = (filteredManagers) => {
-    setShowManagers(filteredManagers);
+    setShowManagers([...filteredManagers]);
   }
 
   useEffect(() => {
