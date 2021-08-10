@@ -1,4 +1,4 @@
-import { all, put, call, takeLatest } from "redux-saga/effects";
+import { all, put, call, takeLatest, delay } from "redux-saga/effects";
 
 import memberFirmsApi from 'api/memberFirms';
 
@@ -69,6 +69,16 @@ function* createMemberFirm(payload) {
   }
 }
 
+function* getMemberFirmActivities({payload}) {
+  const response = yield call(memberFirmsApi.getMemberFirmActivities, payload);
+
+  if (response?.message) {
+    yield put(getMemberFirmActivitiesError(response.message));
+  } else {
+    yield put(getMemberFirmActivitiesSuccess(response))
+  }
+}
+
 function* getMemberFirms() {
   const response = yield call(memberFirmsApi.getMemberFirms);
 
@@ -116,7 +126,9 @@ function* addMemberFirmUsers({payload}) {
     yield put(addMemberFirmUsersError(response.message))
   } else {
     yield put(getMemberFirmRequest(payload.memberFirmId));
-    yield put(addMemberFirmUsersSuccess({response, isEdit: payload.isEdit}))
+    yield put(addMemberFirmUsersSuccess({response, isEdit: payload.isEdit}));
+    yield delay(3000);
+    yield put(getMemberFirmActivitiesRequest({memberFirmId: payload.memberFirmId, page: 1}));
   }
 }
 
@@ -127,7 +139,9 @@ function* removeMemberFirmUsers({payload}) {
     yield put(removeMemberFirmUsersError(response.message))
   } else {
     yield put(getMemberFirmRequest(payload.memberFirmId));
-    yield put(removeMemberFirmUsersSuccess({response, isEdit: payload.isEdit}))
+    yield put(removeMemberFirmUsersSuccess({response, isEdit: payload.isEdit}));
+    yield delay(3000);
+    yield put(getMemberFirmActivitiesRequest({memberFirmId: payload.memberFirmId, page: 1}));
   }
 }
 
@@ -159,7 +173,9 @@ function* updateMemberFirmFormValues({payload}) {
   } else {
     yield put(getMemberFirmRequest(payload.memberFirmId));
     yield put(getMemberFirmFormFieldsRequest(payload.memberFirmId));
-    yield put(updateMemberFirmFormValuesSuccess(response))
+    yield put(updateMemberFirmFormValuesSuccess(response));
+    yield delay(3000);
+    yield put(getMemberFirmActivitiesRequest({memberFirmId: payload.memberFirmId, page: 1}));
   }
 }
 
@@ -180,16 +196,6 @@ function* removeMemberFirmLogo({payload}) {
     yield put(removeMemberFirmLogoError(response.message))
   } else {
     yield put(removeMemberFirmLogoSuccess(response))
-  }
-}
-
-function* getMemberFirmActivities({payload}) {
-  const response = yield call(memberFirmsApi.getMemberFirmActivities, payload);
-
-  if (response?.message) {
-    yield put(getMemberFirmActivitiesError(response.message));
-  } else {
-    yield put(getMemberFirmActivitiesSuccess(response))
   }
 }
 
