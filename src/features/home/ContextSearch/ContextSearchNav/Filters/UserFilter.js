@@ -100,10 +100,19 @@ const UserFilter = ({ handleFilter, managers }) => {
   const filterAndSortManagers = (newFilter, newSort) => {
 
     let newManagers = managers;
-    newManagers = newManagers.filter(item => (
-      newFilter.roles.size === 0
-      || (newFilter.roles.has(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
-      && (newFilter.organizations.size === 0 || newFilter.organizations.has(item?.permissions?.organization.replace('_', ' ')))));
+
+    if (newFilter?.roles && newFilter?.roles?.size !== 0) {
+      newManagers = newManagers.filter(item => {
+        return newFilter.roles.has(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1))
+      })
+    }
+
+    if (newFilter?.organizations && newFilter?.organizations?.size !== 0) {
+      newManagers = newManagers.filter(item => {
+        return newFilter.organizations.size === 0 || newFilter.organizations.has(item?.permissions?.organization.replace('_', ' '))
+      })
+    }
+
     if (newFilter?.memberFirms && newFilter?.memberFirms?.size !== 0) {
       newManagers = newManagers.filter(item => {
         return newFilter.memberFirms.has(item?.member_firm?.main_fields?.name)
@@ -198,15 +207,15 @@ const UserFilter = ({ handleFilter, managers }) => {
   }, [memberFirms?.size]);
 
    useEffect(() => {
-    setMemberFirms(new Set(memberFirmsObjects?.data ? memberFirmsObjects.data.map(item => item?.main_fields.name) : []))
+    setMemberFirms(new Set(memberFirmsObjects?.length > 0 ? memberFirmsObjects.map(item => item?.main_fields.name) : []))
   }, [memberFirmsObjects?.length]);
 
   useEffect(() => {
     if (filter.organizations.size === 0) {
-      setMemberFirms(new Set(memberFirmsObjects?.data ? memberFirmsObjects.data.map(item => item?.main_fields.name) : []))
+      setMemberFirms(new Set(memberFirmsObjects?.length > 0 ? memberFirmsObjects.map(item => item?.main_fields.name) : []))
     } else {
-      setMemberFirms(new Set(memberFirmsObjects?.data
-        ? memberFirmsObjects.data.filter(item =>
+      setMemberFirms(new Set(memberFirmsObjects?.length > 0
+        ? memberFirmsObjects.filter(item =>
           Array.from(filter.organizations).findIndex(elem => elem === item.network.name) !== -1)
           .map(item => item?.main_fields.name)
         : []))
