@@ -597,5 +597,5 @@ export default {
   setUserReviewers,
   getUserManagment,
   setProfileOnboarding,
-  switchUserOrganizationSuccess
+  switchUserOrganizationSuccess,
 };

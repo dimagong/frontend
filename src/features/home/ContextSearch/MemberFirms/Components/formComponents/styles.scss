@@ -1,0 +1,33 @@
+.member_firm-form_field {
+  margin-bottom: 20px;
+  width: 100%;
+  &-label {
+    color: #707070;
+    font-family: Montserrat;
+    font-size: 14px;
+    display: block;
+    font-weight: 500;
+    margin-bottom: 15px;
+  }
+  &-input {
+    color: #707070;
+    width: 100%;
+    padding: 10px ;
+    border: 0;
+    border-bottom: 1px solid #707070;
+    &::placeholder {
+      color: #c6c6c6;
+    }
+  }
+
+  &-validation_error {
+    padding-top: 5px;
+    color: hsl(0, 82%, 67%);
+  }
+
+  &.field_with_error {
+    .member_firm-form_field-label {
+      color: hsl(0, 82%, 67%);
+    }
+  }
+}

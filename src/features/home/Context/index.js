@@ -10,6 +10,7 @@ import WorkflowForm from 'features/onboarding/workflow/components/WorkflowForm'
 import Organization from 'features/Organization'
 import SurveysDesigner from "features/Surveys/SurveysDesigner";
 import Dashboard from "../ContextSearch/Dashboard";
+import MemberFirmsContainer from "../ContextSearch/MemberFirms";
 
 const Context = ({ selectedContext }) => {
   const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible);
@@ -33,6 +34,7 @@ const Context = ({ selectedContext }) => {
           "OrganizationCreate": <Organization create />,
           "Survey": <SurveysDesigner />,
           "Dashboard": <Dashboard/>,
+          "Member Firms": <MemberFirmsContainer/>,
         }[selectedContext]}
       </div>
     </>

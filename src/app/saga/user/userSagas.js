@@ -106,7 +106,15 @@ const {
 
   switchUserOrganizationRequest,
   switchUserOrganizationSuccess,
-  switchUserOrganizationError
+  switchUserOrganizationError,
+
+  addMemberFirmUserRequest,
+  addMemberFirmUserSuccess,
+  addMemberFirmUserError,
+
+  removeMemberFirmUserRequest,
+  removeMemberFirmUserSuccess,
+  removeMemberFirmUserError
 } = appSlice.actions;
 
 function* getProfile() {

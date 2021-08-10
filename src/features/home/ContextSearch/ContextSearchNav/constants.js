@@ -18,5 +18,9 @@ export const NAV_OPTIONS = [
   {
     title: "Surveys",
     id: "surveys",
-  }
+  },
+  {
+    title: "Member Firms",
+    id: "memberFirms",
+  },
 ];

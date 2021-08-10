@@ -1,0 +1,149 @@
+.member-firm-profile {
+  background: white;
+  margin-top: 200px;
+  &_header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    &_logo {
+      position: relative;
+      display: flex;
+      background: #f8f8f8;
+      justify-content: center;
+      align-items: center;
+      margin-top: -200px;
+      border-radius: 50px;
+      border: 5px solid #7367F0;
+      width: 300px;
+      height: 300px;
+      max-height: 300px;
+      overflow: hidden;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      &-change_button {
+        opacity: 0;
+        position: absolute;
+        background: white;
+        bottom: 5px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        transition: 0.2s;
+        &:hover {
+          background: white!important;
+        }
+      }
+
+      .x-closer {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 5px;
+        border-radius: 25px;
+        opacity: 0;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      &:hover {
+        .member-firm-profile_header_logo-change_button {
+          opacity: 1;
+          transition: 0.2s;
+        }
+        .x-closer {
+          opacity: 1;
+          transition: 0.2s;
+        }
+      }
+    }
+    &_name {
+      font-size: 32px;
+      color: #707070;
+      font-family: Montserrat;
+      padding: 0 30px;
+      text-align: center;
+    }
+  }
+
+  &_info {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    padding: 0 5px;
+    flex-wrap: wrap;
+    &_tile {
+      display: flex;
+      //align-items: center;
+      font-size: 18px;
+      color: #707070;
+      font-family: Montserrat;
+      padding: 5px 10px;
+      word-break: break-all;
+      text-align: center;
+
+      &_icon {
+        margin-right: 5px;
+        color: #7367F0;
+      }
+    }
+  }
+
+  &_tabs {
+    border-bottom: 2px solid #7367F0;
+    margin: 0 45px;
+    padding: 20px 10px;
+    &_tab {
+      font-family: Montserrat;
+      margin-right: 20px;
+      min-width: 150px;
+      text-align: center;
+      //color: #707070;
+      //background: white!important;
+      font-weight: 500;
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &:hover {
+        background: #7367F0!important;
+        color: white !important;
+      }
+      &.active {
+        background: #7367F0!important;
+        color: white!important;
+      }
+    }
+  }
+  &_tab-content {
+    padding: 60px 45px;
+  }
+  &-activities {
+    &.card {
+      box-shadow: none!important;
+    }
+    .card-body {
+      padding: 0!important;
+    }
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .member-firm-profile {
+    &_header {
+      &_logo {
+        width: 260px;
+        max-height: 260px;
+      }
+      &_name {
+        font-size: 28px;
+      }
+    }
+  }
+}

@@ -6,7 +6,7 @@ class MasterSchemaService {
   }
 
   getByOrganization(type, id) {
-    return axios.get(`/api/master-schema/organization/${type}/${id}`);
+    return axios.get(`/api/master-schema/organization/${type}/${id}/full`);
   }
 
   create(type, id) {

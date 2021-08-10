@@ -1,0 +1,18 @@
+.member-firm-users-list {
+  margin-bottom: 50px;
+  &_label {
+    font-family: 'Montserrat';
+    color: #707070;
+    font-weight: bold;
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
+}
+
+.member-firm-associated-members {
+  &_settings-button {
+    padding: 14px;
+    float: right;
+    border-radius: 100px;
+  }
+}

@@ -7,15 +7,12 @@ import {
 import './styles.scss'
 import moment from "moment";
 
-import {useDispatch, useSelector} from "react-redux";
-import appSlice from "app/slices/appSlice";
-import {selectUserActivity} from "app/selectors/userSelectors";
+import {useSelector} from "react-redux";
 import {OverlayTrigger, Tooltip, Button} from "react-bootstrap";
 import {userProfileUpdated} from "constants/activity";
 import SpinnerIcon from 'assets/img/svg/spinner.svg';
 import {selectLoading} from 'app/selectors';
 
-const { getActivitiesRequest } = appSlice.actions;
 
 export const parseTextToComponent = (text) => {
   let indexes = [];
@@ -109,10 +106,7 @@ export const getEditMessage = (editData) => {
   }
 
 
-const Timeline = ({managerId}) => {
-  const dispatch = useDispatch();
-
-  const activity = useSelector(selectUserActivity(managerId));
+const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager has no activities yet", className}) => {
   let data = activity?.data
 
   const isLoadingData = useSelector(selectLoading)
@@ -122,20 +116,15 @@ const Timeline = ({managerId}) => {
     return time.format('L') + ' ' + time.format('LT');
   }
 
-  const loadMoreData = () => {
-    dispatch(getActivitiesRequest({managerId: managerId, page: activity.current_page + 1, shouldUpdate: true}))
-  }
-
-  useEffect(() => {
-    dispatch(getActivitiesRequest({managerId: managerId, page: 1, shouldUpdate: false}))
-  }, [managerId]);
-
-
-  if (data && data.length === 0) {
-    return <h1 className={'no-activities'}>This manager has no activities yet</h1>
+  if ((data && data.length === 0) || !activity) {
+    return (
+      <h1 className={'no-activities'}>
+        {noActivitiesMessage}
+      </h1>
+    )
   }
   return (
-    <Card>
+    <Card className={className ? className : ""}>
       <CardBody>
           <table className={'activity-table'}>
             <tr>
@@ -143,11 +132,11 @@ const Timeline = ({managerId}) => {
               <th className={'activity-action'}>Action</th>
             </tr>
             {data && data.slice().sort((lhs, rhs) => new Date(lhs.created_at) > new Date(rhs.created_at) ? -1 : 1).map((item, index) => {
-              let message = getEditMessage(item)
-              if (item.action_type.name !== userProfileUpdated || message) {
+              let message = item?.action_type?.name === userProfileUpdated ? getEditMessage(item) : '';
+              if (item?.action_type?.name !== userProfileUpdated || message) {
                 return <tr>
                   <td>{getTimePassed(item.created_at)}</td>
-                  {item.action_type.name === userProfileUpdated
+                  {item?.action_type?.name === userProfileUpdated
                     ? <td>{message}</td>
                     : <td>{parseTextToComponent(item.description)}</td>}
                 </tr>

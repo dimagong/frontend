@@ -15,6 +15,8 @@ const {
   deleteUserAvatarRequest,
   getUserAvatarRequest,
   updateUserAvatarRequest,
+  setContext,
+  setSelectedMemberFirmId,
 } = appSlice.actions;
 
 const UserCardTemplate = ({className, oneColumn, onClick, editable = false, onEdit = () => {}, ...manager }) => {
@@ -25,6 +27,12 @@ const UserCardTemplate = ({className, oneColumn, onClick, editable = false, onEd
   useEffect(() => {
     manager.avatar && dispatch(getUserAvatarRequest({managerId: manager.id}))
   },[manager.avatar])
+
+  const handleNavigateToMemberFirm = (e, memberFirmId) => {
+    e.stopPropagation();
+    dispatch(setSelectedMemberFirmId(memberFirmId));
+    dispatch(setContext("Member Firms"));
+  };
 
   const changeAvatar = () => {
     fileInputRef.current.click()
@@ -115,7 +123,12 @@ const UserCardTemplate = ({className, oneColumn, onClick, editable = false, onEd
           </div>
           <div className="user-card-body-right">
             <CardText>
-              {manager.permissions?.organization}
+              {manager.permissions?.organization} <br/>
+              {!!manager.member_firm && (
+                <span onClick={(e) => {handleNavigateToMemberFirm(e, manager.member_firm.id)}} className="user-card-body-right-member_firm_name">
+                  {manager.member_firm.main_fields.name}
+                </span>
+              )}
             </CardText>
             <CardText className="user-card-body_last-seen">
               {/*Last seen 3 days ago*/}

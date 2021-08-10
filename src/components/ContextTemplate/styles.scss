@@ -1,0 +1,51 @@
+.context-template {
+  padding-top: 20px;
+  padding-right: 45px;
+  &_hide-context {
+    position: absolute;
+    right: -17px;
+    top: -10px;
+    z-index: 10;
+  }
+
+  &_header{
+    padding-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    &_title {
+      display: flex;
+      font-family: Montserrat;
+      font-weight: bold;
+      font-size: 34px;
+      color: #707070;
+      padding-right: 30px;
+      border-right: 1px solid rgba(112,112,112, 0.5);
+    }
+    &_survey-name {
+      display: flex;
+      font-family: Montserrat;
+      font-size: 34px;
+      color: #707070;
+      padding-left: 30px;
+    }
+    &_edit-icon {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+
+}
+
+@media screen and (max-width: 1200px){
+  .context-template {
+    &_header {
+      &_title {
+        font-size: 30px;
+      }
+      &_survey-name {
+        font-size: 30px;
+      }
+    }
+  }
+}
