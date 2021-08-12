@@ -119,7 +119,7 @@ const OnboardingSurveyComponent = ({
             <LoadingButton
               className="onboarding-survey_action_button"
               color="primary"
-              isLoading={isSurveyBeginProceed || isAnswerPushProceed}
+              isLoading={isSurveyBeginProceed || isAnswerPushProceed || isLoading}
               onClick={handleActionButtonClick}
               value={(
                 <div className="onboarding-survey_action_button_value">

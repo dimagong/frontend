@@ -79,7 +79,7 @@ const OnboardingSurvey = ({ applicationData }) => {
       questionNumber={currentIndex + 1}
       progress={currentIndex / count * 100}
       question={question}
-      isLoading={started_at && isSurveyLoading || (started_at && !question) || isAnswerPushProceed}
+      isLoading={(started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed}
       onSurveyStart={handleSurveyStart}
       isSurveyBeginProceed={isSurveyBeginProceed}
       isAnswerPushProceed={isAnswerPushProceed}
