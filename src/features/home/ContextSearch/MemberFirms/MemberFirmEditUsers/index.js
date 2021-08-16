@@ -1,20 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Modal, ModalBody} from "reactstrap";
 import MemberFirmModalTable from "./MemberFirmModalTable";
-import AutoComplete from "../../../../../components/@vuexy/autoComplete/AutoCompleteComponent";
-import FilterIcon from "../../../../../assets/img/svg/filter.svg";
+import AutoComplete from "components/@vuexy/autoComplete/AutoCompleteComponent";
+import FilterIcon from "assets/img/svg/filter.svg";
 import {X} from "react-feather";
 import FilterModal from "../../ContextSearchNav/Filters/FilterModal";
-import {useDispatch, useSelector} from "react-redux";
-import {selectOrganizations} from "../../../../../app/selectors/groupSelector";
+import {useDispatch} from "react-redux";
 import MemberFirmsChangeRoleModal from "./MemberFirmsChangeRoleModal";
 import CloseIcon from "@material-ui/icons/Close";
-import appSlice from "../../../../../app/slices/appSlice";
-import {getSelectedMemberFirmPotentialUsers} from "../../../../../app/selectors/memberFirmsSelector";
-import memberFirmsApi from "../../../../../api/memberFirms";
+import appSlice from "app/slices/appSlice";
 
 const {
-  addMemberFirmUsersRequest,
   removeMemberFirmUsersRequest,
   getMemberFirmPotentialUsersRequest
 } = appSlice.actions;
@@ -29,21 +25,11 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
   const [isEdit, setIsEdit] = useState(false);
   const [userToDelete, setUserToDelete] = useState({});
   const [currUser, setCurrUser] = useState({});
-  const [filter, setFilter] = useState({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}});
   const wrapperRefFilterButton = useRef(null);
   const [curr, setCurr] = useState('roles');
-  const [footerText, setFooterText] = useState({roles: '', organizations: ''});
+  const [filter, setFilter] = useState({roles: new Set(), organizations: new Set(), memberFirms: new Set(), type: {roles: 'initial', organizations: 'initial', memberFirms: 'initial'}});
+  const [footerText, setFooterText] = useState({roles: '', organizations: '', memberFirms: ''});
   const [filterName, setFilterName] = useState('');
-
-  const addUser = (user) => {
-    dispatch(addMemberFirmUsersRequest({
-      memberFirmId: memberFirm.id,
-      users: [{
-        id: user.id,
-        type: 'member'
-      }]
-    }))
-  }
 
   const removeUser = (user) => {
     dispatch(removeMemberFirmUsersRequest({
@@ -59,6 +45,15 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
       setIsFiltered(true)
     } else {
       setIsFiltered(false)
+    }
+  }
+
+  const handleFilter = (newManagers) => {
+    setSearchedMembers(newManagers)
+    if (filter.roles.size > 0) {
+      setIsFiltered(true);
+    } else {
+      setIsFiltered(false);
     }
   }
 
@@ -107,14 +102,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
           />
           {isFilterBoxOpen && <FilterModal
             managers={potentialMembers}
-            handleFilter={(newManagers) => {
-              setSearchedMembers(newManagers)
-              if (filter.roles.size > 0) {
-                setIsFiltered(true);
-              } else {
-                setIsFiltered(false);
-              }
-            }}
+            handleFilter={handleFilter}
             wrapperRefFilterButton={wrapperRefFilterButton}
             style={{left: 220, top: 50, marginBottom: 0}}
             filterTypes={['roles']}
@@ -132,8 +120,9 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
           <div style={{textAlign: 'right', paddingRight: 10, height: 30}}>
             {filter.roles.size > 0 && <Button className={'filter-tab member-firm-filter-tab'} variant={'dark'}>
               <span className={'nav-text'}>{footerText.roles.length <= 40 ? footerText.roles : `${filter.roles.size} roles`}</span>
+
               <span onClick={() => {
-                setFilter({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}})
+                setFilter({roles: new Set(), organizations: new Set(), memberFirms: new Set(), type: {roles: 'initial', organizations: 'initial', memberFirms: 'initial'}})
                 setSearchedMembers([]);
                 setIsFiltered(false)
               }}
@@ -144,7 +133,6 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
           <MemberFirmModalTable
             array={(searchedMembers?.length > 0 || isFiltered) ? searchedMembers : potentialMembers}
             setArray={setSearchedMembers}
-            changeUser={addUser}
             editUser={(user, newIsEdit) => {
               setIsChangeRoleModalOpen(true);
               setCurrUser(user)
@@ -157,7 +145,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
           <div style={{fontWeight: 'bold'}}>Existing</div>
           <MemberFirmModalTable
             array={members}
-            changeUser={(user) => setUserToDelete(user)}
+            deleteUser={(user) => setUserToDelete(user)}
             editUser={(user, newIsEdit) => {
               setIsChangeRoleModalOpen(true);
               setCurrUser(user)
