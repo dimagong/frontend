@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 import { getTimeDifference } from "utility/common";
+import SurveyModal from "../../../SurveyModal";
+import HintIcon from "assets/img/svg/help-with-circle.svg"
 
 const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
 
@@ -23,12 +25,18 @@ const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
   )
 };
 
-const FreeText = ({ onChange, answer }) => {
+const FreeText = ({ onClick, onChange, answer }) => {
 
   return (
     <div className="answer free-text">
       <div className="title">
         Write your answer below:
+        <img
+          src={HintIcon}
+          alt={'hint'}
+          onClick={onClick}
+          style={{float: 'right', cursor: 'pointer'}}
+        />
       </div>
       <div>
         <TextArea
@@ -49,14 +57,20 @@ const OnboardingQuestion = ({
   answer,
 }) => {
 
+  const [isHintOpen, setIsHintOpen] = useState(false)
   const [stopwatchTime, setStopwatchTime] = useState(getTimeDifference(questionData.started_at));
 
   const {
     body,
+    hint,
     answer_structure: {type, options}
   } = questionData;
 
   setInterval(() => setStopwatchTime(getTimeDifference(questionData.started_at)), 1000);
+
+  const handleOnClick = () => {
+    setIsHintOpen(true)
+  }
 
   return (
     <div className={`question question-${displayType}`}>
@@ -72,8 +86,18 @@ const OnboardingQuestion = ({
 
       {{
         "multiple_choice": <MultipleChoice options={options} onChange={onAnswerChange} correctAnswerId={answer} />,
-        "text": <FreeText onChange={onAnswerChange} answer={answer} />
+        "text": <FreeText onChange={onAnswerChange} answer={answer} onClick={handleOnClick}/>
       }[type]}
+
+      <SurveyModal
+        title={"Hint"}
+        isOpen={isHintOpen}
+        onClose={() => setIsHintOpen(false)}
+        submitBtnText={"Close"}
+        onSubmit={() => setIsHintOpen(false)}
+      >
+        <h3 style={{fontWeight: 'initial'}}>{hint}</h3>
+      </SurveyModal>
     </div>
   );
 };

@@ -187,6 +187,7 @@ function* getSurvey(payload) {
 }
 
 function* updateSurvey(payload) {
+  payload.payload.data.is_can_return = true;
   const response = yield call(surveysApi.updateSurvey, payload);
 
   if(response?.message) {
