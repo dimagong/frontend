@@ -13,7 +13,7 @@ deploy to dev:
   environment: dev
   image: agoncaruks/aws-elastic-beanstalk-cli
   before_script:
-    - apt update
+    - apt-get update --allow-releaseinfo-change
     - mkdir ~/.aws/
     - touch ~/.aws/credentials
     - printf "[nmpdev]\naws_access_key_id = %s\naws_secret_access_key = %s\n" "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
@@ -42,7 +42,7 @@ deploy to staging:
   environment: staging
   image: agoncaruks/aws-elastic-beanstalk-cli
   before_script:
-    - apt update
+    - apt-get update --allow-releaseinfo-change
     - mkdir ~/.aws/
     - touch ~/.aws/credentials
     - printf "[nmpdev]\naws_access_key_id = %s\naws_secret_access_key = %s\n" "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
@@ -71,7 +71,7 @@ deploy to production:
   environment: production
   image: agoncaruks/aws-elastic-beanstalk-cli
   before_script:
-    - apt update
+    - apt-get update --allow-releaseinfo-change
     - mkdir ~/.aws/
     - touch ~/.aws/credentials
     - printf "[nmpdev]\naws_access_key_id = %s\naws_secret_access_key = %s\n" "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
