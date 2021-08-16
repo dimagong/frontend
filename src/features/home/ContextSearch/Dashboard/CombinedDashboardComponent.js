@@ -187,8 +187,8 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
         />
       </div>
     </div>
-    {settings.state === 'large' &&
-    <div style={{background: 'white'}} className={'dashboard-activities'}>
+
+    <div style={{background: 'white'}} className={'dashboard-activities ' + (settings.state === 'large' ? 'dashboard-activities-open' : 'dashboard-activities-closed')}>
       <ActivitiesDashboard
         usersActivities={(chartType === 'Applications' && !(settings.dForm?.id)) ? []
           : chartType === 'Applications' ? dashboardData?.userDFormActivities : dashboardData?.usersActivities}
@@ -203,7 +203,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
         filter={filter}
         setFilter={setFilter}
       />
-    </div>}
+    </div>
 
     <Modal className={"chart-rename-modal"} isOpen={isRenameModalOpen} fade={false} toggle={()=>{setIsRenameModalOpen(false)}}>
         <ModalBody>

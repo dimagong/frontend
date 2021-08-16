@@ -176,12 +176,8 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
 
   }
 
-
-  if (settings.state !== 'large') return null;
-
-
   return (
-    <div>
+    <div style={{height: 350}}>
       { <span ref={wrapperRefFilterBox}>
           <FilterBox
             setIsFilterBoxOpen={setIsFilterBoxOpen}
