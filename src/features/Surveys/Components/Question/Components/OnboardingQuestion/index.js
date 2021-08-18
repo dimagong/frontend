@@ -96,7 +96,7 @@ const OnboardingQuestion = ({
         submitBtnText={"Close"}
         onSubmit={() => setIsHintOpen(false)}
       >
-        <h3 style={{fontWeight: 'initial'}}>{hint}</h3>
+        <h3 style={{fontWeight: 'initial', marginBottom: 50}}>{hint}</h3>
       </SurveyModal>
     </div>
   );
