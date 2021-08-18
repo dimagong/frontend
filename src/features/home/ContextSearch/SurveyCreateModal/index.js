@@ -50,6 +50,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
       setSurveyTitle("");
       setSurveyDescription("");
       setSurveyOrganization(null);
+      setIsUserAbleToGoBackDuringSurvey(false);
 
       onClose()
     }
