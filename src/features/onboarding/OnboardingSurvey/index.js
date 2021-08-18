@@ -72,6 +72,7 @@ const OnboardingSurvey = ({ applicationData }) => {
     }
   }, []);
 
+  const TEST_SURVEY_DESCRIPTION = "http://something.com Please use info that you can find on that link http://something.com or that link http://something.com.au or even at http://somethidddddg.com.au http://sometasg.com.au";
 
   return (
     <OnboardingSurveyComponent
@@ -90,6 +91,7 @@ const OnboardingSurvey = ({ applicationData }) => {
       onAnswerChange={handleAnswerSelect}
       selectedAnswer={answer}
       isLastQuestion={(count - 1) === currentIndex}
+      surveyDescription={TEST_SURVEY_DESCRIPTION}
     />
   )
 };

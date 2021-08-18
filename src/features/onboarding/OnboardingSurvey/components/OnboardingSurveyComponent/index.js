@@ -5,6 +5,8 @@ import OnboardingSurveyProgressBar from "./components/OnboardingSurveyProgressBa
 import LoadingButton from "components/LoadingButton";
 import Question from "../../../../Surveys/Components/Question";
 
+import SurveyAdditionalInfoComponent from "./components/SurveyAdditionalInfoComponent";
+
 import { ChevronRight } from "react-feather";
 
 import './styles.scss'
@@ -59,6 +61,7 @@ const OnboardingSurveyComponent = ({
   isAnswerPushProceed,
   onAnswerSubmit,
   isSurveyBeginProceed,
+  surveyDescription,
 }) => {
 
   const getButtonValue = () => {
@@ -128,6 +131,13 @@ const OnboardingSurveyComponent = ({
               )} />
           </div>
         )}
+
+        <SurveyAdditionalInfoComponent
+          className="onboarding-survey-manager_comments"
+          label={"Manager comments"}
+          text={surveyDescription}
+        />
+
       </Col>
     </Row>
   )
