@@ -98,7 +98,7 @@ const OnboardingSurvey = ({ applicationData }) => {
       currentQuestionAnswer={answers && currentIndex !== undefined && answers[currentIndex]}
       isLastQuestion={(count - 1) === currentIndex}
       isFirstQuestion={currentIndex === 0}
-      surveyDescription={survey.interaction_version.description}
+      surveyDescription={survey?.interaction_version?.description || ""}
       onSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
       isSurveySwitchToPreviousQuestionProceed={isSurveySwitchToPreviousQuestionProceed}
       isAbleToSwitchToPreviousQuestion={survey?.options?.is_can_return}
