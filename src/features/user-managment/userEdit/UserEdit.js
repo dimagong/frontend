@@ -13,6 +13,8 @@ import DataTable from "react-data-table-component"
 
 import Select from 'react-select';
 
+import _ from "lodash"
+
 import { Plus } from "react-feather"
 
 import { handleMasterSchemaDataExport } from "services/files.service";
@@ -245,11 +247,8 @@ const UserEdit = (props, context) => {
     }
   }, [manager.onboardings, openOnboarding]);
 
-  const tableData = [...manager.onboardings, ...assignedSurveys].sort((a, b) => {
-    const firstItem = a.title || a?.d_form?.name;
-    const secondItem = b.title || b?.d_form?.name;
-
-    return firstItem.localeCompare(secondItem)
+  const tableData = _.sortBy([...manager.onboardings, ...assignedSurveys], function(application) {
+    return new Date(application.created_at);
   });
 
   useEffect(() => {
