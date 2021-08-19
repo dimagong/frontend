@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 import { getTimeDifference } from "utility/common";
+import SurveyModal from "../../../SurveyModal";
+import HintIcon from "assets/img/svg/help-with-circle.svg"
 
 const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
 
@@ -23,12 +25,18 @@ const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
   )
 };
 
-const FreeText = ({ onChange, answer }) => {
+const FreeText = ({ onClick, onChange, answer }) => {
 
   return (
     <div className="answer free-text">
       <div className="title">
         Write your answer below:
+        <img
+          src={HintIcon}
+          alt={'hint'}
+          onClick={onClick}
+          style={{float: 'right', cursor: 'pointer'}}
+        />
       </div>
       <div>
         <TextArea
@@ -41,22 +49,40 @@ const FreeText = ({ onChange, answer }) => {
   )
 };
 
+const TimerComponent = ({startTime}) => {
+  const [stopwatchTime, setStopwatchTime] = useState(getTimeDifference(startTime));
+
+  setInterval(() => setStopwatchTime(getTimeDifference(startTime)), 1000);
+
+  return stopwatchTime;
+};
+
 const OnboardingQuestion = ({
   displayType,
   questionNumber,
   questionData,
   onAnswerChange,
   answer,
+  initAnswer
 }) => {
 
-  const [stopwatchTime, setStopwatchTime] = useState(getTimeDifference(questionData.started_at));
+  const [isHintOpen, setIsHintOpen] = useState(false);
 
   const {
     body,
+    hint,
     answer_structure: {type, options}
   } = questionData;
 
-  setInterval(() => setStopwatchTime(getTimeDifference(questionData.started_at)), 1000);
+  const handleOnClick = () => {
+    setIsHintOpen(true)
+  };
+
+  useEffect(() => {
+    if (initAnswer) {
+      onAnswerChange(initAnswer.answer)
+    }
+  }, [initAnswer]);
 
   return (
     <div className={`question question-${displayType}`}>
@@ -64,7 +90,7 @@ const OnboardingQuestion = ({
         {`Question ${questionNumber}`}
       </div>
       <div className="question-time">
-        {stopwatchTime}
+        <TimerComponent startTime={questionData.started_at} />
       </div>
       <div className={"question-description"}>
         {body}
@@ -72,8 +98,18 @@ const OnboardingQuestion = ({
 
       {{
         "multiple_choice": <MultipleChoice options={options} onChange={onAnswerChange} correctAnswerId={answer} />,
-        "text": <FreeText onChange={onAnswerChange} answer={answer} />
+        "text": <FreeText onChange={onAnswerChange} answer={answer} onClick={handleOnClick}/>
       }[type]}
+
+      <SurveyModal
+        title={"Hint"}
+        isOpen={isHintOpen}
+        onClose={() => setIsHintOpen(false)}
+        submitBtnText={"Close"}
+        onSubmit={() => setIsHintOpen(false)}
+      >
+        <h3 style={{fontWeight: 'initial', marginBottom: 50}}>{hint}</h3>
+      </SurveyModal>
     </div>
   );
 };

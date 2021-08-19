@@ -6,7 +6,7 @@ import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectOrganizations } from "app/selectors/groupSelector";
 import { selectError } from "app/selectors";
 import { usePrevious } from "hooks/common";
-import { Input, Select } from "features/Surveys/Components/SurveyFormComponents";
+import { Input, Select, Checkbox } from "features/Surveys/Components/SurveyFormComponents";
 import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import appSlice from "app/slices/appSlice";
@@ -15,7 +15,7 @@ import './styles.scss'
 
 const {
   createSurveyRequest,
-  changeSurveyTitleAndDescription,
+  changeSurveyMainData,
 } = appSlice.actions;
 
 const editSurveyValidation = yup.object().shape({
@@ -36,6 +36,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
   const [surveyTitle, setSurveyTitle] = useState("");
   const [surveyDescription, setSurveyDescription] = useState("");
   const [surveyOrganization, setSurveyOrganization] = useState(null);
+  const [isUserAbleToGoBackDuringSurvey, setIsUserAbleToGoBackDuringSurvey] = useState(false);
 
   const isLoading = useSelector(createLoadingSelector([createSurveyRequest.type], true));
   const error = useSelector(selectError);
@@ -49,6 +50,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
       setSurveyTitle("");
       setSurveyDescription("");
       setSurveyOrganization(null);
+      setIsUserAbleToGoBackDuringSurvey(false);
 
       onClose()
     }
@@ -59,6 +61,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
     const surveyData = {
       title: surveyTitle,
       description: surveyDescription,
+      is_can_return: isUserAbleToGoBackDuringSurvey,
       organization: !isEdit && surveyOrganization && {
         id: surveyOrganization.value.id,
         type: surveyOrganization.value.type,
@@ -74,7 +77,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
     if (!isValid) return;
 
     if (isEdit) {
-      dispatch(changeSurveyTitleAndDescription(surveyData));
+      dispatch(changeSurveyMainData(surveyData));
       handleModalClose();
     } else {
       dispatch(createSurveyRequest(surveyData));
@@ -103,6 +106,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
     if (isEdit && isOpen) {
       setSurveyTitle(surveyData.latest_version.title);
       setSurveyDescription(surveyData.latest_version.description);
+      setIsUserAbleToGoBackDuringSurvey(surveyData.latest_version.is_can_return)
     }
   }, [isEdit, isOpen]);
 
@@ -127,6 +131,13 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
         name={"Survey description"}
         value={surveyDescription}
         onChange={(e) => setSurveyDescription(e.target.value)}
+      />
+      <Checkbox
+        className={"survey-create-modal-checkbox"}
+        onChange={(e) => setIsUserAbleToGoBackDuringSurvey(e.target.checked)}
+        name="Is user able to go back during survey"
+        checked={isUserAbleToGoBackDuringSurvey}
+        label="User can go back during survey"
       />
       {!isEdit && (
         <div className="survey-create-modal_select">

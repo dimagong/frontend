@@ -112,9 +112,10 @@ const surveysReducer = {
     state.selectedSurvey.latest_version.latest_questions = latestQuestions;
   },
 
-  changeSurveyTitleAndDescription: (state, { payload }) => {
+  changeSurveyMainData: (state, { payload }) => {
     state.selectedSurvey.latest_version.title = payload.title;
     state.selectedSurvey.latest_version.description = payload.description;
+    state.selectedSurvey.latest_version.is_can_return = payload.is_can_return;
   },
 
   updateSurveySuccess: (state, { payload }) => {
@@ -336,6 +337,13 @@ const surveysReducer = {
 
   deleteAssignedSurveySuccess: (state, {payload}) => {
     state.selectedManagerAssignedSurveys = state.selectedManagerAssignedSurveys.filter(survey => survey.id !== payload);
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  switchToPreviousQuestionSuccess: (state, {payload}) => {
+    state.user.profile.onboarding = { ...state.user.profile.onboarding, ...payload };
 
     state.isLoading = false;
     state.error = null;

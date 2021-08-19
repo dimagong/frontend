@@ -110,11 +110,20 @@
 
 
         &.selected {
-          color: #7367F0;
+          color: #7367F0!important;
 
           .option-circle {
-            border-color: #7367F0;
-            background: #7367F0;
+            border-color: #7367F0!important;
+            background: #7367F0!important;
+          }
+        }
+
+        &.curr {
+          color: red;
+
+          .option-circle {
+            border-color: red;
+            background: red;
           }
         }
       }

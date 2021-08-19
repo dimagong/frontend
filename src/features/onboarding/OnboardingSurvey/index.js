@@ -13,6 +13,7 @@ const {
   getCurrentQuestionForAssignedSurveyRequest,
   beginSurveyRequest,
   pushAnswerRequest,
+  switchToPreviousQuestionRequest,
 } = appSlice.actions;
 
 const OnboardingSurvey = ({ applicationData }) => {
@@ -22,12 +23,14 @@ const OnboardingSurvey = ({ applicationData }) => {
   const isSurveyLoading = useSelector(createLoadingSelector([getCurrentQuestionForAssignedSurveyRequest.type]));
   const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
   const isSurveyBeginProceed = useSelector(createLoadingSelector([beginSurveyRequest.type], true));
+  const isSurveySwitchToPreviousQuestionProceed = useSelector(createLoadingSelector([switchToPreviousQuestionRequest.type], true));
 
   const survey = useSelector(selectUserOnboarding);
 
   const {
     question,
     count,
+    answers,
     currentIndex,
   } = survey;
 
@@ -46,6 +49,10 @@ const OnboardingSurvey = ({ applicationData }) => {
 
   const handleAnswerSelect = (answer) => {
     setAnswer(answer)
+  };
+
+  const handleSwitchToPreviousQuestion = () => {
+    dispatch(switchToPreviousQuestionRequest(id))
   };
 
   const handleAnswerSubmit = () => {
@@ -72,14 +79,13 @@ const OnboardingSurvey = ({ applicationData }) => {
     }
   }, []);
 
-
   return (
     <OnboardingSurveyComponent
       onAnswerSubmit={handleAnswerSubmit}
       questionNumber={currentIndex + 1}
       progress={currentIndex / count * 100}
       question={question}
-      isLoading={started_at && isSurveyLoading || (started_at && !question) || isAnswerPushProceed}
+      isLoading={(started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed}
       onSurveyStart={handleSurveyStart}
       isSurveyBeginProceed={isSurveyBeginProceed}
       isAnswerPushProceed={isAnswerPushProceed}
@@ -89,7 +95,13 @@ const OnboardingSurvey = ({ applicationData }) => {
       finishedAt={finished_at}
       onAnswerChange={handleAnswerSelect}
       selectedAnswer={answer}
+      currentQuestionAnswer={answers && currentIndex !== undefined && answers[currentIndex]}
       isLastQuestion={(count - 1) === currentIndex}
+      isFirstQuestion={currentIndex === 0}
+      surveyDescription={survey.interaction_version.description}
+      onSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
+      isSurveySwitchToPreviousQuestionProceed={isSurveySwitchToPreviousQuestionProceed}
+      isAbleToSwitchToPreviousQuestion={survey?.options?.is_can_return}
     />
   )
 };

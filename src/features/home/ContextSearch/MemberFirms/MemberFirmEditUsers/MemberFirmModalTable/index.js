@@ -3,16 +3,8 @@ import noneAvatar from "assets/img/portrait/none-avatar.png";
 import AddUserIcon from 'assets/img/svg/add-user.svg';
 import RemoveUserIcon from 'assets/img/svg/remove-user.svg';
 import SettingsIcon from 'assets/img/svg/settings.svg';
-import appSlice from "app/slices/appSlice";
-import {useDispatch} from "react-redux";
 
-const {
-  setManager,
-  setContext,
-} = appSlice.actions;
-
-const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser, editUser, notFindMessage}) => {
-  const dispatch = useDispatch();
+const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, deleteUser, editUser, notFindMessage}) => {
 
   const TableCard = ({ manager }) => {
     console.log("test", manager);
@@ -40,7 +32,7 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser, 
         ) : (
           <span className={'member-firm-table-icons member-firm-table-icons-remove'}>
             <img src={SettingsIcon} alt={'remove-user'} onClick={() => editUser(manager, true)} style={{marginRight: 8}}/>
-            <img src={RemoveUserIcon} alt={'settings'} onClick={() => {changeUser(manager)}}/>
+            <img src={RemoveUserIcon} alt={'settings'} onClick={() => {deleteUser(manager)}}/>
           </span>
         )}
       </div>
@@ -75,11 +67,6 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, changeUser, 
     } else {
       setArray(newArray)
     }
-  }
-
-  const handleCardClick = (manager) => {
-    dispatch(setManager(manager));
-    dispatch(setContext('User'));
   }
 
   return (

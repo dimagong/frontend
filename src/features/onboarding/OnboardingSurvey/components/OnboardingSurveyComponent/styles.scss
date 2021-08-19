@@ -8,6 +8,10 @@
     margin-bottom: 10px;
   }
 
+  &-manager_comments {
+    margin-top: 25px;
+  }
+
   &_loading {
     display: flex;
     justify-content: center;
@@ -36,24 +40,41 @@
     }
   }
 
-  &_action {
+  &_actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin-top: 10px;
 
-    &_button {
+    &_back, &_next {
       border-radius: 10px;
       position: relative;
+
       &_value {
         display: inline-block;
-        padding: 0 40px;
+        padding: 0 30px;
         font-size: 15px;
 
         &_icon {
           position: absolute;
-          right: 0;
           top: 50%;
           transform: translate(0, -50%);
+        }
+      }
+    }
+
+    &_back {
+      background: #717171!important;
+      &_value {
+        &_icon {
+          left: 0;
+        }
+      }
+    }
+
+    &_next {
+      &_value {
+        &_icon {
+          right: 0!important;
         }
       }
     }

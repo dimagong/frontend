@@ -72,8 +72,26 @@
     }
   }
 
+  .dashboard-activities-open {
+    height: 370px!important;
+    padding-top: 10px!important;
+    padding-bottom: 10px!important;
+  }
+
+  .dashboard-activities-closed {
+    height: 0!important;
+    padding-top: 0!important;
+    padding-bottom: 0!important;
+    margin: 0!important;
+  }
+
   .dashboard-activities {
-    height: 370px;
+    -moz-transition: height .5s;
+    -o-transition: height .5s;
+    -webkit-transition: height .5s;
+    transition: height .5s;
+    overflow: hidden;
+    height: 0;
     padding-top: 10px;
     padding-bottom: 10px;
     top: -10px;
@@ -154,6 +172,11 @@
 }
 
 .combined-dashboard-component {
+  -moz-transition: width .5s;
+  -o-transition: width .5s;
+  -webkit-transition: width .5s;
+  transition: width .5s;
+  overflow: hidden;
   margin-bottom: 1%;
   display: inline-block;
   vertical-align: top;
