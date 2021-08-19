@@ -23,6 +23,7 @@ const Question = ({
   onGradingAnswerSave,
   onFinishButtonDisableStateChange,
   isGradingReview,
+  currAnswer
   initAnswer,
 }) => {
 
@@ -42,7 +43,7 @@ const Question = ({
                   isSelected={isSelected}
                   onRemove={handleRemoveQuestionFromSurvey}
                 />,
-    "review": <ReviewQuestion {...commonProps} />,
+    "review": <ReviewQuestion {...commonProps} currAnswer={currAnswer}/>,
     "onboarding": <OnboardingQuestion initAnswer={initAnswer} {...commonProps} onAnswerChange={onAnswerChange} answer={selectedAnswer} />,
     "grading": (
       <GradingQuestion

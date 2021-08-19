@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 
-const MultipleChoice = ({ options, correctAnswerId }) => {
+const MultipleChoice = ({ options, correctAnswerId, currAnswer}) => {
 
   return (
     <div className={"answer multiple-choice"}>
@@ -10,7 +10,7 @@ const MultipleChoice = ({ options, correctAnswerId }) => {
       </div>
       <div className="options">
         {options.map((answer, index) => (
-          <div key={index} className={`option ${answer.id === correctAnswerId ? "selected" : ""}`}>
+          <div key={index} className={`option ${answer.id === correctAnswerId ? "selected" : ""} ${answer.id === currAnswer ? "curr" : ""}`}>
             <div className={"option-circle"} />
             <div className={"option-text"}>
               {answer.text}
@@ -22,7 +22,7 @@ const MultipleChoice = ({ options, correctAnswerId }) => {
   )
 };
 
-const FreeText = () => {
+const FreeText = ({answer}) => {
 
   return (
     <div className="answer free-text">
@@ -31,7 +31,7 @@ const FreeText = () => {
       </div>
       <div>
         <TextArea
-          value={""}
+          value={answer ? answer : ""}
           onChange={() => {}}
           height={7}
           disabled
@@ -45,6 +45,7 @@ const ReviewQuestion = ({
                             displayType,
                             questionNumber,
                             questionData,
+                            currAnswer
                           }) => {
 
   const {
@@ -63,12 +64,12 @@ const ReviewQuestion = ({
       </div>
 
       {{
-        "multiple_choice": <MultipleChoice options={options} correctAnswerId={questionData.correct_answer} />,
-        "text": <FreeText />
+        "multiple_choice": <MultipleChoice options={options} correctAnswerId={currAnswer === '-1' ? currAnswer : questionData.correct_answer} currAnswer={currAnswer}/>,
+        "text": <FreeText answer={currAnswer !== '-1' ? currAnswer : undefined}/>
       }[type]}
 
       <div className={"question-points"}>
-        {points || max_points} Points
+        {(!currAnswer || questionData.correct_answer === currAnswer) ?  (points || max_points) : 0} Points
       </div>
     </div>
   );
