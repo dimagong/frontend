@@ -23,7 +23,7 @@ const Question = ({
   onGradingAnswerSave,
   onFinishButtonDisableStateChange,
   isGradingReview,
-  currAnswer
+  currAnswer,
   initAnswer,
 }) => {
 
