@@ -12,6 +12,8 @@ import {debounce} from 'lodash';
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import './styles.scss'
 
+import _ from 'lodash';
+
 import WelcomePageComponent from "./components/WeclomePage";
 
 import Approved from './approved.svg'
@@ -56,12 +58,10 @@ const OnboardingUser = () => {
       };
     });
 
-    userApplications = userApplications.sort((a, b) => {
-      const firstArg = a?.d_form?.name || a.title;
-      const secondArg = b?.d_form?.name || b.title;
+    userApplications = _.sortBy(userApplications, (application) => (
+      new Date(application.created_at)
+    ));
 
-      return firstArg.localeCompare(secondArg);
-    });
   }
 
   useEffect(() => {
