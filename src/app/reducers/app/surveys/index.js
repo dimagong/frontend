@@ -340,6 +340,13 @@ const surveysReducer = {
 
     state.isLoading = false;
     state.error = null;
+  },
+
+  switchToPreviousQuestionSuccess: (state, {payload}) => {
+    state.user.profile.onboarding = { ...state.user.profile.onboarding, ...payload };
+
+    state.isLoading = false;
+    state.error = null;
   }
 
 };
