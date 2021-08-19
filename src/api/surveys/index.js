@@ -24,6 +24,7 @@ import {
   getGradeSurveyQuestionAnswerUrl,
   getFinishGradingUrl,
   getDeleteAssignedSurveyUrl,
+  getSwitchToPreviousQuestionUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -117,7 +118,11 @@ const surveysApi = {
 
   async deleteAssignedSurvey(surveyId) {
     return await requestLayout(getDeleteAssignedSurveyUrl(surveyId), "DELETE")
-  }
+  },
+
+  async switchToPreviousQuestion(surveyId) {
+    return await requestLayout(getSwitchToPreviousQuestionUrl(surveyId), "PUT")
+  },
 
 };
 

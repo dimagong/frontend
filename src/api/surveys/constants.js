@@ -21,3 +21,4 @@ export const getSurveyAnswerPushUrl = (assignedSurveyId) => `api/survey-passing/
 export const getGradeSurveyQuestionAnswerUrl = (assignedSurveyId) => `api/survey-assigned-interaction/${assignedSurveyId}/update-grade`;
 export const getFinishGradingUrl = (assignedSurveyId) => `api/survey-assigned-interaction/${assignedSurveyId}/finish-grade`;
 export const getDeleteAssignedSurveyUrl = (assignedInteractionId) => `api/survey-assigned-interaction/${assignedInteractionId}`;
+export const getSwitchToPreviousQuestionUrl = (assignedInteractionId) => `api/survey-passing/${assignedInteractionId}/make-previous-question-current`;

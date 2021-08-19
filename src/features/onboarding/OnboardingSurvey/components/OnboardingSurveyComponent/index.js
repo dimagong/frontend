@@ -5,7 +5,9 @@ import OnboardingSurveyProgressBar from "./components/OnboardingSurveyProgressBa
 import LoadingButton from "components/LoadingButton";
 import Question from "../../../../Surveys/Components/Question";
 
-import { ChevronRight } from "react-feather";
+import SurveyAdditionalInfoComponent from "./components/SurveyAdditionalInfoComponent";
+
+import { ChevronRight, ChevronLeft } from "react-feather";
 
 import './styles.scss'
 
@@ -27,11 +29,12 @@ const OnboardingSurveyBeginComponent = ({ surveyName }) => {
 };
 
 
-const OnboardingSurveyInProgress = ({ question, questionNumber, selectedAnswer, onAnswerChange, }) => {
+const OnboardingSurveyInProgress = ({ question, questionNumber, selectedAnswer, onAnswerChange, initAnswer }) => {
 
   return (
     <div>
       <Question
+        initAnswer={initAnswer}
         questionNumber={questionNumber}
         question={question}
         displayType={"onboarding"}
@@ -59,6 +62,12 @@ const OnboardingSurveyComponent = ({
   isAnswerPushProceed,
   onAnswerSubmit,
   isSurveyBeginProceed,
+  surveyDescription,
+  isFirstQuestion,
+  onSwitchToPreviousQuestion,
+  isSurveySwitchToPreviousQuestionProceed,
+  isAbleToSwitchToPreviousQuestion,
+  currentQuestionAnswer,
 }) => {
 
   const getButtonValue = () => {
@@ -80,6 +89,12 @@ const OnboardingSurveyComponent = ({
     }
   };
 
+  const handleSwitchToPreviousQuestion = () => {
+    onSwitchToPreviousQuestion();
+  };
+
+  const isBackButtonVisible = !isFirstQuestion && status === "started" && !isLoading && isAbleToSwitchToPreviousQuestion;
+
   return (
     <Row className="onboarding-survey">
       <Col className="offset-md-1" sm={12} md={10}>
@@ -98,6 +113,7 @@ const OnboardingSurveyComponent = ({
                       selectedAnswer={selectedAnswer}
                       question={question}
                       questionNumber={questionNumber}
+                      initAnswer={currentQuestionAnswer}
                     />
                   ) ,
                   'notStarted': (
@@ -115,19 +131,41 @@ const OnboardingSurveyComponent = ({
         <OnboardingSurveyProgressBar progressPercents={question ? progress : 0} />
 
         {status !== "finished" && (
-          <div className="onboarding-survey_action">
+          <div className="onboarding-survey_actions">
+            {isBackButtonVisible ? (
+              <LoadingButton
+                className="onboarding-survey_actions_back"
+                color="primary"
+                disabled={isAnswerPushProceed}
+                isLoading={isSurveySwitchToPreviousQuestionProceed}
+                onClick={handleSwitchToPreviousQuestion}
+                value={(
+                  <div className="onboarding-survey_actions_back_value">
+                    <ChevronLeft className="onboarding-survey_actions_back_value_icon"/> Back
+                  </div>
+                )}
+              />
+            ) : <div />}
             <LoadingButton
-              className="onboarding-survey_action_button"
+              className="onboarding-survey_actions_next"
               color="primary"
               isLoading={isSurveyBeginProceed || isAnswerPushProceed || isLoading}
               onClick={handleActionButtonClick}
               value={(
-                <div className="onboarding-survey_action_button_value">
-                  {getButtonValue()} <ChevronRight className="onboarding-survey_action_button_value_icon"/>
+                <div className="onboarding-survey_actions_next_value">
+                  {getButtonValue()} <ChevronRight className="onboarding-survey_actions_next_value_icon"/>
                 </div>
-              )} />
+              )}
+            />
           </div>
         )}
+
+        <SurveyAdditionalInfoComponent
+          className="onboarding-survey-manager_comments"
+          label={"Manager comments"}
+          text={surveyDescription}
+        />
+
       </Col>
     </Row>
   )

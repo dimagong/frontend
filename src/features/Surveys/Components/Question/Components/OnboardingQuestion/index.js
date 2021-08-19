@@ -49,16 +49,24 @@ const FreeText = ({ onClick, onChange, answer }) => {
   )
 };
 
+const TimerComponent = ({startTime}) => {
+  const [stopwatchTime, setStopwatchTime] = useState(getTimeDifference(startTime));
+
+  setInterval(() => setStopwatchTime(getTimeDifference(startTime)), 1000);
+
+  return stopwatchTime;
+};
+
 const OnboardingQuestion = ({
   displayType,
   questionNumber,
   questionData,
   onAnswerChange,
   answer,
+  initAnswer
 }) => {
 
-  const [isHintOpen, setIsHintOpen] = useState(false)
-  const [stopwatchTime, setStopwatchTime] = useState(getTimeDifference(questionData.started_at));
+  const [isHintOpen, setIsHintOpen] = useState(false);
 
   const {
     body,
@@ -66,11 +74,15 @@ const OnboardingQuestion = ({
     answer_structure: {type, options}
   } = questionData;
 
-  setInterval(() => setStopwatchTime(getTimeDifference(questionData.started_at)), 1000);
-
   const handleOnClick = () => {
     setIsHintOpen(true)
-  }
+  };
+
+  useEffect(() => {
+    if (initAnswer) {
+      onAnswerChange(initAnswer.answer)
+    }
+  }, [initAnswer]);
 
   return (
     <div className={`question question-${displayType}`}>
@@ -78,7 +90,7 @@ const OnboardingQuestion = ({
         {`Question ${questionNumber}`}
       </div>
       <div className="question-time">
-        {stopwatchTime}
+        <TimerComponent startTime={questionData.started_at} />
       </div>
       <div className={"question-description"}>
         {body}

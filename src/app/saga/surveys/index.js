@@ -114,6 +114,10 @@ const {
   deleteAssignedSurveySuccess,
   deleteAssignedSurveyRequest,
   deleteAssignedSurveyError,
+
+  switchToPreviousQuestionSuccess,
+  switchToPreviousQuestionRequest,
+  switchToPreviousQuestionError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -187,7 +191,6 @@ function* getSurvey(payload) {
 }
 
 function* updateSurvey(payload) {
-  payload.payload.data.is_can_return = true;
   const response = yield call(surveysApi.updateSurvey, payload);
 
   if(response?.message) {
@@ -399,6 +402,16 @@ function* deleteAssignedSurvey({ payload }) {
   }
 }
 
+function* switchToPreviousQuestion({ payload }) {
+  const response = yield call(surveysApi.switchToPreviousQuestion, payload);
+
+  if (response?.message) {
+    yield put(switchToPreviousQuestionError(response.message))
+  } else {
+    yield put(switchToPreviousQuestionSuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -428,5 +441,6 @@ export default function* () {
     yield takeEvery(gradeSurveyQuestionAnswerRequest.type, gradeSurveyQuestionAnswer),
     yield takeLatest(finishGradingRequest.type, finishGrading),
     yield takeLatest(deleteAssignedSurveyRequest.type, deleteAssignedSurvey),
+    yield takeLatest(switchToPreviousQuestionRequest.type, switchToPreviousQuestion),
   ]);
 }
