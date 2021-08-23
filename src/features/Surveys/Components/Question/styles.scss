@@ -10,6 +10,10 @@
   cursor: pointer;
 
 
+  &-feedback_icon {
+    cursor: pointer;
+  }
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -237,4 +241,20 @@
 
   }
 
+}
+
+
+.survey_feedback_modal {
+  &-body {
+    padding-bottom: 15px;
+    font-family: Montserrat;
+    &-label {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #4b484d;
+    }
+    textarea {
+      border-color: #e7e7e7;
+    }
+  }
 }

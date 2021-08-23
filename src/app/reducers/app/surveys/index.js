@@ -347,7 +347,18 @@ const surveysReducer = {
 
     state.isLoading = false;
     state.error = null;
-  }
+  },
+
+  addFeedbackToQuestionSuccess: (state, {payload}) => {
+    const surveyIndex = state.selectedManagerAssignedSurveys.findIndex(survey => survey.id === payload.id);
+
+    state.selectedManagerAssignedSurveys[surveyIndex] = payload;
+
+    toast.success("Feedback added successfully");
+
+    state.isLoading = false;
+    state.error = null;
+  },
 
 };
 

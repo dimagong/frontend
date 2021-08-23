@@ -16,6 +16,8 @@ const SurveyGradingComponent = ({
   onForceSurveyReviewHide,
   onAssignedSurveyDelete,
   isSurveyDeleteProceeding,
+  onFeedbackSubmit,
+  isFeedbackSubmitProceeding,
 }) => {
 
   const handleFinishGrading = () => {
@@ -34,6 +36,8 @@ const SurveyGradingComponent = ({
     <div className="survey-grading-component">
       {surveyData.questions.map((question, index) => (
         <Question
+          isFeedbackSubmitProceeding={isFeedbackSubmitProceeding}
+          onFeedbackSubmit={onFeedbackSubmit}
           displayType="grading"
           question={question}
           questionNumber={index + 1}

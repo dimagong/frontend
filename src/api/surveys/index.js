@@ -25,6 +25,7 @@ import {
   getFinishGradingUrl,
   getDeleteAssignedSurveyUrl,
   getSwitchToPreviousQuestionUrl,
+  addFeedbackToQuestionUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -122,6 +123,10 @@ const surveysApi = {
 
   async switchToPreviousQuestion(surveyId) {
     return await requestLayout(getSwitchToPreviousQuestionUrl(surveyId), "PUT")
+  },
+
+  async addFeedbackToQuestion({ payload }) {
+    return await requestLayout(addFeedbackToQuestionUrl(payload.surveyId), "PUT", payload.data)
   },
 
 };

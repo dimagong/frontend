@@ -25,6 +25,8 @@ const Question = ({
   isGradingReview,
   currAnswer,
   initAnswer,
+  onFeedbackSubmit,
+  isFeedbackSubmitProceeding,
 }) => {
 
   const commonProps = {
@@ -49,9 +51,11 @@ const Question = ({
       <GradingQuestion
         {...commonProps}
         answer={answer}
+        isFeedbackSubmitProceeding={isFeedbackSubmitProceeding}
         onGradingAnswerSave={onGradingAnswerSave}
         onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
         isGradingReview={isGradingReview}
+        onFeedbackSubmit={onFeedbackSubmit}
       />
     )
   }[displayType]
