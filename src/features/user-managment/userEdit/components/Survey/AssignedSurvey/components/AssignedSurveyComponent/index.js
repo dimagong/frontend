@@ -17,6 +17,8 @@ const AssignedSurveyComponent = ({
   onForceSurveyReviewHide,
   onAssignedSurveyDelete,
   isSurveyDeleteProceeding,
+  onFeedbackSubmit,
+  isFeedbackSubmitProceeding,
 }) => {
 
   const commonAssignedSurveyComponentsProps = {
@@ -49,6 +51,9 @@ const AssignedSurveyComponent = ({
           ),
           "grading": (
             <SurveyGradingComponent
+              isFeedbackSubmitProceeding={isFeedbackSubmitProceeding}
+              answers={surveyData.answers}
+              onFeedbackSubmit={onFeedbackSubmit}
               isGradingReview={isGradingReview}
               onQuestionAnswerGradingSave={onQuestionAnswerGradingSave}
               onFinishGrading={onFinishGrading}

@@ -6,24 +6,29 @@ import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectUserOnboarding } from "app/selectors/userSelectors";
 import { toast } from "react-toastify";
+import OnboardingSurveyStatusComponent from "./components/OnboardingSurveyStatusComponent";
 
 import { appSlice } from "app/slices/appSlice";
+import OnboardingSurveyFeedbackViewComponent from "./components/OnboardingSurveyFeedbackViewComponent";
 
 const {
   getCurrentQuestionForAssignedSurveyRequest,
   beginSurveyRequest,
   pushAnswerRequest,
   switchToPreviousQuestionRequest,
+  getAllSurveyQuestionsRequest,
 } = appSlice.actions;
 
-const OnboardingSurvey = ({ applicationData }) => {
+const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecentlySubmitted }) => {
   const dispatch = useDispatch();
   const [answer, setAnswer] = useState("");
+  const [isFeedbackView, setIsFeedbackView] = useState(false);
 
   const isSurveyLoading = useSelector(createLoadingSelector([getCurrentQuestionForAssignedSurveyRequest.type]));
   const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
   const isSurveyBeginProceed = useSelector(createLoadingSelector([beginSurveyRequest.type], true));
   const isSurveySwitchToPreviousQuestionProceed = useSelector(createLoadingSelector([switchToPreviousQuestionRequest.type], true));
+  const isSurveyGradedQuestionsLoading = useSelector(createLoadingSelector([getAllSurveyQuestionsRequest.type], true));
 
   const survey = useSelector(selectUserOnboarding);
 
@@ -39,9 +44,14 @@ const OnboardingSurvey = ({ applicationData }) => {
     started_at,
     finished_at,
     title,
+    graded_at,
   } = applicationData;
 
   const surveyStatus = (started_at && "started") || "notStarted";
+
+  const submittedSurveyStatus = (applicationData.graded_at && "approved")
+    || (applicationData.finished_at && isRecentlySubmitted && "recent")
+    || "submitted";
 
   const handleSurveyStart = () => {
     dispatch(beginSurveyRequest(id))
@@ -79,7 +89,35 @@ const OnboardingSurvey = ({ applicationData }) => {
     }
   }, []);
 
-  return (
+  useEffect(() => {
+    if (graded_at) {
+      dispatch(getAllSurveyQuestionsRequest(id))
+    }
+  },[]);
+
+  const isFeedbackExist = !!survey?.passedSurveyData?.answers.find(answer => !!answer.feedback);
+
+  return finished_at ? (
+
+    graded_at && isFeedbackView ? (
+      <OnboardingSurveyFeedbackViewComponent
+        questions={survey.passedSurveyData.questions}
+        answers={survey.passedSurveyData.answers}
+        onFeedbackClose={() => setIsFeedbackView(false)}
+      />
+    ) : (
+      <div style={{marginLeft: "-100px", marginRight: "100px"}}>
+        <OnboardingSurveyStatusComponent
+          isFeedbackExist={isFeedbackExist}
+          isLoading={isSurveyGradedQuestionsLoading}
+          onForceApplicationShow={setIsFeedbackView}
+          status={submittedSurveyStatus}
+          isAllApplicationsCompleted={isAllApplicationsCompleted}
+        />
+      </div>
+    )
+
+  ) : (
     <OnboardingSurveyComponent
       onAnswerSubmit={handleAnswerSubmit}
       questionNumber={currentIndex + 1}

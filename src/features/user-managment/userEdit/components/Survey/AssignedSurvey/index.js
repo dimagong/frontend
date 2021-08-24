@@ -15,6 +15,7 @@ const {
   gradeSurveyQuestionAnswerRequest,
   finishGradingRequest,
   deleteAssignedSurveyRequest,
+  addFeedbackToQuestionRequest,
 } = appSlice.actions;
 
 const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
@@ -26,6 +27,8 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
   const error = useSelector(selectError);
   const surveyData = useSelector(selectAssignedSurveyById(selectedSurveyId));
   const isSurveyDeleteProceeding = useSelector(createLoadingSelector([deleteAssignedSurveyRequest.type], true));
+  const isFeedbackSubmitProceeding = useSelector(createLoadingSelector([addFeedbackToQuestionRequest.type], true));
+
 
   const prevSurveyDeleteLoadingState = usePrevious(isSurveyDeleteProceeding);
 
@@ -54,6 +57,16 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
 
       dispatch(finishGradingRequest(surveyData.id))
     }
+  };
+
+  const handleFeedbackSubmit = (feedback, questionId) => {
+    dispatch(addFeedbackToQuestionRequest({
+      surveyId: selectedSurveyId,
+      data: {
+        message: feedback,
+        question_id: questionId,
+      }
+    }))
   };
 
   // Disabling of finish button doesn't work correctly
@@ -102,6 +115,8 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
 
   return (
     <AssignedSurveyComponent
+      isFeedbackSubmitProceeding={isFeedbackSubmitProceeding}
+      onFeedbackSubmit={handleFeedbackSubmit}
       surveyData={surveyData}
       status={surveyStatus}
       isGradingReview={isGradingReview && surveyData.graded_at}

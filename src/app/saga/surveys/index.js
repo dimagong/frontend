@@ -118,6 +118,14 @@ const {
   switchToPreviousQuestionSuccess,
   switchToPreviousQuestionRequest,
   switchToPreviousQuestionError,
+
+  addFeedbackToQuestionSuccess,
+  addFeedbackToQuestionRequest,
+  addFeedbackToQuestionError,
+
+  getAllSurveyQuestionsSuccess,
+  getAllSurveyQuestionsRequest,
+  getAllSurveyQuestionsError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -412,6 +420,26 @@ function* switchToPreviousQuestion({ payload }) {
   }
 }
 
+function* addFeedbackToQuestion(payload) {
+  const response = yield call(surveysApi.addFeedbackToQuestion, payload);
+
+  if (response?.message) {
+    yield put(addFeedbackToQuestionError(response.message))
+  } else {
+    yield put(addFeedbackToQuestionSuccess(response))
+  }
+}
+
+function* getAllSurveyQuestions({ payload }) {
+  const response = yield call(surveysApi.getAllSurveyQuestions, payload);
+
+  if (response?.message) {
+    yield put(getAllSurveyQuestionsError(response.message))
+  } else {
+    yield put(getAllSurveyQuestionsSuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -442,5 +470,7 @@ export default function* () {
     yield takeLatest(finishGradingRequest.type, finishGrading),
     yield takeLatest(deleteAssignedSurveyRequest.type, deleteAssignedSurvey),
     yield takeLatest(switchToPreviousQuestionRequest.type, switchToPreviousQuestion),
+    yield takeLatest(addFeedbackToQuestionRequest.type, addFeedbackToQuestion),
+    yield takeLatest(getAllSurveyQuestionsRequest.type, getAllSurveyQuestions),
   ]);
 }
