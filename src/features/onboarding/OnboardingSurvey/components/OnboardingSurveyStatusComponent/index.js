@@ -23,9 +23,9 @@ const OnboardingSurveyStatusComponent = ({status, onForceApplicationShow, isAllA
       <div className={"status_description"}>
 
         {{submitted: <>
-            <h1>Under Review</h1>
-            <div>You have successfully submitted your information, and it is currently under review.</div>
-            <div><span className="font-weight-bold">What happens next?</span><br />After our review, we will be in touch with next steps.</div>
+            <h1>Thank you</h1>
+            <div>You have successfully submitted this questionnaire, and it is currently under review.</div>
+            <div><span className="font-weight-bold">What happens next?</span><br />You will receive a notification once it has been graded with any relevant feedback if necessary.</div>
           </>,
           approved: <>
             <h1>Success!</h1>
@@ -39,9 +39,9 @@ const OnboardingSurveyStatusComponent = ({status, onForceApplicationShow, isAllA
           </>,
         }[status]}
 
-        {isAllApplicationsCompleted && (
+        {!isAllApplicationsCompleted && (
           <div>
-            {{submitted: "In the meantime, please continue with the remaining applications",
+            {{submitted: "In the interim, please continue with any remaining forms.",
               approved: "Please continue with the remaining applications to complete your onboarding process.",
               recent: "In the meantime, please continue with the remaining applications to complete your onboarding process.",
             }[status]}
