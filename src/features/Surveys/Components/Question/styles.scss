@@ -213,7 +213,7 @@
     padding-top: 40px;
   }
 
-  &.question-onboarding {
+  &.question-onboarding, &.question-review-onboarding {
     cursor: default;
     box-shadow: none;
     padding: 0 6px 0 6px;
@@ -231,6 +231,19 @@
         &:hover {
           .option-circle {
             border-color: #7367F0;
+          }
+        }
+      }
+    }
+  }
+  &.question-review-onboarding {
+    .options{
+      .option {
+        cursor: default;
+
+        &:hover {
+          .option-circle {
+            border-color: #4B484D;
           }
         }
       }

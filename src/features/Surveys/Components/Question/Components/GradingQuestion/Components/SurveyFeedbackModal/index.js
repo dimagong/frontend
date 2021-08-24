@@ -26,9 +26,7 @@ const SurveyFeedbackModal = ({
   };
 
   const handleSubmit = () => {
-    if (feedback.trim() !== "") {
-      onSubmit(feedback, questionId);
-    }
+    onSubmit(feedback, questionId);
   };
 
   useEffect(() => {

@@ -360,6 +360,17 @@ const surveysReducer = {
     state.error = null;
   },
 
+  getAllSurveyQuestionsSuccess: (state, {payload}) => {
+    state.user.profile.onboarding.passedSurveyData = payload;
+
+    // const surveyIndex = state.onboardingSurveys.findIndex((survey) => survey.id === currentSurveyId);
+    //
+    // state.onboardingSurveys[surveyIndex] = {...state.onboardingSurveys[surveyIndex], passedSurveyData: payload};
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
 };
 
 export default surveysReducer;
