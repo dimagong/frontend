@@ -18,6 +18,7 @@ const {
   setManager,
   setPreview,
   setSearch,
+  getUserAvatarRequest,
 } = appSlice.actions;
 
 
@@ -35,6 +36,8 @@ const SearchInput = ({ suggestions }) => {
     onSuggestionItemClick,
     onSuggestionItemHover
   ) => {
+
+    if(suggestion.avatar_path.length > 0 && !suggestion.url) dispatch(getUserAvatarRequest({managerId: suggestion.id}))
 
     return (
       <li
@@ -60,7 +63,8 @@ const SearchInput = ({ suggestions }) => {
           <div className="d-flex flex-row">
             <div className="d-flex align-items-center">
               <img
-                src={noneAvatar}
+                // src={noneAvatar}
+                src={suggestion.url || noneAvatar}
                 alt={suggestion.name}
                 height="32"
                 width="32"

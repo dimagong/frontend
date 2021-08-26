@@ -5,10 +5,38 @@ export const getSelectedMemberFirm = (state) => (
   ) : null
 );
 export const getSelectedMemberFirmUsers = (state) => state?.app?.selectedMemberFirmUsers;
-export const getSelectedMemberFirmPotentialUsers = (state) => state?.app?.selectedMemberFirmPotentialUsers;
+// export const getSelectedMemberFirmPotentialUsers = (state) => state?.app?.selectedMemberFirmPotentialUsers;
+export const getSelectedMemberFirmPotentialUsers = (state) => {
+  if (state?.app?.selectedMemberFirmPotentialUsers) {
+    const id = state?.app?.selectedMemberFirmPotentialUsers.map(user => user.id)
 
-export const getSelectedMemberFirmMembers = (state) => state?.app?.selectedMemberFirmUsers?.member || [];
-export const getSelectedMemberFirmPrincipals = (state) => state?.app?.selectedMemberFirmUsers?.principal || [];
+    return state?.app?.user?.managers.filter(user => id.includes(user.id));
+  } else {
+    return [];
+  }
+};
+
+// export const getSelectedMemberFirmMembers = (state) => state?.app?.selectedMemberFirmUsers?.member || [];
+export const getSelectedMemberFirmMembers = (state) => {
+  if (state?.app?.selectedMemberFirmUsers?.member) {
+    const id = state?.app?.selectedMemberFirmUsers?.member.map(user => user.id)
+
+    return state?.app?.user?.managers.filter(user => id.includes(user.id));
+  } else {
+    return [];
+  }
+};
+
+// export const getSelectedMemberFirmPrincipals = (state) => state?.app?.selectedMemberFirmUsers?.principal || [];
+export const getSelectedMemberFirmPrincipals = (state) => {
+  if (state?.app?.selectedMemberFirmUsers?.principal) {
+    const id = state?.app?.selectedMemberFirmUsers?.principal.map(user => user.id)
+
+    return state?.app?.user?.managers.filter(user => id.includes(user.id));
+  } else {
+    return [];
+  }
+};
 
 export const getSelectedMemberFirmAllUsers = (state) => (
   [...getSelectedMemberFirmMembers(state), ...getSelectedMemberFirmPrincipals(state)]
