@@ -11,7 +11,7 @@ const workflowApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async createWorkflow(data) {
@@ -24,7 +24,7 @@ const workflowApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async updateWorkflow(data) {
@@ -37,7 +37,7 @@ const workflowApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async deleteWorkflow(data) {
@@ -49,7 +49,7 @@ const workflowApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
 

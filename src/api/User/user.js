@@ -319,7 +319,9 @@ const userApi = {
         data:  {reviewer_ids: reviewersIds}
       });
       return result ? result.data : result;
-    } catch (error) {}
+    } catch (error) {
+      throw error.response.data.error.errors;
+    }
   },
   async postFilter(filter) {
     try {
@@ -333,7 +335,9 @@ const userApi = {
                 }
       });
       return result ? result.data : result;
-    } catch (error) {console.log('ERROR POST FILTER')}
+    } catch (error) {
+      throw error.response.data.error.errors;
+    }
   },
   async patchFilter(payload) {
     try {
@@ -358,7 +362,9 @@ const userApi = {
         method: "DELETE",
       });
       return result ? result.data.data : result;
-    } catch (error) { console.log(error)}
+    } catch (error) {
+      throw error.response.data.error.errors;
+    }
   },
 
   async updateUserOnboardingWorkflow({workflowId, onboardingId}) {
@@ -369,7 +375,9 @@ const userApi = {
         data:  {workflow_id: workflowId}
       });
       return result ? result.data : result;
-    } catch (error) {}
+    } catch (error) {
+      throw error.response.data.error.errors;
+    }
   },
 
   async deleteUserOnboarding({ id }) {
@@ -379,7 +387,9 @@ const userApi = {
         method: "DELETE",
       });
       return result ? result.data.data : result;
-    } catch (error) {}
+    } catch (error) {
+      throw error.response.data.error.errors;
+    }
   },
   async updateUser(payload) {
     const { id, ...data } = payload;
@@ -532,7 +542,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      return err;
+      throw err.response.data.error.errors;
     }
   },
 
@@ -546,7 +556,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
 
@@ -564,7 +574,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      return err;
+      throw err.response.data.error.errors;
     }
   },
 
@@ -579,7 +589,7 @@ const userApi = {
         }
       })
     } catch (err) {
-      return err;
+      throw err.response.data.error.errors;
     }
 
   },
