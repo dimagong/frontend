@@ -228,18 +228,18 @@ const UserFilter = ({ handleFilter, managers }) => {
           <span onClick={() => setIsFilterBoxOpened(!isFilterBoxOpened)} ref={wrapperRefFilterButton} id={'filter-btn'}>
             <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
           </span>
-          {filter.roles.size !== roles.size && filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
+          {filter.roles.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.roles.length <= 40 ? footerText.roles : `${filter.roles.size} roles`}</span>
             <span onClick={() => handleCloseTab({roles:new Set(), organizations: filter.organizations, memberFirms: filter.memberFirms, type: {roles: 'initial', organizations: filter.type.organizations, memberFirms: filter.type.memberFirms}})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
-          {filter.organizations.size !== organizations.size &&filter.organizations.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
-            <span className={'nav-text'}>{footerText.organizations}</span>
+          {filter.organizations.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
+            <span className={'nav-text'}>{footerText.organizations.length <= 40 ? footerText.organizations : `${filter.organizations.size} organizations`}</span>
             <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set(), memberFirms: filter.memberFirms, type: {roles: filter.type.roles, organizations: 'initial', memberFirms: filter.type.memberFirms}})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
           {filter.memberFirms.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
-            <span className={'nav-text'}>{footerText.memberFirms}</span>
+            <span className={'nav-text'}>{footerText.memberFirms.length <= 40 ? footerText.memberFirms : `${filter.memberFirms.size} member firms`}</span>
             <span onClick={() => handleCloseTab({roles:filter.roles, organizations: filter.organizations, memberFirms: new Set(), type: {roles: filter.type.roles, organizations: filter.type.organizations, memberFirms: 'initial'}})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}

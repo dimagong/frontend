@@ -41,7 +41,7 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, handleFilter,
                   key={index}
                   onClick={() => handleNavItemSelect(navEl)}
                 >
-                  <NavItem>
+                  <NavItem style={{width: 188}}>
                     {navEl.title}
                   </NavItem>
                 </DropdownItem>
