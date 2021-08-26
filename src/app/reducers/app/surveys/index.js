@@ -112,10 +112,14 @@ const surveysReducer = {
     state.selectedSurvey.latest_version.latest_questions = latestQuestions;
   },
 
-  changeSurveyMainData: (state, { payload }) => {
-    state.selectedSurvey.latest_version.title = payload.title;
-    state.selectedSurvey.latest_version.description = payload.description;
-    state.selectedSurvey.latest_version.is_can_return = payload.is_can_return;
+  changeSurveyMainData: (state, { payload: {title, description, is_can_return, min_percent_pass} }) => {
+    state.selectedSurvey.latest_version = {
+      ...state.selectedSurvey.latest_version,
+      title,
+      description,
+      is_can_return,
+      min_percent_pass,
+    }
   },
 
   updateSurveySuccess: (state, { payload }) => {
@@ -361,11 +365,9 @@ const surveysReducer = {
   },
 
   getAllSurveyQuestionsSuccess: (state, {payload}) => {
-    state.user.profile.onboarding.passedSurveyData = payload;
-
-    // const surveyIndex = state.onboardingSurveys.findIndex((survey) => survey.id === currentSurveyId);
-    //
-    // state.onboardingSurveys[surveyIndex] = {...state.onboardingSurveys[surveyIndex], passedSurveyData: payload};
+    if(payload.id === state.user.profile.onboarding.id) {
+      state.user.profile.onboarding.passedSurveyData = payload.data;
+    }
 
     state.isLoading = false;
     state.error = null;

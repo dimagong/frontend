@@ -97,6 +97,8 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
 
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find(answer => !!answer.feedback);
 
+  console.log("dddd", survey?.passedSurveyData?.answers);
+
   return finished_at ? (
 
     graded_at && isFeedbackView ? (
