@@ -74,6 +74,11 @@ const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surv
       reviewers: selectedReviewers.map(reviewer => reviewer.id)
     };
 
+
+    setSelectedSurvey(null);
+    setSelectedReviewers([]);
+    setSelectedWorkFlow(null);
+
     onSurveyAdd(surveyData);
   };
 

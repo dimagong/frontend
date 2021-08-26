@@ -42,6 +42,7 @@ const SurveyAssign = ({ userId }) => {
   };
 
   const handleSurveyAdd = (surveyData) => {
+    console.log(surveyData)
     surveyData.user_id = userId;
 
     dispatch(assignSurveyRequest(surveyData))
