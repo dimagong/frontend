@@ -112,10 +112,14 @@ const surveysReducer = {
     state.selectedSurvey.latest_version.latest_questions = latestQuestions;
   },
 
-  changeSurveyMainData: (state, { payload }) => {
-    state.selectedSurvey.latest_version.title = payload.title;
-    state.selectedSurvey.latest_version.description = payload.description;
-    state.selectedSurvey.latest_version.is_can_return = payload.is_can_return;
+  changeSurveyMainData: (state, { payload: {title, description, is_can_return, min_percent_pass} }) => {
+    state.selectedSurvey.latest_version = {
+      ...state.selectedSurvey.latest_version,
+      title,
+      description,
+      is_can_return,
+      min_percent_pass,
+    }
   },
 
   updateSurveySuccess: (state, { payload }) => {
@@ -347,7 +351,27 @@ const surveysReducer = {
 
     state.isLoading = false;
     state.error = null;
-  }
+  },
+
+  addFeedbackToQuestionSuccess: (state, {payload}) => {
+    const surveyIndex = state.selectedManagerAssignedSurveys.findIndex(survey => survey.id === payload.id);
+
+    state.selectedManagerAssignedSurveys[surveyIndex] = payload;
+
+    toast.success("Feedback added successfully");
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
+  getAllSurveyQuestionsSuccess: (state, {payload}) => {
+    if(payload.id === state.user.profile.onboarding.id) {
+      state.user.profile.onboarding.passedSurveyData = payload.data;
+    }
+
+    state.isLoading = false;
+    state.error = null;
+  },
 
 };
 
