@@ -373,6 +373,15 @@ const surveysReducer = {
     state.error = null;
   },
 
+  getSurveyByIdSuccess: (state, {payload}) => {
+    const surveyIndex = state.onboardingSurveys.findIndex(survey => survey.id === payload.id);
+
+    state.onboardingSurveys[surveyIndex] = {...state.onboardingSurveys[surveyIndex], stats: payload.stats};
+
+    state.isLoading = false;
+    state.error = false;
+  }
+
 };
 
 export default surveysReducer;

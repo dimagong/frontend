@@ -126,6 +126,10 @@ const {
   getAllSurveyQuestionsSuccess,
   getAllSurveyQuestionsRequest,
   getAllSurveyQuestionsError,
+
+  getSurveyByIdSuccess,
+  getSurveyByIdRequest,
+  getSurveyByIdError,
 }  = appSlice.actions;
 
 function* getSurveys() {
@@ -440,6 +444,16 @@ function* getAllSurveyQuestions({ payload }) {
   }
 }
 
+function* getSurveyById({ payload }) {
+  const response = yield call(surveysApi.getSurveyById, payload);
+
+  if (response?.message) {
+    yield put(getSurveyByIdError(response.message));
+  } else {
+    yield put(getSurveyByIdSuccess(response));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getSurveysRequest.type, getSurveys),
@@ -472,5 +486,6 @@ export default function* () {
     yield takeLatest(switchToPreviousQuestionRequest.type, switchToPreviousQuestion),
     yield takeLatest(addFeedbackToQuestionRequest.type, addFeedbackToQuestion),
     yield takeLatest(getAllSurveyQuestionsRequest.type, getAllSurveyQuestions),
+    yield takeLatest(getSurveyByIdRequest.type, getSurveyById),
   ]);
 }

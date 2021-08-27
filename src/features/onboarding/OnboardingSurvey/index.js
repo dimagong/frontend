@@ -97,7 +97,6 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
 
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find(answer => !!answer.feedback);
 
-  console.log("dddd", survey?.passedSurveyData?.answers);
 
   return finished_at ? (
 
@@ -110,6 +109,7 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
     ) : (
       <div style={{marginLeft: "-100px", marginRight: "100px"}}>
         <OnboardingSurveyStatusComponent
+          survey={survey}
           isFeedbackExist={isFeedbackExist}
           isLoading={isSurveyGradedQuestionsLoading}
           onForceApplicationShow={setIsFeedbackView}
