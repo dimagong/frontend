@@ -9,21 +9,19 @@ import {X} from "react-feather";
 
 import './styles.scss'
 
-const SurveyModal = (props) => {
-
-  const {
-    isOpen,
-    onClose,
-    title,
-    children,
-    submitBtnText,
-    onSubmit,
-    deleteBtnText,
-    onDelete,
-    isSubmitProceed,
-    isDeleteProceed,
-    className,
-  } = props;
+const SurveyModal = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  submitBtnText,
+  onSubmit,
+  deleteBtnText,
+  onDelete,
+  isSubmitProceed,
+  isDeleteProceed,
+  className,
+}) => {
 
   return (
     <Modal className={className} isOpen={isOpen} toggle={onClose}>
