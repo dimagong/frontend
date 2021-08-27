@@ -101,13 +101,14 @@ const SurveysDesigner = () => {
   };
 
   const handleSurveyUpdate = () => {
-    const {title, description, interaction_id, is_can_return} = selectedSurvey.latest_version;
+    const {title, description, interaction_id, is_can_return, min_percent_pass} = selectedSurvey.latest_version;
 
     const surveyData = {
       title,
       description,
       interaction_id,
       is_can_return,
+      min_percent_pass,
       question_versions: selectedSurvey.latest_version.latest_questions.map((question) => ({order: question.latest_version.question.order, question_version_id: question.latest_version.id})),
     };
 

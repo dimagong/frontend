@@ -436,7 +436,7 @@ function* getAllSurveyQuestions({ payload }) {
   if (response?.message) {
     yield put(getAllSurveyQuestionsError(response.message))
   } else {
-    yield put(getAllSurveyQuestionsSuccess(response))
+    yield put(getAllSurveyQuestionsSuccess({data: response, id: payload}))
   }
 }
 
