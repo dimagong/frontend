@@ -135,7 +135,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
   return (
     <SurveyModal
       className="survey-create-modal"
-      title={"Edit Survey"}
+      title={isEdit ? "Edit Survey" : "Create Survey"}
       isOpen={isOpen}
       onClose={handleModalClose}
       submitBtnText={isEdit ? "Save" : "Create"}

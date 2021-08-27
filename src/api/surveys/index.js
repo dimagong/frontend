@@ -27,6 +27,7 @@ import {
   getSwitchToPreviousQuestionUrl,
   addFeedbackToQuestionUrl,
   getAllSurveyQuestionUrl,
+  getSurveyByIdUrl,
 } from "./constants";
 
 const surveysApi = {
@@ -132,6 +133,10 @@ const surveysApi = {
 
   async getAllSurveyQuestions(surveyId) {
     return await requestLayout(getAllSurveyQuestionUrl(surveyId), "GET")
+  },
+
+  async getSurveyById(surveyId) {
+    return await requestLayout(getSurveyByIdUrl(surveyId), "GET")
   },
 };
 
