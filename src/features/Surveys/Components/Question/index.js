@@ -4,7 +4,6 @@ import DesignerQuestion from "./Components/DesignerQuestion";
 import ReviewQuestion from "./Components/ReviewQuestion";
 import OnboardingQuestion from './Components/OnboardingQuestion';
 import GradingQuestion from "./Components/GradingQuestion";
-import ReviewOnboardingQuestion from "./Components/ReviewOnboardingQuestion"
 
 import './styles.scss'
 
@@ -26,8 +25,6 @@ const Question = ({
   isGradingReview,
   currAnswer,
   initAnswer,
-  onFeedbackSubmit,
-  isFeedbackSubmitProceeding,
 }) => {
 
   const commonProps = {
@@ -47,17 +44,14 @@ const Question = ({
                   onRemove={handleRemoveQuestionFromSurvey}
                 />,
     "review": <ReviewQuestion {...commonProps} currAnswer={currAnswer}/>,
-    "review-onboarding": <ReviewOnboardingQuestion {...commonProps} currAnswer={currAnswer} />,
     "onboarding": <OnboardingQuestion initAnswer={initAnswer} {...commonProps} onAnswerChange={onAnswerChange} answer={selectedAnswer} />,
     "grading": (
       <GradingQuestion
         {...commonProps}
         answer={answer}
-        isFeedbackSubmitProceeding={isFeedbackSubmitProceeding}
         onGradingAnswerSave={onGradingAnswerSave}
         onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
         isGradingReview={isGradingReview}
-        onFeedbackSubmit={onFeedbackSubmit}
       />
     )
   }[displayType]

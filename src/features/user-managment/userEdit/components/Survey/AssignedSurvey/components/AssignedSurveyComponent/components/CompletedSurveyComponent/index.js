@@ -34,8 +34,6 @@ const CompletedSurveyComponent = ({
   isSurveyDeleteProceeding,
 }) => {
 
-  stats[0].color = surveyData?.interaction_version.min_percent_pass <= surveyData.stats.total ? "#00BF00" : "#d33c30";
-
   return (
     <Card className="survey-results">
       <div className="survey-results_stats">

@@ -12,35 +12,4 @@
   &-checkbox {
     margin-bottom: 20px;
   }
-  &-min_percent {
-    label {
-      display: block;
-      font-size: 22px;
-      color: #4B484D;
-      font-family: Montserrat;
-      font-weight: 500;
-    }
-    &-input {
-      display: inline-block;
-      max-width: 100px;
-      input {
-
-        display: block;
-        text-align: center;
-      }
-    }
-    span {
-      font-size: 22px;
-      color: #4B484D;
-      font-family: Montserrat;
-      font-weight: 500;
-      padding-left: 8px;
-    }
-  }
-  &-guidance {
-    margin-bottom: 20px;
-    textarea {
-      border-color: #eee;
-    }
-  }
 }

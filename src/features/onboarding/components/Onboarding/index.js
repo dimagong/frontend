@@ -213,15 +213,28 @@ const OnboardingComponent = ({profile, userApplications}) => {
                     );
                   } else {
 
+                    const surveyStatus = (application.graded_at && "approved")
+                                      || (application.finished_at && recentlySubmitted && "recent")
+                                      || "submitted";
+
                     return (
                       <TabPane key={index} tabId={application.tabId}>
                         {application.id === profile.onboarding.id && (
-                          <OnboardingSurvey
-                            onSurveyFinish={() => setRecentlySubmitted(true)}
-                            applicationData={application}
-                            isRecentlySubmitted={recentlySubmitted}
-                            isAllApplicationsCompleted={!unCompletedApplications.length}
-                          />
+                          application.finished_at ? (
+                            <div style={{marginLeft: "-100px", marginRight: "100px"}}>
+                              <StatusComponent
+                                status={surveyStatus}
+                                application={application}
+                                isAllApplicationsCompleted={!unCompletedApplications.length}
+                              />
+                            </div>
+                          ) : (
+                            <OnboardingSurvey
+                              onSurveyFinish={() => setRecentlySubmitted(true)}
+                              applicationData={application}
+                            />
+                          )
+
                         )}
                       </TabPane>
                     )
