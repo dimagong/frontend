@@ -73,7 +73,7 @@ const ThemeNavbar = props => {
 
   useEffect(() => {
     user && dispatch(getUserAvatarRequest({managerId: user.id}))
-  }, [user])
+  }, [user?.avatar_path])
 
   const handleOrgPictureClick = () => {
     dispatch(setContext('Dashboard'))

@@ -37,7 +37,7 @@ const SearchInput = ({ suggestions }) => {
     onSuggestionItemHover
   ) => {
 
-    if(suggestion.avatar_path.length > 0 && !suggestion.url) dispatch(getUserAvatarRequest({managerId: suggestion.id}))
+    if(!!suggestion.avatar_path && !suggestion.url) dispatch(getUserAvatarRequest({managerId: suggestion.id}))
 
     return (
       <li
