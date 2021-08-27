@@ -186,7 +186,6 @@ const ThemeNavbar = props => {
                   changeCurrentLang={props.changeCurrentLang}
                   userName={<UserName {...props} />}
                   email={`${userProfile.permissions.organization}`}
-                  // userImg={manager && manager.ulr? manager.ulr : noneAvatar}
                   userImg={user?.url || noneAvatar}
                   loggedType={null}
                   logoutWithJWT={logoutJWT}

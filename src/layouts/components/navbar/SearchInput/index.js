@@ -63,7 +63,6 @@ const SearchInput = ({ suggestions }) => {
           <div className="d-flex flex-row">
             <div className="d-flex align-items-center">
               <img
-                // src={noneAvatar}
                 src={suggestion.url || noneAvatar}
                 alt={suggestion.name}
                 height="32"

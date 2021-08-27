@@ -5,7 +5,7 @@ export const getSelectedMemberFirm = (state) => (
   ) : null
 );
 export const getSelectedMemberFirmUsers = (state) => state?.app?.selectedMemberFirmUsers;
-// export const getSelectedMemberFirmPotentialUsers = (state) => state?.app?.selectedMemberFirmPotentialUsers;
+
 export const getSelectedMemberFirmPotentialUsers = (state) => {
   if (state?.app?.selectedMemberFirmPotentialUsers) {
     const usersId = state?.app?.selectedMemberFirmPotentialUsers.map(user => user.id)
@@ -16,7 +16,6 @@ export const getSelectedMemberFirmPotentialUsers = (state) => {
   }
 };
 
-// export const getSelectedMemberFirmMembers = (state) => state?.app?.selectedMemberFirmUsers?.member || [];
 export const getSelectedMemberFirmMembers = (state) => {
   if (state?.app?.selectedMemberFirmUsers?.member) {
     const usersId = state?.app?.selectedMemberFirmUsers?.member.map(user => user.id)
@@ -27,7 +26,6 @@ export const getSelectedMemberFirmMembers = (state) => {
   }
 };
 
-// export const getSelectedMemberFirmPrincipals = (state) => state?.app?.selectedMemberFirmUsers?.principal || [];
 export const getSelectedMemberFirmPrincipals = (state) => {
   if (state?.app?.selectedMemberFirmUsers?.principal) {
     const usersId = state?.app?.selectedMemberFirmUsers?.principal.map(user => user.id)
