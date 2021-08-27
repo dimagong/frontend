@@ -42,7 +42,8 @@ export const selectUserAbility = state => state?.app?.user?.profile?.permissions
 
 export const selectUserOnboarding = state => state?.app?.user?.profile?.onboarding;
 
-export const selectFilters = state => state?.app?.user?.filters;
+export const selectFilters = state => state?.app?.user?.filters.data;
+export const selectFiltersId = state => state?.app?.user?.filters.id;
 
 export const selectSearchText = state => state?.app?.user?.searchText;
 

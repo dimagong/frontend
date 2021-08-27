@@ -24,13 +24,19 @@ const getUsersSuccess = (state, { payload }) => {
 const getFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  let filters = payload;
-  filters.forEach(item => {
-    item.value.roles = new Set(item.value.roles);
-    item.value.organizations = new Set(item.value.organizations);
-  });
-  filters = filters.filter(item => item.user_id === state.user.profile.id);
-  state.user.filters = filters;
+  let filters = payload.find(item => item.key === 'user_filter');
+  console.log('payload 123', payload)
+  console.log('filters', filters)
+  if (filters.value) {
+    /*state.user.filters.data = filters.value.map(item => JSON.parse(item, (key, value) =>
+      //Parsing '{}' as an empty Set()
+      (typeof value === 'object' && Object.keys(value).length === 0)
+        ? new Set([])
+        : value
+    ));*/
+    state.user.filters.data = filters.value
+    state.user.filters.id = filters.id;
+  }
 };
 
 const getSettingsSuccess = (state, {payload}) => {

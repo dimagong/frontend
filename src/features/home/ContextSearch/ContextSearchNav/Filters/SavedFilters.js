@@ -8,17 +8,35 @@ import CreatableSelect from "react-select/creatable";
 import {Button, Modal, ModalBody} from "reactstrap";
 const {postFilterRequest, deleteFilterRequest, patchFilterRequest} = appSlice.actions;
 
-const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter, filterName, setFilterName, isDeleteModalOpen, setIsDeleteModalOpen }) => {
+const areSetsEqual = (set1, set2) => {
+  console.log('sets',set1, set2)
+  return set1.size === set2.size && [...set1].every(value => set2.has(value))
+}
+
+const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter, filterName, setFilterName, isDeleteModalOpen, setIsDeleteModalOpen, userFiltersId }) => {
   const dispatch = useDispatch();
-  if (activeFilter && !activeFilter.hasOwnProperty('id')) {
+  console.log('userFilters', userFilters)
+  //console.log('activeFilter', activeFilter)
+  if (activeFilter && !activeFilter.hasOwnProperty('filter_name')) {
     userFilters.forEach(item => {
-      if (activeFilter.roles.size === item.value.roles.size && [...activeFilter.roles].every(value => item.value.roles.has(value)) &&
-        activeFilter.organizations.size === item.value.organizations.size && [...activeFilter.organizations].every(value => item.value.organizations.has(value))) {
+      console.log('item && active', item, activeFilter)
+      let isEqual = true;
+      Object.keys(activeFilter).forEach(key => {
+        if (key !== 'type' && !areSetsEqual(activeFilter[key], item.data[key])) {
+          isEqual = false
+        }
+      })
+      if (isEqual) {
         setActiveFilter(item);
       }
     })
   }
   const handleSave = () => {
+    const newUserFilter = userFilters.filter(item => item.filter_name !== filterName);
+    newUserFilter.push({filter_name: filterName, data: filter})
+    console.log('newUserFilter', newUserFilter)
+    dispatch(patchFilterRequest({id: userFiltersId, value: newUserFilter}));
+    return;
     if (activeFilter && activeFilter.value.filter_name === filterName) {
       if (!(filter.roles.size === activeFilter.value.roles.size && [...filter.roles].every(value => activeFilter.value.roles.has(value)) &&
         filter.organizations.size === activeFilter.value.organizations.size && [...filter.organizations].every(value => activeFilter.value.organizations.has(value)))) {
@@ -65,8 +83,9 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
     if (actionMeta.action === 'select-option') {
       if (newValue) {
         setActiveFilter(newValue.value);
-        setFilter(newValue.value);
-        changeFooter(newValue.value);
+        console.log('newFilter', newValue.value.data)
+        setFilter(newValue.value.data);
+        changeFooter(newValue.value.data);
         setFilterName(newValue.value.filter_name);
       } else {
         setActiveFilter(null);
@@ -76,7 +95,8 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
 
     if (actionMeta.action === 'create-option') {
       setFilterName(newValue.label);
-      postFilter(newValue.label);
+      //postFilter(newValue.label);
+      handleSave();
     }
 
     if (actionMeta.action === 'clear') {
@@ -87,7 +107,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   };
 
   let options = [];
-  userFilters.forEach(item => options.push({value: item.value, label: item.value.filter_name}));
+  userFilters.forEach(item => options.push({value: item, label: item.filter_name}));
 
   const selectStyles = {
     container: styles => ({ ...styles, width: '320px', display: 'inline-block' }),

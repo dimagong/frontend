@@ -30,10 +30,11 @@ const userApi = {
   async getFilter() {
     try {
       const result = await instance({
-        url: getFilterPath,
+        url: '/api/settings',
         method: "GET",
       });
 
+      console.log('result', result)
       return result ? result.data.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
@@ -322,30 +323,30 @@ const userApi = {
     } catch (error) {}
   },
   async postFilter(filter) {
+    console.log('post filter', filter)
     try {
       const result = await instance({
-        url: getFilterPath,
+        url: '/api/settings',
         method: "POST",
-        data: {filter_name: filter.filter_name,
-          data: {roles: Array.from(filter.data.roles),
-                 organizations: Array.from(filter.data.organizations),
-                  type: filter.data.type}
-                }
+        params: {
+          value: [],
+          key: 'user_filter',
+        }
       });
       return result ? result.data : result;
     } catch (error) {console.log('ERROR POST FILTER')}
   },
-  async patchFilter(payload) {
+  async patchFilter(filters) {
+    console.log('payload', filters)
     try {
       const result = await instance({
-        url: getFilterPathByID(payload.id),
+        url: `/api/settings/${filters.id}`,
         method: "PATCH",
-        data: { filter_name: payload.filter_name,
-          data: {roles: Array.from(payload.newFilter.roles),
-            organizations: Array.from(payload.newFilter.organizations),
-            type: payload.newFilter.type}
+        data: {
+          value: filters.value
         }
       });
+      console.log('result', result)
       return result ? result.data : result;
     } catch (err) {
       throw err.response.data.error.errors;

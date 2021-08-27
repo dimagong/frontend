@@ -12,7 +12,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import FilterOptions from "./FilterOptions";
 import {useSelector} from "react-redux";
-import {selectFilters} from "app/selectors/userSelectors";
+import {selectFilters, selectFiltersId} from "app/selectors/userSelectors";
 import {selectOrganizations} from "app/selectors/groupSelector";
 import SavedFilters from "./SavedFilters";
 import SortingFilters from "./SortingFilters";
@@ -22,6 +22,7 @@ import {getMemberFirms} from "app/selectors/memberFirmsSelector";
 
 const UserFilter = ({ handleFilter, managers }) => {
   const userFilters = useSelector(selectFilters);
+  const userFiltersId = useSelector(selectFiltersId);
   const organizationsObjects = useSelector(selectOrganizations);
   const [memberFirms, setMemberFirms] = useState(new Set())
 
@@ -130,6 +131,7 @@ const UserFilter = ({ handleFilter, managers }) => {
   }
 
   const setToString = (set) => {
+    if (!set) return ''
     let array = Array.from(set);
     let res = ' ';
     for (let i = 0; i < array.length; ++i) {
@@ -222,6 +224,8 @@ const UserFilter = ({ handleFilter, managers }) => {
     }
   }, [filter.organizations]);
 
+  console.log('filter', filter)
+
   return (
     <span className={'filters'}>
           <SortingFilters currSort={currSort} setCurrSort={setCurrSort} applyFilters={applyFilters}/>
@@ -238,7 +242,7 @@ const UserFilter = ({ handleFilter, managers }) => {
             <span onClick={() => handleCloseTab({roles:filter.roles, organizations: new Set(), memberFirms: filter.memberFirms, type: {roles: filter.type.roles, organizations: 'initial', memberFirms: filter.type.memberFirms}})}
                   className={'close-nav'}><CloseIcon/></span>
           </Button>}
-          {filter.memberFirms.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
+          {filter?.memberFirms?.size !== 0 && <Button className={'filter-tab'} variant={'dark'}>
             <span className={'nav-text'}>{footerText.memberFirms}</span>
             <span onClick={() => handleCloseTab({roles:filter.roles, organizations: filter.organizations, memberFirms: new Set(), type: {roles: filter.type.roles, organizations: filter.type.organizations, memberFirms: 'initial'}})}
                   className={'close-nav'}><CloseIcon/></span>
@@ -292,6 +296,7 @@ const UserFilter = ({ handleFilter, managers }) => {
                     setFilterName={setFilterName}
                     isDeleteModalOpen={isDeleteModalOpen}
                     setIsDeleteModalOpen={setIsDeleteModalOpen}
+                    userFiltersId={userFiltersId}
                   />
                 </ListGroupItem>
                 <ListGroupItem>

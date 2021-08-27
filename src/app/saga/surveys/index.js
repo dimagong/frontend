@@ -139,6 +139,7 @@ function* getSurveys() {
 }
 
 function* createSurvey(payload) {
+  payload.payload.min_percent_pass = 1;
   const response = yield call(surveysApi.createSurvey, payload);
 
   if (response?.message) {
@@ -199,6 +200,7 @@ function* getSurvey(payload) {
 }
 
 function* updateSurvey(payload) {
+  payload.payload.data.min_percent_pass = 1;
   const response = yield call(surveysApi.updateSurvey, payload);
 
   if(response?.message) {
