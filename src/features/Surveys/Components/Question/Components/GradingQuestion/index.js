@@ -2,9 +2,7 @@ import React, {useState, useMemo, useEffect} from 'react';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 import { CheckCircleOutline, HighlightOff } from '@material-ui/icons'
 import { getTimeDifference } from "utility/common";
-import { QueryBuilder, SmsOutlined } from "@material-ui/icons";
-
-import SurveyFeedbackModal from "./Components/SurveyFeedbackModal";
+import { QueryBuilder } from "@material-ui/icons";
 
 import _ from 'lodash'
 
@@ -88,13 +86,10 @@ const GradingQuestion = ({
   onGradingAnswerSave,
   onFinishButtonDisableStateChange,
   isGradingReview,
-  onFeedbackSubmit,
-  isFeedbackSubmitProceeding,
 }) => {
 
   const [gradingPoints, setGradingPoints] = useState(answer?.grade_structure?.grade);
   const [reviewerNotes, setReviewerNotes] = useState(answer?.grade_structure?.reviewer_notes || "");
-  const [isFeedbackModalVisible, setIsFeedbackModalVisible] = useState(false);
 
   const {
     body,
@@ -157,7 +152,7 @@ const GradingQuestion = ({
   return (
     <div className={`question question-${displayType}`}>
       <div className={"question-title"}>
-        {`Question ${questionNumber}`} <SmsOutlined className="question-feedback_icon" onClick={() => setIsFeedbackModalVisible(true)} />
+        {`Question ${questionNumber}`}
       </div>
       <div className="question-time">
         <QueryBuilder style={{fontSize: "18px", color: "#444", marginRight: "5px", paddingTop: "1px"}} /> {getTimeDifference(answer.started_at, answer.finished_at)}
@@ -188,13 +183,6 @@ const GradingQuestion = ({
         )
       }[type]}
 
-      <SurveyFeedbackModal
-        isSubmitProceed={isFeedbackSubmitProceeding}
-        initFeedback={answer.feedback}
-        isOpen={isFeedbackModalVisible}
-        onSubmit={onFeedbackSubmit}
-        questionId={questionData.id}
-        onClose={() => setIsFeedbackModalVisible(false)} />
     </div>
   );
 };

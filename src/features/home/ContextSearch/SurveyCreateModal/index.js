@@ -6,7 +6,7 @@ import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectOrganizations } from "app/selectors/groupSelector";
 import { selectError } from "app/selectors";
 import { usePrevious } from "hooks/common";
-import { Input, Select, Checkbox, TextArea } from "features/Surveys/Components/SurveyFormComponents";
+import { Input, Select, Checkbox } from "features/Surveys/Components/SurveyFormComponents";
 import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import appSlice from "app/slices/appSlice";
@@ -37,7 +37,6 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
   const [surveyDescription, setSurveyDescription] = useState("");
   const [surveyOrganization, setSurveyOrganization] = useState(null);
   const [isUserAbleToGoBackDuringSurvey, setIsUserAbleToGoBackDuringSurvey] = useState(false);
-  const [minPercentToPass, setMinPercentToPass] = useState("0");
 
   const isLoading = useSelector(createLoadingSelector([createSurveyRequest.type], true));
   const error = useSelector(selectError);
@@ -52,7 +51,6 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
       setSurveyDescription("");
       setSurveyOrganization(null);
       setIsUserAbleToGoBackDuringSurvey(false);
-      setMinPercentToPass("0");
 
       onClose()
     }
@@ -64,7 +62,6 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
       title: surveyTitle,
       description: surveyDescription,
       is_can_return: isUserAbleToGoBackDuringSurvey,
-      min_percent_pass: minPercentToPass,
       organization: !isEdit && surveyOrganization && {
         id: surveyOrganization.value.id,
         type: surveyOrganization.value.type,
@@ -98,23 +95,6 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
     }))
   );
 
-  const handleMinPercentToPassChange = (e) => {
-    if(/[^0-9]/g.test(e.target.value)) return;
-
-    let value = e.target.value.toString();
-
-    // Value in range 0-99
-    if (value[0] === "0" && value.length > 1) {
-      value = value.substring(1)
-    } else if (value.length > 2) {
-      value = "100"
-    } else if (value.length === 0) {
-      value = "0"
-    }
-
-    setMinPercentToPass(value);
-  };
-
   // Close modal after user hit submit and request ends with no error
   useEffect(() => {
     if (!error && prevLoadingValue === true && !isLoading) {
@@ -124,11 +104,9 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
 
   useEffect(() => {
     if (isEdit && isOpen) {
-      const {title, description, is_can_return, min_percent_pass} = surveyData.latest_version;
-      setSurveyTitle(title);
-      setSurveyDescription(description);
-      setIsUserAbleToGoBackDuringSurvey(is_can_return);
-      setMinPercentToPass(min_percent_pass);
+      setSurveyTitle(surveyData.latest_version.title);
+      setSurveyDescription(surveyData.latest_version.description);
+      setIsUserAbleToGoBackDuringSurvey(surveyData.latest_version.is_can_return)
     }
   }, [isEdit, isOpen]);
 
@@ -148,29 +126,12 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
         value={surveyTitle}
         onChange={(e) => setSurveyTitle(e.target.value)}
       />
-      <TextArea
-        className="survey-create-modal-guidance"
-        height={6}
-        label={"Guidance"}
+      <Input
+        label={"Description"}
         name={"Survey description"}
         value={surveyDescription}
         onChange={(e) => setSurveyDescription(e.target.value)}
       />
-      <div className="survey-create-modal-min_percent">
-        <label
-          className="survey-input-component_label"
-          htmlFor={"Survey description"}
-        >
-          Minimum % to pass
-        </label>
-        <Input
-          className="survey-create-modal-min_percent-input"
-          name={"Survey description"}
-          value={minPercentToPass}
-          onChange={handleMinPercentToPassChange}
-        />
-        <span>%</span>
-      </div>
       <Checkbox
         className={"survey-create-modal-checkbox"}
         onChange={(e) => setIsUserAbleToGoBackDuringSurvey(e.target.checked)}

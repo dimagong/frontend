@@ -10,10 +10,6 @@
   cursor: pointer;
 
 
-  &-feedback_icon {
-    cursor: pointer;
-  }
-
   &:last-child {
     margin-bottom: 0;
   }
@@ -213,7 +209,7 @@
     padding-top: 40px;
   }
 
-  &.question-onboarding, &.question-review-onboarding {
+  &.question-onboarding {
     cursor: default;
     box-shadow: none;
     padding: 0 6px 0 6px;
@@ -236,38 +232,9 @@
       }
     }
   }
-  &.question-review-onboarding {
-    .options{
-      .option {
-        cursor: default;
-
-        &:hover {
-          .option-circle {
-            border-color: #4B484D;
-          }
-        }
-      }
-    }
-  }
 
   &.question-review {
 
   }
 
-}
-
-
-.survey_feedback_modal {
-  &-body {
-    padding-bottom: 15px;
-    font-family: Montserrat;
-    &-label {
-      font-size: 16px;
-      margin-bottom: 10px;
-      color: #4b484d;
-    }
-    textarea {
-      border-color: #e7e7e7;
-    }
-  }
 }
