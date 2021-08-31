@@ -26,6 +26,7 @@ const {
 
 const {
   setContext,
+  setNotificationsAndWorkFlowsContext,
 } = appSlice.actions;
 
 const dependenciesList = [
@@ -41,7 +42,7 @@ const dependenciesList = [
   }
 ];
 
-const WorkFlowsAndNotificationsList = () => {
+const WorkFlowsAndNotificationsList = ({ context }) => {
   const dispatch = useDispatch();
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -50,8 +51,11 @@ const WorkFlowsAndNotificationsList = () => {
   const notifications = useSelector(selectNotifications);
   const workflows = useSelector(selectWorkflows);
 
-  const changeContext = (context) => {
-    dispatch(setContext(context))
+  const changeContext = (newContext) => {
+    // newContext is just context that we want to appear
+    // context from props is context for notifications\workflows creation
+    dispatch(setNotificationsAndWorkFlowsContext(context));
+    dispatch(setContext(newContext));
   };
 
   const handleItemSelect = (item, itemType) => {

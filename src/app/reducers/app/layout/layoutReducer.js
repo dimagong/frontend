@@ -1,22 +1,24 @@
-const showContextSearch = (state) => {
-  state.isContextSearchVisible = true
+const layoutReducer = {
+  showContextSearch: (state) => {
+    state.isContextSearchVisible = true;
+  },
+
+  hideContextSearch: (state) => {
+    state.isContextSearchVisible = false
+  },
+
+  setContext: (state, {payload}) => {
+    state.context = payload;
+  },
+
+  setPreview: (state, {payload}) => {
+    state.preview = payload;
+  },
+
+  setNotificationsAndWorkFlowsContext: (state, {payload}) => {
+    state.notificationsAndWorkFlowContext = payload;
+  }
+
 };
 
-const hideContextSearch = (state) => {
-  state.isContextSearchVisible = false
-};
-
-const setContext = (state, {payload}) => {
-  state.context = payload;
-};
-
-const setPreview = (state, {payload}) => {
-  state.preview = payload;
-};
-
-export default {
-  showContextSearch,
-  hideContextSearch,
-  setContext,
-  setPreview,
-}
+export default layoutReducer;
