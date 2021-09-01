@@ -1,18 +1,9 @@
-import instance from "api";
+import instance, { requestLayout } from "api";
 import { workflowPath } from "constants/onboarding";
 
 const workflowApi = {
-  async getWorkflows() {
-    try {
-      const result = await instance({
-        url: workflowPath,
-        method: "GET",
-      });
-
-      return result.data.data;
-    } catch (err) {
-      throw err;
-    }
+  async getWorkflows(context) {
+    return await requestLayout(workflowPath, "GET", context);
   },
   async createWorkflow(data) {
     try {

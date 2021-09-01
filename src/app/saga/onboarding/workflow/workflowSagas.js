@@ -13,9 +13,13 @@ import onboardingSlice from 'app/slices/onboardingSlice';
 import appSlice from 'app/slices/appSlice'
 
 const {
-    setWorkflows,
-    setWorkflow,
-    setAllowedUserList,
+  setWorkflows,
+  setWorkflow,
+  setAllowedUserList,
+
+  getSurveyWorkFlowsSuccess,
+  getSurveyWorkFlowsRequest,
+  getSurveyWorkFlowsError,
 } = onboardingSlice.actions;
 
 const {
@@ -45,12 +49,13 @@ const {
     setContext,
 } = appSlice.actions;
 
-function* getWorkflows() {
+function* getWorkflows({ payload }) {
     try {
-        const response = yield call(workflowApi.getWorkflows);
+        const surveyWorkFlows = yield call(workflowApi.getWorkflows, {context: "survey"});
+        const applicationsWorkFlows = yield call(workflowApi.getWorkflows, {context: "application"});
 
         yield put(getWorkflowsSuccess());
-        yield put(setWorkflows(response));
+        yield put(setWorkflows([...surveyWorkFlows, ...applicationsWorkFlows]));
         yield put(getdFormActionsRequest());
         yield put(getdFormTriggersRequest());
         yield put(getSurveyTriggersRequest());
