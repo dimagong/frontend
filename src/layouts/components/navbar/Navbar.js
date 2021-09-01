@@ -69,11 +69,9 @@ const ThemeNavbar = props => {
 
   }
 
-  const user = managers.find(user => user.id === userProfile.id);
-
   useEffect(() => {
-    user && dispatch(getUserAvatarRequest({managerId: user.id}))
-  }, [user?.avatar_path])
+    userProfile && dispatch(getUserAvatarRequest({managerId: userProfile.id}))
+  }, [userProfile?.avatar_path]);
 
   const handleOrgPictureClick = () => {
     dispatch(setContext('Dashboard'))
@@ -186,7 +184,7 @@ const ThemeNavbar = props => {
                   changeCurrentLang={props.changeCurrentLang}
                   userName={<UserName {...props} />}
                   email={`${userProfile.permissions.organization}`}
-                  userImg={user?.url || noneAvatar}
+                  userImg={userProfile?.url || noneAvatar}
                   loggedType={null}
                   logoutWithJWT={logoutJWT}
                 />
