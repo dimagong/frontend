@@ -10,7 +10,7 @@ const {
   setWorkflowTriggers,
 } = onboardingSlice.actions;
 
-const WorkflowTriggers = () => {
+const WorkflowTriggers = ({ context }) => {
   const workflow = useSelector(selectWorkflow);
   const dispatch = useDispatch();
 
@@ -31,7 +31,7 @@ const WorkflowTriggers = () => {
   return (
     <Col sm="12">
       {workflow.triggers.map((trigger, keyTrigger) => (
-        <WorkflowTrigger trigger={trigger} keyTrigger={keyTrigger} />
+        <WorkflowTrigger context={context} trigger={trigger} keyTrigger={keyTrigger} />
       ))}
       <div className="d-flex justify-content-end flex-wrap mt-2">
         <Button size="sm" color="primary d-flex-left" onClick={createTrigger}>
