@@ -33,10 +33,11 @@ const {
 
 function* getNotifications() {
   try {
-    const responce = yield call(notificationApi.getNotifications);
+    const surveyNotifications = yield call(notificationApi.getNotifications, {context: "survey"});
+    const applicationNotifications = yield call(notificationApi.getNotifications, {context: "application"});
 
     yield put(getNotificationsSuccess());
-    yield put(setNotifications(responce))
+    yield put(setNotifications([...surveyNotifications, ...applicationNotifications]))
   } catch (error) {
     yield put(getNotificationsError(error));
   }
