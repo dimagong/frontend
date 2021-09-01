@@ -34,7 +34,6 @@ const userApi = {
         method: "GET",
       });
 
-      console.log('result', result)
       return result ? result.data.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
@@ -323,21 +322,24 @@ const userApi = {
     } catch (error) {}
   },
   async postFilter(filter) {
-    console.log('post filter', filter)
     try {
       const result = await instance({
         url: '/api/settings',
         method: "POST",
         params: {
-          value: [],
           key: 'user_filter',
+        },
+        data: {
+          value: filter.value,
         }
       });
       return result ? result.data : result;
     } catch (error) {console.log('ERROR POST FILTER')}
   },
   async patchFilter(filters) {
-    console.log('payload', filters)
+    if (filters.value.length < 0) {
+      filters.value = null;
+    }
     try {
       const result = await instance({
         url: `/api/settings/${filters.id}`,
@@ -346,7 +348,6 @@ const userApi = {
           value: filters.value
         }
       });
-      console.log('result', result)
       return result ? result.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
@@ -355,7 +356,7 @@ const userApi = {
   async deleteFilter(id) {
     try {
       const result = await instance({
-        url: getFilterPathByID(id),
+        url: `/api/settings/${id}`,
         method: "DELETE",
       });
       return result ? result.data.data : result;

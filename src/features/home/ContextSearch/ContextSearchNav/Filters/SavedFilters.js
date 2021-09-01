@@ -1,70 +1,65 @@
-import React, {useState} from 'react'
+import React from 'react'
 import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from "@material-ui/icons/Save";
 import {useDispatch} from "react-redux";
 import appSlice from "app/slices/appSlice";
-import {toast} from "react-toastify";
 import CreatableSelect from "react-select/creatable";
 import {Button, Modal, ModalBody} from "reactstrap";
-const {postFilterRequest, deleteFilterRequest, patchFilterRequest} = appSlice.actions;
 
-const areSetsEqual = (set1, set2) => {
-  console.log('sets',set1, set2)
+const {
+  postFilterRequest,
+  patchFilterRequest,
+  deleteFilterRequest
+} = appSlice.actions;
+
+const areSetsEqual = (arr1, arr2) => {
+  let set1 = new Set(arr1);
+  let set2 = new Set(arr2);
   return set1.size === set2.size && [...set1].every(value => set2.has(value))
+}
+
+const areFiltersEqual = (filter1, filter2) => {
+  let isEqual = true;
+  Object.keys(filter1).forEach(key => {
+    if (key !== 'type' && !areSetsEqual(filter1[key], filter2[key])) {
+      isEqual = false
+    }
+  })
+  return isEqual
 }
 
 const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFooter, activeFilter, setActiveFilter, filterName, setFilterName, isDeleteModalOpen, setIsDeleteModalOpen, userFiltersId }) => {
   const dispatch = useDispatch();
-  console.log('userFilters', userFilters)
-  //console.log('activeFilter', activeFilter)
-  if (activeFilter && !activeFilter.hasOwnProperty('filter_name')) {
+  if (activeFilter) {
     userFilters.forEach(item => {
-      console.log('item && active', item, activeFilter)
-      let isEqual = true;
-      Object.keys(activeFilter).forEach(key => {
-        if (key !== 'type' && !areSetsEqual(activeFilter[key], item.data[key])) {
-          isEqual = false
-        }
-      })
-      if (isEqual) {
+      if (activeFilter === item.filterName && !areFiltersEqual(activeFilter.data, item.data)) {
         setActiveFilter(item);
       }
     })
   }
   const handleSave = () => {
     const newUserFilter = userFilters.filter(item => item.filter_name !== filterName);
+    setActiveFilter({filter_name: filterName, data: filter})
     newUserFilter.push({filter_name: filterName, data: filter})
-    console.log('newUserFilter', newUserFilter)
-    dispatch(patchFilterRequest({id: userFiltersId, value: newUserFilter}));
-    return;
-    if (activeFilter && activeFilter.value.filter_name === filterName) {
-      if (!(filter.roles.size === activeFilter.value.roles.size && [...filter.roles].every(value => activeFilter.value.roles.has(value)) &&
-        filter.organizations.size === activeFilter.value.organizations.size && [...filter.organizations].every(value => activeFilter.value.organizations.has(value)))) {
-          dispatch(patchFilterRequest({id: activeFilter.id, filter_name: activeFilter.value.filter_name,
-            newFilter: filter}));
-      }
-      setActiveFilter(filter);
-    } else {
-      postFilter(filterName ? filterName : 'filter set');
-    }
+    dispatch(patchFilterRequest({id: userFiltersId, value: newUserFilter, message: 'updated', filterName: filterName}));
   }
 
   const postFilter = (newFilterName) => {
-      let isUnique = !!filter;
-      userFilters.forEach(item => {
-        if (filter.roles.size === item.value.roles.size && [...filter.roles].every(value => item.value.roles.has(value)) &&
-          filter.organizations.size === item.value.organizations.size && [...filter.organizations].every(value => item.value.organizations.has(value))) {
-          isUnique = false;
-        }
-      })
-      if (isUnique) {
-        dispatch(postFilterRequest({filter_name: newFilterName, data: filter}));
-        setActiveFilter(filter);
-        setFilterName(newFilterName);
-      } else {
-        toast.success(`You already have this filter set`);
-        setFilterName('');
-      }
+    const newUserFilter = [...userFilters];
+    setActiveFilter({filter_name: filterName, data: filter})
+    newUserFilter.push({filter_name: newFilterName, data: filter})
+    if (userFilters.length === 0) {
+      dispatch(postFilterRequest({
+        value: newUserFilter,
+      }));
+    } else {
+      dispatch(patchFilterRequest({
+        id: userFiltersId,
+        value: newUserFilter,
+        message: 'added',
+        filterName: newFilterName
+      }));
+    }
   }
 
   const handleDelete = () => {
@@ -74,16 +69,21 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
   }
 
   const handleFilterDelete = () => {
-    dispatch(deleteFilterRequest(activeFilter))
-    handleChange(null, {action: 'clear'});
-    setIsDeleteModalOpen(false);
+     const newUserFilter = userFilters.filter(item => item.filter_name !== filterName);
+     if (newUserFilter.length === 0) {
+       dispatch(deleteFilterRequest({id: userFiltersId, filterName: filterName}));
+     }
+     else {
+       dispatch(patchFilterRequest({id: userFiltersId, value: newUserFilter, message: 'deleted', filterName: filterName}));
+     }
+     handleChange(null, {action: 'clear'});
+     setIsDeleteModalOpen(false);
   }
 
   const handleChange = (newValue, actionMeta) => {
     if (actionMeta.action === 'select-option') {
       if (newValue) {
         setActiveFilter(newValue.value);
-        console.log('newFilter', newValue.value.data)
         setFilter(newValue.value.data);
         changeFooter(newValue.value.data);
         setFilterName(newValue.value.filter_name);
@@ -95,8 +95,7 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
 
     if (actionMeta.action === 'create-option') {
       setFilterName(newValue.label);
-      //postFilter(newValue.label);
-      handleSave();
+      postFilter(newValue.label);
     }
 
     if (actionMeta.action === 'clear') {
@@ -130,16 +129,14 @@ const SavedFilters = ({ userFilters, filter, setFilter, initialFilter, changeFoo
       <CloseIcon/>
     </span>
     <span className={'unsaved'}>
-      {activeFilter && activeFilter.value && !(activeFilter.value.roles.size === filter.roles.size && [...activeFilter.value.roles].every(value => filter.roles.has(value)) &&
-      activeFilter.value.organizations.size === filter.organizations.size && [...activeFilter.value.organizations].every(value => filter.organizations.has(value)))
-      && 'Unsaved'}
+      {activeFilter?.data && !areFiltersEqual(activeFilter.data, filter) && 'Unsaved'}
     </span>
 
     <Modal className={"organization-remove-modal"} isOpen={isDeleteModalOpen} fade={false} toggle={()=>{setIsDeleteModalOpen(false)}}>
         <ModalBody>
           <div>
             <span style={{fontSize: "22px"}}>
-            Are you sure you want to delete filter set: {activeFilter?.value?.filter_name}?
+            Are you sure you want to delete filter set: {activeFilter?.filter_name}?
           </span>
           </div>
           <div className={"organization-remove-modal_action-buttons"}>
