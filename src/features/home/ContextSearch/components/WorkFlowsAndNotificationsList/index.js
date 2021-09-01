@@ -13,7 +13,7 @@ import {Scrollbars} from "react-custom-scrollbars";
 import ListItem from "../ListItem";
 import {useDispatch, useSelector} from "react-redux";
 import {selectNotifications} from "app/selectors";
-import {selectWorkflows} from "app/selectors/onboardingSelectors";
+import {selectSurveyWorkFlows, selectApplicationWorkFlows} from "app/selectors/onboardingSelectors";
 import onboardingSlice from "app/slices/onboardingSlice";
 import appSlice from "app/slices/appSlice";
 
@@ -49,7 +49,9 @@ const WorkFlowsAndNotificationsList = ({ context }) => {
   const [dependenciesSelectedActiveItem, setDependenciesSelectedActiveItem] = useState(dependenciesList[0]);
 
   const notifications = useSelector(selectNotifications);
-  const workflows = useSelector(selectWorkflows);
+  const surveyWorkFlows = useSelector(selectSurveyWorkFlows);
+  const applicationWorkFlows = useSelector(selectApplicationWorkFlows);
+  const workflows = context === "dForm" ? applicationWorkFlows : surveyWorkFlows;
 
   const changeContext = (newContext) => {
     // newContext is just context that we want to appear
