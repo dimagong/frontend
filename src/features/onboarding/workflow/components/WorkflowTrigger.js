@@ -31,7 +31,7 @@ const WorkflowTrigger = ({keyTrigger, trigger, context}) => {
   const surveyTriggers = useSelector(selectSurveyTriggers);
   const dispatch = useDispatch();
 
-  const triggerTypes = allTriggerTypes.filter(triggerType => triggerType.label === context);
+  const triggerTypes = allTriggerTypes;
 
   const isTriggerDisabled = (type) => {
     if (type === types.dform.trigger) {

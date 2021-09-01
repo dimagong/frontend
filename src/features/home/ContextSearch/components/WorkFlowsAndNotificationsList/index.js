@@ -13,7 +13,7 @@ import {Scrollbars} from "react-custom-scrollbars";
 import ListItem from "../ListItem";
 import {useDispatch, useSelector} from "react-redux";
 import {selectNotifications} from "app/selectors";
-import {selectSurveyWorkFlows, selectApplicationWorkFlows} from "app/selectors/onboardingSelectors";
+import {selectSurveyWorkFlows, selectApplicationWorkFlows, selectSurveyNotifications, selectApplicationNotifications} from "app/selectors/onboardingSelectors";
 import onboardingSlice from "app/slices/onboardingSlice";
 import appSlice from "app/slices/appSlice";
 
@@ -48,7 +48,10 @@ const WorkFlowsAndNotificationsList = ({ context }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [dependenciesSelectedActiveItem, setDependenciesSelectedActiveItem] = useState(dependenciesList[0]);
 
-  const notifications = useSelector(selectNotifications);
+  const surveyNotifications = useSelector(selectSurveyNotifications);
+  const applicationNotifications = useSelector(selectApplicationNotifications);
+
+  const notifications = context === "dForm" ? applicationNotifications : surveyNotifications;
   const surveyWorkFlows = useSelector(selectSurveyWorkFlows);
   const applicationWorkFlows = useSelector(selectApplicationWorkFlows);
   const workflows = context === "dForm" ? applicationWorkFlows : surveyWorkFlows;

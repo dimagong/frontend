@@ -20,6 +20,7 @@ import {prepareSelectGroups} from "utility/select/prepareSelectData";
 
 import onboardingSlice from 'app/slices/onboardingSlice';
 import appSlice from 'app/slices/appSlice'
+import {selectNotificationsAndWorkFlowsContext} from "../../../app/selectors/layoutSelector";
 
 const {
   setNotification,
@@ -35,6 +36,7 @@ const {
 const initNotification = {name: '', subject: '', description: "", content: "", groups: []};
 
 const NotificationsForm = ({isCreate}) => {
+  const context = useSelector(selectNotificationsAndWorkFlowsContext);
   const notification = useSelector(selectNotification);
   const {name, description, content, subject} = notification || {};
   const dispatch = useDispatch();
@@ -51,7 +53,7 @@ const NotificationsForm = ({isCreate}) => {
   const submitNotification = (e) => {
     e.preventDefault();
     if (isCreate) {
-      dispatch(createNotificationRequest(notification))
+      dispatch(createNotificationRequest({...notification, context}))
     } else {
       dispatch(updateNotificationRequest(notification))
     }
