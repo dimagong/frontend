@@ -1,4 +1,4 @@
-import instance from "api";
+import instance, {requestLayout} from "api";
 import qs from 'qs'
 import {
   getProfilePath,
@@ -25,19 +25,11 @@ import {
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
 import moment from "moment";
+import {getQuestionUpdateUrl} from "../surveys/constants";
 
 const userApi = {
   async getFilter() {
-    try {
-      const result = await instance({
-        url: getFilterPath,
-        method: "GET",
-      });
-
-      return result ? result.data.data : result;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
+    return await requestLayout(`/api/settings`, "GET")
   },
   async getActivities(payload) {
     try {
@@ -324,41 +316,20 @@ const userApi = {
     }
   },
   async postFilter(filter) {
-    try {
-      const result = await instance({
-        url: getFilterPath,
-        method: "POST",
-        data: {filter_name: filter.filter_name,
-          data: {roles: Array.from(filter.data.roles),
-                 organizations: Array.from(filter.data.organizations),
-                  type: filter.data.type}
-                }
-      });
-      return result ? result.data : result;
-    } catch (error) {
-      throw error.response.data.error.errors;
-    }
+    return await requestLayout('/api/settings', "POST", {
+          key: 'user_filter',
+          value: filter.value,
+        })
   },
-  async patchFilter(payload) {
-    try {
-      const result = await instance({
-        url: getFilterPathByID(payload.id),
-        method: "PATCH",
-        data: { filter_name: payload.filter_name,
-          data: {roles: Array.from(payload.newFilter.roles),
-            organizations: Array.from(payload.newFilter.organizations),
-            type: payload.newFilter.type}
-        }
-      });
-      return result ? result.data : result;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
+  async patchFilter(filters) {
+    return await requestLayout(`/api/settings/${filters.id}`, "PATCH", {
+          value: filters.value,
+        })
   },
   async deleteFilter(id) {
     try {
       const result = await instance({
-        url: getFilterPathByID(id),
+        url: `/api/settings/${id}`,
         method: "DELETE",
       });
       return result ? result.data.data : result;
