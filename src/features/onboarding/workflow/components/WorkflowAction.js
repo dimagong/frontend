@@ -19,7 +19,7 @@ import {
   selectWorkflow,
   selectNotifications,
   selectdFormActions,
-  selectAllowedUserList
+  selectAllowedUserList, selectSurveyNotifications, selectApplicationNotifications
 } from "app/selectors/onboardingSelectors";
 import { selectManagers } from "app/selectors/userSelectors";
 import Select from "react-select";
@@ -27,6 +27,7 @@ import { colourStyles } from "utility/select/selectSettigns";
 import {prepareSelectManagers} from "utility/select/prepareSelectData";
 
 import onboardingSlice from 'app/slices/onboardingSlice';
+import {selectNotificationsAndWorkFlowsContext} from "../../../../app/selectors/layoutSelector";
 
 const {
   setWorkflowTriggers,
@@ -36,7 +37,14 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
   const dispatch = useDispatch();
   const workflow = useSelector(selectWorkflow);
   const actions = useSelector(selectdFormActions);
-  const notification = useSelector(selectNotifications);
+
+  const context = useSelector(selectNotificationsAndWorkFlowsContext);
+
+  const surveyNotifications = useSelector(selectSurveyNotifications);
+  const applicationNotifications = useSelector(selectApplicationNotifications);
+
+  const notification = context === "dForm" ? applicationNotifications : surveyNotifications;
+
   const managers = useSelector(selectAllowedUserList);
   const [actionData, setActionData] = useState([]);
 
