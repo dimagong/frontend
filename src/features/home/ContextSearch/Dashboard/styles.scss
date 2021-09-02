@@ -79,6 +79,7 @@
   }
 
   .dashboard-activities-closed {
+    overflow: hidden;
     height: 0!important;
     padding-top: 0!important;
     padding-bottom: 0!important;
@@ -170,7 +171,13 @@
   }
 }
 
+.combined-dashboard-component-filtered {
+  overflow: unset!important;
+}
+
 .combined-dashboard-component {
+  overflow: hidden;
+  background: white;
   -moz-transition: width .5s;
   -o-transition: width .5s;
   -webkit-transition: width .5s;
