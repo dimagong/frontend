@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { Row, Card, CardBody, CardHeader, CardTitle, Col } from "reactstrap";
 import {X, ChevronDown, Plus} from "react-feather";
@@ -9,6 +9,15 @@ import LoadingButton from "components/LoadingButton";
 
 
 import './styles.scss'
+import {useSelector} from "react-redux";
+import {createLoadingSelector} from "app/selectors/loadingSelector";
+import {usePrevious} from "hooks/common";
+import appSlice from "app/slices/appSlice";
+import {selectError} from "app/selectors";
+
+const {
+  assignSurveyRequest,
+} = appSlice.actions;
 
 const selectStyles = {
   control: styles => ({
@@ -52,6 +61,10 @@ const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surv
   const [selectedWorkFlow, setSelectedWorkFlow] = useState(null);
   const [reviewerSelectValue, setReviewerSelectValue] = useState(null);
 
+  const isSurveyAddProceeding = useSelector(createLoadingSelector([assignSurveyRequest.type], true));
+  const prevSurveyAddLoadingState = usePrevious(isSurveyAddProceeding);
+  const error = useSelector(selectError);
+
   const handleReviewerAdd = () => {
     if (reviewerSelectValue?.value) {
       setSelectedReviewers([...selectedReviewers, reviewerSelectValue.value]);
@@ -80,6 +93,14 @@ const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surv
   const reviewersSelectOptions = reviewers
                         .map(reviewer => ({label: `${reviewer.first_name} ${reviewer.last_name}`, value: reviewer}))
                         .filter(({value}) => !~selectedReviewers.indexOf(value));
+
+  useEffect(() => {
+    if (!isSurveyAddProceeding && prevSurveyAddLoadingState && !error) {
+      setSelectedSurvey(null);
+      setSelectedReviewers([]);
+      setSelectedWorkFlow(null);
+    }
+  }, [isSurveyAddProceeding])
 
   return (
     <div className="survey-assign">
