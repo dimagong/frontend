@@ -24,13 +24,11 @@ const getUsersSuccess = (state, { payload }) => {
 const getFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  let filters = payload;
-  filters.forEach(item => {
-    item.value.roles = new Set(item.value.roles);
-    item.value.organizations = new Set(item.value.organizations);
-  });
-  filters = filters.filter(item => item.user_id === state.user.profile.id);
-  state.user.filters = filters;
+  let filters = payload.find(item => item.key === 'user_filter');
+  if (filters?.value) {
+    state.user.filters.data = filters.value
+    state.user.filters.id = filters.id;
+  }
 };
 
 const getSettingsSuccess = (state, {payload}) => {
@@ -222,13 +220,9 @@ const getDashboardActivitySuccess = (state, {payload}) => {
 const postFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  const newFilter = payload.response.data;
-  newFilter.value.roles = new Set(newFilter.value.roles)
-  newFilter.value.organizations = new Set(newFilter.value.organizations)
-  let filters = state.user.filters;
-  filters.push(newFilter);
-  state.user.filters = filters;
-  toast.success(`The filter set '${payload.response.data.value.filter_name}' was added`);
+  state.user.filters.data = payload.response.value
+  state.user.filters.id = payload.response.id
+  toast.success(`The filter set '${payload.response.value[0].filter_name}' was added`);
 };
 
 const getActivityTypesSuccess = (state, {payload}) => {
@@ -240,9 +234,8 @@ const getActivityTypesSuccess = (state, {payload}) => {
 const patchFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  let index = state.user.filters.findIndex(item => item.id === payload.payload.id);
-  state.user.filters[index].data = payload.payload.newFilter;
-  toast.success(`The filter set '${payload.payload.value.filter_name}' was updated`);
+  toast.success(`The filter set '${payload.payload.filterName}' was ${payload.payload.message}`);
+  state.user.filters.data = payload.payload.value
 };
 
 const getOnboardingsByUserSuccess = (state, { payload }) => {
@@ -311,10 +304,8 @@ const deleteUserAvatarSuccess = (state, { payload }) => {
 const deleteFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  let filters = state.user.filters;
-  filters = filters.filter(item => item.id !== payload.id);
-  state.user.filters = filters;
-  toast.success(`The filter set '${payload.value.filter_name}' was deleted`);
+  state.user.filters.data = []
+  state.user.filters.id = null
 }
 
 const getUserAvatarSuccess = (state, { payload }) => {
