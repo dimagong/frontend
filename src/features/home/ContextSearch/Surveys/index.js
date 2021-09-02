@@ -69,7 +69,7 @@ const Surveys = () => {
         </Scrollbars>
       </Col>
 
-      <WorkFlowsAndNotificationsList />
+      <WorkFlowsAndNotificationsList context="survey" />
 
     </Row>
   )

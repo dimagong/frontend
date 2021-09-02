@@ -88,7 +88,7 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
                   <div className="icon-container">
                     <img src={item.icon} alt="" onError="this.style.display = 'none'"/>
                   </div>
-                  <div>
+                  <div className={'tabs-text-container'}>
                     {tabName(item)}
                   </div>
                 </PaginationLink>

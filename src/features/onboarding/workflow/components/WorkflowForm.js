@@ -18,6 +18,7 @@ import { X } from "react-feather";
 import MultiSelect from "components/MultiSelect/multiSelect";
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { selectWorkflow } from "app/selectors/onboardingSelectors";
+import { selectNotificationsAndWorkFlowsContext } from "app/selectors/layoutSelector";
 import { useDispatch, useSelector } from "react-redux";
 import WorkflowTriggers from './WorkflowTriggers'
 import {initWorkflow} from './constants'
@@ -37,6 +38,7 @@ const {
 } = appSlice.actions;
 
 const WorkflowForm = ({ workflowModalType }) => {
+  const context = useSelector(selectNotificationsAndWorkFlowsContext);
   const workflow = useSelector(selectWorkflow);
   const { name, description } = workflow || {};
   const dispatch = useDispatch();
@@ -57,8 +59,8 @@ const WorkflowForm = ({ workflowModalType }) => {
         dispatch(updateWorkflowRequest(workflow))
 
         break;
-        case "Create":
-      dispatch(createWorkflowRequest(workflow))
+      case "Create":
+      dispatch(createWorkflowRequest({...workflow, context: context === "dForm" ? "application" : "survey"}));
       break;
       default:
         return <></>
@@ -120,7 +122,7 @@ const WorkflowForm = ({ workflowModalType }) => {
               <Col>
                 <MultiSelect groups={prepareSelectGroups(workflow.groups)} setGroups={setWorkflowGroups}/>
               </Col>
-              <WorkflowTriggers/>
+              <WorkflowTriggers context={context} />
 
               <Col md="12">
                 <div className="d-flex justify-content-center flex-wrap mt-2">

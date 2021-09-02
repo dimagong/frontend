@@ -97,3 +97,11 @@
     font-size: 18px;
   }
 }
+
+.tabs-text-container {
+  max-width: 300px;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

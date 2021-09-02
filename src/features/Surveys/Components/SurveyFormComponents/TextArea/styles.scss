@@ -1,6 +1,11 @@
-
-
 .survey-textarea-component {
+  font-family: Montserrat;
+  &_label {
+    font-size: 22px;
+    color: #4B484D;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
   textarea {
     width: 100%;
     resize: none;

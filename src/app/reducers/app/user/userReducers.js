@@ -312,6 +312,10 @@ const getUserAvatarSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
 
+  if(state.user.profile.id === payload.managerId) {
+    state.user.profile.url = payload.url.avatar;
+  }
+
   state.user.managers = state.user.managers.map((manager) => {
     if (manager.id === payload.managerId) {
       manager.url = payload.url.avatar;

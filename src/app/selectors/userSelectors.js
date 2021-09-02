@@ -65,3 +65,4 @@ export const selectSurveyWorkFlowsAndReviewers = state => state?.app?.surveyWork
 export const selectSelectedManagerAssignedSurveys = state => state?.app?.selectedManagerAssignedSurveys;
 export const selectOnboardingSurveys = state => state?.app?.onboardingSurveys;
 export const selectAssignedSurveyById = (id) => state => state?.app?.selectedManagerAssignedSurveys.filter(survey => survey.id === id)[0];
+export const selectOnboardingSurveyStats = (id) => state => state?.app?.onboardingSurveys.filter(os => os.id === id)[0].stats;
