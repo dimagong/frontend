@@ -220,9 +220,9 @@ const getDashboardActivitySuccess = (state, {payload}) => {
 const postFilterSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.filters.data = payload.response.data.value
-  state.user.filters.id = payload.response.data.id
-  toast.success(`The filter set '${payload.response.data.value[0].filter_name}' was added`);
+  state.user.filters.data = payload.response.value
+  state.user.filters.id = payload.response.id
+  toast.success(`The filter set '${payload.response.value[0].filter_name}' was added`);
 };
 
 const getActivityTypesSuccess = (state, {payload}) => {

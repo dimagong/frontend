@@ -1,4 +1,4 @@
-import instance from "api";
+import instance, {requestLayout} from "api";
 import qs from 'qs'
 import {
   getProfilePath,
@@ -25,9 +25,11 @@ import {
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
 import moment from "moment";
+import {getQuestionUpdateUrl} from "../surveys/constants";
 
 const userApi = {
   async getFilter() {
+    return await requestLayout(`/api/settings`, "GET")
     try {
       const result = await instance({
         url: '/api/settings',
@@ -322,24 +324,26 @@ const userApi = {
     } catch (error) {}
   },
   async postFilter(filter) {
-    try {
+    return await requestLayout('/api/settings', "POST", {
+          key: 'user_filter',
+          value: filter.value,
+        })
+    /*try {
       const result = await instance({
         url: '/api/settings',
         method: "POST",
-        params: {
-          key: 'user_filter',
-        },
         data: {
+          key: 'user_filter',
           value: filter.value,
         }
       });
       return result ? result.data : result;
-    } catch (error) {console.log('ERROR POST FILTER')}
+    } catch (error) {console.log('ERROR POST FILTER')}*/
   },
   async patchFilter(filters) {
-    if (filters.value.length < 0) {
-      filters.value = null;
-    }
+    return await requestLayout(`/api/settings/${filters.id}`, "PATCH", {
+          value: filters.value,
+        })
     try {
       const result = await instance({
         url: `/api/settings/${filters.id}`,
