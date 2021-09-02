@@ -188,7 +188,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
       </div>
     </div>
 
-    <div style={{background: 'white'}} className={'dashboard-activities ' + (settings.state === 'large' ? 'dashboard-activities-open' : 'dashboard-activities-closed')}>
+    <div style={{background: 'white', zIndex: 100 - settings.key}} className={'dashboard-activities ' + (settings.state === 'large' ? 'dashboard-activities-open' : 'dashboard-activities-closed')}>
       <ActivitiesDashboard
         usersActivities={(chartType === 'Applications' && !(settings.dForm?.id)) ? []
           : chartType === 'Applications' ? dashboardData?.userDFormActivities : dashboardData?.usersActivities}
