@@ -2101,7 +2101,9 @@ class FormCreate extends React.Component {
                   )}
                   {this.props.onSubmit && (
                     <div style={{float: "right", paddingRight: "20px"}}>
-                      <span style={{color: "#7367f0", paddingRight: "10px"}}>{this.state.additionalData.name}</span>
+                      <span style={{color: "#7367f0", paddingRight: "10px", maxWidth: 400, display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>
+                        {this.state.additionalData.name}
+                      </span>
                       <Button type="submit" className="ml-auto submit-onboarding-button">Submit for review</Button>
                     </div>
                   )}
