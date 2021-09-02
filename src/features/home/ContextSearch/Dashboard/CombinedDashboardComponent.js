@@ -124,7 +124,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   }, [settings.daysNumber, settings['filter[value]'], settings.dForm, settings.user_groups, settings.ability_user_ids, dashboardDForms, managers?.length]);
 
 
-  return (<div className={'combined-dashboard-component ' + (isFilterBoxOpen ? 'combined-dashboard-component-filtered' : '') + (settings.state === 'small' ? 'combined-dashboard-component-small' : 'combined-dashboard-component-large')}>
+  return (<div className={`combined-dashboard-component ${isFilterBoxOpen ? 'combined-dashboard-component-filtered' : ''} combined-dashboard-component-${settings.state === 'small' ? "small" : "large"}`}>
     <div className={'dashboard-charts'} style={settings.state === 'large' ? {backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 20%, white 20%)'} : {}}>
       <div style={{width: '100%'}}
            className={'dashboard-one-chart'}>
