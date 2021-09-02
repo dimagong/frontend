@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import {
   Navbar,
   UncontrolledDropdown,
@@ -35,6 +35,7 @@ const {
   showContextSearch,
   hideContextSearch,
   setContext,
+  getUserAvatarRequest,
 } = appSlice.actions;
 
 const UserName = ({userProfile}) => {
@@ -67,6 +68,10 @@ const ThemeNavbar = props => {
     }
 
   }
+
+  useEffect(() => {
+    userProfile && dispatch(getUserAvatarRequest({managerId: userProfile.id}))
+  }, [userProfile?.avatar_path]);
 
   const handleOrgPictureClick = () => {
     dispatch(setContext('Dashboard'))
@@ -179,7 +184,7 @@ const ThemeNavbar = props => {
                   changeCurrentLang={props.changeCurrentLang}
                   userName={<UserName {...props} />}
                   email={`${userProfile.permissions.organization}`}
-                  userImg={manager && manager.ulr? manager.ulr : noneAvatar}
+                  userImg={userProfile?.url || noneAvatar}
                   loggedType={null}
                   logoutWithJWT={logoutJWT}
                 />
