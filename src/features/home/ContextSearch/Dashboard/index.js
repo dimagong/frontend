@@ -62,18 +62,17 @@ const Dashboard = ({ }) => {
   };
 
   const addComponent = () => {
-    try {
-      let newDashboardSettings = [...dashboardSettings.value];
+     let newDashboardSettings = [...dashboardSettings.value];
+      if (!componentToAdd) {
+        toast.error('Please choose component to add');
+        return;
+      }
       newDashboardSettings.push(componentToAdd)
       newDashboardSettings[newDashboardSettings.length - 1].key = newDashboardSettings.length > 1
         ? newDashboardSettings[newDashboardSettings.length - 2].key + 1
         : 0;
       dispatch(patchSettingsRequest({value: newDashboardSettings, id: dashboardSettings.id}));
       setComponentToAdd({...componentToAdd})
-    }
-    catch (err) {
-      toast.error('Please choose component to add')
-    }
   }
 
   useEffect(() => {
