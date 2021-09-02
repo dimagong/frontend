@@ -4,7 +4,7 @@ export const triggerTypesStrings = {
 };
 export const triggerTypes = [
   {type: "App\\DFormTrigger", label: "dForm"},
-  {type: "survey_trigger", label: "survey"},
+    {type: "survey_trigger", label: "survey"},
 ];
 
 export const userTargetTypes = {

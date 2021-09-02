@@ -66,7 +66,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
   };
 
   const isDisabledSubmit = () => {
-    return ['user-lock', 'hard-lock'].indexOf(profile.onboarding.d_form.access_type) !== -1;
+    return ['user-lock', 'hard-lock'].indexOf(profile.onboarding.d_form?.access_type) !== -1;
   };
 
   const isShowProtectedElements = (roles) => {

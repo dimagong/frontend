@@ -16,7 +16,7 @@ import {
   selectWorkflow,
   selectdFormTriggers,
 } from "app/selectors/onboardingSelectors";
-import {triggerTypes, types, triggerByTriggerType, triggerTypesStrings, actionTypesByTriggerType} from "./constants";
+import {triggerTypes as allTriggerTypes, types, triggerByTriggerType, triggerTypesStrings, actionTypesByTriggerType} from "./constants";
 
 import onboardingSlice from 'app/slices/onboardingSlice';
 import {selectSurveyTriggers} from "../../../../app/selectors/onboardingSelectors";
@@ -25,11 +25,13 @@ const {
   setWorkflowTriggers,
 } = onboardingSlice.actions;
 
-const WorkflowTrigger = ({keyTrigger, trigger}) => {
+const WorkflowTrigger = ({keyTrigger, trigger, context}) => {
   const workflow = useSelector(selectWorkflow);
   const triggers = useSelector(selectdFormTriggers);
   const surveyTriggers = useSelector(selectSurveyTriggers);
   const dispatch = useDispatch();
+
+  const triggerTypes = allTriggerTypes;
 
   const isTriggerDisabled = (type) => {
     if (type === types.dform.trigger) {

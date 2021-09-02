@@ -1,18 +1,9 @@
-import instance from "api";
+import instance, { requestLayout } from "api";
 import { notificationPath } from "constants/onboarding";
 
 const notificationApi = {
-  async getNotifications() {
-    try {
-      const result = await instance({
-        url: notificationPath,
-        method: "GET",
-      });
-
-      return result.data.data;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
+  async getNotifications(context) {
+    return await requestLayout(notificationPath, "GET", context);
   },
   async createNotification(data) {
     try {
@@ -24,7 +15,7 @@ const notificationApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err.response.data.error.errors;
+      throw err;
     }
   },
   async updateNotification(data) {
@@ -37,7 +28,7 @@ const notificationApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err.response.data.error.errors;
+      throw err;
     }
   },
   async deleteNotification(data) {
@@ -49,7 +40,7 @@ const notificationApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err.response.data.error.errors;
+      throw err;
     }
   },
 

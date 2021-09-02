@@ -67,7 +67,7 @@ const Applications = () => {
         </Scrollbars>
       </Col>
 
-      <WorkFlowsAndNotificationsList />
+      <WorkFlowsAndNotificationsList context="dForm" />
 
     </Row>
   )
