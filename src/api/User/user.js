@@ -30,16 +30,6 @@ import {getQuestionUpdateUrl} from "../surveys/constants";
 const userApi = {
   async getFilter() {
     return await requestLayout(`/api/settings`, "GET")
-    try {
-      const result = await instance({
-        url: '/api/settings',
-        method: "GET",
-      });
-
-      return result ? result.data.data : result;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
   },
   async getActivities(payload) {
     try {
@@ -321,41 +311,20 @@ const userApi = {
         data:  {reviewer_ids: reviewersIds}
       });
       return result ? result.data : result;
-    } catch (error) {}
+    } catch (error) {
+      throw error.response.data.error.errors;
+    }
   },
   async postFilter(filter) {
     return await requestLayout('/api/settings', "POST", {
           key: 'user_filter',
           value: filter.value,
         })
-    /*try {
-      const result = await instance({
-        url: '/api/settings',
-        method: "POST",
-        data: {
-          key: 'user_filter',
-          value: filter.value,
-        }
-      });
-      return result ? result.data : result;
-    } catch (error) {console.log('ERROR POST FILTER')}*/
   },
   async patchFilter(filters) {
     return await requestLayout(`/api/settings/${filters.id}`, "PATCH", {
           value: filters.value,
         })
-    try {
-      const result = await instance({
-        url: `/api/settings/${filters.id}`,
-        method: "PATCH",
-        data: {
-          value: filters.value
-        }
-      });
-      return result ? result.data : result;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
   },
   async deleteFilter(id) {
     try {
@@ -364,7 +333,9 @@ const userApi = {
         method: "DELETE",
       });
       return result ? result.data.data : result;
-    } catch (error) { console.log(error)}
+    } catch (error) {
+      throw error.response.data.error.errors;
+    }
   },
 
   async updateUserOnboardingWorkflow({workflowId, onboardingId}) {
@@ -375,7 +346,9 @@ const userApi = {
         data:  {workflow_id: workflowId}
       });
       return result ? result.data : result;
-    } catch (error) {}
+    } catch (error) {
+      throw error.response.data.error.errors;
+    }
   },
 
   async deleteUserOnboarding({ id }) {
@@ -385,7 +358,9 @@ const userApi = {
         method: "DELETE",
       });
       return result ? result.data.data : result;
-    } catch (error) {}
+    } catch (error) {
+      throw error.response.data.error.errors;
+    }
   },
   async updateUser(payload) {
     const { id, ...data } = payload;
@@ -538,7 +513,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      return err;
+      throw err.response.data.error.errors;
     }
   },
 
@@ -552,7 +527,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
 
@@ -570,7 +545,7 @@ const userApi = {
 
       return result.data.data;
     } catch (err) {
-      return err;
+      throw err.response.data.error.errors;
     }
   },
 
@@ -585,7 +560,7 @@ const userApi = {
         }
       })
     } catch (err) {
-      return err;
+      throw err.response.data.error.errors;
     }
 
   },
