@@ -9,6 +9,7 @@ import {
 } from 'reactstrap';
 
 import { Search } from "@material-ui/icons";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import FolderCreateModal from "./Components/FolderCreateModal";
 import QuestionCreateModal from "./Components/QuestionCreateModal";
@@ -54,6 +55,8 @@ const QuestionDesignerComponent = ({
   const [questionForEdit, setQuestionForEdit] = useState(null);
 
   const selectedFolder = folders?.filter((folder) => folder.id === selectedFolderId)[0] || [];
+
+  const HEADER_HEIGHT = 200;
 
   const handleFolderDelete = () => {
     onFolderDelete(selectedFolderId);
@@ -139,57 +142,61 @@ const QuestionDesignerComponent = ({
             <Search style={{color: "#95989A", fontSize: "28px"}} />
           </div>
         </div>
-        <div className="question-designer_folders">
-          {!isFoldersLoading ? folders && folders.map((folder, index) => (
-            <FolderTemplate
-              key={index}
-              onClick={() => handleFolderSelect(folder.id)}
-              folderData={folder}
-              isSelected={folder.id === selectedFolder.id}
-            />
-          )) : (
-            <div className="question-designer_folders_loader">
-              <Spinner color="primary" size={40} />
-            </div>
-          )}
-          <button
-            className="question-designer_folders_add-folder"
-            onClick={() => setIsCreateFolderModalVisible(true)}
-          >
-            +
-          </button>
-          {folders && !folders.length && (
-            <div className="question-designer_folders_folders-missing">
-              Create a folder to start creating questions
-            </div>
-          )}
-        </div>
-        {selectedFolderId !== -1 && (
-          <>
-            <div className="question-designer_actions">
-              <LoadingButton
-                className="question-designer_actions_delete-btn"
-                color="secondary"
-                onClick={handleFolderDelete}
-                value="Delete folder"
-                isLoading={isFolderDeleteProceed}
-              />
-              <Button onClick={() => setIsCreateQuestionModalVisible(true)} color="primary">
-                Design new question
-              </Button>
-            </div>
-            <div className="question-designer_folder-questions">
-              {!selectedFolder?.questions?.length ? (
-                <div className="question-designer_folder-questions_no-questions">
-                  There are no questions inside this folder,<br/>
-                  click "Design new question" button to create a new question
+        <Scrollbars autoHeight autoHeightMax={window.innerHeight - HEADER_HEIGHT}>
+          <div className={'survey-folder-scroll'}>
+            <div className="question-designer_folders">
+              {!isFoldersLoading ? folders && folders.map((folder, index) => (
+                <FolderTemplate
+                  key={index}
+                  onClick={() => handleFolderSelect(folder.id)}
+                  folderData={folder}
+                  isSelected={folder.id === selectedFolder.id}
+                />
+              )) : (
+                <div className="question-designer_folders_loader">
+                  <Spinner color="primary" size={40} />
                 </div>
-              ) : (
-                renderQuestionsInFolder()
+              )}
+              <button
+                className="question-designer_folders_add-folder"
+                onClick={() => setIsCreateFolderModalVisible(true)}
+              >
+                +
+              </button>
+              {folders && !folders.length && (
+                <div className="question-designer_folders_folders-missing">
+                  Create a folder to start creating questions
+                </div>
               )}
             </div>
-          </>
-        )}
+            {selectedFolderId !== -1 && (
+              <>
+                <div className="question-designer_actions">
+                  <LoadingButton
+                    className="question-designer_actions_delete-btn"
+                    color="secondary"
+                    onClick={handleFolderDelete}
+                    value="Delete folder"
+                    isLoading={isFolderDeleteProceed}
+                  />
+                  <Button onClick={() => setIsCreateQuestionModalVisible(true)} color="primary">
+                    Design new question
+                  </Button>
+                </div>
+                <div className="question-designer_folder-questions">
+                  {!selectedFolder?.questions?.length ? (
+                    <div className="question-designer_folder-questions_no-questions">
+                      There are no questions inside this folder,<br/>
+                      click "Design new question" button to create a new question
+                    </div>
+                  ) : (
+                    renderQuestionsInFolder()
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </Scrollbars>
       </Col>
 
       <FolderCreateModal

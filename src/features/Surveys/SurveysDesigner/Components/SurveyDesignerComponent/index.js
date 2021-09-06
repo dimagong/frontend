@@ -19,6 +19,7 @@ import SurveysDesignerQuestionsList from "./Components/SurveysDesignerQuestionsL
 import SurveyCreateModal from "features/home/ContextSearch/SurveyCreateModal";
 import LoadingButton from "components/LoadingButton";
 import ChevronUpButton from "components/ArrowButton";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import "./styles.scss";
 
@@ -57,6 +58,7 @@ const SurveysDesignerComponent = ({
   const error = useSelector(selectError);
   const surveyVersions = useSelector(selectSurveyVersions);
 
+  const HEADER_HEIGHT = 200
 
 
   const prevSurveyLoadingValue = usePrevious(isSurveyLoading);
@@ -141,40 +143,43 @@ const SurveysDesignerComponent = ({
 
       {!isSurveyLoading ? (
         <>
-          <div className="survey-designer_version-select">
-            <Select
-              value={surveyVersion}
-              displayType="versionSelect"
-              isSearchable={false}
-              onChange={handleSurveyVersionChange}
-              isLoading={isSurveyVersionsLoading}
-              options={surveyVersions && surveyVersions.map((version) => ({value: version.id, label: version.current_version})).reverse()}
+        <Scrollbars autoHeight autoHeightMax={window.innerHeight - HEADER_HEIGHT}>
+          <div className={'survey-designer-scroll'}>
+            <div className="survey-designer_version-select">
+              <Select
+                value={surveyVersion}
+                displayType="versionSelect"
+                isSearchable={false}
+                onChange={handleSurveyVersionChange}
+                isLoading={isSurveyVersionsLoading}
+                options={surveyVersions && surveyVersions.map((version) => ({value: version.id, label: version.current_version})).reverse()}
+              />
+            </div>
+            <SurveysDesignerQuestionsList
+              questions={latest_version.latest_questions}
+              isQuestionSelected={isQuestionSelected}
+              onQuestionInsert={onQuestionInsert}
+              onQuestionsReorder={onQuestionsReorder}
+              handleRemoveQuestionFromSurvey={handleRemoveQuestionFromSurvey}
             />
+            <div className="survey-designer_action-buttons">
+              <LoadingButton
+                className={"survey-designer_action-buttons_delete-button px-4"}
+                color="secondary"
+                onClick={handleSurveyVersionDelete}
+                value={"Delete survey"}
+                isLoading={isDeleteProceed}
+              />
+              <LoadingButton
+                className={"survey-designer_action-buttons_save-button"}
+                color="primary"
+                onClick={handleSurveyUpdate}
+                value={"Save survey"}
+                isLoading={isSurveyUpdateProceed}
+              />
+            </div>
           </div>
-          <SurveysDesignerQuestionsList
-            questions={latest_version.latest_questions}
-            isQuestionSelected={isQuestionSelected}
-            onQuestionInsert={onQuestionInsert}
-            onQuestionsReorder={onQuestionsReorder}
-            handleRemoveQuestionFromSurvey={handleRemoveQuestionFromSurvey}
-          />
-          <div className="survey-designer_action-buttons">
-            <LoadingButton
-              className={"survey-designer_action-buttons_delete-button px-4"}
-              color="secondary"
-              onClick={handleSurveyVersionDelete}
-              value={"Delete survey"}
-              isLoading={isDeleteProceed}
-            />
-            <LoadingButton
-              className={"survey-designer_action-buttons_save-button"}
-              color="primary"
-              onClick={handleSurveyUpdate}
-              value={"Save survey"}
-              isLoading={isSurveyUpdateProceed}
-            />
-          </div>
-
+        </Scrollbars>
         </>
       ) : (
         <div className="survey-designer_loading">

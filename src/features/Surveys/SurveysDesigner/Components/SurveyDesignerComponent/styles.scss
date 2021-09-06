@@ -1,6 +1,11 @@
 .survey-designer {
   padding-top: 20px;
   padding-right: 45px;
+
+  .survey-designer-scroll {
+    padding-right: 20px;
+  }
+
   &_hide-survey {
     position: absolute;
     right: -17px;
