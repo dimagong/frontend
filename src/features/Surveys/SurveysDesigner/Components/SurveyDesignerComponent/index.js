@@ -19,6 +19,7 @@ import SurveysDesignerQuestionsList from "./Components/SurveysDesignerQuestionsL
 import SurveyCreateModal from "features/home/ContextSearch/SurveyCreateModal";
 import LoadingButton from "components/LoadingButton";
 import ChevronUpButton from "components/ArrowButton";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import "./styles.scss";
 
@@ -57,6 +58,7 @@ const SurveysDesignerComponent = ({
   const error = useSelector(selectError);
   const surveyVersions = useSelector(selectSurveyVersions);
 
+  const HEADER_HEIGHT = 200
 
 
   const prevSurveyLoadingValue = usePrevious(isSurveyLoading);
@@ -141,6 +143,7 @@ const SurveysDesignerComponent = ({
 
       {!isSurveyLoading ? (
         <>
+        <Scrollbars autoHeight autoHeightMax={window.innerHeight - HEADER_HEIGHT}>
           <div className="survey-designer_version-select">
             <Select
               value={surveyVersion}
@@ -174,7 +177,7 @@ const SurveysDesignerComponent = ({
               isLoading={isSurveyUpdateProceed}
             />
           </div>
-
+        </Scrollbars>
         </>
       ) : (
         <div className="survey-designer_loading">

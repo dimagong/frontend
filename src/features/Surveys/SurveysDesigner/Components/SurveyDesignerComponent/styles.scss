@@ -1,6 +1,15 @@
 .survey-designer {
   padding-top: 20px;
   padding-right: 45px;
+
+  .survey-designer_version-select {
+    padding-right: 20px;
+  }
+
+  .survey-designer_action-buttons {
+    padding-right: 20px;
+  }
+
   &_hide-survey {
     position: absolute;
     right: -17px;
