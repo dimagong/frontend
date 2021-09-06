@@ -30,8 +30,6 @@ const SurveyAssign = ({ userId }) => {
 
   const [surveyAssignedReviewers, setSurveyAssignedReviewers] = useState([]);
 
-  console.log(surveyWorkFlowsAndReviewers);
-
   const handleReviewerAdd = (reviewer) => {
     setSurveyAssignedReviewers([...surveyAssignedReviewers, reviewer])
   };
