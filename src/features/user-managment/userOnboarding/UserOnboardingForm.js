@@ -90,6 +90,11 @@ const onboardingCreateValidationSchema = yup.object().shape({
   d_form: yup.object().typeError('Please, select dForm'),
 });
 
+const sortByLabel = (a, b) => {
+  console.log(a, b)
+  return a.label.localeCompare(b.label)
+};
+
 const UserOnboardingCreate = ({isCreate}) => {
   const dispatch = useDispatch();
 
@@ -174,6 +179,7 @@ const UserOnboardingCreate = ({isCreate}) => {
 
   const availableReviewers = reviewers.filter(reviewer => !manager.onboarding.reviewers.filter(onboardingReviewer => onboardingReviewer.id === reviewer.id).length);
 
+  console.log("test",workflows, dForms, reviewers);
   return (
     <Col md="12" lg="12" className="p-0 ml-0">
       <Card className="border-0 mb-0">
@@ -192,7 +198,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                     styles={selectStyles}
                     components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])}
-                    options={prepareDFormSelect(dForms)}
+                    options={prepareDFormSelect(dForms).sort(sortByLabel)}
                     onChange={(value) => {
                       onSelectDFormChange(value)
                     }}
@@ -209,7 +215,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                     styles={selectStyles}
                     components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
-                    options={prepareDFormSelect(workflows)}
+                    options={prepareDFormSelect(workflows).sort(sortByLabel)}
                     onChange={(value) => {
                       onSelectWorkflowChange(value)
                     }}
@@ -230,7 +236,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                         components={{DropdownIndicator}}
                         value={selectedReviewer}
                         styles={selectStyles}
-                        options={isReviewersLimitNotExceed ? prepareSelect(availableReviewers) : []}
+                        options={isReviewersLimitNotExceed ? prepareSelect(availableReviewers).sort(sortByLabel) : []}
                         noOptionsMessage={() => isReviewersLimitNotExceed ? "No options" : "Maximum reviewers count is 5"}
                         onChange={(value) => {
                           setSelectedReviewer(value)
