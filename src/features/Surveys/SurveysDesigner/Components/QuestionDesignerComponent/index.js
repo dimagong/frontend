@@ -145,6 +145,10 @@ const QuestionDesignerComponent = ({
         <Scrollbars autoHeight autoHeightMax={window.innerHeight - HEADER_HEIGHT}>
           <div className={'survey-folder-scroll'}>
             <div className="question-designer_folders">
+              <Scrollbars
+                className={'folder-scrollbar'}
+                style={{height: 170}}
+                renderScrollbarHorizontal={props => <div {...props} className="scrollbar-horizontal" />}>
               {!isFoldersLoading ? folders && folders.map((folder, index) => (
                 <FolderTemplate
                   key={index}
@@ -168,6 +172,7 @@ const QuestionDesignerComponent = ({
                   Create a folder to start creating questions
                 </div>
               )}
+              </Scrollbars>
             </div>
             {selectedFolderId !== -1 && (
               <>
