@@ -84,7 +84,7 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm, 
         },
         y: {
           ticks: {
-            stepSize: title === 'Applications' ? undefined : 2
+            stepSize: title === 'Applications' ? 1 : 2
           },
           title: {
             display: true,
