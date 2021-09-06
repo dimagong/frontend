@@ -18,13 +18,16 @@ const {
   changeSurveyMainData,
 } = appSlice.actions;
 
+
 const editSurveyValidation = yup.object().shape({
+  min_percent_pass: yup.number().transform(Number).min(50, "Percent to pass should not be lower then 50").max(100, "Percent to pass should not be higher then 100"),
   description: yup.string().trim().required("Please, provide some description"),
   title: yup.string().trim().required("Title is required"),
 });
 
 const createSurveyValidation = yup.object().shape({
   organization: yup.object().typeError('Select organisation for survey'),
+  min_percent_pass: yup.number().transform(Number).min(50, "Percent to pass should not be lower then 50").max(100, "Percent to pass should not be higher then 100"),
   description: yup.string().trim().required("Please, provide some description"),
   title: yup.string().trim().required("Title is required"),
 });
@@ -37,7 +40,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
   const [surveyDescription, setSurveyDescription] = useState("");
   const [surveyOrganization, setSurveyOrganization] = useState(null);
   const [isUserAbleToGoBackDuringSurvey, setIsUserAbleToGoBackDuringSurvey] = useState(false);
-  const [minPercentToPass, setMinPercentToPass] = useState("0");
+  const [minPercentToPass, setMinPercentToPass] = useState("50");
 
   const isLoading = useSelector(createLoadingSelector([createSurveyRequest.type], true));
   const error = useSelector(selectError);
@@ -52,7 +55,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
       setSurveyDescription("");
       setSurveyOrganization(null);
       setIsUserAbleToGoBackDuringSurvey(false);
-      setMinPercentToPass("0");
+      setMinPercentToPass("50");
 
       onClose()
     }
