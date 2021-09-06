@@ -57,7 +57,10 @@ export const initialState = {
     workflows: [],
     dForms: [],
     reviewers: [],
-    filters: [],
+    filters: {
+      data: [],
+      id: null
+    },
     searchText: '',
     dashboard: {
       data: [],

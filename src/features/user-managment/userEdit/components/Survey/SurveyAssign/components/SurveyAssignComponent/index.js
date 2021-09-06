@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { Row, Card, CardBody, CardHeader, CardTitle, Col } from "reactstrap";
 import {X, ChevronDown, Plus} from "react-feather";
@@ -9,6 +9,17 @@ import LoadingButton from "components/LoadingButton";
 
 
 import './styles.scss'
+import {useSelector} from "react-redux";
+import {createLoadingSelector} from "app/selectors/loadingSelector";
+import {usePrevious} from "hooks/common";
+import appSlice from "app/slices/appSlice";
+import {selectError} from "app/selectors";
+import * as yup from "yup";
+import {toast} from "react-toastify";
+
+const {
+  assignSurveyRequest,
+} = appSlice.actions;
 
 const selectStyles = {
   control: styles => ({
@@ -45,12 +56,22 @@ const DropdownIndicator = props => {
   );
 };
 
+const createSurveyValidation = yup.object().shape({
+  interaction_version_id: yup.number().defined('Please, select survey'),
+  workflow_id: yup.number().defined('Please, select workflow'),
+  reviewers: yup.array().of(yup.number()).min(1, 'Please, select reviewer and click plus button to add at least one reviewer'),
+});
+
 const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surveys, isLoading, onSurveyAdd, isSurveyAssignProceed }) => {
 
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
   const [selectedWorkFlow, setSelectedWorkFlow] = useState(null);
   const [reviewerSelectValue, setReviewerSelectValue] = useState(null);
+
+  const isSurveyAddProceeding = useSelector(createLoadingSelector([assignSurveyRequest.type], true));
+  const prevSurveyAddLoadingState = usePrevious(isSurveyAddProceeding);
+  const error = useSelector(selectError);
 
   const handleReviewerAdd = () => {
     if (reviewerSelectValue?.value) {
@@ -67,19 +88,33 @@ const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surv
     setReviewerSelectValue(value);
   };
 
-  const handleSurveyAdd = () => {
+  const handleSurveyAdd = async () => {
     const surveyData = {
-      interaction_version_id: selectedSurvey.value.latest_version.id,
-      workflow_id: selectedWorkFlow.value.id,
+      interaction_version_id: selectedSurvey?.value?.latest_version?.id,
+      workflow_id: selectedWorkFlow?.value?.id,
       reviewers: selectedReviewers.map(reviewer => reviewer.id)
     };
 
-    onSurveyAdd(surveyData);
+    const isValid = await createSurveyValidation
+      .validate(surveyData)
+      .catch((err) => { toast.error(err.message) });
+
+    if (isValid) {
+      onSurveyAdd(surveyData);
+    }
   };
 
   const reviewersSelectOptions = reviewers
                         .map(reviewer => ({label: `${reviewer.first_name} ${reviewer.last_name}`, value: reviewer}))
                         .filter(({value}) => !~selectedReviewers.indexOf(value));
+
+  useEffect(() => {
+    if (!isSurveyAddProceeding && prevSurveyAddLoadingState && !error) {
+      setSelectedSurvey(null);
+      setSelectedReviewers([]);
+      setSelectedWorkFlow(null);
+    }
+  }, [isSurveyAddProceeding])
 
   return (
     <div className="survey-assign">

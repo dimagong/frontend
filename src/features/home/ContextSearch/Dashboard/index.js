@@ -7,6 +7,7 @@ import {selectDashboardDForms, selectDashboardSettings} from "app/selectors/user
 import Select from "react-select";
 import {Button} from "reactstrap";
 import {Plus} from "react-feather";
+import {toast} from "react-toastify";
 
 const {
   getSettingsRequest,
@@ -61,13 +62,17 @@ const Dashboard = ({ }) => {
   };
 
   const addComponent = () => {
-    let newDashboardSettings = [...dashboardSettings.value];
-    newDashboardSettings.push(componentToAdd)
-    newDashboardSettings[newDashboardSettings.length - 1].key = newDashboardSettings.length > 1
-      ? newDashboardSettings[newDashboardSettings.length - 2].key + 1
-      : 0;
-    dispatch(patchSettingsRequest({value: newDashboardSettings, id: dashboardSettings.id}));
-    setComponentToAdd({...componentToAdd})
+     let newDashboardSettings = [...dashboardSettings.value];
+      if (!componentToAdd) {
+        toast.error('Please choose component to add');
+        return;
+      }
+      newDashboardSettings.push(componentToAdd)
+      newDashboardSettings[newDashboardSettings.length - 1].key = newDashboardSettings.length > 1
+        ? newDashboardSettings[newDashboardSettings.length - 2].key + 1
+        : 0;
+      dispatch(patchSettingsRequest({value: newDashboardSettings, id: dashboardSettings.id}));
+      setComponentToAdd({...componentToAdd})
   }
 
   useEffect(() => {

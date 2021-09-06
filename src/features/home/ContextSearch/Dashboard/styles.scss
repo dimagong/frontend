@@ -79,6 +79,7 @@
   }
 
   .dashboard-activities-closed {
+    overflow: hidden;
     height: 0!important;
     padding-top: 0!important;
     padding-bottom: 0!important;
@@ -90,7 +91,6 @@
     -o-transition: height .5s;
     -webkit-transition: height .5s;
     transition: height .5s;
-    overflow: hidden;
     height: 0;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -171,12 +171,27 @@
   }
 }
 
+.combined-dashboard-component-filtered {
+  overflow: unset!important;
+}
+
+.combined-dashboard-component-small {
+  width: 22%;
+  margin-right: 1%;
+}
+
+.combined-dashboard-component-large {
+  width: 45%;
+  margin-right: 1%;
+}
+
 .combined-dashboard-component {
+  overflow: hidden;
+  background: white;
   -moz-transition: width .5s;
   -o-transition: width .5s;
   -webkit-transition: width .5s;
   transition: width .5s;
-  overflow: hidden;
   margin-bottom: 1%;
   display: inline-block;
   vertical-align: top;

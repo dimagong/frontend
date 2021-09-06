@@ -20,7 +20,7 @@ const authApi = {
 
       return result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
 
@@ -54,7 +54,7 @@ const authApi = {
 
       return result;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
 

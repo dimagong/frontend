@@ -11,7 +11,7 @@ const moduleApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
 

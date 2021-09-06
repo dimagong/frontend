@@ -20,7 +20,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async submitdFormData({dForm, data}) {
@@ -33,7 +33,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async submitdForm({dForm, data}) {
@@ -46,7 +46,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async changedFormStatus({dForm, status}) {
@@ -59,7 +59,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async createDFormTemplate(data) {
@@ -72,7 +72,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async updateDForm(data) {
@@ -85,7 +85,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async updateDFormTemplate(data) {
@@ -98,7 +98,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async deleteDFormTemplate(data) {
@@ -110,7 +110,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async getdFormActions() {
@@ -122,7 +122,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async getdFormTriggers() {
@@ -134,7 +134,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async getSurveyTriggers() {
@@ -146,7 +146,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async updateDFormFromParent({id}) {
@@ -158,7 +158,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
   async updateViewedSections(id, isViewedSectionsList) {
@@ -174,7 +174,7 @@ const dFormApi = {
 
       return result.data.data;
     } catch (err) {
-      throw err;
+      throw err.response.data.error.errors;
     }
   },
 };
