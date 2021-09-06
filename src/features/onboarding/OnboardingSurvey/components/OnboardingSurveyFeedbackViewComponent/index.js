@@ -41,7 +41,7 @@ const OnboardingSurveyFeedbackViewComponent = ({questions, answers, onFeedbackCl
 
         <SurveyAdditionalInfoComponent
           className="onboarding-survey-manager_feedback"
-          label={"Manager Feedback"}
+          label={"Feedback"}
           text={questionsWithFeedback[currQuestionIndex].answer.feedback}
         />
 

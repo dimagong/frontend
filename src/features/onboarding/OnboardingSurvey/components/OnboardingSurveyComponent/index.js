@@ -162,7 +162,7 @@ const OnboardingSurveyComponent = ({
 
         <SurveyAdditionalInfoComponent
           className="onboarding-survey-manager_comments"
-          label={"Manager comments"}
+          label={"Guidance"}
           text={surveyDescription}
         />
 
