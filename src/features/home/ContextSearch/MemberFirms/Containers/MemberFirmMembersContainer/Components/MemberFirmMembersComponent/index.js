@@ -39,44 +39,44 @@ const MemberFirmMembersComponent = ({
     <ContextFeatureTemplate contextFeatureTitle="Associated members" isSearchEnabled onSearchValueChange={onSearch} searchValue={searchQuery}>
       <Scrollbars autoHeight autoHeightMax={window.innerHeight - HEADER_HEIGHT}>
         <div className={'member-firm-members-scroll'}>
-      <div className="member-firm-associated-members">
-        <MemberFirmUsersList
-          className={"principals"}
-          users={principals.filter(user => isUserMatchSearchQuery(user))}
-          label="Principals"
-          isLoading={isMemberFirmMembersLoading}
-          isSearch={!!searchQuery}
-          onUserClick={onNavigateToUserProfile}
-        />
-        <MemberFirmUsersList
-          className={"members"}
-          users={members.filter(user => isUserMatchSearchQuery(user))}
-          label="Members"
-          isLoading={isMemberFirmMembersLoading}
-          isSearch={!!searchQuery}
-          onUserClick={onNavigateToUserProfile}
-        />
-      </div>
+          <div className="member-firm-associated-members">
+            <MemberFirmUsersList
+              className={"principals"}
+              users={principals.filter(user => isUserMatchSearchQuery(user))}
+              label="Principals"
+              isLoading={isMemberFirmMembersLoading}
+              isSearch={!!searchQuery}
+              onUserClick={onNavigateToUserProfile}
+            />
+            <MemberFirmUsersList
+              className={"members"}
+              users={members.filter(user => isUserMatchSearchQuery(user))}
+              label="Members"
+              isLoading={isMemberFirmMembersLoading}
+              isSearch={!!searchQuery}
+              onUserClick={onNavigateToUserProfile}
+            />
+          </div>
 
-      <Button
-        className="member-firm-associated-members_settings-button"
-        color="primary"
-        onClick={() => setIsEditUserModalOpened(true)}
-      >
-        <Settings />
-      </Button>
+          <Button
+            className="member-firm-associated-members_settings-button"
+            color="primary"
+            onClick={() => setIsEditUserModalOpened(true)}
+          >
+            <Settings />
+          </Button>
 
-      <MemberFirmEditUsers
-        allMembers={allMembers}
-        isModalOpen={isEditUserModalOpened}
-        setIsModalOpen={setIsEditUserModalOpened}
-        members={(potentialMembers && allMembers) ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) !== -1) : []}
-        potentialMembers={potentialMembers
-          ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) === -1)
-          : []}
-        memberFirm={memberFirm}
-        principals={principals}
-      />
+          <MemberFirmEditUsers
+            allMembers={allMembers}
+            isModalOpen={isEditUserModalOpened}
+            setIsModalOpen={setIsEditUserModalOpened}
+            members={(potentialMembers && allMembers) ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) !== -1) : []}
+            potentialMembers={potentialMembers
+              ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) === -1)
+              : []}
+            memberFirm={memberFirm}
+            principals={principals}
+          />
         </div>
       </Scrollbars>
     </ContextFeatureTemplate>
