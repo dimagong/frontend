@@ -62,6 +62,8 @@ const createSurveyValidation = yup.object().shape({
   reviewers: yup.array().of(yup.number()).min(1, 'Please, select reviewer and click plus button to add at least one reviewer'),
 });
 
+const sortByLabel = (a, b) => a.label.localeCompare(b.label);
+
 const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surveys, isLoading, onSurveyAdd, isSurveyAssignProceed }) => {
 
   const [selectedSurvey, setSelectedSurvey] = useState(null);
@@ -106,7 +108,10 @@ const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surv
 
   const reviewersSelectOptions = reviewers
                         .map(reviewer => ({label: `${reviewer.first_name} ${reviewer.last_name}`, value: reviewer}))
-                        .filter(({value}) => !~selectedReviewers.indexOf(value));
+                        .filter(({value}) => !~selectedReviewers.indexOf(value)).sort(sortByLabel);
+
+  const surveyOptions = surveys.map(survey => ({label: survey.latest_version.title, value: survey})).sort(sortByLabel);
+  const workFlowsOptions = workFlows.map(workFlow => ({label: workFlow.name, value: workFlow})).sort(sortByLabel);
 
   useEffect(() => {
     if (!isSurveyAddProceeding && prevSurveyAddLoadingState && !error) {
@@ -134,7 +139,7 @@ const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surv
                     <Select
                       styles={selectStyles}
                       components={{ DropdownIndicator }}
-                      options={surveys.map(survey => ({label: survey.latest_version.title, value: survey}))}
+                      options={surveyOptions}
                       value={selectedSurvey}
                       onChange={(value) => setSelectedSurvey(value)}
                       isLoading={isLoading}
@@ -149,7 +154,7 @@ const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surv
                     <Select
                       styles={selectStyles}
                       components={{ DropdownIndicator }}
-                      options={workFlows.map(workFlow => ({label: workFlow.name, value: workFlow}))}
+                      options={workFlowsOptions}
                       value={selectedWorkFlow}
                       onChange={(value) => setSelectedWorkFlow(value)}
                       isLoading={isLoading}
