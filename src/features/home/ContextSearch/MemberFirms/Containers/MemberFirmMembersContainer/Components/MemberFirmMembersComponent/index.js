@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
@@ -25,6 +26,8 @@ const MemberFirmMembersComponent = ({
 
   const allMembers = [...members, ...principals];
 
+  const HEADER_HEIGHT = 200;
+
 
   const isUserMatchSearchQuery = (user) => {
     if (!searchQuery) return true;
@@ -34,6 +37,8 @@ const MemberFirmMembersComponent = ({
 
   return (
     <ContextFeatureTemplate contextFeatureTitle="Associated members" isSearchEnabled onSearchValueChange={onSearch} searchValue={searchQuery}>
+      <Scrollbars autoHeight autoHeightMax={window.innerHeight - HEADER_HEIGHT}>
+        <div className={'member-firm-members-scroll'}>
       <div className="member-firm-associated-members">
         <MemberFirmUsersList
           className={"principals"}
@@ -72,6 +77,8 @@ const MemberFirmMembersComponent = ({
         memberFirm={memberFirm}
         principals={principals}
       />
+        </div>
+      </Scrollbars>
     </ContextFeatureTemplate>
   )
 };
