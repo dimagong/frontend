@@ -72,7 +72,7 @@
   height: 102px;
   position: fixed;
   top: 0;
-  z-index: 11;
+  z-index: 1001;
 }
 
 .header-navbar {
@@ -139,7 +139,7 @@
     border-radius: 0.5rem;
     position: fixed;
     width: calc(100% - calc(#{$content-padding} * 2) - #{$menu-expanded-width});
-    z-index: 11;
+    z-index: 1001;
     right: 0;
   }
 
