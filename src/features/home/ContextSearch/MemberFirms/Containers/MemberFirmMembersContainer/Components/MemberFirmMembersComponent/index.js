@@ -7,6 +7,7 @@ import { Button } from 'reactstrap'
 import {Settings} from 'react-feather';
 import MemberFirmEditUsers from "../../../../MemberFirmEditUsers";
 import MemberFirmUsersList from "./Components/MemberFirmUsersList";
+import {HEADER_HEIGHT} from "constants/header";
 
 import "./styles.scss"
 
@@ -25,8 +26,6 @@ const MemberFirmMembersComponent = ({
   const [isEditUserModalOpened, setIsEditUserModalOpened] = useState(false);
 
   const allMembers = [...members, ...principals];
-
-  const HEADER_HEIGHT = 200;
 
 
   const isUserMatchSearchQuery = (user) => {

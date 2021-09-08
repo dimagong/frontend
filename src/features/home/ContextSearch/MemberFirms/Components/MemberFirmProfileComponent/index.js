@@ -10,6 +10,7 @@ import Timeline from "components/Timeline";
 
 import FormComponent from "./Components/FormComponent";
 import noneAvatar from "../../../../../../assets/img/portrait/none-avatar.png";
+import {HEADER_HEIGHT} from "constants/header";
 
 import './styles.scss'
 
@@ -34,8 +35,6 @@ const MemberFirmProfileComponent = ({
   const [selectedTab, setSelectedTab] = useState(memberFirmProfileTabs[0]);
 
   const isProfilePhotoChangeProceeding = false;
-
-  const HEADER_HEIGHT = 200;
 
   return (
     <ContextTemplate contextTitle={"Member firm"}>

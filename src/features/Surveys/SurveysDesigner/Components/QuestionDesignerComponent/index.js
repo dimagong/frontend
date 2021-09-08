@@ -17,6 +17,7 @@ import Question from "features/Surveys/Components/Question";
 import LoadingButton from "components/LoadingButton";
 
 import './styles.scss'
+import {HEADER_HEIGHT} from "constants/header";
 
 const FolderTemplate = ({ folderData, isSelected, onClick }) => {
 
@@ -55,8 +56,6 @@ const QuestionDesignerComponent = ({
   const [questionForEdit, setQuestionForEdit] = useState(null);
 
   const selectedFolder = folders?.filter((folder) => folder.id === selectedFolderId)[0] || [];
-
-  const HEADER_HEIGHT = 200;
 
   const handleFolderDelete = () => {
     onFolderDelete(selectedFolderId);
