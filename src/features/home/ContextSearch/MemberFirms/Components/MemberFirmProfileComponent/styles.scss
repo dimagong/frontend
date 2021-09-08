@@ -1,24 +1,25 @@
 .member-firm-profile {
   background: white;
-  margin-top: 200px;
+  margin-top: 70px;
   &_header {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    //flex-direction: row;
+    //justify-content: center;
     align-items: center;
     margin-bottom: 30px;
     &_logo {
       position: relative;
       display: flex;
       background: #f8f8f8;
-      justify-content: center;
-      align-items: center;
-      margin-top: -200px;
-      border-radius: 50px;
-      border: 5px solid #7367F0;
-      width: 300px;
-      height: 300px;
-      max-height: 300px;
+      //justify-content: center;
+      //align-items: center;
+      margin-top: -70px;
+      border-radius: 25px;
+      border-bottom-left-radius: 0;
+      border: 3px solid #7367F0;
+      width: 200px;
+      height: 200px;
+      max-height: 200px;
       overflow: hidden;
       img {
         width: 100%;
@@ -61,37 +62,47 @@
         }
       }
     }
-    &_name {
-      font-size: 32px;
-      color: #707070;
-      font-family: Montserrat;
-      padding: 0 30px;
-      text-align: center;
-    }
-  }
 
-  &_info {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
-    padding: 0 5px;
-    flex-wrap: wrap;
-    &_tile {
-      display: flex;
-      //align-items: center;
-      font-size: 18px;
-      color: #707070;
-      font-family: Montserrat;
-      padding: 5px 10px;
-      word-break: break-all;
-      text-align: center;
+    &-info {
+      &-name {
+        margin-bottom: 30px;
+        margin-top: -100px;
+        font-size: 32px;
+        color: #707070;
+        font-family: Montserrat;
+        padding: 0 30px;
+      }
 
-      &_icon {
-        margin-right: 5px;
-        color: #7367F0;
+      &-contact_data {
+        padding-left: 30px;
+        &-info {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 30px;
+          padding: 0 5px;
+          flex-wrap: wrap;
+          &_tile {
+            display: flex;
+            //align-items: center;
+            font-size: 18px;
+            color: #707070;
+            font-family: Montserrat;
+            padding: 5px 0;
+            word-break: break-all;
+            text-align: center;
+
+            &-icon {
+              margin-right: 5px;
+              color: #7367F0;
+            }
+          }
+        }
       }
     }
+
   }
+
+
 
   &_tabs {
     border-bottom: 2px solid #7367F0;
@@ -138,11 +149,14 @@
   .member-firm-profile {
     &_header {
       &_logo {
-        width: 260px;
-        max-height: 260px;
+        width: 150px;
+        max-height: 150px;
       }
-      &_name {
-        font-size: 28px;
+      &-info {
+        &-name {
+          margin-bottom: 20px;
+          margin-top: -50px;
+        }
       }
     }
   }
