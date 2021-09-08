@@ -380,7 +380,14 @@ const surveysReducer = {
 
     state.isLoading = false;
     state.error = false;
-  }
+  },
+
+  updateSurveyMainDataSuccess: (state, {payload}) => {
+
+
+    state.isLoading = false;
+    state.error = false;
+  },
 
 };
 

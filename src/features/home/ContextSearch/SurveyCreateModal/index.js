@@ -16,6 +16,7 @@ import './styles.scss'
 const {
   createSurveyRequest,
   changeSurveyMainData,
+  updateSurveyMainDataRequest,
 } = appSlice.actions;
 
 
@@ -43,6 +44,8 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
   const [minPercentToPass, setMinPercentToPass] = useState("50");
 
   const isLoading = useSelector(createLoadingSelector([createSurveyRequest.type], true));
+  const isSurveyUpdating = useSelector(createLoadingSelector([updateSurveyMainDataRequest.type], true));
+
   const error = useSelector(selectError);
   const organizations = useSelector(selectOrganizations);
 
@@ -63,7 +66,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
 
   const handleSubmit = async () => {
 
-    const surveyData = {
+    const surveyRequestData = {
       title: surveyTitle,
       description: surveyDescription,
       is_can_return: isUserAbleToGoBackDuringSurvey,
@@ -77,16 +80,18 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
     const validationSchema = isEdit ? editSurveyValidation : createSurveyValidation;
 
     const isValid = await validationSchema
-                          .validate(surveyData)
+                          .validate(surveyRequestData)
                           .catch((err) => { toast.error(err.message) });
 
     if (!isValid) return;
 
     if (isEdit) {
-      dispatch(changeSurveyMainData(surveyData));
+      surveyRequestData.interaction_id = surveyData.latest_version.interaction_id;
+
+      dispatch(updateSurveyMainDataRequest({surveyId: surveyData.id, data: surveyRequestData}));
       handleModalClose();
     } else {
-      dispatch(createSurveyRequest(surveyData));
+      dispatch(createSurveyRequest(surveyRequestData));
     }
   };
 
