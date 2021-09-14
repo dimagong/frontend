@@ -1,5 +1,6 @@
 .custom-textarea {
-  resize: both;
+  resize: vertical;
+  min-height: 45px;
   width: 100%;
   background: #eee;
   border: 0;
