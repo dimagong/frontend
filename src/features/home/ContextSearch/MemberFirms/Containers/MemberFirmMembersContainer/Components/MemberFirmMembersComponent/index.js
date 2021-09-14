@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
@@ -6,6 +7,7 @@ import { Button } from 'reactstrap'
 import {Settings} from 'react-feather';
 import MemberFirmEditUsers from "../../../../MemberFirmEditUsers";
 import MemberFirmUsersList from "./Components/MemberFirmUsersList";
+import {HEADER_HEIGHT} from "constants/header";
 
 import "./styles.scss"
 
@@ -34,44 +36,48 @@ const MemberFirmMembersComponent = ({
 
   return (
     <ContextFeatureTemplate contextFeatureTitle="Associated members" isSearchEnabled onSearchValueChange={onSearch} searchValue={searchQuery}>
-      <div className="member-firm-associated-members">
-        <MemberFirmUsersList
-          className={"principals"}
-          users={principals.filter(user => isUserMatchSearchQuery(user))}
-          label="Principals"
-          isLoading={isMemberFirmMembersLoading}
-          isSearch={!!searchQuery}
-          onUserClick={onNavigateToUserProfile}
-        />
-        <MemberFirmUsersList
-          className={"members"}
-          users={members.filter(user => isUserMatchSearchQuery(user))}
-          label="Members"
-          isLoading={isMemberFirmMembersLoading}
-          isSearch={!!searchQuery}
-          onUserClick={onNavigateToUserProfile}
-        />
-      </div>
+      <Scrollbars autoHeight autoHeightMax={window.innerHeight - HEADER_HEIGHT}>
+        <div className={'member-firm-members-scroll'}>
+          <div className="member-firm-associated-members">
+            <MemberFirmUsersList
+              className={"principals"}
+              users={principals.filter(user => isUserMatchSearchQuery(user))}
+              label="Principals"
+              isLoading={isMemberFirmMembersLoading}
+              isSearch={!!searchQuery}
+              onUserClick={onNavigateToUserProfile}
+            />
+            <MemberFirmUsersList
+              className={"members"}
+              users={members.filter(user => isUserMatchSearchQuery(user))}
+              label="Members"
+              isLoading={isMemberFirmMembersLoading}
+              isSearch={!!searchQuery}
+              onUserClick={onNavigateToUserProfile}
+            />
+          </div>
 
-      <Button
-        className="member-firm-associated-members_settings-button"
-        color="primary"
-        onClick={() => setIsEditUserModalOpened(true)}
-      >
-        <Settings />
-      </Button>
+          <Button
+            className="member-firm-associated-members_settings-button"
+            color="primary"
+            onClick={() => setIsEditUserModalOpened(true)}
+          >
+            <Settings />
+          </Button>
 
-      <MemberFirmEditUsers
-        allMembers={allMembers}
-        isModalOpen={isEditUserModalOpened}
-        setIsModalOpen={setIsEditUserModalOpened}
-        members={(potentialMembers && allMembers) ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) !== -1) : []}
-        potentialMembers={potentialMembers
-          ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) === -1)
-          : []}
-        memberFirm={memberFirm}
-        principals={principals}
-      />
+          <MemberFirmEditUsers
+            allMembers={allMembers}
+            isModalOpen={isEditUserModalOpened}
+            setIsModalOpen={setIsEditUserModalOpened}
+            members={(potentialMembers && allMembers) ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) !== -1) : []}
+            potentialMembers={potentialMembers
+              ? potentialMembers.filter(item => allMembers.findIndex(element => element.id === item.id) === -1)
+              : []}
+            memberFirm={memberFirm}
+            principals={principals}
+          />
+        </div>
+      </Scrollbars>
     </ContextFeatureTemplate>
   )
 };

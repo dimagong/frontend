@@ -25,6 +25,7 @@ import "./styles.scss";
 
 import appSlice from "app/slices/appSlice";
 import {Select} from "../../../Components/SurveyFormComponents";
+import {HEADER_HEIGHT} from "constants/header";
 
 const {
   getSurveyVersionsRequest,
@@ -57,8 +58,6 @@ const SurveysDesignerComponent = ({
 
   const error = useSelector(selectError);
   const surveyVersions = useSelector(selectSurveyVersions);
-
-  const HEADER_HEIGHT = 200
 
 
   const prevSurveyLoadingValue = usePrevious(isSurveyLoading);

@@ -44,7 +44,6 @@ class Autocomplete extends React.Component {
     this.setState({
       activeSuggestion: 0,
       showSuggestions: false,
-      userInput: ""
     })
     if (url) this.props.history.push(url)
   }
