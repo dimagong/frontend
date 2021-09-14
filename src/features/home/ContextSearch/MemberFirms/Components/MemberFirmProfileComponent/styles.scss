@@ -1,24 +1,21 @@
 .member-firm-profile {
   background: white;
   margin-top: 70px;
+  border-radius: 10px;
   &_header {
     display: flex;
-    //flex-direction: row;
-    //justify-content: center;
     align-items: center;
-    margin-bottom: 30px;
     &_logo {
       position: relative;
       display: flex;
       background: #f8f8f8;
-      //justify-content: center;
-      //align-items: center;
       margin-top: -70px;
-      border-radius: 25px;
+      border-radius: 10px;
       border-bottom-left-radius: 0;
       border: 3px solid #7367F0;
       width: 200px;
       height: 200px;
+      min-width: 200px;
       max-height: 200px;
       overflow: hidden;
       img {
@@ -64,13 +61,21 @@
     }
 
     &-info {
+      // 100% - image width
+      max-width: calc(100% - 200px);
       &-name {
         margin-bottom: 30px;
         margin-top: -100px;
-        font-size: 32px;
+        font-size: 40px;
         color: #707070;
         font-family: Montserrat;
         padding: 0 30px;
+        p {
+          line-height: normal;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
       }
 
       &-contact_data {
@@ -150,10 +155,13 @@
     &_header {
       &_logo {
         width: 150px;
+        min-width: 150px;
         max-height: 150px;
       }
       &-info {
+        max-width: calc(100% - 150px);
         &-name {
+          font-size: 32px;
           margin-bottom: 20px;
           margin-top: -50px;
         }
