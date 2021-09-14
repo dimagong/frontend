@@ -6,6 +6,7 @@ import appSlice from 'app/slices/appSlice';
 
 const {
   setContext,
+  handleSurveyVersionSelect,
 
   getSurveysSuccess,
   getSurveysRequest,
@@ -464,6 +465,8 @@ function* updateSurveyMainData(payload) {
   if (response?.message) {
     yield put(updateSurveyMainDataError(response.message));
   } else {
+    yield put(getSurveyVersionsRequest(payload.payload.data.interaction_id));
+    yield put(handleSurveyVersionSelect(response.latest_version));
     yield put(updateSurveyMainDataSuccess(response));
   }
 }

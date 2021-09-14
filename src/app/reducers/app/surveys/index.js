@@ -112,16 +112,6 @@ const surveysReducer = {
     state.selectedSurvey.latest_version.latest_questions = latestQuestions;
   },
 
-  changeSurveyMainData: (state, { payload: {title, description, is_can_return, min_percent_pass} }) => {
-    state.selectedSurvey.latest_version = {
-      ...state.selectedSurvey.latest_version,
-      title,
-      description,
-      is_can_return,
-      min_percent_pass,
-    }
-  },
-
   updateSurveySuccess: (state, { payload }) => {
     state.surveys = state.surveys.map(survey => payload.id === survey.id ? payload : survey);
 
@@ -383,7 +373,7 @@ const surveysReducer = {
   },
 
   updateSurveyMainDataSuccess: (state, {payload}) => {
-
+    state.surveys = state.surveys.map(survey => payload.id === survey.id ? payload : survey);
 
     state.isLoading = false;
     state.error = false;

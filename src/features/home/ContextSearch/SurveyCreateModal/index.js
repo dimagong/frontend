@@ -15,7 +15,6 @@ import './styles.scss'
 
 const {
   createSurveyRequest,
-  changeSurveyMainData,
   updateSurveyMainDataRequest,
 } = appSlice.actions;
 
@@ -43,17 +42,18 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
   const [isUserAbleToGoBackDuringSurvey, setIsUserAbleToGoBackDuringSurvey] = useState(false);
   const [minPercentToPass, setMinPercentToPass] = useState("50");
 
-  const isLoading = useSelector(createLoadingSelector([createSurveyRequest.type], true));
+  const isSurveyCreating = useSelector(createLoadingSelector([createSurveyRequest.type], true));
   const isSurveyUpdating = useSelector(createLoadingSelector([updateSurveyMainDataRequest.type], true));
 
   const error = useSelector(selectError);
   const organizations = useSelector(selectOrganizations);
 
-  const prevLoadingValue = usePrevious(isLoading);
+  const prevSurveyCreateLoadingValue = usePrevious(isSurveyCreating);
+  const prevSurveyUpdateLoadingValue = usePrevious(isSurveyUpdating);
 
   const handleModalClose = () => {
 
-    if (!isLoading) {
+    if (!isSurveyCreating) {
       setSurveyTitle("");
       setSurveyDescription("");
       setSurveyOrganization(null);
@@ -88,8 +88,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
     if (isEdit) {
       surveyRequestData.interaction_id = surveyData.latest_version.interaction_id;
 
-      dispatch(updateSurveyMainDataRequest({surveyId: surveyData.id, data: surveyRequestData}));
-      handleModalClose();
+      dispatch(updateSurveyMainDataRequest({surveyId: surveyData.latest_version.id, data: surveyRequestData}));
     } else {
       dispatch(createSurveyRequest(surveyRequestData));
     }
@@ -125,10 +124,16 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
 
   // Close modal after user hit submit and request ends with no error
   useEffect(() => {
-    if (!error && prevLoadingValue === true && !isLoading) {
+    if (!error && prevSurveyCreateLoadingValue === true && !isSurveyCreating) {
       handleModalClose()
     }
-  }, [isLoading]);
+  }, [isSurveyCreating]);
+
+  useEffect(() => {
+    if (!error && prevSurveyUpdateLoadingValue === true && !isSurveyUpdating) {
+      handleModalClose()
+    }
+  }, [isSurveyUpdating]);
 
   useEffect(() => {
     if (isEdit && isOpen) {
@@ -148,7 +153,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
       onClose={handleModalClose}
       submitBtnText={isEdit ? "Save" : "Create"}
       onSubmit={handleSubmit}
-      isSubmitProceed={isLoading}
+      isSubmitProceed={isSurveyCreating || isSurveyUpdating}
     >
       <Input
         label={"Survey title"}
