@@ -79,24 +79,30 @@ const MemberFirmProfileComponent = ({
                 </div>
               )}
             </div>
-            <div className="member-firm-profile_header_name">
-              {data.main_fields.name}
+            <div className="member-firm-profile_header-info">
+              <div className="member-firm-profile_header-info-name">
+                <p>
+                  {data.main_fields.name}
+                </p>
+              </div>
+              <div className="member-firm-profile_header-info-contact_data">
+                {!!data.main_fields.email && (
+                  <div className="member-firm-profile_header-info-contact_data-info_tile">
+                    <AtSign className="member-firm-profile_header-info-contact_data-info_tile-icon" /> {data.main_fields.email}
+                  </div>
+                )}
+
+                {!!data.main_fields.contactNumber && (
+                  <div className="member-firm-profile_header-info-contact_data-info_tile">
+                    <PhoneEnabled className="member-firm-profile_header-info-contact_data-info_tile-icon" /> {data.main_fields.contactNumber}
+                  </div>
+                )}
+
+              </div>
             </div>
-          </div>
-          <div className="member-firm-profile_info">
-            {!!data.main_fields.email && (
-              <div className="member-firm-profile_info_tile">
-                <AtSign className="member-firm-profile_info_tile_icon" /> {data.main_fields.email}
-              </div>
-            )}
-
-            {!!data.main_fields.contactNumber && (
-              <div className="member-firm-profile_info_tile">
-                <PhoneEnabled className="member-firm-profile_info_tile_icon" /> {data.main_fields.contactNumber}
-              </div>
-            )}
 
           </div>
+
           <div className="member-firm-profile_tabs">
             {memberFirmProfileTabs.map(tab => (
               <Button className="member-firm-profile_tabs_tab" color={selectedTab === tab ? "primary" : "default"} onClick={() => setSelectedTab(tab)}>
