@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import classNames from "classnames";
 
@@ -8,21 +8,58 @@ import { CheckCircle } from 'react-feather';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 
 const MultipleChoice = ({ options }) => {
+  const [isSmallOptions, setIsSmallOptions] = useState(null);
 
-  return (
-    <div className={"answer multiple-choice"}>
-      <div className="title">
-        Mark one answer:
-      </div>
-      <div className="options">
+  const DisplayOptions = ({type}) => {
+    return (
+      <div className={`options
+        ${((type === 'large' && isSmallOptions)
+        || (type === 'small' && isSmallOptions === false))
+        ? "options-hidden" : ""}`
+      }>
         {options.map((answer, index) => (
-          <div key={index} className={`option ${answer.is_correct ? "selected" : ""}`}>
+          <div key={index} className={`option option-${type} ${answer.is_correct ? "selected" : ""}`}>
             <div className={"option-circle"} />
             <div className={"option-text"}>
               {answer.text}
             </div>
           </div>
         ))}
+      </div>
+    )
+  }
+
+  useEffect(() => {
+    let optionsElementsCollection = document.getElementsByClassName('option-small');
+    let optionsElements = [].slice.call(optionsElementsCollection);
+    optionsElements = optionsElements.filter(item => options.find(option => option.text === item.childNodes[1].innerHTML))
+    if (optionsElements.length === 0) {
+      setIsSmallOptions(null);
+      return;
+    }
+    for (let i = 0; i < optionsElements.length; ++i) {
+      if (optionsElements[i].offsetHeight > 50) {
+        setIsSmallOptions(false)
+        return;
+      }
+    }
+    setIsSmallOptions(true)
+
+  }, [window.innerWidth, options])
+
+  return (
+    <div className={"answer multiple-choice"}>
+      <div className="title">
+        Mark one answer:
+      </div>
+      <div className={'all-options'}>
+        <DisplayOptions
+          type={'large'}
+        />
+
+        <DisplayOptions
+          type={'small'}
+        />
       </div>
     </div>
   )
