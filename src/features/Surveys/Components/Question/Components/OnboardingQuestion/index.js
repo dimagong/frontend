@@ -3,20 +3,28 @@ import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 import { getTimeDifference } from "utility/common";
 import SurveyModal from "../../../SurveyModal";
 import HintIcon from "assets/img/svg/help-with-circle.svg"
+import {useSmallOptionsSurveyStyles} from "hooks/useSmallOptionsSurveyStyles";
 
 const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
-  const [isSmallOptions, setIsSmallOptions] = useState(null);
+  const [IsSmallOptionsStylesUsed, setIsSmallOptionsStylesUsed] = useState(false);
+
+  const optionsRef = React.useRef([]);
+
+  useEffect(() => {
+    optionsRef.current = optionsRef.current.slice(0, options.length);
+  }, [options]);
+
 
   const DisplayOptions = ({type}) => {
     return (
       <div className={`options
-        ${((type === 'large' && isSmallOptions)
-        || (type === 'small' && isSmallOptions === false))
+        ${((type === 'large' && IsSmallOptionsStylesUsed)
+        || (type === 'small' && !IsSmallOptionsStylesUsed))
         ? "options-hidden" : ""}`
       }>
         {options.map((answer, index) => (
           <div key={index} className={`option option-${type} ${answer.id === correctAnswerId ? "selected" : ""}`}
-               onClick={() => onChange(answer.id)}>
+               onClick={() => onChange(answer.id)} ref={el => optionsRef.current[index] = el}>
             <div className={"option-circle"} />
             <div className={"option-text"}>
               {answer.text}
@@ -27,21 +35,7 @@ const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
     )
   }
 
-  useEffect(() => {
-    let options = document.getElementsByClassName('option-small');
-    if (options.length === 0) {
-      setIsSmallOptions(null);
-      return;
-    }
-    for (let i = 0; i < options.length; ++i) {
-      if (options[i].offsetHeight > 50) {
-        setIsSmallOptions(false)
-        return;
-      }
-    }
-    setIsSmallOptions(true)
-
-  }, [window.innerWidth, options])
+  useSmallOptionsSurveyStyles(options, setIsSmallOptionsStylesUsed, optionsRef);
 
   return (
     <div className={"answer multiple-choice"}>

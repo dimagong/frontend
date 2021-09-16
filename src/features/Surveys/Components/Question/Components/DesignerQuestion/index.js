@@ -6,19 +6,27 @@ import { Edit } from 'react-feather'
 import { Cancel } from "@material-ui/icons";
 import { CheckCircle } from 'react-feather';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
+import {useSmallOptionsSurveyStyles} from "hooks/useSmallOptionsSurveyStyles";
 
 const MultipleChoice = ({ options }) => {
-  const [isSmallOptions, setIsSmallOptions] = useState(null);
+  const [IsSmallOptionsStylesUsed, setIsSmallOptionsStylesUsed] = useState(null);
+
+  const optionsRef = React.useRef([]);
+
+  useEffect(() => {
+    optionsRef.current = optionsRef.current.slice(0, options.length);
+  }, [options]);
 
   const DisplayOptions = ({type}) => {
     return (
       <div className={`options
-        ${((type === 'large' && isSmallOptions)
-        || (type === 'small' && isSmallOptions === false))
+        ${((type === 'large' && IsSmallOptionsStylesUsed)
+        || (type === 'small' && IsSmallOptionsStylesUsed === false))
         ? "options-hidden" : ""}`
       }>
         {options.map((answer, index) => (
-          <div key={index} className={`option option-${type} ${answer.is_correct ? "selected" : ""}`}>
+          <div key={index} className={`option option-${type} ${answer.is_correct ? "selected" : ""}`}
+            ref={el => optionsRef.current[index] = el}>
             <div className={"option-circle"} />
             <div className={"option-text"}>
               {answer.text}
@@ -29,23 +37,7 @@ const MultipleChoice = ({ options }) => {
     )
   }
 
-  useEffect(() => {
-    let optionsElementsCollection = document.getElementsByClassName('option-small');
-    let optionsElements = [].slice.call(optionsElementsCollection);
-    optionsElements = optionsElements.filter(item => options.find(option => option.text === item.childNodes[1].innerHTML))
-    if (optionsElements.length === 0) {
-      setIsSmallOptions(null);
-      return;
-    }
-    for (let i = 0; i < optionsElements.length; ++i) {
-      if (optionsElements[i].offsetHeight > 50) {
-        setIsSmallOptions(false)
-        return;
-      }
-    }
-    setIsSmallOptions(true)
-
-  }, [window.innerWidth, options])
+  useSmallOptionsSurveyStyles(options, setIsSmallOptionsStylesUsed, optionsRef);
 
   return (
     <div className={"answer multiple-choice"}>
