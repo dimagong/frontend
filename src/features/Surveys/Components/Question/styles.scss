@@ -2,7 +2,6 @@
   position: relative;
   background: white;
   border-radius: 0.5rem;
-  width: 100%;
   padding: 20px 66px 20px 66px;
   box-shadow: 0 3px 6px 0 rgba(0,0,0, 0.16);
   border: 2px solid transparent;
@@ -87,8 +86,23 @@
   }
 
   .multiple-choice {
+    .all-options {
+      position: relative;
+      .options-hidden {
+        visibility: hidden;
+        position: absolute;
+      }
+    }
 
     .options {
+      .option-small {
+          width: 45%;
+          margin-right: 2.5%;
+          margin-left: 2.5%;
+          display: inline-flex!important;
+        }
+
+
       .option {
         box-shadow: 0 3px 6px 0 rgba(0,0,0, 0.16);
         margin-bottom: 25px;
@@ -270,4 +284,8 @@
       border-color: #e7e7e7;
     }
   }
+}
+
+.question-designer-view {
+  width: 100%;
 }
