@@ -14,6 +14,7 @@ import {
   removeMemberFirmLogoUrl,
   getMemberFirm,
   getMemberFirmActivitiesUrl,
+  addFormFieldToMemberFirmUrl,
 } from "./constants";
 
 const memberFirmsApi = {
@@ -70,6 +71,10 @@ const memberFirmsApi = {
   async getMemberFirmActivities(payload) {
     return await requestLayout(getMemberFirmActivitiesUrl(payload.memberFirmId),"GET", {page: payload.page})
   },
+
+  async addFieldToMemberFirm({payload}) {
+    return await requestLayout(addFormFieldToMemberFirmUrl(payload.memberFirmId), "POST", payload.data)
+  }
 
 };
 
