@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import classNames from "classnames";
 
@@ -6,23 +6,53 @@ import { Edit } from 'react-feather'
 import { Cancel } from "@material-ui/icons";
 import { CheckCircle } from 'react-feather';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
+import {useSmallOptionsSurveyStyles} from "hooks/useSmallOptionsSurveyStyles";
 
 const MultipleChoice = ({ options }) => {
+  const [IsSmallOptionsStylesUsed, setIsSmallOptionsStylesUsed] = useState(null);
 
-  return (
-    <div className={"answer multiple-choice"}>
-      <div className="title">
-        Mark one answer:
-      </div>
-      <div className="options">
+  const optionsRef = React.useRef([]);
+
+  useEffect(() => {
+    optionsRef.current = optionsRef.current.slice(0, options.length);
+  }, [options]);
+
+  const DisplayOptions = ({type}) => {
+    return (
+      <div className={`options
+        ${( (IsSmallOptionsStylesUsed === null)
+        ||  (type === 'large' && IsSmallOptionsStylesUsed)
+        || (type === 'small' && !IsSmallOptionsStylesUsed))
+        ? "options-hidden" : ""}`
+      }>
         {options.map((answer, index) => (
-          <div key={index} className={`option ${answer.is_correct ? "selected" : ""}`}>
+          <div key={index} className={`option option-${type} ${answer.is_correct ? "selected" : ""}`}
+            ref={el => optionsRef.current[index] = el}>
             <div className={"option-circle"} />
             <div className={"option-text"}>
               {answer.text}
             </div>
           </div>
         ))}
+      </div>
+    )
+  }
+
+  useSmallOptionsSurveyStyles(options, setIsSmallOptionsStylesUsed, optionsRef);
+
+  return (
+    <div className={"answer multiple-choice"}>
+      <div className="title">
+        Mark one answer:
+      </div>
+      <div className={'all-options'}>
+        <DisplayOptions
+          type={'large'}
+        />
+
+        <DisplayOptions
+          type={'small'}
+        />
       </div>
     </div>
   )

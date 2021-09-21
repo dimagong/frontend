@@ -59,7 +59,8 @@ const WorkFlowsAndNotificationsList = ({ context }) => {
   const changeContext = (newContext) => {
     // newContext is just context that we want to appear
     // context from props is context for notifications\workflows creation
-    dispatch(setNotificationsAndWorkFlowsContext(context));
+    const notificationAndWorkflowContext = context === 'dForm' ? 'application' : 'survey';
+    dispatch(setNotificationsAndWorkFlowsContext(notificationAndWorkflowContext));
     dispatch(setContext(newContext));
   };
 

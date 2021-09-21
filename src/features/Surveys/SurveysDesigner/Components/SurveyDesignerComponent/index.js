@@ -25,6 +25,7 @@ import "./styles.scss";
 
 import appSlice from "app/slices/appSlice";
 import {Select} from "../../../Components/SurveyFormComponents";
+import {HEADER_HEIGHT} from "constants/header";
 
 const {
   getSurveyVersionsRequest,
@@ -32,6 +33,7 @@ const {
   deleteSurveyLatestVersionRequest,
   deleteSurveyVersionRequest,
   setContext,
+  updateSurveyMainDataRequest,
 } = appSlice.actions;
 
 const SurveysDesignerComponent = ({
@@ -54,15 +56,15 @@ const SurveysDesignerComponent = ({
   const isSurveyDeleteProceed = useSelector(createLoadingSelector([deleteSurveyRequest.type], true));
   const isSurveyDeleteLatestVersionProceed = useSelector(createLoadingSelector([deleteSurveyLatestVersionRequest.type], true));
   const isSurveyDeleteVersionProceed = useSelector(createLoadingSelector([deleteSurveyVersionRequest.type], true));
+  const isSurveyMainDataUpdateProceed = useSelector(createLoadingSelector([updateSurveyMainDataRequest.type], true));
 
   const error = useSelector(selectError);
   const surveyVersions = useSelector(selectSurveyVersions);
 
-  const HEADER_HEIGHT = 200
-
 
   const prevSurveyLoadingValue = usePrevious(isSurveyLoading);
   const prevSurveyUpdateProceed = usePrevious(isSurveyUpdateProceed);
+  const prevSurveyMainDataUpdateProceed = usePrevious(isSurveyMainDataUpdateProceed);
 
   const handleEditSurvey = () => {
     setIsEditSurveyModalVisible(true)
@@ -100,6 +102,13 @@ const SurveysDesignerComponent = ({
   const handleSurveyHide = () => {
     dispatch(setContext(null))
   };
+
+  useEffect(() => {
+    if (!isSurveyMainDataUpdateProceed && prevSurveyMainDataUpdateProceed && !error) {
+
+      setSurveyVersion({value: survey.latest_version.id, label: survey.latest_version.current_version})
+    }
+  }, [isSurveyMainDataUpdateProceed]);
 
   useEffect(() => {
     if (!isSurveyUpdateProceed && prevSurveyUpdateProceed && !error) {

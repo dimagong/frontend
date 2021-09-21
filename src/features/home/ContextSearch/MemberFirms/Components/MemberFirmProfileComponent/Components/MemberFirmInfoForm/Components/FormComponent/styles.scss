@@ -7,10 +7,12 @@
   &-fields {
     &-actions {
       display: flex;
-      //justify-content: space-between;
       justify-content: flex-end;
       padding-top: 50px;
       align-items: center;
+      &.with_add_button {
+        justify-content: space-between;
+      }
       &-add_field {
         border-radius: 40px;
         padding: 15px;

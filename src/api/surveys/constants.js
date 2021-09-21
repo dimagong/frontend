@@ -25,3 +25,4 @@ export const getSwitchToPreviousQuestionUrl = (assignedInteractionId) => `api/su
 export const addFeedbackToQuestionUrl = (assignedInteractionId) => `api/survey-assigned-interaction/${assignedInteractionId}/feedback`;
 export const getAllSurveyQuestionUrl = (assignedInteractionId) => `api/survey-passing/${assignedInteractionId}/questions`;
 export const getSurveyByIdUrl = (assignedSurveyId) => `api/survey-passing/${assignedSurveyId}`;
+export const updateSurveyMainDataUrl = (surveyVersionId) => `api/survey-interaction/${surveyVersionId}/with-previous-questions`;

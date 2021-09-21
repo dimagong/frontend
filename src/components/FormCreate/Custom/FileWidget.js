@@ -156,9 +156,9 @@ export function FileWidget(props) {
   const renderSingleFile = (fileDataUrl) => {
     if (!fileDataUrl) return <div></div>;
 
-    // if (!fileDataUrl.property_value) {
-    //   return <div></div>;
-    // }
+    if (!fileDataUrl.property_value) {
+      return <div></div>;
+    }
 
     if (Array.isArray(fileDataUrl) && fileDataUrl.length) {
       fileDataUrl = fileDataUrl[0];

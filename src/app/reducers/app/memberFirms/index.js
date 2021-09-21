@@ -101,6 +101,13 @@ const memberFirmsReducer = {
     state.isLoading = false;
     state.error = false;
   },
+
+  addFieldToMemberFirmSuccess: (state, {payload}) => {
+    state.selectedMemberFirmFormFields = payload;
+
+    state.isLoading = false;
+    state.error = false;
+  }
 };
 
 export default memberFirmsReducer;
