@@ -33,6 +33,7 @@ import {CheckboxesWidget} from "./Custom/CheckboxesWidget/CheckboxesWidget";
 import {CheckboxWidget} from "./Custom/CheckboxWidget";
 import Reference from "./Custom/Reference";
 import TextWidget from './Custom/TextWidget';
+import LongTextWidget from './Custom/LongTextWidget';
 import NumberWidget from './Custom/NumberWidget';
 import SelectWidget from './Custom/SelectWidget';
 import TextAreaWidget from './Custom/TextAreaWidget';
@@ -42,7 +43,7 @@ import DateTimeInput from './Custom/DateTimeInput';
 import {isEqual, debounce, concat, isObject, isEmpty, difference, omit, differenceWith} from 'lodash';
 import fileService from "./services/file.service";
 import Constants, {
-  FIELD_TYPE_BOOLEAN, FIELD_TYPE_DATE, FIELD_TYPE_FILE, FIELD_TYPE_FILE_LIST,
+  FIELD_TYPE_BOOLEAN, FIELD_TYPE_DATE, FIELD_TYPE_FILE, FIELD_TYPE_FILE_LIST, FIELD_TYPE_LONG_TEXT_AREA,
   FIELD_TYPE_MULTI_SELECT, FIELD_TYPE_NUMBER, FIELD_TYPE_REFERENCE,
   FIELD_TYPE_SELECT, FIELD_TYPE_TEXT,
   FIELD_TYPE_TEXT_AREA
@@ -286,6 +287,10 @@ class FormCreate extends React.Component {
           break;
         }
         case FIELD_TYPE_TEXT_AREA: {
+          formData[key] = '';
+          break;
+        }
+        case FIELD_TYPE_LONG_TEXT_AREA: {
           formData[key] = '';
           break;
         }
@@ -2040,6 +2045,7 @@ class FormCreate extends React.Component {
                   FileWidget: this.fileWidget,
 
                   TextWidget: TextWidget,
+                  LongTextWidget: LongTextWidget,
                   SelectWidget: SelectWidget,
                   TextareaWidget: TextAreaWidget,
                   DateWidget: DateInput,
