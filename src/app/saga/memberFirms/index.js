@@ -56,6 +56,10 @@ const {
   getMemberFirmActivitiesSuccess,
   getMemberFirmActivitiesRequest,
   getMemberFirmActivitiesError,
+
+  addFieldToMemberFirmSuccess,
+  addFieldToMemberFirmRequest,
+  addFieldToMemberFirmError,
 } = appSlice.actions;
 
 
@@ -199,6 +203,16 @@ function* removeMemberFirmLogo({payload}) {
   }
 }
 
+function* addFieldToMemberFirm(payload) {
+  const response = yield call(memberFirmsApi.addFieldToMemberFirm, payload);
+
+  if (response?.message) {
+    yield put(addFieldToMemberFirmError(response?.message));
+  } else {
+    yield put(addFieldToMemberFirmSuccess(response));
+  }
+}
+
 export default function* () {
   yield all([
     takeLatest(createMemberFirmRequest.type, createMemberFirm),
@@ -214,5 +228,6 @@ export default function* () {
     takeLatest(removeMemberFirmLogoRequest.type, removeMemberFirmLogo),
     takeLatest(getMemberFirmRequest.type, getMemberFirm),
     takeLatest(getMemberFirmActivitiesRequest.type, getMemberFirmActivities),
+    takeLatest(addFieldToMemberFirmRequest.type, addFieldToMemberFirm),
   ]);
 }

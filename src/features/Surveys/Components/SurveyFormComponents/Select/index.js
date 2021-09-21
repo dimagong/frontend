@@ -65,22 +65,32 @@ const versionSelectStyles = {
   indicatorSeparator: () => ({display: 'none'}),
 };
 
-const SurveySelectComponent = ({value, onChange, options, displayType, ...rest}) => {
+const SurveySelectComponent = ({value, onChange, options, displayType, label, name, className, ...rest}) => {
 
   return (
-    <Select
-      components={{DropdownIndicator:  DropdownIndicator,}}
-      value={value}
-      maxMenuHeight={200}
-      isMulti={false}
-      isClearable={false}
-      styles={displayType === "versionSelect" ? versionSelectStyles : defaultStyles}
-      options={options}
-      onChange={onChange}
-      classNamePrefix="select"
-      id="organizations"
-      {...rest}
-    />
+    <div className={className || ""}>
+      {!!label && (
+        <label
+          className="survey-input-component_label"
+          htmlFor={name}
+        >
+          {label}
+        </label>
+      )}
+      <Select
+        components={{DropdownIndicator:  DropdownIndicator,}}
+        value={value}
+        maxMenuHeight={200}
+        isMulti={false}
+        isClearable={false}
+        styles={displayType === "versionSelect" ? versionSelectStyles : defaultStyles}
+        options={options}
+        onChange={onChange}
+        classNamePrefix="select"
+        id="organizations"
+        {...rest}
+      />
+    </div>
   )
 };
 

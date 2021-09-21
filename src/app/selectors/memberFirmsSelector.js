@@ -40,6 +40,8 @@ export const getSelectedMemberFirmAllUsers = (state) => (
   [...getSelectedMemberFirmMembers(state), ...getSelectedMemberFirmPrincipals(state)]
 );
 
+export const getSelectedMemberFirmId = (state) => state?.app?.selectedMemberFirmId;
+
 export const getSelectedMemberFirmMSFields = (state) => state?.app?.selectedMemberFirmMSFields || [];
 export const getSelectedMemberFirmFormFields = (state) => state?.app?.selectedMemberFirmFormFields || [];
 export const getSelectedMemberFirmActivities = (state) => state?.app?.memberFirmActivities;

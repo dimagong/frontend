@@ -1,8 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import masterSchemaService from "./services/masterSchema.service";
+import { useDispatch, useSelector } from "react-redux";
 import {Button, CardBody, Input, InputGroup, InputGroupAddon, Label} from "reactstrap";
+import { getSelectedMemberFirmId } from "app/selectors/memberFirmsSelector";
+import appSlice from "../../../app/slices/appSlice";
+
+const {
+  getMasterSchemaFieldsForMemberFirmRequest,
+} = appSlice.actions;
 
 export default function FieldCreate({data, onNewField}) {
+  const dispatch = useDispatch();
+
+  const selectedMemberFirmId = useSelector(getSelectedMemberFirmId);
 
   const [newField, setNewField] = useState({});
   const [selectedElement, setSelectedElement] = useState({});
@@ -31,6 +41,10 @@ export default function FieldCreate({data, onNewField}) {
       });
     } catch (exception) {
       console.log(exception);
+    }
+
+    if (selectedMemberFirmId) {
+      dispatch(getMasterSchemaFieldsForMemberFirmRequest(selectedMemberFirmId))
     }
   };
 

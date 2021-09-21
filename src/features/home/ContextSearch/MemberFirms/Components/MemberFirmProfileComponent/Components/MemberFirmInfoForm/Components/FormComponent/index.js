@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import appSlice from "../../../../../../../../app/slices/appSlice";
+import appSlice from "../../../../../../../../../../app/slices/appSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {createLoadingSelector} from "app/selectors/loadingSelector";
 import {
@@ -9,17 +9,19 @@ import {
 } from 'reactstrap';
 
 import LoadingButton from "components/LoadingButton";
+import AddFieldModal from "./Components/AddFieldModal";
+import validationSchemas from "../../../../../formComponents/validationSchemas";
+import formComponents from "../../../../../formComponents";
 
-import validationSchemas from "../../../formComponents/validationSchemas";
-import formComponents from "../../../formComponents";
+import { selectError } from "app/selectors";
 
 import {Plus} from "react-feather";
 import './styles.scss';
-import * as yup from "yup";
 import {toast} from "react-toastify";
 
 const {
   updateMemberFirmFormValuesRequest,
+  addFieldToMemberFirmRequest,
 } = appSlice.actions;
 
 const FormComponent = ({
@@ -28,13 +30,17 @@ const FormComponent = ({
   memberFirmFormFields,
   masterSchemaMemberFirmFields,
   memberFirmId,
+  onFieldAdd,
 }) => {
-
+  console.log(memberFirmFormFields, masterSchemaMemberFirmFields);
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({});
+  const [isAddFieldModalVisible, setIsAddFieldModalVisible] = useState(false);
 
   const isSubmitProceeding = useSelector(createLoadingSelector([updateMemberFirmFormValuesRequest.type], true));
+  const isAddingFieldToMemberFirmLoading = useSelector(createLoadingSelector([addFieldToMemberFirmRequest.type], true));
+  const error = useSelector(selectError);
 
   // Each field store with structure:
   // - id - id of master schema field id
@@ -122,6 +128,18 @@ const FormComponent = ({
     setFormData(initialData);
   };
 
+  const handleAddFieldModalOpen = () => {
+    setIsAddFieldModalVisible(true);
+  };
+
+  const handleAddFieldModalClose = () => {
+    setIsAddFieldModalVisible(false)
+  };
+
+  const handleAddFieldSubmit = (data) => {
+    dispatch(addFieldToMemberFirmRequest({memberFirmId: memberFirmId, data}))
+  };
+
   // Init form
   useEffect(() => {
     if(memberFirmFormFields.length) {
@@ -157,10 +175,12 @@ const FormComponent = ({
             )
           })}
 
-          <div className="member_firm-form_component-fields-actions">
-            {/*<Button className="member_firm-form_component-fields-actions-add_field" color="primary">*/}
-            {/*  <Plus size={28}/>*/}
-            {/*</Button>*/}
+          <div className={`member_firm-form_component-fields-actions ${onFieldAdd ? "with_add_button" : ""}`}>
+            {onFieldAdd && (
+              <Button onClick={handleAddFieldModalOpen} className="member_firm-form_component-fields-actions-add_field" color="primary">
+                <Plus size={28}/>
+              </Button>
+            )}
 
             <LoadingButton
               className="member_firm-form_component-fields-actions-save"
@@ -171,6 +191,16 @@ const FormComponent = ({
           </div>
         </div>
       )}
+
+      <AddFieldModal
+        isOpen={isAddFieldModalVisible}
+        onClose={handleAddFieldModalClose}
+        isMSPropertiesLoading={isMasterSchemaFieldsForMemberFirmLoading}
+        MSProperties={masterSchemaMemberFirmFields}
+        onSubmit={handleAddFieldSubmit}
+        isSubmitProceeding={isAddingFieldToMemberFirmLoading}
+        error={error}
+      />
     </div>
   )
 };
