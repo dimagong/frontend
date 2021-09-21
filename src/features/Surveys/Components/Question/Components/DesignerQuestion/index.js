@@ -20,8 +20,9 @@ const MultipleChoice = ({ options }) => {
   const DisplayOptions = ({type}) => {
     return (
       <div className={`options
-        ${((type === 'large' && IsSmallOptionsStylesUsed)
-        || (type === 'small' && IsSmallOptionsStylesUsed === false))
+        ${( (IsSmallOptionsStylesUsed === null)
+        ||  (type === 'large' && IsSmallOptionsStylesUsed)
+        || (type === 'small' && !IsSmallOptionsStylesUsed))
         ? "options-hidden" : ""}`
       }>
         {options.map((answer, index) => (

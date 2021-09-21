@@ -6,7 +6,7 @@ import HintIcon from "assets/img/svg/help-with-circle.svg"
 import {useSmallOptionsSurveyStyles} from "hooks/useSmallOptionsSurveyStyles";
 
 const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
-  const [IsSmallOptionsStylesUsed, setIsSmallOptionsStylesUsed] = useState(false);
+  const [IsSmallOptionsStylesUsed, setIsSmallOptionsStylesUsed] = useState(null);
 
   const optionsRef = React.useRef([]);
 
@@ -18,7 +18,8 @@ const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
   const DisplayOptions = ({type}) => {
     return (
       <div className={`options
-        ${((type === 'large' && IsSmallOptionsStylesUsed)
+        ${( (IsSmallOptionsStylesUsed === null)
+        ||  (type === 'large' && IsSmallOptionsStylesUsed)
         || (type === 'small' && !IsSmallOptionsStylesUsed))
         ? "options-hidden" : ""}`
       }>
