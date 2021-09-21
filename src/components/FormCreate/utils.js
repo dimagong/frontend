@@ -1,6 +1,10 @@
 import * as _ from 'lodash'
+import { Base64 } from 'js-base64';
 
 export function dataURItoBlob(dataURI) {
+
+
+
   try {
     // Split metadata from data
     var splitted = dataURI.split(","); // Split params
@@ -24,13 +28,12 @@ export function dataURItoBlob(dataURI) {
     } // Built the Uint8Array Blob parameter from the base64 string.
 
 
-    var binary = atob(splitted[1]);
+    var binary = Base64.atob((splitted[1]));
     var array = [];
 
     for (var i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
     } // Create the blob object
-
 
     var blob = new window.Blob([new Uint8Array(array)], {
       type: type
