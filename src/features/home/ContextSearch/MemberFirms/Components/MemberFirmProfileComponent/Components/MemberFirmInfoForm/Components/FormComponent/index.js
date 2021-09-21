@@ -155,7 +155,7 @@ const FormComponent = ({
         </div>
       ) : (
         <div className="member_firm-form_component-fields">
-          {memberFirmFormFields.map((formField, index) => {
+          {memberFirmFormFields.map((formField) => {
 
             const FormFieldElement = formComponents[formField.type];
             const fieldId = formField.master_schema_field_id;
