@@ -353,6 +353,39 @@ export function listControls(properties) {
             </Row>
           );
         }
+        case Constants.FIELD_TYPE_LONG_TEXT_AREA: {
+          return (
+            <Row>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+
+              <Col md="6">
+                <FormGroup>
+                  {renderLabel('minLength', 'Min length')}
+                  {renderInputNumberColumn('minLength', 'Min length')}
+                </FormGroup>
+              </Col>
+
+              <Col md="6">
+                <FormGroup>
+                  {renderLabel('maxLength', 'Max length')}
+                  {renderInputNumberColumn('maxLength', 'Max length')}
+                </FormGroup>
+              </Col>
+              <Col md="12">
+                <FormGroup>
+                  {renderRequiredColumn(objKey, 'Required?')}
+                </FormGroup>
+              </Col>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabelShowing(objKey, 'Required?')}
+                </FormGroup>
+              </Col>
+            </Row>
+          );
+        }
         case Constants.FIELD_TYPE_DATE: {
           return (<div>
             <Row>
