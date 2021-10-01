@@ -7,7 +7,7 @@ import htmlToDraft from 'html-to-draftjs'
 
 import './wysiwygEditor.scss';
 
-export default function WysiwygEditor({orgId = "default", disabled, data, onChange, orgPage = false}) {
+export default function WysiwygEditor({toolbar, orgId = "default", disabled, data, onChange, orgPage = false}) {
   const [editorState, setEditorState] = useState(false);
 
   const init = () => {
@@ -55,6 +55,7 @@ export default function WysiwygEditor({orgId = "default", disabled, data, onChan
       wrapperClassName="wrapperClassName"
       editorClassName="editorClassName"
       onEditorStateChange={onEditorStateChange}
+      toolbar={toolbar}
     />)
 }
 
