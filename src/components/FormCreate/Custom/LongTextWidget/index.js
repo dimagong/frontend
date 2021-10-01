@@ -17,7 +17,7 @@ const LongTextWidget = ({props}) => {
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [inputHTML, setInputHTML] = useState('');
-  const inputRef = React.useRef()
+  const inputRef = React.useRef();
 
   const wysiwygChange = (event) => {
     setInputValue(event)
@@ -55,6 +55,7 @@ const LongTextWidget = ({props}) => {
       <span className={'long-text-area-open-more'} onClick={() => setIsModalOpened(true)}>Click here to expand text area</span>
 
       <SurveyModal
+        className={'long-text-modal-window'}
         isOpen={isModalOpened}
         onClose={handleModalClose}
         submitBtnText={"Close"}
@@ -69,6 +70,17 @@ const LongTextWidget = ({props}) => {
             data={inputValue}
             onChange={event => wysiwygChange(event)}
             className="form-control"
+            toolbar={{
+              options: ['inline', 'list', 'textAlign', 'link'],
+              inline: {
+                inDropdown: false,
+                options: ['bold', 'italic', 'underline'],
+              },
+              textAlign: {
+                inDropdown: false,
+                options: ['indent', 'outdent'],
+              }
+            }}
           />
 
         </div>
