@@ -90,3 +90,8 @@
     }
   }
 }
+
+.custom-longtext {
+  overflow-y: scroll;
+  max-height: 100px;
+}
