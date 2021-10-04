@@ -74,3 +74,28 @@
     padding-bottom: 10px;
   }
 }
+.long-text-modal-window {
+  right: 125px;
+  .modal-content {
+    width: 750px;
+    height: 645px;
+    position: relative;
+    .rdw-editor-wrapper {
+      height: 430px;
+      .rdw-editor-main {
+        max-height: 390px;
+        height: auto;
+      }
+    }
+    .loading-button {
+      position: absolute;
+      bottom: 30px;
+      right: 21px;
+    }
+  }
+}
+
+.custom-longtext {
+  overflow-y: auto;
+  height: 100px;
+}
