@@ -21,7 +21,8 @@ import {
   sendInvitationAcceptPath,
   getOnboardingsByUserPath,
   getFilterPath,
-  getFilterPathByID
+  getFilterPathByID,
+  updateUserApplicationsOrder,
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
 import moment from "moment";
@@ -30,6 +31,9 @@ import {getQuestionUpdateUrl} from "../surveys/constants";
 const userApi = {
   async getFilter() {
     return await requestLayout(`/api/settings`, "GET")
+  },
+  async updateApllicationsOrder({ userId, orderedArray }) {
+    return await requestLayout(updateUserApplicationsOrder(userId), 'PUT', orderedArray)
   },
   async getActivities(payload) {
     try {
