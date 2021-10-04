@@ -80,18 +80,22 @@
     width: 750px;
     height: 645px;
     position: relative;
-    .rdw-editor-main {
-      max-height: 350px;
+    .rdw-editor-wrapper {
+      height: 430px;
+      .rdw-editor-main {
+        max-height: 390px;
+        height: auto;
+      }
     }
     .loading-button {
       position: absolute;
       bottom: 30px;
-      right: 30px;
+      right: 21px;
     }
   }
 }
 
 .custom-longtext {
-  overflow-y: scroll;
-  max-height: 100px;
+  overflow-y: auto;
+  height: 100px;
 }
