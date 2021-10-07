@@ -36,7 +36,6 @@ const MemberFirmMembersComponent = ({
 
   return (
     <ContextFeatureTemplate contextFeatureTitle="Associated members" isSearchEnabled onSearchValueChange={onSearch} searchValue={searchQuery}>
-      <Scrollbars autoHeight autoHeightMax={window.innerHeight - HEADER_HEIGHT}>
         <div className={'member-firm-members-scroll'}>
           <div className="member-firm-associated-members">
             <MemberFirmUsersList
@@ -77,7 +76,6 @@ const MemberFirmMembersComponent = ({
             principals={principals}
           />
         </div>
-      </Scrollbars>
     </ContextFeatureTemplate>
   )
 };
