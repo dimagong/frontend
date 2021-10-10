@@ -2,12 +2,11 @@ import React from 'react';
 import ContextTemplate from "components/ContextTemplate";
 
 
-const MasterSchemaContextComponent = () => {
+const MasterSchemaContextComponent = ({ children }) => {
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
-
-
+      {children}
     </ContextTemplate>
   )
 };
