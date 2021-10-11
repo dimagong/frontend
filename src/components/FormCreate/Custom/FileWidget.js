@@ -71,16 +71,21 @@ export function FileWidget(props) {
     }
   };
 
+  const deletedFiles = useRef([]);
+
   const removeFile = async (event, file, index) => {
     if (!window.confirm(`Are you sure you want to delete the file: ${file.name}`)) {
       return;
     }
     if (props.multiple) {
-      let newValue = clone(props.value);
-      newValue.splice(index, 1);
-      setFilesRemoving(filesRemoving.concat(props.value[index].file.id));
-      await fileService.deleteFile(props.value[index].file.id);
-      setFilesRemoving(filesRemoving.filter(fileId => fileId === props.value[index].file.id));
+      const { value } = props;
+      deletedFiles.current.push(value[index].file.id);
+
+      let newValue = [...value].filter(({ file }) => !deletedFiles.current.includes(file.id))
+
+      setFilesRemoving(filesRemoving.concat(value[index].file.id));
+      await fileService.deleteFile(value[index].file.id);
+      setFilesRemoving(filesRemoving.filter(fileId => fileId !== value[index].file.id));
       props.onChange(newValue);
     } else {
       setFilesRemoving(filesRemoving.concat(props.value[index].file.id));
@@ -92,7 +97,9 @@ export function FileWidget(props) {
 
   const renderFile = (file, index = null) => {
 
-    const isRemoving = Array.isArray(props.value) && ~filesRemoving.indexOf(props.value[index].file.id);
+    const isFileRemoving = deletedFiles.current.includes(props.value[index].file.id);
+    const isRemoving = (Array.isArray(props.value) && ~filesRemoving.indexOf(props.value[index].file.id)) || isFileRemoving;
+
     return (
       <div className="file">
         <div className="name">
