@@ -106,6 +106,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
             settings: settings
           }))
         } else {
+
           dispatch(getDashboardDataRequest({
             key: settings.key,
             page: 1,

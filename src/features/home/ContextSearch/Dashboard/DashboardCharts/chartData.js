@@ -143,15 +143,14 @@ const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm, 
 
   let chosenDForms = [];
   if (dFormIds && dashboardDForms) {
-    dFormIds.forEach(dForm => {
+      // dFormIds (array of dForms) was changed to dFormTemplate id
       Object.keys(dashboardDForms).forEach(key => {
-        if (dashboardDForms[key].findIndex(item => item === dForm) !== -1) {
+        if (Object.values(dashboardDForms).indexOf(dFormIds) !== -1) {
           if (chosenDForms.findIndex(chosen => chosen.name === key) === -1) {
             chosenDForms.push({name: key, id: dashboardDForms[key]})
           }
         }
       })
-    });
   }
 
   chosenDForms.forEach(dForm => {

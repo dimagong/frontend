@@ -119,23 +119,23 @@ const userApi = {
         page: payload.page,
         'created_at[from]': payload.from,
       }
-    if (payload?.dForm?.name === 'Applications Snapshot') {
       if (payload?.settings?.dForm.id) {
         params.app_ids = payload.settings.dForm.id;
       } else {
         params.app_ids = [];
       }
-    }
     ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
       if (payload.settings && payload.settings[item]) {
         params[item] = payload.settings[item];
       }
     })
     try {
+
       const result = await instance({
         url: `${path}?` + qs.stringify(params),
         method: "GET",
       });
+
       return result.data.data;
 
     } catch (err) {
