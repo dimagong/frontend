@@ -33,6 +33,13 @@ export default {
     default: '',
     reference: {...referenceObject}
   },
+  longText: {
+    type: "string",
+    format: 'longText',
+    title: "Some Title",
+    default: '',
+    reference: {...referenceObject}
+  },
   boolean: {
     type: "boolean",
     title: "Some Title",

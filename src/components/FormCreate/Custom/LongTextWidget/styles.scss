@@ -1,0 +1,101 @@
+.form-create_custom-text-widget {
+  display: flex;
+  flex-direction: column;
+  label {
+    color: #707070;
+    font-size: 15px;
+    margin-bottom: 25px;
+  }
+  input {
+    border-right: 0;
+    border-top: 0;
+    border-left: 0;
+    padding: 12px 15px;
+    border-bottom: 1px solid #707070;
+    color: #707070;
+    background-color: #eee;
+
+    &::-webkit-input-placeholder {
+      color: rgba(112,112,112, 0.72);
+    }
+    /* Firefox 4-18 */
+    &:-moz-placeholder {
+      color: rgba(112,112,112, 0.72);
+    }
+    /* Firefox 19-50 */
+    &::-moz-placeholder {
+      color: rgba(112,112,112, 0.72);
+    }
+    /* - Internet Explorer 10–11
+       - Internet Explorer Mobile 10-11 */
+    &:-ms-input-placeholder {
+      color: rgba(112,112,112, 0.72) !important;
+    }
+    &::-ms-input-placeholder {
+      color: rgba(112,112,112, 0.72);
+    }
+    &::placeholder {
+      color: rgba(112,112,112, 0.72);
+    }
+  }
+}
+.field-with-error {
+  .form-create_custom-text-widget {
+    input {
+      border-right: 3px solid #dc3545;
+    }
+  }
+}
+.custom-long-text-area-widget {
+    .textarea:focus {
+      outline: 0;
+    }
+    .textarea {
+      color: unset;
+      background: #eee;
+      border: 0;
+      border-bottom: 1px solid #707070;
+      padding: 12px 15px;
+    }
+    .modal-textarea {
+      margin-bottom: 15px;
+    }
+  }
+.long-text-area-container {
+  .long-text-area-open-more {
+      float: right;
+      cursor: pointer;
+      max-width: 40%;
+    }
+}
+.modal-long-text-area-widget {
+  padding-bottom: 15px;
+  .modal-label {
+    padding-bottom: 10px;
+  }
+}
+.long-text-modal-window {
+  right: 125px;
+  .modal-content {
+    width: 750px;
+    height: 645px;
+    position: relative;
+    .rdw-editor-wrapper {
+      height: 430px;
+      .rdw-editor-main {
+        max-height: 390px;
+        height: auto;
+      }
+    }
+    .loading-button {
+      position: absolute;
+      bottom: 30px;
+      right: 21px;
+    }
+  }
+}
+
+.custom-longtext {
+  overflow-y: auto;
+  height: 100px;
+}

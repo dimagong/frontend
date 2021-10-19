@@ -1,4 +1,4 @@
-import Constants from "./Parts/Constants";
+import Constants, {FIELD_TYPE_LONG_TEXT_AREA} from "./Parts/Constants";
 
 function _toBool(value) {
   switch (typeof value) {
@@ -247,6 +247,10 @@ export function getSpecificType(property) {
     property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
     property.format === 'textarea') {
     return Constants.FIELD_TYPE_TEXT_AREA;
+  } else if (
+    property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
+    property.format === 'longText') {
+    return Constants.FIELD_TYPE_LONG_TEXT_AREA;
   } else if (
     property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
     (property.format === 'data-url' || property.format === 'file')

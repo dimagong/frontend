@@ -2,12 +2,17 @@ import React from 'react';
 import FieldLabel from '../FieldLabel'
 
 import './styles.scss'
+import LongTextWidget from "../LongTextWidget";
 
 const Index = (props) => {
   let fieldType = 'text';
 
   if(props.schema?.type === 'number') {
     fieldType = 'number';
+  }
+
+  if (props.schema.format === 'longText') {
+    return <LongTextWidget props={props}/>
   }
 
   return (
