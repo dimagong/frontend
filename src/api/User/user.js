@@ -119,11 +119,13 @@ const userApi = {
         page: payload.page,
         'created_at[from]': payload.from,
       }
-      if (payload?.settings?.dForm.id) {
+
+      if (payload?.settings?.dForm?.id) {
         params.app_ids = payload.settings.dForm.id;
       } else {
         params.app_ids = [];
       }
+
     ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
       if (payload.settings && payload.settings[item]) {
         params[item] = payload.settings[item];
