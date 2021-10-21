@@ -83,29 +83,9 @@ const updateApllicationsOrderSuccess = (state, { payload }) => {
   state.isError = null;
 
   const managerIndex = state.user.managers.findIndex(item => item.id === payload.userId);
-  const survey = payload.orderedArray.filter(item => item.type === 'survey');
-  const application = payload.orderedArray.filter(item => item.type === "application");
 
-  const assignedSurvey = [...state.selectedManagerAssignedSurveys].map(item => {
-    let value = survey.find(index => index.id === item.id);
-
-    return {
-      ...item,
-      order: value.order
-    }
-  }).sort((a, b) => a.order - b.order);
-
-  const onboardings = [...state.user.managers[managerIndex].onboardings].map(item => {
-    let value = application.find(index => index.id === item.id);
-
-    return {
-      ...item,
-      order: value.order
-    }
-  }).sort((a, b) => a.order - b.order);
-
-  state.user.managers[managerIndex].onboardings = onboardings;
-  state.selectedManagerAssignedSurveys = assignedSurvey;
+  state.user.managers[managerIndex].onboardings = payload.storeData.onboardings;
+  state.selectedManagerAssignedSurveys = payload.storeData.assignedSurvey;
 }
 
 const getActivitiesSuccess = (state, {payload}) => {

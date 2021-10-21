@@ -29,12 +29,13 @@ export const CustomTable = ({
   selectedManager,
   selectedAssignedSurvey,
 }) => {
+  const dispatch = useDispatch();
+  const [data, setData] = useState([]);
+
   const isAssignedSurveysLoading = useSelector(createLoadingSelector([getAssignedSurveysRequest.type], true));
   const isOnbordingLoading = useSelector(createLoadingSelector([getOnboardingsByUserRequest.type], true));
   const assignedSurveys = useSelector(selectSelectedManagerAssignedSurveys) || [];
   const manager = useSelector(selectCurrentManager);
-  const [data, setData] = useState([]);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const sortOrder = _.sortBy([...manager.onboardings, ...assignedSurveys], function(application) {
@@ -48,31 +49,56 @@ export const CustomTable = ({
     return <tbody>{children}</tbody>;
   });
 
-  const arrayMoveMutate = (array, from, to) => {
-    array.splice(to < 0 ? array.length + to : to, 0, array.splice(from, 1)[0]);
-  };
-
   const arrayMove = (array, from, to) => {
-    array = array.slice();
-    arrayMoveMutate(array, from, to);
-    return array;
+    const newArray = [...array];
+    newArray.splice(to < 0 ? newArray.length + to : to, 0, newArray.splice(from, 1)[0]);
+    return newArray;
   };
 
-  const onSortEnd = ({ oldIndex, newIndex }) => {
+  const dataForStore = (array) => {
+    const survey = array.filter(item => item.type === 'survey');
+    const application = array.filter(item => item.type === "application");
+
+    const assignedSurvey = [...data].filter(item => item.context === "survey").map(item => {
+      let value = survey.find(index => index.id === item.id);
+  
+      return {
+        ...item,
+        order: value.order
+      }
+    }).sort((a, b) => a.order - b.order);
+  
+    const onboardings = [...data].filter(item => item.context === "application").map(item => {
+      let value = application.find(index => index.id === item.id);
+  
+      return {
+        ...item,
+        order: value.order
+      }
+    }).sort((a, b) => a.order - b.order);
+
+    return {
+      assignedSurvey,
+      onboardings,
+    }
+  }
+
+  const handleSortEnd = ({ oldIndex, newIndex }) => {
     const sortedData = arrayMove(data, oldIndex, newIndex);
     setData(sortedData);
 
     if (oldIndex !== newIndex) {
       const orderedArray = orderedData(sortedData);
       const userId = manager.id;
+      const storeData = dataForStore(orderedArray);
 
-      dispatch(updateApllicationsOrderRequest({userId, orderedArray}));
+      dispatch(updateApllicationsOrderRequest({userId, orderedArray, storeData}));
     }
   };
 
   const RowHandler = SortableHandle(() => <div className="custome_table__handle">|</div>);
 
-  const isSelectItem = (value) => {
+  const isItemSelected = (value) => {
     if(selectedManager.onboarding) {
       if(value?.id === selectedManager.onboarding.id && !value.questions) {
         return 'custome_table__row-active';
@@ -88,11 +114,11 @@ export const CustomTable = ({
     return '';
   }
 
-  const TableRow = ({ className, handleRowClick, value }) => {
+  const TableRow = ({ handleRowClick, value }) => {
     return (
       <tr
         onClick={() => handleRowClick(value)}
-        className={`custome_table__row ${isSelectItem(value)}`}
+        className={`custome_table__row ${isItemSelected(value)}`}
       >
         <td style={{ minWidth: 150 }}>
           <div className="firstElement">
@@ -150,54 +176,54 @@ export const CustomTable = ({
     );
   }
 
+  if(!data.length) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <p style={{ padding: 24, margin: 0, color: 'rgba(0,0,0,0.87)' }}>There are no records to display</p>
+      </div>
+    );
+  }
+
   return (
     <>
-      {
-        !data.length ? (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <p style={{ padding: 24, margin: 0, color: 'rgba(0,0,0,0.87)' }}>There are no records to display</p>
-          </div>
-        ) : (
-          <div className='custome_table'>
-            <table className="table table-dark fixed_header">
-              <thead>
-                <tr
-                  className='custome_table__row'
-                  style={{ minHeight: 56 }}
-                >
-                  <th style={{ minWidth: 150 }}>
-                    <div style={{ marginLeft: 25 }}>
-                      Name
-                    </div>
-                  </th>
-                  <th>Reviewers</th>
-                  <th>Workflows</th>
-                  <th>Private</th>
-                  <th>Up to date</th>
-                </tr>
-              </thead>
-              <SortableCont
-                onSortEnd={onSortEnd}
-                axis="y"
-                lockAxis="y"
-                lockToContainerEdges={true}
-                lockOffset={["30%", "50%"]}
-                helperClass="helperContainerClass"
-                useDragHandle={true}
-              >
-                {data.map((value, index) => (
-                  <SortableItem
-                    key={`item-${index}`}
-                    index={index}
-                    handleRowClick={(item) => handleRowClick(item)}
-                    value={value}
-                  />
-                ))}
-              </SortableCont>
-            </table>
-          </div>
-        )
-      }
+      <div className='custome_table'>
+        <table className="table table-dark fixed_header">
+          <thead>
+            <tr
+              className='custome_table__row'
+              style={{ minHeight: 56 }}
+            >
+              <th style={{ minWidth: 150 }}>
+                <div style={{ marginLeft: 25 }}>
+                  Name
+                </div>
+              </th>
+              <th>Reviewers</th>
+              <th>Workflows</th>
+              <th>Private</th>
+              <th>Up to date</th>
+            </tr>
+          </thead>
+          <SortableCont
+            onSortEnd={handleSortEnd}
+            axis="y"
+            lockAxis="y"
+            lockToContainerEdges={true}
+            lockOffset={["30%", "50%"]}
+            helperClass="helperContainerClass"
+            useDragHandle={true}
+          >
+            {data.map((value, index) => (
+              <SortableItem
+                key={`item-${index}`}
+                index={index}
+                handleRowClick={(item) => handleRowClick(item)}
+                value={value}
+              />
+            ))}
+          </SortableCont>
+        </table>
+      </div>
     </>
-  )
+  );
 }
