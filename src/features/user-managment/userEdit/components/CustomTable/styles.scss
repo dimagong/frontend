@@ -1,0 +1,103 @@
+.custome_table {
+  overflow: auto;
+
+  .fixed_header {
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    & > tbody {
+      cursor: grabbing;
+      background: white;
+
+      & > tr:last-child {
+        border: none;
+      }
+    }
+
+    & > thead {
+      background: white;
+      
+      & > tr > th {
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(0,0,0,0.87);
+        height: 100%;
+        line-height: 1;
+        word-wrap: break-word;
+      }
+    }
+
+    & > thead th,
+    & > tbody td {
+      text-align: left;
+      border: none;
+      padding: 0 16px;
+      width: 100%;
+      min-width: 100px;
+      max-width: 250px;
+    }
+  }
+
+  &__row {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0,0,0,.12);
+    cursor: pointer;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    align-content: stretch;
+    width: 100%;
+    font-size: 13px;
+    background-color: white;
+    color: rgba(0,0,0,0.87);
+
+    &-active {
+      background-color: #7367f0;
+      color: white;
+    }
+
+    .firstElement {
+      display: flex;
+      flex-direction: row;
+    }
+
+    &.helperContainerClass {
+      width: auto;
+      border: 1px solid #efefef;
+      box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
+
+      &:active {
+        cursor: grabbing;
+      }
+  
+      & > td {
+        text-align: left;
+        padding: 0 16px;
+        width: 100%;
+        min-width: 100px;
+        max-width: 250px;
+        border: none;
+      }
+    }
+  }
+
+  &__handle {
+    margin-right: 10px;
+    padding: 0 5px;
+    cursor: grab;
+  }
+
+  &__wrap {
+    max-width: 160;
+    overflow: hidden;
+  }
+
+  &__name {
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}

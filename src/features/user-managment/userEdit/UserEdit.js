@@ -7,9 +7,7 @@ import {
   TabPane,
   Button,
   TabContent,
-  Spinner,
 } from "reactstrap"
-import DataTable from "react-data-table-component"
 
 import Select from 'react-select';
 
@@ -27,9 +25,6 @@ import {
   selectUserReviewers,
 } from "app/selectors";
 
-import { createLoadingSelector } from "app/selectors/loadingSelector";
-
-import {columnDefs} from '../userOnboarding/gridSettings'
 import UserOnboardingForm from '../userOnboarding/UserOnboardingForm'
 import UserOnboardingDForm from '../userOnboarding/UserOnboardingDForm'
 
@@ -51,6 +46,7 @@ import {
 } from 'app/selectors/userSelectors'
 
 import appSlice from 'app/slices/appSlice'
+import { CustomTable } from './components/CustomTable/CustomTable';
 
 const {
   setManagerOnboarding,
@@ -119,7 +115,6 @@ const UserEdit = (props, context) => {
   const reviewers = useSelector(selectUserReviewers);
   const userOrganizations = useSelector(selectUserOrganizations(manager.id));
   const assignedSurveys = useSelector(selectSelectedManagerAssignedSurveys) || [];
-  const isAssignedSurveysLoading = useSelector(createLoadingSelector([getAssignedSurveysRequest.type], true));
   const activity = useSelector(selectUserActivity(manager.id));
 
   const [contextFeature, setContextFeature] = useState("");
@@ -307,39 +302,13 @@ const UserEdit = (props, context) => {
               <CardBody>
                 <Row className="mx-0" col="12">
                   <Col md="12" className="ml-0 pl-0">
-                    <DataTable
-                      progressComponent={<Spinner className={"my-4"} color={"primary"} />}
-                      progressPending={isAssignedSurveysLoading}
-                      data={tableData}
-                      columns={columnDefs}
-                      Clicked
-                      onRowClicked={handleRowClick}
-                      conditionalRowStyles={[
-                        {
-                          when: row => selectedManager.onboarding ? row.id === selectedManager.onboarding.id && !row.questions : false,
-                          style: () => ({
-                            backgroundColor: '#7367f0',
-                            color: 'white',
-                            cursor: "pointer"
-                          }),
-                        },
-                        {
-                          when: row => selectedAssignedSurvey ? row.id === selectedAssignedSurvey.id && !row.d_form : false,
-                          style: () => ({
-                            backgroundColor: '#7367f0',
-                            color: 'white',
-                            cursor: "pointer"
-                          }),
-                        },
-                        {
-                          when: () => !selectedAssignedSurvey && !selectedManager.onboarding,
-                          style: () => ({
-                            cursor: "pointer"
-                          })
-                        }
-                      ]}
-                      noHeader
+
+                    <CustomTable
+                      handleRowClick={handleRowClick}
+                      selectedManager={selectedManager}
+                      selectedAssignedSurvey={selectedAssignedSurvey}
                     />
+
                   </Col>
                   <Col md="12" className="ml-0 pl-0">
                     {!!tableData.length ? (

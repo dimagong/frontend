@@ -26,3 +26,4 @@ export const revokeInvitationsPath = (id) => `/api/invitation/${id}/revoke`;
 export const getInvitationPath = (id) => `/api/invitation/${id}`;
 export const sendInvitationAcceptPath = '/api/invitation/accept';
 export const getOnboardingsByUserPath = (userId) => `/api/user/${userId}/onboardings`;
+export const updateUserApplicationsOrder = (userId) => `api/user/${userId}/sort-apps`;
