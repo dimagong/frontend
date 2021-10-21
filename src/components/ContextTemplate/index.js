@@ -8,10 +8,12 @@ import ArrowButton from "components/ArrowButton";
 
 import "./styles.scss";
 import {useDispatch, useSelector} from "react-redux";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import {selectContextSearchVisibility} from "app/selectors";
 
 import appSlice from "app/slices/appSlice";
+import {HEADER_HEIGHT, INPUT_HEADER_HEIGHT} from "../../constants/header";
 
 const {
   showContextSearch,
@@ -34,32 +36,33 @@ const ContextTemplate = ({
   };
 
   return (
-    <Col className={"context-template"} xs={6} >
-      <div className={"context-template_hide-context"}>
-        <ArrowButton onClick={handleContextToggle} direction={isContextSearchVisible ? "up" : "down"} />
-      </div>
-
-      <div className={"context-template_header"}>
-        <div className={"d-flex"}>
-          <div className={`context-template_header_title ${contextName ? "" : "border-right-0"}`}>
-            {contextTitle}
-          </div>
-          {!!contextName && (
-            <div className={"context-template_header_survey-name"}>
-              {contextName}
-            </div>
-          )}
+      <Col className={"context-template"} xs={6} >
+        <div className={"context-template_hide-context"}>
+          <ArrowButton onClick={handleContextToggle} direction={isContextSearchVisible ? "up" : "down"} />
         </div>
-        {!!contextHeaderIcon && (
-          <div className={"context-template_header_edit-icon"}>
-            {contextHeaderIcon}
+
+        <Scrollbars autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
+          <div className={"context-template_header"}>
+            <div className={"d-flex"}>
+              <div className={`context-template_header_title ${contextName ? "" : "border-right-0"}`}>
+                {contextTitle}
+              </div>
+              {!!contextName && (
+                <div className={"context-template_header_survey-name"}>
+                  {contextName}
+                </div>
+              )}
+            </div>
+            {!!contextHeaderIcon && (
+              <div className={"context-template_header_edit-icon"}>
+                {contextHeaderIcon}
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      {children}
-
-    </Col>
+          {children}
+        </Scrollbars>
+      </Col>
   )
 };
 

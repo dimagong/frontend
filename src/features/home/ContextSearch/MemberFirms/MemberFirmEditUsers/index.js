@@ -61,6 +61,11 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
     dispatch(getMemberFirmPotentialUsersRequest(memberFirm.id));
   }, [members?.length])
 
+  useEffect(() => {
+    let newSearchedManagers = potentialMembers.filter(item => searchedMembers.find(el => el.id === item.id));
+    setSearchedMembers(newSearchedManagers);
+  }, [potentialMembers])
+
   return (
     <Modal
       size="lg"
