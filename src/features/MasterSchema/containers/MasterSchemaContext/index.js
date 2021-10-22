@@ -1,13 +1,13 @@
 import React from 'react';
 
 import MasterSchemaContextComponent from "./components/MasterSchemaContextComponent";
-import MasterSchemaElementTree from './components/MasterSchemaElementTree';
+import MasterSchemaMainSection from './components/MasterSchemaElements';
 
 const MasterSchemaContext = () => {
 
   return (
     <MasterSchemaContextComponent>
-      <MasterSchemaElementTree />
+      <MasterSchemaMainSection />
     </MasterSchemaContextComponent>
   )
 };
