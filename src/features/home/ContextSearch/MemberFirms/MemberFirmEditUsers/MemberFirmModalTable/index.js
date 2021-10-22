@@ -1,13 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import noneAvatar from "assets/img/portrait/none-avatar.png";
 import AddUserIcon from 'assets/img/svg/add-user.svg';
 import RemoveUserIcon from 'assets/img/svg/remove-user.svg';
 import SettingsIcon from 'assets/img/svg/settings.svg';
+import {useSelector} from "react-redux";
+import {getSelectedMemberFirmPotentialUsers} from "../../../../../../app/selectors/memberFirmsSelector";
 
 const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, deleteUser, editUser, notFindMessage}) => {
 
   const TableCard = ({ manager }) => {
-    console.log("test", manager);
+
     return (
       <div style={{position: 'relative'}}>
         <div className={'dashboard-action'} style={{cursor: 'unset', display: 'inline-block', marginBottom: 0, marginTop: 5}}>
@@ -24,7 +26,7 @@ const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, deleteUser, 
           <span className={'action-user'} style={{width: 120, paddingRight: 0}}>{manager.member_firm?.main_fields?.name || '-'}</span>
         </div>
         {isAddUser ? (
-          !manager.member_firm && (
+          (
             <span className={'member-firm-table-icons member-firm-table-icons-add'}>
               <img src={AddUserIcon} alt={'add-user'} onClick={() => {editUser(manager, false)}}/>
             </span>

@@ -4,7 +4,8 @@
   border-radius: 10px;
   &_header {
     display: flex;
-    align-items: center;
+    position: relative;
+
     &_logo {
       position: relative;
       display: flex;
@@ -64,12 +65,12 @@
       // 100% - image width
       max-width: calc(100% - 200px);
       &-name {
-        margin-bottom: 30px;
-        margin-top: -100px;
         font-size: 40px;
-        color: #707070;
-        font-family: Montserrat;
-        padding: 0 30px;
+        color: #444444;
+        font-family: 'Segoe UI', sans-serif;
+        padding: 0 27px;
+        position: absolute;
+        top: -73px;
         p {
           line-height: normal;
           text-overflow: ellipsis;
@@ -79,7 +80,8 @@
       }
 
       &-contact_data {
-        padding-left: 30px;
+        padding-left: 27px;
+        padding-top: 15px;
         &-info {
           display: flex;
           justify-content: center;
@@ -88,8 +90,8 @@
           flex-wrap: wrap;
           &_tile {
             display: flex;
-            //align-items: center;
-            font-size: 18px;
+            align-items: center;
+            font-size: 21px;
             color: #707070;
             font-family: Montserrat;
             padding: 5px 0;
@@ -97,7 +99,7 @@
             text-align: center;
 
             &-icon {
-              margin-right: 5px;
+              margin-right: 10px;
               color: #7367F0;
             }
           }
@@ -110,12 +112,14 @@
 
 
   &_tabs {
-    border-bottom: 2px solid #7367F0;
+    border-bottom: 1px solid rgba($color: #7367F0, $alpha: .43);
     margin: 0 45px;
-    padding: 20px 10px;
+    padding: 29px 14px 22px;
     &_tab {
       font-family: Montserrat;
-      margin-right: 20px;
+      margin-right: 13px;
+      padding: 0;
+      height: 33px;
       min-width: 150px;
       text-align: center;
       //color: #707070;
@@ -138,7 +142,7 @@
     }
   }
   &_tab-content {
-    padding: 60px 45px;
+    padding: 15px 45px;
   }
   &-activities {
     &.card {
@@ -162,8 +166,15 @@
         max-width: calc(100% - 150px);
         &-name {
           font-size: 32px;
-          margin-bottom: 20px;
-          margin-top: -50px;
+          top: -63px;
+        }
+        &-contact_data {
+          padding-top: 10px;
+          &-info {
+            &_tile {
+              font-size: 18px;
+            }
+          }
         }
       }
     }

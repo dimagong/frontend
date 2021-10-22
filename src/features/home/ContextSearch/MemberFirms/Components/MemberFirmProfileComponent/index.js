@@ -79,12 +79,15 @@ const MemberFirmProfileComponent = ({
                 </div>
               )}
             </div>
+
             <div className="member-firm-profile_header-info">
+
               <div className="member-firm-profile_header-info-name">
                 <p>
                   {data.main_fields.name}
                 </p>
               </div>
+              
               <div className="member-firm-profile_header-info-contact_data">
                 {!!data.main_fields.email && (
                   <div className="member-firm-profile_header-info-contact_data-info_tile">
