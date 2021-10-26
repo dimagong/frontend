@@ -34,6 +34,7 @@ const Dashboard = ({ }) => {
         {state: 'large', title: 'Applications', daysNumber: 7, filter: null, key: 1}]
       let changeSettingsIndex = initialSettings.findIndex(item => item.key === newSettings.key);
       initialSettings[changeSettingsIndex] = newSettings;
+      console.log('initialSettings', newSettings, initialSettings);
       dispatch(postSettingsRequest(initialSettings))
     }
   }
@@ -71,6 +72,7 @@ const Dashboard = ({ }) => {
       newDashboardSettings[newDashboardSettings.length - 1].key = newDashboardSettings.length > 1
         ? newDashboardSettings[newDashboardSettings.length - 2].key + 1
         : 0;
+      // todo patch
       dispatch(patchSettingsRequest({value: newDashboardSettings, id: dashboardSettings.id}));
       setComponentToAdd({...componentToAdd})
   }
