@@ -95,8 +95,9 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     if (settings.filter) {
       setFilter(JSON.parse(JSON.stringify(settings.filter)));
     }
-
+    console.log('filter', filter);
     if (chartType === 'Applications') {
+      console.log('getDashboardDataRequest', settings);
         if (settings.dForm?.name === 'Applications Snapshot') {
           dispatch(getDashboardSnapshotDataRequest({
             key: settings.key,
@@ -106,7 +107,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
             settings: settings
           }))
         } else {
-
+          console.log('getDashboardDataRequest', settings);
           dispatch(getDashboardDataRequest({
             key: settings.key,
             page: 1,
@@ -122,6 +123,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
           'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'),
           settings: settings}))
       }
+
   }, [settings.daysNumber, settings['filter[value]'], settings.dForm, settings.user_groups, settings.ability_user_ids, dashboardDForms, managers?.length]);
 
 

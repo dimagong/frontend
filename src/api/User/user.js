@@ -134,7 +134,7 @@ const userApi = {
       if (payload.settings && payload.settings[item]) {
         params[item] = payload.settings[item];
       }
-    })
+    });
     try {
 
       const result = await instance({
