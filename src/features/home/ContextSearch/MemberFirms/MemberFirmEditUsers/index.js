@@ -1,24 +1,30 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Button, Modal, ModalBody} from "reactstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Modal, ModalBody } from "reactstrap";
 import MemberFirmModalTable from "./MemberFirmModalTable";
 import AutoComplete from "components/@vuexy/autoComplete/AutoCompleteComponent";
 import FilterIcon from "assets/img/svg/filter.svg";
-import {X} from "react-feather";
+import { X } from "react-feather";
 import FilterModal from "../../ContextSearchNav/Filters/FilterModal";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import MemberFirmsChangeRoleModal from "./MemberFirmsChangeRoleModal";
 import CloseIcon from "@material-ui/icons/Close";
 import appSlice from "app/slices/appSlice";
+import './style.scss';
 
-const {
-  removeMemberFirmUsersRequest,
-  getMemberFirmPotentialUsersRequest
-} = appSlice.actions;
+const { removeMemberFirmUsersRequest, getMemberFirmPotentialUsersRequest } =
+  appSlice.actions;
 
-
-const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm, allMembers, principals}) => {
-  const dispatch = useDispatch()
-  const [searchedMembers, setSearchedMembers] = useState([])
+const MemberFirmEditUsers = ({
+  isModalOpen,
+  setIsModalOpen,
+  members,
+  potentialMembers,
+  memberFirm,
+  allMembers,
+  principals,
+}) => {
+  const dispatch = useDispatch();
+  const [searchedMembers, setSearchedMembers] = useState([]);
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
   const [isChangeRoleModalOpen, setIsChangeRoleModalOpen] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
@@ -26,71 +32,103 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
   const [userToDelete, setUserToDelete] = useState({});
   const [currUser, setCurrUser] = useState({});
   const wrapperRefFilterButton = useRef(null);
-  const [curr, setCurr] = useState('roles');
-  const [filter, setFilter] = useState({roles: new Set(), organizations: new Set(), memberFirms: new Set(), type: {roles: 'initial', organizations: 'initial', memberFirms: 'initial'}});
-  const [footerText, setFooterText] = useState({roles: '', organizations: '', memberFirms: ''});
-  const [filterName, setFilterName] = useState('');
+  const [curr, setCurr] = useState("roles");
+  const [filter, setFilter] = useState({
+    roles: new Set(),
+    organizations: new Set(),
+    memberFirms: new Set(),
+    type: {
+      roles: "initial",
+      organizations: "initial",
+      memberFirms: "initial",
+    },
+  });
+  const [footerText, setFooterText] = useState({
+    roles: "",
+    organizations: "",
+    memberFirms: "",
+  });
+  const [filterName, setFilterName] = useState("");
 
   const removeUser = (user) => {
-    dispatch(removeMemberFirmUsersRequest({
-      memberFirmId: memberFirm.id,
-      users: [user.id]
-    }))
-  }
+    dispatch(
+      removeMemberFirmUsersRequest({
+        memberFirmId: memberFirm.id,
+        users: [user.id],
+      })
+    );
+  };
 
   const handleSearch = (e) => {
-    setSearchedMembers(potentialMembers.filter(item =>
-      (item.first_name + item.last_name).toLowerCase().search(e.target.value.toLowerCase()) !== -1))
+    setSearchedMembers(
+      potentialMembers.filter(
+        (item) =>
+          (item.first_name + item.last_name)
+            .toLowerCase()
+            .search(e.target.value.toLowerCase()) !== -1
+      )
+    );
     if (e.target.value.length > 0) {
-      setIsFiltered(true)
+      setIsFiltered(true);
     } else {
-      setIsFiltered(false)
+      setIsFiltered(false);
     }
-  }
+  };
 
   const handleFilter = (newManagers) => {
-    setSearchedMembers(newManagers)
+    setSearchedMembers(newManagers);
     if (filter.roles.size > 0) {
       setIsFiltered(true);
     } else {
       setIsFiltered(false);
     }
-  }
+  };
 
   useEffect(() => {
     dispatch(getMemberFirmPotentialUsersRequest(memberFirm.id));
-  }, [members?.length])
+  }, [members?.length]);
 
   useEffect(() => {
-    let newSearchedManagers = potentialMembers.filter(item => searchedMembers.find(el => el.id === item.id));
+    let newSearchedManagers = potentialMembers.filter((item) =>
+      searchedMembers.find((el) => el.id === item.id)
+    );
     setSearchedMembers(newSearchedManagers);
-  }, [potentialMembers])
+  }, [potentialMembers]);
 
   return (
     <Modal
       size="lg"
-      className={"member-firms-users-modal"}
+      // className={"member-firms-users-modal"}
+      className={"member-firm__modal"}
       isOpen={isModalOpen}
       fade={false}
-      toggle={()=>{setIsModalOpen(false)}}>
+      toggle={() => {
+        setIsModalOpen(false);
+      }}
+    >
       <div className="survey-modal_header">
-          <div className="survey-modal_header_title">
-            Edit member firm
-          </div>
-          <div className={"survey-modal_header_cross"}>
-            <X
-              size={26}
-              className={"survey-modal_header_cross-icon"}
-              onClick={() => {setIsModalOpen(false)}}
-            />
-          </div>
+        {/* <div className="survey-modal_header_title">Firm Member Management</div> */}
+        <div className="member-firm__title">Firm Member Management</div>
+        {/* <div className={"survey-modal_header_cross"}> */}
+        <div className={"member-firm__close"}>
+          <X
+            size={26}
+            className={"survey-modal_header_cross-icon member-firm__close-icon"}
+            onClick={() => {
+              setIsModalOpen(false);
+            }}
+          />
         </div>
-        <ModalBody style={{marginLeft: 15}}>
-          <div style={{width: 693, marginBottom: 20, marginTop: 10}}>
+      </div>
+      <ModalBody className="member-firm__body" >
+        {/* <div style={{ width: 693, marginBottom: 20, marginTop: 10 }}> */}
+        <div style={{ display: 'flex', gap: 25, alignItems: 'center', paddingRight: 13 }}>
+          <div style={{ width: '100%' }}>
             <AutoComplete
               placeholder="Search"
               suggestions={[]}
-              className="form-control"
+              // className="form-control"
+              className="member-firm__input"
               filterKey="name"
               onChange={handleSearch}
               suggestionLimit={4}
@@ -100,17 +138,27 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
               hideSuggestions
             />
           </div>
-          <img ref={wrapperRefFilterButton}
-               className={'filter-icon member-firm-filter-icon'}
-               src={FilterIcon} alt={'filter-icon'}
-               onClick={() => {setIsFilterBoxOpen(!isFilterBoxOpen)}}
-          />
-          {isFilterBoxOpen && <FilterModal
+
+          <div>
+            <img
+              ref={wrapperRefFilterButton}
+              className={"filter-icon member-firm-filter-icon"}
+              // className={"filter-icon member-firm__filter-icon"}
+              src={FilterIcon}
+              alt={"filter-icon"}
+              onClick={() => {
+                setIsFilterBoxOpen(!isFilterBoxOpen);
+              }}
+            />
+          </div>
+        </div>
+        {isFilterBoxOpen && (
+          <FilterModal
             managers={potentialMembers}
             handleFilter={handleFilter}
             wrapperRefFilterButton={wrapperRefFilterButton}
-            style={{left: 220, top: 50, marginBottom: 0}}
-            filterTypes={['roles']}
+            style={{ left: 220, top: 50, marginBottom: 0 }}
+            filterTypes={["roles"]}
             filter={filter}
             setFilter={setFilter}
             setIsFilterBoxOpen={setIsFilterBoxOpen}
@@ -120,81 +168,166 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
             setFooterText={setFooterText}
             filterName={filterName}
             setFilterName={setFilterName}
-          />}
-
-          <div style={{textAlign: 'right', paddingRight: 10, height: 30}}>
-            {filter.roles.size > 0 && <Button className={'filter-tab member-firm-filter-tab'} variant={'dark'}>
-              <span className={'nav-text'}>{footerText.roles.length <= 40 ? footerText.roles : `${filter.roles.size} roles`}</span>
-
-              <span onClick={() => {
-                setFilter({roles: new Set(), organizations: new Set(), memberFirms: new Set(), type: {roles: 'initial', organizations: 'initial', memberFirms: 'initial'}})
-                setSearchedMembers([]);
-                setIsFiltered(false)
-              }}
-                    className={'close-nav'}><CloseIcon/></span>
-            </Button>}
-          </div>
-
-          <MemberFirmModalTable
-            array={(searchedMembers?.length > 0 || isFiltered) ? searchedMembers : potentialMembers}
-            setArray={setSearchedMembers}
-            editUser={(user, newIsEdit) => {
-              setIsChangeRoleModalOpen(true);
-              setCurrUser(user)
-              setIsEdit(newIsEdit)
-            }}
-            isTitle
-            isAddUser
-            notFindMessage={isFiltered ? 'No user was found for your query' : 'There are no potential users to add'}
           />
-          <div style={{fontWeight: 'bold'}}>Existing</div>
-          <MemberFirmModalTable
-            array={members}
-            deleteUser={(user) => setUserToDelete(user)}
-            editUser={(user, newIsEdit) => {
-              setIsChangeRoleModalOpen(true);
-              setCurrUser(user)
-              setIsEdit(newIsEdit)
-            }}
-            notFindMessage={'There are no users in member firm'}
-          />
-          <MemberFirmsChangeRoleModal
-            isOpen={isChangeRoleModalOpen}
-            setIsOpen={setIsChangeRoleModalOpen}
-            user={currUser}
-            memberFirm={memberFirm}
-            allMembers={allMembers}
-            isEdit={isEdit}
-            setIsEdit={setIsEdit}
-            principals={principals}
-          />
+        )}
 
-          <Modal className={"organization-remove-modal"} isOpen={userToDelete.hasOwnProperty('id')} fade={false} toggle={()=>{setUserToDelete({})}}>
-            <ModalBody>
-              <div>
-                <span style={{fontSize: "22px"}}>
-                Are you sure you want to remove {userToDelete.first_name + ' ' + userToDelete.last_name} from {memberFirm?.main_fields?.name}?
+        <div style={{ textAlign: "right", paddingRight: 10, height: 30 }}>
+          {filter.roles.size > 0 && (
+            <Button
+              className={"filter-tab member-firm-filter-tab"}
+              variant={"dark"}
+            >
+              <span className={"nav-text"}>
+                {footerText.roles.length <= 40
+                  ? footerText.roles
+                  : `${filter.roles.size} roles`}
               </span>
-              </div>
-              <div className={"organization-remove-modal_action-buttons"}>
-                <Button className={"remove-button"} onClick={() => {
-                  removeUser(userToDelete)
-                  setUserToDelete({})
-                }}>
-                  Remove
-                </Button>
-                <Button className={"cancel-button"} onClick={() => {
-                  setUserToDelete({});
-                }}>
-                  Cancel
-                </Button>
-              </div>
-            </ModalBody>
-          </Modal>
 
-        </ModalBody>
-      </Modal>
-  )
+              <span
+                onClick={() => {
+                  setFilter({
+                    roles: new Set(),
+                    organizations: new Set(),
+                    memberFirms: new Set(),
+                    type: {
+                      roles: "initial",
+                      organizations: "initial",
+                      memberFirms: "initial",
+                    },
+                  });
+                  setSearchedMembers([]);
+                  setIsFiltered(false);
+                }}
+                className={"close-nav"}
+              >
+                <CloseIcon />
+              </span>
+            </Button>
+          )}
+        </div>
+
+
+        <MemberFirmModalTable
+          array={members}
+          deleteUser={(user) => setUserToDelete(user)}
+          editUser={(user, newIsEdit) => {
+            setIsChangeRoleModalOpen(true);
+            setCurrUser(user);
+            setIsEdit(newIsEdit);
+          }}
+          notFindMessage={"There are no users in member firm"}
+          isTitle
+        />
+        <div style={{
+            fontWeight: "bold",
+            fontSize: 15,
+            lineHeight: '16px',
+            color: '#707070',
+            paddingTop: 22,
+            borderTop: '1px solid #ECECEC',
+          }}>Other members</div>
+        <MemberFirmModalTable
+          array={
+            searchedMembers?.length > 0 || isFiltered
+              ? searchedMembers
+              : potentialMembers
+          }
+          setArray={setSearchedMembers}
+          editUser={(user, newIsEdit) => {
+            setIsChangeRoleModalOpen(true);
+            setCurrUser(user);
+            setIsEdit(newIsEdit);
+          }}
+          isAddUser
+          notFindMessage={
+            isFiltered
+              ? "No user was found for your query"
+              : "There are no potential users to add"
+          }
+        />
+
+        {/* <MemberFirmModalTable
+          array={
+            searchedMembers?.length > 0 || isFiltered
+              ? searchedMembers
+              : potentialMembers
+          }
+          setArray={setSearchedMembers}
+          editUser={(user, newIsEdit) => {
+            setIsChangeRoleModalOpen(true);
+            setCurrUser(user);
+            setIsEdit(newIsEdit);
+          }}
+          isTitle
+          isAddUser
+          notFindMessage={
+            isFiltered
+              ? "No user was found for your query"
+              : "There are no potential users to add"
+          }
+        />
+        <div style={{ fontWeight: "bold" }}>Existing</div>
+        <MemberFirmModalTable
+          array={members}
+          deleteUser={(user) => setUserToDelete(user)}
+          editUser={(user, newIsEdit) => {
+            setIsChangeRoleModalOpen(true);
+            setCurrUser(user);
+            setIsEdit(newIsEdit);
+          }}
+          notFindMessage={"There are no users in member firm"}
+        /> */}
+        <MemberFirmsChangeRoleModal
+          isOpen={isChangeRoleModalOpen}
+          setIsOpen={setIsChangeRoleModalOpen}
+          user={currUser}
+          memberFirm={memberFirm}
+          allMembers={allMembers}
+          isEdit={isEdit}
+          setIsEdit={setIsEdit}
+          principals={principals}
+        />
+
+        <Modal
+          className={"organization-remove-modal"}
+          isOpen={userToDelete.hasOwnProperty("id")}
+          fade={false}
+          toggle={() => {
+            setUserToDelete({});
+          }}
+        >
+          <ModalBody>
+            <div>
+              <span style={{ fontSize: "22px" }}>
+                Are you sure you want to remove{" "}
+                {userToDelete.first_name + " " + userToDelete.last_name} from{" "}
+                {memberFirm?.main_fields?.name}?
+              </span>
+            </div>
+            <div className={"organization-remove-modal_action-buttons"}>
+              <Button
+                className={"remove-button"}
+                onClick={() => {
+                  removeUser(userToDelete);
+                  setUserToDelete({});
+                }}
+              >
+                Remove
+              </Button>
+              <Button
+                className={"cancel-button"}
+                onClick={() => {
+                  setUserToDelete({});
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </ModalBody>
+        </Modal>
+      </ModalBody>
+    </Modal>
+  );
 };
 
 export default MemberFirmEditUsers;

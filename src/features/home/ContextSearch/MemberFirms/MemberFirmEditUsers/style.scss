@@ -1,0 +1,53 @@
+.member-firm {
+
+  &__modal {
+    max-width: 721px;
+    width: 100%;
+    background-color: #FFFFFF;
+    // border: 1px solid #EEEEEE;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: 0px 3px 6px rgba(82, 61, 61, 0.161);
+    border-radius: 10px;
+  }
+
+  &__title {
+    font-family: 'SegoeUI', sans-serif;
+    font-size: 22px;
+    line-height: 29px;
+    color: #FFFFFF;
+    max-width: 307px;
+    width: 100%;
+    min-height: 43px;
+    background-color: #7367F0;
+    padding-left: 18px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__input {
+    // max-width: 622px;
+    width: 100%;
+    outline: none;
+    border: 1px solid #95989A;
+    border-radius: 8px;
+    padding: 6px 19px;
+    min-height: 35px;
+    // height: 100%;
+  }
+
+  &__close {
+    padding: 8px 10px;
+  }
+
+  &__close-icon {
+    padding: 0;
+    transform: none;
+  }
+
+  &__body {
+    margin: 0;
+    padding: 27px 24px 27px 21px;
+  }
+}
