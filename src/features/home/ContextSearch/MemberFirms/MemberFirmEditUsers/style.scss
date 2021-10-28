@@ -1,10 +1,8 @@
 .member-firm {
-
   &__modal {
     max-width: 721px;
     width: 100%;
-    background-color: #FFFFFF;
-    // border: 1px solid #EEEEEE;
+    background-color: #ffffff;
     box-sizing: border-box;
     overflow: hidden;
     box-shadow: 0px 3px 6px rgba(82, 61, 61, 0.161);
@@ -12,14 +10,14 @@
   }
 
   &__title {
-    font-family: 'SegoeUI', sans-serif;
     font-size: 22px;
+    font-weight: 600;
     line-height: 29px;
-    color: #FFFFFF;
+    color: #ffffff;
     max-width: 307px;
     width: 100%;
     min-height: 43px;
-    background-color: #7367F0;
+    background-color: #7367f0;
     padding-left: 18px;
     border-bottom-right-radius: 10px;
     display: flex;
@@ -27,14 +25,12 @@
   }
 
   &__input {
-    // max-width: 622px;
     width: 100%;
     outline: none;
-    border: 1px solid #95989A;
+    border: 1px solid #95989a;
     border-radius: 8px;
     padding: 6px 19px;
     min-height: 35px;
-    // height: 100%;
   }
 
   &__close {
@@ -49,5 +45,15 @@
   &__body {
     margin: 0;
     padding: 27px 24px 27px 21px;
+  }
+
+  &__text {
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 16px;
+    color: #707070;
+    padding-top: 22px;
+    border-top: 1px solid #ececec;
+    padding-bottom: 5px;
   }
 }

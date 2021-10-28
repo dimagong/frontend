@@ -9,7 +9,8 @@ import { useDispatch } from "react-redux";
 import MemberFirmsChangeRoleModal from "./MemberFirmsChangeRoleModal";
 import CloseIcon from "@material-ui/icons/Close";
 import appSlice from "app/slices/appSlice";
-import './style.scss';
+import "./style.scss";
+import Scrollbars from "react-custom-scrollbars";
 
 const { removeMemberFirmUsersRequest, getMemberFirmPotentialUsersRequest } =
   appSlice.actions;
@@ -98,7 +99,6 @@ const MemberFirmEditUsers = ({
   return (
     <Modal
       size="lg"
-      // className={"member-firms-users-modal"}
       className={"member-firm__modal"}
       isOpen={isModalOpen}
       fade={false}
@@ -107,9 +107,7 @@ const MemberFirmEditUsers = ({
       }}
     >
       <div className="survey-modal_header">
-        {/* <div className="survey-modal_header_title">Firm Member Management</div> */}
         <div className="member-firm__title">Firm Member Management</div>
-        {/* <div className={"survey-modal_header_cross"}> */}
         <div className={"member-firm__close"}>
           <X
             size={26}
@@ -120,14 +118,19 @@ const MemberFirmEditUsers = ({
           />
         </div>
       </div>
-      <ModalBody className="member-firm__body" >
-        {/* <div style={{ width: 693, marginBottom: 20, marginTop: 10 }}> */}
-        <div style={{ display: 'flex', gap: 25, alignItems: 'center', paddingRight: 13 }}>
-          <div style={{ width: '100%' }}>
+      <ModalBody className="member-firm__body">
+        <div
+          style={{
+            display: "flex",
+            gap: 25,
+            alignItems: "center",
+            paddingRight: 13,
+          }}
+        >
+          <div style={{ width: "100%" }}>
             <AutoComplete
               placeholder="Search"
               suggestions={[]}
-              // className="form-control"
               className="member-firm__input"
               filterKey="name"
               onChange={handleSearch}
@@ -143,7 +146,6 @@ const MemberFirmEditUsers = ({
             <img
               ref={wrapperRefFilterButton}
               className={"filter-icon member-firm-filter-icon"}
-              // className={"filter-icon member-firm__filter-icon"}
               src={FilterIcon}
               alt={"filter-icon"}
               onClick={() => {
@@ -152,6 +154,7 @@ const MemberFirmEditUsers = ({
             />
           </div>
         </div>
+
         {isFilterBoxOpen && (
           <FilterModal
             managers={potentialMembers}
@@ -171,8 +174,8 @@ const MemberFirmEditUsers = ({
           />
         )}
 
-        <div style={{ textAlign: "right", paddingRight: 10, height: 30 }}>
-          {filter.roles.size > 0 && (
+        {filter.roles.size > 0 && (
+          <div style={{ textAlign: "right", marginTop: 16, height: 30 }}>
             <Button
               className={"filter-tab member-firm-filter-tab"}
               variant={"dark"}
@@ -203,80 +206,48 @@ const MemberFirmEditUsers = ({
                 <CloseIcon />
               </span>
             </Button>
-          )}
+          </div>
+        )}
+
+        <MemberFirmModalTable
+          array={members}
+          deleteUser={(user) => setUserToDelete(user)}
+          editUser={(user, newIsEdit) => {
+            setIsChangeRoleModalOpen(true);
+            setCurrUser(user);
+            setIsEdit(newIsEdit);
+          }}
+          notFindMessage={"There are no users in member firm"}
+          isTitle
+          setArray={setSearchedMembers}
+          sortedArr={potentialMembers}
+        />
+        <div className={'member-firm__text'}>
+          Other members
         </div>
+        <Scrollbars autoHeight autoHeightMax={200}>
+          <MemberFirmModalTable
+            array={
+              searchedMembers?.length > 0 || isFiltered
+                ? searchedMembers
+                : potentialMembers
+            }
+            setArray={setSearchedMembers}
+            editUser={(user, newIsEdit) => {
+              setIsChangeRoleModalOpen(true);
+              setCurrUser(user);
+              setIsEdit(newIsEdit);
+            }}
+            // isTitle
+            isAddUser
+            notFindMessage={
+              isFiltered
+                ? "No user was found for your query"
+                : "There are no potential users to add"
+            }
+          />
+        </Scrollbars>
 
-
-        <MemberFirmModalTable
-          array={members}
-          deleteUser={(user) => setUserToDelete(user)}
-          editUser={(user, newIsEdit) => {
-            setIsChangeRoleModalOpen(true);
-            setCurrUser(user);
-            setIsEdit(newIsEdit);
-          }}
-          notFindMessage={"There are no users in member firm"}
-          isTitle
-        />
-        <div style={{
-            fontWeight: "bold",
-            fontSize: 15,
-            lineHeight: '16px',
-            color: '#707070',
-            paddingTop: 22,
-            borderTop: '1px solid #ECECEC',
-          }}>Other members</div>
-        <MemberFirmModalTable
-          array={
-            searchedMembers?.length > 0 || isFiltered
-              ? searchedMembers
-              : potentialMembers
-          }
-          setArray={setSearchedMembers}
-          editUser={(user, newIsEdit) => {
-            setIsChangeRoleModalOpen(true);
-            setCurrUser(user);
-            setIsEdit(newIsEdit);
-          }}
-          isAddUser
-          notFindMessage={
-            isFiltered
-              ? "No user was found for your query"
-              : "There are no potential users to add"
-          }
-        />
-
-        {/* <MemberFirmModalTable
-          array={
-            searchedMembers?.length > 0 || isFiltered
-              ? searchedMembers
-              : potentialMembers
-          }
-          setArray={setSearchedMembers}
-          editUser={(user, newIsEdit) => {
-            setIsChangeRoleModalOpen(true);
-            setCurrUser(user);
-            setIsEdit(newIsEdit);
-          }}
-          isTitle
-          isAddUser
-          notFindMessage={
-            isFiltered
-              ? "No user was found for your query"
-              : "There are no potential users to add"
-          }
-        />
-        <div style={{ fontWeight: "bold" }}>Existing</div>
-        <MemberFirmModalTable
-          array={members}
-          deleteUser={(user) => setUserToDelete(user)}
-          editUser={(user, newIsEdit) => {
-            setIsChangeRoleModalOpen(true);
-            setCurrUser(user);
-            setIsEdit(newIsEdit);
-          }}
-          notFindMessage={"There are no users in member firm"}
-        /> */}
         <MemberFirmsChangeRoleModal
           isOpen={isChangeRoleModalOpen}
           setIsOpen={setIsChangeRoleModalOpen}

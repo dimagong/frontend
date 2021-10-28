@@ -13,137 +13,93 @@ const MemberFirmModalTable = ({
   deleteUser,
   editUser,
   notFindMessage,
+  sortedArr,
 }) => {
-  // const TableCard = ({ manager }) => {
-
-  //   return (
-  //     <div style={{position: 'relative'}}>
-  //       <div className={'dashboard-action'} style={{cursor: 'unset', display: 'inline-block', marginBottom: 0, marginTop: 5}}>
-  //         <img src={manager.url ? manager.url : noneAvatar} className={"action-user-avatar"} alt={'profile-img'}/>
-  //         <span style={{width: 130}} className={'action-user-name'}>
-  //           {manager.first_name + ' ' + manager.last_name}
-  //         </span>
-  //         <span className={'action-user'}>
-  //           {manager?.permissions?.ability ? manager.permissions.ability.charAt(0).toUpperCase()
-  //           + manager.permissions.ability.slice(1).replace('_', ' ') : 'none'}
-  //         </span>
-  //         <span className={'action-user'}>{manager.email}</span>
-  //         <span className={'action-user'}>-</span>
-  //         <span className={'action-user'} style={{width: 120, paddingRight: 0}}>{manager.member_firm?.main_fields?.name || '-'}</span>
-  //       </div>
-  //       {isAddUser ? (
-  //         (
-  //           <span className={'member-firm-table-icons member-firm-table-icons-add'}>
-  //             <img src={AddUserIcon} alt={'add-user'} onClick={() => {editUser(manager, false)}}/>
-  //           </span>
-  //         )
-  //       ) : (
-  //         <span className={'member-firm-table-icons member-firm-table-icons-remove'}>
-  //           <img src={SettingsIcon} alt={'remove-user'} onClick={() => editUser(manager, true)} style={{marginRight: 8}}/>
-  //           <img src={RemoveUserIcon} alt={'settings'} onClick={() => {deleteUser(manager)}}/>
-  //         </span>
-  //       )}
-  //     </div>
-  //   )
-  // }
   const TableCard = ({ manager }) => {
     return (
-      <div style={{ position: "relative" }}>
-        <div className="table-card">
-          <img
-            src={manager.url ? manager.url : noneAvatar}
-            className={"table-card__avatar"}
-            alt={"profile-img"}
-          />
-          <span style={{ width: 85, paddingRight: 20 }} className={"table-card__user-name"}>
-            {manager.first_name + " " + manager.last_name}
+      <div className="table-card">
+
+        <img
+          src={manager.url ? manager.url : noneAvatar}
+          className={"table-card__avatar"}
+          alt={"profile-img"}
+        />
+
+        <span className={"table-card__user-name"}>
+          {manager.first_name + " " + manager.last_name}
+        </span>
+
+        <span className={"table-card__user-status"}>
+          {
+            manager?.status
+          }
+        </span>
+
+        <span className={"table-card__user-email"}>
+          {manager.email}
+        </span>
+
+        <span className={"table-card__user-city"}>
+          -
+        </span>
+
+        <span className={"table-card__user-role"}>
+          {manager?.permissions?.ability
+            ? manager.permissions.ability.charAt(0).toUpperCase() +
+              manager.permissions.ability.slice(1).replace("_", " ")
+            : "none"}
+        </span>
+
+        <div className={"table-card__delimiter"} />
+
+        {isAddUser ? (
+          <span>
+            <img
+              src={AddUserIcon}
+              alt={"add-user"}
+              onClick={() => {
+                editUser(manager, false);
+              }}
+              className="cursor-pointer"
+            />
           </span>
-          <span className={"action-user"} style={{ width: 105, paddingRight: 20 }}>
-            {manager?.permissions?.ability
-              ? manager.permissions.ability.charAt(0).toUpperCase() +
-                manager.permissions.ability.slice(1).replace("_", " ")
-              : "none"}
+        ) : (
+          <span className="table-card__block">
+            <img
+              src={SettingsIcon}
+              alt={"remove-user"}
+              onClick={() => editUser(manager, true)}
+              style={{ marginRight: 8 }}
+              className="cursor-pointer"
+            />
+            <img
+              src={RemoveUserIcon}
+              alt={"settings"}
+              onClick={() => {
+                deleteUser(manager);
+              }}
+              className="cursor-pointer"
+            />
           </span>
-          <span
-            className={"action-user"}
-            style={{
-              width: 163,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              paddingRight: 20
-            }}
-          >
-            {manager.email}
-          </span>
-          <span className={"action-user"} style={{ width: 108, paddingRight: 20 }}>
-            -
-          </span>
-          <span className={"action-user"} style={{ width: 100, paddingRight: 20 }}>
-            -
-          </span>
-          <div style={{ height: 28, width: 2, backgroundColor: '#707070', marginRight: 20 }}/>
-          {/* <span className={'action-user'} style={{width: 120, paddingRight: 0}}>{manager.member_firm?.main_fields?.name || '-'}</span> */}
-          {isAddUser ? (
-            <span
-            // className={"member-firm-table-icons member-firm-table-icons-add"}
-            >
-              <img
-                src={AddUserIcon}
-                alt={"add-user"}
-                onClick={() => {
-                  editUser(manager, false);
-                }}
-              />
-            </span>
-          ) : (
-            <span
-            // className={"member-firm-table-icons member-firm-table-icons-remove"}
-            style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}
-            >
-              <img
-                src={SettingsIcon}
-                alt={"remove-user"}
-                onClick={() => editUser(manager, true)}
-                style={{ marginRight: 8 }}
-              />
-              <img
-                src={RemoveUserIcon}
-                alt={"settings"}
-                onClick={() => {
-                  deleteUser(manager);
-                }}
-              />
-            </span>
-          )}
-        </div>
+        )}
       </div>
     );
   };
 
-  // const TableTitle = () => {
-  //   return <div className={'member-firm-table-title'}>
-  //     <span onClick={() => handleSortBy('first_name')}>Name</span>
-  //     <span onClick={() => handleSortBy('role')}>Role</span>
-  //     <span onClick={() => handleSortBy('email')}>Email</span>
-  //     <span>Suburb</span>
-  //     <span onClick={() => handleSortBy('memberFirm')} style={{width: 120}}>Member Firm</span>
-  //   </div>
-  // }
   const TableTitle = () => {
     return (
       <div className={"member-firm-table-title"}>
-        <span style={{ maxWidth: 85, width: '100%' }} onClick={() => handleSortBy("first_name")}>
+        <span className="title__user-name" onClick={() => handleSortBy("first_name")}>
           Name
         </span>
-        <span style={{ maxWidth: 105, width: '100%' }} onClick={() => handleSortBy("role")}>
-          Firm role
-        </span>
-        <span style={{ maxWidth: 163, width: '100%' }} onClick={() => handleSortBy("email")}>
+        <span className="title__user-status">Status</span>
+        <span className="title__user-email" onClick={() => handleSortBy("email")}>
           Email
         </span>
-        <span style={{ maxWidth: 108, width: '100%' }}>City</span>
-        {/* <span onClick={() => handleSortBy('memberFirm')} style={{width: 120}}>Member Firm</span> */}
+        <span className="title__user-city">City</span>
+        <span className="title__user-role" onClick={() => handleSortBy("role")}>
+          Firm role
+        </span>
       </div>
     );
   };
@@ -152,13 +108,13 @@ const MemberFirmModalTable = ({
     let newArray;
     switch (parameter) {
       case "role": {
-        newArray = [...array].sort((lhs, rhs) =>
+        newArray = [...sortedArr].sort((lhs, rhs) =>
           lhs.permissions?.ability >= rhs.permissions?.ability ? 1 : -1
         );
         break;
       }
       case "memberFirm": {
-        newArray = [...array].sort((lhs, rhs) =>
+        newArray = [...sortedArr].sort((lhs, rhs) =>
           lhs.member_firm?.main_fields?.name >=
           rhs.member_firm?.main_fields?.name
             ? 1
@@ -167,11 +123,11 @@ const MemberFirmModalTable = ({
         break;
       }
       default:
-        newArray = [...array].sort((lhs, rhs) =>
+        newArray = [...sortedArr].sort((lhs, rhs) =>
           lhs[parameter] >= rhs[parameter] ? 1 : -1
         );
     }
-    if (JSON.stringify(array) === JSON.stringify(newArray)) {
+    if (JSON.stringify(sortedArr) === JSON.stringify(newArray)) {
       setArray(newArray.reverse());
     } else {
       setArray(newArray);
@@ -189,6 +145,7 @@ const MemberFirmModalTable = ({
             textAlign: "center",
             fontSize: "large",
             marginTop: isTitle ? 50 : 25,
+            marginBottom: isTitle ? 50 : 25,
           }}
         >
           {notFindMessage}
