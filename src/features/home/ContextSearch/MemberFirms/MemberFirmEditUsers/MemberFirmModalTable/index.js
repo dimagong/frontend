@@ -13,7 +13,7 @@ const MemberFirmModalTable = ({
   deleteUser,
   editUser,
   notFindMessage,
-  sortedArr,
+  arrayForSort,
 }) => {
   const TableCard = ({ manager }) => {
     return (
@@ -108,13 +108,13 @@ const MemberFirmModalTable = ({
     let newArray;
     switch (parameter) {
       case "role": {
-        newArray = [...sortedArr].sort((lhs, rhs) =>
+        newArray = [...arrayForSort].sort((lhs, rhs) =>
           lhs.permissions?.ability >= rhs.permissions?.ability ? 1 : -1
         );
         break;
       }
       case "memberFirm": {
-        newArray = [...sortedArr].sort((lhs, rhs) =>
+        newArray = [...arrayForSort].sort((lhs, rhs) =>
           lhs.member_firm?.main_fields?.name >=
           rhs.member_firm?.main_fields?.name
             ? 1
@@ -123,11 +123,11 @@ const MemberFirmModalTable = ({
         break;
       }
       default:
-        newArray = [...sortedArr].sort((lhs, rhs) =>
+        newArray = [...arrayForSort].sort((lhs, rhs) =>
           lhs[parameter] >= rhs[parameter] ? 1 : -1
         );
     }
-    if (JSON.stringify(sortedArr) === JSON.stringify(newArray)) {
+    if (JSON.stringify(arrayForSort) === JSON.stringify(newArray)) {
       setArray(newArray.reverse());
     } else {
       setArray(newArray);

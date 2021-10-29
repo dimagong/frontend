@@ -220,7 +220,7 @@ const MemberFirmEditUsers = ({
           notFindMessage={"There are no users in member firm"}
           isTitle
           setArray={setSearchedMembers}
-          sortedArr={potentialMembers}
+          arrayForSort={potentialMembers}
         />
         <div className={'member-firm__text'}>
           Other members
@@ -232,13 +232,11 @@ const MemberFirmEditUsers = ({
                 ? searchedMembers
                 : potentialMembers
             }
-            setArray={setSearchedMembers}
             editUser={(user, newIsEdit) => {
               setIsChangeRoleModalOpen(true);
               setCurrUser(user);
               setIsEdit(newIsEdit);
             }}
-            // isTitle
             isAddUser
             notFindMessage={
               isFiltered
