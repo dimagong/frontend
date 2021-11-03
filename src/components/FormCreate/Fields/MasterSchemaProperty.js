@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Col, FormFeedback, FormGroup, Row, Alert} from "reactstrap";
+import {useDispatch} from "react-redux";
+import {Col, FormGroup, Row, Alert} from "reactstrap";
 import Select from "react-select";
 import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
-import {isEmpty, isObject, first} from 'lodash'
-import {current} from "@reduxjs/toolkit";
+import {isEmpty, isObject} from 'lodash'
 
 import appSlice from 'app/slices/appSlice'
 

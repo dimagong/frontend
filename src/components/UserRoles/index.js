@@ -20,8 +20,6 @@ import {capitalizeAll} from '../../utility/common'
 
 import './styles.scss'
 
-import { logos } from 'constants/organizations'
-
 import appSlice from 'app/slices/appSlice'
 import {toast} from "react-toastify";
 
@@ -30,7 +28,6 @@ const {
   allowUserAbilityRequest,
   disallowUserAbilityRequest,
   getOrganizationsRequest,
-  getUserOnboardingRequest,
   getUserOrganizationsRequest,
   removeUserOrganizationRequest,
   switchUserOrganizationRequest

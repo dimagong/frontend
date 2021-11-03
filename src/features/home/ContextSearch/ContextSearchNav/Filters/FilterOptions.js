@@ -4,7 +4,7 @@ import {
 } from 'reactstrap';
 
 const FilterOptions = ({ filter, curr, roles, memberFirms, organizations, handleFilterOptions }) => {
-  let currFilters, currFiltersSet;
+  let currFilters;
   if (curr === 'reps') {
     return; //Temporary
   }

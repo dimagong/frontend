@@ -1,11 +1,10 @@
-import {Button} from "react-bootstrap";
 import React, {useState, useEffect} from "react";
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd"
 import {
-  Card, CardHeader, CardBody, CardTitle, ListGroup,
+  ListGroup,
   ListGroupItem
 } from "reactstrap"
-import PropertyNameById, {PropertyNameByIdAsTextNode} from "../Parts/PropertyNameById";
+import {PropertyNameByIdAsTextNode} from "../Parts/PropertyNameById";
 
 const reorder = (list, startIndex, endIndex) => {
 

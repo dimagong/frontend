@@ -13,7 +13,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import {selectContextSearchVisibility} from "app/selectors";
 
 import appSlice from "app/slices/appSlice";
-import {HEADER_HEIGHT, INPUT_HEADER_HEIGHT} from "../../constants/header";
+import {INPUT_HEADER_HEIGHT} from "../../constants/header";
 
 const {
   showContextSearch,

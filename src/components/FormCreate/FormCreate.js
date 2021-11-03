@@ -1,29 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-// import Form from "@rjsf/core";
+import React, {useEffect} from 'react';
+import {useDispatch} from "react-redux";
 import Form from '@rjsf/material-ui';
-import ElementEditModal from "./ElementEditModal";
 import DependencyEditModal from "./DependencyEditModal";
-import classnames from "classnames"
 import rfdc from 'rfdc';
 import {
-  Nav,
-  NavItem,
-  TabContent,
   Row,
   Col,
-  NavLink,
-  TabPane,
   Button,
   CardTitle,
   Card,
-  FormGroup,
   CardBody,
   CardHeader,
-  Badge, FormFeedback, Input
+  FormFeedback,
+  Input,
 } from 'reactstrap';
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy"
-import {X, Check, Plus} from "react-feather"
+import {X, Check} from "react-feather"
 import Select from "react-select"
 import {deepCompare, makeid, IsJsonString} from "./utils";
 
@@ -34,13 +26,12 @@ import {CheckboxWidget} from "./Custom/CheckboxWidget";
 import Reference from "./Custom/Reference";
 import TextWidget from './Custom/TextWidget';
 import LongTextWidget from './Custom/LongTextWidget';
-import NumberWidget from './Custom/NumberWidget';
 import SelectWidget from './Custom/SelectWidget';
 import TextAreaWidget from './Custom/TextAreaWidget';
 import DateInput from './Custom/DateInput';
 import DateTimeInput from './Custom/DateTimeInput';
 
-import {isEqual, debounce, concat, isObject, isEmpty, difference, omit, differenceWith} from 'lodash';
+import {isEqual, debounce, isEmpty} from 'lodash';
 import fileService from "./services/file.service";
 import Constants, {
   FIELD_TYPE_BOOLEAN, FIELD_TYPE_DATE, FIELD_TYPE_FILE, FIELD_TYPE_FILE_LIST, FIELD_TYPE_LONG_TEXT_AREA,
@@ -56,10 +47,7 @@ import './FormCreate.scss';
 import {dependencyChecker} from './Parts/DependencyChecker'
 import {listControls} from './Parts/ListControls'
 import {getSpecificType, isElementProtected} from "./helper";
-import OrderingEditModal from './Ordering/OrderingEditModal'
-import Ordering from './Ordering/Ordering'
 import FormOrdering from './Ordering/index'
-import masterSchemaService from "../../views/pages/master-schema/services/masterSchema.service";
 import PropertyNameById from "./Parts/PropertyNameById";
 
 import { toast } from "react-toastify";

@@ -1,10 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import noneAvatar from "assets/img/portrait/none-avatar.png";
 import AddUserIcon from 'assets/img/svg/add-user.svg';
 import RemoveUserIcon from 'assets/img/svg/remove-user.svg';
 import SettingsIcon from 'assets/img/svg/settings.svg';
-import {useSelector} from "react-redux";
-import {getSelectedMemberFirmPotentialUsers} from "../../../../../../app/selectors/memberFirmsSelector";
 
 const MemberFirmModalTable = ({array, isTitle, isAddUser, setArray, deleteUser, editUser, notFindMessage}) => {
 

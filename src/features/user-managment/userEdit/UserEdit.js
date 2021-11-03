@@ -36,12 +36,9 @@ import UserProfileEdit from './UserEditContextFeature'
 import SurveyAssign from './components/Survey/SurveyAssign'
 import AssignedSurvey from './components/Survey/AssignedSurvey';
 
-import { useParams } from 'react-router-dom'
-
 import {
   selectUserOrganizations,
   selectCurrentManager,
-  selectManagerById,
   selectSelectedManagerAssignedSurveys, selectUserActivity,
 } from 'app/selectors/userSelectors'
 
@@ -99,9 +96,6 @@ const selectOptions = [
 
 const UserEdit = (props, context) => {
   const dispatch = useDispatch();
-  const { id } = useParams();
-
-  const newManager = useSelector(selectManagerById(id))
 
   //* TODO refactor, old manager is used
   const selectedManager = useSelector(selectManager);
@@ -123,7 +117,6 @@ const UserEdit = (props, context) => {
   const [applicationAddSelectValue, setApplicationAddSelectValue] = useState(selectOptions[0]);
 
   const [activeModuleTab, setActiveModuleTab] = useState(manager.permissions ? tabs[0] : tabs[3]);
-  const [activeOnboardingId, setActiveOnboardingId] = useState(-1);
   const isCreate = useRef(false);
 
   const initOnboarding = {

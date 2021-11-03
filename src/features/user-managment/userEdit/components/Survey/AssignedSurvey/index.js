@@ -38,7 +38,6 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
 
   const handleFinishGrading = () => {
     const questionsWithTextType = surveyData.questions.filter(question => question.answer_structure.type === "text");
-    const answersWithTextType = surveyData.answers.filter(answer => answer.grade_structure);
 
     const answersWithoutGrade = questionsWithTextType.filter(question => {
       const isGraded = surveyData.answers.some(answer => {

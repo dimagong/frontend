@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import {
   FormGroup,
   Row,
@@ -14,16 +14,14 @@ import {
   Card,
 } from "reactstrap";
 import Checkbox from "../../../components/@vuexy/checkbox/CheckboxesVuexy";
-import Select from "react-select"
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "app/selectors";
-import {Check, Eye, EyeOff, Lock, X} from "react-feather"
+import {Check, X} from "react-feather"
 import Flatpickr from "react-flatpickr";
 import moment from 'moment';
-import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
+import { colorMultiSelect} from "utility/select/selectSettigns";
 import { selectGroups, selectRoles, selectError } from "app/selectors";
-import {prepareSelectOptions,prepareNotNestedSelectOptions, normalizeGroups, getGroupName, prepareSelectGroups} from "utility/select/prepareSelectData";
-import {groupTypes} from 'constants/group'
+import {prepareNotNestedSelectOptions, normalizeGroups, prepareSelectGroups} from "utility/select/prepareSelectData";
 
 import appSlice from 'app/slices/appSlice'
 

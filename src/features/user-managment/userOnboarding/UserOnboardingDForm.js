@@ -7,7 +7,7 @@ import {
   Col,
   Spinner,
 } from "reactstrap"
-import {RefreshCw, EyeOff, Eye} from "react-feather"
+import {RefreshCw} from "react-feather"
 import FormCreate from 'components/FormCreate/FormCreate'
 import {useDispatch, useSelector} from "react-redux";
 import {selectManager, selectLoading} from "app/selectors";

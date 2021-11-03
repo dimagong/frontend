@@ -14,7 +14,6 @@ import {useSelector} from "react-redux";
 import {selectFilters} from "app/selectors/userSelectors";
 import {selectOrganizations} from "app/selectors/groupSelector";
 import SavedFilters from "./SavedFilters";
-import SortingFilters from "./SortingFilters";
 import {useOutsideAlerter} from "hooks/useOutsideAlerter";
 import {getMemberFirms} from "app/selectors/memberFirmsSelector";
 
@@ -27,9 +26,7 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
   const [activeFilter, setActiveFilter] = useState();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [isFilterBoxOpened, setIsFilterBoxOpened] = useState(false);
   const [currSort, setCurrSort] = useState(-1);
-  const [filtered, setFiltered] = useState(false);
   let roles = new Set(['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']), organizations = new Set(), reps = new Set();
   organizationsObjects.forEach(item => {organizations.add(item.name.replace('_', ' '))})
   const memberFirmsObjects = useSelector(getMemberFirms);

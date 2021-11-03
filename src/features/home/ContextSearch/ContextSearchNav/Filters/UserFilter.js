@@ -35,8 +35,7 @@ const UserFilter = ({ handleFilter, managers }) => {
   const [filtered, setFiltered] = useState(false);
   const [filterName, setFilterName] = useState('');
   let roles = ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead'],
-      organizations = [],
-      reps = [];
+      organizations = [];
   organizationsObjects.forEach(item => {organizations.push(item.name.replace('_', ' '))})
   const memberFirmsObjects = useSelector(getMemberFirms);
   const [curr, setCurr] = useState('roles');

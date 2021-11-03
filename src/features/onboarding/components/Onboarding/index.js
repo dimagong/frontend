@@ -4,7 +4,6 @@ import {
   Card,
   Row,
   Col,
-  Spinner,
   TabContent,
   TabPane,
 } from 'reactstrap';
@@ -16,7 +15,6 @@ import {
 import {isEmpty} from 'lodash'
 import FormCreate from 'components/FormCreate/FormCreate'
 import {debounce} from 'lodash';
-import { createLoadingSelector } from "app/selectors/loadingSelector";
 import OnboardingSurvey from "../../OnboardingSurvey";
 import './styles.scss'
 

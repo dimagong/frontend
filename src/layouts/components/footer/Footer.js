@@ -6,6 +6,7 @@ import classnames from "classnames"
 
 const Footer = props => {
   let footerTypeArr = ["sticky", "static", "hidden"]
+
   return (
     <footer
       className={classnames("footer footer-light", {

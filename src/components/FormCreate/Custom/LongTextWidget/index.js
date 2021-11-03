@@ -11,7 +11,6 @@ const LongTextWidget = ({props}) => {
     value,
     onChange,
     label,
-    disabled,
     required
   } = props
   const [isModalOpened, setIsModalOpened] = useState(false);

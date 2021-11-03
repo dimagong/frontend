@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 
-import { Row, Card, CardBody, CardHeader, CardTitle, Col } from "reactstrap";
+import { Row, Card, CardBody, Col } from "reactstrap";
 import {X, ChevronDown, Plus} from "react-feather";
 import Select, { components } from "react-select";
-import {colourStyles} from "../../../../../../../../utility/select/selectSettigns";
 
 import LoadingButton from "components/LoadingButton";
 

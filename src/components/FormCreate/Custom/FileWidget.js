@@ -1,10 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
-import {dataURItoBlob, extractFileInfo, processFiles} from "../utils";
-import {concat, isEmpty} from "lodash";
+import React, { useRef, useState} from "react";
+import {dataURItoBlob, processFiles} from "../utils";
+import {concat} from "lodash";
 import {X} from "react-feather";
 import rfdc from "rfdc";
 import fileService from "../services/file.service";
-import moment from "moment";
 import {Badge, Spinner} from "reactstrap";
 
 import FieldLabel from './FieldLabel';

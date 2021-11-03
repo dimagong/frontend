@@ -1,9 +1,6 @@
 import React, {useState, useEffect} from 'react'
-import {
-  Button,
-  UncontrolledTooltip
-} from "reactstrap"
-import {RefreshCcw, Trash, Save} from "react-feather"
+import { Button } from "reactstrap"
+import {RefreshCcw, Trash} from "react-feather"
 import {useDispatch, useSelector} from "react-redux";
 import {selectManager} from "app/selectors";
 import moment from "moment";
@@ -83,9 +80,6 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
       >
         <Trash></Trash>
       </Button>
-      {/*<UncontrolledTooltip placement="top" target="trash-invitation-btn">*/}
-      {/*  Delete invitation*/}
-      {/*</UncontrolledTooltip>*/}
     </div>;
   };
 
@@ -116,9 +110,6 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
           Copy link
         </Button>
       </CopyToClipboard>
-      {/*<UncontrolledTooltip placement="top" target="resend-invitation-btn">*/}
-      {/*  Resend invitation*/}
-      {/*</UncontrolledTooltip>*/}
     </div>;
   };
 
@@ -135,9 +126,6 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
       >
         {!invitationText ? 'Send invitation' : invitationText}
       </Button>
-      {/*<UncontrolledTooltip placement="top" target="send-invitation-btn">*/}
-      {/*  Send invitation*/}
-      {/*</UncontrolledTooltip>*/}
     </div>;
   };
 

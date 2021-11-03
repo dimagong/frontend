@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react'
+import React, {useRef} from 'react'
 import '../ContextSearchNav/styles.scss'
 import moment from "moment";
 import {useDispatch, useSelector} from "react-redux";

@@ -1,6 +1,6 @@
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import {Check, Plus} from "react-feather";
-import Constants, {FIELD_TYPE_HELP_TEXT} from "./Constants";
+import Constants from "./Constants";
 import {
   Badge,
   Card,
@@ -14,18 +14,15 @@ import {
   Row,
   TabContent,
   TabPane,
-  FormFeedback,
   Input
 } from "reactstrap";
 import ElementEditModal from "../ElementEditModal";
 import DependencyEditModal from "../DependencyEditModal";
 import {isEmpty} from "lodash";
 import classnames from "classnames";
-import React, {useState} from "react";
+import React from "react";
 import {getSpecificType} from "../helper";
 import WysiwygEditor from "../Custom/WysiwygEditor";
-import Select from 'react-select'
-import MasterSchemaField from "../Fields/MasterSchemaField";
 import MasterSchemaProperty from "../Fields/MasterSchemaProperty";
 import MasterSchemaPropertyConfig from "../Fields/MasterSchemaPropertyConfig";
 
@@ -60,10 +57,6 @@ export function listControls(properties) {
     };
 
     const renderKeyObjectEditColumn = (column, placeholder) => {
-
-      let errorMsg = 'Error';
-
-      // console.log('errorPropertyNameAlreadyTaken', errorPropertyNameAlreadyTaken);
 
       if (Constants.NOT_MASTER_SCHEMA_FIELDS.indexOf(schemaPropertyEdit?.type) !== -1) {
         return (<div>

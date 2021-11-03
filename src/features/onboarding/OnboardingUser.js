@@ -1,14 +1,10 @@
-import React, {useRef, useState, useEffect} from 'react'
+import React, {useEffect} from 'react'
 import {
   Spinner,
 } from 'reactstrap';
 import {useDispatch, useSelector} from "react-redux";
-import {
-  selectProfile,
-  selectLoading,
-} from "app/selectors";
+import { selectProfile } from "app/selectors";
 import { selectOnboardingSurveys } from "app/selectors/userSelectors";
-import {debounce} from 'lodash';
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import './styles.scss'
 
@@ -16,26 +12,14 @@ import _ from 'lodash';
 
 import WelcomePageComponent from "./components/WeclomePage";
 
-import Approved from './approved.svg'
-import Submitted from './submitted.svg'
-import Review from './onReview.svg'
-
 import OnboardingComponent from "./components/Onboarding";
 
 import appSlice from 'app/slices/appSlice'
 
 const {
-  submitdFormRequest,
-  submitdFormDataRequest,
   setProfileOnboarding,
   getAssignedSurveysForOnboardingRequest,
 } = appSlice.actions;
-
-const statusImages = {
-  approved: {img: Approved, alt: "form approved"},
-  submitted: {img: Review, alt: "form submitted"},
-  recent: {img: Submitted, alt: "form recently submitted"},
-};
 
 const OnboardingUser = () => {
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import {useDispatch, useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectError } from "app/selectors";
 

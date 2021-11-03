@@ -6,8 +6,6 @@ import SidebarHeader from "./SidebarHeader"
 import Hammer from "react-hammerjs"
 import SideMenuContent from "./sidemenu/SideMenuContent"
 import PerfectScrollbar from "react-perfect-scrollbar"
-// import UserService from '../../../../services/user.service'
-import {User} from "react-feather";
 import { selectProfile } from "app/selectors"
 
 class Sidebar extends Component {

@@ -3,7 +3,6 @@ import {all, put, call, takeLatest, select} from "redux-saga/effects";
 import dFormApi from "api/Onboarding/dForms";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {selectdForms} from "app/selectors/onboardingSelectors";
-import rfdc from "rfdc";
 
 import onboardingSlice from 'app/slices/onboardingSlice';
 import appSlice from 'app/slices/appSlice'
@@ -26,7 +25,6 @@ const {
   updateDFormSuccess,
   updateDFormTemplateRequest,
   updateDFormRequest,
-  updateDFormError,
   updateDFormTemplateError,
   deletedFormSuccess,
   deletedFormRequest,
@@ -54,8 +52,6 @@ const {
   changedFormStatusError,
   setContext,
 } = appSlice.actions;
-
-const clone = rfdc();
 
 function* getdForms() {
   try {

@@ -12,7 +12,6 @@ import {
 import {Scrollbars} from "react-custom-scrollbars";
 import ListItem from "../ListItem";
 import {useDispatch, useSelector} from "react-redux";
-import {selectNotifications} from "app/selectors";
 import {selectSurveyWorkFlows, selectApplicationWorkFlows, selectSurveyNotifications, selectApplicationNotifications} from "app/selectors/onboardingSelectors";
 import onboardingSlice from "app/slices/onboardingSlice";
 import appSlice from "app/slices/appSlice";

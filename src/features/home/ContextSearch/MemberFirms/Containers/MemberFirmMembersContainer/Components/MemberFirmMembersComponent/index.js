@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import { Scrollbars } from 'react-custom-scrollbars';
 
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
@@ -7,7 +6,6 @@ import { Button } from 'reactstrap'
 import {Settings} from 'react-feather';
 import MemberFirmEditUsers from "../../../../MemberFirmEditUsers";
 import MemberFirmUsersList from "./Components/MemberFirmUsersList";
-import {HEADER_HEIGHT} from "constants/header";
 
 import "./styles.scss"
 

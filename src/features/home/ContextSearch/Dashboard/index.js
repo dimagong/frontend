@@ -17,7 +17,7 @@ const {
   getDashboardDFormsRequest,
 } = appSlice.actions;
 
-const Dashboard = ({ }) => {
+const Dashboard = () => {
   const dispatch = useDispatch();
   const dashboardSettings = useSelector(selectDashboardSettings)
   const dashboardDForms = useSelector(selectDashboardDForms)

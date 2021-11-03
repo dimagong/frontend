@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardBody,
   Col,
   Button,
@@ -26,7 +24,6 @@ import appSlice from 'app/slices/appSlice'
 
 const {
   setManagerOnboardingProperty,
-  setManagerOnboarding,
   setUserDForms,
   setUserWorkflows,
   setUserReviewers,

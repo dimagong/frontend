@@ -35,10 +35,6 @@ const MemberFirmMembersContainer = ({ onNavigateToUserProfile }) => {
     setSearchQuery(e.target.value);
   };
 
-  const filterUsersByName = (users) => {
-
-  };
-
   useEffect(() => {
     dispatch(getMemberFirmUsersRequest(selectedMemberFirm.id));
     dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id));

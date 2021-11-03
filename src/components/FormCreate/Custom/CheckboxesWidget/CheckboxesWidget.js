@@ -1,4 +1,3 @@
-import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import {Check} from "react-feather";
 import React from "react";
 import rfdc from "rfdc";

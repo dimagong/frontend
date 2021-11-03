@@ -8,14 +8,12 @@ import {
   Col,
 } from "reactstrap";
 import { X, Eye, EyeOff } from "react-feather";
-import MultiSelect, {DropdownIndicator} from "components/MultiSelect/multiSelect";
+import MultiSelect from "components/MultiSelect/multiSelect";
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { useDispatch, useSelector } from "react-redux";
-import { selectdForms, selectdForm} from "app/selectors/onboardingSelectors";
+import { selectdForm} from "app/selectors/onboardingSelectors";
 import FormCreate from "components/FormCreate/FormCreate"
 import {initDForm} from './settings'
-import {colourStyles} from '../../../utility/select/selectSettigns'
-import Select from 'react-select'
 
 import onboardingSlice from 'app/slices/onboardingSlice';
 import appSlice from 'app/slices/appSlice'

@@ -31,7 +31,6 @@ const {
   deleteFolderRequest,
   deleteSurveyLatestVersionRequest,
   handleSurveyVersionSelect,
-  deleteSurveyVersionRequest,
 } = appSlice.actions;
 
 const SurveysDesigner = () => {
@@ -54,7 +53,6 @@ const SurveysDesigner = () => {
   const isSurveyUpdateProceed = useSelector(createLoadingSelector([updateSurveyRequest.type], true));
   const isFolderDeleteProceed = useSelector(createLoadingSelector([deleteFolderRequest.type], true));
   const isSurveyDeleteLatestVersionProceed = useSelector(createLoadingSelector([deleteSurveyLatestVersionRequest.type], true));
-  const isSurveyDeleteVersionProceed = useSelector(createLoadingSelector([deleteSurveyVersionRequest.type], true));
 
   const prevFolderDeleteState = usePrevious(isFolderDeleteProceed);
   const prevSurveyDeleteLatestVersionValue = usePrevious(isSurveyDeleteLatestVersionProceed);

@@ -11,12 +11,8 @@ import {
   TabPane,
 } from "reactstrap";
 import classnames from "classnames";
-// import UserCreate from './UserCreate'
-// import UserList from './UserList'
-// import InvitationList from '../invitation/InvitationList'
-// import UserEdit from './UserEdit'
 import { useDispatch, useSelector } from "react-redux";
-import { selectGroups, selectRoles, selectManager, selectManagers } from "app/selectors";
+import { selectManager, selectManagers } from "app/selectors";
 import { navItemFactory } from "./contants";
 import UserEdit from './userEdit/UserEdit'
 import { useRouter } from "hooks/useRouter";

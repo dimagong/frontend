@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import {
   Row,
@@ -9,9 +9,6 @@ import {
   DropdownMenu,
   DropdownItem,
   NavItem,
-  NavbarToggler,
-  Collapse,
-  Nav,
   Card,
   CardBody,
 } from 'reactstrap'

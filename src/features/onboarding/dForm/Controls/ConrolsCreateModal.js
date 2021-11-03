@@ -2,7 +2,7 @@ import { Button, Modal } from "react-bootstrap";
 import React, { useState } from "react";
 import { Settings } from "react-feather";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy"
-import {X, Check, Plus} from "react-feather"
+import {Check} from "react-feather"
 import { v4 } from 'uuid'
 
 const DFormCreateModal = () => {

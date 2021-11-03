@@ -1,13 +1,10 @@
-import {Col, Nav, NavItem, NavLink, Row, TabContent, TabPane} from "reactstrap";
-import React, {useState} from "react";
-import classnames from "classnames";
+import React from "react";
 import Constants from "../Parts/Constants";
 import {isElementProtected} from "../helper";
 import HelpText from "./HelpText";
 import Sections from '../Elements/Sections'
 import Groups from '../Elements/Groups'
 import Field from "../Elements/Field";
-import _ from 'lodash'
 import dFormApi from "api/Onboarding/dForms";
 
 export function ObjectFieldTemplate(props) {
