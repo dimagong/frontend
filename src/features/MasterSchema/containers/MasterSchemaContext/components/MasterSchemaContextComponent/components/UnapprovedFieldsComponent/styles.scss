@@ -1,0 +1,58 @@
+.unapproved_fields {
+  font-family: Montserrat, sans-serif;
+  &-list {
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      &-title {
+        font-size: 15px;
+        color: #707070;
+      }
+
+      &-selected_items {
+        &-count {
+          color: #707070;
+          font-size: 15px;
+
+          &>p {
+            margin: 0;
+          }
+        }
+      }
+    }
+
+    &-items {
+      background: #F1F1F1;
+      border-radius: 5px;
+
+      &-item {
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px 12px 12px;
+        user-select: none;
+        &-state {
+
+        }
+
+        &-description {
+          padding-left: 10px;
+
+          &-name {
+            font-size: 15px;
+            margin-bottom: 6px;
+          }
+
+          &-appearances {
+            font-size: 12px;
+          }
+        }
+
+        &-creation_info {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}
