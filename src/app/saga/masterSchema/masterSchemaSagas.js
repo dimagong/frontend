@@ -8,6 +8,10 @@ const {
   getMasterSchemaFieldsRequest,
   getMasterSchemaFieldsSuccess,
   getMasterSchemaFieldsError,
+
+  getMasterSchemaOrganizationsRequest,
+  getMasterSchemaOrganizationsSuccess,
+  getMasterSchemaOrganizationsError,
 }  = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -86,8 +90,24 @@ function* getMasterSchemaFields() {
   }
 }
 
+
+
+// NEW SAGA  -----------------------------
+
+function* getMasterSchemaOrganizations() {
+  const response = yield call(masterSchemaApi.getMasterSchemaOrganizations);
+
+  if (response?.message) {
+    yield put(getMasterSchemaOrganizationsError(response.message))
+  } else {
+    yield put(getMasterSchemaOrganizationsSuccess(response))
+  }
+}
+
+
 export default function* () {
   yield all([
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
+    yield takeLatest(getMasterSchemaOrganizationsRequest.type, getMasterSchemaOrganizations),
   ]);
 }

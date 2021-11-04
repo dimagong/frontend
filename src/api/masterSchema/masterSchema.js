@@ -1,7 +1,15 @@
-import instance from "api";
+import instance, { requestLayout } from "api";
 import { masterSchemaOrganizations } from "constants/masterSchema";
 
+import {
+  getMasterSchemaOrganizationsUrl,
+} from "./constants";
+
 const masterSchemaApi = {
+  async getMasterSchemaOrganizations() {
+    return requestLayout(getMasterSchemaOrganizationsUrl, "GET");
+  },
+
   async getOrganizationsMasterSchema() {
     try {
       const result = await instance({
