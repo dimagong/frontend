@@ -112,7 +112,7 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
             let res = [];
             filter['Application'].forEach(item => {
               if (item.name !== 'Applications Snapshot')  {
-                res = item.id.concat(res)
+                res = res.concat(item.id)
               }})
             if (res.length === 0) {
               res = null

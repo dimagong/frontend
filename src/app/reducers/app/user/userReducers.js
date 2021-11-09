@@ -78,6 +78,16 @@ const patchSettingsSuccess = (state, {payload}) => {
   state.user.dashboard.settings = payload;
 }
 
+const updateApllicationsOrderSuccess = (state, { payload }) => {
+  state.isLoading = false;
+  state.isError = null;
+
+  const managerIndex = state.user.managers.findIndex(item => item.id === payload.userId);
+
+  state.user.managers[managerIndex].onboardings = payload.storeData.onboardings;
+  state.selectedManagerAssignedSurveys = payload.storeData.assignedSurvey;
+}
+
 const getActivitiesSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
@@ -593,4 +603,5 @@ export default {
   getUserManagment,
   setProfileOnboarding,
   switchUserOrganizationSuccess,
+  updateApllicationsOrderSuccess,
 };
