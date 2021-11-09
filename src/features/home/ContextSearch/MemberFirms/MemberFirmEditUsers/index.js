@@ -9,6 +9,7 @@ import {useDispatch} from "react-redux";
 import MemberFirmsChangeRoleModal from "./MemberFirmsChangeRoleModal";
 import CloseIcon from "@material-ui/icons/Close";
 import appSlice from "app/slices/appSlice";
+import SearchAndFilter from "../../../../../components/SearchAndFilter";
 
 const {
   removeMemberFirmUsersRequest,
@@ -81,7 +82,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
           </div>
         </div>
         <ModalBody style={{marginLeft: 15}}>
-          <div style={{width: 693, marginBottom: 20, marginTop: 10}}>
+          {/*<div style={{width: 693, marginBottom: 20, marginTop: 10}}>
             <AutoComplete
               placeholder="Search"
               suggestions={[]}
@@ -128,7 +129,15 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
               }}
                     className={'close-nav'}><CloseIcon/></span>
             </Button>}
-          </div>
+          </div>*/}
+
+          <SearchAndFilter
+            handleSearch={handleSearch}
+            handleFilter={handleFilter}
+            setIsFiltered={setIsFiltered}
+            onCancelFilter={() => {setSearchedMembers([])}}
+            potentialMembers={potentialMembers}
+          />
 
           <MemberFirmModalTable
             array={(searchedMembers?.length > 0 || isFiltered) ? searchedMembers : potentialMembers}
