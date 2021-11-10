@@ -58,9 +58,9 @@ const OnboardingUser = () => {
       };
     });
 
-    userApplications = _.sortBy(userApplications, (application) => (
-      new Date(application.created_at)
-    ));
+    userApplications = _.sortBy(userApplications, (application) => {
+      return application.order;
+    });
 
   }
 
