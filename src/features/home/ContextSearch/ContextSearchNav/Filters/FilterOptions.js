@@ -16,7 +16,7 @@ const FilterOptions = ({ filter, curr, roles, memberFirms, organizations, handle
     case 'reps': currFilters = []; /*TODO*/ break;
   }
 
-  return currFilters.map(item => <Button className={'filter-option not-active'} variant="primary">
+  return currFilters.map((item, idx) => <Button className={'filter-option not-active'} variant="primary" key={idx}>
     <span className={'filter-name'}>{item}</span>
     <span className={'filter-right'}>
         <span>

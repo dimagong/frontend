@@ -31,7 +31,7 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, handleFilter,
             <DropdownToggle className="text-dark" nav caret={true}>
               {selectedNavItem.title}
             </DropdownToggle>
-            <DropdownMenu left>
+            <DropdownMenu>
               {navOptions.map((navEl, index) => (
                 <DropdownItem
                   //*TODO Temp disabled, remove after masterSchema implement

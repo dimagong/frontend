@@ -122,11 +122,12 @@ const MemberFirmsList = () => {
   return (
     <Row>
       <Col className={`home__card-wrapper`}>
-        {currentPageMemberFirms.map(memberFirm => (
+        {currentPageMemberFirms.map((memberFirm, idx) => (
           <UserCardTemplate
             data={memberFirm}
             className="cursor-pointer"
             onClick={handleMemberFirmSelect}
+            key={idx}
           />
         ))}
 

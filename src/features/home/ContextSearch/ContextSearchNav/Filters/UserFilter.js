@@ -182,12 +182,14 @@ const UserFilter = ({ handleFilter, managers }) => {
     }
   }
 
-  if (!filtered && managers.length !== 0 && userFilters) {
-    handleFilter(managers);
-    setFilter({roles: [], organizations: [], memberFirms: [], type: {roles: 'initial', organizations: 'initial', memberFirms:'initial'}});
-    setFiltered(true);
-    setFooterText({roles: arrayToString(roles), organizations: arrayToString(organizations), memberFirms: arrayToString(memberFirms)});
-  }
+  useEffect(() => {
+    if (!filtered && managers.length !== 0 && userFilters) {
+      handleFilter(managers);
+      setFilter({roles: [], organizations: [], memberFirms: [], type: {roles: 'initial', organizations: 'initial', memberFirms:'initial'}});
+      setFiltered(true);
+      setFooterText({roles: arrayToString(roles), organizations: arrayToString(organizations), memberFirms: arrayToString(memberFirms)});
+    }
+  }, [filtered, handleFilter, managers, memberFirms, organizations, roles, userFilters]);
 
   useEffect(() => {
     filterAndSortManagers(

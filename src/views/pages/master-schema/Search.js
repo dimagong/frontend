@@ -4,7 +4,7 @@ import {debounce} from "lodash";
 
 
 export default function Search(props) {
-  const [searchValue, setSearchValue] = useState(null);
+  const [searchValue, setSearchValue] = useState('');
 
   let onChangeInput = useCallback(
     debounce((searchValue) => {

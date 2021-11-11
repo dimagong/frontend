@@ -164,11 +164,14 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
               </span>
             </span>
           }
-              {settings?.dForm?.name !== 'Applications Snapshot' && [{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map(item => {
-                return <span onClick={() => handleChangeDate(item.daysNumber)}
-                             className={'chart-days ' + (settings.daysNumber === item.daysNumber ? 'active-days' : '')}>
+              {settings?.dForm?.name !== 'Applications Snapshot' && [{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map((item, idx) => {
+                return (<span
+                  onClick={() => handleChangeDate(item.daysNumber)}
+                  className={'chart-days ' + (settings.daysNumber === item.daysNumber ? 'active-days' : '')}
+                  key={idx}
+                >
                   {item.label}
-                </span>
+                </span>);
               })}
             </span>
         {chartType === 'Applications' && (settings.dForm === 'Unselected application' || !settings.dForm?.id) &&

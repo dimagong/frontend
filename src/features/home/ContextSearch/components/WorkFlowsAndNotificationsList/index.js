@@ -96,7 +96,7 @@ const WorkFlowsAndNotificationsList = ({ context }) => {
               >
                 {dependenciesSelectedActiveItem.title}
               </DropdownToggle>
-              <DropdownMenu left>
+              <DropdownMenu>
                 {dependenciesList.map((item, index) => (
                   <DropdownItem
                     key={index}
