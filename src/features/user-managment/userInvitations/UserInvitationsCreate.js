@@ -17,7 +17,7 @@ const {
   deleteInvitationsRequest,
 } = appSlice.actions;
 
-const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
+const UserInvitationsCreate = ({resend, invitationText}) => {
   const dispatch = useDispatch();
   const manager = useSelector(selectManager);
   const [invitationExpiredTime, setInvitationExpiredTime] = useState('');
@@ -59,6 +59,7 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
   useEffect(() => {
     startInvitationTimer();
     return () => clearInterval(invitationInterval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager]);
 
   const onCopy = () => {
@@ -78,7 +79,7 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
         style={{'font-size': '14px'}}
         id="trash-invitation-btn"
       >
-        <Trash></Trash>
+        <Trash />
       </Button>
     </div>;
   };

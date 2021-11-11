@@ -63,7 +63,7 @@ const createSurveyValidation = yup.object().shape({
 
 const sortByLabel = (a, b) => a.label.localeCompare(b.label);
 
-const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surveys, isLoading, onSurveyAdd, isSurveyAssignProceed }) => {
+const SurveyAssignComponent = ({ workFlows, reviewers, surveys, isLoading, onSurveyAdd, isSurveyAssignProceed }) => {
 
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [selectedReviewers, setSelectedReviewers] = useState([]);
@@ -118,6 +118,7 @@ const SurveyAssignComponent = ({ onSurveyAssignClose, workFlows, reviewers, surv
       setSelectedReviewers([]);
       setSelectedWorkFlow(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyAddProceeding])
 
   return (

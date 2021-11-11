@@ -26,8 +26,8 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
   const [activeFilter, setActiveFilter] = useState();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [currSort, setCurrSort] = useState(-1);
-  let roles = new Set(['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']), organizations = new Set(), reps = new Set();
+  const [currSort] = useState(-1);
+  let roles = new Set(['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']), organizations = new Set();
   organizationsObjects.forEach(item => {organizations.add(item.name.replace('_', ' '))})
   const memberFirmsObjects = useSelector(getMemberFirms);
 
@@ -108,6 +108,7 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
         return newFilter.memberFirms.has(item?.member_firm?.main_fields?.name)
       })
     }
+    // eslint-disable-next-line default-case
     switch (newSort) {
       case 0: newManagers.sort((lhs, rhs) => lhs.first_name.localeCompare(rhs.first_name)); break;
       case 1: newManagers.sort((lhs, rhs) => rhs.first_name.localeCompare(lhs.first_name)); break;
@@ -140,14 +141,6 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
     setFooterText({roles: setToString(filter.roles), organizations: setToString(filter.organizations)});
   }
 
-  const handleCloseTab = (newFilter) => {
-    setFilter(newFilter);
-    setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
-    applyFilters(newFilter);
-    setActiveFilter(null);
-    setFilterName('');
-  }
-
   const footer = () => {
     if ((filter.roles.size === 0 && filter.organizations.size === 0)
          ||
@@ -173,6 +166,7 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
       {roles: appliedFilters.roles, organizations: appliedFilters.organizations},
       appliedFilters.sort
     )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [managers]);
 
   useEffect(() => {
@@ -185,10 +179,12 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
       setFilter(newFilter)
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirms?.size]);
 
    useEffect(() => {
     setMemberFirms(new Set(memberFirmsObjects?.length > 0 ? memberFirmsObjects.map(item => item?.main_fields.name) : []))
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirmsObjects?.length]);
 
   useEffect(() => {
@@ -201,6 +197,7 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
           .map(item => item?.main_fields.name)
         : []))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter.organizations]);
 
   return (

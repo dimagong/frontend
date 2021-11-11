@@ -23,6 +23,7 @@ const Home = () => {
     if (userRole && !isOnboarding && !context) {
       dispatch(setContext('Dashboard'))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

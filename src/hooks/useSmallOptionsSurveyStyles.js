@@ -7,5 +7,6 @@ export function useSmallOptionsSurveyStyles(options, setIsSmallOptionsStylesUsed
       const SINGLE_ROW_OPTION_HEIGHT = 50;
       const isNotSingleRowOptionExist = !!optionRows.find(option => option.offsetHeight > SINGLE_ROW_OPTION_HEIGHT);
       setIsSmallOptionsStylesUsed(!isNotSingleRowOptionExist)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.innerWidth, options])
 }

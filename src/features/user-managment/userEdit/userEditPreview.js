@@ -39,7 +39,7 @@ const {
   getUserOrganizationsRequest,
 } = appSlice.actions;
 
-const UserEditPreview = (props, context) => {
+const UserEditPreview = () => {
   const [activeTab, setActiveTab] = useState("Permissions")
 
   const preview = useSelector(selectPreview);
@@ -58,10 +58,12 @@ const UserEditPreview = (props, context) => {
     if(organizations.length === 0) {
       dispatch(getOrganizationsRequest())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     dispatch(getUserOrganizationsRequest(manager.id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager.id])
 
   const modalContainer = useRef();

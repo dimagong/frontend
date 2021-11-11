@@ -43,6 +43,7 @@ const DForm = () => {
 
   useEffect(() => {
     !dForms.length && dispatch(getdFormsRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
    // TODO: START - AG GRID API

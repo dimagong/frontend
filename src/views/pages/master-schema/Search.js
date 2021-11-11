@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Input} from "reactstrap";
 import {debounce} from "lodash";
-import masterSchemaService from "./services/masterSchema.service";
 
 
 export default function Search(props) {
@@ -15,6 +14,7 @@ export default function Search(props) {
 
   useEffect(() => {
     searchValue !== null && onChangeInput(searchValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
 

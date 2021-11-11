@@ -138,6 +138,7 @@ const SurveysDesigner = () => {
     if (!isSurveyDeleteLatestVersionProceed && prevSurveyDeleteLatestVersionValue && !errors) {
       dispatch(getSurveyRequest(selectedSurvey.id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyDeleteLatestVersionProceed]);
 
   useEffect(() => {
@@ -150,10 +151,12 @@ const SurveysDesigner = () => {
         setSelectedFolderId(-1);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFolderDeleteProceed]);
 
   useEffect(() => {
     dispatch(getFoldersRequest())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

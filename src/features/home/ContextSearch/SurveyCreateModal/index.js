@@ -127,12 +127,14 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
     if (!error && prevSurveyCreateLoadingValue === true && !isSurveyCreating) {
       handleModalClose()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyCreating]);
 
   useEffect(() => {
     if (!error && prevSurveyUpdateLoadingValue === true && !isSurveyUpdating) {
       handleModalClose()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyUpdating]);
 
   useEffect(() => {
@@ -143,6 +145,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
       setIsUserAbleToGoBackDuringSurvey(is_can_return);
       setMinPercentToPass(min_percent_pass);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, isOpen]);
 
   return (

@@ -41,6 +41,7 @@ const Notification = () => {
 
   useEffect(() => {
     !notifications.length && dispatch(getNotificationsRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // TODO: START - AG GRID API

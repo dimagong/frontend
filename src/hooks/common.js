@@ -13,7 +13,7 @@ export const usePrevious = (value) => {
   return ref.current;
 };
 
-export const useCallbackOnLoad = (actionType, callback, isPreloadRequired, selectorPassedToCallBack) => {
+export const useCallbackOnLoad = (actionType, callback, isPreloadRequired) => {
 
   const actionLoadingSelector = useSelector(createLoadingSelector([actionType], isPreloadRequired));
   const prevActionLoadingState = usePrevious(actionLoadingSelector);
@@ -23,6 +23,7 @@ export const useCallbackOnLoad = (actionType, callback, isPreloadRequired, selec
     if (!error && !actionLoadingSelector && prevActionLoadingState === true) {
       callback()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actionLoadingSelector]);
 
   return actionLoadingSelector;

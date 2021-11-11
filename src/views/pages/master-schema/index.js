@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {
-  Input,
   Card,
   CardBody,
   CardHeader,
@@ -8,7 +7,6 @@ import {
   Row,
   Col,
   Button,
-  Table,
   UncontrolledButtonDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -16,16 +14,13 @@ import {
 } from 'reactstrap'
 import masterSchemaService from './services/masterSchema.service'
 import Select from "react-select"
-import {X, Plus, ChevronDown} from "react-feather";
+import {X, Plus} from "react-feather";
 import rfdc from "rfdc";
 import FieldEdit from "./FieldEdit";
 import GroupEdit from "./GroupEdit";
 import './index.scss';
 import MasterSchemaTree from "./MasterSchemaTree/MasterSchemaTree";
 import Breadcrumbs from './Breadcrumbs/index'
-import {Treebeard} from "react-treebeard";
-import {styleLight} from "./MasterSchemaTree/styles/style";
-import {styleColumn} from "./MasterSchemaTree/styles/styleColumn";
 import {Scrollbars} from 'react-custom-scrollbars'
 import Tabs from '../../../components/Tabs/index.js'
 import GroupCreate from "./GroupCreate";
@@ -39,8 +34,6 @@ const clone = rfdc();
 
 function MasterSchema() {
 
-  const CTRL = 17;
-
   const [masterSchemaIsLoading, setMasterSchemaIsLoading] = useState(false);
   const [organization, setOrganization] = useState();
   const [masterSchema, setMasterSchema] = useState();
@@ -49,7 +42,7 @@ function MasterSchema() {
   const [cursor, setCursor] = useState(false);
   const [rightCardState, setRightCardState] = useState('');
 
-  const [ctrlState, setCtrlState] = useState(false);
+  const [, setCtrlState] = useState(false);
   const [searchValue, setSearchValue] = useState(null);
 
   const [groupsList, setGroupsList] = useState([]);
@@ -57,6 +50,7 @@ function MasterSchema() {
   useEffect(() => {
     if (searchValue === null || isEmpty(masterSchemaTreebeard)) return;
     parseToFormatTreebeard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
   const getOrganizations = async () => {
@@ -76,12 +70,14 @@ function MasterSchema() {
     let groupsListBuffer = [];
     createGroupsList(masterSchemaTreebeard, groupsListBuffer);
     setGroupsList(groupsListBuffer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [masterSchemaTreebeard]);
 
   useEffect(() => {
     setMasterSchemaTreebeard(null);
     closeElement();
     getCurrentMasterSchema();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organization]);
 
   useEffect(() => {
@@ -89,6 +85,7 @@ function MasterSchema() {
       parseToFormatTreebeard();
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [masterSchema]);
 
 
@@ -104,20 +101,6 @@ function MasterSchema() {
       setMasterSchemaTreebeard(Object.assign({}, masterSchemaTreebeard));
       setCursor(null);
       setRightCardState('');
-    }
-  };
-
-  const getSelectedList = (node, selectedNodes = []) => {
-
-    if (!node) return null;
-    if (node.selected) {
-      selectedNodes.push(node);
-    }
-
-    if (node.children) {
-      for (let next of node.children) {
-        getSelectedList(next, selectedNodes);
-      }
     }
   };
 
@@ -239,7 +222,7 @@ function MasterSchema() {
   };
 
 
-  const onToggle = (node, toggled) => {
+  const onToggle = (node) => {
     if (cursor) {
       cursor.active = false;
       masterSchemaTreebeard.active = false;
@@ -273,7 +256,7 @@ function MasterSchema() {
           setRightCardState('');
 
           setCursor(recursiveMap(newGroup));
-        }}></GroupCreate>
+        }} />
       }
       case 'create-element': {
 
@@ -281,7 +264,7 @@ function MasterSchema() {
           getCurrentMasterSchema();
           setRightCardState('');
           setCursor(newField);
-        }}></FieldCreate>
+        }} />
       }
       default:
         return false;
@@ -346,7 +329,7 @@ function MasterSchema() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <Breadcrumbs list={['Master schema', 'Organization view']}></Breadcrumbs>
+              <Breadcrumbs list={['Master schema', 'Organization view']} />
             </CardTitle>
           </CardHeader>
           <CardBody>
@@ -420,7 +403,7 @@ function MasterSchema() {
                                 if(!element.isVisible) return <></>;
                                 if (element.children) {
                                   return <div className="ms-tree-column">
-                                    <div></div>
+                                    <div />
                                   </div>
                                 }
                                 return (
@@ -473,7 +456,7 @@ function MasterSchema() {
               <CardTitle>
                 <Breadcrumbs list={getBreadCrumbs()}/>
               </CardTitle>
-              <X size={15} className="cursor-pointer mr-1" onClick={event => closeElement()}/>
+              <X size={15} className="cursor-pointer mr-1" onClick={() => closeElement()}/>
             </CardHeader>
             <CardBody>
               {

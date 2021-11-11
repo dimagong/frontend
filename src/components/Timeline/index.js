@@ -131,6 +131,7 @@ const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager h
               <th className={'activity-date'}>Date time</th>
               <th className={'activity-action'}>Action</th>
             </tr>
+            {/* eslint-disable-next-line array-callback-return */}
             {data && data.slice().sort((lhs, rhs) => new Date(lhs.created_at) > new Date(rhs.created_at) ? -1 : 1).map((item, index) => {
               let message = item?.action_type?.name === userProfileUpdated ? getEditMessage(item) : '';
               if (item?.action_type?.name !== userProfileUpdated || message) {

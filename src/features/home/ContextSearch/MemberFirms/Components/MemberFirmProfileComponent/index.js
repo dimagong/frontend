@@ -26,7 +26,6 @@ const MemberFirmProfileComponent = ({
   onFileInputDialogOpen,
   onLogoChange,
   onLogoRemove,
-  isMemberFirmActivitiesLoading,
   onLoadMoreDataForActivities,
   memberFirmActivities,
 }) => {
@@ -84,7 +83,7 @@ const MemberFirmProfileComponent = ({
                   {data.main_fields.name}
                 </p>
               </div>
-              
+
               <div className="member-firm-profile_header-info-contact_data">
                 {!!data.main_fields.email && (
                   <div className="member-firm-profile_header-info-contact_data-info_tile">

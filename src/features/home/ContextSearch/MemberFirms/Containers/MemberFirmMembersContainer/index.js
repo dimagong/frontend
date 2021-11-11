@@ -39,6 +39,7 @@ const MemberFirmMembersContainer = ({ onNavigateToUserProfile }) => {
     dispatch(getMemberFirmUsersRequest(selectedMemberFirm.id));
     dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id));
     dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMemberFirm.id]);
 
   return (

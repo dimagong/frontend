@@ -6,15 +6,7 @@ import {
 } from "reactstrap"
 import {PropertyNameByIdAsTextNode} from "../Parts/PropertyNameById";
 
-const reorder = (list, startIndex, endIndex) => {
-
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-  return result
-};
-
-const reorderKeysObjectResult = (list, startIndex, endIndex, draggableKey) => {
+const reorderKeysObjectResult = (list, startIndex, endIndex) => {
   const listKeys = Object.keys(list);
 
   const result = Array.from(listKeys);
@@ -26,7 +18,7 @@ const reorderKeysObjectResult = (list, startIndex, endIndex, draggableKey) => {
   return resultObject;
 };
 
-const reorderKeysArrayResult = (list, startIndex, endIndex, draggableKey) => {
+const reorderKeysArrayResult = (list, startIndex, endIndex) => {
   const listKeys = Object.keys(list);
 
   const result = Array.from(listKeys);
@@ -37,7 +29,7 @@ const reorderKeysArrayResult = (list, startIndex, endIndex, draggableKey) => {
 };
 
 function Ordering(props) {
-  const [direction, setDirection] = useState('vertical');
+  const [direction] = useState('vertical');
   const [deviceWidth, setDeviceWidth] = useState(window.width);
   const [items, setItems] = useState(props.items);
 
@@ -55,6 +47,7 @@ function Ordering(props) {
 
   useEffect(() => {
     props.onDragEnd(items);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
 
@@ -102,7 +95,7 @@ function Ordering(props) {
           return (
             <ListGroup tag="div">
               <Draggable key={key} draggableId={key} index={index}>
-                {(provided, snapshot) => (
+                {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
@@ -143,7 +136,7 @@ function Ordering(props) {
           return (
             <ListGroup tag="div">
               <Draggable key={key} draggableId={key} index={index}>
-                {(provided, snapshot) => (
+                {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
@@ -167,7 +160,7 @@ function Ordering(props) {
     <div ref={modalContainer}>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable" direction={direction}>
-          {(provided, snapshot) => (
+          {(provided) => (
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}

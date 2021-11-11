@@ -32,7 +32,6 @@ const FormComponent = ({
   memberFirmId,
   onFieldAdd,
 }) => {
-  console.log(memberFirmFormFields, masterSchemaMemberFirmFields);
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({});
@@ -145,6 +144,7 @@ const FormComponent = ({
     if(memberFirmFormFields.length) {
       initForm()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirmFormFields]);
 
   return (

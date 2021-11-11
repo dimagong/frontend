@@ -87,23 +87,10 @@ function* submitdForm({payload}) {
 
 function* changedFormStatus({payload}) {
   try {
-    const response = yield call(dFormApi.changedFormStatus, payload);
+    yield call(dFormApi.changedFormStatus, payload);
     yield put(changedFormStatusSuccess(payload));
   } catch (error) {
     yield put(changedFormStatusError(error));
-  }
-}
-
-
-function* createDForm({payload}) {
-  try {
-    const responce = yield call(dFormApi.createdForm, {
-      ...payload,
-    });
-
-    yield put(createDFormTemplateSuccess());
-  } catch (error) {
-    yield put(createDFormTemplateError(error));
   }
 }
 

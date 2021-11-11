@@ -29,6 +29,7 @@ const UserInvitations = ({activeTab}) => {
 
     useEffect(() => {
         !invitations.length && dispatch(getInvitationsRequest())
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {

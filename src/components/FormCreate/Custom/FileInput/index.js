@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 
 import './styles.scss'
 
-const FileInput = ({multiple}) => {
+const FileInput = () => {
 
   const [files, setFiles] = useState([])
   const [status, setStatus] = useState("Drop")
@@ -53,6 +53,7 @@ const FileInput = ({multiple}) => {
       })}
       <div className="drop-zone" onDragEnter={onDragEnter} onDragLeave={onDragLeave} onDragOver={onDragOver} onDrop={onDrop}>
         {{
+          // eslint-disable-next-line no-useless-escape
           'Drop': "Drag \'n\' Drop files here",
           'Drop Here': "come back",
           'File Detected': "COme on do IT !"

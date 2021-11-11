@@ -50,6 +50,7 @@ const OnboardingUser = () => {
 
   useEffect(() => {
     dispatch(getAssignedSurveysForOnboardingRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ const OnboardingUser = () => {
 
       dispatch(setProfileOnboarding(activeOnboarding))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile, isOnboardingSurveysLoading]);
 
 

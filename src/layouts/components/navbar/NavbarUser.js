@@ -7,14 +7,6 @@ import {
 } from "reactstrap"
 import * as Icon from "react-feather"
 
-import { history } from "../../../history"
-
-
-const handleNavigation = (e, path) => {
-  e.preventDefault()
-  history.push(path)
-}
-
 const UserDropdown = props => {
   return (
     <DropdownMenu right>

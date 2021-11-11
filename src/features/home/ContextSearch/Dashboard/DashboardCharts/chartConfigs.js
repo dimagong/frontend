@@ -13,6 +13,7 @@ const configApplicationChart = ({dataToShow, isSmall, title, daysNumber, dForm, 
   }
 
   const getTicks = (val, index) => {
+    // eslint-disable-next-line default-case
     switch (daysNumber) {
       case 7: {
         return moment().subtract(daysNumber - index - 1, 'days').format('ddd');
@@ -113,6 +114,7 @@ const configApplicationSnapshotChart = ({dataToShow, isSmall, title, daysNumber,
   }
 
   const getTicks = (val, index) => {
+    // eslint-disable-next-line default-case
     switch (daysNumber) {
       case 7: {
         return moment().subtract(daysNumber - index - 1, 'days').format('ddd');

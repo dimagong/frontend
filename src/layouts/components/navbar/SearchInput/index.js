@@ -3,8 +3,6 @@ import React from 'react'
 import AutoComplete from 'components/@vuexy/autoComplete/AutoCompleteComponent'
 import classnames from 'classnames'
 import noneAvatar from 'assets/img/portrait/none-avatar.png'
-import {useSelector} from 'react-redux'
-import {selectGroups} from 'app/selectors'
 import {useDispatch} from 'react-redux'
 
 import appSlice from 'app/slices/appSlice'

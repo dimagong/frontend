@@ -19,9 +19,7 @@ import { selectUser } from "app/selectors";
 import {Check, X} from "react-feather"
 import Flatpickr from "react-flatpickr";
 import moment from 'moment';
-import { colorMultiSelect} from "utility/select/selectSettigns";
-import { selectGroups, selectRoles, selectError } from "app/selectors";
-import {prepareNotNestedSelectOptions, normalizeGroups, prepareSelectGroups} from "utility/select/prepareSelectData";
+import {selectError } from "app/selectors";
 
 import appSlice from 'app/slices/appSlice'
 
@@ -33,39 +31,8 @@ const {
 
 const UserCreate = () => {
     const user = useSelector(selectUser);
-    const roles = useSelector(selectRoles);
-    const groups = useSelector(selectGroups);
     const errors = useSelector(selectError) || {};
     const dispatch = useDispatch();
-
-    const filtredSelectOptions = () => {
-        return prepareNotNestedSelectOptions(groups)
-        .filter( groupSelect => !prepareSelectGroups(user.groups)
-          .some( group =>  group.value.group_id === groupSelect.value.group_id && group.value.type === groupSelect.value.type ))
-      }
-
-      const prepareRolesSelect = (roles) => {
-        if(!roles) return []
-        return roles.map((role) => {
-             return {
-               value: role,
-               label: role,
-               color: colorMultiSelect
-             }
-           })
-     }
-
-      const onSelectGroupsChange = (values) => {
-        values
-        ? dispatch(setUser({...user, groups: normalizeGroups(groups).filter( group => values.some( value => value.label === group.name))}))
-        : dispatch(setUser({...user, groups:[]}))
-      };
-
-      const onSelectRolesChange = (values) => {
-        values
-        ? dispatch(setUser({...user, roles : roles.filter( role =>  values.some(value => value.value === role))}))
-        : dispatch(setUser({...user, roles :[]}))
-    }
 
     const onSubmit = e => {
         e.preventDefault();
@@ -88,7 +55,6 @@ const UserCreate = () => {
             </CardHeader>
             <CardBody>
               <Form
-                // onSubmit={(event) => this.formSubmit(event)}
                 className="user-create"
               >
                 <Row>

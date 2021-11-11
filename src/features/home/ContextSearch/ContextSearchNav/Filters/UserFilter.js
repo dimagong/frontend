@@ -120,6 +120,7 @@ const UserFilter = ({ handleFilter, managers }) => {
       })
     }
 
+    // eslint-disable-next-line default-case
     switch (newSort) {
       case 0: newManagers.sort((lhs, rhs) => lhs.first_name.localeCompare(rhs.first_name)); break;
       case 1: newManagers.sort((lhs, rhs) => rhs.first_name.localeCompare(lhs.first_name)); break;
@@ -193,6 +194,7 @@ const UserFilter = ({ handleFilter, managers }) => {
       {roles: appliedFilters.roles, organizations: appliedFilters.organizations, memberFirms: appliedFilters.memberFirms},
       appliedFilters.sort
     )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [managers]);
 
   useEffect(() => {
@@ -205,10 +207,12 @@ const UserFilter = ({ handleFilter, managers }) => {
       setFilter(newFilter)
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirms?.length]);
 
    useEffect(() => {
     setMemberFirms(memberFirmsObjects?.length > 0 ? memberFirmsObjects.map(item => item?.main_fields.name) : [])
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirmsObjects?.length]);
 
   useEffect(() => {
@@ -221,6 +225,7 @@ const UserFilter = ({ handleFilter, managers }) => {
           .map(item => item?.main_fields.name)
         : [])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter.organizations]);
 
 

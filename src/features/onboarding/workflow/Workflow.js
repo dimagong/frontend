@@ -41,6 +41,7 @@ const Workflow = () => {
 
     useEffect(() => {
         !workflows.length && dispatch(getWorkflowsRequest());
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
        // TODO: START - AG GRID API

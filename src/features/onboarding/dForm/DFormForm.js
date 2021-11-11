@@ -55,6 +55,7 @@ const DFormForm = ({isCreate}) => {
     if(isCreate) {
       dispatch(setdForm(initDForm));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreate])
 
   if(!dForm) return null;

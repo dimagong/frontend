@@ -59,11 +59,13 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
 
   useEffect(() => {
     dispatch(getMemberFirmPotentialUsersRequest(memberFirm.id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [members?.length])
 
   useEffect(() => {
     let newSearchedManagers = potentialMembers.filter(item => searchedMembers.find(el => el.id === item.id));
     setSearchedMembers(newSearchedManagers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [potentialMembers])
 
   return (

@@ -33,6 +33,7 @@ const LongTextWidget = ({props}) => {
       setInputHTML(value)
       setInputValue(value)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
   return (

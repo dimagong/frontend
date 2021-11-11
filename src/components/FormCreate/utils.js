@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import { Base64 } from 'js-base64';
 
 export function dataURItoBlob(dataURI) {

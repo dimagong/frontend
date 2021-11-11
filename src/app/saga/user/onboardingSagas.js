@@ -72,7 +72,7 @@ function* createUserOnboarding({payload}) {
 
 function* deleteUserOnboarding({payload}) {
   try {
-    const onboarding = yield call(userApi.deleteUserOnboarding, payload);
+    yield call(userApi.deleteUserOnboarding, payload);
     yield put(deleteUserOnboardingSuccess(payload))
   } catch (error) {
     yield put(deleteUserOnboardingError(error));
@@ -81,7 +81,7 @@ function* deleteUserOnboarding({payload}) {
 
 function* updateUserRoles({payload}) {
   try {
-    const responce = yield call(userApi.updateUserRoles, payload);
+    yield call(userApi.updateUserRoles, payload);
     yield put(updateUserRolesSuccess({roles: payload.roles}));
   } catch (error) {
     console.log("error", error);

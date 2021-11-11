@@ -95,8 +95,7 @@ class Autocomplete extends React.Component {
 
   // Input's Keydown Event
   onKeyDown = e => {
-    const { activeSuggestion, showSuggestions, userInput } = this.state
-    const filterKey = this.props.filterKey
+    const { activeSuggestion, userInput } = this.state
     let suggestionList = ReactDOM.findDOMNode(this.suggestionList)
 
     // User pressed the up arrow

@@ -81,6 +81,7 @@ const Dashboard = () => {
     dispatch(getSettingsRequest());
     dispatch(getActivityTypesRequest());
     dispatch(getDashboardDFormsRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const options = [{label: "Application", value: {

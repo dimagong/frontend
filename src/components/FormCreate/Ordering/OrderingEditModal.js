@@ -14,13 +14,6 @@ function OrderingEditModal(props) {
         props.onOpen();
     };
 
-    const handleSave = () => {
-        setShow(false);
-        setTimeout(() => {
-            props.onSave();
-        });
-    };
-
     return (
         <div>
             <MoreVertical size={20} className="cursor-pointer" onClick={handleShow} />

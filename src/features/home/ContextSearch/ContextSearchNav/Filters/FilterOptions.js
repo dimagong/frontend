@@ -8,6 +8,7 @@ const FilterOptions = ({ filter, curr, roles, memberFirms, organizations, handle
   if (curr === 'reps') {
     return; //Temporary
   }
+  // eslint-disable-next-line default-case
   switch (curr) {
     case 'roles': currFilters = roles; break;
     case 'organizations': currFilters = organizations; break;

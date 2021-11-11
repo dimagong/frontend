@@ -51,9 +51,7 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
 
     if (answersWithoutGrade.length) {
       toast.error("Please, grade all text answers");
-      return;
     } else {
-
       dispatch(finishGradingRequest(surveyData.id))
     }
   };
@@ -103,6 +101,7 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
 
       toast.success("Survey deleted successfully");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyDeleteProceeding]);
 
   useEffect(() => {

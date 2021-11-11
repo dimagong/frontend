@@ -37,6 +37,7 @@ export const MultiSelect = ({groups: selectedGroups, setGroups, single, noDropdo
 
   useEffect(() => {
     !groups.length && dispatch(getGroupsRequest())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 // TODO: set groups in to parrent component
   const onSelectGroupsChange = (values) => {

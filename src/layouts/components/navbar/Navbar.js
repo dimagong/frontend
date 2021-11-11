@@ -69,6 +69,7 @@ const ThemeNavbar = props => {
 
   useEffect(() => {
     userProfile && dispatch(getUserAvatarRequest({managerId: userProfile.id}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile?.avatar_path]);
 
   const handleOrgPictureClick = () => {

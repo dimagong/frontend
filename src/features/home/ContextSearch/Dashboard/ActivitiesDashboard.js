@@ -111,6 +111,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
     let newFilter = {...filter}
     newFilter[key] = []
     setFilter(newFilter);
+    // eslint-disable-next-line default-case
     switch (key) {
         case 'Activity types': {
           settings['filter[type]'] = null;
@@ -160,6 +161,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                     {<span className={'filter-icon-box'} onClick={handleFilterBox} ref={wrapperRefFilterButton}>
                       <img className={'filter-icon'} src={FilterIcon} alt={'filter-icon'}/>
                     </span>}
+      {/* eslint-disable-next-line array-callback-return */}
                     {settings.filter && Object.keys(settings.filter).map(key => {
                       if ((key !== 'Application' || settings?.dForm?.name === 'Applications Snapshot') && Array.isArray(settings.filter[key]) && settings.filter[key].length > 0) {
                         return <Button style={{zIndex: 1000000}} className={'filter-tab'} variant={'dark'}>
@@ -171,7 +173,8 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                       }
                     })}
                     <span className={'arrow-close-activities'} onClick={handleChangeList}>
-                      <img src={ArrowUp}/>
+                      {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                      <img src={ArrowUp} alt />
                     </span>
                   </span>
 
@@ -211,8 +214,10 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                   <FilterIconAndTabsBox/>
                 }
               </div>
+              {/* eslint-disable-next-line array-callback-return */}
               {item.data.map(currAction => {
                 if (!currAction.options.hasOwnProperty('show_in_dashboard') || !currAction.options.show_in_dashboard) {
+                  // eslint-disable-next-line array-callback-return
                   return;
                 }
                 let manager = managers.find(item => item.id === currAction.user_id);
@@ -221,7 +226,8 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
                   : parseTextToComponent(currAction.description)
                 if (description) {
                   return <div onClick={() => handleActionClick(manager, currAction)} className={'dashboard-action'}>
-                    <img src={manager.url ? manager.url : noneAvatar} className={"action-user-avatar"}/>
+                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                    <img src={manager.url ? manager.url : noneAvatar} alt className={"action-user-avatar"}/>
                     <span className={'action-user-name'}>
                       {manager.first_name + ' ' + manager.last_name}
                     </span>

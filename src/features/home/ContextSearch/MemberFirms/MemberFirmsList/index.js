@@ -96,6 +96,7 @@ const MemberFirmsList = () => {
 
   useEffect(() => {
     dispatch(getMemberFirmsRequest())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isMemberFirmsLoading) {

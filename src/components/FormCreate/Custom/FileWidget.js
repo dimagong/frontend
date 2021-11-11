@@ -102,6 +102,7 @@ export function FileWidget(props) {
     return (
       <div className="file">
         <div className="name">
+          {/* eslint-disable-next-line react/jsx-no-target-blank */}
           <a target="_blank" href={file.url}>{decodeURIComponent(file.name)}</a>
         </div>
 
@@ -140,7 +141,7 @@ export function FileWidget(props) {
     )
   };
 
-  const FileItem = ({name, isLoading}) => {
+  const FileItem = ({name}) => {
 
     return (
       <div className={"file"}>
@@ -160,7 +161,7 @@ export function FileWidget(props) {
   };
 
   const renderSingleFile = (fileDataUrl) => {
-    if (!fileDataUrl) return <div></div>;
+    if (!fileDataUrl) return <div />;
 
     // if (!fileDataUrl.property_value) {
     //   return <div></div>;
@@ -227,17 +228,6 @@ export function FileWidget(props) {
       }
     </>
   };
-
-  let isSingleFileDisabled = () => {
-    if (filesLoading.length) return true;
-    if (!props.value) return false;
-    return props.value.length;
-  };
-  let isMultipleFileDisabled = () => {
-    if (filesLoading.length) return true;
-    return false;
-  };
-
 
   const onDragEnter = event => {
     event.preventDefault();

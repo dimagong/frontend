@@ -40,7 +40,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
 
-  const [isDebounced, setDebounced] = useState(false);
+  const [, setDebounced] = useState(false);
 
 
   const isOnboarding = () => {

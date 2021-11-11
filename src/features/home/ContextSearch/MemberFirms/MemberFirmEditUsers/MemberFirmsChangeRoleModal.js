@@ -45,6 +45,7 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, princi
     } else if (isEdit && user.hasOwnProperty('id')) {
       setCurrRole(principals.find(item => item.id === user.id) ? 'principal' : 'member')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, isEdit])
 
   useEffect(() => {
@@ -57,6 +58,7 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, princi
         setWasLoading(false)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading])
 
 

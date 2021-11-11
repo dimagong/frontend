@@ -87,12 +87,14 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
     if (started_at && !finished_at) {
       dispatch(getCurrentQuestionForAssignedSurveyRequest(id))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (graded_at) {
       dispatch(getAllSurveyQuestionsRequest(id))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find(answer => !!answer.feedback);

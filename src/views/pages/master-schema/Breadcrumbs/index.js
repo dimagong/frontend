@@ -1,5 +1,5 @@
 import React from "react";
-import {BreadcrumbItem, Breadcrumb, CardTitle} from 'reactstrap'
+import {BreadcrumbItem, Breadcrumb} from 'reactstrap'
 import './index.scss'
 
 export default function Breadcrumbs(props) {

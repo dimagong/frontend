@@ -122,6 +122,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
           settings: settings}))
       }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.daysNumber, settings['filter[value]'], settings.dForm, settings.user_groups, settings.ability_user_ids, dashboardDForms, managers?.length]);
 
 

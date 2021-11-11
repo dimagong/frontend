@@ -69,7 +69,7 @@ const submitdFormDataSuccess = (state, {payload}) => {
 
   if (!isEmpty(state.user.profile.onboarding)) {
     state.user.profile.onboarding.d_form = payload;
-    const result = state.user.profile.onboardings.some(onboarding => {
+    state.user.profile.onboardings.some(onboarding => {
       if (onboarding.d_form.id === payload.id) {
         onboarding.d_form = payload;
         return true;

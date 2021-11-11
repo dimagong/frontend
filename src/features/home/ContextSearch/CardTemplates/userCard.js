@@ -25,6 +25,7 @@ const UserCardTemplate = ({className, oneColumn, onClick, editable = false, onEd
 
   useEffect(() => {
     manager.avatar && dispatch(getUserAvatarRequest({managerId: manager.id}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[manager.avatar])
 
   const handleNavigateToMemberFirm = (e, memberFirmId) => {
