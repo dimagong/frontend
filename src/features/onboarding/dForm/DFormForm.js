@@ -16,6 +16,7 @@ import FormCreate from "components/FormCreate/FormCreate"
 import {initDForm} from './settings'
 import {colourStyles} from '../../../utility/select/selectSettigns'
 import Select from 'react-select'
+import Checkbox from "../../Surveys/Components/SurveyFormComponents/Checkbox";
 
 import onboardingSlice from 'app/slices/onboardingSlice';
 import appSlice from 'app/slices/appSlice'
@@ -33,11 +34,12 @@ const {
 
 const DFormForm = ({isCreate}) => {
   const dForm = useSelector(selectdForm);
-  const [ isStateConfig, setIsStateConfig] = useState(true)
+  const [ isStateConfig, setIsStateConfig] = useState(true);
+  const [isApplicationTemplatePrivate, setIsApplicationTemplatePrivate] = useState(false);
   const dispatch = useDispatch();
 
   const closeDForm = () => {
-    dispatch(setContext(null))
+    dispatch(setContext(null));
     dispatch(setdForm(null));
   };
 
@@ -45,7 +47,7 @@ const DFormForm = ({isCreate}) => {
     if(isCreate){
       dispatch(createDFormTemplateRequest({...dForm, name, description, protected_properties}))
     }else{
-      dispatch(updateDFormTemplateRequest({...dForm, name, description, protected_properties}))
+      dispatch(updateDFormTemplateRequest({...dForm, name, description, protected_properties, is_private: isApplicationTemplatePrivate}))
     }
   }
 
@@ -94,12 +96,20 @@ const DFormForm = ({isCreate}) => {
                 <MultiSelect setGroups={setdFormGroups} groups={prepareSelectGroups(dForm.groups)} single noDropdownIndicator />
               </div>
             ) : (
-              <div className="mt-2">
+              <div className="mt-2 d-flex justify-content-between">
                 <div className="d-flex mb-1">
                   <div className="font-weight-bold" style={{padding: 4}}>Organization</div>
                   <div className="w-100" style={{padding: "4px 4px 4px 0"}}>
                     {dForm.groups[0]?.name}
                   </div>
+                </div>
+                <div>
+                  <Checkbox
+                    checked={isApplicationTemplatePrivate}
+                    label={"Is private"}
+                    onChange={() => setIsApplicationTemplatePrivate(!isApplicationTemplatePrivate)}
+                    name={"is_private"}
+                  />
                 </div>
               </div>
             )}
