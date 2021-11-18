@@ -3,19 +3,9 @@ import {
   Button,
 } from 'reactstrap';
 
-const FilterOptions = ({ filter, curr, roles, memberFirms, organizations, handleFilterOptions }) => {
-  let currFilters, currFiltersSet;
-  if (curr === 'reps') {
-    return; //Temporary
-  }
-  switch (curr) {
-    case 'roles': currFilters = roles; break;
-    case 'organizations': currFilters = organizations; break;
-    case 'memberFirms': currFilters = memberFirms; break;
-    case 'reps': currFilters = []; /*TODO*/ break;
-  }
+const FilterOptions = ({ filter, curr, options, handleFilterOptions }) => {
 
-  return currFilters.map(item => <Button className={'filter-option not-active'} variant="primary">
+  return options.map(item => <Button className={'filter-option not-active'} variant="primary">
     <span className={'filter-name'}>{item}</span>
     <span className={'filter-right'}>
         <span>

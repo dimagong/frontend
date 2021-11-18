@@ -1,15 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Modal, ModalBody} from "reactstrap";
 import MemberFirmModalTable from "./MemberFirmModalTable";
-import AutoComplete from "components/@vuexy/autoComplete/AutoCompleteComponent";
-import FilterIcon from "assets/img/svg/filter.svg";
 import {X} from "react-feather";
-import FilterModal from "../../ContextSearchNav/Filters/FilterModal";
 import {useDispatch} from "react-redux";
 import MemberFirmsChangeRoleModal from "./MemberFirmsChangeRoleModal";
-import CloseIcon from "@material-ui/icons/Close";
 import appSlice from "app/slices/appSlice";
-import SearchAndFilter from "../../../../../components/SearchAndFilter";
+import SearchAndFilter from "components/SearchAndFilter";
 
 const {
   removeMemberFirmUsersRequest,
@@ -20,17 +16,13 @@ const {
 const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm, allMembers, principals}) => {
   const dispatch = useDispatch()
   const [searchedMembers, setSearchedMembers] = useState([])
-  const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
   const [isChangeRoleModalOpen, setIsChangeRoleModalOpen] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [userToDelete, setUserToDelete] = useState({});
   const [currUser, setCurrUser] = useState({});
-  const wrapperRefFilterButton = useRef(null);
-  const [curr, setCurr] = useState('roles');
-  const [filter, setFilter] = useState({roles: new Set(), organizations: new Set(), memberFirms: new Set(), type: {roles: 'initial', organizations: 'initial', memberFirms: 'initial'}});
-  const [footerText, setFooterText] = useState({roles: '', organizations: '', memberFirms: ''});
-  const [filterName, setFilterName] = useState('');
+
+  const filterTypes = {roles: ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']}
 
   const removeUser = (user) => {
     dispatch(removeMemberFirmUsersRequest({
@@ -49,13 +41,29 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
     }
   }
 
-  const handleFilter = (newManagers) => {
+  const handleFilter = (newManagers, filter) => {
     setSearchedMembers(newManagers)
     if (filter.roles.size > 0) {
       setIsFiltered(true);
     } else {
       setIsFiltered(false);
     }
+  }
+
+  const onCancelFilter = () => {
+    setSearchedMembers([]);
+    setIsFiltered(false);
+  }
+
+  const applyFilter = (managers, filter) => {
+    let newManagers = managers;
+    if (filter?.roles && filter?.roles?.length !== 0) {
+      newManagers = managers.filter(item => {
+        return filter.roles.find(role => role === (item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
+      })
+    }
+    setSearchedMembers(newManagers);
+    setIsFiltered(true);
   }
 
   useEffect(() => {
@@ -87,61 +95,13 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
           </div>
         </div>
         <ModalBody style={{marginLeft: 15}}>
-          {/*<div style={{width: 693, marginBottom: 20, marginTop: 10}}>
-            <AutoComplete
-              placeholder="Search"
-              suggestions={[]}
-              className="form-control"
-              filterKey="name"
-              onChange={handleSearch}
-              suggestionLimit={4}
-              defaultSuggestions={false}
-              customRender={() => {}}
-              showClear={true}
-              hideSuggestions
-            />
-          </div>
-          <img ref={wrapperRefFilterButton}
-               className={'filter-icon member-firm-filter-icon'}
-               src={FilterIcon} alt={'filter-icon'}
-               onClick={() => {setIsFilterBoxOpen(!isFilterBoxOpen)}}
-          />
-          {isFilterBoxOpen && <FilterModal
-            managers={potentialMembers}
-            handleFilter={handleFilter}
-            wrapperRefFilterButton={wrapperRefFilterButton}
-            style={{left: 220, top: 50, marginBottom: 0}}
-            filterTypes={['roles']}
-            filter={filter}
-            setFilter={setFilter}
-            setIsFilterBoxOpen={setIsFilterBoxOpen}
-            curr={curr}
-            setCurr={setCurr}
-            footerText={footerText}
-            setFooterText={setFooterText}
-            filterName={filterName}
-            setFilterName={setFilterName}
-          />}
-
-          <div style={{textAlign: 'right', paddingRight: 10, height: 30}}>
-            {filter.roles.size > 0 && <Button className={'filter-tab member-firm-filter-tab'} variant={'dark'}>
-              <span className={'nav-text'}>{footerText.roles.length <= 40 ? footerText.roles : `${filter.roles.size} roles`}</span>
-
-              <span onClick={() => {
-                setFilter({roles: new Set(), organizations: new Set(), memberFirms: new Set(), type: {roles: 'initial', organizations: 'initial', memberFirms: 'initial'}})
-                setSearchedMembers([]);
-                setIsFiltered(false)
-              }}
-                    className={'close-nav'}><CloseIcon/></span>
-            </Button>}
-          </div>*/}
-
           <SearchAndFilter
             handleSearch={handleSearch}
             handleFilter={handleFilter}
-            setIsFiltered={setIsFiltered}
-            onCancelFilter={() => {setSearchedMembers([])}}
-            potentialMembers={potentialMembers}
+            onCancelFilter={onCancelFilter}
+            dataToFilter={potentialMembers}
+            filterTypes={filterTypes}
+            applyFilter={applyFilter}
           />
 
           <MemberFirmModalTable

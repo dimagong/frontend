@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useRef, useState} from 'react'
 
 import {
   Row,
@@ -11,68 +11,77 @@ import {
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import FilterOptions from "./FilterOptions";
 import {useSelector} from "react-redux";
-import {selectFilters} from "app/selectors/userSelectors";
-import {selectOrganizations} from "app/selectors/groupSelector";
+import {selectFilters, selectFiltersId} from "app/selectors/userSelectors";
 import SavedFilters from "./SavedFilters";
-import SortingFilters from "./SortingFilters";
 import {useOutsideAlerter} from "hooks/useOutsideAlerter";
-import {getMemberFirms} from "app/selectors/memberFirmsSelector";
 
-const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, filterTypes, filter, setFilter, setIsFilterBoxOpen, curr, setCurr, footerText, setFooterText, filterName, setFilterName }) => {
+const FilterModal = (props) => {
+  const {
+    handleFilter,
+    managers,
+    wrapperRefFilterButton,
+    style,
+    filterTypes,
+    filter,
+    setFilter,
+    setIsFilterBoxOpen,
+    curr,
+    setCurr,
+    footerText,
+    setFooterText,
+    filterName,
+    setFilterName,
+    applyFilterCustom,
+    setAppliedFilter
+  } = props;
+
   const userFilters = useSelector(selectFilters);
-  const organizationsObjects = useSelector(selectOrganizations);
-  const [memberFirms, setMemberFirms] = useState(new Set())
+  const userFiltersId = useSelector(selectFiltersId);
 
-  const [appliedFilters, setAppliedFilters] = useState({roles: new Set(), organizations: new Set(), sort: -1});
+  const [appliedFilters, setAppliedFilters] = useState({roles: [], organizations: [], memberFirms: [], sort: -1});
   const [activeFilter, setActiveFilter] = useState();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [isFilterBoxOpened, setIsFilterBoxOpened] = useState(false);
   const [currSort, setCurrSort] = useState(-1);
-  const [filtered, setFiltered] = useState(false);
-  let roles = new Set(['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']), organizations = new Set(), reps = new Set();
-  organizationsObjects.forEach(item => {organizations.add(item.name.replace('_', ' '))})
-  const memberFirmsObjects = useSelector(getMemberFirms);
 
   const wrapperRefFilterBox = useRef(null)
   useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (!isDeleteModalOpen) setIsFilterBoxOpen(false)});
 
   const handleFilterOptions = (type, option) => {
-    let newFilter = filter;
-    newFilter = {roles: new Set(Array.from(newFilter.roles)),
-                 organizations: new Set (Array.from(newFilter.organizations)),
-                  type: {roles: filter.type.roles, organizations: filter.type.organizations}
-    };
+    const newFilter = JSON.parse(JSON.stringify(filter));
+
     if (type === 'add') {
       if (newFilter.type[curr] === 'check') {
-        if (newFilter[curr].has(option)) {
-          newFilter[curr].delete(option);
+        if (newFilter[curr].find(item => item === option)) {
+          newFilter[curr] = newFilter[curr].filter(item => item !== option);
         } else {
-          newFilter[curr].add(option);
+          newFilter[curr].push(option);
         }
       } else {
         newFilter.type[curr] = 'check';
-        newFilter[curr] = new Set();
-        newFilter[curr].add(option);
+        newFilter[curr] = [];
+        newFilter[curr].push(option);
       }
     } else {
       if (newFilter.type[curr] === 'cross') {
-        if (newFilter[curr].has(option)) {
-          newFilter[curr].delete(option);
+        if (newFilter[curr].find(item => item === option)) {
+          newFilter[curr] = newFilter[curr].filter(item => item !== option);
         } else {
-          newFilter[curr].add(option);
+          newFilter[curr].push(option);
         }
       } else {
         newFilter.type[curr] = 'cross';
-        newFilter[curr] = curr === 'roles' ? roles : organizations;
-        newFilter[curr].delete(option);
+        newFilter[curr] = filterTypes[curr];
+        newFilter[curr] = newFilter[curr].filter(item => item !== option);
       }
     }
     setFilter(newFilter);
-    setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
+    setFooterText({roles: arrayToString(newFilter.roles), organizations: arrayToString(newFilter.organizations), memberFirms: arrayToString(newFilter.memberFirms)});
   }
 
-  const applyFilters = (newFilter, newSort) => {
+
+  const applyFiltersDefault = (newFilter, newSort) => {
     if (!newFilter.hasOwnProperty('roles')) {
       newFilter = filter;
     }
@@ -83,34 +92,36 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
     setAppliedFilters({
       roles: newFilter.roles,
       organizations: newFilter.organizations,
+      memberFirms: newFilter.memberFirms,
       sort: newSort,
     });
 
     filterAndSortManagers(newFilter, newSort);
-    setIsFilterBoxOpen(false);
+    setIsFilterBoxOpened(false);
   };
 
   const filterAndSortManagers = (newFilter, newSort) => {
 
     let newManagers = managers;
 
-    if (newFilter?.roles && newFilter?.roles?.size !== 0) {
+    if (newFilter?.roles && newFilter?.roles?.length !== 0) {
       newManagers = newManagers.filter(item => {
-        return newFilter.roles.has(item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1))
+        return newFilter.roles.find(role => role === (item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
       })
     }
 
-    if (newFilter?.organizations && newFilter?.organizations?.size !== 0) {
+    if (newFilter?.organizations && newFilter?.organizations?.length !== 0) {
       newManagers = newManagers.filter(item => {
-        return newFilter.organizations.size === 0 || newFilter.organizations.has(item?.permissions?.organization.replace('_', ' '))
+        return newFilter.organizations.find(org => org === (item?.permissions?.organization.replace('_', ' ')))
       })
     }
 
-    if (newFilter?.memberFirms && newFilter?.memberFirms?.size !== 0) {
+    if (newFilter?.memberFirms && newFilter?.memberFirms?.length !== 0) {
       newManagers = newManagers.filter(item => {
-        return newFilter.memberFirms.has(item?.member_firm?.main_fields?.name)
+        return newFilter.memberFirms.find(firm => firm === (item?.member_firm?.main_fields?.name))
       })
     }
+
     switch (newSort) {
       case 0: newManagers.sort((lhs, rhs) => lhs.first_name.localeCompare(rhs.first_name)); break;
       case 1: newManagers.sort((lhs, rhs) => rhs.first_name.localeCompare(lhs.first_name)); break;
@@ -118,11 +129,11 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
       case 3: newManagers.sort((lhs, rhs) => rhs.first_name.localeCompare(lhs.first_name)); break;
     }
 
-    handleFilter(newManagers);
+    handleFilter(newManagers, filter);
   }
 
-  const setToString = (set) => {
-    let array = Array.from(set);
+  const arrayToString = (array) => {
+    if (!array) return ''
     let res = ' ';
     for (let i = 0; i < array.length; ++i) {
       switch (i) {
@@ -135,28 +146,31 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
   }
 
   const initialFilter = () => {
-    setFilter({roles: new Set(), organizations: new Set(), type: {roles: 'initial', organizations: 'initial'}});
-    setFooterText({roles: setToString(new Set()), organizations: setToString(new Set())});
+    let emptyFilter = {}
+    let emptyFooterText = {}
+    Object.keys(filter).forEach(item => {
+      emptyFilter[item] = [];
+      emptyFooterText[item] = arrayToString([]);
+      emptyFilter.type = {...emptyFilter.type, [item]: 'initial'};
+    });
+    setFilter(emptyFilter);
+    setFooterText(emptyFooterText);
   }
 
   const changeFooterText = (filter) => {
-    setFooterText({roles: setToString(filter.roles), organizations: setToString(filter.organizations)});
-  }
-
-  const handleCloseTab = (newFilter) => {
-    setFilter(newFilter);
-    setFooterText({roles: setToString(newFilter.roles), organizations: setToString(newFilter.organizations)});
-    applyFilters(newFilter);
-    setActiveFilter(null);
-    setFilterName('');
+    let newFooterText = {}
+    Object.keys(filter).forEach(item => {
+      newFooterText[item] = arrayToString(filter[item]);
+    });
+    setFooterText(newFooterText);
   }
 
   const footer = () => {
-    if ((filter.roles.size === 0 && filter.organizations.size === 0)
+    if ((filter?.roles?.length === 0 && filter?.organizations?.length === 0)
          ||
-        (filter.roles.size === roles.size && filter.organizations.size === organizations.size)) {
+        (filter?.roles?.length === filterTypes?.role?.length && filter?.organizations?.length === filterTypes?.organizations?.length)) {
       return <p/>
-    } else if (filter.roles.size > 0 && filter.organizations.size > 0) {
+    } else if (filter?.roles?.length > 0 && filter?.organizations?.length > 0) {
       return <p className={'filter-text'}>
         Filtering by
         <span className={'blue'}>{footerText.roles}</span>
@@ -166,45 +180,10 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
     } else {
       return <p className={'filter-text'}>
         Filtering by
-        <span className={'blue'}>{filter.roles.size > 0 ? footerText.roles : footerText.organizations}</span>
+        <span className={'blue'}>{Object.values(filter)[0].length > 0 ? footerText[Object.keys(filter)[0]] : ' chosen options'}</span>
       </p>
     }
   }
-
-  useEffect(() => {
-    filterAndSortManagers(
-      {roles: appliedFilters.roles, organizations: appliedFilters.organizations},
-      appliedFilters.sort
-    )
-  }, [managers]);
-
-  useEffect(() => {
-    let newMemberFirms = [...filter.memberFirms]
-    newMemberFirms = newMemberFirms.filter(item => Array.from(memberFirms).find(elem => item === elem))
-    if (filter.memberFirms.size !== newMemberFirms.length) {
-      let newFilter = {roles: new Set([...filter.roles]), organizations: new Set([...filter.organizations]), memberFirms: new Set([...filter.memberFirms]),
-        type: {roles: filter.type.roles, organizations: filter.type.organizations, memberFirms: filter.type.memberFirms}}
-      newFilter.memberFirms = new Set(newMemberFirms);
-      setFilter(newFilter)
-    }
-
-  }, [memberFirms?.size]);
-
-   useEffect(() => {
-    setMemberFirms(new Set(memberFirmsObjects?.length > 0 ? memberFirmsObjects.map(item => item?.main_fields.name) : []))
-  }, [memberFirmsObjects?.length]);
-
-  useEffect(() => {
-    if (filter.organizations.size === 0) {
-      setMemberFirms(new Set(memberFirmsObjects?.length > 0 ? memberFirmsObjects.map(item => item?.main_fields.name) : []))
-    } else {
-      setMemberFirms(new Set(memberFirmsObjects?.length > 0
-        ? memberFirmsObjects.filter(item =>
-          Array.from(filter.organizations).findIndex(elem => elem === item.network.name) !== -1)
-          .map(item => item?.main_fields.name)
-        : []))
-    }
-  }, [filter.organizations]);
 
   return (
     <span style={style} ref={wrapperRefFilterBox} className={'filter-box opened'}>
@@ -214,33 +193,21 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
                 <ListGroupItem>
                   <Row>
                     <Col className={'left'}>
-                      {filterTypes.findIndex(item => item === 'roles') !== -1 && <Button onClick={() => {setCurr('roles')}} variant="secondary" className={curr === 'roles' ? 'active' : 'not-active'}>
-                        <span className={'filter-name'}>Roles ({roles.size})</span>
-                        {curr === 'roles' && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
-                      </Button>}
-
-                      <br/>
-                      {filterTypes.findIndex(item => item === 'organizations') !== -1 && <Button onClick={() => {setCurr('organizations')}} variant="secondary" className={curr === 'organizations' ? 'active' : 'not-active'}>
-                        <span className={'filter-name'}>Organizations ({organizations.size})</span>
-                        {curr === 'organizations' && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
-                      </Button>}
-
-                      <br/>
-                      {filterTypes.findIndex(item => item === 'member firms') !== -1 && <Button onClick={() => {setCurr('memberFirms')}} variant="secondary" className={curr === 'memberFirms' ? 'active' : 'not-active'}>
-                        <span className={'filter-name'}>Member Firms ({memberFirms.size})</span>
-                        {curr === 'memberFirms' && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
-                      </Button>}
+                      {Object.keys(filterTypes).map(key => (
+                        <Button onClick={() => {setCurr(key)}} variant="secondary" className={curr === key ? 'active' : 'not-active'}>
+                          <span className={'filter-name'}>{key.charAt(0).toUpperCase() + key.slice(1)} ({filterTypes[key].length})</span>
+                          {curr === key && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
+                        </Button>
+                      ))}
                     </Col>
                     <Col className={'right'} id={'filter-options-right'}>
                       <span>
-                        {curr !== 'reps' &&
                         <FilterOptions
                           filter={filter}
                           curr={curr}
-                          roles={roles}
-                          organizations={organizations}
+                          options={filterTypes[curr]}
                           handleFilterOptions={handleFilterOptions}
-                        />}
+                        />
                       </span>
                     </Col>
                   </Row>
@@ -258,12 +225,20 @@ const FilterModal = ({ handleFilter, managers, wrapperRefFilterButton, style, fi
                     setFilterName={setFilterName}
                     isDeleteModalOpen={isDeleteModalOpen}
                     setIsDeleteModalOpen={setIsDeleteModalOpen}
+                    userFiltersId={userFiltersId}
                   />
                 </ListGroupItem>
                 <ListGroupItem>
                   {footer()}
                   <div className={'filter-footer'}>
-                    <Button variat="success" onClick={applyFilters}>Apply filter</Button>
+                    <Button variat="success"
+                            onClick={() => {applyFilterCustom
+                              ? applyFilterCustom(managers, filter)
+                              : applyFiltersDefault(filter);
+                              setAppliedFilter(filter);
+                            }}>
+                      Apply filter
+                    </Button>
                   </div>
                   </ListGroupItem>
               </ListGroup>
