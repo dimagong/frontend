@@ -35,7 +35,7 @@ const {
 const DFormForm = ({isCreate}) => {
   const dForm = useSelector(selectdForm);
   const [ isStateConfig, setIsStateConfig] = useState(true);
-  const [isApplicationTemplatePrivate, setIsApplicationTemplatePrivate] = useState(false);
+  const [isApplicationTemplatePrivate, setIsApplicationTemplatePrivate] = useState(isCreate ? false : dForm.is_private);
   const dispatch = useDispatch();
 
   const closeDForm = () => {
@@ -58,6 +58,7 @@ const DFormForm = ({isCreate}) => {
   useEffect(() => {
     if(isCreate) {
       dispatch(setdForm(initDForm));
+      setIsApplicationTemplatePrivate(false);
     }
   }, [isCreate])
 
