@@ -57,7 +57,6 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
       setIsFiltered(false);
     }
   };
-  }
 
   const onCancelFilter = () => {
     setSearchedMembers([]);
@@ -108,7 +107,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
             />
           </div>
         </div>
-        <ModalBody style={{marginLeft: 15}}>
+        <ModalBody className={'member-firm-users-modal-body'} style={{marginLeft: 15}}>
           <SearchAndFilter
             handleSearch={handleSearch}
             handleFilter={handleFilter}
@@ -134,7 +133,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
         <div className={'member-firm__text'}>
           Other members
         </div>
-        <Scrollbars autoHeight autoHeightMax={200}>
+        <Scrollbars autoHeight autoHeightMax={300}>
           <MemberFirmModalTable
             array={
               searchedMembers?.length > 0 || isFiltered
