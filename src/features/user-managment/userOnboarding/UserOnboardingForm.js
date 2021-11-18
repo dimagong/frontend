@@ -272,12 +272,12 @@ const UserOnboardingCreate = ({isCreate}) => {
               <div className="font-weight-bold mr-1">Private</div>
               <div className="" id="onboarding-create-config-is-internal">
                 <Checkbox
-                  disabled={!isCreate.current}
+                  disabled={!isCreate.current || manager?.onboarding?.d_form?.is_private}
                   size="sm"
                   color="primary"
                   icon={<Check className="vx-icon" size={12}/>}
                   label=""
-                  checked={manager.onboarding.is_internal}
+                  checked={manager.onboarding.is_internal || manager?.onboarding?.d_form?.is_private}
                   onChange={(event) => dispatch(setManagerOnboardingProperty({
                     is_internal: event.target.checked
                   }))}
