@@ -100,6 +100,8 @@ const UserOnboardingCreate = ({isCreate}) => {
   const workflows = useSelector(selectUserWorkflows);
   const reviewers = useSelector(selectUserReviewers);
 
+  const dFormWorkFlows = workflows.filter(wf => wf.context === "application");
+
   const [selectedReviewer, setSelectedReviewer] = useState(null);
 
   const onSelectDFormChange = (value) => {
@@ -211,7 +213,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                     styles={selectStyles}
                     components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
-                    options={prepareDFormSelect(workflows).sort(sortByLabel)}
+                    options={prepareDFormSelect(dFormWorkFlows).sort(sortByLabel)}
                     onChange={(value) => {
                       onSelectWorkflowChange(value)
                     }}
