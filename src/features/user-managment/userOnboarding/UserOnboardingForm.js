@@ -148,7 +148,7 @@ const UserOnboardingCreate = ({isCreate}) => {
       .catch((err) => { toast.error(err.message) });
 
     if (isValid) {
-      dispatch(createUserOnboardingRequest(manager.onboarding))
+      dispatch(createUserOnboardingRequest({...manager.onboarding, is_private: manager?.onboarding?.d_form?.is_private, is_internal: manager?.onboarding?.d_form?.is_private}))
     }
   };
 
