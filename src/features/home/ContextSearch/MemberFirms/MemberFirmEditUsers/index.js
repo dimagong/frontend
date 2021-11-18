@@ -6,11 +6,11 @@ import {useDispatch} from "react-redux";
 import MemberFirmsChangeRoleModal from "./MemberFirmsChangeRoleModal";
 import appSlice from "app/slices/appSlice";
 import SearchAndFilter from "components/SearchAndFilter";
+import "./style.scss";
+import Scrollbars from "react-custom-scrollbars";
 
-const {
-  removeMemberFirmUsersRequest,
-  getMemberFirmPotentialUsersRequest
-} = appSlice.actions;
+const { removeMemberFirmUsersRequest, getMemberFirmPotentialUsersRequest } =
+  appSlice.actions;
 
 
 const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm, allMembers, principals}) => {
@@ -25,21 +25,29 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
   const filterTypes = {roles: ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']}
 
   const removeUser = (user) => {
-    dispatch(removeMemberFirmUsersRequest({
-      memberFirmId: memberFirm.id,
-      users: [user.id]
-    }))
-  }
+    dispatch(
+      removeMemberFirmUsersRequest({
+        memberFirmId: memberFirm.id,
+        users: [user.id],
+      })
+    );
+  };
 
   const handleSearch = (e) => {
-    setSearchedMembers(potentialMembers.filter(item =>
-      (item.first_name + item.last_name).toLowerCase().search(e.target.value.toLowerCase()) !== -1))
+    setSearchedMembers(
+      potentialMembers.filter(
+        (item) =>
+          (item.first_name + item.last_name)
+            .toLowerCase()
+            .search(e.target.value.toLowerCase()) !== -1
+      )
+    );
     if (e.target.value.length > 0) {
-      setIsFiltered(true)
+      setIsFiltered(true);
     } else {
-      setIsFiltered(false)
+      setIsFiltered(false);
     }
-  }
+  };
 
   const handleFilter = (newManagers, filter) => {
     setSearchedMembers(newManagers)
@@ -48,6 +56,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
     } else {
       setIsFiltered(false);
     }
+  };
   }
 
   const onCancelFilter = () => {
@@ -68,20 +77,25 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
 
   useEffect(() => {
     dispatch(getMemberFirmPotentialUsersRequest(memberFirm.id));
-  }, [members?.length])
+  }, [members?.length]);
 
   useEffect(() => {
-    let newSearchedManagers = potentialMembers.filter(item => searchedMembers.find(el => el.id === item.id));
+    let newSearchedManagers = potentialMembers.filter((item) =>
+      searchedMembers.find((el) => el.id === item.id)
+    );
     setSearchedMembers(newSearchedManagers);
-  }, [potentialMembers])
+  }, [potentialMembers]);
 
   return (
     <Modal
       size="lg"
-      className={"member-firms-users-modal"}
+      className={"member-firm__modal"}
       isOpen={isModalOpen}
       fade={false}
-      toggle={()=>{setIsModalOpen(false)}}>
+      toggle={() => {
+        setIsModalOpen(false);
+      }}
+    >
       <div className="survey-modal_header">
           <div className="survey-modal_header_title">
             Edit member firm
@@ -104,66 +118,94 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
             applyFilter={applyFilter}
           />
 
+        <MemberFirmModalTable
+          array={members}
+          deleteUser={(user) => setUserToDelete(user)}
+          editUser={(user, newIsEdit) => {
+            setIsChangeRoleModalOpen(true);
+            setCurrUser(user);
+            setIsEdit(newIsEdit);
+          }}
+          notFindMessage={"There are no users in member firm"}
+          isTitle
+          setArray={setSearchedMembers}
+          arrayForSort={potentialMembers}
+        />
+        <div className={'member-firm__text'}>
+          Other members
+        </div>
+        <Scrollbars autoHeight autoHeightMax={200}>
           <MemberFirmModalTable
-            array={(searchedMembers?.length > 0 || isFiltered) ? searchedMembers : potentialMembers}
-            setArray={setSearchedMembers}
+            array={
+              searchedMembers?.length > 0 || isFiltered
+                ? searchedMembers
+                : potentialMembers
+            }
             editUser={(user, newIsEdit) => {
               setIsChangeRoleModalOpen(true);
-              setCurrUser(user)
-              setIsEdit(newIsEdit)
+              setCurrUser(user);
+              setIsEdit(newIsEdit);
             }}
-            isTitle
             isAddUser
-            notFindMessage={isFiltered ? 'No user was found for your query' : 'There are no potential users to add'}
+            notFindMessage={
+              isFiltered
+                ? "No user was found for your query"
+                : "There are no potential users to add"
+            }
           />
-          <div style={{fontWeight: 'bold'}}>Existing</div>
-          <MemberFirmModalTable
-            array={members}
-            deleteUser={(user) => setUserToDelete(user)}
-            editUser={(user, newIsEdit) => {
-              setIsChangeRoleModalOpen(true);
-              setCurrUser(user)
-              setIsEdit(newIsEdit)
-            }}
-            notFindMessage={'There are no users in member firm'}
-          />
-          <MemberFirmsChangeRoleModal
-            isOpen={isChangeRoleModalOpen}
-            setIsOpen={setIsChangeRoleModalOpen}
-            user={currUser}
-            memberFirm={memberFirm}
-            allMembers={allMembers}
-            isEdit={isEdit}
-            setIsEdit={setIsEdit}
-            principals={principals}
-          />
+        </Scrollbars>
 
-          <Modal className={"organization-remove-modal"} isOpen={userToDelete.hasOwnProperty('id')} fade={false} toggle={()=>{setUserToDelete({})}}>
-            <ModalBody>
-              <div>
-                <span style={{fontSize: "22px"}}>
-                Are you sure you want to remove {userToDelete.first_name + ' ' + userToDelete.last_name} from {memberFirm?.main_fields?.name}?
+        <MemberFirmsChangeRoleModal
+          isOpen={isChangeRoleModalOpen}
+          setIsOpen={setIsChangeRoleModalOpen}
+          user={currUser}
+          memberFirm={memberFirm}
+          allMembers={allMembers}
+          isEdit={isEdit}
+          setIsEdit={setIsEdit}
+          principals={principals}
+        />
+
+        <Modal
+          className={"organization-remove-modal"}
+          isOpen={userToDelete.hasOwnProperty("id")}
+          fade={false}
+          toggle={() => {
+            setUserToDelete({});
+          }}
+        >
+          <ModalBody>
+            <div>
+              <span style={{ fontSize: "22px" }}>
+                Are you sure you want to remove{" "}
+                {userToDelete.first_name + " " + userToDelete.last_name} from{" "}
+                {memberFirm?.main_fields?.name}?
               </span>
-              </div>
-              <div className={"organization-remove-modal_action-buttons"}>
-                <Button className={"remove-button"} onClick={() => {
-                  removeUser(userToDelete)
-                  setUserToDelete({})
-                }}>
-                  Remove
-                </Button>
-                <Button className={"cancel-button"} onClick={() => {
+            </div>
+            <div className={"organization-remove-modal_action-buttons"}>
+              <Button
+                className={"remove-button"}
+                onClick={() => {
+                  removeUser(userToDelete);
                   setUserToDelete({});
-                }}>
-                  Cancel
-                </Button>
-              </div>
-            </ModalBody>
-          </Modal>
-
-        </ModalBody>
-      </Modal>
-  )
+                }}
+              >
+                Remove
+              </Button>
+              <Button
+                className={"cancel-button"}
+                onClick={() => {
+                  setUserToDelete({});
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </ModalBody>
+        </Modal>
+      </ModalBody>
+    </Modal>
+  );
 };
 
 export default MemberFirmEditUsers;
