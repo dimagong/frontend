@@ -24,8 +24,7 @@ import ContextSearchNav from './ContextSearchNav'
 import { selectAuth } from "app/selectors/authSelectors"
 import {selectVuexyUser} from 'app/selectors'
 import Applications from './Applications'
-//import MasterSchema from 'views/pages/master-schema'
-import MasterSchema from 'features/MasterSchema';
+import MasterSchema from 'views/pages/master-schema'
 import Organizations from './Organizations'
 import UserManagement from './UserManagement'
 import Surveys from './Surveys'
