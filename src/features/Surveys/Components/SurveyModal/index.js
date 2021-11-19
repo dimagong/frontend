@@ -21,6 +21,7 @@ const SurveyModal = ({
   isSubmitProceed,
   isDeleteProceed,
   className,
+  actions,
 }) => {
 
   return (
@@ -43,27 +44,29 @@ const SurveyModal = ({
           {children}
 
         </div>
-        <div className={"survey-modal_actions"}>
-          <div>
-            {!!deleteBtnText && !!onDelete && (
+        {actions ?? (
+          <div className={'survey-modal_actions'}>
+            <div>
+              {!!deleteBtnText && !!onDelete && (
+                <LoadingButton
+                  onClick={onDelete}
+                  className={'survey-modal_actions_delete-btn px-4'}
+                  isLoading={isDeleteProceed}
+                  value={deleteBtnText}
+                />
+              )}
+            </div>
+            <div>
               <LoadingButton
-                onClick={onDelete}
-                className={"survey-modal_actions_delete-btn px-4"}
-                isLoading={isDeleteProceed}
-                value={deleteBtnText}
+                className={'px-4'}
+                onClick={onSubmit}
+                color="primary"
+                isLoading={isSubmitProceed}
+                value={submitBtnText}
               />
-            )}
+            </div>
           </div>
-          <div>
-            <LoadingButton
-              className={"px-4"}
-              onClick={onSubmit}
-              color="primary"
-              isLoading={isSubmitProceed}
-              value={submitBtnText}
-            />
-          </div>
-        </div>
+        )}
       </ModalBody>
     </Modal>
   )
