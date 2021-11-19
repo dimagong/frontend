@@ -1,12 +1,14 @@
 import React from 'react';
 
-import MasterSchemaContextFeatureComponent from "./components/MasterSchemaContextFeatureComponent";
+import MasterSchemaUserList from './components/MasterSchemaUserList';
+import MasterSchemaContextFeatureComponent from './components/MasterSchemaContextFeatureComponent';
 
 const MasterSchemaContextFeature = () => {
-
   return (
-    <MasterSchemaContextFeatureComponent />
-  )
+    <MasterSchemaContextFeatureComponent>
+      <MasterSchemaUserList />
+    </MasterSchemaContextFeatureComponent>
+  );
 };
 
 export default MasterSchemaContextFeature;

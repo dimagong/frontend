@@ -1,0 +1,141 @@
+%list-reset {
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+%btn-reset {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+}
+
+%btn-icon {
+  width: 22px;
+  height: 22px;
+
+  //border-radius: 5px;
+  //background-color: transparent;
+  //transition: background-color .2s ease;
+  //
+  //&:hover {
+  //  background-color: rgba(186, 186, 186, 0.3);
+  //}
+}
+
+.ms-elements {
+  &__tree {
+    overflow-x: auto;
+  }
+
+  &__list {
+    @extend %list-reset;
+    padding-left: 13px;
+
+    &--root {
+      padding-left: 0;
+    }
+  }
+
+  &__node {
+    display: block;
+
+    min-width: max-content;
+
+    padding: 3px 0;
+
+    color: #707070;
+
+    &--selected {
+      color: #fff;
+    }
+  }
+
+  &__node-content {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f1f1f1;
+    }
+
+    @at-root .ms-elements__node--selectable > & {
+      cursor: pointer;
+    }
+
+    @at-root .ms-elements__node--selected > & {
+      background-color: #707070;
+    }
+  }
+
+  &__mark-icon {
+    width: 30px;
+    height: 30px;
+
+    color: #63c9ef;
+    // ToDo: check that it should 13px
+    font-size: 0.8125em;
+  }
+
+  &__collapse {
+    @extend %btn-icon;
+    @extend %btn-reset;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  &__name {
+    padding: 0 8px;
+    font-size: 0.9375em;
+  }
+
+  &__popup {
+    color: #707070;
+    // ToDo: check that it should 12px
+    font-size: 0.75em;
+
+    z-index: 1;
+  }
+
+  &__node-creator {
+    color: inherit;
+    font-size: inherit;
+
+    & + & {
+      border-top: 1px solid currentColor;
+    }
+  }
+
+  &__popup-accessor {
+    @extend %btn-icon;
+    @extend %btn-reset;
+
+    color: #95989a;
+    // ToDo: check that it should 10px
+    font-size: 0.625em;
+
+    @at-root .ms-elements__node--selected > .ms-elements__node-content & {
+      color: currentColor;
+    }
+  }
+
+  &__input-field {
+    > input {
+      border-radius: 0;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+
+    > label {
+      margin-bottom: 6px;
+
+      font-weight: 350;
+      font-size: 0.9375rem;
+      line-height: 1.25;
+      color: #707070;
+    }
+  }
+}

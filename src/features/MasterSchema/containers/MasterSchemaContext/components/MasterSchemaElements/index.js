@@ -1,50 +1,153 @@
-import React from 'react';
-import MSTreeElement from './master-schema-tree-element';
+import "./styles.scss";
 
-const element = (name, elements = []) => ({
+import PropTypes from "prop-types";
+import { isEmpty } from "lodash/fp";
+import React, { useMemo, useState } from "react";
+
+import TreeRoot from "components/tree/tree-root";
+import { useTreeData } from "hooks/use-tree-data";
+import { useToggleable } from "hooks/use-toggleable";
+import SurveyModal from "features/Surveys/Components/SurveyModal";
+
+import MSETreeElement from "./components/mse-tree-element";
+import MSETreeNodeList from "./components/mse-tree-node-list";
+import MSECreateElementForm from "./components/mse-create-element-form";
+import { CREATE_FIELD, CREATE_GROUP } from "./mse-category-popup-actions";
+
+// ToDo: ✔ Make more abstract and reusable component for tree
+// ToDo: ✔ Make useTreeData hook
+// ToDo: ✔ Use prepared UI components for Tree abstraction component - Make UI
+// ToDo: ~ Make modal UI for category\element creation form
+//          ✔ Use the SurveyModal as an example. - Can be used.
+//          ✔ Use the MemberFirms as an example. - Can't be used due to not good example.
+//          ✔ Create simple input component. (Try reuse from reactstrap/mui)
+//          ✔ Create simple select component. (Try reuse from reactstrap/mui/react-select)
+//          - Create simple multiple-input component.
+// ToDo: - Make data for tree. Use swagger to bind UI with API.
+//          - Find out how to work with state
+//          - Look at redux store
+//          - Look at sagas
+//          - Ask about invariant cases ?
+//          - Ask about client side model (DTO) ?
+//          - Ask about react-toastify Can i use it ?
+//          - Bind MSETree to API
+// ToDo: - Make selected event to handle it (when should show detailed component)
+// ToDo: - Merge request MSTRee
+
+/* Mock */
+let elementId = 0;
+const element = (name, children = []) => ({
+  id: elementId++,
   name,
-  type: 'text',
+  type: "text",
+  category: children.length > 0,
   createdAt: new Date().toString().slice(0, 15),
-  parent: elements.length > 0,
-  elements
+  children,
 });
-
-const TREE = {
-  elements: [element('ValidPath', [
-    element('WelcomeVPBrochure'),
-    element('Succession'),
-    element('FCA', [
-      element('InvestmentBusiness'),
-      element('HomeFinance'),
-    ]),
-  ])],
+const branch = () => {
+  return element("ValidPath", [
+    element("WelcomeVPBrochure"),
+    element("Succession", [element("Element 1"), element("Element 2")]),
+    element("FCA", [element("InvestmentBusiness"), element("HomeFinance")]),
+  ]);
 };
 
-const MSElementTree = ({ elements }) => {
+// eslint-disable-next-line no-unused-vars
+const DEEP_TREE_MOCK = ((deep = 100) => {
+  let child = element(`element ${deep}`);
+
+  while (deep > 0) {
+    deep--;
+    child = element(`element ${deep}`, [child]);
+  }
+
+  return [child];
+})();
+// eslint-disable-next-line no-unused-vars
+const BROAD_TREE_MOCK = ((length = 100) => {
+  const root = [];
+
+  while (length > 0) {
+    length--;
+    root.push(branch());
+  }
+
+  return root;
+})();
+// eslint-disable-next-line no-unused-vars
+const DESIGN_TREE_MOCK = [branch()];
+
+const serialiseMasterSchemaNode = ({ id, name, fields = [], groups = [] }) => {
+  return {
+    id,
+    name,
+    category: !isEmpty(groups) || !isEmpty(fields),
+    children: fields.concat(groups).map(serialiseMasterSchemaNode),
+  };
+};
+
+const MasterSchemaElements = ({ root }) => {
+  const items = useMemo(() => [serialiseMasterSchemaNode(root)], [root]);
+  const tree = useTreeData({ items });
+  const selectable = useToggleable([]);
+  const expandable = useToggleable([]);
+
+  const [modal, setModal] = useState(false);
+  const closeModal = () => setModal(false);
+  const onPopupAction = ({ id, type }) => {
+    switch (type) {
+      case CREATE_FIELD:
+        console.log("create field", id);
+        break;
+      case CREATE_GROUP:
+        console.log("create group", id);
+        break;
+      default:
+        throw new Error("Unexpected type: " + type);
+    }
+  };
+
+  const onElementCreation = (formValues) =>
+    console.log("element creation", formValues);
+
   return (
-    <>
-      {
-        elements.length && elements.map(({ name, type, parent, createdAt, elements }) => (
-          <MSTreeElement name={name} type={type} parent={parent} createdAt={createdAt} key={name}>
-            {/*<MSElementTree elements={elements} />*/}
-          </MSTreeElement>
-        ))
-      }
-    </>
+    !isEmpty(root) && (
+      <div className="ms-elements">
+        <div className="ms-elements__tree">
+          <TreeRoot
+            nodes={tree.items}
+            renderNodeList={({ root, children }) => (
+              <MSETreeNodeList root={root}>{children}</MSETreeNodeList>
+            )}
+            renderNode={({ node, children }) => (
+              <MSETreeElement
+                state={{ node: node.value, selectable, expandable }}
+                onPopupAction={onPopupAction}
+              >
+                {children}
+              </MSETreeElement>
+            )}
+          />
+        </div>
+
+        <SurveyModal
+          isOpen={modal}
+          title="New Element"
+          onClose={closeModal}
+          actions={false}
+        >
+          <MSECreateElementForm
+            submitting={false}
+            onElementCreation={onElementCreation}
+          />
+        </SurveyModal>
+      </div>
+    )
   );
 };
 
-// ToDo: Cover the case when the MSTree is empty
-
-const MasterSchemaElements = () => {
-  return (
-    <div>
-      <h3>MasterSchemaTree</h3>
-      <input type="text" />
-
-      <MSElementTree elements={TREE.elements} />
-    </div>
-  );
+MasterSchemaElements.propTypes = {
+  root: PropTypes.object.isRequired,
 };
 
 export default MasterSchemaElements;

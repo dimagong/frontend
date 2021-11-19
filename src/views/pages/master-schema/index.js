@@ -23,6 +23,8 @@ import { Scrollbars } from "react-custom-scrollbars";
 import Tabs from "components/Tabs/index";
 import { handleMasterSchemaDataExport } from "services/files.service";
 
+import NewMasterSchemaElements from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements";
+
 import Search from "./Search";
 import FieldEdit from "./FieldEdit";
 import GroupEdit from "./GroupEdit";
@@ -396,6 +398,12 @@ function MasterSchema() {
 
                   <div style={{ marginBottom: "20px" }}>
                     <Scrollbars autoHeight autoHeightMax={500}>
+                      {organization?.value?.master_schema?.root && (
+                        <NewMasterSchemaElements
+                          root={organization?.value?.master_schema?.root}
+                        />
+                      )}
+
                       <div className="table-content">
                         <div className="w-50 column">
                           <MasterSchemaTree
@@ -460,6 +468,7 @@ function MasterSchema() {
           </CardBody>
         </Card>
       </Col>
+
       <Col md="6">
         {!cursor ? null : (
           <Card>
