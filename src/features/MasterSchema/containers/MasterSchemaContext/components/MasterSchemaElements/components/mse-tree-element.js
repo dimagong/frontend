@@ -1,20 +1,40 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import React, { useMemo } from "react";
 
-import MSETreeField from './mse-tree-field';
-import MSETreeCategory from './mse-tree-category';
+import MSETreeField from "./mse-tree-field";
+import MSETreeCategory from "./mse-tree-category";
 
 const MSETreeElement = ({ state, onPopupAction, children }) => {
   const { node, expandable, selectable } = state;
   const toggleExpandable = () => expandable.toggle([node.id]);
   const toggleSelectable = () => selectable.toggle([node.id]);
+  const selected = useMemo(
+    () => selectable.includes(node.id),
+    [node.id, selectable]
+  );
+  const className = classNames("ms-elements__node--selectable", {
+    "ms-elements__node--selected": selected,
+  });
 
   return node.category ? (
-    <MSETreeCategory id={node.id} name={node.name} expanded={expandable.includes(node.id)} onExpandChange={toggleExpandable} onPopupAction={onPopupAction}>
+    <MSETreeCategory
+      className={className}
+      id={node.id}
+      name={node.name}
+      expanded={expandable.includes(node.id)}
+      onExpandChange={toggleExpandable}
+      onSelectChange={toggleSelectable}
+      onPopupAction={onPopupAction}
+    >
       {children}
     </MSETreeCategory>
   ) : (
-    <MSETreeField name={node.name} selected={selectable.includes(node.id)} onSelectChange={toggleSelectable}>
+    <MSETreeField
+      className={className}
+      name={node.name}
+      onSelectChange={toggleSelectable}
+    >
       {children}
     </MSETreeField>
   );

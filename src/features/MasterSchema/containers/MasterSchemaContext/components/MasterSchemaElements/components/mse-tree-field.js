@@ -1,13 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { FiberManualRecord } from '@material-ui/icons';
 
 import MSETreeNode from './mse-tree-node';
 
-const MSETreeField = ({ name, selected, onSelectChange, children }) => {
-  const className = classNames('ms-elements__node--selectable', { 'ms-elements__node--selected': selected });
-
+const MSETreeField = ({ name, onSelectChange, className, children }) => {
   return (
     <MSETreeNode
       className={className}
@@ -26,8 +23,8 @@ const MSETreeField = ({ name, selected, onSelectChange, children }) => {
 
 MSETreeField.propTypes = {
   name: PropTypes.string.isRequired,
-  selected: PropTypes.bool.isRequired,
   onSelectChange: PropTypes.func,
+  className: PropTypes.string,
   children: PropTypes.node,
 };
 

@@ -13,7 +13,7 @@ import { createGroup, createField } from '../mse-category-popup-actions';
 
 const getMarkIconAriaLabel = (expanded) => `${expanded ? 'Collapse' : 'Expand'} category.`;
 
-const MSETreeCategory = ({ id, name, expanded, onExpandChange, onPopupAction, children }) => {
+const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
   const popupRef = useRef();
   const [popup, togglePopup, setPopup] = useToggle(false);
 
@@ -33,6 +33,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onPopupAction, ch
 
   return (
     <MSETreeNode
+      className={className}
       name={name}
       prepend={
         <div className="ms-elements__mark-icon d-flex justify-content-center align-items-center">
@@ -82,6 +83,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onPopupAction, ch
           </Fade>
         </div>
       }
+      onClick={onSelectChange}
     >
       <Collapse isOpen={expanded} mountOnEnter unmountOnExit aria-expanded={expanded.toString()}>
         {children}
@@ -95,7 +97,9 @@ MSETreeCategory.propTypes = {
   name: PropTypes.string.isRequired,
   expanded: PropTypes.bool.isRequired,
   onExpandChange: PropTypes.func,
+  onSelectChange: PropTypes.func,
   onPopupAction: PropTypes.func,
+  className: PropTypes.string,
   children: PropTypes.node,
 };
 
