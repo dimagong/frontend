@@ -77,23 +77,27 @@ const BROAD_TREE_MOCK = ((length = 100) => {
 // eslint-disable-next-line no-unused-vars
 const DESIGN_TREE_MOCK = [branch()];
 
-const serialiseMasterSchemaNode = (
-  { id, name, fields = [], groups = [] },
-  category = false
+const serialiseMasterSchemaTree = (
+  node,
+  category = false,
+  composedId = ""
 ) => {
+  const id = [composedId, node.id].filter(Boolean).join(',');
+  const { name, fields = [], groups = [] } = node;
+
   return {
     id,
     name,
     category,
     children: [
-      ...fields.map(serialiseMasterSchemaNode),
-      ...groups.map((group) => serialiseMasterSchemaNode(group, true)),
+      ...fields.map((field) => serialiseMasterSchemaTree(field, false, id)),
+      ...groups.map((group) => serialiseMasterSchemaTree(group, true, id)),
     ],
   };
 };
 
 const MasterSchemaElements = ({ root }) => {
-  const items = useMemo(() => [serialiseMasterSchemaNode(root, true)], [root]);
+  const items = useMemo(() => [serialiseMasterSchemaTree(root, true)], [root]);
   const tree = useTreeData({ items });
   const selectable = useToggleable([]);
   const expandable = useToggleable([]);

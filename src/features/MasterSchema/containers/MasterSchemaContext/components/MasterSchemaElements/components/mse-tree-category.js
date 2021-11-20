@@ -83,7 +83,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
           </Fade>
         </div>
       }
-      onClick={onSelectChange}
+      onClick={stopPropagation(onSelectChange)}
     >
       <Collapse isOpen={expanded} mountOnEnter unmountOnExit aria-expanded={expanded.toString()}>
         {children}
