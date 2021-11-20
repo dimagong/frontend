@@ -114,7 +114,11 @@ const {
 
   removeMemberFirmUserRequest,
   removeMemberFirmUserSuccess,
-  removeMemberFirmUserError
+  removeMemberFirmUserError,
+
+  updateApllicationsOrderSuccess,
+  updateApllicationsOrderError,
+  updateApllicationsOrderRequest,
 } = appSlice.actions;
 
 function* getProfile() {
@@ -134,6 +138,15 @@ function* getProfile() {
 function* getUsers() {
   const response = yield call(userApi.getUsers);
   yield put(getUsersSuccess(response));
+}
+
+function* updateApllicationsOrder({ payload }) {
+  try {
+    const response = yield call(userApi.updateApllicationsOrder, payload);
+    yield put(updateApllicationsOrderSuccess(payload));
+  } catch (error) {
+    yield put(updateApllicationsOrderError(error));
+  }
 }
 
 function* getFilter() {
@@ -396,6 +409,7 @@ function* getUserPermissions({payload}) {
 
 export default function* () {
   yield all([
+    yield takeLatest(updateApllicationsOrderRequest.type, updateApllicationsOrder),
     yield takeLatest(getOnboardingsByUserRequest.type, getOnboardingsByUser),
     yield takeLatest(getProfileRequest.type, getProfile),
     yield takeLatest(getUsersRequest.type, getUsers),

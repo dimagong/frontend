@@ -100,6 +100,8 @@ const UserOnboardingCreate = ({isCreate}) => {
   const workflows = useSelector(selectUserWorkflows);
   const reviewers = useSelector(selectUserReviewers);
 
+  const dFormWorkFlows = workflows.filter(wf => wf.context === "application");
+
   const [selectedReviewer, setSelectedReviewer] = useState(null);
 
   const onSelectDFormChange = (value) => {
@@ -148,7 +150,7 @@ const UserOnboardingCreate = ({isCreate}) => {
       .catch((err) => { toast.error(err.message) });
 
     if (isValid) {
-      dispatch(createUserOnboardingRequest(manager.onboarding))
+      dispatch(createUserOnboardingRequest({...manager.onboarding, is_private: manager?.onboarding?.d_form?.is_private, is_internal: manager?.onboarding?.d_form?.is_private}))
     }
   };
 
@@ -211,7 +213,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                     styles={selectStyles}
                     components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
-                    options={prepareDFormSelect(workflows).sort(sortByLabel)}
+                    options={prepareDFormSelect(dFormWorkFlows).sort(sortByLabel)}
                     onChange={(value) => {
                       onSelectWorkflowChange(value)
                     }}
@@ -272,12 +274,12 @@ const UserOnboardingCreate = ({isCreate}) => {
               <div className="font-weight-bold mr-1">Private</div>
               <div className="" id="onboarding-create-config-is-internal">
                 <Checkbox
-                  disabled={!isCreate.current}
+                  disabled={!isCreate.current || manager?.onboarding?.d_form?.is_private}
                   size="sm"
                   color="primary"
                   icon={<Check className="vx-icon" size={12}/>}
                   label=""
-                  checked={manager.onboarding.is_internal}
+                  checked={manager.onboarding.is_internal || manager?.onboarding?.d_form?.is_private}
                   onChange={(event) => dispatch(setManagerOnboardingProperty({
                     is_internal: event.target.checked
                   }))}

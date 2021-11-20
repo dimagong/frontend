@@ -1,9 +1,11 @@
 .member-firm-table-title {
   margin-left: 50px;
+  display: flex;
   span {
+    display: flex;
     cursor: pointer;
-    width: 130px;
-    display: inline-block;
+    // width: 130px;
+    // display: inline-block;
     font-size: smaller;
     font-weight: bold;
   }

@@ -1,0 +1,98 @@
+.table-card {
+  margin: 11px 0;
+  display: flex;
+  align-items: center;
+
+  &__avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  &__user-name {
+    margin-left: 22px;
+    width: 120px;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+    width: 85px;
+    span {
+      cursor: pointer;
+    }
+    overflow: hidden;
+  }
+
+  &__user-status {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 80px;
+    padding-right: 20px;
+  }
+
+  &__user-email {
+    width: 163px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 20px;
+  }
+  
+  &__user-city {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 20px;
+    width: 108px;
+  }
+  
+  &__user-role {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 20px;
+    width: 105px;
+  }
+
+  &__delimiter {
+    height: 28px;
+    width: 2px;
+    background-color: #707070;
+    margin-right: 20px;
+  }
+
+  &__block {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+}
+
+.title {
+
+  &__user-name {
+    max-width: 85px;
+    width: 100%;
+  }
+
+  &__user-status {
+    max-width: 80px;
+    width: 100%;
+  }
+
+  &__user-email {
+    max-width: 163px;
+    width: 100%;
+  }
+
+  &__user-city {
+    max-width: 108px;
+    width: 100%;
+  }
+
+  &__user-role {
+    max-width: 105px;
+    width: 100%;
+  }
+}

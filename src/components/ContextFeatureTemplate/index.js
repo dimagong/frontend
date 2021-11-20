@@ -5,8 +5,10 @@ import {
 } from 'reactstrap';
 
 import { Search } from "@material-ui/icons";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import './styles.scss'
+import {INPUT_HEADER_HEIGHT} from "../../constants/header";
 
 const ContextFeatureTemplate = ({
   onSearchValueChange,
@@ -18,6 +20,7 @@ const ContextFeatureTemplate = ({
 
   return (
     <Col xs={6} className="context-feature-template">
+      <Scrollbars autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
       <div className="context-feature-template_header">
         <div className="context-feature-template_header_title">
           {contextFeatureTitle}
@@ -36,6 +39,7 @@ const ContextFeatureTemplate = ({
 
       {children}
 
+      </Scrollbars>
     </Col>
   )
 };

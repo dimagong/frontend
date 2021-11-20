@@ -69,6 +69,7 @@ const ActivitiesDashboard = ({updateSettings, dForms, handleFilterBox, settings,
       if (settings?.dForm?.name === 'Applications Snapshot') {
         dispatch(getDashboardSnapshotDataRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
       } else {
+
         dispatch(getDashboardActivityRequest({key: settings.key, page: usersActivities.current_page + 1, 'from': moment().subtract(settings.daysNumber, 'days').format('YYYY-MM-DD'), settings: settings}))
       }
     } else {

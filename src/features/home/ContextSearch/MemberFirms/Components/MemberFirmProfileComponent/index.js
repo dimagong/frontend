@@ -39,7 +39,6 @@ const MemberFirmProfileComponent = ({
 
   return (
     <ContextTemplate contextTitle={"Member firm"}>
-      <Scrollbars autoHeight autoHeightMax={window.innerHeight - HEADER_HEIGHT}>
         <div className="member-firm-profile">
           <div className="member-firm-profile_header">
             <div className="member-firm-profile_header_logo">
@@ -80,12 +79,15 @@ const MemberFirmProfileComponent = ({
                 </div>
               )}
             </div>
+
             <div className="member-firm-profile_header-info">
+
               <div className="member-firm-profile_header-info-name">
                 <p>
                   {data.main_fields.name}
                 </p>
               </div>
+              
               <div className="member-firm-profile_header-info-contact_data">
                 {!!data.main_fields.email && (
                   <div className="member-firm-profile_header-info-contact_data-info_tile">
@@ -133,7 +135,6 @@ const MemberFirmProfileComponent = ({
             }[selectedTab]}
           </div>
         </div>
-      </Scrollbars>
     </ContextTemplate>
   )
 };
