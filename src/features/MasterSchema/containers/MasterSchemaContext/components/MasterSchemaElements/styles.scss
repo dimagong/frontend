@@ -8,19 +8,15 @@
   padding: 0;
   border: none;
   background-color: transparent;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 %btn-icon {
   width: 22px;
   height: 22px;
-
-  //border-radius: 5px;
-  //background-color: transparent;
-  //transition: background-color .2s ease;
-  //
-  //&:hover {
-  //  background-color: rgba(186, 186, 186, 0.3);
-  //}
 }
 
 .ms-elements {
@@ -55,8 +51,8 @@
     padding: 5px;
     border-radius: 5px;
     background-color: transparent;
-    transition: background-color 0.2s ease;
 
+    transition: background-color 0.2s ease;
     &:hover {
       background-color: #f1f1f1;
     }
@@ -75,8 +71,7 @@
     height: 30px;
 
     color: #63c9ef;
-    // ToDo: check that it should 13px
-    font-size: 0.8125em;
+    font-size: 0.8125rem;
   }
 
   &__collapse {
@@ -88,24 +83,34 @@
 
   &__name {
     padding: 0 8px;
-    font-size: 0.9375em;
+    font-size: 0.9375rem;
   }
 
   &__popup {
     color: #707070;
-    // ToDo: check that it should 12px
-    font-size: 0.75em;
+    font-size: 0.75rem;
 
     z-index: 1;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.160784);
+
+    position: relative;
+    &:after {
+      content: '';
+      width: 80%;
+      height: 1px;
+      background-color: currentColor;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 
   &__node-creator {
+    @extend %btn-reset;
+    padding: 10px 20px;
     color: inherit;
     font-size: inherit;
-
-    & + & {
-      border-top: 1px solid currentColor;
-    }
   }
 
   &__popup-accessor {
@@ -113,8 +118,7 @@
     @extend %btn-reset;
 
     color: #95989a;
-    // ToDo: check that it should 10px
-    font-size: 0.625em;
+    font-size: 0.625rem;
 
     @at-root .ms-elements__node--selected > .ms-elements__node-content & {
       color: currentColor;

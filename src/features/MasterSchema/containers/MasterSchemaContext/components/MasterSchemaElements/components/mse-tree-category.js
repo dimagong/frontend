@@ -66,7 +66,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
           >
             <button
               type="button"
-              className="ms-elements__node-creator btn"
+              className="ms-elements__node-creator"
               aria-label="Create category"
               onClick={stopPropagation(dispatchCreateCategoryNode)}
             >
@@ -74,7 +74,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
             </button>
             <button
               type="button"
-              className="ms-elements__node-creator btn"
+              className="ms-elements__node-creator"
               aria-label="Create element"
               onClick={stopPropagation(dispatchCreateElementNode)}
             >
