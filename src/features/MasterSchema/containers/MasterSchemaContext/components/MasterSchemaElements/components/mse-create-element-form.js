@@ -3,30 +3,31 @@ import { Col, Row } from 'reactstrap';
 import React, { useState } from 'react';
 
 import LoadingButton from 'components/LoadingButton';
-
-import TextField from '../text-field';
-import SelectField from '../select-field';
-import { preventDefault } from '../event-decorators';
 import { useFormGroup, useFormField, Validators } from 'hooks/use-form';
+
+import MSETextField from './mse-text-field';
+import MSESelectField from './mse-select-field';
+
+import { preventDefault } from '../event-decorators';
 
 const computeOptionsFromArray = (array) => array.map((value) => ({ label: value, value }));
 
-const MSECreateElementForm = ({ submitting, onElementCreation }) => {
+const MSECreateElementForm = ({ submitting, onSubmit: propOnSubmit }) => {
   const [elementPath, setElementPath] = useFormField('', [Validators.required]);
   const [elementTypeOptions] = useState(computeOptionsFromArray(['select', 'text']));
-  const [elementType, setElementType] = useFormField(elementTypeOptions[0], [Validators.required]);
-  const [formGroup] = useFormGroup({
+  const [elementType, setElementType] = useFormField(null, [Validators.required]);
+  const formGroup = useFormGroup({
     elementPath,
     elementType,
   });
 
-  const onSubmit = preventDefault(() => onElementCreation(formGroup.values));
+  const onSubmit = preventDefault(() => propOnSubmit(formGroup));
 
   return (
     <form onSubmit={onSubmit}>
       <Row className="my-3">
         <Col className="ms-elements__input-field">
-          <TextField
+          <MSETextField
             label="Element location and name"
             name="elementPath"
             placeholder="MS.ValidPath.bio.firstName"
@@ -38,7 +39,7 @@ const MSECreateElementForm = ({ submitting, onElementCreation }) => {
 
       <Row className="my-3">
         <Col className="ms-elements__input-field">
-          <SelectField
+          <MSESelectField
             label="Element type"
             name="elementType"
             placeholder="New option"
@@ -51,11 +52,10 @@ const MSECreateElementForm = ({ submitting, onElementCreation }) => {
 
       <Row className="my-3">
         <Col>
-          <div className="d-flex">
+          <div className="d-flex justify-content-end">
             <LoadingButton
               type="submit"
-              className="ms-auto px-4"
-              style={{ backgroundColor: '#7367F0', color: '#fff' }}
+              color="primary"
               isLoading={submitting}
               disabled={formGroup.invalid}
               value="Create"
@@ -69,7 +69,7 @@ const MSECreateElementForm = ({ submitting, onElementCreation }) => {
 
 MSECreateElementForm.propTypes = {
   submitting: PropTypes.bool.isRequired,
-  onElementCreation: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
 
 export default MSECreateElementForm;

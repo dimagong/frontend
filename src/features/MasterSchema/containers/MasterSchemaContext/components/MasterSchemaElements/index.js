@@ -1,18 +1,19 @@
-import "./styles.scss";
+import './styles.scss';
 
-import PropTypes from "prop-types";
-import { isEmpty } from "lodash/fp";
-import React, { useMemo, useState } from "react";
+import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash/fp';
+import React, { useMemo } from 'react';
 
-import TreeRoot from "components/tree/tree-root";
-import { useTreeData } from "hooks/use-tree-data";
-import { useToggleable } from "hooks/use-toggleable";
-import SurveyModal from "features/Surveys/Components/SurveyModal";
+import { useBoolean } from 'hooks/use-boolean';
+import TreeRoot from 'components/tree/tree-root';
+import { useTreeData } from 'hooks/use-tree-data';
+import { useToggleable } from 'hooks/use-toggleable';
+import SurveyModal from 'features/Surveys/Components/SurveyModal';
 
-import MSETreeElement from "./components/mse-tree-element";
-import MSETreeNodeList from "./components/mse-tree-node-list";
-import MSECreateElementForm from "./components/mse-create-element-form";
-import { CREATE_FIELD, CREATE_GROUP } from "./mse-category-popup-actions";
+import MSETreeElement from './components/mse-tree-element';
+import MSETreeNodeList from './components/mse-tree-node-list';
+import MSECreateElementForm from './components/mse-create-element-form';
+import { CREATE_FIELD, CREATE_GROUP } from './mse-category-popup-actions';
 
 // ToDo: ✔ Make more abstract and reusable component for tree
 // ToDo: ✔ Make useTreeData hook
@@ -39,16 +40,16 @@ let elementId = 0;
 const element = (name, children = []) => ({
   id: elementId++,
   name,
-  type: "text",
+  type: 'text',
   category: children.length > 0,
   createdAt: new Date().toString().slice(0, 15),
   children,
 });
 const branch = () => {
-  return element("ValidPath", [
-    element("WelcomeVPBrochure"),
-    element("Succession", [element("Element 1"), element("Element 2")]),
-    element("FCA", [element("InvestmentBusiness"), element("HomeFinance")]),
+  return element('ValidPath', [
+    element('WelcomeVPBrochure'),
+    element('Succession', [element('Element 1'), element('Element 2')]),
+    element('FCA', [element('InvestmentBusiness'), element('HomeFinance')]),
   ]);
 };
 
@@ -77,11 +78,7 @@ const BROAD_TREE_MOCK = ((length = 100) => {
 // eslint-disable-next-line no-unused-vars
 const DESIGN_TREE_MOCK = [branch()];
 
-const serialiseMasterSchemaTree = (
-  node,
-  category = false,
-  composedId = ""
-) => {
+const serialiseMasterSchemaTree = (node, category = false, composedId = '') => {
   const id = [composedId, node.id].filter(Boolean).join(',');
   const { name, fields = [], groups = [] } = node;
 
@@ -102,23 +99,24 @@ const MasterSchemaElements = ({ root }) => {
   const selectable = useToggleable([]);
   const expandable = useToggleable([]);
 
-  const [modal, setModal] = useState(false);
-  const closeModal = () => setModal(false);
+  const [modal, openModal, closeModal] = useBoolean(false);
+
   const onPopupAction = ({ id, type }) => {
     switch (type) {
       case CREATE_FIELD:
-        console.log("create field", id);
+        openModal();
+        console.log('create field', id);
         break;
       case CREATE_GROUP:
-        console.log("create group", id);
+        openModal();
+        console.log('create group', id);
         break;
       default:
-        throw new Error("Unexpected type: " + type);
+        throw new Error('Unexpected type: ' + type);
     }
   };
 
-  const onElementCreation = (formValues) =>
-    console.log("element creation", formValues);
+  const onSubmitCreateElement = (submitted) => console.log('element creation submitted:', submitted);
 
   return (
     !isEmpty(root) && (
@@ -126,30 +124,19 @@ const MasterSchemaElements = ({ root }) => {
         <div className="ms-elements__tree">
           <TreeRoot
             nodes={tree.items}
-            renderNodeList={({ root, children }) => (
-              <MSETreeNodeList root={root}>{children}</MSETreeNodeList>
-            )}
+            renderNodeList={({ root, children }) => <MSETreeNodeList root={root} children={children} />}
             renderNode={({ node, children }) => (
               <MSETreeElement
                 state={{ node: node.value, selectable, expandable }}
                 onPopupAction={onPopupAction}
-              >
-                {children}
-              </MSETreeElement>
+                children={children}
+              />
             )}
           />
         </div>
 
-        <SurveyModal
-          isOpen={modal}
-          title="New Element"
-          onClose={closeModal}
-          actions={false}
-        >
-          <MSECreateElementForm
-            submitting={false}
-            onElementCreation={onElementCreation}
-          />
+        <SurveyModal isOpen={modal} title="New Element" onClose={closeModal} actions={false}>
+          <MSECreateElementForm submitting={false} onSubmit={onSubmitCreateElement} />
         </SurveyModal>
       </div>
     )

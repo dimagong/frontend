@@ -2,14 +2,19 @@ import { Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
 
-import BaseFormField from './base-form-field';
+import MSEFormField from './mse-form-field';
 
-const TextField = ({ label, type, name, value, errors, valid, invalid, placeholder, onChange, ...attrs }) => {
+const MSETextField = ({ label, type, name, value, errors, valid, invalid, placeholder, onChange, ...attrs }) => {
   const [dirty, setDirty] = useState(false);
   const onInput = useMemo(() => (dirty ? null : () => setDirty(true)), [dirty]);
 
   return (
-    <BaseFormField label={label} dirty={dirty} invalid={invalid} errors={errors}>
+    <MSEFormField
+      label={label}
+      dirty={dirty}
+      invalid={invalid}
+      errors={errors}
+    >
       {(id) => (
         <Input
           type={type}
@@ -24,20 +29,20 @@ const TextField = ({ label, type, name, value, errors, valid, invalid, placehold
           {...attrs}
         />
       )}
-    </BaseFormField>
+    </MSEFormField>
   );
 };
 
-TextField.defaultProps = {
+MSETextField.defaultProps = {
   type: 'text',
   errors: [],
 };
 
-TextField.propTypes = {
+MSETextField.propTypes = {
   label: PropTypes.string.isRequired,
   type: PropTypes.string,
   name: PropTypes.string.isRequired,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any,
 
   valid: PropTypes.bool,
   invalid: PropTypes.bool,
@@ -47,4 +52,4 @@ TextField.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default TextField;
+export default MSETextField;

@@ -1,48 +1,48 @@
 import { useMemo, useState } from 'react';
-import { isEmpty, isString, every, mapValues } from 'lodash/fp';
+import { every, mapValues, isNil } from 'lodash/fp';
 
-// ValidationError :: string
-
-// Validator :: <T>(value: T) -> ValidationError | true
-
-// FormField :: {
-//   value: any,
-//   errors: ValidationError[],
-//   valid: boolean,
-//   invalid: boolean
-// }
-
+// Validator :: <T>(value: T) -> string | true | false
 export const Validators = {
   required: (value) => !!value || 'Value is required',
 };
 
-export const useFormField = (initialValue, validators = []) => {
-  const [value, setValue] = useState(initialValue);
-  const errors = useMemo(() => validators.map((validator) => validator(value)).filter(isString), [validators, value]);
-  const valid = useMemo(() => isEmpty(errors), [errors]);
+const initialValidationState = { valid: null, errors: [] };
 
-  const field = useMemo(() => ({ value, errors, valid, invalid: !valid }), [errors, valid, value]);
+const validatorsReducer =
+  (value) =>
+  ({ valid, errors }, validator) => {
+    const errorOrBool = validator(value);
 
-  return [field, setValue];
+    switch (typeof errorOrBool) {
+      case 'string':
+        return { errors: [...errors, errorOrBool], valid };
+      default:
+        return { errors: errors, valid: isNil(valid) ? errorOrBool : errorOrBool && valid };
+    }
+  };
+
+const useFormControl = (value, validators) => {
+  const { valid, errors } = useMemo(
+    () => validators.reduce(validatorsReducer(value), initialValidationState),
+    [validators, value]
+  );
+
+  return { value, valid, invalid: !valid, errors };
 };
 
-// FieldName :: string
-// FormFields :: { [FieldName]: Field }
-// FormValues :: { [FieldName]: any }
+// ToDo: consider, is field valid when it is pristine ?
+export const useFormField = (initialValue, validators = []) => {
+  const [value, setValue] = useState(initialValue);
+  const control = useFormControl(value, validators);
 
-// FormGroup :: {
-//   valid: boolean,
-//   invalid: boolean,
-//   fields: FormFields,
-//   values: FormValues,
-// }
+  return [control, setValue];
+};
 
-// ToDo: make possible group in group
-export const useFormGroup = (fields) => {
-  // ToDo: consider, is form valid with some pristine field ?
-  const valid = useMemo(() => every((field) => field.valid, fields), [fields]);
-  const values = useMemo(() => mapValues((field) => field.value, fields), [fields]);
-  const formGroup = useMemo(() => ({ valid, invalid: !valid, fields, values }), [valid, fields, values]);
+const groupControlsValidator = (controls) => every(({ valid }) => valid, controls);
 
-  return [formGroup];
+export const useFormGroup = (controls) => {
+  const { valid, invalid, errors } = useFormControl(controls, [groupControlsValidator]);
+  const values = useMemo(() => mapValues(({ value }) => value, controls), [controls]);
+
+  return { valid, errors, invalid, values, controls };
 };
