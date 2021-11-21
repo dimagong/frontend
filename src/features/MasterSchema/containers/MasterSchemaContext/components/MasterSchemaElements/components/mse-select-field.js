@@ -15,6 +15,7 @@ const SelectField = (props) => {
     invalid,
     placeholder,
     onChange: propOnChange,
+    innerChildren,
     children,
     ...attrs
   } = props;
@@ -31,9 +32,10 @@ const SelectField = (props) => {
     [dirty, propOnChange]
   );
 
-  return (
-    <MSEFormField label={label} dirty={dirty} invalid={invalid} errors={errors}>
+  const renderSelect = (id) => {
+    return (
       <Select
+        inputId={id}
         name={name}
         defaultValue={value}
         options={options}
@@ -41,8 +43,29 @@ const SelectField = (props) => {
         placeholder={placeholder}
         {...attrs}
       >
-        {children}
+        {innerChildren}
       </Select>
+    );
+  };
+
+  const renderChildren = () => {
+    switch (typeof children) {
+      case "function":
+        return ({ id, error, label }) => children({ select: renderSelect(id), error, label });
+      default:
+        return ({ id, error, label }) => (
+          <>
+            {label}
+            {renderSelect(id)}
+            {error}
+          </>
+        );
+    }
+  };
+
+  return (
+    <MSEFormField label={label} dirty={dirty} invalid={invalid} errors={errors}>
+      {renderChildren()}
     </MSEFormField>
   );
 };
@@ -65,7 +88,8 @@ SelectField.propTypes = {
 
   onChange: PropTypes.func.isRequired,
 
-  children: PropTypes.node,
+  innerChildren: PropTypes.node,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
 export default SelectField;

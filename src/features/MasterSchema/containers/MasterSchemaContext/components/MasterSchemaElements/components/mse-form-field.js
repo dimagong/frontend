@@ -15,26 +15,15 @@ const MSEFormField = ({ dirty, invalid, errors, label, error, children }) => {
   };
 
   const renderError = () => {
+    if (!dirty || !invalid) return;
+
     switch (typeof error) {
       case 'function': return error(errors);
-      default: return errors[0];
+      default: return <small className="text-danger">{errors[0]}</small>;
     }
   };
 
-  const renderChildren = () => {
-    switch (typeof children) {
-      case 'function': return children(id);
-      default: return children;
-    }
-  };
-
-  return (
-    <>
-      {renderLabel()}
-      {renderChildren()}
-      {dirty && invalid && renderError()}
-    </>
-  );
+  return children({ id, label: renderLabel(), error: renderError() });
 };
 
 MSEFormField.defaultProps = {
@@ -47,8 +36,8 @@ MSEFormField.propTypes = {
   errors: PropTypes.arrayOf(PropTypes.string),
 
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  error: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]).isRequired,
+  error: PropTypes.func,
+  children: PropTypes.func.isRequired,
 };
 
 export default MSEFormField;
