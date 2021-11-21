@@ -1,20 +1,20 @@
-import PropTypes from 'prop-types';
-import { Col, Row } from 'reactstrap';
-import React, { useState } from 'react';
+import PropTypes from "prop-types";
+import { Col, Row } from "reactstrap";
+import React, { useState } from "react";
 
-import LoadingButton from 'components/LoadingButton';
-import { useFormGroup, useFormField, Validators } from 'hooks/use-form';
+import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 
-import MSETextField from './mse-text-field';
-import MSESelectField from './mse-select-field';
+import MSEButton from "./mse-button";
+import MSETextField from "./mse-text-field";
+import MSESelectField from "./mse-select-field";
 
-import { preventDefault } from '../event-decorators';
+import { preventDefault } from "../event-decorators";
 
 const computeOptionsFromArray = (array) => array.map((value) => ({ label: value, value }));
 
 const MSECreateElementForm = ({ submitting, onSubmit: propOnSubmit }) => {
-  const [elementPath, setElementPath] = useFormField('', [Validators.required]);
-  const [elementTypeOptions] = useState(computeOptionsFromArray(['select', 'text']));
+  const [elementPath, setElementPath] = useFormField("", [Validators.required]);
+  const [elementTypeOptions] = useState(computeOptionsFromArray(["select", "text"]));
   const [elementType, setElementType] = useFormField(null, [Validators.required]);
   const formGroup = useFormGroup({
     elementPath,
@@ -53,13 +53,9 @@ const MSECreateElementForm = ({ submitting, onSubmit: propOnSubmit }) => {
       <Row className="my-3">
         <Col>
           <div className="d-flex justify-content-end">
-            <LoadingButton
-              type="submit"
-              color="primary"
-              isLoading={submitting}
-              disabled={formGroup.invalid}
-              value="Create"
-            />
+            <MSEButton color="primary" disabled={formGroup.invalid} loading={submitting} type="submit">
+              Create
+            </MSEButton>
           </div>
         </Col>
       </Row>
