@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   selectUnapprovedFieldsOfSelectedOrganization,
+  selectMasterSchemaOfSelectedOrganization,
 } from "app/selectors/masterSchemaSelectors";
 
 import MasterSchemaContextComponent from "./components/MasterSchemaContextComponent";
@@ -15,6 +16,8 @@ const MasterSchemaContext = () => {
   const [isListOfUnapprovedElementsVisible, setIsListOfUnapprovedElementsVisible] = useState(true);
 
   const selectedOrganizationUnapprovedFields = useSelector(selectUnapprovedFieldsOfSelectedOrganization);
+  const selectedOrganizationMasterSchema = useSelector(selectMasterSchemaOfSelectedOrganization);
+
 
 
   const handleUnapprovedFieldSelect = (field) => {
@@ -49,6 +52,7 @@ const MasterSchemaContext = () => {
   return (
     <MasterSchemaContextComponent
       unapprovedFields={selectedOrganizationUnapprovedFields}
+      selectedOrganizationMasterSchema={selectedOrganizationMasterSchema}
       selectedUnapprovedFields={selectedUnapprovedFields}
       onUnapprovedFieldClick={handleUnapprovedFieldClick}
       onAllUnapprovedFieldsUnselect={handleAllUnapprovedFieldsUnselect}

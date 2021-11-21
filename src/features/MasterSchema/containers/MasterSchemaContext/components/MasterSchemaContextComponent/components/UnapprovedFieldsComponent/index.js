@@ -11,6 +11,7 @@ const iconStyles = {
   color: "#95989A",
   fontSize: "22px",
   marginLeft: "12px",
+  cursor: "pointer",
 };
 
 const UnapprovedFieldsListItem = ({ onClick, field, isSelected}) => {
@@ -30,7 +31,7 @@ const UnapprovedFieldsListItem = ({ onClick, field, isSelected}) => {
             {field.name}
           </div>
           <div className="unapproved_fields-list-items-item-description-appearances">
-            dForm: {field.d_form_names.join(", ") || "Not used in dForms"}
+            dForm: {field?.d_form_names?.join(", ") || "Not used in dForms"}
           </div>
         </div>
       </div>

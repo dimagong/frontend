@@ -3,6 +3,7 @@ import React from 'react';
 
 import ContextTemplate from "components/ContextTemplate";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
+import MasterSchemaElements from "../MasterSchemaElements";
 
 const MasterSchemaContextComponent = ({
   unapprovedFields,
@@ -11,6 +12,7 @@ const MasterSchemaContextComponent = ({
   onAllUnapprovedFieldsUnselect,
   onListOfUnapprovedElementsVisibilityToggle,
   isListOfUnapprovedElementsVisible,
+  selectedOrganizationMasterSchema,
 }) => {
 
   return (
@@ -25,7 +27,7 @@ const MasterSchemaContextComponent = ({
           onListVisibilityToggle={onListOfUnapprovedElementsVisibilityToggle}
         />
       )}
-
+      <MasterSchemaElements root={selectedOrganizationMasterSchema.root} />
     </ContextTemplate>
   )
 };
