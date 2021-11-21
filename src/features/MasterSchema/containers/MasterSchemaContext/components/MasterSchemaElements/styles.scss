@@ -111,6 +111,14 @@
     padding: 10px 20px;
     color: inherit;
     font-size: inherit;
+
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+    transition-property: color, background-color;
+    &:hover {
+      color: var(--primary);
+      background-color: #f8f8f8;
+    }
   }
 
   &__popup-accessor {

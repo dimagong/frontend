@@ -1,45 +1,65 @@
-import { Input } from 'reactstrap';
-import PropTypes from 'prop-types';
-import React, { useMemo, useState } from 'react';
+import { Input } from "reactstrap";
+import PropTypes from "prop-types";
+import React, { useMemo, useState } from "react";
 
-import MSEFormField from './mse-form-field';
+import MSEFormField from "./mse-form-field";
 
-const MSETextField = ({ label, type, name, value, errors, valid, invalid, placeholder, onChange, ...attrs }) => {
+const MSETextField = (props) => {
+  const { label, type, name, value, errors, valid, invalid, placeholder, onChange, children, ...attrs } = props;
+
   const [dirty, setDirty] = useState(false);
   const onInput = useMemo(() => (dirty ? null : () => setDirty(true)), [dirty]);
 
+  const renderInput = (id) => {
+    return (
+      <Input
+        type={type}
+        name={name}
+        value={value}
+        placeholder={placeholder}
+        id={id}
+        valid={dirty ? valid : null}
+        invalid={dirty ? invalid : null}
+        onInput={onInput}
+        onChange={onChange}
+        {...attrs}
+      />
+    );
+  };
+
+  const renderChildren = () => {
+    switch (typeof children) {
+      case "function":
+        return ({ id, error, label }) => children({ input: renderInput(id), error, label });
+      default:
+        return ({ id, error, label }) => (
+          <>
+            {label}
+            {renderInput(id)}
+            {error}
+          </>
+        );
+    }
+  };
+
   return (
     <MSEFormField
-      label={label}
       dirty={dirty}
       invalid={invalid}
       errors={errors}
+      label={label}
     >
-      {(id) => (
-        <Input
-          type={type}
-          name={name}
-          value={value}
-          placeholder={placeholder}
-          id={id}
-          valid={dirty ? valid : null}
-          invalid={dirty ? invalid : null}
-          onInput={onInput}
-          onChange={onChange}
-          {...attrs}
-        />
-      )}
+      {renderChildren()}
     </MSEFormField>
   );
 };
 
 MSETextField.defaultProps = {
-  type: 'text',
+  type: "text",
   errors: [],
 };
 
 MSETextField.propTypes = {
-  label: PropTypes.string.isRequired,
   type: PropTypes.string,
   name: PropTypes.string.isRequired,
   value: PropTypes.any,
@@ -48,8 +68,11 @@ MSETextField.propTypes = {
   invalid: PropTypes.bool,
   errors: PropTypes.arrayOf(PropTypes.string),
 
-  placeholder: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+
+  placeholder: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
 export default MSETextField;
