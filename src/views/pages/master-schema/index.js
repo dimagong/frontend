@@ -23,9 +23,9 @@ import { Scrollbars } from "react-custom-scrollbars";
 import Tabs from "components/Tabs/index";
 import { handleMasterSchemaDataExport } from "services/files.service";
 
-import NewMasterSchemaElements from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements";
-import MSENodeRenamingForm from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements/components/mse-node-renaming-form";
-import MSENodeRelocationForm from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements/components/mse-node-relocation-form";
+import NewMasterSchemaElements from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaContextComponent/components/MasterSchemaElements";
+import MSENodeRenamingForm from "features/MasterSchema/containers/MasterSchemaContextFeature/components/MasterSchemaContextFeatureComponent/components/MasterSchemaManager/components/mse-node-renaming-form";
+import MSENodeRelocationForm from "features/MasterSchema/containers/MasterSchemaContextFeature/components/MasterSchemaContextFeatureComponent/components/MasterSchemaManager/components/mse-node-relocation-form";
 
 import Search from "./Search";
 import FieldEdit from "./FieldEdit";

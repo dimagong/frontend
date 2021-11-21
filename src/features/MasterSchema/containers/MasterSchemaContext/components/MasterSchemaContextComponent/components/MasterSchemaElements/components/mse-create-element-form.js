@@ -2,13 +2,11 @@ import PropTypes from "prop-types";
 import { Col, Row } from "reactstrap";
 import React, { useState } from "react";
 
+import { preventDefault } from "utility/event-decorators";
+import MSEButton from "features/MasterSchema/share/mse-button";
+import MSETextField from "features/MasterSchema/share/mse-text-field";
 import { useFormGroup, useFormField, Validators } from "hooks/use-form";
-
-import MSEButton from "./mse-button";
-import MSETextField from "./mse-text-field";
-import MSESelectField from "./mse-select-field";
-
-import { preventDefault } from "../event-decorators";
+import MSESelectField from "features/MasterSchema/share/mse-select-field";
 
 const computeOptionsFromArray = (array) => array.map((value) => ({ label: value, value }));
 
@@ -26,7 +24,7 @@ const MSECreateElementForm = ({ submitting, onSubmit: propOnSubmit }) => {
   return (
     <form onSubmit={onSubmit}>
       <Row className="my-3">
-        <Col className="ms-elements__input-field">
+        <Col>
           <MSETextField
             label="Element location and name"
             name="elementPath"
@@ -38,7 +36,7 @@ const MSECreateElementForm = ({ submitting, onSubmit: propOnSubmit }) => {
       </Row>
 
       <Row className="my-3">
-        <Col className="ms-elements__input-field">
+        <Col>
           <MSESelectField
             label="Element type"
             name="elementType"

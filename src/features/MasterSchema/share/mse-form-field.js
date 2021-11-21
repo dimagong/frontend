@@ -2,6 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Label } from "reactstrap";
 
+const labelStyles = {
+  marginBottom: '6px',
+  fontWeight: '350',
+  fontSize: '0.9375rem',
+  lineHeight: '1.25',
+  color: '#707070',
+};
+
 let formFieldCounter = 0;
 
 const MSEFormField = ({ dirty, invalid, errors, label, error, children }) => {
@@ -9,8 +17,10 @@ const MSEFormField = ({ dirty, invalid, errors, label, error, children }) => {
 
   const renderLabel = () => {
     switch (typeof label) {
-      case 'function': return label(id);
-      default: return <Label for={id}>{label}</Label>;
+      case "function":
+        return label(id);
+      default:
+        return <Label for={id} style={labelStyles}>{label}</Label>;
     }
   };
 
@@ -18,8 +28,10 @@ const MSEFormField = ({ dirty, invalid, errors, label, error, children }) => {
     if (!dirty || !invalid) return;
 
     switch (typeof error) {
-      case 'function': return error(errors);
-      default: return <small className="text-danger">{errors[0]}</small>;
+      case "function":
+        return error(errors);
+      default:
+        return <small className="text-danger">{errors[0]}</small>;
     }
   };
 
@@ -27,7 +39,7 @@ const MSEFormField = ({ dirty, invalid, errors, label, error, children }) => {
 };
 
 MSEFormField.defaultProps = {
-  errors: []
+  errors: [],
 };
 
 MSEFormField.propTypes = {

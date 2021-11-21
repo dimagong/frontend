@@ -1,19 +1,19 @@
-import './styles.scss';
+import "./styles.scss";
 
-import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash/fp';
-import React, { useMemo } from 'react';
+import PropTypes from "prop-types";
+import { isEmpty } from "lodash/fp";
+import React, { useMemo } from "react";
 
-import { useBoolean } from 'hooks/use-boolean';
-import TreeRoot from 'components/tree/tree-root';
-import { useTreeData } from 'hooks/use-tree-data';
-import { useToggleable } from 'hooks/use-toggleable';
-import SurveyModal from 'features/Surveys/Components/SurveyModal';
+import { useBoolean } from "hooks/use-boolean";
+import TreeRoot from "components/tree/tree-root";
+import { useTreeData } from "hooks/use-tree-data";
+import { useToggleable } from "hooks/use-toggleable";
+import SurveyModal from "features/Surveys/Components/SurveyModal";
 
-import MSETreeElement from './components/mse-tree-element';
-import MSETreeNodeList from './components/mse-tree-node-list';
-import MSECreateElementForm from './components/mse-create-element-form';
-import { CREATE_FIELD, CREATE_GROUP } from './mse-category-popup-actions';
+import MSETreeElement from "./components/mse-tree-element";
+import MSETreeNodeList from "./components/mse-tree-node-list";
+import MSECreateElementForm from "./components/mse-create-element-form";
+import { CREATE_FIELD, CREATE_GROUP } from "./mse-category-popup-actions";
 
 // ToDo: ✔ Make more abstract and reusable component for tree
 // ToDo: ✔ Make useTreeData hook
@@ -40,16 +40,16 @@ let elementId = 0;
 const element = (name, children = []) => ({
   id: elementId++,
   name,
-  type: 'text',
+  type: "text",
   category: children.length > 0,
   createdAt: new Date().toString().slice(0, 15),
   children,
 });
 const branch = () => {
-  return element('ValidPath', [
-    element('WelcomeVPBrochure'),
-    element('Succession', [element('Element 1'), element('Element 2')]),
-    element('FCA', [element('InvestmentBusiness'), element('HomeFinance')]),
+  return element("ValidPath", [
+    element("WelcomeVPBrochure"),
+    element("Succession", [element("Element 1"), element("Element 2")]),
+    element("FCA", [element("InvestmentBusiness"), element("HomeFinance")]),
   ]);
 };
 
@@ -78,8 +78,8 @@ const BROAD_TREE_MOCK = ((length = 100) => {
 // eslint-disable-next-line no-unused-vars
 const DESIGN_TREE_MOCK = [branch()];
 
-const serialiseMasterSchemaTree = (node, category = false, composedId = '') => {
-  const id = [composedId, node.id].filter(Boolean).join(',');
+const serialiseMasterSchemaTree = (node, category = false, composedId = "") => {
+  const id = [composedId, node.id].filter(Boolean).join(",");
   const { name, fields = [], groups = [] } = node;
 
   return {
@@ -105,18 +105,18 @@ const MasterSchemaElements = ({ root }) => {
     switch (type) {
       case CREATE_FIELD:
         openModal();
-        console.log('create field', id);
+        console.log("create field", id);
         break;
       case CREATE_GROUP:
         openModal();
-        console.log('create group', id);
+        console.log("create group", id);
         break;
       default:
-        throw new Error('Unexpected type: ' + type);
+        throw new Error("Unexpected type: " + type);
     }
   };
 
-  const onSubmitCreateElement = (submitted) => console.log('element creation submitted:', submitted);
+  const onSubmitCreateElement = (submitted) => console.log("element creation submitted:", submitted);
 
   return (
     !isEmpty(root) && (

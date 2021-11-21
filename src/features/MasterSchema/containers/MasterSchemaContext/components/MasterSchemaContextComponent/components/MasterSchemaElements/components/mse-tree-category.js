@@ -1,19 +1,28 @@
-import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
-import { Collapse, Fade } from 'reactstrap';
-import { AddBox, AddSharp, RemoveSharp } from '@material-ui/icons';
+import PropTypes from "prop-types";
+import React, { useRef } from "react";
+import { Collapse, Fade } from "reactstrap";
+import { AddBox, AddSharp, RemoveSharp } from "@material-ui/icons";
 
-import MSETreeNode from './mse-tree-node';
+import { useToggle } from "hooks/use-toggle";
+import { stopPropagation } from "utility/event-decorators";
+import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
-import { useToggle } from 'hooks/use-toggle';
-import { useOutsideClick, useOutsideFocus } from 'hooks/use-outside-event';
+import MSETreeNode from "./mse-tree-node";
 
-import { stopPropagation } from '../event-decorators';
-import { createGroup, createField } from '../mse-category-popup-actions';
+import { createGroup, createField } from "../mse-category-popup-actions";
 
-const getMarkIconAriaLabel = (expanded) => `${expanded ? 'Collapse' : 'Expand'} category.`;
+const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
 
-const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
+const MSETreeCategory = ({
+  id,
+  name,
+  expanded,
+  onExpandChange,
+  onSelectChange,
+  onPopupAction,
+  className,
+  children,
+}) => {
   const popupRef = useRef();
   const [popup, togglePopup, setPopup] = useToggle(false);
 
@@ -43,7 +52,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
             onClick={stopPropagation(toggleExpanded)}
             aria-label={getMarkIconAriaLabel(expanded)}
           >
-            {expanded ? <RemoveSharp fontSize={'inherit'} /> : <AddSharp fontSize={'inherit'} />}
+            {expanded ? <RemoveSharp fontSize={"inherit"} /> : <AddSharp fontSize={"inherit"} />}
           </button>
         </div>
       }
@@ -55,7 +64,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
             aria-label="Create element or category"
             onClick={stopPropagation(togglePopup)}
           >
-            <AddBox fontSize={'inherit'} />
+            <AddBox fontSize={"inherit"} />
           </button>
 
           <Fade

@@ -9,10 +9,7 @@ const MSETreeElement = ({ state, onPopupAction, children }) => {
   const { node, expandable, selectable } = state;
   const toggleExpandable = () => expandable.toggle([node.id]);
   const toggleSelectable = () => selectable.toggle([node.id]);
-  const selected = useMemo(
-    () => selectable.includes(node.id),
-    [node.id, selectable]
-  );
+  const selected = useMemo(() => selectable.includes(node.id), [node.id, selectable]);
   const className = classNames("ms-elements__node--selectable", {
     "ms-elements__node--selected": selected,
   });
@@ -30,11 +27,7 @@ const MSETreeElement = ({ state, onPopupAction, children }) => {
       {children}
     </MSETreeCategory>
   ) : (
-    <MSETreeField
-      className={className}
-      name={node.name}
-      onSelectChange={toggleSelectable}
-    >
+    <MSETreeField className={className} name={node.name} onSelectChange={toggleSelectable}>
       {children}
     </MSETreeField>
   );

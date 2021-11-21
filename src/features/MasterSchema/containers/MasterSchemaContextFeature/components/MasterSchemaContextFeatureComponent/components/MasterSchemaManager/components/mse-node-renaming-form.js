@@ -3,12 +3,11 @@ import { CardTitle, Label } from "reactstrap";
 import { pipe, isEqual, get } from "lodash/fp";
 import React, { useCallback, useMemo } from "react";
 
+import { preventDefault } from "utility/event-decorators";
+import MSETextField from "features/MasterSchema/share/mse-text-field";
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import MSETextField from "./mse-text-field";
 import MSENodeEditorForm from "./mse-node-editor-form";
-
-import { preventDefault } from "../event-decorators";
 
 const MOCK_NODE = { id: "1", name: "ValidPath.FCA.InvestmentBusiness" };
 const MOCK_NODES = [MOCK_NODE];

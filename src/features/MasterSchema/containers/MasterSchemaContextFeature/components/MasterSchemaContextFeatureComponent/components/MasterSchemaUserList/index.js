@@ -1,6 +1,6 @@
-import './styles.scss';
+import "./styles.scss";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 // ToDo: - Make User list UI
 // ToDo: - Make User API binding
@@ -8,21 +8,21 @@ import React, { useState } from 'react';
 let userId = 1;
 const user = () => ({
   id: userId++,
-  firstName: 'Alexander',
-  lastName: 'Shibisty',
+  firstName: "Alexander",
+  lastName: "Shibisty",
   field: {
-    value: 'InputValue/LongText/FilePath',
-    date: '2021-11-10T18:50:53.000000Z',
+    value: "InputValue/LongText/FilePath",
+    date: "2021-11-10T18:50:53.000000Z",
   },
   permissions: {
-    organization: 'Rimbal',
-    ability: 'admin',
+    organization: "Rimbal",
+    ability: "admin",
   },
-  onboardings: ['string'],
-  avatar: 'filePath',
-  avatarPath: 'filePath',
+  onboardings: ["string"],
+  avatar: "filePath",
+  avatarPath: "filePath",
   memberFirm: {},
-  memberFirmPermissions: ['string'],
+  memberFirmPermissions: ["string"],
 });
 const MOCK_USERS = [user(), user()];
 

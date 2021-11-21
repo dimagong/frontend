@@ -132,22 +132,4 @@
       color: currentColor;
     }
   }
-
-  &__input-field {
-    > input {
-      border-radius: 0;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-    }
-
-    > label {
-      margin-bottom: 6px;
-
-      font-weight: 350;
-      font-size: 0.9375rem;
-      line-height: 1.25;
-      color: #707070;
-    }
-  }
 }

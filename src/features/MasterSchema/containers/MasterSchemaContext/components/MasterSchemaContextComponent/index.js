@@ -1,9 +1,9 @@
 import React from 'react';
 
-
 import ContextTemplate from "components/ContextTemplate";
+
+import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
-import MasterSchemaElements from "../MasterSchemaElements";
 
 const MasterSchemaContextComponent = ({
   unapprovedFields,

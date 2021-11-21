@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Card, CardBody, CardHeader, Col, Row } from "reactstrap";
 
-import MSEButton from "./mse-button";
+import MSEButton from "features/MasterSchema/share/mse-button";
 
 const MSENodeEditorForm = ({ invalid, submitting, buttonText, onSubmit, label, field, ...attrs }) => {
   return (
@@ -10,8 +10,8 @@ const MSENodeEditorForm = ({ invalid, submitting, buttonText, onSubmit, label, f
       <CardHeader>{label}</CardHeader>
       <CardBody>
         <Row>
-          <Col xs={9}>{field}</Col>
-          <Col xs={3}>
+          <Col xs={8}>{field}</Col>
+          <Col xs={4}>
             <MSEButton
               className="w-100"
               backgroundColor="#ABABAB4D"

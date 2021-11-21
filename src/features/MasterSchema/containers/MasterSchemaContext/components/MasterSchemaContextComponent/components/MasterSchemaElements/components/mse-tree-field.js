@@ -1,9 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FiberManualRecord } from '@material-ui/icons';
+import React from "react";
+import PropTypes from "prop-types";
+import { FiberManualRecord } from "@material-ui/icons";
 
-import MSETreeNode from './mse-tree-node';
-import { stopPropagation } from '../event-decorators';
+import { stopPropagation } from "utility/event-decorators";
+
+import MSETreeNode from "./mse-tree-node";
 
 const MSETreeField = ({ name, onSelectChange, className, children }) => {
   return (
@@ -13,7 +14,7 @@ const MSETreeField = ({ name, onSelectChange, className, children }) => {
       onClick={stopPropagation(onSelectChange)}
       prepend={
         <div className="ms-elements__mark-icon d-flex justify-content-center align-items-center">
-          <FiberManualRecord fontSize={'inherit'} />
+          <FiberManualRecord fontSize={"inherit"} />
         </div>
       }
     >

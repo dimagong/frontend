@@ -1,15 +1,14 @@
-import React from 'react';
+import React from "react";
 import PropTypes from "prop-types";
 import { CardTitle, Label } from "reactstrap";
 
+import { preventDefault } from "utility/event-decorators";
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
+import MSESelectField from "features/MasterSchema/share/mse-select-field";
 
-import MSESelectField from "./mse-select-field";
 import MSENodeEditorForm from "./mse-node-editor-form";
 
-import { preventDefault } from "../event-decorators";
-
-const MOCK_LOCATIONS = [{ label: 'ValidPath.FCA.number', value: '1.2.3' }];
+const MOCK_LOCATIONS = [{ label: "ValidPath.FCA.number", value: "1.2.3" }];
 
 const MSENodeRelocationForm = ({ submitting, onSubmit: propOnSubmit, ...attrs }) => {
   // Form implementation

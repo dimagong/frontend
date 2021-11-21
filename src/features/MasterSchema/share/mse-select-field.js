@@ -1,8 +1,8 @@
-import Select from 'react-select';
-import PropTypes from 'prop-types';
-import React, { useMemo, useState } from 'react';
+import Select from "react-select";
+import PropTypes from "prop-types";
+import React, { useMemo, useState } from "react";
 
-import MSEFormField from './mse-form-field';
+import MSEFormField from "./mse-form-field";
 
 const SelectField = (props) => {
   const {
