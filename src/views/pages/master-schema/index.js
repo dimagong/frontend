@@ -24,6 +24,8 @@ import Tabs from "components/Tabs/index";
 import { handleMasterSchemaDataExport } from "services/files.service";
 
 import NewMasterSchemaElements from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements";
+import MSENodeRenamingForm from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements/components/mse-node-renaming-form";
+import MSENodeRelocationForm from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements/components/mse-node-relocation-form";
 
 import Search from "./Search";
 import FieldEdit from "./FieldEdit";
@@ -485,6 +487,8 @@ function MasterSchema() {
             <CardBody>{renderRightCard()}</CardBody>
           </Card>
         )}
+        <MSENodeRenamingForm className="my-2" nodeId={'1'} submitting={false} onSubmit={() => {}} />
+        <MSENodeRelocationForm className="my-2" submitting={false} onSubmit={() => {}} />
       </Col>
     </Row>
   );
