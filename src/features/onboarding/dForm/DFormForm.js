@@ -45,7 +45,7 @@ const DFormForm = ({isCreate}) => {
 
   const submitDForm = (dForm, {name, description, protected_properties}) => {
     if(isCreate){
-      dispatch(createDFormTemplateRequest({...dForm, name, description, protected_properties}))
+      dispatch(createDFormTemplateRequest({...dForm, name, description, protected_properties, is_private: isApplicationTemplatePrivate}))
     }else{
       dispatch(updateDFormTemplateRequest({...dForm, name, description, protected_properties, is_private: isApplicationTemplatePrivate}))
     }
