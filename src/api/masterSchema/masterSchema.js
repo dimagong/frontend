@@ -1,9 +1,7 @@
 import instance, { requestLayout } from "api";
 import { masterSchemaOrganizations } from "constants/masterSchema";
 
-import {
-  getMasterSchemaOrganizationsUrl,
-} from "./constants";
+import { getMasterSchemaOrganizationsUrl } from "./constants";
 
 const masterSchemaApi = {
   async getMasterSchemaOrganizations() {
@@ -29,7 +27,7 @@ const masterSchemaApi = {
     const result = await instance({
       url: "api/master-schema/export",
       method: "POST",
-      responseType: 'blob',
+      responseType: "blob",
       data,
     });
 
