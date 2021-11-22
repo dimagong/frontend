@@ -84,7 +84,7 @@ SelectField.propTypes = {
   errors: PropTypes.arrayOf(PropTypes.string),
 
   placeholder: PropTypes.string,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 
   onChange: PropTypes.func.isRequired,
 
