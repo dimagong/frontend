@@ -9,20 +9,11 @@ import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
 import MSETreeNode from "./mse-tree-node";
 
-import { createGroup, createField } from "../mse-category-popup-actions";
+import { createGroup, createField } from "../mse-creation-actions";
 
 const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
 
-const MSETreeCategory = ({
-  id,
-  name,
-  expanded,
-  onExpandChange,
-  onSelectChange,
-  onPopupAction,
-  className,
-  children,
-}) => {
+const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
   const popupRef = useRef();
   const [popup, togglePopup, setPopup] = useToggle(false);
 
@@ -68,7 +59,7 @@ const MSETreeCategory = ({
           </button>
 
           <Fade
-            className="ms-elements__popup bg-white d-flex justify-content-center flex-column position-absolute top-50 start-50"
+            className="ms-elements__popup bg-white d-flex justify-content-center flex-column position-absolute"
             in={popup}
             mountOnEnter
             unmountOnExit
@@ -101,7 +92,7 @@ const MSETreeCategory = ({
   );
 };
 
-MSETreeCategory.propTypes = {
+MSETreeGroup.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   expanded: PropTypes.bool.isRequired,
@@ -112,4 +103,4 @@ MSETreeCategory.propTypes = {
   children: PropTypes.node,
 };
 
-export default MSETreeCategory;
+export default MSETreeGroup;

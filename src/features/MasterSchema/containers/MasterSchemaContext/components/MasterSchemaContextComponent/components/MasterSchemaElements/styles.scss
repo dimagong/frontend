@@ -20,10 +20,6 @@
 }
 
 .ms-elements {
-  &__tree {
-    overflow-x: auto;
-  }
-
   &__list {
     @extend %list-reset;
     padding-left: 13px;

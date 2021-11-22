@@ -3,7 +3,7 @@ import classNames from "classnames";
 import React, { useMemo } from "react";
 
 import MSETreeField from "./mse-tree-field";
-import MSETreeCategory from "./mse-tree-category";
+import MSETreeGroup from "./mse-tree-group";
 
 const MSETreeElement = ({ state, onPopupAction, children }) => {
   const { node, expandable, selectable } = state;
@@ -15,7 +15,7 @@ const MSETreeElement = ({ state, onPopupAction, children }) => {
   });
 
   return node.group ? (
-    <MSETreeCategory
+    <MSETreeGroup
       className={className}
       id={node.id}
       name={node.name}
@@ -25,7 +25,7 @@ const MSETreeElement = ({ state, onPopupAction, children }) => {
       onPopupAction={onPopupAction}
     >
       {children}
-    </MSETreeCategory>
+    </MSETreeGroup>
   ) : (
     <MSETreeField className={className} name={node.name} onSelectChange={toggleSelectable}>
       {children}

@@ -12,8 +12,8 @@ import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import MSETreeElement from "./components/mse-tree-element";
 import MSETreeNodeList from "./components/mse-tree-node-list";
+import { CREATE_FIELD, CREATE_GROUP } from "./mse-creation-actions";
 import MSECreateElementForm from "./components/mse-create-element-form";
-import { CREATE_FIELD, CREATE_GROUP } from "./mse-category-popup-actions";
 
 // ToDo: ✔ Make more abstract and reusable component for tree
 // ToDo: ✔ Make useTreeData hook
@@ -25,58 +25,14 @@ import { CREATE_FIELD, CREATE_GROUP } from "./mse-category-popup-actions";
 //          ✔ Create simple select component. (Try reuse from reactstrap/mui/react-select)
 //          - Create simple multiple-input component.
 // ToDo: - Make data for tree. Use swagger to bind UI with API.
-//          - Find out how to work with state
-//          - Look at redux store
-//          - Look at sagas
-//          - Ask about invariant cases ?
+//          ✔ Find out how to work with state
+//          ✔ Look at redux store
+//          ✔ Look at sagas
+//          - App about invariant cases ?
 //          - Ask about client side model (DTO) ?
-//          - Ask about react-toastify Can i use it ?
 //          - Bind MSETree to API
 // ToDo: - Make selected event to handle it (when should show detailed component)
 // ToDo: - Merge request MSTRee
-
-/* Mock */
-let elementId = 0;
-const element = (name, children = []) => ({
-  id: elementId++,
-  name,
-  type: "text",
-  category: children.length > 0,
-  createdAt: new Date().toString().slice(0, 15),
-  children,
-});
-const branch = () => {
-  return element("ValidPath", [
-    element("WelcomeVPBrochure"),
-    element("Succession", [element("Element 1"), element("Element 2")]),
-    element("FCA", [element("InvestmentBusiness"), element("HomeFinance")]),
-  ]);
-};
-
-// eslint-disable-next-line no-unused-vars
-const DEEP_TREE_MOCK = ((deep = 100) => {
-  let child = element(`element ${deep}`);
-
-  while (deep > 0) {
-    deep--;
-    child = element(`element ${deep}`, [child]);
-  }
-
-  return [child];
-})();
-// eslint-disable-next-line no-unused-vars
-const BROAD_TREE_MOCK = ((length = 100) => {
-  const root = [];
-
-  while (length > 0) {
-    length--;
-    root.push(branch());
-  }
-
-  return root;
-})();
-// eslint-disable-next-line no-unused-vars
-const DESIGN_TREE_MOCK = [branch()];
 
 const MasterSchemaElements = ({ root }) => {
   const tree = useTreeData({
@@ -109,19 +65,17 @@ const MasterSchemaElements = ({ root }) => {
   return (
     !isEmpty(root) && (
       <div className="ms-elements">
-        <div className="ms-elements__tree">
-          <TreeRoot
-            nodes={tree.items}
-            renderNodeList={({ root, children }) => <MSETreeNodeList root={root} children={children} />}
-            renderNode={({ node, children }) => (
-              <MSETreeElement
-                state={{ node: node.value, selectable, expandable }}
-                onPopupAction={onPopupAction}
-                children={children}
-              />
-            )}
-          />
-        </div>
+        <TreeRoot
+          nodes={tree.items}
+          renderNodeList={({ root, children }) => <MSETreeNodeList root={root} children={children} />}
+          renderNode={({ node, children }) => (
+            <MSETreeElement
+              state={{ node: node.value, selectable, expandable }}
+              onPopupAction={onPopupAction}
+              children={children}
+            />
+          )}
+        />
 
         <SurveyModal isOpen={modal} title="New Element" onClose={closeModal} actions={false}>
           <MSECreateElementForm submitting={false} onSubmit={onSubmitCreateElement} />
