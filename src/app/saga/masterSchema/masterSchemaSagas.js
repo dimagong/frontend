@@ -1,8 +1,8 @@
+import * as yup from "yup";
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
-import masterSchemaApi from "api/masterSchema/masterSchema";
-
 import appSlice from "app/slices/appSlice";
+import masterSchemaApi from "api/masterSchema/masterSchema";
 
 const {
   getMasterSchemaFieldsRequest,
@@ -89,13 +89,123 @@ function* getMasterSchemaFields() {
 
 // NEW SAGA  -----------------------------
 
-function* getMasterSchemaOrganizations() {
-  const response = yield call(masterSchemaApi.getMasterSchemaOrganizations);
+const masterSchemaNodeSchema = {
+  id: yup.number().required(),
+  parentId: yup.number().required(),
+  key: yup.string().required(),
+  name: yup.string().required(),
+  path: yup.array(yup.string()).required(),
+  group: yup.boolean().required(),
+};
 
-  if (response?.message) {
-    yield put(getMasterSchemaOrganizationsError(response.message));
-  } else {
-    yield put(getMasterSchemaOrganizationsSuccess(response));
+const masterSchemaGroupSchema = {
+  groups: yup
+    .array()
+    .transform((value) => Object.values(value))
+    .of(yup.lazy(() => masterSchemaGroupInterface.default(undefined)))
+    .test((v) => Array.isArray(v)),
+  fields: yup
+    .array()
+    .transform((value) => Object.values(value))
+    .of(yup.lazy(() => masterSchemaFieldInterface.default(undefined)))
+    .test((v) => Array.isArray(v)),
+};
+
+const masterSchemaFieldInterface = yup.object({
+  ...masterSchemaNodeSchema,
+  dFormNames: yup.array().nullable(),
+});
+
+const masterSchemaGroupInterface = yup.object({
+  ...masterSchemaNodeSchema,
+  ...masterSchemaGroupSchema,
+});
+
+const masterSchemaRootInterface = yup.object({
+  ...masterSchemaNodeSchema,
+  ...masterSchemaGroupSchema,
+  parentId: yup.number().nullable(),
+  createdAt: yup.object().nullable(),
+});
+
+const masterSchemaInterface = yup
+  .object({
+    id: yup.number(),
+    name: yup.string(),
+    root: masterSchemaRootInterface,
+    organizationId: yup.string(),
+  })
+  .required();
+
+const organizationInterface = yup
+  .object({
+    id: yup.number(),
+    type: yup.string(),
+    name: yup.string(),
+    masterSchema: masterSchemaInterface,
+  })
+  .required();
+
+const serialiseMasterSchemaNode = (node, group = true, path = [], composedKey = "") => {
+  const { id, parent_id, name, d_form_names, fields, groups } = node;
+
+  path = [...path, name];
+  composedKey = composedKey ? `${composedKey},${id}` : String(id);
+
+  const serialised = {
+    id,
+    parentId: parent_id,
+    key: composedKey,
+    name,
+    path,
+    group,
+  };
+
+  if (d_form_names) {
+    serialised.dFormNames = d_form_names;
+  }
+
+  if (fields) {
+    serialised.fields = fields.map((field) => serialiseMasterSchemaNode(field, false, path, composedKey));
+  }
+
+  if (groups) {
+    serialised.groups = groups.map((group) => serialiseMasterSchemaNode(group, true, path, composedKey));
+  }
+
+  return serialised;
+};
+
+const serialiseMasterSchema = ({ id, name, organization_id, root }) => {
+  return {
+    id,
+    name,
+    organizationId: organization_id,
+    root: serialiseMasterSchemaNode(root),
+  };
+};
+
+const serialiseMasterSchemaOrganization = ({ id, type, name, master_schema }) => {
+  return {
+    id,
+    type,
+    name,
+    masterSchema: serialiseMasterSchema(master_schema),
+  };
+};
+
+const invariantMasterSchemaOrganization = (organization) => organizationInterface.validate(organization);
+
+function* getMasterSchemaOrganizations() {
+  try {
+    const organizations = yield call(masterSchemaApi.getMasterSchemaOrganizations);
+    const validSerialisedOrganizations = yield all(
+      organizations.map(serialiseMasterSchemaOrganization).map(invariantMasterSchemaOrganization)
+    );
+
+    yield put(getMasterSchemaOrganizationsSuccess(validSerialisedOrganizations));
+  } catch (error) {
+    yield put(getMasterSchemaOrganizationsError(error.message));
   }
 }
 

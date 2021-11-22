@@ -4,10 +4,10 @@ export const selectMasterSchemaOrganizations = (state) => state?.app?.masterSche
 export const selectMasterSchemaOfSelectedOrganization = (state) => {
   const selectedOrganizationIdAndType = state?.app?.masterSchema.selectedOrganization;
   const selectedOrganization = state?.app?.masterSchema.organizations.filter(
-    (org) => org.id === selectedOrganizationIdAndType.id && org.type === selectedOrganizationIdAndType.type
+    ({ id, type }) => id === selectedOrganizationIdAndType.id && type === selectedOrganizationIdAndType.type
   )[0];
 
-  return selectedOrganization.master_schema;
+  return selectedOrganization.masterSchema;
 };
 
 export const selectUnapprovedFieldsOfSelectedOrganization = (state) => {

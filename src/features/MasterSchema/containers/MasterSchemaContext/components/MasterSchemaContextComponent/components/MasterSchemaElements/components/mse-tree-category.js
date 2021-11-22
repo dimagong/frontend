@@ -102,7 +102,7 @@ const MSETreeCategory = ({
 };
 
 MSETreeCategory.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   expanded: PropTypes.bool.isRequired,
   onExpandChange: PropTypes.func,

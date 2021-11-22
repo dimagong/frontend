@@ -7,19 +7,19 @@ import MSETreeCategory from "./mse-tree-category";
 
 const MSETreeElement = ({ state, onPopupAction, children }) => {
   const { node, expandable, selectable } = state;
-  const toggleExpandable = () => expandable.toggle([node.id]);
-  const toggleSelectable = () => selectable.toggle([node.id]);
-  const selected = useMemo(() => selectable.includes(node.id), [node.id, selectable]);
+  const toggleExpandable = () => expandable.toggle([node.key]);
+  const toggleSelectable = () => selectable.toggle([node.key]);
+  const selected = useMemo(() => selectable.includes(node.key), [node.key, selectable]);
   const className = classNames("ms-elements__node--selectable", {
     "ms-elements__node--selected": selected,
   });
 
-  return node.category ? (
+  return node.group ? (
     <MSETreeCategory
       className={className}
       id={node.id}
       name={node.name}
-      expanded={expandable.includes(node.id)}
+      expanded={expandable.includes(node.key)}
       onExpandChange={toggleExpandable}
       onSelectChange={toggleSelectable}
       onPopupAction={onPopupAction}

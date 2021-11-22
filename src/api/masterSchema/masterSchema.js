@@ -1,11 +1,18 @@
-import instance, { requestLayout } from "api";
+import instance from "api";
+import { get, pipe } from "lodash/fp";
 import { masterSchemaOrganizations } from "constants/masterSchema";
 
 import { getMasterSchemaOrganizationsUrl } from "./constants";
 
+const flatResponseData = get("data.data");
+const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
+
 const masterSchemaApi = {
   async getMasterSchemaOrganizations() {
-    return requestLayout(getMasterSchemaOrganizationsUrl, "GET");
+    return instance({
+      method: "GET",
+      url: getMasterSchemaOrganizationsUrl,
+    }).then(flatResponseData, flatResponseError);
   },
 
   async getOrganizationsMasterSchema() {
