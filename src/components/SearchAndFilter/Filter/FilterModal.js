@@ -12,8 +12,9 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import FilterOptions from "./FilterOptions";
 import {useSelector} from "react-redux";
 import {selectFilters, selectFiltersId} from "app/selectors/userSelectors";
-import SavedFilters from "./SavedFilters";
+import SavedFilters from "features/home/ContextSearch/ContextSearchNav/Filters/SavedFilters";
 import {useOutsideAlerter} from "hooks/useOutsideAlerter";
+import {arrayToString, filterToText, getFilterTypes, getDefaultFilterOutput} from "./FilterHelper";
 
 const FilterModal = (props) => {
   const {
@@ -25,8 +26,8 @@ const FilterModal = (props) => {
     filter,
     setFilter,
     setIsFilterBoxOpen,
-    curr,
-    setCurr,
+    currFilterOption,
+    setCurrFilterOption,
     footerText,
     setFooterText,
     filterName,
@@ -48,36 +49,52 @@ const FilterModal = (props) => {
   const wrapperRefFilterBox = useRef(null)
   useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {if (!isDeleteModalOpen) setIsFilterBoxOpen(false)});
 
-  const handleFilterOptions = (type, option) => {
-    const newFilter = JSON.parse(JSON.stringify(filter));
-
-    if (type === 'add') {
-      if (newFilter.type[curr] === 'check') {
-        if (newFilter[curr].find(item => item === option)) {
-          newFilter[curr] = newFilter[curr].filter(item => item !== option);
-        } else {
-          newFilter[curr].push(option);
-        }
-      } else {
-        newFilter.type[curr] = 'check';
-        newFilter[curr] = [];
-        newFilter[curr].push(option);
-      }
-    } else {
-      if (newFilter.type[curr] === 'cross') {
-        if (newFilter[curr].find(item => item === option)) {
-          newFilter[curr] = newFilter[curr].filter(item => item !== option);
-        } else {
-          newFilter[curr].push(option);
-        }
-      } else {
-        newFilter.type[curr] = 'cross';
-        newFilter[curr] = filterTypes[curr];
-        newFilter[curr] = newFilter[curr].filter(item => item !== option);
-      }
+  const checkFullCrossOptions = (currFilter) => {
+    if (currFilter.type[currFilterOption] === 'cross' && currFilter[currFilterOption].length === filterTypes[currFilterOption].length) {
+        currFilter[currFilterOption] = [];
+        currFilter.type[currFilterOption] = 'initial';
     }
+  }
+
+  const updateSelectedOptions = (currFilter, option) => {
+    if (currFilter[currFilterOption].includes(option)) {
+      currFilter[currFilterOption] = currFilter[currFilterOption].filter(item => item !== option);
+    } else {
+      currFilter[currFilterOption].push(option);
+    }
+
+    checkFullCrossOptions(currFilter);
+  }
+
+  const changeFilterType = (currFilter, type, option) => {
+    currFilter.type[currFilterOption] = type;
+    currFilter[currFilterOption] = changeFilterType.newOptions[type](filterTypes[currFilterOption], option)
+  }
+
+  changeFilterType.newOptions = {
+    'check': (allOptions, newOption) => [newOption],
+    'cross': (allOptions, newOption) => allOptions.filter(item => item !== newOption),
+  }
+
+  const changeFilterOptions = (currFilter, type, option) => {
+    if (currFilter.type[currFilterOption] === type) {
+        updateSelectedOptions(currFilter, option);
+      } else {
+        changeFilterType(currFilter, type, option);
+    }
+
+    return currFilter;
+  }
+
+  const handleFilterOptions = (type, option) => {
+    let newFilter = JSON.parse(JSON.stringify(filter));
+
+    newFilter = (type === 'add')
+      ? changeFilterOptions(newFilter, 'check', option)
+      : changeFilterOptions(newFilter, 'cross', option);
+
     setFilter(newFilter);
-    setFooterText({roles: arrayToString(newFilter.roles), organizations: arrayToString(newFilter.organizations), memberFirms: arrayToString(newFilter.memberFirms)});
+    setFooterText(filterToText(newFilter, Object.keys(filterTypes)));
   }
 
 
@@ -101,26 +118,10 @@ const FilterModal = (props) => {
   };
 
   const filterAndSortManagers = (newFilter, newSort) => {
+    let newManagers = [...managers];
 
-    let newManagers = managers;
-
-    if (newFilter?.roles && newFilter?.roles?.length !== 0) {
-      newManagers = newManagers.filter(item => {
-        return newFilter.roles.find(role => role === (item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
-      })
-    }
-
-    if (newFilter?.organizations && newFilter?.organizations?.length !== 0) {
-      newManagers = newManagers.filter(item => {
-        return newFilter.organizations.find(org => org === (item?.permissions?.organization.replace('_', ' ')))
-      })
-    }
-
-    if (newFilter?.memberFirms && newFilter?.memberFirms?.length !== 0) {
-      newManagers = newManagers.filter(item => {
-        return newFilter.memberFirms.find(firm => firm === (item?.member_firm?.main_fields?.name))
-      })
-    }
+    getFilterTypes(newFilter).forEach(item =>
+      newManagers = filterAndSortManagers.filterByType[item](newManagers, newFilter))
 
     switch (newSort) {
       case 0: newManagers.sort((lhs, rhs) => lhs.first_name.localeCompare(rhs.first_name)); break;
@@ -132,18 +133,17 @@ const FilterModal = (props) => {
     handleFilter(newManagers, filter);
   }
 
-  const arrayToString = (array) => {
-    if (!array) return ''
-    let res = ' ';
-    for (let i = 0; i < array.length; ++i) {
-      switch (i) {
-        case array.length - 1: res += array[i] + ' '; break;
-        case array.length - 2: res += array[i] + ' or '; break;
-        default: res += array[i] + ', '; break;
-      }
-    }
-    return res;
+  filterAndSortManagers.filterByType = {
+    'roles': (newManagers, newFilter) => newManagers.filter(item =>
+        newFilter.organizations.find(org => org === (item?.permissions?.organization.replace('_', ' ')))),
+
+    'organizations': (newManagers, newFilter) => newManagers.filter(item =>
+        newFilter.organizations.find(org => org === (item?.permissions?.organization.replace('_', ' ')))),
+
+    'memberFirms': (newManagers, newFilter) => newManagers.filter(item =>
+        newFilter.memberFirms.find(firm => firm === (item?.member_firm?.main_fields?.name)))
   }
+
 
   const initialFilter = () => {
     let emptyFilter = {}
@@ -158,30 +158,24 @@ const FilterModal = (props) => {
   }
 
   const changeFooterText = (filter) => {
-    let newFooterText = {}
-    Object.keys(filter).forEach(item => {
-      newFooterText[item] = arrayToString(filter[item]);
-    });
-    setFooterText(newFooterText);
+    setFooterText(filterToText(filter, filterTypes));
   }
 
   const footer = () => {
-    if ((filter?.roles?.length === 0 && filter?.organizations?.length === 0)
-         ||
-        (filter?.roles?.length === filterTypes?.role?.length && filter?.organizations?.length === filterTypes?.organizations?.length)) {
-      return <p/>
-    } else if (filter?.roles?.length > 0 && filter?.organizations?.length > 0) {
-      return <p className={'filter-text'}>
-        Filtering by
-        <span className={'blue'}>{footerText.roles}</span>
-        from
-        <span className={'blue'}>{footerText.organizations}</span>
+    let filterTypes = getFilterTypes(filter);
+
+    if (filter?.roles?.length > 0 && filter?.organizations?.length > 0) {
+      return getDefaultFilterOutput(footerText);
+    }
+
+    switch (filterTypes.length) {
+      case 1: return <p className={'filter-text'}>
+        Filtering by <span className={'blue'}>{footerText[filterTypes[0]]}</span>
       </p>
-    } else {
-      return <p className={'filter-text'}>
-        Filtering by
-        <span className={'blue'}>{Object.values(filter)[0].length > 0 ? footerText[Object.keys(filter)[0]] : ' chosen options'}</span>
-      </p>
+
+      case 0: return <p/>
+
+      default: return <p>Filtering by chosen options</p>
     }
   }
 
@@ -194,9 +188,9 @@ const FilterModal = (props) => {
                   <Row>
                     <Col className={'left'}>
                       {Object.keys(filterTypes).map(key => (
-                        <Button onClick={() => {setCurr(key)}} variant="secondary" className={curr === key ? 'active' : 'not-active'}>
+                        <Button onClick={() => {setCurrFilterOption(key)}} variant="secondary" className={currFilterOption === key ? 'active' : 'not-active'}>
                           <span className={'filter-name'}>{key.charAt(0).toUpperCase() + key.slice(1)} ({filterTypes[key].length})</span>
-                          {curr === key && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
+                          {currFilterOption === key && <span className={'filter-right'}><ArrowForwardIosIcon/></span>}
                         </Button>
                       ))}
                     </Col>
@@ -204,8 +198,8 @@ const FilterModal = (props) => {
                       <span>
                         <FilterOptions
                           filter={filter}
-                          curr={curr}
-                          options={filterTypes[curr]}
+                          currFilterOption={currFilterOption}
+                          options={filterTypes[currFilterOption]}
                           handleFilterOptions={handleFilterOptions}
                         />
                       </span>

@@ -9,6 +9,7 @@ import './styles.scss';
 import 'react-calendar/dist/Calendar.css';
 import Calendar from "react-calendar";
 import {useOutsideAlerter} from "../../hooks/useOutsideAlerter";
+import _ from "lodash";
 
 const SearchAndFilter = (props) => {
   const {
@@ -29,7 +30,7 @@ const SearchAndFilter = (props) => {
   const [filterName, setFilterName] = useState('');
   const [filter, setFilter] = useState({});
   const [footerText, setFooterText] = useState({});
-  const [curr, setCurr] = useState('');
+  const [currFilterOption, setCurrFilterOption] = useState('');
   const [appliedFilter, setAppliedFilter] = useState({});
   const [isCalendarOpened, setIsCalendarOpened] = useState(false);
   const [currentDateRange, setCurrentDateRange] = useState(new Date());
@@ -52,12 +53,7 @@ const SearchAndFilter = (props) => {
     clearedFooterText[typeToClear] = '';
     clearedFilter.type = {...clearedFilter.type, [typeToClear]: 'initial'};
 
-    let isFilterEmpty = true;
-    Object.keys(clearedFilter).forEach(item => {
-      if (item !== 'type' && clearedFilter[item].length > 0) {
-        isFilterEmpty = false;
-      }
-    });
+    let isFilterEmpty = !Object.keys(clearedFilter).find(item => item !== 'type' && clearedFilter[item].length > 0);
 
     if (isFilterEmpty) {
       onCancelFilter();
@@ -72,42 +68,41 @@ const SearchAndFilter = (props) => {
     let options = {day: 'numeric', month: 'numeric', year: '2-digit'};
     if (Array.isArray(value)) {
       setCalendarText(value[0].toLocaleString('en-GB', options) + ' - ' + value[1].toLocaleString('en-GB', options));
-    } else {
-      setCalendarText(value.toLocaleString('en-GB', options))
     }
     setCurrentDateRange(value);
     onCalendarChange(value);
     setIsCalendarOpened(false);
   }
 
+  const overwriteFilterOption = (currFilter, option) => {
+    currFilter[option] = _.intersection(filter[option], filterTypes[option]);
+    currFilter.type = {...currFilter.type, [option]: currFilter[option].length > 0 ? filter.type[option] : 'initial'};
+  }
+
+
   useEffect(() => {
-    if (filterTypes) {
-      if (!curr || !Object.keys(filterTypes).find(item => item === curr)) {
-        setCurr(Object.keys(filterTypes)[0]);
+    if (!filterTypes) {
+      return;
+    }
+
+    if (!currFilterOption || !Object.keys(filterTypes).includes(currFilterOption)) {
+        setCurrFilterOption(Object.keys(filterTypes)[0]);
       }
 
-      let newFooterText = {};
-      Object.keys(filterTypes).forEach(item => newFooterText[item] = footerText[item] ? footerText[item] : '');
-      setFooterText(newFooterText);
+    let newFooterText = {};
+    Object.keys(filterTypes).forEach(item => newFooterText[item] = footerText[item] ? footerText[item] : '');
+    setFooterText(newFooterText);
 
-      let newFilter = {};
-      Object.keys(filterTypes).forEach(item => {
-        if (filter.hasOwnProperty(item)) {
-          newFilter[item] = filter[item].filter(chosenOption => filterTypes[item].find(option => option === chosenOption));
-          newFilter.type = {...newFilter.type, [item]: newFilter[item].length > 0 ? filter.type[item] : 'initial'};
-        } else {
-          newFilter[item] = [];
-          newFilter.type = {...newFilter.type, [item]: 'initial'}
-        }
-      });
-      setFilter(newFilter);
-    }
+    let newFilter = {};
+    Object.keys(filterTypes).forEach(item => overwriteFilterOption(newFilter, item));
+    setFilter(newFilter);
+
   }, [filterTypes])
 
   useOutsideAlerter([wrapperRefCalendarButton, wrapperRefCalendarContainer],
     () => setIsCalendarOpened(false));
 
-  if (!curr || !filter.hasOwnProperty(curr)) {
+  if (!currFilterOption || !filter.hasOwnProperty(currFilterOption)) {
     return <div/>
   }
 
@@ -149,8 +144,8 @@ const SearchAndFilter = (props) => {
             filter={filter}
             setFilter={setFilter}
             setIsFilterBoxOpen={setIsFilterBoxOpen}
-            curr={curr}
-            setCurr={setCurr}
+            currFilterOption={currFilterOption}
+            setCurrFilterOption={setCurrFilterOption}
             footerText={footerText}
             setFooterText={setFooterText}
             filterName={filterName}
