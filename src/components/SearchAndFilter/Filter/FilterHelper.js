@@ -2,15 +2,15 @@ import React from "react";
 
 export const arrayToString = (array) => {
     if (!array) return ''
-    let res = ' ';
+    let result = ' ';
     for (let i = 0; i < array.length; ++i) {
       switch (i) {
-        case array.length - 1: res += array[i] + ' '; break;
-        case array.length - 2: res += array[i] + ' or '; break;
-        default: res += array[i] + ', '; break;
+        case array.length - 1: result += array[i] + ' '; break;
+        case array.length - 2: result += array[i] + ' or '; break;
+        default: result += array[i] + ', '; break;
       }
     }
-    return res;
+    return result;
   }
 
   export const filterToText = (currFilter, filterTypes) => {
