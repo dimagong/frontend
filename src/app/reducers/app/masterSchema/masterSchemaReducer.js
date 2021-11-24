@@ -80,6 +80,34 @@ const masterSchemaReducer = {
     }
   },
 
+  updateFieldMasterSchemaSuccess(state, { payload }) {
+    const { field, parentKey, organization } = payload;
+
+    try {
+      // ToDo: refactor - make it DRY
+      const root = state?.masterSchema?.organizations?.find(
+        ({ id, type }) => id === organization.id && type === organization.type
+      )?.masterSchema?.root;
+      if (!root) throw new Error("Unable to get master schema root for field addition.");
+
+      const fieldKey = `${parentKey}/${field.id}`;
+      const fundedField = [root, ...root.children].find(({ key }) => fieldKey === key);
+
+      fundedField.name = field.name;
+      // [root, ...root.children].find(({ key }) => fieldKey === key).name = field.name;
+
+      state.isError = null;
+    } catch (error) {
+      state.isError = error;
+    } finally {
+      state.isLoading = false;
+    }
+  },
+
+  setSelectedMasterSchemaNodes(state, { payload }) {
+    state.masterSchema.selectedNodes = payload;
+  },
+
   setSelectedOrganizationMasterSchema: (state, { payload }) => {
     state.masterSchema.selectedOrganization = payload;
   },

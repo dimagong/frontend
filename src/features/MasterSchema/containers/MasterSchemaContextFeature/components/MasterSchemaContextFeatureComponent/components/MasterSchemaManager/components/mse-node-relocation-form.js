@@ -10,7 +10,7 @@ import MSENodeEditorForm from "./mse-node-editor-form";
 
 const MOCK_LOCATIONS = [{ label: "ValidPath.FCA.number", value: "1.2.3" }];
 
-const MSENodeRelocationForm = ({ submitting, onSubmit: propOnSubmit, ...attrs }) => {
+const MSENodeRelocationForm = ({ node, submitting, onSubmit: propOnSubmit, ...attrs }) => {
   // Form implementation
   const [elementLocation, setElementLocation] = useFormField(MOCK_LOCATIONS, [Validators.required]);
   const form = useFormGroup({ elementLocation });
@@ -51,6 +51,7 @@ const MSENodeRelocationForm = ({ submitting, onSubmit: propOnSubmit, ...attrs })
 };
 
 MSENodeRelocationForm.propTypes = {
+  node: PropTypes.object.isRequired,
   submitting: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

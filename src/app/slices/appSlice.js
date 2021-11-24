@@ -69,7 +69,8 @@ export const initialState = {
     activityTypes: [],
   },
   masterSchema: {
-    fields: []
+    fields: [],
+    selectedNodes: [],
   }
 };
 

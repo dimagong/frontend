@@ -31,6 +31,22 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
+  updateField({ id, name }) {
+    return instance({
+      method: "PUT",
+      url: Urls.putMasterSchemaFieldUrl(id),
+      data: { name },
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  updateGroup({ id, name }) {
+    return instance({
+      method: "PUT",
+      url: Urls.putMasterSchemaGroupUrl(id),
+      data: { name },
+    }).then(flatResponseData, flatResponseError);
+  },
+
   async getOrganizationsMasterSchema() {
     try {
       const result = await instance({

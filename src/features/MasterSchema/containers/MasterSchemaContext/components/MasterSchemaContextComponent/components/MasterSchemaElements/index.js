@@ -21,7 +21,7 @@ import MSETreeNodeList from "./components/mse-tree-node-list";
 import { ADD_FIELD, ADD_GROUP } from "./mse-addition-actions";
 import MSECreateElementForm from "./components/mse-create-element-form";
 
-const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlice.actions;
+const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest, setSelectedMasterSchemaNodes } = appSlice.actions;
 
 // ToDo: ✔ Make more abstract and reusable component for tree
 // ToDo: ✔ Make useTreeData hook
@@ -36,9 +36,6 @@ const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlic
 //          ✔ Find out how to work with state
 //          ✔ Look at redux store
 //          ✔ Look at sagas
-//          - App about invariant cases ?
-//          - Ask about client side model (DTO) ?
-//          - Bind MSETree to API
 // ToDo: - Make selected event to handle it (when should show detailed component)
 // ToDo: - Merge request MSTRee
 
@@ -86,10 +83,14 @@ const MasterSchemaElements = ({ root }) => {
 
     switch (addTo.type) {
       case ADD_FIELD:
-        dispatch(addFieldToMasterSchemaRequest({ name, toGroup: addTo.item.value, toOrganization: selectedOrganization }));
+        dispatch(
+          addFieldToMasterSchemaRequest({ name, toGroup: addTo.item.value, toOrganization: selectedOrganization })
+        );
         break;
       case ADD_GROUP:
-        dispatch(addGroupToMasterSchemaRequest({ name, toParent: addTo.item.value, toOrganization: selectedOrganization }));
+        dispatch(
+          addGroupToMasterSchemaRequest({ name, toParent: addTo.item.value, toOrganization: selectedOrganization })
+        );
         break;
       default:
         throw new Error("Unexpected element addition type.");
@@ -101,6 +102,8 @@ const MasterSchemaElements = ({ root }) => {
   // Tree needs to be updated only when items change. Or it'll cause a stack overflow
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => tree.update(items), [items]);
+
+  useEffect(() => void dispatch(setSelectedMasterSchemaNodes(selectable.keys)), [dispatch, selectable.keys]);
 
   return (
     !isEmpty(root) && (
