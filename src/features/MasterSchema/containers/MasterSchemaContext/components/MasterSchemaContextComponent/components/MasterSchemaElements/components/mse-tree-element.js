@@ -14,10 +14,10 @@ const MSETreeElement = ({ state, onPopupAction, children }) => {
     "ms-elements__node--selected": selected,
   });
 
-  return node.group ? (
+  return node.containable ? (
     <MSETreeGroup
       className={className}
-      id={node.id}
+      id={node.key}
       name={node.name}
       expanded={expandable.includes(node.key)}
       onExpandChange={toggleExpandable}

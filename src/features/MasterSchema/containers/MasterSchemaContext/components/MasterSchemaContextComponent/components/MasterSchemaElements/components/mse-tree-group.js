@@ -9,7 +9,7 @@ import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
 import MSETreeNode from "./mse-tree-node";
 
-import { createGroup, createField } from "../mse-creation-actions";
+import { addField, addGroup } from "../mse-addition-actions";
 
 const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
 
@@ -19,13 +19,13 @@ const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPo
 
   const hidePopup = () => setPopup(false);
   const toggleExpanded = () => onExpandChange(!expanded);
-  const dispatchCreateElementNode = () => {
+  const dispatchAddField = () => {
     hidePopup();
-    onPopupAction(createField(id));
+    onPopupAction(addField(id));
   };
-  const dispatchCreateCategoryNode = () => {
+  const dispatchAddGroup = () => {
     hidePopup();
-    onPopupAction(createGroup(id));
+    onPopupAction(addGroup(id));
   };
 
   useOutsideClick(popupRef, hidePopup);
@@ -68,7 +68,7 @@ const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPo
               type="button"
               className="ms-elements__node-creator"
               aria-label="Create category"
-              onClick={stopPropagation(dispatchCreateCategoryNode)}
+              onClick={stopPropagation(dispatchAddGroup)}
             >
               Category
             </button>
@@ -76,7 +76,7 @@ const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPo
               type="button"
               className="ms-elements__node-creator"
               aria-label="Create element"
-              onClick={stopPropagation(dispatchCreateElementNode)}
+              onClick={stopPropagation(dispatchAddField)}
             >
               Element
             </button>
@@ -93,7 +93,7 @@ const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPo
 };
 
 MSETreeGroup.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   name: PropTypes.string.isRequired,
   expanded: PropTypes.bool.isRequired,
   onExpandChange: PropTypes.func,

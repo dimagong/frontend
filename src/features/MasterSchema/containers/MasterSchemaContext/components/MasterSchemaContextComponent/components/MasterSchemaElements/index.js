@@ -1,19 +1,27 @@
 import "./styles.scss";
 
-import React from "react";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash/fp";
+import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
+import { useTreeData } from "hooks/use-tree";
 import { useBoolean } from "hooks/use-boolean";
-import TreeRoot from "components/tree/tree-root";
-import { useTreeData } from "hooks/use-tree-data";
 import { useToggleable } from "hooks/use-toggleable";
+
+import TreeRoot from "components/tree/tree-root";
 import SurveyModal from "features/Surveys/Components/SurveyModal";
+
+import appSlice from "app/slices/appSlice";
+import { selectLoading } from "app/selectors";
+import { selectSelectedOrganization } from "app/selectors/masterSchemaSelectors";
 
 import MSETreeElement from "./components/mse-tree-element";
 import MSETreeNodeList from "./components/mse-tree-node-list";
-import { CREATE_FIELD, CREATE_GROUP } from "./mse-creation-actions";
+import { ADD_FIELD, ADD_GROUP } from "./mse-addition-actions";
 import MSECreateElementForm from "./components/mse-create-element-form";
+
+const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlice.actions;
 
 // ToDo: ✔ Make more abstract and reusable component for tree
 // ToDo: ✔ Make useTreeData hook
@@ -34,39 +42,72 @@ import MSECreateElementForm from "./components/mse-create-element-form";
 // ToDo: - Make selected event to handle it (when should show detailed component)
 // ToDo: - Merge request MSTRee
 
+const getKey = ({ key }) => key;
+
 const MasterSchemaElements = ({ root }) => {
+  const dispatch = useDispatch();
+  const loading = useSelector(selectLoading);
+  const selectedOrganization = useSelector(selectSelectedOrganization);
+  const items = useMemo(() => [root], [root]);
   const tree = useTreeData({
-    items: [root],
-    getKey: ({ key }) => key,
-    getChildren: ({ fields = [], groups = [] }) => [...fields, ...groups],
+    items,
+    getKey,
+    getChildren: ({ containable, fields, groups }) =>
+      containable ? root.children.filter(({ key }) => [...groups, ...fields].includes(key)) : [],
   });
+  // ToDo: refactor it may cause unhandled cases
+  const [addTo, setAddTo] = useState(null);
   const selectable = useToggleable([]);
   const expandable = useToggleable([]);
 
   const [modal, openModal, closeModal] = useBoolean(false);
 
-  const onPopupAction = ({ id, type }) => {
+  const onPopupAction = ({ key, type }) => {
     switch (type) {
-      case CREATE_FIELD:
+      case ADD_FIELD:
         openModal();
-        console.log("create field", id);
+        setAddTo({ item: tree.getItem(key), type: ADD_FIELD });
         break;
-      case CREATE_GROUP:
+      case ADD_GROUP:
         openModal();
-        console.log("create group", id);
+        setAddTo({ item: tree.getItem(key), type: ADD_GROUP });
         break;
       default:
-        throw new Error("Unexpected type: " + type);
+        throw new Error("Unexpected popup action type.");
     }
   };
 
-  const onSubmitCreateElement = (submitted) => console.log("element creation submitted:", submitted);
+  const onSubmitCreateElement = (submitted) => {
+    if (submitted.invalid) return;
+    // ToDo: consider about react-toastify here
+    if (!addTo || !selectedOrganization) throw new Error("Unexpected form submitting.");
+
+    const { name } = submitted.values;
+
+    switch (addTo.type) {
+      case ADD_FIELD:
+        dispatch(addFieldToMasterSchemaRequest({ name, toGroup: addTo.item.value, toOrganization: selectedOrganization }));
+        break;
+      case ADD_GROUP:
+        dispatch(addGroupToMasterSchemaRequest({ name, toParent: addTo.item.value, toOrganization: selectedOrganization }));
+        break;
+      default:
+        throw new Error("Unexpected element addition type.");
+    }
+
+    closeModal();
+  };
+
+  // Tree needs to be updated only when items change. Or it'll cause a stack overflow
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => tree.update(items), [items]);
 
   return (
     !isEmpty(root) && (
       <div className="ms-elements">
         <TreeRoot
           nodes={tree.items}
+          getKey={getKey}
           renderNodeList={({ root, children }) => <MSETreeNodeList root={root} children={children} />}
           renderNode={({ node, children }) => (
             <MSETreeElement
@@ -78,7 +119,7 @@ const MasterSchemaElements = ({ root }) => {
         />
 
         <SurveyModal isOpen={modal} title="New Element" onClose={closeModal} actions={false}>
-          <MSECreateElementForm submitting={false} onSubmit={onSubmitCreateElement} />
+          <MSECreateElementForm submitting={loading} onSubmit={onSubmitCreateElement} />
         </SurveyModal>
       </div>
     )

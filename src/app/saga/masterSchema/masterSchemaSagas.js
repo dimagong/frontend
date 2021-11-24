@@ -12,6 +12,14 @@ const {
   getMasterSchemaOrganizationsRequest,
   getMasterSchemaOrganizationsSuccess,
   getMasterSchemaOrganizationsError,
+
+  addFieldToMasterSchemaRequest,
+  addFieldToMasterSchemaSuccess,
+  addFieldToMasterSchemaError,
+
+  addGroupToMasterSchemaRequest,
+  addGroupToMasterSchemaSuccess,
+  addGroupToMasterSchemaError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -91,24 +99,16 @@ function* getMasterSchemaFields() {
 
 const masterSchemaNodeSchema = {
   id: yup.number().required(),
-  parentId: yup.number().required(),
   key: yup.string().required(),
   name: yup.string().required(),
+  parentId: yup.number().required(),
+  containable: yup.boolean().required(),
   path: yup.array(yup.string()).required(),
-  group: yup.boolean().required(),
 };
 
 const masterSchemaGroupSchema = {
-  groups: yup
-    .array()
-    .transform((value) => Object.values(value))
-    .of(yup.lazy(() => masterSchemaGroupInterface.default(undefined)))
-    .test((v) => Array.isArray(v)),
-  fields: yup
-    .array()
-    .transform((value) => Object.values(value))
-    .of(yup.lazy(() => masterSchemaFieldInterface.default(undefined)))
-    .test((v) => Array.isArray(v)),
+  fields: yup.array(yup.string()).test((v) => Array.isArray(v)),
+  groups: yup.array(yup.string()).test((v) => Array.isArray(v)),
 };
 
 const masterSchemaFieldInterface = yup.object({
@@ -121,11 +121,14 @@ const masterSchemaGroupInterface = yup.object({
   ...masterSchemaGroupSchema,
 });
 
+// Consider about children as hashmap, will it be faster ?
 const masterSchemaRootInterface = yup.object({
   ...masterSchemaNodeSchema,
   ...masterSchemaGroupSchema,
+  children: yup
+    .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
+    .test((v) => Array.isArray(v)),
   parentId: yup.number().nullable(),
-  createdAt: yup.object().nullable(),
 });
 
 const masterSchemaInterface = yup
@@ -146,34 +149,56 @@ const organizationInterface = yup
   })
   .required();
 
-const serialiseMasterSchemaNode = (node, group = true, path = [], composedKey = "") => {
-  const { id, parent_id, name, d_form_names, fields, groups } = node;
+const serialiseNode = (node, { containable, composedKey = "", path = [], rootChildren = [] }) => {
+  const { id, parent_id, master_schema_group_id, name, groups, fields, d_form_names } = node;
 
   path = [...path, name];
-  composedKey = composedKey ? `${composedKey},${id}` : String(id);
+  composedKey = composedKey ? `${composedKey}/${id}` : id;
 
-  const serialised = {
+  const serialisedNode = {
     id,
-    parentId: parent_id,
     key: composedKey,
     name,
+    containable,
+    parentId: parent_id ?? master_schema_group_id,
     path,
-    group,
+    ...(d_form_names ? { dFormNames: d_form_names } : {}),
   };
 
-  if (d_form_names) {
-    serialised.dFormNames = d_form_names;
-  }
-
   if (fields) {
-    serialised.fields = fields.map((field) => serialiseMasterSchemaNode(field, false, path, composedKey));
+    serialisedNode.fields = [];
+
+    fields.forEach((field) => {
+      const serialisedField = serialiseNode(field, { containable: false, composedKey, path, rootChildren });
+
+      rootChildren.push(serialisedField);
+      serialisedNode.fields.push(serialisedField.key);
+    });
   }
 
   if (groups) {
-    serialised.groups = groups.map((group) => serialiseMasterSchemaNode(group, true, path, composedKey));
+    serialisedNode.groups = [];
+
+    groups.forEach((group) => {
+      const serialisedGroup = serialiseNode(group, { containable: true, composedKey, path, rootChildren });
+
+      rootChildren.push(serialisedGroup);
+      serialisedNode.groups.push(serialisedGroup.key);
+    });
   }
 
-  return serialised;
+  return serialisedNode;
+};
+
+const serialiseMasterSchemaRoot = (root) => {
+  const rootChildren = [];
+
+  const serialisedRoot = serialiseNode(root, { containable: true, rootChildren });
+
+  return {
+    ...serialisedRoot,
+    children: rootChildren,
+  };
 };
 
 const serialiseMasterSchema = ({ id, name, organization_id, root }) => {
@@ -181,7 +206,7 @@ const serialiseMasterSchema = ({ id, name, organization_id, root }) => {
     id,
     name,
     organizationId: organization_id,
-    root: serialiseMasterSchemaNode(root),
+    root: serialiseMasterSchemaRoot(root),
   };
 };
 
@@ -209,8 +234,38 @@ function* getMasterSchemaOrganizations() {
   }
 }
 
+const invariantAddedField = (field) => masterSchemaFieldInterface.validate(field);
+
+function* addField({ payload }) {
+  const { name, toGroup, toOrganization } = payload;
+  try {
+    const field = yield call(masterSchemaApi.addField, { name, groupId: toGroup.id });
+    const validSerialisedField = yield invariantAddedField(serialiseNode(field, { containable: false }));
+
+    yield put(addFieldToMasterSchemaSuccess({ field: validSerialisedField, toGroup, toOrganization }));
+  } catch (error) {
+    yield put(addFieldToMasterSchemaError(error));
+  }
+}
+
+const invariantAddedGroup = (group) => masterSchemaGroupInterface.validate(group);
+
+function* addGroup({ payload }) {
+  const { name, toParent, toOrganization } = payload;
+  try {
+    const group = yield call(masterSchemaApi.addGroup, { name, parentId: toParent.id });
+    const validSerialisedGroup = yield invariantAddedGroup(serialiseNode(group, { containable: true }));
+
+    yield put(addGroupToMasterSchemaSuccess({ group: validSerialisedGroup, toParent, toOrganization }));
+  } catch (error) {
+    yield put(addGroupToMasterSchemaError(error));
+  }
+}
+
 export default function* () {
   yield all([
+    yield takeLatest(addFieldToMasterSchemaRequest, addField),
+    yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
     yield takeLatest(getMasterSchemaOrganizationsRequest.type, getMasterSchemaOrganizations),
   ]);

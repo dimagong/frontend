@@ -2,7 +2,7 @@ import instance from "api";
 import { get, pipe } from "lodash/fp";
 import { masterSchemaOrganizations } from "constants/masterSchema";
 
-import { getMasterSchemaOrganizationsUrl } from "./constants";
+import * as Urls from "./constants";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
@@ -11,7 +11,23 @@ const masterSchemaApi = {
   async getMasterSchemaOrganizations() {
     return instance({
       method: "GET",
-      url: getMasterSchemaOrganizationsUrl,
+      url: Urls.getMasterSchemaOrganizationsUrl,
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  addField({ name, groupId }) {
+    return instance({
+      method: "POST",
+      url: Urls.postMasterSchemaFieldUrl,
+      data: { name, master_schema_group_id: groupId },
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  addGroup({ name, parentId }) {
+    return instance({
+      method: "POST",
+      url: Urls.postMasterSchemaGroupUrl,
+      data: { name, parent_id: parentId },
     }).then(flatResponseData, flatResponseError);
   },
 

@@ -27,7 +27,7 @@ const MasterSchemaContextComponent = ({
           onListVisibilityToggle={onListOfUnapprovedElementsVisibilityToggle}
         />
       )}
-      <MasterSchemaElements root={selectedOrganizationMasterSchema.root} />
+      <MasterSchemaElements root={selectedOrganizationMasterSchema.root} key={selectedOrganizationMasterSchema.name} />
     </ContextTemplate>
   )
 };
