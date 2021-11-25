@@ -24,6 +24,10 @@ const {
   updateFieldMasterSchemaRequest,
   updateFieldMasterSchemaSuccess,
   updateFieldMasterSchemaError,
+
+  updateGroupMasterSchemaRequest,
+  updateGroupMasterSchemaSuccess,
+  updateGroupMasterSchemaError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -284,11 +288,27 @@ function* updateField({ payload }) {
   }
 }
 
+function* updateGroup({ payload }) {
+  const { name, id, parentKey, organization } = payload;
+  try {
+    const group = yield call(masterSchemaApi.updateGroup, { id, name });
+    console.log("api/group", group);
+    const validSerialisedGroup = yield invariantGroup(serialiseNode(group, { containable: true }));
+    console.log("api/valid-group", validSerialisedGroup);
+
+    yield put(updateGroupMasterSchemaSuccess({ group: validSerialisedGroup, parentKey, organization }));
+  } catch (error) {
+    console.log("api/error", error);
+    yield put(updateGroupMasterSchemaError(error));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),
+    yield takeLatest(updateGroupMasterSchemaRequest, updateGroup),
     yield takeLatest(getMasterSchemaOrganizationsRequest.type, getOrganizations),
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
   ]);

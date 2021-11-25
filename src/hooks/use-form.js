@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react';
-import { every, mapValues, isNil } from 'lodash/fp';
+import { useMemo, useState } from "react";
+import { every, mapValues, isNil } from "lodash/fp";
 
 // Validator :: <T>(value: T) -> string | true | false
 export const Validators = {
-  required: (value) => !!value || 'Value is required',
+  required: (value) => !!value || "Value is required",
 };
 
 const initialValidationState = { valid: null, errors: [] };
@@ -14,8 +14,8 @@ const validatorsReducer =
     const errorOrBool = validator(value);
 
     switch (typeof errorOrBool) {
-      case 'string':
-        return { errors: [...errors, errorOrBool], valid };
+      case "string":
+        return { errors: [...errors, errorOrBool], valid: false };
       default:
         return { errors: errors, valid: isNil(valid) ? errorOrBool : errorOrBool && valid };
     }

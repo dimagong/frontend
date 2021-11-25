@@ -82,6 +82,7 @@ const masterSchemaReducer = {
 
   updateFieldMasterSchemaSuccess(state, { payload }) {
     const { field, parentKey, organization } = payload;
+    const fieldKey = `${parentKey}/${field.id}`;
 
     try {
       // ToDo: refactor - make it DRY
@@ -90,11 +91,28 @@ const masterSchemaReducer = {
       )?.masterSchema?.root;
       if (!root) throw new Error("Unable to get master schema root for field addition.");
 
-      const fieldKey = `${parentKey}/${field.id}`;
-      const fundedField = [root, ...root.children].find(({ key }) => fieldKey === key);
+      [root, ...root.children].find(({ key }) => fieldKey === key).name = field.name;
 
-      fundedField.name = field.name;
-      // [root, ...root.children].find(({ key }) => fieldKey === key).name = field.name;
+      state.isError = null;
+    } catch (error) {
+      state.isError = error;
+    } finally {
+      state.isLoading = false;
+    }
+  },
+
+  updateGroupMasterSchemaSuccess(state, { payload }) {
+    const { group, parentKey, organization } = payload;
+    const groupKey = `${parentKey}/${group.id}`;
+
+    try {
+      // ToDo: refactor - make it DRY
+      const root = state?.masterSchema?.organizations?.find(
+        ({ id, type }) => id === organization.id && type === organization.type
+      )?.masterSchema?.root;
+      if (!root) throw new Error("Unable to get master schema root for field addition.");
+
+      [root, ...root.children].find(({ key }) => groupKey === key).name = group.name;
 
       state.isError = null;
     } catch (error) {

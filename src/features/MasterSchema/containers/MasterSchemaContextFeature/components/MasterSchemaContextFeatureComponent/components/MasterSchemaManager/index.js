@@ -7,7 +7,7 @@ import { selectSelectedNodes, selectSelectedOrganization } from "app/selectors/m
 import MSENodeRenamingForm from "./components/mse-node-renaming-form";
 import MSENodeRelocationForm from "./components/mse-node-relocation-form";
 
-const { updateFieldMasterSchemaRequest } = appSlice.actions;
+const { updateFieldMasterSchemaRequest, updateGroupMasterSchemaRequest } = appSlice.actions;
 
 const MasterSchemaManager = () => {
   const dispatch = useDispatch(selectSelectedNodes);
@@ -19,10 +19,11 @@ const MasterSchemaManager = () => {
     if (submitted.invalid) return;
 
     const { name } = submitted.values;
-    const { id, parentKey } = selectedNode;
+    const { id, parentKey, containable } = selectedNode;
     const payload = { name, id, parentKey, organization: selectedOrganization };
+    const action = containable ? updateGroupMasterSchemaRequest : updateFieldMasterSchemaRequest;
 
-    dispatch(updateFieldMasterSchemaRequest(payload));
+    dispatch(action(payload));
   };
 
   const onRelocateSubmit = (submitted) => {};
