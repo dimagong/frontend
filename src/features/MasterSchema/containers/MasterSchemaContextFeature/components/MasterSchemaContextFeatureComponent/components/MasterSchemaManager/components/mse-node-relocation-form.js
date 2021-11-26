@@ -36,6 +36,7 @@ const MSENodeRelocationForm = ({ node, submitting, onSubmit: propOnSubmit, ...at
           <CardTitle>Move datapoint to:</CardTitle>
         </Label>
       )}
+      menuPosition={'fixed'}
     >
       {({ select, label, error }) => (
         <MSENodeEditorForm

@@ -40,7 +40,6 @@ const MasterSchemaManager = () => {
   return selectedNodes.length === 1 && selectedNode && !selectedNode.isSystem ? (
     <>
       <MSENodeRenamingForm className="my-2" name={selectedNode.name} submitting={false} onSubmit={onRenameSubmit} />
-      {/* ToDo: don't show for root */}
       <MSENodeRelocationForm className="my-2" node={selectedNode} submitting={false} onSubmit={onRelocateSubmit} />
     </>
   ) : null;

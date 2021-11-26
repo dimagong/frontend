@@ -7,7 +7,7 @@ import MasterSchemaManager from './components/MasterSchemaManager';
 const MasterSchemaContextFeatureComponent = () => {
 
   return (
-    <ContextFeatureTemplate contextFeatureTitle="Temporary title">
+    <ContextFeatureTemplate contextFeatureTitle="Manage Datapoint">
       {/*<MasterSchemaUserList />*/}
       <MasterSchemaManager />
     </ContextFeatureTemplate>
