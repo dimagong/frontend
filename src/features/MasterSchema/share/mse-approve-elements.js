@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo, useState} from 'react';
 import PropTypes from "prop-types";
 import {Card, CardBody, CardHeader, CardTitle, Col, Label, Row} from "reactstrap";
 
@@ -8,32 +8,40 @@ import MSESelectField from "./mse-select-field";
 
 import MSEButton from "./mse-button";
 import './styles.scss';
+import {get} from "lodash/fp";
+import {useSelector} from "react-redux";
+import {selectMasterSchemaOfSelectedOrganization} from "../../../app/selectors/masterSchemaSelectors";
+import {preventDefault} from "../../../utility/event-decorators";
 
-const MSEApproveElements = ({ submitting, onSubmit: propOnSubmit, groups, elements, ...attrs }) => {
-  const [elementLocation, setElementLocation] = useFormField(groups, [Validators.required]);
+const nodeToOption = (node) => ({ label: node.path.join("."), value: node });
 
-  const onSubmit = () => propOnSubmit(elements);
+const MSEApproveElements = ({ submitting, onSubmit: propOnSubmit, elements, ...attrs }) => {
+  const [approveIntoGroup, setApproveIntoGroup] = useState({});
+  const { root } = useSelector(selectMasterSchemaOfSelectedOrganization);
+  const locationOptions = useMemo(() => [root, ...root.children].filter(get("containable"))
+    .map(nodeToOption), [root]).filter(item => item.value.name !== "Unapproved");
 
-  console.log('elementLocation', elementLocation)
-  console.log('groups', groups)
+
+  const onSubmit = () => propOnSubmit(elements, approveIntoGroup)
+
 
   return (
       <MSESelectField
         name="elementLocation"
-        placeholder="ValidPath.FCA"
-        options={groups.map(item => {return {label: item.name, value: item}})}
-        onChange={setElementLocation}
+        placeholder="Choose location"
+        options={locationOptions}
+        onChange={setApproveIntoGroup}
         label={(id) => (
           <Label for={id}>
             <CardTitle className={'mse-approve-element-title'}>Approve selected fields</CardTitle>
             <CardTitle className={'mse-approve-element-subtitle'}>{elements.length
-              ? `Which brand should the selected ${elements.length} elements be approved into?`
+              ? `Which brand should the selected ${elements.length} element${elements.length > 1 && 's'} be approved into?`
               : 'Please select the unapproved elements'}</CardTitle>
           </Label>
         )}
       >
         {({ select, label, error }) => (
-          <Card tag="form" onSubmit={onSubmit} {...attrs}>
+          <Card tag="form" onSubmit={preventDefault(onSubmit)} {...attrs}>
             <CardHeader>{label}</CardHeader>
             <CardBody>
               <Row>

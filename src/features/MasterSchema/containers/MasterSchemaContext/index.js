@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from "react-redux";
+import {toast} from "react-toastify";
+import appSlice from "../../../../app/slices/appSlice";
+
+import MasterSchemaContextComponent from "./components/MasterSchemaContextComponent";
 
 import {
   selectUnapprovedFieldsOfSelectedOrganization,
   selectMasterSchemaOfSelectedOrganization,
 } from "app/selectors/masterSchemaSelectors";
 
-import MasterSchemaContextComponent from "./components/MasterSchemaContextComponent";
+const {
+  putNewAllowedElementsRequest
+} = appSlice.actions;
 
 const MasterSchemaContext = () => {
   const dispatch = useDispatch();
@@ -44,6 +50,18 @@ const MasterSchemaContext = () => {
     setIsListOfUnapprovedElementsVisible(!isListOfUnapprovedElementsVisible)
   };
 
+  const handleOnApproveElements = (elements, group) => {
+    if (!group?.value.hasOwnProperty('id')) {
+      toast.error('Please choose the location');
+      return;
+    }
+    dispatch(putNewAllowedElementsRequest({
+      master_schema_field_ids: elements.map(item => item.id),
+      master_schema_group_id: group.value.id
+    }));
+
+  }
+
   // Unselect all on organization change
   useEffect(() => {
     handleAllUnapprovedFieldsUnselect();
@@ -58,6 +76,7 @@ const MasterSchemaContext = () => {
       onAllUnapprovedFieldsUnselect={handleAllUnapprovedFieldsUnselect}
       onListOfUnapprovedElementsVisibilityToggle={handleListOfUnapprovedElementsVisibilityToggle}
       isListOfUnapprovedElementsVisible={isListOfUnapprovedElementsVisible}
+      onApproveElements={handleOnApproveElements}
     />
   )
 };

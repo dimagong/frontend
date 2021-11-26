@@ -1,8 +1,10 @@
-import instance from "api";
+import instance, {requestLayout} from "api";
 import { get, pipe } from "lodash/fp";
 import { masterSchemaOrganizations } from "constants/masterSchema";
 
 import * as Urls from "./constants";
+import {assignSurvey} from "../surveys/constants";
+import {getApproveElemenetsUrl} from "./constants";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
@@ -61,6 +63,11 @@ const masterSchemaApi = {
       url: Urls.putMasterSchemaGroupMakeParentUrl(nodeId),
       data: { parent_id: parentId },
     }).then(flatResponseData, flatResponseError);
+  },
+
+  async putNewAllowedElements(payload) {
+    console.log('payload', payload)
+    return await requestLayout(getApproveElemenetsUrl, "PUT", payload)
   },
 
   async getOrganizationsMasterSchema() {

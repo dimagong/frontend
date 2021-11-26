@@ -36,6 +36,10 @@ const {
   groupMakeParentMasterSchemaRequest,
   groupMakeParentMasterSchemaSuccess,
   groupMakeParentMasterSchemaError,
+
+  putNewAllowedElementsRequest,
+  putNewAllowedElementsSuccess,
+  putNewAllowedElementsError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -198,6 +202,15 @@ function* groupMakeParent({ payload }) {
   }
 }
 
+function* putNewAllowedElements({ payload }) {
+  try {
+    const response = yield call(masterSchemaApi.putNewAllowedElements, payload);
+    yield put(putNewAllowedElementsSuccess({ response }));
+  } catch (error) {
+    yield put(putNewAllowedElementsError(error));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
@@ -207,6 +220,7 @@ export default function* () {
     yield takeLatest(fieldMakeParentMasterSchemaRequest, fieldMakeParent),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
     yield takeLatest(getMasterSchemaOrganizationsRequest, getOrganizations),
+    yield takeLatest(putNewAllowedElementsRequest, putNewAllowedElements),
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
   ]);
 }

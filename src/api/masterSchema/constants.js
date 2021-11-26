@@ -5,3 +5,4 @@ export const putMasterSchemaGroupUrl = (id) => `/api/master-schema-group/${id}`;
 export const putMasterSchemaFieldMakeParentUrl = (fieldId) => `/api/master-schema-field/${fieldId}/make-parent`;
 export const putMasterSchemaGroupMakeParentUrl = (groupId) => `/api/master-schema-group/${groupId}/make-parent`;
 export const getMasterSchemaOrganizationsUrl = "/api/master-schema/organizations";
+export const getApproveElemenetsUrl = "/api/master-schema-field/make-parent-many";

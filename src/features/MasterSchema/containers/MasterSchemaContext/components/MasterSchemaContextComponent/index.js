@@ -4,8 +4,7 @@ import ContextTemplate from "components/ContextTemplate";
 
 import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
-import MasterSchemaElements from "../MasterSchemaElements";
-import MSEApproveElements from "../MasterSchemaElements/components/mse-approve-elements";
+import MSEApproveElements from "../../../../share/mse-approve-elements";
 
 const MasterSchemaContextComponent = ({
   unapprovedFields,
@@ -15,19 +14,13 @@ const MasterSchemaContextComponent = ({
   onListOfUnapprovedElementsVisibilityToggle,
   isListOfUnapprovedElementsVisible,
   selectedOrganizationMasterSchema,
+  onApproveElements
 }) => {
-
-  const onApproveElements = (elements) => {
-    if (elements.length === 0) {
-      alert('eblan?');
-      return;
-    }
-    console.log('elements finished', elements)
-  }
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
       {!!unapprovedFields.length && (
+        <>
         <UnapprovedFieldsComponent
           fields={unapprovedFields}
           selectedFields={selectedUnapprovedFields}
@@ -36,15 +29,14 @@ const MasterSchemaContextComponent = ({
           isListVisible={isListOfUnapprovedElementsVisible}
           onListVisibilityToggle={onListOfUnapprovedElementsVisibilityToggle}
         />
+          <MSEApproveElements
+            elements={selectedUnapprovedFields}
+            submitting={false}
+            onSubmit={onApproveElements}
+          />
+        </>
       )}
-      {!!unapprovedFields.length && (
-        <MSEApproveElements
-          elements={selectedUnapprovedFields}
-          groups={selectedOrganizationMasterSchema.root.groups.filter(item => item.name !== 'Unapproved')}
-          submitting={false}
-          onSubmit={onApproveElements}
-        />
-      )}
+
       <MasterSchemaElements root={selectedOrganizationMasterSchema.root} key={selectedOrganizationMasterSchema.name} />
     </ContextTemplate>
   )

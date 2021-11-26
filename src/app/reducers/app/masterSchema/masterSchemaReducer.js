@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import { pipe, get, isEqual, pick } from "lodash/fp";
+import _ from "lodash";
 
 /* Interfaces */
 
@@ -326,6 +327,14 @@ const masterSchemaReducer = {
     state.masterSchema.selectedNodes = state.masterSchema.selectedNodes.map((key) =>
       key === oldGroup.key ? valid.key : key
     );
+  },
+
+  putNewAllowedElementsSuccess(state, {payload}) {
+    console.log('payload reducer', payload);
+    let msChildren = state.masterSchema.selectedNodes.find(item => item.id === state.masterSchema.selectedOrganization.id)
+      .masterSchema.root.children;
+    msChildren = [... _.differenceBy(msChildren, payload.response,'id'), ... payload.response];
+    console.log('payload msChildren', msChildren);
   },
 
   setSelectedMasterSchemaNodes(state, { payload }) {
