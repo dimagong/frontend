@@ -203,12 +203,12 @@ function* groupMakeParent({ payload }) {
 }
 
 function* putNewAllowedElements({ payload }) {
-  try {
+  //try {
     const response = yield call(masterSchemaApi.putNewAllowedElements, payload);
     yield put(putNewAllowedElementsSuccess({ response }));
-  } catch (error) {
-    yield put(putNewAllowedElementsError(error));
-  }
+  //} catch (error) {
+  //  yield put(putNewAllowedElementsError(error));
+  //}
 }
 
 export default function* () {

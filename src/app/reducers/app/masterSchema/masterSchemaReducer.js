@@ -330,10 +330,8 @@ const masterSchemaReducer = {
   },
 
   putNewAllowedElementsSuccess(state, {payload}) {
-    let selectedMS = state.masterSchema.selectedNodes.find(item => item.id === state.masterSchema.selectedOrganization.id);
-    selectedMS.masterSchema.root.children =
-       [... _.differenceBy(selectedMS.masterSchema.root.children, payload.response,'id'),
-        ... payload.response];
+    state.isLoading = false;
+    state.isError = null;
   },
 
   setSelectedMasterSchemaNodes(state, { payload }) {

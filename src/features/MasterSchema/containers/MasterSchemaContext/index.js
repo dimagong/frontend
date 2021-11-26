@@ -10,9 +10,11 @@ import {
   selectUnapprovedFieldsOfSelectedOrganization,
   selectMasterSchemaOfSelectedOrganization,
 } from "app/selectors/masterSchemaSelectors";
+import {createLoadingSelector} from "app/selectors/loadingSelector";
 
 const {
-  putNewAllowedElementsRequest
+  putNewAllowedElementsRequest,
+  getMasterSchemaOrganizationsRequest
 } = appSlice.actions;
 
 const MasterSchemaContext = () => {
@@ -23,6 +25,8 @@ const MasterSchemaContext = () => {
 
   const selectedOrganizationUnapprovedFields = useSelector(selectUnapprovedFieldsOfSelectedOrganization);
   const selectedOrganizationMasterSchema = useSelector(selectMasterSchemaOfSelectedOrganization);
+
+  const isApprovingLoading = useSelector(createLoadingSelector([putNewAllowedElementsRequest.type], false));
 
 
 
@@ -66,6 +70,15 @@ const MasterSchemaContext = () => {
   useEffect(() => {
     handleAllUnapprovedFieldsUnselect();
   }, [selectedOrganizationUnapprovedFields]);
+
+  useEffect(() => {
+    if (!isApprovingLoading) {
+      dispatch(getMasterSchemaOrganizationsRequest())
+      toast.success('The approving was successful')
+    }
+  }, [isApprovingLoading]);
+
+
 
   return (
     <MasterSchemaContextComponent
