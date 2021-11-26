@@ -333,7 +333,9 @@ const masterSchemaReducer = {
   },
 
   setSelectedOrganizationMasterSchema: (state, { payload }) => {
+    state.masterSchema.selectedNodes = [];
     state.masterSchema.selectedOrganization = payload;
+
   },
 };
 
