@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import { current } from "@reduxjs/toolkit";
 import { pipe, get, isEqual, pick } from "lodash/fp";
 
 /* Interfaces */
@@ -256,17 +255,19 @@ const masterSchemaReducer = {
   },
 
   updateGroupMasterSchemaSuccess(state, { payload }) {
-    const parentId = payload.group.parent_id;
-    const { root, parent } = findMasterSchemaRootAndParentGroup(state, parentId);
+    // const parentId = payload.group.parent_id;
+    // const { root, parent } = findMasterSchemaRootAndParentGroup(state, parentId);
 
-    const serialised = serialiseNode(payload.group, { containable: true, parent });
-    console.log("update_group/serialised", serialised);
-    const valid = masterSchemaGroupInterface.validateSync(serialised);
-    console.log("update_group/serialised", serialised);
+    // fixme: Fix it on response side
+    // const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
+    // const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { containable: true, parent });
+    // console.log("update_group/serialised", serialised);
+    // const valid = masterSchemaGroupInterface.validateSync(serialised);
+    // console.log("update_group/serialised", serialised);
 
-    const group = findMasterSchemaGroup(state, valid.id, root);
+    // const group = findMasterSchemaGroup(state, valid.id, root);
 
-    group.name = valid.name;
+    // group.name = valid.name;
   },
 
   fieldMakeParentMasterSchemaSuccess(state, { payload }) {

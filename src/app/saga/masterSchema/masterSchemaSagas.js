@@ -166,6 +166,7 @@ function* updateGroup({ payload }) {
     const group = yield call(masterSchemaApi.updateGroup, { id, name });
     console.log("update_group/api", group);
     yield put(updateGroupMasterSchemaSuccess({ group }));
+    yield call(getOrganizations);
   } catch (error) {
     console.error("update_group/error", error);
     yield put(updateGroupMasterSchemaError(error));
