@@ -1,21 +1,18 @@
 import { useEffect, useRef } from "react";
 
-export const useEventListener = (
-  elementRef,
-  listener,
-  eventType,
-  options = false
-) => {
+export const useEventListener = (elementRef, listener, eventType, options = false) => {
   const savedListenerRef = useRef(listener);
 
   useEffect(() => void (savedListenerRef.current = listener), [listener]);
 
   useEffect(() => {
+    const { current } = elementRef;
+    if (!current) return;
+
     const savedListener = (event) => savedListenerRef.current(event);
 
-    document.addEventListener(eventType, savedListener, options);
+    elementRef.current.addEventListener(eventType, savedListener, options);
 
-    return () =>
-      document.removeEventListener(eventType, savedListener, options);
-  }, [eventType, options]);
+    return () => current.removeEventListener(eventType, savedListener, options);
+  }, [elementRef, eventType, options]);
 };

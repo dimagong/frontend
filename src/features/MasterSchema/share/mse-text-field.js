@@ -4,8 +4,15 @@ import React, { useMemo, useState } from "react";
 
 import MSEFormField from "./mse-form-field";
 
+const inputStyles = {
+  borderRadius: '0',
+  borderTop: 'none',
+  borderLeft: 'none',
+  borderRight: 'none',
+};
+
 const MSETextField = (props) => {
-  const { label, type, name, value, errors, valid, invalid, placeholder, onChange, children, ...attrs } = props;
+  const { label, type, name, value, errors, valid, invalid, placeholder, onChange, children, style, ...attrs } = props;
 
   const [dirty, setDirty] = useState(false);
   const onInput = useMemo(() => (dirty ? null : () => setDirty(true)), [dirty]);
@@ -22,6 +29,7 @@ const MSETextField = (props) => {
         invalid={dirty ? invalid : null}
         onInput={onInput}
         onChange={onChange}
+        style={style}
         {...attrs}
       />
     );
@@ -57,6 +65,7 @@ const MSETextField = (props) => {
 MSETextField.defaultProps = {
   type: "text",
   errors: [],
+  style: inputStyles,
 };
 
 MSETextField.propTypes = {
@@ -72,6 +81,7 @@ MSETextField.propTypes = {
 
   placeholder: PropTypes.string,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  style: PropTypes.object,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 

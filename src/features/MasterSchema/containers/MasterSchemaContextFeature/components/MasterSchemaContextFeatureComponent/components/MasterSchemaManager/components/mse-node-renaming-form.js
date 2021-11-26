@@ -1,33 +1,25 @@
+import React from "react";
 import PropTypes from "prop-types";
 import { CardTitle, Label } from "reactstrap";
-import { pipe, isEqual, get } from "lodash/fp";
-import React, { useCallback, useMemo } from "react";
 
+import { preventDefault } from "utility/event-decorators";
+import MSETextField from "features/MasterSchema/share/mse-text-field";
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import MSETextField from "./mse-text-field";
 import MSENodeEditorForm from "./mse-node-editor-form";
 
-import { preventDefault } from "../event-decorators";
-
-const MOCK_NODE = { id: "1", name: "ValidPath.FCA.InvestmentBusiness" };
-const MOCK_NODES = [MOCK_NODE];
-
-const MSENodeRenamingForm = ({ nodeId, submitting, onSubmit: propOnSubmit, ...attrs }) => {
-  const equalsToId = useCallback(pipe(get("id"), isEqual(nodeId)), [nodeId]);
-  const node = useMemo(() => MOCK_NODES.find(equalsToId), [equalsToId]);
-
+const MSENodeRenamingForm = ({ name: initialName, submitting, onSubmit: propOnSubmit, ...attrs }) => {
   // Form implementation
-  const [elementName, setElementName] = useFormField(node.name, [Validators.required]);
-  const form = useFormGroup({ elementName });
+  const [name, setName] = useFormField(initialName, [Validators.required, Validators.identical(initialName)]);
+  const form = useFormGroup({ name });
 
   const onSubmit = () => propOnSubmit(form);
 
   return (
     <MSETextField
       name="elementName"
-      onChange={({ target }) => setElementName(target.value)}
-      {...elementName}
+      onChange={({ target }) => setName(target.value)}
+      {...name}
       label={(id) => (
         <Label for={id}>
           <CardTitle>Rename datapoint to:</CardTitle>
@@ -55,7 +47,7 @@ const MSENodeRenamingForm = ({ nodeId, submitting, onSubmit: propOnSubmit, ...at
 };
 
 MSENodeRenamingForm.propTypes = {
-  nodeId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  name: PropTypes.string.isRequired,
   submitting: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

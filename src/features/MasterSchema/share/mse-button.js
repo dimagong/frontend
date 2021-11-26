@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Button, Spinner } from "reactstrap";
 import React, { useLayoutEffect, useMemo, useRef } from "react";
 
-import { stringIsHashColor } from "../string-is-hash-color";
+import { stringIsHashColor } from "utility/string-is-hash-color";
 
 const MSEButton = ({ loading, textColor, backgroundColor, spinner, children, ...attrs }) => {
   const buttonRef = useRef();

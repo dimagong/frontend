@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from "react";
 
 // :: <T>(node: T): string
 const defaultGetKey = (node) => node.id ?? node.key;
@@ -87,6 +87,84 @@ export const useTreeData = ({ items: initialItems = [], getKey = defaultGetKey, 
     }
   };
 
+  const insertItem = (parentKey, index, ...values) => {
+    setItems(items => {
+      let nodes = buildTree(values, parentKey);
+
+      // If parentKey is null, insert into the root.
+      if (parentKey == null) {
+        return [
+          ...items.slice(0, index),
+          ...nodes,
+          ...items.slice(index)
+        ];
+      }
+
+      // Otherwise, update the parent node and its ancestors.
+      return updateTree(items, parentKey, parentNode => ({
+        key: parentNode.key,
+        parentKey: parentNode.parentKey,
+        value: parentNode.value,
+        children: [
+          ...parentNode.children.slice(0, index),
+          ...nodes,
+          ...parentNode.children.slice(index)
+        ]
+      }));
+    });
+  };
+
+  const appendItem = (parentKey, ...values) => {
+    if (parentKey == null) {
+      insertItem(null, items.length, ...values);
+    } else {
+      let parentNode = map.get(parentKey);
+      if (!parentNode) {
+        return;
+      }
+
+      insertItem(parentKey, parentNode.children.length, ...values);
+    }
+  };
+
+  const updateItem = (oldKey, newValue) => {
+    setItems((items) =>
+      updateTree(items, oldKey, (oldNode) => ({
+        key: oldNode.key,
+        parentKey: oldNode.parentKey,
+        value: newValue,
+        children: buildTree(getChildren(newValue), oldNode.key),
+      }))
+    );
+  };
+
+  const moveItem = (key, toParentKey, index) => {
+    setItems(items => {
+      let node = map.get(key);
+      if (!node) {
+        return items;
+      }
+
+      items = updateTree(items, key, () => null);
+
+      const movedNode = {
+        ...node,
+        parentKey: toParentKey
+      };
+
+      return updateTree(items, toParentKey, parentNode => ({
+        key: parentNode.key,
+        parentKey: parentNode.parentKey,
+        value: parentNode.value,
+        children: [
+          ...parentNode.children.slice(0, index),
+          movedNode,
+          ...parentNode.children.slice(index)
+        ]
+      }));
+    });
+  };
+
   const map = useMemo(() => new Map(), []);
 
   // Compute this only on initial render.
@@ -99,15 +177,10 @@ export const useTreeData = ({ items: initialItems = [], getKey = defaultGetKey, 
     getItem: (key) => {
       return map.get(key);
     },
-    update: (oldKey, newValue) => {
-      setItems((items) =>
-        updateTree(items, oldKey, (oldNode) => ({
-          key: oldNode.key,
-          parentKey: oldNode.parentKey,
-          value: newValue,
-          children: buildTree(getChildren(newValue), oldNode.key),
-        }))
-      );
-    },
+    insertItem,
+    appendItem,
+    moveItem,
+    updateItem,
+    update: (items) => setItems(buildTree(items)),
   };
 };

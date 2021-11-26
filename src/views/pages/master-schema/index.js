@@ -23,10 +23,6 @@ import { Scrollbars } from "react-custom-scrollbars";
 import Tabs from "components/Tabs/index";
 import { handleMasterSchemaDataExport } from "services/files.service";
 
-import NewMasterSchemaElements from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements";
-import MSENodeRenamingForm from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements/components/mse-node-renaming-form";
-import MSENodeRelocationForm from "features/MasterSchema/containers/MasterSchemaContext/components/MasterSchemaElements/components/mse-node-relocation-form";
-
 import Search from "./Search";
 import FieldEdit from "./FieldEdit";
 import GroupEdit from "./GroupEdit";
@@ -337,7 +333,7 @@ function MasterSchema() {
           </CardHeader>
           <CardBody>
             <Row>
-              <Col md={{ size: 6 }} sm={{ size: 6 }}>
+              <Col xs={6}>
                 <Select
                   className="React"
                   classNamePrefix="select"
@@ -357,7 +353,7 @@ function MasterSchema() {
                   }}
                 />
               </Col>
-              <Col md={{ size: 6 }} sm={{ size: 6 }}>
+              <Col xs={6}>
                 {!!organization && (
                   <Button
                     color={"primary"}
@@ -367,7 +363,7 @@ function MasterSchema() {
                   </Button>
                 )}
               </Col>
-              <Col md="6" sm="6" className="mt-1">
+              <Col xs={6} className="mt-1">
                 <Search
                   onChange={(value) => {
                     setSearchValue(value);
@@ -390,7 +386,7 @@ function MasterSchema() {
               </Col>
             </Row>
 
-            {!masterSchemaTreebeard ? null : (
+            {masterSchemaTreebeard && (
               <div>
                 <div className="dependencies-table">
                   <div className="table-item table-header">
@@ -400,12 +396,6 @@ function MasterSchema() {
 
                   <div style={{ marginBottom: "20px" }}>
                     <Scrollbars autoHeight autoHeightMax={500}>
-                      {organization?.value?.master_schema?.root && (
-                        <NewMasterSchemaElements
-                          root={organization?.value?.master_schema?.root}
-                        />
-                      )}
-
                       <div className="table-content">
                         <div className="w-50 column">
                           <MasterSchemaTree
@@ -472,7 +462,7 @@ function MasterSchema() {
       </Col>
 
       <Col md="6">
-        {!cursor ? null : (
+        {cursor && (
           <Card>
             <CardHeader>
               <CardTitle>
@@ -487,8 +477,6 @@ function MasterSchema() {
             <CardBody>{renderRightCard()}</CardBody>
           </Card>
         )}
-        <MSENodeRenamingForm className="my-2" nodeId={'1'} submitting={false} onSubmit={() => {}} />
-        <MSENodeRelocationForm className="my-2" submitting={false} onSubmit={() => {}} />
       </Col>
     </Row>
   );

@@ -1,7 +1,8 @@
 import React from 'react';
 
-
 import ContextTemplate from "components/ContextTemplate";
+
+import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
 import MasterSchemaElements from "../MasterSchemaElements";
 import MSEApproveElements from "../MasterSchemaElements/components/mse-approve-elements";
@@ -44,7 +45,7 @@ const MasterSchemaContextComponent = ({
           onSubmit={onApproveElements}
         />
       )}
-      <MasterSchemaElements root={selectedOrganizationMasterSchema.root} />
+      <MasterSchemaElements root={selectedOrganizationMasterSchema.root} key={selectedOrganizationMasterSchema.name} />
     </ContextTemplate>
   )
 };
