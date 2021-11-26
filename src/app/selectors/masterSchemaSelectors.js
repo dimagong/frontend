@@ -1,19 +1,31 @@
-export const selectMasterSchemaFields = state => state?.app?.masterSchema.fields;
-export const selectMasterSchemaOrganizations = state => state?.app?.masterSchema.organizations;
+export const selectMasterSchemaFields = (state) => state?.app?.masterSchema.fields;
+export const selectMasterSchemaOrganizations = (state) => state?.app?.masterSchema.organizations;
 
-
-export const selectMasterSchemaOfSelectedOrganization = state => {
-  const selectedOrganizationIdAndType = state?.app?.masterSchema.selectedOrganization;
-  const selectedOrganization = state?.app?.masterSchema.organizations.filter(org => (
-    org.id === selectedOrganizationIdAndType.id && org.type === selectedOrganizationIdAndType.type
-  ))[0];
-
-  return selectedOrganization.master_schema;
+export const selectSelectedOrganization = (state) => {
+  return state?.app?.masterSchema.selectedOrganization;
 };
 
-export const selectUnapprovedFieldsOfSelectedOrganization = state => {
+export const selectSelectedKeys = (state) => {
+  return state?.app?.masterSchema.selectedNodes;
+};
+
+export const selectSelectedNodes = (state) => {
+  const { root } = selectMasterSchemaOfSelectedOrganization(state);
+  return state?.app?.masterSchema.selectedNodes.map((selectedKey) => [root, ...root.children].find(({ key }) => key === selectedKey));
+};
+
+export const selectMasterSchemaOfSelectedOrganization = (state) => {
+  const selectedOrganizationIdAndType = selectSelectedOrganization(state);
+  const selectedOrganization = state?.app?.masterSchema.organizations.filter(
+    ({ id, type }) => id === selectedOrganizationIdAndType.id && type === selectedOrganizationIdAndType.type
+  )[0];
+
+  return selectedOrganization.masterSchema;
+};
+
+export const selectUnapprovedFieldsOfSelectedOrganization = (state) => {
   const selectedOrganizationMasterSchema = selectMasterSchemaOfSelectedOrganization(state);
+  const unapproved = selectedOrganizationMasterSchema.root.children.find(({ name }) => name === "Unapproved");
 
-  return selectedOrganizationMasterSchema.root.groups.filter(group => group.name === "Unapproved")[0].fields;
+  return selectedOrganizationMasterSchema.root.children.filter(({ key }) => unapproved.fields.includes(key));
 };
-

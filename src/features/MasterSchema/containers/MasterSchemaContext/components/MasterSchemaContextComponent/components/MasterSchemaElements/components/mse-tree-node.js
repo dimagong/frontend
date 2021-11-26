@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
 const MSETreeNode = ({ name, prepend, append, className: propClassName, onClick, children }) => {
-  const className = classNames('ms-elements__node', propClassName);
+  const className = classNames("ms-elements__node", propClassName);
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions,jsx-a11y/click-events-have-key-events

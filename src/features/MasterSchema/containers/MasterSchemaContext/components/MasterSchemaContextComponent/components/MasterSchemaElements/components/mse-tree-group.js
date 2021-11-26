@@ -1,31 +1,31 @@
-import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
-import { Collapse, Fade } from 'reactstrap';
-import { AddBox, AddSharp, RemoveSharp } from '@material-ui/icons';
+import PropTypes from "prop-types";
+import React, { useRef } from "react";
+import { Collapse, Fade } from "reactstrap";
+import { AddBox, AddSharp, RemoveSharp } from "@material-ui/icons";
 
-import MSETreeNode from './mse-tree-node';
+import { useToggle } from "hooks/use-toggle";
+import { stopPropagation } from "utility/event-decorators";
+import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
-import { useToggle } from 'hooks/use-toggle';
-import { useOutsideClick, useOutsideFocus } from 'hooks/use-outside-event';
+import MSETreeNode from "./mse-tree-node";
 
-import { stopPropagation } from '../event-decorators';
-import { createGroup, createField } from '../mse-category-popup-actions';
+import { addField, addGroup } from "../mse-addition-actions";
 
-const getMarkIconAriaLabel = (expanded) => `${expanded ? 'Collapse' : 'Expand'} category.`;
+const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
 
-const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
+const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
   const popupRef = useRef();
   const [popup, togglePopup, setPopup] = useToggle(false);
 
   const hidePopup = () => setPopup(false);
   const toggleExpanded = () => onExpandChange(!expanded);
-  const dispatchCreateElementNode = () => {
+  const dispatchAddField = () => {
     hidePopup();
-    onPopupAction(createField(id));
+    onPopupAction(addField(id));
   };
-  const dispatchCreateCategoryNode = () => {
+  const dispatchAddGroup = () => {
     hidePopup();
-    onPopupAction(createGroup(id));
+    onPopupAction(addGroup(id));
   };
 
   useOutsideClick(popupRef, hidePopup);
@@ -43,7 +43,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
             onClick={stopPropagation(toggleExpanded)}
             aria-label={getMarkIconAriaLabel(expanded)}
           >
-            {expanded ? <RemoveSharp fontSize={'inherit'} /> : <AddSharp fontSize={'inherit'} />}
+            {expanded ? <RemoveSharp fontSize={"inherit"} /> : <AddSharp fontSize={"inherit"} />}
           </button>
         </div>
       }
@@ -55,11 +55,11 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
             aria-label="Create element or category"
             onClick={stopPropagation(togglePopup)}
           >
-            <AddBox fontSize={'inherit'} />
+            <AddBox fontSize={"inherit"} />
           </button>
 
           <Fade
-            className="ms-elements__popup bg-white d-flex justify-content-center flex-column position-absolute top-50 start-50"
+            className="ms-elements__popup bg-white d-flex justify-content-center flex-column position-absolute"
             in={popup}
             mountOnEnter
             unmountOnExit
@@ -68,7 +68,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
               type="button"
               className="ms-elements__node-creator"
               aria-label="Create category"
-              onClick={stopPropagation(dispatchCreateCategoryNode)}
+              onClick={stopPropagation(dispatchAddGroup)}
             >
               Category
             </button>
@@ -76,7 +76,7 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
               type="button"
               className="ms-elements__node-creator"
               aria-label="Create element"
-              onClick={stopPropagation(dispatchCreateElementNode)}
+              onClick={stopPropagation(dispatchAddField)}
             >
               Element
             </button>
@@ -92,8 +92,8 @@ const MSETreeCategory = ({ id, name, expanded, onExpandChange, onSelectChange, o
   );
 };
 
-MSETreeCategory.propTypes = {
-  id: PropTypes.string.isRequired,
+MSETreeGroup.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   name: PropTypes.string.isRequired,
   expanded: PropTypes.bool.isRequired,
   onExpandChange: PropTypes.func,
@@ -103,4 +103,4 @@ MSETreeCategory.propTypes = {
   children: PropTypes.node,
 };
 
-export default MSETreeCategory;
+export default MSETreeGroup;
