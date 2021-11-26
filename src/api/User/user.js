@@ -370,12 +370,20 @@ const userApi = {
   },
   async updateUser(payload) {
     const { id, ...data } = payload;
-    let dataToSend = {first_name: data.first_name, last_name: data.last_name, email: data.email, number: data.number}
+
+    let dataToSend = {
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      number: data.number,
+      notify: data.notify
+    }
+
     try {
       const result = await instance({
         url: `${updateUserPath}/${id}`,
         method: "PUT",
-        params: dataToSend,
+        data: dataToSend,
       });
 
       return result ? result.data.data : result;
