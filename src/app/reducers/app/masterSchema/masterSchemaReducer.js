@@ -330,11 +330,10 @@ const masterSchemaReducer = {
   },
 
   putNewAllowedElementsSuccess(state, {payload}) {
-    console.log('payload reducer', payload);
-    let msChildren = state.masterSchema.selectedNodes.find(item => item.id === state.masterSchema.selectedOrganization.id)
-      .masterSchema.root.children;
-    msChildren = [... _.differenceBy(msChildren, payload.response,'id'), ... payload.response];
-    console.log('payload msChildren', msChildren);
+    let selectedMS = state.masterSchema.selectedNodes.find(item => item.id === state.masterSchema.selectedOrganization.id);
+    selectedMS.masterSchema.root.children =
+       [... _.differenceBy(selectedMS.masterSchema.root.children, payload.response,'id'),
+        ... payload.response];
   },
 
   setSelectedMasterSchemaNodes(state, { payload }) {

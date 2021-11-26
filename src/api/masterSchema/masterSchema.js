@@ -66,7 +66,6 @@ const masterSchemaApi = {
   },
 
   async putNewAllowedElements(payload) {
-    console.log('payload', payload)
     return await requestLayout(getApproveElemenetsUrl, "PUT", payload)
   },
 
