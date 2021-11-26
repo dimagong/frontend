@@ -1,55 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Button, Modal, ModalBody } from "reactstrap";
+import React, {useEffect, useState} from 'react';
+import {Button, Modal, ModalBody} from "reactstrap";
 import MemberFirmModalTable from "./MemberFirmModalTable";
-import AutoComplete from "components/@vuexy/autoComplete/AutoCompleteComponent";
-import FilterIcon from "assets/img/svg/filter.svg";
-import { X } from "react-feather";
-import FilterModal from "../../ContextSearchNav/Filters/FilterModal";
-import { useDispatch } from "react-redux";
+import {X} from "react-feather";
+import {useDispatch} from "react-redux";
 import MemberFirmsChangeRoleModal from "./MemberFirmsChangeRoleModal";
-import CloseIcon from "@material-ui/icons/Close";
 import appSlice from "app/slices/appSlice";
+import SearchAndFilter from "components/SearchAndFilter";
 import "./style.scss";
 import Scrollbars from "react-custom-scrollbars";
 
 const { removeMemberFirmUsersRequest, getMemberFirmPotentialUsersRequest } =
   appSlice.actions;
 
-const MemberFirmEditUsers = ({
-  isModalOpen,
-  setIsModalOpen,
-  members,
-  potentialMembers,
-  memberFirm,
-  allMembers,
-  principals,
-}) => {
-  const dispatch = useDispatch();
-  const [searchedMembers, setSearchedMembers] = useState([]);
-  const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
+
+const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMembers, memberFirm, allMembers, principals}) => {
+  const dispatch = useDispatch()
+  const [searchedMembers, setSearchedMembers] = useState([])
   const [isChangeRoleModalOpen, setIsChangeRoleModalOpen] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [userToDelete, setUserToDelete] = useState({});
   const [currUser, setCurrUser] = useState({});
-  const wrapperRefFilterButton = useRef(null);
-  const [curr, setCurr] = useState("roles");
-  const [filter, setFilter] = useState({
-    roles: new Set(),
-    organizations: new Set(),
-    memberFirms: new Set(),
-    type: {
-      roles: "initial",
-      organizations: "initial",
-      memberFirms: "initial",
-    },
-  });
-  const [footerText, setFooterText] = useState({
-    roles: "",
-    organizations: "",
-    memberFirms: "",
-  });
-  const [filterName, setFilterName] = useState("");
+
+  const filterTypes = {qfr: ['321', '232'], qw: ['1', '2'], roles: ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']}
 
   const removeUser = (user) => {
     dispatch(
@@ -76,14 +49,30 @@ const MemberFirmEditUsers = ({
     }
   };
 
-  const handleFilter = (newManagers) => {
-    setSearchedMembers(newManagers);
+  const handleFilter = (newManagers, filter) => {
+    setSearchedMembers(newManagers)
     if (filter.roles.size > 0) {
       setIsFiltered(true);
     } else {
       setIsFiltered(false);
     }
   };
+
+  const onCancelFilter = () => {
+    setSearchedMembers([]);
+    setIsFiltered(false);
+  }
+
+  const applyFilter = (managers, filter) => {
+    let newManagers = managers;
+    if (filter?.roles && filter?.roles?.length !== 0) {
+      newManagers = managers.filter(item => {
+        return filter.roles.find(role => role === (item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace('_', ' ').slice(1)))
+      })
+    }
+    setSearchedMembers(newManagers);
+    setIsFiltered(true);
+  }
 
   useEffect(() => {
     dispatch(getMemberFirmPotentialUsersRequest(memberFirm.id));
@@ -107,107 +96,26 @@ const MemberFirmEditUsers = ({
       }}
     >
       <div className="survey-modal_header">
-        <div className="member-firm__title">Firm Member Management</div>
-        <div className={"member-firm__close"}>
-          <X
-            size={26}
-            className={"survey-modal_header_cross-icon member-firm__close-icon"}
-            onClick={() => {
-              setIsModalOpen(false);
-            }}
-          />
-        </div>
-      </div>
-      <ModalBody className="member-firm__body">
-        <div
-          style={{
-            display: "flex",
-            gap: 25,
-            alignItems: "center",
-            paddingRight: 13,
-          }}
-        >
-          <div style={{ width: "100%" }}>
-            <AutoComplete
-              placeholder="Search"
-              suggestions={[]}
-              className="member-firm__input"
-              filterKey="name"
-              onChange={handleSearch}
-              suggestionLimit={4}
-              defaultSuggestions={false}
-              customRender={() => {}}
-              showClear={true}
-              hideSuggestions
-            />
+          <div className="survey-modal_header_title">
+            Edit member firm
           </div>
-
-          <div>
-            <img
-              ref={wrapperRefFilterButton}
-              className={"filter-icon member-firm-filter-icon"}
-              src={FilterIcon}
-              alt={"filter-icon"}
-              onClick={() => {
-                setIsFilterBoxOpen(!isFilterBoxOpen);
-              }}
+          <div className={"survey-modal_header_cross"}>
+            <X
+              size={26}
+              className={"survey-modal_header_cross-icon"}
+              onClick={() => {setIsModalOpen(false)}}
             />
           </div>
         </div>
-
-        {isFilterBoxOpen && (
-          <FilterModal
-            managers={potentialMembers}
+        <ModalBody className={'member-firm-users-modal-body'} style={{marginLeft: 15}}>
+          <SearchAndFilter
+            handleSearch={handleSearch}
             handleFilter={handleFilter}
-            wrapperRefFilterButton={wrapperRefFilterButton}
-            style={{ left: 220, top: 50, marginBottom: 0 }}
-            filterTypes={["roles"]}
-            filter={filter}
-            setFilter={setFilter}
-            setIsFilterBoxOpen={setIsFilterBoxOpen}
-            curr={curr}
-            setCurr={setCurr}
-            footerText={footerText}
-            setFooterText={setFooterText}
-            filterName={filterName}
-            setFilterName={setFilterName}
+            onCancelFilter={onCancelFilter}
+            dataToFilter={potentialMembers}
+            filterTypes={filterTypes}
+            applyFilter={applyFilter}
           />
-        )}
-
-        {filter.roles.size > 0 && (
-          <div style={{ textAlign: "right", marginTop: 16, height: 30 }}>
-            <Button
-              className={"filter-tab member-firm-filter-tab"}
-              variant={"dark"}
-            >
-              <span className={"nav-text"}>
-                {footerText.roles.length <= 40
-                  ? footerText.roles
-                  : `${filter.roles.size} roles`}
-              </span>
-
-              <span
-                onClick={() => {
-                  setFilter({
-                    roles: new Set(),
-                    organizations: new Set(),
-                    memberFirms: new Set(),
-                    type: {
-                      roles: "initial",
-                      organizations: "initial",
-                      memberFirms: "initial",
-                    },
-                  });
-                  setSearchedMembers([]);
-                  setIsFiltered(false);
-                }}
-                className={"close-nav"}
-              >
-                <CloseIcon />
-              </span>
-            </Button>
-          </div>
-        )}
 
         <MemberFirmModalTable
           array={members}
@@ -225,7 +133,7 @@ const MemberFirmEditUsers = ({
         <div className={'member-firm__text'}>
           Other members
         </div>
-        <Scrollbars autoHeight autoHeightMax={200}>
+        <Scrollbars autoHeight autoHeightMax={300}>
           <MemberFirmModalTable
             array={
               searchedMembers?.length > 0 || isFiltered
