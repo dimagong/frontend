@@ -28,6 +28,14 @@ const {
   updateGroupMasterSchemaRequest,
   updateGroupMasterSchemaSuccess,
   updateGroupMasterSchemaError,
+
+  fieldMakeParentMasterSchemaRequest,
+  fieldMakeParentMasterSchemaSuccess,
+  fieldMakeParentMasterSchemaError,
+
+  groupMakeParentMasterSchemaRequest,
+  groupMakeParentMasterSchemaSuccess,
+  groupMakeParentMasterSchemaError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -105,201 +113,87 @@ function* getMasterSchemaFields() {
 
 // NEW SAGA  -----------------------------
 
-// ToDo: add is_system
-const masterSchemaNodeSchema = {
-  id: yup.number().required(),
-  key: yup.string().required(),
-  name: yup.string().required(),
-  parentId: yup.number().required(),
-  parentKey: yup.string().required(),
-  containable: yup.boolean().required(),
-  path: yup.array(yup.string()).required(),
-};
-
-const masterSchemaGroupSchema = {
-  fields: yup.array(yup.string()).test((v) => Array.isArray(v)),
-  groups: yup.array(yup.string()).test((v) => Array.isArray(v)),
-};
-
-const masterSchemaFieldInterface = yup.object({
-  ...masterSchemaNodeSchema,
-  dFormNames: yup.array().nullable(),
-});
-
-const masterSchemaGroupInterface = yup.object({
-  ...masterSchemaNodeSchema,
-  ...masterSchemaGroupSchema,
-});
-
-// Consider about children as hashmap, will it be faster ?
-const masterSchemaRootInterface = yup.object({
-  ...masterSchemaNodeSchema,
-  ...masterSchemaGroupSchema,
-  children: yup
-    .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
-    .test((v) => Array.isArray(v)),
-  parentKey: yup.string().nullable(),
-  parentId: yup.number().nullable(),
-});
-
-const masterSchemaInterface = yup
-  .object({
-    id: yup.number(),
-    name: yup.string(),
-    root: masterSchemaRootInterface,
-    organizationId: yup.string(),
-  })
-  .required();
-
-const organizationInterface = yup
-  .object({
-    id: yup.number(),
-    type: yup.string(),
-    name: yup.string(),
-    masterSchema: masterSchemaInterface,
-  })
-  .required();
-
-const serialiseNode = (node, { containable, composedKey = "-", path = [], rootChildren = [] }) => {
-  const parentKey = composedKey;
-  const { id, parent_id, master_schema_group_id, name, groups, fields, d_form_names } = node;
-
-  path = [...path, name];
-  composedKey = composedKey ? `${composedKey}/${id}` : id;
-
-  const serialisedNode = {
-    id,
-    key: composedKey,
-    name,
-    containable,
-    parentId: parent_id ?? master_schema_group_id,
-    parentKey,
-    path,
-    ...(d_form_names ? { dFormNames: d_form_names } : {}),
-  };
-
-  if (fields) {
-    serialisedNode.fields = [];
-
-    fields.forEach((field) => {
-      const serialisedField = serialiseNode(field, { containable: false, composedKey, path, rootChildren });
-
-      rootChildren.push(serialisedField);
-      serialisedNode.fields.push(serialisedField.key);
-    });
-  }
-
-  if (groups) {
-    serialisedNode.groups = [];
-
-    groups.forEach((group) => {
-      const serialisedGroup = serialiseNode(group, { containable: true, composedKey, path, rootChildren });
-
-      rootChildren.push(serialisedGroup);
-      serialisedNode.groups.push(serialisedGroup.key);
-    });
-  }
-
-  return serialisedNode;
-};
-
-const serialiseRoot = (root) => {
-  const rootChildren = [];
-
-  const serialisedRoot = serialiseNode(root, { containable: true, composedKey: "", rootChildren });
-
-  return {
-    ...serialisedRoot,
-    children: rootChildren,
-  };
-};
-
-const serialiseMasterSchema = ({ id, name, organization_id, root }) => {
-  return {
-    id,
-    name,
-    organizationId: organization_id,
-    root: serialiseRoot(root),
-  };
-};
-
-const serialiseOrganization = ({ id, type, name, master_schema }) => {
-  return {
-    id,
-    type,
-    name,
-    masterSchema: serialiseMasterSchema(master_schema),
-  };
-};
-
-const invariantOrganization = (organization) => organizationInterface.validate(organization);
-
-const invariantField = (field) => masterSchemaFieldInterface.validate(field);
-
-const invariantGroup = (group) => masterSchemaGroupInterface.validate(group);
-
 function* getOrganizations() {
   try {
-    const organizations = yield call(masterSchemaApi.getMasterSchemaOrganizations);
-    const validSerialisedOrganizations = yield all(organizations.map(serialiseOrganization).map(invariantOrganization));
-
-    yield put(getMasterSchemaOrganizationsSuccess(validSerialisedOrganizations));
+    const organizations = yield call(masterSchemaApi.getOrganizations);
+    console.log('organizations/api', organizations);
+    yield put(getMasterSchemaOrganizationsSuccess({ organizations }));
   } catch (error) {
+    console.error('organizations/error', error);
     yield put(getMasterSchemaOrganizationsError(error.message));
   }
 }
 
 function* addField({ payload }) {
-  const { name, toGroup, toOrganization } = payload;
+  const { name, parentId } = payload;
   try {
-    const field = yield call(masterSchemaApi.addField, { name, groupId: toGroup.id });
-    const validSerialisedField = yield invariantField(serialiseNode(field, { containable: false }));
-
-    yield put(addFieldToMasterSchemaSuccess({ field: validSerialisedField, toGroup, toOrganization }));
+    const field = yield call(masterSchemaApi.addField, { name, parentId });
+    console.log("add_field/api", field);
+    yield put(addFieldToMasterSchemaSuccess({ field }));
   } catch (error) {
+    console.error("add_field/error", error);
     yield put(addFieldToMasterSchemaError(error));
   }
 }
 
 function* addGroup({ payload }) {
-  const { name, toParent, toOrganization } = payload;
+  const { name, parentId } = payload;
   try {
-    const group = yield call(masterSchemaApi.addGroup, { name, parentId: toParent.id });
-    const validSerialisedGroup = yield invariantGroup(serialiseNode(group, { containable: true }));
-
-    yield put(addGroupToMasterSchemaSuccess({ group: validSerialisedGroup, toParent, toOrganization }));
+    const group = yield call(masterSchemaApi.addGroup, { name, parentId });
+    console.log("add_group/api", group);
+    yield put(addGroupToMasterSchemaSuccess({ group }));
   } catch (error) {
+    console.log("add_group/error", error);
     yield put(addGroupToMasterSchemaError(error));
   }
 }
 
 function* updateField({ payload }) {
-  const { name, id, parentKey, organization } = payload;
+  const { id, name } = payload;
   try {
     const field = yield call(masterSchemaApi.updateField, { id, name });
-    console.log("api/field", field);
-    const validSerialisedField = yield invariantField(serialiseNode(field, { containable: false }));
-    console.log("api/valid-field", validSerialisedField);
-
-    yield put(updateFieldMasterSchemaSuccess({ field: validSerialisedField, parentKey, organization }));
+    console.log("update_field/api", field);
+    yield put(updateFieldMasterSchemaSuccess({ field }));
   } catch (error) {
-    console.log("api/error", error);
+    console.error("update_field/error", error);
     yield put(updateFieldMasterSchemaError(error));
   }
 }
 
 function* updateGroup({ payload }) {
-  const { name, id, parentKey, organization } = payload;
+  const { id, name } = payload;
   try {
     const group = yield call(masterSchemaApi.updateGroup, { id, name });
-    console.log("api/group", group);
-    const validSerialisedGroup = yield invariantGroup(serialiseNode(group, { containable: true }));
-    console.log("api/valid-group", validSerialisedGroup);
-
-    yield put(updateGroupMasterSchemaSuccess({ group: validSerialisedGroup, parentKey, organization }));
+    console.log("update_group/api", group);
+    yield put(updateGroupMasterSchemaSuccess({ group }));
   } catch (error) {
-    console.log("api/error", error);
+    console.error("update_group/error", error);
     yield put(updateGroupMasterSchemaError(error));
+  }
+}
+
+function* fieldMakeParent({ payload }) {
+  const { nodeId, parentId } = payload;
+  try {
+    const field = yield call(masterSchemaApi.fieldMakeParent, { nodeId, parentId });
+    console.log("field-make-parent/api", field);
+    yield put(fieldMakeParentMasterSchemaSuccess({ field }));
+  } catch (error) {
+    console.error("field-make-parent/error", error);
+    yield put(fieldMakeParentMasterSchemaError(error));
+  }
+}
+
+function* groupMakeParent({ payload }) {
+  const { nodeId, parentId } = payload;
+  try {
+    const group = yield call(masterSchemaApi.groupMakeParent, { nodeId, parentId });
+    console.log("group-make-parent/api", group);
+    yield put(groupMakeParentMasterSchemaSuccess({ group }));
+    yield call(getOrganizations);
+  } catch (error) {
+    console.error("group-make-parent/error", error);
+    yield put(groupMakeParentMasterSchemaError(error));
   }
 }
 
@@ -309,7 +203,9 @@ export default function* () {
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),
     yield takeLatest(updateGroupMasterSchemaRequest, updateGroup),
-    yield takeLatest(getMasterSchemaOrganizationsRequest.type, getOrganizations),
+    yield takeLatest(fieldMakeParentMasterSchemaRequest, fieldMakeParent),
+    yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
+    yield takeLatest(getMasterSchemaOrganizationsRequest, getOrganizations),
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
   ]);
 }

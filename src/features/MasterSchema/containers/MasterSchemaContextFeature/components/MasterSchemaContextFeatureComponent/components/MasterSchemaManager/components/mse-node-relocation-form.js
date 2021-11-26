@@ -1,19 +1,26 @@
-import React from "react";
 import PropTypes from "prop-types";
+import React, { useMemo } from "react";
+import { useSelector } from "react-redux";
 import { CardTitle, Label } from "reactstrap";
+import { get, pipe, isEqual } from "lodash/fp";
 
 import { preventDefault } from "utility/event-decorators";
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
+
 import MSESelectField from "features/MasterSchema/share/mse-select-field";
+import { selectMasterSchemaOfSelectedOrganization } from "app/selectors/masterSchemaSelectors";
 
 import MSENodeEditorForm from "./mse-node-editor-form";
 
-const MOCK_LOCATIONS = [{ label: "ValidPath.FCA.number", value: "1.2.3" }];
+const nodeToOption = (node) => ({ label: node.path.join("."), value: node });
 
 const MSENodeRelocationForm = ({ node, submitting, onSubmit: propOnSubmit, ...attrs }) => {
-  // Form implementation
-  const [elementLocation, setElementLocation] = useFormField(MOCK_LOCATIONS, [Validators.required]);
-  const form = useFormGroup({ elementLocation });
+  const { root } = useSelector(selectMasterSchemaOfSelectedOrganization);
+  const withParentKey = useMemo(() => pipe(get("value.key"), isEqual(node.parentKey)), [node]);
+  const locationOptions = useMemo(() => [root, ...root.children].filter(get("containable")).map(nodeToOption), [root]);
+  const initialValue = useMemo(() => locationOptions.find(withParentKey), [locationOptions, withParentKey]);
+  const [location, setLocation] = useFormField(initialValue, [Validators.required, Validators.identical(initialValue)]);
+  const form = useFormGroup({ location });
 
   const onSubmit = () => propOnSubmit(form);
 
@@ -21,9 +28,9 @@ const MSENodeRelocationForm = ({ node, submitting, onSubmit: propOnSubmit, ...at
     <MSESelectField
       name="elementLocation"
       placeholder="ValidPath.FCA"
-      options={MOCK_LOCATIONS}
-      {...elementLocation}
-      onChange={setElementLocation}
+      options={locationOptions}
+      {...location}
+      onChange={setLocation}
       label={(id) => (
         <Label for={id}>
           <CardTitle>Move datapoint to:</CardTitle>

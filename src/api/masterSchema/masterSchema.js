@@ -8,18 +8,18 @@ const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
 
 const masterSchemaApi = {
-  async getMasterSchemaOrganizations() {
+  getOrganizations() {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaOrganizationsUrl,
     }).then(flatResponseData, flatResponseError);
   },
 
-  addField({ name, groupId }) {
+  addField({ name, parentId }) {
     return instance({
       method: "POST",
       url: Urls.postMasterSchemaFieldUrl,
-      data: { name, master_schema_group_id: groupId },
+      data: { name, master_schema_group_id: parentId },
     }).then(flatResponseData, flatResponseError);
   },
 
@@ -44,6 +44,22 @@ const masterSchemaApi = {
       method: "PUT",
       url: Urls.putMasterSchemaGroupUrl(id),
       data: { name },
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  fieldMakeParent({ nodeId, parentId }) {
+    return instance({
+      method: "PUT",
+      url: Urls.putMasterSchemaFieldMakeParentUrl(nodeId),
+      data: { master_schema_group_id: parentId },
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  groupMakeParent({ nodeId, parentId }) {
+    return instance({
+      method: "PUT",
+      url: Urls.putMasterSchemaGroupMakeParentUrl(nodeId),
+      data: { parent_id: parentId },
     }).then(flatResponseData, flatResponseError);
   },
 

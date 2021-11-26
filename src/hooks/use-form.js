@@ -4,6 +4,7 @@ import { every, mapValues, isNil } from "lodash/fp";
 // Validator :: <T>(value: T) -> string | true | false
 export const Validators = {
   required: (value) => !!value || "Value is required",
+  identical: (initial) => (value) => initial === value ? "Value should be changed" : true,
 };
 
 const initialValidationState = { valid: null, errors: [] };
@@ -30,6 +31,7 @@ const useFormControl = (value, validators) => {
   return { value, valid, invalid: !valid, errors };
 };
 
+// ToDo: consider, how to reset pristine state on submit.
 // ToDo: consider, is field valid when it is pristine ?
 export const useFormField = (initialValue, validators = []) => {
   const [value, setValue] = useState(initialValue);

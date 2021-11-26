@@ -5,9 +5,9 @@ import React, { useMemo } from "react";
 import MSETreeField from "./mse-tree-field";
 import MSETreeGroup from "./mse-tree-group";
 
-const MSETreeElement = ({ state, onPopupAction, children }) => {
+const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children }) => {
   const { node, expandable, selectable } = state;
-  const toggleSelectable = () => selectable.toggle([node.key]);
+  const onSelect = () => propOnSelect(node.key);
   const toggleExpandable = () => expandable.toggle([node.key]);
   const selected = useMemo(() => selectable.includes(node.key), [node.key, selectable]);
   const className = classNames("ms-elements__node--selectable", {
@@ -21,13 +21,13 @@ const MSETreeElement = ({ state, onPopupAction, children }) => {
       name={node.name}
       expanded={expandable.includes(node.key)}
       onExpandChange={toggleExpandable}
-      onSelectChange={toggleSelectable}
+      onSelectChange={onSelect}
       onPopupAction={onPopupAction}
     >
       {children}
     </MSETreeGroup>
   ) : (
-    <MSETreeField className={className} name={node.name} onSelectChange={toggleSelectable}>
+    <MSETreeField className={className} name={node.name} onSelectChange={onSelect}>
       {children}
     </MSETreeField>
   );
@@ -35,6 +35,7 @@ const MSETreeElement = ({ state, onPopupAction, children }) => {
 
 MSETreeElement.propTypes = {
   state: PropTypes.object.isRequired,
+  onSelect: PropTypes.func,
   onPopupAction: PropTypes.func,
   children: PropTypes.node,
 };

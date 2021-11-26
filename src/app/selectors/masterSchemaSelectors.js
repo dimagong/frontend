@@ -5,6 +5,10 @@ export const selectSelectedOrganization = (state) => {
   return state?.app?.masterSchema.selectedOrganization;
 };
 
+export const selectSelectedKeys = (state) => {
+  return state?.app?.masterSchema.selectedNodes;
+};
+
 export const selectSelectedNodes = (state) => {
   const { root } = selectMasterSchemaOfSelectedOrganization(state);
   return state?.app?.masterSchema.selectedNodes.map((selectedKey) => [root, ...root.children].find(({ key }) => key === selectedKey));

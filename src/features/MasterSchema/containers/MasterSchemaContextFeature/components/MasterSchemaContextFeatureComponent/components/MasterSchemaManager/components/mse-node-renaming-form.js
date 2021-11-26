@@ -10,8 +10,7 @@ import MSENodeEditorForm from "./mse-node-editor-form";
 
 const MSENodeRenamingForm = ({ name: initialName, submitting, onSubmit: propOnSubmit, ...attrs }) => {
   // Form implementation
-  const valueChanged = (initial) => (v) => v === initial ? 'Value should be changed' : true;
-  const [name, setName] = useFormField(initialName, [Validators.required, valueChanged(initialName)]);
+  const [name, setName] = useFormField(initialName, [Validators.required, Validators.identical(initialName)]);
   const form = useFormGroup({ name });
 
   const onSubmit = () => propOnSubmit(form);
