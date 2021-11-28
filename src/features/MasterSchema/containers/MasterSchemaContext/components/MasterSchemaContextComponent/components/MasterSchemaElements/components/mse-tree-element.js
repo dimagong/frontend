@@ -14,7 +14,7 @@ const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children
     "ms-elements__node--selected": selected,
   });
 
-  return node.containable ? (
+  return node.isContainable ? (
     <MSETreeGroup
       className={className}
       id={node.key}

@@ -1,4 +1,3 @@
-import * as yup from "yup";
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import appSlice from "app/slices/appSlice";
@@ -9,9 +8,13 @@ const {
   getMasterSchemaFieldsSuccess,
   getMasterSchemaFieldsError,
 
-  getMasterSchemaOrganizationsRequest,
-  getMasterSchemaOrganizationsSuccess,
-  getMasterSchemaOrganizationsError,
+  getMasterSchemaListRequest,
+  getMasterSchemaListSuccess,
+  getMasterSchemaListError,
+
+  getMasterSchemaHierarchyRequest,
+  getMasterSchemaHierarchySuccess,
+  getMasterSchemaHierarchyError,
 
   addFieldToMasterSchemaRequest,
   addFieldToMasterSchemaSuccess,
@@ -113,14 +116,26 @@ function* getMasterSchemaFields() {
 
 // NEW SAGA  -----------------------------
 
-function* getOrganizations() {
+function* getList() {
   try {
-    const organizations = yield call(masterSchemaApi.getOrganizations);
-    console.log('organizations/api', organizations);
-    yield put(getMasterSchemaOrganizationsSuccess({ organizations }));
+    const list = yield call(masterSchemaApi.getList);
+    console.log("master-schema-list/api", list);
+    yield put(getMasterSchemaListSuccess({ list }));
+    yield all(list.map(({ id }) => call(getHierarchy, { payload: { id } })));
   } catch (error) {
-    console.error('organizations/error', error);
-    yield put(getMasterSchemaOrganizationsError(error.message));
+    console.error("master-schema-list/error", error);
+    yield put(getMasterSchemaListError(error.message));
+  }
+}
+
+function* getHierarchy({ payload: { id, name } }) {
+  try {
+    const hierarchy = yield call(masterSchemaApi.getHierarchy, { id, name });
+    console.log("master-schema-hierarchy/api", hierarchy);
+    yield put(getMasterSchemaHierarchySuccess({ hierarchy }));
+  } catch (error) {
+    console.error("master-schema-hierarchy/error", error);
+    yield put(getMasterSchemaHierarchyError(error.message));
   }
 }
 
@@ -166,7 +181,7 @@ function* updateGroup({ payload }) {
     const group = yield call(masterSchemaApi.updateGroup, { id, name });
     console.log("update_group/api", group);
     yield put(updateGroupMasterSchemaSuccess({ group }));
-    yield call(getOrganizations);
+    yield call(getList);
   } catch (error) {
     console.error("update_group/error", error);
     yield put(updateGroupMasterSchemaError(error));
@@ -191,7 +206,7 @@ function* groupMakeParent({ payload }) {
     const group = yield call(masterSchemaApi.groupMakeParent, { nodeId, parentId });
     console.log("group-make-parent/api", group);
     yield put(groupMakeParentMasterSchemaSuccess({ group }));
-    yield call(getOrganizations);
+    yield call(getList);
   } catch (error) {
     console.error("group-make-parent/error", error);
     yield put(groupMakeParentMasterSchemaError(error));
@@ -200,13 +215,14 @@ function* groupMakeParent({ payload }) {
 
 export default function* () {
   yield all([
+    yield takeLatest(getMasterSchemaListRequest, getList),
+    yield takeLatest(getMasterSchemaHierarchyRequest, getHierarchy),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),
     yield takeLatest(updateGroupMasterSchemaRequest, updateGroup),
     yield takeLatest(fieldMakeParentMasterSchemaRequest, fieldMakeParent),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
-    yield takeLatest(getMasterSchemaOrganizationsRequest, getOrganizations),
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
   ]);
 }

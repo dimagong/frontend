@@ -8,16 +8,19 @@ import { preventDefault } from "utility/event-decorators";
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
 import MSESelectField from "features/MasterSchema/share/mse-select-field";
-import { selectMasterSchemaOfSelectedOrganization } from "app/selectors/masterSchemaSelectors";
+import { selectSelectedMasterSchemaHierarchy } from "app/selectors/masterSchemaSelectors";
 
 import MSENodeEditorForm from "./mse-node-editor-form";
 
 const nodeToOption = (node) => ({ label: node.path.join("."), value: node });
 
 const MSENodeRelocationForm = ({ node, submitting, onSubmit: propOnSubmit, ...attrs }) => {
-  const { root } = useSelector(selectMasterSchemaOfSelectedOrganization);
+  const hierarchy = useSelector(selectSelectedMasterSchemaHierarchy);
   const withParentKey = useMemo(() => pipe(get("value.key"), isEqual(node.parentKey)), [node]);
-  const locationOptions = useMemo(() => [root, ...root.children].filter(get("containable")).map(nodeToOption), [root]);
+  const locationOptions = useMemo(
+    () => [hierarchy, ...hierarchy.children].filter(get("isContainable")).map(nodeToOption),
+    [hierarchy]
+  );
   const initialValue = useMemo(() => locationOptions.find(withParentKey), [locationOptions, withParentKey]);
   const [location, setLocation] = useFormField(initialValue, [Validators.required, Validators.identical(initialValue)]);
   const form = useFormGroup({ location });
@@ -36,7 +39,7 @@ const MSENodeRelocationForm = ({ node, submitting, onSubmit: propOnSubmit, ...at
           <CardTitle>Move datapoint to:</CardTitle>
         </Label>
       )}
-      menuPosition={'fixed'}
+      menuPosition={"fixed"}
     >
       {({ select, label, error }) => (
         <MSENodeEditorForm
