@@ -1,0 +1,40 @@
+.mse-search {
+  background-color: #fff;
+
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &:focus-within {
+    border-color: #7367f0;
+    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  &__input {
+    border: none;
+
+    &:hover,
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &__icon {
+    width: 39px;
+
+    border-radius: 50%;
+    background-color: transparent;
+
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+
+    &:hover,
+    &:focus {
+      outline: none;
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+}

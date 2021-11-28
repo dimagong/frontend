@@ -11,7 +11,7 @@ const { updateFieldMasterSchemaRequest, updateGroupMasterSchemaRequest, fieldMak
   appSlice.actions;
 
 const MasterSchemaManager = () => {
-  const dispatch = useDispatch(selectSelectedNodes);
+  const dispatch = useDispatch();
   const selectedNodes = useSelector(selectSelectedNodes);
   const selectedNode = useMemo(() => selectedNodes[0], [selectedNodes]);
 
@@ -19,9 +19,9 @@ const MasterSchemaManager = () => {
     if (submitted.invalid) return;
 
     const { name } = submitted.values;
-    const { id, containable } = selectedNode;
+    const { id, isContainable } = selectedNode;
     const payload = { id, name };
-    const action = containable ? updateGroupMasterSchemaRequest : updateFieldMasterSchemaRequest;
+    const action = isContainable ? updateGroupMasterSchemaRequest : updateFieldMasterSchemaRequest;
 
     dispatch(action(payload));
   };
@@ -29,10 +29,10 @@ const MasterSchemaManager = () => {
   const onRelocateSubmit = (submitted) => {
     if (submitted.invalid) return;
 
-    const { id, containable } = selectedNode;
+    const { id, isContainable } = selectedNode;
     const { value } = submitted.values.location;
     const payload = { nodeId: id, parentId: value.id };
-    const action = containable ? groupMakeParentMasterSchemaRequest : fieldMakeParentMasterSchemaRequest;
+    const action = isContainable ? groupMakeParentMasterSchemaRequest : fieldMakeParentMasterSchemaRequest;
 
     dispatch(action(payload));
   };

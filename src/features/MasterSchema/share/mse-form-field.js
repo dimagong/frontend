@@ -40,11 +40,12 @@ const MSEFormField = ({ dirty, invalid, errors, label, error, children }) => {
 
 MSEFormField.defaultProps = {
   errors: [],
+  invalid: false,
 };
 
 MSEFormField.propTypes = {
   dirty: PropTypes.bool.isRequired,
-  invalid: PropTypes.bool.isRequired,
+  invalid: PropTypes.bool,
   errors: PropTypes.arrayOf(PropTypes.string),
 
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),

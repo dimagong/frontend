@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { pipe, get, isEqual, pick } from "lodash/fp";
+import { pipe, isEqual, pick, xorBy } from "lodash/fp";
 
 /* Interfaces */
 
@@ -10,7 +10,7 @@ const masterSchemaNodeSchema = {
   parentId: yup.number().required(),
   parentKey: yup.string().required(),
   isSystem: yup.boolean().required(),
-  containable: yup.boolean().required(),
+  isContainable: yup.boolean().required(),
   path: yup.array(yup.string()).required(),
 };
 
@@ -30,39 +30,31 @@ const masterSchemaGroupInterface = yup.object({
 });
 
 // Consider about children as hashmap, will it be faster ?
-const masterSchemaRootInterface = yup.object({
-  ...masterSchemaNodeSchema,
-  ...masterSchemaGroupSchema,
-  children: yup
-    .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
-    .test((v) => Array.isArray(v)),
-  parentKey: yup.string().nullable(),
-  parentId: yup.number().nullable(),
-});
+const masterSchemaHierarchyInterface = yup
+  .object({
+    ...masterSchemaNodeSchema,
+    ...masterSchemaGroupSchema,
+    children: yup
+      .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
+      .test((v) => Array.isArray(v)),
+    parentId: yup.number().nullable(),
+    parentKey: yup.string().nullable(),
+    masterSchemaId: yup.number().required(),
+  });
 
 const masterSchemaInterface = yup
   .object({
-    id: yup.number(),
-    name: yup.string(),
-    root: masterSchemaRootInterface,
-    organizationId: yup.string(),
-  })
-  .required();
+    id: yup.number().required(),
+    name: yup.string().required(),
+    organizationId: yup.number().required(),
+    organizationType: yup.string().required(),
+  });
 
-const organizationInterface = yup
-  .object({
-    id: yup.number(),
-    type: yup.string(),
-    name: yup.string(),
-    masterSchema: masterSchemaInterface,
-  })
-  .required();
-
-const organizationsPayloadInterface = yup.object({ organizations: yup.array(organizationInterface) }).required();
+const masterSchemaListInterface = yup.object({ list: yup.array(masterSchemaInterface).test((v) => Array.isArray(v)) });
 
 /* Serializers */
 
-const serialiseNode = (node, { containable, parent = null, rootChildren = [] }) => {
+const serialiseNode = (node, { isContainable, parent = null, children = [] }) => {
   const { id, parent_id, master_schema_group_id, name, groups, fields, d_form_names, is_system } = node;
   const key = parent ? `${parent.key}/${id}` : id;
   const path = parent ? [...parent.path, name] : [name];
@@ -74,9 +66,9 @@ const serialiseNode = (node, { containable, parent = null, rootChildren = [] }) 
     name,
     path,
     parentKey,
-    containable,
+    isContainable,
     isSystem: is_system,
-    parentId: parent_id ?? master_schema_group_id,
+    parentId: parent_id ?? master_schema_group_id ?? null,
     ...(d_form_names ? { dFormNames: d_form_names } : {}),
   };
 
@@ -84,9 +76,9 @@ const serialiseNode = (node, { containable, parent = null, rootChildren = [] }) 
     serialised.fields = [];
 
     fields.forEach((field) => {
-      const serialisedField = serialiseNode(field, { containable: false, parent: serialised, rootChildren });
+      const serialisedField = serialiseNode(field, { isContainable: false, parent: serialised, children });
 
-      rootChildren.push(serialisedField);
+      children.push(serialisedField);
       serialised.fields.push(serialisedField.key);
     });
   }
@@ -95,9 +87,9 @@ const serialiseNode = (node, { containable, parent = null, rootChildren = [] }) 
     serialised.groups = [];
 
     groups.forEach((group) => {
-      const serialisedGroup = serialiseNode(group, { containable: true, parent: serialised, rootChildren });
+      const serialisedGroup = serialiseNode(group, { isContainable: true, parent: serialised, children });
 
-      rootChildren.push(serialisedGroup);
+      children.push(serialisedGroup);
       serialised.groups.push(serialisedGroup.key);
     });
   }
@@ -105,88 +97,44 @@ const serialiseNode = (node, { containable, parent = null, rootChildren = [] }) 
   return serialised;
 };
 
-const serialiseRoot = (root) => {
-  const rootChildren = [];
-  const serialisedRoot = serialiseNode(root, { containable: true, rootChildren });
+const serialiseMasterSchemaHierarchy = (hierarchy) => {
+  const children = [];
+  const root = serialiseNode(hierarchy, { isContainable: true, children });
 
   return {
-    ...serialisedRoot,
-    children: rootChildren,
+    ...root,
+    children,
+    masterSchemaId: hierarchy.master_schema_id
   };
 };
 
-const serialiseMasterSchema = ({ id, name, organization_id, root }) => {
+const serialiseMasterSchema = ({ id, name, organization_id, organization_type }) => {
   return {
     id,
     name,
-    root: serialiseRoot(root),
     organizationId: organization_id,
+    organizationType: organization_type,
   };
 };
 
-const serialiseOrganization = ({ id, type, name, master_schema }) => {
-  return {
-    id,
-    type,
-    name,
-    masterSchema: serialiseMasterSchema(master_schema),
-  };
-};
-
-const serialiseOrganizationsPayload = ({ organizations = [] }) => {
-  return { organizations: organizations.map(serialiseOrganization) };
-};
+const serialiseMasterSchemaList = (list) => ({ list: list.map(serialiseMasterSchema) });
 
 /* State searchers */
 
-const findMasterSchemaRoot = (state, { id, containable }) => {
-  const nodePredicate = pipe(pick(["containable", "id"]), isEqual({ id, containable }));
+const getPredicateGroupById = (id) => pipe(pick(["isContainable", "id"]), isEqual({ id, isContainable: true }));
+const getPredicateFieldById = (id) => pipe(pick(["isContainable", "id"]), isEqual({ id, isContainable: false }));
 
-  return state.masterSchema.organizations
-    .map(get("masterSchema.root"))
-    .find((root) => root.id === id || root.children.find(nodePredicate));
+const getParentById = (hierarchy, id) => {
+  return hierarchy.id === id ? hierarchy :hierarchy.children.find(getPredicateGroupById(id))
 };
 
-const findMasterSchemaNode = (state, { id, containable }, root) => {
-  const nodePredicate = pipe(pick(["containable", "id"]), isEqual({ id, containable }));
+const getFieldById = (hierarchy, id) => hierarchy.children.find(getPredicateFieldById(id));
 
-  if (root.id === id) return root;
-
-  return root.children.find(nodePredicate);
-  // const rootPredicate = pipe(pick(["id"]), isEqual({ id }));
-  // const nodePredicate = pipe(pick(["containable", "id"]), isEqual({ id, containable }));
-  //
-  // return state.masterSchema.organizations
-  //   .map(get("masterSchema.root"))
-  //   .reduce((parent, root) => {
-  //     if (parent) return parent;
-  //
-  //     if (rootPredicate(root)) return { node: root };
-  //
-  //     const node = root.children.find(nodePredicate);
-  //
-  //     return node ? { node } : null;
-  //   }, null).node;
-};
-
-const findMasterSchemaField = (state, id, root) => findMasterSchemaNode(state, { id, containable: false }, root);
-
-const findMasterSchemaGroup = (state, id, root) => findMasterSchemaNode(state, { id, containable: true }, root);
-
-const findMasterSchemaRootAndParentField = (state, id) => {
-  const type = { id, containable: false };
-  const root = findMasterSchemaRoot(state, type);
-  const parent = findMasterSchemaNode(state, type, root);
-
-  return { root, parent };
-};
-
-const findMasterSchemaRootAndParentGroup = (state, id) => {
-  const type = { id, containable: true };
-  const root = findMasterSchemaRoot(state, type);
-  const parent = findMasterSchemaNode(state, type, root);
-
-  return { root, parent };
+const getHierarchyAndParentByParentId = (state, id) => {
+  return state.masterSchema.hierarchies.reduce(
+    (acc, hierarchy) => (acc.parent ? acc : { parent: getParentById(hierarchy, id), hierarchy }),
+    { hierarchy: null, parent: null }
+  );
 };
 
 const masterSchemaReducer = {
@@ -196,14 +144,36 @@ const masterSchemaReducer = {
     state.masterSchema.fields = payload;
   },
 
-  // ToDo: move it all to its own domain
-  getMasterSchemaOrganizationsSuccess: (state, { payload }) => {
-    const serialised = serialiseOrganizationsPayload(payload);
-    console.log("organizations/serialised", serialised);
-    const valid = organizationsPayloadInterface.validateSync(serialised);
-    console.log("organizations/valid", valid);
+  setSelectedMasterSchema: (state, { payload }) => {
+    state.masterSchema.selectedNodes = [];
+    state.masterSchema.selectedId = payload.id;
+  },
 
-    state.masterSchema.organizations = valid.organizations;
+  setSelectedMasterSchemaNodesKeys(state, { payload }) {
+    state.masterSchema.selectedNodesKeys = payload;
+  },
+
+  getMasterSchemaListSuccess: (state, { payload }) => {
+    const serialised = serialiseMasterSchemaList(payload.list);
+    console.log("master-schema-list/serialised", serialised);
+    const valid = masterSchemaListInterface.validateSync(serialised);
+    console.log("master-schema-list/valid", valid);
+
+    state.masterSchema.list = valid.list;
+
+    state.isLoading = false;
+    state.isError = null;
+  },
+
+  getMasterSchemaHierarchySuccess: (state, { payload }) => {
+    if (payload.hierarchy) {
+      const serialised = serialiseMasterSchemaHierarchy({ ...payload.hierarchy, master_schema_id: payload.id });
+      console.log("master-schema-hierarchy/serialised", serialised);
+      const valid = masterSchemaHierarchyInterface.validateSync(serialised);
+      console.log("master-schema-hierarchy/valid", valid);
+
+      state.masterSchema.hierarchies = xorBy(state.masterSchema.hierarchies, [valid], "id");
+    }
 
     state.isLoading = false;
     state.isError = null;
@@ -211,14 +181,14 @@ const masterSchemaReducer = {
 
   addFieldToMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.field.master_schema_group_id;
-    const { root, parent } = findMasterSchemaRootAndParentField(state, parentId);
+    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
 
-    const serialised = serialiseNode(payload.field, { containable: false, parent });
+    const serialised = serialiseNode(payload.field, { isContainable: false, parent });
     console.log("add_field/serialised", serialised);
     const valid = masterSchemaFieldInterface.validateSync(serialised);
     console.log("add_field/valid", valid);
 
-    root.children.push(valid);
+    hierarchy.children.push(valid);
     parent.fields.push(valid.key);
 
     state.isError = false;
@@ -227,87 +197,78 @@ const masterSchemaReducer = {
 
   addGroupToMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.group.parent_id;
-    const { root, parent } = findMasterSchemaRootAndParentGroup(state, parentId);
+    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
 
-    // fixme: Fix it on response side
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
-    const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { containable: true, parent });
+    const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });
     console.log("add_group/serialised", serialised);
     const valid = masterSchemaGroupInterface.validateSync(serialised);
     console.log("add_group/valid", valid);
 
-    root.children.push(valid);
+    hierarchy.children.push(valid);
     parent.groups.push(valid.key);
   },
 
   updateFieldMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.field.master_schema_group_id;
-    const { root, parent } = findMasterSchemaRootAndParentField(state, parentId);
+    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
 
-    const serialised = serialiseNode(payload.field, { containable: false, parent });
+    const serialised = serialiseNode(payload.field, { isContainable: false, parent });
     console.log("update_field/serialised", serialised);
     const valid = masterSchemaFieldInterface.validateSync(serialised);
     console.log("update_field/valid", valid);
 
-    const field = findMasterSchemaField(state, valid.id, root);
-
-    field.name = valid.name;
+    getFieldById(hierarchy, valid.id).name = valid.name;
   },
 
   updateGroupMasterSchemaSuccess(state, { payload }) {
     // const parentId = payload.group.parent_id;
     // const { root, parent } = findMasterSchemaRootAndParentGroup(state, parentId);
-
     // fixme: Fix it on response side
     // const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
     // const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { containable: true, parent });
     // console.log("update_group/serialised", serialised);
     // const valid = masterSchemaGroupInterface.validateSync(serialised);
     // console.log("update_group/serialised", serialised);
-
     // const group = findMasterSchemaGroup(state, valid.id, root);
-
     // group.name = valid.name;
   },
 
   fieldMakeParentMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.field.master_schema_group_id;
-    const { root, parent } = findMasterSchemaRootAndParentGroup(state, parentId);
+    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
 
-    const serialised = serialiseNode(payload.field, { containable: false, parent });
+    const serialised = serialiseNode(payload.field, { isContainable: false, parent });
     console.log("field-make-parent/serialised", serialised);
     const valid = masterSchemaFieldInterface.validateSync(serialised);
     console.log("field-make-parent/valid", valid);
 
-    const oldField = findMasterSchemaField(state, valid.id, root);
-    const oldParent = findMasterSchemaGroup(state, oldField.parentId, root);
+    const oldField = getFieldById(hierarchy, valid.id);
+    const oldParent = getParentById(hierarchy, oldField.parentId);
 
     parent.fields.push(valid.key);
     oldParent.fields = oldParent.fields.filter((key) => key !== oldField.key);
-    root.children = root.children.map((child) => (child.key === oldField.key ? valid : child));
+    hierarchy.children = hierarchy.children.map((child) => (child.key === oldField.key ? valid : child));
 
-    state.masterSchema.selectedNodes = state.masterSchema.selectedNodes.map((key) =>
+    state.masterSchema.selectedNodesKeys = state.masterSchema.selectedNodesKeys.map((key) =>
       key === oldField.key ? valid.key : key
     );
   },
 
   groupMakeParentMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.group.parent_id;
-    const { root, parent } = findMasterSchemaRootAndParentGroup(state, parentId);
+    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
+    // const { root, parent } = findMasterSchemaRootAndParentGroup(state, parentId);
 
-    // fixme: Fix it on response side
-    // Don't uncomment this!
-    // Now this case will be overridden whole master schema.
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
-    const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC, }, { containable: true, parent });
+    const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });
     console.log("group-make-parent/serialised", serialised);
     const valid = masterSchemaGroupInterface.validateSync(serialised);
     console.log("group-make-parent/valid", valid);
 
-    const oldGroup = findMasterSchemaGroup(state, valid.id, root);
+    const oldGroup = getParentById(hierarchy, valid.id);
     // const oldParent = findMasterSchemaGroup(state, oldGroup.parentId, root);
 
-    // fixme: Fix it on response side
     // valid.fields = oldGroup.fields;
     // valid.groups = oldGroup.groups;
     // root.children = root.children.map((child) => {
@@ -326,16 +287,6 @@ const masterSchemaReducer = {
     state.masterSchema.selectedNodes = state.masterSchema.selectedNodes.map((key) =>
       key === oldGroup.key ? valid.key : key
     );
-  },
-
-  setSelectedMasterSchemaNodes(state, { payload }) {
-    state.masterSchema.selectedNodes = payload;
-  },
-
-  setSelectedOrganizationMasterSchema: (state, { payload }) => {
-    state.masterSchema.selectedNodes = [];
-    state.masterSchema.selectedOrganization = payload;
-
   },
 };
 
