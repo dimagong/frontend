@@ -1,31 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
 
 import {
+  selectSelectedMasterSchemaHierarchy,
   selectUnapprovedFieldsOfSelectedOrganization,
-  selectMasterSchemaOfSelectedOrganization,
 } from "app/selectors/masterSchemaSelectors";
 
 import MasterSchemaContextComponent from "./components/MasterSchemaContextComponent";
 
 const MasterSchemaContext = () => {
-  const dispatch = useDispatch();
-
   const [selectedUnapprovedFields, setSelectedUnapprovedFields] = useState([]);
   const [isListOfUnapprovedElementsVisible, setIsListOfUnapprovedElementsVisible] = useState(true);
 
+  const selectedMasterSchemaHierarchy = useSelector(selectSelectedMasterSchemaHierarchy);
   const selectedOrganizationUnapprovedFields = useSelector(selectUnapprovedFieldsOfSelectedOrganization);
-  const selectedOrganizationMasterSchema = useSelector(selectMasterSchemaOfSelectedOrganization);
-
-
 
   const handleUnapprovedFieldSelect = (field) => {
     setSelectedUnapprovedFields([...selectedUnapprovedFields, field]);
   };
 
   const handleUnapprovedFieldUnselect = (field) => {
-    setSelectedUnapprovedFields(selectedUnapprovedFields.filter(selectedField => selectedField !== field))
+    setSelectedUnapprovedFields(selectedUnapprovedFields.filter((selectedField) => selectedField !== field));
   };
 
   const handleAllUnapprovedFieldsUnselect = () => {
@@ -41,7 +37,7 @@ const MasterSchemaContext = () => {
   };
 
   const handleListOfUnapprovedElementsVisibilityToggle = () => {
-    setIsListOfUnapprovedElementsVisible(!isListOfUnapprovedElementsVisible)
+    setIsListOfUnapprovedElementsVisible(!isListOfUnapprovedElementsVisible);
   };
 
   // Unselect all on organization change
@@ -52,14 +48,14 @@ const MasterSchemaContext = () => {
   return (
     <MasterSchemaContextComponent
       unapprovedFields={selectedOrganizationUnapprovedFields}
-      selectedOrganizationMasterSchema={selectedOrganizationMasterSchema}
+      selectedMasterSchemaHierarchy={selectedMasterSchemaHierarchy}
       selectedUnapprovedFields={selectedUnapprovedFields}
       onUnapprovedFieldClick={handleUnapprovedFieldClick}
       onAllUnapprovedFieldsUnselect={handleAllUnapprovedFieldsUnselect}
       onListOfUnapprovedElementsVisibilityToggle={handleListOfUnapprovedElementsVisibilityToggle}
       isListOfUnapprovedElementsVisible={isListOfUnapprovedElementsVisible}
     />
-  )
+  );
 };
 
 export default MasterSchemaContext;

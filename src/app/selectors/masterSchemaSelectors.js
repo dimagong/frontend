@@ -1,31 +1,34 @@
+import { get, pipe, isEqual } from "lodash/fp";
+
+export const selectMasterSchemaList = (state) => state?.app?.masterSchema.list;
+
 export const selectMasterSchemaFields = (state) => state?.app?.masterSchema.fields;
-export const selectMasterSchemaOrganizations = (state) => state?.app?.masterSchema.organizations;
 
-export const selectSelectedOrganization = (state) => {
-  return state?.app?.masterSchema.selectedOrganization;
-};
+export const selectSelectedNodesKeys = (state) => state?.app?.masterSchema.selectedNodesKeys;
 
-export const selectSelectedKeys = (state) => {
-  return state?.app?.masterSchema.selectedNodes;
-};
+export const selectSelectedId = (state) => state?.app?.masterSchema.selectedId;
 
 export const selectSelectedNodes = (state) => {
-  const { root } = selectMasterSchemaOfSelectedOrganization(state);
-  return state?.app?.masterSchema.selectedNodes.map((selectedKey) => [root, ...root.children].find(({ key }) => key === selectedKey));
+  const selectedNodesKeys = selectSelectedNodesKeys(state);
+  const selectedMasterSchemaHierarchy = selectSelectedMasterSchemaHierarchy(state);
+
+  if (!selectedMasterSchemaHierarchy) return [];
+
+  return selectedNodesKeys.map((key) => selectedMasterSchemaHierarchy.children.find(pipe(get("key"), isEqual(key))));
 };
 
-export const selectMasterSchemaOfSelectedOrganization = (state) => {
-  const selectedOrganizationIdAndType = selectSelectedOrganization(state);
-  const selectedOrganization = state?.app?.masterSchema.organizations.filter(
-    ({ id, type }) => id === selectedOrganizationIdAndType.id && type === selectedOrganizationIdAndType.type
-  )[0];
+export const selectSelectedMasterSchemaHierarchy = (state) => {
+  const { selectedId } = state?.app?.masterSchema;
+  const hierarchies = state?.app?.masterSchema.hierarchies;
 
-  return selectedOrganization.masterSchema;
+  return hierarchies.find(pipe(get("masterSchemaId"), isEqual(selectedId)));
 };
 
 export const selectUnapprovedFieldsOfSelectedOrganization = (state) => {
-  const selectedOrganizationMasterSchema = selectMasterSchemaOfSelectedOrganization(state);
-  const unapproved = selectedOrganizationMasterSchema.root.children.find(({ name }) => name === "Unapproved");
-
-  return selectedOrganizationMasterSchema.root.children.filter(({ key }) => unapproved.fields.includes(key));
+  // ToDo: return unapproved fields as single prop
+  // const selectedOrganizationMasterSchema = selectMasterSchemaOfSelectedOrganization(state);
+  // const unapproved = selectedOrganizationMasterSchema.root.children.find(({ name }) => name === "Unapproved");
+  //
+  // return selectedOrganizationMasterSchema.root.children.filter(({ key }) => unapproved.fields.includes(key));
+  return [];
 };

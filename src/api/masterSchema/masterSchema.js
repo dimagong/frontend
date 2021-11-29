@@ -15,6 +15,24 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
+  getList() {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaListUrl,
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getHierarchy({ id, name }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaHierarchyUrl(id),
+      params: {
+        ...(name ? { name } : {}),
+        hidden_groups: [0],
+      },
+    }).then(flatResponseData, flatResponseError);
+  },
+
   addField({ name, parentId }) {
     return instance({
       method: "POST",

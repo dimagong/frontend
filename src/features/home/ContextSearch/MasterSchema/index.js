@@ -1,44 +1,38 @@
-import React, { useEffect } from 'react';
-
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createLoadingSelector } from "app/selectors/loadingSelector";
 
-import { selectMasterSchemaOrganizations } from "app/selectors/masterSchemaSelectors";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { selectMasterSchemaList } from "app/selectors/masterSchemaSelectors";
 
 import MasterSchemaContextSearchComponent from "./components/MasterSchemaComponent";
 
 import appSlice from "app/slices/appSlice";
 
-const {
-  getMasterSchemaOrganizationsRequest,
-
-  setSelectedOrganizationMasterSchema,
-  setContext,
-} = appSlice.actions;
+const { setContext, setSelectedMasterSchema, getMasterSchemaListRequest } = appSlice.actions;
 
 const MasterSchemaContextSearch = () => {
   const dispatch = useDispatch();
 
-  const masterSchemaOrganizations = useSelector(selectMasterSchemaOrganizations);
-  const isMasterSchemaOrganizationsLoading = useSelector(createLoadingSelector([getMasterSchemaOrganizationsRequest.type]));
+  const masterSchemas = useSelector(selectMasterSchemaList);
+  const isMasterSchemasLoading = useSelector(createLoadingSelector([getMasterSchemaListRequest.type]));
 
-
-  const handleOrganizationSelect = (organization) => {
-    dispatch(setSelectedOrganizationMasterSchema({id: organization.id, type: organization.type}));
+  const handleMasterSchemaSelect = (masterSchema) => {
+    dispatch(setSelectedMasterSchema({ id: masterSchema.id }));
     dispatch(setContext("MasterSchema"));
   };
 
   useEffect(() => {
-    dispatch(getMasterSchemaOrganizationsRequest())
+    dispatch(getMasterSchemaListRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <MasterSchemaContextSearchComponent
-      organizations={masterSchemaOrganizations}
-      isMasterSchemaOrganizationsLoading={isMasterSchemaOrganizationsLoading}
-      onOrganizationSelect={handleOrganizationSelect}
+      masterSchemas={masterSchemas}
+      loading={isMasterSchemasLoading}
+      onMasterSchemaSelect={handleMasterSchemaSelect}
     />
-  )
+  );
 };
 
 export default MasterSchemaContextSearch;

@@ -70,7 +70,10 @@ export const initialState = {
   },
   masterSchema: {
     fields: [],
-    selectedNodes: [],
+    list: [],
+    hierarchies: [],
+    selectedId: null,
+    selectedNodesKeys: [],
   }
 };
 
