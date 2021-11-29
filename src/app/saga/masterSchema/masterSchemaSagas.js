@@ -1,3 +1,4 @@
+import * as yup from "yup";
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import appSlice from "app/slices/appSlice";
@@ -80,11 +81,6 @@ const convertMasterSchemaToFieldsList = (node, list, path = "") => {
 };
 
 function formatMasterSchemaFieldsByOrganization(organizationsByType) {
-  // let organizations = []
-  //   .concat(organizationsByType.corporation)
-  //   .concat(organizationsByType.network)
-  //   .concat(organizationsByType.member_firm);
-
   return formatOrganizationMasterSchema(organizationsByType);
 }
 
@@ -132,7 +128,8 @@ function* getHierarchy({ payload: { id, name } }) {
   try {
     const hierarchy = yield call(masterSchemaApi.getHierarchy, { id, name });
     console.log("master-schema-hierarchy/api", hierarchy);
-    yield put(getMasterSchemaHierarchySuccess({ hierarchy }));
+    // ToDo: redo it later, API should return id itself
+    yield put(getMasterSchemaHierarchySuccess({ hierarchy, id }));
   } catch (error) {
     console.error("master-schema-hierarchy/error", error);
     yield put(getMasterSchemaHierarchyError(error.message));

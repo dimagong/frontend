@@ -39,6 +39,7 @@ const masterSchemaHierarchyInterface = yup
       .test((v) => Array.isArray(v)),
     parentId: yup.number().nullable(),
     parentKey: yup.string().nullable(),
+    masterSchemaId: yup.number().required(),
   });
 
 const masterSchemaInterface = yup
@@ -103,6 +104,7 @@ const serialiseMasterSchemaHierarchy = (hierarchy) => {
   return {
     ...root,
     children,
+    masterSchemaId: hierarchy.master_schema_id
   };
 };
 
@@ -165,8 +167,7 @@ const masterSchemaReducer = {
 
   getMasterSchemaHierarchySuccess: (state, { payload }) => {
     if (payload.hierarchy) {
-      // ToDo: As far as understand, I need to point master schema id to hierarchy. Does it ?
-      const serialised = serialiseMasterSchemaHierarchy(payload.hierarchy);
+      const serialised = serialiseMasterSchemaHierarchy({ ...payload.hierarchy, master_schema_id: payload.id });
       console.log("master-schema-hierarchy/serialised", serialised);
       const valid = masterSchemaHierarchyInterface.validateSync(serialised);
       console.log("master-schema-hierarchy/valid", valid);

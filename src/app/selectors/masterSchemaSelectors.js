@@ -21,7 +21,7 @@ export const selectSelectedMasterSchemaHierarchy = (state) => {
   const { selectedId } = state?.app?.masterSchema;
   const hierarchies = state?.app?.masterSchema.hierarchies;
 
-  return hierarchies.find(pipe(get("id"), isEqual(selectedId)));
+  return hierarchies.find(pipe(get("masterSchemaId"), isEqual(selectedId)));
 };
 
 export const selectUnapprovedFieldsOfSelectedOrganization = (state) => {

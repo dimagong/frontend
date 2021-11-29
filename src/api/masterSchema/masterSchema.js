@@ -28,7 +28,7 @@ const masterSchemaApi = {
       url: Urls.getMasterSchemaHierarchyUrl(id),
       params: {
         ...(name ? { name } : {}),
-        hidden_groups: [1],
+        hidden_groups: [0],
       },
     }).then(flatResponseData, flatResponseError);
   },
