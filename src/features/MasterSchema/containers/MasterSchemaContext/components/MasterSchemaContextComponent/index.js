@@ -1,6 +1,7 @@
 import "./styles.scss";
 
 import React from "react";
+import PropTypes from "prop-types";
 import { isEmpty } from "lodash/fp";
 import { Search } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,12 +23,11 @@ import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
 
 const { getMasterSchemaHierarchyRequest } = appSlice.actions;
 
-const MasterSchemaContextComponent = () => {
+const MasterSchemaContextComponent = ({ state }) => {
   const dispatch = useDispatch();
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
-  const hierarchy = useSelector(masterSchemaSelectors.selectSelectedHierarchy);
 
-  const unapproved = useSelector(masterSchemaSelectors.selectSelectedUnapproved);
+  const { hierarchy, unapproved, selectable } = state;
 
   const [expanded] = useBoolean(true);
   const [search, setSearch] = useFormField("");
@@ -61,9 +61,13 @@ const MasterSchemaContextComponent = () => {
         </MSETextField>
       </div>
 
-      <MasterSchemaElements expanded={expanded} hierarchy={hierarchy} key={hierarchy.name} />
+      <MasterSchemaElements expanded={expanded} selectable={selectable} hierarchy={hierarchy} key={hierarchy.name} />
     </ContextTemplate>
   );
+};
+
+MasterSchemaContextComponent.propTypes = {
+  state: PropTypes.object.isRequired,
 };
 
 export default MasterSchemaContextComponent;

@@ -6,17 +6,6 @@ export const selectSelectedId = (state) => state?.app?.masterSchema.selectedId;
 
 export const selectMasterSchemaFields = (state) => state?.app?.masterSchema.fields;
 
-export const selectSelectedNodesKeys = (state) => state?.app?.masterSchema.selectedNodesKeys;
-
-export const selectSelectedNodes = (state) => {
-  const selectedNodesKeys = selectSelectedNodesKeys(state);
-  const selectedHierarchy = selectSelectedHierarchy(state);
-
-  if (!selectedHierarchy) return [];
-
-  return selectedNodesKeys.map((key) => selectedHierarchy.children.find(pipe(get("key"), isEqual(key))));
-};
-
 export const selectSelectedUnapproved = (state) => {
   const selectedId = selectSelectedId(state);
   const { unapproved } = state?.app?.masterSchema;

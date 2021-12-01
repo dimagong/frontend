@@ -6,16 +6,21 @@ export const useToggleable = (initialKeys = []) => {
   const isEmpty = useMemo(() => keys.length === 0, [keys]);
 
   const clear = () => setKeys([]);
+  // :: string -> void
+  const select = (toSelect) => setKeys((prev) => xor(prev, [toSelect]));
   // :: string[] -> void
-  const toggle = (toSelect) => setKeys((prev) => xor(prev, toSelect));
+  const toggle = (toSelectMany) => setKeys((prev) => xor(prev, toSelectMany));
+  // :: string -> boolean
   const includes = useCallback((key) => keys.includes(key), [keys]);
 
   return {
     keys,
+    isEmpty,
+
     clear,
     toggle,
+    select,
     setKeys,
     includes,
-    isEmpty,
   };
 };

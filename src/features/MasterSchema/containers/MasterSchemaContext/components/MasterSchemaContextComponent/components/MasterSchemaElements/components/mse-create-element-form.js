@@ -10,7 +10,7 @@ import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 
 // const computeOptionsFromArray = (array) => array.map((value) => ({ label: value, value }));
 
-const MSECreateElementForm = ({ submitting, onSubmit: propOnSubmit }) => {
+const MSECreateElementForm = ({ placeholder, submitting, onSubmit: propOnSubmit }) => {
   const [name, setName] = useFormField("", [Validators.required]);
   // Next Feature Update
   // const [elementTypeOptions] = useState(computeOptionsFromArray(["select", "text"]));
@@ -26,7 +26,7 @@ const MSECreateElementForm = ({ submitting, onSubmit: propOnSubmit }) => {
           <MSETextField
             label="Element location and name"
             name="name"
-            placeholder="MS.ValidPath.bio.firstName"
+            placeholder={placeholder}
             onChange={({ target }) => setName(target.value)}
             {...name}
           />
@@ -61,6 +61,7 @@ const MSECreateElementForm = ({ submitting, onSubmit: propOnSubmit }) => {
 };
 
 MSECreateElementForm.propTypes = {
+  placeholder: PropTypes.string.isRequired,
   submitting: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
