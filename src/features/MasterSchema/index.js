@@ -18,7 +18,9 @@ const MasterSchema = () => {
 
   const selected = useMemo(() => {
     const nodes = [hierarchy, ...hierarchy.children];
-    const selectedNodes = selectable.keys.map((nodeId) => nodes.find(pipe(get("nodeId"), isEqual(nodeId))));
+    const selectedNodes = selectable.keys
+      .map((nodeId) => nodes.find(pipe(get("nodeId"), isEqual(nodeId))))
+      .filter(Boolean);
     const selectedFields = selectedNodes.filter(pipe(get("isContainable"), (v) => !v));
     const selectedGroups = selectedNodes.filter(get("isContainable"));
 
