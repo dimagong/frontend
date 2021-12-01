@@ -1,21 +1,20 @@
 import "./styles.scss";
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Search } from "@material-ui/icons";
 
 import appSlice from "app/slices/appSlice";
 import { useBoolean } from "hooks/use-boolean";
 import ContextTemplate from "components/ContextTemplate";
-import { preventDefault } from "utility/event-decorators";
-import { useFormField, useFormGroup } from "hooks/use-form";
-import MSETextField from "features/MasterSchema/share/mse-text-field";
 import { selectSelectedId } from "app/selectors/masterSchemaSelectors";
 
 import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
+import SearchAndFilter from "components/SearchAndFilter";
+import {selectdForms} from "app/selectors";
+import _ from "lodash";
 
-const { getMasterSchemaHierarchyRequest } = appSlice.actions;
+const { getMasterSchemaHierarchyRequest, getdFormsRequest } = appSlice.actions;
 
 const MasterSchemaContextComponent = ({
   unapprovedFields,
@@ -28,19 +27,39 @@ const MasterSchemaContextComponent = ({
 }) => {
   const dispatch = useDispatch();
   const selectedId = useSelector(selectSelectedId);
+  const [currSearchName, setCurrSearchName] = useState('');
+  const [currFilterOptions, setCurrFilterOptions] = useState([]);
+  const allDForms = useSelector(selectdForms);
 
   const [expanded] = useBoolean(true);
-  const [search, setSearch] = useFormField("");
-  const searchForm = useFormGroup({ search });
 
-  const onSearchChange = (event) => {
-    setSearch(event.target.value);
+
+  const onSearchSubmit = (searchName) => {
+    let currSearch = searchName.hasOwnProperty('target') ?  searchName.target.value : searchName;
+    const payload = { id: selectedId, name: currSearch, application_ids: currFilterOptions };
+    dispatch(getMasterSchemaHierarchyRequest(payload));
+    setCurrSearchName(currSearch);
   };
 
-  const onSearchSubmit = preventDefault(() => {
-    const payload = { id: selectedId, name: searchForm.values.search };
+  const onFilterSubmit = (filterOptions, filter) => {
+    let application_ids = _.intersectionBy(allDForms.filter(item =>
+        item.groups.filter(group => group.name === selectedMasterSchemaHierarchy.name).length > 0),
+        filter.applications.map(item => {return {name: item}}), 'name').map(item => item.id);
+    const payload = { id: selectedId, name: currSearchName, application_ids: application_ids };
     dispatch(getMasterSchemaHierarchyRequest(payload));
-  });
+    setCurrFilterOptions(application_ids);
+  };
+
+  const onFilterCancel = () => {
+    const payload = { id: selectedId, name: currSearchName, application_ids: [] };
+    dispatch(getMasterSchemaHierarchyRequest(payload));
+    setCurrFilterOptions([]);
+  }
+
+  useEffect(() => {
+    dispatch(getdFormsRequest())
+  }, [])
+
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
@@ -55,26 +74,24 @@ const MasterSchemaContextComponent = ({
         />
       )}
 
-      <div className="mb-2">
-        <MSETextField onChange={onSearchChange} name="search" value={search.value} className="mse-search__input">
-          {({ input }) => (
-            <form onSubmit={onSearchSubmit}>
-              <div className="mse-search d-flex">
-                <button className="mse-search__icon" type="submit" tabIndex="0" aria-label="search">
-                  <Search />
-                </button>
-                {input}
-              </div>
-            </form>
-          )}
-        </MSETextField>
-      </div>
+      <SearchAndFilter
+        handleSearch={onSearchSubmit}
+        onCancelFilter={onFilterCancel}
+        filterTypes={{applications: allDForms.filter(item =>
+            item.groups.filter(group => group.name === selectedMasterSchemaHierarchy.name).length > 0)
+            .map(item => item.name)}}
+        applyFilter={onFilterSubmit}
+        isCalendar
+        onCalendarChange={() => {}}
+      />
 
-      <MasterSchemaElements
+      {selectedMasterSchemaHierarchy?.id
+        ? <MasterSchemaElements
         expanded={expanded}
         hierarchy={selectedMasterSchemaHierarchy}
         key={selectedMasterSchemaHierarchy.name}
       />
+      : <h2>Nothing was found for your query</h2>}
     </ContextTemplate>
   );
 };

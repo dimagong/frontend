@@ -57,8 +57,9 @@ const SearchAndFilter = (props) => {
 
     if (isFilterEmpty) {
       onCancelFilter();
+    } else {
+      applyFilterCustom(dataToFilter, clearedFilter);
     }
-    applyFilter(dataToFilter, clearedFilter);
     setFooterText(clearedFooterText);
     setFilter(clearedFilter);
     setAppliedFilter(clearedFilter);
@@ -114,6 +115,7 @@ const SearchAndFilter = (props) => {
               className="form-control"
               filterKey="name"
               onChange={handleSearch}
+              onEnter={handleSearch}
               suggestionLimit={4}
               defaultSuggestions={false}
               customRender={() => {}}

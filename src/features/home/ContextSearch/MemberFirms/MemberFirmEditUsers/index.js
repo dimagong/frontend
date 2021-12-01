@@ -22,7 +22,7 @@ const MemberFirmEditUsers = ({isModalOpen, setIsModalOpen, members, potentialMem
   const [userToDelete, setUserToDelete] = useState({});
   const [currUser, setCurrUser] = useState({});
 
-  const filterTypes = {qfr: ['321', '232'], qw: ['1', '2'], roles: ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']}
+  const filterTypes = {roles: ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead']}
 
   const removeUser = (user) => {
     dispatch(
