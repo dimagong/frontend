@@ -175,9 +175,9 @@ const masterSchemaReducer = {
 
   getMasterSchemaListSuccess: (state, { payload }) => {
     const serialised = serialiseMasterSchemaList(payload.list);
-    console.log("master-schema-list/serialised", serialised);
+    // console.log("master-schema-list/serialised", serialised);
     const valid = masterSchemaListInterface.validateSync(serialised);
-    console.log("master-schema-list/valid", valid);
+    // console.log("master-schema-list/valid", valid);
 
     state.masterSchema.list = valid.list;
 
@@ -188,7 +188,7 @@ const masterSchemaReducer = {
   getMasterSchemaHierarchySuccess: (state, { payload }) => {
     if (payload.hierarchy) {
       const serialised = serialiseMasterSchemaHierarchy({ ...payload.hierarchy, master_schema_id: payload.id });
-      console.log("master-schema-hierarchy/serialised", serialised);
+      // console.log("master-schema-hierarchy/serialised", serialised);
       const valid = masterSchemaHierarchyInterface.validateSync(serialised);
 
       state.masterSchema.hierarchies = xorBy(state.masterSchema.hierarchies, [valid], "id");
@@ -206,9 +206,9 @@ const masterSchemaReducer = {
     const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
 
     const serialised = serialiseNode(payload.field, { isContainable: false, parent });
-    console.log("add_field/serialised", serialised);
+    // console.log("add_field/serialised", serialised);
     const valid = masterSchemaFieldInterface.validateSync(serialised);
-    console.log("add_field/valid", valid);
+    // console.log("add_field/valid", valid);
 
     hierarchy.children.push(valid);
     parent.fields.push(valid.key);
@@ -223,9 +223,9 @@ const masterSchemaReducer = {
 
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
     const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });
-    console.log("add_group/serialised", serialised);
+    // console.log("add_group/serialised", serialised);
     const valid = masterSchemaGroupInterface.validateSync(serialised);
-    console.log("add_group/valid", valid);
+    // console.log("add_group/valid", valid);
 
     hierarchy.children.push(valid);
     parent.groups.push(valid.key);
@@ -239,9 +239,9 @@ const masterSchemaReducer = {
     const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
 
     const serialised = serialiseNode(payload.field, { isContainable: false, parent });
-    console.log("update_field/serialised", serialised);
+    // console.log("update_field/serialised", serialised);
     const valid = masterSchemaFieldInterface.validateSync(serialised);
-    console.log("update_field/valid", valid);
+    // console.log("update_field/valid", valid);
 
     getFieldById(hierarchy, valid.id).name = valid.name;
 
@@ -269,9 +269,9 @@ const masterSchemaReducer = {
     const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
 
     const serialised = serialiseNode(payload.field, { isContainable: false, parent });
-    console.log("field-make-parent/serialised", serialised);
+    // console.log("field-make-parent/serialised", serialised);
     const valid = masterSchemaFieldInterface.validateSync(serialised);
-    console.log("field-make-parent/valid", valid);
+    // console.log("field-make-parent/valid", valid);
 
     const oldField = getFieldById(hierarchy, valid.id);
     const oldParent = getParentById(hierarchy, oldField.parentId);
@@ -310,9 +310,9 @@ const masterSchemaReducer = {
 
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
     const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });
-    console.log("group-make-parent/serialised", serialised);
+    // console.log("group-make-parent/serialised", serialised);
     const valid = masterSchemaGroupInterface.validateSync(serialised);
-    console.log("group-make-parent/valid", valid);
+    // console.log("group-make-parent/valid", valid);
 
     // const oldGroup = getParentById(hierarchy, valid.id);
     // const oldParent = findMasterSchemaGroup(state, oldGroup.parentId, root);
@@ -338,9 +338,9 @@ const masterSchemaReducer = {
 
   setUnapprovedMasterSchemaSuccess(state, { payload }) {
     const serialised = serialiseUnapproved({ ...payload.unapproved, master_schema_id: payload.id });
-    console.log("unapproved/serialised", serialised);
+    // console.log("unapproved/serialised", serialised);
     const valid = masterSchemaUnapprovedInterface.validateSync(serialised);
-    console.log("unapproved/valid", valid);
+    // console.log("unapproved/valid", valid);
 
     state.masterSchema.unapproved[payload.id] = valid;
     state.isError = false;
