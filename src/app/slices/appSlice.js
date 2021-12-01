@@ -74,7 +74,6 @@ export const initialState = {
     unapproved: {},
     hierarchies: [],
     selectedId: null,
-    selectedNodesKeys: [],
   }
 };
 

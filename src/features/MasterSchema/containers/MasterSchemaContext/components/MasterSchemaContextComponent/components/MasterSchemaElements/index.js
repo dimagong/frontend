@@ -1,7 +1,7 @@
 import "./styles.scss";
 
+import { get } from "lodash/fp";
 import PropTypes from "prop-types";
-import { xor, get } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -14,24 +14,32 @@ import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
-import { selectSelectedNodesKeys } from "app/selectors/masterSchemaSelectors";
 
 import MSETreeElement from "./components/mse-tree-element";
 import MSETreeNodeList from "./components/mse-tree-node-list";
 import { ADD_FIELD, ADD_GROUP } from "./mse-addition-actions";
 import MSECreateElementForm from "./components/mse-create-element-form";
 
-const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest, setSelectedMasterSchemaNodesKeys } =
-  appSlice.actions;
+const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlice.actions;
 
 const getKey = ({ key }) => key;
 
-const MasterSchemaElements = ({ hierarchy, expanded }) => {
+const creatationTitle = (type) => {
+  switch (type) {
+    case ADD_FIELD:
+      return "New Element";
+    case ADD_GROUP:
+      return "New Category";
+    default:
+      throw new Error("Unexpected element addition type.");
+  }
+};
+
+const MasterSchemaElements = ({ selectable, hierarchy, expanded }) => {
   const dispatch = useDispatch();
   const loading = useSelector(
     createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true)
   );
-  const selectedNodesKeys = useSelector(selectSelectedNodesKeys);
 
   const tree = useTreeData({
     items: [hierarchy],
@@ -39,10 +47,8 @@ const MasterSchemaElements = ({ hierarchy, expanded }) => {
     getChildren: ({ isContainable, fields, groups }) =>
       isContainable ? hierarchy.children.filter(({ key }) => [...groups, ...fields].includes(key)) : [],
   });
-  // ToDo: refactor it may cause unhandled cases
-  const [addTo, setAddTo] = useState(null);
-  const selectable = useToggleable(selectedNodesKeys);
   const expandable = useToggleable([]);
+  const [addTo, setAddTo] = useState(null);
 
   const [modal, openModal, closeModal] = useBoolean(false);
 
@@ -63,8 +69,6 @@ const MasterSchemaElements = ({ hierarchy, expanded }) => {
 
   const onSubmitCreateElement = (submitted) => {
     if (submitted.invalid) return;
-    // ToDo: consider about react-toast here
-    if (!addTo) throw new Error("Unexpected form submitting.");
 
     const { id } = addTo.node;
     const { name } = submitted.values;
@@ -82,29 +86,22 @@ const MasterSchemaElements = ({ hierarchy, expanded }) => {
     }
 
     closeModal();
+    setAddTo(null);
   };
 
-  const onNodeSelect = (key) => {
-    // ToDo: Consider how to use useToggleable in this case
-    const selected = xor(selectable.keys, [key]);
-    dispatch(setSelectedMasterSchemaNodesKeys(selected));
-  };
+  const onNodeSelect = (key) => selectable.toggle([key]);
 
-  const foldAll = useCallback(() => expandable.setKeys([]), [expandable]);
-  const expandAll = useCallback(
-    () => expandable.setKeys([hierarchy, ...hierarchy.children].map(get("key"))),
-    [expandable, hierarchy]
-  );
+  const foldAll = useCallback(() => expandable.clear(), [expandable]);
+  const getHierarchyKeys = useCallback(() => [hierarchy, ...hierarchy.children].map(get("key")), [hierarchy]);
+  const expandAll = useCallback(() => expandable.setKeys(getHierarchyKeys), [expandable, getHierarchyKeys]);
 
-  // Effect only on props
+  // Effect only on expanded change
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => void (expanded ? expandAll : foldAll)(), [expanded]);
 
   // Tree needs to be updated only when items change. Or it'll cause a stack overflow
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => void tree.update([hierarchy]), [hierarchy]);
-
-  useEffect(() => void selectable.setKeys(selectedNodesKeys), [selectable, selectedNodesKeys]);
 
   return (
     <div className="ms-elements">
@@ -122,9 +119,15 @@ const MasterSchemaElements = ({ hierarchy, expanded }) => {
         )}
       />
 
-      <SurveyModal isOpen={modal} title="New Element" onClose={closeModal} actions={false}>
-        <MSECreateElementForm submitting={loading} onSubmit={onSubmitCreateElement} />
-      </SurveyModal>
+      {addTo && (
+        <SurveyModal isOpen={modal} title={creatationTitle(addTo.type)} onClose={closeModal} actions={false}>
+          <MSECreateElementForm
+            submitting={loading}
+            placeholder={addTo.node.path.join(",")}
+            onSubmit={onSubmitCreateElement}
+          />
+        </SurveyModal>
+      )}
     </div>
   );
 };
@@ -134,8 +137,9 @@ MasterSchemaElements.defaultProps = {
 };
 
 MasterSchemaElements.propTypes = {
-  expanded: PropTypes.bool,
   hierarchy: PropTypes.object.isRequired,
+  selectable: PropTypes.object.isRequired,
+  expanded: PropTypes.bool,
 };
 
 export default MasterSchemaElements;

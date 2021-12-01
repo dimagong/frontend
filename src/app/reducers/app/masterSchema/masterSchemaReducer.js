@@ -278,17 +278,13 @@ const masterSchemaReducer = {
     oldParent.fields = oldParent.fields.filter((key) => key !== oldField.key);
     hierarchy.children = hierarchy.children.map((child) => (child.key === oldField.key ? valid : child));
 
-    state.masterSchema.selectedNodesKeys = state.masterSchema.selectedNodesKeys.map((key) =>
-      key === oldField.key ? valid.key : key
-    );
-
     state.isError = false;
     state.isLoading = false;
   },
 
   groupMakeParentMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.group.parent_id;
-    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
+    const { parent } = getHierarchyAndParentByParentId(state, parentId);
 
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
     const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });
@@ -296,7 +292,7 @@ const masterSchemaReducer = {
     const valid = masterSchemaGroupInterface.validateSync(serialised);
     console.log("group-make-parent/valid", valid);
 
-    const oldGroup = getParentById(hierarchy, valid.id);
+    // const oldGroup = getParentById(hierarchy, valid.id);
     // const oldParent = findMasterSchemaGroup(state, oldGroup.parentId, root);
 
     // valid.fields = oldGroup.fields;
@@ -314,10 +310,6 @@ const masterSchemaReducer = {
     // oldParent.groups = oldParent.groups.filter((key) => key !== oldGroup.key);
     // root.children = root.children.map((child) => (child.key === oldGroup.key ? valid : child));
 
-    state.masterSchema.selectedNodes = state.masterSchema.selectedNodes.map((key) =>
-      key === oldGroup.key ? valid.key : key
-    );
-
     state.isError = false;
     state.isLoading = false;
   },
@@ -334,7 +326,7 @@ const masterSchemaReducer = {
   },
 
   approveUnapprovedFieldsSuccess(state, { payload }) {
-    const { fields, masterSchemaId, fieldsIds } = payload;
+    const { masterSchemaId, fieldsIds } = payload;
     const oldUnapprovedFields = state.masterSchema.unapproved[masterSchemaId];
 
     oldUnapprovedFields.fields = oldUnapprovedFields.fields.filter(pipe(get("id"), includes(fieldsIds)));

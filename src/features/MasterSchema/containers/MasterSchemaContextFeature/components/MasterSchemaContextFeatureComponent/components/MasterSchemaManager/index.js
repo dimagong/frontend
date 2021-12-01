@@ -1,8 +1,9 @@
-import React, { useMemo } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
-import { selectMovementOptions, selectSelectedNodes } from "app/selectors/masterSchemaSelectors";
+import { selectMovementOptions } from "app/selectors/masterSchemaSelectors";
 
 import MSENodeRenamingForm from "./components/mse-node-renaming-form";
 import MSENodeRelocationForm from "./components/mse-node-relocation-form";
@@ -14,18 +15,16 @@ const {
   groupMakeParentMasterSchemaRequest,
 } = appSlice.actions;
 
-const MasterSchemaManager = () => {
+const MasterSchemaManager = ({ state }) => {
+  const { selected } = state;
   const dispatch = useDispatch();
-  const selectedNodes = useSelector(selectSelectedNodes);
   const movementOptions = useSelector(selectMovementOptions);
-
-  const selectedNode = useMemo(() => selectedNodes[0], [selectedNodes]);
 
   const onRenameSubmit = (submitted) => {
     if (submitted.invalid) return;
 
     const { name } = submitted.values;
-    const { id, isContainable } = selectedNode;
+    const { id, isContainable } = selected.node;
     const payload = { id, name };
     const action = isContainable ? updateGroupMasterSchemaRequest : updateFieldMasterSchemaRequest;
 
@@ -35,7 +34,7 @@ const MasterSchemaManager = () => {
   const onRelocateSubmit = (submitted) => {
     if (submitted.invalid) return;
 
-    const { id, isContainable } = selectedNode;
+    const { id, isContainable } = selected.node;
     const { value } = submitted.values.location;
     const payload = { nodeId: id, parentId: value.id };
     const action = isContainable ? groupMakeParentMasterSchemaRequest : fieldMakeParentMasterSchemaRequest;
@@ -43,12 +42,75 @@ const MasterSchemaManager = () => {
     dispatch(action(payload));
   };
 
-  return selectedNodes.length === 1 && selectedNode && !selectedNode.isSystem ? (
-    <>
-      <MSENodeRenamingForm className="my-2" name={selectedNode.name} submitting={false} onSubmit={onRenameSubmit} />
-      <MSENodeRelocationForm className="my-2" node={selectedNode} options={movementOptions} submitting={false} onSubmit={onRelocateSubmit} />
-    </>
-  ) : null;
+  const render = () => {
+    // ToDo: handle multiple fields managing
+    // if (selected.fields > 1) {
+    //   return (
+    //     <>
+    //       <div>Manage datapoints</div>
+    //       <MSENodeRelocationForm
+    //         className="my-2"
+    //         node={selected.node}
+    //         options={movementOptions}
+    //         submitting={false}
+    //         onSubmit={onRelocateSubmit}
+    //       />
+    //     </>
+    //   );
+    // }
+
+    if (selected.node && selected.node.isSystem) return null;
+
+    if (selected.field) {
+      return (
+        <>
+          <div className="context-feature-template_header_title">Manage Datapoint</div>
+          <MSENodeRenamingForm
+            className="my-2"
+            name={selected.field.name}
+            submitting={false}
+            onSubmit={onRenameSubmit}
+          />
+          <MSENodeRelocationForm
+            className="my-2"
+            node={selected.field}
+            options={movementOptions}
+            submitting={false}
+            onSubmit={onRelocateSubmit}
+          />
+        </>
+      );
+    }
+
+    if (selected.group) {
+      return (
+        <>
+          <div className="context-feature-template_header_title">Manage Branch</div>
+          <MSENodeRenamingForm
+            className="my-2"
+            name={selected.group.name}
+            submitting={false}
+            onSubmit={onRenameSubmit}
+          />
+          <MSENodeRelocationForm
+            className="my-2"
+            node={selected.group}
+            options={movementOptions}
+            submitting={false}
+            onSubmit={onRelocateSubmit}
+          />
+        </>
+      );
+    }
+
+    return null;
+  };
+
+  return render();
+};
+
+MasterSchemaManager.propTypes = {
+  state: PropTypes.object.isRequired,
 };
 
 export default MasterSchemaManager;
