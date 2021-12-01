@@ -5,13 +5,19 @@ import { CardTitle, Label, Row, Col } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import MSEButton from 'features/MasterSchema/share/mse-button';
+import MSEButton from "features/MasterSchema/share/mse-button";
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 import MSESelectField from "features/MasterSchema/share/mse-select-field";
 
-const MSENodeRelocationForm = ({ node, options, submitting, onSubmit: propOnSubmit, ...attrs }) => {
-  const withParentKey = useMemo(() => pipe(get("value.key"), isEqual(node.parentKey)), [node]);
-  const initialValue = useMemo(() => options.find(withParentKey), [options, withParentKey]);
+const MSENodeRelocationForm = ({ node, multiple, options, submitting, label, action, onSubmit: propOnSubmit, ...attrs }) => {
+  const withParentKey = useMemo(
+    () => (multiple ? () => {} : pipe(get("value.key"), isEqual(node.parentKey))),
+    [multiple, node]
+  );
+  const initialValue = useMemo(
+    () => (multiple ? null : options.find(withParentKey)),
+    [multiple, options, withParentKey]
+  );
 
   const [location, setLocation] = useFormField(initialValue, [Validators.required, Validators.identical(initialValue)]);
   const form = useFormGroup({ location });
@@ -27,7 +33,7 @@ const MSENodeRelocationForm = ({ node, options, submitting, onSubmit: propOnSubm
       menuPosition={"fixed"}
       label={(id) => (
         <Label for={id}>
-          <CardTitle>Move datapoint to:</CardTitle>
+          <CardTitle>{label}</CardTitle>
         </Label>
       )}
     >
@@ -49,7 +55,7 @@ const MSENodeRelocationForm = ({ node, options, submitting, onSubmit: propOnSubm
                   type="submit"
                   disabled={form.invalid}
                 >
-                  Move
+                  {action}
                 </MSEButton>
               </Col>
             </Row>
@@ -62,13 +68,17 @@ const MSENodeRelocationForm = ({ node, options, submitting, onSubmit: propOnSubm
 };
 
 MSENodeRelocationForm.defaultProps = {
+  multiple: false,
   submitting: false,
 };
 
 MSENodeRelocationForm.propTypes = {
-  node: PropTypes.object.isRequired,
+  node: PropTypes.object,
+  multiple: PropTypes.bool,
   options: PropTypes.array.isRequired,
   submitting: PropTypes.bool,
+  label: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 

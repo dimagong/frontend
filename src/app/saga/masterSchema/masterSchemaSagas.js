@@ -36,6 +36,10 @@ const {
   fieldMakeParentMasterSchemaSuccess,
   fieldMakeParentMasterSchemaError,
 
+  fieldsMakeParentMasterSchemaRequest,
+  fieldsMakeParentMasterSchemaSuccess,
+  fieldsMakeParentMasterSchemaError,
+
   groupMakeParentMasterSchemaRequest,
   groupMakeParentMasterSchemaSuccess,
   groupMakeParentMasterSchemaError,
@@ -217,6 +221,19 @@ function* fieldMakeParent({ payload }) {
   }
 }
 
+function* fieldsMakeParent({ payload }) {
+  const { masterSchemaId, parentId, fieldsIds } = payload;
+  try {
+    const fields = yield call(masterSchemaApi.fieldsMakeParent, { parentId, fieldsIds });
+    console.log("fields-make-parent/api", fields);
+    yield put(fieldsMakeParentMasterSchemaSuccess({ fields, masterSchemaId, fieldsIds }));
+    yield call(getList);
+  } catch (error) {
+    console.error("fields-make-parent/error", error);
+    yield put(fieldsMakeParentMasterSchemaError(error));
+  }
+}
+
 function* groupMakeParent({ payload }) {
   const { nodeId, parentId } = payload;
   try {
@@ -254,6 +271,7 @@ export default function* () {
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),
     yield takeLatest(updateGroupMasterSchemaRequest, updateGroup),
     yield takeLatest(fieldMakeParentMasterSchemaRequest, fieldMakeParent),
+    yield takeLatest(fieldsMakeParentMasterSchemaRequest, fieldsMakeParent),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
   ]);

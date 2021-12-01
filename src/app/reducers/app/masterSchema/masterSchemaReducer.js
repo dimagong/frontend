@@ -284,6 +284,26 @@ const masterSchemaReducer = {
     state.isLoading = false;
   },
 
+  fieldsMakeParentMasterSchemaSuccess(state, { payload }) {
+    // const parentId = payload.field.master_schema_group_id;
+    // const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
+    //
+    // const serialised = serialiseNode(payload.field, { isContainable: false, parent });
+    // console.log("field-make-parent/serialised", serialised);
+    // const valid = masterSchemaFieldInterface.validateSync(serialised);
+    // console.log("field-make-parent/valid", valid);
+    //
+    // const oldField = getFieldById(hierarchy, valid.id);
+    // const oldParent = getParentById(hierarchy, oldField.parentId);
+    //
+    // parent.fields.push(valid.key);
+    // oldParent.fields = oldParent.fields.filter((key) => key !== oldField.key);
+    // hierarchy.children = hierarchy.children.map((child) => (child.key === oldField.key ? valid : child));
+
+    state.isError = false;
+    state.isLoading = false;
+  },
+
   groupMakeParentMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.group.parent_id;
     const { parent } = getHierarchyAndParentByParentId(state, parentId);
