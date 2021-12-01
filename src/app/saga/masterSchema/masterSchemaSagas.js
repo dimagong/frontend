@@ -132,9 +132,9 @@ function* getList() {
   }
 }
 
-function* getHierarchy({ payload: { id, name } }) {
+function* getHierarchy({ payload: { id, name, application_ids } }) {
   try {
-    const hierarchy = yield call(masterSchemaApi.getHierarchy, { id, name });
+    const hierarchy = yield call(masterSchemaApi.getHierarchy, { id, name, application_ids });
     console.log("master-schema-hierarchy/api", hierarchy);
     // ToDo: redo it later, API should return id itself
     yield put(getMasterSchemaHierarchySuccess({ hierarchy, id }));

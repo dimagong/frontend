@@ -12,7 +12,6 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import FilterOptions from "./FilterOptions";
 import {useSelector} from "react-redux";
 import {selectFilters, selectFiltersId} from "app/selectors/userSelectors";
-import SavedFilters from "features/home/ContextSearch/ContextSearchNav/Filters/SavedFilters";
 import {useOutsideAlerter} from "hooks/useOutsideAlerter";
 import {arrayToString, filterToText, getFilterTypes, getDefaultFilterOutput} from "./FilterHelper";
 
@@ -35,9 +34,6 @@ const FilterModal = (props) => {
     applyFilterCustom,
     setAppliedFilter
   } = props;
-
-  const userFilters = useSelector(selectFilters);
-  const userFiltersId = useSelector(selectFiltersId);
 
   const [appliedFilters, setAppliedFilters] = useState({roles: [], organizations: [], memberFirms: [], sort: -1});
   const [activeFilter, setActiveFilter] = useState();
@@ -205,22 +201,6 @@ const FilterModal = (props) => {
                       </span>
                     </Col>
                   </Row>
-                </ListGroupItem>
-                <ListGroupItem>
-                  <SavedFilters
-                    userFilters={userFilters}
-                    filter={filter}
-                    setFilter={setFilter}
-                    initialFilter={initialFilter}
-                    changeFooter={changeFooterText}
-                    activeFilter={activeFilter}
-                    setActiveFilter={setActiveFilter}
-                    filterName={filterName}
-                    setFilterName={setFilterName}
-                    isDeleteModalOpen={isDeleteModalOpen}
-                    setIsDeleteModalOpen={setIsDeleteModalOpen}
-                    userFiltersId={userFiltersId}
-                  />
                 </ListGroupItem>
                 <ListGroupItem>
                   {footer()}

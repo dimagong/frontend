@@ -188,9 +188,11 @@ const masterSchemaReducer = {
       const serialised = serialiseMasterSchemaHierarchy({ ...payload.hierarchy, master_schema_id: payload.id });
       console.log("master-schema-hierarchy/serialised", serialised);
       const valid = masterSchemaHierarchyInterface.validateSync(serialised);
-      console.log("master-schema-hierarchy/valid", valid);
 
       state.masterSchema.hierarchies = xorBy(state.masterSchema.hierarchies, [valid], "id");
+    } else {
+      const serialised = serialiseMasterSchemaHierarchy({ ...payload.hierarchy, master_schema_id: payload.id });
+      state.masterSchema.hierarchies = xorBy(state.masterSchema.hierarchies, [serialised], "id");
     }
 
     state.isLoading = false;

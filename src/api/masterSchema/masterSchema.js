@@ -22,13 +22,14 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
-  getHierarchy({ id, name }) {
+  getHierarchy({ id, name, application_ids }) {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaHierarchyUrl(id),
       params: {
         ...(name ? { name } : {}),
         hidden_groups: [1],
+        ...(application_ids ? { application_ids } : {}),
       },
     }).then(flatResponseData, flatResponseError);
   },
