@@ -57,7 +57,7 @@ const MasterSchemaManager = ({ state }) => {
   };
 
   const render = () => {
-    if (selected.fields.length > 1 && !selected.fields.some(get("isSystem"))) {
+    if (selected.fields.length > 1) {
       return (
         <>
           <div className="context-feature-template_header_title">Manage datapoints</div>
@@ -74,7 +74,7 @@ const MasterSchemaManager = ({ state }) => {
       );
     }
 
-    if (selected.fields.length === 1 && selected.field && !selected.field.isSystem) {
+    if (selected.fields.length === 1 && selected.field) {
       return (
         <>
           <div className="context-feature-template_header_title">Manage Datapoint</div>
@@ -99,7 +99,7 @@ const MasterSchemaManager = ({ state }) => {
       );
     }
 
-    if (selected.groups.length === 1 && selected.group && !selected.group.isSystem) {
+    if (selected.groups.length === 1 && selected.group) {
       return (
         <>
           <div className="context-feature-template_header_title">Manage Branch</div>
