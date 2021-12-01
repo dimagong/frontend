@@ -1,4 +1,3 @@
-import * as yup from "yup";
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import appSlice from "app/slices/appSlice";
@@ -40,6 +39,14 @@ const {
   groupMakeParentMasterSchemaRequest,
   groupMakeParentMasterSchemaSuccess,
   groupMakeParentMasterSchemaError,
+
+  setUnapprovedMasterSchemaRequest,
+  setUnapprovedMasterSchemaSuccess,
+  setUnapprovedMasterSchemaError,
+
+  approveUnapprovedFieldsRequest,
+  approveUnapprovedFieldsSuccess,
+  approveUnapprovedFieldsError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -118,6 +125,7 @@ function* getList() {
     console.log("master-schema-list/api", list);
     yield put(getMasterSchemaListSuccess({ list }));
     yield all(list.map(({ id }) => call(getHierarchy, { payload: { id } })));
+    yield all(list.map(({ id }) => call(getUnapproved, { payload: { id } })));
   } catch (error) {
     console.error("master-schema-list/error", error);
     yield put(getMasterSchemaListError(error.message));
@@ -133,6 +141,18 @@ function* getHierarchy({ payload: { id, name } }) {
   } catch (error) {
     console.error("master-schema-hierarchy/error", error);
     yield put(getMasterSchemaHierarchyError(error.message));
+  }
+}
+
+function* getUnapproved({ payload }) {
+  const { id } = payload;
+  try {
+    const unapproved = yield call(masterSchemaApi.getUnapproved, { id });
+    console.log("unapproved/api", unapproved);
+    yield put(setUnapprovedMasterSchemaSuccess({ unapproved, id }));
+  } catch (error) {
+    console.error("unapproved/error", error);
+    yield put(setUnapprovedMasterSchemaError(error));
   }
 }
 
@@ -210,10 +230,25 @@ function* groupMakeParent({ payload }) {
   }
 }
 
+function* approveFields({ payload }) {
+  const { masterSchemaId, parentId, fieldsIds } = payload;
+  try {
+    const fields = yield call(masterSchemaApi.fieldsMakeParent, { parentId, fieldsIds });
+    console.log("approve-fields/api", fields);
+    yield put(approveUnapprovedFieldsSuccess({ fields, masterSchemaId, fieldsIds }));
+    yield call(getList);
+  } catch (error) {
+    console.error("approve-fields/error", error);
+    yield put(approveUnapprovedFieldsError(error));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getMasterSchemaListRequest, getList),
     yield takeLatest(getMasterSchemaHierarchyRequest, getHierarchy),
+    yield takeLatest(setUnapprovedMasterSchemaRequest, getUnapproved),
+    yield takeLatest(approveUnapprovedFieldsRequest, approveFields),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),

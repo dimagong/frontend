@@ -47,6 +47,10 @@ const hashColorStringPropValidator = (props, propName, componentName) => {
   }
 };
 
+MSEButton.defaultProps = {
+  loading: false,
+};
+
 MSEButton.propTypes = {
   loading: PropTypes.bool,
   textColor: hashColorStringPropValidator,

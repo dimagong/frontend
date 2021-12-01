@@ -1,15 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { CardTitle, Label } from "reactstrap";
+import { CardTitle, Col, Label, Row } from "reactstrap";
 
-import { preventDefault } from "utility/event-decorators";
-import MSETextField from "features/MasterSchema/share/mse-text-field";
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import MSENodeEditorForm from "./mse-node-editor-form";
+import MSEButton from "features/MasterSchema/share/mse-button";
+import MSETextField from "features/MasterSchema/share/mse-text-field";
+import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 
 const MSENodeRenamingForm = ({ name: initialName, submitting, onSubmit: propOnSubmit, ...attrs }) => {
-  // Form implementation
   const [name, setName] = useFormField(initialName, [Validators.required, Validators.identical(initialName)]);
   const form = useFormGroup({ name });
 
@@ -27,17 +26,27 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, onSubmit: propOnSu
       )}
     >
       {({ input, label, error }) => (
-        <MSENodeEditorForm
-          buttonText="Rename"
-          invalid={form.invalid}
-          submitting={submitting}
-          onSubmit={preventDefault(onSubmit)}
-          label={label}
-          field={
-            <>
-              {input}
-              {error}
-            </>
+        <MSEEditorForm
+          onSubmit={onSubmit}
+          header={label}
+          body={
+            <Row>
+              <Col xs={8}>
+                {input}
+                {error}
+              </Col>
+              <Col xs={4}>
+                <MSEButton
+                  className="w-100"
+                  textColor="#fff"
+                  backgroundColor="#ABABAB4D"
+                  type="submit"
+                  disabled={form.invalid}
+                >
+                  Rename
+                </MSEButton>
+              </Col>
+            </Row>
           }
           {...attrs}
         />
@@ -46,9 +55,13 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, onSubmit: propOnSu
   );
 };
 
+MSENodeRenamingForm.defaultProps = {
+  submitting: false,
+};
+
 MSENodeRenamingForm.propTypes = {
   name: PropTypes.string.isRequired,
-  submitting: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
 };
 

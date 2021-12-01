@@ -1,33 +1,33 @@
 import "./styles.scss";
 
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { isEmpty } from "lodash/fp";
 import { Search } from "@material-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
+import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
+
 import { useBoolean } from "hooks/use-boolean";
-import ContextTemplate from "components/ContextTemplate";
-import { preventDefault } from "utility/event-decorators";
 import { useFormField, useFormGroup } from "hooks/use-form";
+
+import ContextTemplate from "components/ContextTemplate";
+
+import { preventDefault } from "utility/event-decorators";
+
 import MSETextField from "features/MasterSchema/share/mse-text-field";
-import { selectSelectedId } from "app/selectors/masterSchemaSelectors";
 
 import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
 
 const { getMasterSchemaHierarchyRequest } = appSlice.actions;
 
-const MasterSchemaContextComponent = ({
-  unapprovedFields,
-  selectedMasterSchemaHierarchy,
-  selectedUnapprovedFields,
-  onUnapprovedFieldClick,
-  onAllUnapprovedFieldsUnselect,
-  onListOfUnapprovedElementsVisibilityToggle,
-  isListOfUnapprovedElementsVisible,
-}) => {
+const MasterSchemaContextComponent = () => {
   const dispatch = useDispatch();
-  const selectedId = useSelector(selectSelectedId);
+  const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
+  const hierarchy = useSelector(masterSchemaSelectors.selectSelectedHierarchy);
+
+  const unapproved = useSelector(masterSchemaSelectors.selectSelectedUnapproved);
 
   const [expanded] = useBoolean(true);
   const [search, setSearch] = useFormField("");
@@ -44,16 +44,7 @@ const MasterSchemaContextComponent = ({
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
-      {!!unapprovedFields.length && (
-        <UnapprovedFieldsComponent
-          fields={unapprovedFields}
-          selectedFields={selectedUnapprovedFields}
-          onFieldClick={onUnapprovedFieldClick}
-          onUnselectAll={onAllUnapprovedFieldsUnselect}
-          isListVisible={isListOfUnapprovedElementsVisible}
-          onListVisibilityToggle={onListOfUnapprovedElementsVisibilityToggle}
-        />
-      )}
+      {!isEmpty(unapproved.fields) && <UnapprovedFieldsComponent fields={unapproved.fields} />}
 
       <div className="mb-2">
         <MSETextField onChange={onSearchChange} name="search" value={search.value} className="mse-search__input">
@@ -70,11 +61,7 @@ const MasterSchemaContextComponent = ({
         </MSETextField>
       </div>
 
-      <MasterSchemaElements
-        expanded={expanded}
-        hierarchy={selectedMasterSchemaHierarchy}
-        key={selectedMasterSchemaHierarchy.name}
-      />
+      <MasterSchemaElements expanded={expanded} hierarchy={hierarchy} key={hierarchy.name} />
     </ContextTemplate>
   );
 };

@@ -1,3 +1,18 @@
+.approve {
+  &__label {
+    color: #707070;
+  }
+
+  &__title {
+    color: currentColor !important;
+  }
+
+  &__subtitle {
+    font-size: 0.9375rem;
+    color: currentColor !important;
+  }
+}
+
 .unapproved_fields {
   font-family: Montserrat, sans-serif;
   margin-bottom: 50px;

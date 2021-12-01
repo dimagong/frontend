@@ -2,17 +2,23 @@ import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
-import { selectSelectedNodes } from "app/selectors/masterSchemaSelectors";
+import { selectMovementOptions, selectSelectedNodes } from "app/selectors/masterSchemaSelectors";
 
 import MSENodeRenamingForm from "./components/mse-node-renaming-form";
 import MSENodeRelocationForm from "./components/mse-node-relocation-form";
 
-const { updateFieldMasterSchemaRequest, updateGroupMasterSchemaRequest, fieldMakeParentMasterSchemaRequest, groupMakeParentMasterSchemaRequest } =
-  appSlice.actions;
+const {
+  updateFieldMasterSchemaRequest,
+  updateGroupMasterSchemaRequest,
+  fieldMakeParentMasterSchemaRequest,
+  groupMakeParentMasterSchemaRequest,
+} = appSlice.actions;
 
 const MasterSchemaManager = () => {
   const dispatch = useDispatch();
   const selectedNodes = useSelector(selectSelectedNodes);
+  const movementOptions = useSelector(selectMovementOptions);
+
   const selectedNode = useMemo(() => selectedNodes[0], [selectedNodes]);
 
   const onRenameSubmit = (submitted) => {
@@ -40,7 +46,7 @@ const MasterSchemaManager = () => {
   return selectedNodes.length === 1 && selectedNode && !selectedNode.isSystem ? (
     <>
       <MSENodeRenamingForm className="my-2" name={selectedNode.name} submitting={false} onSubmit={onRenameSubmit} />
-      <MSENodeRelocationForm className="my-2" node={selectedNode} submitting={false} onSubmit={onRelocateSubmit} />
+      <MSENodeRelocationForm className="my-2" node={selectedNode} options={movementOptions} submitting={false} onSubmit={onRelocateSubmit} />
     </>
   ) : null;
 };

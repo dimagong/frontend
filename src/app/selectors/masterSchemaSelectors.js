@@ -2,33 +2,38 @@ import { get, pipe, isEqual } from "lodash/fp";
 
 export const selectMasterSchemaList = (state) => state?.app?.masterSchema.list;
 
+export const selectSelectedId = (state) => state?.app?.masterSchema.selectedId;
+
 export const selectMasterSchemaFields = (state) => state?.app?.masterSchema.fields;
 
 export const selectSelectedNodesKeys = (state) => state?.app?.masterSchema.selectedNodesKeys;
 
-export const selectSelectedId = (state) => state?.app?.masterSchema.selectedId;
-
 export const selectSelectedNodes = (state) => {
   const selectedNodesKeys = selectSelectedNodesKeys(state);
-  const selectedMasterSchemaHierarchy = selectSelectedMasterSchemaHierarchy(state);
+  const selectedHierarchy = selectSelectedHierarchy(state);
 
-  if (!selectedMasterSchemaHierarchy) return [];
+  if (!selectedHierarchy) return [];
 
-  return selectedNodesKeys.map((key) => selectedMasterSchemaHierarchy.children.find(pipe(get("key"), isEqual(key))));
+  return selectedNodesKeys.map((key) => selectedHierarchy.children.find(pipe(get("key"), isEqual(key))));
 };
 
-export const selectSelectedMasterSchemaHierarchy = (state) => {
-  const { selectedId } = state?.app?.masterSchema;
-  const hierarchies = state?.app?.masterSchema.hierarchies;
+export const selectSelectedUnapproved = (state) => {
+  const selectedId = selectSelectedId(state);
+  const { unapproved } = state?.app?.masterSchema;
+
+  return unapproved[selectedId];
+};
+
+export const selectSelectedHierarchy = (state) => {
+  const selectedId = selectSelectedId(state);
+  const { hierarchies } = state?.app?.masterSchema;
 
   return hierarchies.find(pipe(get("masterSchemaId"), isEqual(selectedId)));
 };
 
-export const selectUnapprovedFieldsOfSelectedOrganization = (state) => {
-  // ToDo: return unapproved fields as single prop
-  // const selectedOrganizationMasterSchema = selectMasterSchemaOfSelectedOrganization(state);
-  // const unapproved = selectedOrganizationMasterSchema.root.children.find(({ name }) => name === "Unapproved");
-  //
-  // return selectedOrganizationMasterSchema.root.children.filter(({ key }) => unapproved.fields.includes(key));
-  return [];
+export const selectMovementOptions = (state) => {
+  const hierarchy = selectSelectedHierarchy(state);
+  return [hierarchy, ...hierarchy.children]
+    .filter(get("isContainable"))
+    .map((node) => ({ label: node.path.join("."), value: node }));
 };

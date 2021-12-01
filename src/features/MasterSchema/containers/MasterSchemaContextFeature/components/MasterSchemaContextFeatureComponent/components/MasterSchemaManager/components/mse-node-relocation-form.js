@@ -1,27 +1,18 @@
 import PropTypes from "prop-types";
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
-import { CardTitle, Label } from "reactstrap";
 import { get, pipe, isEqual } from "lodash/fp";
+import { CardTitle, Label, Row, Col } from "reactstrap";
 
-import { preventDefault } from "utility/event-decorators";
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
+import MSEButton from 'features/MasterSchema/share/mse-button';
+import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 import MSESelectField from "features/MasterSchema/share/mse-select-field";
-import { selectSelectedMasterSchemaHierarchy } from "app/selectors/masterSchemaSelectors";
 
-import MSENodeEditorForm from "./mse-node-editor-form";
-
-const nodeToOption = (node) => ({ label: node.path.join("."), value: node });
-
-const MSENodeRelocationForm = ({ node, submitting, onSubmit: propOnSubmit, ...attrs }) => {
-  const hierarchy = useSelector(selectSelectedMasterSchemaHierarchy);
+const MSENodeRelocationForm = ({ node, options, submitting, onSubmit: propOnSubmit, ...attrs }) => {
   const withParentKey = useMemo(() => pipe(get("value.key"), isEqual(node.parentKey)), [node]);
-  const locationOptions = useMemo(
-    () => [hierarchy, ...hierarchy.children].filter(get("isContainable")).map(nodeToOption),
-    [hierarchy]
-  );
-  const initialValue = useMemo(() => locationOptions.find(withParentKey), [locationOptions, withParentKey]);
+  const initialValue = useMemo(() => options.find(withParentKey), [options, withParentKey]);
+
   const [location, setLocation] = useFormField(initialValue, [Validators.required, Validators.identical(initialValue)]);
   const form = useFormGroup({ location });
 
@@ -29,30 +20,39 @@ const MSENodeRelocationForm = ({ node, submitting, onSubmit: propOnSubmit, ...at
 
   return (
     <MSESelectField
-      name="elementLocation"
-      placeholder="ValidPath.FCA"
-      options={locationOptions}
       {...location}
+      name="location"
+      options={options}
       onChange={setLocation}
+      menuPosition={"fixed"}
       label={(id) => (
         <Label for={id}>
           <CardTitle>Move datapoint to:</CardTitle>
         </Label>
       )}
-      menuPosition={"fixed"}
     >
       {({ select, label, error }) => (
-        <MSENodeEditorForm
-          buttonText="Move"
-          invalid={form.invalid}
-          submitting={submitting}
-          onSubmit={preventDefault(onSubmit)}
-          label={label}
-          field={
-            <>
-              {select}
-              {error}
-            </>
+        <MSEEditorForm
+          onSubmit={onSubmit}
+          header={label}
+          body={
+            <Row>
+              <Col xs={8}>
+                {select}
+                {error}
+              </Col>
+              <Col xs={4}>
+                <MSEButton
+                  className="w-100"
+                  textColor="#fff"
+                  backgroundColor="#ABABAB4D"
+                  type="submit"
+                  disabled={form.invalid}
+                >
+                  Move
+                </MSEButton>
+              </Col>
+            </Row>
           }
           {...attrs}
         />
@@ -61,9 +61,14 @@ const MSENodeRelocationForm = ({ node, submitting, onSubmit: propOnSubmit, ...at
   );
 };
 
+MSENodeRelocationForm.defaultProps = {
+  submitting: false,
+};
+
 MSENodeRelocationForm.propTypes = {
   node: PropTypes.object.isRequired,
-  submitting: PropTypes.bool.isRequired,
+  options: PropTypes.array.isRequired,
+  submitting: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
 };
 

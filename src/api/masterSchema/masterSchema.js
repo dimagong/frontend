@@ -28,7 +28,7 @@ const masterSchemaApi = {
       url: Urls.getMasterSchemaHierarchyUrl(id),
       params: {
         ...(name ? { name } : {}),
-        hidden_groups: [0],
+        hidden_groups: [1],
       },
     }).then(flatResponseData, flatResponseError);
   },
@@ -78,6 +78,24 @@ const masterSchemaApi = {
       method: "PUT",
       url: Urls.putMasterSchemaGroupMakeParentUrl(nodeId),
       data: { parent_id: parentId },
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getUnapproved({ id }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaUnapprovedUrl(id),
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  fieldsMakeParent({ parentId, fieldsIds }) {
+    return instance({
+      method: "PUT",
+      url: Urls.putMasterSchemaFieldsMakeParentUrl,
+      data: {
+        master_schema_group_id: parentId,
+        master_schema_field_ids: fieldsIds,
+      },
     }).then(flatResponseData, flatResponseError);
   },
 

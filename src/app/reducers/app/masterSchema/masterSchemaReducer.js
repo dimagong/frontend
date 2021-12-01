@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { pipe, isEqual, pick, xorBy } from "lodash/fp";
+import { pipe, get, isEqual, pick, xorBy, includes } from "lodash/fp";
 
 /* Interfaces */
 
@@ -30,25 +30,30 @@ const masterSchemaGroupInterface = yup.object({
 });
 
 // Consider about children as hashmap, will it be faster ?
-const masterSchemaHierarchyInterface = yup
-  .object({
-    ...masterSchemaNodeSchema,
-    ...masterSchemaGroupSchema,
-    children: yup
-      .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
-      .test((v) => Array.isArray(v)),
-    parentId: yup.number().nullable(),
-    parentKey: yup.string().nullable(),
-    masterSchemaId: yup.number().required(),
-  });
+const masterSchemaUnapprovedInterface = yup.object({
+  name: yup.string().required(),
+  fields: yup.array(masterSchemaFieldInterface).test((v) => Array.isArray(v)),
+  masterSchemaId: yup.number().required(),
+});
 
-const masterSchemaInterface = yup
-  .object({
-    id: yup.number().required(),
-    name: yup.string().required(),
-    organizationId: yup.number().required(),
-    organizationType: yup.string().required(),
-  });
+// Consider about children as hashmap, will it be faster ?
+const masterSchemaHierarchyInterface = yup.object({
+  ...masterSchemaNodeSchema,
+  ...masterSchemaGroupSchema,
+  children: yup
+    .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
+    .test((v) => Array.isArray(v)),
+  parentId: yup.number().nullable(),
+  parentKey: yup.string().nullable(),
+  masterSchemaId: yup.number().required(),
+});
+
+const masterSchemaInterface = yup.object({
+  id: yup.number().required(),
+  name: yup.string().required(),
+  organizationId: yup.number().required(),
+  organizationType: yup.string().required(),
+});
 
 const masterSchemaListInterface = yup.object({ list: yup.array(masterSchemaInterface).test((v) => Array.isArray(v)) });
 
@@ -104,7 +109,18 @@ const serialiseMasterSchemaHierarchy = (hierarchy) => {
   return {
     ...root,
     children,
-    masterSchemaId: hierarchy.master_schema_id
+    masterSchemaId: hierarchy.master_schema_id,
+  };
+};
+
+const serialiseUnapproved = (unapproved) => {
+  const fields = [];
+  const node = serialiseNode(unapproved, { isContainable: true, children: fields });
+
+  return {
+    name: node.name,
+    fields,
+    masterSchemaId: unapproved.master_schema_id,
   };
 };
 
@@ -125,7 +141,7 @@ const getPredicateGroupById = (id) => pipe(pick(["isContainable", "id"]), isEqua
 const getPredicateFieldById = (id) => pipe(pick(["isContainable", "id"]), isEqual({ id, isContainable: false }));
 
 const getParentById = (hierarchy, id) => {
-  return hierarchy.id === id ? hierarchy :hierarchy.children.find(getPredicateGroupById(id))
+  return hierarchy.id === id ? hierarchy : hierarchy.children.find(getPredicateGroupById(id));
 };
 
 const getFieldById = (hierarchy, id) => hierarchy.children.find(getPredicateFieldById(id));
@@ -137,6 +153,8 @@ const getHierarchyAndParentByParentId = (state, id) => {
   );
 };
 
+/* Reducers */
+
 const masterSchemaReducer = {
   getMasterSchemaFieldsSuccess: (state, { payload }) => {
     state.isLoading = false;
@@ -145,7 +163,7 @@ const masterSchemaReducer = {
   },
 
   setSelectedMasterSchema: (state, { payload }) => {
-    state.masterSchema.selectedNodes = [];
+    state.masterSchema.selectedNodesKeys = [];
     state.masterSchema.selectedId = payload.id;
   },
 
@@ -207,6 +225,9 @@ const masterSchemaReducer = {
 
     hierarchy.children.push(valid);
     parent.groups.push(valid.key);
+
+    state.isError = false;
+    state.isLoading = false;
   },
 
   updateFieldMasterSchemaSuccess(state, { payload }) {
@@ -219,6 +240,9 @@ const masterSchemaReducer = {
     console.log("update_field/valid", valid);
 
     getFieldById(hierarchy, valid.id).name = valid.name;
+
+    state.isError = false;
+    state.isLoading = false;
   },
 
   updateGroupMasterSchemaSuccess(state, { payload }) {
@@ -232,6 +256,8 @@ const masterSchemaReducer = {
     // console.log("update_group/serialised", serialised);
     // const group = findMasterSchemaGroup(state, valid.id, root);
     // group.name = valid.name;
+    state.isError = false;
+    state.isLoading = false;
   },
 
   fieldMakeParentMasterSchemaSuccess(state, { payload }) {
@@ -253,12 +279,14 @@ const masterSchemaReducer = {
     state.masterSchema.selectedNodesKeys = state.masterSchema.selectedNodesKeys.map((key) =>
       key === oldField.key ? valid.key : key
     );
+
+    state.isError = false;
+    state.isLoading = false;
   },
 
   groupMakeParentMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.group.parent_id;
     const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
-    // const { root, parent } = findMasterSchemaRootAndParentGroup(state, parentId);
 
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
     const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });
@@ -287,6 +315,35 @@ const masterSchemaReducer = {
     state.masterSchema.selectedNodes = state.masterSchema.selectedNodes.map((key) =>
       key === oldGroup.key ? valid.key : key
     );
+
+    state.isError = false;
+    state.isLoading = false;
+  },
+
+  setUnapprovedMasterSchemaSuccess(state, { payload }) {
+    const serialised = serialiseUnapproved({ ...payload.unapproved, master_schema_id: payload.id });
+    console.log("unapproved/serialised", serialised);
+    const valid = masterSchemaUnapprovedInterface.validateSync(serialised);
+    console.log("unapproved/valid", valid);
+
+    state.masterSchema.unapproved[payload.id] = valid;
+    state.isError = false;
+    state.isLoading = false;
+  },
+
+  approveUnapprovedFieldsSuccess(state, { payload }) {
+    const { fields, masterSchemaId, fieldsIds } = payload;
+    const oldUnapprovedFields = state.masterSchema.unapproved[masterSchemaId];
+
+    oldUnapprovedFields.fields = oldUnapprovedFields.fields.filter(pipe(get("id"), includes(fieldsIds)));
+
+    // const serialised = serialiseUnapproved({ ...unapproved, master_schema_id: masterSchemaId });
+    // console.log("approve-fields/serialised", serialised);
+    // const valid = masterSchemaUnapprovedInterface.validateSync(serialised);
+    // console.log("approve-fields/valid", valid);
+
+    state.isError = false;
+    state.isLoading = false;
   },
 };
 
