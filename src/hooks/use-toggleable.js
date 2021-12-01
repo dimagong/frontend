@@ -1,5 +1,5 @@
 import xor from "lodash/fp/xor";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 export const useToggleable = (initialKeys = []) => {
   const [keys, setKeys] = useState(initialKeys);
@@ -11,12 +11,11 @@ export const useToggleable = (initialKeys = []) => {
   // :: string[] -> void
   const toggle = (toSelectMany) => setKeys((prev) => xor(prev, toSelectMany));
   // :: string -> boolean
-  const includes = useCallback((key) => keys.includes(key), [keys]);
+  const includes = (key) => keys.includes(key);
 
   return {
     keys,
     isEmpty,
-
     clear,
     toggle,
     select,

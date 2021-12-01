@@ -24,7 +24,7 @@ const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlic
 
 const getKey = ({ key }) => key;
 
-const creatationTitle = (type) => {
+const creationTitle = (type) => {
   switch (type) {
     case ADD_FIELD:
       return "New Element";
@@ -89,7 +89,7 @@ const MasterSchemaElements = ({ selectable, hierarchy, expanded }) => {
     setAddTo(null);
   };
 
-  const onNodeSelect = (key) => selectable.toggle([key]);
+  const onNodeSelect = selectable.select;
 
   const foldAll = useCallback(() => expandable.clear(), [expandable]);
   const getHierarchyKeys = useCallback(() => [hierarchy, ...hierarchy.children].map(get("key")), [hierarchy]);
@@ -120,7 +120,7 @@ const MasterSchemaElements = ({ selectable, hierarchy, expanded }) => {
       />
 
       {addTo && (
-        <SurveyModal isOpen={modal} title={creatationTitle(addTo.type)} onClose={closeModal} actions={false}>
+        <SurveyModal isOpen={modal} title={creationTitle(addTo.type)} onClose={closeModal} actions={false}>
           <MSECreateElementForm
             submitting={loading}
             placeholder={addTo.node.path.join(",")}

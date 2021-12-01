@@ -7,9 +7,9 @@ import MSETreeGroup from "./mse-tree-group";
 
 const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children }) => {
   const { node, expandable, selectable } = state;
-  const onSelect = () => propOnSelect(node.key);
-  const toggleExpandable = () => expandable.toggle([node.key]);
-  const selected = useMemo(() => selectable.includes(node.key), [node.key, selectable]);
+  const onSelect = () => propOnSelect(node.nodeId);
+  const toggleExpandable = () => expandable.select(node.key);
+  const selected = useMemo(() => selectable.includes(node.nodeId), [node, selectable]);
   const className = classNames("ms-elements__node--selectable", {
     "ms-elements__node--selected": selected,
   });

@@ -32,8 +32,8 @@ const iconStyles = {
 const UnapprovedFieldItem = ({ selectable, field }) => {
   const selected = useMemo(() => selectable.includes(field.key), [field, selectable]);
 
-  const handleFieldClick = () => selectable.toggle([field.key]);
-  const handleFieldChange = () => selectable.toggle([field.key]);
+  const handleFieldClick = () => selectable.select(field.key);
+  const handleFieldChange = () => selectable.toggle(field.key);
 
   return (
     <div className="unapproved_fields-list-items-item" onClick={handleFieldClick}>
