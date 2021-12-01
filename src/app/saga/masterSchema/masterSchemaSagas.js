@@ -47,6 +47,10 @@ const {
   approveUnapprovedFieldsRequest,
   approveUnapprovedFieldsSuccess,
   approveUnapprovedFieldsError,
+
+  getUsersByMasterSchemaFieldRequest,
+  getUsersByMasterSchemaFieldSuccess,
+  getUsersByMasterSchemaFieldError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -243,12 +247,26 @@ function* approveFields({ payload }) {
   }
 }
 
+function* getUsers({ payload }) {
+  const { fieldId } = payload;
+  try {
+    const users = yield call(masterSchemaApi.getUsers, { fieldId });
+    console.log("users-by-field/api", users);
+    yield put(getUsersByMasterSchemaFieldSuccess({ users, fieldId }));
+    yield call(getList);
+  } catch (error) {
+    console.error("users-by-field/error", error);
+    yield put(getUsersByMasterSchemaFieldError(error));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getMasterSchemaListRequest, getList),
     yield takeLatest(getMasterSchemaHierarchyRequest, getHierarchy),
     yield takeLatest(setUnapprovedMasterSchemaRequest, getUnapproved),
     yield takeLatest(approveUnapprovedFieldsRequest, approveFields),
+    yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsers),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),

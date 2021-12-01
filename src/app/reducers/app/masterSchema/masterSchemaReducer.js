@@ -58,6 +58,41 @@ const masterSchemaInterface = yup.object({
 
 const masterSchemaListInterface = yup.object({ list: yup.array(masterSchemaInterface).test((v) => Array.isArray(v)) });
 
+const userInterface = yup.object({
+  id: yup.number().required(),
+  firstName: yup.string().required(),
+  lastName: yup.string().required(),
+  field: yup
+    .object({
+      value: yup.string().required(),
+      type: yup.string().required(),
+      date: yup.string().required(),
+      files: yup
+        .array(
+          yup.object({
+            name: yup.string().required(),
+            mimeType: yup.string().required(),
+            path: yup.string().required(),
+            group: yup.string().required(),
+          })
+        )
+        .test((v) => Array.isArray(v)),
+    })
+    .required(),
+  permissions: yup
+    .object({
+      organization: yup.string().required(),
+      ability: yup.string().required(),
+    })
+    .required(),
+  avatar: yup.string().nullable(),
+  avatarPath: yup.string().nullable(),
+  memberFirm: yup.object().nullable(),
+  memberFirmPermissions: yup.array(yup.string()).test((v) => Array.isArray(v)),
+});
+
+const masterSchemaUsersInterface = yup.array(userInterface).test((v) => Array.isArray(v));
+
 /* Serializers */
 
 const serialiseNode = (node, { isContainable, parent = null, children = [] }) => {
@@ -337,6 +372,15 @@ const masterSchemaReducer = {
     // console.log("approve-fields/serialised", serialised);
     // const valid = masterSchemaUnapprovedInterface.validateSync(serialised);
     // console.log("approve-fields/valid", valid);
+
+    state.isError = false;
+    state.isLoading = false;
+  },
+
+  getUsersByMasterSchemaFieldSuccess(state, { payload }) {
+    const { users, fieldId } = payload;
+
+    state.masterSchema.users[fieldId] = users;
 
     state.isError = false;
     state.isLoading = false;

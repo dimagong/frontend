@@ -100,6 +100,13 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
+  getUsers({ fieldId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaUsersByFieldUrl(fieldId),
+    }).then(flatResponseData, flatResponseError);
+  },
+
   async getOrganizationsMasterSchema() {
     try {
       const result = await instance({

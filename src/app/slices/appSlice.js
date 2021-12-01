@@ -71,6 +71,7 @@ export const initialState = {
   masterSchema: {
     fields: [],
     list: [],
+    users: {},
     unapproved: {},
     hierarchies: [],
     selectedId: null,
