@@ -35,7 +35,7 @@ const creationTitle = (type) => {
   }
 };
 
-const MasterSchemaElements = ({ selectable, hierarchy, expanded }) => {
+const MasterSchemaElements = ({ selectable, hierarchy, expanded, onNodeSelect }) => {
   const dispatch = useDispatch();
   const loading = useSelector(
     createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true)
@@ -89,8 +89,6 @@ const MasterSchemaElements = ({ selectable, hierarchy, expanded }) => {
     setAddTo(null);
   };
 
-  const onNodeSelect = selectable.select;
-
   const foldAll = useCallback(() => expandable.clear(), [expandable]);
   const getHierarchyKeys = useCallback(() => [hierarchy, ...hierarchy.children].map(get("key")), [hierarchy]);
   const expandAll = useCallback(() => expandable.setKeys(getHierarchyKeys), [expandable, getHierarchyKeys]);
@@ -140,6 +138,7 @@ MasterSchemaElements.propTypes = {
   hierarchy: PropTypes.object.isRequired,
   selectable: PropTypes.object.isRequired,
   expanded: PropTypes.bool,
+  onNodeSelect: PropTypes.func.isRequired,
 };
 
 export default MasterSchemaElements;

@@ -22,7 +22,7 @@ const MasterSchemaContextComponent = ({ state }) => {
   const dispatch = useDispatch();
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
 
-  const { hierarchy, unapproved, selectable } = state;
+  const { hierarchy, unapproved, selectable, onNodeSelect } = state;
 
   const allDForms = useSelector(selectdForms);
   const [currSearchName, setCurrSearchName] = useState("");
@@ -74,7 +74,13 @@ const MasterSchemaContextComponent = ({ state }) => {
       />
 
       {hierarchy?.id ? (
-        <MasterSchemaElements expanded selectable={selectable} hierarchy={hierarchy} key={hierarchy.name} />
+        <MasterSchemaElements
+          expanded
+          selectable={selectable}
+          hierarchy={hierarchy}
+          onNodeSelect={onNodeSelect}
+          key={hierarchy.name}
+        />
       ) : (
         <h2>Nothing was found for your query</h2>
       )}
