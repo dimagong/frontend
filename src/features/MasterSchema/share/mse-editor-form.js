@@ -6,7 +6,7 @@ import { preventDefault } from "utility/event-decorators";
 
 const MSEEditorForm = ({ onSubmit, header, body, ...attrs }) => {
   return (
-    <Card tag="form" onSubmit={preventDefault(onSubmit)} {...attrs}>
+    <Card tag="form" style={{ boxShadow: "none"}} onSubmit={preventDefault(onSubmit)} {...attrs}>
       <CardHeader>{header}</CardHeader>
       <CardBody>{body}</CardBody>
     </Card>

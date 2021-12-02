@@ -38,8 +38,7 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onS
               <Col xs={4}>
                 <MSEButton
                   className="w-100"
-                  textColor="#fff"
-                  backgroundColor="#ABABAB4D"
+                  color="primary"
                   type="submit"
                   disabled={form.invalid}
                 >

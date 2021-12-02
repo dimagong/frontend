@@ -9,7 +9,27 @@ import MSEButton from "features/MasterSchema/share/mse-button";
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 import MSESelectField from "features/MasterSchema/share/mse-select-field";
 
-const MSENodeRelocationForm = ({ node, multiple, options, submitting, label, action, onSubmit: propOnSubmit, ...attrs }) => {
+const customSelectStyles = {
+  control: (provided) => ({
+    ...provided,
+    borderRadius: 0,
+    borderTop: "none",
+    borderLeft: "none",
+    borderRight: "none",
+    boxShadow: "none",
+  }),
+};
+
+const MSENodeRelocationForm = ({
+  node,
+  multiple,
+  options,
+  submitting,
+  label,
+  action,
+  onSubmit: propOnSubmit,
+  ...attrs
+}) => {
   const withParentKey = useMemo(
     () => (multiple ? () => {} : pipe(get("value.key"), isEqual(node.parentKey))),
     [multiple, node]
@@ -31,6 +51,8 @@ const MSENodeRelocationForm = ({ node, multiple, options, submitting, label, act
       options={options}
       onChange={setLocation}
       menuPosition={"fixed"}
+      styles={customSelectStyles}
+      components={{ IndicatorSeparator: null }}
       label={(id) => (
         <Label for={id}>
           <CardTitle>{label}</CardTitle>
@@ -50,8 +72,7 @@ const MSENodeRelocationForm = ({ node, multiple, options, submitting, label, act
               <Col xs={4}>
                 <MSEButton
                   className="w-100"
-                  textColor="#fff"
-                  backgroundColor="#ABABAB4D"
+                  color="primary"
                   type="submit"
                   disabled={form.invalid}
                 >
