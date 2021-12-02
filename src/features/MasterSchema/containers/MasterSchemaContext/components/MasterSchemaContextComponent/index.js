@@ -69,7 +69,6 @@ const MasterSchemaContextComponent = ({ state }) => {
             .map((item) => item.name),
         }}
         applyFilter={onFilterSubmit}
-        isCalendar
         onCalendarChange={() => {}}
       />
 
