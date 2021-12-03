@@ -46,7 +46,7 @@ const UnapprovedFieldItem = ({ selectable, field }) => {
         <div className="unapproved_fields-list-items-item-description">
           <div className="unapproved_fields-list-items-item-description-name">{field.name}</div>
           <div className="unapproved_fields-list-items-item-description-appearances">
-            dForm: {field.dFormNames?.join(", ") || "Not used in dForms"}
+            Applications: {field.applicationNames?.join(", ") || "Not used in Applications"}
           </div>
         </div>
       </div>
