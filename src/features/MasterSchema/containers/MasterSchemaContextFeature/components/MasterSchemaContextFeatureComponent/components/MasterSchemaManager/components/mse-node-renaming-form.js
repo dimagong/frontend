@@ -21,7 +21,7 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onS
       {...name}
       label={(id) => (
         <Label for={id}>
-          <CardTitle>{label}</CardTitle>
+          <CardTitle className="ms-manager__label">{label}</CardTitle>
         </Label>
       )}
     >
