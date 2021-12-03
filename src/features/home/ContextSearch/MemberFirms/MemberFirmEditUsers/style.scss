@@ -7,6 +7,10 @@
     overflow: hidden;
     box-shadow: 0px 3px 6px rgba(82, 61, 61, 0.161);
     border-radius: 10px;
+
+    .member-firm-users-modal-body {
+      min-height: 550px;
+    }
   }
 
   &__title {

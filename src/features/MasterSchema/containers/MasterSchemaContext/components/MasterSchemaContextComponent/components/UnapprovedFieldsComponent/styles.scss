@@ -1,0 +1,78 @@
+.approve {
+  &__label {
+    color: #707070;
+  }
+
+  &__title {
+    color: currentColor !important;
+  }
+
+  &__subtitle {
+    font-size: 0.9375rem;
+    color: currentColor !important;
+  }
+}
+
+.unapproved_fields {
+  font-family: Montserrat, sans-serif;
+  margin-bottom: 50px;
+  border-bottom: 1px solid #c8c8c8;
+
+  &-list {
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      &-title {
+        font-size: 15px;
+        color: #707070;
+      }
+
+      &-selected_items {
+        &-count {
+          color: #707070;
+          font-size: 15px;
+
+          &>p {
+            margin: 0;
+          }
+        }
+      }
+    }
+
+    &-items {
+      margin-bottom: 20px;
+      &-item {
+        cursor: pointer;
+        display: flex;
+        background: #F1F1F1;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px 12px 12px;
+        user-select: none;
+        margin-bottom: 12px;
+        border-radius: 5px;
+
+        &-state {
+
+        }
+
+        &-description {
+          padding-left: 10px;
+
+          &-name {
+            font-size: 15px;
+            margin-bottom: 6px;
+          }
+
+          &-appearances {
+            font-size: 12px;
+          }
+        }
+
+        &-creation_info {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}

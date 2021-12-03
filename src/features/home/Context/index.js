@@ -11,6 +11,7 @@ import Organization from 'features/Organization'
 import SurveysDesigner from "features/Surveys/SurveysDesigner";
 import Dashboard from "../ContextSearch/Dashboard";
 import MemberFirmsContainer from "../ContextSearch/MemberFirms";
+import MasterSchema from "../../MasterSchema";
 
 const Context = ({ selectedContext }) => {
   const isCSshown = useSelector((state) =>  state.app.isContextSearchVisible);
@@ -35,6 +36,7 @@ const Context = ({ selectedContext }) => {
           "Survey": <SurveysDesigner />,
           "Dashboard": <Dashboard/>,
           "Member Firms": <MemberFirmsContainer/>,
+          "MasterSchema": <MasterSchema />,
         }[selectedContext]}
       </div>
     </>
