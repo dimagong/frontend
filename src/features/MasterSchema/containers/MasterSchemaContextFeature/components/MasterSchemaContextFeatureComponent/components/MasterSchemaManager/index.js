@@ -59,7 +59,7 @@ const MasterSchemaManager = ({ state }) => {
   const render = () => {
     if (selected.fields.length > 1) {
       return (
-        <>
+        <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage datapoints</div>
           <MSENodeRelocationForm
             className="my-2"
@@ -70,13 +70,13 @@ const MasterSchemaManager = ({ state }) => {
             submitting={false}
             onSubmit={onMultipleRelocateSubmit}
           />
-        </>
+        </div>
       );
     }
 
     if (selected.fields.length === 1 && selected.field) {
       return (
-        <>
+        <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage Datapoint</div>
           <MSENodeRenamingForm
             className="my-2"
@@ -95,13 +95,13 @@ const MasterSchemaManager = ({ state }) => {
             submitting={false}
             onSubmit={onRelocateSubmit}
           />
-        </>
+        </div>
       );
     }
 
     if (selected.groups.length === 1 && selected.group) {
       return (
-        <>
+        <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage Branch</div>
           <MSENodeRenamingForm
             className="my-2"
@@ -120,7 +120,7 @@ const MasterSchemaManager = ({ state }) => {
             submitting={false}
             onSubmit={onRelocateSubmit}
           />
-        </>
+        </div>
       );
     }
 

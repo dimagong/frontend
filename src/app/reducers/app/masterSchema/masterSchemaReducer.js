@@ -10,6 +10,8 @@ const masterSchemaNodeSchema = {
   nodeId: yup.string().required(),
   parentId: yup.number().required(),
   parentKey: yup.string().required(),
+  updatedAt: yup.string().required(),
+  createdAt: yup.string().required(),
   isSystem: yup.boolean().required(),
   isContainable: yup.boolean().required(),
   path: yup.array(yup.string()).required(),
@@ -22,7 +24,8 @@ const masterSchemaGroupSchema = {
 
 const masterSchemaFieldInterface = yup.object({
   ...masterSchemaNodeSchema,
-  dFormNames: yup.array().nullable(),
+  applicationNames: yup.array().nullable(),
+  providedByFullName: yup.string().nullable(),
 });
 
 const masterSchemaGroupInterface = yup.object({
@@ -61,7 +64,19 @@ const masterSchemaListInterface = yup.object({ list: yup.array(masterSchemaInter
 /* Serializers */
 
 const serialiseNode = (node, { isContainable, parent = null, children = [] }) => {
-  const { id, parent_id, master_schema_group_id, name, groups, fields, d_form_names, is_system } = node;
+  const {
+    id,
+    parent_id,
+    master_schema_group_id,
+    name,
+    groups,
+    fields,
+    application_names,
+    is_system,
+    updated_at,
+    created_at,
+    provided_by_full_name,
+  } = node;
   const key = parent ? `${parent.key}/${id}` : id;
   const path = parent ? [...parent.path, name] : [name];
   const parentKey = parent ? parent.key : null;
@@ -71,12 +86,15 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
     key,
     name,
     path,
-    nodeId: `${isContainable ? 'group' : 'field'}${id}`,
+    nodeId: `${isContainable ? "group" : "field"}${id}`,
     parentKey,
     isContainable,
     isSystem: is_system,
+    createdAt: created_at,
+    updatedAt: updated_at,
+    providedByFullName: provided_by_full_name,
     parentId: parent_id ?? master_schema_group_id ?? null,
-    ...(d_form_names ? { dFormNames: d_form_names } : {}),
+    applicationNames: application_names,
   };
 
   if (fields) {

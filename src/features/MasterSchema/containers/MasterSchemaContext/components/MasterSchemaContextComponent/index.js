@@ -27,11 +27,22 @@ const MasterSchemaContextComponent = ({ state }) => {
   const allDForms = useSelector(selectdForms);
   const [currSearchName, setCurrSearchName] = useState("");
   const [currSelectedFilterOptions, setCurrSelectedFilterOptions] = useState([]);
+  const [currCalendarDates, setCurrCalendarDates] = useState([]);
   const [currFilterOptions, setCurrFilterOptions] = useState([]);
+
+  const getDateFormat = (date) => {
+    const options = {day: 'numeric', month: 'numeric', year: 'numeric'};
+    if (date?.length > 1) {
+      return date.map(item => item.toLocaleString('en-CA', options))
+    } else {
+      return [undefined, undefined]
+    }
+  }
 
   const onSearchSubmit = (searchName) => {
     let currSearch = searchName.hasOwnProperty("target") ? searchName.target.value : searchName;
-    const payload = { id: selectedId, name: currSearch, application_ids: currSelectedFilterOptions };
+    const payload = { id: selectedId, name: currSearch, application_ids: currSelectedFilterOptions,
+      date_begin: currCalendarDates[0], date_end: currCalendarDates[1]};
     dispatch(getMasterSchemaHierarchyRequest(payload));
     setCurrSearchName(currSearch);
   };
@@ -44,16 +55,23 @@ const MasterSchemaContextComponent = ({ state }) => {
       }),
       "name"
     ).map((item) => item.id);
-    const payload = { id: selectedId, name: currSearchName, application_ids: application_ids };
+    const payload = { id: selectedId, name: currSearchName, application_ids: application_ids, date_begin: currCalendarDates[0], date_end: currCalendarDates[1]};
     dispatch(getMasterSchemaHierarchyRequest(payload));
     setCurrSelectedFilterOptions(application_ids);
   };
 
   const onFilterCancel = () => {
-    const payload = { id: selectedId, name: currSearchName, application_ids: [] };
+    const payload = { id: selectedId, name: currSearchName, application_ids: [], date_begin: currCalendarDates[0], date_end: currCalendarDates[1]};
     dispatch(getMasterSchemaHierarchyRequest(payload));
     setCurrSelectedFilterOptions([]);
   };
+
+  const onCalendarChange = (date) => {
+    const formattedDate = getDateFormat(date);
+    const payload = { id: selectedId, name: currSearchName, application_ids: currSelectedFilterOptions, date_begin: formattedDate[0], date_end: formattedDate[1]};
+    dispatch(getMasterSchemaHierarchyRequest(payload));
+    setCurrCalendarDates(formattedDate)
+  }
 
   useEffect(() => void dispatch(getdFormsRequest()), []);
 
@@ -72,13 +90,18 @@ const MasterSchemaContextComponent = ({ state }) => {
       {!isEmpty(unapproved.fields) && <UnapprovedFieldsComponent fields={unapproved.fields} />}
 
       <SearchAndFilter
+        placeholder={' '}
+        className={'ms-search-and-filter'}
         handleSearch={onSearchSubmit}
         onCancelFilter={onFilterCancel}
         filterTypes={{
           applications: currFilterOptions,
         }}
         applyFilter={onFilterSubmit}
-        onCalendarChange={() => {}}
+        onCalendarChange={onCalendarChange}
+        isCalendar
+        hasIcon
+        filterTabPosition={'left'}
       />
 
       {hierarchy?.id ? (
