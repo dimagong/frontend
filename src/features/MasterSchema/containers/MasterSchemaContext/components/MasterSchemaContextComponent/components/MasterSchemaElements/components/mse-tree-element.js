@@ -19,6 +19,7 @@ const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children
       className={className}
       id={node.key}
       name={node.name}
+      date={node.createdAt}
       expanded={expandable.includes(node.key)}
       onExpandChange={toggleExpandable}
       onSelectChange={onSelect}
@@ -27,7 +28,7 @@ const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children
       {children}
     </MSETreeGroup>
   ) : (
-    <MSETreeField className={className} name={node.name} onSelectChange={onSelect}>
+    <MSETreeField className={className} name={node.name} date={node.createdAt} onSelectChange={onSelect}>
       {children}
     </MSETreeField>
   );
