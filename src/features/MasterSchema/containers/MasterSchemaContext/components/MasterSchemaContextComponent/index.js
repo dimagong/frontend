@@ -26,11 +26,12 @@ const MasterSchemaContextComponent = ({ state }) => {
 
   const allDForms = useSelector(selectdForms);
   const [currSearchName, setCurrSearchName] = useState("");
+  const [currSelectedFilterOptions, setCurrSelectedFilterOptions] = useState([]);
   const [currFilterOptions, setCurrFilterOptions] = useState([]);
 
   const onSearchSubmit = (searchName) => {
     let currSearch = searchName.hasOwnProperty("target") ? searchName.target.value : searchName;
-    const payload = { id: selectedId, name: currSearch, application_ids: currFilterOptions };
+    const payload = { id: selectedId, name: currSearch, application_ids: currSelectedFilterOptions };
     dispatch(getMasterSchemaHierarchyRequest(payload));
     setCurrSearchName(currSearch);
   };
@@ -45,16 +46,26 @@ const MasterSchemaContextComponent = ({ state }) => {
     ).map((item) => item.id);
     const payload = { id: selectedId, name: currSearchName, application_ids: application_ids };
     dispatch(getMasterSchemaHierarchyRequest(payload));
-    setCurrFilterOptions(application_ids);
+    setCurrSelectedFilterOptions(application_ids);
   };
 
   const onFilterCancel = () => {
     const payload = { id: selectedId, name: currSearchName, application_ids: [] };
     dispatch(getMasterSchemaHierarchyRequest(payload));
-    setCurrFilterOptions([]);
+    setCurrSelectedFilterOptions([]);
   };
 
   useEffect(() => void dispatch(getdFormsRequest()), []);
+
+
+  useEffect(() => {
+    if (hierarchy.name) {
+      setCurrFilterOptions(allDForms
+            .filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0)
+            .map((item) => item.name))
+    }
+  }, [hierarchy]);
+
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
@@ -64,9 +75,7 @@ const MasterSchemaContextComponent = ({ state }) => {
         handleSearch={onSearchSubmit}
         onCancelFilter={onFilterCancel}
         filterTypes={{
-          applications: allDForms
-            .filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0)
-            .map((item) => item.name),
+          applications: currFilterOptions,
         }}
         applyFilter={onFilterSubmit}
         onCalendarChange={() => {}}
@@ -81,7 +90,7 @@ const MasterSchemaContextComponent = ({ state }) => {
           key={hierarchy.name}
         />
       ) : (
-        <h2>Nothing was found for your query</h2>
+        <h2 className={'ms-nothing-was-found'}>Nothing was found for your query</h2>
       )}
     </ContextTemplate>
   );
