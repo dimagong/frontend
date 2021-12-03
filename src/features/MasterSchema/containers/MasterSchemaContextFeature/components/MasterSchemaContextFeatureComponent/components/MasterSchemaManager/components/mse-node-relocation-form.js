@@ -55,7 +55,7 @@ const MSENodeRelocationForm = ({
       components={{ IndicatorSeparator: null }}
       label={(id) => (
         <Label for={id}>
-          <CardTitle>{label}</CardTitle>
+          <CardTitle className="ms-manager__label">{label}</CardTitle>
         </Label>
       )}
     >
