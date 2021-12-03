@@ -1,10 +1,11 @@
 import AutoComplete from "../@vuexy/autoComplete/AutoCompleteComponent";
 import FilterIcon from "../../assets/img/svg/filter.svg";
+import SearchIcon from "../../assets/img/svg/searchIcon.svg";
 import CalendarIcon from "../../assets/img/svg/calendar.svg";
 import React, {useEffect, useRef, useState} from "react";
 import FilterModal from "./Filter/FilterModal";
 import {Button} from "reactstrap";
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "../../assets/img/svg/circle-with-cross.svg";
 import './styles.scss';
 import 'react-calendar/dist/Calendar.css';
 import Calendar from "react-calendar";
@@ -20,7 +21,11 @@ const SearchAndFilter = (props) => {
     filterTypes,
     applyFilter,
     isCalendar,
-    onCalendarChange
+    onCalendarChange,
+    className,
+    hasIcon,
+    placeholder,
+    filterTabPosition,
   } = props;
 
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
@@ -109,10 +114,13 @@ const SearchAndFilter = (props) => {
 
   return <div className={'search-and-filter-container'}>
     <div className={`autocomplete-search-container ${isCalendar ? 'small-autocomplete' : 'large-autocomplete'}`}>
+      {
+        hasIcon && <img src={SearchIcon} alt={'search-icon'} className={'search-icon'}/>
+      }
             <AutoComplete
-              placeholder="Search"
+              placeholder={placeholder ? placeholder : 'Search'}
               suggestions={[]}
-              className="form-control"
+              className={`form-control ${className}`}
               filterKey="name"
               onChange={handleSearch}
               onEnter={handleSearch}
@@ -168,7 +176,7 @@ const SearchAndFilter = (props) => {
                 </div>
           }
 
-          <div className={'modal-filter-tabs'}>
+          <div className={`modal-filter-tabs ${filterTabPosition === 'left' && 'left-orientation-tabs'} ${filterTabPosition === 'right' && 'right-orientation-tabs'}`}>
             {appliedFilter && Object.keys(appliedFilter).map(item => {
               if (item !== 'type' && appliedFilter[item].length > 0) {
                 return (
@@ -181,7 +189,7 @@ const SearchAndFilter = (props) => {
                     </span>
 
                     <span onClick={() => {clearOneFilterType(item)}}
-                          className={'close-nav'}><CloseIcon/></span>
+                          className={'close-nav'}><img src={CloseIcon} alt={'close-tab'}/></span>
                   </Button>
                 )
               }

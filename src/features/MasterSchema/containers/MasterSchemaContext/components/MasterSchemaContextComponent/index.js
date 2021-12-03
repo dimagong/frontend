@@ -72,6 +72,8 @@ const MasterSchemaContextComponent = ({ state }) => {
       {!isEmpty(unapproved.fields) && <UnapprovedFieldsComponent fields={unapproved.fields} />}
 
       <SearchAndFilter
+        placeholder={' '}
+        className={'ms-search-and-filter'}
         handleSearch={onSearchSubmit}
         onCancelFilter={onFilterCancel}
         filterTypes={{
@@ -79,6 +81,9 @@ const MasterSchemaContextComponent = ({ state }) => {
         }}
         applyFilter={onFilterSubmit}
         onCalendarChange={() => {}}
+        isCalendar
+        hasIcon
+        filterTabPosition={'left'}
       />
 
       {hierarchy?.id ? (
