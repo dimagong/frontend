@@ -12,6 +12,8 @@ import Checkbox from "components/Checkbox";
 import appSlice from "app/slices/appSlice";
 import { selectMovementOptions, selectSelectedId } from "app/selectors/masterSchemaSelectors";
 
+import { stopPropagation } from "utility/event-decorators";
+
 import { useToggle } from "hooks/use-toggle";
 import { useToggleable } from "hooks/use-toggleable";
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
@@ -33,7 +35,7 @@ const UnapprovedFieldItem = ({ selectable, field }) => {
   const selected = useMemo(() => selectable.includes(field.key), [field, selectable]);
 
   const handleFieldClick = () => selectable.select(field.key);
-  const handleFieldChange = () => selectable.toggle(field.key);
+  const handleFieldChange = stopPropagation(() => selectable.select(field.key));
 
   return (
     <div className="unapproved_fields-list-items-item" onClick={handleFieldClick}>
@@ -49,10 +51,25 @@ const UnapprovedFieldItem = ({ selectable, field }) => {
         </div>
       </div>
       <div className="unapproved_fields-list-items-item_creation_info">
-        <p>{`Created by SOME_USER on ${moment(field.createdAt).format("DD.MM.YYYY")}`}</p>
+        <p>
+          {field.providedByFullName
+            ? `Created by ${field.providedByFullName} on ${moment(field.createdAt).format("DD.MM.YYYY")}`
+            : `Created on ${moment(field.createdAt).format("DD.MM.YYYY")}`}
+        </p>
       </div>
     </div>
   );
+};
+
+const customSelectStyles = {
+  control: (provided) => ({
+    ...provided,
+    borderRadius: 0,
+    borderTop: "none",
+    borderLeft: "none",
+    borderRight: "none",
+    boxShadow: "none",
+  }),
 };
 
 const UnapprovedFieldsComponent = ({ fields }) => {
@@ -82,15 +99,13 @@ const UnapprovedFieldsComponent = ({ fields }) => {
       <div className="unapproved_fields">
         <div className="unapproved_fields-list">
           <div className="unapproved_fields-list-header">
-            <div className="unapproved_fields-list-header-title">
-              <h4>
-                New unapproved elements
-                {visible ? (
-                  <Visibility onClick={toggleVisibility} style={iconStyles} />
-                ) : (
-                  <VisibilityOff onClick={toggleVisibility} style={iconStyles} />
-                )}
-              </h4>
+            <div className="unapproved_fields-list-header-title mb-1">
+              New unapproved elements
+              {visible ? (
+                <Visibility onClick={toggleVisibility} style={iconStyles} />
+              ) : (
+                <VisibilityOff onClick={toggleVisibility} style={iconStyles} />
+              )}
             </div>
             <div className="unapproved_fields-list-header-selected_items">
               <div className="unapproved_fields-list-header-selected_items-count">
@@ -115,6 +130,8 @@ const UnapprovedFieldsComponent = ({ fields }) => {
           placeholder="Choose location"
           options={movementOptions}
           onChange={setLocation}
+          styles={customSelectStyles}
+          components={{ IndicatorSeparator: null }}
           label={(id) => (
             <Label for={id} className="approve__label">
               <CardTitle className="approve__title font-weight-bold">Approve selected fields</CardTitle>

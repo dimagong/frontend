@@ -24,6 +24,7 @@
       justify-content: space-between;
       &-title {
         font-size: 15px;
+        font-weight: 700;
         color: #707070;
       }
 
@@ -52,8 +53,8 @@
         margin-bottom: 12px;
         border-radius: 5px;
 
-        &-state {
-
+        > * {
+          width: calc(50% - 8px);
         }
 
         &-description {
@@ -66,11 +67,17 @@
 
           &-appearances {
             font-size: 12px;
+
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
 
-        &-creation_info {
+        &_creation_info {
           font-size: 15px;
+          text-align: right;
         }
       }
     }
