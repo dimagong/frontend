@@ -39,7 +39,7 @@ const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPo
         <div className="ms-elements__mark-icon d-flex justify-content-center align-items-center">
           <button
             type="button"
-            className="ms-elements__collapse"
+            className="ms-elements__collapse d-flex justify-content-center align-items-center"
             onClick={stopPropagation(toggleExpanded)}
             aria-label={getMarkIconAriaLabel(expanded)}
           >
