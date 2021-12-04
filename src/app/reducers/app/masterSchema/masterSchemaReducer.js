@@ -292,12 +292,12 @@ const masterSchemaReducer = {
     const valid = masterSchemaFieldInterface.validateSync(serialised);
     // console.log("field-make-parent/valid", valid);
 
-    const oldField = getFieldById(hierarchy, valid.id);
-    const oldParent = getParentById(hierarchy, oldField.parentId);
+    // const oldField = getFieldById(hierarchy, valid.id);
+    // const oldParent = getParentById(hierarchy, oldField.parentId);
 
-    parent.fields.push(valid.key);
-    oldParent.fields = oldParent.fields.filter((key) => key !== oldField.key);
-    hierarchy.children = hierarchy.children.map((child) => (child.key === oldField.key ? valid : child));
+    // parent.fields.push(valid.key);
+    // oldParent.fields = oldParent.fields.filter((key) => key !== oldField.key);
+    // hierarchy.children = hierarchy.children.map((child) => (child.key === oldField.key ? valid : child));
 
     state.isError = false;
     state.isLoading = false;

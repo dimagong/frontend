@@ -220,6 +220,7 @@ function* fieldMakeParent({ payload }) {
     const field = yield call(masterSchemaApi.fieldMakeParent, { nodeId, parentId });
     // console.log("field-make-parent/api", field);
     yield put(fieldMakeParentMasterSchemaSuccess({ field }));
+    yield call(getList);
   } catch (error) {
     // console.error("field-make-parent/error", error);
     yield put(fieldMakeParentMasterSchemaError(error));
