@@ -102,6 +102,14 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
+  getGroups({ masterSchemaId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaGroupsUrl(masterSchemaId),
+      params: { hidden_groups: [1] },
+    }).then(flatResponseData, flatResponseError);
+  },
+
   async getOrganizationsMasterSchema() {
     try {
       const result = await instance({
