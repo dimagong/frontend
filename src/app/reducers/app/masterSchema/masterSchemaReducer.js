@@ -10,6 +10,7 @@ const masterSchemaNodeSchema = {
   nodeId: yup.string().required(),
   parentId: yup.number().required(),
   parentKey: yup.string().required(),
+  parentNodeId: yup.string().required(),
   updatedAt: yup.string().required(),
   createdAt: yup.string().required(),
   isSystem: yup.boolean().required(),
@@ -18,8 +19,12 @@ const masterSchemaNodeSchema = {
 };
 
 const masterSchemaGroupSchema = {
+  ...masterSchemaNodeSchema,
   fields: yup.array(yup.string()).test((v) => Array.isArray(v)),
   groups: yup.array(yup.string()).test((v) => Array.isArray(v)),
+  parentId: yup.number().nullable(),
+  parentKey: yup.string().nullable(),
+  parentNodeId: yup.string().nullable(),
 };
 
 const masterSchemaFieldInterface = yup.object({
@@ -28,10 +33,7 @@ const masterSchemaFieldInterface = yup.object({
   providedByFullName: yup.string().nullable(),
 });
 
-const masterSchemaGroupInterface = yup.object({
-  ...masterSchemaNodeSchema,
-  ...masterSchemaGroupSchema,
-});
+const masterSchemaGroupInterface = yup.object(masterSchemaGroupSchema);
 
 // Consider about children as hashmap, will it be faster ?
 const masterSchemaUnapprovedInterface = yup.object({
@@ -42,13 +44,10 @@ const masterSchemaUnapprovedInterface = yup.object({
 
 // Consider about children as hashmap, will it be faster ?
 const masterSchemaHierarchyInterface = yup.object({
-  ...masterSchemaNodeSchema,
   ...masterSchemaGroupSchema,
   children: yup
     .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
     .test((v) => Array.isArray(v)),
-  parentId: yup.number().nullable(),
-  parentKey: yup.string().nullable(),
   masterSchemaId: yup.number().required(),
 });
 
@@ -80,6 +79,7 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
   const key = parent ? `${parent.key}/${id}` : id;
   const path = parent ? [...parent.path, name] : [name];
   const parentKey = parent ? parent.key : null;
+  const parentNodeId = parent ? parent.nodeId : null;
 
   const serialised = {
     id,
@@ -88,6 +88,7 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
     path,
     nodeId: `${isContainable ? "group" : "field"}${id}`,
     parentKey,
+    parentNodeId,
     isContainable,
     isSystem: is_system,
     createdAt: created_at,
@@ -291,12 +292,12 @@ const masterSchemaReducer = {
     const valid = masterSchemaFieldInterface.validateSync(serialised);
     // console.log("field-make-parent/valid", valid);
 
-    const oldField = getFieldById(hierarchy, valid.id);
-    const oldParent = getParentById(hierarchy, oldField.parentId);
+    // const oldField = getFieldById(hierarchy, valid.id);
+    // const oldParent = getParentById(hierarchy, oldField.parentId);
 
-    parent.fields.push(valid.key);
-    oldParent.fields = oldParent.fields.filter((key) => key !== oldField.key);
-    hierarchy.children = hierarchy.children.map((child) => (child.key === oldField.key ? valid : child));
+    // parent.fields.push(valid.key);
+    // oldParent.fields = oldParent.fields.filter((key) => key !== oldField.key);
+    // hierarchy.children = hierarchy.children.map((child) => (child.key === oldField.key ? valid : child));
 
     state.isError = false;
     state.isLoading = false;
@@ -375,6 +376,27 @@ const masterSchemaReducer = {
     // console.log("approve-fields/serialised", serialised);
     // const valid = masterSchemaUnapprovedInterface.validateSync(serialised);
     // console.log("approve-fields/valid", valid);
+
+    state.isError = false;
+    state.isLoading = false;
+  },
+
+  getMasterSchemaGroupsSuccess(state, { payload }) {
+    const { groups, masterSchemaId } = payload;
+    // const hierarchy = getHierarchyByMasterSchemaId(state, masterSchemaId);
+
+    const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
+    const serialised = groups.map((group) => {
+      return serialiseNode({ ...group, ...RISKY_CLIENT_LOGIC }, { isContainable: true });
+    });
+    // console.log("get-groups/serialised", serialised);
+    const valid = yup
+      .array(masterSchemaGroupInterface)
+      .test((v) => Array.isArray(v))
+      .validateSync(serialised);
+    // console.log("get-groups/valid", valid);
+
+    state.masterSchema.groups[masterSchemaId] = valid;
 
     state.isError = false;
     state.isLoading = false;

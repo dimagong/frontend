@@ -30,13 +30,13 @@ const MSENodeRelocationForm = ({
   onSubmit: propOnSubmit,
   ...attrs
 }) => {
-  const withParentKey = useMemo(
-    () => (multiple ? () => {} : pipe(get("value.key"), isEqual(node.parentKey))),
+  const withParentNodeId = useMemo(
+    () => (multiple ? () => {} : pipe(get("value.nodeId"), isEqual(node.parentNodeId))),
     [multiple, node]
   );
   const initialValue = useMemo(
-    () => (multiple ? null : options.find(withParentKey)),
-    [multiple, options, withParentKey]
+    () => (multiple ? null : options.find(withParentNodeId)),
+    [multiple, options, withParentNodeId]
   );
 
   const [location, setLocation] = useFormField(initialValue, [Validators.required, Validators.identical(initialValue)]);
@@ -70,12 +70,7 @@ const MSENodeRelocationForm = ({
                 {error}
               </Col>
               <Col xs={4}>
-                <MSEButton
-                  className="w-100"
-                  color="primary"
-                  type="submit"
-                  disabled={form.invalid}
-                >
+                <MSEButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
                   {action}
                 </MSEButton>
               </Col>

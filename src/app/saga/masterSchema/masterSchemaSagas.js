@@ -51,6 +51,10 @@ const {
   approveUnapprovedFieldsRequest,
   approveUnapprovedFieldsSuccess,
   approveUnapprovedFieldsError,
+
+  getMasterSchemaGroupsRequest,
+  getMasterSchemaGroupsSuccess,
+  getMasterSchemaGroupsError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -142,6 +146,7 @@ function* getHierarchy({ payload: { id, name, application_ids, date_begin, date_
     // console.log("master-schema-hierarchy/api", hierarchy);
     // ToDo: redo it later, API should return id itself
     yield put(getMasterSchemaHierarchySuccess({ hierarchy, id }));
+    yield call(getGroups, { payload: { masterSchemaId: id } });
   } catch (error) {
     // console.error("master-schema-hierarchy/error", error);
     yield put(getMasterSchemaHierarchyError(error.message));
@@ -215,6 +220,7 @@ function* fieldMakeParent({ payload }) {
     const field = yield call(masterSchemaApi.fieldMakeParent, { nodeId, parentId });
     // console.log("field-make-parent/api", field);
     yield put(fieldMakeParentMasterSchemaSuccess({ field }));
+    yield call(getList);
   } catch (error) {
     // console.error("field-make-parent/error", error);
     yield put(fieldMakeParentMasterSchemaError(error));
@@ -260,6 +266,18 @@ function* approveFields({ payload }) {
   }
 }
 
+function* getGroups({ payload }) {
+  const { masterSchemaId } = payload;
+  try {
+    const groups = yield call(masterSchemaApi.getGroups, { masterSchemaId });
+    // console.log("get-groups/api", groups);
+    yield put(getMasterSchemaGroupsSuccess({ groups, masterSchemaId }));
+  } catch (error) {
+    // console.error("get-groups/error", error);
+    yield put(getMasterSchemaGroupsError(error));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getMasterSchemaListRequest, getList),
@@ -273,6 +291,7 @@ export default function* () {
     yield takeLatest(fieldMakeParentMasterSchemaRequest, fieldMakeParent),
     yield takeLatest(fieldsMakeParentMasterSchemaRequest, fieldsMakeParent),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
+    yield takeLatest(getMasterSchemaGroupsRequest, getGroups),
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
   ]);
 }
