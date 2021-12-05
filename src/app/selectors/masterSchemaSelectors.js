@@ -6,6 +6,8 @@ export const selectSelectedId = (state) => state?.app?.masterSchema.selectedId;
 
 export const selectMasterSchemaFields = (state) => state?.app?.masterSchema.fields;
 
+export const selectSearch = (state) => state?.app?.masterSchema.search;
+
 export const selectSelectedUnapproved = (state) => {
   const selectedId = selectSelectedId(state);
   const { unapproved } = state?.app?.masterSchema;

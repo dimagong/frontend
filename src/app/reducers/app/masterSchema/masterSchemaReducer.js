@@ -192,6 +192,10 @@ const masterSchemaReducer = {
     state.masterSchema.selectedNodesKeys = payload;
   },
 
+  setMasterSchemaSearch(state, { payload }) {
+    state.masterSchema.search = payload;
+  },
+
   getMasterSchemaListSuccess: (state, { payload }) => {
     const serialised = serialiseMasterSchemaList(payload.list);
     // console.log("master-schema-list/serialised", serialised);
