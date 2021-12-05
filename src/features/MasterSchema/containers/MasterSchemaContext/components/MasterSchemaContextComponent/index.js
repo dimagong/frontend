@@ -79,7 +79,7 @@ const MasterSchemaContextComponent = ({ state }) => {
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
-      {!isEmpty(unapproved.fields) && <UnapprovedFieldsComponent fields={unapproved.fields} />}
+      {!isEmpty(unapproved?.fields) && <UnapprovedFieldsComponent fields={unapproved.fields} />}
 
       <SearchAndFilter
         placeholder={" "}
