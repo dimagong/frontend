@@ -133,7 +133,7 @@
     @extend %btn-reset;
 
     color: #95989a;
-    font-size: 0.625rem;
+    font-size: 14px;
 
     @at-root .ms-elements__node--selected > .ms-elements__node-content & {
       color: currentColor;
