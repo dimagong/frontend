@@ -176,11 +176,12 @@ const SearchAndFilter = (props) => {
                 </div>
           }
 
-          <div className={`modal-filter-tabs ${filterTabPosition === 'left' && 'left-orientation-tabs'} ${filterTabPosition === 'right' && 'right-orientation-tabs'}`}>
-            {appliedFilter && Object.keys(appliedFilter).map(item => {
-              if (item !== 'type' && appliedFilter[item].length > 0) {
-                return (
-                  <Button className={'filter-tab member-firm-filter-tab filter-close-button'} variant={'dark'}>
+          {!!Object.keys(appliedFilter).length && (
+            <div className={`modal-filter-tabs ${filterTabPosition === 'left' && 'left-orientation-tabs'} ${filterTabPosition === 'right' ? 'right-orientation-tabs' : ""}`}>
+              {Object.keys(appliedFilter).map(item => {
+                if (item !== 'type' && appliedFilter[item].length > 0) {
+                  return (
+                    <Button className={'filter-tab member-firm-filter-tab filter-close-button'} variant={'dark'}>
                     <span className={'nav-text'}>
                       {footerText[item].length <= FILTER_DESCRIPTION_SIZE
                         ? footerText[item]
@@ -188,13 +189,15 @@ const SearchAndFilter = (props) => {
                       }
                     </span>
 
-                    <span onClick={() => {clearOneFilterType(item)}}
-                          className={'close-nav'}><img src={CloseIcon} alt={'close-tab'}/></span>
-                  </Button>
-                )
-              }
-            })}
-          </div>
+                      <span onClick={() => {clearOneFilterType(item)}}
+                            className={'close-nav'}><img src={CloseIcon} alt={'close-tab'}/></span>
+                    </Button>
+                  )
+                }
+              })}
+            </div>
+          )}
+
   </div>
 
 
