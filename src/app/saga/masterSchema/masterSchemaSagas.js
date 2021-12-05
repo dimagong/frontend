@@ -1,7 +1,8 @@
-import { all, put, call, takeLatest } from "redux-saga/effects";
+import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import appSlice from "app/slices/appSlice";
 import masterSchemaApi from "api/masterSchema/masterSchema";
+import { selectSearch } from "app/selectors/masterSchemaSelectors";
 
 const {
   getMasterSchemaFieldsRequest,
@@ -140,9 +141,16 @@ function* getList() {
   }
 }
 
-function* getHierarchy({ payload: { id, name, application_ids, date_begin, date_end } }) {
+function* getHierarchy({ payload: { id } }) {
+  const search = yield select(selectSearch);
   try {
-    const hierarchy = yield call(masterSchemaApi.getHierarchy, { id, name, application_ids, date_begin, date_end });
+    const hierarchy = yield call(masterSchemaApi.getHierarchy, {
+      id,
+      name: search.value,
+      application_ids: search.filters,
+      date_begin: search.dates[0],
+      date_end: search.dates[1]
+    });
     // console.log("master-schema-hierarchy/api", hierarchy);
     // ToDo: redo it later, API should return id itself
     yield put(getMasterSchemaHierarchySuccess({ hierarchy, id }));

@@ -75,6 +75,11 @@ export const initialState = {
     unapproved: {},
     hierarchies: [],
     selectedId: null,
+    search: {
+      value: "",
+      dates: [],
+      filters: [],
+    },
   }
 };
 
