@@ -191,7 +191,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                                 <Applications />
                               </TabPane>
                               <TabPane tabId={NAV_OPTIONS[2].id}>
-                                <MasterSchema />
+                                { NAV_OPTIONS[2].id === selectedNavItem.id && <MasterSchema /> }
                               </TabPane>
                               <TabPane tabId={NAV_OPTIONS[3].id}>
                                 <Organizations />
