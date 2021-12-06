@@ -29,13 +29,17 @@
       }
 
       &-selected_items {
+        display: flex;
         &-count {
           color: #707070;
           font-size: 15px;
-
+          margin-right: 3px;
           &>p {
             margin: 0;
           }
+        }
+        &-unselect_icon {
+          cursor: pointer;
         }
       }
     }

@@ -6,6 +6,8 @@ export const selectSelectedId = (state) => state?.app?.masterSchema.selectedId;
 
 export const selectMasterSchemaFields = (state) => state?.app?.masterSchema.fields;
 
+export const selectSearch = (state) => state?.app?.masterSchema.search;
+
 export const selectSelectedUnapproved = (state) => {
   const selectedId = selectSelectedId(state);
   const { unapproved } = state?.app?.masterSchema;
@@ -21,8 +23,7 @@ export const selectSelectedHierarchy = (state) => {
 };
 
 export const selectMovementOptions = (state) => {
-  const hierarchy = selectSelectedHierarchy(state);
-  return [hierarchy, ...hierarchy.children]
-    .filter(get("isContainable"))
-    .map((node) => ({ label: node.path.join("."), value: node }));
+  const selectedId = selectSelectedId(state);
+  const groups =  state?.app?.masterSchema.groups[selectedId] || [];
+  return groups.map((group) => ({ label: group.name, value: group }));
 };

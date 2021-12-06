@@ -10,6 +10,7 @@ import './styles.scss';
 import 'react-calendar/dist/Calendar.css';
 import Calendar from "react-calendar";
 import {useOutsideAlerter} from "../../hooks/useOutsideAlerter";
+import { Close } from '@material-ui/icons'
 import _ from "lodash";
 
 const SearchAndFilter = (props) => {
@@ -85,6 +86,12 @@ const SearchAndFilter = (props) => {
     currFilter.type = {...currFilter.type, [option]: currFilter[option].length > 0 ? filter.type[option] : 'initial'};
   }
 
+  const handleCalendarClear = (e) => {
+    e.stopPropagation();
+    setCurrentDateRange(null);
+    onCalendarChange(null);
+    setCalendarText("");
+  };
 
   useEffect(() => {
     if (!filterTypes) {
@@ -111,90 +118,101 @@ const SearchAndFilter = (props) => {
   if (!currFilterOption || !filter.hasOwnProperty(currFilterOption)) {
     return <div/>
   }
-
+  console.log("test", appliedFilter);
   return <div className={'search-and-filter-container'}>
-    <div className={`autocomplete-search-container ${isCalendar ? 'small-autocomplete' : 'large-autocomplete'}`}>
+    <div>
+      <div className={`autocomplete-search-container ${isCalendar ? 'small-autocomplete' : 'large-autocomplete'}`}>
+        {
+          hasIcon && <img src={SearchIcon} alt={'search-icon'} className={'search-icon'}/>
+        }
+        <AutoComplete
+          placeholder={placeholder ? placeholder : 'Search'}
+          suggestions={[]}
+          className={`form-control ${className}`}
+          filterKey="name"
+          onChange={handleSearch}
+          onEnter={handleSearch}
+          suggestionLimit={4}
+          defaultSuggestions={false}
+          customRender={() => {}}
+          showClear={true}
+          hideSuggestions
+        />
+      </div>
+      <img ref={wrapperRefFilterButton}
+           className={`filter-icon member-firm-filter-icon ${isCalendar ? 'small-filter-icon' : 'large-filter-icon'}`}
+           src={FilterIcon} alt={'filter-icon'}
+           onClick={() => {setIsFilterBoxOpen(!isFilterBoxOpen)}}
+      />
+      {isCalendar && (
+        <span
+          className={'calendar-container'}
+          onClick={() => setIsCalendarOpened(!isCalendarOpened)}
+          ref={wrapperRefCalendarButton}
+        >
+        <img src={CalendarIcon} alt={'calendar-icon'}
+             className={'member-firm-calendar-icon member-firm-icon'}
+        />
+          {calendarText}
+          {calendarText && <Close onClick={handleCalendarClear} />}
+      </span>
+      )}
+      {isFilterBoxOpen && <FilterModal
+        managers={dataToFilter}
+        handleFilter={handleFilter}
+        wrapperRefFilterButton={wrapperRefFilterButton}
+        style={isCalendar ? stylesWithCalendar : stylesWithoutCalendar}
+        filterTypes={filterTypes}
+        filter={filter}
+        setFilter={setFilter}
+        setIsFilterBoxOpen={setIsFilterBoxOpen}
+        currFilterOption={currFilterOption}
+        setCurrFilterOption={setCurrFilterOption}
+        footerText={footerText}
+        setFooterText={setFooterText}
+        filterName={filterName}
+        setFilterName={setFilterName}
+        applyFilterCustom={applyFilter ? applyFilterCustom : undefined}
+        setAppliedFilter={setAppliedFilter}
+      />}
+
       {
-        hasIcon && <img src={SearchIcon} alt={'search-icon'} className={'search-icon'}/>
-      }
-            <AutoComplete
-              placeholder={placeholder ? placeholder : 'Search'}
-              suggestions={[]}
-              className={`form-control ${className}`}
-              filterKey="name"
-              onChange={handleSearch}
-              onEnter={handleSearch}
-              suggestionLimit={4}
-              defaultSuggestions={false}
-              customRender={() => {}}
-              showClear={true}
-              hideSuggestions
-            />
-    </div>
-          <img ref={wrapperRefFilterButton}
-               className={`filter-icon member-firm-filter-icon ${isCalendar ? 'small-filter-icon' : 'large-filter-icon'}`}
-               src={FilterIcon} alt={'filter-icon'}
-               onClick={() => {setIsFilterBoxOpen(!isFilterBoxOpen)}}
+        isCalendarOpened &&
+        <div className={'calendar-component'} ref={wrapperRefCalendarContainer}>
+          <Calendar
+            onChange={onCustomCalendarChange}
+            value={currentDateRange}
+            locale={'en-EN'}
+            selectRange
           />
-          {isCalendar && <span className={'calendar-container'}>
-            <img src={CalendarIcon} alt={'calendar-icon'}
-                 className={'member-firm-calendar-icon member-firm-icon'}
-                 onClick={() => setIsCalendarOpened(!isCalendarOpened)}
-                 ref={wrapperRefCalendarButton}
-            />
-            {calendarText}
-            </span>
+        </div>
+      }
+
+    </div>
+
+    {/*TODO** write correct handle for case when no filters selected*/}
+    {!!appliedFilter?.applications?.length && (
+      <div className={`modal-filter-tabs ${filterTabPosition === 'left' && 'left-orientation-tabs'} ${filterTabPosition === 'right' ? 'right-orientation-tabs' : ""}`}>
+        {Object.keys(appliedFilter).map(item => {
+          if (item !== 'type' && appliedFilter[item].length > 0) {
+            return (
+              <Button className={'filter-tab member-firm-filter-tab filter-close-button'} variant={'dark'}>
+              <span className={'nav-text'}>
+                {footerText[item].length <= FILTER_DESCRIPTION_SIZE
+                  ? footerText[item]
+                  : `${filter[item].length} ${item}`
+                }
+              </span>
+
+                <span onClick={() => {clearOneFilterType(item)}}
+                      className={'close-nav'}><img src={CloseIcon} alt={'close-tab'}/></span>
+              </Button>
+            )
           }
-          {isFilterBoxOpen && <FilterModal
-            managers={dataToFilter}
-            handleFilter={handleFilter}
-            wrapperRefFilterButton={wrapperRefFilterButton}
-            style={isCalendar ? stylesWithCalendar : stylesWithoutCalendar}
-            filterTypes={filterTypes}
-            filter={filter}
-            setFilter={setFilter}
-            setIsFilterBoxOpen={setIsFilterBoxOpen}
-            currFilterOption={currFilterOption}
-            setCurrFilterOption={setCurrFilterOption}
-            footerText={footerText}
-            setFooterText={setFooterText}
-            filterName={filterName}
-            setFilterName={setFilterName}
-            applyFilterCustom={applyFilter ? applyFilterCustom : undefined}
-            setAppliedFilter={setAppliedFilter}
-          />}
+        })}
+      </div>
+    )}
 
-          {
-            isCalendarOpened &&
-              <div className={'calendar-component'} ref={wrapperRefCalendarContainer}>
-                <Calendar
-                  onChange={onCustomCalendarChange}
-                  value={currentDateRange}
-                  locale={'en-EN'}
-                  selectRange
-                />
-                </div>
-          }
-
-          <div className={`modal-filter-tabs ${filterTabPosition === 'left' && 'left-orientation-tabs'} ${filterTabPosition === 'right' && 'right-orientation-tabs'}`}>
-            {appliedFilter && Object.keys(appliedFilter).map(item => {
-              if (item !== 'type' && appliedFilter[item].length > 0) {
-                return (
-                  <Button className={'filter-tab member-firm-filter-tab filter-close-button'} variant={'dark'}>
-                    <span className={'nav-text'}>
-                      {footerText[item].length <= FILTER_DESCRIPTION_SIZE
-                        ? footerText[item]
-                        : `${filter[item].length} ${item}`
-                      }
-                    </span>
-
-                    <span onClick={() => {clearOneFilterType(item)}}
-                          className={'close-nav'}><img src={CloseIcon} alt={'close-tab'}/></span>
-                  </Button>
-                )
-              }
-            })}
-          </div>
   </div>
 
 

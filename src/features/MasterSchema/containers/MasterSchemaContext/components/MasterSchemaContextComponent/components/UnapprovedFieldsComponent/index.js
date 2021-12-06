@@ -5,7 +5,7 @@ import { get, pipe } from "lodash/fp";
 import { PropTypes } from "prop-types";
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, VisibilityOff, Close } from "@material-ui/icons";
 import { CardTitle, CardSubtitle, Col, Label, Row } from "reactstrap";
 
 import Checkbox from "components/Checkbox";
@@ -91,6 +91,10 @@ const UnapprovedFieldsComponent = ({ fields }) => {
     dispatch(approveUnapprovedFieldsRequest(payload));
   };
 
+  const handleUnselectAll = () => {
+    selectable.clear();
+  };
+
   // clear select value depends on fields selecting
   useEffect(() => void setLocation(null), [selectable.isEmpty, setLocation]);
 
@@ -108,10 +112,17 @@ const UnapprovedFieldsComponent = ({ fields }) => {
               )}
             </div>
             <div className="unapproved_fields-list-header-selected_items">
-              <div className="unapproved_fields-list-header-selected_items-count">
-                {!!selectable.keys.length && <p>{selectable.keys.length} elements selected</p>}
-              </div>
-              <div className="unapproved_fields-list-header-selected_items-unselect_icon" />
+              {!!selectable.keys.length && (
+                <>
+                  <div className="unapproved_fields-list-header-selected_items-count">
+                    <p>{selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} selected</p>
+                  </div>
+                  <div className="unapproved_fields-list-header-selected_items-unselect_icon">
+                    <Close style={{fontSize: "16px", color: "black"}} onClick={handleUnselectAll}/>
+                  </div>
+                </>
+              )}
+
             </div>
           </div>
           {visible && (
@@ -122,46 +133,47 @@ const UnapprovedFieldsComponent = ({ fields }) => {
             </div>
           )}
         </div>
+        {!selectable.isEmpty && (
+          <MSESelectField
+            name="elementLocation"
+            placeholder="Choose location"
+            options={movementOptions}
+            onChange={setLocation}
+            styles={customSelectStyles}
+            components={{ IndicatorSeparator: null }}
+            label={(id) => (
+              <Label for={id} className="approve__label">
+                <CardTitle className="approve__title font-weight-bold">Approve selected fields</CardTitle>
+                <CardSubtitle className="approve__subtitle mt-1">
+                  Which branch should the selected {selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} be approved into?
+                </CardSubtitle>
+              </Label>
+            )}
+          >
+            {({ select, error, label }) => (
+              <MSEEditorForm
+                onSubmit={onSubmit}
+                header={label}
+                body={
+                  <Row>
+                    <Col xs={12}>
+                      {select}
+                      {error}
+                    </Col>
+                    <Col xs={12} className="d-flex mt-3">
+                      <MSEButton className="ml-auto" color="primary" type="submit" disabled={form.invalid}>
+                        Approve and move
+                      </MSEButton>
+                    </Col>
+                  </Row>
+                }
+              />
+            )}
+          </MSESelectField>
+        )}
       </div>
 
-      {!selectable.isEmpty && (
-        <MSESelectField
-          name="elementLocation"
-          placeholder="Choose location"
-          options={movementOptions}
-          onChange={setLocation}
-          styles={customSelectStyles}
-          components={{ IndicatorSeparator: null }}
-          label={(id) => (
-            <Label for={id} className="approve__label">
-              <CardTitle className="approve__title font-weight-bold">Approve selected fields</CardTitle>
-              <CardSubtitle className="approve__subtitle mt-1">
-                Which branch should the selected 2 elements be approved into?
-              </CardSubtitle>
-            </Label>
-          )}
-        >
-          {({ select, error, label }) => (
-            <MSEEditorForm
-              onSubmit={onSubmit}
-              header={label}
-              body={
-                <Row>
-                  <Col xs={12}>
-                    {select}
-                    {error}
-                  </Col>
-                  <Col xs={12} className="d-flex mt-3">
-                    <MSEButton className="ml-auto" color="primary" type="submit" disabled={form.invalid}>
-                      Approve and move
-                    </MSEButton>
-                  </Col>
-                </Row>
-              }
-            />
-          )}
-        </MSESelectField>
-      )}
+
     </>
   );
 };
