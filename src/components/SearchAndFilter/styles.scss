@@ -38,17 +38,23 @@
   }
 
   .calendar-container {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
     background: white;
     position: absolute;
     top: 4px;
     right: 3%;
-    width: 19%;
+    width: 21%;
     padding: 3px;
     font-size: smaller;
-
+    border: 1px solid #eeeeee;
+    height: 100%;
     .member-firm-calendar-icon {
+      width: 20px;
       cursor: pointer;
       margin-right: 10px;
+      margin-left: 3px;
     }
   }
 
@@ -58,7 +64,6 @@
     right: 22%;
     background: white;
     z-index: 1;
-    border: #eeeeee 1px solid;
     border-radius: 10px;
 
     .react-calendar {

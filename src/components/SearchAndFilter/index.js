@@ -10,6 +10,7 @@ import './styles.scss';
 import 'react-calendar/dist/Calendar.css';
 import Calendar from "react-calendar";
 import {useOutsideAlerter} from "../../hooks/useOutsideAlerter";
+import { Close } from '@material-ui/icons'
 import _ from "lodash";
 
 const SearchAndFilter = (props) => {
@@ -85,6 +86,12 @@ const SearchAndFilter = (props) => {
     currFilter.type = {...currFilter.type, [option]: currFilter[option].length > 0 ? filter.type[option] : 'initial'};
   }
 
+  const handleCalendarClear = (e) => {
+    e.stopPropagation();
+    setCurrentDateRange(null);
+    onCalendarChange(null);
+    setCalendarText("");
+  };
 
   useEffect(() => {
     if (!filterTypes) {
@@ -136,15 +143,19 @@ const SearchAndFilter = (props) => {
                src={FilterIcon} alt={'filter-icon'}
                onClick={() => {setIsFilterBoxOpen(!isFilterBoxOpen)}}
           />
-          {isCalendar && <span className={'calendar-container'}>
-            <img src={CalendarIcon} alt={'calendar-icon'}
-                 className={'member-firm-calendar-icon member-firm-icon'}
-                 onClick={() => setIsCalendarOpened(!isCalendarOpened)}
-                 ref={wrapperRefCalendarButton}
-            />
-            {calendarText}
+          {isCalendar && (
+            <span
+              className={'calendar-container'}
+              onClick={() => setIsCalendarOpened(!isCalendarOpened)}
+              ref={wrapperRefCalendarButton}
+            >
+              <img src={CalendarIcon} alt={'calendar-icon'}
+                   className={'member-firm-calendar-icon member-firm-icon'}
+              />
+              {calendarText}
+              {calendarText && <Close onClick={handleCalendarClear} />}
             </span>
-          }
+          )}
           {isFilterBoxOpen && <FilterModal
             managers={dataToFilter}
             handleFilter={handleFilter}
