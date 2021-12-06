@@ -118,7 +118,7 @@ const SearchAndFilter = (props) => {
   if (!currFilterOption || !filter.hasOwnProperty(currFilterOption)) {
     return <div/>
   }
-
+  console.log("test", appliedFilter);
   return <div className={'search-and-filter-container'}>
     <div>
       <div className={`autocomplete-search-container ${isCalendar ? 'small-autocomplete' : 'large-autocomplete'}`}>
@@ -189,7 +189,9 @@ const SearchAndFilter = (props) => {
       }
 
     </div>
-    {!!Object.keys(appliedFilter).length && (
+
+    {/*TODO** write correct handle for case when no filters selected*/}
+    {!!appliedFilter?.applications?.length && (
       <div className={`modal-filter-tabs ${filterTabPosition === 'left' && 'left-orientation-tabs'} ${filterTabPosition === 'right' ? 'right-orientation-tabs' : ""}`}>
         {Object.keys(appliedFilter).map(item => {
           if (item !== 'type' && appliedFilter[item].length > 0) {
