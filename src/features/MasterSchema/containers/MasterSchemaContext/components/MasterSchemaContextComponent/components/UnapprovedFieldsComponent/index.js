@@ -109,7 +109,7 @@ const UnapprovedFieldsComponent = ({ fields }) => {
             </div>
             <div className="unapproved_fields-list-header-selected_items">
               <div className="unapproved_fields-list-header-selected_items-count">
-                {!!selectable.keys.length && <p>{selectable.keys.length} elements selected</p>}
+                {!!selectable.keys.length && <p>{selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} selected</p>}
               </div>
               <div className="unapproved_fields-list-header-selected_items-unselect_icon" />
             </div>
@@ -122,46 +122,47 @@ const UnapprovedFieldsComponent = ({ fields }) => {
             </div>
           )}
         </div>
+        {!selectable.isEmpty && (
+          <MSESelectField
+            name="elementLocation"
+            placeholder="Choose location"
+            options={movementOptions}
+            onChange={setLocation}
+            styles={customSelectStyles}
+            components={{ IndicatorSeparator: null }}
+            label={(id) => (
+              <Label for={id} className="approve__label">
+                <CardTitle className="approve__title font-weight-bold">Approve selected fields</CardTitle>
+                <CardSubtitle className="approve__subtitle mt-1">
+                  Which branch should the selected {selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} be approved into?
+                </CardSubtitle>
+              </Label>
+            )}
+          >
+            {({ select, error, label }) => (
+              <MSEEditorForm
+                onSubmit={onSubmit}
+                header={label}
+                body={
+                  <Row>
+                    <Col xs={12}>
+                      {select}
+                      {error}
+                    </Col>
+                    <Col xs={12} className="d-flex mt-3">
+                      <MSEButton className="ml-auto" color="primary" type="submit" disabled={form.invalid}>
+                        Approve and move
+                      </MSEButton>
+                    </Col>
+                  </Row>
+                }
+              />
+            )}
+          </MSESelectField>
+        )}
       </div>
 
-      {!selectable.isEmpty && (
-        <MSESelectField
-          name="elementLocation"
-          placeholder="Choose location"
-          options={movementOptions}
-          onChange={setLocation}
-          styles={customSelectStyles}
-          components={{ IndicatorSeparator: null }}
-          label={(id) => (
-            <Label for={id} className="approve__label">
-              <CardTitle className="approve__title font-weight-bold">Approve selected fields</CardTitle>
-              <CardSubtitle className="approve__subtitle mt-1">
-                Which branch should the selected 2 elements be approved into?
-              </CardSubtitle>
-            </Label>
-          )}
-        >
-          {({ select, error, label }) => (
-            <MSEEditorForm
-              onSubmit={onSubmit}
-              header={label}
-              body={
-                <Row>
-                  <Col xs={12}>
-                    {select}
-                    {error}
-                  </Col>
-                  <Col xs={12} className="d-flex mt-3">
-                    <MSEButton className="ml-auto" color="primary" type="submit" disabled={form.invalid}>
-                      Approve and move
-                    </MSEButton>
-                  </Col>
-                </Row>
-              }
-            />
-          )}
-        </MSESelectField>
-      )}
+
     </>
   );
 };
