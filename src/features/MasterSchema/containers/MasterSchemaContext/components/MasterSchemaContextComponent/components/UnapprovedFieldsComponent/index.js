@@ -5,7 +5,7 @@ import { get, pipe } from "lodash/fp";
 import { PropTypes } from "prop-types";
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, VisibilityOff, Close } from "@material-ui/icons";
 import { CardTitle, CardSubtitle, Col, Label, Row } from "reactstrap";
 
 import Checkbox from "components/Checkbox";
@@ -91,6 +91,10 @@ const UnapprovedFieldsComponent = ({ fields }) => {
     dispatch(approveUnapprovedFieldsRequest(payload));
   };
 
+  const handleUnselectAll = () => {
+    selectable.clear();
+  };
+
   // clear select value depends on fields selecting
   useEffect(() => void setLocation(null), [selectable.isEmpty, setLocation]);
 
@@ -108,10 +112,17 @@ const UnapprovedFieldsComponent = ({ fields }) => {
               )}
             </div>
             <div className="unapproved_fields-list-header-selected_items">
-              <div className="unapproved_fields-list-header-selected_items-count">
-                {!!selectable.keys.length && <p>{selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} selected</p>}
-              </div>
-              <div className="unapproved_fields-list-header-selected_items-unselect_icon" />
+              {!!selectable.keys.length && (
+                <>
+                  <div className="unapproved_fields-list-header-selected_items-count">
+                    <p>{selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} selected</p>
+                  </div>
+                  <div className="unapproved_fields-list-header-selected_items-unselect_icon">
+                    <Close style={{fontSize: "16px", color: "black"}} onClick={handleUnselectAll}/>
+                  </div>
+                </>
+              )}
+
             </div>
           </div>
           {visible && (
