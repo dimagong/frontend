@@ -3,7 +3,9 @@ import moment from "moment";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-const MSETreeNode = ({ name, date, prepend, append, className: propClassName, onClick, children }) => {
+import { Lock } from "@material-ui/icons";
+
+const MSETreeNode = ({ name, date, system, prepend, append, className: propClassName, onClick, children }) => {
   const className = classNames("ms-elements__node", propClassName);
 
   return (
@@ -12,9 +14,17 @@ const MSETreeNode = ({ name, date, prepend, append, className: propClassName, on
         {prepend}
         <div className="ms-elements__name">{name}</div>
         {append}
-        <div className="ms-elements__date ml-auto">
-          <div>{moment(date).format("DD.MM.YYYY")}</div>
-          <div>{moment(date).format("HH.MM")}</div>
+        <div className="d-flex align-items-center ml-auto">
+          {system && (
+            <div className="ms-elements__lock px-3">
+              <Lock fontSize="inherit" />
+            </div>
+          )}
+
+          <div className="ms-elements__date">
+            <div>{moment(date).format("DD.MM.YYYY")}</div>
+            <div>{moment(date).format("HH.MM")}</div>
+          </div>
         </div>
       </div>
       {children}
@@ -25,6 +35,7 @@ const MSETreeNode = ({ name, date, prepend, append, className: propClassName, on
 MSETreeNode.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
+  system: PropTypes.bool.isRequired,
   prepend: PropTypes.node,
   append: PropTypes.node,
   className: PropTypes.string,

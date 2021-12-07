@@ -75,8 +75,6 @@
     @extend %btn-icon;
     @extend %btn-reset;
 
-
-
     color: inherit;
     font-size: 1.5rem;
   }
@@ -84,6 +82,15 @@
   &__name {
     padding: 0 8px;
     font-size: 1.125rem;
+  }
+
+  &__lock {
+    color: #7367f0;
+    font-size: 1.1rem;
+
+    @at-root .ms-elements__node--selected > .ms-elements__node-content & {
+      color: #fff;
+    }
   }
 
   &__date {
@@ -102,7 +109,7 @@
 
     position: relative;
     &:after {
-      content: '';
+      content: "";
       width: 80%;
       height: 1px;
       background-color: currentColor;
