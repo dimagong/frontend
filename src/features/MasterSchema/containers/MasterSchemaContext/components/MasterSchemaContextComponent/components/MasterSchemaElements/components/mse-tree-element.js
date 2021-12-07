@@ -8,8 +8,9 @@ import MSETreeGroup from "./mse-tree-group";
 const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children }) => {
   const { node, expandable, selectable } = state;
   const onSelect = () => propOnSelect(node.nodeId);
-  const toggleExpandable = () => expandable.select(node.key);
+  const toggleExpandable = () => expandable.select(node.nodeId);
   const selected = useMemo(() => selectable.includes(node.nodeId), [node, selectable]);
+  const expanded = useMemo(() => expandable.includes(node.nodeId), [node, expandable]);
   const className = classNames("ms-elements__node--selectable", {
     "ms-elements__node--selected": selected,
   });
@@ -21,7 +22,7 @@ const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children
       name={node.name}
       date={node.createdAt}
       system={node.isSystem}
-      expanded={expandable.includes(node.key)}
+      expanded={expanded}
       onExpandChange={toggleExpandable}
       onSelectChange={onSelect}
       onPopupAction={onPopupAction}
