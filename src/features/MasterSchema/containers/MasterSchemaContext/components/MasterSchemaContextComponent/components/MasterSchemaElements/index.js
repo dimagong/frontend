@@ -35,7 +35,9 @@ const creationTitle = (type) => {
   }
 };
 
-const MasterSchemaElements = ({ selectable, hierarchy, expanded, onNodeSelect }) => {
+const MasterSchemaElements = ({ state, onNodeSelect }) => {
+  const { selectable, hierarchy } = state;
+
   const dispatch = useDispatch();
   const loading = useSelector(
     createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true)
@@ -47,7 +49,7 @@ const MasterSchemaElements = ({ selectable, hierarchy, expanded, onNodeSelect })
     getChildren: ({ isContainable, fields, groups }) =>
       isContainable ? hierarchy.children.filter(({ key }) => [...groups, ...fields].includes(key)) : [],
   });
-  const expandable = useToggleable([]);
+  const expandable = useToggleable([hierarchy.nodeId]);
   const [addTo, setAddTo] = useState(null);
 
   const [modal, openModal, closeModal] = useBoolean(false);
@@ -89,14 +91,6 @@ const MasterSchemaElements = ({ selectable, hierarchy, expanded, onNodeSelect })
     setAddTo(null);
   };
 
-  const foldAll = useCallback(() => expandable.clear(), [expandable]);
-  const getHierarchyKeys = useCallback(() => [hierarchy, ...hierarchy.children].map(get("key")), [hierarchy]);
-  const expandAll = useCallback(() => expandable.setKeys(getHierarchyKeys), [expandable, getHierarchyKeys]);
-
-  // Effect only on expanded change
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => void (expanded ? expandAll : foldAll)(), [expanded]);
-
   // Tree needs to be updated only when items change. Or it'll cause a stack overflow
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => void tree.update([hierarchy]), [hierarchy]);
@@ -130,14 +124,8 @@ const MasterSchemaElements = ({ selectable, hierarchy, expanded, onNodeSelect })
   );
 };
 
-MasterSchemaElements.defaultProps = {
-  expanded: false,
-};
-
 MasterSchemaElements.propTypes = {
-  hierarchy: PropTypes.object.isRequired,
-  selectable: PropTypes.object.isRequired,
-  expanded: PropTypes.bool,
+  state: PropTypes.object.isRequired,
   onNodeSelect: PropTypes.func.isRequired,
 };
 

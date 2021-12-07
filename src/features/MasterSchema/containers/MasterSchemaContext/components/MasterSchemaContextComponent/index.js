@@ -96,7 +96,7 @@ const MasterSchemaContextComponent = ({ state }) => {
 
       {hierarchy?.id ? (
         <MasterSchemaElements
-          expanded={false}
+          state={state}
           selectable={selectable}
           hierarchy={hierarchy}
           onNodeSelect={onNodeSelect}
