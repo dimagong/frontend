@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 import { Lock } from "@material-ui/icons";
 
-const MSETreeNode = ({ name, date, system, prepend, append, className: propClassName, onClick, children }) => {
+const MSETreeNode = ({ name, date, isSystem, prepend, append, className: propClassName, onClick, children }) => {
   const className = classNames("ms-elements__node", propClassName);
 
   return (
@@ -15,7 +15,7 @@ const MSETreeNode = ({ name, date, system, prepend, append, className: propClass
         <div className="ms-elements__name">{name}</div>
         {append}
         <div className="d-flex align-items-center ml-auto">
-          {system && (
+          {isSystem && (
             <div className="ms-elements__lock px-3">
               <Lock fontSize="inherit" />
             </div>
@@ -35,7 +35,7 @@ const MSETreeNode = ({ name, date, system, prepend, append, className: propClass
 MSETreeNode.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
-  system: PropTypes.bool.isRequired,
+  isSystem: PropTypes.bool.isRequired,
   prepend: PropTypes.node,
   append: PropTypes.node,
   className: PropTypes.string,

@@ -13,7 +13,7 @@ import { addField, addGroup } from "../mse-addition-actions";
 
 const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
 
-const MSETreeGroup = ({ id, name, date, system, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
+const MSETreeGroup = ({ id, name, date, isSystem, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
   const popupRef = useRef();
   const [popup, togglePopup, setPopup] = useToggle(false);
 
@@ -36,7 +36,7 @@ const MSETreeGroup = ({ id, name, date, system, expanded, onExpandChange, onSele
       className={className}
       name={name}
       date={date}
-      system={system}
+      isSystem={isSystem}
 
       prepend={
         <div className="ms-elements__mark-icon d-flex justify-content-center align-items-center">
@@ -99,7 +99,7 @@ MSETreeGroup.propTypes = {
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
-  system: PropTypes.bool.isRequired,
+  isSystem: PropTypes.bool.isRequired,
   expanded: PropTypes.bool.isRequired,
   onExpandChange: PropTypes.func,
   onSelectChange: PropTypes.func,
