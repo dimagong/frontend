@@ -127,7 +127,7 @@ const MasterSchemaManager = ({ state }) => {
     return null;
   };
 
-  return render();
+  return selected.node && !selected.node.isSystem ? render() : null;
 };
 
 MasterSchemaManager.propTypes = {

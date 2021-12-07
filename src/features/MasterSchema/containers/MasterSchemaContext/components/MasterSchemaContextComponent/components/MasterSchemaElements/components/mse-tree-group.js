@@ -99,6 +99,7 @@ MSETreeGroup.propTypes = {
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
+  system: PropTypes.bool.isRequired,
   expanded: PropTypes.bool.isRequired,
   onExpandChange: PropTypes.func,
   onSelectChange: PropTypes.func,
