@@ -58,8 +58,8 @@ const MasterSchema = () => {
   }, [nodes, selectable, selected]);
 
   const state = useMemo(() => {
-    return { selectable, onNodeSelect, selected, hierarchy, unapproved };
-  }, [hierarchy, onNodeSelect, selectable, selected, unapproved]);
+    return { selectable, nodes, onNodeSelect, selected, hierarchy, unapproved };
+  }, [hierarchy, nodes, onNodeSelect, selectable, selected, unapproved]);
 
   // clear selectable on selected master schema change
   // eslint-disable-next-line react-hooks/exhaustive-deps
