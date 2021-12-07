@@ -118,7 +118,7 @@ const SearchAndFilter = (props) => {
   if (!currFilterOption || !filter.hasOwnProperty(currFilterOption)) {
     return <div/>
   }
-  console.log("test", appliedFilter);
+
   return <div className={'search-and-filter-container'}>
     <div>
       <div className={`autocomplete-search-container ${isCalendar ? 'small-autocomplete' : 'large-autocomplete'}`}>

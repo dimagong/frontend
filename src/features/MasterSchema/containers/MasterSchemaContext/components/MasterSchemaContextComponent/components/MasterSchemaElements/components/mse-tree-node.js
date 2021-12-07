@@ -35,7 +35,7 @@ const MSETreeNode = ({ name, date, system, prepend, append, className: propClass
 MSETreeNode.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
-  system: PropTypes.string.isRequired,
+  system: PropTypes.bool.isRequired,
   prepend: PropTypes.node,
   append: PropTypes.node,
   className: PropTypes.string,

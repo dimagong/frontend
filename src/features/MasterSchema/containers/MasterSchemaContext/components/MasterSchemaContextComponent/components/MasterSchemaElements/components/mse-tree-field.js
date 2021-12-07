@@ -28,7 +28,7 @@ const MSETreeField = ({ name, date, system, onSelectChange, className, children 
 MSETreeField.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
-  system: PropTypes.string.isRequired,
+  system: PropTypes.bool.isRequired,
   onSelectChange: PropTypes.func,
   className: PropTypes.string,
   children: PropTypes.node,
