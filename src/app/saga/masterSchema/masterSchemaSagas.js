@@ -179,6 +179,7 @@ function* addField({ payload }) {
     const field = yield call(masterSchemaApi.addField, { name, parentId });
     // console.log("add_field/api", field);
     yield put(addFieldToMasterSchemaSuccess({ field }));
+    yield call(getList);
   } catch (error) {
     // console.error("add_field/error", error);
     yield put(addFieldToMasterSchemaError(error));
@@ -191,6 +192,7 @@ function* addGroup({ payload }) {
     const group = yield call(masterSchemaApi.addGroup, { name, parentId });
     // console.log("add_group/api", group);
     yield put(addGroupToMasterSchemaSuccess({ group }));
+    yield call(getList);
   } catch (error) {
     // console.log("add_group/error", error);
     yield put(addGroupToMasterSchemaError(error));
