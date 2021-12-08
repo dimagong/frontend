@@ -30,7 +30,7 @@ const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children
       {children}
     </MSETreeGroup>
   ) : (
-    <MSETreeField className={className} name={node.name} date={node.createdAt} system={node.isSystem} onSelectChange={onSelect}>
+    <MSETreeField className={className} name={node.name} date={node.createdAt} isSystem={node.isSystem} onSelectChange={onSelect}>
       {children}
     </MSETreeField>
   );
