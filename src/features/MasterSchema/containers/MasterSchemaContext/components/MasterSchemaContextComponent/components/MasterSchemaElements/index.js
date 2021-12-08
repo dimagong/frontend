@@ -1,13 +1,11 @@
 import "./styles.scss";
 
-import { get } from "lodash/fp";
 import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useCallback, useEffect, useState } from "react";
 
 import { useTreeData } from "hooks/use-tree";
 import { useBoolean } from "hooks/use-boolean";
-import { useToggleable } from "hooks/use-toggleable";
 
 import TreeRoot from "components/tree/tree-root";
 import SurveyModal from "features/Surveys/Components/SurveyModal";
@@ -35,22 +33,22 @@ const creationTitle = (type) => {
   }
 };
 
+const createLoading = () =>
+  createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true);
+
 const MasterSchemaElements = ({ state, onNodeSelect }) => {
-  const { selectable, hierarchy } = state;
+  const { selectable, expandable, hierarchy } = state;
 
   const dispatch = useDispatch();
-  const loading = useSelector(
-    createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true)
-  );
+  const loading = useSelector(createLoading());
 
+  const [addTo, setAddTo] = useState(null);
   const tree = useTreeData({
     items: [hierarchy],
     getKey,
     getChildren: ({ isContainable, fields, groups }) =>
       isContainable ? hierarchy.children.filter(({ key }) => [...groups, ...fields].includes(key)) : [],
   });
-  const expandable = useToggleable([hierarchy.nodeId]);
-  const [addTo, setAddTo] = useState(null);
 
   const [modal, openModal, closeModal] = useBoolean(false);
 
@@ -93,7 +91,7 @@ const MasterSchemaElements = ({ state, onNodeSelect }) => {
 
   // Tree needs to be updated only when items change. Or it'll cause a stack overflow
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => void tree.update([hierarchy]), [hierarchy]);
+  useEffect(() => tree.update([hierarchy]), [hierarchy]);
 
   return (
     <div className="ms-elements">
