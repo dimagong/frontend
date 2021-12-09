@@ -52,7 +52,7 @@ const LongTextWidget = ({props}) => {
           }}
         />
       </div>
-      <span className={'long-text-area-open-more'} onClick={() => setIsModalOpened(true)}>Click here to expand text area</span>
+      <span className={'long-text-area-open-more'} onClick={() => setIsModalOpened(true)}>Expand text area</span>
 
       <SurveyModal
         className={'long-text-modal-window'}
