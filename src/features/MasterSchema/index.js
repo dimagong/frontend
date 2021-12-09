@@ -71,7 +71,7 @@ const MasterSchema = () => {
   useDidUpdate(() => expandable.setKeys([hierarchy.nodeId]), [selectedId]);
 
   return (
-    <div className="d-flex" key={hierarchy.name}>
+    <div className="d-flex">
       <MasterSchemaContext state={state} />
       <MasterSchemaContextFeature state={state} />
     </div>
