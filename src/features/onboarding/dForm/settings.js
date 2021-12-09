@@ -1,4 +1,4 @@
-export const initDForm = { 
+export const initDForm = {
     name: '',
       description: '',
       groups: [],
@@ -35,4 +35,4 @@ export const initDForm = {
       assigned_user_id: 1,
       entity_id: 1,
       entity_type: 'App\\Workflow'
-}
+};
