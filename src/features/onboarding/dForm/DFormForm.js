@@ -6,6 +6,7 @@ import {
   CardBody,
   Row,
   Col,
+  Button,
 } from "reactstrap";
 import { X, Eye, EyeOff } from "react-feather";
 import MultiSelect, {DropdownIndicator} from "components/MultiSelect/multiSelect";
@@ -17,6 +18,9 @@ import {initDForm} from './settings'
 import {colourStyles} from '../../../utility/select/selectSettigns'
 import Select from 'react-select'
 import Checkbox from "../../Surveys/Components/SurveyFormComponents/Checkbox";
+import SurveyModal from "../../Surveys/Components/SurveyModal";
+import SurveySelectComponent from "../../Surveys/Components/SurveyFormComponents/Select";
+import { toast } from 'react-toastify'
 
 import onboardingSlice from 'app/slices/onboardingSlice';
 import appSlice from 'app/slices/appSlice'
@@ -34,8 +38,12 @@ const {
 
 const DFormForm = ({isCreate}) => {
   const dForm = useSelector(selectdForm);
+  const dForms = useSelector(selectdForms);
   const [ isStateConfig, setIsStateConfig] = useState(true);
+  const [isDFormCreationFormInitialized, setIsDFormCreationFormInitialized] = useState(false);
+  const [dFormTemplate, setDFormTemplate] = useState(null);
   const [isApplicationTemplatePrivate, setIsApplicationTemplatePrivate] = useState(isCreate ? false : dForm.is_private);
+  const [isDFormTemplateSelectModalVisible, setIsDFormTemplateSelectModalVisible] = useState(false);
   const dispatch = useDispatch();
 
   const closeDForm = () => {
@@ -43,24 +51,53 @@ const DFormForm = ({isCreate}) => {
     dispatch(setdForm(null));
   };
 
+
   const submitDForm = (dForm, {name, description, protected_properties}) => {
     if(isCreate){
       dispatch(createDFormTemplateRequest({...dForm, name, description, protected_properties, is_private: isApplicationTemplatePrivate}))
     }else{
       dispatch(updateDFormTemplateRequest({...dForm, name, description, protected_properties, is_private: isApplicationTemplatePrivate}))
     }
-  }
+  };
 
   const changeStateConfig = () => {
     setIsStateConfig(!isStateConfig)
-  }
+  };
+
+  const handleDFormDuplicate = () => {
+    if (!dFormTemplate) {
+      toast.error("Please, select a dForm");
+    } else {
+      initializeDForm(dFormTemplate.value);
+      setIsDFormTemplateSelectModalVisible(false);
+    }
+  };
+
+  const initializeDForm = (dFormTemplate) => {
+    if (dFormTemplate) {
+      dispatch(setdForm({...dFormTemplate, name: "", description: "", created_at: undefined, updated_at: undefined}))
+    }
+
+    setIsDFormCreationFormInitialized(true)
+  };
+
+  const getOptionsByOrganization = (organization) => {
+    if (!organization) return [];
+
+    const dFormsByOrganization = dForms.filter(dForm =>
+      dForm.groups[0].type === organization.type
+      && dForm.groups[0].name === organization.name
+    );
+
+    return dFormsByOrganization.map(dForm => ({label: dForm.name, value: dForm}))
+  };
 
   useEffect(() => {
-    if(isCreate) {
+    if(isCreate && !isDFormCreationFormInitialized) {
       dispatch(setdForm(initDForm));
       setIsApplicationTemplatePrivate(false);
     }
-  }, [isCreate])
+  }, [isCreate]);
 
   if(!dForm) return null;
 
@@ -92,9 +129,22 @@ const DFormForm = ({isCreate}) => {
             </div>
           </CardHeader>
           <CardBody className="card-top-padding">
-            {isCreate && !dForm.groups.length ? (
+            {isCreate && !isDFormCreationFormInitialized ? (
               <div className="mt-2">
                 <MultiSelect setGroups={setdFormGroups} groups={prepareSelectGroups(dForm.groups)} single noDropdownIndicator />
+                {!!dForm.groups.length && (
+                  <div>
+                    <span>Please, create a dForm from scratch or use an existing dForm as a template</span>
+                    <div className="d-flex justify-content-around mt-2">
+                      <Button onClick={() => setIsDFormTemplateSelectModalVisible(true)} color="primary">
+                        Duplicate an existing dForm
+                      </Button>
+                      <Button onClick={() => {initializeDForm()}} color="primary">
+                        Create form scratch
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="mt-2 d-flex justify-content-between">
@@ -114,7 +164,7 @@ const DFormForm = ({isCreate}) => {
                 </div>
               </div>
             )}
-            {!!dForm.groups.length && (
+            {!!dForm.groups.length && (isCreate ? isDFormCreationFormInitialized : true) && (
               <FormCreate fileLoader={false}
                           submitDForm={submitDForm}
                           liveValidate={false}
@@ -126,6 +176,24 @@ const DFormForm = ({isCreate}) => {
           </CardBody>
         </Card>
       </Col>
+
+      <SurveyModal
+        isOpen={isDFormTemplateSelectModalVisible}
+        onClose={() => setIsDFormTemplateSelectModalVisible(false)}
+        title="Select dForm"
+        onSubmit={handleDFormDuplicate}
+        submitBtnText="Duplicate"
+      >
+
+        <SurveySelectComponent
+          className="mb-2"
+          value={dFormTemplate}
+          onChange={setDFormTemplate}
+          label="Select dForm to use as a template"
+          noOptionsMessage={() => "There are no dForm that can be used as a template"}
+          options={getOptionsByOrganization(dForm.groups[0])}
+        />
+      </SurveyModal>
     </Row>
   );
 };
