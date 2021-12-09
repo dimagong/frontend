@@ -1,6 +1,6 @@
 import { Input } from "reactstrap";
 import PropTypes from "prop-types";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, forwardRef } from "react";
 
 import MSEFormField from "./mse-form-field";
 
@@ -11,7 +11,7 @@ const inputStyles = {
   borderRight: 'none',
 };
 
-const MSETextField = (props) => {
+const MSETextField = forwardRef((props, ref) => {
   const { label, type, name, value, errors, valid, invalid, placeholder, onChange, children, style, ...attrs } = props;
 
   const [dirty, setDirty] = useState(false);
@@ -30,6 +30,7 @@ const MSETextField = (props) => {
         onInput={onInput}
         onChange={onChange}
         style={style}
+        innerRef={ref}
         {...attrs}
       />
     );
@@ -60,7 +61,7 @@ const MSETextField = (props) => {
       {renderChildren()}
     </MSEFormField>
   );
-};
+});
 
 MSETextField.defaultProps = {
   type: "text",

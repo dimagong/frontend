@@ -226,15 +226,15 @@ const masterSchemaReducer = {
 
   addFieldToMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.field.master_schema_group_id;
-    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
+    const { parent } = getHierarchyAndParentByParentId(state, parentId);
 
     const serialised = serialiseNode(payload.field, { isContainable: false, parent });
     // console.log("add_field/serialised", serialised);
-    const valid = masterSchemaFieldInterface.validateSync(serialised);
+    masterSchemaFieldInterface.validateSync(serialised);
     // console.log("add_field/valid", valid);
 
-    hierarchy.children.push(valid);
-    parent.fields.push(valid.key);
+    // hierarchy.children.push(valid);
+    // parent.fields.push(valid.key);
 
     state.isError = false;
     state.isLoading = false;
@@ -242,16 +242,16 @@ const masterSchemaReducer = {
 
   addGroupToMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.group.parent_id;
-    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
+    const { parent } = getHierarchyAndParentByParentId(state, parentId);
 
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
     const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });
     // console.log("add_group/serialised", serialised);
-    const valid = masterSchemaGroupInterface.validateSync(serialised);
+    masterSchemaGroupInterface.validateSync(serialised);
     // console.log("add_group/valid", valid);
 
-    hierarchy.children.push(valid);
-    parent.groups.push(valid.key);
+    // hierarchy.children.push(valid);
+    // parent.groups.push(valid.key);
 
     state.isError = false;
     state.isLoading = false;

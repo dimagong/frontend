@@ -5,12 +5,14 @@ import { get } from "lodash/fp";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
 import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 
+import { useDidMount } from "hooks/use-did-mount";
+import { useDidUpdate } from "hooks/use-did-update";
 import SearchAndFilter from "components/SearchAndFilter";
 import ContextTemplate from "components/ContextTemplate";
 
@@ -25,8 +27,11 @@ const MasterSchemaContextComponent = ({ state }) => {
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
 
-  const { hierarchy, unapproved, selectable, onNodeSelect } = state;
+  const { nodes, hierarchy, unapproved, expandable, onNodeSelect } = state;
 
+  const expandAllElements = useCallback(() => expandable.setKeys(nodes.map(get("nodeId"))), [expandable, nodes]);
+
+  const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
   const filterNames = useMemo(() => filterTypes.map(get("name")), [filterTypes]);
 
@@ -64,18 +69,26 @@ const MasterSchemaContextComponent = ({ state }) => {
     dispatch(setMasterSchemaSearch({ ...search, dates: formattedDate }));
   };
 
-  useEffect(() => void dispatch(getdFormsRequest()), [dispatch]);
+  useDidMount(() => {
+    dispatch(getdFormsRequest());
 
-  useEffect(() => void dispatch(getMasterSchemaHierarchyRequest({ id: selectedId })), [dispatch, search, selectedId]);
-
-  useEffect(() => {
     if (hierarchy.name) {
-      const types = allDForms.filter(
-        (item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0
+      setFilterTypes(
+        allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0)
       );
-      setFilterTypes(types);
     }
-  }, [allDForms, hierarchy]);
+  });
+
+  useDidUpdate(() => (isSearchingRef.current = true), [search]);
+
+  useDidUpdate(() => {
+    if (isSearchingRef.current) {
+      expandAllElements();
+      isSearchingRef.current = false;
+    }
+  }, [hierarchy]);
+
+  useDidUpdate(() => void dispatch(getMasterSchemaHierarchyRequest({ id: selectedId })), [search]);
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
@@ -95,13 +108,7 @@ const MasterSchemaContextComponent = ({ state }) => {
       />
 
       {hierarchy?.id ? (
-        <MasterSchemaElements
-          state={state}
-          selectable={selectable}
-          hierarchy={hierarchy}
-          onNodeSelect={onNodeSelect}
-          key={hierarchy.name}
-        />
+        <MasterSchemaElements state={state} onNodeSelect={onNodeSelect} />
       ) : (
         <h2 className={"ms-nothing-was-found"}>Nothing was found for your query</h2>
       )}
