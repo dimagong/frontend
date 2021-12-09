@@ -118,7 +118,7 @@ const FormComponent = ({
       initialData[formField.master_schema_field_id] = {
         id: formField.master_schema_field_id,
         type: formField.type,
-        value: formField.master_schema_field?.value?.value || defaultValue,
+        value: formField.master_schema_field?.master_schema_field_value?.value || defaultValue,
         isRequired: formField.is_required,
       };
 
