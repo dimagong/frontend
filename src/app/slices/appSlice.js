@@ -69,7 +69,17 @@ export const initialState = {
     activityTypes: [],
   },
   masterSchema: {
-    fields: []
+    fields: [],
+    list: [],
+    groups: {},
+    unapproved: {},
+    hierarchies: [],
+    selectedId: null,
+    search: {
+      value: "",
+      dates: [],
+      filters: [],
+    },
   }
 };
 

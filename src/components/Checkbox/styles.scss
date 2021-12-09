@@ -1,0 +1,122 @@
+$container-class: "checkbox_container";
+
+.#{$container-class} {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+
+  &-hidden_input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+
+    // styles of styled input after it checked
+    &:checked ~ .#{$container-class}-check_mark {
+
+      // styles of checkmark itself after input is checked
+      &:after {
+        display: block;
+      }
+    }
+  }
+
+  // styles of styled input
+  &-check_mark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+
+    // styles of checkmark itself
+    &:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+  }
+
+  // styles of styled input on hover
+  &:hover input ~ .#{$container-class}-check_mark {
+
+  }
+
+  // default theme
+  &.default {
+    font-size: 22px;
+    padding-left: 35px;
+    margin-bottom: 12px;
+
+    .#{$container-class} {
+      &-hidden_input {
+        // styles of styled input after it checked
+        &:checked ~ .#{$container-class}-check_mark {
+          background-color: #2196F3;
+        }
+      }
+
+      // styles of styled input
+      &-check_mark {
+        border: 1px solid #c3c3c3;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+
+        // styles of checkmark itself
+        &:after {
+          left: 9px;
+          top: 5px;
+          width: 5px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 3px 3px 0;
+          -webkit-transform: rotate(45deg);
+          -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+        }
+      }
+    }
+  }
+
+  // radio-like checkbox theme
+  &.radio-like {
+    font-size: 22px;
+    padding-left: 35px;
+    margin-bottom: 12px;
+
+    &.no-label {
+      width: 16px;
+      height: 16px;
+      padding-left: 0;
+    }
+
+    .#{$container-class} {
+      // styles of styled input
+      &-check_mark {
+        border: 1px solid #E2E2E2;
+        height: 16px;
+        width: 16px;
+        background-color: white;
+        border-radius: 30px;
+
+        // styles of checkmark itself
+        &:after {
+          left: 3px;
+          top: 3px;
+          width: 8px;
+          height: 8px;
+          background: #63C9EF;
+          border-radius: 30px;
+        }
+      }
+    }
+  }
+}

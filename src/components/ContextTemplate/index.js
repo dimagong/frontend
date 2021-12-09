@@ -42,25 +42,27 @@ const ContextTemplate = ({
         </div>
 
         <Scrollbars autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
-          <div className={"context-template_header"}>
-            <div className={"d-flex"}>
-              <div className={`context-template_header_title ${contextName ? "" : "border-right-0"}`}>
-                {contextTitle}
+          <div style={{paddingRight: "15px"}}>
+            <div className={"context-template_header"}>
+              <div className={"d-flex"}>
+                <div className={`context-template_header_title ${contextName ? "" : "border-right-0"}`}>
+                  {contextTitle}
+                </div>
+                {!!contextName && (
+                  <div className={"context-template_header_survey-name"}>
+                    {contextName}
+                  </div>
+                )}
               </div>
-              {!!contextName && (
-                <div className={"context-template_header_survey-name"}>
-                  {contextName}
+              {!!contextHeaderIcon && (
+                <div className={"context-template_header_edit-icon"}>
+                  {contextHeaderIcon}
                 </div>
               )}
             </div>
-            {!!contextHeaderIcon && (
-              <div className={"context-template_header_edit-icon"}>
-                {contextHeaderIcon}
-              </div>
-            )}
-          </div>
 
-          {children}
+            {children}
+          </div>
         </Scrollbars>
       </Col>
   )

@@ -1,0 +1,82 @@
+.search-and-filter-container {
+  position: relative;
+
+  .autocomplete-search-container {
+    margin-bottom: 20px;
+    margin-top: 10px;
+    border: 1px solid #ececec;
+    border-radius: 5px;
+    .search-icon {
+      position: absolute;
+      top: 9px;
+      left: 10px;
+      z-index: 2;
+      width: 20px;
+    }
+  }
+
+  .small-autocomplete {
+    width: 73%;
+  }
+
+  .large-autocomplete {
+    width: 92%;
+  }
+
+  .filter-close-button {
+    margin-left: 10px;
+  }
+
+  .small-filter-icon {
+    right: 23%;
+    top: 8px;
+    height: 20px;
+  }
+
+  .large-filter-icon {
+    right: 3%;
+    top: 8px;
+    height: 20px;
+  }
+
+  .calendar-container {
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    background: white;
+    position: absolute;
+    top: 0;
+    right: 0%;
+    width: 21%;
+    padding: 8px 3px;
+    font-size: smaller;
+    border: 1px solid #eeeeee;
+    .member-firm-calendar-icon {
+      width: 20px;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-left: 3px;
+    }
+  }
+
+  .calendar-component {
+    position: absolute;
+    top: 50px;
+    right: 22%;
+    background: white;
+    z-index: 1;
+    border-radius: 10px;
+
+    .react-calendar {
+      border: 1px solid rgba(34, 41, 47, 0.125);
+      border-radius: 10px;
+    }
+  }
+
+  .modal-filter-tabs {
+    text-align: right;
+    padding-right: 10px;
+    height: 30px
+  }
+}

@@ -1,0 +1,74 @@
+.mse-search {
+  background-color: #fff;
+
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &:focus-within {
+    border-color: #7367f0;
+    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  &__input {
+    border: none;
+
+    &:hover,
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &__icon {
+    width: 39px;
+
+    border-radius: 50%;
+    background-color: transparent;
+
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+
+    &:hover,
+    &:focus {
+      outline: none;
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+}
+
+.ms-nothing-was-found {
+  margin-bottom: 350px;
+  color: #707070;
+  text-align: center;
+  padding-top: 40px;
+}
+
+.ms-search-and-filter {
+  border: unset;
+  padding-left: 40px;
+}
+
+.modal-filter-tabs {
+  .close-nav {
+    cursor: pointer;
+    margin-left: 15px;
+  }
+}
+
+.left-orientation-tabs {
+  text-align: left!important;
+  .filter-tab {
+    margin-left: 0;
+    margin-right: 10px;
+  }
+}
+
+.right-orientation-tabs {
+  text-align: right!important;
+  margin-left: 10px;
+  margin-right: 0;
+}
+

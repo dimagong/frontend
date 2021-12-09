@@ -24,7 +24,8 @@ import ContextSearchNav from './ContextSearchNav'
 import { selectAuth } from "app/selectors/authSelectors"
 import {selectVuexyUser} from 'app/selectors'
 import Applications from './Applications'
-import MasterSchema from 'views/pages/master-schema'
+// import MasterSchema from 'views/pages/master-schema'
+import MasterSchema from 'features/home/ContextSearch/MasterSchema';
 import Organizations from './Organizations'
 import UserManagement from './UserManagement'
 import Surveys from './Surveys'
@@ -190,7 +191,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                                 <Applications />
                               </TabPane>
                               <TabPane tabId={NAV_OPTIONS[2].id}>
-                                <MasterSchema />
+                                { NAV_OPTIONS[2].id === selectedNavItem.id && <MasterSchema /> }
                               </TabPane>
                               <TabPane tabId={NAV_OPTIONS[3].id}>
                                 <Organizations />
