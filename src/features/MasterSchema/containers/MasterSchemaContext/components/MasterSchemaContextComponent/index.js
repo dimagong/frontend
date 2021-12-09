@@ -108,7 +108,7 @@ const MasterSchemaContextComponent = ({ state }) => {
       />
 
       {hierarchy?.id ? (
-        <MasterSchemaElements state={state} onNodeSelect={onNodeSelect} />
+        <MasterSchemaElements state={state} onNodeSelect={onNodeSelect} key={hierarchy.name} />
       ) : (
         <h2 className={"ms-nothing-was-found"}>Nothing was found for your query</h2>
       )}
