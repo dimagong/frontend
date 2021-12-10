@@ -23,7 +23,7 @@ const MSETreeNode = ({ name, date, isSystem, prepend, append, className: propCla
 
           <div className="ms-elements__date">
             <div>{moment(date).format("DD.MM.YYYY")}</div>
-            <div>{moment(date).format("HH.MM")}</div>
+            <div>{moment(date).format("HH:MM")}</div>
           </div>
         </div>
       </div>

@@ -3,24 +3,24 @@ import PropTypes from "prop-types";
 import { Button, Spinner } from "reactstrap";
 import React, { useLayoutEffect, useMemo, useRef } from "react";
 
-import { stringIsHashColor } from "utility/string-is-hash-color";
+import { stringIsColor } from "utility/string-is-color";
 
 const MSEButton = ({ loading, textColor, backgroundColor, spinner, children, ...attrs }) => {
   const buttonRef = useRef();
-  const textColorIsHashColor = useMemo(() => stringIsHashColor(textColor), [textColor]);
-  const backgroundColorIsHashColor = useMemo(() => stringIsHashColor(backgroundColor), [backgroundColor]);
+  const textColorIsColor = useMemo(() => stringIsColor(textColor), [textColor]);
+  const backgroundColorIsColor = useMemo(() => stringIsColor(backgroundColor), [backgroundColor]);
 
   useLayoutEffect(() => {
     if (!buttonRef.current) return;
 
-    if (textColorIsHashColor) {
+    if (textColorIsColor) {
       buttonRef.current.style.setProperty("color", textColor, "important");
     }
 
-    if (backgroundColorIsHashColor) {
+    if (backgroundColorIsColor) {
       buttonRef.current.style.setProperty("background-color", backgroundColor, "important");
     }
-  }, [backgroundColor, backgroundColorIsHashColor, textColor, textColorIsHashColor]);
+  }, [backgroundColor, backgroundColorIsColor, textColor, textColorIsColor]);
 
   return (
     <Button innerRef={buttonRef} {...attrs}>
@@ -40,10 +40,10 @@ const MSEButton = ({ loading, textColor, backgroundColor, spinner, children, ...
 
 const hashColorStringPropValidator = (props, propName, componentName) => {
   const value = props[propName];
-  const valid = [isNil, stringIsHashColor].some((v) => v(value));
+  const valid = [isNil, stringIsColor].some((v) => v(value));
 
   if (!valid) {
-    return new Error(`Invalid prop \`${propName}\` supplied \`${componentName}\`. Prop should a hash color string.`);
+    return new Error(`Invalid prop \`${propName}\` supplied \`${componentName}\`. Prop should be a color string.`);
   }
 };
 
