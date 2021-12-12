@@ -1,6 +1,11 @@
 import {toast} from "react-toastify";
 
 const memberFirmsReducer = {
+  createMasterSchemaFieldForMemberFirmSuccess: (state) => {
+    state.isLoading = false;
+    state.error = null;
+  },
+
   createMemberFirmSuccess: (state, { payload }) => {
     state.memberFirms = [...state.memberFirms, payload];
 
@@ -14,6 +19,7 @@ const memberFirmsReducer = {
     state.isLoading = false;
     state.error = null;
   },
+
 
   setSelectedMemberFirmId: (state, { payload }) => {
     state.selectedMemberFirmId = payload;

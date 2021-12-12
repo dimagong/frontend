@@ -60,6 +60,10 @@ const {
   addFieldToMemberFirmSuccess,
   addFieldToMemberFirmRequest,
   addFieldToMemberFirmError,
+
+  createMasterSchemaFieldForMemberFirmSuccess,
+  createMasterSchemaFieldForMemberFirmRequest,
+  createMasterSchemaFieldForMemberFirmError,
 } = appSlice.actions;
 
 
@@ -213,6 +217,17 @@ function* addFieldToMemberFirm(payload) {
   }
 }
 
+function* createMasterSchemaFieldForMemberFirm({ payload }) {
+  const response = yield call(memberFirmsApi.createMasterSchemaFieldForMemberFirm, payload);
+
+  if (response?.message) {
+    yield put(createMasterSchemaFieldForMemberFirmError(response?.message));
+  } else {
+    yield put(createMasterSchemaFieldForMemberFirmSuccess(response));
+    yield call(getMasterSchemaFieldsForMemberFirm, { payload: payload.member_firm_id });
+  }
+}
+
 export default function* () {
   yield all([
     takeLatest(createMemberFirmRequest.type, createMemberFirm),
@@ -229,5 +244,6 @@ export default function* () {
     takeLatest(getMemberFirmRequest.type, getMemberFirm),
     takeLatest(getMemberFirmActivitiesRequest.type, getMemberFirmActivities),
     takeLatest(addFieldToMemberFirmRequest.type, addFieldToMemberFirm),
+    takeLatest(createMasterSchemaFieldForMemberFirmRequest, createMasterSchemaFieldForMemberFirm),
   ]);
 }

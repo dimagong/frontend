@@ -1,18 +1,19 @@
-import React from 'react';
-import Select, {components} from 'react-select';
-import {ChevronUp, ChevronDown} from "react-feather";
+import React from "react";
+import Select, { components } from "react-select";
+import { ChevronUp, ChevronDown } from "react-feather";
 
-export const DropdownIndicator = props => {
-  return components.DropdownIndicator && (
-    <components.DropdownIndicator {...props}>
-      {props.selectProps.menuIsOpen ? <ChevronUp /> : <ChevronDown />}
-    </components.DropdownIndicator>
-  )
+export const DropdownIndicator = (props) => {
+  return (
+    components.DropdownIndicator && (
+      <components.DropdownIndicator {...props}>
+        {props.selectProps.menuIsOpen ? <ChevronUp /> : <ChevronDown />}
+      </components.DropdownIndicator>
+    )
+  );
 };
 
-
 const defaultStyles = {
-  control: styles => ({
+  control: (styles) => ({
     ...styles,
     backgroundColor: "white",
     border: 0,
@@ -35,11 +36,11 @@ const defaultStyles = {
     padding: "10px 7px 10px 0",
   }),
 
-  indicatorSeparator: () => ({display: 'none'}),
+  indicatorSeparator: () => ({ display: "none" }),
 };
 
 const versionSelectStyles = {
-  control: styles => ({
+  control: (styles) => ({
     ...styles,
     backgroundColor: "white",
     border: 0,
@@ -62,23 +63,29 @@ const versionSelectStyles = {
     padding: "6px 7px 6px 0",
   }),
 
-  indicatorSeparator: () => ({display: 'none'}),
+  indicatorSeparator: () => ({ display: "none" }),
 };
 
-const SurveySelectComponent = ({value, onChange, options, displayType, label, name, className, ...rest}) => {
-
+const SurveySelectComponent = ({
+  value,
+  onChange,
+  options,
+  displayType,
+  label,
+  name,
+  className,
+  onInputChange,
+  ...rest
+}) => {
   return (
     <div className={className || ""}>
       {!!label && (
-        <label
-          className="survey-input-component_label"
-          htmlFor={name}
-        >
+        <label className="survey-input-component_label" htmlFor={name}>
           {label}
         </label>
       )}
       <Select
-        components={{DropdownIndicator:  DropdownIndicator,}}
+        components={{ DropdownIndicator: DropdownIndicator }}
         value={value}
         maxMenuHeight={200}
         isMulti={false}
@@ -86,12 +93,17 @@ const SurveySelectComponent = ({value, onChange, options, displayType, label, na
         styles={displayType === "versionSelect" ? versionSelectStyles : defaultStyles}
         options={options}
         onChange={onChange}
+        onInputChange={onInputChange}
         classNamePrefix="select"
         id="organizations"
         {...rest}
       />
     </div>
-  )
+  );
+};
+
+SurveySelectComponent.defaultProps = {
+  isCreatable: false,
 };
 
 export default SurveySelectComponent;

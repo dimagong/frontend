@@ -32,7 +32,6 @@ const FormComponent = ({
   memberFirmId,
   onFieldAdd,
 }) => {
-  console.log(memberFirmFormFields, masterSchemaMemberFirmFields);
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({});
@@ -196,6 +195,7 @@ const FormComponent = ({
         isOpen={isAddFieldModalVisible}
         onClose={handleAddFieldModalClose}
         isMSPropertiesLoading={isMasterSchemaFieldsForMemberFirmLoading}
+        memberFirmId={memberFirmId}
         MSProperties={masterSchemaMemberFirmFields}
         onSubmit={handleAddFieldSubmit}
         isSubmitProceeding={isAddingFieldToMemberFirmLoading}
