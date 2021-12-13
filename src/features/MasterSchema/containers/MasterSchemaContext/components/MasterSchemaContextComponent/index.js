@@ -5,11 +5,13 @@ import { get } from "lodash/fp";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
 import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
+
+import MSEButton from "features/MasterSchema/share/mse-button";
 
 import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
@@ -27,9 +29,7 @@ const MasterSchemaContextComponent = ({ state }) => {
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
 
-  const { nodes, hierarchy, unapproved, expandable, onNodeSelect } = state;
-
-  const expandAllElements = useCallback(() => expandable.setKeys(nodes.map(get("nodeId"))), [expandable, nodes]);
+  const { hierarchy, unapproved, expandable, onNodeSelect } = state;
 
   const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
@@ -83,8 +83,8 @@ const MasterSchemaContextComponent = ({ state }) => {
 
   useDidUpdate(() => {
     if (isSearchingRef.current) {
-      expandAllElements();
       isSearchingRef.current = false;
+      (isEmpty(search.value) ? expandable.reset : expandable.expandAll)();
     }
   }, [hierarchy]);
 
@@ -92,26 +92,42 @@ const MasterSchemaContextComponent = ({ state }) => {
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
-      {!isEmpty(unapproved?.fields) && <UnapprovedFieldsComponent fields={unapproved.fields} />}
+      <div className="position-relative">
+        {!isEmpty(unapproved?.fields) && <UnapprovedFieldsComponent fields={unapproved.fields} />}
 
-      <SearchAndFilter
-        placeholder={" "}
-        className={"ms-search-and-filter"}
-        handleSearch={onSearchSubmit}
-        onCancelFilter={onFilterCancel}
-        filterTypes={{ applications: filterNames }}
-        applyFilter={onFilterSubmit}
-        onCalendarChange={onCalendarChange}
-        isCalendar
-        hasIcon
-        filterTabPosition={"left"}
-      />
+        <div className="position-sticky" style={{ top: "0px", left: "0px", backgroundColor: "#f8f8f8" }}>
+          <SearchAndFilter
+            className="ms-search-and-filter"
+            placeholder=""
+            handleSearch={onSearchSubmit}
+            onCancelFilter={onFilterCancel}
+            filterTypes={{ applications: filterNames }}
+            applyFilter={onFilterSubmit}
+            onCalendarChange={onCalendarChange}
+            isCalendar
+            hasIcon
+            filterTabPosition={"left"}
+          />
 
-      {hierarchy?.id ? (
-        <MasterSchemaElements state={state} onNodeSelect={onNodeSelect} key={hierarchy.name} />
-      ) : (
-        <h2 className={"ms-nothing-was-found"}>Nothing was found for your query</h2>
-      )}
+          <div className="d-flex justify-content-end pb-1">
+            <MSEButton
+              className="p-0"
+              textColor="currentColor"
+              backgroundColor="transparent"
+              disabled={expandable.isInitial}
+              onClick={expandable.reset}
+            >
+              Collapse
+            </MSEButton>
+          </div>
+        </div>
+
+        {hierarchy?.id ? (
+          <MasterSchemaElements state={state} onNodeSelect={onNodeSelect} key={hierarchy.name} />
+        ) : (
+          <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
+        )}
+      </div>
     </ContextTemplate>
   );
 };

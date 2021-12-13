@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { get, pipe, isEqual } from "lodash/fp";
+import { get, pipe, isEqual, includes } from "lodash/fp";
 import React, { useCallback, useMemo } from "react";
 
 import { useDidUpdate } from "hooks/use-did-update";
@@ -12,15 +12,52 @@ import MasterSchemaContextFeature from "./containers/MasterSchemaContextFeature"
 
 const getNodeIdPredicate = (nodeId) => pipe(get("nodeId"), isEqual(nodeId));
 
+export const useExpandable = (keys, initialKeys) => {
+  const toggleable = useToggleable(initialKeys);
+
+  const reset = useCallback(() => toggleable.setKeys(initialKeys), [initialKeys, toggleable]);
+
+  const expand = useCallback(
+    (key) => toggleable.setKeys((prev) => (prev.includes(key) ? prev : [...prev, key])),
+    [toggleable]
+  );
+
+  const collapse = useCallback(
+    (key) => toggleable.setKeys((prev) => prev.filter(pipe(isEqual(key), (v) => !v))),
+    [toggleable]
+  );
+  const expandAll = useCallback(() => toggleable.setKeys(keys), [keys, toggleable]);
+  const isInitial = useMemo(() => isEqual(initialKeys, toggleable.keys), [initialKeys, toggleable.keys]);
+
+  return {
+    ...toggleable,
+    isInitial,
+    reset,
+    expand,
+    collapse,
+    expandAll,
+  };
+};
+
 const MasterSchema = () => {
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
   const hierarchy = useSelector(masterSchemaSelectors.selectSelectedHierarchy);
   const unapproved = useSelector(masterSchemaSelectors.selectSelectedUnapproved);
 
-  const selectable = useToggleable([]);
-  const expandable = useToggleable([hierarchy.nodeId]);
-
   const nodes = useMemo(() => [hierarchy, ...hierarchy.children], [hierarchy]);
+
+  const selectable = useToggleable([]);
+  const expandable = useExpandable(nodes.map(get("nodeId")), [hierarchy.nodeId]);
+  const collapseWhole = useCallback(
+    (nodeId) => {
+      debugger;
+      const node = nodes.find(pipe(get("nodeId"), isEqual(nodeId)));
+      const keysToCollapse = [nodeId, ...nodes.filter(({ key }) => node.groups.includes(key)).map(get("nodeId"))];
+
+      keysToCollapse.forEach(key => expandable.collapse(key));
+    },
+    [expandable, nodes]
+  );
 
   const selected = useMemo(() => {
     const selectedNodes = selectable.keys.map((nodeId) => nodes.find(getNodeIdPredicate(nodeId))).filter(Boolean);
@@ -61,14 +98,14 @@ const MasterSchema = () => {
   );
 
   const state = useMemo(() => {
-    return { selectable, expandable, nodes, onNodeSelect, selected, hierarchy, unapproved };
-  }, [hierarchy, nodes, onNodeSelect, selectable, expandable, selected, unapproved]);
+    return { selectable, expandable, collapseWhole, nodes, onNodeSelect, selected, hierarchy, unapproved };
+  }, [selectable, expandable, collapseWhole, nodes, onNodeSelect, selected, hierarchy, unapproved]);
 
   // clear selectable on selected master schema change
   useDidUpdate(() => selectable.clear(), [selectedId]);
 
   // set expanded first brand element
-  useDidUpdate(() => expandable.setKeys([hierarchy.nodeId]), [selectedId]);
+  useDidUpdate(() => expandable.reset(), [selectedId]);
 
   return (
     <div className="d-flex">

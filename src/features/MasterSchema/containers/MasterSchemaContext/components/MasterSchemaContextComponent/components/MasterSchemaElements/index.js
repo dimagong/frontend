@@ -37,7 +37,7 @@ const createLoading = () =>
   createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true);
 
 const MasterSchemaElements = ({ state, onNodeSelect }) => {
-  const { selectable, expandable, hierarchy } = state;
+  const { selectable, expandable, hierarchy, collapseWhole } = state;
 
   const dispatch = useDispatch();
   const loading = useSelector(createLoading());
@@ -101,7 +101,7 @@ const MasterSchemaElements = ({ state, onNodeSelect }) => {
         renderNodeList={({ root, children }) => <MSETreeNodeList root={root} children={children} />}
         renderNode={({ node, children }) => (
           <MSETreeElement
-            state={{ node: node.value, selectable, expandable }}
+            state={{ node: node.value, selectable, expandable, collapseWhole }}
             onPopupAction={onPopupAction}
             onSelect={onNodeSelect}
             children={children}
