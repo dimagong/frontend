@@ -385,6 +385,16 @@ const masterSchemaReducer = {
     state.isError = false;
     state.isLoading = false;
   },
+
+
+  getRelatedApplicationsSuccess(state, { payload }) {
+      const { users, fieldId } = payload;
+
+      state.masterSchema.related_applications[fieldId] = users;
+
+      state.isError = false;
+      state.isLoading = false;
+    },
 };
 
 export default masterSchemaReducer;

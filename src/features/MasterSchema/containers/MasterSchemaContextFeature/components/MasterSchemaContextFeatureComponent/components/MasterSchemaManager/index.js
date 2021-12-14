@@ -1,24 +1,27 @@
-import React from "react";
+import React, {useEffect} from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
-import { selectMovementOptions } from "app/selectors/masterSchemaSelectors";
+import {selectMovementOptions, selectRelatedApplications} from "app/selectors/masterSchemaSelectors";
 
 import MSENodeRenamingForm from "./components/mse-node-renaming-form";
 import MSENodeRelocationForm from "./components/mse-node-relocation-form";
+import MSENodeRelatedTable from "./components/mse-node-related-table";
 
 const {
   updateFieldMasterSchemaRequest,
   updateGroupMasterSchemaRequest,
   fieldMakeParentMasterSchemaRequest,
   groupMakeParentMasterSchemaRequest,
+  getRelatedApplicationsRequest,
 } = appSlice.actions;
 
 const MasterSchemaManager = ({ state }) => {
   const { selected } = state;
   const dispatch = useDispatch();
   const movementOptions = useSelector(selectMovementOptions);
+  const relatedApplications = useSelector(selectRelatedApplications(selected?.node?.id));
 
   const onRenameSubmit = (submitted) => {
     if (submitted.invalid) return;
@@ -41,6 +44,12 @@ const MasterSchemaManager = ({ state }) => {
 
     dispatch(action(payload));
   };
+
+  useEffect(() => {
+    if (selected?.node?.id) {
+      dispatch(getRelatedApplicationsRequest({fieldId: selected.node.id}))
+    }
+  }, [selected])
 
   const render = () => {
     // ToDo: handle multiple fields managing
@@ -65,6 +74,10 @@ const MasterSchemaManager = ({ state }) => {
       return (
         <>
           <div className="context-feature-template_header_title">Manage Datapoint</div>
+          {relatedApplications?.length > 0 &&
+            <MSENodeRelatedTable
+            relatedApplications={relatedApplications}
+          />}
           <MSENodeRenamingForm
             className="my-2"
             name={selected.field.name}

@@ -2,6 +2,14 @@
 
 }
 
+.msu-related-table {
+  padding: 20px 40px;
+
+  tr > td:last-of-type {
+    border-right: #9aa9b7 solid 3px;
+  }
+}
+
 .msu-table {
   min-width: 630px;
   table-layout: fixed;

@@ -51,6 +51,10 @@ const {
   getUsersByMasterSchemaFieldRequest,
   getUsersByMasterSchemaFieldSuccess,
   getUsersByMasterSchemaFieldError,
+
+  getRelatedApplicationsRequest,
+  getRelatedApplicationsSuccess,
+  getRelatedApplicationsError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -260,6 +264,18 @@ function* getUsers({ payload }) {
   }
 }
 
+function* getRelatedApplications({ payload }) {
+  const { fieldId } = payload;
+  try {
+    const users = yield call(masterSchemaApi.getRelatedApplications, { fieldId });
+    console.log("related-table-applications/api", users);
+    yield put(getRelatedApplicationsSuccess({ users, fieldId }));
+  } catch (error) {
+    console.error("related-table-applications/error", error);
+    yield put(getRelatedApplicationsError(error));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getMasterSchemaListRequest, getList),
@@ -273,6 +289,7 @@ export default function* () {
     yield takeLatest(updateGroupMasterSchemaRequest, updateGroup),
     yield takeLatest(fieldMakeParentMasterSchemaRequest, fieldMakeParent),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
+    yield takeLatest(getRelatedApplicationsRequest, getRelatedApplications),
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
   ]);
 }

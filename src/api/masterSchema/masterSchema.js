@@ -3,6 +3,7 @@ import { get, pipe } from "lodash/fp";
 import { masterSchemaOrganizations } from "constants/masterSchema";
 
 import * as Urls from "./constants";
+import {getMasterSchemaRelatedApplications} from "./constants";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
@@ -102,8 +103,15 @@ const masterSchemaApi = {
 
   getUsers({ fieldId }) {
     return instance({
-      method: "GET",
+      method: "POST",
       url: Urls.getMasterSchemaUsersByFieldUrl(fieldId),
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getRelatedApplications({ fieldId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaRelatedApplications(fieldId),
     }).then(flatResponseData, flatResponseError);
   },
 
