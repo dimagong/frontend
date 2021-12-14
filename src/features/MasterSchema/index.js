@@ -79,6 +79,14 @@ export const useMasterSchemaSelectable = (nodes) => {
     const selectedNodes = selectable.keys.map((nodeId) => nodes.find(getNodeIdPredicate(nodeId))).filter(Boolean);
     const selectedFields = selectedNodes.filter(pipe(get("isContainable"), (v) => !v));
     const selectedGroups = selectedNodes.filter(get("isContainable"));
+    const thereIsSelectedSystemNode = selectedNodes.some(get("isSystem"));
+
+    const memberFirmsGroups = nodes.filter(get("isMemberFirmGroup"));
+    const selectedFieldsFromMemberFirm = selectedFields.filter(({ key }) => {
+      return memberFirmsGroups.some((group) => group.fields.includes(key));
+    });
+    const areSelectedFieldsContainCommonAndMemberFirmFields =
+      selectedFields.length > selectedFieldsFromMemberFirm.length && selectedFieldsFromMemberFirm.length > 0;
 
     return {
       nodes: selectedNodes,
@@ -87,6 +95,8 @@ export const useMasterSchemaSelectable = (nodes) => {
       node: selectedNodes[0],
       field: selectedFields[0],
       group: selectedGroups[0],
+      thereIsSelectedSystemNode,
+      areSelectedFieldsContainCommonAndMemberFirmFields,
     };
   }, [nodes, selectable.keys]);
 
@@ -116,7 +126,7 @@ export const useMasterSchemaSelectable = (nodes) => {
   return {
     selected,
     ...selectable,
-    toggle
+    toggle,
   };
 };
 

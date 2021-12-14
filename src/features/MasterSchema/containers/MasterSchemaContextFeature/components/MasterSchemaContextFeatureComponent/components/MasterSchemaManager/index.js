@@ -19,7 +19,9 @@ const {
 } = appSlice.actions;
 
 const MasterSchemaManager = () => {
-  const { selectable: { selected } } = useMasterSchemaContext();
+  const {
+    selectable: { selected },
+  } = useMasterSchemaContext();
 
   const dispatch = useDispatch();
   const selectedId = useSelector(selectSelectedId);
@@ -58,7 +60,8 @@ const MasterSchemaManager = () => {
   };
 
   const render = () => {
-    if (selected.fields.length > 1) {
+    // reminder - the !selected.areSelectedFieldsContainCommonAndMemberFirmFields work the same for merge feature
+    if (selected.fields.length > 1 && !selected.areSelectedFieldsContainCommonAndMemberFirmFields) {
       return (
         <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage datapoints</div>
@@ -128,7 +131,7 @@ const MasterSchemaManager = () => {
     return null;
   };
 
-  return selected.node && !selected.node.isSystem ? render() : null;
+  return selected.node && !selected.thereIsSelectedSystemNode ? render() : null;
 };
 
 export default MasterSchemaManager;

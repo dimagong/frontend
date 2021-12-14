@@ -1,7 +1,7 @@
 import "./styles.scss";
 
 import React from "react";
-import { isEmpty } from "lodash/fp";
+import { isEmpty, get, pipe, join } from "lodash/fp";
 
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
@@ -21,13 +21,25 @@ const MasterSchemaContextFeatureComponent = () => {
       return (
         <>
           {firstName}
-          { restNames && <span className="font-weight-normal">{restNames}</span> }
+          {restNames && <span className="font-weight-normal">{restNames}</span>}
         </>
       );
     }
 
     if (selectable.selected.fields.length > 1) {
-      return `${selectable.selected.fields.length} Datapoints Selected`;
+      return (
+        <>
+          {`${selectable.selected.fields.length} Datapoints Selected`}
+          <p className="mb-0 mt-1 font-size-base font-weight-normal">
+            {selectable.selected.fields.map(pipe(get("path"), join("."))).join(", ")}
+          </p>
+          {selectable.selected.areSelectedFieldsContainCommonAndMemberFirmFields && (
+            <p className="mb-0 mt-1 font-size-base font-weight-normal text-danger">
+              There are selected fields not from member firm.
+            </p>
+          )}
+        </>
+      );
     }
   };
 
