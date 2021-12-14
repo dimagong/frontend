@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { get, pipe, isEqual, includes } from "lodash/fp";
+import { get, pipe, isEqual } from "lodash/fp";
 import React, { useCallback, useMemo } from "react";
 
 import { useDidUpdate } from "hooks/use-did-update";
@@ -9,6 +9,8 @@ import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 
 import MasterSchemaContext from "./containers/MasterSchemaContext";
 import MasterSchemaContextFeature from "./containers/MasterSchemaContextFeature";
+
+import { MasterSchemaContext as MasterSchemaReactContext } from "./master-schema-context";
 
 const getNodeIdPredicate = (nodeId) => pipe(get("nodeId"), isEqual(nodeId));
 
@@ -50,11 +52,10 @@ const MasterSchema = () => {
   const expandable = useExpandable(nodes.map(get("nodeId")), [hierarchy.nodeId]);
   const collapseWhole = useCallback(
     (nodeId) => {
-      debugger;
       const node = nodes.find(pipe(get("nodeId"), isEqual(nodeId)));
       const keysToCollapse = [nodeId, ...nodes.filter(({ key }) => node.groups.includes(key)).map(get("nodeId"))];
 
-      keysToCollapse.forEach(key => expandable.collapse(key));
+      keysToCollapse.forEach((key) => expandable.collapse(key));
     },
     [expandable, nodes]
   );
@@ -97,20 +98,30 @@ const MasterSchema = () => {
     [nodes, selectable, selected]
   );
 
-  const state = useMemo(() => {
-    return { selectable, expandable, collapseWhole, nodes, onNodeSelect, selected, hierarchy, unapproved };
+  const context = useMemo(() => {
+    return {
+      selectable,
+      expandable,
+      collapseWhole,
+      nodes,
+      onNodeSelect,
+      selected,
+      hierarchy,
+      unapproved,
+    };
   }, [selectable, expandable, collapseWhole, nodes, onNodeSelect, selected, hierarchy, unapproved]);
 
-  // clear selectable on selected master schema change
-  useDidUpdate(() => selectable.clear(), [selectedId]);
-
-  // set expanded first brand element
-  useDidUpdate(() => expandable.reset(), [selectedId]);
+  useDidUpdate(() => {
+    selectable.clear();
+    expandable.reset();
+  }, [selectedId]);
 
   return (
     <div className="d-flex">
-      <MasterSchemaContext state={state} />
-      <MasterSchemaContextFeature state={state} />
+      <MasterSchemaReactContext.Provider value={context}>
+        <MasterSchemaContext />
+        <MasterSchemaContextFeature />
+      </MasterSchemaReactContext.Provider>
     </div>
   );
 };

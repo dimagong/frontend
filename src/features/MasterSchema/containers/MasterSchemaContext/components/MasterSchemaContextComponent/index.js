@@ -2,7 +2,6 @@ import "./styles.scss";
 
 import _ from "lodash";
 import { get } from "lodash/fp";
-import PropTypes from "prop-types";
 import { isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useMemo, useRef, useState } from "react";
@@ -12,6 +11,7 @@ import { selectdForms } from "app/selectors";
 import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
+import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
 import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
@@ -23,13 +23,13 @@ import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
 
 const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch } = appSlice.actions;
 
-const MasterSchemaContextComponent = ({ state }) => {
+const MasterSchemaContextComponent = () => {
   const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
 
-  const { hierarchy, unapproved, expandable, onNodeSelect } = state;
+  const { hierarchy, unapproved, expandable, onNodeSelect } = useMasterSchemaContext();
 
   const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
@@ -123,17 +123,13 @@ const MasterSchemaContextComponent = ({ state }) => {
         </div>
 
         {hierarchy?.id ? (
-          <MasterSchemaElements state={state} onNodeSelect={onNodeSelect} key={hierarchy.name} />
+          <MasterSchemaElements onNodeSelect={onNodeSelect} key={hierarchy.name} />
         ) : (
           <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
         )}
       </div>
     </ContextTemplate>
   );
-};
-
-MasterSchemaContextComponent.propTypes = {
-  state: PropTypes.object.isRequired,
 };
 
 export default MasterSchemaContextComponent;

@@ -8,7 +8,9 @@ import { useTreeData } from "hooks/use-tree";
 import { useBoolean } from "hooks/use-boolean";
 
 import TreeRoot from "components/tree/tree-root";
+
 import SurveyModal from "features/Surveys/Components/SurveyModal";
+import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
 import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
@@ -36,8 +38,8 @@ const creationTitle = (type) => {
 const createLoading = () =>
   createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true);
 
-const MasterSchemaElements = ({ state, onNodeSelect }) => {
-  const { selectable, expandable, hierarchy, collapseWhole } = state;
+const MasterSchemaElements = ({ onNodeSelect }) => {
+  const { selectable, expandable, hierarchy, collapseWhole } = useMasterSchemaContext();
 
   const dispatch = useDispatch();
   const loading = useSelector(createLoading());
@@ -123,7 +125,6 @@ const MasterSchemaElements = ({ state, onNodeSelect }) => {
 };
 
 MasterSchemaElements.propTypes = {
-  state: PropTypes.object.isRequired,
   onNodeSelect: PropTypes.func.isRequired,
 };
 

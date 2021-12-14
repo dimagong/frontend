@@ -1,15 +1,16 @@
 import "./styles.scss";
 
 import React from "react";
-import PropTypes from "prop-types";
 import { isEmpty } from "lodash/fp";
 
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
+import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
+
 import MasterSchemaManager from "./components/MasterSchemaManager";
 
-const MasterSchemaContextFeatureComponent = ({ state }) => {
-  const { selected } = state;
+const MasterSchemaContextFeatureComponent = () => {
+  const { selected } = useMasterSchemaContext();
 
   const renderTitle = () => {
     if (selected.nodes.length === 1) {
@@ -33,13 +34,9 @@ const MasterSchemaContextFeatureComponent = ({ state }) => {
   return (
     <ContextFeatureTemplate contextFeatureTitle={renderTitle()}>
       {/*<MasterSchemaUserList />*/}
-      <MasterSchemaManager state={state} />
+      <MasterSchemaManager />
     </ContextFeatureTemplate>
   );
-};
-
-MasterSchemaContextFeatureComponent.propTypes = {
-  state: PropTypes.object.isRequired,
 };
 
 export default MasterSchemaContextFeatureComponent;

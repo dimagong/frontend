@@ -1,10 +1,11 @@
 import React from "react";
 import { get } from "lodash/fp";
-import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
 import { selectMovementOptions, selectSelectedId } from "app/selectors/masterSchemaSelectors";
+
+import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
 import MSENodeRenamingForm from "./components/mse-node-renaming-form";
 import MSENodeRelocationForm from "./components/mse-node-relocation-form";
@@ -17,8 +18,8 @@ const {
   groupMakeParentMasterSchemaRequest,
 } = appSlice.actions;
 
-const MasterSchemaManager = ({ state }) => {
-  const { selected } = state;
+const MasterSchemaManager = () => {
+  const { selected } = useMasterSchemaContext();
 
   const dispatch = useDispatch();
   const selectedId = useSelector(selectSelectedId);
@@ -128,10 +129,6 @@ const MasterSchemaManager = ({ state }) => {
   };
 
   return selected.node && !selected.node.isSystem ? render() : null;
-};
-
-MasterSchemaManager.propTypes = {
-  state: PropTypes.object.isRequired,
 };
 
 export default MasterSchemaManager;
