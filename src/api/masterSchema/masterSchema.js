@@ -100,10 +100,15 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
-  getUsers({ fieldId }) {
+  getUsers({ fieldId, name, abilities, organizations  }) {
     return instance({
-      method: "GET",
+      method: "POST",
       url: Urls.getMasterSchemaUsersByFieldUrl(fieldId),
+      data: {
+        name: name?.length > 0 ? name : undefined,
+        abilities: abilities?.length > 0 ? abilities : undefined,
+        organizations: organizations?.length > 0 ? organizations : undefined,
+      }
     }).then(flatResponseData, flatResponseError);
   },
 

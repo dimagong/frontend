@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import React, { useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import moment from "moment";
 import PropTypes from "prop-types";
 import {useDispatch, useSelector} from "react-redux";
@@ -16,6 +16,14 @@ import SurveyModal from "features/Surveys/Components/SurveyModal";
 import { useBoolean } from "hooks/use-boolean";
 import NoneAvatar from "assets/img/portrait/none-avatar.png";
 import appSlice from "app/slices/appSlice";
+import {selectOrganizations} from "app/selectors/groupSelector";
+import {
+  FilterMemberFirmsOptions,
+  FilterOrganizationsOptions,
+  FilterRolesOptions
+} from "../../../../../../../../constants/filter";
+import _ from "lodash";
+import {getMemberFirms} from "../../../../../../../../app/selectors/memberFirmsSelector";
 
 const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
@@ -37,19 +45,26 @@ const isValueLong = (v) => v.length > TEMP_LONG_VALUE_LENGTH;
 
 // ToDo: remove boxShadow and add border on Card
 
-const MasterSchemaUserList = ({ users: initialUsers, hierarchy, selected }) => {
+const MasterSchemaUserList = ({ users, hierarchy, selected }) => {
   const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
 
-  const [filter, setFilter] = useState([]);
-  const [users, setUsers] = useState(initialUsers);
-  const filterTypes = useMemo(() => {
+  /*const filterTypes = useMemo(() => {
     const applications = allDForms
       .filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0)
       .map((item) => item.name);
 
     return { applications };
-  }, [allDForms, hierarchy.name]);
+  }, [allDForms, hierarchy.name]);*/
+  const organizationsInfo = useSelector(selectOrganizations);
+  const memberFirmsInfo = useSelector(getMemberFirms);
+
+  const filterTypes = {
+    roles: FilterRolesOptions(),
+    organizations: FilterOrganizationsOptions(),
+    memberFirms: FilterMemberFirmsOptions(),
+  }
+  console.log('filterTypes', filterTypes)
 
   const [longValue, setLongValue] = useState("");
   const [modal, openModal, closeModal] = useBoolean(false);
@@ -58,7 +73,7 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy, selected }) => {
   const [filterOptions, setFilterOptions] = useState({})
 
   const openModalForLongValue = (userId) => () => {
-    const field = initialUsers.find(({ id }) => id === userId)?.field;
+    const field = users.find(({ id }) => id === userId)?.field;
     const value = normalizeFieldValue(field);
 
     setLongValue(value);
@@ -66,44 +81,56 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy, selected }) => {
   };
 
   const onFilterCancel = () => {
-    setUsers(initialUsers);
     setFilterOptions({})
   }
 
   const onFilterSubmit = (filterOptions, filter) => {
-    console.log("filterOptions", filterOptions);
-    console.log("filter", filter);
-    const payload = {
-      fieldId: selected.field.id,
-      abilities: filter.roles,
-      organizations: filter.organizations,
-      name: searchInput,
-      member_firm_id: filter.memberFirm
-    }
-    dispatch(getUsersByMasterSchemaFieldRequest(payload));
     setFilterOptions(filter)
   };
 
   const onSearchSubmit = (value) => {
+    if (value.target.value.length !== 1) {
+      setSearchInput(value.target.value)
+    }
+  };
+
+  const onFilterOptionCancel = (option) => {
+    setFilterOptions(onFilterOptionCancel.cancelOption[option])
+  }
+
+  onFilterOptionCancel.cancelOption = {
+    roles: () => {return {...filterOptions, roles: []}},
+    organizations: () => {return {...filterOptions, organizations: []}},
+    memberFirm: () => {return {...filterOptions, memberFirm: []}},
+  }
+
+  useEffect(() => {
+    const orgatizationsToFilter =  filterOptions.organizations
+      ? _.intersectionBy(
+          organizationsInfo,
+          filterOptions.organizations.map(item => {return {name: item} }),
+          "name"
+        ).map(item => {return {...item, type: item.logo.entity_type}})
+      : [];
+
+    const memberFirmsToFilter = filterOptions.memberFirms
+      ? _.intersectionBy(
+          memberFirmsInfo,
+          filterOptions.memberFirms.map(item => {return {name: item} }),
+          "name"
+        ).map(item => item.id)[0] //TODO remove [0] (backend issue)
+      : [];
+
     const payload = {
       fieldId: selected.field.id,
-      abilities: filterOptions.roles,
-      organizations: filterOptions.organizations,
-      name: value.target.value,
-      member_firm_id: filterOptions.memberFirm
+      abilities: filterOptions?.roles ? filterOptions.roles.map(item => item.toLowerCase()) : [],
+      organizations: orgatizationsToFilter,
+      member_firm_id: memberFirmsToFilter,
+      name: searchInput,
     }
 
     dispatch(getUsersByMasterSchemaFieldRequest(payload));
-    setSearchInput(value.target.value)
-    /*value = (value.hasOwnProperty("target") ? value.target.value : value).toLowerCase();
-
-    setUsers(
-      initialUsers.filter(
-        ({ first_name, last_name }) =>
-          first_name.toLowerCase().includes(value) || last_name.toLowerCase().includes(value)
-      )
-    );*/
-  };
+  }, [searchInput, filterOptions])
 
   return (
     <>
@@ -121,6 +148,7 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy, selected }) => {
               onCancelFilter={onFilterCancel}
               filterTypes={filterTypes}
               applyFilter={onFilterSubmit}
+              onFilterOptionCancel={onFilterOptionCancel}
             />
           </div>
         </CardHeader>
@@ -130,10 +158,10 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy, selected }) => {
               <tr>
                 <th className="msu-table__avatar">&nbsp;</th>
                 <th className="msu-table__name">Name</th>
-                <th>Organisation</th>
                 <th>Role</th>
                 <th>Member firm</th>
                 <th className="msu-table__value">Value</th>
+                <th className="msu-table__value">User</th>
                 <th className="msu-table__date">Date</th>
               </tr>
             </thead>
@@ -161,7 +189,6 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy, selected }) => {
 
                     <td className="msu-table__name">{fullName}</td>
 
-                    <td>{organization}</td>
                     <td>{role}</td>
                     <td>{memberFirm}</td>
                     <td className="msu-table__value">
@@ -180,6 +207,7 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy, selected }) => {
                         </>
                       )}
                     </td>
+                     <td>{fullName}</td>
                     <td className="msu-table__date">
                       <div>{moment(user.field.date).format("DD/MM/YYYY")}</div>
                       <div>{moment(user.field.date).format("HH:MM")}</div>

@@ -20,7 +20,8 @@ const SearchAndFilter = (props) => {
     filterTypes,
     applyFilter,
     isCalendar,
-    onCalendarChange
+    onCalendarChange,
+    onFilterOptionCancel
   } = props;
 
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
@@ -63,6 +64,9 @@ const SearchAndFilter = (props) => {
     setFooterText(clearedFooterText);
     setFilter(clearedFilter);
     setAppliedFilter(clearedFilter);
+    if (onFilterOptionCancel) {
+      onFilterOptionCancel(typeToClear)
+    }
   }
 
   const onCustomCalendarChange = (value, event) => {

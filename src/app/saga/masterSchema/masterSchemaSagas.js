@@ -248,9 +248,9 @@ function* approveFields({ payload }) {
 }
 
 function* getUsers({ payload }) {
-  const { fieldId } = payload;
+  const { fieldId, name, abilities, organizations } = payload;
   try {
-    const users = yield call(masterSchemaApi.getUsers, { fieldId });
+    const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations  });
     console.log("users-by-field/api", users);
     yield put(getUsersByMasterSchemaFieldSuccess({ users, fieldId }));
     yield call(getList);
