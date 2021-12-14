@@ -5,6 +5,7 @@ import { get } from "lodash/fp";
 import { isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useMemo, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
@@ -20,17 +21,18 @@ import ContextTemplate from "components/ContextTemplate";
 
 import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
+import {createLoadingSelector} from "app/selectors/loadingSelector";
 
-const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch } = appSlice.actions;
+const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch, setUnapprovedMasterSchemaRequest, approveUnapprovedFieldsRequest } = appSlice.actions;
 
 const MasterSchemaContextComponent = () => {
   const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
+  const isApprovingLoading = useSelector(createLoadingSelector([approveUnapprovedFieldsRequest.type], false));
 
   const { hierarchy, unapproved, expandable } = useMasterSchemaContext();
-
   const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
   const filterNames = useMemo(() => filterTypes.map(get("name")), [filterTypes]);
@@ -90,10 +92,17 @@ const MasterSchemaContextComponent = () => {
 
   useDidUpdate(() => void dispatch(getMasterSchemaHierarchyRequest({ id: selectedId })), [search]);
 
+  useDidUpdate(() => {
+    if (!isApprovingLoading) {
+      dispatch(setUnapprovedMasterSchemaRequest({id: hierarchy.masterSchemaId}))
+      toast.success('The approving was successful')
+    }
+  }, [isApprovingLoading]);
+
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
       <div className="position-relative">
-        {!isEmpty(unapproved?.fields) && <UnapprovedFieldsComponent fields={unapproved.fields} />}
+        {!isEmpty(unapproved) && <UnapprovedFieldsComponent fields={unapproved} />}
 
         <div className="position-sticky" style={{ top: "0px", left: "0px", backgroundColor: "#f8f8f8" }}>
           <SearchAndFilter

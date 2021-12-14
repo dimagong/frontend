@@ -369,12 +369,7 @@ const masterSchemaReducer = {
   },
 
   setUnapprovedMasterSchemaSuccess(state, { payload }) {
-    const serialised = serialiseUnapproved({ ...payload.unapproved, master_schema_id: payload.id });
-    // console.log("unapproved/serialised", serialised);
-    const valid = masterSchemaUnapprovedInterface.validateSync(serialised);
-    // console.log("unapproved/valid", valid);
-
-    state.masterSchema.unapproved[payload.id] = valid;
+    state.masterSchema.unapproved[payload.id] = payload.unapproved;
     state.isError = false;
     state.isLoading = false;
   },
