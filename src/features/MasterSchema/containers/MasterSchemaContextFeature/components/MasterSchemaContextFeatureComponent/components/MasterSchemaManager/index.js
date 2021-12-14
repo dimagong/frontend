@@ -47,8 +47,6 @@ const MasterSchemaManager = ({ state }) => {
 
   useEffect(() => {
     if (selected?.node?.id) {
-      console.log('selected', selected)
-      console.log('selected.node.id', selected.node.id)
       dispatch(getRelatedApplicationsRequest({fieldId: selected.node.id}))
     }
   }, [selected])
