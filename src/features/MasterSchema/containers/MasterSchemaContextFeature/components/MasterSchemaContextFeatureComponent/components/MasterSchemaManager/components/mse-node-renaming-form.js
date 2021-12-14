@@ -8,7 +8,7 @@ import MSEButton from "features/MasterSchema/share/mse-button";
 import MSETextField from "features/MasterSchema/share/mse-text-field";
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 
-const MSENodeRenamingForm = ({ name: initialName, submitting, onSubmit: propOnSubmit, ...attrs }) => {
+const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onSubmit: propOnSubmit, ...attrs }) => {
   const [name, setName] = useFormField(initialName, [Validators.required, Validators.identical(initialName)]);
   const form = useFormGroup({ name });
 
@@ -21,7 +21,7 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, onSubmit: propOnSu
       {...name}
       label={(id) => (
         <Label for={id}>
-          <CardTitle>Rename datapoint to:</CardTitle>
+          <CardTitle className="ms-manager__label">{label}</CardTitle>
         </Label>
       )}
     >
@@ -38,12 +38,11 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, onSubmit: propOnSu
               <Col xs={4}>
                 <MSEButton
                   className="w-100"
-                  textColor="#fff"
-                  backgroundColor="#ABABAB4D"
+                  color="primary"
                   type="submit"
                   disabled={form.invalid}
                 >
-                  Rename
+                  {action}
                 </MSEButton>
               </Col>
             </Row>
@@ -62,6 +61,8 @@ MSENodeRenamingForm.defaultProps = {
 MSENodeRenamingForm.propTypes = {
   name: PropTypes.string.isRequired,
   submitting: PropTypes.bool,
+  label: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 

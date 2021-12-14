@@ -71,10 +71,16 @@ export const initialState = {
   masterSchema: {
     fields: [],
     list: [],
+    groups: {},
     users: {},
     unapproved: {},
     hierarchies: [],
     selectedId: null,
+    search: {
+      value: "",
+      dates: [],
+      filters: [],
+    },
   }
 };
 

@@ -1,9 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { get } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
-import { selectMovementOptions } from "app/selectors/masterSchemaSelectors";
+import { selectMovementOptions, selectSelectedId } from "app/selectors/masterSchemaSelectors";
+
+import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
 import MSENodeRenamingForm from "./components/mse-node-renaming-form";
 import MSENodeRelocationForm from "./components/mse-node-relocation-form";
@@ -11,13 +13,18 @@ import MSENodeRelocationForm from "./components/mse-node-relocation-form";
 const {
   updateFieldMasterSchemaRequest,
   updateGroupMasterSchemaRequest,
+  fieldsMakeParentMasterSchemaRequest,
   fieldMakeParentMasterSchemaRequest,
   groupMakeParentMasterSchemaRequest,
 } = appSlice.actions;
 
-const MasterSchemaManager = ({ state }) => {
-  const { selected } = state;
+const MasterSchemaManager = () => {
+  const {
+    selectable: { selected },
+  } = useMasterSchemaContext();
+
   const dispatch = useDispatch();
+  const selectedId = useSelector(selectSelectedId);
   const movementOptions = useSelector(selectMovementOptions);
 
   const onRenameSubmit = (submitted) => {
@@ -42,75 +49,89 @@ const MasterSchemaManager = ({ state }) => {
     dispatch(action(payload));
   };
 
+  const onMultipleRelocateSubmit = (submitted) => {
+    if (submitted.invalid) return;
+
+    const fieldsIds = selected.fields.map(get("id"));
+    const parentId = submitted.values.location.value.id;
+    const payload = { masterSchemaId: selectedId, parentId, fieldsIds };
+
+    dispatch(fieldsMakeParentMasterSchemaRequest(payload));
+  };
+
   const render = () => {
-    // ToDo: handle multiple fields managing
-    // if (selected.fields > 1) {
-    //   return (
-    //     <>
-    //       <div>Manage datapoints</div>
-    //       <MSENodeRelocationForm
-    //         className="my-2"
-    //         node={selected.node}
-    //         options={movementOptions}
-    //         submitting={false}
-    //         onSubmit={onRelocateSubmit}
-    //       />
-    //     </>
-    //   );
-    // }
-
-    if (selected.node && selected.node.isSystem) return null;
-
-    if (selected.field) {
+    // reminder - the !selected.areSelectedFieldsContainCommonAndMemberFirmFields work the same for merge feature
+    if (selected.fields.length > 1 && !selected.areSelectedFieldsContainCommonAndMemberFirmFields) {
       return (
-        <>
+        <div key={selected.node.name}>
+          <div className="context-feature-template_header_title">Manage datapoints</div>
+          <MSENodeRelocationForm
+            className="my-2"
+            label="Move datapoints to:"
+            action="Move"
+            multiple
+            options={movementOptions}
+            submitting={false}
+            onSubmit={onMultipleRelocateSubmit}
+          />
+        </div>
+      );
+    }
+
+    if (selected.fields.length === 1 && selected.field) {
+      return (
+        <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage Datapoint</div>
           <MSENodeRenamingForm
             className="my-2"
+            label="Rename datapoint to:"
+            action="Rename"
             name={selected.field.name}
             submitting={false}
             onSubmit={onRenameSubmit}
           />
           <MSENodeRelocationForm
             className="my-2"
+            label="Move datapoint to:"
+            action="Move"
             node={selected.field}
             options={movementOptions}
             submitting={false}
             onSubmit={onRelocateSubmit}
           />
-        </>
+        </div>
       );
     }
 
-    if (selected.group) {
+    if (selected.groups.length === 1 && selected.group) {
       return (
-        <>
+        <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage Branch</div>
           <MSENodeRenamingForm
             className="my-2"
+            label="Rename branch to:"
+            action="Rename"
             name={selected.group.name}
             submitting={false}
             onSubmit={onRenameSubmit}
           />
           <MSENodeRelocationForm
             className="my-2"
+            label="Migrate branch contents to:"
+            action="Migrate"
             node={selected.group}
             options={movementOptions}
             submitting={false}
             onSubmit={onRelocateSubmit}
           />
-        </>
+        </div>
       );
     }
 
     return null;
   };
 
-  return render();
-};
-
-MasterSchemaManager.propTypes = {
-  state: PropTypes.object.isRequired,
+  return selected.node && !selected.thereIsSelectedSystemNode ? render() : null;
 };
 
 export default MasterSchemaManager;

@@ -22,7 +22,7 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
-  getHierarchy({ id, name, application_ids }) {
+  getHierarchy({ id, name, application_ids, date_begin, date_end }) {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaHierarchyUrl(id),
@@ -30,6 +30,8 @@ const masterSchemaApi = {
         ...(name ? { name } : {}),
         hidden_groups: [1],
         ...(application_ids ? { application_ids } : {}),
+        ...(date_begin ? { date_begin } : {}),
+        ...(date_end ? { date_end } : {}),
       },
     }).then(flatResponseData, flatResponseError);
   },
@@ -97,6 +99,14 @@ const masterSchemaApi = {
         master_schema_group_id: parentId,
         master_schema_field_ids: fieldsIds,
       },
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getGroups({ masterSchemaId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaGroupsUrl(masterSchemaId),
+      params: { hidden_groups: [1] },
     }).then(flatResponseData, flatResponseError);
   },
 

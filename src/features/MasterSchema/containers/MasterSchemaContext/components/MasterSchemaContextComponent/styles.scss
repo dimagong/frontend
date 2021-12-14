@@ -38,3 +38,37 @@
     }
   }
 }
+
+.ms-nothing-was-found {
+  margin-bottom: 350px;
+  color: #707070;
+  text-align: center;
+  padding-top: 40px;
+}
+
+.ms-search-and-filter {
+  border: unset;
+  padding-left: 40px;
+}
+
+.modal-filter-tabs {
+  .close-nav {
+    cursor: pointer;
+    margin-left: 15px;
+  }
+}
+
+.left-orientation-tabs {
+  text-align: left!important;
+  .filter-tab {
+    margin-left: 0;
+    margin-right: 10px;
+  }
+}
+
+.right-orientation-tabs {
+  text-align: right!important;
+  margin-left: 10px;
+  margin-right: 0;
+}
+

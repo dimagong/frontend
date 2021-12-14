@@ -6,10 +6,8 @@ export const useToggleable = (initialKeys = []) => {
   const isEmpty = useMemo(() => keys.length === 0, [keys]);
 
   const clear = () => setKeys([]);
-  // :: string -> void
-  const select = (toSelect) => setKeys((prev) => xor(prev, [toSelect]));
-  // :: string[] -> void
-  const toggle = (toSelectMany) => setKeys((prev) => xor(prev, toSelectMany));
+  // :: string | string[] -> void
+  const toggle = (toSelect) => setKeys((prev) => xor(prev, Array.isArray(toSelect) ? toSelect : [toSelect]));
   // :: string -> boolean
   const includes = (key) => keys.includes(key);
 
@@ -18,7 +16,6 @@ export const useToggleable = (initialKeys = []) => {
     isEmpty,
     clear,
     toggle,
-    select,
     setKeys,
     includes,
   };
