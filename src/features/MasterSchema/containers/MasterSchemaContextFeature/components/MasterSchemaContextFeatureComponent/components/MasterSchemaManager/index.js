@@ -7,6 +7,7 @@ import { selectMovementOptions } from "app/selectors/masterSchemaSelectors";
 
 import MSENodeRenamingForm from "./components/mse-node-renaming-form";
 import MSENodeRelocationForm from "./components/mse-node-relocation-form";
+import MSENodeRelatedTable from "./components/mse-node-related-table";
 
 const {
   updateFieldMasterSchemaRequest,
@@ -65,6 +66,9 @@ const MasterSchemaManager = ({ state }) => {
       return (
         <>
           <div className="context-feature-template_header_title">Manage Datapoint</div>
+          <MSENodeRelatedTable
+            users={[]}
+          />
           <MSENodeRenamingForm
             className="my-2"
             name={selected.field.name}
