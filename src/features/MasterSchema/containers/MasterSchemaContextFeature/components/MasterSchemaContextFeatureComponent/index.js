@@ -10,11 +10,11 @@ import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-
 import MasterSchemaManager from "./components/MasterSchemaManager";
 
 const MasterSchemaContextFeatureComponent = () => {
-  const { selected } = useMasterSchemaContext();
+  const { selectable } = useMasterSchemaContext();
 
   const renderTitle = () => {
-    if (selected.nodes.length === 1) {
-      const path = [...selected.node.path];
+    if (selectable.selected.nodes.length === 1) {
+      const path = [...selectable.selected.node.path];
       const firstName = path.shift();
       const restNames = isEmpty(path) ? null : `.${path.join(".")}`;
 
@@ -26,8 +26,8 @@ const MasterSchemaContextFeatureComponent = () => {
       );
     }
 
-    if (selected.fields.length > 1) {
-      return `${selected.fields.length} Datapoints Selected`;
+    if (selectable.selected.fields.length > 1) {
+      return `${selectable.selected.fields.length} Datapoints Selected`;
     }
   };
 

@@ -19,7 +19,7 @@ const {
 } = appSlice.actions;
 
 const MasterSchemaManager = () => {
-  const { selected } = useMasterSchemaContext();
+  const { selectable: { selected } } = useMasterSchemaContext();
 
   const dispatch = useDispatch();
   const selectedId = useSelector(selectSelectedId);

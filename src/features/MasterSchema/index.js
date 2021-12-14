@@ -12,8 +12,6 @@ import MasterSchemaContextFeature from "./containers/MasterSchemaContextFeature"
 
 import { MasterSchemaContext as MasterSchemaReactContext } from "./master-schema-context";
 
-const getNodeIdPredicate = (nodeId) => pipe(get("nodeId"), isEqual(nodeId));
-
 export const useExpandable = (keys, initialKeys) => {
   const toggleable = useToggleable(initialKeys);
 
@@ -28,28 +26,24 @@ export const useExpandable = (keys, initialKeys) => {
     (key) => toggleable.setKeys((prev) => prev.filter(pipe(isEqual(key), (v) => !v))),
     [toggleable]
   );
+
   const expandAll = useCallback(() => toggleable.setKeys(keys), [keys, toggleable]);
-  const isInitial = useMemo(() => isEqual(initialKeys, toggleable.keys), [initialKeys, toggleable.keys]);
+
+  const collapseAll = useCallback(() => toggleable.clear(), [toggleable]);
 
   return {
-    ...toggleable,
-    isInitial,
     reset,
     expand,
     collapse,
     expandAll,
+    collapseAll,
+    ...toggleable,
   };
 };
 
-const MasterSchema = () => {
-  const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
-  const hierarchy = useSelector(masterSchemaSelectors.selectSelectedHierarchy);
-  const unapproved = useSelector(masterSchemaSelectors.selectSelectedUnapproved);
-
-  const nodes = useMemo(() => [hierarchy, ...hierarchy.children], [hierarchy]);
-
-  const selectable = useToggleable([]);
+export const useMasterSchemaExpandable = (nodes, hierarchy) => {
   const expandable = useExpandable(nodes.map(get("nodeId")), [hierarchy.nodeId]);
+
   const collapseWhole = useCallback(
     (nodeId) => {
       const node = nodes.find(pipe(get("nodeId"), isEqual(nodeId)));
@@ -59,6 +53,27 @@ const MasterSchema = () => {
     },
     [expandable, nodes]
   );
+
+  const toggle = (nodeId) => {
+    expandable.includes(nodeId) ? collapseWhole(nodeId) : expandable.expand(nodeId);
+  };
+
+  const isCollapsable = useMemo(
+    () => expandable.keys.length > 1 /* && expandable.includes(hierarchy.nodeId)*/,
+    [expandable.keys.length]
+  );
+
+  return {
+    isCollapsable,
+    ...expandable,
+    toggle,
+  };
+};
+
+const getNodeIdPredicate = (nodeId) => pipe(get("nodeId"), isEqual(nodeId));
+
+export const useMasterSchemaSelectable = (nodes) => {
+  const selectable = useToggleable([]);
 
   const selected = useMemo(() => {
     const selectedNodes = selectable.keys.map((nodeId) => nodes.find(getNodeIdPredicate(nodeId))).filter(Boolean);
@@ -75,7 +90,7 @@ const MasterSchema = () => {
     };
   }, [nodes, selectable.keys]);
 
-  const onNodeSelect = useCallback(
+  const toggle = useCallback(
     (nodeId) => {
       const toSelectNode = nodes.find(getNodeIdPredicate(nodeId));
       const thereIsSelectedFields = selected.fields.length > 0;
@@ -93,23 +108,37 @@ const MasterSchema = () => {
         selectable.clear();
       }
 
-      selectable.select(nodeId);
+      selectable.toggle(nodeId);
     },
     [nodes, selectable, selected]
   );
+
+  return {
+    selected,
+    ...selectable,
+    toggle
+  };
+};
+
+const MasterSchema = () => {
+  const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
+  const hierarchy = useSelector(masterSchemaSelectors.selectSelectedHierarchy);
+  const unapproved = useSelector(masterSchemaSelectors.selectSelectedUnapproved);
+
+  const nodes = useMemo(() => [hierarchy, ...hierarchy.children], [hierarchy]);
+
+  const selectable = useMasterSchemaSelectable(nodes);
+  const expandable = useMasterSchemaExpandable(nodes, hierarchy);
 
   const context = useMemo(() => {
     return {
       selectable,
       expandable,
-      collapseWhole,
       nodes,
-      onNodeSelect,
-      selected,
       hierarchy,
       unapproved,
     };
-  }, [selectable, expandable, collapseWhole, nodes, onNodeSelect, selected, hierarchy, unapproved]);
+  }, [selectable, expandable, nodes, hierarchy, unapproved]);
 
   useDidUpdate(() => {
     selectable.clear();

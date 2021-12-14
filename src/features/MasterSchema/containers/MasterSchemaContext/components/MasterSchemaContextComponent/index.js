@@ -29,7 +29,7 @@ const MasterSchemaContextComponent = () => {
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
 
-  const { hierarchy, unapproved, expandable, onNodeSelect } = useMasterSchemaContext();
+  const { hierarchy, unapproved, expandable } = useMasterSchemaContext();
 
   const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
@@ -114,7 +114,7 @@ const MasterSchemaContextComponent = () => {
               className="p-0"
               textColor="currentColor"
               backgroundColor="transparent"
-              disabled={expandable.isInitial}
+              disabled={!expandable.isCollapsable}
               onClick={expandable.reset}
             >
               Collapse
@@ -122,10 +122,10 @@ const MasterSchemaContextComponent = () => {
           </div>
         </div>
 
-        {hierarchy?.id ? (
-          <MasterSchemaElements onNodeSelect={onNodeSelect} key={hierarchy.name} />
-        ) : (
+        {hierarchy == null ? (
           <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
+        ) : (
+          <MasterSchemaElements key={hierarchy.name} />
         )}
       </div>
     </ContextTemplate>

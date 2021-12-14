@@ -1,6 +1,5 @@
 import "./styles.scss";
 
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -38,8 +37,8 @@ const creationTitle = (type) => {
 const createLoading = () =>
   createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true);
 
-const MasterSchemaElements = ({ onNodeSelect }) => {
-  const { selectable, expandable, hierarchy, collapseWhole } = useMasterSchemaContext();
+const MasterSchemaElements = () => {
+  const { selectable, expandable, hierarchy } = useMasterSchemaContext();
 
   const dispatch = useDispatch();
   const loading = useSelector(createLoading());
@@ -103,9 +102,8 @@ const MasterSchemaElements = ({ onNodeSelect }) => {
         renderNodeList={({ root, children }) => <MSETreeNodeList root={root} children={children} />}
         renderNode={({ node, children }) => (
           <MSETreeElement
-            state={{ node: node.value, selectable, expandable, collapseWhole }}
+            state={{ node: node.value, selectable, expandable }}
             onPopupAction={onPopupAction}
-            onSelect={onNodeSelect}
             children={children}
           />
         )}
@@ -122,10 +120,6 @@ const MasterSchemaElements = ({ onNodeSelect }) => {
       )}
     </div>
   );
-};
-
-MasterSchemaElements.propTypes = {
-  onNodeSelect: PropTypes.func.isRequired,
 };
 
 export default MasterSchemaElements;
