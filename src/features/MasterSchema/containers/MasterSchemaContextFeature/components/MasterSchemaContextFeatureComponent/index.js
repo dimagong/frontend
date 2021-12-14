@@ -50,7 +50,7 @@ const MasterSchemaContextFeatureComponent = ({ state }) => {
 
   return (
     <ContextFeatureTemplate contextFeatureTitle={renderTitle()}>
-      {selectedUsers && !isEmpty(selectedUsers) && <MasterSchemaUserList users={selectedUsers} hierarchy={hierarchy} />}
+      {selectedUsers && !isEmpty(selectedUsers) && <MasterSchemaUserList users={selectedUsers} hierarchy={hierarchy} selected={selected} />}
       <MasterSchemaManager state={state} />
     </ContextFeatureTemplate>
   );

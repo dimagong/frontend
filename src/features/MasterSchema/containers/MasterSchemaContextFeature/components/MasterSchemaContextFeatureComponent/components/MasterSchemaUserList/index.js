@@ -3,7 +3,7 @@ import "./styles.scss";
 import React, { useMemo, useState } from "react";
 import moment from "moment";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { capitalize, get } from "lodash/fp";
 import { ExternalLink } from "react-feather";
 import { Table, Card, CardBody, CardHeader } from "reactstrap";
@@ -15,6 +15,9 @@ import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import { useBoolean } from "hooks/use-boolean";
 import NoneAvatar from "assets/img/portrait/none-avatar.png";
+import appSlice from "app/slices/appSlice";
+
+const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
 // :: (field) -> string
 const normalizeFieldValue = (field) => {
@@ -34,7 +37,8 @@ const isValueLong = (v) => v.length > TEMP_LONG_VALUE_LENGTH;
 
 // ToDo: remove boxShadow and add border on Card
 
-const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
+const MasterSchemaUserList = ({ users: initialUsers, hierarchy, selected }) => {
+  const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
 
   const [filter, setFilter] = useState([]);
@@ -50,6 +54,9 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
   const [longValue, setLongValue] = useState("");
   const [modal, openModal, closeModal] = useBoolean(false);
 
+  const [searchInput, setSearchInput] = useState('');
+  const [filterOptions, setFilterOptions] = useState({})
+
   const openModalForLongValue = (userId) => () => {
     const field = initialUsers.find(({ id }) => id === userId)?.field;
     const value = normalizeFieldValue(field);
@@ -58,22 +65,44 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
     openModal();
   };
 
-  const onFilterCancel = () => setUsers(initialUsers);
+  const onFilterCancel = () => {
+    setUsers(initialUsers);
+    setFilterOptions({})
+  }
 
   const onFilterSubmit = (filterOptions, filter) => {
     console.log("filterOptions", filterOptions);
     console.log("filter", filter);
+    const payload = {
+      fieldId: selected.field.id,
+      abilities: filter.roles,
+      organizations: filter.organizations,
+      name: searchInput,
+      member_firm_id: filter.memberFirm
+    }
+    dispatch(getUsersByMasterSchemaFieldRequest(payload));
+    setFilterOptions(filter)
   };
 
   const onSearchSubmit = (value) => {
-    value = (value.hasOwnProperty("target") ? value.target.value : value).toLowerCase();
+    const payload = {
+      fieldId: selected.field.id,
+      abilities: filterOptions.roles,
+      organizations: filterOptions.organizations,
+      name: value.target.value,
+      member_firm_id: filterOptions.memberFirm
+    }
+
+    dispatch(getUsersByMasterSchemaFieldRequest(payload));
+    setSearchInput(value.target.value)
+    /*value = (value.hasOwnProperty("target") ? value.target.value : value).toLowerCase();
 
     setUsers(
       initialUsers.filter(
         ({ first_name, last_name }) =>
           first_name.toLowerCase().includes(value) || last_name.toLowerCase().includes(value)
       )
-    );
+    );*/
   };
 
   return (
