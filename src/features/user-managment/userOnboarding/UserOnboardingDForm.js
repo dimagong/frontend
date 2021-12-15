@@ -21,6 +21,7 @@ const {
   submitdFormDataRequest,
   changedFormStatusRequest,
   getUserByIdRequest,
+  submitdFormNewVersionRequest
 } = appSlice.actions;
 
 const initRefreshClassName = "bg-hover-icon";
@@ -57,7 +58,6 @@ const UserOnboardingDForm = () => {
 
 
   const submitDForm = (dForm, {name, description, protected_properties}) => {
-
     dispatch(updateDFormRequest({...dForm, name, description, protected_properties}))
   };
 
@@ -72,6 +72,9 @@ const UserOnboardingDForm = () => {
         {<Spinner className="ml-1" color="success"/>}
       </div>)
       : `Progress saved: ${moment(manager.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`
+  };
+  const submitOnboardingForm = data => {
+    dispatch(submitdFormNewVersionRequest({dForm: manager.onboarding.d_form, data}))
   };
   const handleRefresh = () => {
     refreshOnboarding.current(manager.id);
@@ -114,8 +117,8 @@ const UserOnboardingDForm = () => {
             onboardingUser={manager}
             isStateConfig={isStateConfig}
             updatedAtText={updatedAtText()}
-
-
+            onCreateNewVersion={submitDForm}
+            onSubmit={(formData) => submitOnboardingForm(formData)}
 
             // reInit={(reInit, context) => {
             //   this.reInitForm = reInit.bind(context)
