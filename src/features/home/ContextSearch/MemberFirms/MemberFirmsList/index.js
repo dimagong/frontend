@@ -45,7 +45,7 @@ const UserCardTemplate = ({className, onClick, data }) => {
       >
 
         <div className="user-avatar-management">
-          <CardImg variant="top" src={data.logo_path || noneAvatar} className="user-card-img d-sm-flex d-none" />
+          <CardImg src={data.logo_path || noneAvatar} className="user-card-img user-card-img-fit-contain" />
         </div>
 
         <CardBody className="user-card-body">
