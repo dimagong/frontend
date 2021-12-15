@@ -25,6 +25,7 @@ const masterSchemaGroupSchema = {
   parentId: yup.number().nullable(),
   parentKey: yup.string().nullable(),
   parentNodeId: yup.string().nullable(),
+  isMemberFirmGroup: yup.boolean().nullable(),
 };
 
 const masterSchemaFieldInterface = yup.object({
@@ -35,20 +36,21 @@ const masterSchemaFieldInterface = yup.object({
 
 const masterSchemaGroupInterface = yup.object(masterSchemaGroupSchema);
 
-// Consider about children as hashmap, will it be faster ?
+// Consider children as hashmap, will it be faster ?
 const masterSchemaUnapprovedInterface = yup.object({
   name: yup.string().required(),
   fields: yup.array(masterSchemaFieldInterface).test((v) => Array.isArray(v)),
   masterSchemaId: yup.number().required(),
 });
 
-// Consider about children as hashmap, will it be faster ?
+// Consider children as hashmap, will it be faster ?
 const masterSchemaHierarchyInterface = yup.object({
   ...masterSchemaGroupSchema,
   children: yup
     .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
     .test((v) => Array.isArray(v)),
   masterSchemaId: yup.number().required(),
+  isMemberFirmGroup: yup.boolean().nullable(),
 });
 
 const masterSchemaInterface = yup.object({
@@ -60,6 +62,11 @@ const masterSchemaInterface = yup.object({
 
 const masterSchemaListInterface = yup.object({ list: yup.array(masterSchemaInterface).test((v) => Array.isArray(v)) });
 
+const masterSchemaAbleMovementGroup = yup.object({
+  id: yup.number().required(),
+  name: yup.string().required()
+});
+
 /* Serializers */
 
 const serialiseNode = (node, { isContainable, parent = null, children = [] }) => {
@@ -67,6 +74,7 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
     id,
     parent_id,
     master_schema_group_id,
+    is_member_firm_group,
     name,
     groups,
     fields,
@@ -93,6 +101,7 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
     isSystem: is_system,
     createdAt: created_at,
     updatedAt: updated_at,
+    ...(is_member_firm_group ? { isMemberFirmGroup: is_member_firm_group } : {}),
     providedByFullName: provided_by_full_name,
     parentId: parent_id ?? master_schema_group_id ?? null,
     applicationNames: application_names,
@@ -360,12 +369,7 @@ const masterSchemaReducer = {
   },
 
   setUnapprovedMasterSchemaSuccess(state, { payload }) {
-    const serialised = serialiseUnapproved({ ...payload.unapproved, master_schema_id: payload.id });
-    // console.log("unapproved/serialised", serialised);
-    const valid = masterSchemaUnapprovedInterface.validateSync(serialised);
-    // console.log("unapproved/valid", valid);
-
-    state.masterSchema.unapproved[payload.id] = valid;
+    state.masterSchema.unapproved[payload.id] = payload.unapproved;
     state.isError = false;
     state.isLoading = false;
   },
@@ -395,7 +399,7 @@ const masterSchemaReducer = {
     });
     // console.log("get-groups/serialised", serialised);
     const valid = yup
-      .array(masterSchemaGroupInterface)
+      .array(masterSchemaAbleMovementGroup)
       .test((v) => Array.isArray(v))
       .validateSync(serialised);
     // console.log("get-groups/valid", valid);
