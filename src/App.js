@@ -20,6 +20,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     authService.getToken() && dispatch(getProfileRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

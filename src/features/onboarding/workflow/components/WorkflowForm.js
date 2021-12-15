@@ -71,6 +71,7 @@ const WorkflowForm = ({ workflowModalType }) => {
     if(workflowModalType === "Create") {
       dispatch(setWorkflow(initWorkflow))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workflowModalType])
 
   if(!workflow) return null;
@@ -102,7 +103,7 @@ const WorkflowForm = ({ workflowModalType }) => {
                     value={name}
                     onChange={(event) => handleWorkflow({name: event.target.value})}
                   />
-                  <FormFeedback></FormFeedback>
+                  <FormFeedback />
                 </FormGroup>
               </Col>
               <Col sm="12">
@@ -116,7 +117,7 @@ const WorkflowForm = ({ workflowModalType }) => {
                     value={description}
                     onChange={(event) => handleWorkflow({description: event.target.value})}
                   />
-                  <FormFeedback></FormFeedback>
+                  <FormFeedback />
                 </FormGroup>
               </Col>
               <Col>

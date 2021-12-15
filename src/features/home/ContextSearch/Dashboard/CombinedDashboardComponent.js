@@ -46,8 +46,6 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   const wrapperRefFilterButton = useRef(null);
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
   const [isMapFilterBoxOpen, setIsMapFilterBoxOpen] = useState(false);
-  const [tabLabel, setTabLabel] = useState('')
-  const [isFilterTagOpen, setIsFilterTagOpen] = useState(false)
   const [filter, setFilter] = useState({Roles: [], Organizations: [], 'Activity types': [], Application: []})
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [newChartTitle, setNewChartTitle] = useState('');
@@ -124,6 +122,7 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
           settings: settings}))
       }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.daysNumber, settings['filter[value]'], settings.dForm, settings.user_groups, settings.ability_user_ids, dashboardDForms, managers?.length]);
 
 
@@ -165,11 +164,14 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
               </span>
             </span>
           }
-              {settings?.dForm?.name !== 'Applications Snapshot' && [{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map(item => {
-                return <span onClick={() => handleChangeDate(item.daysNumber)}
-                             className={'chart-days ' + (settings.daysNumber === item.daysNumber ? 'active-days' : '')}>
+              {settings?.dForm?.name !== 'Applications Snapshot' && [{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map((item, idx) => {
+                return (<span
+                  onClick={() => handleChangeDate(item.daysNumber)}
+                  className={'chart-days ' + (settings.daysNumber === item.daysNumber ? 'active-days' : '')}
+                  key={idx}
+                >
                   {item.label}
-                </span>
+                </span>);
               })}
             </span>
         {chartType === 'Applications' && (settings.dForm === 'Unselected application' || !settings.dForm?.id) &&

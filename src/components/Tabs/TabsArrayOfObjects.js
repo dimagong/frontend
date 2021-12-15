@@ -105,7 +105,7 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
       scrollIntoContainerView(active)
       setIsScrolled(true);
     }
-  }, [active, document.getElementById(active)])
+  }, [active, isScrolled, scrollOnStart, tabs])
 
   //** TODO add mt-1 to other sections
   return (

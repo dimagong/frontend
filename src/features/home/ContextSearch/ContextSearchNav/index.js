@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import {
   Row,
@@ -9,9 +9,6 @@ import {
   DropdownMenu,
   DropdownItem,
   NavItem,
-  NavbarToggler,
-  Collapse,
-  Nav,
   Card,
   CardBody,
 } from 'reactstrap'
@@ -34,7 +31,7 @@ const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, handleFilter,
             <DropdownToggle className="text-dark" nav caret={true}>
               {selectedNavItem.title}
             </DropdownToggle>
-            <DropdownMenu left>
+            <DropdownMenu>
               {navOptions.map((navEl, index) => (
                 <DropdownItem
                   //*TODO Temp disabled, remove after masterSchema implement

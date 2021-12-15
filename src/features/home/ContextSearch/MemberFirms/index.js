@@ -77,6 +77,7 @@ const MemberFirmsContainer = () => {
     dispatch(getMasterSchemaFieldsForMemberFirmRequest(memberFirmData.id));
     dispatch(getMemberFirmFormFieldsRequest(memberFirmData.id));
     dispatch(getMemberFirmActivitiesRequest({memberFirmId: memberFirmData.id, page: 1}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirmData.id]);
 
   return (

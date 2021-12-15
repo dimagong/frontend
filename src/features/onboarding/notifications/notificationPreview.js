@@ -4,13 +4,9 @@ import {
   CardHeader,
   CardTitle,
   CardBody,
-  FormGroup,
   Col,
-  Input,
-  Form,
-  Button,
-  Label,
-  Row, Badge
+  Row,
+  Badge,
 } from "reactstrap";
 import { X } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,12 +20,7 @@ const {
   setNotification,
 } = onboardingSlice.actions;
 
-const {
-  createNotificationRequest,
-  setContext,
-  updateNotificationRequest,
-  setPreview,
-} = appSlice.actions;
+const { setPreview } = appSlice.actions;
 
 const initNotification = {name: '', description: "", content: "", groups: []};
 
@@ -43,19 +34,6 @@ const NotificationsFormPreview = ({isCreate}) => {
 
   const closeNotification = () => {
     dispatch(setPreview(null));
-  };
-
-  const handleNotification = (notificationValue) => {
-    dispatch(setNotification({...notification, ...notificationValue}));
-  };
-
-  const submitNotification = (e) => {
-    e.preventDefault();
-    if (isCreate) {
-      dispatch(createNotificationRequest(notification))
-    } else {
-      dispatch(updateNotificationRequest(notification))
-    }
   };
 
   useEffect(() => {

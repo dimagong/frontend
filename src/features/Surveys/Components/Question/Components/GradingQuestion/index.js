@@ -118,6 +118,7 @@ const GradingQuestion = ({
   };
 
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedGradingSave = useMemo(() => _.debounce(handleAnswerGradingSave, 1000, {maxWait: 10000}), []);
 
   const handleGradingPointsChange = (e) => {
@@ -152,6 +153,7 @@ const GradingQuestion = ({
       setGradingPoints(null);
       setReviewerNotes("");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionData.id]);
 
   return (

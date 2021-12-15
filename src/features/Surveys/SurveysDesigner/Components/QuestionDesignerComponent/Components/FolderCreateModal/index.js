@@ -49,6 +49,7 @@ const FolderCreateModal = ({title, isOpen, onClose }) => {
     if (!error && prevLoadingValue === true && !isLoading) {
       handleModalClose()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
 

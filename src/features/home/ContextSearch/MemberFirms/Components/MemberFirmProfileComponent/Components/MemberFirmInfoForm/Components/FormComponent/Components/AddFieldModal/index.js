@@ -22,7 +22,6 @@ const AddFieldModal = ({
   isOpen,
   onClose,
   isMSPropertiesLoading,
-  isEdit,
   MSProperties,
   onSubmit,
   isSubmitProceeding,
@@ -73,6 +72,7 @@ const AddFieldModal = ({
       onClose();
       handleClearAllValues()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitProceeding]);
 
   return (

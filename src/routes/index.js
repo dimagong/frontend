@@ -5,8 +5,6 @@ import {Switch} from "react-router-dom";
 import {PrivateRoute, PublicRoute} from "./RouteProvider";
 import {useSelector} from "react-redux"
 import {selectAuth} from "app/selectors/authSelectors"
-import {selectProfile} from 'app/selectors'
-import {userService} from 'services/user'
 import {selectUserAbility} from '../app/selectors/userSelectors'
 
 const Routes = () => {
@@ -14,8 +12,6 @@ const Routes = () => {
   const userRole = useSelector(selectUserAbility);
 
   const isOnboarding = ["prospect", "member"].indexOf(userRole) !== -1;
-
-  // if(isAuth && !profile) return null
 
   return (
     <Switch>

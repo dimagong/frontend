@@ -292,11 +292,11 @@ const masterSchemaReducer = {
 
   fieldMakeParentMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.field.master_schema_group_id;
-    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
+    const { parent } = getHierarchyAndParentByParentId(state, parentId);
 
     const serialised = serialiseNode(payload.field, { isContainable: false, parent });
     // console.log("field-make-parent/serialised", serialised);
-    const valid = masterSchemaFieldInterface.validateSync(serialised);
+    masterSchemaFieldInterface.validateSync(serialised);
     // console.log("field-make-parent/valid", valid);
 
     // const oldField = getFieldById(hierarchy, valid.id);
@@ -337,7 +337,7 @@ const masterSchemaReducer = {
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
     const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });
     // console.log("group-make-parent/serialised", serialised);
-    const valid = masterSchemaGroupInterface.validateSync(serialised);
+    masterSchemaGroupInterface.validateSync(serialised);
     // console.log("group-make-parent/valid", valid);
 
     // const oldGroup = getParentById(hierarchy, valid.id);

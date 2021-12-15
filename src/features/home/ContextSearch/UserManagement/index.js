@@ -50,7 +50,7 @@ const UserManagement = ({ allManagers, managers, handleContextChange }) => {
     }
 
     const pageData = data.slice(itemsPerPage * page, itemsPerPage * (page + 1))
-    return pageData.map((elData) => (
+    return pageData.map((elData, idx) => (
       <UserCardTemplate
         className="cursor-pointer"
         oneColumn={oneColumn}
@@ -63,6 +63,7 @@ const UserManagement = ({ allManagers, managers, handleContextChange }) => {
           }
         }}
         {...elData}
+        key={idx}
       />
     ))
   }

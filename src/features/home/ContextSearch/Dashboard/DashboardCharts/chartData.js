@@ -36,7 +36,7 @@ const dataDefaultChart = ({data, daysNumber, title}) => {
 }
 
 
-const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
+const dataApplicationChart = ({data, daysNumber, dForm}) => {
   if (!data || daysNumber === -1) {
     return null;
   }
@@ -56,6 +56,7 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
           })
         })
       }
+      // eslint-disable-next-line no-loop-func
       Object.keys(pointsY).forEach(item => pointsY[item].push({x: i, y: currInfo[item]}));
     } else {
       Object.values(pointsY).forEach(item => {item.push({x: i, y: 0})});
@@ -104,7 +105,7 @@ const dataApplicationChart = ({data, daysNumber, title, isSmall, dForm}) => {
       }
 };
 
-const dataApplicationSnapshotChart = ({data, daysNumber, title, isSmall, dForm, dFormIds, dashboardDForms}) => {
+const dataApplicationSnapshotChart = ({data, daysNumber, dFormIds, dashboardDForms}) => {
   if (!dFormIds) {
     return {
         labels: ['in-progress', 'submitted', 'approved', "rejected"],

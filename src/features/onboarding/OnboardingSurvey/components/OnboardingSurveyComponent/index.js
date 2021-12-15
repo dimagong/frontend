@@ -47,9 +47,7 @@ const OnboardingSurveyInProgress = ({ question, questionNumber, selectedAnswer, 
 
 
 const OnboardingSurveyComponent = ({
-  startedAt,
   surveyName,
-  finishedAt,
   status,
   onSurveyStart,
   isLoading,
