@@ -1,7 +1,7 @@
 import "./styles.scss";
 
 import React from "react";
-import { isEmpty, get, pipe, join } from "lodash/fp";
+import { isEmpty } from "lodash/fp";
 
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
@@ -30,9 +30,11 @@ const MasterSchemaContextFeatureComponent = () => {
       return (
         <>
           {`${selectable.selected.fields.length} Datapoints Selected`}
-          <p className="mb-0 mt-1 font-size-base font-weight-normal">
-            {selectable.selected.fields.map(pipe(get("path"), join("."))).join(", ")}
-          </p>
+          {selectable.selected.fields.map((field) => (
+            <p className="mb-0 mt-1 font-size-base font-weight-normal" key={field.id}>
+              {field.path.join(".")}
+            </p>
+          ))}
           {selectable.selected.areSelectedFieldsContainCommonAndMemberFirmFields && (
             <p className="mb-0 mt-1 font-size-base font-weight-normal text-danger">
               There are selected fields not from member firm.
