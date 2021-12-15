@@ -18,7 +18,7 @@ const ContextFeatureTemplate = ({
 }) => {
   return (
     <Col xs={6} className="context-feature-template">
-      <Scrollbars autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
+      <Scrollbars autoHeightMin={550} autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
         <div className="context-feature-template_header">
           {contextFeatureTitle && <div className="context-feature-template_header_title">{contextFeatureTitle}</div>}
 

@@ -14,6 +14,7 @@ import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-
 
 import MasterSchemaManager from "./components/MasterSchemaManager";
 import MasterSchemaUserList from "./components/MasterSchemaUserList";
+import {useBoolean} from "../../../../../../hooks/use-boolean";
 
 const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
@@ -21,6 +22,7 @@ const MasterSchemaContextFeatureComponent = ({ state }) => {
   const { selectable } = useMasterSchemaContext();
   const dispatch = useDispatch();
   const masterSchemaUsers = useSelector(selectMasterSchemaUsers);
+  const [isUsersFiltered, setIsUsersFiltered] = useBoolean(false)
 
   const { selected, hierarchy } = state;
   const selectedUsers = useMemo(() => {
@@ -58,6 +60,8 @@ const MasterSchemaContextFeatureComponent = ({ state }) => {
     }
   };
 
+  console.log('show list', selectedUsers && (isUsersFiltered || !isEmpty(selectedUsers)))
+
   useEffect(() => {
     if (selected.field && !masterSchemaUsers[selected.field.id]) {
       const payload = { fieldId: selected.field.id };
@@ -66,8 +70,8 @@ const MasterSchemaContextFeatureComponent = ({ state }) => {
   }, [dispatch, masterSchemaUsers, selected.field]);
 
   return (
-    <ContextFeatureTemplate contextFeatureTitle={renderTitle()}>
-      {selectedUsers && !isEmpty(selectedUsers) && <MasterSchemaUserList users={selectedUsers} hierarchy={hierarchy} selected={selected} />}
+    <ContextFeatureTemplate className={'qweewq'} contextFeatureTitle={renderTitle()}>
+      {selectedUsers && (isUsersFiltered || !isEmpty(selectedUsers)) && <MasterSchemaUserList users={selectedUsers} hierarchy={hierarchy} selected={selected} setUsersFiltered={setIsUsersFiltered}/>}
       <MasterSchemaManager state={state} />
     </ContextFeatureTemplate>
   );

@@ -3,7 +3,7 @@ import {selectOrganizations} from "../app/selectors/groupSelector";
 import {getMemberFirms} from "../app/selectors/memberFirmsSelector";
 
 export const FilterRolesOptions = () =>
-  ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead'];
+  ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Network manager', 'Member', 'Lead'];
 
 export const FilterOrganizationsOptions = () => {
   const organizationsObjects = useSelector(selectOrganizations);

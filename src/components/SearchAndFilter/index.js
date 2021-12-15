@@ -195,7 +195,7 @@ const SearchAndFilter = (props) => {
     </div>
 
     {/*TODO** write correct handle for case when no filters selected*/}
-    {!!appliedFilter?.applications?.length && (
+    {(
       <div className={`modal-filter-tabs ${filterTabPosition === 'left' && 'left-orientation-tabs'} ${filterTabPosition === 'right' ? 'right-orientation-tabs' : ""}`}>
         {Object.keys(appliedFilter).map(item => {
           if (item !== 'type' && appliedFilter[item].length > 0) {

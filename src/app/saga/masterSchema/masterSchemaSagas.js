@@ -293,9 +293,9 @@ function* getGroups({ payload }) {
 }
 
 function* getUsers({ payload }) {
-  const { fieldId, name, abilities, organizations } = payload;
+  const { fieldId, name, abilities, organizations, member_firm_id } = payload;
   try {
-    const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations  });
+    const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations, member_firm_id });
     console.log("users-by-field/api", users);
     yield put(getUsersByMasterSchemaFieldSuccess({ users, fieldId }));
     yield call(getList);

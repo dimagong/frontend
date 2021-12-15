@@ -150,16 +150,37 @@ const MasterSchema = () => {
     };
   }, [selectable, expandable, nodes, hierarchy, unapproved]);
 
+  const selected = useMemo(() => {
+    const nodes = [hierarchy, ...hierarchy.children];
+    const selectedNodes = selectable.keys.map((nodeId) => nodes.find(pipe(get("nodeId"), isEqual(nodeId))));
+    const selectedFields = selectedNodes.filter(pipe(get("isContainable"), (v) => !v));
+    const selectedGroups = selectedNodes.filter(get("isContainable"));
+
+    return {
+      nodes: selectedNodes,
+      fields: selectedFields,
+      groups: selectedGroups,
+      node: selectedNodes[0],
+      field: selectedFields[0],
+      group: selectedGroups[0],
+    };
+  }, [hierarchy, selectable]);
+
+  const state = useMemo(
+    () => ({ selectable, selected, hierarchy, unapproved }),
+    [hierarchy, selectable, selected, unapproved]
+  );
+
   useDidUpdate(() => {
     selectable.clear();
     expandable.reset();
   }, [selectedId]);
 
   return (
-    <div className="d-flex">
+    <div className="d-flex master-schema-container">
       <MasterSchemaReactContext.Provider value={context}>
-        <MasterSchemaContext />
-        <MasterSchemaContextFeature />
+        <MasterSchemaContext state={state}/>
+        <MasterSchemaContextFeature state={state} />
       </MasterSchemaReactContext.Provider>
     </div>
   );
