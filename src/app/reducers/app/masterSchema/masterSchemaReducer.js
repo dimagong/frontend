@@ -8,9 +8,6 @@ const masterSchemaNodeSchema = {
   key: yup.string().required(),
   name: yup.string().required(),
   nodeId: yup.string().required(),
-  parentId: yup.number().required(),
-  parentKey: yup.string().required(),
-  parentNodeId: yup.string().required(),
   updatedAt: yup.string().required(),
   createdAt: yup.string().required(),
   isSystem: yup.boolean().required(),
@@ -30,18 +27,21 @@ const masterSchemaGroupSchema = {
 
 const masterSchemaFieldInterface = yup.object({
   ...masterSchemaNodeSchema,
-  applicationNames: yup.array().nullable(),
-  providedByFullName: yup.string().nullable(),
+  parentId: yup.number().required(),
+  parentKey: yup.string().required(),
+  parentNodeId: yup.string().required(),
+});
+
+const masterSchemaUnapprovedFieldInterface = yup.object({
+  ...masterSchemaNodeSchema,
+  applicationNames: yup.array().test((v) => Array.isArray(v)),
+  providedByFullName: yup.string().required(),
+  parentGroupName: yup.string().required(),
 });
 
 const masterSchemaGroupInterface = yup.object(masterSchemaGroupSchema);
 
-// Consider children as hashmap, will it be faster ?
-const masterSchemaUnapprovedInterface = yup.object({
-  name: yup.string().required(),
-  fields: yup.array(masterSchemaFieldInterface).test((v) => Array.isArray(v)),
-  masterSchemaId: yup.number().required(),
-});
+const masterSchemaUnapprovedInterface = yup.array(masterSchemaUnapprovedFieldInterface).test((v) => Array.isArray(v));
 
 // Consider children as hashmap, will it be faster ?
 const masterSchemaHierarchyInterface = yup.object({
@@ -50,7 +50,6 @@ const masterSchemaHierarchyInterface = yup.object({
     .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
     .test((v) => Array.isArray(v)),
   masterSchemaId: yup.number().required(),
-  isMemberFirmGroup: yup.boolean().nullable(),
 });
 
 const masterSchemaInterface = yup.object({
@@ -83,6 +82,7 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
     updated_at,
     created_at,
     provided_by_full_name,
+    parent_group_name,
   } = node;
   const key = parent ? `${parent.key}/${id}` : id;
   const path = parent ? [...parent.path, name] : [name];
@@ -102,6 +102,7 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
     createdAt: created_at,
     updatedAt: updated_at,
     ...(is_member_firm_group ? { isMemberFirmGroup: is_member_firm_group } : {}),
+    ...(parent_group_name ? { parentGroupName: parent_group_name } : {}),
     providedByFullName: provided_by_full_name,
     parentId: parent_id ?? master_schema_group_id ?? null,
     applicationNames: application_names,
@@ -144,14 +145,7 @@ const serialiseMasterSchemaHierarchy = (hierarchy) => {
 };
 
 const serialiseUnapproved = (unapproved) => {
-  const fields = [];
-  const node = serialiseNode(unapproved, { isContainable: true, children: fields });
-
-  return {
-    name: node.name,
-    fields,
-    masterSchemaId: unapproved.master_schema_id,
-  };
+  return unapproved.map((field) => serialiseNode(field, { isContainable: false }));
 };
 
 const serialiseMasterSchema = ({ id, name, organization_id, organization_type }) => {
@@ -369,7 +363,11 @@ const masterSchemaReducer = {
   },
 
   setUnapprovedMasterSchemaSuccess(state, { payload }) {
-    state.masterSchema.unapproved[payload.id] = payload.unapproved;
+    const { id, unapproved } = payload;
+    const serialised = serialiseUnapproved(unapproved);
+    const valid = masterSchemaUnapprovedInterface.validateSync(serialised);
+
+    state.masterSchema.unapproved[id] = valid;
     state.isError = false;
     state.isLoading = false;
   },
