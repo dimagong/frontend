@@ -21,16 +21,16 @@ import ContextTemplate from "components/ContextTemplate";
 
 import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
-import {createLoadingSelector} from "app/selectors/loadingSelector";
+// import {createLoadingSelector} from "app/selectors/loadingSelector";
 
-const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch, setUnapprovedMasterSchemaRequest, approveUnapprovedFieldsRequest } = appSlice.actions;
+const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch, /*setUnapprovedMasterSchemaRequest, approveUnapprovedFieldsRequest*/ } = appSlice.actions;
 
 const MasterSchemaContextComponent = () => {
   const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
-  const isApprovingLoading = useSelector(createLoadingSelector([approveUnapprovedFieldsRequest.type], false));
+  // const isApprovingLoading = useSelector(createLoadingSelector([approveUnapprovedFieldsRequest.type], false));
 
   const { hierarchy, unapproved, expandable } = useMasterSchemaContext();
   const isSearchingRef = useRef(false);
@@ -92,12 +92,13 @@ const MasterSchemaContextComponent = () => {
 
   useDidUpdate(() => void dispatch(getMasterSchemaHierarchyRequest({ id: selectedId })), [search]);
 
-  useDidUpdate(() => {
-    if (!isApprovingLoading) {
-      dispatch(setUnapprovedMasterSchemaRequest({id: hierarchy.masterSchemaId}))
-      toast.success('The approving was successful')
-    }
-  }, [isApprovingLoading]);
+  // Fixme: wring metadata reporting
+  // useDidUpdate(() => {
+  //   if (!isApprovingLoading) {
+  //     dispatch(setUnapprovedMasterSchemaRequest({id: hierarchy.masterSchemaId}))
+  //     toast.success('The approving was successful')
+  //   }
+  // }, [isApprovingLoading]);
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
