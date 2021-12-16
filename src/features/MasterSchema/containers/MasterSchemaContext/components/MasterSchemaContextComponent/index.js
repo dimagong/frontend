@@ -21,9 +21,15 @@ import ContextTemplate from "components/ContextTemplate";
 
 import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
-import {createLoadingSelector} from "app/selectors/loadingSelector";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
 
-const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch, setUnapprovedMasterSchemaRequest, approveUnapprovedFieldsRequest } = appSlice.actions;
+const {
+  getMasterSchemaHierarchyRequest,
+  getdFormsRequest,
+  setMasterSchemaSearch,
+  setUnapprovedMasterSchemaRequest,
+  approveUnapprovedFieldsRequest,
+} = appSlice.actions;
 
 const MasterSchemaContextComponent = () => {
   const dispatch = useDispatch();
@@ -94,8 +100,8 @@ const MasterSchemaContextComponent = () => {
 
   useDidUpdate(() => {
     if (!isApprovingLoading) {
-      dispatch(setUnapprovedMasterSchemaRequest({id: hierarchy.masterSchemaId}))
-      toast.success('The approving was successful')
+      dispatch(setUnapprovedMasterSchemaRequest({ id: hierarchy.masterSchemaId }));
+      toast.success("The approving was successful");
     }
   }, [isApprovingLoading]);
 
@@ -118,21 +124,23 @@ const MasterSchemaContextComponent = () => {
             filterTabPosition={"left"}
           />
 
-          <div className="d-flex justify-content-end pb-1">
-            <MSEButton
-              className="p-0"
-              textColor="currentColor"
-              backgroundColor="transparent"
-              disabled={!expandable.isCollapsable}
-              onClick={expandable.reset}
-            >
-              Collapse
-            </MSEButton>
-          </div>
+          {hierarchy?.id && (
+            <div className="d-flex justify-content-end pb-1">
+              <MSEButton
+                className="p-0"
+                textColor="currentColor"
+                backgroundColor="transparent"
+                disabled={!expandable.isCollapsable}
+                onClick={expandable.reset}
+              >
+                Collapse
+              </MSEButton>
+            </div>
+          )}
         </div>
 
         {hierarchy?.id ? (
-            <MasterSchemaElements key={hierarchy.name} />
+          <MasterSchemaElements key={hierarchy.name} />
         ) : (
           <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
         )}

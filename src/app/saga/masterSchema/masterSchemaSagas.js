@@ -296,15 +296,20 @@ function* getGroups({ payload }) {
   }
 }
 
+function* getHistoryByField({ payload }) {
+  const { fieldId } = payload;
+  const versions = yield call(masterSchemaApi.getFieldVersions, { fieldId });
+  const history = { fieldId, versions };
+  return history;
+}
+
 function* getUsers({ payload }) {
   const { fieldId, name, abilities, organizations, member_firm_id } = payload;
   try {
     const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations, member_firm_id });
-    // console.log("users-by-field/api", users);
-    yield put(getUsersByMasterSchemaFieldSuccess({ users, fieldId }));
-    yield call(getList);
+    const histories = yield all(users.map(({ field }) => call(getHistoryByField, { payload: { fieldId: field.id } })));
+    yield put(getUsersByMasterSchemaFieldSuccess({ users, histories, fieldId }));
   } catch (error) {
-    // console.error("users-by-field/error", error);
     yield put(getUsersByMasterSchemaFieldError(error));
   }
 }
