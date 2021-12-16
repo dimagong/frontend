@@ -1,16 +1,15 @@
 import "./styles.scss";
 
-import { get } from "lodash/fp";
-import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useCallback, useEffect, useState } from "react";
 
 import { useTreeData } from "hooks/use-tree";
 import { useBoolean } from "hooks/use-boolean";
-import { useToggleable } from "hooks/use-toggleable";
 
 import TreeRoot from "components/tree/tree-root";
+
 import SurveyModal from "features/Surveys/Components/SurveyModal";
+import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
 import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
@@ -35,20 +34,22 @@ const creationTitle = (type) => {
   }
 };
 
-const MasterSchemaElements = ({ selectable, hierarchy, expanded }) => {
-  const dispatch = useDispatch();
-  const loading = useSelector(
-    createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true)
-  );
+const createLoading = () =>
+  createLoadingSelector([addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type], true);
 
+const MasterSchemaElements = () => {
+  const { selectable, expandable, hierarchy } = useMasterSchemaContext();
+
+  const dispatch = useDispatch();
+  const loading = useSelector(createLoading());
+
+  const [addTo, setAddTo] = useState(null);
   const tree = useTreeData({
     items: [hierarchy],
     getKey,
     getChildren: ({ isContainable, fields, groups }) =>
       isContainable ? hierarchy.children.filter(({ key }) => [...groups, ...fields].includes(key)) : [],
   });
-  const expandable = useToggleable([]);
-  const [addTo, setAddTo] = useState(null);
 
   const [modal, openModal, closeModal] = useBoolean(false);
 
@@ -89,19 +90,9 @@ const MasterSchemaElements = ({ selectable, hierarchy, expanded }) => {
     setAddTo(null);
   };
 
-  const onNodeSelect = selectable.select;
-
-  const foldAll = useCallback(() => expandable.clear(), [expandable]);
-  const getHierarchyKeys = useCallback(() => [hierarchy, ...hierarchy.children].map(get("key")), [hierarchy]);
-  const expandAll = useCallback(() => expandable.setKeys(getHierarchyKeys), [expandable, getHierarchyKeys]);
-
-  // Effect only on expanded change
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => void (expanded ? expandAll : foldAll)(), [expanded]);
-
   // Tree needs to be updated only when items change. Or it'll cause a stack overflow
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => void tree.update([hierarchy]), [hierarchy]);
+  useEffect(() => tree.update([hierarchy]), [hierarchy]);
 
   return (
     <div className="ms-elements">
@@ -113,7 +104,6 @@ const MasterSchemaElements = ({ selectable, hierarchy, expanded }) => {
           <MSETreeElement
             state={{ node: node.value, selectable, expandable }}
             onPopupAction={onPopupAction}
-            onSelect={onNodeSelect}
             children={children}
           />
         )}
@@ -130,16 +120,6 @@ const MasterSchemaElements = ({ selectable, hierarchy, expanded }) => {
       )}
     </div>
   );
-};
-
-MasterSchemaElements.defaultProps = {
-  expanded: false,
-};
-
-MasterSchemaElements.propTypes = {
-  hierarchy: PropTypes.object.isRequired,
-  selectable: PropTypes.object.isRequired,
-  expanded: PropTypes.bool,
 };
 
 export default MasterSchemaElements;

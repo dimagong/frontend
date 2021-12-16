@@ -5,13 +5,39 @@ import { CardTitle, Label, Row, Col } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import MSEButton from 'features/MasterSchema/share/mse-button';
+import MSEButton from "features/MasterSchema/share/mse-button";
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 import MSESelectField from "features/MasterSchema/share/mse-select-field";
 
-const MSENodeRelocationForm = ({ node, options, submitting, onSubmit: propOnSubmit, ...attrs }) => {
-  const withParentKey = useMemo(() => pipe(get("value.key"), isEqual(node.parentKey)), [node]);
-  const initialValue = useMemo(() => options.find(withParentKey), [options, withParentKey]);
+const customSelectStyles = {
+  control: (provided) => ({
+    ...provided,
+    borderRadius: 0,
+    borderTop: "none",
+    borderLeft: "none",
+    borderRight: "none",
+    boxShadow: "none",
+  }),
+};
+
+const MSENodeRelocationForm = ({
+  node,
+  multiple,
+  options,
+  submitting,
+  label,
+  action,
+  onSubmit: propOnSubmit,
+  ...attrs
+}) => {
+  const withParentNodeId = useMemo(
+    () => (multiple ? () => {} : pipe(get("value.nodeId"), isEqual(node.parentNodeId))),
+    [multiple, node]
+  );
+  const initialValue = useMemo(
+    () => (multiple ? null : options.find(withParentNodeId)),
+    [multiple, options, withParentNodeId]
+  );
 
   const [location, setLocation] = useFormField(initialValue, [Validators.required, Validators.identical(initialValue)]);
   const form = useFormGroup({ location });
@@ -25,9 +51,11 @@ const MSENodeRelocationForm = ({ node, options, submitting, onSubmit: propOnSubm
       options={options}
       onChange={setLocation}
       menuPosition={"fixed"}
+      styles={customSelectStyles}
+      components={{ IndicatorSeparator: null }}
       label={(id) => (
         <Label for={id}>
-          <CardTitle>Move datapoint to:</CardTitle>
+          <CardTitle className="ms-manager__label">{label}</CardTitle>
         </Label>
       )}
     >
@@ -42,14 +70,8 @@ const MSENodeRelocationForm = ({ node, options, submitting, onSubmit: propOnSubm
                 {error}
               </Col>
               <Col xs={4}>
-                <MSEButton
-                  className="w-100"
-                  textColor="#fff"
-                  backgroundColor="#ABABAB4D"
-                  type="submit"
-                  disabled={form.invalid}
-                >
-                  Move
+                <MSEButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
+                  {action}
                 </MSEButton>
               </Col>
             </Row>
@@ -62,13 +84,17 @@ const MSENodeRelocationForm = ({ node, options, submitting, onSubmit: propOnSubm
 };
 
 MSENodeRelocationForm.defaultProps = {
+  multiple: false,
   submitting: false,
 };
 
 MSENodeRelocationForm.propTypes = {
-  node: PropTypes.object.isRequired,
+  node: PropTypes.object,
+  multiple: PropTypes.bool,
   options: PropTypes.array.isRequired,
   submitting: PropTypes.bool,
+  label: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 

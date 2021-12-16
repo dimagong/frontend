@@ -13,7 +13,7 @@ import { addField, addGroup } from "../mse-addition-actions";
 
 const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
 
-const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
+const MSETreeGroup = ({ id, name, date, isSystem, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
   const popupRef = useRef();
   const [popup, togglePopup, setPopup] = useToggle(false);
 
@@ -35,11 +35,14 @@ const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPo
     <MSETreeNode
       className={className}
       name={name}
+      date={date}
+      isSystem={isSystem}
+
       prepend={
         <div className="ms-elements__mark-icon d-flex justify-content-center align-items-center">
           <button
             type="button"
-            className="ms-elements__collapse"
+            className="ms-elements__collapse d-flex justify-content-center align-items-center"
             onClick={stopPropagation(toggleExpanded)}
             aria-label={getMarkIconAriaLabel(expanded)}
           >
@@ -95,6 +98,8 @@ const MSETreeGroup = ({ id, name, expanded, onExpandChange, onSelectChange, onPo
 MSETreeGroup.propTypes = {
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   name: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  isSystem: PropTypes.bool.isRequired,
   expanded: PropTypes.bool.isRequired,
   onExpandChange: PropTypes.func,
   onSelectChange: PropTypes.func,

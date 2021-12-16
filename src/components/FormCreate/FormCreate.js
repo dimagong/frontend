@@ -481,9 +481,6 @@ class FormCreate extends React.Component {
         const newData = this.removeRudimentFormData(formDataFormatted);
         const oldData = this.props.dForm.submit_data;
         const diff = Object.keys(newData).filter((nextKey) => {
-          if(nextKey in oldData) {
-
-          }
           return JSON.stringify(newData[nextKey]) !== JSON.stringify(oldData[nextKey]);
         });
 
@@ -493,7 +490,6 @@ class FormCreate extends React.Component {
           newDiffData[diff[nextKey]] = newData[diff[nextKey]];
         }
 
-        console.log('diff', newDiffData);
         this.props.onChange(newDiffData)
       }
     }

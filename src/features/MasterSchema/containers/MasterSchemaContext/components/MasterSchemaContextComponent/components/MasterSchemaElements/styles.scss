@@ -20,7 +20,7 @@
 }
 
 .ms-elements {
-  min-height: 300px;
+  min-height: 400px;
   &__list {
     @extend %list-reset;
     padding-left: 13px;
@@ -68,31 +68,48 @@
     height: 30px;
 
     color: #63c9ef;
-    font-size: 0.8125rem;
+    font-size: 1rem;
   }
 
   &__collapse {
     @extend %btn-icon;
     @extend %btn-reset;
+
     color: inherit;
-    font-size: inherit;
+    font-size: 1.5rem;
   }
 
   &__name {
     padding: 0 8px;
-    font-size: 0.9375rem;
+    font-size: 1.125rem;
+  }
+
+  &__lock {
+    color: #7367f0;
+    font-size: 1.1rem;
+
+    @at-root .ms-elements__node--selected > .ms-elements__node-content & {
+      color: #fff;
+    }
+  }
+
+  &__date {
+    text-align: right;
+    font-size: 0.825rem;
+    color: currentColor;
   }
 
   &__popup {
     color: #707070;
     font-size: 0.75rem;
+    line-height: 1.3;
 
     z-index: 1;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.160784);
 
     position: relative;
     &:after {
-      content: '';
+      content: "";
       width: 80%;
       height: 1px;
       background-color: currentColor;
@@ -105,9 +122,9 @@
 
   &__node-creator {
     @extend %btn-reset;
-    padding: 10px 20px;
+    padding: 6px 22px;
     color: inherit;
-    font-size: inherit;
+    font-size: 0.875rem;
 
     transition-duration: 0.2s;
     transition-timing-function: ease;
@@ -123,7 +140,7 @@
     @extend %btn-reset;
 
     color: #95989a;
-    font-size: 0.625rem;
+    font-size: 14px;
 
     @at-root .ms-elements__node--selected > .ms-elements__node-content & {
       color: currentColor;

@@ -24,17 +24,22 @@
       justify-content: space-between;
       &-title {
         font-size: 15px;
+        font-weight: 700;
         color: #707070;
       }
 
       &-selected_items {
+        display: flex;
         &-count {
           color: #707070;
           font-size: 15px;
-
+          margin-right: 3px;
           &>p {
             margin: 0;
           }
+        }
+        &-unselect_icon {
+          cursor: pointer;
         }
       }
     }
@@ -52,8 +57,8 @@
         margin-bottom: 12px;
         border-radius: 5px;
 
-        &-state {
-
+        > * {
+          width: calc(50% - 8px);
         }
 
         &-description {
@@ -66,11 +71,17 @@
 
           &-appearances {
             font-size: 12px;
+
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
 
-        &-creation_info {
+        &_creation_info {
           font-size: 15px;
+          text-align: right;
         }
       }
     }

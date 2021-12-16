@@ -1,9 +1,9 @@
 import "./styles.scss";
 
-import React, { useMemo, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import moment from "moment";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { capitalize, get } from "lodash/fp";
 import { ExternalLink } from "react-feather";
 import { Table, Card, CardBody, CardHeader } from "reactstrap";
@@ -15,13 +15,27 @@ import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import { useBoolean } from "hooks/use-boolean";
 import NoneAvatar from "assets/img/portrait/none-avatar.png";
+import appSlice from "app/slices/appSlice";
+import {selectOrganizations} from "app/selectors/groupSelector";
+import {
+  FilterMemberFirmsOptions,
+  FilterOrganizationsOptions,
+  FilterRolesOptions
+} from "constants/filter";
+import _ from "lodash";
+import {getMemberFirms} from "app/selectors/memberFirmsSelector";
+
+const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
 // :: (field) -> string
 const normalizeFieldValue = (field) => {
   if (!field.type || !field.value) return null;
 
   switch (field.type) {
-    case "files":
+    case "files": //TODO remove null, backend issue
+      if (!field.files) {
+        return null;
+      }
       return field.files.map(get("name")).join(", ");
     default:
       return field.value;
@@ -34,47 +48,98 @@ const isValueLong = (v) => v.length > TEMP_LONG_VALUE_LENGTH;
 
 // ToDo: remove boxShadow and add border on Card
 
-const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
+const NoUserFound = () => {
+  return <h3 className={'ms-list-no-user-found'}>No users found for your query</h3>
+}
+
+const MasterSchemaUserList = ({ users, hierarchy, selected, setUsersFiltered }) => {
+  const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
 
-  const [filter, setFilter] = useState([]);
-  const [users, setUsers] = useState(initialUsers);
-  const filterTypes = useMemo(() => {
+  /*const filterTypes = useMemo(() => {
     const applications = allDForms
       .filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0)
       .map((item) => item.name);
 
     return { applications };
-  }, [allDForms, hierarchy.name]);
+  }, [allDForms, hierarchy.name]);*/
+  const organizationsInfo = useSelector(selectOrganizations);
+  const memberFirmsInfo = useSelector(getMemberFirms);
+
+  const filterTypes = {
+    roles: FilterRolesOptions(),
+    organizations: FilterOrganizationsOptions(),
+    memberFirms: FilterMemberFirmsOptions(),
+  }
 
   const [longValue, setLongValue] = useState("");
   const [modal, openModal, closeModal] = useBoolean(false);
 
+  const [searchInput, setSearchInput] = useState('');
+  const [filterOptions, setFilterOptions] = useState({})
+
   const openModalForLongValue = (userId) => () => {
-    const field = initialUsers.find(({ id }) => id === userId)?.field;
+    const field = users.find(({ id }) => id === userId)?.field;
     const value = normalizeFieldValue(field);
 
     setLongValue(value);
     openModal();
   };
 
-  const onFilterCancel = () => setUsers(initialUsers);
+  const onFilterCancel = () => {
+    setFilterOptions({})
+    setUsersFiltered(false);
+  }
 
   const onFilterSubmit = (filterOptions, filter) => {
-    console.log("filterOptions", filterOptions);
-    console.log("filter", filter);
+    setFilterOptions(filter)
+    setUsersFiltered(true);
   };
 
   const onSearchSubmit = (value) => {
-    value = (value.hasOwnProperty("target") ? value.target.value : value).toLowerCase();
-
-    setUsers(
-      initialUsers.filter(
-        ({ first_name, last_name }) =>
-          first_name.toLowerCase().includes(value) || last_name.toLowerCase().includes(value)
-      )
-    );
+    if (value.target.value.length !== 1) {
+      setSearchInput(value.target.value)
+      setUsersFiltered(true);
+    }
   };
+
+  const onFilterOptionCancel = (option) => {
+    setFilterOptions(onFilterOptionCancel.cancelOption[option])
+  }
+
+  onFilterOptionCancel.cancelOption = {
+    roles: () => {return {...filterOptions, roles: []}},
+    organizations: () => {return {...filterOptions, organizations: []}},
+    memberFirms: () => {return {...filterOptions, memberFirms: []}},
+  }
+
+  useEffect(() => {
+    const orgatizationsToFilter =  filterOptions.organizations
+      ? _.intersectionBy(
+          organizationsInfo,
+          filterOptions.organizations.map(item => {return {name: item} }),
+          "name"
+        ).map(item => {return {...item, type: item.logo.entity_type}})
+      : [];
+
+    const memberFirmsToFilter = filterOptions.memberFirms
+      ? _.intersectionBy(
+          memberFirmsInfo,
+          filterOptions.memberFirms.map(item => {return {main_fields: {name: item}} }),
+          "main_fields.name"
+        ).map(item => item.id)
+      : [];
+
+    const payload = {
+      fieldId: selected.field.id,
+      abilities: filterOptions?.roles ? filterOptions.roles.map(item => item.toLowerCase().replace(' ', '_')) : [],
+      organizations: orgatizationsToFilter,
+      member_firm_id: memberFirmsToFilter,
+      name: searchInput,
+    }
+
+    dispatch(getUsersByMasterSchemaFieldRequest(payload));
+  }, [searchInput, filterOptions])
 
   return (
     <>
@@ -84,7 +149,9 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
         </SurveyModal>
       )}
 
-      <Card className="px-1">
+      {users && !users.length && <NoUserFound/>}
+
+      <Card className="px-1 ms-user-list">
         <CardHeader className="px-0">
           <div className="w-100">
             <SearchAndFilter
@@ -92,6 +159,8 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
               onCancelFilter={onFilterCancel}
               filterTypes={filterTypes}
               applyFilter={onFilterSubmit}
+              onFilterOptionCancel={onFilterOptionCancel}
+              filterTabPosition={'left'}
             />
           </div>
         </CardHeader>
@@ -101,10 +170,10 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
               <tr>
                 <th className="msu-table__avatar">&nbsp;</th>
                 <th className="msu-table__name">Name</th>
-                <th>Organisation</th>
                 <th>Role</th>
                 <th>Member firm</th>
                 <th className="msu-table__value">Value</th>
+                <th className="msu-table__value">User</th>
                 <th className="msu-table__date">Date</th>
               </tr>
             </thead>
@@ -112,7 +181,7 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
               {users.map((user) => {
                 const avatarPath = user.avatar_path || NoneAvatar;
                 const fullName = `${user.first_name} ${user.last_name}`;
-                const organization = user?.permissions?.organization;
+                const providedFullName = `${user.field.provided.first_name} ${user.field.provided.last_name}`;
                 const role = capitalize(user?.permissions?.ability);
                 const memberFirm = user.member_firm?.main_fields.name;
                 const fieldType = capitalize(user.field.type || "");
@@ -132,7 +201,6 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
 
                     <td className="msu-table__name">{fullName}</td>
 
-                    <td>{organization}</td>
                     <td>{role}</td>
                     <td>{memberFirm}</td>
                     <td className="msu-table__value">
@@ -151,6 +219,7 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
                         </>
                       )}
                     </td>
+                     <td>{providedFullName}</td>
                     <td className="msu-table__date">
                       <div>{moment(user.field.date).format("DD/MM/YYYY")}</div>
                       <div>{moment(user.field.date).format("HH:MM")}</div>
@@ -163,7 +232,8 @@ const MasterSchemaUserList = ({ users: initialUsers, hierarchy }) => {
         </CardBody>
       </Card>
     </>
-  );
+  )
+
 };
 
 MasterSchemaUserList.propTypes = {

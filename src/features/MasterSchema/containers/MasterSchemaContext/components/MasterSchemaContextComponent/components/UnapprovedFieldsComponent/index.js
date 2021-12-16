@@ -1,16 +1,17 @@
 import "./styles.scss";
 
 import moment from "moment";
-import { get, pipe } from "lodash/fp";
 import { PropTypes } from "prop-types";
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, VisibilityOff, Close } from "@material-ui/icons";
 import { CardTitle, CardSubtitle, Col, Label, Row } from "reactstrap";
 
 import Checkbox from "components/Checkbox";
 import appSlice from "app/slices/appSlice";
 import { selectMovementOptions, selectSelectedId } from "app/selectors/masterSchemaSelectors";
+
+import { stopPropagation } from "utility/event-decorators";
 
 import { useToggle } from "hooks/use-toggle";
 import { useToggleable } from "hooks/use-toggleable";
@@ -30,10 +31,10 @@ const iconStyles = {
 };
 
 const UnapprovedFieldItem = ({ selectable, field }) => {
-  const selected = useMemo(() => selectable.includes(field.key), [field, selectable]);
+  const selected = useMemo(() => selectable.includes(field.id), [field, selectable]);
 
-  const handleFieldClick = () => selectable.select(field.key);
-  const handleFieldChange = () => selectable.toggle(field.key);
+  const handleFieldClick = () => selectable.toggle(field.id);
+  const handleFieldChange = stopPropagation(() => selectable.toggle(field.id));
 
   return (
     <div className="unapproved_fields-list-items-item" onClick={handleFieldClick}>
@@ -44,15 +45,30 @@ const UnapprovedFieldItem = ({ selectable, field }) => {
         <div className="unapproved_fields-list-items-item-description">
           <div className="unapproved_fields-list-items-item-description-name">{field.name}</div>
           <div className="unapproved_fields-list-items-item-description-appearances">
-            dForm: {field.dFormNames?.join(", ") || "Not used in dForms"}
+            Applications: {field.applicationNames?.join(", ") || "Not used in Applications"}
           </div>
         </div>
       </div>
       <div className="unapproved_fields-list-items-item_creation_info">
-        <p>{`Created by SOME_USER on ${moment(field.createdAt).format("DD.MM.YYYY")}`}</p>
+        <p>
+          {field.providedByFullName
+            ? `Created by ${field.providedByFullName} on ${moment(field.createdAt).format("DD.MM.YYYY")}`
+            : `Created on ${moment(field.createdAt).format("DD.MM.YYYY")}`}
+        </p>
       </div>
     </div>
   );
+};
+
+const customSelectStyles = {
+  control: (provided) => ({
+    ...provided,
+    borderRadius: 0,
+    borderTop: "none",
+    borderLeft: "none",
+    borderRight: "none",
+    boxShadow: "none",
+  }),
 };
 
 const UnapprovedFieldsComponent = ({ fields }) => {
@@ -60,7 +76,7 @@ const UnapprovedFieldsComponent = ({ fields }) => {
   const selectedId = useSelector(selectSelectedId);
   const movementOptions = useSelector(selectMovementOptions);
 
-  const selectable = useToggleable([]);
+  const selectable = useToggleable();
 
   const [visible, toggleVisibility] = useToggle(true);
   const [location, setLocation] = useFormField(null, [Validators.required]);
@@ -68,11 +84,13 @@ const UnapprovedFieldsComponent = ({ fields }) => {
 
   const onSubmit = () => {
     const parentId = form.values.location.value.id;
-    const fieldsIds = fields.filter(pipe(get("key"), selectable.includes)).map(get("id"));
+    const fieldsIds = selectable.keys;
     const payload = { masterSchemaId: selectedId, parentId, fieldsIds };
 
     dispatch(approveUnapprovedFieldsRequest(payload));
   };
+
+  const handleUnselectAll = () => selectable.clear();
 
   // clear select value depends on fields selecting
   useEffect(() => void setLocation(null), [selectable.isEmpty, setLocation]);
@@ -82,69 +100,77 @@ const UnapprovedFieldsComponent = ({ fields }) => {
       <div className="unapproved_fields">
         <div className="unapproved_fields-list">
           <div className="unapproved_fields-list-header">
-            <div className="unapproved_fields-list-header-title">
-              <h4>
-                New unapproved elements
-                {visible ? (
-                  <Visibility onClick={toggleVisibility} style={iconStyles} />
-                ) : (
-                  <VisibilityOff onClick={toggleVisibility} style={iconStyles} />
-                )}
-              </h4>
+            <div className="unapproved_fields-list-header-title mb-1">
+              New unapproved elements
+              {visible ? (
+                <Visibility onClick={toggleVisibility} style={iconStyles} />
+              ) : (
+                <VisibilityOff onClick={toggleVisibility} style={iconStyles} />
+              )}
             </div>
             <div className="unapproved_fields-list-header-selected_items">
-              <div className="unapproved_fields-list-header-selected_items-count">
-                {!!selectable.keys.length && <p>{selectable.keys.length} elements selected</p>}
-              </div>
-              <div className="unapproved_fields-list-header-selected_items-unselect_icon" />
+              {!!selectable.keys.length && (
+                <>
+                  <div className="unapproved_fields-list-header-selected_items-count">
+                    <p>
+                      {selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} selected
+                    </p>
+                  </div>
+                  <div className="unapproved_fields-list-header-selected_items-unselect_icon">
+                    <Close style={{ fontSize: "16px", color: "black" }} onClick={handleUnselectAll} />
+                  </div>
+                </>
+              )}
             </div>
           </div>
           {visible && (
             <div className="unapproved_fields-list-items">
               {fields.map((field) => (
-                <UnapprovedFieldItem field={field} selectable={selectable} key={field.key} />
+                <UnapprovedFieldItem field={field} selectable={selectable} key={field.id} />
               ))}
             </div>
           )}
         </div>
+        {!selectable.isEmpty && (
+          <MSESelectField
+            name="elementLocation"
+            placeholder="Choose location"
+            options={movementOptions}
+            onChange={setLocation}
+            styles={customSelectStyles}
+            components={{ IndicatorSeparator: null }}
+            label={(id) => (
+              <Label for={id} className="approve__label">
+                <CardTitle className="approve__title font-weight-bold">Approve selected fields</CardTitle>
+                <CardSubtitle className="approve__subtitle mt-1">
+                  Which branch should the selected {selectable.keys.length} element
+                  {selectable.keys.length === 1 ? "" : "s"} be approved into?
+                </CardSubtitle>
+              </Label>
+            )}
+          >
+            {({ select, error, label }) => (
+              <MSEEditorForm
+                onSubmit={onSubmit}
+                header={label}
+                body={
+                  <Row>
+                    <Col xs={12}>
+                      {select}
+                      {error}
+                    </Col>
+                    <Col xs={12} className="d-flex mt-3">
+                      <MSEButton className="ml-auto" color="primary" type="submit" disabled={form.invalid}>
+                        Approve and move
+                      </MSEButton>
+                    </Col>
+                  </Row>
+                }
+              />
+            )}
+          </MSESelectField>
+        )}
       </div>
-
-      {!selectable.isEmpty && (
-        <MSESelectField
-          name="elementLocation"
-          placeholder="Choose location"
-          options={movementOptions}
-          onChange={setLocation}
-          label={(id) => (
-            <Label for={id} className="approve__label">
-              <CardTitle className="approve__title font-weight-bold">Approve selected fields</CardTitle>
-              <CardSubtitle className="approve__subtitle mt-1">
-                Which branch should the selected 2 elements be approved into?
-              </CardSubtitle>
-            </Label>
-          )}
-        >
-          {({ select, error, label }) => (
-            <MSEEditorForm
-              onSubmit={onSubmit}
-              header={label}
-              body={
-                <Row>
-                  <Col xs={12}>
-                    {select}
-                    {error}
-                  </Col>
-                  <Col xs={12} className="d-flex mt-3">
-                    <MSEButton className="ml-auto" color="primary" type="submit" disabled={form.invalid}>
-                      Approve and move
-                    </MSEButton>
-                  </Col>
-                </Row>
-              }
-            />
-          )}
-        </MSESelectField>
-      )}
     </>
   );
 };

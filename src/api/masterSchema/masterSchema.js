@@ -23,7 +23,7 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
-  getHierarchy({ id, name, application_ids }) {
+  getHierarchy({ id, name, application_ids, date_begin, date_end }) {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaHierarchyUrl(id),
@@ -31,6 +31,8 @@ const masterSchemaApi = {
         ...(name ? { name } : {}),
         hidden_groups: [1],
         ...(application_ids ? { application_ids } : {}),
+        ...(date_begin ? { date_begin } : {}),
+        ...(date_end ? { date_end } : {}),
       },
     }).then(flatResponseData, flatResponseError);
   },
@@ -101,10 +103,11 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
-  getUsers({ fieldId }) {
+  getGroups({ masterSchemaId }) {
     return instance({
-      method: "POST",
-      url: Urls.getMasterSchemaUsersByFieldUrl(fieldId),
+      method: "GET",
+      url: Urls.getMasterSchemaGroupsUrl(masterSchemaId),
+      params: { hidden_groups: [1] },
     }).then(flatResponseData, flatResponseError);
   },
 
@@ -112,6 +115,19 @@ const masterSchemaApi = {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaRelatedApplications(fieldId),
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getUsers({ fieldId, name, abilities, organizations, member_firm_id  }) {
+    return instance({
+      method: "POST",
+      url: Urls.getMasterSchemaUsersByFieldUrl(fieldId),
+      data: {
+        name: name?.length > 0 ? name : undefined,
+        abilities: abilities?.length > 0 ? abilities : undefined,
+        organizations: organizations?.length > 0 ? organizations : undefined,
+        member_firms: member_firm_id?.length > 0 ? member_firm_id : undefined,
+      }
     }).then(flatResponseData, flatResponseError);
   },
 

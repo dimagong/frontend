@@ -11,3 +11,4 @@ export const putMasterSchemaGroupMakeParentUrl = (groupId) => `/api/master-schem
 export const putMasterSchemaFieldsMakeParentUrl = "/api/master-schema-field/make-parent-many";
 export const getMasterSchemaUsersByFieldUrl = (fieldId) => `/api/master-schema-field/${fieldId}/users`;
 export const getMasterSchemaRelatedApplications = (fieldId) => `/api/master-schema-field/${fieldId}/related-applications`;
+export const getMasterSchemaGroupsUrl = (id) => `/api/master-schema/${id}/groups`;
