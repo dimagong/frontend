@@ -151,7 +151,7 @@ const MasterSchemaUserList = ({ users, hierarchy, selected, setUsersFiltered }) 
 
       {users && !users.length && <NoUserFound/>}
 
-      <Card className="px-1 ms-user-list">
+      <Card className="px-1 ms-user-list" style={{ boxShadow: "none", border: "1px solid #ececec"}}>
         <CardHeader className="px-0">
           <div className="w-100">
             <SearchAndFilter

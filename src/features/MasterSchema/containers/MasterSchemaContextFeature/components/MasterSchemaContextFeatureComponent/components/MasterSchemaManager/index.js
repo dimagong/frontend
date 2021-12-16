@@ -3,7 +3,11 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
-import { selectMovementOptions, selectRelatedApplications, selectSelectedId } from "app/selectors/masterSchemaSelectors";
+import {
+  selectMovementOptions,
+  selectRelatedApplications,
+  selectSelectedId,
+} from "app/selectors/masterSchemaSelectors";
 
 import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
@@ -64,7 +68,7 @@ const MasterSchemaManager = () => {
 
   useEffect(() => {
     if (selected?.node?.id) {
-      dispatch(getRelatedApplicationsRequest({fieldId: selected.node.id}))
+      dispatch(getRelatedApplicationsRequest({ fieldId: selected.node.id }));
     }
   }, [selected]);
 
@@ -91,10 +95,9 @@ const MasterSchemaManager = () => {
       return (
         <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage Datapoint</div>
-          {relatedApplications?.length > 0 &&
-            <MSENodeRelatedTable
-            relatedApplications={relatedApplications}
-          />}
+          {relatedApplications?.length > 0 && (
+            <MSENodeRelatedTable className="my-2" relatedApplications={relatedApplications} />
+          )}
           <MSENodeRenamingForm
             className="my-2"
             label="Rename datapoint to:"
