@@ -43,6 +43,10 @@ const {
   getSurveyTriggersRequest,
   getSurveyTriggersError,
 
+  submitdFormNewVersionRequest,
+  submitdFormNewVersionSuccess,
+  submitdFormNewVersionError,
+
   submitdFormSuccess,
   submitdFormRequest,
   submitdFormError,
@@ -86,6 +90,16 @@ function* submitdForm({payload}) {
   } catch (error) {
     console.log(error);
     yield put(submitdFormError(error));
+  }
+}
+
+function* submitdFormNewVersion({payload}) {
+  try {
+    const response = yield call(dFormApi.submitdFormNewVersion, payload);
+    yield put(submitdFormNewVersionSuccess(response));
+  } catch (error) {
+    yield put(submitdFormNewVersionError(error));
+    console.log(error);
   }
 }
 
@@ -224,6 +238,7 @@ export default function* () {
 
     yield takeLatest(submitdFormDataRequest.type, submitdFormData),
     yield takeLatest(submitdFormRequest.type, submitdForm),
+    yield takeLatest(submitdFormNewVersionRequest.type, submitdFormNewVersion),
     yield takeLatest(changedFormStatusRequest.type, changedFormStatus),
   ]);
 }

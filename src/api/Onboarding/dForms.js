@@ -6,7 +6,8 @@ import {
   changedFormStatusPath,
   submitdFormPath,
   surveyTriggersPath,
-  updateDFormFromParent
+  updateDFormFromParent,
+  submitdFormNewVersionPath
 } from "constants/onboarding";
 import {dFormPath, dFormTemplatePath} from "../../constants/onboarding";
 
@@ -40,6 +41,19 @@ const dFormApi = {
     try {
       const result = await instance({
         url: submitdFormPath(dForm.id),
+        method: "PUT",
+        data
+      });
+
+      return result.data.data;
+    } catch (err) {
+      throw err.response.data.error.errors;
+    }
+  },
+  async submitdFormNewVersion({dForm, data}) {
+    try {
+      const result = await instance({
+        url: submitdFormNewVersionPath(dForm.id),
         method: "PUT",
         data
       });
