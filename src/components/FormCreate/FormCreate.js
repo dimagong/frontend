@@ -447,6 +447,10 @@ class FormCreate extends React.Component {
     this.props.onSave && this.props.onSave(this.state.formData);
   }
 
+  onCreateNewVersion() {
+    this.props.onCreateNewVersion && this.props.onCreateNewVersion(this.state.formData);
+  }
+
   removeRudimentFormData(formData) {
     Object.keys(formData).forEach(key => {
       if (key in this.state.schema.properties && this.state.schema.properties[key]?.type === Constants.FIELD_TYPE_HELP_TEXT) {
@@ -2068,12 +2072,17 @@ class FormCreate extends React.Component {
                       )}
                     </div>
                   )}
-                  {this.props.onSubmit && (
+                  {this.props.onSubmit && !this.props.onCreateNewVersion && (
                     <div style={{float: "right", paddingRight: "20px"}}>
                       <span style={{color: "#7367f0", paddingRight: "10px", maxWidth: 400, display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>
                         {this.state.additionalData.name}
                       </span>
                       <Button type="submit" className="ml-auto submit-onboarding-button">Submit for review</Button>
+                    </div>
+                  )}
+                  {this.props.onCreateNewVersion && (
+                    <div style={{float: "right", paddingRight: "20px"}}>
+                      <Button type="submit" className="ml-auto submit-onboarding-button">Save</Button>
                     </div>
                   )}
                   {this.state.dFormTemplate.status === "submitted" && this.props.showSubmittedStatus && (

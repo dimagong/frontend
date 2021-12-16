@@ -62,6 +62,10 @@ const submitdFormSuccess = (state, {payload}) => {
   toast.success("Submitted for review")
 };
 
+const submitdFormNewVersionSuccess = (state, {payload}) => {
+  state.isLoading = false;
+}
+
 const submitdFormDataSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
@@ -160,6 +164,7 @@ export default {
   getdFormActionsSuccess,
   getdFormTriggersSuccess,
   submitdFormSuccess,
+  submitdFormNewVersionSuccess,
   submitdFormDataSuccess,
   changedFormStatusSuccess,
   updateDFormFromParentSuccess,

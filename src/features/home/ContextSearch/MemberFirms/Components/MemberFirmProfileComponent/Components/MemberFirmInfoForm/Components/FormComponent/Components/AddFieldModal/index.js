@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { isEmpty } from "lodash/fp";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 
-import SurveyModal from "../../../../../../../../../../../Surveys/Components/SurveyModal";
-import { Input, Select, Checkbox } from "../../../../../../../../../../../Surveys/Components/SurveyFormComponents";
 import { usePrevious } from "hooks/common";
-import getValidationDependingOnComponent from "./validations";
-import {toast} from "react-toastify";
 
+import appSlice from "app/slices/appSlice";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { getSelectedMemberFirm } from "app/selectors/memberFirmsSelector";
+
+import SurveyModal from "features/Surveys/Components/SurveyModal";
+import { Input, Select, Checkbox } from "features/Surveys/Components/SurveyFormComponents";
+
+import getValidationDependingOnComponent from "./validations";
 
 const inputTypes = [
   {
@@ -18,31 +25,65 @@ const inputTypes = [
   },
 ];
 
+const { createMasterSchemaFieldForMemberFirmRequest } = appSlice.actions;
+
+const transformMSPropertiesToOptions = (properties) => {
+  return Object.values(properties).map((property) => ({
+    value: property.id,
+    label: `${property.breadcrumbs}.${property.name}`,
+  }));
+};
+
 const AddFieldModal = ({
   isOpen,
   onClose,
   isMSPropertiesLoading,
   MSProperties,
+  memberFirmId,
   onSubmit,
   isSubmitProceeding,
   error,
 }) => {
+  const dispatch = useDispatch();
+  const memberFirmData = useSelector(getSelectedMemberFirm);
+  const isNewPropertyLoading = useSelector(
+    createLoadingSelector([createMasterSchemaFieldForMemberFirmRequest.type], true)
+  );
 
+  const breadcrumbs = memberFirmData?.master_schema_breadcrumbs ?? "";
   const [fieldTitle, setFieldTitle] = useState("");
   const [fieldType, setFieldType] = useState(null);
-  const [masterSchemaProperty, setMasterSchemaProperty] = useState(null);
-  const [isFieldRequired, setIsFieldRequired] = useState(false);
 
+  const newPropertyRef = useRef(null);
+  const [property, setProperty] = useState(null);
+  const [newProperty, setNewProperty] = useState("");
+  const initialPropertyOptions = useMemo(() => transformMSPropertiesToOptions(MSProperties), [MSProperties]);
+  const propertyOptions = useMemo(() => {
+    return isEmpty(newProperty)
+      ? initialPropertyOptions.concat({ label: `${breadcrumbs}.<newField>`, value: null, placeholder: true })
+      : [{ label: `${breadcrumbs}.${newProperty}`, value: null, _new: true }];
+  }, [initialPropertyOptions, breadcrumbs, newProperty]);
+
+  const [isFieldRequired, setIsFieldRequired] = useState(false);
   const isSubmitProceedingPrev = usePrevious(isSubmitProceeding);
 
-  const MSPropertiesOptions = Object.values(MSProperties).map(property => ({
-    value: property.id,
-    label: `${property.breadcrumbs}.${property.name}`,
-  }));
+  const onPropertyChange = (option) => {
+    if (option.placeholder) return;
+
+    if (option._new && window.confirm(`Are you sure you want to create a field: "${option.label}"?`)) {
+      const payload = { member_firm_id: memberFirmId, data: { name: newProperty } };
+
+      newPropertyRef.current = `${breadcrumbs}.${newProperty}`;
+      dispatch(createMasterSchemaFieldForMemberFirmRequest(payload));
+      return;
+    }
+
+    setProperty(option);
+  };
 
   const handleSubmit = async () => {
     const dataToSubmit = {
-      master_schema_field_id: masterSchemaProperty?.value,
+      master_schema_field_id: property?.value,
       type: fieldType?.value,
       title: fieldTitle,
       is_required: isFieldRequired,
@@ -51,29 +92,41 @@ const AddFieldModal = ({
 
     const validationSchema = getValidationDependingOnComponent(dataToSubmit.type);
 
-    const isValid = await validationSchema
-      .validate(dataToSubmit)
-      .catch((err) => { toast.error(err.message) });
+    const isValid = await validationSchema.validate(dataToSubmit).catch((err) => {
+      toast.error(err.message);
+    });
 
     if (!isValid) return;
 
-    onSubmit(dataToSubmit)
+    onSubmit(dataToSubmit);
   };
 
   const handleClearAllValues = () => {
     setFieldTitle("");
     setFieldType(null);
-    setMasterSchemaProperty(null);
+    setProperty(null);
+    setNewProperty("");
     setIsFieldRequired(false);
   };
 
   useEffect(() => {
     if (!isSubmitProceeding && isSubmitProceedingPrev && !error) {
       onClose();
-      handleClearAllValues()
+      handleClearAllValues();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitProceeding]);
+
+  useEffect(() => {
+    if (!newPropertyRef.current || isNewPropertyLoading) return;
+
+    const newOption = propertyOptions.find(({ label }) => label === newPropertyRef.current);
+
+    if (!newOption) return;
+
+    setProperty(newOption);
+    newPropertyRef.current = null;
+  }, [isNewPropertyLoading, propertyOptions]);
 
   return (
     <SurveyModal
@@ -103,12 +156,12 @@ const AddFieldModal = ({
       <Select
         label="MS Property"
         className="mb-2"
-        options={MSPropertiesOptions}
+        options={propertyOptions}
         isLoading={isMSPropertiesLoading}
         maxMenuHeight={300}
-        value={masterSchemaProperty}
-        onChange={setMasterSchemaProperty}
-        noOptionsMessage={() => "There is no available MS fields for this member firm"}
+        value={property}
+        onChange={onPropertyChange}
+        onInputChange={setNewProperty}
       />
       <Checkbox
         label="Required"
@@ -117,7 +170,7 @@ const AddFieldModal = ({
         checked={isFieldRequired}
       />
     </SurveyModal>
-  )
+  );
 };
 
 export default AddFieldModal;

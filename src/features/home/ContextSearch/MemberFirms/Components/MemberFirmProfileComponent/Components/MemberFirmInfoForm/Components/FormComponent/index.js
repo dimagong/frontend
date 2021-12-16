@@ -196,6 +196,7 @@ const FormComponent = ({
         isOpen={isAddFieldModalVisible}
         onClose={handleAddFieldModalClose}
         isMSPropertiesLoading={isMasterSchemaFieldsForMemberFirmLoading}
+        memberFirmId={memberFirmId}
         MSProperties={masterSchemaMemberFirmFields}
         onSubmit={handleAddFieldSubmit}
         isSubmitProceeding={isAddingFieldToMemberFirmLoading}
