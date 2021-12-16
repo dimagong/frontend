@@ -2,9 +2,13 @@ import { get, pipe, isEqual } from "lodash/fp";
 
 export const selectMasterSchemaList = (state) => state?.app?.masterSchema.list;
 
+export const selectMasterSchemaUsers = (state) => state?.app?.masterSchema.users;
+
 export const selectSelectedId = (state) => state?.app?.masterSchema.selectedId;
 
 export const selectMasterSchemaFields = (state) => state?.app?.masterSchema.fields;
+
+export const selectRelatedApplications = fieldId => state => state?.app?.masterSchema?.related_applications[fieldId];
 
 export const selectSearch = (state) => state?.app?.masterSchema.search;
 

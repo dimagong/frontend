@@ -72,8 +72,10 @@ export const initialState = {
     fields: [],
     list: [],
     groups: {},
+    users: {},
     unapproved: {},
     hierarchies: [],
+    related_applications: {},
     selectedId: null,
     search: {
       value: "",

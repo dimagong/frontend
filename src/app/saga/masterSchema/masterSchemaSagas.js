@@ -56,6 +56,14 @@ const {
   getMasterSchemaGroupsRequest,
   getMasterSchemaGroupsSuccess,
   getMasterSchemaGroupsError,
+
+  getUsersByMasterSchemaFieldRequest,
+  getUsersByMasterSchemaFieldSuccess,
+  getUsersByMasterSchemaFieldError,
+
+  getRelatedApplicationsRequest,
+  getRelatedApplicationsSuccess,
+  getRelatedApplicationsError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -288,12 +296,38 @@ function* getGroups({ payload }) {
   }
 }
 
+function* getUsers({ payload }) {
+  const { fieldId, name, abilities, organizations, member_firm_id } = payload;
+  try {
+    const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations, member_firm_id });
+    // console.log("users-by-field/api", users);
+    yield put(getUsersByMasterSchemaFieldSuccess({ users, fieldId }));
+    yield call(getList);
+  } catch (error) {
+    // console.error("users-by-field/error", error);
+    yield put(getUsersByMasterSchemaFieldError(error));
+  }
+}
+
+function* getRelatedApplications({ payload }) {
+  const { fieldId } = payload;
+  try {
+    const users = yield call(masterSchemaApi.getRelatedApplications, { fieldId });
+    // console.log("related-table-applications/api", users);
+    yield put(getRelatedApplicationsSuccess({ users, fieldId }));
+  } catch (error) {
+    // console.error("related-table-applications/error", error);
+    yield put(getRelatedApplicationsError(error));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(getMasterSchemaListRequest, getList),
     yield takeLatest(getMasterSchemaHierarchyRequest, getHierarchy),
     yield takeLatest(setUnapprovedMasterSchemaRequest, getUnapproved),
     yield takeLatest(approveUnapprovedFieldsRequest, approveFields),
+    yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsers),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),
@@ -302,6 +336,7 @@ export default function* () {
     yield takeLatest(fieldsMakeParentMasterSchemaRequest, fieldsMakeParent),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
     yield takeLatest(getMasterSchemaGroupsRequest, getGroups),
+    yield takeLatest(getRelatedApplicationsRequest, getRelatedApplications),
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
   ]);
 }

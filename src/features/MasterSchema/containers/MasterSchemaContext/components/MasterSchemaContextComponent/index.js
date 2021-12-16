@@ -131,10 +131,10 @@ const MasterSchemaContextComponent = () => {
           </div>
         </div>
 
-        {hierarchy == null ? (
-          <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
+        {hierarchy?.id ? (
+            <MasterSchemaElements key={hierarchy.name} />
         ) : (
-          <MasterSchemaElements key={hierarchy.name} />
+          <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
         )}
       </div>
     </ContextTemplate>
