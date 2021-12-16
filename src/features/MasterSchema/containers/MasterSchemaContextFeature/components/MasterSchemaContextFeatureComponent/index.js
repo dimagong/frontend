@@ -14,7 +14,7 @@ import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-
 
 import MasterSchemaManager from "./components/MasterSchemaManager";
 import MasterSchemaUserList from "./components/MasterSchemaUserList";
-import {useBoolean} from "../../../../../../hooks/use-boolean";
+import { useBoolean } from "../../../../../../hooks/use-boolean";
 
 const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
@@ -22,11 +22,15 @@ const MasterSchemaContextFeatureComponent = ({ state }) => {
   const { selectable } = useMasterSchemaContext();
   const dispatch = useDispatch();
   const masterSchemaUsers = useSelector(selectMasterSchemaUsers);
-  const [isUsersFiltered, setIsUsersFiltered] = useBoolean(false)
+  const [isUsersFiltered, setIsUsersFiltered] = useBoolean(false);
 
   const { selected, hierarchy } = state;
   const selectedUsers = useMemo(() => {
-    return selected.nodes.length === 1 && selected.field && masterSchemaUsers[selected.field.id];
+    return (
+      selected.nodes.length === 1 &&
+      selected.field &&
+      masterSchemaUsers[selected.field.id]
+    );
   }, [masterSchemaUsers, selected]);
 
   const renderTitle = () => {
@@ -48,9 +52,12 @@ const MasterSchemaContextFeatureComponent = ({ state }) => {
         <>
           {`${selectable.selected.fields.length} Datapoints Selected`}
           <p className="mb-0 mt-1 font-size-base font-weight-normal">
-            {selectable.selected.fields.map(pipe(get("path"), join("."))).join(", ")}
+            {selectable.selected.fields
+              .map(pipe(get("path"), join(".")))
+              .join(", ")}
           </p>
-          {selectable.selected.areSelectedFieldsContainCommonAndMemberFirmFields && (
+          {selectable.selected
+            .areSelectedFieldsContainCommonAndMemberFirmFields && (
             <p className="mb-0 mt-1 font-size-base font-weight-normal text-danger">
               There are selected fields not from member firm.
             </p>
@@ -60,8 +67,6 @@ const MasterSchemaContextFeatureComponent = ({ state }) => {
     }
   };
 
-  console.log('show list', selectedUsers && (isUsersFiltered || !isEmpty(selectedUsers)))
-
   useEffect(() => {
     if (selected.field && !masterSchemaUsers[selected.field.id]) {
       const payload = { fieldId: selected.field.id };
@@ -70,8 +75,15 @@ const MasterSchemaContextFeatureComponent = ({ state }) => {
   }, [dispatch, masterSchemaUsers, selected.field]);
 
   return (
-    <ContextFeatureTemplate className={'qweewq'} contextFeatureTitle={renderTitle()}>
-      {selectedUsers && (isUsersFiltered || !isEmpty(selectedUsers)) && <MasterSchemaUserList users={selectedUsers} hierarchy={hierarchy} selected={selected} setUsersFiltered={setIsUsersFiltered}/>}
+    <ContextFeatureTemplate contextFeatureTitle={renderTitle()}>
+      {selectedUsers && (isUsersFiltered || !isEmpty(selectedUsers)) && (
+        <MasterSchemaUserList
+          users={selectedUsers}
+          hierarchy={hierarchy}
+          selected={selected}
+          setUsersFiltered={setIsUsersFiltered}
+        />
+      )}
       <MasterSchemaManager state={state} />
     </ContextFeatureTemplate>
   );
