@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import masterSchemaService from "./services/masterSchema.service";
 import { useDispatch, useSelector } from "react-redux";
-import {Button, CardBody, Input, InputGroup, InputGroupAddon, Label} from "reactstrap";
+import {Button, Input, InputGroup, InputGroupAddon, Label} from "reactstrap";
 import { getSelectedMemberFirmId } from "app/selectors/memberFirmsSelector";
 import appSlice from "../../../app/slices/appSlice";
 

@@ -7,7 +7,7 @@ import {
   Col,
   Spinner,
 } from "reactstrap"
-import {RefreshCw, EyeOff, Eye} from "react-feather"
+import {RefreshCw} from "react-feather"
 import FormCreate from 'components/FormCreate/FormCreate'
 import {useDispatch, useSelector} from "react-redux";
 import {selectManager, selectLoading} from "app/selectors";
@@ -27,7 +27,7 @@ const {
 const initRefreshClassName = "bg-hover-icon";
 
 const UserOnboardingDForm = () => {
-  const [isStateConfig, setStateConfig] = useState(false);
+  const [isStateConfig] = useState(false);
   const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
   const manager = useSelector(selectManager);
   const loading = useSelector(selectLoading);
@@ -50,11 +50,8 @@ const UserOnboardingDForm = () => {
       refreshClassName === `${initRefreshClassName} rotating` && setRefreshClassName(initRefreshClassName);
       updatedAtTextLoding.current && (updatedAtTextLoding.current = false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
-
-  const switchStateConfig = () => {
-    setStateConfig(!isStateConfig)
-  };
 
 
   const submitDForm = (dForm, {name, description, protected_properties}) => {

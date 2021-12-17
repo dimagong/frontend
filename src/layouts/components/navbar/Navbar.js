@@ -25,8 +25,6 @@ import {ChevronDown, ChevronUp, Power, Menu} from "react-feather"
 import {userService} from 'services/user'
 
 import SearchInput from './SearchInput'
-import {capitalizeAll} from '../../../utility/common'
-import authApi from "../../../api/Auth/auth";
 
 import appSlice from 'app/slices/appSlice'
 
@@ -47,7 +45,7 @@ const UserName = ({userProfile}) => {
 
 const ThemeNavbar = props => {
   const dispatch = useDispatch();
-  const {manager, managers, userProfile} = props;
+  const {managers, userProfile} = props;
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"]
   const navbarTypes = ["floating", "static", "sticky", "hidden"]
 
@@ -71,6 +69,7 @@ const ThemeNavbar = props => {
 
   useEffect(() => {
     userProfile && dispatch(getUserAvatarRequest({managerId: userProfile.id}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile?.avatar_path]);
 
   const handleOrgPictureClick = () => {

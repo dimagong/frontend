@@ -3,7 +3,6 @@ import {
   NavItem,
   NavLink,
   UncontrolledTooltip,
-  DropdownItem,
 } from "reactstrap"
 import * as Icon from "react-feather"
 import { history } from "../../../history"
@@ -122,8 +121,6 @@ class NavbarBookmarks extends React.PureComponent {
   render() {
     let {
       sidebarVisibility,
-      updateStarred,
-      handleAppOverlay
     } = this.props
 
 

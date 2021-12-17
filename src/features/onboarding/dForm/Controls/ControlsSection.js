@@ -1,27 +1,13 @@
 import React from 'react'
-import {
-    Badge,
-    Card,
-    CardBody,
-    CardHeader,
-    Col,
-    FormGroup,
-    Nav,
-    NavItem,
-    NavLink,
-    Row,
-    TabContent,
-    TabPane
-  } from "reactstrap";
+import { Badge } from "reactstrap";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
-import {Check, Plus} from "react-feather";
-import Constants from './utils/constants'
+import {Check} from "react-feather";
 import ElementEditModal from './components/ElementEditModal'
 import {getSpecificType} from "./utils/helper"
 import DependencyEditModal from "./components/ElementEditModal"
 import ControlTypeFactory from './ControlsTypeFactory';
-import { useDispatch, useSelector } from "react-redux";
-import { selectdForms, selectdForm } from "app/selectors/onboardingSelectors";
+import { useSelector } from "react-redux";
+import { selectdForm } from "app/selectors/onboardingSelectors";
 
 const ControlsSection = ({objKey, index, schemaPropertyEdit={}}) => {
   const dForm = useSelector(selectdForm);

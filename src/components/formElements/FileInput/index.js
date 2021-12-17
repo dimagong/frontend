@@ -9,11 +9,11 @@ const dropZoneStatus = {
   drop: "Drop here",
 }
 
-const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onChange, loading, preview}) => {
+const FileInput = ({multiple = false, acceptTypes, value, onChange, loading, preview}) => {
 
   const inputFileRef = useRef( null );
   const [status, setStatus] = useState(dropZoneStatus.ready)
-  const [isDropZoneVisible, setIsDropZoneVisible] = useState(value === null)
+  const [, setIsDropZoneVisible] = useState(value === null)
 
   const onDragEnter = event => {
     event.preventDefault();
@@ -81,8 +81,10 @@ const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onCh
 
   return (
     <div className={"form-element_file-input"}>
+      {/* eslint-disable-next-line no-mixed-operators */}
       {value && (
         <div className={"form-element_file-input_drop-zone"}>
+          {/* eslint-disable-next-line no-mixed-operators */}
           {!multiple && (
             preview ? (
               <>
@@ -99,10 +101,12 @@ const FileInput = ({multiple = false, disabled = false, acceptTypes, value, onCh
                 </div>
               </>
             )
+            // eslint-disable-next-line no-mixed-operators
           ) || (
             <div />
           )}
         </div>
+        // eslint-disable-next-line no-mixed-operators
       ) || (
         <div
           className="form-element_file-input_drop-zone"

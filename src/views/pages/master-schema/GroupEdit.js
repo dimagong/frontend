@@ -2,13 +2,8 @@ import React, {useEffect, useState} from "react";
 import masterSchemaService from './services/masterSchema.service'
 import {
   Input,
-  UncontrolledCollapse,
   Label,
   Button,
-  CardTitle,
-  CardHeader,
-  CardBody,
-  Card,
   InputGroup, InputGroupAddon
 } from "reactstrap";
 import Select from "react-select"
@@ -28,6 +23,7 @@ export default function GroupEdit({data, onChange, groupsList}) {
       return nextGroup.value.id === group.parent_id;
     });
     setParentGroup(tempParentGroup);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [group]);
 
   const groupSave = async () => {
@@ -45,7 +41,7 @@ export default function GroupEdit({data, onChange, groupsList}) {
 
   const groupDelete = async () => {
     try {
-      const response = await masterSchemaService.deleteGroup(group);
+      await masterSchemaService.deleteGroup(group);
       onChange(null);
     } catch (exception) {
       console.log(exception);
@@ -77,7 +73,7 @@ export default function GroupEdit({data, onChange, groupsList}) {
   };
 
   if (!group) {
-    return <div></div>;
+    return <div />;
   }
 
   const getGroupSelectOptions = () => {
@@ -125,9 +121,9 @@ export default function GroupEdit({data, onChange, groupsList}) {
               options={getGroupSelectOptions()}
               value={parentGroup}
               onChange={(event) => setParentGroup(event)}
-              onInputChange={(event) => {
+              onInputChange={() => {
 
-              }}></Select>
+              }} />
         }
       </div> : null
     }

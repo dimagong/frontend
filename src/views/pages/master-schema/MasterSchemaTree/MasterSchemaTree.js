@@ -6,7 +6,7 @@ import classnames from "classnames"
 
 class CustomContainer extends decorators.Container {
   render() {
-    const { style, decorators, terminal, onClick, node } = this.props;
+    const { decorators, terminal, onClick, node } = this.props;
     if(!node.isVisible) {
       return <></>;
     }

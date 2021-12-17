@@ -1,6 +1,5 @@
-import React, {useState} from "react";
+import React from "react";
 import { GENERIC_NAV } from "react-jsonschema-form-pagination/lib/utils";
-import { Tabs, Tab } from "react-bootstrap";
 // todo not used anymore
 function CustomNavs({ navs: { links }, onNavChange }) {
     let relLinks = links.filter(({ nav }) => nav !== GENERIC_NAV);

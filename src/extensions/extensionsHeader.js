@@ -1,6 +1,5 @@
 import React from "react"
 import { Row, Col } from "reactstrap"
-// import { Star } from "react-feather"
 
 class ExtensionsHeader extends React.Component {
   render() {

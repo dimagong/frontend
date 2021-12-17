@@ -47,9 +47,11 @@ export const useTreeData = ({ items: initialItems = [], getKey = defaultGetKey, 
 
       let children = nextParent.children;
       if (newNode == null) {
+        // eslint-disable-next-line no-loop-func
         children = children.filter((c) => c !== node);
       }
 
+      // eslint-disable-next-line no-loop-func
       copy.children = children.map((child) => (child === node ? newNode : child));
 
       map.set(copy.key, copy);
@@ -88,28 +90,20 @@ export const useTreeData = ({ items: initialItems = [], getKey = defaultGetKey, 
   };
 
   const insertItem = (parentKey, index, ...values) => {
-    setItems(items => {
+    setItems((items) => {
       let nodes = buildTree(values, parentKey);
 
       // If parentKey is null, insert into the root.
       if (parentKey == null) {
-        return [
-          ...items.slice(0, index),
-          ...nodes,
-          ...items.slice(index)
-        ];
+        return [...items.slice(0, index), ...nodes, ...items.slice(index)];
       }
 
       // Otherwise, update the parent node and its ancestors.
-      return updateTree(items, parentKey, parentNode => ({
+      return updateTree(items, parentKey, (parentNode) => ({
         key: parentNode.key,
         parentKey: parentNode.parentKey,
         value: parentNode.value,
-        children: [
-          ...parentNode.children.slice(0, index),
-          ...nodes,
-          ...parentNode.children.slice(index)
-        ]
+        children: [...parentNode.children.slice(0, index), ...nodes, ...parentNode.children.slice(index)],
       }));
     });
   };
@@ -139,7 +133,7 @@ export const useTreeData = ({ items: initialItems = [], getKey = defaultGetKey, 
   };
 
   const moveItem = (key, toParentKey, index) => {
-    setItems(items => {
+    setItems((items) => {
       let node = map.get(key);
       if (!node) {
         return items;
@@ -149,18 +143,14 @@ export const useTreeData = ({ items: initialItems = [], getKey = defaultGetKey, 
 
       const movedNode = {
         ...node,
-        parentKey: toParentKey
+        parentKey: toParentKey,
       };
 
-      return updateTree(items, toParentKey, parentNode => ({
+      return updateTree(items, toParentKey, (parentNode) => ({
         key: parentNode.key,
         parentKey: parentNode.parentKey,
         value: parentNode.value,
-        children: [
-          ...parentNode.children.slice(0, index),
-          movedNode,
-          ...parentNode.children.slice(index)
-        ]
+        children: [...parentNode.children.slice(0, index), movedNode, ...parentNode.children.slice(index)],
       }));
     });
   };

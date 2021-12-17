@@ -1,6 +1,6 @@
-import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
-import {Check, Plus} from "react-feather";
-import Constants, {FIELD_TYPE_HELP_TEXT} from "./Constants";
+import Checkbox from 'components/@vuexy/checkbox/CheckboxesVuexy';
+import { Check, Plus } from 'react-feather';
+import Constants from './Constants';
 import {
   Badge,
   Card,
@@ -8,26 +8,23 @@ import {
   CardHeader,
   Col,
   FormGroup,
+  Input,
   Nav,
   NavItem,
   NavLink,
   Row,
   TabContent,
-  TabPane,
-  FormFeedback,
-  Input
-} from "reactstrap";
-import ElementEditModal from "../ElementEditModal";
-import DependencyEditModal from "../DependencyEditModal";
-import {isEmpty} from "lodash";
-import classnames from "classnames";
-import React, {useState} from "react";
-import {getSpecificType} from "../helper";
-import WysiwygEditor from "../Custom/WysiwygEditor";
-import Select from 'react-select'
-import MasterSchemaField from "../Fields/MasterSchemaField";
-import MasterSchemaProperty from "../Fields/MasterSchemaProperty";
-import MasterSchemaPropertyConfig from "../Fields/MasterSchemaPropertyConfig";
+  TabPane
+} from 'reactstrap';
+import ElementEditModal from '../ElementEditModal';
+import DependencyEditModal from '../DependencyEditModal';
+import { isEmpty } from 'lodash';
+import classnames from 'classnames';
+import React from 'react';
+import { getSpecificType } from '../helper';
+import WysiwygEditor from '../Custom/WysiwygEditor';
+import MasterSchemaProperty from '../Fields/MasterSchemaProperty';
+import MasterSchemaPropertyConfig from '../Fields/MasterSchemaPropertyConfig';
 
 export function listControls(properties) {
 
@@ -60,10 +57,6 @@ export function listControls(properties) {
     };
 
     const renderKeyObjectEditColumn = (column, placeholder) => {
-
-      let errorMsg = 'Error';
-
-      // console.log('errorPropertyNameAlreadyTaken', errorPropertyNameAlreadyTaken);
 
       if (Constants.NOT_MASTER_SCHEMA_FIELDS.indexOf(schemaPropertyEdit?.type) !== -1) {
         return (<div>
@@ -132,7 +125,7 @@ export function listControls(properties) {
       );
     };
 
-    const renderRequiredColumn = (column, text) => {
+    const renderRequiredColumn = (column) => {
       return (
         <div className="w-100">
           <Checkbox
@@ -140,7 +133,7 @@ export function listControls(properties) {
             icon={<Check className="vx-icon" size={16}/>}
             label="Is required"
             id={`${index}-${column}`}
-            onChange={event => {
+            onChange={() => {
               //this.inputHandlerRequired(event, this.state.fieldEdit.propertyKey);
               this.setState({fieldEdit: {...this.state.fieldEdit, isRequired: !this.state.fieldEdit.isRequired}});
             }}
@@ -157,7 +150,7 @@ export function listControls(properties) {
           icon={<Check className="vx-icon" size={16}/>}
           label="Label showing"
           id={`${index}-${column}`}
-          onChange={event => this.setLabelShowingCheckbox()}
+          onChange={() => this.setLabelShowingCheckbox()}
           checked={this.getLabelShowingCheckbox()}
         />
       </div>
@@ -168,10 +161,6 @@ export function listControls(properties) {
     };
 
     const specificType = getSpecificType(schemaPropertyEdit);
-
-    const onChangeFieldId = (fieldId) => {
-      this.changePropertyEditing('field_id', fieldId);
-    };
 
     const onChangeMasterSchemaProperty = (fieldId) => {
       this.changeMasterSchemaFieldId(fieldId);
@@ -523,7 +512,7 @@ export function listControls(properties) {
           </div>)
         }
         default:
-          return (<div></div>)
+          return (<div />)
       }
     };
 
@@ -642,16 +631,6 @@ export function listControls(properties) {
     )
   });
 
-  const getColumnClass = (key, element) => {
-    let classes = [];
-    classes.push(key in properties.uiSchema.columnsClasses ? properties.uiSchema.columnsClasses[key] : 'col-md-12');
-    // classes.push(key in props.uiSchema.columnsClasses ? props.uiSchema.columnsClasses[key] : 'col-md-12');
-    if (this.checkUiOptionField(element.name, 'label')) {
-      classes.push('label-hide');
-    }
-    return classes.join(' ');
-  };
-
   const elementsByGroups = () => {
     const groups = {};
 
@@ -674,15 +653,6 @@ export function listControls(properties) {
     });
 
     return groups;
-  };
-
-  const getUniqueValues = (notUniqArray) => {
-    return notUniqArray.filter((value, index, arr) => arr.indexOf(value) === index);
-  };
-
-  const getSections = () => {
-    const sections = Object.values(this.state.uiSchema.sections);
-    return getUniqueValues(sections);
   };
 
   const isElementInSection = (elementContentKey, sectionName) => {
@@ -834,25 +804,19 @@ export function listControls(properties) {
       if (groupName.indexOf('WITHOUT_GROUP') === -1) {
         return null;
       }
-      const elementContent = Object.keys(groupedElements[groupName]).map(key => {
+
+      return Object.keys(groupedElements[groupName]).map(key => {
 
         if (isElementInSection(key, sectionName)) {
           return renderConfigFields(key, index);
         }
         return null;
-      });
-
-
-      return elementContent
+      })
     })
   };
 
-  const sections = getSections();
   const onlySections = Object.keys(this.state.uiSchema.onlySections);
   const groupedElements = elementsByGroups();
-
-
-  const defaultTab = sections.length && this.state.tabConfig === -1 ? 1 : this.state.tabConfig;
 
   const renderObject = () => {
     return (<div>
@@ -866,6 +830,7 @@ export function listControls(properties) {
             <NavItem key={section}>
               <NavLink
                 className={classnames({
+                  // eslint-disable-next-line eqeqeq
                   active: this.state.tabConfig == index
                 })}
                 onClick={() => {

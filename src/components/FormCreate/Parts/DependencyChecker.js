@@ -5,9 +5,8 @@ import {
   getFieldHasDefaultEffectByOperator,
   operatorResult,
   isValidationFieldPassed,
-  getFieldsByGroup, getSpecificType
+  getFieldsByGroup,
 } from "../helper";
-import {isArray} from "leaflet/src/core/Util";
 
 export function dependencyChecker(state) {
 
@@ -125,7 +124,6 @@ export function dependencyChecker(state) {
 
   Object.keys(state.uiSchema.dependencies.groups).forEach((settingGroup) => {
     if (!('conditions' in state.uiSchema.dependencies.groups[settingGroup])) return;
-    let isGroupDisabled = false;
 
     const effect = getEffectByType(state.uiSchema.dependencies.groups[settingGroup].effect);
 

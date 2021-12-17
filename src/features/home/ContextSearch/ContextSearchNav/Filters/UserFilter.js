@@ -35,8 +35,7 @@ const UserFilter = ({ handleFilter, managers }) => {
   const [filtered, setFiltered] = useState(false);
   const [filterName, setFilterName] = useState('');
   let roles = ['Admin', 'Corporation manager', 'Prospect', 'Suspect', 'Archived', 'Network manager', 'Member', 'Lead'],
-      organizations = [],
-      reps = [];
+      organizations = [];
   organizationsObjects.forEach(item => {organizations.push(item.name.replace('_', ' '))})
   const memberFirmsObjects = useSelector(getMemberFirms);
   const [curr, setCurr] = useState('roles');
@@ -121,6 +120,7 @@ const UserFilter = ({ handleFilter, managers }) => {
       })
     }
 
+    // eslint-disable-next-line default-case
     switch (newSort) {
       case 0: newManagers.sort((lhs, rhs) => lhs.first_name.localeCompare(rhs.first_name)); break;
       case 1: newManagers.sort((lhs, rhs) => rhs.first_name.localeCompare(lhs.first_name)); break;
@@ -182,18 +182,21 @@ const UserFilter = ({ handleFilter, managers }) => {
     }
   }
 
-  if (!filtered && managers.length !== 0 && userFilters) {
-    handleFilter(managers);
-    setFilter({roles: [], organizations: [], memberFirms: [], type: {roles: 'initial', organizations: 'initial', memberFirms:'initial'}});
-    setFiltered(true);
-    setFooterText({roles: arrayToString(roles), organizations: arrayToString(organizations), memberFirms: arrayToString(memberFirms)});
-  }
+  useEffect(() => {
+    if (!filtered && managers.length !== 0 && userFilters) {
+      handleFilter(managers);
+      setFilter({roles: [], organizations: [], memberFirms: [], type: {roles: 'initial', organizations: 'initial', memberFirms:'initial'}});
+      setFiltered(true);
+      setFooterText({roles: arrayToString(roles), organizations: arrayToString(organizations), memberFirms: arrayToString(memberFirms)});
+    }
+  }, [filtered, handleFilter, managers, memberFirms, organizations, roles, userFilters]);
 
   useEffect(() => {
     filterAndSortManagers(
       {roles: appliedFilters.roles, organizations: appliedFilters.organizations, memberFirms: appliedFilters.memberFirms},
       appliedFilters.sort
     )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [managers]);
 
   useEffect(() => {
@@ -206,10 +209,12 @@ const UserFilter = ({ handleFilter, managers }) => {
       setFilter(newFilter)
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirms?.length]);
 
    useEffect(() => {
     setMemberFirms(memberFirmsObjects?.length > 0 ? memberFirmsObjects.map(item => item?.main_fields.name) : [])
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirmsObjects?.length]);
 
   useEffect(() => {
@@ -222,6 +227,7 @@ const UserFilter = ({ handleFilter, managers }) => {
           .map(item => item?.main_fields.name)
         : [])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter.organizations]);
 
 

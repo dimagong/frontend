@@ -1,23 +1,23 @@
-import React, { PureComponent } from "react";
-import classnames from "classnames";
-import Customizer from "../components/@vuexy/customizer/Customizer";
-import Navbar from "./components/navbar/Navbar";
-import Footer from "./components/footer/Footer";
-import { connect } from "react-redux";
+import React, { PureComponent } from 'react';
+import classnames from 'classnames';
+import Customizer from '../components/@vuexy/customizer/Customizer';
+import Navbar from './components/navbar/Navbar';
+import Footer from './components/footer/Footer';
+import { connect } from 'react-redux';
 import {
-  changeMode,
-  collapseSidebar,
-  changeNavbarColor,
-  changeNavbarType,
   changeFooterType,
   changeMenuColor,
+  changeMode,
+  changeNavbarColor,
+  changeNavbarType,
+  collapseSidebar,
   hideScrollToTop,
-} from "app/actions/vuexy/customizer/index";
-import { selectProfile } from "app/selectors";
+} from '../app/actions/vuexy/customizer';
+import { selectProfile } from 'app/selectors';
 
-import { userService } from 'services/user'
+import { userService } from 'services/user';
 
-import ContextSearch from 'features/home/ContextSearch'
+import ContextSearch from 'features/home/ContextSearch';
 
 class VerticalLayout extends PureComponent {
   state = {
@@ -42,7 +42,7 @@ class VerticalLayout extends PureComponent {
   mounted = false;
   updateWidth = () => {
     if (this.mounted) {
-      this.setState(prevState => ({
+      this.setState(() => ({
         width: window.innerWidth
       }));
     }
@@ -72,10 +72,12 @@ class VerticalLayout extends PureComponent {
       }
 
       let layout = theme;
-      let dir = direction;
-      if (dir === "rtl")
-        document.getElementsByTagName("html")[0].setAttribute("dir", "rtl");
-      else document.getElementsByTagName("html")[0].setAttribute("dir", "ltr");
+      if (direction === "rtl") {
+        document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
+      }
+      else {
+        document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
+      }
       return layout === "dark"
         ? document.body.classList.add("dark-layout")
         : layout === "semi-dark"
@@ -144,7 +146,7 @@ class VerticalLayout extends PureComponent {
     }
   };
 
-  toggleSidebarMenu = val => {
+  toggleSidebarMenu = () => {
     this.setState({
       sidebarState: !this.state.sidebarState,
       collapsedContent: !this.state.collapsedContent
@@ -214,22 +216,6 @@ class VerticalLayout extends PureComponent {
       "warning",
       "dark"
     ];
-    let sidebarProps = {
-      toggleSidebarMenu: this.props.collapseSidebar,
-      userProfile: this.props.userProfile,
-      toggle: this.toggleSidebarMenu,
-      sidebarState: this.state.sidebarState,
-      sidebarHover: this.sidebarMenuHover,
-      sidebarVisibility: this.handleSidebarVisibility,
-      visibilityState: this.state.sidebarHidden,
-      activePath: this.props.match.path,
-      collapsedMenuPaths: this.handleCollapsedMenuPaths,
-      currentLang: this.state.currentLang,
-      activeTheme: appProps.menuTheme,
-      collapsed: this.state.collapsedContent,
-      permission: this.props.permission,
-      deviceWidth: this.state.width
-    };
     let navbarProps = {
       toggleSidebarMenu: this.toggleSidebarMenu,
       sidebarState: this.state.sidebarState,

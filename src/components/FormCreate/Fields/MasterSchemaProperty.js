@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Col, FormFeedback, FormGroup, Row, Alert} from "reactstrap";
+import {useDispatch} from "react-redux";
+import {Col, FormGroup, Row, Alert} from "reactstrap";
 import Select from "react-select";
 import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
-import {isEmpty, isObject, first} from 'lodash'
-import {current} from "@reduxjs/toolkit";
+import {isEmpty, isObject} from 'lodash'
 
 import appSlice from 'app/slices/appSlice'
 
@@ -44,12 +43,14 @@ export default function MasterSchemaProperty(props) {
 
   useEffect(() => {
     initOrganizations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (!isEmpty(currentField)) {
       props.onChangeFieldId(currentField.value);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentField]);
 
   const convertMasterSchemaToFieldsList = (node, list, path = '') => {
@@ -205,7 +206,7 @@ export default function MasterSchemaProperty(props) {
         onInputChange={(event) => {
           setSearchableValue(event);
         }}
-      ></CustomSelect>
+      />
       {
         !props.invalid ? null : <Alert className="mt-1" color="danger">
           {props.errorMsg}

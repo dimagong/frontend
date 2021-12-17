@@ -5,7 +5,6 @@ import { get } from "lodash/fp";
 import { isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useMemo, useRef, useState } from "react";
-import { toast } from "react-toastify";
 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
@@ -92,12 +91,11 @@ const MasterSchemaContextComponent = () => {
 
   useDidUpdate(() => void dispatch(getMasterSchemaHierarchyRequest({ id: selectedId })), [search]);
 
-  useDidUpdate(() => {
-    if (!isApprovingLoading) {
-      dispatch(setUnapprovedMasterSchemaRequest({id: hierarchy.masterSchemaId}))
-      toast.success('The approving was successful')
-    }
-  }, [isApprovingLoading]);
+   useDidUpdate(() => {
+     if (!isApprovingLoading) {
+       dispatch(setUnapprovedMasterSchemaRequest({id: hierarchy.masterSchemaId}))
+     }
+   }, [isApprovingLoading]);
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
@@ -118,23 +116,25 @@ const MasterSchemaContextComponent = () => {
             filterTabPosition={"left"}
           />
 
-          <div className="d-flex justify-content-end pb-1">
-            <MSEButton
-              className="p-0"
-              textColor="currentColor"
-              backgroundColor="transparent"
-              disabled={!expandable.isCollapsable}
-              onClick={expandable.reset}
-            >
-              Collapse
-            </MSEButton>
-          </div>
+          {hierarchy?.id && (
+            <div className="d-flex justify-content-end pb-1">
+              <MSEButton
+                className="p-0"
+                textColor="currentColor"
+                backgroundColor="transparent"
+                disabled={!expandable.isCollapsable}
+                onClick={expandable.reset}
+              >
+                Collapse
+              </MSEButton>
+            </div>
+          )}
         </div>
 
-        {hierarchy == null ? (
-          <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
-        ) : (
+        {hierarchy?.id ? (
           <MasterSchemaElements key={hierarchy.name} />
+        ) : (
+          <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
         )}
       </div>
     </ContextTemplate>

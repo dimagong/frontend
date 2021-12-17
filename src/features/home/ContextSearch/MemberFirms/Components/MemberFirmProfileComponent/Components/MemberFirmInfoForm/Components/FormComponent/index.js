@@ -144,6 +144,7 @@ const FormComponent = ({
     if(memberFirmFormFields.length) {
       initForm()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirmFormFields]);
 
   return (

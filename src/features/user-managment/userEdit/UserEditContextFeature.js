@@ -16,7 +16,6 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import { X, Check } from "react-feather"
-import {selectCurrentManager} from 'app/selectors/userSelectors'
 import {selectError} from "app/selectors";
 
 import UserInvitationsCreate from '../userInvitations/UserInvitationsCreate'

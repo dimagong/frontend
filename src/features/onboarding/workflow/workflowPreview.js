@@ -27,7 +27,6 @@ const WorkflowFormPreview = ({ workflowModalType }) => {
 
   const workflow = workflows.filter(({id}) => id === preview.id)[0]
 
-  const { name, description } = workflow || {};
   const dispatch = useDispatch();
 
   const closeWorkflow = () => {

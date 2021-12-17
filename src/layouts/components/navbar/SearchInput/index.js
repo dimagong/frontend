@@ -2,12 +2,7 @@ import React from 'react'
 
 import AutoComplete from 'components/@vuexy/autoComplete/AutoCompleteComponent'
 import classnames from 'classnames'
-import { userManagmentOptionsPath } from 'constants/paths'
 import noneAvatar from 'assets/img/portrait/none-avatar.png'
-import {getGroupName} from 'utility/select/prepareSelectData'
-import {groupTypes} from '../../../../constants/group'
-import {useSelector} from 'react-redux'
-import {selectGroups} from 'app/selectors'
 import {useDispatch} from 'react-redux'
 
 import appSlice from 'app/slices/appSlice'
@@ -25,8 +20,6 @@ const {
 const SearchInput = ({ suggestions }) => {
 
   const dispatch = useDispatch()
-
-  const groups = useSelector(selectGroups)
 
   const SearchInputSuggestionsLayout = (
     suggestion,

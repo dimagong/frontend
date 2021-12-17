@@ -16,7 +16,6 @@ import {
   STEP_FORGOT,
   STEP_FORGOT_SUCCESS,
   STEP_VERYFI,
-  STEP_VERYFI_SUCCESS,
 } from "constants/resetPasswordSteps";
 import { useSelector } from "react-redux";
 import { selectLoading, selectError } from "app/selectors/authSelectors";

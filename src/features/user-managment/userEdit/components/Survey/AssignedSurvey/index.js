@@ -38,7 +38,6 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
 
   const handleFinishGrading = () => {
     const questionsWithTextType = surveyData.questions.filter(question => question.answer_structure.type === "text");
-    const answersWithTextType = surveyData.answers.filter(answer => answer.grade_structure);
 
     const answersWithoutGrade = questionsWithTextType.filter(question => {
       const isGraded = surveyData.answers.some(answer => {
@@ -52,9 +51,7 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
 
     if (answersWithoutGrade.length) {
       toast.error("Please, grade all text answers");
-      return;
     } else {
-
       dispatch(finishGradingRequest(surveyData.id))
     }
   };
@@ -104,6 +101,7 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
 
       toast.success("Survey deleted successfully");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyDeleteProceeding]);
 
   useEffect(() => {

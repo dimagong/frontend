@@ -1,11 +1,6 @@
 import React, {useState} from 'react'
 import {
-    Badge,
-    Card,
-    CardBody,
-    CardHeader,
     Col,
-    FormGroup,
     Nav,
     NavItem,
     NavLink,
@@ -13,14 +8,12 @@ import {
     TabContent,
     TabPane
   } from "reactstrap";
-import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import classnames from "classnames";
-import {Check, Plus} from "react-feather";
+import {Plus} from "react-feather";
 import ConrolsCreateModal from './ConrolsCreateModal'
 import ControlsSections from './ControlsSections';
-import ControlsSection from './ControlsSection';
-import { useDispatch, useSelector } from "react-redux";
-import { selectdForms, selectdForm } from "app/selectors/onboardingSelectors";
+import { useSelector } from "react-redux";
+import { selectdForm } from "app/selectors/onboardingSelectors";
 
 const ControlsFactory = () => {
   const dForm = useSelector(selectdForm);

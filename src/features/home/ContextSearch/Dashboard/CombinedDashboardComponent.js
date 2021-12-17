@@ -46,8 +46,6 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
   const wrapperRefFilterButton = useRef(null);
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
   const [isMapFilterBoxOpen, setIsMapFilterBoxOpen] = useState(false);
-  const [tabLabel, setTabLabel] = useState('')
-  const [isFilterTagOpen, setIsFilterTagOpen] = useState(false)
   const [filter, setFilter] = useState({Roles: [], Organizations: [], 'Activity types': [], Application: []})
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [newChartTitle, setNewChartTitle] = useState('');
@@ -95,9 +93,8 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
     if (settings.filter) {
       setFilter(JSON.parse(JSON.stringify(settings.filter)));
     }
-    console.log('filter', filter);
+
     if (chartType === 'Applications') {
-      console.log('getDashboardDataRequest', settings);
         if (settings.dForm?.name === 'Applications Snapshot') {
           dispatch(getDashboardSnapshotDataRequest({
             key: settings.key,
@@ -107,7 +104,6 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
             settings: settings
           }))
         } else {
-          console.log('getDashboardDataRequest', settings);
           dispatch(getDashboardDataRequest({
             key: settings.key,
             page: 1,
@@ -124,8 +120,8 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
           settings: settings}))
       }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.daysNumber, settings['filter[value]'], settings.dForm, settings.user_groups, settings.ability_user_ids, dashboardDForms, managers?.length]);
-
 
   return (<div className={`combined-dashboard-component ${isFilterBoxOpen ? 'combined-dashboard-component-filtered' : ''} combined-dashboard-component-${settings.state === 'small' ? "small" : "large"}`}>
     <div className={'dashboard-charts'} style={settings.state === 'large' ? {backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 20%, white 20%)'} : {}}>
@@ -165,11 +161,14 @@ const CombinedDashboardComponent = ({ chartId, chartType, dashboardSettings, upd
               </span>
             </span>
           }
-              {settings?.dForm?.name !== 'Applications Snapshot' && [{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map(item => {
-                return <span onClick={() => handleChangeDate(item.daysNumber)}
-                             className={'chart-days ' + (settings.daysNumber === item.daysNumber ? 'active-days' : '')}>
+              {settings?.dForm?.name !== 'Applications Snapshot' && [{label: 'y', daysNumber: 365}, {label: 'm', daysNumber: 28}, {label: 'w', daysNumber: 7}].map((item, idx) => {
+                return (<span
+                  onClick={() => handleChangeDate(item.daysNumber)}
+                  className={'chart-days ' + (settings.daysNumber === item.daysNumber ? 'active-days' : '')}
+                  key={idx}
+                >
                   {item.label}
-                </span>
+                </span>);
               })}
             </span>
         {chartType === 'Applications' && (settings.dForm === 'Unselected application' || !settings.dForm?.id) &&

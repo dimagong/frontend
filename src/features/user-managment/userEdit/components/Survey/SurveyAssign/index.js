@@ -48,6 +48,7 @@ const SurveyAssign = ({ userId }) => {
 
   useEffect(() => {
     dispatch(getSurveyWorkFlowsAndReviewersRequest())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
