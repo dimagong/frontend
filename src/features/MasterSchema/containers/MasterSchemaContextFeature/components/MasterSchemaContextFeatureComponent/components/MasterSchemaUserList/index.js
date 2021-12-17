@@ -3,6 +3,7 @@ import "./styles.scss";
 import _ from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 import { capitalize, get } from "lodash/fp";
 import { ExternalLink } from "react-feather";
 import React, { useEffect, useState } from "react";
@@ -12,6 +13,7 @@ import { Table, Card, CardBody, CardHeader } from "reactstrap";
 import appSlice from "app/slices/appSlice";
 import { useBoolean } from "hooks/use-boolean";
 import SearchAndFilter from "components/SearchAndFilter";
+import masterSchemaApi from "api/masterSchema/masterSchema";
 import MSEButton from "features/MasterSchema/share/mse-button";
 import SurveyModal from "features/Surveys/Components/SurveyModal";
 import { selectOrganizations } from "app/selectors/groupSelector";
@@ -23,601 +25,6 @@ import NoneAvatar from "assets/img/portrait/none-avatar.png";
 
 const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
-// eslint-disable-next-line no-unused-vars
-const MOCK_USERS = [
-  {
-    id: 7,
-    first_name: "multiple",
-    last_name: "files",
-    field: {
-      id: 17,
-      name: "number",
-      value: "",
-      type: "files",
-      date: "2021-10-21T10:57:53.000000Z",
-      files: [{ name: "File1.jpg" }, { name: "File1.jpg" }],
-      provided: {
-        id: 1,
-        email: "nmpadmin@webinspire.com.au",
-        first_name: "Admin",
-        last_name: "Padberg",
-        avatar: {
-          id: 5,
-          name: "doge.jpg",
-          mime_type: "image/jpeg",
-          path: "user/1/avatar/5/doge.jpg",
-          type: "s3",
-          entity_id: 1,
-          group: "avatar",
-          entity_type: "user",
-          created_at: "2021-09-06T08:59:40.000000Z",
-          updated_at: "2021-12-16T21:40:02.000000Z",
-        },
-        avatar_path:
-          "https://nmp-dev.s3.eu-west-2.amazonaws.com/user/1/avatar/5/doge.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAV55RTVV6NJI3CTVT%2F20211216%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211216T214002Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=25e05ed2ee4e383baa94fe9bf1991557fd63ff7a6a23d3c6e90d1ee1253fe2c3",
-      },
-    },
-    avatar: null,
-    permissions: {
-      organization: "ValidPath",
-      organization_id: 1,
-      organization_type: "network",
-      ability: "prospect",
-      logo_path: "http://nmpdevv1-env.eba-xfzbdsum.eu-west-2.elasticbeanstalk.com/api/file/organization-logo/network/1",
-      logo: {
-        id: 3,
-        name: "ValidPath.png",
-        mime_type: "image/png",
-        path: "organization/network/1/logo/3/ValidPath.png",
-        type: "s3",
-        entity_id: 1,
-        group: "org_logo",
-        entity_type: "App\\Network",
-        created_at: "2021-09-04T00:49:57.000000Z",
-        updated_at: "2021-09-04T00:49:57.000000Z",
-      },
-    },
-    avatar_path: null,
-    member_firm: {
-      id: 2,
-      network_id: 1,
-      created_at: "2021-10-15T08:48:49.000000Z",
-      updated_at: "2021-10-15T08:48:49.000000Z",
-      laravel_through_key: 7,
-      numberOfMembers: 4,
-      type: "member_firm",
-      logo: {
-        id: 461,
-        name: "22.jpg",
-        mime_type: "image/jpeg",
-        path: "organization/member_firm/2/logo/461/22.jpg",
-        type: "s3",
-        entity_id: 2,
-        group: "org_logo",
-        entity_type: "memberFirm",
-        created_at: "2021-11-09T14:27:14.000000Z",
-        updated_at: "2021-11-09T14:27:14.000000Z",
-      },
-      logo_path:
-        "http://nmpdevv1-env.eba-xfzbdsum.eu-west-2.elasticbeanstalk.com/api/file/member-firm/2/logo?timestamp=1639693098",
-      main_fields: {
-        name: "",
-        email: "",
-        contactNumber: "",
-        Address: "",
-        msnewfield1: "",
-        qweqwe: "",
-        qwedsazxc: "",
-      },
-      master_schema_breadcrumbs: "ValidPath.MemberFirm.Unapproved",
-      name: "MemberFirmName",
-    },
-    member_firm_permissions: {
-      role: {
-        id: 7,
-        member_firm_id: 2,
-        user_id: 7,
-        type: "principal",
-      },
-    },
-    versions_total: 2,
-    history: {
-      fieldId: 17,
-      versions: [
-        {
-          id: 12,
-          value: "",
-          type: "files",
-          files: [{ name: "File1.jpg" }, { name: "File1.jpg" }],
-          created_at: "2021-12-16T17:56:40.000000Z",
-          updated_at: "2021-12-16T17:56:40.000000Z",
-          provided: {
-            id: 1,
-            email: "nmpadmin@webinspire.com.au",
-            first_name: "Admin",
-            last_name: "Padberg",
-            avatar: {
-              id: 5,
-              name: "doge.jpg",
-              mime_type: "image/jpeg",
-              path: "user/1/avatar/5/doge.jpg",
-              type: "s3",
-              entity_id: 1,
-              group: "avatar",
-              entity_type: "user",
-              created_at: "2021-09-06T08:59:40.000000Z",
-              updated_at: "2021-12-16T21:40:02.000000Z",
-            },
-            avatar_path:
-              "https://nmp-dev.s3.eu-west-2.amazonaws.com/user/1/avatar/5/doge.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAV55RTVV6NJI3CTVT%2F20211216%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211216T214002Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=25e05ed2ee4e383baa94fe9bf1991557fd63ff7a6a23d3c6e90d1ee1253fe2c3",
-          },
-        },
-        {
-          id: 13,
-          value: "",
-          type: "files",
-          files: [{ name: "File1.mp3" }, { name: "File1.mp3" }],
-          created_at: "2021-12-16T17:56:40.000000Z",
-          updated_at: "2021-12-16T17:56:40.000000Z",
-          provided: {
-            id: 1,
-            email: "nmpadmin@webinspire.com.au",
-            first_name: "Admin",
-            last_name: "Padberg",
-            avatar: {
-              id: 5,
-              name: "doge.jpg",
-              mime_type: "image/jpeg",
-              path: "user/1/avatar/5/doge.jpg",
-              type: "s3",
-              entity_id: 1,
-              group: "avatar",
-              entity_type: "user",
-              created_at: "2021-09-06T08:59:40.000000Z",
-              updated_at: "2021-12-16T21:40:02.000000Z",
-            },
-            avatar_path:
-              "https://nmp-dev.s3.eu-west-2.amazonaws.com/user/1/avatar/5/doge.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAV55RTVV6NJI3CTVT%2F20211216%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211216T214002Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=25e05ed2ee4e383baa94fe9bf1991557fd63ff7a6a23d3c6e90d1ee1253fe2c3",
-          },
-        },
-      ],
-    },
-  },
-  {
-    id: 123,
-    first_name: "multiple",
-    last_name: "files",
-    field: {
-      id: 432,
-      name: "number",
-      value: "",
-      type: "file",
-      date: "2021-10-21T10:57:53.000000Z",
-      files: [{ name: "File1.jpg" }],
-      provided: null,
-    },
-    avatar: null,
-    permissions: {
-      organization: "ValidPath",
-      organization_id: 1,
-      organization_type: "network",
-      ability: "prospect",
-      logo_path: "http://nmpdevv1-env.eba-xfzbdsum.eu-west-2.elasticbeanstalk.com/api/file/organization-logo/network/1",
-      logo: {
-        id: 3,
-        name: "ValidPath.png",
-        mime_type: "image/png",
-        path: "organization/network/1/logo/3/ValidPath.png",
-        type: "s3",
-        entity_id: 1,
-        group: "org_logo",
-        entity_type: "App\\Network",
-        created_at: "2021-09-04T00:49:57.000000Z",
-        updated_at: "2021-09-04T00:49:57.000000Z",
-      },
-    },
-    avatar_path: null,
-    member_firm: {
-      id: 2,
-      network_id: 1,
-      created_at: "2021-10-15T08:48:49.000000Z",
-      updated_at: "2021-10-15T08:48:49.000000Z",
-      laravel_through_key: 7,
-      numberOfMembers: 4,
-      type: "member_firm",
-      logo: {
-        id: 461,
-        name: "22.jpg",
-        mime_type: "image/jpeg",
-        path: "organization/member_firm/2/logo/461/22.jpg",
-        type: "s3",
-        entity_id: 2,
-        group: "org_logo",
-        entity_type: "memberFirm",
-        created_at: "2021-11-09T14:27:14.000000Z",
-        updated_at: "2021-11-09T14:27:14.000000Z",
-      },
-      logo_path:
-        "http://nmpdevv1-env.eba-xfzbdsum.eu-west-2.elasticbeanstalk.com/api/file/member-firm/2/logo?timestamp=1639693098",
-      main_fields: {
-        name: "",
-        email: "",
-        contactNumber: "",
-        Address: "",
-        msnewfield1: "",
-        qweqwe: "",
-        qwedsazxc: "",
-      },
-      master_schema_breadcrumbs: "ValidPath.MemberFirm.Unapproved",
-      name: "MemberFirmName",
-    },
-    member_firm_permissions: {
-      role: {
-        id: 7,
-        member_firm_id: 2,
-        user_id: 7,
-        type: "principal",
-      },
-    },
-    versions_total: 100,
-    history: {
-      fieldId: 432,
-      versions: [
-        {
-          id: 12,
-          value: "",
-          type: "file",
-          files: [{ name: "File1.jpg" }],
-          created_at: "2021-12-16T17:56:40.000000Z",
-          updated_at: "2021-12-16T17:56:40.000000Z",
-          provided: {
-            id: 1,
-            email: "nmpadmin@webinspire.com.au",
-            first_name: "Admin",
-            last_name: "Padberg",
-            avatar: {
-              id: 5,
-              name: "doge.jpg",
-              mime_type: "image/jpeg",
-              path: "user/1/avatar/5/doge.jpg",
-              type: "s3",
-              entity_id: 1,
-              group: "avatar",
-              entity_type: "user",
-              created_at: "2021-09-06T08:59:40.000000Z",
-              updated_at: "2021-12-16T21:40:02.000000Z",
-            },
-            avatar_path:
-              "https://nmp-dev.s3.eu-west-2.amazonaws.com/user/1/avatar/5/doge.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAV55RTVV6NJI3CTVT%2F20211216%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211216T214002Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=25e05ed2ee4e383baa94fe9bf1991557fd63ff7a6a23d3c6e90d1ee1253fe2c3",
-          },
-        },
-      ],
-    },
-  },
-  {
-    id: 6,
-    first_name: "Survey",
-    last_name: "Styles",
-    field: {
-      id: 5,
-      name: "number",
-      value: true,
-      type: "boolean",
-      date: "2021-09-21T12:34:02.000000Z",
-      files: null,
-      provided: null,
-    },
-    avatar: null,
-    permissions: {
-      organization: "ValidPath",
-      organization_id: 1,
-      organization_type: "network",
-      ability: "prospect",
-      logo_path: "http://nmpdevv1-env.eba-xfzbdsum.eu-west-2.elasticbeanstalk.com/api/file/organization-logo/network/1",
-      logo: {
-        id: 3,
-        name: "ValidPath.png",
-        mime_type: "image/png",
-        path: "organization/network/1/logo/3/ValidPath.png",
-        type: "s3",
-        entity_id: 1,
-        group: "org_logo",
-        entity_type: "App\\Network",
-        created_at: "2021-09-04T00:49:57.000000Z",
-        updated_at: "2021-09-04T00:49:57.000000Z",
-      },
-    },
-    avatar_path: null,
-    member_firm: {
-      id: 1,
-      network_id: 1,
-      created_at: "2021-09-06T14:47:58.000000Z",
-      updated_at: "2021-09-06T14:47:58.000000Z",
-      laravel_through_key: 6,
-      numberOfMembers: 1,
-      type: "member_firm",
-      logo: {
-        id: 8,
-        name: "test3.png",
-        mime_type: "image/png",
-        path: "organization/member_firm/1/logo/8/test3.png",
-        type: "s3",
-        entity_id: 1,
-        group: "org_logo",
-        entity_type: "memberFirm",
-        created_at: "2021-09-08T09:47:26.000000Z",
-        updated_at: "2021-09-08T09:47:26.000000Z",
-      },
-      logo_path:
-        "http://nmpdevv1-env.eba-xfzbdsum.eu-west-2.elasticbeanstalk.com/api/file/member-firm/1/logo?timestamp=1639693098",
-      main_fields: {
-        name: "",
-        email: "",
-        contactNumber: "",
-        Address: "",
-      },
-      master_schema_breadcrumbs: "ValidPath.MemberFirm.Unapproved",
-    },
-    member_firm_permissions: {
-      role: {
-        id: 6,
-        member_firm_id: 1,
-        user_id: 6,
-        type: "member",
-      },
-    },
-    versions_total: 1,
-    history: {
-      fieldId: 5,
-      versions: [
-        {
-          id: 12,
-          value: true,
-          type: "boolean",
-          files: null,
-          created_at: "2021-12-16T17:56:40.000000Z",
-          updated_at: "2021-12-16T17:56:40.000000Z",
-          provided: {
-            id: 1,
-            email: "nmpadmin@webinspire.com.au",
-            first_name: "Admin",
-            last_name: "Padberg",
-            avatar: {
-              id: 5,
-              name: "doge.jpg",
-              mime_type: "image/jpeg",
-              path: "user/1/avatar/5/doge.jpg",
-              type: "s3",
-              entity_id: 1,
-              group: "avatar",
-              entity_type: "user",
-              created_at: "2021-09-06T08:59:40.000000Z",
-              updated_at: "2021-12-16T21:40:02.000000Z",
-            },
-            avatar_path:
-              "https://nmp-dev.s3.eu-west-2.amazonaws.com/user/1/avatar/5/doge.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAV55RTVV6NJI3CTVT%2F20211216%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211216T214002Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=25e05ed2ee4e383baa94fe9bf1991557fd63ff7a6a23d3c6e90d1ee1253fe2c3",
-          },
-        },
-      ],
-    },
-  },
-  {
-    id: 10,
-    first_name: "Onboarding",
-    last_name: "Test",
-    field: {
-      id: 32,
-      name: "number",
-      value: "<h1>Dangerous html value</h1>",
-      type: "string",
-      date: "2021-11-09T11:23:19.000000Z",
-      files: null,
-      provided: null,
-    },
-    avatar: null,
-    permissions: {
-      organization: "ValidPath",
-      organization_id: 1,
-      organization_type: "network",
-      ability: "prospect",
-      logo_path: "http://nmpdevv1-env.eba-xfzbdsum.eu-west-2.elasticbeanstalk.com/api/file/organization-logo/network/1",
-      logo: {
-        id: 3,
-        name: "ValidPath.png",
-        mime_type: "image/png",
-        path: "organization/network/1/logo/3/ValidPath.png",
-        type: "s3",
-        entity_id: 1,
-        group: "org_logo",
-        entity_type: "App\\Network",
-        created_at: "2021-09-04T00:49:57.000000Z",
-        updated_at: "2021-09-04T00:49:57.000000Z",
-      },
-    },
-    avatar_path: null,
-    member_firm: null,
-    member_firm_permissions: null,
-    versions_total: 1,
-    history: {
-      fieldId: 32,
-      versions: [
-        {
-          id: 12,
-          value: "<h1>Dangerous html value</h1>",
-          type: "string",
-          files: null,
-          created_at: "2021-12-16T17:56:40.000000Z",
-          updated_at: "2021-12-16T17:56:40.000000Z",
-          provided: {
-            id: 1,
-            email: "nmpadmin@webinspire.com.au",
-            first_name: "Admin",
-            last_name: "Padberg",
-            avatar: {
-              id: 5,
-              name: "doge.jpg",
-              mime_type: "image/jpeg",
-              path: "user/1/avatar/5/doge.jpg",
-              type: "s3",
-              entity_id: 1,
-              group: "avatar",
-              entity_type: "user",
-              created_at: "2021-09-06T08:59:40.000000Z",
-              updated_at: "2021-12-16T21:40:02.000000Z",
-            },
-            avatar_path:
-              "https://nmp-dev.s3.eu-west-2.amazonaws.com/user/1/avatar/5/doge.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAV55RTVV6NJI3CTVT%2F20211216%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211216T214002Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=25e05ed2ee4e383baa94fe9bf1991557fd63ff7a6a23d3c6e90d1ee1253fe2c3",
-          },
-        },
-      ],
-    },
-  },
-  {
-    id: 4,
-    first_name: "Prospect2",
-    last_name: "Runolfsdottir",
-    field: {
-      id: 10,
-      name: "number",
-      value: "just a string",
-      type: "string",
-      date: "2021-10-04T08:55:42.000000Z",
-      files: null,
-      provided: null,
-    },
-    avatar: {
-      id: 462,
-      name: "pink_floyd_dispersion_2-wallpaper-2560x1600.jpg",
-      mime_type: "image/jpeg",
-      path: "user/4/avatar/462/pink_floyd_dispersion_2-wallpaper-2560x1600.jpg",
-      type: "s3",
-      entity_id: 4,
-      group: "avatar",
-      entity_type: "user",
-      created_at: "2021-12-02T16:30:06.000000Z",
-      updated_at: "2021-12-16T21:40:03.000000Z",
-    },
-    permissions: {
-      organization: "ValidPath",
-      organization_id: 1,
-      organization_type: "network",
-      ability: "prospect",
-      logo_path: "http://nmpdevv1-env.eba-xfzbdsum.eu-west-2.elasticbeanstalk.com/api/file/organization-logo/network/1",
-      logo: {
-        id: 3,
-        name: "ValidPath.png",
-        mime_type: "image/png",
-        path: "organization/network/1/logo/3/ValidPath.png",
-        type: "s3",
-        entity_id: 1,
-        group: "org_logo",
-        entity_type: "App\\Network",
-        created_at: "2021-09-04T00:49:57.000000Z",
-        updated_at: "2021-09-04T00:49:57.000000Z",
-      },
-    },
-    avatar_path:
-      "https://nmp-dev.s3.eu-west-2.amazonaws.com/user/4/avatar/462/pink_floyd_dispersion_2-wallpaper-2560x1600.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAV55RTVV6NJI3CTVT%2F20211216%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211216T214003Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=49ecec033c96b06572790eb096020c62722e0967b937fb6b425d84d26e78d40f",
-    member_firm: {
-      id: 2,
-      network_id: 1,
-      created_at: "2021-10-15T08:48:49.000000Z",
-      updated_at: "2021-10-15T08:48:49.000000Z",
-      laravel_through_key: 4,
-      numberOfMembers: 4,
-      type: "member_firm",
-      logo: {
-        id: 461,
-        name: "22.jpg",
-        mime_type: "image/jpeg",
-        path: "organization/member_firm/2/logo/461/22.jpg",
-        type: "s3",
-        entity_id: 2,
-        group: "org_logo",
-        entity_type: "memberFirm",
-        created_at: "2021-11-09T14:27:14.000000Z",
-        updated_at: "2021-11-09T14:27:14.000000Z",
-      },
-      logo_path:
-        "http://nmpdevv1-env.eba-xfzbdsum.eu-west-2.elasticbeanstalk.com/api/file/member-firm/2/logo?timestamp=1639693098",
-      main_fields: {
-        name: "",
-        email: "",
-        contactNumber: "",
-        Address: "",
-        msnewfield1: "",
-        qweqwe: "",
-        qwedsazxc: "",
-      },
-      master_schema_breadcrumbs: "ValidPath.MemberFirm.Unapproved",
-    },
-    member_firm_permissions: {
-      role: {
-        id: 4,
-        member_firm_id: 2,
-        user_id: 4,
-        type: "member",
-      },
-    },
-    versions_total: 1,
-    history: {
-      fieldId: 10,
-      versions: [
-        {
-          id: 12,
-          value: "just a string",
-          type: "string",
-          files: null,
-          created_at: "2021-12-16T17:56:40.000000Z",
-          updated_at: "2021-12-16T17:56:40.000000Z",
-          provided: {
-            id: 1,
-            email: "nmpadmin@webinspire.com.au",
-            first_name: "Admin",
-            last_name: "Padberg",
-            avatar: {
-              id: 5,
-              name: "doge.jpg",
-              mime_type: "image/jpeg",
-              path: "user/1/avatar/5/doge.jpg",
-              type: "s3",
-              entity_id: 1,
-              group: "avatar",
-              entity_type: "user",
-              created_at: "2021-09-06T08:59:40.000000Z",
-              updated_at: "2021-12-16T21:40:02.000000Z",
-            },
-            avatar_path:
-              "https://nmp-dev.s3.eu-west-2.amazonaws.com/user/1/avatar/5/doge.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAV55RTVV6NJI3CTVT%2F20211216%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20211216T214002Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Signature=25e05ed2ee4e383baa94fe9bf1991557fd63ff7a6a23d3c6e90d1ee1253fe2c3",
-          },
-        },
-      ],
-    },
-  },
-];
-
-// :: (field) -> string
-const normalizeFieldValue = (field) => {
-  if (!field.type) return null;
-
-  switch (field.type) {
-    case "files":
-      if (!field.files) {
-        return null;
-      }
-      return field.files.map(get("name")).join(", ");
-    case "file":
-      if (!field.files) {
-        return null;
-      }
-      return field.files.map(get("name"))[0];
-    case "boolean":
-      return field.value ? "Yes" : "No";
-    default:
-      return field.value;
-  }
-};
-
 const normalizeVersionTotal = (total) => (total > 9 ? "+9" : total);
 
 const getFullName = ({ first_name, last_name }) => `${first_name} ${last_name}`;
@@ -626,13 +33,47 @@ const TEMP_LONG_VALUE_LENGTH = 15;
 
 const isValueLong = (v) => v.length > TEMP_LONG_VALUE_LENGTH;
 
-const ValueCell = ({ value, files, type, onLongValueClick }) => {
-  const fieldType = capitalize(type || "");
-  const normalizeValue = normalizeFieldValue({ value, files, type });
+const FilesValue = ({ files }) => {
+  const [filesUrl, setFilesUrl] = useState([]);
 
-  if (normalizeValue && isValueLong(normalizeValue)) {
+  useEffect(() => {
+    Promise.all(files.map(({ id, name }) =>
+      masterSchemaApi.getValueFile({ valueId: id })
+        .then((blob) => ({ url: window.URL.createObjectURL(blob), name }))
+    ))
+      .then((filesUrl) => setFilesUrl(filesUrl))
+      .catch((error) => toast.error(error));
+  }, [files]);
+
+  return (
+    <>
+      {filesUrl.map((file) => (
+        <a style={{ color: "currentColor" }} href={file.url} download>{file.name}</a>
+      ))}
+    </>
+  );
+};
+
+const ValueExtended = ({ value, files, type }) => {
+  if (["file", "files"].includes(type)) {
     return (
-      <MSEButton className="d-flex align-items-center msu-table__value-button" onClick={onLongValueClick}>
+      <div className="py-2">
+        <FilesValue files={files} />
+      </div>
+    );
+  }
+
+  return <div className="py-2" dangerouslySetInnerHTML={{ __html: value }} />;
+};
+
+const PrivateValuePreview = ({ value, type, normalizedValue, onExtendedValueClick }) => {
+  if (value == null) {
+    return type ? <div>{`${type}: Null`}</div> : <div>Null</div>;
+  }
+
+  if (isValueLong(normalizedValue)) {
+    return (
+      <MSEButton className="d-flex align-items-center msu-table__value-button" onClick={onExtendedValueClick}>
         <div>This is a long text</div>
         <ExternalLink size="12" />
       </MSEButton>
@@ -641,9 +82,44 @@ const ValueCell = ({ value, files, type, onLongValueClick }) => {
 
   return (
     <>
-      {fieldType && <div>{`${fieldType}: `}</div>}
-      {normalizeValue && <div className="msu-table__field-value">{normalizeValue}</div>}
+      {type && <div>{`${capitalize(type)}:`}</div>}
+      <div className="msu-table__field-value">{value}</div>
     </>
+  );
+};
+
+const ValuePreview = ({ value, files, type, onExtendedValueClick }) => {
+  if (type === "boolean") {
+    const normalizedValue = value ? "Yes" : "No";
+    return (
+      <PrivateValuePreview
+        value={value}
+        type={type}
+        normalizedValue={normalizedValue}
+        onExtendedValueClick={onExtendedValueClick}
+      />
+    );
+  }
+
+  if (["file", "files"].includes(type)) {
+    const normalizedValue = files.map(get("name")).join(", ");
+    return (
+      <PrivateValuePreview
+        value={<FilesValue files={files} />}
+        type={type}
+        normalizedValue={normalizedValue}
+        onExtendedValueClick={onExtendedValueClick}
+      />
+    );
+  }
+
+  return (
+    <PrivateValuePreview
+      value={value}
+      type={type}
+      normalizedValue={value}
+      onExtendedValueClick={onExtendedValueClick}
+    />
   );
 };
 
@@ -661,15 +137,15 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
   };
 
   const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedField, setSelectedField] = useState(null);
   const [valueModal, openValueModal, closeValueModal] = useBoolean(false);
   const [historyModal, openHistoryModal, closeHistoryModal] = useBoolean(false);
 
   const [searchInput, setSearchInput] = useState("");
   const [filterOptions, setFilterOptions] = useState({});
 
-  const onLongValueClick = (value) => () => {
-    setSelectedValue(normalizeFieldValue(value));
+  const onExtendedValueClick = (field) => () => {
+    setSelectedField(field);
     openValueModal();
   };
 
@@ -809,11 +285,11 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
                     <td>{memberFirm}</td>
 
                     <td className="msu-table__value">
-                      <ValueCell
+                      <ValuePreview
                         value={field.value}
                         files={field.files}
                         type={field.type}
-                        onLongValueClick={onLongValueClick(user.field)}
+                        onExtendedValueClick={onExtendedValueClick(user.field)}
                       />
                     </td>
 
@@ -840,9 +316,9 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
         </CardBody>
       </Card>
 
-      {selectedValue && (
+      {selectedField && (
         <SurveyModal isOpen={valueModal} title="Extended input" onClose={closeValueModal} actions={false}>
-          <div className="py-2" dangerouslySetInnerHTML={{ __html: selectedValue }} />
+          <ValueExtended value={selectedField.value} type={selectedField.type} files={selectedField.files} />
         </SurveyModal>
       )}
 
@@ -873,11 +349,11 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
                       <div>{moment(version?.created_at).format("HH:MM")}</div>
                     </td>
                     <td className="msu-table__value">
-                      <ValueCell
+                      <ValuePreview
                         type={version.type}
                         value={version.value}
                         files={version.files}
-                        onLongValueClick={onLongValueClick(version)}
+                        onExtendedValueClick={onExtendedValueClick(version)}
                       />
                     </td>
                     <td>{fullName}</td>
