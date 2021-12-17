@@ -128,7 +128,7 @@ const masterSchemaApi = {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaUsersByFieldUrl(fieldId),
-      data: {
+      params: {
         name: name?.length > 0 ? name : undefined,
         abilities: abilities?.length > 0 ? abilities : undefined,
         organizations: organizations?.length > 0 ? organizations : undefined,
