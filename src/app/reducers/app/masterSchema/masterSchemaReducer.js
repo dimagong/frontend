@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import { pipe, get, isEqual, pick, xorBy, includes } from "lodash/fp";
+import { toast } from "react-toastify";
 
 /* Interfaces */
 
@@ -408,6 +409,7 @@ const masterSchemaReducer = {
   },
 
   approveUnapprovedFieldsSuccess(state, { payload }) {
+    toast.success('The approving was successful');
     const { masterSchemaId, fieldsIds } = payload;
     const oldUnapprovedFields = state.masterSchema.unapproved[masterSchemaId];
 
