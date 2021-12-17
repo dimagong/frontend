@@ -649,7 +649,7 @@ const ValueCell = ({ value, files, type, onLongValueClick }) => {
 
 const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
   // ToDo: remove it when API will be ready
-  users = MOCK_USERS;
+  // users = MOCK_USERS;
   const dispatch = useDispatch();
 
   const memberFirmsInfo = useSelector(getMemberFirms);
