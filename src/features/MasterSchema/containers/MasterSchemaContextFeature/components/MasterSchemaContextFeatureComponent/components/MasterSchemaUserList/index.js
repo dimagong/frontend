@@ -20,6 +20,7 @@ import { FilterMemberFirmsOptions, FilterOrganizationsOptions, FilterRolesOption
 
 import BackInTimeIcon from "assets/img/svg/back-in-time.svg";
 import NoneAvatar from "assets/img/portrait/none-avatar.png";
+import {createLoadingSelector} from "../../../../../../../../app/selectors/loadingSelector";
 
 const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
@@ -653,6 +654,7 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
 
   const memberFirmsInfo = useSelector(getMemberFirms);
   const organizationsInfo = useSelector(selectOrganizations);
+  const loading = useSelector(createLoadingSelector([getUsersByMasterSchemaFieldRequest.type]), true);
 
   const filterTypes = {
     roles: FilterRolesOptions(),
@@ -748,8 +750,6 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
 
   return (
     <>
-      {users && !users.length && <h3 className="ms-nothing-was-found">No users found for your query</h3>}
-
       <Card className="px-1 ms-user-list" style={{ boxShadow: "none", border: "1px solid #ececec" }}>
         <CardHeader className="px-0">
           <div className="w-100">
@@ -760,11 +760,13 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
               applyFilter={onFilterSubmit}
               onFilterOptionCancel={onFilterOptionCancel}
               filterTabPosition={"left"}
+              loading={loading}
             />
           </div>
         </CardHeader>
 
         <CardBody className="pt-0 pb-1 px-0">
+          {users && !users.length && <h3 className="ms-nothing-was-found">No users found for your query</h3>}
           <Table className="msu-table" borderless responsive>
             <thead>
               <tr className="msu-table__users-head">
