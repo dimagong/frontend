@@ -776,7 +776,7 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
                 <th>Member firm</th>
                 <th className="msu-table__value">Value</th>
                 <th className="msu-table__value">User</th>
-                <th>Date</th>
+                <th className="msu-table__date--end">Date</th>
                 <th className="msu-table__total">&nbsp;</th>
               </tr>
             </thead>
