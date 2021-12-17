@@ -420,6 +420,7 @@ class Autocomplete extends React.Component {
             this.setState({ focused: true })
           }}
           autoFocus={this.props.autoFocus}
+          disabled={this.props.disabled}
           onBlur={e => {
             // this.onBlur(e)
             if (this.props.onBlur) this.props.onBlur(e)
