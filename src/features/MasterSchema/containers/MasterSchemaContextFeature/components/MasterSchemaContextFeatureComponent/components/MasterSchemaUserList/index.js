@@ -24,6 +24,7 @@ import NoneAvatar from "assets/img/portrait/none-avatar.png";
 
 const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
+// eslint-disable-next-line no-unused-vars
 const MOCK_USERS = [
   {
     id: 7,
@@ -630,25 +631,24 @@ const ValueCell = ({ value, files, type, onLongValueClick }) => {
   const fieldType = capitalize(type || "");
   const normalizeValue = normalizeFieldValue({ value, files, type });
 
+  if (normalizeValue && isValueLong(normalizeValue)) {
+    return (
+      <MSEButton className="d-flex align-items-center msu-table__value-button" onClick={onLongValueClick}>
+        <div>This is a long text</div>
+        <ExternalLink size="12" />
+      </MSEButton>
+    );
+  }
+
   return (
     <>
-      {normalizeValue && isValueLong(normalizeValue) ? (
-        <MSEButton className="d-flex align-items-center msu-table__value-button" onClick={onLongValueClick}>
-          <div>This is a long text</div>
-          <ExternalLink size="12" />
-        </MSEButton>
-      ) : (
-        <>
-          {fieldType && <div>{`${fieldType}: `}</div>}
-          {normalizeValue && <div className="msu-table__field-value">{normalizeValue}</div>}
-        </>
-      )}
+      {fieldType && <div>{`${fieldType}: `}</div>}
+      {normalizeValue && <div className="msu-table__field-value">{normalizeValue}</div>}
     </>
   );
 };
 
 const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
-  // ToDo: remove it when API will be ready
   // users = MOCK_USERS;
   const dispatch = useDispatch();
 
