@@ -18,8 +18,8 @@ import MasterSchemaUserList from "./components/MasterSchemaUserList";
 const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
 const MasterSchemaContextFeatureComponent = () => {
-  const { selectable, hierarchy } = useMasterSchemaContext();
   const dispatch = useDispatch();
+  const { selectable, hierarchy } = useMasterSchemaContext();
   const masterSchemaUsers = useSelector(selectMasterSchemaUsers);
   const [isUsersFiltered, setIsUsersFiltered] = useBoolean(false);
 
@@ -71,16 +71,30 @@ const MasterSchemaContextFeatureComponent = () => {
     }
   }, [dispatch, masterSchemaUsers, selectable.selected.field]);
 
+  const renderUsers = () => {
+    if (!selectedUsers) return null;
+
+    // if (isUsersLoading) return (
+    //   <Col className="d-flex justify-content-center pt-4">
+    //     <Spinner />
+    //   </Col>
+    // );
+
+    if (isUsersFiltered || !isEmpty(selectedUsers)) {
+      return <MasterSchemaUserList
+        users={selectedUsers}
+        hierarchy={hierarchy}
+        selected={selectable.selected}
+        setUsersFiltered={setIsUsersFiltered}
+      />
+    }
+
+    return null;
+  };
+
   return (
     <ContextFeatureTemplate contextFeatureTitle={renderTitle()}>
-      {selectedUsers && (isUsersFiltered || !isEmpty(selectedUsers)) && (
-        <MasterSchemaUserList
-          users={selectedUsers}
-          hierarchy={hierarchy}
-          selected={selectable.selected}
-          setUsersFiltered={setIsUsersFiltered}
-        />
-      )}
+      {renderUsers()}
       <MasterSchemaManager />
     </ContextFeatureTemplate>
   );

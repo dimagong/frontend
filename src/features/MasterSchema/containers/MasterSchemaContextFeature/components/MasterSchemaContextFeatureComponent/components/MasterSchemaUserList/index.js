@@ -7,7 +7,7 @@ import { capitalize, get } from "lodash/fp";
 import { ExternalLink } from "react-feather";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Card, CardBody, CardHeader, Spinner, Col } from "reactstrap";
+import { Table, Card, CardBody, CardHeader } from "reactstrap";
 
 import appSlice from "app/slices/appSlice";
 import { useBoolean } from "hooks/use-boolean";
@@ -16,7 +16,6 @@ import MSEButton from "features/MasterSchema/share/mse-button";
 import SurveyModal from "features/Surveys/Components/SurveyModal";
 import { selectOrganizations } from "app/selectors/groupSelector";
 import { getMemberFirms } from "app/selectors/memberFirmsSelector";
-import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { FilterMemberFirmsOptions, FilterOrganizationsOptions, FilterRolesOptions } from "constants/filter";
 
 import BackInTimeIcon from "assets/img/svg/back-in-time.svg";
@@ -654,7 +653,6 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
 
   const memberFirmsInfo = useSelector(getMemberFirms);
   const organizationsInfo = useSelector(selectOrganizations);
-  const loading = useSelector(createLoadingSelector([getUsersByMasterSchemaFieldRequest.type]), true);
 
   const filterTypes = {
     roles: FilterRolesOptions(),
@@ -747,14 +745,6 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
     dispatch(getUsersByMasterSchemaFieldRequest(payload));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchInput, filterOptions, dispatch]);
-
-  if (loading) {
-    return (
-      <Col className="d-flex justify-content-center pt-4">
-        <Spinner />
-      </Col>
-    );
-  }
 
   return (
     <>
