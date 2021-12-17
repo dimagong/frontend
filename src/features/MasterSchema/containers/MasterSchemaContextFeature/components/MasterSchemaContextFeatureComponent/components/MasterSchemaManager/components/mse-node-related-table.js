@@ -22,11 +22,13 @@ const MSENodeRelatedTable = ({ relatedApplications, ...attrs }) => {
           </thead>
           <tbody>
             {relatedApplications.map((currRelated) => {
+              const { provided_by } = currRelated;
+              const providedFullName = provided_by ? `${provided_by.first_name} ${provided_by.last_name}` : null;
               return (
                 <tr className="msu-table__row--shadowed" key={currRelated.id}>
                   <td className="msu-table__name">{currRelated.application.name}</td>
                   <td>Created</td>
-                  <td>{currRelated.provided_by ?? "No info"}</td>
+                  <td>{providedFullName ?? "No info"}</td>
                   <td className="msu-table__date--end">
                     <div>{moment(currRelated?.field?.date).format("DD/MM/YYYY")}</div>
                     <div>{moment(currRelated?.field?.date).format("HH:MM")}</div>

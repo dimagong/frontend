@@ -137,6 +137,14 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
+  getValueFile({ valueId }) {
+    return instance({
+      url: `api/file/${valueId}/download`,
+      method: "GET",
+      responseType: "blob",
+    }).then(get("data"), flatResponseError);
+  },
+
   async getOrganizationsMasterSchema() {
     try {
       const result = await instance({
