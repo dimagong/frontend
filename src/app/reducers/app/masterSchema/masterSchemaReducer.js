@@ -444,9 +444,12 @@ const masterSchemaReducer = {
   },
 
   getUsersByMasterSchemaFieldSuccess(state, { payload }) {
-    const { users, fieldId } = payload;
+    const { users, histories, fieldId } = payload;
 
-    state.masterSchema.users[fieldId] = users;
+    state.masterSchema.users[fieldId] = users.map((user) => {
+      user.history = histories.find(({ fieldId }) => user.field.id === fieldId);
+      return user;
+    });
 
     state.isError = false;
     state.isLoading = false;
