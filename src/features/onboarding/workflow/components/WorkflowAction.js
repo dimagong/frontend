@@ -17,11 +17,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectWorkflow,
-  selectNotifications,
   selectdFormActions,
   selectAllowedUserList, selectSurveyNotifications, selectApplicationNotifications
 } from "app/selectors/onboardingSelectors";
-import { selectManagers } from "app/selectors/userSelectors";
 import Select from "react-select";
 import { colourStyles } from "utility/select/selectSettigns";
 import {prepareSelectManagers} from "utility/select/prepareSelectData";

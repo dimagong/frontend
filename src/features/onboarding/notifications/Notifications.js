@@ -6,14 +6,9 @@ import {
   Col,
   Button,
 } from "reactstrap";
-// import { X } from "react-feather";
-// import { toast } from "react-toastify";
 import "assets/scss/plugins/extensions/toastr.scss";
 import { ContextLayout } from "utility/context/Layout";
 import { AgGridReact } from "ag-grid-react";
-// import workflowService from "services/workflow.service";
-// import MultiSelect from "components/MultiSelect/multiSelect";
-// import { prepareTableGroupData } from "utility/table/prepareTableGroupData";
 import { columnDefs } from "./gridSettings";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -46,6 +41,7 @@ const Notification = () => {
 
   useEffect(() => {
     !notifications.length && dispatch(getNotificationsRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // TODO: START - AG GRID API

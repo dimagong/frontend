@@ -1,5 +1,4 @@
 import React from 'react';
-import {Input} from 'reactstrap';
 import Select from 'react-select'
 import './styles.scss'
 import FieldLabel from '../FieldLabel'

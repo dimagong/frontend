@@ -10,7 +10,6 @@ const ProgressBar = props => {
     size,
     progress,
     strokeWidth,
-    circleOneStroke,
     circleTwoStroke,
     index,
     completed,

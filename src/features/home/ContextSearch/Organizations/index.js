@@ -35,8 +35,10 @@ const OrganizationCard = ({org, onSelect}) => {
   return (
     <Card key={org.name} style={{ minHeight: "120px"}}>
       <CardBody className="organizations-context-search_organization-card" onClick={handleOrgSelect}>
+        {/* eslint-disable-next-line no-mixed-operators */}
         {!!org.logo?.base64 && (
           <img src={org.logo.base64} alt={org.logo.name} />
+          // eslint-disable-next-line no-mixed-operators
         ) || org.logo?.isLoading && (
           <div
             className="user-edit__user-avatar_spinner-wrapper"
@@ -66,6 +68,7 @@ const Organizations = () => {
 
   useEffect(() => {
     dispatch(getOrganizationsRequest())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

@@ -36,12 +36,9 @@ import UserProfileEdit from './UserEditContextFeature'
 import SurveyAssign from './components/Survey/SurveyAssign'
 import AssignedSurvey from './components/Survey/AssignedSurvey';
 
-import { useParams } from 'react-router-dom'
-
 import {
   selectUserOrganizations,
   selectCurrentManager,
-  selectManagerById,
   selectSelectedManagerAssignedSurveys, selectUserActivity,
 } from 'app/selectors/userSelectors'
 
@@ -97,11 +94,8 @@ const selectOptions = [
   },
 ];
 
-const UserEdit = (props, context) => {
+const UserEdit = () => {
   const dispatch = useDispatch();
-  const { id } = useParams();
-
-  const newManager = useSelector(selectManagerById(id))
 
   //* TODO refactor, old manager is used
   const selectedManager = useSelector(selectManager);
@@ -123,7 +117,6 @@ const UserEdit = (props, context) => {
   const [applicationAddSelectValue, setApplicationAddSelectValue] = useState(selectOptions[0]);
 
   const [activeModuleTab, setActiveModuleTab] = useState(manager.permissions ? tabs[0] : tabs[3]);
-  const [activeOnboardingId, setActiveOnboardingId] = useState(-1);
   const isCreate = useRef(false);
 
   const initOnboarding = {
@@ -158,14 +151,17 @@ const UserEdit = (props, context) => {
     }
     // user onboarding
     dispatch(getUserOnboardingRequest({userId: manager.id}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager.groups]);
 
   useEffect(() => {
     setActiveModuleTab(manager.permissions ? tabs[0] : tabs[3]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager.id]);
 
   useEffect(() => {
     dispatch(getAssignedSurveysRequest(manager.id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager.id]);
 
   const handleEdit = () => {
@@ -240,6 +236,7 @@ const UserEdit = (props, context) => {
     if (!selectedManager.onboarding && openOnboarding && manager.onboardings.length > 0) {
       dispatch(setManagerOnboarding(manager.onboardings.find(item => item.d_form.name === selectedManager.selectedInfo.value)));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager.onboardings, openOnboarding]);
 
   const tableData = _.sortBy([...manager.onboardings, ...assignedSurveys], function(application) {
@@ -248,6 +245,7 @@ const UserEdit = (props, context) => {
 
   useEffect(() => {
     dispatch(getActivitiesRequest({managerId: manager.id, page: 1, shouldUpdate: false}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager?.id]);
 
   return (
@@ -330,8 +328,10 @@ const UserEdit = (props, context) => {
                       <div className="onboarding-create">
                         <div>
                           Create new&nbsp;
+                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
                           <a onClick={createViewOnboarding} href="javascript:void(0);">onboarding</a>
                           &nbsp;or&nbsp;
+                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
                           <a onClick={handleSurveyAssign} href="javascript:void(0);">survey</a>
                         </div>
                       </div>

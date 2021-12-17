@@ -22,6 +22,7 @@ function OnboardingReference(props) {
 
   useEffect(() => {
     getUserValueByFieldId(fieldId, userId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -47,7 +48,7 @@ function OnboardingReference(props) {
           }}
           value={fieldValue.value}
         />
-        : <Input fullWidth disabled={true}></Input>
+        : <Input fullWidth disabled={true} />
     }
   </div>;
 }
@@ -61,8 +62,8 @@ export default function Reference(props) {
     const fieldId = props.schema.field_id;
     const userId = this.state.onboardingUser.id;
     const data = {fieldId, userId};
-    return <OnboardingReference {...data} {...props}></OnboardingReference>
+    return <OnboardingReference {...data} {...props} />
   }
 
-  return <Input fullWidth placeholder="Reference" disabled={true}></Input>
+  return <Input fullWidth placeholder="Reference" disabled={true} />
 }

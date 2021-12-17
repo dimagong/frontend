@@ -110,6 +110,41 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
+  getRelatedApplications({ fieldId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaRelatedApplications(fieldId),
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getFieldVersions({ fieldId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaFieldVersions(fieldId),
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getUsers({ fieldId, name, abilities, organizations, member_firm_id  }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaUsersByFieldUrl(fieldId),
+      params: {
+        name: name?.length > 0 ? name : undefined,
+        abilities: abilities?.length > 0 ? abilities : undefined,
+        organizations: organizations?.length > 0 ? organizations : undefined,
+        member_firms: member_firm_id?.length > 0 ? member_firm_id : undefined,
+      }
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getValueFile({ valueId }) {
+    return instance({
+      url: `api/file/${valueId}/download`,
+      method: "GET",
+      responseType: "blob",
+    }).then(get("data"), flatResponseError);
+  },
+
   async getOrganizationsMasterSchema() {
     try {
       const result = await instance({

@@ -1,21 +1,12 @@
 import React from 'react'
 import Constants from './utils/constants'
 import {
-    Badge,
-    Card,
-    CardBody,
-    CardHeader,
     Col,
     FormGroup,
-    Nav,
-    NavItem,
-    NavLink,
     Row,
-    TabContent,
-    TabPane
   } from "reactstrap";
   import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
-  import {Check, Plus} from "react-feather";
+  import {Check} from "react-feather";
 
   
 

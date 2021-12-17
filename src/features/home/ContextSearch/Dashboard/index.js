@@ -17,7 +17,7 @@ const {
   getDashboardDFormsRequest,
 } = appSlice.actions;
 
-const Dashboard = ({ }) => {
+const Dashboard = () => {
   const dispatch = useDispatch();
   const dashboardSettings = useSelector(selectDashboardSettings)
   const dashboardDForms = useSelector(selectDashboardDForms)
@@ -81,6 +81,7 @@ const Dashboard = ({ }) => {
     dispatch(getSettingsRequest());
     dispatch(getActivityTypesRequest());
     dispatch(getDashboardDFormsRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const options = [{label: "Application", value: {
@@ -150,6 +151,7 @@ const Dashboard = ({ }) => {
           dForms={dashboardDForms}
           deleteComponent={deleteComponent}
           allTitleNames={dashboardSettings ? dashboardSettings.value.map(item => item.titleName) : []}
+          key={key}
         />
       )
     }

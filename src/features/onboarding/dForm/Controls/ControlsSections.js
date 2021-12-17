@@ -1,24 +1,11 @@
 import React from "react";
-import {
-    Badge,
-    Card,
-    CardBody,
-    CardHeader,
-    Col,
-    FormGroup,
-    Nav,
-    NavItem,
-    NavLink,
-    Row,
-    TabContent,
-    TabPane
-  } from "reactstrap";
-import {Check, Plus} from "react-feather";
+import { Col, Row } from "reactstrap";
+import { Plus} from "react-feather";
 import Constants from './utils/constants'
 import { elementsByGroups } from "./utils/group";
 import ControlsSection from './ControlsSection'
-import { useDispatch, useSelector } from "react-redux";
-import { selectdForms, selectdForm } from "app/selectors/onboardingSelectors";
+import { useSelector } from "react-redux";
+import { selectdForm } from "app/selectors/onboardingSelectors";
 
 const ControlsSections = ({sectionName}) => {
   const dForm = useSelector(selectdForm);

@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
   Card,
   CardBody,
   CardImg, CardText, CardTitle,
   Col,
-  // Pagination,
-  // PaginationItem,
-  // PaginationLink,
   Row,
-  Spinner
 } from "reactstrap";
 import {useDispatch, useSelector} from "react-redux";
 import appSlice from "app/slices/appSlice";
@@ -23,7 +18,6 @@ import CustomPagination from 'components/Pagination';
 import {
   getMemberFirms,
 } from "app/selectors/memberFirmsSelector";
-import {ChevronLeft, ChevronRight} from "react-feather";
 
 const {
   setContext,
@@ -45,7 +39,7 @@ const UserCardTemplate = ({className, onClick, data }) => {
       >
 
         <div className="user-avatar-management">
-          <CardImg variant="top" src={data.logo_path || noneAvatar} className="user-card-img d-sm-flex d-none" />
+          <CardImg src={data.logo_path || noneAvatar} className="user-card-img user-card-img-fit-contain" />
         </div>
 
         <CardBody className="user-card-body">
@@ -72,12 +66,12 @@ const UserCardTemplate = ({className, onClick, data }) => {
             </div>
           </div>
           <div className="user-card-body-right">
-            {/*<CardText>*/}
+            {/* <CardText>*/}
             {/*  organization logo*/}
             {/*</CardText>*/}
             {/*<CardText className="user-card-body_last-seen">*/}
             {/*  Last seen 3 days ago*/}
-            {/*</CardText>*/}
+            {/*</CardText> */}
           </div>
         </CardBody>
       </Card>
@@ -102,6 +96,7 @@ const MemberFirmsList = () => {
 
   useEffect(() => {
     dispatch(getMemberFirmsRequest())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isMemberFirmsLoading) {
@@ -127,11 +122,12 @@ const MemberFirmsList = () => {
   return (
     <Row>
       <Col className={`home__card-wrapper`}>
-        {currentPageMemberFirms.map(memberFirm => (
+        {currentPageMemberFirms.map((memberFirm, idx) => (
           <UserCardTemplate
             data={memberFirm}
             className="cursor-pointer"
             onClick={handleMemberFirmSelect}
+            key={idx}
           />
         ))}
 

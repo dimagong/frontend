@@ -138,9 +138,7 @@ function MasterSchema() {
     });
 
     if (searchValue && node.children && node.children.length) {
-      node.children = node.children.filter(
-        (nextNode) => nextNode.name.indexOf(searchValue) !== -1
-      );
+      node.children = node.children.filter((nextNode) => nextNode.name.indexOf(searchValue) !== -1);
 
       node.children.forEach((nextNode) => {
         nextNode.isVisible = true;
@@ -202,10 +200,7 @@ function MasterSchema() {
   };
 
   const createMasterSchema = async () => {
-    const response = await masterSchemaService.create(
-      organization.value.type,
-      organization.value.id
-    );
+    const response = await masterSchemaService.create(organization.value.type, organization.value.id);
     setMasterSchema(response.data.data);
   };
 
@@ -276,17 +271,9 @@ function MasterSchema() {
 
   const renderOptionsEditForCurrentElement = () => {
     return "children" in cursor ? (
-      <GroupEdit
-        data={cursor}
-        onChange={() => getCurrentMasterSchema()}
-        groupsList={groupsList}
-      />
+      <GroupEdit data={cursor} onChange={() => getCurrentMasterSchema()} groupsList={groupsList} />
     ) : (
-      <FieldEdit
-        data={cursor}
-        onChange={() => getCurrentMasterSchema()}
-        groupsList={groupsList}
-      />
+      <FieldEdit data={cursor} onChange={() => getCurrentMasterSchema()} groupsList={groupsList} />
     );
   };
 
@@ -315,11 +302,9 @@ function MasterSchema() {
   };
 
   const handleOrganizationMasterSchemaExport = () => {
-    handleMasterSchemaDataExport(
-      organization.value.name,
-      organization.value.type,
-      organization.value.id
-    ).then(() => {});
+    handleMasterSchemaDataExport(organization.value.name, organization.value.type, organization.value.id).then(
+      () => {}
+    );
   };
 
   return (
@@ -355,10 +340,7 @@ function MasterSchema() {
               </Col>
               <Col xs={6}>
                 {!!organization && (
-                  <Button
-                    color={"primary"}
-                    onClick={handleOrganizationMasterSchemaExport}
-                  >
+                  <Button color={"primary"} onClick={handleOrganizationMasterSchemaExport}>
                     Export MS Data in csv
                   </Button>
                 )}
@@ -375,10 +357,7 @@ function MasterSchema() {
               <Col>
                 {masterSchemaIsLoading || !isNeedToCreateMS() ? null : (
                   <div>
-                    <Button.Ripple
-                      onClick={() => createMasterSchema()}
-                      color="success"
-                    >
+                    <Button.Ripple onClick={() => createMasterSchema()} color="success">
                       Create Master Schema
                     </Button.Ripple>
                   </div>
@@ -398,33 +377,22 @@ function MasterSchema() {
                     <Scrollbars autoHeight autoHeightMax={500}>
                       <div className="table-content">
                         <div className="w-50 column">
-                          <MasterSchemaTree
-                            data={masterSchemaTreebeard}
-                            cursor={cursor}
-                            onToggle={onToggle}
-                          />
+                          <MasterSchemaTree data={masterSchemaTreebeard} cursor={cursor} onToggle={onToggle} />
                         </div>
                         <div className="w-50 column">
-                          {outputTreeColumn(masterSchemaTreebeard).map(
-                            (element) => {
-                              if (!element.isVisible) return <></>;
-                              if (element.children) {
-                                return <div className="ms-tree-column" />;
-                              }
-                              return (
-                                <div className="ms-tree-column">
-                                  {element.d_form_names &&
-                                    !!element.d_form_names.length && (
-                                      <Tabs
-                                        className="w-100"
-                                        onChange={() => {}}
-                                        tabs={element.d_form_names}
-                                      />
-                                    )}
-                                </div>
-                              );
+                          {outputTreeColumn(masterSchemaTreebeard).map((element) => {
+                            if (!element.isVisible) return <></>;
+                            if (element.children) {
+                              return <div className="ms-tree-column" />;
                             }
-                          )}
+                            return (
+                              <div className="ms-tree-column">
+                                {element.d_form_names && !!element.d_form_names.length && (
+                                  <Tabs className="w-100" onChange={() => {}} tabs={element.d_form_names} />
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </Scrollbars>
@@ -440,16 +408,10 @@ function MasterSchema() {
                       <Plus size={28} />
                     </DropdownToggle>
                     <DropdownMenu>
-                      <DropdownItem
-                        tag="a"
-                        onClick={() => setRightCardState("create-category")}
-                      >
+                      <DropdownItem tag="a" onClick={() => setRightCardState("create-category")}>
                         Category
                       </DropdownItem>
-                      <DropdownItem
-                        tag="a"
-                        onClick={() => setRightCardState("create-element")}
-                      >
+                      <DropdownItem tag="a" onClick={() => setRightCardState("create-element")}>
                         Element
                       </DropdownItem>
                     </DropdownMenu>
@@ -468,11 +430,7 @@ function MasterSchema() {
               <CardTitle>
                 <Breadcrumbs list={getBreadCrumbs()} />
               </CardTitle>
-              <X
-                size={15}
-                className="cursor-pointer mr-1"
-                onClick={() => closeElement()}
-              />
+              <X size={15} className="cursor-pointer mr-1" onClick={() => closeElement()} />
             </CardHeader>
             <CardBody>{renderRightCard()}</CardBody>
           </Card>

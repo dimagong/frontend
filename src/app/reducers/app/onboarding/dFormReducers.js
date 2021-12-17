@@ -62,6 +62,10 @@ const submitdFormSuccess = (state, {payload}) => {
   toast.success("Submitted for review")
 };
 
+const submitdFormNewVersionSuccess = (state, {payload}) => {
+  state.isLoading = false;
+}
+
 const submitdFormDataSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
@@ -69,7 +73,7 @@ const submitdFormDataSuccess = (state, {payload}) => {
 
   if (!isEmpty(state.user.profile.onboarding)) {
     state.user.profile.onboarding.d_form = payload;
-    const result = state.user.profile.onboardings.some(onboarding => {
+    state.user.profile.onboardings.some(onboarding => {
       if (onboarding.d_form.id === payload.id) {
         onboarding.d_form = payload;
         return true;
@@ -160,6 +164,7 @@ export default {
   getdFormActionsSuccess,
   getdFormTriggersSuccess,
   submitdFormSuccess,
+  submitdFormNewVersionSuccess,
   submitdFormDataSuccess,
   changedFormStatusSuccess,
   updateDFormFromParentSuccess,

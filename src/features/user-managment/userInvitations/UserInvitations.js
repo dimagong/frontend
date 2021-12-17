@@ -8,9 +8,6 @@ import {
 import { ContextLayout } from "utility/context/Layout"
 import { AgGridReact } from "ag-grid-react"
 
-// import { setEditUser } from '../../../redux/actions/user-management/userEditActions'
-// import { setUserList } from '../../../redux/actions/user/userActions'
-// import { setInvitationsList } from '../../../redux/actions/user-management/InvitationsActions'
 import { useDispatch, useSelector } from "react-redux";
 import { selectInvitations } from "app/selectors";
 import { columnDefs } from "./gridSettings";
@@ -32,6 +29,7 @@ const UserInvitations = ({activeTab}) => {
 
     useEffect(() => {
         !invitations.length && dispatch(getInvitationsRequest())
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {

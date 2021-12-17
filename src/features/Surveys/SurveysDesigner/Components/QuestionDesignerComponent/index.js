@@ -127,6 +127,7 @@ const QuestionDesignerComponent = ({
     if(folders && folders[0] && selectedFolderId === -1) {
       onFolderSelect(folders[0].id)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [folders]);
 
   return (

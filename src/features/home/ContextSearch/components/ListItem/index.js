@@ -15,7 +15,7 @@ const ListItem = ({item, index, onClick, isSelected}) => {
         {item.description}
       </div>
       <div className="list_item_organizations">
-        {item.groups && item.groups.map((group) => <div>{group.name}</div>)}
+        {item.groups && item.groups.map((group) => <div key={group.name}>{group.name}</div>)}
       </div>
 
     </div>

@@ -1,14 +1,12 @@
-import {all, put, call, takeLatest, select} from "redux-saga/effects";
+import {all, put, call, takeLatest} from "redux-saga/effects";
 
 import userApi from "api/User/user";
 import dFormsApi from "api/Onboarding/dForms";
 import groupRelations from "api/groupRelations/groupRelations";
-import {selectManager, selectManagers} from "app/selectors";
 
 import appSlice from 'app/slices/appSlice'
 
 const {
-  getUsersRequest,
   getUserOnboardingSuccess,
   getUserOnboardingRequest,
   getUserOnboardingError,
@@ -49,7 +47,6 @@ const {
   updateUserOnboardingWorkflowSuccess,
   updateUserOnboardingWorkflowError,
 
-  setManager,
 } = appSlice.actions;
 
 function* getUserOnboarding({payload}) {
@@ -75,7 +72,7 @@ function* createUserOnboarding({payload}) {
 
 function* deleteUserOnboarding({payload}) {
   try {
-    const onboarding = yield call(userApi.deleteUserOnboarding, payload);
+    yield call(userApi.deleteUserOnboarding, payload);
     yield put(deleteUserOnboardingSuccess(payload))
   } catch (error) {
     yield put(deleteUserOnboardingError(error));
@@ -84,7 +81,7 @@ function* deleteUserOnboarding({payload}) {
 
 function* updateUserRoles({payload}) {
   try {
-    const responce = yield call(userApi.updateUserRoles, payload);
+    yield call(userApi.updateUserRoles, payload);
     yield put(updateUserRolesSuccess({roles: payload.roles}));
   } catch (error) {
     console.log("error", error);

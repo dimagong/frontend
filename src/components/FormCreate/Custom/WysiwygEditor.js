@@ -43,6 +43,7 @@ export default function WysiwygEditor({toolbar, orgId = "default", disabled, dat
 
   useEffect(() => {
     init()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId])
 
   if(!orgId || !editorState) return null;

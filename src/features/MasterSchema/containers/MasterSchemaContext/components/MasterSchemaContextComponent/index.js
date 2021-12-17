@@ -2,7 +2,6 @@ import "./styles.scss";
 
 import _ from "lodash";
 import { get } from "lodash/fp";
-import PropTypes from "prop-types";
 import { isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useMemo, useRef, useState } from "react";
@@ -12,6 +11,7 @@ import { selectdForms } from "app/selectors";
 import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
+import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
 import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
@@ -20,17 +20,18 @@ import ContextTemplate from "components/ContextTemplate";
 
 import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
+import {createLoadingSelector} from "app/selectors/loadingSelector";
 
-const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch } = appSlice.actions;
+const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch, setUnapprovedMasterSchemaRequest, approveUnapprovedFieldsRequest } = appSlice.actions;
 
-const MasterSchemaContextComponent = ({ state }) => {
+const MasterSchemaContextComponent = () => {
   const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
+  const isApprovingLoading = useSelector(createLoadingSelector([approveUnapprovedFieldsRequest.type], false));
 
-  const { hierarchy, unapproved, expandable, onNodeSelect } = state;
-
+  const { hierarchy, unapproved, expandable } = useMasterSchemaContext();
   const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
   const filterNames = useMemo(() => filterTypes.map(get("name")), [filterTypes]);
@@ -90,10 +91,16 @@ const MasterSchemaContextComponent = ({ state }) => {
 
   useDidUpdate(() => void dispatch(getMasterSchemaHierarchyRequest({ id: selectedId })), [search]);
 
+   useDidUpdate(() => {
+     if (!isApprovingLoading) {
+       dispatch(setUnapprovedMasterSchemaRequest({id: hierarchy.masterSchemaId}))
+     }
+   }, [isApprovingLoading]);
+
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
       <div className="position-relative">
-        {!isEmpty(unapproved?.fields) && <UnapprovedFieldsComponent fields={unapproved.fields} />}
+        {!isEmpty(unapproved) && <UnapprovedFieldsComponent fields={unapproved} />}
 
         <div className="position-sticky" style={{ top: "0px", left: "0px", backgroundColor: "#f8f8f8" }}>
           <SearchAndFilter
@@ -109,31 +116,29 @@ const MasterSchemaContextComponent = ({ state }) => {
             filterTabPosition={"left"}
           />
 
-          <div className="d-flex justify-content-end pb-1">
-            <MSEButton
-              className="p-0"
-              textColor="currentColor"
-              backgroundColor="transparent"
-              disabled={expandable.isInitial}
-              onClick={expandable.reset}
-            >
-              Collapse
-            </MSEButton>
-          </div>
+          {hierarchy?.id && (
+            <div className="d-flex justify-content-end pb-1">
+              <MSEButton
+                className="p-0"
+                textColor="currentColor"
+                backgroundColor="transparent"
+                disabled={!expandable.isCollapsable}
+                onClick={expandable.reset}
+              >
+                Collapse
+              </MSEButton>
+            </div>
+          )}
         </div>
 
         {hierarchy?.id ? (
-          <MasterSchemaElements state={state} onNodeSelect={onNodeSelect} key={hierarchy.name} />
+          <MasterSchemaElements key={hierarchy.name} />
         ) : (
           <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
         )}
       </div>
     </ContextTemplate>
   );
-};
-
-MasterSchemaContextComponent.propTypes = {
-  state: PropTypes.object.isRequired,
 };
 
 export default MasterSchemaContextComponent;

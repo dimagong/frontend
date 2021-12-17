@@ -5,15 +5,13 @@ import React, { useMemo } from "react";
 import MSETreeField from "./mse-tree-field";
 import MSETreeGroup from "./mse-tree-group";
 
-const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children }) => {
-  const { node, expandable, selectable, collapseWhole } = state;
+const MSETreeElement = ({ state, onPopupAction, children }) => {
+  const { node, expandable, selectable } = state;
   const selected = useMemo(() => selectable.includes(node.nodeId), [node, selectable]);
   const expanded = useMemo(() => expandable.includes(node.nodeId), [node, expandable]);
 
-  const onSelect = () => propOnSelect(node.nodeId);
-  const toggleExpandable = () => {
-    expandable.includes(node.nodeId) ? collapseWhole(node.nodeId) : expandable.expand(node.nodeId);
-  };
+  const onSelect = () => selectable.toggle(node.nodeId);
+  const onExpand = () => expandable.toggle(node.nodeId);
 
   const className = classNames("ms-elements__node--selectable", {
     "ms-elements__node--selected": selected,
@@ -27,7 +25,7 @@ const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children
       date={node.createdAt}
       isSystem={node.isSystem}
       expanded={expanded}
-      onExpandChange={toggleExpandable}
+      onExpandChange={onExpand}
       onSelectChange={onSelect}
       onPopupAction={onPopupAction}
     >
@@ -42,7 +40,6 @@ const MSETreeElement = ({ state, onPopupAction, onSelect: propOnSelect, children
 
 MSETreeElement.propTypes = {
   state: PropTypes.object.isRequired,
-  onSelect: PropTypes.func,
   onPopupAction: PropTypes.func,
   children: PropTypes.node,
 };

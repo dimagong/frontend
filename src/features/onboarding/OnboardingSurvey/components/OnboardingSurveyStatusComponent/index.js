@@ -35,6 +35,7 @@ const OnboardingSurveyStatusComponent = ({survey, status, onForceApplicationShow
     if(status === "approved" && !surveyStats) {
       dispatch(getSurveyByIdRequest(survey.id));
     }
+    // eslint-disable-next-line
   }, [survey.id]);
 
   const isSurveyPassed = (surveyStats && surveyStats.total > surveyStats.min_percent_pass);

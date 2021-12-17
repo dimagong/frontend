@@ -3,7 +3,6 @@ import {all, put, call, takeLatest, select} from "redux-saga/effects";
 import dFormApi from "api/Onboarding/dForms";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
 import {selectdForms} from "app/selectors/onboardingSelectors";
-import rfdc from "rfdc";
 
 import onboardingSlice from 'app/slices/onboardingSlice';
 import appSlice from 'app/slices/appSlice'
@@ -26,7 +25,6 @@ const {
   updateDFormSuccess,
   updateDFormTemplateRequest,
   updateDFormRequest,
-  updateDFormError,
   updateDFormTemplateError,
   deletedFormSuccess,
   deletedFormRequest,
@@ -43,6 +41,10 @@ const {
   getSurveyTriggersRequest,
   getSurveyTriggersError,
 
+  submitdFormNewVersionRequest,
+  submitdFormNewVersionSuccess,
+  submitdFormNewVersionError,
+
   submitdFormSuccess,
   submitdFormRequest,
   submitdFormError,
@@ -54,8 +56,6 @@ const {
   changedFormStatusError,
   setContext,
 } = appSlice.actions;
-
-const clone = rfdc();
 
 function* getdForms() {
   try {
@@ -89,25 +89,22 @@ function* submitdForm({payload}) {
   }
 }
 
-function* changedFormStatus({payload}) {
+function* submitdFormNewVersion({payload}) {
   try {
-    const response = yield call(dFormApi.changedFormStatus, payload);
-    yield put(changedFormStatusSuccess(payload));
+    const response = yield call(dFormApi.submitdFormNewVersion, payload);
+    yield put(submitdFormNewVersionSuccess(response));
   } catch (error) {
-    yield put(changedFormStatusError(error));
+    yield put(submitdFormNewVersionError(error));
+    console.log(error);
   }
 }
 
-
-function* createDForm({payload}) {
+function* changedFormStatus({payload}) {
   try {
-    const responce = yield call(dFormApi.createdForm, {
-      ...payload,
-    });
-
-    yield put(createDFormTemplateSuccess());
+    yield call(dFormApi.changedFormStatus, payload);
+    yield put(changedFormStatusSuccess(payload));
   } catch (error) {
-    yield put(createDFormTemplateError(error));
+    yield put(changedFormStatusError(error));
   }
 }
 
@@ -224,6 +221,7 @@ export default function* () {
 
     yield takeLatest(submitdFormDataRequest.type, submitdFormData),
     yield takeLatest(submitdFormRequest.type, submitdForm),
+    yield takeLatest(submitdFormNewVersionRequest.type, submitdFormNewVersion),
     yield takeLatest(changedFormStatusRequest.type, changedFormStatus),
   ]);
 }

@@ -1,17 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 
 import ContextTemplate from "components/ContextTemplate";
-import {AtSign, X, Plus} from "react-feather";
+import {AtSign, X} from "react-feather";
 import {PhoneEnabled} from "@material-ui/icons";
-import { Scrollbars } from 'react-custom-scrollbars';
 
 import {Button, Spinner} from 'reactstrap';
 import Timeline from "components/Timeline";
 import MemberFirmInfoForm from "./Components/MemberFirmInfoForm";
 
-import FormComponent from "./Components/MemberFirmInfoForm/Components/FormComponent";
 import noneAvatar from "../../../../../../assets/img/portrait/none-avatar.png";
-import {HEADER_HEIGHT} from "constants/header";
 
 import './styles.scss'
 
@@ -29,7 +26,6 @@ const MemberFirmProfileComponent = ({
   onFileInputDialogOpen,
   onLogoChange,
   onLogoRemove,
-  isMemberFirmActivitiesLoading,
   onLoadMoreDataForActivities,
   memberFirmActivities,
 }) => {
@@ -87,7 +83,7 @@ const MemberFirmProfileComponent = ({
                   {data.main_fields.name}
                 </p>
               </div>
-              
+
               <div className="member-firm-profile_header-info-contact_data">
                 {!!data.main_fields.email && (
                   <div className="member-firm-profile_header-info-contact_data-info_tile">

@@ -1,9 +1,8 @@
 import React, {useEffect, useRef} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {Button, Card, CardBody, CardImg, CardText, CardTitle, Col, Media, Spinner} from 'reactstrap'
+import {Button, Card, CardBody, CardImg, CardText, CardTitle, Spinner} from 'reactstrap'
 import noneAvatar from 'assets/img/portrait/none-avatar.png'
 
-import useWindowSize from 'hooks/windowWidth'
 import { X, Edit } from "react-feather";
 import './userCard.scss'
 import {capitalizeAll} from '../../../../utility/common'
@@ -26,6 +25,7 @@ const UserCardTemplate = ({className, oneColumn, onClick, editable = false, onEd
 
   useEffect(() => {
     manager.avatar && dispatch(getUserAvatarRequest({managerId: manager.id}))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[manager.avatar])
 
   const handleNavigateToMemberFirm = (e, memberFirmId) => {

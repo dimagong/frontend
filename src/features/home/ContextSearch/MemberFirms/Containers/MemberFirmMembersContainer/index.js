@@ -35,14 +35,11 @@ const MemberFirmMembersContainer = ({ onNavigateToUserProfile }) => {
     setSearchQuery(e.target.value);
   };
 
-  const filterUsersByName = (users) => {
-
-  };
-
   useEffect(() => {
     dispatch(getMemberFirmUsersRequest(selectedMemberFirm.id));
     dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id));
     dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMemberFirm.id]);
 
   return (

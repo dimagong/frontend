@@ -1,4 +1,4 @@
-import { Button, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import React, { useState } from "react";
 import { MoreVertical } from "react-feather"
 
@@ -12,13 +12,6 @@ function OrderingEditModal(props) {
     const handleShow = () => {
         setShow(true);
         props.onOpen();
-    };
-
-    const handleSave = () => {
-        setShow(false);
-        setTimeout(() => {
-            props.onSave();
-        });
     };
 
     return (

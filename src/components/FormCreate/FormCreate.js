@@ -1,70 +1,53 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-// import Form from "@rjsf/core";
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import Form from '@rjsf/material-ui';
-import ElementEditModal from "./ElementEditModal";
-import DependencyEditModal from "./DependencyEditModal";
-import classnames from "classnames"
+import DependencyEditModal from './DependencyEditModal';
 import rfdc from 'rfdc';
-import {
-  Nav,
-  NavItem,
-  TabContent,
-  Row,
-  Col,
-  NavLink,
-  TabPane,
-  Button,
-  CardTitle,
-  Card,
-  FormGroup,
-  CardBody,
-  CardHeader,
-  Badge, FormFeedback, Input
-} from 'reactstrap';
-import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy"
-import {X, Check, Plus} from "react-feather"
-import Select from "react-select"
-import {deepCompare, makeid, IsJsonString} from "./utils";
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormFeedback, Input, Row, } from 'reactstrap';
+import Checkbox from 'components/@vuexy/checkbox/CheckboxesVuexy';
+import { Check, X } from 'react-feather';
+import Select from 'react-select';
+import { deepCompare, IsJsonString, makeid } from './utils';
 
-import {ObjectFieldTemplate} from './Custom/ObjectFieldTemplate'
-import {FileWidget} from "./Custom/FileWidget";
-import {CheckboxesWidget} from "./Custom/CheckboxesWidget/CheckboxesWidget";
-import {CheckboxWidget} from "./Custom/CheckboxWidget";
-import Reference from "./Custom/Reference";
+import { ObjectFieldTemplate } from './Custom/ObjectFieldTemplate';
+import { FileWidget } from './Custom/FileWidget';
+import Reference from './Custom/Reference';
 import TextWidget from './Custom/TextWidget';
 import LongTextWidget from './Custom/LongTextWidget';
-import NumberWidget from './Custom/NumberWidget';
 import SelectWidget from './Custom/SelectWidget';
 import TextAreaWidget from './Custom/TextAreaWidget';
 import DateInput from './Custom/DateInput';
 import DateTimeInput from './Custom/DateTimeInput';
 
-import {isEqual, debounce, concat, isObject, isEmpty, difference, omit, differenceWith} from 'lodash';
-import fileService from "./services/file.service";
+import { debounce, isEmpty, isEqual } from 'lodash';
+import fileService from './services/file.service';
 import Constants, {
-  FIELD_TYPE_BOOLEAN, FIELD_TYPE_DATE, FIELD_TYPE_FILE, FIELD_TYPE_FILE_LIST, FIELD_TYPE_LONG_TEXT_AREA,
-  FIELD_TYPE_MULTI_SELECT, FIELD_TYPE_NUMBER, FIELD_TYPE_REFERENCE,
-  FIELD_TYPE_SELECT, FIELD_TYPE_TEXT,
+  FIELD_TYPE_BOOLEAN,
+  FIELD_TYPE_DATE,
+  FIELD_TYPE_FILE,
+  FIELD_TYPE_FILE_LIST,
+  FIELD_TYPE_LONG_TEXT_AREA,
+  FIELD_TYPE_MULTI_SELECT,
+  FIELD_TYPE_NUMBER,
+  FIELD_TYPE_REFERENCE,
+  FIELD_TYPE_SELECT,
+  FIELD_TYPE_TEXT,
   FIELD_TYPE_TEXT_AREA
-} from './Parts/Constants'
+} from './Parts/Constants';
 
-import Controls, {referenceObject} from './Parts/Controls'
+import Controls, { referenceObject } from './Parts/Controls';
 
 import './FormCreate.scss';
 
-import {dependencyChecker} from './Parts/DependencyChecker'
-import {listControls} from './Parts/ListControls'
-import {getSpecificType, isElementProtected} from "./helper";
-import OrderingEditModal from './Ordering/OrderingEditModal'
-import Ordering from './Ordering/Ordering'
-import FormOrdering from './Ordering/index'
-import masterSchemaService from "../../views/pages/master-schema/services/masterSchema.service";
-import PropertyNameById from "./Parts/PropertyNameById";
+import { dependencyChecker } from './Parts/DependencyChecker';
+import { listControls } from './Parts/ListControls';
+import { getSpecificType, isElementProtected } from './helper';
+import FormOrdering from './Ordering/index';
+import PropertyNameById from './Parts/PropertyNameById';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from 'app/slices/appSlice';
 
 const {
   getMasterSchemaFieldsRequest,
@@ -77,9 +60,10 @@ function InitFormCreate() {
 
   useEffect(() => {
     dispatch(getMasterSchemaFieldsRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <div></div>
+  return <div />
 }
 
 class FormCreate extends React.Component {
@@ -166,10 +150,12 @@ class FormCreate extends React.Component {
       || formData[field] === false
     );
 
+    // eslint-disable-next-line array-callback-return
     errors.field.map((field) => {
       if (isFieldEmpty(field)) {
         const section = getFieldSection(field);
 
+        // eslint-disable-next-line array-callback-return
         if (!section) return;
 
         if (!resultErrors[section]) {
@@ -216,11 +202,11 @@ class FormCreate extends React.Component {
       isShowToggleProtectedProperties: typeof props.isShowToggleProtectedProperties === 'boolean' ? props.isShowToggleProtectedProperties : false,
       refresh: false,
       tabConfig: 0,
-      inputDisabled: props.inputDisabled === true ? true : false,
+      inputDisabled: props.inputDisabled === true,
       fieldEdit: {
         propertyKey: ''
       },
-      onSaveButtonHidden: props.onSaveButtonHidden === true ? true : false,
+      onSaveButtonHidden: props.onSaveButtonHidden === true,
       dFormActions: [
         {value: "submitted", label: "submitted"},
         {value: "approved", label: "approved"},
@@ -349,14 +335,18 @@ class FormCreate extends React.Component {
       let errors = {
         field: []
       };
+      // eslint-disable-next-line array-callback-return
       requiredFields.map((field) => {
         if (isFieldEmpty(field)) {
 
           const section = getFieldSection(field);
 
+          // eslint-disable-next-line array-callback-return
           if (!section) return;
 
+          // eslint-disable-next-line no-mixed-operators
           if (this.state.uiSchema[field] && (Constants.UI_HIDDEN in this.state.uiSchema[field])
+            // eslint-disable-next-line no-mixed-operators,array-callback-return
             || this.state.uiSchema[field] && (this.state.uiSchema[field][Constants.UI_HIDDEN])) return;
 
           if (!errors[section]) {
@@ -455,6 +445,10 @@ class FormCreate extends React.Component {
 
   onSave() {
     this.props.onSave && this.props.onSave(this.state.formData);
+  }
+
+  onCreateNewVersion() {
+    this.props.onCreateNewVersion && this.props.onCreateNewVersion(this.state.formData);
   }
 
   removeRudimentFormData(formData) {
@@ -664,7 +658,7 @@ class FormCreate extends React.Component {
                               value={condition}
                               onChange={event => this.setConditionalField(event, 'sections', index, indexField)}
                             >
-                              <option key="-1"></option>
+                              <option key="-1" />
                               {this.getSections().map((type, indexType) => <option
                                 key={index + '_' + indexField + '_' + indexType}>{type}</option>)}
                             </select>
@@ -697,7 +691,7 @@ class FormCreate extends React.Component {
                           value={condition}
                           onChange={event => this.setConditionalField(event, 'groups', index, indexField)}
                         >
-                          <option key="-1"></option>
+                          <option key="-1" />
                           {this.getGroups().map((type, indexType) => <option
                             key={indexType}>{type}</option>)}
                         </select>
@@ -728,7 +722,7 @@ class FormCreate extends React.Component {
                           value={condition}
                           onChange={event => this.setConditionalField(event, 'fields', index, indexField)}
                         >
-                          <option key="-1"></option>
+                          <option key="-1" />
                           {Object.keys(this.state.schema.properties).filter(nextFilterField => nextFilterField !== objKey).map((type, indexType) =>
                             <PropertyNameById
                               key={indexType} fieldId={type} value={type}/>)}
@@ -761,7 +755,7 @@ class FormCreate extends React.Component {
                           onChange={event => this.setOperatorField(event, 'fieldOperators', index, indexFieldOperator, 'field')}
                           value={fieldOperator.field}
                         >
-                          <option key="-1"></option>
+                          <option key="-1" />
                           {
                             Object.keys(this.state.schema.properties)
                               .filter(nextFilterField => nextFilterField !== objKey)
@@ -776,7 +770,7 @@ class FormCreate extends React.Component {
                           onChange={event => this.setOperatorField(event, 'fieldOperators', index, indexFieldOperator, 'operator')}
                           value={fieldOperator.operator}
                         >
-                          <option key="-1"></option>
+                          <option key="-1" />
                           {Constants.DEPENDENCY_LOGIC_OPERATOR_ARR.map((type, indexType) => <option
                             key={indexType}>{type}</option>)}
                         </select>
@@ -1022,25 +1016,21 @@ class FormCreate extends React.Component {
 
     if (Array.isArray(state.uiSchema.fieldsOrdering)) {
       state.uiSchema.fieldsOrdering = state.uiSchema.fieldsOrdering.filter(nextField => {
-        // todo only fo numbers
-        if (String(nextField) === String(previousFieldKey)) {
-          return false;
-        }
-        return true;
+        // only fo numbers
+        return String(nextField) !== String(previousFieldKey);
+
       });
 
       const stringProps = Object.keys(properties).map(nextPropertyName => String(nextPropertyName));
 
       state.uiSchema.fieldsOrdering = state.uiSchema.fieldsOrdering.filter(nextField => {
-        // todo only fo numbers
-        if (stringProps.indexOf(String(nextField)) === -1) {
-          return false;
-        }
-        return true;
+        // only fo numbers
+        return stringProps.indexOf(String(nextField)) !== -1;
+
       });
     }
 
-    Object.keys(properties).forEach((deepIndex, deepCounter) => {
+    Object.keys(properties).forEach((deepIndex) => {
       if (previousFieldKey === deepIndex) {
         return;
       }
@@ -1122,7 +1112,7 @@ class FormCreate extends React.Component {
       delete state.uiSchema.columnsClasses[previousFieldKey];
     }
 
-    Object.keys(properties).forEach((deepIndex, deepCounter) => {
+    Object.keys(properties).forEach((deepIndex) => {
       if (previousFieldKey === deepIndex) {
         schema.properties[newFieldKey] = properties[deepIndex];
         return;
@@ -1215,7 +1205,7 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit});
   };
 
-  elementTypeChange = (event, objKey, prop) => {
+  elementTypeChange = (event, objKey) => {
     const {target: {value}} = event;
 
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
@@ -1287,7 +1277,7 @@ class FormCreate extends React.Component {
 
   addControl = (sectionName, groupName) => {
 
-    this.setState(state => {
+    this.setState(() => {
       let schema = clone(this.state.schema);
       let uiSchema = clone(this.state.uiSchema);
       let propertyName = "property_default " + (Object.keys(schema.properties).length + 1);
@@ -1313,7 +1303,7 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit})
   };
 
-  addSelectValues = (event, objKey, index) => {
+  addSelectValues = () => {
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit['enum'].push('');
     this.setState({schemaPropertyEdit})
@@ -1339,7 +1329,7 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit})
   };
 
-  addMultiSelectValues = (event, objKey, index) => {
+  addMultiSelectValues = () => {
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit['items']['anyOf'].push({
       "type": "string",
@@ -1415,10 +1405,6 @@ class FormCreate extends React.Component {
     let schema = clone(this.state.schema);
     let uiSchema = clone(this.state.uiSchema);
 
-
-    const oldPropertyType = getSpecificType(this.state.schema.properties[previousFieldKey]);
-    const newPropertyType = getSpecificType(this.state.schemaPropertyEdit);
-
     if (Array.isArray(uiSchema.fieldsOrdering)) {
       uiSchema.fieldsOrdering = uiSchema.fieldsOrdering.map(nextField => {
         if (String(nextField) === String(previousFieldKey)) {
@@ -1441,10 +1427,8 @@ class FormCreate extends React.Component {
     uiSchema[newFieldKey] = clone(this.state.uiSchemaPropertyEdit);
 
     schema.required = schema.required.filter(nextRequired => {
-      if (this.state.fieldEdit.propertyKey === nextRequired || +this.state.fieldEdit.propertyKey === +nextRequired) {
-        return false;
-      }
-      return true;
+      return !(this.state.fieldEdit.propertyKey === nextRequired || +this.state.fieldEdit.propertyKey === +nextRequired);
+
     });
 
 
@@ -1453,10 +1437,8 @@ class FormCreate extends React.Component {
     }
 
     schema.required = schema.required.filter(nextRequired => {
-      if ((+nextRequired in schema.properties) || ((nextRequired in schema.properties))) {
-        return true;
-      }
-      return false;
+      return (+nextRequired in schema.properties) || ((nextRequired in schema.properties));
+
     });
 
 
@@ -1502,7 +1484,7 @@ class FormCreate extends React.Component {
     this.setState({uiSchemaPropertyEdit})
   }
 
-  getUiSchemaTemplateMultiselect(objKey) {
+  getUiSchemaTemplateMultiselect() {
     if ("ui:widget" in this.state.uiSchemaPropertyEdit && this.state.uiSchemaPropertyEdit["ui:widget"] === 'checkboxes') {
       return this.state.uiSchemaPropertyEdit["ui:widget"];
     }
@@ -1513,10 +1495,8 @@ class FormCreate extends React.Component {
   getLabelShowingCheckbox() {
     if (!this.state.uiSchemaPropertyEdit[Constants.UI_OPTIONS]) return true;
 
-    if (this.state.uiSchemaPropertyEdit[Constants.UI_OPTIONS] && this.state.uiSchemaPropertyEdit[Constants.UI_OPTIONS]['label']) {
-      return true
-    }
-    return false;
+    return !!(this.state.uiSchemaPropertyEdit[Constants.UI_OPTIONS] && this.state.uiSchemaPropertyEdit[Constants.UI_OPTIONS]['label']);
+
   }
 
   setLabelShowingCheckbox() {
@@ -1598,7 +1578,7 @@ class FormCreate extends React.Component {
     this.setState(state);
   };
 
-  addConditional = (objKey) => {
+  addConditional = () => {
     let state = clone(this.state);
 
     if (Object.keys(state.uiSettings.dependencies).length) {
@@ -1627,7 +1607,7 @@ class FormCreate extends React.Component {
     this.setState(state);
   };
 
-  changeClasses = (event, objKey) => {
+  changeClasses = (event) => {
     let state = clone(this.state);
     if (event.target.value) {
       state.uiSettings.classes = event.target.value;
@@ -1637,7 +1617,7 @@ class FormCreate extends React.Component {
     this.setState(state);
   };
 
-  changeGroup = (event, objKey) => {
+  changeGroup = (event) => {
     let state = clone(this.state);
     if (event.target.value) {
       state.uiSettings.group = event.target.value;
@@ -1647,7 +1627,7 @@ class FormCreate extends React.Component {
     this.setState(state);
   };
 
-  changeSection = (event, objKey) => {
+  changeSection = (event) => {
     let state = clone(this.state);
     if (event.target.value) {
       state.uiSettings.section = event.target.value;
@@ -1933,17 +1913,11 @@ class FormCreate extends React.Component {
   };
 
   getFieldsForFormOrdering = () => {
-    const allProps = Object.keys(this.state.schema.properties).map(next => String(next));
-    const orderedProps = this.state.uiSchema.fieldsOrdering;
-    return orderedProps;
+    return this.state.uiSchema.fieldsOrdering;
   };
 
   render() {
-
     let controls = this.getListControls(this.state.schema.properties);
-    const options = {
-      selectOnLineNumbers: true
-    };
 
     return (
       <Row>
@@ -2007,7 +1981,7 @@ class FormCreate extends React.Component {
                       color="primary"
                       icon={<Check className="vx-icon" size={16}/>}
                       label="Subject view"
-                      onChange={event => {
+                      onChange={() => {
                         const formData = clone(this.state.formData);
                         this.setState({
                           isShowProtectedElements: !this.state.isShowProtectedElements,
@@ -2036,10 +2010,7 @@ class FormCreate extends React.Component {
                 ObjectFieldTemplate={this.objectFieldTemplate}
                 uiSchema={this.state.uiSchema}
                 widgets={{
-                  CheckboxWidget: CheckboxWidget,
-                  CheckboxesWidget: CheckboxesWidget,
                   FileWidget: this.fileWidget,
-
                   TextWidget: TextWidget,
                   LongTextWidget: LongTextWidget,
                   SelectWidget: SelectWidget,
@@ -2101,12 +2072,17 @@ class FormCreate extends React.Component {
                       )}
                     </div>
                   )}
-                  {this.props.onSubmit && (
+                  {this.props.onSubmit && !this.props.onCreateNewVersion && (
                     <div style={{float: "right", paddingRight: "20px"}}>
                       <span style={{color: "#7367f0", paddingRight: "10px", maxWidth: 400, display: 'inline-block', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>
                         {this.state.additionalData.name}
                       </span>
                       <Button type="submit" className="ml-auto submit-onboarding-button">Submit for review</Button>
+                    </div>
+                  )}
+                  {this.props.onCreateNewVersion && (
+                    <div style={{float: "right", paddingRight: "20px"}}>
+                      <Button type="submit" className="ml-auto submit-onboarding-button">Save</Button>
                     </div>
                   )}
                   {this.state.dFormTemplate.status === "submitted" && this.props.showSubmittedStatus && (

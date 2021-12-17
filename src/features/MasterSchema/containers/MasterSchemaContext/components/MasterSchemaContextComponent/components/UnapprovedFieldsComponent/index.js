@@ -1,7 +1,6 @@
 import "./styles.scss";
 
 import moment from "moment";
-import { get, pipe } from "lodash/fp";
 import { PropTypes } from "prop-types";
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,10 +31,10 @@ const iconStyles = {
 };
 
 const UnapprovedFieldItem = ({ selectable, field }) => {
-  const selected = useMemo(() => selectable.includes(field.key), [field, selectable]);
+  const selected = useMemo(() => selectable.includes(field.id), [field, selectable]);
 
-  const handleFieldClick = () => selectable.select(field.key);
-  const handleFieldChange = stopPropagation(() => selectable.select(field.key));
+  const handleFieldClick = () => selectable.toggle(field.id);
+  const handleFieldChange = stopPropagation(() => selectable.toggle(field.id));
 
   return (
     <div className="unapproved_fields-list-items-item" onClick={handleFieldClick}>
@@ -44,7 +43,9 @@ const UnapprovedFieldItem = ({ selectable, field }) => {
           <Checkbox checked={selected} onChange={handleFieldChange} />
         </div>
         <div className="unapproved_fields-list-items-item-description">
-          <div className="unapproved_fields-list-items-item-description-name">{field.name}</div>
+          <div className="unapproved_fields-list-items-item-description-name">
+            {`${field.parentGroupName}/${field.name}`}
+          </div>
           <div className="unapproved_fields-list-items-item-description-appearances">
             Applications: {field.applicationNames?.join(", ") || "Not used in Applications"}
           </div>
@@ -77,7 +78,7 @@ const UnapprovedFieldsComponent = ({ fields }) => {
   const selectedId = useSelector(selectSelectedId);
   const movementOptions = useSelector(selectMovementOptions);
 
-  const selectable = useToggleable([]);
+  const selectable = useToggleable();
 
   const [visible, toggleVisibility] = useToggle(true);
   const [location, setLocation] = useFormField(null, [Validators.required]);
@@ -85,15 +86,13 @@ const UnapprovedFieldsComponent = ({ fields }) => {
 
   const onSubmit = () => {
     const parentId = form.values.location.value.id;
-    const fieldsIds = fields.filter(pipe(get("key"), selectable.includes)).map(get("id"));
+    const fieldsIds = selectable.keys;
     const payload = { masterSchemaId: selectedId, parentId, fieldsIds };
 
     dispatch(approveUnapprovedFieldsRequest(payload));
   };
 
-  const handleUnselectAll = () => {
-    selectable.clear();
-  };
+  const handleUnselectAll = () => selectable.clear();
 
   // clear select value depends on fields selecting
   useEffect(() => void setLocation(null), [selectable.isEmpty, setLocation]);
@@ -115,20 +114,21 @@ const UnapprovedFieldsComponent = ({ fields }) => {
               {!!selectable.keys.length && (
                 <>
                   <div className="unapproved_fields-list-header-selected_items-count">
-                    <p>{selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} selected</p>
+                    <p>
+                      {selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} selected
+                    </p>
                   </div>
                   <div className="unapproved_fields-list-header-selected_items-unselect_icon">
-                    <Close style={{fontSize: "16px", color: "black"}} onClick={handleUnselectAll}/>
+                    <Close style={{ fontSize: "16px", color: "black" }} onClick={handleUnselectAll} />
                   </div>
                 </>
               )}
-
             </div>
           </div>
           {visible && (
             <div className="unapproved_fields-list-items">
               {fields.map((field) => (
-                <UnapprovedFieldItem field={field} selectable={selectable} key={field.key} />
+                <UnapprovedFieldItem field={field} selectable={selectable} key={field.id} />
               ))}
             </div>
           )}
@@ -145,7 +145,8 @@ const UnapprovedFieldsComponent = ({ fields }) => {
               <Label for={id} className="approve__label">
                 <CardTitle className="approve__title font-weight-bold">Approve selected fields</CardTitle>
                 <CardSubtitle className="approve__subtitle mt-1">
-                  Which branch should the selected {selectable.keys.length} element{selectable.keys.length === 1 ? "" : "s"} be approved into?
+                  Which branch should the selected {selectable.keys.length} element
+                  {selectable.keys.length === 1 ? "" : "s"} be approved into?
                 </CardSubtitle>
               </Label>
             )}
@@ -172,8 +173,6 @@ const UnapprovedFieldsComponent = ({ fields }) => {
           </MSESelectField>
         )}
       </div>
-
-
     </>
   );
 };

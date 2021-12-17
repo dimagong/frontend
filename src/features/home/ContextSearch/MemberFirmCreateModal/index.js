@@ -26,7 +26,7 @@ const createMemberFirmValidation = yup.object().shape({
   network_id: yup.number().required("Select organisation for member firm"),
 });
 
-const MemberFirmCreateModal = ({isOpen, onClose, isEdit, memberFirmData}) => {
+const MemberFirmCreateModal = ({isOpen, onClose, isEdit}) => {
 
   const dispatch = useDispatch();
 
@@ -91,6 +91,7 @@ const MemberFirmCreateModal = ({isOpen, onClose, isEdit, memberFirmData}) => {
     if (!error && prevMemberFirmCreationLoadingState === true && !isMemberFirmCreationProceeding) {
       handleModalClose()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMemberFirmCreationProceeding]);
 
   // useEffect(() => {

@@ -15,10 +15,7 @@ import {
 import UserRoles from '../../../components/UserRoles'
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  selectGroups,
-  selectManagers
-} from "app/selectors";
+import { selectManagers } from "app/selectors";
 
 import {
   selectOrganizations,
@@ -40,14 +37,12 @@ const {
   getUserOnboardingRequest,
   getOrganizationsRequest,
   getUserOrganizationsRequest,
-  setPreview,
 } = appSlice.actions;
 
-const UserEditPreview = (props, context) => {
+const UserEditPreview = () => {
   const [activeTab, setActiveTab] = useState("Permissions")
 
   const preview = useSelector(selectPreview);
-  const groups = useSelector(selectGroups)
   const dispatch = useDispatch();
   const managers = useSelector(selectManagers)
 
@@ -57,33 +52,19 @@ const UserEditPreview = (props, context) => {
 
   const userOrganizations = useSelector(selectUserOrganizations(manager.id))
 
-  const isUserHasModules = manager && manager.modules && manager.modules.length > 0;
-
-
-  const initOnboarding = {
-    d_form: null,
-    is_internal: false,
-    reviewers: [],
-    user_id: manager.id,
-    workflow: null,
-  }
-
   useEffect(()=>{
-
     // todo what is that
     dispatch(getUserOnboardingRequest({userId: manager.id}))
     if(organizations.length === 0) {
       dispatch(getOrganizationsRequest())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     dispatch(getUserOrganizationsRequest(manager.id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager.id])
-
-  const removeCard = () => {
-    dispatch(setPreview(null))
-  }
 
   const modalContainer = useRef();
 
@@ -107,8 +88,6 @@ const UserEditPreview = (props, context) => {
           )}
 
           <CardText className="mt-3">
-            {/*{manager.roles && !!manager.roles.length && (manager.roles.map((role) => role + " ").join("")) + " at "}*/}
-            {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
             {(manager?.permissions?.ability && manager?.permissions?.organization) ? capitalizeAll(manager?.permissions?.ability.replace("_", " ")) + " at " + manager?.permissions?.organization : ""}
           </CardText>
         </CardBody>
@@ -123,7 +102,6 @@ const UserEditPreview = (props, context) => {
             <div>
               <CardTitle className="m-0 user-card-body_title">{`${manager.first_name} ${manager.last_name}`}</CardTitle>
               <CardText style={{marginBottom: "5px"}}>
-                {/*{manager.roles && manager.roles.length && manager.roles.map((role) => role + " ") || "No roles"}*/}
                 {capitalizeAll(manager?.permissions?.ability.replace("_", " "))}
               </CardText>
             </div>
@@ -140,7 +118,6 @@ const UserEditPreview = (props, context) => {
           </div>
           <div className="user-card-body-right">
             <CardText>
-              {/*{(manager.groups && manager.groups.length > 0 && manager.groups.map((group) => <span className="organization-name">{getGroupName(groups, group.group_id, groupTypes[group.group_type])}</span> ))}*/}
               {manager?.permissions?.organization}
             </CardText>
             <UncontrolledDropdown>

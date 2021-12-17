@@ -1,9 +1,11 @@
+import "./style.scss";
+
 import React from "react";
+
 import noneAvatar from "assets/img/portrait/none-avatar.png";
 import AddUserIcon from "assets/img/svg/add-user.svg";
 import RemoveUserIcon from "assets/img/svg/remove-user.svg";
 import SettingsIcon from "assets/img/svg/settings.svg";
-import "./style.scss";
 
 const MemberFirmModalTable = ({
   array,
@@ -18,30 +20,15 @@ const MemberFirmModalTable = ({
   const TableCard = ({ manager }) => {
     return (
       <div className="table-card">
+        <img src={manager.url ? manager.url : noneAvatar} className={"table-card__avatar"} alt={"profile-img"} />
 
-        <img
-          src={manager.url ? manager.url : noneAvatar}
-          className={"table-card__avatar"}
-          alt={"profile-img"}
-        />
+        <span className={"table-card__user-name"}>{manager.first_name + " " + manager.last_name}</span>
 
-        <span className={"table-card__user-name"}>
-          {manager.first_name + " " + manager.last_name}
-        </span>
+        <span className={"table-card__user-status"}>{manager?.status}</span>
 
-        <span className={"table-card__user-status"}>
-          {
-            manager?.status
-          }
-        </span>
+        <span className={"table-card__user-email"}>{manager.email}</span>
 
-        <span className={"table-card__user-email"}>
-          {manager.email}
-        </span>
-
-        <span className={"table-card__user-city"}>
-          -
-        </span>
+        <span className={"table-card__user-city"}>-</span>
 
         <span className={"table-card__user-role"}>
           {manager?.permissions?.ability
@@ -115,17 +102,12 @@ const MemberFirmModalTable = ({
       }
       case "memberFirm": {
         newArray = [...arrayForSort].sort((lhs, rhs) =>
-          lhs.member_firm?.main_fields?.name >=
-          rhs.member_firm?.main_fields?.name
-            ? 1
-            : -1
+          lhs.member_firm?.main_fields?.name >= rhs.member_firm?.main_fields?.name ? 1 : -1
         );
         break;
       }
       default:
-        newArray = [...arrayForSort].sort((lhs, rhs) =>
-          lhs[parameter] >= rhs[parameter] ? 1 : -1
-        );
+        newArray = [...arrayForSort].sort((lhs, rhs) => (lhs[parameter] >= rhs[parameter] ? 1 : -1));
     }
     if (JSON.stringify(arrayForSort) === JSON.stringify(newArray)) {
       setArray(newArray.reverse());
@@ -135,7 +117,7 @@ const MemberFirmModalTable = ({
   };
 
   return (
-    <div style={{ marginBottom: 22, marginTop: 26}}>
+    <div style={{ marginBottom: 22, marginTop: 26 }}>
       {isTitle && <TableTitle />}
       {array?.length > 0 ? (
         array.map((item) => <TableCard manager={item} />)

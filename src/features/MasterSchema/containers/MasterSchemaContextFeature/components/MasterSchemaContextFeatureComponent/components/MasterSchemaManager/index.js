@@ -1,13 +1,19 @@
-import React from "react";
 import { get } from "lodash/fp";
-import PropTypes from "prop-types";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
-import { selectMovementOptions, selectSelectedId } from "app/selectors/masterSchemaSelectors";
+import {
+  selectMovementOptions,
+  selectRelatedApplications,
+  selectSelectedId,
+} from "app/selectors/masterSchemaSelectors";
+
+import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
 import MSENodeRenamingForm from "./components/mse-node-renaming-form";
 import MSENodeRelocationForm from "./components/mse-node-relocation-form";
+import MSENodeRelatedTable from "./components/mse-node-related-table";
 
 const {
   updateFieldMasterSchemaRequest,
@@ -15,14 +21,18 @@ const {
   fieldsMakeParentMasterSchemaRequest,
   fieldMakeParentMasterSchemaRequest,
   groupMakeParentMasterSchemaRequest,
+  getRelatedApplicationsRequest,
 } = appSlice.actions;
 
-const MasterSchemaManager = ({ state }) => {
-  const { selected } = state;
+const MasterSchemaManager = () => {
+  const {
+    selectable: { selected },
+  } = useMasterSchemaContext();
 
   const dispatch = useDispatch();
   const selectedId = useSelector(selectSelectedId);
   const movementOptions = useSelector(selectMovementOptions);
+  const relatedApplications = useSelector(selectRelatedApplications(selected?.node?.id));
 
   const onRenameSubmit = (submitted) => {
     if (submitted.invalid) return;
@@ -56,8 +66,15 @@ const MasterSchemaManager = ({ state }) => {
     dispatch(fieldsMakeParentMasterSchemaRequest(payload));
   };
 
+  useEffect(() => {
+    if (selected?.node?.id) {
+      dispatch(getRelatedApplicationsRequest({ fieldId: selected.node.id }));
+    }
+  }, [selected]);
+
   const render = () => {
-    if (selected.fields.length > 1) {
+    // reminder - the !selected.areSelectedFieldsContainCommonAndMemberFirmFields work the same for merge feature
+    if (selected.fields.length > 1 && !selected.areSelectedFieldsContainCommonAndMemberFirmFields) {
       return (
         <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage datapoints</div>
@@ -78,6 +95,9 @@ const MasterSchemaManager = ({ state }) => {
       return (
         <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage Datapoint</div>
+          {relatedApplications?.length > 0 && (
+            <MSENodeRelatedTable className="my-2" relatedApplications={relatedApplications} />
+          )}
           <MSENodeRenamingForm
             className="my-2"
             label="Rename datapoint to:"
@@ -127,11 +147,7 @@ const MasterSchemaManager = ({ state }) => {
     return null;
   };
 
-  return selected.node && !selected.node.isSystem ? render() : null;
-};
-
-MasterSchemaManager.propTypes = {
-  state: PropTypes.object.isRequired,
+  return selected.node && !selected.thereIsSelectedSystemNode ? render() : null;
 };
 
 export default MasterSchemaManager;

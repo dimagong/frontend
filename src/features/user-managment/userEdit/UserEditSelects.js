@@ -2,13 +2,13 @@ import React, {useEffect, useState} from 'react'
 import {
   Col,
 } from "reactstrap"
-import Select, {components} from "react-select"
+import Select from "react-select"
 import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
 import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
 import {useDispatch, useSelector} from "react-redux";
 import {selectGroups, selectRoles, selectModules, selectManager} from "app/selectors";
 import {groupTypes} from 'constants/group'
-import {prepareSelectOptions,prepareNotNestedSelectOptions, normalizeGroups, getGroupName} from "utility/select/prepareSelectData";
+import {prepareNotNestedSelectOptions, getGroupName} from "utility/select/prepareSelectData";
 import {MultiSelectOrganization} from "../../../components/MultiSelect/MultiSelectOrganizations";
 import { isEmpty } from 'lodash'
 import OrganizationPermissionsModal from '../../../components/modals/OrganizationPermissionsModal'
@@ -131,14 +131,6 @@ const UserEditSelects = () => {
       }))
     }
 
-    // addUserGroupsRequest
-    // removeUserGroupsRequest
-    // values
-    //   ? dispatch(updateUserGroupsRequest({
-    //     id: manager.id,
-    //     groups: normalizeGroups(groups).filter(group => values.some(value => value.label === group.name))
-    //   }))
-    //   : dispatch(updateUserGroupsRequest({id: manager.id, groups: []}))
   };
 
   const prepareSelectGroups = selectedGroups => {
@@ -188,7 +180,6 @@ const UserEditSelects = () => {
           <div className="font-weight-bold column-sizing" style={{padding: 5}}>Organisations</div>
           <div className="w-100">
             <MultiSelectOrganization
-              // isDisabled={this.state.isDisabledGroups}
               value={prepareSelectGroups(manager.groups)}
               options={filtredSelectOptions()}
               onChange={(values) => {

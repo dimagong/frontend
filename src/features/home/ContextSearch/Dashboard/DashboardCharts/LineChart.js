@@ -48,6 +48,7 @@ const LineChart = ({ settings, data, chartId, title}) => {
       setCurrChart(myChart)
       setChartIsCreated(true)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
@@ -59,6 +60,7 @@ const LineChart = ({ settings, data, chartId, title}) => {
       );
       setCurrChart(myChart)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, settings.state, settings?.dForm, settings.titleName])
 
   return ( <div style={{width: '100%', height: "auto", position: 'relative', zIndex: 10}}>

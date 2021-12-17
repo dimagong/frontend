@@ -49,6 +49,7 @@ export default function Sections(props) {
             <NavItem style={isSectionHidden(section)} key={`tab-display-${section}`} {...isSectionDisabled(section)}>
               <NavLink
                 className={classnames({
+                  // eslint-disable-next-line eqeqeq
                   active: keyTab == index
                 }, "sections-nav_item")}
                 onClick={() => {
@@ -73,6 +74,7 @@ export default function Sections(props) {
                 </div>
                 <div
                   className={classnames({
+                    // eslint-disable-next-line eqeqeq
                     active: keyTab == index
                   }, "sections-nav_item_delimiter")}
                 />
