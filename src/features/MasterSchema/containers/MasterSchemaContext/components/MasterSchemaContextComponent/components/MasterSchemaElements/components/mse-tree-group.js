@@ -51,7 +51,7 @@ const MSETreeGroup = ({ id, name, date, isSystem, expanded, onExpandChange, onSe
         </div>
       }
       append={
-        <div className="d-flex position-relative" ref={popupRef}>
+        <div ref={popupRef}>
           <button
             type="button"
             className="ms-elements__popup-accessor"

@@ -108,21 +108,21 @@ const SurveysDesignerComponent = ({
 
       setSurveyVersion({value: survey.latest_version.id, label: survey.latest_version.current_version})
     }
-  }, [error, isSurveyMainDataUpdateProceed, prevSurveyMainDataUpdateProceed, survey.latest_version.current_version, survey.latest_version.id]);
+  }, [isSurveyMainDataUpdateProceed]);
 
   useEffect(() => {
     if (!isSurveyUpdateProceed && prevSurveyUpdateProceed && !error) {
       dispatch(getSurveyVersionsRequest(survey.id));
       setSurveyVersion({value: survey.latest_version.id, label: survey.latest_version.current_version})
     }
-  }, [dispatch, error, isSurveyUpdateProceed, prevSurveyUpdateProceed, survey.id, survey.latest_version.current_version, survey.latest_version.id]);
+  }, [isSurveyUpdateProceed]);
 
   useEffect(() => {
     if(!isSurveyLoading && prevSurveyLoadingValue && !error) {
       dispatch(getSurveyVersionsRequest(survey.id));
       setSurveyVersion({value: survey.latest_version.id, label: survey.latest_version.current_version})
     }
-  }, [dispatch, error, isSurveyLoading, prevSurveyLoadingValue, survey.id, survey.latest_version.current_version, survey.latest_version.id]);
+  }, [isSurveyLoading]);
 
   const isDeleteProceed = isSurveyDeleteProceed
                           || isSurveyDeleteLatestVersionProceed
