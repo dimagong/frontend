@@ -36,7 +36,7 @@ const masterSchemaFieldInterface = yup.object({
 const masterSchemaUnapprovedFieldInterface = yup.object({
   ...masterSchemaNodeSchema,
   applicationNames: yup.array().test((v) => Array.isArray(v)),
-  providedByFullName: yup.string().required(),
+  providedByFullName: yup.string().nullable(),
   parentGroupName: yup.string().required(),
 });
 
