@@ -114,7 +114,7 @@ const OnboardingQuestion = ({
     if (initAnswer) {
       onAnswerChange(initAnswer.answer)
     }
-  }, [initAnswer, onAnswerChange]);
+  }, [initAnswer]);
 
   return (
     <div className={`question question-${displayType}`}>
