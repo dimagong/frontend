@@ -67,7 +67,7 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
 
   const handleAnswerSubmit = () => {
 
-    if (answer.trim() === "") {
+    if (!answer || answer.trim() === "") {
       toast.error("Please, answer the question");
       return;
     }
