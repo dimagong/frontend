@@ -111,7 +111,7 @@ const MasterSchemaContextComponent = () => {
         {!isEmpty(unapproved) && <UnapprovedFieldsComponent fields={unapproved} />}
 
         <div
-          className={hierarchy ? "position-sticky" : ""}
+          className={hierarchy ? "position-sticky zindex-1" : ""}
           style={{ top: "0px", left: "0px", backgroundColor: "#f8f8f8" }}
         >
           <SearchAndFilter
