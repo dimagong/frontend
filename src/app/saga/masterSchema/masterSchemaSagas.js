@@ -2,7 +2,7 @@ import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import appSlice from "app/slices/appSlice";
 import masterSchemaApi from "api/masterSchema/masterSchema";
-import { selectSearch } from "app/selectors/masterSchemaSelectors";
+import { selectSearch, selectSelectedId } from "app/selectors/masterSchemaSelectors";
 
 const {
   getMasterSchemaFieldsRequest,
@@ -68,6 +68,10 @@ const {
   getRelatedApplicationsRequest,
   getRelatedApplicationsSuccess,
   getRelatedApplicationsError,
+
+  getVersionsByMasterSchemaFieldRequest,
+  getVersionsByMasterSchemaFieldSuccess,
+  getVersionsByMasterSchemaFieldError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -300,25 +304,28 @@ function* getGroups({ payload }) {
   }
 }
 
-function* getHistoryByField({ payload }) {
+function* getVersionsByField({ payload }) {
+  const selectedId = yield select(selectSelectedId);
   const { fieldId } = payload;
-  const versions = yield call(masterSchemaApi.getFieldVersions, { fieldId });
-  const history = { fieldId, versions };
-  return history;
+  try {
+    const versions = yield call(masterSchemaApi.getFieldVersions, { fieldId });
+    yield put(getVersionsByMasterSchemaFieldSuccess({ fieldId, versions, selectedId }));
+  } catch (error) {
+    yield put(getVersionsByMasterSchemaFieldError(error));
+  }
 }
 
 function* getUsers({ payload }) {
   const { fieldId, name, abilities, organizations, member_firm_id } = payload;
   const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations, member_firm_id });
-  const histories = yield all(users.map(({ field }) => call(getHistoryByField, { payload: { fieldId: field.id } })));
-  return { users, histories };
+  return { users };
 }
 
 function* getUsersByField({ payload }) {
   const { fieldId } = payload;
   try {
-    const { users, histories } = yield call(getUsers, { payload: { fieldId } });
-    yield put(getUsersByMasterSchemaFieldSuccess({ users, histories, fieldId }));
+    const { users } = yield call(getUsers, { payload: { fieldId } });
+    yield put(getUsersByMasterSchemaFieldSuccess({ users, fieldId }));
   } catch (error) {
     yield put(getUsersByMasterSchemaFieldError(error));
   }
@@ -327,8 +334,8 @@ function* getUsersByField({ payload }) {
 function* searchUsersByField({ payload }) {
   const { fieldId, name, abilities, organizations, member_firm_id } = payload;
   try {
-    const { users, histories } = yield call(getUsers, { payload: { fieldId, name, abilities, organizations, member_firm_id } });
-    yield put(searchUsersByMasterSchemaFieldSuccess({ users, histories, fieldId }));
+    const { users } = yield call(getUsers, { payload: { fieldId, name, abilities, organizations, member_firm_id } });
+    yield put(searchUsersByMasterSchemaFieldSuccess({ users, fieldId }));
   } catch (error) {
     yield put(searchUsersByMasterSchemaFieldError(error));
   }
@@ -353,6 +360,7 @@ export default function* () {
     yield takeLatest(setUnapprovedMasterSchemaRequest, getUnapproved),
     yield takeLatest(approveUnapprovedFieldsRequest, approveFields),
     yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsersByField),
+    yield takeLatest(getVersionsByMasterSchemaFieldRequest, getVersionsByField),
     yield takeLatest(searchUsersByMasterSchemaFieldRequest, searchUsersByField),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),

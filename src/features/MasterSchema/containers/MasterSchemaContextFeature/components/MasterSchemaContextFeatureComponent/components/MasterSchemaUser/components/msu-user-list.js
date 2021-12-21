@@ -2,11 +2,17 @@ import moment from "moment";
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import { ExternalLink } from "react-feather";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { capitalize, get, isEmpty } from "lodash/fp";
-import { Table, Card, CardBody, CardHeader } from "reactstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { Table, Card, CardBody, CardHeader, Spinner, Col } from "reactstrap";
 
 import { useBoolean } from "hooks/use-boolean";
+
+import appSlice from "app/slices/appSlice";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { selectSelectedId, selectVersions } from "app/selectors/masterSchemaSelectors";
+
 import masterSchemaApi from "api/masterSchema/masterSchema";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
@@ -116,8 +122,19 @@ const ValuePreview = ({ value, files, type, onExtendedValueClick }) => {
   );
 };
 
+const { getVersionsByMasterSchemaFieldRequest } = appSlice.actions;
+
 const MSUUserList = ({ users, header }) => {
-  const [selectedUser, setSelectedUser] = useState(null);
+  const dispatch = useDispatch();
+  const selectedId = useSelector(selectSelectedId);
+  const masterSchemaVersions = useSelector(selectVersions);
+
+  const [versionFieldId, setVersionFieldId] = useState();
+  const isVersionsLoading = useSelector(createLoadingSelector([getVersionsByMasterSchemaFieldRequest.type]));
+  const versions = useMemo(() => {
+    return masterSchemaVersions[`${selectedId}/${versionFieldId}`] || [];
+  }, [masterSchemaVersions, selectedId, versionFieldId]);
+
   const [selectedField, setSelectedField] = useState(null);
   const [valueModal, openValueModal, closeValueModal] = useBoolean(false);
   const [historyModal, openHistoryModal, closeHistoryModal] = useBoolean(false);
@@ -128,8 +145,10 @@ const MSUUserList = ({ users, header }) => {
   };
 
   const onVersionClick = (user) => () => {
-    setSelectedUser(user);
+    const fieldId = user.field.id;
     openHistoryModal();
+    setVersionFieldId(fieldId);
+    dispatch(getVersionsByMasterSchemaFieldRequest({ fieldId }));
   };
 
   if (isEmpty(users)) {
@@ -230,24 +249,32 @@ const MSUUserList = ({ users, header }) => {
         </SurveyModal>
       )}
 
-      {selectedUser && (
-        <SurveyModal
-          className="element-history"
-          isOpen={historyModal}
-          title="Element history"
-          onClose={closeHistoryModal}
-          actions={false}
-        >
-          <Table className="msu-table" borderless responsive>
-            <thead>
-              <tr className="msu-table__history-head">
-                <th>Date</th>
-                <th className="msu-table__value">Value</th>
-                <th>User</th>
+      <SurveyModal
+        className="element-history"
+        isOpen={historyModal}
+        title="Element history"
+        onClose={closeHistoryModal}
+        actions={false}
+      >
+        <Table className="msu-table" borderless responsive>
+          <thead>
+            <tr className="msu-table__history-head">
+              <th>Date</th>
+              <th className="msu-table__value">Value</th>
+              <th>User</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isVersionsLoading ? (
+              <tr>
+                <td colSpan="3">
+                  <Col className="d-flex justify-content-center py-4">
+                    <Spinner />
+                  </Col>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {selectedUser.history.versions.map((version) => {
+            ) : (
+              versions.map((version) => {
                 const { provided } = version;
                 const fullName = provided ? getFullName(provided) : null;
                 return (
@@ -267,11 +294,11 @@ const MSUUserList = ({ users, header }) => {
                     <td>{fullName}</td>
                   </tr>
                 );
-              })}
-            </tbody>
-          </Table>
-        </SurveyModal>
-      )}
+              })
+            )}
+          </tbody>
+        </Table>
+      </SurveyModal>
     </>
   );
 };

@@ -445,25 +445,28 @@ const masterSchemaReducer = {
     state.isLoading = false;
   },
 
-  getUsersByMasterSchemaFieldSuccess(state, { payload }) {
-    const { users, histories, fieldId } = payload;
+  getVersionsByMasterSchemaFieldSuccess(state, { payload }) {
+    const { versions, fieldId, selectedId } = payload;
 
-    state.masterSchema.users[fieldId] = users.map((user) => {
-      user.history = histories.find(({ fieldId }) => user.field.id === fieldId);
-      return user;
-    });
+    state.masterSchema.versions[`${selectedId}/${fieldId}`] = versions;
+
+    state.isError = false;
+    state.isLoading = false;
+  },
+
+  getUsersByMasterSchemaFieldSuccess(state, { payload }) {
+    const { users, fieldId } = payload;
+
+    state.masterSchema.users[fieldId] = users;
 
     state.isError = false;
     state.isLoading = false;
   },
 
   searchUsersByMasterSchemaFieldSuccess(state, { payload }) {
-    const { users, histories, fieldId } = payload;
+    const { users, fieldId } = payload;
 
-    state.masterSchema.users[fieldId] = users.map((user) => {
-      user.history = histories.find(({ fieldId }) => user.field.id === fieldId);
-      return user;
-    });
+    state.masterSchema.users[fieldId] = users;
 
     state.isError = false;
     state.isLoading = false;
