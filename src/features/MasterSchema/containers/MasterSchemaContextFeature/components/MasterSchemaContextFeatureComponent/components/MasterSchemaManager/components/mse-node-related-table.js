@@ -1,4 +1,4 @@
-import "../../MasterSchemaUserList/styles.scss";
+import "../../MasterSchemaUser/styles.scss";
 
 import React from "react";
 import moment from "moment";

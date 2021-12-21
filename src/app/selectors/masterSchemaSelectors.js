@@ -22,8 +22,7 @@ export const selectSelectedUnapproved = (state) => {
 export const selectSelectedHierarchy = (state) => {
   const selectedId = selectSelectedId(state);
   const { hierarchies } = state?.app?.masterSchema;
-
-  return hierarchies.find(pipe(get("masterSchemaId"), isEqual(selectedId)));
+  return hierarchies[selectedId];
 };
 
 export const selectMovementOptions = (state) => {

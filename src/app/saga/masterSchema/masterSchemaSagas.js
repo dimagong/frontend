@@ -61,6 +61,10 @@ const {
   getUsersByMasterSchemaFieldSuccess,
   getUsersByMasterSchemaFieldError,
 
+  searchUsersByMasterSchemaFieldRequest,
+  searchUsersByMasterSchemaFieldSuccess,
+  searchUsersByMasterSchemaFieldError,
+
   getRelatedApplicationsRequest,
   getRelatedApplicationsSuccess,
   getRelatedApplicationsError,
@@ -305,12 +309,28 @@ function* getHistoryByField({ payload }) {
 
 function* getUsers({ payload }) {
   const { fieldId, name, abilities, organizations, member_firm_id } = payload;
+  const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations, member_firm_id });
+  const histories = yield all(users.map(({ field }) => call(getHistoryByField, { payload: { fieldId: field.id } })));
+  return { users, histories };
+}
+
+function* getUsersByField({ payload }) {
+  const { fieldId } = payload;
   try {
-    const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations, member_firm_id });
-    const histories = yield all(users.map(({ field }) => call(getHistoryByField, { payload: { fieldId: field.id } })));
+    const { users, histories } = yield call(getUsers, { payload: { fieldId } });
     yield put(getUsersByMasterSchemaFieldSuccess({ users, histories, fieldId }));
   } catch (error) {
     yield put(getUsersByMasterSchemaFieldError(error));
+  }
+}
+
+function* searchUsersByField({ payload }) {
+  const { fieldId, name, abilities, organizations, member_firm_id } = payload;
+  try {
+    const { users, histories } = yield call(getUsers, { payload: { fieldId, name, abilities, organizations, member_firm_id } });
+    yield put(searchUsersByMasterSchemaFieldSuccess({ users, histories, fieldId }));
+  } catch (error) {
+    yield put(searchUsersByMasterSchemaFieldError(error));
   }
 }
 
@@ -332,7 +352,8 @@ export default function* () {
     yield takeLatest(getMasterSchemaHierarchyRequest, getHierarchy),
     yield takeLatest(setUnapprovedMasterSchemaRequest, getUnapproved),
     yield takeLatest(approveUnapprovedFieldsRequest, approveFields),
-    yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsers),
+    yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsersByField),
+    yield takeLatest(searchUsersByMasterSchemaFieldRequest, searchUsersByField),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),
