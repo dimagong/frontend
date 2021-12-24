@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { pipe, get, isEqual, pick, xorBy, includes } from "lodash/fp";
+import { pipe, get, isEqual, pick, isEmpty, includes } from "lodash/fp";
 import { toast } from "react-toastify";
 
 /* Interfaces */
@@ -457,7 +457,7 @@ const masterSchemaReducer = {
   getUsersByMasterSchemaFieldSuccess(state, { payload }) {
     const { users, fieldId } = payload;
 
-    state.masterSchema.users[fieldId] = users;
+    state.masterSchema.users[fieldId] = isEmpty(users) ? null : users;
 
     state.isError = false;
     state.isLoading = false;

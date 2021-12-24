@@ -40,7 +40,6 @@ const MSENodeRelocationForm = ({
   );
   const [pristine, setPristine] = useState(true);
 
-  console.log(label, initialValue);
   const [location, setLocation] = useFormField(initialValue, [
     Validators.required,
     Validators.identical(initialValue),

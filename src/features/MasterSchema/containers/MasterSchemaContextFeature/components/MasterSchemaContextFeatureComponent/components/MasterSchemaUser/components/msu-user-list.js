@@ -1,11 +1,11 @@
 import moment from "moment";
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
+import { capitalize, get } from "lodash/fp";
 import { ExternalLink } from "react-feather";
-import React, { useEffect, useMemo, useState } from "react";
-import { capitalize, get, isEmpty } from "lodash/fp";
+import { Table, Spinner, Col } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Card, CardBody, CardHeader, Spinner, Col } from "reactstrap";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { useBoolean } from "hooks/use-boolean";
 
@@ -124,7 +124,7 @@ const ValuePreview = ({ value, files, type, onExtendedValueClick }) => {
 
 const { getVersionsByMasterSchemaFieldRequest } = appSlice.actions;
 
-const MSUUserList = ({ users, header }) => {
+const MSUUserList = ({ users }) => {
   const dispatch = useDispatch();
   const selectedId = useSelector(selectSelectedId);
   const masterSchemaVersions = useSelector(selectVersions);
@@ -151,97 +151,80 @@ const MSUUserList = ({ users, header }) => {
     dispatch(getVersionsByMasterSchemaFieldRequest({ fieldId }));
   };
 
-  if (isEmpty(users)) {
-    return (
-      <Card className="px-1 ms-user-list" style={{ boxShadow: "none", border: "1px solid #ececec" }}>
-        <CardHeader className="px-0">{header}</CardHeader>
-        <CardBody className="pt-0 pb-1 px-0">
-          <h2 className="ms-nothing-was-found pt-0">No users found for your query</h2>
-        </CardBody>
-      </Card>
-    );
-  }
-
   return (
     <>
-      <Card className="px-1 ms-user-list" style={{ boxShadow: "none", border: "1px solid #ececec" }}>
-        <CardHeader className="px-0">{header}</CardHeader>
-        <CardBody className="pt-0 pb-1 px-0">
-          {users && !users.length && <h3 className="ms-nothing-was-found">No users found for your query</h3>}
-          <Table className="msu-table" borderless responsive>
-            <thead>
-              <tr className="msu-table__users-head">
-                <th className="msu-table__avatar">&nbsp;</th>
-                <th className="msu-table__name">Name</th>
-                <th>Role</th>
-                <th>Member firm</th>
-                <th className="msu-table__value">Value</th>
-                <th className="msu-table__value">User</th>
-                <th className="msu-table__date--end">Date</th>
-                <th className="msu-table__total">&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => {
-                const fullName = getFullName(user);
-                const { field, permissions } = user;
-                const { provided } = field;
-                const avatarPath = user.avatar_path || NoneAvatar;
-                const providedFullName = provided ? getFullName(provided) : null;
-                const role = capitalize(permissions?.ability || "");
-                const memberFirm = user.member_firm?.name;
-                const versionsTotal = user.versions_total ?? 0;
-                const normalizedVersionsTotal = normalizeVersionTotal(versionsTotal);
+      <Table className="msu-table" borderless responsive>
+        <thead>
+        <tr className="msu-table__users-head">
+          <th className="msu-table__avatar">&nbsp;</th>
+          <th className="msu-table__name">Name</th>
+          <th>Role</th>
+          <th>Member firm</th>
+          <th className="msu-table__value">Value</th>
+          <th className="msu-table__value">User</th>
+          <th className="msu-table__date--end">Date</th>
+          <th className="msu-table__total">&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        {users.map((user) => {
+          const fullName = getFullName(user);
+          const { field, permissions } = user;
+          const { provided } = field;
+          const avatarPath = user.avatar_path || NoneAvatar;
+          const providedFullName = provided ? getFullName(provided) : null;
+          const role = capitalize(permissions?.ability || "");
+          const memberFirm = user.member_firm?.name;
+          const versionsTotal = user.versions_total ?? 0;
+          const normalizedVersionsTotal = normalizeVersionTotal(versionsTotal);
 
-                return (
-                  <tr className="msu-table__row--shadowed-partial" key={user.id}>
-                    <td className="msu-table__avatar">
-                      <img
-                        className="msu-table__avatar-img"
-                        src={avatarPath}
-                        width="40"
-                        height="40"
-                        alt="user's avatar."
-                      />
-                    </td>
+          return (
+            <tr className="msu-table__row--shadowed-partial" key={user.id}>
+              <td className="msu-table__avatar">
+                <img
+                  className="msu-table__avatar-img"
+                  src={avatarPath}
+                  width="40"
+                  height="40"
+                  alt="user's avatar."
+                />
+              </td>
 
-                    <td className="msu-table__name pl-1">{fullName}</td>
+              <td className="msu-table__name pl-1">{fullName}</td>
 
-                    <td>{role}</td>
+              <td>{role}</td>
 
-                    <td>{memberFirm}</td>
+              <td>{memberFirm}</td>
 
-                    <td className="msu-table__value">
-                      <ValuePreview
-                        value={field.value}
-                        files={field.files}
-                        type={field.type}
-                        onExtendedValueClick={onExtendedValueClick(user.field)}
-                      />
-                    </td>
+              <td className="msu-table__value">
+                <ValuePreview
+                  value={field.value}
+                  files={field.files}
+                  type={field.type}
+                  onExtendedValueClick={onExtendedValueClick(user.field)}
+                />
+              </td>
 
-                    <td className="msu-table__name">{providedFullName}</td>
+              <td className="msu-table__name">{providedFullName}</td>
 
-                    <td className="msu-table__date--end msu-table__date--bordered">
-                      <div>{moment(user.field.date).format("DD/MM/YYYY")}</div>
-                      <div>{moment(user.field.date).format("HH:MM")}</div>
-                    </td>
+              <td className="msu-table__date--end msu-table__date--bordered">
+                <div>{moment(user.field.date).format("DD/MM/YYYY")}</div>
+                <div>{moment(user.field.date).format("HH:MM")}</div>
+              </td>
 
-                    <td className="msu-table__total">
-                      <button className="msu-table__versioning-button" onClick={onVersionClick(user)}>
-                        <span className="msu-table__versioning-number" title={versionsTotal}>
-                          {normalizedVersionsTotal}
-                        </span>
-                        <img className="msu-table__versioning-img" src={BackInTimeIcon} alt="versions-modal" />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        </CardBody>
-      </Card>
+              <td className="msu-table__total">
+                <button className="msu-table__versioning-button" onClick={onVersionClick(user)}>
+                          <span className="msu-table__versioning-number" title={versionsTotal}>
+                            {normalizedVersionsTotal}
+                          </span>
+                  <img className="msu-table__versioning-img" src={BackInTimeIcon} alt="versions-modal" />
+                </button>
+              </td>
+            </tr>
+          );
+        })}
+        </tbody>
+      </Table>
 
       {selectedField && (
         <SurveyModal isOpen={valueModal} title="Extended input" onClose={closeValueModal} actions={false}>
@@ -303,9 +286,12 @@ const MSUUserList = ({ users, header }) => {
   );
 };
 
+MSUUserList.defaultProps = {
+  users: [],
+};
+
 MSUUserList.propTypes = {
-  users: PropTypes.array.isRequired,
-  header: PropTypes.node.isRequired,
+  users: PropTypes.array,
 };
 
 export default MSUUserList;
