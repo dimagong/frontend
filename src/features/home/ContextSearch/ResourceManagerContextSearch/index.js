@@ -20,7 +20,7 @@ const ResourceManagerContextSearch = () => {
   const organizationsData = useSelector(selectOrganizations);
 
   const handleOrganizationSelect = () => {
-    setContext("resourceManager")
+    dispatch(setContext("resourceManager"));
   };
 
   useEffect(() => {
