@@ -131,6 +131,10 @@ const MasterSchemaUserList = ({ field }) => {
     );
   }
 
+  if (isEmpty(users)) {
+    return null;
+  }
+
   return (
     <MSUUserList
       users={users}
