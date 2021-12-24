@@ -78,8 +78,8 @@ const MasterSchemaManager = () => {
   };
 
   useEffect(() => {
-    if (selected?.node?.id) {
-      dispatch(getRelatedApplicationsRequest({ fieldId: selected.node.id }));
+    if (selected.field) {
+      dispatch(getRelatedApplicationsRequest({ fieldId: selected.field.id }));
     }
   }, [dispatch, selected]);
 

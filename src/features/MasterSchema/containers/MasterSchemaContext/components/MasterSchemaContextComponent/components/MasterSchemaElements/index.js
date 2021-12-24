@@ -21,7 +21,7 @@ import MSECreateElementForm from "./components/mse-create-element-form";
 
 const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlice.actions;
 
-const getKey = ({ key }) => key;
+const getKey = ({ nodeId }) => nodeId;
 
 const creationTitle = (type) => {
   switch (type) {
@@ -48,20 +48,20 @@ const MasterSchemaElements = () => {
     items: [hierarchy],
     getKey,
     getChildren: ({ isContainable, fields, groups }) =>
-      isContainable ? hierarchy.children.filter(({ key }) => [...groups, ...fields].includes(key)) : [],
+      isContainable ? hierarchy.children.filter(({ nodeId }) => [...groups, ...fields].includes(nodeId)) : [],
   });
 
   const [modal, openModal, closeModal] = useBoolean(false);
 
-  const onPopupAction = ({ key, type }) => {
+  const onPopupAction = ({ id, type }) => {
     switch (type) {
       case ADD_FIELD:
         openModal();
-        setAddTo({ node: tree.getItem(key).value, type: ADD_FIELD });
+        setAddTo({ node: tree.getItem(id).value, type: ADD_FIELD });
         break;
       case ADD_GROUP:
         openModal();
-        setAddTo({ node: tree.getItem(key).value, type: ADD_GROUP });
+        setAddTo({ node: tree.getItem(id).value, type: ADD_GROUP });
         break;
       default:
         throw new Error("Unexpected popup action type.");
@@ -98,7 +98,6 @@ const MasterSchemaElements = () => {
     <div className="ms-elements">
       <TreeRoot
         nodes={tree.items}
-        getKey={getKey}
         renderNodeList={({ root, children }) => <MSETreeNodeList root={root} children={children} />}
         renderNode={({ node, children }) => (
           <MSETreeElement

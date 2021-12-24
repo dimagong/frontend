@@ -82,8 +82,8 @@ export const useMasterSchemaSelectable = (nodes) => {
     const thereIsSelectedSystemNode = selectedNodes.some(get("isSystem"));
 
     const memberFirmsGroups = nodes.filter(get("isMemberFirmGroup"));
-    const selectedFieldsFromMemberFirm = selectedFields.filter(({ key }) => {
-      return memberFirmsGroups.some((group) => group.fields.includes(key));
+    const selectedFieldsFromMemberFirm = selectedFields.filter(({ nodeId }) => {
+      return memberFirmsGroups.some((group) => group.fields.includes(nodeId));
     });
     const areSelectedFieldsContainCommonAndMemberFirmFields =
       selectedFields.length > selectedFieldsFromMemberFirm.length && selectedFieldsFromMemberFirm.length > 0;
@@ -103,22 +103,20 @@ export const useMasterSchemaSelectable = (nodes) => {
   const toggle = useCallback(
     (nodeId) => {
       const toSelectNode = nodes.find(getNodeIdPredicate(nodeId));
-      const thereIsSelectedFields = selected.fields.length > 0;
-      const thereIsSelectedGroups = selected.groups.length > 0;
 
-      if (toSelectNode.isContainable && thereIsSelectedGroups && !selected.groups.includes(toSelectNode)) {
-        selectable.clear();
+      // Unable to select field simultaneously with groups
+      if (!toSelectNode.isContainable) {
+        return selectable.toggle([nodeId, ...selected.groups.map(get("nodeId"))]);
       }
 
-      if (toSelectNode.isContainable && thereIsSelectedFields) {
-        selectable.clear();
+      // Unable to select group simultaneously with groups and fields
+      if (toSelectNode.isContainable) {
+        return selectable.toggle([
+          nodeId,
+          ...selected.groups.map(get("nodeId")),
+          ...selected.fields.map(get("nodeId")),
+        ]);
       }
-
-      if (!toSelectNode.isContainable && thereIsSelectedGroups) {
-        selectable.clear();
-      }
-
-      selectable.toggle(nodeId);
     },
     [nodes, selectable, selected]
   );
@@ -135,7 +133,7 @@ const MasterSchema = () => {
   const hierarchy = useSelector(masterSchemaSelectors.selectSelectedHierarchy);
   const unapproved = useSelector(masterSchemaSelectors.selectSelectedUnapproved);
 
-  const nodes = useMemo(() => hierarchy ? [hierarchy, ...hierarchy.children] : [], [hierarchy]);
+  const nodes = useMemo(() => (hierarchy ? [hierarchy, ...hierarchy.children] : []), [hierarchy]);
 
   const selectable = useMasterSchemaSelectable(nodes);
   const expandable = useMasterSchemaExpandable(nodes, hierarchy);

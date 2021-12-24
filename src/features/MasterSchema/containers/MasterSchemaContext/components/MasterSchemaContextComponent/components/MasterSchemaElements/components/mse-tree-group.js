@@ -37,7 +37,6 @@ const MSETreeGroup = ({ id, name, date, isSystem, expanded, onExpandChange, onSe
       name={name}
       date={date}
       isSystem={isSystem}
-
       prepend={
         <div className="ms-elements__mark-icon d-flex justify-content-center align-items-center">
           <button

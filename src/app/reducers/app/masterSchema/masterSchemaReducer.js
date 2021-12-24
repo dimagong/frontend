@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 
 const masterSchemaNodeSchema = {
   id: yup.number().required(),
-  key: yup.string().required(),
   name: yup.string().required(),
   nodeId: yup.string().required(),
   updatedAt: yup.string().required(),
@@ -21,7 +20,6 @@ const masterSchemaGroupSchema = {
   fields: yup.array(yup.string()).test((v) => Array.isArray(v)),
   groups: yup.array(yup.string()).test((v) => Array.isArray(v)),
   parentId: yup.number().nullable(),
-  parentKey: yup.string().nullable(),
   parentNodeId: yup.string().nullable(),
   isMemberFirmGroup: yup.boolean().nullable(),
 };
@@ -29,7 +27,6 @@ const masterSchemaGroupSchema = {
 const masterSchemaFieldInterface = yup.object({
   ...masterSchemaNodeSchema,
   parentId: yup.number().required(),
-  parentKey: yup.string().required(),
   parentNodeId: yup.string().required(),
 });
 
@@ -64,7 +61,7 @@ const masterSchemaListInterface = yup.object({ list: yup.array(masterSchemaInter
 
 const masterSchemaAbleMovementGroup = yup.object({
   id: yup.number().required(),
-  name: yup.string().required()
+  name: yup.string().required(),
 });
 
 const userInterface = yup.object({
@@ -121,18 +118,14 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
     provided_by_full_name,
     parent_group_name,
   } = node;
-  const key = parent ? `${parent.key}/${id}` : id;
   const path = parent ? [...parent.path, name] : [name];
-  const parentKey = parent ? parent.key : null;
   const parentNodeId = parent ? parent.nodeId : null;
 
   const serialised = {
     id,
-    key,
     name,
     path,
     nodeId: `${isContainable ? "group" : "field"}${id}`,
-    parentKey,
     parentNodeId,
     isContainable,
     isSystem: is_system,
@@ -152,7 +145,7 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
       const serialisedField = serialiseNode(field, { isContainable: false, parent: serialised, children });
 
       children.push(serialisedField);
-      serialised.fields.push(serialisedField.key);
+      serialised.fields.push(serialisedField.nodeId);
     });
   }
 
@@ -163,7 +156,7 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
       const serialisedGroup = serialiseNode(group, { isContainable: true, parent: serialised, children });
 
       children.push(serialisedGroup);
-      serialised.groups.push(serialisedGroup.key);
+      serialised.groups.push(serialisedGroup.nodeId);
     });
   }
 
@@ -369,7 +362,7 @@ const masterSchemaReducer = {
   },
 
   fieldsMergeMasterSchemaSuccess(state, { payload }) {
-    toast.success('The selection was successfully merged');
+    toast.success("The selection was successfully merged");
     state.isError = false;
     state.isLoading = false;
   },
@@ -417,7 +410,7 @@ const masterSchemaReducer = {
   },
 
   approveUnapprovedFieldsSuccess(state, { payload }) {
-    toast.success('The approving was successful');
+    toast.success("The approving was successful");
     const { masterSchemaId, fieldsIds } = payload;
     const oldUnapprovedFields = state.masterSchema.unapproved[masterSchemaId];
 
@@ -465,15 +458,6 @@ const masterSchemaReducer = {
   getUsersByMasterSchemaFieldSuccess(state, { payload }) {
     const { users, fieldId } = payload;
 
-    state.masterSchema.users[fieldId] = isEmpty(users) ? null : users;
-
-    state.isError = false;
-    state.isLoading = false;
-  },
-
-  searchUsersByMasterSchemaFieldSuccess(state, { payload }) {
-    const { users, fieldId } = payload;
-
     state.masterSchema.users[fieldId] = users;
 
     state.isError = false;
@@ -481,13 +465,13 @@ const masterSchemaReducer = {
   },
 
   getRelatedApplicationsSuccess(state, { payload }) {
-      const { users, fieldId } = payload;
+    const { users, fieldId } = payload;
 
-      state.masterSchema.related_applications[fieldId] = users;
+    state.masterSchema.related_applications[fieldId] = users;
 
-      state.isError = false;
-      state.isLoading = false;
-    },
+    state.isError = false;
+    state.isLoading = false;
+  },
 };
 
 export default masterSchemaReducer;

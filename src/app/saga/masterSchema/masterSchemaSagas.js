@@ -61,10 +61,6 @@ const {
   getUsersByMasterSchemaFieldSuccess,
   getUsersByMasterSchemaFieldError,
 
-  searchUsersByMasterSchemaFieldRequest,
-  searchUsersByMasterSchemaFieldSuccess,
-  searchUsersByMasterSchemaFieldError,
-
   getRelatedApplicationsRequest,
   getRelatedApplicationsSuccess,
   getRelatedApplicationsError,
@@ -339,22 +335,12 @@ function* getUsers({ payload }) {
 }
 
 function* getUsersByField({ payload }) {
-  const { fieldId } = payload;
-  try {
-    const { users } = yield call(getUsers, { payload: { fieldId } });
-    yield put(getUsersByMasterSchemaFieldSuccess({ users, fieldId }));
-  } catch (error) {
-    yield put(getUsersByMasterSchemaFieldError(error));
-  }
-}
-
-function* searchUsersByField({ payload }) {
   const { fieldId, name, abilities, organizations, member_firm_id } = payload;
   try {
     const { users } = yield call(getUsers, { payload: { fieldId, name, abilities, organizations, member_firm_id } });
-    yield put(searchUsersByMasterSchemaFieldSuccess({ users, fieldId }));
+    yield put(getUsersByMasterSchemaFieldSuccess({ users, fieldId }));
   } catch (error) {
-    yield put(searchUsersByMasterSchemaFieldError(error));
+    yield put(getUsersByMasterSchemaFieldError(error));
   }
 }
 
@@ -378,7 +364,6 @@ export default function* () {
     yield takeLatest(approveUnapprovedFieldsRequest, approveFields),
     yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsersByField),
     yield takeLatest(getVersionsByMasterSchemaFieldRequest, getVersionsByField),
-    yield takeLatest(searchUsersByMasterSchemaFieldRequest, searchUsersByField),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),

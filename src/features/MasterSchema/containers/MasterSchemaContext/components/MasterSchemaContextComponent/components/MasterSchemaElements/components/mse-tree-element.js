@@ -20,7 +20,7 @@ const MSETreeElement = ({ state, onPopupAction, children }) => {
   return node.isContainable ? (
     <MSETreeGroup
       className={className}
-      id={node.key}
+      id={node.nodeId}
       name={node.name}
       date={node.createdAt}
       isSystem={node.isSystem}
