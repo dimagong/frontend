@@ -384,6 +384,7 @@ export default function* () {
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),
     yield takeLatest(updateGroupMasterSchemaRequest, updateGroup),
     yield takeLatest(fieldMakeParentMasterSchemaRequest, fieldMakeParent),
+    yield takeLatest(fieldsMakeParentMasterSchemaRequest, fieldsMakeParent),
     yield takeLatest(fieldsMergeMasterSchemaRequest, fieldsMerge),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
     yield takeLatest(getMasterSchemaGroupsRequest, getGroups),
