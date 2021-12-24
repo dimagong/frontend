@@ -1,4 +1,4 @@
-import { get } from "lodash/fp";
+import { get, isEmpty } from "lodash/fp";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -95,7 +95,7 @@ const MasterSchemaManager = () => {
       return (
         <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage Datapoint</div>
-          {relatedApplications?.length > 0 && (
+          {!isEmpty(relatedApplications) && (
             <MSENodeRelatedTable className="my-2" relatedApplications={relatedApplications} />
           )}
           <MSENodeRenamingForm
