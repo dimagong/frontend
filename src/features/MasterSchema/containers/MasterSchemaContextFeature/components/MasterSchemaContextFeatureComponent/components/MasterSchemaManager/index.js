@@ -70,7 +70,7 @@ const MasterSchemaManager = () => {
     if (selected?.node?.id) {
       dispatch(getRelatedApplicationsRequest({ fieldId: selected.node.id }));
     }
-  }, [selected]);
+  }, [dispatch, selected]);
 
   const render = () => {
     // reminder - the !selected.areSelectedFieldsContainCommonAndMemberFirmFields work the same for merge feature

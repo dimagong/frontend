@@ -1,30 +1,25 @@
-import "./styles.scss";
-
-import _ from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
-import { capitalize, get } from "lodash/fp";
 import { ExternalLink } from "react-feather";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { capitalize, get, isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Card, CardBody, CardHeader } from "reactstrap";
+import { Table, Card, CardBody, CardHeader, Spinner, Col } from "reactstrap";
+
+import { useBoolean } from "hooks/use-boolean";
 
 import appSlice from "app/slices/appSlice";
-import { useBoolean } from "hooks/use-boolean";
-import SearchAndFilter from "components/SearchAndFilter";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { selectSelectedId, selectVersions } from "app/selectors/masterSchemaSelectors";
+
 import masterSchemaApi from "api/masterSchema/masterSchema";
+
 import MSEButton from "features/MasterSchema/share/mse-button";
 import SurveyModal from "features/Surveys/Components/SurveyModal";
-import { selectOrganizations } from "app/selectors/groupSelector";
-import { getMemberFirms } from "app/selectors/memberFirmsSelector";
-import { FilterMemberFirmsOptions, FilterOrganizationsOptions, FilterRolesOptions } from "constants/filter";
 
 import BackInTimeIcon from "assets/img/svg/back-in-time.svg";
 import NoneAvatar from "assets/img/portrait/none-avatar.png";
-import {createLoadingSelector} from "../../../../../../../../app/selectors/loadingSelector";
-
-const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
 const normalizeVersionTotal = (total) => (total > 9 ? "+9" : total);
 
@@ -38,10 +33,11 @@ const FilesValue = ({ files }) => {
   const [filesUrl, setFilesUrl] = useState([]);
 
   useEffect(() => {
-    Promise.all(files.map(({ id, name }) =>
-      masterSchemaApi.getValueFile({ valueId: id })
-        .then((blob) => ({ url: window.URL.createObjectURL(blob), name }))
-    ))
+    Promise.all(
+      files.map(({ id, name }) =>
+        masterSchemaApi.getValueFile({ valueId: id }).then((blob) => ({ url: window.URL.createObjectURL(blob), name }))
+      )
+    )
       .then((filesUrl) => setFilesUrl(filesUrl))
       .catch((error) => toast.error(error));
   }, [files]);
@@ -49,7 +45,9 @@ const FilesValue = ({ files }) => {
   return (
     <>
       {filesUrl.map((file) => (
-        <a style={{ color: "currentColor" }} href={file.url} download>{file.name}</a>
+        <a style={{ color: "currentColor" }} href={file.url} download>
+          {file.name}
+        </a>
       ))}
     </>
   );
@@ -124,27 +122,22 @@ const ValuePreview = ({ value, files, type, onExtendedValueClick }) => {
   );
 };
 
-const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
-  // users = MOCK_USERS;
+const { getVersionsByMasterSchemaFieldRequest } = appSlice.actions;
+
+const MSUUserList = ({ users, header }) => {
   const dispatch = useDispatch();
+  const selectedId = useSelector(selectSelectedId);
+  const masterSchemaVersions = useSelector(selectVersions);
 
-  const memberFirmsInfo = useSelector(getMemberFirms);
-  const organizationsInfo = useSelector(selectOrganizations);
-  const loading = useSelector(createLoadingSelector([getUsersByMasterSchemaFieldRequest.type]), true);
+  const [versionFieldId, setVersionFieldId] = useState();
+  const isVersionsLoading = useSelector(createLoadingSelector([getVersionsByMasterSchemaFieldRequest.type]));
+  const versions = useMemo(() => {
+    return masterSchemaVersions[`${selectedId}/${versionFieldId}`] || [];
+  }, [masterSchemaVersions, selectedId, versionFieldId]);
 
-  const filterTypes = {
-    roles: FilterRolesOptions(),
-    organizations: FilterOrganizationsOptions(),
-    memberFirms: FilterMemberFirmsOptions(),
-  };
-
-  const [selectedUser, setSelectedUser] = useState(null);
   const [selectedField, setSelectedField] = useState(null);
   const [valueModal, openValueModal, closeValueModal] = useBoolean(false);
   const [historyModal, openHistoryModal, closeHistoryModal] = useBoolean(false);
-
-  const [searchInput, setSearchInput] = useState("");
-  const [filterOptions, setFilterOptions] = useState({});
 
   const onExtendedValueClick = (field) => () => {
     setSelectedField(field);
@@ -152,95 +145,27 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
   };
 
   const onVersionClick = (user) => () => {
-    setSelectedUser(user);
+    const fieldId = user.field.id;
     openHistoryModal();
+    setVersionFieldId(fieldId);
+    dispatch(getVersionsByMasterSchemaFieldRequest({ fieldId }));
   };
 
-  const onFilterCancel = () => {
-    setFilterOptions({});
-    setUsersFiltered(false);
-  };
-
-  const onFilterSubmit = (filterOptions, filter) => {
-    setFilterOptions(filter);
-    setUsersFiltered(true);
-  };
-
-  const onSearchSubmit = (value) => {
-    if (value.target.value.length !== 1) {
-      setSearchInput(value.target.value);
-      setUsersFiltered(true);
-    }
-  };
-
-  const onFilterOptionCancel = (option) => {
-    setFilterOptions(onFilterOptionCancel.cancelOption[option]);
-  };
-
-  onFilterOptionCancel.cancelOption = {
-    roles: () => {
-      return { ...filterOptions, roles: [] };
-    },
-    organizations: () => {
-      return { ...filterOptions, organizations: [] };
-    },
-    memberFirms: () => {
-      return { ...filterOptions, memberFirms: [] };
-    },
-  };
-
-  useEffect(() => {
-    const orgatizationsToFilter = filterOptions.organizations
-      ? _.intersectionBy(
-          organizationsInfo,
-          filterOptions.organizations.map((item) => {
-            return { name: item };
-          }),
-          "name"
-        ).map((item) => {
-          return { ...item, type: item.logo.entity_type };
-        })
-      : [];
-
-    const memberFirmsToFilter = filterOptions.memberFirms
-      ? _.intersectionBy(
-          memberFirmsInfo,
-          filterOptions.memberFirms.map((item) => {
-            return { main_fields: { name: item } };
-          }),
-          "main_fields.name"
-        ).map((item) => item.id)
-      : [];
-
-    const payload = {
-      fieldId: selected.field.id,
-      abilities: filterOptions?.roles ? filterOptions.roles.map((item) => item.toLowerCase().replace(" ", "_")) : [],
-      organizations: orgatizationsToFilter,
-      member_firm_id: memberFirmsToFilter,
-      name: searchInput,
-    };
-
-    dispatch(getUsersByMasterSchemaFieldRequest(payload));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchInput, filterOptions, dispatch]);
+  if (isEmpty(users)) {
+    return (
+      <Card className="px-1 ms-user-list" style={{ boxShadow: "none", border: "1px solid #ececec" }}>
+        <CardHeader className="px-0">{header}</CardHeader>
+        <CardBody className="pt-0 pb-1 px-0">
+          <h2 className="ms-nothing-was-found pt-0">No users found for your query</h2>
+        </CardBody>
+      </Card>
+    );
+  }
 
   return (
     <>
       <Card className="px-1 ms-user-list" style={{ boxShadow: "none", border: "1px solid #ececec" }}>
-        <CardHeader className="px-0">
-          <div className="w-100">
-            <SearchAndFilter
-              handleSearch={onSearchSubmit}
-              onCancelFilter={onFilterCancel}
-              filterTypes={filterTypes}
-              applyFilter={onFilterSubmit}
-              onFilterOptionCancel={onFilterOptionCancel}
-              filterTabPosition={"left"}
-              loading={loading}
-            />
-          </div>
-        </CardHeader>
-
+        <CardHeader className="px-0">{header}</CardHeader>
         <CardBody className="pt-0 pb-1 px-0">
           {users && !users.length && <h3 className="ms-nothing-was-found">No users found for your query</h3>}
           <Table className="msu-table" borderless responsive>
@@ -324,24 +249,32 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
         </SurveyModal>
       )}
 
-      {selectedUser && (
-        <SurveyModal
-          className="element-history"
-          isOpen={historyModal}
-          title="Element history"
-          onClose={closeHistoryModal}
-          actions={false}
-        >
-          <Table className="msu-table" borderless responsive>
-            <thead>
-              <tr className="msu-table__history-head">
-                <th>Date</th>
-                <th className="msu-table__value">Value</th>
-                <th>User</th>
+      <SurveyModal
+        className="element-history"
+        isOpen={historyModal}
+        title="Element history"
+        onClose={closeHistoryModal}
+        actions={false}
+      >
+        <Table className="msu-table" borderless responsive>
+          <thead>
+            <tr className="msu-table__history-head">
+              <th>Date</th>
+              <th className="msu-table__value">Value</th>
+              <th>User</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isVersionsLoading ? (
+              <tr>
+                <td colSpan="3">
+                  <Col className="d-flex justify-content-center py-4">
+                    <Spinner />
+                  </Col>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {selectedUser.history.versions.map((version) => {
+            ) : (
+              versions.map((version) => {
                 const { provided } = version;
                 const fullName = provided ? getFullName(provided) : null;
                 return (
@@ -361,18 +294,18 @@ const MasterSchemaUserList = ({ users, selected, setUsersFiltered }) => {
                     <td>{fullName}</td>
                   </tr>
                 );
-              })}
-            </tbody>
-          </Table>
-        </SurveyModal>
-      )}
+              })
+            )}
+          </tbody>
+        </Table>
+      </SurveyModal>
     </>
   );
 };
 
-MasterSchemaUserList.propTypes = {
+MSUUserList.propTypes = {
   users: PropTypes.array.isRequired,
-  hierarchy: PropTypes.object.isRequired,
+  header: PropTypes.node.isRequired,
 };
 
-export default MasterSchemaUserList;
+export default MSUUserList;

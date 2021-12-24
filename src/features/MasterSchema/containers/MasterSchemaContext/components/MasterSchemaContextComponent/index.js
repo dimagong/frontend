@@ -20,9 +20,15 @@ import ContextTemplate from "components/ContextTemplate";
 
 import MasterSchemaElements from "./components/MasterSchemaElements";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
-import {createLoadingSelector} from "app/selectors/loadingSelector";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
 
-const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch, setUnapprovedMasterSchemaRequest, approveUnapprovedFieldsRequest } = appSlice.actions;
+const {
+  getMasterSchemaHierarchyRequest,
+  getdFormsRequest,
+  setMasterSchemaSearch,
+  setUnapprovedMasterSchemaRequest,
+  approveUnapprovedFieldsRequest,
+} = appSlice.actions;
 
 const MasterSchemaContextComponent = () => {
   const dispatch = useDispatch();
@@ -42,6 +48,8 @@ const MasterSchemaContextComponent = () => {
   };
 
   const onFilterSubmit = (filterOptions, filter) => {
+    if (!hierarchy) return;
+
     const filters = _.intersectionBy(
       allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0),
       filter.applications.map((item) => {
@@ -73,7 +81,7 @@ const MasterSchemaContextComponent = () => {
   useDidMount(() => {
     dispatch(getdFormsRequest());
 
-    if (hierarchy.name) {
+    if (hierarchy?.name) {
       setFilterTypes(
         allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0)
       );
@@ -91,18 +99,21 @@ const MasterSchemaContextComponent = () => {
 
   useDidUpdate(() => void dispatch(getMasterSchemaHierarchyRequest({ id: selectedId })), [search]);
 
-   useDidUpdate(() => {
-     if (!isApprovingLoading) {
-       dispatch(setUnapprovedMasterSchemaRequest({id: hierarchy.masterSchemaId}))
-     }
-   }, [isApprovingLoading]);
+  useDidUpdate(() => {
+    if (!isApprovingLoading) {
+      dispatch(setUnapprovedMasterSchemaRequest({ id: hierarchy.masterSchemaId }));
+    }
+  }, [isApprovingLoading]);
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
       <div className="position-relative">
         {!isEmpty(unapproved) && <UnapprovedFieldsComponent fields={unapproved} />}
 
-        <div className="position-sticky" style={{ top: "0px", left: "0px", backgroundColor: "#f8f8f8" }}>
+        <div
+          className={hierarchy ? "position-sticky zindex-1" : ""}
+          style={{ top: "0px", left: "0px", backgroundColor: "#f8f8f8" }}
+        >
           <SearchAndFilter
             className="ms-search-and-filter"
             placeholder=""
@@ -131,7 +142,7 @@ const MasterSchemaContextComponent = () => {
           )}
         </div>
 
-        {hierarchy?.id ? (
+        {hierarchy ? (
           <MasterSchemaElements key={hierarchy.name} />
         ) : (
           <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>

@@ -100,6 +100,7 @@ const userInterface = yup.object({
   memberFirmPermissions: yup.array(yup.string()).test((v) => Array.isArray(v)),
 });
 
+// eslint-disable-next-line no-unused-vars
 const masterSchemaUsersInterface = yup.array(userInterface).test((v) => Array.isArray(v));
 
 /* Serializers */
@@ -248,15 +249,14 @@ const masterSchemaReducer = {
   },
 
   getMasterSchemaHierarchySuccess: (state, { payload }) => {
-    if (payload.hierarchy) {
-      const serialised = serialiseMasterSchemaHierarchy({ ...payload.hierarchy, master_schema_id: payload.id });
+    const { hierarchy, id } = payload;
+    if (hierarchy) {
+      const serialised = serialiseMasterSchemaHierarchy({ ...hierarchy, master_schema_id: id });
       // console.log("master-schema-hierarchy/serialised", serialised);
       const valid = masterSchemaHierarchyInterface.validateSync(serialised);
-
-      state.masterSchema.hierarchies = xorBy(state.masterSchema.hierarchies, [valid], "id");
+      state.masterSchema.hierarchies[id] = valid;
     } else {
-      const serialised = serialiseMasterSchemaHierarchy({ ...payload.hierarchy, master_schema_id: payload.id });
-      state.masterSchema.hierarchies = xorBy(state.masterSchema.hierarchies, [serialised], "id");
+      state.masterSchema.hierarchies[id] = null;
     }
 
     state.isLoading = false;
@@ -445,18 +445,32 @@ const masterSchemaReducer = {
     state.isLoading = false;
   },
 
-  getUsersByMasterSchemaFieldSuccess(state, { payload }) {
-    const { users, histories, fieldId } = payload;
+  getVersionsByMasterSchemaFieldSuccess(state, { payload }) {
+    const { versions, fieldId, selectedId } = payload;
 
-    state.masterSchema.users[fieldId] = users.map((user) => {
-      user.history = histories.find(({ fieldId }) => user.field.id === fieldId);
-      return user;
-    });
+    state.masterSchema.versions[`${selectedId}/${fieldId}`] = versions;
 
     state.isError = false;
     state.isLoading = false;
   },
 
+  getUsersByMasterSchemaFieldSuccess(state, { payload }) {
+    const { users, fieldId } = payload;
+
+    state.masterSchema.users[fieldId] = users;
+
+    state.isError = false;
+    state.isLoading = false;
+  },
+
+  searchUsersByMasterSchemaFieldSuccess(state, { payload }) {
+    const { users, fieldId } = payload;
+
+    state.masterSchema.users[fieldId] = users;
+
+    state.isError = false;
+    state.isLoading = false;
+  },
 
   getRelatedApplicationsSuccess(state, { payload }) {
       const { users, fieldId } = payload;
