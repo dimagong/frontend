@@ -208,8 +208,10 @@ const getParentById = (hierarchy, id) => {
 const getFieldById = (hierarchy, id) => hierarchy.children.find(getPredicateFieldById(id));
 
 const getHierarchyAndParentByParentId = (state, id) => {
-  return state.masterSchema.hierarchies.reduce(
-    (acc, hierarchy) => (acc.parent ? acc : { parent: getParentById(hierarchy, id), hierarchy }),
+  return Object.entries(state.masterSchema.hierarchies).reduce(
+    (acc, [, hierarchy]) => {
+      return acc.parent ? acc : { parent: getParentById(hierarchy, id), hierarchy };
+    },
     { hierarchy: null, parent: null }
   );
 };
