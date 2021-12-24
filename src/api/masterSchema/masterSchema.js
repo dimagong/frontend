@@ -3,6 +3,7 @@ import { get, pipe } from "lodash/fp";
 import { masterSchemaOrganizations } from "constants/masterSchema";
 
 import * as Urls from "./constants";
+import {putMasterSchemaMergeFields} from "./constants";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
@@ -97,6 +98,16 @@ const masterSchemaApi = {
       url: Urls.putMasterSchemaFieldsMakeParentUrl,
       data: {
         master_schema_group_id: parentId,
+        master_schema_field_ids: fieldsIds,
+      },
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  fieldsMerge({ parentId, fieldsIds }) {
+    return instance({
+      method: "PUT",
+      url: Urls.putMasterSchemaMergeFields(parentId),
+      data: {
         master_schema_field_ids: fieldsIds,
       },
     }).then(flatResponseData, flatResponseError);

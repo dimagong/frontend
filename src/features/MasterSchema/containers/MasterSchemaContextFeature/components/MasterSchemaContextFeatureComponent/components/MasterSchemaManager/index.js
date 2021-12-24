@@ -22,6 +22,7 @@ const {
   fieldMakeParentMasterSchemaRequest,
   groupMakeParentMasterSchemaRequest,
   getRelatedApplicationsRequest,
+  fieldsMergeMasterSchemaRequest,
 } = appSlice.actions;
 
 const MasterSchemaManager = () => {
@@ -66,6 +67,16 @@ const MasterSchemaManager = () => {
     dispatch(fieldsMakeParentMasterSchemaRequest(payload));
   };
 
+  const onMergeSubmit = (submitted) => {
+    if (submitted.invalid) return;
+
+    const parentId = submitted.values.location.value.id;
+    const fieldsIds = selected.fields.map(get("id")).filter(item => item !== parentId);
+    const payload = { parentId, fieldsIds };
+
+    dispatch(fieldsMergeMasterSchemaRequest(payload));
+  };
+
   useEffect(() => {
     if (selected?.node?.id) {
       dispatch(getRelatedApplicationsRequest({ fieldId: selected.node.id }));
@@ -78,6 +89,18 @@ const MasterSchemaManager = () => {
       return (
         <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage datapoints</div>
+          <MSENodeRelocationForm
+            className="my-2"
+            label="Merge selection into"
+            action="Merge"
+            multiple
+            options={selected.fields.map(item => {return {label: item.path.join('.'), value: item}})}
+            submitting={false}
+            onSubmit={onMergeSubmit}
+            note={<p className={'mse-note'}><strong>Note: </strong>Source files will be deleted.
+              Only field that are <strong>not</strong> referenced in dFrom can be merged.</p>}
+          />
+
           <MSENodeRelocationForm
             className="my-2"
             label="Move datapoints to:"

@@ -366,6 +366,12 @@ const masterSchemaReducer = {
     state.isLoading = false;
   },
 
+  fieldsMergeMasterSchemaSuccess(state, { payload }) {
+    toast.success('The selection was successfully merged');
+    state.isError = false;
+    state.isLoading = false;
+  },
+
   groupMakeParentMasterSchemaSuccess(state, { payload }) {
     const parentId = payload.group.parent_id;
     const { parent } = getHierarchyAndParentByParentId(state, parentId);
