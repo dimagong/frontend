@@ -367,6 +367,7 @@ const masterSchemaReducer = {
   },
 
   fieldsMergeMasterSchemaSuccess(state, { payload }) {
+    toast.success('The selection was successfully merged');
     state.isError = false;
     state.isLoading = false;
   },

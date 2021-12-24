@@ -69,11 +69,10 @@ const MasterSchemaManager = () => {
 
   const onMergeSubmit = (submitted) => {
     if (submitted.invalid) return;
-    console.log('submitted', submitted)
 
-    const fieldsIds = selected.fields.map(get("id"));
     const parentId = submitted.values.location.value.id;
-    const payload = { masterSchemaId: selectedId, parentId, fieldsIds };
+    const fieldsIds = selected.fields.map(get("id")).filter(item => item !== parentId);
+    const payload = { parentId, fieldsIds };
 
     dispatch(fieldsMergeMasterSchemaRequest(payload));
   };
@@ -95,7 +94,7 @@ const MasterSchemaManager = () => {
             label="Merge selection into"
             action="Merge"
             multiple
-            options={movementOptions}
+            options={selected.fields.map(item => {return {label: item.path.join('.'), value: item}})}
             submitting={false}
             onSubmit={onMergeSubmit}
             note={<p className={'mse-note'}><strong>Note: </strong>Source files will be deleted.

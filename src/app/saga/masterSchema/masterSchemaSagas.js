@@ -263,15 +263,14 @@ function* fieldsMakeParent({ payload }) {
 }
 
 function* fieldsMerge({ payload }) {
-  console.log('payload', payload)
-  const { masterSchemaId, parentId, fieldsIds } = payload;
+  const { parentId, fieldsIds } = payload;
   try {
-    const fields = yield call(masterSchemaApi.fieldsMerge, { masterSchemaId, parentId, fieldsIds });
-    console.log("fields-merge/api", fields);
-    yield put(fieldsMergeMasterSchemaSuccess({ fields, masterSchemaId, fieldsIds }));
+    const fields = yield call(masterSchemaApi.fieldsMerge, { parentId, fieldsIds });
+    // console.log("fields-merge/api", fields);
+    yield put(fieldsMergeMasterSchemaSuccess({ fields, fieldsIds }));
     yield call(getList);
   } catch (error) {
-    console.error("fields-merge/error", error);
+    // console.error("fields-merge/error", error);
     yield put(fieldsMergeMasterSchemaError(error));
   }
 }
