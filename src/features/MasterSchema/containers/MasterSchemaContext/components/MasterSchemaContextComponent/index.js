@@ -94,6 +94,7 @@ const MasterSchemaContextComponent = () => {
    useDidUpdate(() => {
      if (!isApprovingLoading) {
        dispatch(setUnapprovedMasterSchemaRequest({id: hierarchy.masterSchemaId}))
+       dispatch(getMasterSchemaHierarchyRequest({id: hierarchy.masterSchemaId}))
      }
    }, [isApprovingLoading]);
 

@@ -64,6 +64,10 @@ const {
   getRelatedApplicationsRequest,
   getRelatedApplicationsSuccess,
   getRelatedApplicationsError,
+
+  fieldsMergeMasterSchemaRequest,
+  fieldsMergeMasterSchemaSuccess,
+  fieldsMergeMasterSchemaError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -258,6 +262,20 @@ function* fieldsMakeParent({ payload }) {
   }
 }
 
+function* fieldsMerge({ payload }) {
+  console.log('payload', payload)
+  const { masterSchemaId, parentId, fieldsIds } = payload;
+  try {
+    const fields = yield call(masterSchemaApi.fieldsMerge, { masterSchemaId, parentId, fieldsIds });
+    console.log("fields-merge/api", fields);
+    yield put(fieldsMergeMasterSchemaSuccess({ fields, masterSchemaId, fieldsIds }));
+    yield call(getList);
+  } catch (error) {
+    console.error("fields-merge/error", error);
+    yield put(fieldsMergeMasterSchemaError(error));
+  }
+}
+
 function* groupMakeParent({ payload }) {
   const { nodeId, parentId } = payload;
   try {
@@ -338,7 +356,7 @@ export default function* () {
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),
     yield takeLatest(updateGroupMasterSchemaRequest, updateGroup),
     yield takeLatest(fieldMakeParentMasterSchemaRequest, fieldMakeParent),
-    yield takeLatest(fieldsMakeParentMasterSchemaRequest, fieldsMakeParent),
+    yield takeLatest(fieldsMergeMasterSchemaRequest, fieldsMerge),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
     yield takeLatest(getMasterSchemaGroupsRequest, getGroups),
     yield takeLatest(getRelatedApplicationsRequest, getRelatedApplications),

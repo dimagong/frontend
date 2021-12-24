@@ -28,6 +28,7 @@ const MSENodeRelocationForm = ({
   label,
   action,
   onSubmit: propOnSubmit,
+  note,
   ...attrs
 }) => {
   const withParentNodeId = useMemo(
@@ -67,6 +68,7 @@ const MSENodeRelocationForm = ({
             <Row>
               <Col xs={8}>
                 {select}
+                {note}
                 {error}
               </Col>
               <Col xs={4}>
