@@ -223,7 +223,7 @@ const UserOnboardingCreate = ({isCreate}) => {
               <Row className="mb-2">
                 <Col md={6}>
                   <div className="survey-assign_body_select-label">
-                    Who will review the results? 123
+                    Who will review the results?
                   </div>
                   <div className="survey-assign_body_reviewers-select_container">
                     <div className="survey-assign_body_reviewers-select_container_select">
