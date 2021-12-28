@@ -1,5 +1,5 @@
+import { get, negate } from "lodash/fp";
 import { useSelector } from "react-redux";
-import { get, pipe, isEqual } from "lodash/fp";
 import React, { useCallback, useMemo } from "react";
 
 import { useDidUpdate } from "hooks/use-did-update";
@@ -10,85 +10,43 @@ import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 import MasterSchemaContext from "./containers/MasterSchemaContext";
 import MasterSchemaContextFeature from "./containers/MasterSchemaContextFeature";
 
-import { MasterSchemaContext as MasterSchemaReactContext } from "./master-schema-context";
+export const useMasterSchemaSelectable = (nodeMap) => {
+  const toggleable = useToggleable([]);
 
-export const useExpandable = (keys, initialKeys) => {
-  const toggleable = useToggleable(initialKeys);
+  const isSomeNodeSystem = (nodes) => nodes.some(get("isSystem"));
 
-  const reset = useCallback(() => toggleable.setKeys(initialKeys), [initialKeys, toggleable]);
+  const getGroups = (nodes) => nodes.filter(get("isContainable"));
 
-  const expand = useCallback(
-    (key) => toggleable.setKeys((prev) => (prev.includes(key) ? prev : [...prev, key])),
-    [toggleable]
-  );
+  const getFields = (nodes) => nodes.filter(negate(get("isContainable")));
 
-  const collapse = useCallback(
-    (key) => toggleable.setKeys((prev) => prev.filter(pipe(isEqual(key), (v) => !v))),
-    [toggleable]
-  );
+  const getMemberFirmGroups = (nodeMap) => [...nodeMap.values()].filter(get("isMemberFirmGroup"));
 
-  const expandAll = useCallback(() => toggleable.setKeys(keys), [keys, toggleable]);
+  const getSelectedNodes = (selectedIds, nodeMap) => selectedIds.map((nodeId) => nodeMap.get(nodeId)).filter(Boolean);
 
-  const collapseAll = useCallback(() => toggleable.clear(), [toggleable]);
-
-  return {
-    reset,
-    expand,
-    collapse,
-    expandAll,
-    collapseAll,
-    ...toggleable,
-  };
-};
-
-export const useMasterSchemaExpandable = (nodes, hierarchy) => {
-  const expandable = useExpandable(nodes.map(get("nodeId")), [hierarchy?.nodeId]);
-
-  const collapseWhole = useCallback(
-    (nodeId) => {
-      const node = nodes.find(pipe(get("nodeId"), isEqual(nodeId)));
-      const keysToCollapse = [nodeId, ...nodes.filter(({ key }) => node.groups.includes(key)).map(get("nodeId"))];
-
-      keysToCollapse.forEach((key) => expandable.collapse(key));
-    },
-    [expandable, nodes]
-  );
-
-  const toggle = (nodeId) => {
-    expandable.includes(nodeId) ? collapseWhole(nodeId) : expandable.expand(nodeId);
-  };
-
-  const isCollapsable = useMemo(
-    () => expandable.keys.length > 1 /* && expandable.includes(hierarchy.nodeId)*/,
-    [expandable.keys.length]
-  );
-
-  return {
-    isCollapsable,
-    ...expandable,
-    toggle,
-  };
-};
-
-const getNodeIdPredicate = (nodeId) => pipe(get("nodeId"), isEqual(nodeId));
-
-export const useMasterSchemaSelectable = (nodes) => {
-  const selectable = useToggleable([]);
-
-  const selected = useMemo(() => {
-    const selectedNodes = selectable.keys.map((nodeId) => nodes.find(getNodeIdPredicate(nodeId))).filter(Boolean);
-    const selectedFields = selectedNodes.filter(pipe(get("isContainable"), (v) => !v));
-    const selectedGroups = selectedNodes.filter(get("isContainable"));
-    const thereIsSelectedSystemNode = selectedNodes.some(get("isSystem"));
-
-    const memberFirmsGroups = nodes.filter(get("isMemberFirmGroup"));
-    const selectedFieldsFromMemberFirm = selectedFields.filter(({ key }) => {
-      return memberFirmsGroups.some((group) => group.fields.includes(key));
+  const getSelectedFieldsInMemberFirms = (selectedNodes, memberFirmGroups) => {
+    return selectedNodes.filter(({ nodeId }) => {
+      return memberFirmGroups.some((group) => group.fields.includes(nodeId));
     });
-    const areSelectedFieldsContainCommonAndMemberFirmFields =
-      selectedFields.length > selectedFieldsFromMemberFirm.length && selectedFieldsFromMemberFirm.length > 0;
+  };
 
-    return {
+  const areCommonAndMemberFirmFieldsSelected = (selectedNodes, memberFirmGroups) => {
+    const selectedFieldsFromMemberFirm = getSelectedFieldsInMemberFirms(selectedNodes, memberFirmGroups);
+    return selectedNodes.length > selectedFieldsFromMemberFirm.length && selectedFieldsFromMemberFirm.length > 0;
+  };
+
+  const selectedNodes = useMemo(() => getSelectedNodes(toggleable.keys, nodeMap), [nodeMap, toggleable.keys]);
+  const selectedFields = useMemo(() => getFields(selectedNodes), [selectedNodes]);
+  const selectedGroups = useMemo(() => getGroups(selectedNodes), [selectedNodes]);
+  const thereIsSelectedSystemNode = useMemo(() => isSomeNodeSystem(selectedNodes), [selectedNodes]);
+  const memberFirmGroups = useMemo(() => getMemberFirmGroups(nodeMap), [nodeMap]);
+  const areSelectedFieldsContainCommonAndMemberFirmFields = useMemo(
+    () => areCommonAndMemberFirmFieldsSelected(selectedNodes, memberFirmGroups),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [memberFirmGroups, selectedNodes]
+  );
+
+  const selected = useMemo(
+    () => ({
       nodes: selectedNodes,
       fields: selectedFields,
       groups: selectedGroups,
@@ -97,36 +55,42 @@ export const useMasterSchemaSelectable = (nodes) => {
       group: selectedGroups[0],
       thereIsSelectedSystemNode,
       areSelectedFieldsContainCommonAndMemberFirmFields,
-    };
-  }, [nodes, selectable.keys]);
+    }),
+    [
+      selectedNodes,
+      selectedFields,
+      selectedGroups,
+      thereIsSelectedSystemNode,
+      areSelectedFieldsContainCommonAndMemberFirmFields,
+    ]
+  );
 
   const toggle = useCallback(
     (nodeId) => {
-      const toSelectNode = nodes.find(getNodeIdPredicate(nodeId));
-      const thereIsSelectedFields = selected.fields.length > 0;
-      const thereIsSelectedGroups = selected.groups.length > 0;
+      const toSelectNode = nodeMap.get(nodeId);
 
-      if (toSelectNode.isContainable && thereIsSelectedGroups && !selected.groups.includes(toSelectNode)) {
-        selectable.clear();
+      // Unable to select field simultaneously with groups
+      if (!toSelectNode.isContainable) {
+        return toggleable.toggle([nodeId, ...selected.groups.map(get("nodeId"))]);
       }
 
-      if (toSelectNode.isContainable && thereIsSelectedFields) {
-        selectable.clear();
+      // Unable to select group simultaneously with groups and fields
+      if (toSelectNode.isContainable) {
+        return toggleable.toggle([
+          nodeId,
+          ...selected.groups.map(get("nodeId")),
+          ...selected.fields.map(get("nodeId")),
+        ]);
       }
-
-      if (!toSelectNode.isContainable && thereIsSelectedGroups) {
-        selectable.clear();
-      }
-
-      selectable.toggle(nodeId);
     },
-    [nodes, selectable, selected]
+    [nodeMap, toggleable, selected]
   );
 
   return {
     selected,
-    ...selectable,
     toggle,
+    keys: toggleable.keys,
+    clear: toggleable.clear,
   };
 };
 
@@ -135,32 +99,24 @@ const MasterSchema = () => {
   const hierarchy = useSelector(masterSchemaSelectors.selectSelectedHierarchy);
   const unapproved = useSelector(masterSchemaSelectors.selectSelectedUnapproved);
 
-  const nodes = useMemo(() => hierarchy ? [hierarchy, ...hierarchy.children] : [], [hierarchy]);
+  const nodeMap = hierarchy?.nodeMap || new Map();
+  const selectable = useMasterSchemaSelectable(nodeMap);
 
-  const selectable = useMasterSchemaSelectable(nodes);
-  const expandable = useMasterSchemaExpandable(nodes, hierarchy);
-
-  const context = useMemo(() => {
-    return {
-      selectable,
-      expandable,
-      nodes,
-      hierarchy,
-      unapproved,
-    };
-  }, [selectable, expandable, nodes, hierarchy, unapproved]);
+  const onSelect = (node) => selectable.toggle(node.nodeId);
 
   useDidUpdate(() => {
     selectable.clear();
-    expandable.reset();
   }, [selectedId]);
 
   return (
     <div className="d-flex master-schema-container">
-      <MasterSchemaReactContext.Provider value={context}>
-        <MasterSchemaContext />
-        <MasterSchemaContextFeature />
-      </MasterSchemaReactContext.Provider>
+      <MasterSchemaContext
+        hierarchy={hierarchy}
+        unapproved={unapproved}
+        onSelect={onSelect}
+        selectedIds={selectable.keys}
+      />
+      <MasterSchemaContextFeature selectable={selectable} />
     </div>
   );
 };

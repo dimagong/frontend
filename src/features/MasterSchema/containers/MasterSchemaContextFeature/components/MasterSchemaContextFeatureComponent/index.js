@@ -1,20 +1,18 @@
 import "./styles.scss";
 
 import React from "react";
+import PropTypes from "prop-types";
 import { isEmpty } from "lodash/fp";
 
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
 import MasterSchemaUser from "./components/MasterSchemaUser";
 import MasterSchemaManager from "./components/MasterSchemaManager";
 
-const MasterSchemaContextFeatureComponent = () => {
-  const { selectable: { selected } } = useMasterSchemaContext();
-
+const MasterSchemaContextFeatureComponent = ({ selectable }) => {
   const renderTitle = () => {
-    if (selected.nodes.length === 1) {
-      const path = [...selected.node.path];
+    if (selectable.selected.nodes.length === 1) {
+      const path = [...selectable.selected.node.path];
       const firstName = path.shift();
       const restNames = isEmpty(path) ? null : `.${path.join(".")}`;
 
@@ -26,16 +24,16 @@ const MasterSchemaContextFeatureComponent = () => {
       );
     }
 
-    if (selected.fields.length > 1) {
+    if (selectable.selected.fields.length > 1) {
       return (
         <>
-          {`${selected.fields.length} Datapoints Selected`}
-          {selected.fields.map((field) => (
+          {`${selectable.selected.fields.length} Datapoints Selected`}
+          {selectable.selected.fields.map((field) => (
             <p className="mb-0 mt-1 font-size-base font-weight-normal" key={field.id}>
               {field.path.join(".")}
             </p>
           ))}
-          {selected.areSelectedFieldsContainCommonAndMemberFirmFields && (
+          {selectable.selected.areSelectedFieldsContainCommonAndMemberFirmFields && (
             <p className="mb-0 mt-1 font-size-base font-weight-normal text-danger">
               There are selected fields not from member firm.
             </p>
@@ -45,20 +43,25 @@ const MasterSchemaContextFeatureComponent = () => {
     }
   };
 
-  const renderUsers = () => {
-    if (selected.fields.length === 1 && selected.field) {
-      return <MasterSchemaUser field={selected.field} />
+  const renderFeatures = () => {
+    const features = [];
+
+    if (selectable.selected.fields.length === 1 && selectable.selected.field) {
+      features.push(<MasterSchemaUser field={selectable.selected.field} />);
     }
 
-    return null;
+    if (selectable.selected.nodes.length > 0) {
+      features.push(<MasterSchemaManager selectable={selectable} />);
+    }
+
+    return features;
   };
 
-  return (
-    <ContextFeatureTemplate contextFeatureTitle={renderTitle()}>
-      {renderUsers()}
-      <MasterSchemaManager />
-    </ContextFeatureTemplate>
-  );
+  return <ContextFeatureTemplate contextFeatureTitle={renderTitle()}>{renderFeatures()}</ContextFeatureTemplate>;
+};
+
+MasterSchemaContextFeatureComponent.propTypes = {
+  selectable: PropTypes.object,
 };
 
 export default MasterSchemaContextFeatureComponent;

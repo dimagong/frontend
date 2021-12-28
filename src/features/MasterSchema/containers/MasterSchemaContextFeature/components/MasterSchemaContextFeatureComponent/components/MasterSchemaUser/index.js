@@ -3,11 +3,10 @@ import "./styles.scss";
 import _ from "lodash";
 import { isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Card, CardBody, CardHeader, Col, Spinner, Collapse } from "reactstrap";
 
 import { useToggle } from "hooks/use-toggle";
-import { useDidUpdate } from "hooks/use-did-update";
 
 import ArrowButton from "components/ArrowButton";
 import SearchAndFilter from "components/SearchAndFilter";
@@ -22,7 +21,7 @@ import { FilterMemberFirmsOptions, FilterOrganizationsOptions, FilterRolesOption
 
 import MSUUserList from "./components/msu-user-list";
 
-const { getUsersByMasterSchemaFieldRequest, searchUsersByMasterSchemaFieldRequest } = appSlice.actions;
+const { getUsersByMasterSchemaFieldRequest } = appSlice.actions;
 
 const MasterSchemaUserList = ({ field }) => {
   const dispatch = useDispatch();
@@ -31,10 +30,6 @@ const MasterSchemaUserList = ({ field }) => {
   const isUsersLoading = useSelector(createLoadingSelector([getUsersByMasterSchemaFieldRequest.type]), true);
 
   const [expanded, toggleExpand] = useToggle(true);
-
-  const isUsersSearchInitial = useRef(true);
-  const isUsersSearchLoading = useSelector(createLoadingSelector([searchUsersByMasterSchemaFieldRequest.type]), true);
-  const isUsersSearching = useMemo(() => !isUsersSearchInitial.current && isUsersSearchLoading, [isUsersSearchLoading]);
 
   const users = useMemo(() => masterSchemaUsers[field.id], [field.id, masterSchemaUsers]);
 
@@ -108,7 +103,7 @@ const MasterSchemaUserList = ({ field }) => {
     !isEmpty(newMemberFirmsToFilter) && setMemberFirmsToFilter(newMemberFirmsToFilter);
   }, [filterOptions.memberFirms, memberFirmsInfo]);
 
-  useDidUpdate(() => {
+  useEffect(() => {
     const payload = {
       fieldId: field.id,
       abilities,
@@ -116,15 +111,8 @@ const MasterSchemaUserList = ({ field }) => {
       member_firm_id: memberFirmsToFilter,
       name: searchInput,
     };
-
-    isUsersSearchInitial.current = false;
-    dispatch(searchUsersByMasterSchemaFieldRequest(payload));
-  }, [searchInput, dispatch, field, abilities, organizations, memberFirmsToFilter]);
-
-  useEffect(() => {
-    const payload = { fieldId: field.id };
     dispatch(getUsersByMasterSchemaFieldRequest(payload));
-  }, [field.id, dispatch]);
+  }, [field.id, dispatch, abilities, organizations, memberFirmsToFilter, searchInput]);
 
   if (isUsersLoading) {
     return (
@@ -132,10 +120,6 @@ const MasterSchemaUserList = ({ field }) => {
         <Spinner />
       </Col>
     );
-  }
-
-  if (users == null) {
-    return null;
   }
 
   return (
@@ -153,18 +137,17 @@ const MasterSchemaUserList = ({ field }) => {
             applyFilter={onFilterSubmit}
             onFilterOptionCancel={onFilterOptionCancel}
             filterTabPosition={"left"}
-            loading={isUsersSearching}
           />
         </div>
       </CardHeader>
 
       <Collapse isOpen={expanded} aria-expanded={expanded.toString()}>
         <CardBody className="pt-0 pb-1 px-0">
-          { isEmpty(users) ? (
-            <h2 className="ms-nothing-was-found pt-0">No users found for your query</h2>
+          {isEmpty(users) ? (
+            <h2 className="ms-nothing-was-found pt-0">No users found</h2>
           ) : (
             <MSUUserList users={users} />
-          ) }
+          )}
         </CardBody>
       </Collapse>
     </Card>

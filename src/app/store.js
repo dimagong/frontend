@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === "development") {
     let previousValue = currentValue;
     currentValue = store.getState()?.app?.isError;
 
-    previousValue !== currentValue && currentValue && console.error(currentValue.name, currentValue);
+    previousValue !== currentValue && currentValue && console.error(currentValue);
   });
 }
 

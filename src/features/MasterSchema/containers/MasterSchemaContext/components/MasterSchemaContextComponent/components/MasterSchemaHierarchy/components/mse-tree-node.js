@@ -1,21 +1,24 @@
 import React from "react";
 import moment from "moment";
+import { noop } from "lodash/fp";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-
 import { Lock } from "@material-ui/icons";
 
-const MSETreeNode = ({ name, date, isSystem, prepend, append, className: propClassName, onClick, children }) => {
-  const className = classNames("ms-elements__node", propClassName);
+import { stopPropagation } from "utility/event-decorators";
+
+const MSETreeNode = (props) => {
+  const { name, date, selected, isLocked, onSelect, prepend, append, className: propClassName, children } = props;
+  const className = classNames("ms-elements__node", propClassName, { "ms-elements__node--selected": selected });
 
   return (
-    <li className={className} onClick={onClick}>
+    <li className={className} onClick={stopPropagation(onSelect)}>
       <div className="ms-elements__node-content d-flex align-items-center">
         {prepend}
         <div className="ms-elements__name">{name}</div>
         {append}
         <div className="d-flex align-items-center ml-auto">
-          {isSystem && (
+          {isLocked && (
             <div className="ms-elements__lock px-3">
               <Lock fontSize="inherit" />
             </div>
@@ -32,14 +35,23 @@ const MSETreeNode = ({ name, date, isSystem, prepend, append, className: propCla
   );
 };
 
+MSETreeNode.defaultProps = {
+  onSelect: noop,
+  selected: false,
+};
+
 MSETreeNode.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
-  isSystem: PropTypes.bool.isRequired,
+  isLocked: PropTypes.bool.isRequired,
+
+  selected: PropTypes.bool,
+  onSelect: PropTypes.func,
+
   prepend: PropTypes.node,
   append: PropTypes.node,
+
   className: PropTypes.string,
-  onClick: PropTypes.func,
   children: PropTypes.node,
 };
 
