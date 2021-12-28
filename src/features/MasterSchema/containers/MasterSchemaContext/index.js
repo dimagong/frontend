@@ -3,12 +3,20 @@ import PropTypes from "prop-types";
 
 import MasterSchemaContextComponent from "./components/MasterSchemaContextComponent";
 
-const MasterSchemaContext = ({ hierarchy, selectedIds, onSelect }) => {
-  return <MasterSchemaContextComponent hierarchy={hierarchy} selectedIds={selectedIds} onSelect={onSelect} />;
+const MasterSchemaContext = ({ hierarchy, unapproved, selectedIds, onSelect }) => {
+  return (
+    <MasterSchemaContextComponent
+      hierarchy={hierarchy}
+      unapproved={unapproved}
+      selectedIds={selectedIds}
+      onSelect={onSelect}
+    />
+  );
 };
 
 MasterSchemaContext.propTypes = {
   hierarchy: PropTypes.object,
+  unapproved: PropTypes.array,
 
   onSelect: PropTypes.func,
   selectedIds: PropTypes.arrayOf(PropTypes.string),

@@ -12,7 +12,6 @@ import { createLoadingSelector } from "app/selectors/loadingSelector";
 import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
-import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-context";
 
 import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
@@ -80,14 +79,13 @@ export const useMasterSchemaExpandable = (hierarchy) => {
   ];
 };
 
-const MasterSchemaContextComponent = ({ hierarchy, selectedIds, onSelect }) => {
+const MasterSchemaContextComponent = ({ hierarchy, selectedIds, unapproved, onSelect }) => {
   const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
   const isApprovingLoading = useSelector(createLoadingSelector([approveUnapprovedFieldsRequest.type], false));
 
-  const { unapproved } = useMasterSchemaContext();
   const [expandableState, expandable] = useMasterSchemaExpandable(hierarchy);
 
   const isSearchingRef = useRef(false);
@@ -213,8 +211,13 @@ const MasterSchemaContextComponent = ({ hierarchy, selectedIds, onSelect }) => {
   );
 };
 
+MasterSchemaContextComponent.defaultProps = {
+  unapproved: [],
+};
+
 MasterSchemaContextComponent.propTypes = {
   hierarchy: PropTypes.object,
+  unapproved: PropTypes.array,
 
   onSelect: PropTypes.func,
   selectedIds: PropTypes.arrayOf(PropTypes.string),

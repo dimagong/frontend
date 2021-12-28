@@ -10,8 +10,6 @@ import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 import MasterSchemaContext from "./containers/MasterSchemaContext";
 import MasterSchemaContextFeature from "./containers/MasterSchemaContextFeature";
 
-import { MasterSchemaContext as MasterSchemaReactContext } from "./master-schema-context";
-
 export const useMasterSchemaSelectable = (nodeMap) => {
   const toggleable = useToggleable([]);
 
@@ -92,6 +90,7 @@ export const useMasterSchemaSelectable = (nodeMap) => {
     selected,
     toggle,
     keys: toggleable.keys,
+    clear: toggleable.clear,
   };
 };
 
@@ -102,7 +101,6 @@ const MasterSchema = () => {
 
   const nodeMap = hierarchy?.nodeMap || new Map();
   const selectable = useMasterSchemaSelectable(nodeMap);
-  const context = useMemo(() => ({ selectable, unapproved }), [selectable, unapproved]);
 
   const onSelect = (node) => selectable.toggle(node.nodeId);
 
@@ -112,10 +110,13 @@ const MasterSchema = () => {
 
   return (
     <div className="d-flex master-schema-container">
-      <MasterSchemaReactContext.Provider value={context}>
-        <MasterSchemaContext hierarchy={hierarchy} onSelect={onSelect} selectedIds={selectable.keys} />
-        <MasterSchemaContextFeature selectable={selectable} />
-      </MasterSchemaReactContext.Provider>
+      <MasterSchemaContext
+        hierarchy={hierarchy}
+        unapproved={unapproved}
+        onSelect={onSelect}
+        selectedIds={selectable.keys}
+      />
+      <MasterSchemaContextFeature selectable={selectable} />
     </div>
   );
 };
