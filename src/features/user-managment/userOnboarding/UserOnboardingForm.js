@@ -60,7 +60,7 @@ const selectStyles = {
   indicatorSeparator: () => ({display: 'none'}),
 };
 
-const prepareSelect = (data) => {
+export const prepareSelect = (data) => {
   return data.map((value) => ({
     value: value,
     label: value["first_name"] + " " + value["last_name"]
@@ -223,7 +223,7 @@ const UserOnboardingCreate = ({isCreate}) => {
               <Row className="mb-2">
                 <Col md={6}>
                   <div className="survey-assign_body_select-label">
-                    Who will review the results?
+                    Who will review the results? 123
                   </div>
                   <div className="survey-assign_body_reviewers-select_container">
                     <div className="survey-assign_body_reviewers-select_container_select">
