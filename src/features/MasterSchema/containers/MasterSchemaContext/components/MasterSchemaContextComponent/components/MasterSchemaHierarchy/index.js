@@ -105,7 +105,7 @@ const MasterSchemaHierarchy = (props) => {
           <MSETreeElement
             node={node}
             selected={selectedIds.includes(node.nodeId)}
-            onSelect={() => onSelect(node.nodeId)}
+            onSelect={() => onSelect(node)}
             expanded={expandedIds.includes(node.nodeId)}
             onExpand={() => onExpand(node)}
             onCollapse={() => onCollapse(node)}

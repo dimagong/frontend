@@ -104,7 +104,7 @@ const MasterSchema = () => {
   const selectable = useMasterSchemaSelectable(nodeMap);
   const context = useMemo(() => ({ selectable, unapproved }), [selectable, unapproved]);
 
-  const onSelect = (nodeId) => selectable.toggle(nodeId);
+  const onSelect = (node) => selectable.toggle(node.nodeId);
 
   useDidUpdate(() => {
     selectable.clear();
@@ -114,7 +114,7 @@ const MasterSchema = () => {
     <div className="d-flex master-schema-container">
       <MasterSchemaReactContext.Provider value={context}>
         <MasterSchemaContext hierarchy={hierarchy} onSelect={onSelect} selectedIds={selectable.keys} />
-        <MasterSchemaContextFeature />
+        <MasterSchemaContextFeature selectable={selectable} />
       </MasterSchemaReactContext.Provider>
     </div>
   );
