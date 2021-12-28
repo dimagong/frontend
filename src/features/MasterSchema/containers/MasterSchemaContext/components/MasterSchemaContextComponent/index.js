@@ -1,13 +1,14 @@
 import "./styles.scss";
 
 import _ from "lodash";
-import { get } from "lodash/fp";
-import { isEmpty } from "lodash/fp";
+import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useMemo, useRef, useState } from "react";
+import { __, get, isEmpty, filter, negate, includes } from "lodash/fp";
 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
 import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
@@ -15,12 +16,13 @@ import { useMasterSchemaContext } from "features/MasterSchema/use-master-schema-
 
 import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
+import { useToggleable } from "hooks/use-toggleable";
+
 import SearchAndFilter from "components/SearchAndFilter";
 import ContextTemplate from "components/ContextTemplate";
 
-import MasterSchemaElements from "./components/MasterSchemaElements";
+import MasterSchemaHierarchy from "./components/MasterSchemaHierarchy";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
-import { createLoadingSelector } from "app/selectors/loadingSelector";
 
 const {
   getMasterSchemaHierarchyRequest,
@@ -30,14 +32,64 @@ const {
   approveUnapprovedFieldsRequest,
 } = appSlice.actions;
 
-const MasterSchemaContextComponent = () => {
+// fixme: sometimes hierarchy is collapsed
+export const useMasterSchemaExpandable = (hierarchy) => {
+  const initialKeys = hierarchy ? [hierarchy.nodeId] : [];
+  const toggleable = useToggleable(initialKeys);
+
+  const isInitial = useMemo(
+    () => toggleable.keys.length === 0 || (toggleable.keys.length === 1 && toggleable.keys[0] === hierarchy?.nodeId),
+    [hierarchy, toggleable.keys]
+  );
+
+  const setInitialKeys = () => toggleable.setKeys(initialKeys);
+
+  const expand = (node) => toggleable.setKeys((prev) => [...prev, node.nodeId]);
+
+  const collapse = (node) =>
+    toggleable.setKeys((prev) => {
+      const nodeIds = [];
+
+      const recursive = (groupIds = node.groups) => {
+        nodeIds.push(...groupIds);
+        const groups = groupIds.map((id) => hierarchy.nodeMap.get(id));
+        groups.forEach((group) => recursive(group.groups));
+      };
+      recursive(node.groups);
+
+      nodeIds.push(node.nodeId);
+
+      return filter(negate(includes(__, nodeIds)))(prev);
+    });
+
+  const expandAll = () => toggleable.setKeys([...hierarchy.nodeMap.keys()]);
+
+  return [
+    {
+      isInitial,
+      expandedIds: toggleable.keys,
+    },
+    {
+      toggle: toggleable.toggle,
+      setKeys: toggleable.setKeys,
+      setInitialKeys,
+      expand,
+      collapse,
+      expandAll,
+    },
+  ];
+};
+
+const MasterSchemaContextComponent = ({ hierarchy, selectedIds, onSelect }) => {
   const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
   const isApprovingLoading = useSelector(createLoadingSelector([approveUnapprovedFieldsRequest.type], false));
 
-  const { hierarchy, unapproved, expandable } = useMasterSchemaContext();
+  const { unapproved } = useMasterSchemaContext();
+  const [expandableState, expandable] = useMasterSchemaExpandable(hierarchy);
+
   const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
   const filterNames = useMemo(() => filterTypes.map(get("name")), [filterTypes]);
@@ -91,9 +143,9 @@ const MasterSchemaContextComponent = () => {
   useDidUpdate(() => (isSearchingRef.current = true), [search]);
 
   useDidUpdate(() => {
-    if (isSearchingRef.current) {
+    if (isSearchingRef.current && hierarchy) {
       isSearchingRef.current = false;
-      (isEmpty(search.value) ? expandable.reset : expandable.expandAll)();
+      isEmpty(search.value) ? expandable.setInitialKeys() : expandable.expandAll();
     }
   }, [hierarchy]);
 
@@ -128,14 +180,14 @@ const MasterSchemaContextComponent = () => {
             filterTabPosition={"left"}
           />
 
-          {hierarchy?.id && (
+          {hierarchy && (
             <div className="d-flex justify-content-end pb-1">
               <MSEButton
                 className="p-0"
                 textColor="currentColor"
                 backgroundColor="transparent"
-                disabled={!expandable.isCollapsable}
-                onClick={expandable.reset}
+                disabled={expandableState.isInitial}
+                onClick={expandable.setInitialKeys}
               >
                 Collapse
               </MSEButton>
@@ -144,13 +196,28 @@ const MasterSchemaContextComponent = () => {
         </div>
 
         {hierarchy ? (
-          <MasterSchemaElements key={hierarchy.name} />
+          <MasterSchemaHierarchy
+            hierarchy={hierarchy}
+            expandedIds={expandableState.expandedIds}
+            onExpand={expandable.expand}
+            onCollapse={expandable.collapse}
+            selectedIds={selectedIds}
+            onSelect={onSelect}
+            key={hierarchy.name}
+          />
         ) : (
           <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
         )}
       </div>
     </ContextTemplate>
   );
+};
+
+MasterSchemaContextComponent.propTypes = {
+  hierarchy: PropTypes.object,
+
+  onSelect: PropTypes.func,
+  selectedIds: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default MasterSchemaContextComponent;

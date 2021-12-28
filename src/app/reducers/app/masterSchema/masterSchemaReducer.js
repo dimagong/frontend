@@ -1,6 +1,6 @@
 import * as yup from "yup";
-import { pipe, get, isEqual, pick, isEmpty, includes } from "lodash/fp";
 import { toast } from "react-toastify";
+import { pipe, get, isEqual, pick, includes } from "lodash/fp";
 
 /* Interfaces */
 
@@ -40,24 +40,6 @@ const masterSchemaUnapprovedFieldInterface = yup.object({
 const masterSchemaGroupInterface = yup.object(masterSchemaGroupSchema);
 
 const masterSchemaUnapprovedInterface = yup.array(masterSchemaUnapprovedFieldInterface).test((v) => Array.isArray(v));
-
-// Consider children as hashmap, will it be faster ?
-const masterSchemaHierarchyInterface = yup.object({
-  ...masterSchemaGroupSchema,
-  children: yup
-    .array(yup.lazy((child) => (child.group ? masterSchemaGroupInterface : masterSchemaFieldInterface)))
-    .test((v) => Array.isArray(v)),
-  masterSchemaId: yup.number().required(),
-});
-
-const masterSchemaInterface = yup.object({
-  id: yup.number().required(),
-  name: yup.string().required(),
-  organizationId: yup.number().required(),
-  organizationType: yup.string().required(),
-});
-
-const masterSchemaListInterface = yup.object({ list: yup.array(masterSchemaInterface).test((v) => Array.isArray(v)) });
 
 const masterSchemaAbleMovementGroup = yup.object({
   id: yup.number().required(),
@@ -163,31 +145,9 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
   return serialised;
 };
 
-const serialiseMasterSchemaHierarchy = (hierarchy) => {
-  const children = [];
-  const root = serialiseNode(hierarchy, { isContainable: true, children });
-
-  return {
-    ...root,
-    children,
-    masterSchemaId: hierarchy.master_schema_id,
-  };
-};
-
 const serialiseUnapproved = (unapproved) => {
   return unapproved.map((field) => serialiseNode(field, { isContainable: false }));
 };
-
-const serialiseMasterSchema = ({ id, name, organization_id, organization_type }) => {
-  return {
-    id,
-    name,
-    organizationId: organization_id,
-    organizationType: organization_type,
-  };
-};
-
-const serialiseMasterSchemaList = (list) => ({ list: list.map(serialiseMasterSchema) });
 
 /* State searchers */
 
@@ -211,6 +171,40 @@ const getHierarchyAndParentByParentId = (state, id) => {
 
 /* Reducers */
 
+const normalizeNode = (node, { isContainable, parent = null, childrenMap = new Map() }) => {
+  const serialised = {
+    ...node,
+    nodeId: `${isContainable ? "group" : "field"}${node.id}`,
+    parentNodeId: parent ? parent.nodeId : null,
+    path: parent ? [...parent.path, node.name] : [node.name],
+    isContainable,
+  };
+
+  if (node.fields) {
+    serialised.fields = [];
+
+    node.fields.forEach((field) => {
+      const serialisedField = normalizeNode(field, { isContainable: false, parent: serialised, childrenMap });
+
+      serialised.fields.push(serialisedField.nodeId);
+      childrenMap.set(serialisedField.nodeId, serialisedField);
+    });
+  }
+
+  if (node.groups) {
+    serialised.groups = [];
+
+    node.groups.forEach((group) => {
+      const serialisedGroup = normalizeNode(group, { isContainable: true, parent: serialised, childrenMap });
+
+      serialised.groups.push(serialisedGroup.nodeId);
+      childrenMap.set(serialisedGroup.nodeId, serialisedGroup);
+    });
+  }
+
+  return serialised;
+};
+
 const masterSchemaReducer = {
   getMasterSchemaFieldsSuccess: (state, { payload }) => {
     state.isLoading = false;
@@ -232,26 +226,30 @@ const masterSchemaReducer = {
   },
 
   getMasterSchemaListSuccess: (state, { payload }) => {
-    const serialised = serialiseMasterSchemaList(payload.list);
-    // console.log("master-schema-list/serialised", serialised);
-    const valid = masterSchemaListInterface.validateSync(serialised);
-    // console.log("master-schema-list/valid", valid);
-
-    state.masterSchema.list = valid.list;
-
+    state.masterSchema.list = payload.list;
     state.isLoading = false;
     state.isError = null;
   },
 
   getMasterSchemaHierarchySuccess: (state, { payload }) => {
-    const { hierarchy, id } = payload;
+    const { hierarchy, masterSchemaId } = payload;
+
+    if (!hierarchy) {
+      state.masterSchema.hierarchies[masterSchemaId] = null;
+    }
+
     if (hierarchy) {
-      const serialised = serialiseMasterSchemaHierarchy({ ...hierarchy, master_schema_id: id });
-      // console.log("master-schema-hierarchy/serialised", serialised);
-      const valid = masterSchemaHierarchyInterface.validateSync(serialised);
-      state.masterSchema.hierarchies[id] = valid;
-    } else {
-      state.masterSchema.hierarchies[id] = null;
+      // Normalize hierarchy
+      const childrenMap = new Map();
+      const root = normalizeNode(hierarchy, { isContainable: true, childrenMap });
+      const nodeMap = new Map(childrenMap).set(root.nodeId, root);
+      const normalizedHierarchy = {
+        ...root,
+        childrenMap,
+        nodeMap,
+      };
+
+      state.masterSchema.hierarchies[hierarchy.masterSchemaId] = normalizedHierarchy;
     }
 
     state.isLoading = false;
@@ -270,6 +268,7 @@ const masterSchemaReducer = {
     // hierarchy.children.push(valid);
     // parent.fields.push(valid.key);
 
+    toast.success("The field added successfully.");
     state.isError = false;
     state.isLoading = false;
   },
@@ -287,6 +286,7 @@ const masterSchemaReducer = {
     // hierarchy.children.push(valid);
     // parent.groups.push(valid.key);
 
+    toast.success("The group added successfully.");
     state.isError = false;
     state.isLoading = false;
   },

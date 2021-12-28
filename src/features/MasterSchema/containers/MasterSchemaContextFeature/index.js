@@ -2,8 +2,8 @@ import React from "react";
 
 import MasterSchemaContextFeatureComponent from "./components/MasterSchemaContextFeatureComponent";
 
-const MasterSchemaContextFeature = ({state}) => {
-  return <MasterSchemaContextFeatureComponent state={state} />;
+const MasterSchemaContextFeature = () => {
+  return <MasterSchemaContextFeatureComponent />;
 };
 
 export default MasterSchemaContextFeature;

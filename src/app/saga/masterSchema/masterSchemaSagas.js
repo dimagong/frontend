@@ -147,13 +147,13 @@ function* getMasterSchemaFields() {
 function* getList() {
   try {
     const list = yield call(masterSchemaApi.getList);
-    // console.log("master-schema-list/api", list);
     yield put(getMasterSchemaListSuccess({ list }));
+    // ToDo: refactor this
     yield all(list.map(({ id }) => call(getHierarchy, { payload: { id } })));
+    // ToDo: refactor this
     yield all(list.map(({ id }) => call(getUnapproved, { payload: { id } })));
   } catch (error) {
-    // console.error("master-schema-list/error", error);
-    yield put(getMasterSchemaListError(error.message));
+    yield put(getMasterSchemaListError(error));
   }
 }
 
@@ -167,13 +167,11 @@ function* getHierarchy({ payload: { id } }) {
       date_begin: search.dates[0],
       date_end: search.dates[1]
     });
-    // console.log("master-schema-hierarchy/api", hierarchy);
-    // ToDo: redo it later, API should return id itself
-    yield put(getMasterSchemaHierarchySuccess({ hierarchy, id }));
+    yield put(getMasterSchemaHierarchySuccess({ hierarchy, masterSchemaId: id }));
+    // ToDo: refactor this
     yield call(getGroups, { payload: { masterSchemaId: id } });
   } catch (error) {
-    // console.error("master-schema-hierarchy/error", error);
-    yield put(getMasterSchemaHierarchyError(error.message));
+    yield put(getMasterSchemaHierarchyError(error));
   }
 }
 

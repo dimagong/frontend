@@ -1,3 +1,4 @@
+import { noop } from "lodash/fp";
 import PropTypes from "prop-types";
 import React, { useRef } from "react";
 import { Collapse, Fade } from "reactstrap";
@@ -9,23 +10,38 @@ import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
 import MSETreeNode from "./mse-tree-node";
 
-import { addField, addGroup } from "../mse-addition-actions";
-
 const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
 
-const MSETreeGroup = ({ id, name, date, isSystem, expanded, onExpandChange, onSelectChange, onPopupAction, className, children }) => {
+const MSETreeGroup = (props) => {
+  const {
+    name,
+    date,
+    isLocked,
+    expanded,
+    onExpand,
+    onCollapse,
+    selected,
+    onSelect,
+    onFieldCreatorClick: onFieldCreatorClickProp,
+    onGroupCreatorClick: onGroupCreatorClickProp,
+    className,
+    children,
+  } = props;
   const popupRef = useRef();
   const [popup, togglePopup, setPopup] = useToggle(false);
 
   const hidePopup = () => setPopup(false);
-  const toggleExpanded = () => onExpandChange(!expanded);
-  const dispatchAddField = () => {
+
+  const onRetractableClick = () => (expanded ? onCollapse : onExpand)();
+
+  const onFieldCreatorClick = (event) => {
     hidePopup();
-    onPopupAction(addField(id));
+    onFieldCreatorClickProp(event);
   };
-  const dispatchAddGroup = () => {
+
+  const onGroupCreatorClick = (event) => {
     hidePopup();
-    onPopupAction(addGroup(id));
+    onGroupCreatorClickProp(event);
   };
 
   useOutsideClick(popupRef, hidePopup);
@@ -36,13 +52,14 @@ const MSETreeGroup = ({ id, name, date, isSystem, expanded, onExpandChange, onSe
       className={className}
       name={name}
       date={date}
-      isSystem={isSystem}
+      selected={selected}
+      isLocked={isLocked}
       prepend={
         <div className="ms-elements__mark-icon d-flex justify-content-center align-items-center">
           <button
             type="button"
-            className="ms-elements__collapse d-flex justify-content-center align-items-center"
-            onClick={stopPropagation(toggleExpanded)}
+            className="ms-elements__retractable d-flex justify-content-center align-items-center"
+            onClick={stopPropagation(onRetractableClick)}
             aria-label={getMarkIconAriaLabel(expanded)}
           >
             {expanded ? <RemoveSharp fontSize={"inherit"} /> : <AddSharp fontSize={"inherit"} />}
@@ -70,7 +87,7 @@ const MSETreeGroup = ({ id, name, date, isSystem, expanded, onExpandChange, onSe
               type="button"
               className="ms-elements__node-creator"
               aria-label="Create category"
-              onClick={stopPropagation(dispatchAddGroup)}
+              onClick={stopPropagation(onGroupCreatorClick)}
             >
               Category
             </button>
@@ -78,14 +95,14 @@ const MSETreeGroup = ({ id, name, date, isSystem, expanded, onExpandChange, onSe
               type="button"
               className="ms-elements__node-creator"
               aria-label="Create element"
-              onClick={stopPropagation(dispatchAddField)}
+              onClick={stopPropagation(onFieldCreatorClick)}
             >
               Element
             </button>
           </Fade>
         </div>
       }
-      onClick={stopPropagation(onSelectChange)}
+      onSelect={onSelect}
     >
       <Collapse isOpen={expanded} mountOnEnter unmountOnExit aria-expanded={expanded.toString()}>
         {children}
@@ -94,15 +111,28 @@ const MSETreeGroup = ({ id, name, date, isSystem, expanded, onExpandChange, onSe
   );
 };
 
+MSETreeGroup.defaultProps = {
+  onExpand: noop,
+  onCollapse: noop,
+  onSelect: noop,
+  onFieldCreatorClick: noop,
+  onGroupCreatorClick: noop,
+};
+
 MSETreeGroup.propTypes = {
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
-  isSystem: PropTypes.bool.isRequired,
+  isLocked: PropTypes.bool.isRequired,
+
   expanded: PropTypes.bool.isRequired,
-  onExpandChange: PropTypes.func,
-  onSelectChange: PropTypes.func,
-  onPopupAction: PropTypes.func,
+  onExpand: PropTypes.func,
+  onCollapse: PropTypes.func,
+
+  selected: PropTypes.bool,
+  onSelect: PropTypes.func,
+  onFieldCreatorClick: PropTypes.func,
+  onGroupCreatorClick: PropTypes.func,
+
   className: PropTypes.string,
   children: PropTypes.node,
 };
