@@ -1,5 +1,3 @@
-import { get, pipe, isEqual } from "lodash/fp";
-
 export const selectMasterSchemaList = (state) => state?.app?.masterSchema.list;
 
 export const selectMasterSchemaUsers = (state) => state?.app?.masterSchema.users;
@@ -12,6 +10,8 @@ export const selectRelatedApplications = fieldId => state => state?.app?.masterS
 
 export const selectSearch = (state) => state?.app?.masterSchema.search;
 
+export const selectVersions = (state) => state?.app?.masterSchema.versions;
+
 export const selectSelectedUnapproved = (state) => {
   const selectedId = selectSelectedId(state);
   const { unapproved } = state?.app?.masterSchema;
@@ -22,8 +22,7 @@ export const selectSelectedUnapproved = (state) => {
 export const selectSelectedHierarchy = (state) => {
   const selectedId = selectSelectedId(state);
   const { hierarchies } = state?.app?.masterSchema;
-
-  return hierarchies.find(pipe(get("masterSchemaId"), isEqual(selectedId)));
+  return hierarchies[selectedId];
 };
 
 export const selectMovementOptions = (state) => {

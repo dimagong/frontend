@@ -2,7 +2,7 @@ import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import appSlice from "app/slices/appSlice";
 import masterSchemaApi from "api/masterSchema/masterSchema";
-import { selectSearch } from "app/selectors/masterSchemaSelectors";
+import { selectSearch, selectSelectedId } from "app/selectors/masterSchemaSelectors";
 
 const {
   getMasterSchemaFieldsRequest,
@@ -64,6 +64,14 @@ const {
   getRelatedApplicationsRequest,
   getRelatedApplicationsSuccess,
   getRelatedApplicationsError,
+
+  getVersionsByMasterSchemaFieldRequest,
+  getVersionsByMasterSchemaFieldSuccess,
+  getVersionsByMasterSchemaFieldError,
+
+  fieldsMergeMasterSchemaRequest,
+  fieldsMergeMasterSchemaSuccess,
+  fieldsMergeMasterSchemaError,
 } = appSlice.actions;
 
 function makeMasterSchemaFields(organizationsByType) {
@@ -139,13 +147,13 @@ function* getMasterSchemaFields() {
 function* getList() {
   try {
     const list = yield call(masterSchemaApi.getList);
-    // console.log("master-schema-list/api", list);
     yield put(getMasterSchemaListSuccess({ list }));
+    // ToDo: refactor this
     yield all(list.map(({ id }) => call(getHierarchy, { payload: { id } })));
+    // ToDo: refactor this
     yield all(list.map(({ id }) => call(getUnapproved, { payload: { id } })));
   } catch (error) {
-    // console.error("master-schema-list/error", error);
-    yield put(getMasterSchemaListError(error.message));
+    yield put(getMasterSchemaListError(error));
   }
 }
 
@@ -159,13 +167,11 @@ function* getHierarchy({ payload: { id } }) {
       date_begin: search.dates[0],
       date_end: search.dates[1]
     });
-    // console.log("master-schema-hierarchy/api", hierarchy);
-    // ToDo: redo it later, API should return id itself
-    yield put(getMasterSchemaHierarchySuccess({ hierarchy, id }));
+    yield put(getMasterSchemaHierarchySuccess({ hierarchy, masterSchemaId: id }));
+    // ToDo: refactor this
     yield call(getGroups, { payload: { masterSchemaId: id } });
   } catch (error) {
-    // console.error("master-schema-hierarchy/error", error);
-    yield put(getMasterSchemaHierarchyError(error.message));
+    yield put(getMasterSchemaHierarchyError(error));
   }
 }
 
@@ -258,6 +264,19 @@ function* fieldsMakeParent({ payload }) {
   }
 }
 
+function* fieldsMerge({ payload }) {
+  const { parentId, fieldsIds } = payload;
+  try {
+    const fields = yield call(masterSchemaApi.fieldsMerge, { parentId, fieldsIds });
+    // console.log("fields-merge/api", fields);
+    yield put(fieldsMergeMasterSchemaSuccess({ fields, fieldsIds }));
+    yield call(getList);
+  } catch (error) {
+    // console.error("fields-merge/error", error);
+    yield put(fieldsMergeMasterSchemaError(error));
+  }
+}
+
 function* groupMakeParent({ payload }) {
   const { nodeId, parentId } = payload;
   try {
@@ -296,19 +315,28 @@ function* getGroups({ payload }) {
   }
 }
 
-function* getHistoryByField({ payload }) {
+function* getVersionsByField({ payload }) {
+  const selectedId = yield select(selectSelectedId);
   const { fieldId } = payload;
-  const versions = yield call(masterSchemaApi.getFieldVersions, { fieldId });
-  const history = { fieldId, versions };
-  return history;
+  try {
+    const versions = yield call(masterSchemaApi.getFieldVersions, { fieldId });
+    yield put(getVersionsByMasterSchemaFieldSuccess({ fieldId, versions, selectedId }));
+  } catch (error) {
+    yield put(getVersionsByMasterSchemaFieldError(error));
+  }
 }
 
 function* getUsers({ payload }) {
   const { fieldId, name, abilities, organizations, member_firm_id } = payload;
+  const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations, member_firm_id });
+  return { users };
+}
+
+function* getUsersByField({ payload }) {
+  const { fieldId, name, abilities, organizations, member_firm_id } = payload;
   try {
-    const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations, member_firm_id });
-    const histories = yield all(users.map(({ field }) => call(getHistoryByField, { payload: { fieldId: field.id } })));
-    yield put(getUsersByMasterSchemaFieldSuccess({ users, histories, fieldId }));
+    const { users } = yield call(getUsers, { payload: { fieldId, name, abilities, organizations, member_firm_id } });
+    yield put(getUsersByMasterSchemaFieldSuccess({ users, fieldId }));
   } catch (error) {
     yield put(getUsersByMasterSchemaFieldError(error));
   }
@@ -332,13 +360,15 @@ export default function* () {
     yield takeLatest(getMasterSchemaHierarchyRequest, getHierarchy),
     yield takeLatest(setUnapprovedMasterSchemaRequest, getUnapproved),
     yield takeLatest(approveUnapprovedFieldsRequest, approveFields),
-    yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsers),
+    yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsersByField),
+    yield takeLatest(getVersionsByMasterSchemaFieldRequest, getVersionsByField),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),
     yield takeLatest(updateGroupMasterSchemaRequest, updateGroup),
     yield takeLatest(fieldMakeParentMasterSchemaRequest, fieldMakeParent),
     yield takeLatest(fieldsMakeParentMasterSchemaRequest, fieldsMakeParent),
+    yield takeLatest(fieldsMergeMasterSchemaRequest, fieldsMerge),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
     yield takeLatest(getMasterSchemaGroupsRequest, getGroups),
     yield takeLatest(getRelatedApplicationsRequest, getRelatedApplications),
