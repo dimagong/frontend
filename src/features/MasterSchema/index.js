@@ -10,6 +10,7 @@ import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 import MasterSchemaContext from "./containers/MasterSchemaContext";
 import MasterSchemaContextFeature from "./containers/MasterSchemaContextFeature";
 
+// ToDo: write test for this
 export const useMasterSchemaSelectable = (nodeMap) => {
   const toggleable = useToggleable([]);
 
@@ -113,8 +114,8 @@ const MasterSchema = () => {
       <MasterSchemaContext
         hierarchy={hierarchy}
         unapproved={unapproved}
-        onSelect={onSelect}
         selectedIds={selectable.keys}
+        onSelect={onSelect}
       />
       <MasterSchemaContextFeature selectable={selectable} />
     </div>
