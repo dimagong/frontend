@@ -2,9 +2,9 @@ import "./styles.scss";
 
 import _ from "lodash";
 import PropTypes from "prop-types";
+import { get, isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useMemo, useRef, useState } from "react";
-import { __, get, isEmpty, filter, negate, includes } from "lodash/fp";
 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
@@ -12,10 +12,10 @@ import { createLoadingSelector } from "app/selectors/loadingSelector";
 import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
+import { useMasterSchemaExpandable } from "features/MasterSchema/hooks/useMasterSchemaExpandable";
 
 import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
-import { useToggleable } from "hooks/use-toggleable";
 
 import SearchAndFilter from "components/SearchAndFilter";
 import ContextTemplate from "components/ContextTemplate";
@@ -30,55 +30,6 @@ const {
   setUnapprovedMasterSchemaRequest,
   approveUnapprovedFieldsRequest,
 } = appSlice.actions;
-
-// ToDo: write test for this
-// fixme: sometimes hierarchy is collapsed
-export const useMasterSchemaExpandable = (hierarchy) => {
-  const initialKeys = hierarchy ? [hierarchy.nodeId] : [];
-  const toggleable = useToggleable(initialKeys);
-
-  const isInitial = useMemo(
-    () => toggleable.keys.length === 0 || (toggleable.keys.length === 1 && toggleable.keys[0] === hierarchy?.nodeId),
-    [hierarchy, toggleable.keys]
-  );
-
-  const setInitialKeys = () => toggleable.setKeys(initialKeys);
-
-  const expand = (node) => toggleable.setKeys((prev) => [...prev, node.nodeId]);
-
-  const collapse = (node) =>
-    toggleable.setKeys((prev) => {
-      const nodeIds = [];
-
-      const recursive = (groupIds = node.groups) => {
-        nodeIds.push(...groupIds);
-        const groups = groupIds.map((id) => hierarchy.nodeMap.get(id));
-        groups.forEach((group) => recursive(group.groups));
-      };
-      recursive(node.groups);
-
-      nodeIds.push(node.nodeId);
-
-      return filter(negate(includes(__, nodeIds)))(prev);
-    });
-
-  const expandAll = () => toggleable.setKeys([...hierarchy.nodeMap.keys()]);
-
-  return [
-    {
-      isInitial,
-      expandedIds: toggleable.keys,
-    },
-    {
-      toggle: toggleable.toggle,
-      setKeys: toggleable.setKeys,
-      setInitialKeys,
-      expand,
-      collapse,
-      expandAll,
-    },
-  ];
-};
 
 const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) => {
   const dispatch = useDispatch();
@@ -185,8 +136,8 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
                 className="p-0"
                 textColor="currentColor"
                 backgroundColor="transparent"
-                disabled={expandableState.isInitial}
-                onClick={expandable.setInitialKeys}
+                disabled={!expandableState.isDecedentsExpanded}
+                onClick={expandable.expandOnlyRoot}
               >
                 Collapse
               </MSEButton>
