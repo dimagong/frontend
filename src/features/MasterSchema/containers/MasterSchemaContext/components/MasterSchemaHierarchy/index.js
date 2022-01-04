@@ -28,7 +28,7 @@ const getKey = ({ nodeId }) => nodeId;
 const getChildren =
   (hierarchy) =>
   ({ isContainable, fields, groups }) => {
-    return isContainable ? [...fields, ...groups].map((nodeId) => hierarchy.childrenMap.get(nodeId)) : [];
+    return isContainable ? [...fields, ...groups].map((nodeId) => hierarchy.children[nodeId]) : [];
   };
 
 const creationTitle = (type) => {

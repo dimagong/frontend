@@ -2,33 +2,39 @@ import _ from "lodash/fp";
 
 let id = 0;
 
-const getNode = (nodeId, children = [], { isMemberFirmGroup } = { isMemberFirmGroup: false }) => ({
+const getNode = (nodeId, childrenStructure = [], { isMemberFirmGroup } = { isMemberFirmGroup: false }) => ({
   id: id++,
   nodeId,
-  children,
-  groups: children.filter(_.get("isContainable")).map(_.get("nodeId")),
-  fields: children.filter(_.negate(_.get("isContainable"))).map(_.get("nodeId")),
-  isContainable: children.length > 0,
+  childrenStructure,
+  groups: childrenStructure.filter(_.get("isContainable")).map(_.get("nodeId")),
+  fields: childrenStructure.filter(_.negate(_.get("isContainable"))).map(_.get("nodeId")),
+  isContainable: !_.isEmpty(childrenStructure),
   isMemberFirmGroup,
 });
 
-const getDescendants = (node) => {
-  return [node, ...node.children.map((child) => (child.isContainable > 0 ? getDescendants(child) : child)).flat()];
-};
+const getHierarchy = (name, masterSchemaId, childrenStructure = []) => {
+  const children = {};
+  const root = getNode(name, childrenStructure);
 
-const getHierarchy = (name, masterSchemaId, children = []) => {
-  const root = { ...getNode(name, children) };
-  const nodeMap = new Map(getDescendants(root).map((child) => [child.nodeId, child]));
+  (function buildChildrenStructure(node) {
+    node.childrenStructure.forEach((child) => {
+      children[child.nodeId] = child;
+      child.isContainable && buildChildrenStructure(child);
+      delete child.childrenStructure;
+    });
+  })(root);
+  const nodes = { ...children, root };
 
   return {
     ...root,
-    nodeMap,
+    nodes,
+    children,
     masterSchemaId,
   };
 };
 
-export const buildHierarchy = () =>
-  getHierarchy("root", 1, [
+export const buildHierarchy = (rootName = "root", masterSchemaId = 1) =>
+  getHierarchy(rootName, masterSchemaId, [
     getNode("field1"),
     getNode("field2"),
     getNode("memberFirm", [getNode("field8"), getNode("field9")], { isMemberFirmGroup: true }),

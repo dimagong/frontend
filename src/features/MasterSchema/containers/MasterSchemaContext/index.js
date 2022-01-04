@@ -95,7 +95,7 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
   useDidUpdate(() => {
     if (isSearchingRef.current && hierarchy) {
       isSearchingRef.current = false;
-      isEmpty(search.value) ? expandable.setInitialKeys() : expandable.expandAll();
+      isEmpty(search.value) ? expandable.expandOnlyRoot() : expandable.expandAll();
     }
   }, [hierarchy]);
 

@@ -42,14 +42,14 @@ describe("useMasterSchemaSelectable", () => {
   it("nullable hierarchy", () => {
     renderTestComponent();
 
-    const root = testHierarchy.nodeMap.get("root");
+    const root = testHierarchy.nodes["root"];
 
     expect(expandableState.expandedIds).toStrictEqual([]);
     expect(() => expandableMethods.collapse(root)).toThrow();
   });
 
   describe("isDecedentsExpanded", () => {
-    it("initialy only root expanded", () => {
+    it("initially only root expanded", () => {
       renderTestComponent(testHierarchy);
 
       expect(expandableState.isDecedentsExpanded).toBe(false);
@@ -84,8 +84,8 @@ describe("useMasterSchemaSelectable", () => {
   it("expand", () => {
     renderTestComponent(testHierarchy);
 
-    const root = testHierarchy.nodeMap.get("root");
-    const group = testHierarchy.nodeMap.get("group1");
+    const root = testHierarchy.nodes["root"];
+    const group = testHierarchy.nodes["group1"];
 
     expandableMethods.expand(root);
     expect(expandableState.expandedIds).toStrictEqual(["root"]);
@@ -97,7 +97,7 @@ describe("useMasterSchemaSelectable", () => {
   it("collapse", () => {
     renderTestComponent(testHierarchy);
 
-    const root = testHierarchy.nodeMap.get("root");
+    const root = testHierarchy.nodes["root"];
 
     expandableMethods.setKeys(_.concat(["group2", "group3"]));
     expect(expandableState.expandedIds).toStrictEqual(["group2", "group3", "root"]);
@@ -110,6 +110,23 @@ describe("useMasterSchemaSelectable", () => {
     renderTestComponent(testHierarchy);
 
     expandableMethods.expandAll();
-    expect(expandableState.expandedIds).toStrictEqual([...testHierarchy.nodeMap.keys()]);
+    expect(expandableState.expandedIds).toStrictEqual(
+      _.pipe(
+        _.filter(_.get("isContainable")),
+        _.map(_.get("nodeId"))
+      )(testHierarchy.nodes)
+    );
+  });
+
+  describe("effects", () => {
+    it("clear selected when hierarchy.masterSchemaId changed", async () => {
+      renderTestComponent(testHierarchy);
+      expect(expandableState.expandedIds).toStrictEqual(["root"]);
+
+      renderTestComponent(buildHierarchy("root1", 2));
+
+      await new Promise((r) => setTimeout(r));
+      expect(expandableState.expandedIds).toStrictEqual(["root1"]);
+    });
   });
 });
