@@ -45,7 +45,7 @@ const FilesValue = ({ files }) => {
   return (
     <>
       {filesUrl.map((file) => (
-        <a style={{ color: "currentColor" }} href={file.url} download>
+        <a style={{ color: "currentColor" }} href={file.url} download={file.name}>
           {file.name}
         </a>
       ))}
