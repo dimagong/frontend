@@ -153,7 +153,7 @@ const MasterSchemaUserList = ({ field }) => {
 
       <Collapse isOpen={expanded} aria-expanded={expanded.toString()}>
         <CardBody className="pt-0 pb-1 px-0">
-          <RenderUsers />
+          {RenderUsers()}
         </CardBody>
       </Collapse>
     </Card>
