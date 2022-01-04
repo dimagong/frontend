@@ -113,6 +113,7 @@
   },
   "devDependencies": {
     "dotenv-cli": "^4.0.0",
+    "jest": "^27.4.5",
     "prettier": "^2.5.1",
     "react-app-rewire-postcss": "^3.0.2",
     "react-app-rewired": "^2.1.5"
