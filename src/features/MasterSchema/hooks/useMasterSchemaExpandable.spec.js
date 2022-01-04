@@ -49,7 +49,7 @@ describe("useMasterSchemaSelectable", () => {
   });
 
   describe("isDecedentsExpanded", () => {
-    it("initialy only root expanded", () => {
+    it("initially only root expanded", () => {
       renderTestComponent(testHierarchy);
 
       expect(expandableState.isDecedentsExpanded).toBe(false);
@@ -111,5 +111,17 @@ describe("useMasterSchemaSelectable", () => {
 
     expandableMethods.expandAll();
     expect(expandableState.expandedIds).toStrictEqual([...testHierarchy.nodeMap.keys()]);
+  });
+
+  describe("effects", () => {
+    it("clear selected when hierarchy.masterSchemaId changed", async () => {
+      renderTestComponent(testHierarchy);
+      expect(expandableState.expandedIds).toStrictEqual(["root"]);
+
+      renderTestComponent(buildHierarchy("root1", 2));
+
+      await new Promise((r) => setTimeout(r));
+      expect(expandableState.expandedIds).toStrictEqual(["root1"]);
+    });
   });
 });

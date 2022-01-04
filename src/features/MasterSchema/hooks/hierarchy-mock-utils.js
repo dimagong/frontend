@@ -27,8 +27,8 @@ const getHierarchy = (name, masterSchemaId, children = []) => {
   };
 };
 
-export const buildHierarchy = () =>
-  getHierarchy("root", 1, [
+export const buildHierarchy = (rootName = "root", masterSchemaId = 1) =>
+  getHierarchy(rootName, masterSchemaId, [
     getNode("field1"),
     getNode("field2"),
     getNode("memberFirm", [getNode("field8"), getNode("field9")], { isMemberFirmGroup: true }),
