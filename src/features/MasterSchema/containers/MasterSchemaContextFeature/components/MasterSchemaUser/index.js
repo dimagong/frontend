@@ -114,13 +114,23 @@ const MasterSchemaUserList = ({ field }) => {
     dispatch(getUsersByMasterSchemaFieldRequest(payload));
   }, [field.id, dispatch, abilities, organizations, memberFirmsToFilter, searchInput]);
 
-  if (isUsersLoading) {
+  const RenderUsers = () => {
+    if (isUsersLoading) {
+      return (
+        <Col className="d-flex justify-content-center py-4">
+          <Spinner />
+        </Col>
+      );
+    }
+
     return (
-      <Col className="d-flex justify-content-center py-4">
-        <Spinner />
-      </Col>
-    );
-  }
+      isEmpty(users) ? (
+        <h2 className="ms-nothing-was-found pt-0">No users found</h2>
+      ) : (
+        <MSUUserList users={users} />
+      )
+    )
+  };
 
   return (
     <Card className="px-1" style={{ boxShadow: "none", border: "1px solid #ececec" }}>
@@ -143,11 +153,7 @@ const MasterSchemaUserList = ({ field }) => {
 
       <Collapse isOpen={expanded} aria-expanded={expanded.toString()}>
         <CardBody className="pt-0 pb-1 px-0">
-          {isEmpty(users) ? (
-            <h2 className="ms-nothing-was-found pt-0">No users found</h2>
-          ) : (
-            <MSUUserList users={users} />
-          )}
+          <RenderUsers />
         </CardBody>
       </Collapse>
     </Card>
