@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { toast } from "react-toastify";
-import { pipe, get, isEqual, pick, includes } from "lodash/fp";
+import _, { pipe, get, includes } from "lodash/fp";
 
 /* Interfaces */
 
@@ -151,27 +151,16 @@ const serialiseUnapproved = (unapproved) => {
 
 /* State searchers */
 
-const getPredicateGroupById = (id) => pipe(pick(["isContainable", "id"]), isEqual({ id, isContainable: true }));
-const getPredicateFieldById = (id) => pipe(pick(["isContainable", "id"]), isEqual({ id, isContainable: false }));
-
-const getParentById = (hierarchy, id) => {
-  return hierarchy.id === id ? hierarchy : hierarchy.children.find(getPredicateGroupById(id));
-};
-
-const getFieldById = (hierarchy, id) => hierarchy.children.find(getPredicateFieldById(id));
-
 const getHierarchyAndParentByParentId = (state, id) => {
   return Object.entries(state.masterSchema.hierarchies).reduce(
-    (acc, [, hierarchy]) => {
-      return acc.parent ? acc : { parent: getParentById(hierarchy, id), hierarchy };
-    },
+    (acc, [, hierarchy]) => acc.parent ? acc : { parent: hierarchy.nodes[id], hierarchy },
     { hierarchy: null, parent: null }
   );
 };
 
 /* Reducers */
 
-const normalizeNode = (node, { isContainable, parent = null, childrenMap = new Map() }) => {
+const normalizeNode = (node, { isContainable, parent = null, children = {} }) => {
   const serialised = {
     ...node,
     nodeId: `${isContainable ? "group" : "field"}${node.id}`,
@@ -184,10 +173,10 @@ const normalizeNode = (node, { isContainable, parent = null, childrenMap = new M
     serialised.fields = [];
 
     node.fields.forEach((field) => {
-      const serialisedField = normalizeNode(field, { isContainable: false, parent: serialised, childrenMap });
+      const serialisedField = normalizeNode(field, { isContainable: false, parent: serialised, children });
 
       serialised.fields.push(serialisedField.nodeId);
-      childrenMap.set(serialisedField.nodeId, serialisedField);
+      children[serialisedField.nodeId] = serialisedField;
     });
   }
 
@@ -195,10 +184,10 @@ const normalizeNode = (node, { isContainable, parent = null, childrenMap = new M
     serialised.groups = [];
 
     node.groups.forEach((group) => {
-      const serialisedGroup = normalizeNode(group, { isContainable: true, parent: serialised, childrenMap });
+      const serialisedGroup = normalizeNode(group, { isContainable: true, parent: serialised, children });
 
       serialised.groups.push(serialisedGroup.nodeId);
-      childrenMap.set(serialisedGroup.nodeId, serialisedGroup);
+      children[serialisedGroup.nodeId] = serialisedGroup;
     });
   }
 
@@ -240,13 +229,16 @@ const masterSchemaReducer = {
 
     if (hierarchy) {
       // Normalize hierarchy
-      const childrenMap = new Map();
-      const root = normalizeNode(hierarchy, { isContainable: true, childrenMap });
-      const nodeMap = new Map(childrenMap).set(root.nodeId, root);
+      const children = {};
+      const root = normalizeNode(hierarchy, { isContainable: true, children });
+      const nodes = _.cloneDeep(children);
+
+      nodes[root.nodeId] = root;
+
       const normalizedHierarchy = {
         ...root,
-        childrenMap,
-        nodeMap,
+        children,
+        nodes,
       };
 
       state.masterSchema.hierarchies[hierarchy.masterSchemaId] = normalizedHierarchy;
@@ -257,8 +249,8 @@ const masterSchemaReducer = {
   },
 
   addFieldToMasterSchemaSuccess(state, { payload }) {
-    const parentId = payload.field.master_schema_group_id;
-    const { parent } = getHierarchyAndParentByParentId(state, parentId);
+    const parentNodeId = `group${payload.field.master_schema_group_id}`;
+    const { parent } = getHierarchyAndParentByParentId(state, parentNodeId);
 
     const serialised = serialiseNode(payload.field, { isContainable: false, parent });
     // console.log("add_field/serialised", serialised);
@@ -274,8 +266,8 @@ const masterSchemaReducer = {
   },
 
   addGroupToMasterSchemaSuccess(state, { payload }) {
-    const parentId = payload.group.parent_id;
-    const { parent } = getHierarchyAndParentByParentId(state, parentId);
+    const parentNodeId = payload.group.parent_id;
+    const { parent } = getHierarchyAndParentByParentId(state, parentNodeId);
 
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
     const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });
@@ -292,15 +284,15 @@ const masterSchemaReducer = {
   },
 
   updateFieldMasterSchemaSuccess(state, { payload }) {
-    const parentId = payload.field.master_schema_group_id;
-    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentId);
+    const parentNodeId = `group${payload.field.master_schema_group_id}`;
+    const { hierarchy, parent } = getHierarchyAndParentByParentId(state, parentNodeId);
 
     const serialised = serialiseNode(payload.field, { isContainable: false, parent });
     // console.log("update_field/serialised", serialised);
     const valid = masterSchemaFieldInterface.validateSync(serialised);
     // console.log("update_field/valid", valid);
 
-    getFieldById(hierarchy, valid.id).name = valid.name;
+    hierarchy.children[valid.nodeId].name = valid.name;
 
     state.isError = false;
     state.isLoading = false;
@@ -322,8 +314,8 @@ const masterSchemaReducer = {
   },
 
   fieldMakeParentMasterSchemaSuccess(state, { payload }) {
-    const parentId = payload.field.master_schema_group_id;
-    const { parent } = getHierarchyAndParentByParentId(state, parentId);
+    const parentNodeId = `group${payload.field.master_schema_group_id}`;
+    const { parent } = getHierarchyAndParentByParentId(state, parentNodeId);
 
     const serialised = serialiseNode(payload.field, { isContainable: false, parent });
     // console.log("field-make-parent/serialised", serialised);
@@ -368,8 +360,8 @@ const masterSchemaReducer = {
   },
 
   groupMakeParentMasterSchemaSuccess(state, { payload }) {
-    const parentId = payload.group.parent_id;
-    const { parent } = getHierarchyAndParentByParentId(state, parentId);
+    const parentNodeId = `group${payload.group.parent_id}`;
+    const { parent } = getHierarchyAndParentByParentId(state, parentNodeId);
 
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
     const serialised = serialiseNode({ ...payload.group, ...RISKY_CLIENT_LOGIC }, { isContainable: true, parent });

@@ -1,4 +1,4 @@
-import { get, negate } from "lodash/fp";
+import _ from "lodash/fp";
 import { useCallback, useMemo } from "react";
 
 import { useDidUpdate } from "hooks/use-did-update";
@@ -8,18 +8,18 @@ import { useToggleable } from "hooks/use-toggleable";
 export const useMasterSchemaSelectable = (hierarchy) => {
   const toggleable = useToggleable([]);
 
-  const nodeMap = hierarchy?.nodeMap || new Map();
+  const nodes = hierarchy?.nodes || {};
   const masterSchemaId = hierarchy?.masterSchemaId;
 
-  const isSomeNodeSystem = (nodes) => nodes.some(get("isSystem"));
+  const isSomeNodeSystem = (nodes) => nodes.some(_.get("isSystem"));
 
-  const getGroups = (nodes) => nodes.filter(get("isContainable"));
+  const getGroups = (nodes) => nodes.filter(_.get("isContainable"));
 
-  const getFields = (nodes) => nodes.filter(negate(get("isContainable")));
+  const getFields = (nodes) => nodes.filter(_.negate(_.get("isContainable")));
 
-  const getMemberFirmGroups = (nodeMap) => [...nodeMap.values()].filter(get("isMemberFirmGroup"));
+  const getMemberFirmGroups = (nodes) => _.filter(_.get("isMemberFirmGroup"), nodes);
 
-  const getSelectedNodes = (selectedIds, nodeMap) => selectedIds.map((nodeId) => nodeMap.get(nodeId)).filter(Boolean);
+  const getSelectedNodes = (selectedIds, nodes) => selectedIds.map((nodeId) => nodes[nodeId]).filter(Boolean);
 
   const getSelectedFieldsInMemberFirms = (selectedNodes, memberFirmGroups) => {
     return selectedNodes.filter(({ nodeId }) => {
@@ -32,11 +32,11 @@ export const useMasterSchemaSelectable = (hierarchy) => {
     return selectedNodes.length > selectedFieldsFromMemberFirm.length && selectedFieldsFromMemberFirm.length > 0;
   };
 
-  const selectedNodes = useMemo(() => getSelectedNodes(toggleable.keys, nodeMap), [nodeMap, toggleable.keys]);
+  const selectedNodes = useMemo(() => getSelectedNodes(toggleable.keys, nodes), [nodes, toggleable.keys]);
   const selectedFields = useMemo(() => getFields(selectedNodes), [selectedNodes]);
   const selectedGroups = useMemo(() => getGroups(selectedNodes), [selectedNodes]);
   const thereIsSelectedSystemNode = useMemo(() => isSomeNodeSystem(selectedNodes), [selectedNodes]);
-  const memberFirmGroups = useMemo(() => getMemberFirmGroups(nodeMap), [nodeMap]);
+  const memberFirmGroups = useMemo(() => getMemberFirmGroups(nodes), [nodes]);
   const areSelectedFieldsContainCommonAndMemberFirmFields = useMemo(
     () => areCommonAndMemberFirmFieldsSelected(selectedNodes, memberFirmGroups),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,23 +65,23 @@ export const useMasterSchemaSelectable = (hierarchy) => {
 
   const toggle = useCallback(
     (nodeId) => {
-      const toSelectNode = nodeMap.get(nodeId);
+      const toSelectNode = nodes[nodeId];
 
       // Unable to select field simultaneously with groups
       if (!toSelectNode.isContainable) {
-        return toggleable.toggle([nodeId, ...selected.groups.map(get("nodeId"))]);
+        return toggleable.toggle([nodeId, ...selected.groups.map(_.get("nodeId"))]);
       }
 
       // Unable to select group simultaneously with groups and fields
       if (toSelectNode.isContainable) {
         return toggleable.toggle([
           nodeId,
-          ...selected.groups.map(get("nodeId")),
-          ...selected.fields.map(get("nodeId")),
+          ...selected.groups.map(_.get("nodeId")),
+          ...selected.fields.map(_.get("nodeId")),
         ]);
       }
     },
-    [nodeMap, toggleable, selected]
+    [nodes, toggleable, selected]
   );
 
   useDidUpdate(() => toggleable.clear(), [masterSchemaId]);
