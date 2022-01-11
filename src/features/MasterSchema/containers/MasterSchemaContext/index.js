@@ -17,10 +17,10 @@ import { useMasterSchemaExpandable } from "features/MasterSchema/hooks/useMaster
 import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
 
+import TreeHierarchy from "components/TreeHierarchy";
 import SearchAndFilter from "components/SearchAndFilter";
 import ContextTemplate from "components/ContextTemplate";
 
-import MasterSchemaHierarchy from "./components/MasterSchemaHierarchy";
 import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
 
 const {
@@ -146,7 +146,7 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
         </div>
 
         {hierarchy ? (
-          <MasterSchemaHierarchy
+          <TreeHierarchy
             hierarchy={hierarchy}
             expandedIds={expandableState.expandedIds}
             onExpand={expandable.expand}

@@ -7,24 +7,24 @@ import { Lock } from "@material-ui/icons";
 
 import { stopPropagation } from "utility/event-decorators";
 
-const MSETreeNode = (props) => {
+const MSHTreeNode = (props) => {
   const { name, date, selected, isLocked, onSelect, prepend, append, className: propClassName, children } = props;
-  const className = classNames("ms-elements__node", propClassName, { "ms-elements__node--selected": selected });
+  const className = classNames("tree-hierarchy__node", propClassName, { "tree-hierarchy__node--selected": selected });
 
   return (
     <li className={className} onClick={stopPropagation(onSelect)}>
-      <div className="ms-elements__node-content d-flex align-items-center">
+      <div className="tree-hierarchy__node-content d-flex align-items-center">
         {prepend}
-        <div className="ms-elements__name">{name}</div>
+        <div className="tree-hierarchy__name">{name}</div>
         {append}
         <div className="d-flex align-items-center ml-auto">
           {isLocked && (
-            <div className="ms-elements__lock px-3">
+            <div className="tree-hierarchy__lock px-3">
               <Lock fontSize="inherit" />
             </div>
           )}
 
-          <div className="ms-elements__date">
+          <div className="tree-hierarchy__date">
             <div>{moment(date).format("DD.MM.YYYY")}</div>
             <div>{moment(date).format("HH:MM")}</div>
           </div>
@@ -35,12 +35,12 @@ const MSETreeNode = (props) => {
   );
 };
 
-MSETreeNode.defaultProps = {
+MSHTreeNode.defaultProps = {
   onSelect: noop,
   selected: false,
 };
 
-MSETreeNode.propTypes = {
+MSHTreeNode.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   isLocked: PropTypes.bool.isRequired,
@@ -55,4 +55,4 @@ MSETreeNode.propTypes = {
   children: PropTypes.node,
 };
 
-export default MSETreeNode;
+export default MSHTreeNode;
