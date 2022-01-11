@@ -2,8 +2,8 @@ import React from "react";
 import _ from "lodash/fp";
 import { render, unmountComponentAtNode } from "react-dom";
 
-import { buildHierarchy } from "./hierarchy-mock-utils";
-import { useMasterSchemaSelectable } from "./useMasterSchemaSelectable";
+import { buildHierarchy } from "components/TreeHierarchy/hooks/hierarchy-mock-utils";
+import { useTreeHierarchySelectable } from "./useTreeHierarchySelectable";
 
 describe("useMasterSchemaSelectable", () => {
   let toggle = null;
@@ -13,7 +13,7 @@ describe("useMasterSchemaSelectable", () => {
   const testHierarchy = buildHierarchy();
 
   const TestComponent = ({ hierarchy }) => {
-    const selectable = useMasterSchemaSelectable(hierarchy);
+    const selectable = useTreeHierarchySelectable(hierarchy);
 
     toggle = (nodeId) => selectable.toggle(nodeId);
     selected = selectable.selected;

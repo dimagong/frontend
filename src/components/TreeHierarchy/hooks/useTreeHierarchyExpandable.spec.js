@@ -2,8 +2,8 @@ import _ from "lodash/fp";
 import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 
-import { buildHierarchy } from "./hierarchy-mock-utils";
-import { useMasterSchemaExpandable } from "./useMasterSchemaExpandable";
+import { buildHierarchy } from "components/TreeHierarchy/hooks/hierarchy-mock-utils";
+import { useTreeHierarchyExpandable } from "./useTreeHierarchyExpandable";
 
 describe("useMasterSchemaSelectable", () => {
   let container = null;
@@ -13,7 +13,7 @@ describe("useMasterSchemaSelectable", () => {
   const testHierarchy = buildHierarchy();
 
   const TestComponent = ({ hierarchy }) => {
-    const [state, methods] = useMasterSchemaExpandable(hierarchy);
+    const [state, methods] = useTreeHierarchyExpandable(hierarchy);
 
     expandableState = state;
     expandableMethods = methods;
