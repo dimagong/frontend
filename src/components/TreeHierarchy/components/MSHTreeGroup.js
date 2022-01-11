@@ -8,11 +8,11 @@ import { useToggle } from "hooks/use-toggle";
 import { stopPropagation } from "utility/event-decorators";
 import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
-import MSETreeNode from "./mse-tree-node";
+import MSHTreeNode from "./MSHTreeNode";
 
 const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
 
-const MSETreeGroup = (props) => {
+const MSHTreeGroup = (props) => {
   const {
     name,
     date,
@@ -48,17 +48,17 @@ const MSETreeGroup = (props) => {
   useOutsideFocus(popupRef, hidePopup);
 
   return (
-    <MSETreeNode
+    <MSHTreeNode
       className={className}
       name={name}
       date={date}
       selected={selected}
       isLocked={isLocked}
       prepend={
-        <div className="ms-elements__mark-icon d-flex justify-content-center align-items-center">
+        <div className="tree-hierarchy__mark-icon d-flex justify-content-center align-items-center">
           <button
             type="button"
-            className="ms-elements__retractable d-flex justify-content-center align-items-center"
+            className="tree-hierarchy__retractable d-flex justify-content-center align-items-center"
             onClick={stopPropagation(onRetractableClick)}
             aria-label={getMarkIconAriaLabel(expanded)}
           >
@@ -70,7 +70,7 @@ const MSETreeGroup = (props) => {
         <div ref={popupRef}>
           <button
             type="button"
-            className="ms-elements__popup-accessor"
+            className="tree-hierarchy__popup-accessor"
             aria-label="Create element or category"
             onClick={stopPropagation(togglePopup)}
           >
@@ -78,14 +78,14 @@ const MSETreeGroup = (props) => {
           </button>
 
           <Fade
-            className="ms-elements__popup bg-white d-flex justify-content-center flex-column position-absolute"
+            className="tree-hierarchy__popup bg-white d-flex justify-content-center flex-column position-absolute"
             in={popup}
             mountOnEnter
             unmountOnExit
           >
             <button
               type="button"
-              className="ms-elements__node-creator"
+              className="tree-hierarchy__node-creator"
               aria-label="Create category"
               onClick={stopPropagation(onGroupCreatorClick)}
             >
@@ -93,7 +93,7 @@ const MSETreeGroup = (props) => {
             </button>
             <button
               type="button"
-              className="ms-elements__node-creator"
+              className="tree-hierarchy__node-creator"
               aria-label="Create element"
               onClick={stopPropagation(onFieldCreatorClick)}
             >
@@ -107,11 +107,11 @@ const MSETreeGroup = (props) => {
       <Collapse isOpen={expanded} mountOnEnter unmountOnExit aria-expanded={expanded.toString()}>
         {children}
       </Collapse>
-    </MSETreeNode>
+    </MSHTreeNode>
   );
 };
 
-MSETreeGroup.defaultProps = {
+MSHTreeGroup.defaultProps = {
   onExpand: noop,
   onCollapse: noop,
   onSelect: noop,
@@ -119,7 +119,7 @@ MSETreeGroup.defaultProps = {
   onGroupCreatorClick: noop,
 };
 
-MSETreeGroup.propTypes = {
+MSHTreeGroup.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   isLocked: PropTypes.bool.isRequired,
@@ -137,4 +137,4 @@ MSETreeGroup.propTypes = {
   children: PropTypes.node,
 };
 
-export default MSETreeGroup;
+export default MSHTreeGroup;

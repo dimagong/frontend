@@ -19,7 +19,7 @@
   height: 22px;
 }
 
-.ms-elements {
+.tree-hierarchy {
   min-height: 400px;
   &__list {
     @extend %list-reset;
@@ -54,11 +54,11 @@
       background-color: #f1f1f1;
     }
 
-    @at-root .ms-elements__node--selectable > & {
+    @at-root .tree-hierarchy__node--selectable > & {
       cursor: pointer;
     }
 
-    @at-root .ms-elements__node--selected > & {
+    @at-root .tree-hierarchy__node--selected > & {
       background-color: #707070;
     }
   }
@@ -88,7 +88,7 @@
     color: #7367f0;
     font-size: 1.1rem;
 
-    @at-root .ms-elements__node--selected > .ms-elements__node-content & {
+    @at-root .tree-hierarchy__node--selected > .tree-hierarchy__node-content & {
       color: #fff;
     }
   }
@@ -142,7 +142,7 @@
     color: #95989a;
     font-size: 14px;
 
-    @at-root .ms-elements__node--selected > .ms-elements__node-content & {
+    @at-root .tree-hierarchy__node--selected > .tree-hierarchy__node-content & {
       color: currentColor;
     }
   }
