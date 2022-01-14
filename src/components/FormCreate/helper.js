@@ -1,4 +1,4 @@
-import Constants, {FIELD_TYPE_LONG_TEXT_AREA} from "./Parts/Constants";
+import Constants from "./Parts/Constants";
 
 function _toBool(value) {
   switch (typeof value) {

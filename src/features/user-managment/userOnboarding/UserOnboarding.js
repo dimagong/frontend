@@ -10,8 +10,6 @@ import {
   TabPane,
 } from "reactstrap"
 import {
-  selectGroups,
-  selectRoles,
   selectModules,
   selectManager,
   selectUserDForms,
@@ -20,8 +18,8 @@ import {
 } from "app/selectors";
 import {useDispatch, useSelector} from "react-redux";
 import classnames from "classnames"
-import DataTable, {createTheme} from "react-data-table-component"
-import {User, X, Check, Plus, Edit2, RefreshCw, EyeOff, Eye} from "react-feather"
+import DataTable from "react-data-table-component"
+import {User} from "react-feather"
 import {columnDefs} from './gridSettings';
 import UserOnboardingForm from './UserOnboardingForm';
 import UserOnboardingDForm from './UserOnboardingDForm';

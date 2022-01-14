@@ -14,7 +14,7 @@ import {
     FormFeedback
   } from "reactstrap";
 import SweetAlert from 'react-bootstrap-sweetalert';
-import { selectError, selectInvitation } from "app/selectors";
+import { selectError } from "app/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from 'hooks/useRouter';
 import TermsAndConditions from 'assets/ValidPath-privacy-policy.pdf'
@@ -28,7 +28,6 @@ const {
 
 const Invitation = () => {
     const errors = useSelector(selectError) || {};
-    const invitation = useSelector(selectInvitation);
     const [invitationAccept, setInvitationAccept] = useState({});
     const dispatch = useDispatch();
     const {query} = useRouter()
@@ -36,6 +35,7 @@ const Invitation = () => {
 
     useEffect(() => {
       dispatch(getInvitationRequest({invitationId}))
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const onSubmit = (e) => {

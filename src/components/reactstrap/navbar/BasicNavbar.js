@@ -36,8 +36,7 @@ import {
   CheckCircle,
   File,
   Power,
-  User,
-  Heart
+  User
 } from "react-feather"
 import { navbarBasic } from "./NavbarSourceCode"
 import userImg from "../../../assets/img/portrait/small/avatar-s-11.jpg"

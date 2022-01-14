@@ -14,6 +14,7 @@ const OnboardingSurveyFeedbackViewComponent = ({questions, answers, onFeedbackCl
 
   const questionsWithFeedback = [];
 
+  // eslint-disable-next-line array-callback-return
   answers.map((answer, index) => {
     if(answer.feedback) {
       questionsWithFeedback.push({

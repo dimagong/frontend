@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {
   Card,
   CardBody,
@@ -33,9 +33,9 @@ export const parseTextToComponent = (text) => {
 
   return <span>
     {text.substring(0, indexes[0].start)}
-    {indexes.map(i => {
+    {indexes.map((i, idx) => {
       ++currIndex;
-      return <span>
+      return <span key={idx}>
         <strong>{text.substring(i.start + 3, i.finish)}</strong>
         {text.substring(i.finish + 4, currIndex + 1 === indexes.length ? text.length : indexes[currIndex + 1].start)}
       </span>
@@ -131,10 +131,11 @@ const Timeline = ({activity, loadMoreData, noActivitiesMessage = "This manager h
               <th className={'activity-date'}>Date time</th>
               <th className={'activity-action'}>Action</th>
             </tr>
+            {/* eslint-disable-next-line array-callback-return */}
             {data && data.slice().sort((lhs, rhs) => new Date(lhs.created_at) > new Date(rhs.created_at) ? -1 : 1).map((item, index) => {
               let message = item?.action_type?.name === userProfileUpdated ? getEditMessage(item) : '';
               if (item?.action_type?.name !== userProfileUpdated || message) {
-                return <tr>
+                return <tr key={index}>
                   <td>{getTimePassed(item.created_at)}</td>
                   {item?.action_type?.name === userProfileUpdated
                     ? <td>{message}</td>

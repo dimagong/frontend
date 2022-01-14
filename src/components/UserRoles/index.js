@@ -20,8 +20,6 @@ import {capitalizeAll} from '../../utility/common'
 
 import './styles.scss'
 
-import { logos } from 'constants/organizations'
-
 import appSlice from 'app/slices/appSlice'
 import {toast} from "react-toastify";
 
@@ -30,7 +28,6 @@ const {
   allowUserAbilityRequest,
   disallowUserAbilityRequest,
   getOrganizationsRequest,
-  getUserOnboardingRequest,
   getUserOrganizationsRequest,
   removeUserOrganizationRequest,
   switchUserOrganizationRequest
@@ -56,8 +53,10 @@ const UserRoles = ({manager, userOrganizations, className}) => {
   // correct user organizations are orgs that links to state.app.organizations object,
   // here we just select same orgs but with fresh data.
   // After that we get back abilities object that exist only in user orgs but not in state.app.organizations
+  // eslint-disable-next-line no-self-compare
   let correctUserOrganizations = organizations.filter((org) => !!userOrganizations.filter((userOrg) => userOrg.id === org.id && userOrg.type === userOrg.type).length)
-  correctUserOrganizations = correctUserOrganizations.map((userOrg, index) => {
+  // eslint-disable-next-line array-callback-return
+  correctUserOrganizations = correctUserOrganizations.map((userOrg) => {
 
     const sameOrg = userOrganizations.filter((org) => userOrg.id === org.id && userOrg.type === org.type)[0]
 
@@ -210,10 +209,12 @@ const UserRoles = ({manager, userOrganizations, className}) => {
     if(organizations.length === 0) {
       dispatch(getOrganizationsRequest())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     dispatch(getUserOrganizationsRequest(manager.id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager.id])
 
   useEffect(() => {
@@ -228,6 +229,7 @@ const UserRoles = ({manager, userOrganizations, className}) => {
         }
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager.organizations])
 
   return (

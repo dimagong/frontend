@@ -43,7 +43,9 @@ const UnapprovedFieldItem = ({ selectable, field }) => {
           <Checkbox checked={selected} onChange={handleFieldChange} />
         </div>
         <div className="unapproved_fields-list-items-item-description">
-          <div className="unapproved_fields-list-items-item-description-name">{field.name}</div>
+          <div className="unapproved_fields-list-items-item-description-name">
+            {`${field.parentGroupName}/${field.name}`}
+          </div>
           <div className="unapproved_fields-list-items-item-description-appearances">
             Applications: {field.applicationNames?.join(", ") || "Not used in Applications"}
           </div>

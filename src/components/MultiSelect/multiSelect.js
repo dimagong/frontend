@@ -2,8 +2,7 @@ import React, {useEffect} from 'react'
 import Select, {components} from "react-select"
 import {Plus} from "react-feather"
 import {colourStyles} from "utility/select/selectSettigns";
-import {prepareSelectOptions, prepareNotNestedSelectOptions, normalizeGroups} from "utility/select/prepareSelectData";
-import _ from "lodash";
+import {prepareNotNestedSelectOptions} from "utility/select/prepareSelectData";
 import {useDispatch, useSelector} from "react-redux";
 import {selectGroups} from 'app/selectors/groupSelector'
 import {normalizeNotNestedGroups} from "../../utility/select/prepareSelectData";
@@ -38,6 +37,7 @@ export const MultiSelect = ({groups: selectedGroups, setGroups, single, noDropdo
 
   useEffect(() => {
     !groups.length && dispatch(getGroupsRequest())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 // TODO: set groups in to parrent component
   const onSelectGroupsChange = (values) => {

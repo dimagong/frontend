@@ -7,7 +7,6 @@ import {selectGroups, selectRoles} from "app/selectors";
 import organizationApi from '../../../api/organizations'
 
 import appSlice from 'app/slices/appSlice'
-import moment from "moment";
 
 const {
   getProfileSuccess,
@@ -18,7 +17,6 @@ const {
   getActivitiesRequest,
   getFilterRequest,
   getFilterSuccess,
-  getFilterError,
   postFilterRequest,
   postFilterSuccess,
   postFilterError,
@@ -39,7 +37,6 @@ const {
   getUserByIdSuccess,
   getUserByIdRequest,
   getUserByIdError,
-  getRolesRequest,
   getGroupsRequest,
   getUserManagment,
   getUserOrganizationsRequest,
@@ -79,7 +76,6 @@ const {
 
   getDashboardDataRequest,
   getDashboardDataSuccess,
-  getDashboardDataError,
 
   getDashboardActivityRequest,
   getDashboardActivitySuccess,
@@ -105,16 +101,7 @@ const {
   getUserOnboardingRequest,
 
   switchUserOrganizationRequest,
-  switchUserOrganizationSuccess,
   switchUserOrganizationError,
-
-  addMemberFirmUserRequest,
-  addMemberFirmUserSuccess,
-  addMemberFirmUserError,
-
-  removeMemberFirmUserRequest,
-  removeMemberFirmUserSuccess,
-  removeMemberFirmUserError,
 
   updateApllicationsOrderSuccess,
   updateApllicationsOrderError,
@@ -142,7 +129,7 @@ function* getUsers() {
 
 function* updateApllicationsOrder({ payload }) {
   try {
-    const response = yield call(userApi.updateApllicationsOrder, payload);
+    yield call(userApi.updateApllicationsOrder, payload);
     yield put(updateApllicationsOrderSuccess(payload));
   } catch (error) {
     yield put(updateApllicationsOrderError(error));
@@ -165,7 +152,7 @@ function* postSettings({payload}) {
 }
 
 function* patchSettings({payload}) {
-  const response = yield call(userApi.patchSettings, payload);
+  yield call(userApi.patchSettings, payload);
   yield put(patchSettingsSuccess(payload));
 }
 
@@ -220,7 +207,7 @@ function* postFilter({payload}) {
 
 function* deleteFilter({payload}) {
   try {
-    const response = yield call(userApi.deleteFilter, payload.id);
+    yield call(userApi.deleteFilter, payload.id);
     yield put(deleteFilterSuccess(payload))
   } catch (error) {
     yield put(deleteFilterError(error));
@@ -229,7 +216,7 @@ function* deleteFilter({payload}) {
 
 function* patchFilter({payload}) {
   try {
-    const response = yield call(userApi.patchFilter, payload);
+    yield call(userApi.patchFilter, payload);
     yield put(patchFilterSuccess({payload}))
   } catch (error) {
     yield put(patchFilterError(error));

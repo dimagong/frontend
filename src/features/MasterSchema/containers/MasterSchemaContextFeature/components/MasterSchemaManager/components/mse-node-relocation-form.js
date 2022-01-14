@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import React, { useMemo } from "react";
 import { get, pipe, isEqual } from "lodash/fp";
+import React, { useMemo, useState } from "react";
 import { CardTitle, Label, Row, Col } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
@@ -28,6 +28,7 @@ const MSENodeRelocationForm = ({
   label,
   action,
   onSubmit: propOnSubmit,
+  note,
   ...attrs
 }) => {
   const withParentNodeId = useMemo(
@@ -38,18 +39,28 @@ const MSENodeRelocationForm = ({
     () => (multiple ? null : options.find(withParentNodeId)),
     [multiple, options, withParentNodeId]
   );
+  const [pristine, setPristine] = useState(true);
 
-  const [location, setLocation] = useFormField(initialValue, [Validators.required, Validators.identical(initialValue)]);
+  const [location, setLocation] = useFormField(initialValue, [
+    Validators.required,
+    Validators.identical(initialValue),
+    () => !pristine,
+  ]);
   const form = useFormGroup({ location });
 
   const onSubmit = () => propOnSubmit(form);
+
+  const onChange = (value) => {
+    setPristine(false);
+    setLocation(value);
+  };
 
   return (
     <MSESelectField
       {...location}
       name="location"
       options={options}
-      onChange={setLocation}
+      onChange={onChange}
       menuPosition={"fixed"}
       styles={customSelectStyles}
       components={{ IndicatorSeparator: null }}
@@ -67,6 +78,7 @@ const MSENodeRelocationForm = ({
             <Row>
               <Col xs={8}>
                 {select}
+                {note}
                 {error}
               </Col>
               <Col xs={4}>

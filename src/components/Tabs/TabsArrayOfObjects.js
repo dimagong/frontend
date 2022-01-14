@@ -105,6 +105,7 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
       scrollIntoContainerView(active)
       setIsScrolled(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, document.getElementById(active)])
 
   //** TODO add mt-1 to other sections

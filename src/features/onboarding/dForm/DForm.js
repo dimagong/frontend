@@ -1,33 +1,17 @@
 import React, {useState ,useRef, useEffect} from 'react'
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardBody,
   Row,
   Col,
-  Button, Badge,
+  Button,
 } from "reactstrap"
-// import {
-//   Trash2,
-// } from "react-feather"
 import "flatpickr/dist/themes/light.css";
 import "assets/scss/plugins/forms/flatpickr/flatpickr.scss"
-// import {X, Eye, EyeOff} from "react-feather"
-
-// import workflowService from 'services/workflow.service'
-
-import {toast} from "react-toastify"
 
 import {ContextLayout} from "utility/context/Layout"
 import {AgGridReact} from "ag-grid-react"
 import "assets/scss/plugins/tables/_agGridStyleOverride.scss"
-// import FormCreate from '../FormCreate/FormCreate'
-// import rfdc from 'rfdc';
-// import Form from "@rjsf/core";
-// import {debounce} from "lodash";
-// import {prepareTableGroupData} from "utility/table/prepareTableGroupData"
-// import MultiSelect from "components/MultiSelect/multiSelect";
 import { ChangeDetectionStrategyType } from 'ag-grid-react/lib/changeDetectionService'
 import { columnDefs } from "./gridSettings";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,6 +43,7 @@ const DForm = () => {
 
   useEffect(() => {
     !dForms.length && dispatch(getdFormsRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
    // TODO: START - AG GRID API

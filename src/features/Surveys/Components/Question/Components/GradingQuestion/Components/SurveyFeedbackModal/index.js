@@ -39,6 +39,7 @@ const SurveyFeedbackModal = ({
     if(!isSubmitProceed && isSubmitProceedPrevState && !error) {
       handleClose();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitProceed]);
 
   return (

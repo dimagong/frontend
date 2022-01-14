@@ -80,14 +80,6 @@ const FreeText = ({ onClick, onChange, answer }) => {
   )
 };
 
-const TimerComponent = ({startTime}) => {
-  const [stopwatchTime, setStopwatchTime] = useState(getTimeDifference(startTime));
-
-  setInterval(() => setStopwatchTime(getTimeDifference(startTime)), 1000);
-
-  return stopwatchTime;
-};
-
 const OnboardingQuestion = ({
                               displayType,
                               questionNumber,

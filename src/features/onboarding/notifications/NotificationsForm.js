@@ -63,6 +63,7 @@ const NotificationsForm = ({isCreate}) => {
     if (isCreate) {
       dispatch(setNotification(initNotification))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreate]);
 
   if (!notification) return null;

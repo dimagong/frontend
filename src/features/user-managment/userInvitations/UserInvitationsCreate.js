@@ -1,9 +1,6 @@
 import React, {useState, useEffect} from 'react'
-import {
-  Button,
-  UncontrolledTooltip
-} from "reactstrap"
-import {RefreshCcw, Trash, Save} from "react-feather"
+import { Button } from "reactstrap"
+import {RefreshCcw, Trash} from "react-feather"
 import {useDispatch, useSelector} from "react-redux";
 import {selectManager} from "app/selectors";
 import moment from "moment";
@@ -20,7 +17,7 @@ const {
   deleteInvitationsRequest,
 } = appSlice.actions;
 
-const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
+const UserInvitationsCreate = ({resend, invitationText}) => {
   const dispatch = useDispatch();
   const manager = useSelector(selectManager);
   const [invitationExpiredTime, setInvitationExpiredTime] = useState('');
@@ -62,6 +59,7 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
   useEffect(() => {
     startInvitationTimer();
     return () => clearInterval(invitationInterval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager]);
 
   const onCopy = () => {
@@ -81,11 +79,8 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
         style={{'font-size': '14px'}}
         id="trash-invitation-btn"
       >
-        <Trash></Trash>
+        <Trash />
       </Button>
-      {/*<UncontrolledTooltip placement="top" target="trash-invitation-btn">*/}
-      {/*  Delete invitation*/}
-      {/*</UncontrolledTooltip>*/}
     </div>;
   };
 
@@ -116,9 +111,6 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
           Copy link
         </Button>
       </CopyToClipboard>
-      {/*<UncontrolledTooltip placement="top" target="resend-invitation-btn">*/}
-      {/*  Resend invitation*/}
-      {/*</UncontrolledTooltip>*/}
     </div>;
   };
 
@@ -135,9 +127,6 @@ const UserInvitationsCreate = ({resend, trash, send, invitationText}) => {
       >
         {!invitationText ? 'Send invitation' : invitationText}
       </Button>
-      {/*<UncontrolledTooltip placement="top" target="send-invitation-btn">*/}
-      {/*  Send invitation*/}
-      {/*</UncontrolledTooltip>*/}
     </div>;
   };
 

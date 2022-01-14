@@ -20,13 +20,9 @@ import {
   getInvitationPath,
   sendInvitationAcceptPath,
   getOnboardingsByUserPath,
-  getFilterPath,
-  getFilterPathByID,
   updateUserApplicationsOrder,
 } from "constants/user";
 import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
-import moment from "moment";
-import {getQuestionUpdateUrl} from "../surveys/constants";
 
 const userApi = {
   async getFilter() {

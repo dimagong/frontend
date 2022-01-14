@@ -2,7 +2,7 @@ import AutoComplete from "../@vuexy/autoComplete/AutoCompleteComponent";
 import FilterIcon from "../../assets/img/svg/filter.svg";
 import SearchIcon from "../../assets/img/svg/searchIcon.svg";
 import CalendarIcon from "../../assets/img/svg/calendar.svg";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import FilterModal from "./Filter/FilterModal";
 import {Button} from "reactstrap";
 import CloseIcon from "../../assets/img/svg/circle-with-cross.svg";
@@ -12,6 +12,7 @@ import Calendar from "react-calendar";
 import {useOutsideAlerter} from "../../hooks/useOutsideAlerter";
 import { Close } from '@material-ui/icons'
 import _ from "lodash";
+import { Spinner } from "reactstrap";
 
 const SearchAndFilter = (props) => {
   const {
@@ -22,11 +23,13 @@ const SearchAndFilter = (props) => {
     filterTypes,
     applyFilter,
     isCalendar,
+    onFilterOptionCancel,
     onCalendarChange,
     className,
     hasIcon,
     placeholder,
     filterTabPosition,
+    loading,
   } = props;
 
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false);
@@ -41,6 +44,14 @@ const SearchAndFilter = (props) => {
   const [isCalendarOpened, setIsCalendarOpened] = useState(false);
   const [currentDateRange, setCurrentDateRange] = useState(new Date());
   const [calendarText, setCalendarText] = useState('');
+
+  const debounceOnChange = useCallback(_.debounce(function(text) {
+    handleSearch({target: {value: text}});
+  }, 1000), []);
+
+  const handleOnChange = (input) => {
+    debounceOnChange(input.target.value);
+  }
 
   const FILTER_DESCRIPTION_SIZE = 40;
 
@@ -69,6 +80,9 @@ const SearchAndFilter = (props) => {
     setFooterText(clearedFooterText);
     setFilter(clearedFilter);
     setAppliedFilter(clearedFilter);
+    if (onFilterOptionCancel) {
+      onFilterOptionCancel(typeToClear)
+    }
   }
 
   const onCustomCalendarChange = (value, event) => {
@@ -110,7 +124,8 @@ const SearchAndFilter = (props) => {
     Object.keys(filterTypes).forEach(item => overwriteFilterOption(newFilter, item));
     setFilter(newFilter);
 
-  }, [filterTypes])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterTypes]);
 
   useOutsideAlerter([wrapperRefCalendarButton, wrapperRefCalendarContainer],
     () => setIsCalendarOpened(false));
@@ -130,20 +145,25 @@ const SearchAndFilter = (props) => {
           suggestions={[]}
           className={`form-control ${className}`}
           filterKey="name"
-          onChange={handleSearch}
-          onEnter={handleSearch}
+          onChange={handleOnChange}
+          onEnter={(text) => {handleOnChange({target: {value: text}})}}
           suggestionLimit={4}
           defaultSuggestions={false}
           customRender={() => {}}
           showClear={true}
           hideSuggestions
+          disabled={loading}
         />
       </div>
-      <img ref={wrapperRefFilterButton}
+      {loading
+        ? (<span className={`filter-icon member-firm-filter-icon ${isCalendar ? 'small-filter-icon' : 'large-filter-icon'}`}>
+          <Spinner/>
+        </span>)
+        : (<img ref={wrapperRefFilterButton}
            className={`filter-icon member-firm-filter-icon ${isCalendar ? 'small-filter-icon' : 'large-filter-icon'}`}
            src={FilterIcon} alt={'filter-icon'}
            onClick={() => {setIsFilterBoxOpen(!isFilterBoxOpen)}}
-      />
+      />)}
       {isCalendar && (
         <span
           className={'calendar-container'}
@@ -191,7 +211,7 @@ const SearchAndFilter = (props) => {
     </div>
 
     {/*TODO** write correct handle for case when no filters selected*/}
-    {!!appliedFilter?.applications?.length && (
+    {(
       <div className={`modal-filter-tabs ${filterTabPosition === 'left' && 'left-orientation-tabs'} ${filterTabPosition === 'right' ? 'right-orientation-tabs' : ""}`}>
         {Object.keys(appliedFilter).map(item => {
           if (item !== 'type' && appliedFilter[item].length > 0) {

@@ -16,7 +16,7 @@ import {
   selectWorkflow,
   selectdFormTriggers,
 } from "app/selectors/onboardingSelectors";
-import {triggerTypes as allTriggerTypes, types, triggerByTriggerType, triggerTypesStrings, actionTypesByTriggerType} from "./constants";
+import {triggerTypes as allTriggerTypes, types, triggerByTriggerType, triggerTypesStrings} from "./constants";
 
 import onboardingSlice from 'app/slices/onboardingSlice';
 import {selectSurveyTriggers} from "../../../../app/selectors/onboardingSelectors";

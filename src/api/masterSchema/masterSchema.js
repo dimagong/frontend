@@ -1,8 +1,10 @@
 import instance from "api";
 import { get, pipe } from "lodash/fp";
+
 import { masterSchemaOrganizations } from "constants/masterSchema";
 
 import * as Urls from "./constants";
+import * as Interfaces from "./interfaces";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
@@ -19,7 +21,10 @@ const masterSchemaApi = {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaListUrl,
-    }).then(flatResponseData, flatResponseError);
+    })
+      .then(flatResponseData, flatResponseError)
+      .then((response) => Interfaces.MasterSchemaArrayInterface.cast(response))
+      .then((casted) => Interfaces.MasterSchemaArrayInterface.validate(casted));
   },
 
   getHierarchy({ id, name, application_ids, date_begin, date_end }) {
@@ -33,7 +38,10 @@ const masterSchemaApi = {
         ...(date_begin ? { date_begin } : {}),
         ...(date_end ? { date_end } : {}),
       },
-    }).then(flatResponseData, flatResponseError);
+    })
+      .then(flatResponseData, flatResponseError)
+      .then((response) => Interfaces.MasterSchemaHierarchyInterface.cast(response))
+      .then((serialized) => Interfaces.MasterSchemaHierarchyInterface.validate(serialized));
   },
 
   addField({ name, parentId }) {
@@ -102,12 +110,57 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
+  fieldsMerge({ parentId, fieldsIds }) {
+    return instance({
+      method: "PUT",
+      url: Urls.putMasterSchemaMergeFields(parentId),
+      data: {
+        master_schema_field_ids: fieldsIds,
+      },
+    }).then(flatResponseData, flatResponseError);
+  },
+
   getGroups({ masterSchemaId }) {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaGroupsUrl(masterSchemaId),
       params: { hidden_groups: [1] },
     }).then(flatResponseData, flatResponseError);
+  },
+
+  getRelatedApplications({ fieldId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaRelatedApplications(fieldId),
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getFieldVersions({ fieldId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaFieldVersions(fieldId),
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getUsers({ fieldId, name, abilities, organizations, member_firm_id }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaUsersByFieldUrl(fieldId),
+      params: {
+        name: name?.length > 0 ? name : undefined,
+        abilities: abilities?.length > 0 ? abilities : undefined,
+        organizations: organizations?.length > 0 ? organizations : undefined,
+        member_firms: member_firm_id?.length > 0 ? member_firm_id : undefined,
+      },
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getValueFile({ valueId }) {
+    return instance({
+      url: `api/file/${valueId}/download`,
+      method: "GET",
+      responseType: "blob",
+    }).then(get("data"), flatResponseError);
   },
 
   async getOrganizationsMasterSchema() {

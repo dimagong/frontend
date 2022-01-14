@@ -160,6 +160,7 @@ const SurveysDesignerQuestionsList = ({ questions = [], isQuestionSelected, onQu
   useEffect(() => {
     const elements = ReactDOM.findDOMNode(questionListRef.current).getElementsByClassName("survey-designer_question-list_item");
     getBreakpointsForInsertButton(elements)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questions, isQuestionSelected]);
 
   return (

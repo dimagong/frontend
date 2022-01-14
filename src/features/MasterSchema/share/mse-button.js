@@ -5,7 +5,7 @@ import React, { useLayoutEffect, useMemo, useRef } from "react";
 
 import { stringIsColor } from "utility/string-is-color";
 
-const MSEButton = ({ loading, textColor, backgroundColor, spinner, children, ...attrs }) => {
+const MSEButton = ({ loading, textColor, backgroundColor, spinner, spinnerColor, children, ...attrs }) => {
   const buttonRef = useRef();
   const textColorIsColor = useMemo(() => stringIsColor(textColor), [textColor]);
   const backgroundColorIsColor = useMemo(() => stringIsColor(backgroundColor), [backgroundColor]);
@@ -28,7 +28,7 @@ const MSEButton = ({ loading, textColor, backgroundColor, spinner, children, ...
         <div className="position-relative">
           <div className="invisible">{children}</div>
           <div className="position-absolute" style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-            { spinner || <Spinner color={attrs.color} size="sm" /> }
+            {spinner || <Spinner color={spinnerColor} size="sm" />}
           </div>
         </div>
       ) : (
@@ -53,9 +53,13 @@ MSEButton.defaultProps = {
 
 MSEButton.propTypes = {
   loading: PropTypes.bool,
+
   textColor: hashColorStringPropValidator,
   backgroundColor: hashColorStringPropValidator,
+
   spinner: PropTypes.node,
+  spinnerColor: hashColorStringPropValidator,
+
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 

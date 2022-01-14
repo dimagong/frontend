@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Col, FormGroup, Input, Label, Button, InputGroup, InputGroupAddon} from "reactstrap";
+import {Input, Label, Button, InputGroup, InputGroupAddon} from "reactstrap";
 import masterSchemaService from './services/masterSchema.service'
 import {isEmpty} from "lodash";
 import Select from "react-select";
@@ -17,6 +17,7 @@ export default function FieldEdit({data, onChange, groupsList}) {
       return nextGroup.value.id === field.master_schema_group_id;
     });
     setParentGroup(tempParentGroup);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field]);
 
   const fieldSave = async () => {
@@ -35,7 +36,7 @@ export default function FieldEdit({data, onChange, groupsList}) {
 
   const fieldDelete = async () => {
     try {
-      const response = await masterSchemaService.deleteField(field);
+      await masterSchemaService.deleteField(field);
       onChange(null);
     } catch (exception) {
       console.log(exception);
@@ -55,7 +56,7 @@ export default function FieldEdit({data, onChange, groupsList}) {
   };
 
   if (!field) {
-    return <div></div>;
+    return <div />;
   }
 
   const getElementDist = () => {
@@ -109,9 +110,7 @@ export default function FieldEdit({data, onChange, groupsList}) {
           options={getGroupSelectOptions()}
           value={parentGroup}
           onChange={(event) => setParentGroup(event)}
-          onInputChange={(event) => {
-
-          }}></Select>
+        />
     }
 
     <div className="d-flex justify-content-between mt-1">

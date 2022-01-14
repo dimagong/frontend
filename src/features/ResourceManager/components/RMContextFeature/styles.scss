@@ -1,0 +1,23 @@
+.search-input-container {
+  position: relative;
+  padding-right: 25px;
+  .search-input-icon {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    font-size: 2rem;
+  }
+  .search-input-custom {
+    width: 230px;
+    background: transparent;
+    border: 1px solid #707070;
+    border-radius: 10px;
+    height: 36px;
+  }
+}
+
+.title {
+  font-weight: bold;
+  font-size: 25px;
+  color: #707070;
+}

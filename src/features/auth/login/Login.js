@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import loginImg from "assets/img/pages/login.png";
 import {
   Card,
@@ -18,9 +18,7 @@ import {
 import { Mail, Lock, Check } from "react-feather";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import { Link } from "react-router-dom";
-import PageTemplate from "templates/pageTemplate";
 import { useDispatch } from "react-redux";
-import { push } from "connected-react-router"
 
 import TermsAndConditions from 'assets/ValidPath-privacy-policy.pdf'
 

@@ -37,7 +37,6 @@ import appSlice from 'app/slices/appSlice'
 import SurveyCreateModal from "./SurveyCreateModal";
 import MemberFirmCreateModal from "./MemberFirmCreateModal";
 import {selectSearchText} from "../../../app/selectors/userSelectors";
-import Dashboard from "./Dashboard";
 import MemberFirmsList from "./MemberFirms/MemberFirmsList";
 
 const {
@@ -145,6 +144,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
       dispatch(getNotificationsRequest());
       dispatch(getSurveysRequest());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, vuexyUser]);
 
   let nav;

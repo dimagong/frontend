@@ -114,6 +114,7 @@ const AddFieldModal = ({
       onClose();
       handleClearAllValues();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitProceeding]);
 
   useEffect(() => {

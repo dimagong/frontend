@@ -17,9 +17,6 @@ const {
   setWorkflow,
   setAllowedUserList,
 
-  getSurveyWorkFlowsSuccess,
-  getSurveyWorkFlowsRequest,
-  getSurveyWorkFlowsError,
 } = onboardingSlice.actions;
 
 const {
@@ -41,11 +38,9 @@ const {
 
     getSurveyTriggersRequest,
 
-    getAllowedUserListSuccess,
     getAllowedUserListRequest,
     getAllowedUserListError,
 
-    getUsersRequest,
     setContext,
 } = appSlice.actions;
 

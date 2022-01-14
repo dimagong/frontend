@@ -335,6 +335,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
     if (!isDeleteQuestionProceed && prevDeleteQuestionProceedValue && !error) {
       handleModalClose();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDeleteQuestionProceed]);
 
   useEffect(() => {
@@ -343,6 +344,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
 
       handleQuestionVersionApply({latest_version: latestVersion})
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDeleteLatestQuestionVersionProceed]);
 
   useEffect(() => {
@@ -354,6 +356,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
 
       handleQuestionVersionApply({latest_version: newVersion})
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDeleteQuestionVersionProceed]);
 
   useEffect(() => {
@@ -364,6 +367,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
     if (!error && prevCreationLoadingValue === true && !isQuestionCreateLoading) {
       handleModalClose()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isQuestionCreateLoading]);
 
   useEffect(() => {
@@ -371,6 +375,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
       handleModalClose()
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isQuestionUpdateLoading]);
 
   useEffect(() => {
@@ -379,6 +384,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
 
       handleQuestionVersionApply(editQuestion)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit]);
 
 

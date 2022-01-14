@@ -27,6 +27,7 @@ const Organizations = () => {
 
   useEffect(() => {
     dispatch(getOrganizationsRequest())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

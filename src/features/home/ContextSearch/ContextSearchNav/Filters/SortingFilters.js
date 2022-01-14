@@ -42,8 +42,8 @@ const SortingFilters = ({ currSort, setCurrSort, applyFilters }) => {
       {elements[currSort !== -1 ? currSort : 0].data}
     </span>
     <span className={'sorting-box ' + (isSortingBoxOpen ? ' opened' : ' closed')}>
-      {elements.map(item =>
-        <div onClick={() => handleSwitchSort(item.id)} className={'sorting-filter-box ' + (currSort === item.id ? 'active' : '')}>
+      {elements.map((item) =>
+        <div key={item.id} onClick={() => handleSwitchSort(item.id)} className={'sorting-filter-box ' + (currSort === item.id ? 'active' : '')}>
           {item.data}
         </div>)
       }

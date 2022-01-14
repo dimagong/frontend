@@ -4,14 +4,13 @@ import ContextTemplate from "components/ContextTemplate";
 
 import './styles.scss';
 
+
 const RMContextComponent = () => {
 
-
   return (
-    <ContextTemplate contextTitle="Resource Manager">
-      Test context
-    </ContextTemplate>
-  )
+    <ContextTemplate contextTitle="Resource Manager" />
+  );
+
 };
 
 export default RMContextComponent;

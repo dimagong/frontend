@@ -108,6 +108,7 @@ const SurveysDesignerComponent = ({
 
       setSurveyVersion({value: survey.latest_version.id, label: survey.latest_version.current_version})
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyMainDataUpdateProceed]);
 
   useEffect(() => {
@@ -115,6 +116,7 @@ const SurveysDesignerComponent = ({
       dispatch(getSurveyVersionsRequest(survey.id));
       setSurveyVersion({value: survey.latest_version.id, label: survey.latest_version.current_version})
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyUpdateProceed]);
 
   useEffect(() => {
@@ -122,7 +124,8 @@ const SurveysDesignerComponent = ({
       dispatch(getSurveyVersionsRequest(survey.id));
       setSurveyVersion({value: survey.latest_version.id, label: survey.latest_version.current_version})
     }
-  }, [isSurveyLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSurveyUpdateProceed]);
 
   const isDeleteProceed = isSurveyDeleteProceed
                           || isSurveyDeleteLatestVersionProceed

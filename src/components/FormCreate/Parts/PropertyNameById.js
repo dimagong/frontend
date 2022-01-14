@@ -1,6 +1,6 @@
 import React from 'react'
 import {selectMasterSchemaFields} from "app/selectors";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 
 export default function PropertyNameById(props) {
   const field = useSelector(selectMasterSchemaFields);

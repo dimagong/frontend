@@ -56,6 +56,7 @@ const FilterBox = ({isMap, settings, updateSettings, dForms, setIsFilterBoxOpen,
 
   const handleApplyFilter = () => {
     Object.keys(filter).forEach(item => {
+      // eslint-disable-next-line default-case
       switch (item) {
         case 'Roles': {
           if (filter['Roles'].length > 0) {

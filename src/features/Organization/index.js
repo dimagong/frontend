@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 import React, { useState, useEffect } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {toast} from "react-toastify"
@@ -94,6 +95,7 @@ const Organization = ({ create = false }) => {
 
     const dataToSubmit = new FormData();
 
+    // eslint-disable-next-line array-callback-return
     Object.keys(organizationTemplate).map((field) => {dataToSubmit.append(field, organizationData[field])})
 
     if (!(organizationData.logo instanceof File) && organizationData.logo?.name) {
@@ -133,6 +135,7 @@ const Organization = ({ create = false }) => {
       setOrganizationData(selectedOrganizationData)
       setIsFilesLoading(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOrganizationIdAndType])
 
   useEffect(() => {
