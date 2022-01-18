@@ -1,11 +1,9 @@
 import moment from "moment";
 import PropTypes from "prop-types";
-import { toast } from "react-toastify";
-import { capitalize, get } from "lodash/fp";
-import { ExternalLink } from "react-feather";
+import { capitalize } from "lodash/fp";
+import React, { useMemo, useState } from "react";
 import { Table, Spinner, Col } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useMemo, useState } from "react";
 
 import { useBoolean } from "hooks/use-boolean";
 
@@ -13,114 +11,16 @@ import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectSelectedId, selectVersions } from "app/selectors/masterSchemaSelectors";
 
-import masterSchemaApi from "api/masterSchema/masterSchema";
-
-import MSEButton from "features/MasterSchema/share/mse-button";
 import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import BackInTimeIcon from "assets/img/svg/back-in-time.svg";
 import NoneAvatar from "assets/img/portrait/none-avatar.png";
 
+import TypedValuePreview from "./typed-value-preview";
+
 const normalizeVersionTotal = (total) => (total > 9 ? "+9" : total);
 
 const getFullName = ({ first_name, last_name }) => `${first_name} ${last_name}`;
-
-const TEMP_LONG_VALUE_LENGTH = 15;
-
-const isValueLong = (v) => v.length > TEMP_LONG_VALUE_LENGTH;
-
-const FilesValue = ({ files }) => {
-  const [filesUrl, setFilesUrl] = useState([]);
-
-  useEffect(() => {
-    Promise.all(
-      files.map(({ id, name }) =>
-        masterSchemaApi.getValueFile({ valueId: id }).then((blob) => ({ url: window.URL.createObjectURL(blob), name }))
-      )
-    )
-      .then((filesUrl) => setFilesUrl(filesUrl))
-      .catch((error) => toast.error(error));
-  }, [files]);
-
-  return (
-    <>
-      {filesUrl.map((file) => (
-        <a style={{ color: "currentColor" }} href={file.url} download={file.name}>
-          {file.name}
-        </a>
-      ))}
-    </>
-  );
-};
-
-const ValueExtended = ({ value, files, type }) => {
-  if (["file", "files"].includes(type)) {
-    return (
-      <div className="py-2">
-        <FilesValue files={files} />
-      </div>
-    );
-  }
-
-  return <div className="py-2" dangerouslySetInnerHTML={{ __html: value }} />;
-};
-
-const PrivateValuePreview = ({ value, type, normalizedValue, onExtendedValueClick }) => {
-  if (value == null) {
-    return type ? <div>{`${type}: Null`}</div> : <div>Null</div>;
-  }
-
-  if (isValueLong(normalizedValue)) {
-    return (
-      <MSEButton className="d-flex align-items-center msu-table__value-button" onClick={onExtendedValueClick}>
-        <div>This is a long text</div>
-        <ExternalLink size="12" />
-      </MSEButton>
-    );
-  }
-
-  return (
-    <>
-      {type && <div>{`${capitalize(type)}:`}</div>}
-      <div className="msu-table__field-value">{value}</div>
-    </>
-  );
-};
-
-const ValuePreview = ({ value, files, type, onExtendedValueClick }) => {
-  if (type === "boolean") {
-    const normalizedValue = value ? "Yes" : "No";
-    return (
-      <PrivateValuePreview
-        value={value}
-        type={type}
-        normalizedValue={normalizedValue}
-        onExtendedValueClick={onExtendedValueClick}
-      />
-    );
-  }
-
-  if (["file", "files"].includes(type)) {
-    const normalizedValue = files.map(get("name")).join(", ");
-    return (
-      <PrivateValuePreview
-        value={<FilesValue files={files} />}
-        type={type}
-        normalizedValue={normalizedValue}
-        onExtendedValueClick={onExtendedValueClick}
-      />
-    );
-  }
-
-  return (
-    <PrivateValuePreview
-      value={value}
-      type={type}
-      normalizedValue={value}
-      onExtendedValueClick={onExtendedValueClick}
-    />
-  );
-};
 
 const { getVersionsByMasterSchemaFieldRequest } = appSlice.actions;
 
@@ -135,14 +35,7 @@ const MSUUserList = ({ users }) => {
     return masterSchemaVersions[`${selectedId}/${versionFieldId}`] || [];
   }, [masterSchemaVersions, selectedId, versionFieldId]);
 
-  const [selectedField, setSelectedField] = useState(null);
-  const [valueModal, openValueModal, closeValueModal] = useBoolean(false);
   const [historyModal, openHistoryModal, closeHistoryModal] = useBoolean(false);
-
-  const onExtendedValueClick = (field) => () => {
-    setSelectedField(field);
-    openValueModal();
-  };
 
   const onVersionClick = (user) => () => {
     const fieldId = user.field.id;
@@ -155,82 +48,68 @@ const MSUUserList = ({ users }) => {
     <>
       <Table className="msu-table" borderless responsive>
         <thead>
-        <tr className="msu-table__users-head">
-          <th className="msu-table__avatar">&nbsp;</th>
-          <th className="msu-table__name">Name</th>
-          <th>Role</th>
-          <th>Member firm</th>
-          <th className="msu-table__value">Value</th>
-          <th className="msu-table__value">User</th>
-          <th className="msu-table__date--end">Date</th>
-          <th className="msu-table__total">&nbsp;</th>
-        </tr>
+          <tr className="msu-table__users-head">
+            <th className="msu-table__avatar">&nbsp;</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Member firm</th>
+            <th>Value</th>
+            <th>User</th>
+            <th className="msu-table__date--end">Date</th>
+            <th className="msu-table__total">&nbsp;</th>
+          </tr>
         </thead>
         <tbody>
-        {users.map((user) => {
-          const fullName = getFullName(user);
-          const { field, permissions } = user;
-          const { provided } = field;
-          const avatarPath = user.avatar_path || NoneAvatar;
-          const providedFullName = provided ? getFullName(provided) : null;
-          const role = capitalize(permissions?.ability || "");
-          const memberFirm = user.member_firm?.name;
-          const versionsTotal = user.versions_total ?? 0;
-          const normalizedVersionsTotal = normalizeVersionTotal(versionsTotal);
+          {users.map((user) => {
+            const fullName = getFullName(user);
+            const { field, permissions } = user;
+            const { provided } = field;
+            const avatarPath = user.avatar_path || NoneAvatar;
+            const providedFullName = provided ? getFullName(provided) : null;
+            const role = capitalize(permissions?.ability || "");
+            const memberFirm = user.member_firm?.name;
+            const versionsTotal = user.versions_total ?? 0;
+            const normalizedVersionsTotal = normalizeVersionTotal(versionsTotal);
 
-          return (
-            <tr className="msu-table__row--shadowed-partial" key={user.id}>
-              <td className="msu-table__avatar">
-                <img
-                  className="msu-table__avatar-img"
-                  src={avatarPath}
-                  width="40"
-                  height="40"
-                  alt="user's avatar."
-                />
-              </td>
+            return (
+              <tr className="msu-table__row--shadowed-partial" key={user.id}>
+                <td className="msu-table__avatar">
+                  <img className="msu-table__avatar-img" src={avatarPath} width="40" height="40" alt="user's avatar." />
+                </td>
 
-              <td className="msu-table__name pl-1">{fullName}</td>
+                <td className="pl-1">{fullName}</td>
 
-              <td>{role}</td>
+                <td>{role}</td>
 
-              <td>{memberFirm}</td>
+                <td>{memberFirm}</td>
 
-              <td className="msu-table__value">
-                <ValuePreview
-                  value={field.value}
-                  files={field.files}
-                  type={field.type}
-                  onExtendedValueClick={onExtendedValueClick(user.field)}
-                />
-              </td>
+                <td>
+                  <TypedValuePreview
+                    type={field.type}
+                    value={field.type === "files" ? field.files : field.value}
+                  />
+                </td>
 
-              <td className="msu-table__name">{providedFullName}</td>
+                <td>{providedFullName}</td>
 
-              <td className="msu-table__date--end msu-table__date--bordered">
-                <div>{moment(user.field.date).format("DD/MM/YYYY")}</div>
-                <div>{moment(user.field.date).format("HH:MM")}</div>
-              </td>
+                <td className="msu-table__date--end msu-table__date--bordered">
+                  <div>{moment(user.field.date).format("DD/MM/YYYY")}</div>
+                  <div>{moment(user.field.date).format("HH:MM")}</div>
+                </td>
 
-              <td className="msu-table__total">
-                <button className="msu-table__versioning-button" onClick={onVersionClick(user)}>
-                          <span className="msu-table__versioning-number" title={versionsTotal}>
-                            {normalizedVersionsTotal}
-                          </span>
-                  <img className="msu-table__versioning-img" src={BackInTimeIcon} alt="versions-modal" />
-                </button>
-              </td>
-            </tr>
-          );
-        })}
+                <td className="msu-table__total">
+                  <button className="msu-table__versioning-button" onClick={onVersionClick(user)}>
+                    <span className="msu-table__versioning-number" title={versionsTotal}>
+                      {normalizedVersionsTotal}
+                    </span>
+                    <img className="msu-table__versioning-img" src={BackInTimeIcon} alt="versions-modal" />
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
-
-      {selectedField && (
-        <SurveyModal isOpen={valueModal} title="Extended input" onClose={closeValueModal} actions={false}>
-          <ValueExtended value={selectedField.value} type={selectedField.type} files={selectedField.files} />
-        </SurveyModal>
-      )}
 
       <SurveyModal
         className="element-history"
@@ -243,7 +122,7 @@ const MSUUserList = ({ users }) => {
           <thead>
             <tr className="msu-table__history-head">
               <th>Date</th>
-              <th className="msu-table__value">Value</th>
+              <th>Value</th>
               <th>User</th>
             </tr>
           </thead>
@@ -266,12 +145,10 @@ const MSUUserList = ({ users }) => {
                       <div>{moment(version?.created_at).format("DD/MM/YYYY")}</div>
                       <div>{moment(version?.created_at).format("HH:MM")}</div>
                     </td>
-                    <td className="msu-table__value">
-                      <ValuePreview
+                    <td>
+                      <TypedValuePreview
                         type={version.type}
-                        value={version.value}
-                        files={version.files}
-                        onExtendedValueClick={onExtendedValueClick(version)}
+                        value={version.type === "files" ? version.files : version.value}
                       />
                     </td>
                     <td>{fullName}</td>

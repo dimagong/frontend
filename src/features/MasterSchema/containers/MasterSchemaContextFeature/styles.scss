@@ -122,39 +122,6 @@
     color: currentColor;
   }
 
-  &__name {
-    //width: 150px;
-  }
-
-  &__value {
-    //width: 130px;
-  }
-
-  &__value-button {
-    padding: 0;
-
-    font-size: inherit;
-    font-weight: inherit;
-    color: currentColor !important;
-
-    background-color: transparent !important;
-
-    > svg {
-      margin-left: 5px;
-    }
-
-    &:active,
-    &:hover,
-    &:focus {
-      box-shadow: none !important;
-      color: currentColor !important;
-    }
-  }
-
-  &__field-value {
-    width: 150px;
-  }
-
   &__date--start {
     text-align: left;
     padding-left: 1.5rem;
