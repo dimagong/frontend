@@ -10,8 +10,6 @@ export const selectRelatedApplications = fieldId => state => state?.app?.masterS
 
 export const selectSearch = (state) => state?.app?.masterSchema.search;
 
-export const selectVersions = (state) => state?.app?.masterSchema.versions;
-
 export const selectSelectedUnapproved = (state) => {
   const selectedId = selectSelectedId(state);
   const { unapproved } = state?.app?.masterSchema;

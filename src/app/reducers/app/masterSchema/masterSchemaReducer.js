@@ -438,15 +438,6 @@ const masterSchemaReducer = {
     state.isLoading = false;
   },
 
-  getVersionsByMasterSchemaFieldSuccess(state, { payload }) {
-    const { versions, fieldId, selectedId } = payload;
-
-    state.masterSchema.versions[`${selectedId}/${fieldId}`] = versions;
-
-    state.isError = false;
-    state.isLoading = false;
-  },
-
   getUsersByMasterSchemaFieldSuccess(state, { payload }) {
     const { users, fieldId } = payload;
 
