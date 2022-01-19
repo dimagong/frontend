@@ -13,6 +13,7 @@ const isLong = (value) => value > TEMP_LONG_VALUE_LENGTH;
 const extendedButtonStyle = {
   padding: 0,
   fontSize: "inherit",
+  fontWeight: "inherit",
   color: "currentColor",
   backgroundColor: "transparent",
 };

@@ -2,8 +2,8 @@ import _ from "lodash/fp";
 import { PropTypes } from "prop-types";
 import React, { useMemo } from "react";
 
-import ValuePreview from "./value-preview";
-import FilesValuePreview from "./files-value-preview";
+import ValuePreview from "./ValuePreview";
+import FilesValuePreview from "./FilesValuePreview";
 
 const TypedValuePreview = ({ type, value }) => {
   const capitalizedType = useMemo(() => _.capitalize(type), [type]);

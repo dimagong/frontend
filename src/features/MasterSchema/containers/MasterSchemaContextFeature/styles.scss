@@ -1,61 +1,9 @@
-.ms-manager__label {
-  font-weight: 700 !important;
-  font-size: 1.2rem !important;
-  color: #707070 !important;
-}
-
-.msu-related-table {
-  &.msu-table {
-    min-width: 400px;
-  }
-}
-
-.mse-note {
-  margin-top: 25px;
-  margin-bottom: 0;
-  font-size: larger;
-}
-
-.element-history {
+.msu-history-modal {
   min-width: 700px;
 }
 
 .msu-table {
   $total-width: 58px;
-
-  min-width: 630px;
-  border-collapse: separate;
-  border-spacing: 0 1rem;
-
-  line-height: 1.3;
-  font-size: 0.85rem;
-  color: #707070;
-
-  /* First value */
-  & &__row--history:first-child td:last-child {
-    position: relative;
-  }
-
-  & &__row--history:first-child td:last-child:after {
-    content: "";
-    width: 3px;
-    height: 100%;
-
-    background-color: #707070;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.160784);
-
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-
-  &__row--history:first-child td {
-    font-weight: 700;
-  }
-
-  &__row--shadowed {
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-  }
 
   &__row--shadowed-partial {
     position: relative;
@@ -79,64 +27,7 @@
     }
   }
 
-  & &__users-head {
-    font-weight: 700;
-  }
-
-  & &__history-head {
-    font-weight: 400;
-    font-size: 1.2rem;
-    color: #4b484d;
-  }
-
-  & &__history-head th {
-    padding-bottom: 16px;
-    border-bottom: 1px solid #a7a2a9;
-  }
-
-  thead th,
-  tbody td {
-    padding: 0.3rem 0.5rem;
-
-    font-size: inherit;
-    font-weight: inherit;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  & &__avatar {
-    width: 40px;
-    padding: 0;
-  }
-
-  &__avatar-img {
-    display: block;
-    max-width: 40px;
-    height: 40px;
-
-    object-fit: cover;
-
-    font-size: inherit;
-    color: currentColor;
-  }
-
-  &__date--start {
-    text-align: left;
-    padding-left: 1.5rem;
-  }
-
-  &__date--end {
-    text-align: right;
-    padding-right: 1.5rem;
-  }
-
-  & &__date--bordered {
-    border-right: #707070 solid 3px;
-  }
-
-  & &__total {
+  &__total {
     width: $total-width;
   }
 
