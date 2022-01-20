@@ -58,7 +58,7 @@ const TreeHierarchy = (props) => {
     components: propComponents,
     ...wrapperAttrs
   } = props;
-  const components = _.merge(propComponents, defaultComponents);
+  const components = _.merge(defaultComponents, propComponents);
 
   const dispatch = useDispatch();
 
