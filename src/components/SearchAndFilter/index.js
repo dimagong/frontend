@@ -3,7 +3,7 @@ import FilterIcon from "../../assets/img/svg/filter.svg";
 import SearchIcon from "../../assets/img/svg/searchIcon.svg";
 import CalendarIcon from "../../assets/img/svg/calendar.svg";
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import FilterModal from "./Filter/FilterModal";
+import FilterModal from "./Filter/FilterComponent";
 import {Button} from "reactstrap";
 import CloseIcon from "../../assets/img/svg/circle-with-cross.svg";
 import './styles.scss';
