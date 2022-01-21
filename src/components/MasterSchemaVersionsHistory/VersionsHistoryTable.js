@@ -15,24 +15,31 @@ import { TypedValuePreview } from "components/MasterSchemaValuePreviews";
 
 const VersionsHistoryTable = ({ fieldId }) => {
   const [versions, setVersions] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
+    setIsLoading(true);
 
     masterSchemaAPI
       .getFieldVersions({ fieldId })
       .then((versions) => isMounted && setVersions(versions))
-      .catch((error) => toast.error(error));
+      .catch((error) => toast.error(error))
+      .finally(() => setIsLoading(false));
 
     return () => (isMounted = false);
   }, [fieldId]);
 
-  if (!versions) {
+  if (!versions && isLoading) {
     return (
       <div className="d-flex justify-content-center py-4">
         <Spinner />
       </div>
     );
+  }
+
+  if (!versions) {
+    return null;
   }
 
   const headers = ["Date", "Value", "User"];
