@@ -34,7 +34,7 @@ const MSENodeRelatedTable = ({ relatedApplications, ...attrs }) => {
               headers={headers}
               customHeader={(header) => {
                 if (header === "$date") {
-                  return <th className="text-right">Date</th>;
+                  return <th className="text-right" key={header}>Date</th>;
                 }
               }}
               rows={relatedApplications}
