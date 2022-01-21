@@ -57,11 +57,7 @@ const TypedValuePreview = ({ type, value }) => {
 
 TypedValuePreview.propTypes = {
   type: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    // When type is "files" the value is array of { name: string } objects.
-    PropTypes.arrayOf(PropTypes.object),
-  ]).isRequired,
+  value: PropTypes.any.isRequired,
 };
 
 export default TypedValuePreview;

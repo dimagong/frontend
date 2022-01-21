@@ -40,7 +40,7 @@ const ValuePreview = ({ value, length }) => {
 };
 
 ValuePreview.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.any.isRequired,
   length: PropTypes.number.isRequired,
 };
 
