@@ -1,5 +1,3 @@
-import "./styles.scss";
-
 import _ from "lodash";
 import { isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";

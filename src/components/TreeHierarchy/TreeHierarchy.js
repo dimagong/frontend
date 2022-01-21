@@ -1,5 +1,6 @@
 import "./styles.scss";
 
+import _ from "lodash/fp";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
@@ -8,16 +9,14 @@ import { useTreeData } from "hooks/use-tree";
 import { useBoolean } from "hooks/use-boolean";
 import { useCallbackOnLoad } from "hooks/common";
 
+import appSlice from "app/slices/appSlice";
 import TreeRoot from "components/tree/tree-root";
-
 import SurveyModal from "features/Surveys/Components/SurveyModal";
 
-import appSlice from "app/slices/appSlice";
-
-import MSETreeElement from "./components/mse-tree-element";
-import MSETreeNodeList from "./components/mse-tree-node-list";
-import MSECreateElementForm from "./components/mse-create-element-form";
-import { ADD_FIELD, ADD_GROUP, addFieldAction, addGroupAction } from "./mse-addition-actions";
+import MSHTreeElement from "./components/MSHTreeElement";
+import MSHTreeNodeList from "./components/MSHTreeNodeList";
+import MSHCreateElementForm from "./components/MSHCreateElementForm";
+import { ADD_FIELD, ADD_GROUP, addFieldAction, addGroupAction } from "./NodeAdditionActions";
 
 const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlice.actions;
 
@@ -42,8 +41,25 @@ const creationTitle = (type) => {
   }
 };
 
-const MasterSchemaHierarchy = (props) => {
-  const { hierarchy, expandedIds, onExpand, onCollapse, selectedIds, onSelect } = props;
+const defaultComponents = {
+  Element: MSHTreeElement,
+  NodeList: MSHTreeNodeList,
+  CreateElementForm: MSHCreateElementForm,
+};
+
+const TreeHierarchy = (props) => {
+  const {
+    hierarchy,
+    expandedIds,
+    onExpand,
+    onCollapse,
+    selectedIds,
+    onSelect,
+    onCreatedElement,
+    components: propComponents,
+    ...wrapperAttrs
+  } = props;
+  const components = _.merge(defaultComponents, propComponents);
 
   const dispatch = useDispatch();
 
@@ -82,9 +98,11 @@ const MasterSchemaHierarchy = (props) => {
 
     switch (type) {
       case ADD_FIELD:
+        onCreatedElement({ type, payload });
         dispatch(addFieldToMasterSchemaRequest(payload));
         break;
       case ADD_GROUP:
+        onCreatedElement({ type, payload });
         dispatch(addGroupToMasterSchemaRequest(payload));
         break;
       default:
@@ -97,12 +115,12 @@ const MasterSchemaHierarchy = (props) => {
   useEffect(() => tree.update([hierarchy]), [hierarchy]);
 
   return (
-    <div className="ms-elements">
+    <div className="tree-hierarchy" {...wrapperAttrs}>
       <TreeRoot
         nodes={tree.items}
-        renderNodeList={({ root, children }) => <MSETreeNodeList root={root} children={children} />}
+        renderNodeList={({ root, children }) => <components.NodeList root={root} children={children} />}
         renderNode={({ node: { value: node }, children }) => (
-          <MSETreeElement
+          <components.Element
             node={node}
             selected={selectedIds.includes(node.nodeId)}
             onSelect={() => onSelect(node)}
@@ -118,7 +136,7 @@ const MasterSchemaHierarchy = (props) => {
 
       {nodeDataToCreate && (
         <SurveyModal isOpen={modal} title={creationTitle(nodeDataToCreate.type)} onClose={closeModal} actions={false}>
-          <MSECreateElementForm
+          <components.CreateElementForm
             submitting={nodeAdditionLoading}
             placeholder={nodeDataToCreate.parent.path.join(".")}
             onSubmit={onCreateElementSubmit}
@@ -129,12 +147,17 @@ const MasterSchemaHierarchy = (props) => {
   );
 };
 
-MasterSchemaHierarchy.defaultProps = {
+TreeHierarchy.defaultProps = {
   expandedIds: [],
   selectedIds: [],
+
+  onSelect: _.noop,
+  onCreatedElement: _.noop,
+
+  components: defaultComponents,
 };
 
-MasterSchemaHierarchy.propTypes = {
+TreeHierarchy.propTypes = {
   hierarchy: PropTypes.object.isRequired,
 
   expandedIds: PropTypes.arrayOf(PropTypes.string),
@@ -143,6 +166,10 @@ MasterSchemaHierarchy.propTypes = {
 
   onSelect: PropTypes.func,
   selectedIds: PropTypes.arrayOf(PropTypes.string),
+
+  onCreatedElement: PropTypes.func,
+
+  components: PropTypes.object,
 };
 
-export default MasterSchemaHierarchy;
+export default TreeHierarchy;
