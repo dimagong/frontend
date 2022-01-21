@@ -55,6 +55,7 @@ const TreeHierarchy = (props) => {
     onCollapse,
     selectedIds,
     onSelect,
+    onCreatedElement,
     components: propComponents,
     ...wrapperAttrs
   } = props;
@@ -97,9 +98,11 @@ const TreeHierarchy = (props) => {
 
     switch (type) {
       case ADD_FIELD:
+        onCreatedElement({ type, payload });
         dispatch(addFieldToMasterSchemaRequest(payload));
         break;
       case ADD_GROUP:
+        onCreatedElement({ type, payload });
         dispatch(addGroupToMasterSchemaRequest(payload));
         break;
       default:
@@ -148,6 +151,9 @@ TreeHierarchy.defaultProps = {
   expandedIds: [],
   selectedIds: [],
 
+  onSelect: _.noop,
+  onCreatedElement: _.noop,
+
   components: defaultComponents,
 };
 
@@ -160,6 +166,8 @@ TreeHierarchy.propTypes = {
 
   onSelect: PropTypes.func,
   selectedIds: PropTypes.arrayOf(PropTypes.string),
+
+  onCreatedElement: PropTypes.func,
 
   components: PropTypes.object,
 };
