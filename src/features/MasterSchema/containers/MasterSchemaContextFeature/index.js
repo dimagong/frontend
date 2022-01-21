@@ -47,11 +47,11 @@ const MasterSchemaContextFeature = ({ selectable }) => {
     const features = [];
 
     if (selectable.selected.fields.length === 1 && selectable.selected.field) {
-      features.push(<MasterSchemaUser field={selectable.selected.field} />);
+      features.push(<MasterSchemaUser field={selectable.selected.field} key="user" />);
     }
 
     if (selectable.selected.nodes.length > 0) {
-      features.push(<MasterSchemaManager selectable={selectable} />);
+      features.push(<MasterSchemaManager selectable={selectable} key="managers" />);
     }
 
     return features;

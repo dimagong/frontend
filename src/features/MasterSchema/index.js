@@ -17,7 +17,7 @@ const MasterSchema = () => {
   const onSelect = (node) => selectable.toggle(node.nodeId);
 
   return (
-    <div className="d-flex master-schema-container">
+    <div className="d-flex">
       <MasterSchemaContext
         hierarchy={hierarchy}
         unapproved={unapproved}

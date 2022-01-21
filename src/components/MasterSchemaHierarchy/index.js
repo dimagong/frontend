@@ -12,7 +12,6 @@ import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
 
-
 import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
 
@@ -21,13 +20,13 @@ import TreeHierarchy, { useTreeHierarchyExpandable } from "components/TreeHierar
 
 const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch } = appSlice.actions;
 
-const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect }) => {
+const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundColor }) => {
   const dispatch = useDispatch();
   const allDForms = useSelector(selectdForms);
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
 
-  const [expandableState, expandable] = useTreeHierarchyExpandable(hierarchy);
+  const expandable = useTreeHierarchyExpandable(hierarchy);
 
   const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
@@ -92,10 +91,7 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect }) => {
 
   return (
     <div className="position-relative">
-      <div
-        className={hierarchy ? "position-sticky zindex-1" : ""}
-        style={{ top: "0px", left: "0px", backgroundColor: "#f8f8f8" }}
-      >
+      <div className={hierarchy ? "position-sticky zindex-1" : ""} style={{ top: "0px", left: "0px", backgroundColor }}>
         <SearchAndFilter
           className="ms-search-and-filter"
           placeholder=""
@@ -115,7 +111,7 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect }) => {
               className="p-0"
               textColor="currentColor"
               backgroundColor="transparent"
-              disabled={!expandableState.isDecedentsExpanded}
+              disabled={!expandable.isDecedentsExpanded}
               onClick={expandable.expandOnlyRoot}
             >
               Collapse
@@ -127,7 +123,7 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect }) => {
       {hierarchy ? (
         <TreeHierarchy
           hierarchy={hierarchy}
-          expandedIds={expandableState.expandedIds}
+          expandedIds={expandable.expandedIds}
           onExpand={expandable.expand}
           onCollapse={expandable.collapse}
           selectedIds={selectedIds}
@@ -141,11 +137,17 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect }) => {
   );
 };
 
+MasterSchemaHierarchy.defaultProps = {
+  backgroundColor: "#f8f8f8",
+};
+
 MasterSchemaHierarchy.propTypes = {
   hierarchy: PropTypes.object,
 
   onSelect: PropTypes.func.isRequired,
   selectedIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+
+  backgroundColor: PropTypes.string,
 };
 
 export default MasterSchemaHierarchy;
