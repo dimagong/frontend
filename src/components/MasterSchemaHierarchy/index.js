@@ -26,7 +26,7 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
   const search = useSelector(masterSchemaSelectors.selectSearch);
   const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
 
-  const [expandableState, expandable] = useTreeHierarchyExpandable(hierarchy);
+  const expandable = useTreeHierarchyExpandable(hierarchy);
 
   const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
@@ -111,7 +111,7 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
               className="p-0"
               textColor="currentColor"
               backgroundColor="transparent"
-              disabled={!expandableState.isDecedentsExpanded}
+              disabled={!expandable.isDecedentsExpanded}
               onClick={expandable.expandOnlyRoot}
             >
               Collapse
@@ -123,7 +123,7 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
       {hierarchy ? (
         <TreeHierarchy
           hierarchy={hierarchy}
-          expandedIds={expandableState.expandedIds}
+          expandedIds={expandable.expandedIds}
           onExpand={expandable.expand}
           onCollapse={expandable.collapse}
           selectedIds={selectedIds}
