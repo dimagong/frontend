@@ -11,7 +11,7 @@ import { useDidUpdate } from "hooks/use-did-update";
 import ContextTemplate from "components/ContextTemplate";
 import MasterSchemaHierarchy from "components/MasterSchemaHierarchy";
 
-import UnapprovedFieldsComponent from "./components/UnapprovedFieldsComponent";
+import UnapprovedFieldsComponent from "components/UnapprovedFieldsComponent";
 
 const { getMasterSchemaHierarchyRequest, setUnapprovedMasterSchemaRequest, approveUnapprovedFieldsRequest } =
   appSlice.actions;
