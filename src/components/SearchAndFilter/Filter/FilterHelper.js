@@ -43,19 +43,21 @@ export const filterOptionsToText = (options) => {
       savable: savable,
     };
 
-    filterOptionsList.forEach((item, key) => {
-      initialFilter.selectedFilters.push(
-        {
-          key: key,
-          name: item,
-          selected: [],
-          settings: {
-            addBySelect: true, // if true then by selecting filter, it will be added, otherwise it will be removed
-            searchable: false
+    if (filterOptionsList) {
+      filterOptionsList.forEach((item, key) => {
+        initialFilter.selectedFilters.push(
+          {
+            key: key,
+            name: item,
+            selected: [],
+            settings: {
+              addBySelect: true, // if true then by selecting filter, it will be added, otherwise it will be removed
+              searchable: false
+            }
           }
-        }
-      )
-    })
+        )
+      });
+    }
 
     return initialFilter;
   }

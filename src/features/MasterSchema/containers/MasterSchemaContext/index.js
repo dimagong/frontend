@@ -49,12 +49,12 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
     dispatch(setMasterSchemaSearch({ ...search, value: searchValue }));
   };
 
-  const onFilterSubmit = (filterOptions, filter) => {
+  const onFilterSubmit = (filter, filterOptions) => {
     if (!hierarchy) return;
 
     const filters = _.intersectionBy(
       allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0),
-      filter.applications.map((item) => {
+      filter.selectedFilters.find(item => item.name === 'applications').selected.map((item) => {
         return { name: item };
       }),
       "name"
@@ -122,7 +122,7 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
             placeholder=""
             handleSearch={onSearchSubmit}
             onCancelFilter={onFilterCancel}
-            filterTypes={{ applications: filterNames }}
+            filterTypes={{ applications: filterNames, types: ['Files only'] }}
             applyFilter={onFilterSubmit}
             onCalendarChange={onCalendarChange}
             isCalendar

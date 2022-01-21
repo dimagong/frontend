@@ -2,11 +2,12 @@ import {Button} from "reactstrap";
 import CloseIcon from "../../../../assets/img/svg/circle-with-cross.svg";
 import React, {useEffect, useState} from "react";
 import {filterOptionsToText} from "../FilterHelper";
+import Filter from "../Filter";
+import PropTypes from "prop-types";
 
 const FILTER_DESCRIPTION_SIZE = 40;
 
 const FilterShorts = ({filter, setFilter, objectsToFilter, filterFunction}) => {
-  const filterTabPosition = 'left';
   const [reloadFilter, setReloadFilter] = useState(false);
 
   const selectedFilters = filter.selectedFilters.filter(item => item.selected.length > 0);
@@ -21,19 +22,19 @@ const FilterShorts = ({filter, setFilter, objectsToFilter, filterFunction}) => {
   useEffect(() => {
     if (reloadFilter) {
       filterFunction(filter, objectsToFilter)
-
+      setReloadFilter(false);
     }
   }, [reloadFilter])
 
   return (
-    <div className={`modal-filter-tabs ${filterTabPosition === 'left' && 'left-orientation-tabs'} ${filterTabPosition === 'right' ? 'right-orientation-tabs' : ""}`}>
+    <div className={`left-orientation-tabs`}>
       {
         selectedFilters.map((item, key) => {
           const outputText = filterOptionsToText(item.selected)
           return (
               <Button className={'filter-tab member-firm-filter-tab filter-close-button'} variant={'dark'}>
               <span className={'nav-text'}>
-                {outputText <= FILTER_DESCRIPTION_SIZE
+                {outputText.length <= FILTER_DESCRIPTION_SIZE
                   ? outputText
                   : `${item.selected.length} ${item.name}`
                 }
@@ -48,5 +49,12 @@ const FilterShorts = ({filter, setFilter, objectsToFilter, filterFunction}) => {
       </div>
   )
 }
+
+FilterShorts.propTypes = {
+  filter: PropTypes.object,
+  setFilter: PropTypes.func,
+  filterOptionsDictionary: PropTypes.object,
+  filterFunction: PropTypes.func,
+};
 
 export default FilterShorts;

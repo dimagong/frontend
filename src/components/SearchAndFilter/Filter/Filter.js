@@ -1,43 +1,64 @@
 import FilterIcon from "../../../assets/img/svg/filter.svg";
-import CalendarIcon from "../../../assets/img/svg/calendar.svg";
-import {Close} from "@material-ui/icons";
 import FilterComponent from "./FilterComponent";
-import CloseIcon from "../../../assets/img/svg/circle-with-cross.svg";
 import React, {useEffect, useRef, useState} from "react";
 import {getInitialFilter} from "./FilterHelper";
 import FilterShorts from "./FilterComponents/FilterShorts";
+import {useOutsideAlerter} from "../../../hooks/useOutsideAlerter";
+import PropTypes from "prop-types";
 
 const Filter = ({objectsToFilter, filterFunction, filterOptionsDictionary, ...attrs}) => {
-
-  const [filter, setFilter] = useState(getInitialFilter(objectsToFilter, false))
+  const [filter, setFilter] = useState(getInitialFilter(Object.keys(filterOptionsDictionary), false))
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false)
 
-
   const wrapperRefFilterButton = useRef(null);
+  const wrapperRefFilterBox = useRef(null);
+
+  useOutsideAlerter([wrapperRefFilterBox, wrapperRefFilterButton], () => {
+    if (isFilterBoxOpen) {
+      setIsFilterBoxOpen(false);
+    }
+  });
 
   return (
-    <span {...attrs}>
-      <img ref={wrapperRefFilterButton}
-           //className={`filter-icon member-firm-filter-icon ${isCalendar ? 'small-filter-icon' : 'large-filter-icon'}`}
+    <span>
+      <span{...attrs}>
+        <img ref={wrapperRefFilterButton}
+           className={`filter-icon`}
            src={FilterIcon} alt={'filter-icon'}
            onClick={() => {setIsFilterBoxOpen(!isFilterBoxOpen)}}
-      />
+        />
 
+        {isFilterBoxOpen &&
+          <span ref={wrapperRefFilterBox}>
+            <FilterComponent
+              objectsToFilter={objectsToFilter}
+              filterFunction={() => {filterFunction(filter, objectsToFilter); setIsFilterBoxOpen(false)}}
+              filter={filter}
+              setFilter={setFilter}
+              filterOptionsDictionary={filterOptionsDictionary}
+              {...attrs}
+            />
+          </span>
+        }
+      </span>
       <FilterShorts
         filter={filter}
+        setFilter={setFilter}
         objectsToFilter={objectsToFilter}
         filterFunction={filterFunction}
       />
-
-      {isFilterBoxOpen &&
-        <FilterComponent
-          objectsToFilter={objectsToFilter}
-          filterFunction={filterFunction}
-          filter={filter}
-          setFilter={setFilter}
-          filterOptionsDictionary={filterOptionsDictionary}
-        />
-      }
     </span>
     )
 }
+
+Filter.defaultProps = {
+  objectsToFilter: [],
+};
+
+Filter.propTypes = {
+  objectsToFilter: PropTypes.array,
+  filterFunction: PropTypes.func,
+  filterOptionsDictionary: PropTypes.object,
+};
+
+export default Filter;

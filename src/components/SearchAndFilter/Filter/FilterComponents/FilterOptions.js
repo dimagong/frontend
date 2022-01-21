@@ -3,13 +3,14 @@ import {
   Button,
 } from 'reactstrap';
 import {FilterCheckIcon, FilterCrossIcon} from "./FilterAssets";
+import PropTypes from "prop-types";
+import Filter from "../Filter";
 
 const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
-  const currSelectedFilters = {...filter.selectedFilters.find(item => item.key === filter.selectedOptionKey)}
-
+  const currSelectedFilters = JSON.parse(JSON.stringify(filter)).selectedFilters.find(item => item.key === filter.selectedOptionKey)
 
   const filterOptionIsSelected = (option) => {
-    return !!currSelectedFilters.selected.find(item => item.name === option)
+    return !!currSelectedFilters.selected.find(item => item === option)
   }
 
   const applyFilter = () => {
@@ -20,9 +21,9 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
 
   const onSelectFilterOption = (option) => {
     if (filterOptionIsSelected(option)) {
-        currSelectedFilters.selected.filter(item => item === option)
+        currSelectedFilters.selected = currSelectedFilters.selected.filter(item => item !== option)
       } else {
-        currSelectedFilters.selected.append(option)
+        currSelectedFilters.selected.push(option)
       }
   }
 
@@ -32,7 +33,8 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
 
   handleFilterSelectCross.selectOptionBySelectingType = {
     true: (option) => {
-      currSelectedFilters.selected = filterOptionsDictionary[currSelectedFilters.name].filter(item => item === option)
+      currSelectedFilters.selected = filterOptionsDictionary[currSelectedFilters.name].filter(item => item !== option)
+      currSelectedFilters.settings.addBySelect = false;
       applyFilter();
     },
     false: (option) => {
@@ -45,7 +47,7 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
   }
 
   const handleFilterSelectCheck = (option) => {
-    handleFilterSelectCross.selectOptionBySelectingType[currSelectedFilters.settings.addBySelect](option);
+    handleFilterSelectCheck.selectOptionBySelectingType[currSelectedFilters.settings.addBySelect](option);
   }
 
   handleFilterSelectCheck.selectOptionBySelectingType = {
@@ -54,6 +56,7 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
       applyFilter();
     },
     false: (option) => {
+      currSelectedFilters.settings.addBySelect = true;
       currSelectedFilters.selected = [option]
       applyFilter()
     }
@@ -79,6 +82,12 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
           </span>
         </span>
     </Button>)
-}
+};
+
+FilterOptions.propTypes = {
+  filter: PropTypes.object,
+  setFilter: PropTypes.func,
+  filterOptionsDictionary: PropTypes.object,
+};
 
 export default FilterOptions;

@@ -1,6 +1,8 @@
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import React from "react";
 import {Button} from "reactstrap";
+import Filter from "../Filter";
+import PropTypes from "prop-types";
 
 const FilterOptionTitles = ({filter, setFilter, filterOptionsDictionary, }) => {
   return (
@@ -20,5 +22,11 @@ const FilterOptionTitles = ({filter, setFilter, filterOptionsDictionary, }) => {
       </Button>
     )))
 }
+
+FilterOptionTitles.propTypes = {
+  filter: PropTypes.object,
+  setFilter: PropTypes.func,
+  filterOptionsDictionary: PropTypes.object,
+};
 
 export default FilterOptionTitles;

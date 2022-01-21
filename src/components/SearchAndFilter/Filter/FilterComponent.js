@@ -1,9 +1,11 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Row, Col, Card, Button, ListGroup, ListGroupItem } from "reactstrap";
 
 import FilterOptions from "./FilterComponents/FilterOptions";
 import FilterOptionTitles from "./FilterComponents/FilterOptionTitles";
 import FilterFooter from "./FilterComponents/FilterFooter";
+import Filter from "./Filter";
+import PropTypes from "prop-types";
 
 const FilterComponent = (props) => {
   const {
@@ -12,11 +14,10 @@ const FilterComponent = (props) => {
     filterFunction,
     filter,
     setFilter,
-    ...attrs
   } = props;
 
   return (
-    <span {...attrs} /*ref={wrapperRefFilterBox}*/ className={"filter-box opened"}>
+    <span className={"filter-box opened"}>
       <Card style={{ marginBottom: 0 }}>
         <ListGroup variant="flush">
           <ListGroupItem className={"filter-header"}>Filter design</ListGroupItem>
@@ -48,7 +49,7 @@ const FilterComponent = (props) => {
             <div className={"filter-footer"}>
               <Button
                 variat="success"
-                onClick={() => filterFunction(filter, objectsToFilter)}
+                onClick={() => {filterFunction(filter, objectsToFilter)}}
               >
                 Apply filter
               </Button>
@@ -58,6 +59,18 @@ const FilterComponent = (props) => {
       </Card>
     </span>
   );
+};
+
+FilterComponent.defaultProps = {
+  objectsToFilter: [],
+};
+
+FilterComponent.propTypes = {
+  objectsToFilter: PropTypes.array,
+  filter: PropTypes.object,
+  setFilter: PropTypes.func,
+  filterOptionsDictionary: PropTypes.object,
+  filterFunction: PropTypes.func,
 };
 
 export default FilterComponent;
