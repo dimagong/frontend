@@ -25,6 +25,5 @@ export const selectSelectedHierarchy = (state) => {
 
 export const selectMovementOptions = (state) => {
   const selectedId = selectSelectedId(state);
-  const groups =  state?.app?.masterSchema.groups[selectedId] || [];
-  return groups.map((group) => ({ label: group.name, value: group }));
+  return state?.app?.masterSchema.groups[selectedId] || [];
 };

@@ -1,5 +1,6 @@
 import "./styles.scss";
 
+import _ from "lodash/fp";
 import moment from "moment";
 import { PropTypes } from "prop-types";
 import React, { useEffect, useMemo } from "react";
@@ -9,7 +10,7 @@ import { CardTitle, CardSubtitle, Col, Label, Row } from "reactstrap";
 
 import Checkbox from "components/Checkbox";
 import appSlice from "app/slices/appSlice";
-import { selectMovementOptions, selectSelectedId } from "app/selectors/masterSchemaSelectors";
+import { selectSelectedId } from "app/selectors/masterSchemaSelectors";
 
 import { stopPropagation } from "utility/event-decorators";
 
@@ -73,10 +74,9 @@ const customSelectStyles = {
   }),
 };
 
-const UnapprovedFieldsComponent = ({ fields }) => {
+const UnapprovedFieldsComponent = ({ fields, movementOptions, onApprove }) => {
   const dispatch = useDispatch();
   const selectedId = useSelector(selectSelectedId);
-  const movementOptions = useSelector(selectMovementOptions);
 
   const selectable = useToggleable();
 
@@ -89,6 +89,7 @@ const UnapprovedFieldsComponent = ({ fields }) => {
     const fieldsIds = selectable.keys;
     const payload = { masterSchemaId: selectedId, parentId, fieldsIds };
 
+    onApprove(payload);
     dispatch(approveUnapprovedFieldsRequest(payload));
   };
 
@@ -177,8 +178,14 @@ const UnapprovedFieldsComponent = ({ fields }) => {
   );
 };
 
+UnapprovedFieldsComponent.defaultProps = {
+  onApprove: _.noop,
+};
+
 UnapprovedFieldsComponent.propTypes = {
   fields: PropTypes.array.isRequired,
+  movementOptions: PropTypes.array.isRequired,
+  onApprove: PropTypes.func,
 };
 
 export default UnapprovedFieldsComponent;

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { selectMovementOptions } from "app/selectors/masterSchemaSelectors";
 
 import { useDidUpdate } from "hooks/use-did-update";
 
@@ -18,6 +19,7 @@ const { getMasterSchemaHierarchyRequest, setUnapprovedMasterSchemaRequest, appro
 
 const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) => {
   const dispatch = useDispatch();
+  const movementOptions = useSelector(selectMovementOptions);
   const isApprovingLoading = useSelector(createLoadingSelector([approveUnapprovedFieldsRequest.type], false));
 
   useDidUpdate(() => {
@@ -29,7 +31,7 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
-      {!isEmpty(unapproved) && <UnapprovedFieldsComponent fields={unapproved} />}
+      {!isEmpty(unapproved) && <UnapprovedFieldsComponent fields={unapproved} movementOptions={movementOptions} />}
       <MasterSchemaHierarchy hierarchy={hierarchy} selectedIds={selectedIds} onSelect={onSelect} />
     </ContextTemplate>
   );

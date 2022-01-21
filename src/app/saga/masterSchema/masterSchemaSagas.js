@@ -2,7 +2,7 @@ import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import appSlice from "app/slices/appSlice";
 import masterSchemaApi from "api/masterSchema/masterSchema";
-import { selectSearch, selectSelectedId } from "app/selectors/masterSchemaSelectors";
+import { selectSearch } from "app/selectors/masterSchemaSelectors";
 
 const {
   getMasterSchemaFieldsRequest,
@@ -175,10 +175,8 @@ function* getUnapproved({ payload }) {
   const { id } = payload;
   try {
     const unapproved = yield call(masterSchemaApi.getUnapproved, { id });
-    // console.log("unapproved/api", unapproved);
     yield put(setUnapprovedMasterSchemaSuccess({ unapproved, id }));
   } catch (error) {
-    // console.error("unapproved/error", error);
     yield put(setUnapprovedMasterSchemaError(error));
   }
 }
