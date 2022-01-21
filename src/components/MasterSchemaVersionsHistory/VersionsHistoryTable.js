@@ -3,8 +3,8 @@ import "./styles.scss";
 import moment from "moment";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import { Spinner } from "reactstrap";
 import { toast } from "react-toastify";
-import { Col, Spinner } from "reactstrap";
 import React, { useEffect, useState } from "react";
 
 import { getFullName } from "utility/get-full-name";
@@ -29,13 +29,9 @@ const VersionsHistoryTable = ({ fieldId }) => {
 
   if (!versions) {
     return (
-      <tr>
-        <td colSpan="3">
-          <Col className="d-flex justify-content-center py-4">
-            <Spinner />
-          </Col>
-        </td>
-      </tr>
+      <div className="d-flex justify-content-center py-4">
+        <Spinner />
+      </div>
     );
   }
 
