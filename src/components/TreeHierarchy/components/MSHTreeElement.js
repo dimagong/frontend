@@ -36,6 +36,8 @@ const MSHTreeElement = (props) => {
       name={node.name}
       date={node.createdAt}
       isLocked={node.isSystem}
+      applicationsCount={node.userDFormsCount}
+      versionsCount={node.userMasterSchemaFieldVersionsCount}
       selected={selected}
       onSelect={onSelect}
       children={children}

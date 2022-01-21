@@ -4,7 +4,9 @@ import { FiberManualRecord } from "@material-ui/icons";
 
 import MSHTreeNode from "./MSHTreeNode";
 
-const MSHTreeField = ({ name, date, selected, isLocked, onSelect, className, children }) => {
+const MSHTreeField = (props) => {
+  const { name, date, selected, isLocked, applicationsCount, versionsCount, onSelect, className, children } = props;
+
   return (
     <MSHTreeNode
       className={className}
@@ -12,6 +14,8 @@ const MSHTreeField = ({ name, date, selected, isLocked, onSelect, className, chi
       date={date}
       selected={selected}
       isLocked={isLocked}
+      applicationsCount={applicationsCount}
+      versionsCount={versionsCount}
       onSelect={onSelect}
       prepend={
         <div className="tree-hierarchy__mark-icon d-flex justify-content-center align-items-center">
@@ -26,7 +30,10 @@ const MSHTreeField = ({ name, date, selected, isLocked, onSelect, className, chi
 MSHTreeField.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
+
   isLocked: PropTypes.bool.isRequired,
+  applicationsCount: PropTypes.number,
+  versionsCount: PropTypes.number,
 
   onSelect: PropTypes.func,
   selected: PropTypes.bool,
