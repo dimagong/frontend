@@ -1,5 +1,6 @@
 import "./styles.scss";
 
+import _ from "lodash/fp";
 import moment from "moment";
 import PropTypes from "prop-types";
 import classNames from "classnames";
@@ -8,12 +9,11 @@ import { toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 
 import { getFullName } from "utility/get-full-name";
-import masterSchemaAPI from "api/masterSchema/masterSchema";
 
 import UITable from "components/Table/UITable";
 import { TypedValuePreview } from "components/MasterSchemaValuePreviews";
 
-const VersionsHistoryTable = ({ fieldId }) => {
+const VersionsHistoryTable = ({ versionsFactory }) => {
   const [versions, setVersions] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -21,14 +21,13 @@ const VersionsHistoryTable = ({ fieldId }) => {
     let isMounted = true;
     setIsLoading(true);
 
-    masterSchemaAPI
-      .getFieldVersions({ fieldId })
+    versionsFactory()
       .then((versions) => isMounted && setVersions(versions))
       .catch((error) => toast.error(error))
       .finally(() => setIsLoading(false));
 
     return () => (isMounted = false);
-  }, [fieldId]);
+  }, [versionsFactory]);
 
   if (!versions && isLoading) {
     return (
@@ -38,8 +37,8 @@ const VersionsHistoryTable = ({ fieldId }) => {
     );
   }
 
-  if (!versions) {
-    return null;
+  if (!versions || _.isEmpty(versions)) {
+    return <h2 style={{ color: "#707070" }}>There are no versions.</h2>;
   }
 
   const headers = ["Date", "Value", "User"];
@@ -71,7 +70,7 @@ const VersionsHistoryTable = ({ fieldId }) => {
 };
 
 VersionsHistoryTable.propTypes = {
-  fieldId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  versionsFactory: PropTypes.func.isRequired,
 };
 
 export default VersionsHistoryTable;

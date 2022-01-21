@@ -5,6 +5,8 @@ import React, { useReducer } from "react";
 
 import { getFullName } from "utility/get-full-name";
 
+import masterSchemaApi from "api/masterSchema/masterSchema";
+
 import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import { UITable } from "components/Table";
@@ -110,7 +112,11 @@ const MSUUserList = ({ users }) => {
         onClose={closeHistoryModal}
         actions={false}
       >
-        {historyData.fieldId ? <VersionsHistoryTable fieldId={historyData.fieldId} /> : null}
+        {historyData.fieldId ? (
+          <VersionsHistoryTable
+            versionsFactory={() => masterSchemaApi.getFieldVersions({ fieldId: historyData.fieldId })}
+          />
+        ) : null}
       </SurveyModal>
     </>
   );
