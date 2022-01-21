@@ -1981,7 +1981,20 @@ class FormCreate extends React.Component {
             </Col>
             :
             <Col>
-
+              <div className="form-group border-bottom">
+                <label>Name</label>
+                <input disabled value={this.state.additionalData.name} onChange={(event) => {
+                  this.setState({additionalData: {...this.state.additionalData, name: event.target.value}})
+                }} type="text"
+                       className="form-control"/>
+              </div>
+              <div className="form-group border-bottom">
+                <label>Description</label>
+                <input disabled value={this.state.additionalData.description} onChange={(event) => {
+                  this.setState({additionalData: {...this.state.additionalData, description: event.target.value}})
+                }} type="text"
+                       className="form-control"/>
+              </div>
               {
                 this.state.isShowToggleProtectedProperties ?
                   <div className="mt-2 mb-2">
