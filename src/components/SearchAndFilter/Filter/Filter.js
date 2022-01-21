@@ -1,10 +1,11 @@
 import FilterIcon from "../../../assets/img/svg/filter.svg";
 import FilterComponent from "./FilterComponent";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {getInitialFilter} from "./FilterHelper";
 import FilterShorts from "./FilterComponents/FilterShorts";
 import {useOutsideAlerter} from "../../../hooks/useOutsideAlerter";
 import PropTypes from "prop-types";
+import './styles.scss';
 
 const Filter = ({objectsToFilter, filterFunction, filterOptionsDictionary, ...attrs}) => {
   const [filter, setFilter] = useState(getInitialFilter(Object.keys(filterOptionsDictionary), false))
