@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import MSETreeField from "./mse-tree-field";
-import MSETreeGroup from "./mse-tree-group";
+import MSHTreeField from "./MSHTreeField";
+import MSHTreeGroup from "./MSHTreeGroup";
 
-const MSETreeElement = (props) => {
+const MSHTreeElement = (props) => {
   const {
     node,
     selected,
@@ -18,7 +18,7 @@ const MSETreeElement = (props) => {
   } = props;
 
   return node.isContainable ? (
-    <MSETreeGroup
+    <MSHTreeGroup
       name={node.name}
       date={node.createdAt}
       isLocked={node.isSystem}
@@ -32,10 +32,12 @@ const MSETreeElement = (props) => {
       children={children}
     />
   ) : (
-    <MSETreeField
+    <MSHTreeField
       name={node.name}
       date={node.createdAt}
       isLocked={node.isSystem}
+      applicationsCount={node.userDFormsCount}
+      versionsCount={node.userMasterSchemaFieldVersionsCount}
       selected={selected}
       onSelect={onSelect}
       children={children}
@@ -43,7 +45,7 @@ const MSETreeElement = (props) => {
   );
 };
 
-MSETreeElement.propTypes = {
+MSHTreeElement.propTypes = {
   node: PropTypes.object.isRequired,
 
   selected: PropTypes.bool.isRequired,
@@ -59,4 +61,4 @@ MSETreeElement.propTypes = {
   children: PropTypes.node,
 };
 
-export default MSETreeElement;
+export default MSHTreeElement;

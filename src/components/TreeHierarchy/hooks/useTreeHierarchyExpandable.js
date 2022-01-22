@@ -7,7 +7,7 @@ import { useToggleable } from "hooks/use-toggleable";
 const filterIncluded = (toFilter, included) => _.filter(_.negate(_.includes(_.__, included)))(toFilter);
 
 // fixme: prevent cases when hierarchy is nullable
-export const useMasterSchemaExpandable = (hierarchy) => {
+export const useTreeHierarchyExpandable = (hierarchy) => {
   const nodes = hierarchy?.nodes;
   const masterSchemaId = hierarchy?.masterSchemaId;
   const initialKeys = hierarchy ? [hierarchy.nodeId] : [];
@@ -44,18 +44,14 @@ export const useMasterSchemaExpandable = (hierarchy) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useDidUpdate(() => toggleable.setKeys(initialKeys), [masterSchemaId]);
 
-  return [
-    {
-      isDecedentsExpanded,
-      expandedIds: toggleable.keys,
-    },
-    {
-      toggle: toggleable.toggle,
-      setKeys: toggleable.setKeys,
-      expand,
-      collapse,
-      expandAll,
-      expandOnlyRoot,
-    },
-  ];
+  return {
+    isDecedentsExpanded,
+    expandedIds: toggleable.keys,
+    toggle: toggleable.toggle,
+    setKeys: toggleable.setKeys,
+    expand,
+    collapse,
+    expandAll,
+    expandOnlyRoot,
+  };
 };

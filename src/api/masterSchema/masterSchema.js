@@ -5,6 +5,8 @@ import { masterSchemaOrganizations } from "constants/masterSchema";
 
 import * as Urls from "./constants";
 import * as Interfaces from "./interfaces";
+import { MasterSchemaUnapprovedInterface } from "./interfaces";
+import { getMasterSchemaVersionsByFieldAndUser } from "./constants";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
@@ -32,6 +34,25 @@ const masterSchemaApi = {
       method: "GET",
       url: Urls.getMasterSchemaHierarchyUrl(id),
       params: {
+        ...(name ? { name } : {}),
+        hidden_groups: [1],
+        ...(application_ids ? { application_ids } : {}),
+        ...(date_begin ? { date_begin } : {}),
+        ...(date_end ? { date_end } : {}),
+      },
+    })
+      .then(flatResponseData, flatResponseError)
+      .then((response) => Interfaces.MasterSchemaHierarchyInterface.cast(response))
+      .then((serialized) => Interfaces.MasterSchemaHierarchyInterface.validate(serialized));
+  },
+
+  getHierarchyByUserId(user_id, { name, application_ids, date_begin, date_end } = {}) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaHierarchyByUserUrl,
+      params: {
+        user_id,
+        only_user_fields: 0,
         ...(name ? { name } : {}),
         hidden_groups: [1],
         ...(application_ids ? { application_ids } : {}),
@@ -96,7 +117,10 @@ const masterSchemaApi = {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaUnapprovedUrl(id),
-    }).then(flatResponseData, flatResponseError);
+    })
+      .then(flatResponseData, flatResponseError)
+      .then((response) => MasterSchemaUnapprovedInterface.cast(response))
+      .then((serialized) => MasterSchemaUnapprovedInterface.validate(serialized))
   },
 
   fieldsMakeParent({ parentId, fieldsIds }) {
@@ -139,6 +163,17 @@ const masterSchemaApi = {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaFieldVersions(fieldId),
+    }).then(flatResponseData, flatResponseError);
+  },
+
+  getVersionsByFieldAndUser({ fieldId, userId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaVersionsByFieldAndUser,
+      params: {
+        user_id: userId,
+        master_schema_field_id: fieldId,
+      },
     }).then(flatResponseData, flatResponseError);
   },
 

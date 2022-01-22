@@ -2,19 +2,23 @@ import React from "react";
 import PropTypes from "prop-types";
 import { FiberManualRecord } from "@material-ui/icons";
 
-import MSETreeNode from "./mse-tree-node";
+import MSHTreeNode from "./MSHTreeNode";
 
-const MSETreeField = ({ name, date, selected, isLocked, onSelect, className, children }) => {
+const MSHTreeField = (props) => {
+  const { name, date, selected, isLocked, applicationsCount, versionsCount, onSelect, className, children } = props;
+
   return (
-    <MSETreeNode
+    <MSHTreeNode
       className={className}
       name={name}
       date={date}
       selected={selected}
       isLocked={isLocked}
+      applicationsCount={applicationsCount}
+      versionsCount={versionsCount}
       onSelect={onSelect}
       prepend={
-        <div className="ms-elements__mark-icon d-flex justify-content-center align-items-center">
+        <div className="tree-hierarchy__mark-icon d-flex justify-content-center align-items-center">
           <FiberManualRecord fontSize={"inherit"} />
         </div>
       }
@@ -23,10 +27,13 @@ const MSETreeField = ({ name, date, selected, isLocked, onSelect, className, chi
   );
 };
 
-MSETreeField.propTypes = {
+MSHTreeField.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
+
   isLocked: PropTypes.bool.isRequired,
+  applicationsCount: PropTypes.number,
+  versionsCount: PropTypes.number,
 
   onSelect: PropTypes.func,
   selected: PropTypes.bool,
@@ -35,4 +42,4 @@ MSETreeField.propTypes = {
   children: PropTypes.node,
 };
 
-export default MSETreeField;
+export default MSHTreeField;

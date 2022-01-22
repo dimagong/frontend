@@ -5,7 +5,7 @@ import { useDidUpdate } from "hooks/use-did-update";
 import { useToggleable } from "hooks/use-toggleable";
 
 // fixme: prevent cases when hierarchy is nullable
-export const useMasterSchemaSelectable = (hierarchy) => {
+export const useTreeHierarchySelectable = (hierarchy) => {
   const toggleable = useToggleable([]);
 
   const nodes = hierarchy?.nodes || {};

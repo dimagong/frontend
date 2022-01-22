@@ -19,7 +19,11 @@
   height: 22px;
 }
 
-.ms-elements {
+.tree-hierarchy {
+  $color: #707070;
+  $inverse-color: #fff;
+  $accent-color: #63c9ef;
+
   min-height: 400px;
   &__list {
     @extend %list-reset;
@@ -37,10 +41,10 @@
 
     padding: 3px 0;
 
-    color: #707070;
+    color: $color;
 
     &--selected {
-      color: #fff;
+      color: $inverse-color;
     }
   }
 
@@ -50,16 +54,17 @@
     background-color: transparent;
 
     transition: background-color 0.2s ease;
+
     &:hover {
       background-color: #f1f1f1;
     }
 
-    @at-root .ms-elements__node--selectable > & {
+    @at-root .tree-hierarchy__node--selectable > & {
       cursor: pointer;
     }
 
-    @at-root .ms-elements__node--selected > & {
-      background-color: #707070;
+    @at-root .tree-hierarchy__node--selected > & {
+      background-color: $color;
     }
   }
 
@@ -67,7 +72,7 @@
     width: 30px;
     height: 30px;
 
-    color: #63c9ef;
+    color: $accent-color;
     font-size: 1rem;
   }
 
@@ -84,12 +89,30 @@
     font-size: 1.125rem;
   }
 
-  &__lock {
-    color: #7367f0;
+  &__icon {
+    color: var(--primary);
     font-size: 1.1rem;
 
-    @at-root .ms-elements__node--selected > .ms-elements__node-content & {
-      color: #fff;
+    @at-root .tree-hierarchy__node--selected > .tree-hierarchy__node-content & {
+      color: $inverse-color;
+    }
+
+    > svg {
+      fill: currentColor;
+    }
+    > svg > * {
+      fill: currentColor;
+    }
+  }
+
+  &__icon-count {
+    top: -0.3rem;
+    left: 0.1rem;
+
+    color: $color;
+
+    @at-root .tree-hierarchy__node--selected > .tree-hierarchy__node-content & {
+      color: $inverse-color;
     }
   }
 
@@ -142,7 +165,7 @@
     color: #95989a;
     font-size: 14px;
 
-    @at-root .ms-elements__node--selected > .ms-elements__node-content & {
+    @at-root .tree-hierarchy__node--selected > .tree-hierarchy__node-content & {
       color: currentColor;
     }
   }

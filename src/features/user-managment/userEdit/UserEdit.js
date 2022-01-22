@@ -5,7 +5,6 @@ import {
   Row,
   Col,
   TabPane,
-  Button,
   TabContent,
 } from "reactstrap"
 
@@ -14,8 +13,6 @@ import Select from 'react-select';
 import _ from "lodash"
 
 import { Plus } from "react-feather"
-
-import { handleMasterSchemaDataExport } from "services/files.service";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -44,6 +41,9 @@ import {
 
 import appSlice from 'app/slices/appSlice'
 import { CustomTable } from './components/CustomTable/CustomTable';
+
+import { UserMasterSchemaContext, UserMasterSchemaContextFeature } from "./components/MasterSchema";
+import UserMasterSchemaProvider from "./components/MasterSchema/UserMasterSchemaProvider";
 
 const {
   setManagerOnboarding,
@@ -133,6 +133,8 @@ const UserEdit = () => {
     setContextFeature("onboarding")
   };
 
+  const setMasterSchemaContextFeature = () => setContextFeature("masterSchema");
+
   const handleRowClick = (application) => {
     if (application.questions) {
       setSelectedAssignedSurvey(application);
@@ -170,15 +172,6 @@ const UserEdit = () => {
 
   const handleEditClose = () => {
     setContextFeature('')
-  };
-
-  const handleUserMasterSchemaExport = () => {
-    handleMasterSchemaDataExport(
-      `${manager.first_name} ${manager.last_name}`,
-      manager.permissions.organization_type,
-      manager.permissions.organization_id,
-      manager.id
-    ).then(() => {})
   };
 
   const handleChangeTab = (data) => {
@@ -250,109 +243,94 @@ const UserEdit = () => {
 
   return (
     <Row className="user-managment">
-      <Col sm="12" md="12" lg="12" xl="6" className="pb-3">
-        <UserCardTemplate
-          className="mb-2"
-          oneColumn={false}
-          onClick={() => {}}
-          onEdit={handleEdit}
-          {...manager}
-          editable
-        />
+      <UserMasterSchemaProvider userId={manager.id} setContextFeature={setMasterSchemaContextFeature}>
+        <Col sm="12" md="12" lg="12" xl="6" className="pb-3">
+          <UserCardTemplate
+            className="mb-2"
+            oneColumn={false}
+            onClick={() => {}}
+            onEdit={handleEdit}
+            {...manager}
+            editable
+          />
 
-        <CustomTabs
-          active={activeModuleTab}
-          onChange={handleChangeTab}
-          tabs={tabs}
-        />
-        <TabContent activeTab={activeModuleTab}>
-          <TabPane tabId="Activity">
-            <Timeline
-              managerId={manager.id}
-              loadMoreData={loadMoreData}
-              activity={activity}
-            />
-          </TabPane>
-          <TabPane tabId="Master Schema">
-            <Card>
-              <CardBody style={{
-                fontSize: "20px",
-                fontWeight: "bold",
-                color: "rgba(112,112,112,0.5)",
-                textAlign: "center",
-                padding: "50px 0",
-              }}>
-                <div style={{marginBottom: "15px"}}>
-                  Coming soon
-                </div>
-                {!!userOrganizations.length && (
-                  <div>
-                    <Button color={"primary"} onClick={handleUserMasterSchemaExport}>
-                      Export MS Data in csv
-                    </Button>
-                  </div>
-                )}
-              </CardBody>
-            </Card>
-          </TabPane>
-          <TabPane tabId="Applications">
-            <Card>
-              <CardBody>
-                <Row className="mx-0" col="12">
-                  <Col md="12" className="ml-0 pl-0">
+          <CustomTabs
+            active={activeModuleTab}
+            onChange={handleChangeTab}
+            tabs={tabs}
+          />
+          <TabContent activeTab={activeModuleTab}>
+            <TabPane tabId="Activity">
+              <Timeline
+                managerId={manager.id}
+                loadMoreData={loadMoreData}
+                activity={activity}
+              />
+            </TabPane>
+            <TabPane tabId="Master Schema">
+              <Card>
+                <CardBody>
+                  {activeModuleTab === "Master Schema" ? <UserMasterSchemaContext /> : null}
+                </CardBody>
+              </Card>
+            </TabPane>
+            <TabPane tabId="Applications">
+              <Card>
+                <CardBody>
+                  <Row className="mx-0" col="12">
+                    <Col md="12" className="ml-0 pl-0">
 
-                    <CustomTable
-                      handleRowClick={handleRowClick}
-                      selectedManager={selectedManager}
-                      selectedAssignedSurvey={selectedAssignedSurvey}
-                    />
+                      <CustomTable
+                        handleRowClick={handleRowClick}
+                        selectedManager={selectedManager}
+                        selectedAssignedSurvey={selectedAssignedSurvey}
+                      />
 
-                  </Col>
-                  <Col md="12" className="ml-0 pl-0">
-                    {!!tableData.length ? (
-                      <div className="application-create-container">
-                        <div className="application-create-container_select">
-                          <Select
-                            options={selectOptions}
-                            value={applicationAddSelectValue}
-                            onChange={setApplicationAddSelectValue}
-                            styles={selectStyles}
-                            isSearchable={false}
-                          />
+                    </Col>
+                    <Col md="12" className="ml-0 pl-0">
+                      {!!tableData.length ? (
+                        <div className="application-create-container">
+                          <div className="application-create-container_select">
+                            <Select
+                              options={selectOptions}
+                              value={applicationAddSelectValue}
+                              onChange={setApplicationAddSelectValue}
+                              styles={selectStyles}
+                              isSearchable={false}
+                            />
+                          </div>
+                          <button onClick={handleApplicationAdd}>
+                            <Plus />
+                          </button>
                         </div>
-                        <button onClick={handleApplicationAdd}>
-                          <Plus />
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="onboarding-create">
-                        <div>
-                          Create new&nbsp;
-                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
-                          <a onClick={createViewOnboarding} href="javascript:void(0);">onboarding</a>
-                          &nbsp;or&nbsp;
-                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
-                          <a onClick={handleSurveyAssign} href="javascript:void(0);">survey</a>
+                      ) : (
+                        <div className="onboarding-create">
+                          <div>
+                            Create new&nbsp;
+                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
+                            <a onClick={createViewOnboarding} href="javascript:void(0);">onboarding</a>
+                            &nbsp;or&nbsp;
+                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
+                            <a onClick={handleSurveyAssign} href="javascript:void(0);">survey</a>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
-          </TabPane>
-          <TabPane tabId="Permissions">
-            <UserRoles manager={manager} userOrganizations={userOrganizations} />
-          </TabPane>
-        </TabContent>
-      </Col>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            </TabPane>
+            <TabPane tabId="Permissions">
+              <UserRoles manager={manager} userOrganizations={userOrganizations} />
+            </TabPane>
+          </TabContent>
+        </Col>
 
-
-      <Col sm="12" md="12" lg="12" xl="6">
-        {{
-          'edit': <UserProfileEdit manager={manager} onEditClose={handleEditClose} />,
-          'onboarding': (
+        <Col sm="12" md="12" lg="12" xl="6">
+          {{
+            'edit': <UserProfileEdit manager={manager} onEditClose={handleEditClose} />,
+            'onboarding': (
               selectedManager.onboarding && (
                 <div className="onboarding-create-feature">
                   <div className="onboarding-create-feature_header">
@@ -381,13 +359,13 @@ const UserEdit = () => {
 
                 </div>
               )
-          ),
-          'surveyCreate': <SurveyAssign userId={manager.id} />,
-          'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />
-        }[contextFeature]}
-
-
-      </Col>
+            ),
+            'surveyCreate': <SurveyAssign userId={manager.id} />,
+            'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />,
+            "masterSchema": <UserMasterSchemaContextFeature />
+          }[contextFeature]}
+        </Col>
+      </UserMasterSchemaProvider>
     </Row>
   )
 };

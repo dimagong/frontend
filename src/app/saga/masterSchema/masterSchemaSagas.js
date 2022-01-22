@@ -2,7 +2,7 @@ import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import appSlice from "app/slices/appSlice";
 import masterSchemaApi from "api/masterSchema/masterSchema";
-import { selectSearch, selectSelectedId } from "app/selectors/masterSchemaSelectors";
+import { selectSearch } from "app/selectors/masterSchemaSelectors";
 
 const {
   getMasterSchemaFieldsRequest,
@@ -64,10 +64,6 @@ const {
   getRelatedApplicationsRequest,
   getRelatedApplicationsSuccess,
   getRelatedApplicationsError,
-
-  getVersionsByMasterSchemaFieldRequest,
-  getVersionsByMasterSchemaFieldSuccess,
-  getVersionsByMasterSchemaFieldError,
 
   fieldsMergeMasterSchemaRequest,
   fieldsMergeMasterSchemaSuccess,
@@ -179,10 +175,8 @@ function* getUnapproved({ payload }) {
   const { id } = payload;
   try {
     const unapproved = yield call(masterSchemaApi.getUnapproved, { id });
-    // console.log("unapproved/api", unapproved);
     yield put(setUnapprovedMasterSchemaSuccess({ unapproved, id }));
   } catch (error) {
-    // console.error("unapproved/error", error);
     yield put(setUnapprovedMasterSchemaError(error));
   }
 }
@@ -315,17 +309,6 @@ function* getGroups({ payload }) {
   }
 }
 
-function* getVersionsByField({ payload }) {
-  const selectedId = yield select(selectSelectedId);
-  const { fieldId } = payload;
-  try {
-    const versions = yield call(masterSchemaApi.getFieldVersions, { fieldId });
-    yield put(getVersionsByMasterSchemaFieldSuccess({ fieldId, versions, selectedId }));
-  } catch (error) {
-    yield put(getVersionsByMasterSchemaFieldError(error));
-  }
-}
-
 function* getUsers({ payload }) {
   const { fieldId, name, abilities, organizations, member_firm_id } = payload;
   const users = yield call(masterSchemaApi.getUsers, { fieldId, name, abilities, organizations, member_firm_id });
@@ -361,7 +344,6 @@ export default function* () {
     yield takeLatest(setUnapprovedMasterSchemaRequest, getUnapproved),
     yield takeLatest(approveUnapprovedFieldsRequest, approveFields),
     yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsersByField),
-    yield takeLatest(getVersionsByMasterSchemaFieldRequest, getVersionsByField),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
     yield takeLatest(updateFieldMasterSchemaRequest, updateField),

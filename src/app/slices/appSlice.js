@@ -73,7 +73,6 @@ export const initialState = {
     list: [],
     groups: {},
     users: {},
-    versions: {},
     unapproved: {},
     hierarchies: {},
     related_applications: {},

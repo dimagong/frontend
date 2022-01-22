@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
 import PropTypes from "prop-types";
+import React, { useRef } from "react";
 import { Col, Row } from "reactstrap";
 
 import { preventDefault } from "utility/event-decorators";
@@ -10,7 +10,7 @@ import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 import MSEButton from "features/MasterSchema/share/mse-button";
 import MSETextField from "features/MasterSchema/share/mse-text-field";
 
-const MSECreateElementForm = ({ placeholder, submitting, onSubmit: propOnSubmit }) => {
+const MSHCreateElementForm = ({ placeholder, submitting, onSubmit: propOnSubmit }) => {
   const nameFieldRef = useRef();
   const [name, setName] = useFormField("", [Validators.required]);
   const formGroup = useFormGroup({ name });
@@ -47,10 +47,10 @@ const MSECreateElementForm = ({ placeholder, submitting, onSubmit: propOnSubmit 
   );
 };
 
-MSECreateElementForm.propTypes = {
+MSHCreateElementForm.propTypes = {
   placeholder: PropTypes.string.isRequired,
   submitting: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 
-export default MSECreateElementForm;
+export default MSHCreateElementForm;
