@@ -8,7 +8,7 @@ import './styles.scss';
 const OrganizationCard = ({org, onSelect, className}) => {
 
   const handleOrgSelect = () => {
-    if(!org.logo.isLoading){
+    if(!org.logo?.isLoading){
       onSelect(org.id, org.type)
     }
   };
@@ -22,7 +22,7 @@ const OrganizationCard = ({org, onSelect, className}) => {
             <Spinner color="primary" />
           </div>
         ) : (
-          <img src={org.logo.base64} alt={org.name} />
+          <img src={org.logo?.base64} alt={org.name} />
         )}
 
       </CardBody>

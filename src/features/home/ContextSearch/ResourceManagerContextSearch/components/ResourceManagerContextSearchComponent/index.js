@@ -4,12 +4,20 @@ import OrganizationCard from "components/OrganizationCard";
 
 import './styles.scss'
 
-const ResourceManagerContextSearchComponent = ({ organizations, handleOrganizationSelect }) => {
+const ResourceManagerContextSearchComponent = ({
+  resourceManagersList,
+  handleResourceManagerSelect,
+  isLoading,
+}) => {
 
   return (
     <div className="home__card-wrapper resource-manager-context-search-component">
-      {organizations.map((org) => (
-        <OrganizationCard key={org.id+org.type} org={org} onSelect={() => {handleOrganizationSelect(org.id, org.type)}} />
+      {resourceManagersList.map((resourceManager) => (
+        <OrganizationCard
+          key={resourceManager.organization_id+resourceManager.organization_type}
+          org={resourceManager.organization}
+          onSelect={() => {handleResourceManagerSelect(resourceManager)}}
+        />
       ))}
     </div>
   )
