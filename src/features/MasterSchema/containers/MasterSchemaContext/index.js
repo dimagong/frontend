@@ -63,8 +63,6 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
     dispatch(setMasterSchemaSearch({ ...search, filters }));
   };
 
-  const onFilterCancel = () => dispatch(setMasterSchemaSearch({ ...search, filters: [] }));
-
   const getDateFormat = (date) => {
     const options = { day: "numeric", month: "numeric", year: "numeric" };
     if (date?.length > 1) {
@@ -118,11 +116,9 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
           style={{ top: "0px", left: "0px", backgroundColor: "#f8f8f8" }}
         >
           <SearchAndFilter
-            className="ms-search-and-filter"
             placeholder=""
             handleSearch={onSearchSubmit}
-            onCancelFilter={onFilterCancel}
-            filterTypes={{ applications: filterNames, types: ['Files only'] }}
+            filterTypes={{ applications: filterNames, types: ['Files only'], qwr: ['qweqwr'] }}
             applyFilter={onFilterSubmit}
             onCalendarChange={onCalendarChange}
             isCalendar

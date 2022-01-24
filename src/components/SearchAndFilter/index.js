@@ -18,12 +18,10 @@ import Filter from "./Filter/Filter";
 const SearchAndFilter = (props) => {
   const {
     handleSearch,
-    onCancelFilter,
     dataToFilter,
     filterTypes,
     applyFilter,
     isCalendar,
-    onFilterOptionCancel,
     onCalendarChange,
     className,
     hasIcon,
@@ -108,7 +106,7 @@ const SearchAndFilter = (props) => {
         <AutoComplete
           placeholder={placeholder ? placeholder : 'Search'}
           suggestions={[]}
-          className={`form-control ${className}`}
+          className={`form-control ${hasIcon && 'search-and-filter-with-icon'} ${ className}`}
           filterKey="name"
           onChange={handleOnChange}
           onEnter={(text) => {handleOnChange({target: {value: text}})}}
