@@ -37,12 +37,12 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
     dispatch(setMasterSchemaSearch({ ...search, value: searchValue }));
   };
 
-  const onFilterSubmit = (filterOptions, filter) => {
+  const onFilterSubmit = (filter) => {
     if (!hierarchy) return;
 
     const filters = _.intersectionBy(
       allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0),
-      filter.applications.map((item) => {
+      filter.selectedFilters.find(item => item.name === 'applications').selected.map((item) => {
         return { name: item };
       }),
       "name"
@@ -50,8 +50,6 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
 
     dispatch(setMasterSchemaSearch({ ...search, filters }));
   };
-
-  const onFilterCancel = () => dispatch(setMasterSchemaSearch({ ...search, filters: [] }));
 
   const getDateFormat = (date) => {
     const options = { day: "numeric", month: "numeric", year: "numeric" };
@@ -93,11 +91,9 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
     <div className="position-relative">
       <div className={hierarchy ? "position-sticky zindex-1" : ""} style={{ top: "0px", left: "0px", backgroundColor }}>
         <SearchAndFilter
-          className="ms-search-and-filter"
           placeholder=""
           handleSearch={onSearchSubmit}
-          onCancelFilter={onFilterCancel}
-          filterTypes={{ applications: filterNames }}
+          filterTypes={{ applications: filterNames, types: ['Files only']}}
           applyFilter={onFilterSubmit}
           onCalendarChange={onCalendarChange}
           isCalendar
