@@ -118,7 +118,7 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
           <SearchAndFilter
             placeholder=""
             handleSearch={onSearchSubmit}
-            filterTypes={{ applications: filterNames, types: ['Files only'], qwr: ['qweqwr'] }}
+            filterTypes={{ applications: filterNames, types: ['Files only']}}
             applyFilter={onFilterSubmit}
             onCalendarChange={onCalendarChange}
             isCalendar
