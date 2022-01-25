@@ -19,6 +19,7 @@ const {
   createResourceManagerFieldRequest,
   createResourceManagerGroupRequest,
   getResourcePreviousVersionsRequest,
+  uploadResourceRequest,
 } = appSlice.actions;
 
 const ResourceManager = () => {
@@ -61,6 +62,17 @@ const ResourceManager = () => {
     dispatch(createResourceManagerGroupRequest({name, parent_id: parentId, resource_manager_id: selectedResourceManager.id}))
   };
 
+  const handleResourceUpload = (resource) => {
+    console.log("submitted", resource);
+
+    const dataToSubmit = new FormData();
+
+    dataToSubmit.append("file", resource);
+    dataToSubmit.append("field_id", selectableNodes.selected.field.id);
+
+    dispatch(uploadResourceRequest(dataToSubmit))
+  };
+
   useEffect(() => {
     selectableNodes.clear();
     dispatch(getResourceManagerHierarchyRequest(selectedResourceManager.id))
@@ -85,6 +97,7 @@ const ResourceManager = () => {
       />
       {!!selectableNodes?.keys?.length && (
         <RMContextFeatureComponent
+          onResourceUpload={handleResourceUpload}
           connectionsAndVersions={resourceConnectionsAndVersions}
         />
       )}

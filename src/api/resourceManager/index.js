@@ -6,6 +6,7 @@ import {
   createFieldInResourceManagerHierarchy,
   createFolderInResourceManagerHierarchy,
   getResourcePreviousVersions,
+  uploadResourceUrl,
 } from './contants'
 
 const resourceManagerApi = {
@@ -28,6 +29,10 @@ const resourceManagerApi = {
 
   async getResourcePreviousVersions({ payload }) {
     return await requestLayout(getResourcePreviousVersions(payload), "GET")
+  },
+
+  async uploadResource({ payload }) {
+    return await requestLayout(uploadResourceUrl, "POST", payload)
   },
 };
 

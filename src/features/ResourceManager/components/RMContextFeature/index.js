@@ -19,13 +19,14 @@ import {Col} from "reactstrap";
 
 const RMContextFeatureComponent = ({
   connectionsAndVersions,
+  onResourceUpload,
 }) => {
 
   const dumbData = [
     {
       name: "Previous Versions",
       id: 0,
-      items: [],
+      items: Array(connectionsAndVersions?.versions?.length || 0),
       itemsName: "revision",
     },
     {
@@ -42,19 +43,6 @@ const RMContextFeatureComponent = ({
     setSelectedFolder(folder)
   };
 
-
-  const dumbTable = [
-    {user: "Test", version: "v2021.05.01", users: 2, date: "26/02/2021", author: "Sarah"},
-    {user: "Test", version: "v2021.05.01", users: 2, date: "26/02/2021", author: "Sarah"},
-    {user: "Test", version: "v2021.05.01", users: 2, date: "26/02/2021", author: "Sarah"},
-    {user: "Test", version: "v2021.05.01", users: 2, date: "26/02/2021", author: "Sarah"},
-    {user: "Test", version: "v2021.05.01", users: 2, date: "26/02/2021", author: "Sarah"},
-    {user: "Test", version: "v2021.05.01", users: 2, date: "26/02/2021", author: "Sarah"},
-    {user: "Test", version: "v2021.05.01", users: 2, date: "26/02/2021", author: "Sarah"},
-  ];
-
-
-
   return (
     <ContextFeatureTemplate contextFeatureTitle="File information">
       {/*<div style={{fontSize: "20px", color:"#707070", marginTop: "-20px", marginBottom: "40px"}}>*/}
@@ -67,6 +55,7 @@ const RMContextFeatureComponent = ({
       <div>
         {selectedFolder.name === dumbData[0].name ? (
           <PreviousVersions
+            onResourceUpload={onResourceUpload}
             previousVersions={connectionsAndVersions?.versions || []}
           />
         ) : (

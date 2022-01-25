@@ -36,6 +36,12 @@ const resourceManagerReducer = {
     state.error = null;
   },
 
+  uploadResourceSuccess: (state, { payload }) => {
+
+    state.isLoading = false;
+    state.error = null;
+  },
+
   setSelectedResourceManager: (state, { payload }) => {
     state.resourceManager.selectedResourceManager = payload;
   },
