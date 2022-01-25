@@ -6,7 +6,7 @@ const FilterFooter = ({filter}) => {
       return getDefaultFilterOutput(filter);
     }
 
-    const selectedFilters = filter.selectedFilters.filter(item => item.selected.length > 0)
+    const selectedFilters = filter.selectedFilters.filter((item, key) => item.selected.length > 0)
 
 
     switch (selectedFilters.length) {
