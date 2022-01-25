@@ -1,6 +1,4 @@
-import TreeHierarchy from "./TreeHierarchy";
-import { useTreeHierarchyExpandable } from "./hooks/useTreeHierarchyExpandable";
-import { useTreeHierarchySelectable } from "./hooks/useTreeHierarchySelectable";
-
-export default TreeHierarchy;
-export { useTreeHierarchyExpandable, useTreeHierarchySelectable };
+export * from "./NodeAdditionActions";
+export * from "./hooks/useTreeHierarchyExpandable";
+export * from "./hooks/useTreeHierarchySelectable";
+export { default as TreeHierarchy } from "./TreeHierarchy";

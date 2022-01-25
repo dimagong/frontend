@@ -270,7 +270,7 @@ const UserEdit = () => {
             <TabPane tabId="Master Schema">
               <Card>
                 <CardBody>
-                  {activeModuleTab === "Master Schema" ? <UserMasterSchemaContext /> : null}
+                  {activeModuleTab === "Master Schema" ? <UserMasterSchemaContext key={manager.id} /> : null}
                 </CardBody>
               </Card>
             </TabPane>
@@ -362,7 +362,7 @@ const UserEdit = () => {
             ),
             'surveyCreate': <SurveyAssign userId={manager.id} />,
             'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />,
-            "masterSchema": <UserMasterSchemaContextFeature />
+            "masterSchema": <UserMasterSchemaContextFeature key={manager.id} />
           }[contextFeature]}
         </Col>
       </UserMasterSchemaProvider>

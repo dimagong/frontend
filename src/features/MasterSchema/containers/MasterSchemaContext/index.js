@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
-import { selectMovementOptions } from "app/selectors/masterSchemaSelectors";
+import { selectMovementOptions, selectSelectedId } from "app/selectors/masterSchemaSelectors";
 
 import { useDidUpdate } from "hooks/use-did-update";
 
@@ -19,8 +19,19 @@ const { getMasterSchemaHierarchyRequest, setUnapprovedMasterSchemaRequest, appro
 
 const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) => {
   const dispatch = useDispatch();
+  const selectedId = useSelector(selectSelectedId);
   const movementOptions = useSelector(selectMovementOptions);
   const isApprovingLoading = useSelector(createLoadingSelector([approveUnapprovedFieldsRequest.type], false));
+
+  const onApproveSubmit = ({ parentId, fieldsIds }) => {
+    dispatch(
+      approveUnapprovedFieldsRequest({
+        parentId,
+        fieldsIds,
+        masterSchemaId: selectedId,
+      })
+    );
+  };
 
   useDidUpdate(() => {
     if (!isApprovingLoading) {
@@ -31,7 +42,13 @@ const MasterSchemaContext = ({ hierarchy, selectedIds, unapproved, onSelect }) =
 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
-      {!isEmpty(unapproved) && <UnapprovedFieldsComponent fields={unapproved} movementOptions={movementOptions} />}
+      {!isEmpty(unapproved) && (
+        <UnapprovedFieldsComponent
+          fields={unapproved}
+          movementOptions={movementOptions}
+          onApproveSubmit={onApproveSubmit}
+        />
+      )}
       <MasterSchemaHierarchy hierarchy={hierarchy} selectedIds={selectedIds} onSelect={onSelect} />
     </ContextTemplate>
   );

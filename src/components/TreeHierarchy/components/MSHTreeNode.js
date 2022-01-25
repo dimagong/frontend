@@ -5,9 +5,6 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { Lock } from "@material-ui/icons";
 
-import BackInTimeIcon from "assets/img/svg/back-in-time.svg";
-import ApplicationFileIcon from "assets/img/svg/application-file.svg";
-
 import { stopPropagation } from "utility/event-decorators";
 
 const MSHTreeNode = (props) => {

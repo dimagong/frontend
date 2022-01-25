@@ -6,7 +6,6 @@ import { masterSchemaOrganizations } from "constants/masterSchema";
 import * as Urls from "./constants";
 import * as Interfaces from "./interfaces";
 import { MasterSchemaUnapprovedInterface } from "./interfaces";
-import { getMasterSchemaVersionsByFieldAndUser } from "./constants";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
@@ -46,13 +45,15 @@ const masterSchemaApi = {
       .then((serialized) => Interfaces.MasterSchemaHierarchyInterface.validate(serialized));
   },
 
-  getHierarchyByUserId(user_id, { name, application_ids, date_begin, date_end } = {}) {
+  getHierarchyByUserId(user_id, { name, application_ids, only_files, date_begin, date_end } = {}) {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaHierarchyByUserUrl,
       params: {
         user_id,
+        only_files: only_files ? 1 : 0,
         only_user_fields: 0,
+        show_empty_folders: 1,
         ...(name ? { name } : {}),
         hidden_groups: [1],
         ...(application_ids ? { application_ids } : {}),

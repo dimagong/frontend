@@ -1,16 +1,12 @@
 import "./styles.scss";
 
-import _ from "lodash/fp";
 import moment from "moment";
 import { PropTypes } from "prop-types";
 import React, { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Visibility, VisibilityOff, Close } from "@material-ui/icons";
 import { CardTitle, CardSubtitle, Col, Label, Row } from "reactstrap";
 
 import Checkbox from "components/Checkbox";
-import appSlice from "app/slices/appSlice";
-import { selectSelectedId } from "app/selectors/masterSchemaSelectors";
 
 import { stopPropagation } from "utility/event-decorators";
 
@@ -21,8 +17,6 @@ import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 import MSEButton from "features/MasterSchema/share/mse-button";
 import MSESelectField from "features/MasterSchema/share/mse-select-field";
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
-
-const { approveUnapprovedFieldsRequest } = appSlice.actions;
 
 const iconStyles = {
   color: "#95989A",
@@ -74,10 +68,7 @@ const customSelectStyles = {
   }),
 };
 
-const UnapprovedFieldsComponent = ({ fields, movementOptions, onApprove }) => {
-  const dispatch = useDispatch();
-  const selectedId = useSelector(selectSelectedId);
-
+const UnapprovedFieldsComponent = ({ fields, movementOptions, onApproveSubmit }) => {
   const selectable = useToggleable();
 
   const [visible, toggleVisibility] = useToggle(true);
@@ -87,10 +78,8 @@ const UnapprovedFieldsComponent = ({ fields, movementOptions, onApprove }) => {
   const onSubmit = () => {
     const parentId = form.values.location.value.id;
     const fieldsIds = selectable.keys;
-    const payload = { masterSchemaId: selectedId, parentId, fieldsIds };
 
-    onApprove(payload);
-    dispatch(approveUnapprovedFieldsRequest(payload));
+    onApproveSubmit({ parentId, fieldsIds });
   };
 
   const handleUnselectAll = () => selectable.clear();
@@ -178,14 +167,10 @@ const UnapprovedFieldsComponent = ({ fields, movementOptions, onApprove }) => {
   );
 };
 
-UnapprovedFieldsComponent.defaultProps = {
-  onApprove: _.noop,
-};
-
 UnapprovedFieldsComponent.propTypes = {
   fields: PropTypes.array.isRequired,
+  onApproveSubmit: PropTypes.func.isRequired,
   movementOptions: PropTypes.array.isRequired,
-  onApprove: PropTypes.func,
 };
 
 export default UnapprovedFieldsComponent;

@@ -3,33 +3,12 @@ import PropTypes from "prop-types";
 
 import { useTreeHierarchySelectable } from "components/TreeHierarchy";
 
-import { useUserMasterSchemaHierarchy } from "./useUserMasterSchemaHierarchy";
-import { useUserMasterSchemaUnapproved } from "./useUserMasterSchemaUnapproved";
-import { useMasterSchemaMovementOptions } from "./useMasterSchemaMovementOptions";
+import { useUserMasterSchema } from "./useUserMasterSchema";
 
 export const UserMasterSchemaProviderContext = React.createContext();
 
-const useUserMS = (userId) => {
-  const hierarchy = useUserMasterSchemaHierarchy(userId);
-  const unapproved = useUserMasterSchemaUnapproved(hierarchy.data?.masterSchemaId);
-  const movementOptions = useMasterSchemaMovementOptions(hierarchy.data?.masterSchemaId);
-
-  const refresh = () => {
-    hierarchy.refresh();
-    unapproved.refresh();
-    movementOptions.refresh();
-  };
-
-  return {
-    hierarchy,
-    unapproved,
-    movementOptions,
-    refresh,
-  };
-};
-
 const UserMasterSchemaProvider = ({ userId, setContextFeature, children }) => {
-  const userMS = useUserMS(userId);
+  const userMS = useUserMasterSchema(userId);
   const selectable = useTreeHierarchySelectable(userMS.hierarchy.data);
 
   const onSelect = React.useCallback(
