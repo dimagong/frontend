@@ -57,6 +57,8 @@ const TreeHierarchy = (props) => {
     onSelect,
     onCreatedElement,
     components: propComponents,
+    onFieldCreate,
+    onGroupCreate,
     ...wrapperAttrs
   } = props;
   const components = _.merge(defaultComponents, propComponents);
@@ -99,11 +101,19 @@ const TreeHierarchy = (props) => {
     switch (type) {
       case ADD_FIELD:
         onCreatedElement({ type, payload });
-        dispatch(addFieldToMasterSchemaRequest(payload));
+        if (onFieldCreate) {
+          onFieldCreate(payload)
+        } else {
+          dispatch(addFieldToMasterSchemaRequest(payload));
+        }
         break;
       case ADD_GROUP:
         onCreatedElement({ type, payload });
-        dispatch(addGroupToMasterSchemaRequest(payload));
+        if (onGroupCreate) {
+          onGroupCreate(payload)
+        } else {
+          dispatch(addGroupToMasterSchemaRequest(payload));
+        }
         break;
       default:
         throw new Error("Unexpected element addition type.");

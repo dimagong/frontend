@@ -33,9 +33,10 @@ const FileInput = ({multiple = false, acceptTypes, value, onChange, loading, pre
 
   const checkFormats = (files) => {
     for (let i = 0; i < files.length; i++) {
-      if(!acceptTypes.includes(files[0].type)) {
-        const acceptableTypes = acceptTypes.reduce((acc, type) => { return `${acc} ${type.split("/")[1]}`}, "")
-        toast.error(`Wrong file type, please use ${acceptableTypes}`)
+      if(!acceptTypes?.includes(files[0].type)) {
+        const acceptableTypes = acceptTypes.reduce((acc, type) => { return `${acc} ${type.split("/")[1]}`}, "");
+        toast.error(`Wrong file type, please use ${acceptableTypes}`);
+        console.error(`Wrong file type, please use ${acceptableTypes}, or add ${files[0].type} to acceptable types`);
         return false
       }
     }

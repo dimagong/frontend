@@ -33,6 +33,10 @@ export const initialState = {
   selectedMemberFirmUsers: [],
   selectedMemberFirmPotentialUsers: [],
   selectedMemberFirmMSFields: null,
+  resourceManager: {
+    list: [],
+    selectedResourceManager: null,
+  },
   organizations: {
     selectedOrganizationIdAndType: {id: null, type: null},
     corporation: [],
