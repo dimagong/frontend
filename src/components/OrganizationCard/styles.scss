@@ -1,0 +1,39 @@
+.organization-card_wrapper {
+  min-height: 120px;
+  .organization-card {
+    cursor: pointer;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    img {
+      height: 57px;
+      max-width: 180px;
+    }
+
+    img[alt]:after {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      font-weight: 300;
+      text-align: center;
+      content: attr(alt);
+    }
+
+    .spinner-wrapper {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+}
+

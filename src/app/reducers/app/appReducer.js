@@ -11,6 +11,7 @@ import layoutReducer from './layout/layoutReducer'
 import masterSchemaReducer from './masterSchema/masterSchemaReducer'
 import surveysReducer from "./surveys";
 import memberFirmsReducer from "./memberFirms";
+import resourceManagerReducer from "./resourceManager";
 
 const appReducer = {
   ...authReducer,
@@ -26,6 +27,7 @@ const appReducer = {
   ...masterSchemaReducer,
   ...surveysReducer,
   ...memberFirmsReducer,
+  ...resourceManagerReducer,
 };
 
 export default appReducer;

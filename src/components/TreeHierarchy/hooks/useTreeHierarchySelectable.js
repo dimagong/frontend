@@ -91,5 +91,6 @@ export const useTreeHierarchySelectable = (hierarchy) => {
     toggle,
     keys: toggleable.keys,
     clear: toggleable.clear,
+    getGroups,
   };
 };
