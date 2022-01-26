@@ -10,12 +10,12 @@ const FILTER_DESCRIPTION_SIZE = 40;
 const FilterShorts = ({filter, setFilter, objectsToFilter, filterFunction}) => {
   const [reloadFilter, setReloadFilter] = useState(false);
 
-  const selectedFilters = filter.selectedFilters.filter(item => item.selected.length > 0);
+  const selectedFilters = filter.selectedFilters.filter((item, key) => item.selected.length > 0);
 
   const removeFiltersByTitle = (title) => {
-    const newSelectedFilters = {...filter.selectedFilters.find(item => item.name === title)};
+    const newSelectedFilters = {...filter.selectedFilters.find((item, key) => item.name === title)};
     newSelectedFilters.selected = []
-    setFilter({...filter, selectedFilters: [...filter.selectedFilters.filter(item => item.name !== title), newSelectedFilters]})
+    setFilter({...filter, selectedFilters: [...filter.selectedFilters.filter((item, key) => item.name !== title), newSelectedFilters]})
     setReloadFilter(true);
   }
 
@@ -32,7 +32,7 @@ const FilterShorts = ({filter, setFilter, objectsToFilter, filterFunction}) => {
         selectedFilters.map((item, key) => {
           const outputText = filterOptionsToText(item.selected)
           return (
-              <Button className={'filter-tab member-firm-filter-tab filter-close-button'} variant={'dark'}>
+              <Button className={'filter-tab member-firm-filter-tab filter-close-button'} variant={'dark'} key={key}>
               <span className={'nav-text'}>
                 {outputText.length <= FILTER_DESCRIPTION_SIZE
                   ? outputText

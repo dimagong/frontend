@@ -10,6 +10,7 @@ const FilterOptionTitles = ({filter, setFilter, filterOptionsDictionary, }) => {
       <Button
         onClick={() => setFilter({...filter, selectedOptionKey: key})}
         variant="secondary"
+        key={key}
         className={filter.selectedOptionKey === key ? "active" : "not-active"}>
           <span className={"filter-name"}>
             {filterOption.charAt(0).toUpperCase() + filterOption.slice(1)} ({filterOptionsDictionary[filterOption].length})

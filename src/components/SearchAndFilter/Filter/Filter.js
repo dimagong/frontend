@@ -7,8 +7,13 @@ import {useOutsideAlerter} from "../../../hooks/useOutsideAlerter";
 import PropTypes from "prop-types";
 import './styles.scss';
 
-const Filter = ({objectsToFilter, filterFunction, filterOptionsDictionary, ...attrs}) => {
-  const [filter, setFilter] = useState(getInitialFilter(Object.keys(filterOptionsDictionary), false))
+const Filter = ({objectsToFilter, filterFunction, filterOptionsDictionary, crossSelectingDisabled, savable, hasSearch, ...attrs}) => {
+  const filterSettings = {
+    savable: savable,
+    crossSelectingDisabled: crossSelectingDisabled,
+    hasSearch: hasSearch ?? [],
+  };
+  const [filter, setFilter] = useState(getInitialFilter(Object.keys(filterOptionsDictionary), filterSettings))
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false)
 
   const wrapperRefFilterButton = useRef(null);
