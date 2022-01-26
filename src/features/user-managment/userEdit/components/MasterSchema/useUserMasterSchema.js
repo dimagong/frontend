@@ -116,7 +116,7 @@ const useUserMasterSchemaHierarchy = (userId) => {
   React.useEffect(() => {
     if (isSearchParamsInitial()) return;
 
-    fetch(searchParams);
+    fetch({ ...searchParams, show_empty_folders: false });
     // Fetch only when params for searching are not initial
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSearchParamsInitial, searchParams]);
@@ -227,7 +227,7 @@ export const useUserMasterSchema = (userId) => {
   const movementOptions = useMasterSchemaMovementOptions();
 
   const fetch = React.useCallback(() => {
-    hierarchy.fetch().then(({ masterSchemaId }) => {
+    hierarchy.fetch({ show_empty_folders: true }).then(({ masterSchemaId }) => {
       unapproved.fetch(masterSchemaId);
       movementOptions.fetch(masterSchemaId);
     });

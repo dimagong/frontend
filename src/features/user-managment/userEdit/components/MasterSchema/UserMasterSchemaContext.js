@@ -117,7 +117,7 @@ const UserMasterSchemaContext = () => {
     hierarchy.isSearchParamsInitial() ? expandable.expandOnlyRoot() : expandable.expandAll();
     // expandable contains a state
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hierarchy]);
+  }, [hierarchy.searchParams]);
 
   return (
     <Scrollbars autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
