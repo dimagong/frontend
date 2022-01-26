@@ -11,7 +11,7 @@ const UserMasterSchemaContextFeature = () => {
   const { userId, selectable } = React.useContext(UserMasterSchemaProviderContext);
 
   const contextFeatureTitle = (() => {
-    if (selectable.selected.nodes.length === 1) {
+    if (selectable.selected.fields.length === 1) {
       const path = [...selectable.selected.node.path];
       const firstName = path.shift();
       const restNames = _.isEmpty(path) ? null : `.${path.join(".")}`;
@@ -20,24 +20,6 @@ const UserMasterSchemaContextFeature = () => {
         <>
           {firstName}
           {restNames && <span className="font-weight-normal">{restNames}</span>}
-        </>
-      );
-    }
-
-    if (selectable.selected.fields.length > 1) {
-      return (
-        <>
-          {`${selectable.selected.fields.length} Datapoints Selected`}
-          {selectable.selected.fields.map((field) => (
-            <p className="mb-0 mt-1 font-size-base font-weight-normal" key={field.id}>
-              {field.path.join(".")}
-            </p>
-          ))}
-          {selectable.selected.areSelectedFieldsContainCommonAndMemberFirmFields && (
-            <p className="mb-0 mt-1 font-size-base font-weight-normal text-danger">
-              There are selected fields not from member firm.
-            </p>
-          )}
         </>
       );
     }

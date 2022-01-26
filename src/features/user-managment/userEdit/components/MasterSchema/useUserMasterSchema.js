@@ -108,16 +108,14 @@ const useUserMasterSchemaHierarchy = (userId) => {
     return (
       searchParams.name === "" &&
       _.isEmpty(searchParams.application_ids) &&
+      !searchParams.only_files &&
       !searchParams.date_begin &&
       !searchParams.date_end
     );
   }, [searchParams]);
 
   React.useEffect(() => {
-    if (isSearchParamsInitial()) return;
-
     fetch({ ...searchParams, show_empty_folders: false });
-    // Fetch only when params for searching are not initial
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSearchParamsInitial, searchParams]);
 

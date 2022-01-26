@@ -36,20 +36,21 @@ const useSearch = (hierarchy) => {
   const onFilterSubmit = (filter) => {
     if (!hierarchy.data) return;
 
-    debugger;
-    const a = allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.data.name).length > 0);
-    // const b1 = filter.selectedFilters.find(item => item.name === 'applications');
-    const b1 = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("applications")));
-    const b2 = b1.selected;
-    const b3 = b2.map((item) => ({ name: item }));
+    const dFormNames = allDForms.filter(
+      (item) => item.groups.filter((group) => group.name === hierarchy.data.name).length > 0
+    );
+    const selectedApplications = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("applications"))).selected;
+    const selectedApplicationsNames = selectedApplications.map((item) => ({ name: item }));
+    const intersectedApplicationNames = _.intersectionBy(dFormNames, selectedApplicationsNames, "name");
+    const selectedApplicationIds = intersectedApplicationNames.map(_.get("id"));
 
-    const intersected = _.intersectionBy(a, b3, "name");
-    const filters = intersected.map(_.get("id"));
+    const selectedTypes = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("types"))).selected;
+    const onlyFiles = selectedTypes.includes("Files only");
 
-    hierarchy.setSearchParams({ application_ids: filters });
+    hierarchy.setSearchParams({ application_ids: selectedApplicationIds, only_files: onlyFiles });
   };
 
-  const onFilterCancel = () => hierarchy.setSearchParams({ application_ids: [] });
+  const onFilterCancel = () => hierarchy.setSearchParams({ application_ids: [], only_files: false });
 
   const getDateFormat = (date) => {
     const options = { day: "numeric", month: "numeric", year: "numeric" };
@@ -66,15 +67,16 @@ const useSearch = (hierarchy) => {
     hierarchy.setSearchParams({ date_begin: formattedDate[0], date_end: formattedDate[1] });
   };
 
-  useDidMount(() => {
+  React.useEffect(() => {
+    if (!hierarchy.data) return;
+
     dispatch(getdFormsRequest());
 
-    if (hierarchy.data?.name) {
-      setFilterTypes(
-        allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.data.name).length > 0)
-      );
-    }
-  });
+    setFilterTypes(
+      allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.data.name).length > 0)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hierarchy.data]);
 
   return {
     filterNames,
@@ -146,6 +148,7 @@ const UserMasterSchemaContext = () => {
             isCalendar
             hasIcon
             filterTabPosition={"left"}
+            crossSelectingDisabled
           />
 
           {hierarchy && (
