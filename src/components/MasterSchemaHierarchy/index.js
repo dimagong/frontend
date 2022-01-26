@@ -62,11 +62,11 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
     dispatch(setMasterSchemaSearch({ ...search, value: searchValue }));
   };
 
-  const onFilterSubmit = (filter) => {
-    if (!hierarchy) return;
+  const onFilterSubmit = (filter, filterHierarchy) => {
+    if (!filterHierarchy) return;
 
     const filters = _.intersectionBy(
-      allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0),
+      allDForms.filter((item) => item.groups.filter((group) => group.name === filterHierarchy.name).length > 0),
       filter.selectedFilters
         .find((item) => item.name === "applications")
         .selected.map((item) => {
@@ -126,6 +126,7 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
           isCalendar
           hasIcon
           filterTabPosition={"left"}
+          dataToFilter={hierarchy}
         />
 
         {hierarchy && (

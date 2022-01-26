@@ -33,11 +33,11 @@ const useSearch = (hierarchy) => {
     hierarchy.setSearchParams({ name: searchValue });
   };
 
-  const onFilterSubmit = (filter) => {
-    if (!hierarchy.data) return;
+  const onFilterSubmit = (filter, filterHierarchy) => {
+    if (!filterHierarchy.data) return;
 
     const dFormNames = allDForms.filter(
-      (item) => item.groups.filter((group) => group.name === hierarchy.data.name).length > 0
+      (item) => item.groups.filter((group) => group.name === filterHierarchy.data.name).length > 0
     );
     const selectedApplications = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("applications"))).selected;
     const selectedApplicationsNames = selectedApplications.map((item) => ({ name: item }));
@@ -47,10 +47,8 @@ const useSearch = (hierarchy) => {
     const selectedTypes = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("types"))).selected;
     const onlyFiles = selectedTypes.includes("Files only");
 
-    hierarchy.setSearchParams({ application_ids: selectedApplicationIds, only_files: onlyFiles });
+    filterHierarchy.setSearchParams({ application_ids: selectedApplicationIds, only_files: onlyFiles });
   };
-
-  const onFilterCancel = () => hierarchy.setSearchParams({ application_ids: [], only_files: false });
 
   const getDateFormat = (date) => {
     const options = { day: "numeric", month: "numeric", year: "numeric" };
@@ -82,7 +80,6 @@ const useSearch = (hierarchy) => {
     filterNames,
     onSearchSubmit,
     onFilterSubmit,
-    onFilterCancel,
     onCalendarChange,
   };
 };
@@ -141,7 +138,6 @@ const UserMasterSchemaContext = () => {
           <SearchAndFilter
             placeholder=""
             handleSearch={search.onSearchSubmit}
-            onCancelFilter={search.onFilterCancel}
             filterTypes={{ applications: search.filterNames, types: ["Files only"] }}
             applyFilter={search.onFilterSubmit}
             onCalendarChange={search.onCalendarChange}
@@ -149,6 +145,7 @@ const UserMasterSchemaContext = () => {
             hasIcon
             filterTabPosition={"left"}
             crossSelectingDisabled
+            dataToFilter={userMS.hierarchy}
           />
 
           {hierarchy && (
