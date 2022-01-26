@@ -45,23 +45,30 @@ const VersionsHistoryTable = ({ versionsFactory }) => {
 
   return (
     <UITable
+      className="versions-table"
       headers={headers}
       rows={versions}
+      customHeader={(header) => (
+        <th className="versions-table__th" key={header}>
+          {header}
+        </th>
+      )}
       customRow={(version, index) => {
         const { provided } = version;
         const fullName = provided ? getFullName(provided) : null;
-        const rowClassName = classNames({ "font-weight-bold": index === 0 });
+        const lastTdClassName = { "ui-table__right-border": index === 0 };
+        const rowClassName = classNames({ "versions-table__tr--actual font-weight-bold": index === 0 });
 
         return (
           <tr className={rowClassName} key={version.id}>
-            <td className="text-left">
+            <td className="versions-table__td text-left">
               <div>{moment(version?.created_at).format("DD/MM/YYYY")}</div>
               <div>{moment(version?.created_at).format("HH:MM")}</div>
             </td>
-            <td>
+            <td className="versions-table__td">
               <TypedValuePreview type={version.type} value={version.type === "files" ? version.files : version.value} />
             </td>
-            <td className="ui-table__right-border">{fullName}</td>
+            <td className={classNames("versions-table__td", lastTdClassName)}>{fullName}</td>
           </tr>
         );
       }}

@@ -4,10 +4,13 @@ import _ from "lodash/fp";
 import React from "react";
 import { Table } from "reactstrap";
 import PropTypes from "prop-types";
+import classnames from "classnames";
 
-const UITable = ({ headers, customHeader, rows, customRow, ...attrs }) => {
+const UITable = ({ headers, customHeader, rows, customRow, className: classNameProp, ...attrs }) => {
+  const className = classnames("ui-table", classNameProp);
+
   return (
-    <Table className="ui-table" borderless responsive {...attrs}>
+    <Table className={className} borderless responsive {...attrs}>
       <thead className="font-weight-bold">
         <tr>
           {headers.map((header, index) => {

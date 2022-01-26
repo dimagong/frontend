@@ -78,7 +78,7 @@ const MSUUserList = ({ users }) => {
                 <img
                   src={avatarPath}
                   alt="user's avatar."
-                  style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                  style={{ width: "48px", height: "48px", objectFit: "cover" }}
                 />
               </td>
               <td className="pl-1">{fullName}</td>
