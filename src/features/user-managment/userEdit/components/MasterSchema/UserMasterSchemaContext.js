@@ -8,8 +8,6 @@ import { INPUT_HEADER_HEIGHT } from "constants/header";
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
 
-import { useDidMount } from "hooks/use-did-mount";
-
 import MSEButton from "features/MasterSchema/share/mse-button";
 
 import SearchAndFilter from "components/SearchAndFilter";
@@ -34,20 +32,20 @@ const useSearch = (hierarchy) => {
   };
 
   const onFilterSubmit = (filter, filterHierarchy) => {
-    if (!filterHierarchy.data) return;
+    if (!filterHierarchy) return;
 
     const dFormNames = allDForms.filter(
-      (item) => item.groups.filter((group) => group.name === filterHierarchy.data.name).length > 0
+      (item) => item.groups.filter((group) => group.name === filterHierarchy.name).length > 0
     );
     const selectedApplications = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("applications"))).selected;
     const selectedApplicationsNames = selectedApplications.map((item) => ({ name: item }));
-    const intersectedApplicationNames = _.intersectionBy(dFormNames, selectedApplicationsNames, "name");
+    const intersectedApplicationNames = _.intersectionBy("name", dFormNames, selectedApplicationsNames);
     const selectedApplicationIds = intersectedApplicationNames.map(_.get("id"));
 
     const selectedTypes = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("types"))).selected;
     const onlyFiles = selectedTypes.includes("Files only");
 
-    filterHierarchy.setSearchParams({ application_ids: selectedApplicationIds, only_files: onlyFiles });
+    hierarchy.setSearchParams({ application_ids: selectedApplicationIds, only_files: onlyFiles });
   };
 
   const getDateFormat = (date) => {
@@ -112,14 +110,14 @@ const UserMasterSchemaContext = () => {
   React.useEffect(() => void userMS.fetch(), [userId]);
 
   React.useEffect(() => {
-    if (!userMS.hierarchy.data || hierarchy.isLoading) return;
+    if (!hierarchy.data || hierarchy.isLoading) return;
     hierarchy.isSearchParamsInitial() ? expandable.expandOnlyRoot() : expandable.expandAll();
     // expandable contains a state
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hierarchy.searchParams]);
+  }, [hierarchy.data, hierarchy.isLoading, hierarchy.searchParams]);
 
   return (
-    <Scrollbars autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
+    <Scrollbars autoHeight autoHeightMin={550} autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
       <div className="position-relative zindex-2">
         {unapproved.data && movementOptions.data && !_.isEmpty(unapproved.data) ? (
           <UnapprovedFieldsComponent
@@ -145,7 +143,7 @@ const UserMasterSchemaContext = () => {
             hasIcon
             filterTabPosition={"left"}
             crossSelectingDisabled
-            dataToFilter={userMS.hierarchy}
+            dataToFilter={userMS.hierarchy.data}
           />
 
           {hierarchy && (

@@ -2,6 +2,8 @@ import _ from "lodash/fp";
 import React from "react";
 import { toast } from "react-toastify";
 
+import { useDidUpdate } from "hooks/use-did-update";
+
 import masterSchemaApi from "api/masterSchema/masterSchema";
 import { normalizeGroups, normalizeHierarchy, normalizeUnapproved } from "api/masterSchema/normalizers";
 
@@ -114,10 +116,9 @@ const useUserMasterSchemaHierarchy = (userId) => {
     );
   }, [searchParams]);
 
-  React.useEffect(() => {
-    fetch({ ...searchParams, show_empty_folders: false });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSearchParamsInitial, searchParams]);
+  useDidUpdate(() => void fetch({ ...searchParams, show_empty_folders: false }), [searchParams]);
+
+  useDidUpdate(() => void setSearchParams(initialSearchParams), [userId]);
 
   return { data, isLoading, fetch, searchParams, isSearchParamsInitial, setSearchParams };
 };
