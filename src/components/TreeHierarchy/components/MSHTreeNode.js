@@ -27,10 +27,13 @@ const MSHTreeNode = (props) => {
     <li className={className} onClick={stopPropagation(onSelect)}>
       <div className="tree-hierarchy__node-content d-flex align-items-center">
         {prepend}
+
         <div className="tree-hierarchy__name">{name}</div>
+
         {append}
+
         <div className="d-flex align-items-center ml-auto">
-          {applicationsCount ? (
+          {applicationsCount == null ? null : (
             <div className="tree-hierarchy__icon position-relative px-1">
               <span className="tree-hierarchy__icon-count position-absolute">{applicationsCount}</span>
               <svg width="16" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -49,16 +52,21 @@ const MSHTreeNode = (props) => {
                 </g>
               </svg>
             </div>
-          ) : null}
+          )}
 
-          {versionsCount ? (
+          {versionsCount == null ? null : (
             <div className="tree-hierarchy__icon position-relative px-1">
               <span className="tree-hierarchy__icon-count position-absolute">{versionsCount}</span>
               <svg width="24" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" clipRule="evenodd" d="M13.456.586c-5.375 0-9.747 4.307-9.877 9.669v.247H.71l4.345 4.709 4.225-4.709H6.05v-.247c.128-3.994 3.394-7.189 7.405-7.189 4.095 0 7.414 3.33 7.414 7.436 0 4.107-3.32 7.437-7.414 7.437a7.372 7.372 0 0 1-4.385-1.443l-1.7 1.818a9.831 9.831 0 0 0 6.085 2.102c5.46 0 9.883-4.438 9.883-9.914 0-5.475-4.424-9.916-9.883-9.916Zm-1.21 3.87v6.046a1.22 1.22 0 0 0 .355.855l3.87 3.87a5.62 5.62 0 0 0 .951-.76l-2.757-2.755V4.457h-2.418Z" fill="#7367F0"/>
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M13.456.586c-5.375 0-9.747 4.307-9.877 9.669v.247H.71l4.345 4.709 4.225-4.709H6.05v-.247c.128-3.994 3.394-7.189 7.405-7.189 4.095 0 7.414 3.33 7.414 7.436 0 4.107-3.32 7.437-7.414 7.437a7.372 7.372 0 0 1-4.385-1.443l-1.7 1.818a9.831 9.831 0 0 0 6.085 2.102c5.46 0 9.883-4.438 9.883-9.914 0-5.475-4.424-9.916-9.883-9.916Zm-1.21 3.87v6.046a1.22 1.22 0 0 0 .355.855l3.87 3.87a5.62 5.62 0 0 0 .951-.76l-2.757-2.755V4.457h-2.418Z"
+                  fill="#7367F0"
+                />
               </svg>
             </div>
-          ) : null}
+          )}
 
           {isLocked ? (
             <div className="tree-hierarchy__icon px-1">

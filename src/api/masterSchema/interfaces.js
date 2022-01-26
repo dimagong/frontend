@@ -19,6 +19,9 @@ export const MasterSchemaFieldInterface = yup
     updatedAt: yup.string().required(),
     createdAt: yup.string().required(),
     isSystem: yup.boolean().required(),
+    userFiles: yup.array().nullable(),
+    userValue: yup.mixed().nullable(),
+    memberFirmValue: yup.mixed().nullable(),
     userDFormsCount: yup.number().nullable(),
     userMasterSchemaFieldVersionsCount: yup.number().nullable(),
   })
