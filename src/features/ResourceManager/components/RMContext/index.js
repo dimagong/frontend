@@ -2,7 +2,7 @@ import React from 'react';
 
 import ContextTemplate from "components/ContextTemplate";
 
-import TreeHierarchy, { useTreeHierarchyExpandable } from "components/TreeHierarchy";
+import { TreeHierarchy } from "components/TreeHierarchy";
 
 import './styles.scss';
 import SearchAndFilter from "../../../../components/SearchAndFilter";
@@ -15,8 +15,8 @@ const RMContextComponent = ({
   selectedNodes,
   isLoading,
   expandable,
-  onFieldCreate,
-  onGroupCreate,
+  isElementCreationLoading,
+  onElementCreationSubmit,
 }) => {
 
   if (isLoading) {
@@ -68,8 +68,8 @@ const RMContextComponent = ({
         onCollapse={expandable.collapse}
         onSelect={onSelect}
         selectedIds={selectedNodes}
-        onFieldCreate={onFieldCreate}
-        onGroupCreate={onGroupCreate}
+        elementCreationLoading={isElementCreationLoading}
+        onElementCreationSubmit={onElementCreationSubmit}
       />
 
     </ContextTemplate>
