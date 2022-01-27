@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Spinner } from "reactstrap";
 
-import TreeHierarchy from "components/TreeHierarchy";
+import { TreeHierarchy } from "components/TreeHierarchy";
 
 const UserMasterSchemaHierarchy = (props) => {
   const { isLoading, hierarchy, expandedIds, onExpand, onCollapse, selectedIds, onSelect, onCreatedElement } = props;
@@ -27,7 +27,8 @@ const UserMasterSchemaHierarchy = (props) => {
       onCollapse={onCollapse}
       selectedIds={selectedIds}
       onSelect={onSelect}
-      onCreatedElement={onCreatedElement}
+      elementCreationLoading={false}
+      onElementCreationSubmit={() => {}}
     />
   );
 };

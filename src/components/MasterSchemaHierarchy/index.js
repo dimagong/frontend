@@ -16,9 +16,18 @@ import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
 
 import SearchAndFilter from "components/SearchAndFilter";
-import TreeHierarchy, { useTreeHierarchyExpandable } from "components/TreeHierarchy";
+import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
+import { createLoadingSelector } from "../../app/selectors/loadingSelector";
 
-const { getMasterSchemaHierarchyRequest, getdFormsRequest, setMasterSchemaSearch } = appSlice.actions;
+const {
+  getMasterSchemaHierarchyRequest,
+  getdFormsRequest,
+  setMasterSchemaSearch,
+  addFieldToMasterSchemaRequest,
+  addGroupToMasterSchemaRequest,
+} = appSlice.actions;
+
+const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
 
 const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundColor }) => {
   const dispatch = useDispatch();
@@ -31,6 +40,21 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
   const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
   const filterNames = useMemo(() => filterTypes.map(get("name")), [filterTypes]);
+
+  const elementCreationLoading = useSelector(createLoadingSelector(elementAdditionActionTypes, true));
+
+  const onElementCreationSubmit = ({ type, ...creationData }) => {
+    switch (type) {
+      case ADD_FIELD:
+        dispatch(addFieldToMasterSchemaRequest(creationData));
+        break;
+      case ADD_GROUP:
+        dispatch(addGroupToMasterSchemaRequest(creationData));
+        break;
+      default:
+        throw new Error("Unexpected element addition type.");
+    }
+  };
 
   const onSearchSubmit = (searchName) => {
     const searchValue = searchName.hasOwnProperty("target") ? searchName.target.value : searchName;
@@ -128,6 +152,8 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
           onCollapse={expandable.collapse}
           selectedIds={selectedIds}
           onSelect={onSelect}
+          elementCreationLoading={elementCreationLoading}
+          onElementCreationSubmit={onElementCreationSubmit}
           key={hierarchy.name}
         />
       ) : (

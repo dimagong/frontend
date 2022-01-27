@@ -14,6 +14,8 @@ import appSlice from "../../app/slices/appSlice";
 
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 
+import { ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
+
 const {
   getResourceManagerHierarchyRequest,
   createResourceManagerFieldRequest,
@@ -22,6 +24,11 @@ const {
   uploadResourceRequest,
 } = appSlice.actions;
 
+const createResourceManagerElementTypes = [
+  createResourceManagerFieldRequest.type,
+  createResourceManagerGroupRequest.type
+];
+
 const ResourceManager = () => {
   const dispatch = useDispatch();
 
@@ -29,6 +36,7 @@ const ResourceManager = () => {
   const hierarchy = useSelector(selectResourceManagerHierarchy);
   const resourceConnectionsAndVersions = useSelector(selectResourceManagerConnectionsAndVersions);
   const isHierarchyLoading = useSelector(createLoadingSelector([getResourceManagerHierarchyRequest.type]));
+  const isResourceManagerElementCreationLoading = useSelector(createLoadingSelector(createResourceManagerElementTypes, true));
 
   const hierarchyPrevious = usePrevious(hierarchy);
 
@@ -54,12 +62,16 @@ const ResourceManager = () => {
     }
   };
 
-  const handleResourceManagerFieldCreate = ({ name, parentId }) => {
-    dispatch(createResourceManagerFieldRequest({name, resource_manager_directory_id: parentId, provided_by: selectedResourceManager.id}))
-  };
-
-  const handleResourceManagerGroupCreate = ({ name, parentId }) => {
-    dispatch(createResourceManagerGroupRequest({name, parent_id: parentId, resource_manager_id: selectedResourceManager.id}))
+  const onElementCreationSubmit = ({ type, name, parentId }) => {
+    switch (type) {
+      case ADD_FIELD:
+        dispatch(createResourceManagerFieldRequest({name, resource_manager_directory_id: parentId, provided_by: selectedResourceManager.id}));
+        break;
+      case ADD_GROUP:
+        dispatch(createResourceManagerGroupRequest({name, parent_id: parentId, resource_manager_id: selectedResourceManager.id}))
+        break;
+      default: throw new Error(`Unhandled type: [${type}] of hierarchy element creation.`);
+    }
   };
 
   const handleResourceUpload = (resource) => {
@@ -92,8 +104,8 @@ const ResourceManager = () => {
         selectedNodes={selectableNodes.keys}
         isLoading={isHierarchyLoading}
         expandable={expandable}
-        onFieldCreate={handleResourceManagerFieldCreate}
-        onGroupCreate={handleResourceManagerGroupCreate}
+        isElementCreationLoading={isResourceManagerElementCreationLoading}
+        onElementCreationSubmit={onElementCreationSubmit}
       />
       {!!selectableNodes?.keys?.length && (
         <RMContextFeatureComponent
