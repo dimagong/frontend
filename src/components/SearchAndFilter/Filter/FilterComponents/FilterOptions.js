@@ -7,10 +7,10 @@ import PropTypes from "prop-types";
 import Filter from "../Filter";
 
 const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
-  const currSelectedFilters = JSON.parse(JSON.stringify(filter)).selectedFilters.find(item => item.key === filter.selectedOptionKey)
+  const currSelectedFilters = JSON.parse(JSON.stringify(filter)).selectedFilters.find((item, key) => item.key === filter.selectedOptionKey)
 
   const filterOptionIsSelected = (option) => {
-    return !!currSelectedFilters.selected.find(item => item === option)
+    return !!currSelectedFilters.selected.find((item, key) => item === option)
   }
 
   const applyFilter = () => {
@@ -21,7 +21,7 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
 
   const onSelectFilterOption = (option) => {
     if (filterOptionIsSelected(option)) {
-        currSelectedFilters.selected = currSelectedFilters.selected.filter(item => item !== option)
+        currSelectedFilters.selected = currSelectedFilters.selected.filter((item, key) => item !== option)
       } else {
         currSelectedFilters.selected.push(option)
       }
@@ -33,7 +33,7 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
 
   handleFilterSelectCross.selectOptionBySelectingType = {
     true: (option) => {
-      currSelectedFilters.selected = filterOptionsDictionary[currSelectedFilters.name].filter(item => item !== option)
+      currSelectedFilters.selected = filterOptionsDictionary[currSelectedFilters.name].filter((item, key) => item !== option)
       currSelectedFilters.settings.addBySelect = false;
       applyFilter();
     },
@@ -62,17 +62,19 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
     }
   }
 
-  return filterOptionsDictionary[currSelectedFilters.name].map(item =>
-    <Button className={'filter-option not-active'} variant="primary">
+  return filterOptionsDictionary[currSelectedFilters.name].map((item, key) =>
+    <Button className={'filter-option not-active'} variant="primary" key={key}>
       <span className={'filter-name'}>{item}</span>
       <span className={'filter-right'}>
           <span>
-            <span className={'filter-check'} onClick={() => handleFilterSelectCross(item)}>
-              <FilterCrossIcon
-                filter={filter}
-                currOption={item}
-              />
-            </span>
+            {!filter.crossSelectingDisabled &&
+              <span className={'filter-check'} onClick={() => handleFilterSelectCross(item)}>
+                <FilterCrossIcon
+                  filter={filter}
+                  currOption={item}
+                />
+              </span>
+            }
             <span className={'filter-check'} onClick={() => handleFilterSelectCheck(item)}>
               <FilterCheckIcon
                 filter={filter}

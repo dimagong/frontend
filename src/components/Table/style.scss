@@ -1,6 +1,6 @@
 .ui-table {
   border-spacing: 0 1rem;
-  border-collapse: separate;
+  border-collapse: collapse;
 
   line-height: 1.3;
   font-size: 0.85rem;
@@ -8,14 +8,8 @@
 
   thead th,
   tbody td {
-    padding: 0.3rem 0.5rem;
-
-    font-size: inherit;
-    font-weight: inherit;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: inherit;
+    padding: 0.6rem 0.5rem;
   }
 
   & &__right-border {

@@ -1,36 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import { useDidUpdate } from "hooks/use-did-update";
 import { useTreeHierarchySelectable } from "components/TreeHierarchy";
 
-import { useUserMasterSchemaHierarchy } from "./useUserMasterSchemaHierarchy";
-import { useUserMasterSchemaUnapproved } from "./useUserMasterSchemaUnapproved";
-import { useMasterSchemaMovementOptions } from "./useMasterSchemaMovementOptions";
+import { useUserMasterSchema } from "./useUserMasterSchema";
 
 export const UserMasterSchemaProviderContext = React.createContext();
 
-const useUserMS = (userId) => {
-  const hierarchy = useUserMasterSchemaHierarchy(userId);
-  const unapproved = useUserMasterSchemaUnapproved(hierarchy.data?.masterSchemaId);
-  const movementOptions = useMasterSchemaMovementOptions(hierarchy.data?.masterSchemaId);
-
-  const refresh = () => {
-    hierarchy.refresh();
-    unapproved.refresh();
-    movementOptions.refresh();
-  };
-
-  return {
-    hierarchy,
-    unapproved,
-    movementOptions,
-    refresh,
-  };
-};
-
 const UserMasterSchemaProvider = ({ userId, setContextFeature, children }) => {
-  const userMS = useUserMS(userId);
-  const selectable = useTreeHierarchySelectable(userMS.hierarchy.data);
+  const userMS = useUserMasterSchema(userId);
+  const selectable = useTreeHierarchySelectable(userMS.hierarchy.data, useTreeHierarchySelectable.STRATEGY.OnlyField);
 
   const onSelect = React.useCallback(
     (node) => {
@@ -40,10 +20,9 @@ const UserMasterSchemaProvider = ({ userId, setContextFeature, children }) => {
     [selectable, setContextFeature]
   );
 
-  const value = React.useMemo(
-    () => ({ userId, userMS, selectable, onSelect }),
-    [userId, userMS, selectable, onSelect]
-  );
+  const value = React.useMemo(() => ({ userId, userMS, selectable, onSelect }), [userId, userMS, selectable, onSelect]);
+
+  useDidUpdate(() => selectable.clear(), [userId]);
 
   return <UserMasterSchemaProviderContext.Provider value={value} children={children} />;
 };

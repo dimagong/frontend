@@ -1,11 +1,14 @@
 import _ from "lodash/fp";
-import { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { useDidUpdate } from "hooks/use-did-update";
 import { useToggleable } from "hooks/use-toggleable";
 
 // fixme: prevent cases when hierarchy is nullable
-export const useTreeHierarchySelectable = (hierarchy) => {
+export const useTreeHierarchySelectable = (
+  hierarchy,
+  strategyId = useTreeHierarchySelectable.STRATEGY.MultipleFieldsAndSingleGroup
+) => {
   const toggleable = useToggleable([]);
 
   const nodes = hierarchy?.nodes || {};
@@ -63,26 +66,42 @@ export const useTreeHierarchySelectable = (hierarchy) => {
     ]
   );
 
-  const toggle = useCallback(
-    (nodeId) => {
-      const toSelectNode = nodes[nodeId];
+  const strategies = {
+    [useTreeHierarchySelectable.STRATEGY.OnlyField]: React.useCallback(
+      (nodeId) => {
+        const toSelectNode = nodes[nodeId];
 
-      // Unable to select field simultaneously with groups
-      if (!toSelectNode.isContainable) {
-        return toggleable.toggle([nodeId, ...selected.groups.map(_.get("nodeId"))]);
-      }
+        // Unable to select field simultaneously with groups
+        if (!toSelectNode.isContainable) {
+          return toggleable.toggle([nodeId, ...selected.fields.map(_.get("nodeId"))]);
+        }
+      },
+      [nodes, selected.fields, toggleable]
+    ),
 
-      // Unable to select group simultaneously with groups and fields
-      if (toSelectNode.isContainable) {
-        return toggleable.toggle([
-          nodeId,
-          ...selected.groups.map(_.get("nodeId")),
-          ...selected.fields.map(_.get("nodeId")),
-        ]);
-      }
-    },
-    [nodes, toggleable, selected]
-  );
+    [useTreeHierarchySelectable.STRATEGY.MultipleFieldsAndSingleGroup]: React.useCallback(
+      (nodeId) => {
+        const toSelectNode = nodes[nodeId];
+
+        // Unable to select field simultaneously with groups
+        if (!toSelectNode.isContainable) {
+          return toggleable.toggle([nodeId, ...selected.groups.map(_.get("nodeId"))]);
+        }
+
+        // Unable to select group simultaneously with groups and fields
+        if (toSelectNode.isContainable) {
+          return toggleable.toggle([
+            nodeId,
+            ...selected.groups.map(_.get("nodeId")),
+            ...selected.fields.map(_.get("nodeId")),
+          ]);
+        }
+      },
+      [nodes, selected.fields, selected.groups, toggleable]
+    ),
+  };
+
+  const toggle = strategies[strategyId];
 
   useDidUpdate(() => toggleable.clear(), [masterSchemaId]);
 
@@ -93,4 +112,9 @@ export const useTreeHierarchySelectable = (hierarchy) => {
     clear: toggleable.clear,
     getGroups,
   };
+};
+
+useTreeHierarchySelectable.STRATEGY = {
+  OnlyField: Symbol("Select only single field."),
+  MultipleFieldsAndSingleGroup: Symbol("Select multiple fields and single group."),
 };

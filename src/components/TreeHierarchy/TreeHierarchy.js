@@ -2,14 +2,11 @@ import "./styles.scss";
 
 import _ from "lodash/fp";
 import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 
 import { useTreeData } from "hooks/use-tree";
 import { useBoolean } from "hooks/use-boolean";
-import { useCallbackOnLoad } from "hooks/common";
 
-import appSlice from "app/slices/appSlice";
 import TreeRoot from "components/tree/tree-root";
 import SurveyModal from "features/Surveys/Components/SurveyModal";
 
@@ -18,9 +15,9 @@ import MSHTreeNodeList from "./components/MSHTreeNodeList";
 import MSHCreateElementForm from "./components/MSHCreateElementForm";
 import { ADD_FIELD, ADD_GROUP, addFieldAction, addGroupAction } from "./NodeAdditionActions";
 
-const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlice.actions;
+// const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlice.actions;
 
-const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
+// const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
 
 const getKey = ({ nodeId }) => nodeId;
 
@@ -55,7 +52,8 @@ const TreeHierarchy = (props) => {
     onCollapse,
     selectedIds,
     onSelect,
-    onCreatedElement,
+    elementCreationLoading,
+    onElementCreationSubmit,
     components: propComponents,
     onFieldCreate,
     onGroupCreate,
@@ -63,19 +61,10 @@ const TreeHierarchy = (props) => {
   } = props;
   const components = _.merge(defaultComponents, propComponents);
 
-  const dispatch = useDispatch();
-
   const tree = useTreeData({ items: [hierarchy], getKey, getChildren: getChildren(hierarchy) });
 
   const [modal, openModal, closeModal] = useBoolean(false);
   const [nodeDataToCreate, setNodeDataToCreate] = useState(null);
-
-  const finishElementCreation = () => {
-    closeModal();
-    setNodeDataToCreate(null);
-  };
-
-  const nodeAdditionLoading = useCallbackOnLoad(elementAdditionActionTypes, finishElementCreation, true);
 
   const onFieldCreatorClick = (nodeId) => {
     const parent = tree.getItem(nodeId).value;
@@ -96,33 +85,21 @@ const TreeHierarchy = (props) => {
 
     const { name } = submitted.values;
     const { parent, type } = nodeDataToCreate;
-    const payload = { name, parentId: parent.id };
 
-    switch (type) {
-      case ADD_FIELD:
-        onCreatedElement({ type, payload });
-        if (onFieldCreate) {
-          onFieldCreate(payload)
-        } else {
-          dispatch(addFieldToMasterSchemaRequest(payload));
-        }
-        break;
-      case ADD_GROUP:
-        onCreatedElement({ type, payload });
-        if (onGroupCreate) {
-          onGroupCreate(payload)
-        } else {
-          dispatch(addGroupToMasterSchemaRequest(payload));
-        }
-        break;
-      default:
-        throw new Error("Unexpected element addition type.");
-    }
+    onElementCreationSubmit({ type, name, parentId: parent.id });
   };
 
   // Tree needs to be updated only when items change. Or it'll cause a stack overflow
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => tree.update([hierarchy]), [hierarchy]);
+
+  React.useEffect(() => {
+    if (!elementCreationLoading) {
+      closeModal();
+      setNodeDataToCreate(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [elementCreationLoading]);
 
   return (
     <div className="tree-hierarchy" {...wrapperAttrs}>
@@ -147,7 +124,7 @@ const TreeHierarchy = (props) => {
       {nodeDataToCreate && (
         <SurveyModal isOpen={modal} title={creationTitle(nodeDataToCreate.type)} onClose={closeModal} actions={false}>
           <components.CreateElementForm
-            submitting={nodeAdditionLoading}
+            submitting={elementCreationLoading}
             placeholder={nodeDataToCreate.parent.path.join(".")}
             onSubmit={onCreateElementSubmit}
           />
@@ -162,7 +139,7 @@ TreeHierarchy.defaultProps = {
   selectedIds: [],
 
   onSelect: _.noop,
-  onCreatedElement: _.noop,
+  onElementCreationSubmit: _.noop,
 
   components: defaultComponents,
 };
@@ -177,7 +154,8 @@ TreeHierarchy.propTypes = {
   onSelect: PropTypes.func,
   selectedIds: PropTypes.arrayOf(PropTypes.string),
 
-  onCreatedElement: PropTypes.func,
+  onElementCreationSubmit: PropTypes.func,
+  elementCreationLoading: PropTypes.bool.isRequired,
 
   components: PropTypes.object,
 };

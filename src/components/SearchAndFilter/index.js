@@ -28,6 +28,7 @@ const SearchAndFilter = (props) => {
     placeholder,
     filterTabPosition,
     loading,
+    crossSelectingDisabled,
   } = props;
 
   const wrapperRefCalendarButton = useRef(null);
@@ -128,6 +129,7 @@ const SearchAndFilter = (props) => {
         filterOptionsDictionary={filterTypes}
         filterFunction={applyFilter}
         className={`${isCalendar ? 'filter-in-search-calendar' : 'filter-in-search'} ${filterTabPosition === 'right' ? 'filter-shorts-to-right' : ''}`}
+        crossSelectingDisabled={crossSelectingDisabled}
       />)}
       {isCalendar && (
         <span

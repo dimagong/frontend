@@ -1,15 +1,21 @@
 import FilterIcon from "../../../assets/img/svg/filter.svg";
 import FilterComponent from "./FilterComponent";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {getInitialFilter} from "./FilterHelper";
 import FilterShorts from "./FilterComponents/FilterShorts";
 import {useOutsideAlerter} from "../../../hooks/useOutsideAlerter";
 import PropTypes from "prop-types";
 import './styles.scss';
 
-const Filter = ({objectsToFilter, filterFunction, filterOptionsDictionary, ...attrs}) => {
-  const [filter, setFilter] = useState(getInitialFilter(Object.keys(filterOptionsDictionary), false))
+const Filter = ({objectsToFilter, filterFunction, filterOptionsDictionary, crossSelectingDisabled, savable, hasSearch, ...attrs}) => {
+  const filterSettings = {
+    savable: savable,
+    crossSelectingDisabled: crossSelectingDisabled,
+    hasSearch: hasSearch ?? [],
+  };
+  const [filter, setFilter] = useState(getInitialFilter(Object.keys(filterOptionsDictionary), filterSettings))
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState(false)
+  const [objectsBeforeFilter, setObjectsBeforeFilter] = useState(null);
 
   const wrapperRefFilterButton = useRef(null);
   const wrapperRefFilterBox = useRef(null);
@@ -19,6 +25,12 @@ const Filter = ({objectsToFilter, filterFunction, filterOptionsDictionary, ...at
       setIsFilterBoxOpen(false);
     }
   });
+
+  useEffect(() => {
+    if (objectsToFilter && !objectsBeforeFilter) {
+      setObjectsBeforeFilter(objectsToFilter);
+    }
+  }, [objectsToFilter])
 
   return (
     <span>
@@ -32,8 +44,8 @@ const Filter = ({objectsToFilter, filterFunction, filterOptionsDictionary, ...at
         {isFilterBoxOpen &&
           <span ref={wrapperRefFilterBox}>
             <FilterComponent
-              objectsToFilter={objectsToFilter}
-              filterFunction={() => {filterFunction(filter, objectsToFilter); setIsFilterBoxOpen(false)}}
+              objectsToFilter={objectsBeforeFilter}
+              filterFunction={() => {filterFunction(filter, objectsBeforeFilter); setIsFilterBoxOpen(false)}}
               filter={filter}
               setFilter={setFilter}
               filterOptionsDictionary={filterOptionsDictionary}
@@ -45,19 +57,14 @@ const Filter = ({objectsToFilter, filterFunction, filterOptionsDictionary, ...at
       <FilterShorts
         filter={filter}
         setFilter={setFilter}
-        objectsToFilter={objectsToFilter}
+        objectsToFilter={objectsBeforeFilter}
         filterFunction={filterFunction}
       />
     </span>
     )
 }
 
-Filter.defaultProps = {
-  objectsToFilter: [],
-};
-
 Filter.propTypes = {
-  objectsToFilter: PropTypes.array,
   filterFunction: PropTypes.func,
   filterOptionsDictionary: PropTypes.object,
 };

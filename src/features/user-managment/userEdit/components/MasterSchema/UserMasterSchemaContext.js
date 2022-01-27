@@ -10,12 +10,9 @@ import { selectdForms } from "app/selectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
 
-import { useDidMount } from "hooks/use-did-mount";
-import { useDidUpdate } from "hooks/use-did-update";
-
 import SearchAndFilter from "components/SearchAndFilter";
-import { useTreeHierarchyExpandable } from "components/TreeHierarchy";
 import UnapprovedFieldsComponent from "components/UnapprovedFieldsComponent";
+import { ADD_FIELD, ADD_GROUP, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
 import UserMasterSchemaHierarchy from "./UserMasterSchemaHierarchy";
 import { UserMasterSchemaProviderContext } from "./UserMasterSchemaProvider";
@@ -34,21 +31,22 @@ const useSearch = (hierarchy) => {
     hierarchy.setSearchParams({ name: searchValue });
   };
 
-  const onFilterSubmit = (filterOptions, filter) => {
-    if (!hierarchy.data) return;
+  const onFilterSubmit = (filter, filterHierarchy) => {
+    if (!filterHierarchy) return;
 
-    const filters = _.intersectionBy(
-      allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.data.name).length > 0),
-      filter.applications.map((item) => {
-        return { name: item };
-      }),
-      "name"
-    ).map((item) => item.id);
+    const dFormNames = allDForms.filter(
+      (item) => item.groups.filter((group) => group.name === filterHierarchy.name).length > 0
+    );
+    const selectedApplications = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("applications"))).selected;
+    const selectedApplicationsNames = selectedApplications.map((item) => ({ name: item }));
+    const intersectedApplicationNames = _.intersectionBy("name", dFormNames, selectedApplicationsNames);
+    const selectedApplicationIds = intersectedApplicationNames.map(_.get("id"));
 
-    hierarchy.setSearchParams({ application_ids: filters });
+    const selectedTypes = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("types"))).selected;
+    const onlyFiles = selectedTypes.includes("Files only");
+
+    hierarchy.setSearchParams({ application_ids: selectedApplicationIds, only_files: onlyFiles });
   };
-
-  const onFilterCancel = () => hierarchy.setSearchParams({ application_ids: [] });
 
   const getDateFormat = (date) => {
     const options = { day: "numeric", month: "numeric", year: "numeric" };
@@ -65,50 +63,70 @@ const useSearch = (hierarchy) => {
     hierarchy.setSearchParams({ date_begin: formattedDate[0], date_end: formattedDate[1] });
   };
 
-  useDidMount(() => {
+  React.useEffect(() => {
+    if (!hierarchy.data) return;
+
     dispatch(getdFormsRequest());
 
-    if (hierarchy.data?.name) {
-      setFilterTypes(
-        allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.data.name).length > 0)
-      );
-    }
-  });
+    setFilterTypes(
+      allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.data.name).length > 0)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hierarchy.data]);
 
   return {
     filterNames,
     onSearchSubmit,
     onFilterSubmit,
-    onFilterCancel,
     onCalendarChange,
   };
 };
 
 const UserMasterSchemaContext = () => {
-  const provided = React.useContext(UserMasterSchemaProviderContext);
-  const { userMS, selectable, onSelect } = provided;
+  const { userMS, userId, selectable, onSelect } = React.useContext(UserMasterSchemaProviderContext);
   const { hierarchy, unapproved, movementOptions } = userMS;
+
+  const search = useSearch(userMS.hierarchy);
   const expandable = useTreeHierarchyExpandable(hierarchy.data);
-  const { filterNames, onSearchSubmit, onFilterSubmit, onFilterCancel, onCalendarChange } = useSearch(hierarchy);
 
-  const onApprove = () => userMS.refresh();
+  const onApproveSubmit = ({ parentId, fieldsIds }) => {
+    userMS.approveUnapproved({ parentId, fieldsIds });
+  };
 
-  const onCreatedElement = () => hierarchy.refresh();
+  const onElementCreationSubmit = ({ type, ...creationData }) => {
+    switch (type) {
+      case ADD_FIELD:
+        userMS.createField(creationData);
+        break;
+      case ADD_GROUP:
+        userMS.createGroup(creationData);
+        break;
+      default:
+        throw new Error("Unexpected element addition type.");
+    }
+  };
 
-  useDidUpdate(() => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => void userMS.fetch(), [userId]);
+
+  React.useEffect(() => {
     if (!hierarchy.data || hierarchy.isLoading) return;
     hierarchy.isSearchParamsInitial() ? expandable.expandOnlyRoot() : expandable.expandAll();
-  }, [hierarchy]);
+    // expandable contains a state
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hierarchy.data, hierarchy.isLoading, hierarchy.searchParams]);
 
   return (
-    <Scrollbars autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
-      {unapproved.data && movementOptions.data && !_.isEmpty(unapproved.data) ? (
-        <UnapprovedFieldsComponent
-          fields={unapproved.data}
-          movementOptions={movementOptions.data}
-          onApprove={onApprove}
-        />
-      ) : null}
+    <Scrollbars autoHeight autoHeightMin={550} autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
+      <div className="position-relative zindex-2">
+        {unapproved.data && movementOptions.data && !_.isEmpty(unapproved.data) ? (
+          <UnapprovedFieldsComponent
+            fields={unapproved.data}
+            movementOptions={movementOptions.data}
+            onApproveSubmit={onApproveSubmit}
+          />
+        ) : null}
+      </div>
 
       <div className="position-relative">
         <div
@@ -117,14 +135,15 @@ const UserMasterSchemaContext = () => {
         >
           <SearchAndFilter
             placeholder=""
-            handleSearch={onSearchSubmit}
-            onCancelFilter={onFilterCancel}
-            filterTypes={{ applications: filterNames }}
-            applyFilter={onFilterSubmit}
-            onCalendarChange={onCalendarChange}
+            handleSearch={search.onSearchSubmit}
+            filterTypes={{ applications: search.filterNames, types: ["Files only"] }}
+            applyFilter={search.onFilterSubmit}
+            onCalendarChange={search.onCalendarChange}
             isCalendar
             hasIcon
             filterTabPosition={"left"}
+            crossSelectingDisabled
+            dataToFilter={userMS.hierarchy.data}
           />
 
           {hierarchy && (
@@ -150,7 +169,8 @@ const UserMasterSchemaContext = () => {
           onCollapse={expandable.collapse}
           selectedIds={selectable.keys}
           onSelect={onSelect}
-          onCreatedElement={onCreatedElement}
+          elementCreationLoading={userMS.elementCreationLoading}
+          onElementCreationSubmit={onElementCreationSubmit}
         />
       </div>
     </Scrollbars>

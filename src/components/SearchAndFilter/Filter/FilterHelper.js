@@ -15,7 +15,7 @@ export const filterOptionsToText = (options) => {
 
   export const filterToText = (currFilter, filterTypes) => {
     let filterText = {}
-    filterTypes.forEach(item => {
+    filterTypes.forEach((item, key) => {
       if (item !== 'type') {
         filterText[item] = filterOptionsToText(currFilter[item])
       }
@@ -36,11 +36,12 @@ export const filterOptionsToText = (options) => {
       </p>
   }
 
-  export const getInitialFilter = (filterOptionsList, savable) => {
+  export const getInitialFilter = (filterOptionsList, filterSettings) => {
     let initialFilter = {
       selectedFilters: [],
       selectedOptionKey: 0,
-      savable: savable,
+      savable: filterSettings.savable,
+      crossSelectingDisabled: filterSettings.crossSelectingDisabled,
     };
 
     if (filterOptionsList) {
@@ -52,7 +53,7 @@ export const filterOptionsToText = (options) => {
             selected: [],
             settings: {
               addBySelect: true, // if true then by selecting filter, it will be added, otherwise it will be removed
-              searchable: false
+              searchable: !!filterSettings.hasSearch.find((elem, key) => elem === item)
             }
           }
         )

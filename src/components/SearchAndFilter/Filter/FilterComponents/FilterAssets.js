@@ -1,7 +1,7 @@
 import React from "react";
 
 export const FilterCrossIcon = ({filter, currOption}) => {
-  const currSelectedOption = filter.selectedFilters.find(item => item.key === filter.selectedOptionKey);
+  const currSelectedOption = filter.selectedFilters.find((item, key) => item.key === filter.selectedOptionKey);
   return <svg style={!currSelectedOption.settings.addBySelect
     && !currSelectedOption.selected.find(item => item === currOption) ? {fill: '#dc3545', whiteSpace: 'pre', borderRadius: '6px'} : {fill: '#95989a', whiteSpace: 'pre', borderRadius: '6px'}}
             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 12" width="14" height="14">
@@ -10,7 +10,7 @@ export const FilterCrossIcon = ({filter, currOption}) => {
 }
 
 export const FilterCheckIcon = ({filter, currOption}) => {
-  const currSelectedOption = filter.selectedFilters.find(item => item.key === filter.selectedOptionKey);
+  const currSelectedOption = filter.selectedFilters.find((item, key) => item.key === filter.selectedOptionKey);
   return <svg style={currSelectedOption.settings.addBySelect
     && currSelectedOption.selected.find(item => item === currOption) ? {fill: '#7367f0', whiteSpace: 'pre', borderRadius: '6px'} : {fill: '#95989a', whiteSpace: 'pre', borderRadius: '6px'}}
               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 12" width="14" height="14">

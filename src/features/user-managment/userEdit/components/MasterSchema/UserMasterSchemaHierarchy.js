@@ -2,13 +2,27 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Spinner } from "reactstrap";
 
-import TreeHierarchy from "components/TreeHierarchy";
+import { TreeHierarchy } from "components/TreeHierarchy";
 
 const UserMasterSchemaHierarchy = (props) => {
-  const { isLoading, hierarchy, expandedIds, onExpand, onCollapse, selectedIds, onSelect, onCreatedElement } = props;
+  const {
+    isLoading,
+    hierarchy,
+    expandedIds,
+    onExpand,
+    onCollapse,
+    selectedIds,
+    onSelect,
+    elementCreationLoading,
+    onElementCreationSubmit,
+  } = props;
 
   if (!hierarchy && isLoading) {
-    return <Spinner />;
+    return (
+      <div className="d-flex justify-content-center align-items-center">
+        <Spinner />
+      </div>
+    );
   }
 
   if (!hierarchy) {
@@ -27,7 +41,8 @@ const UserMasterSchemaHierarchy = (props) => {
       onCollapse={onCollapse}
       selectedIds={selectedIds}
       onSelect={onSelect}
-      onCreatedElement={onCreatedElement}
+      elementCreationLoading={elementCreationLoading}
+      onElementCreationSubmit={onElementCreationSubmit}
     />
   );
 };
@@ -43,7 +58,8 @@ UserMasterSchemaHierarchy.propTypes = {
   onSelect: PropTypes.func.isRequired,
   selectedIds: PropTypes.arrayOf(PropTypes.string).isRequired,
 
-  onCreatedElement: PropTypes.func.isRequired,
+  elementCreationLoading: PropTypes.bool.isRequired,
+  onElementCreationSubmit: PropTypes.func.isRequired,
 };
 
 export default UserMasterSchemaHierarchy;
