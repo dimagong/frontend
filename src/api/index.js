@@ -70,7 +70,8 @@ export const requestLayout = async (url, method, data) => {
   try {
     const result = await instance(method === "GET" ? getRequestInstancePayload : defaultRequestInstancePayload);
 
-    return result.data.data;
+    // Remove second part after getResourcePreviousVersions request would be fixed and would have a data object in its response
+    return result.data.data || result.data;
   } catch (err) {
     return err.response.data.error;
   }

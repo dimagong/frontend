@@ -5,6 +5,7 @@ let id = 0;
 const getNode = (nodeId, childrenStructure = [], { isMemberFirmGroup } = { isMemberFirmGroup: false }) => ({
   id: id++,
   nodeId,
+  name: nodeId,
   childrenStructure,
   groups: childrenStructure.filter(_.get("isContainable")).map(_.get("nodeId")),
   fields: childrenStructure.filter(_.negate(_.get("isContainable"))).map(_.get("nodeId")),

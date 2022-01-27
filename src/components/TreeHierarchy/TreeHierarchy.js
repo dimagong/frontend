@@ -55,6 +55,8 @@ const TreeHierarchy = (props) => {
     elementCreationLoading,
     onElementCreationSubmit,
     components: propComponents,
+    onFieldCreate,
+    onGroupCreate,
     ...wrapperAttrs
   } = props;
   const components = _.merge(defaultComponents, propComponents);

@@ -110,6 +110,7 @@ export const useTreeHierarchySelectable = (
     toggle,
     keys: toggleable.keys,
     clear: toggleable.clear,
+    getGroups,
   };
 };
 
