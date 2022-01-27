@@ -23,9 +23,9 @@ const getKey = ({ nodeId }) => nodeId;
 
 const getChildren =
   (hierarchy) =>
-  ({ isContainable, fields, groups }) => {
-    return isContainable ? [...fields, ...groups].map((nodeId) => hierarchy.children[nodeId]) : [];
-  };
+    ({ isContainable, fields, groups }) => {
+      return isContainable ? [...fields, ...groups].map((nodeId) => hierarchy.children[nodeId]) : [];
+    };
 
 const creationTitle = (type) => {
   switch (type) {
@@ -55,8 +55,6 @@ const TreeHierarchy = (props) => {
     elementCreationLoading,
     onElementCreationSubmit,
     components: propComponents,
-    onFieldCreate,
-    onGroupCreate,
     ...wrapperAttrs
   } = props;
   const components = _.merge(defaultComponents, propComponents);
