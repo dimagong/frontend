@@ -3,8 +3,8 @@ import "./styles.scss";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import { get, isEmpty } from "lodash/fp";
+import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useMemo, useRef, useState } from "react";
 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
@@ -15,7 +15,6 @@ import MSEButton from "features/MasterSchema/share/mse-button";
 
 import { useDidMount } from "hooks/use-did-mount";
 import { useDidUpdate } from "hooks/use-did-update";
-
 
 import SearchAndFilter from "components/SearchAndFilter";
 import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
@@ -38,11 +37,11 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
 
   const expandable = useTreeHierarchyExpandable(hierarchy);
 
-  const isSearchingRef = useRef(false);
   const [filterTypes, setFilterTypes] = useState([]);
   const filterNames = useMemo(() => filterTypes.map(get("name")), [filterTypes]);
 
   const elementCreationLoading = useSelector(createLoadingSelector(elementAdditionActionTypes, true));
+  const hierarchyLoading = useSelector(createLoadingSelector([getMasterSchemaHierarchyRequest.type], true));
 
   const onElementCreationSubmit = ({ type, ...creationData }) => {
     switch (type) {
@@ -93,6 +92,11 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
     dispatch(setMasterSchemaSearch({ ...search, dates: formattedDate }));
   };
 
+  const isSearchEmpty = React.useCallback(
+    () => isEmpty(search.value) && isEmpty(search.filters) && !search.dates.some(Boolean),
+    [search.dates, search.filters, search.value]
+  );
+
   useDidMount(() => {
     dispatch(getdFormsRequest());
 
@@ -103,16 +107,16 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
     }
   });
 
-  useDidUpdate(() => (isSearchingRef.current = true), [search]);
-
-  useDidUpdate(() => {
-    if (isSearchingRef.current && hierarchy) {
-      isSearchingRef.current = false;
-      isEmpty(search.value) ? expandable.expandOnlyRoot() : expandable.expandAll();
-    }
+  React.useEffect(() => {
+    if (!hierarchy || hierarchyLoading) return;
+    isSearchEmpty() ? expandable.expandOnlyRoot() : expandable.expandAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hierarchy]);
 
-  useDidUpdate(() => void dispatch(getMasterSchemaHierarchyRequest({ id: selectedId })), [search]);
+  useDidUpdate(() => {
+    dispatch(getMasterSchemaHierarchyRequest({ id: selectedId }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
 
   return (
     <div className="position-relative">
