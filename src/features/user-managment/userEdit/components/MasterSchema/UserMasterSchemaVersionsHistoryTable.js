@@ -11,7 +11,7 @@ const titleStyle = {
   color: "#707070",
 };
 
-const UserMasterSchemaVersionsHistoryTable = ({ userId, fieldId }) => {
+const UserMasterSchemaVersionsHistoryTable = React.memo(({ userId, fieldId }) => {
   const versionsFactory = () => masterSchemaApi.getVersionsByFieldAndUser({ userId, fieldId });
 
   return (
@@ -26,7 +26,7 @@ const UserMasterSchemaVersionsHistoryTable = ({ userId, fieldId }) => {
       </Card>
     </>
   );
-};
+});
 
 UserMasterSchemaVersionsHistoryTable.propTypes = {
   userId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
