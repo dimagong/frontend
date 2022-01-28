@@ -157,6 +157,8 @@ const useMasterSchemaElementCreator = () => {
   };
 };
 
+// useful logic - do not remove
+// eslint-disable-next-line no-unused-vars
 const useMasterSchemaMovementOptions = () => {
   const { data, isLoading, run } = useAsync();
 
@@ -178,6 +180,8 @@ const useMasterSchemaMovementOptions = () => {
   return { data, isLoading, fetch };
 };
 
+// useful logic - do not remove
+// eslint-disable-next-line no-unused-vars
 const useUserMasterSchemaUnapproved = () => {
   const { data, isLoading, run } = useAsync();
 
@@ -222,50 +226,50 @@ export const useUserMasterSchema = (userId) => {
   const fieldsApproving = useMasterSchemaApproveUnapprovedFields();
 
   const hierarchy = useUserMasterSchemaHierarchy(userId);
-  const unapproved = useUserMasterSchemaUnapproved();
-  const movementOptions = useMasterSchemaMovementOptions();
+  // const unapproved = useUserMasterSchemaUnapproved();
+  // const movementOptions = useMasterSchemaMovementOptions();
 
   const fetch = React.useCallback(() => {
-    hierarchy.fetch({ show_empty_folders: true }).then(({ masterSchemaId }) => {
-      unapproved.fetch(masterSchemaId);
-      movementOptions.fetch(masterSchemaId);
-    });
-  }, [hierarchy, movementOptions, unapproved]);
+    hierarchy.fetch({ show_empty_folders: true });
+    // imported logic of unapproved
+    // .then(({ masterSchemaId }) => {
+    //   unapproved.fetch(masterSchemaId);
+    //   movementOptions.fetch(masterSchemaId);
+    // });
+  }, [hierarchy]);
 
   const createField = React.useCallback(
     (creationData) => {
-      elementCreator
-        .createField(creationData)
-        .then(() => hierarchy.fetch())
-        .then(({ masterSchemaId }) => movementOptions.fetch(masterSchemaId));
+      elementCreator.createField(creationData).then(() => hierarchy.fetch());
+      // imported logic of unapproved
+      // .then(({ masterSchemaId }) => movementOptions.fetch(masterSchemaId))
     },
-    [elementCreator, hierarchy, movementOptions]
+    [elementCreator, hierarchy]
   );
 
   const createGroup = React.useCallback(
     (creationData) => {
-      elementCreator
-        .createGroup(creationData)
-        .then(() => hierarchy.fetch())
-        .then(({ masterSchemaId }) => movementOptions.fetch(masterSchemaId));
+      elementCreator.createGroup(creationData).then(() => hierarchy.fetch());
+      // imported logic of unapproved
+      // .then(({ masterSchemaId }) => movementOptions.fetch(masterSchemaId))
     },
-    [elementCreator, hierarchy, movementOptions]
+    [elementCreator, hierarchy]
   );
 
-  const approveUnapproved = React.useCallback(
-    (approveData) => {
-      fieldsApproving
-        .approve(approveData)
-        .then(() => hierarchy.fetch())
-        .then(({ masterSchemaId }) => unapproved.fetch(masterSchemaId));
-    },
-    [fieldsApproving, hierarchy, unapproved]
-  );
+  // const approveUnapproved = React.useCallback(
+  //   (approveData) => {
+  //     fieldsApproving
+  //       .approve(approveData)
+  //       .then(() => hierarchy.fetch())
+  //       .then(({ masterSchemaId }) => unapproved.fetch(masterSchemaId));
+  //   },
+  //   [fieldsApproving, hierarchy, unapproved]
+  // );
 
   return {
     hierarchy,
-    unapproved,
-    movementOptions,
+    // unapproved,
+    // movementOptions,
 
     fetch,
 
@@ -273,7 +277,7 @@ export const useUserMasterSchema = (userId) => {
     createGroup,
     elementCreationLoading: elementCreator.isLoading,
 
-    approveUnapproved,
+    // approveUnapproved,
     fieldsApprovingLoading: fieldsApproving.isLoading,
   };
 };

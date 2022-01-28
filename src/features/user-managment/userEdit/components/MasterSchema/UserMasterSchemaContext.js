@@ -11,7 +11,6 @@ import { selectdForms } from "app/selectors";
 import MSEButton from "features/MasterSchema/share/mse-button";
 
 import SearchAndFilter from "components/SearchAndFilter";
-import UnapprovedFieldsComponent from "components/UnapprovedFieldsComponent";
 import { ADD_FIELD, ADD_GROUP, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
 import UserMasterSchemaHierarchy from "./UserMasterSchemaHierarchy";
@@ -84,14 +83,10 @@ const useSearch = (hierarchy) => {
 
 const UserMasterSchemaContext = () => {
   const { userMS, userId, selectable, onSelect } = React.useContext(UserMasterSchemaProviderContext);
-  const { hierarchy, unapproved, movementOptions } = userMS;
+  const { hierarchy } = userMS;
 
   const search = useSearch(userMS.hierarchy);
   const expandable = useTreeHierarchyExpandable(hierarchy.data);
-
-  const onApproveSubmit = ({ parentId, fieldsIds }) => {
-    userMS.approveUnapproved({ parentId, fieldsIds });
-  };
 
   const onElementCreationSubmit = ({ type, ...creationData }) => {
     switch (type) {
@@ -118,16 +113,6 @@ const UserMasterSchemaContext = () => {
 
   return (
     <Scrollbars autoHeight autoHeightMin={550} autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
-      <div className="position-relative zindex-2">
-        {unapproved.data && movementOptions.data && !_.isEmpty(unapproved.data) ? (
-          <UnapprovedFieldsComponent
-            fields={unapproved.data}
-            movementOptions={movementOptions.data}
-            onApproveSubmit={onApproveSubmit}
-          />
-        ) : null}
-      </div>
-
       <div className="position-relative">
         <div
           className={hierarchy ? "position-sticky zindex-1" : ""}
