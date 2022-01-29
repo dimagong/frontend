@@ -28,6 +28,11 @@ const {
   uploadResourceSuccess,
   uploadResourceRequest,
   uploadResourceError,
+
+  removeResourceTemplateRequest,
+  removeResourceTemplateSuccess,
+  removeResourceTemplateError,
+
 }  = appSlice.actions;
 
 function* getResourceManagersList() {
@@ -74,7 +79,7 @@ function* createResourceManagerGroup(payload) {
 
 function* getResourcePreviousVersions(payload) {
   const response = yield call(resourceManagerApi.getResourcePreviousVersions, payload);
-  console.log("res", response);
+
   if (response?.message) {
     yield put(getResourcePreviousVersionsError(response.message))
   } else {
@@ -93,6 +98,17 @@ function* uploadResource(payload) {
   }
 }
 
+function* removeResourceTemplate({ payload }) {
+  const response = yield call(resourceManagerApi.removeResource, payload.fileId);
+
+  if (response?.message) {
+    yield put(removeResourceTemplateError(response.message))
+  } else {
+    yield put(getResourcePreviousVersionsRequest(payload.resourceManagerFieldId));
+    yield put(removeResourceTemplateSuccess(response))
+  }
+}
+
 export default function* () {
   yield all([
     takeLatest(getResourceManagersListRequest.type, getResourceManagersList),
@@ -101,5 +117,6 @@ export default function* () {
     takeLatest(createResourceManagerGroupRequest.type, createResourceManagerGroup),
     takeLatest(getResourcePreviousVersionsRequest.type, getResourcePreviousVersions),
     takeLatest(uploadResourceRequest.type, uploadResource),
+    takeLatest(removeResourceTemplateRequest.type, removeResourceTemplate),
   ]);
 }

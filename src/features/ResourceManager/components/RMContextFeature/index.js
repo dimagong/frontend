@@ -1,25 +1,17 @@
 import React, { useState }from 'react';
 
-import {SearchOutlined} from "@material-ui/icons";
-
-import Eye from './eye.png'
-import Link from './link.png'
-
-
 import SharedWith from "./components/SharedWith";
 import PreviousVersions from "./components/PreviousVersions";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 import Folders from "components/Folders";
 
 import './styles.scss';
-import {Scrollbars} from "react-custom-scrollbars";
-import ListItem from "../../../home/ContextSearch/components/ListItem";
-import {Col} from "reactstrap";
-
 
 const RMContextFeatureComponent = ({
   connectionsAndVersions,
   onResourceUpload,
+  onTemplateDownload,
+  onTemplateRemove,
 }) => {
 
   const dumbData = [
@@ -45,9 +37,9 @@ const RMContextFeatureComponent = ({
 
   return (
     <ContextFeatureTemplate contextFeatureTitle="File information">
-      {/*<div style={{fontSize: "20px", color:"#707070", marginTop: "-20px", marginBottom: "40px"}}>*/}
-      {/*  ValidPath / Contracts / AR Agreement.docx*/}
-      {/*</div>*/}
+      <div style={{fontSize: "20px", color:"#707070", marginTop: "-20px", marginBottom: "40px"}}>
+        {connectionsAndVersions?.breadcrumbs?.join(" / ")}
+      </div>
       <div>
         <Folders onFolderSelect={handleFolderSelect} folders={dumbData} selectedFolder={selectedFolder}/>
       </div>
@@ -57,6 +49,8 @@ const RMContextFeatureComponent = ({
           <PreviousVersions
             onResourceUpload={onResourceUpload}
             previousVersions={connectionsAndVersions?.versions || []}
+            onTemplateDownload={onTemplateDownload}
+            onTemplateRemove={onTemplateRemove}
           />
         ) : (
           <SharedWith

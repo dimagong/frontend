@@ -211,7 +211,7 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                           </Col>
                         </Row>
                         <div className="search-content-footer">
-                          {selectedNavItem.id !== "MasterSchema" ? (
+                          {!["MasterSchema", "resourceManager"].includes(selectedNavItem.id) ? (
                             <Button
                               onClick={() => {handleAdd()}}
                               color="primary"
