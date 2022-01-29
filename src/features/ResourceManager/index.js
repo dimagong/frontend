@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import RMContextComponent from "./components/RMContext";
 import RMContextFeatureComponent from "./components/RMContextFeature";
+import instance from "api";
+import { downloadBlob } from "services/files.service";
 
 import {
   selectSelectedResourceManager,
@@ -22,6 +24,7 @@ const {
   createResourceManagerGroupRequest,
   getResourcePreviousVersionsRequest,
   uploadResourceRequest,
+  removeResourceTemplateRequest,
 } = appSlice.actions;
 
 const createResourceManagerElementTypes = [
@@ -75,14 +78,28 @@ const ResourceManager = () => {
   };
 
   const handleResourceUpload = (resource) => {
-    console.log("submitted", resource);
-
     const dataToSubmit = new FormData();
 
     dataToSubmit.append("file", resource);
     dataToSubmit.append("field_id", selectableNodes.selected.field.id);
 
     dispatch(uploadResourceRequest(dataToSubmit))
+  };
+
+  const handleResourceTemplateDownload = (id, name) => {
+    // This request doesn't written in normal way, cause it got no
+    // data to store in redux and also needs a different responseType
+    instance({
+      url: `api/resource-manager-field-file/${id}/download`,
+      method: "GET",
+      responseType: "blob",
+    }).then((response) => {
+      downloadBlob(response.data, name)
+    });
+  };
+
+  const handleResourceTemplateRemove = (id) => {
+    dispatch(removeResourceTemplateRequest({fileId: id, resourceManagerFieldId: selectableNodes.selected.node.id}))
   };
 
   useEffect(() => {
@@ -111,6 +128,8 @@ const ResourceManager = () => {
         <RMContextFeatureComponent
           onResourceUpload={handleResourceUpload}
           connectionsAndVersions={resourceConnectionsAndVersions}
+          onTemplateDownload={handleResourceTemplateDownload}
+          onTemplateRemove={handleResourceTemplateRemove}
         />
       )}
     </div>

@@ -42,6 +42,10 @@ const resourceManagerReducer = {
     state.error = null;
   },
 
+  removeResourceTemplateSuccess: (state) => {
+
+  },
+
   setSelectedResourceManager: (state, { payload }) => {
     state.resourceManager.selectedResourceManager = payload;
   },

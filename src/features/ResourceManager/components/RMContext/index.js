@@ -46,6 +46,7 @@ const RMContextComponent = ({
           isCalendar
           hasIcon
           filterTabPosition={"left"}
+          hideFilter
         />
 
         {hierarchy && (

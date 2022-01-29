@@ -7,6 +7,7 @@ import {
   createFolderInResourceManagerHierarchy,
   getResourcePreviousVersions,
   uploadResourceUrl,
+  removeResourceTemplateUrl,
 } from './contants'
 
 const resourceManagerApi = {
@@ -34,6 +35,10 @@ const resourceManagerApi = {
   async uploadResource({ payload }) {
     return await requestLayout(uploadResourceUrl, "POST", payload)
   },
+
+  async removeResource(fileId) {
+    return await requestLayout(removeResourceTemplateUrl(fileId), "DELETE")
+  }
 };
 
 export default resourceManagerApi;

@@ -29,6 +29,7 @@ const SearchAndFilter = (props) => {
     filterTabPosition,
     loading,
     crossSelectingDisabled,
+    hideFilter,
   } = props;
 
   const wrapperRefCalendarButton = useRef(null);
@@ -119,18 +120,22 @@ const SearchAndFilter = (props) => {
           disabled={loading}
         />
       </div>
-      {loading
-        ? (<span className={`filter-icon member-firm-filter-icon ${isCalendar ? 'small-filter-icon' : 'large-filter-icon'}`}>
+      {loading ? (
+        <span className={`filter-icon member-firm-filter-icon ${isCalendar ? 'small-filter-icon' : 'large-filter-icon'}`}>
           <Spinner/>
-        </span>)
-        : (
-      <Filter
-        objectsToFilter={dataToFilter}
-        filterOptionsDictionary={filterTypes}
-        filterFunction={applyFilter}
-        className={`${isCalendar ? 'filter-in-search-calendar' : 'filter-in-search'} ${filterTabPosition === 'right' ? 'filter-shorts-to-right' : ''}`}
-        crossSelectingDisabled={crossSelectingDisabled}
-      />)}
+        </span>
+      ) : (
+        !hideFilter && (
+          <Filter
+            objectsToFilter={dataToFilter}
+            filterOptionsDictionary={filterTypes}
+            filterFunction={applyFilter}
+            className={`${isCalendar ? 'filter-in-search-calendar' : 'filter-in-search'} ${filterTabPosition === 'right' ? 'filter-shorts-to-right' : ''}`}
+            crossSelectingDisabled={crossSelectingDisabled}
+          />
+        )
+      )}
+
       {isCalendar && (
         <span
           className={'calendar-container'}
