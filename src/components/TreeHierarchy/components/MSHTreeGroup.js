@@ -50,7 +50,47 @@ const MSHTreeGroup = (props) => {
   return (
     <MSHTreeNode
       className={className}
-      name={name}
+      name={
+        <div className="d-flex w-25" >
+          <div className="tree-hierarchy__name d-inline-block pr-3 position-relative" title={name}>
+            {name}
+            <div className="position-absolute" style={{ right: "1rem", top: "50%", transform: "translateY(-50%)" }} ref={popupRef}>
+              <button
+                type="button"
+                className="tree-hierarchy__popup-accessor d-flex justify-content-center align-items-center"
+                aria-label="Create element or category"
+                onClick={stopPropagation(togglePopup)}
+              >
+                <AddBox fontSize={"inherit"} />
+              </button>
+
+              <Fade
+                className="tree-hierarchy__popup bg-white d-flex justify-content-center flex-column position-absolute"
+                in={popup}
+                mountOnEnter
+                unmountOnExit
+              >
+                <button
+                  type="button"
+                  className="tree-hierarchy__node-creator"
+                  aria-label="Create category"
+                  onClick={stopPropagation(onGroupCreatorClick)}
+                >
+                  Category
+                </button>
+                <button
+                  type="button"
+                  className="tree-hierarchy__node-creator"
+                  aria-label="Create element"
+                  onClick={stopPropagation(onFieldCreatorClick)}
+                >
+                  Element
+                </button>
+              </Fade>
+            </div>
+          </div>
+        </div>
+      }
       date={date}
       selected={selected}
       isLocked={isLocked}
@@ -64,42 +104,6 @@ const MSHTreeGroup = (props) => {
           >
             {expanded ? <RemoveSharp fontSize={"inherit"} /> : <AddSharp fontSize={"inherit"} />}
           </button>
-        </div>
-      }
-      append={
-        <div ref={popupRef}>
-          <button
-            type="button"
-            className="tree-hierarchy__popup-accessor"
-            aria-label="Create element or category"
-            onClick={stopPropagation(togglePopup)}
-          >
-            <AddBox fontSize={"inherit"} />
-          </button>
-
-          <Fade
-            className="tree-hierarchy__popup bg-white d-flex justify-content-center flex-column position-absolute"
-            in={popup}
-            mountOnEnter
-            unmountOnExit
-          >
-            <button
-              type="button"
-              className="tree-hierarchy__node-creator"
-              aria-label="Create category"
-              onClick={stopPropagation(onGroupCreatorClick)}
-            >
-              Category
-            </button>
-            <button
-              type="button"
-              className="tree-hierarchy__node-creator"
-              aria-label="Create element"
-              onClick={stopPropagation(onFieldCreatorClick)}
-            >
-              Element
-            </button>
-          </Fade>
         </div>
       }
       onSelect={onSelect}

@@ -28,7 +28,7 @@ const MSHTreeNode = (props) => {
       <div className="tree-hierarchy__node-content d-flex align-items-center">
         {prepend}
 
-        <div className="tree-hierarchy__name">{name}</div>
+        {name}
 
         {append}
 
@@ -69,7 +69,7 @@ const MSHTreeNode = (props) => {
           )}
 
           {isLocked ? (
-            <div className="tree-hierarchy__icon px-1">
+            <div className="tree-hierarchy__icon pr-1">
               <Lock fontSize="inherit" />
             </div>
           ) : null}
@@ -91,7 +91,10 @@ MSHTreeNode.defaultProps = {
 };
 
 MSHTreeNode.propTypes = {
-  name: PropTypes.string.isRequired,
+  name: PropTypes.oneOfType([
+    PropTypes.node,
+    PropTypes.string,
+  ]).isRequired,
   date: PropTypes.string.isRequired,
 
   isLocked: PropTypes.bool.isRequired,

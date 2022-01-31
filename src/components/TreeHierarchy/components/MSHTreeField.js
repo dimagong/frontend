@@ -47,13 +47,13 @@ const MSHTreeField = (props) => {
       return <TypedValuePreview type="files" value={files} isVertical={false} />;
     }
 
-    return null;
+    return "n/a";
   };
 
   return (
     <MSHTreeNode
       className={className}
-      name={name}
+      name={<div className="tree-hierarchy__name w-25" title={name}>{name}</div>}
       date={date}
       selected={selected}
       isLocked={isLocked}
@@ -65,7 +65,7 @@ const MSHTreeField = (props) => {
           <FiberManualRecord fontSize={"inherit"} />
         </div>
       }
-      append={<div className="mx-auto px-1">{renderValue()}</div>}
+      append={<div className="tree-hierarchy__value px-1">{renderValue()}</div>}
       children={children}
     />
   );
