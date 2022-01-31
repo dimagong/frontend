@@ -3,6 +3,7 @@ import { PropTypes } from "prop-types";
 import { ExternalLink } from "react-feather";
 
 import { useBoolean } from "hooks/use-boolean";
+import { stopPropagation } from "utility/event-decorators";
 
 import SurveyModal from "features/Surveys/Components/SurveyModal";
 
@@ -26,7 +27,7 @@ const ValuePreview = ({ value, length }) => {
   }
 
   return isLong(length) ? (
-    <button className="btn d-flex align-items-center" style={extendedButtonStyle} onClick={openExtendedModal}>
+    <button className="btn d-flex align-items-center" style={extendedButtonStyle} onClick={stopPropagation(openExtendedModal)}>
       <div>This is a long text</div>
       <ExternalLink style={{ marginLeft: "5px" }} size="12" />
 
