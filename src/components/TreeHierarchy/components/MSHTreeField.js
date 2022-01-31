@@ -47,7 +47,7 @@ const MSHTreeField = (props) => {
       return <TypedValuePreview type="files" value={files} isVertical={false} />;
     }
 
-    return "n/a";
+    return <TypedValuePreview type={null} value={null} isVertical={false} />;
   };
 
   return (
@@ -57,8 +57,8 @@ const MSHTreeField = (props) => {
       date={date}
       selected={selected}
       isLocked={isLocked}
-      applicationsCount={applicationsCount}
-      versionsCount={versionsCount}
+      applicationsCount={applicationsCount > 0 ? applicationsCount : null}
+      versionsCount={versionsCount > 0 ? versionsCount : null}
       onSelect={onSelect}
       prepend={
         <div className="tree-hierarchy__mark-icon d-flex justify-content-center align-items-center">
