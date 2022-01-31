@@ -6,7 +6,8 @@ import {
   Col,
   TabPane,
   TabContent,
-} from "reactstrap"
+} from "reactstrap";
+import { Scrollbars } from "react-custom-scrollbars";
 
 import Select from 'react-select';
 
@@ -41,6 +42,8 @@ import {
 
 import appSlice from 'app/slices/appSlice'
 import { CustomTable } from './components/CustomTable/CustomTable';
+
+import { INPUT_HEADER_HEIGHT } from "constants/header";
 
 import { UserMasterSchemaContext, UserMasterSchemaContextFeature } from "./components/MasterSchema";
 import UserMasterSchemaProvider from "./components/MasterSchema/UserMasterSchemaProvider";
@@ -245,125 +248,133 @@ const UserEdit = () => {
     <Row className="user-managment">
       <UserMasterSchemaProvider userId={manager.id} setContextFeature={setMasterSchemaContextFeature}>
         <Col sm="12" md="12" lg="12" xl="6" className="pb-3">
-          <UserCardTemplate
-            className="mb-2"
-            oneColumn={false}
-            onClick={() => {}}
-            onEdit={handleEdit}
-            {...manager}
-            editable
-          />
-
-          <CustomTabs
-            active={activeModuleTab}
-            onChange={handleChangeTab}
-            tabs={tabs}
-          />
-          <TabContent activeTab={activeModuleTab}>
-            <TabPane tabId="Activity">
-              <Timeline
-                managerId={manager.id}
-                loadMoreData={loadMoreData}
-                activity={activity}
+          <Scrollbars autoHeight autoHeightMin={550} autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
+            <div style={{paddingRight: "15px"}}>
+              <UserCardTemplate
+                className="mb-2"
+                oneColumn={false}
+                onClick={() => {}}
+                onEdit={handleEdit}
+                {...manager}
+                editable
               />
-            </TabPane>
-            <TabPane tabId="Master Schema">
-              <Card>
-                <CardBody>
-                  {activeModuleTab === "Master Schema" ? <UserMasterSchemaContext key={manager.id} /> : null}
-                </CardBody>
-              </Card>
-            </TabPane>
-            <TabPane tabId="Applications">
-              <Card>
-                <CardBody>
-                  <Row className="mx-0" col="12">
-                    <Col md="12" className="ml-0 pl-0">
 
-                      <CustomTable
-                        handleRowClick={handleRowClick}
-                        selectedManager={selectedManager}
-                        selectedAssignedSurvey={selectedAssignedSurvey}
-                      />
+              <CustomTabs
+                active={activeModuleTab}
+                onChange={handleChangeTab}
+                tabs={tabs}
+              />
+              <TabContent activeTab={activeModuleTab}>
+                <TabPane tabId="Activity">
+                  <Timeline
+                    managerId={manager.id}
+                    loadMoreData={loadMoreData}
+                    activity={activity}
+                  />
+                </TabPane>
+                <TabPane tabId="Master Schema">
+                  <Card>
+                    <CardBody>
+                      {activeModuleTab === "Master Schema" ? <UserMasterSchemaContext key={manager.id} /> : null}
+                    </CardBody>
+                  </Card>
+                </TabPane>
+                <TabPane tabId="Applications">
+                  <Card>
+                    <CardBody>
+                      <Row className="mx-0" col="12">
+                        <Col md="12" className="ml-0 pl-0">
 
-                    </Col>
-                    <Col md="12" className="ml-0 pl-0">
-                      {!!tableData.length ? (
-                        <div className="application-create-container">
-                          <div className="application-create-container_select">
-                            <Select
-                              options={selectOptions}
-                              value={applicationAddSelectValue}
-                              onChange={setApplicationAddSelectValue}
-                              styles={selectStyles}
-                              isSearchable={false}
-                            />
-                          </div>
-                          <button onClick={handleApplicationAdd}>
-                            <Plus />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="onboarding-create">
-                          <div>
-                            Create new&nbsp;
-                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
-                            <a onClick={createViewOnboarding} href="javascript:void(0);">onboarding</a>
-                            &nbsp;or&nbsp;
-                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
-                            <a onClick={handleSurveyAssign} href="javascript:void(0);">survey</a>
-                          </div>
-                        </div>
-                      )}
+                          <CustomTable
+                            handleRowClick={handleRowClick}
+                            selectedManager={selectedManager}
+                            selectedAssignedSurvey={selectedAssignedSurvey}
+                          />
 
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
-            </TabPane>
-            <TabPane tabId="Permissions">
-              <UserRoles manager={manager} userOrganizations={userOrganizations} />
-            </TabPane>
-          </TabContent>
+                        </Col>
+                        <Col md="12" className="ml-0 pl-0">
+                          {!!tableData.length ? (
+                            <div className="application-create-container">
+                              <div className="application-create-container_select">
+                                <Select
+                                  options={selectOptions}
+                                  value={applicationAddSelectValue}
+                                  onChange={setApplicationAddSelectValue}
+                                  styles={selectStyles}
+                                  isSearchable={false}
+                                />
+                              </div>
+                              <button onClick={handleApplicationAdd}>
+                                <Plus />
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="onboarding-create">
+                              <div>
+                                Create new&nbsp;
+                                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
+                                <a onClick={createViewOnboarding} href="javascript:void(0);">onboarding</a>
+                                &nbsp;or&nbsp;
+                                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
+                                <a onClick={handleSurveyAssign} href="javascript:void(0);">survey</a>
+                              </div>
+                            </div>
+                          )}
+
+                        </Col>
+                      </Row>
+                    </CardBody>
+                  </Card>
+                </TabPane>
+                <TabPane tabId="Permissions">
+                  <UserRoles manager={manager} userOrganizations={userOrganizations} />
+                </TabPane>
+              </TabContent>
+            </div>
+          </Scrollbars>
         </Col>
 
         <Col sm="12" md="12" lg="12" xl="6">
-          {{
-            'edit': <UserProfileEdit manager={manager} onEditClose={handleEditClose} />,
-            'onboarding': (
-              selectedManager.onboarding && (
-                <div className="onboarding-create-feature">
-                  <div className="onboarding-create-feature_header">
-                    {isCreate.current ? (
-                      <div className="onboarding-create-feature_header_title">
-                        Onboarding Create
+          <Scrollbars autoHeightMin={550} autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
+            <div style={{paddingRight: "15px"}}>
+              {{
+                'edit': <UserProfileEdit manager={manager} onEditClose={handleEditClose} />,
+                'onboarding': (
+                  selectedManager.onboarding && (
+                    <div className="onboarding-create-feature">
+                      <div className="onboarding-create-feature_header">
+                        {isCreate.current ? (
+                          <div className="onboarding-create-feature_header_title">
+                            Onboarding Create
+                          </div>
+                        ) : (
+                          <>
+                            <div className="onboarding-create-feature_header_title">
+                              Application
+                            </div>
+                            <div className="onboarding-create-feature_header_name">
+                              {selectedManager?.onboarding?.d_form?.name || ""}
+                            </div>
+                          </>
+
+                        )}
                       </div>
-                    ) : (
-                      <>
-                        <div className="onboarding-create-feature_header_title">
-                          Application
-                        </div>
-                        <div className="onboarding-create-feature_header_name">
-                          {selectedManager?.onboarding?.d_form?.name || ""}
-                        </div>
-                      </>
+                      <Card>
+                        <UserOnboardingForm isCreate={isCreate}/>
+                        {!isCreate.current && (
+                          <UserOnboardingDForm />
+                        )}
+                      </Card>
 
-                    )}
-                  </div>
-                  <Card>
-                    <UserOnboardingForm isCreate={isCreate}/>
-                    {!isCreate.current && (
-                      <UserOnboardingDForm />
-                    )}
-                  </Card>
-
-                </div>
-              )
-            ),
-            'surveyCreate': <SurveyAssign userId={manager.id} />,
-            'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />,
-            "masterSchema": <UserMasterSchemaContextFeature key={manager.id} />
-          }[contextFeature]}
+                    </div>
+                  )
+                ),
+                'surveyCreate': <SurveyAssign userId={manager.id} />,
+                'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />,
+                "masterSchema": <UserMasterSchemaContextFeature key={manager.id} />
+              }[contextFeature]}
+            </div>
+          </Scrollbars>
         </Col>
       </UserMasterSchemaProvider>
     </Row>

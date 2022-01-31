@@ -1,8 +1,5 @@
 import React from "react";
 import _ from "lodash/fp";
-import { Scrollbars } from "react-custom-scrollbars";
-
-import { INPUT_HEADER_HEIGHT } from "constants/header";
 
 import { UserMasterSchemaProviderContext } from "./UserMasterSchemaProvider";
 import UserMasterSchemaVersionsHistoryTable from "./UserMasterSchemaVersionsHistoryTable";
@@ -28,20 +25,18 @@ const UserMasterSchemaContextFeature = () => {
   })();
 
   return (
-    <Scrollbars autoHeightMin={550} autoHeight autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
-      <div className="context-feature-template_container">
-        <div className="context-feature-template_header">
-          {contextFeatureTitle ? (
-            <div className="context-feature-template_header_title">{contextFeatureTitle}</div>
-          ) : null}
-        </div>
-
-        {/* should it check is_system prop of the field */}
-        {selectable.selected.fields.length === 1 ? (
-          <UserMasterSchemaVersionsHistoryTable userId={userId} fieldId={selectable.selected.field.id} />
+    <div className="context-feature-template_container">
+      <div className="context-feature-template_header">
+        {contextFeatureTitle ? (
+          <div className="context-feature-template_header_title">{contextFeatureTitle}</div>
         ) : null}
       </div>
-    </Scrollbars>
+
+      {/* should it check is_system prop of the field */}
+      {selectable.selected.fields.length === 1 ? (
+        <UserMasterSchemaVersionsHistoryTable userId={userId} fieldId={selectable.selected.field.id} />
+      ) : null}
+    </div>
   );
 };
 

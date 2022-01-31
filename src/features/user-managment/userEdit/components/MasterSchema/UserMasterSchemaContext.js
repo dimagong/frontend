@@ -1,9 +1,6 @@
 import React from "react";
 import _ from "lodash/fp";
-import { Scrollbars } from "react-custom-scrollbars";
 import { useDispatch, useSelector } from "react-redux";
-
-import { INPUT_HEADER_HEIGHT } from "constants/header";
 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
@@ -112,53 +109,51 @@ const UserMasterSchemaContext = () => {
   }, [hierarchy.data]);
 
   return (
-    <Scrollbars autoHeight autoHeightMin={550} autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
-      <div className="position-relative">
-        <div
-          className={hierarchy ? "position-sticky zindex-1" : ""}
-          style={{ top: "0px", left: "0px", backgroundColor: "#fff" }}
-        >
-          <SearchAndFilter
-            placeholder=""
-            handleSearch={search.onSearchSubmit}
-            filterTypes={{ applications: search.filterNames, types: ["Files only"] }}
-            applyFilter={search.onFilterSubmit}
-            onCalendarChange={search.onCalendarChange}
-            isCalendar
-            hasIcon
-            filterTabPosition={"left"}
-            crossSelectingDisabled
-            dataToFilter={userMS.hierarchy.data}
-          />
-
-          {hierarchy && (
-            <div className="d-flex justify-content-end pb-1">
-              <MSEButton
-                className="p-0"
-                textColor="currentColor"
-                backgroundColor="transparent"
-                disabled={!expandable.isDecedentsExpanded}
-                onClick={expandable.expandOnlyRoot}
-              >
-                Collapse
-              </MSEButton>
-            </div>
-          )}
-        </div>
-
-        <UserMasterSchemaHierarchy
-          hierarchy={hierarchy.data}
-          isLoading={hierarchy.isLoading}
-          expandedIds={expandable.expandedIds}
-          onExpand={expandable.expand}
-          onCollapse={expandable.collapse}
-          selectedIds={selectable.keys}
-          onSelect={onSelect}
-          elementCreationLoading={userMS.elementCreationLoading}
-          onElementCreationSubmit={onElementCreationSubmit}
+    <div className="position-relative">
+      <div
+        className={hierarchy ? "position-sticky zindex-1" : ""}
+        style={{ top: "0px", left: "0px", backgroundColor: "#fff" }}
+      >
+        <SearchAndFilter
+          placeholder=""
+          handleSearch={search.onSearchSubmit}
+          filterTypes={{ applications: search.filterNames, types: ["Files only"] }}
+          applyFilter={search.onFilterSubmit}
+          onCalendarChange={search.onCalendarChange}
+          isCalendar
+          hasIcon
+          filterTabPosition={"left"}
+          crossSelectingDisabled
+          dataToFilter={userMS.hierarchy.data}
         />
+
+        {hierarchy && (
+          <div className="d-flex justify-content-end pb-1">
+            <MSEButton
+              className="p-0"
+              textColor="currentColor"
+              backgroundColor="transparent"
+              disabled={!expandable.isDecedentsExpanded}
+              onClick={expandable.expandOnlyRoot}
+            >
+              Collapse
+            </MSEButton>
+          </div>
+        )}
       </div>
-    </Scrollbars>
+
+      <UserMasterSchemaHierarchy
+        hierarchy={hierarchy.data}
+        isLoading={hierarchy.isLoading}
+        expandedIds={expandable.expandedIds}
+        onExpand={expandable.expand}
+        onCollapse={expandable.collapse}
+        selectedIds={selectable.keys}
+        onSelect={onSelect}
+        elementCreationLoading={userMS.elementCreationLoading}
+        onElementCreationSubmit={onElementCreationSubmit}
+      />
+    </div>
   );
 };
 
