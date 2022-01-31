@@ -15,10 +15,6 @@ import MSHTreeNodeList from "./components/MSHTreeNodeList";
 import MSHCreateElementForm from "./components/MSHCreateElementForm";
 import { ADD_FIELD, ADD_GROUP, addFieldAction, addGroupAction } from "./NodeAdditionActions";
 
-// const { addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } = appSlice.actions;
-
-// const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
-
 const getKey = ({ nodeId }) => nodeId;
 
 const getChildren =
