@@ -11,7 +11,7 @@ const TypedValuePreview = ({ type, value, isVertical }) => {
   const wrapperClassname = classNames("d-flex", isVertical ? "flex-column" : "flex-row");
 
   if (!value) {
-    return type ? `${capitalizedType}: Null` : "Null";
+    return type ? `${capitalizedType}: n.a` : "n.a";
   }
 
   if (type === "boolean") {

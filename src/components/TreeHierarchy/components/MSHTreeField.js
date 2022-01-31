@@ -47,25 +47,25 @@ const MSHTreeField = (props) => {
       return <TypedValuePreview type="files" value={files} isVertical={false} />;
     }
 
-    return null;
+    return <TypedValuePreview type={null} value={null} isVertical={false} />;
   };
 
   return (
     <MSHTreeNode
       className={className}
-      name={name}
+      name={<div className="tree-hierarchy__name w-25" title={name}>{name}</div>}
       date={date}
       selected={selected}
       isLocked={isLocked}
-      applicationsCount={applicationsCount}
-      versionsCount={versionsCount}
+      applicationsCount={applicationsCount > 0 ? applicationsCount : null}
+      versionsCount={versionsCount > 0 ? versionsCount : null}
       onSelect={onSelect}
       prepend={
         <div className="tree-hierarchy__mark-icon d-flex justify-content-center align-items-center">
           <FiberManualRecord fontSize={"inherit"} />
         </div>
       }
-      append={<div className="mx-auto px-1">{renderValue()}</div>}
+      append={<div className="tree-hierarchy__value px-1">{renderValue()}</div>}
       children={children}
     />
   );

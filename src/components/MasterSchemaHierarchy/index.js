@@ -19,6 +19,8 @@ import { useDidUpdate } from "hooks/use-did-update";
 import SearchAndFilter from "components/SearchAndFilter";
 import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
 
+import GeneralMSHTreeElement from "./GeneralMSHTreeElement";
+
 const {
   getMasterSchemaHierarchyRequest,
   getdFormsRequest,
@@ -158,6 +160,7 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
           onSelect={onSelect}
           elementCreationLoading={elementCreationLoading}
           onElementCreationSubmit={onElementCreationSubmit}
+          components={{ Element: GeneralMSHTreeElement }}
           key={hierarchy.name}
         />
       ) : (

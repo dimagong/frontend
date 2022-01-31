@@ -37,7 +37,7 @@
   &__node {
     display: block;
 
-    min-width: max-content;
+    //min-width: max-content;
 
     padding: 3px 0;
 
@@ -85,13 +85,25 @@
   }
 
   &__name {
-    padding: 0 8px;
     font-size: 1.125rem;
+
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__value {
+    width: 100%;
+    max-width: 25%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   &__icon {
     color: var(--primary);
-    font-size: 1.1rem;
+    font-size: 1.6rem;
 
     @at-root .tree-hierarchy__node--selected > .tree-hierarchy__node-content & {
       color: $inverse-color;
@@ -106,6 +118,8 @@
   }
 
   &__icon-count {
+    font-size: 1.1rem;
+
     top: -0.3rem;
     left: 0.1rem;
 
@@ -163,7 +177,7 @@
     @extend %btn-reset;
 
     color: #95989a;
-    font-size: 14px;
+    font-size: 1rem;
 
     @at-root .tree-hierarchy__node--selected > .tree-hierarchy__node-content & {
       color: currentColor;

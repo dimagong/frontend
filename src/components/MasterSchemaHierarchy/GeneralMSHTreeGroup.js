@@ -8,11 +8,11 @@ import { useToggle } from "hooks/use-toggle";
 import { stopPropagation } from "utility/event-decorators";
 import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
-import MSHTreeNode from "./MSHTreeNode";
+import MSHTreeNode from "components/TreeHierarchy/components/MSHTreeNode";
 
 const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
 
-const MSHTreeGroup = (props) => {
+const GeneralMSHTreeGroup = (props) => {
   const {
     name,
     date,
@@ -115,7 +115,7 @@ const MSHTreeGroup = (props) => {
   );
 };
 
-MSHTreeGroup.defaultProps = {
+GeneralMSHTreeGroup.defaultProps = {
   onExpand: noop,
   onCollapse: noop,
   onSelect: noop,
@@ -123,7 +123,7 @@ MSHTreeGroup.defaultProps = {
   onGroupCreatorClick: noop,
 };
 
-MSHTreeGroup.propTypes = {
+GeneralMSHTreeGroup.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   isLocked: PropTypes.bool.isRequired,
@@ -141,4 +141,4 @@ MSHTreeGroup.propTypes = {
   children: PropTypes.node,
 };
 
-export default MSHTreeGroup;
+export default GeneralMSHTreeGroup;
