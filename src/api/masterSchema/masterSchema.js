@@ -5,7 +5,6 @@ import { masterSchemaOrganizations } from "constants/masterSchema";
 
 import * as Urls from "./constants";
 import * as Interfaces from "./interfaces";
-import { MasterSchemaUnapprovedInterface } from "./interfaces";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
@@ -28,16 +27,21 @@ const masterSchemaApi = {
       .then((casted) => Interfaces.MasterSchemaArrayInterface.validate(casted));
   },
 
+  // renaming refactor - at the end remove getList method.
+  getAll() {
+    return masterSchemaApi.getList();
+  },
+
   getHierarchy({ id, name, application_ids, date_begin, date_end }) {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaHierarchyUrl(id),
       params: {
-        ...(name ? { name } : {}),
         hidden_groups: [1],
-        ...(application_ids ? { application_ids } : {}),
-        ...(date_begin ? { date_begin } : {}),
+        ...(name ? { name } : {}),
         ...(date_end ? { date_end } : {}),
+        ...(date_begin ? { date_begin } : {}),
+        ...(application_ids ? { application_ids } : {}),
       },
     })
       .then(flatResponseData, flatResponseError)
@@ -51,14 +55,14 @@ const masterSchemaApi = {
       url: Urls.getMasterSchemaHierarchyByUserUrl,
       params: {
         user_id,
-        only_files: only_files ? 1 : 0,
+        hidden_groups: [1],
         only_user_fields: 0,
+        only_files: only_files ? 1 : 0,
         show_empty_folders: show_empty_folders ? 1 : 0,
         ...(name ? { name } : {}),
-        hidden_groups: [1],
-        ...(application_ids ? { application_ids } : {}),
-        ...(date_begin ? { date_begin } : {}),
         ...(date_end ? { date_end } : {}),
+        ...(date_begin ? { date_begin } : {}),
+        ...(application_ids ? { application_ids } : {}),
       },
     })
       .then(flatResponseData, flatResponseError)
@@ -120,8 +124,8 @@ const masterSchemaApi = {
       url: Urls.getMasterSchemaUnapprovedUrl(id),
     })
       .then(flatResponseData, flatResponseError)
-      .then((response) => MasterSchemaUnapprovedInterface.cast(response))
-      .then((serialized) => MasterSchemaUnapprovedInterface.validate(serialized))
+      .then((response) => Interfaces.MasterSchemaUnapprovedInterface.cast(response))
+      .then((serialized) => Interfaces.MasterSchemaUnapprovedInterface.validate(serialized))
   },
 
   fieldsMakeParent({ parentId, fieldsIds }) {
