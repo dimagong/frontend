@@ -6,11 +6,15 @@ import {
   PaginationItem,
 } from 'reactstrap';
 
+import icon from '../../assets/img/icons/new-check.png'
+import file from '../../assets/img/icons/file3.png'
+
 import './styles.scss'
 
 const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false, scrollOnStart = false}) => {
 
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isShow,setIsShow] = useState(false);
   const tabsByKey = tabs.map((tab => tab[tabId]));
 
   const handlePrevSelect = () => {
@@ -78,7 +82,7 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
     return (
       tabs.map((item) => (
           !item.isHidden && (
-            <span key={item[tabId]} className="custom-tabs_tab with-icon" id={item[tabId]}>
+            <span key={item[tabId]} className="new-custom-tabs_tab with-icon" id={item[tabId]}>
               <PaginationItem
                 active={item[tabId] === active}
               >
@@ -86,7 +90,7 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
                   handleTabChange(item)
                 }}>
                   <div className="icon-container">
-                    <img src={item.icon} alt="" onError="this.style.display = 'none'"/>
+                    <img src={item.icon == 'null' ? 'null' : icon} alt="" onError="this.style.display = 'none'"/>
                   </div>
                   <div className={'tabs-text-container'}>
                     {tabName(item)}
@@ -111,7 +115,7 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
   //** TODO add mt-1 to other sections
   return (
     <>
-    <Pagination className=" justify-content-center custom-tabs">
+    {/* <Pagination className=" justify-content-center custom-tabs">
       <PaginationItem href="#" className="prev-item">
         <PaginationLink onClick={handlePrevSelect} first>
           <ChevronLeft/>{" "}
@@ -126,7 +130,20 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
           <ChevronRight/>
         </PaginationLink>
       </PaginationItem>
+    </Pagination> */}
+    <div className='nav-column'>
+        <div className='nav-column-item' onClick={() => setIsShow(!isShow)}>
+            <img src={file}/>
+        </div>
+    </div>
+    {isShow &&
+    <Pagination className="new-custom-tabs">
+        <span className="title">Applications</span>
+        <div className="new-custom-tabs_tabs" id={"tabs-container"}>
+            {withIcons ? renderTabsWithIcons(tabs) : renderTabsWithoutIcons(tabs)}
+        </div>
     </Pagination>
+    }
     </>
   )
 };

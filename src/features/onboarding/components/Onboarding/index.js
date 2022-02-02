@@ -20,6 +20,8 @@ import './styles.scss'
 
 import TabsArrayOfObjects from 'components/Tabs/TabsArrayOfObjects'
 
+import NewTabsArrayOfObjects from 'components/Tabs/NewTabsArrayOfObjects'
+
 import Check from 'assets/img/icons/check.png'
 
 import StatusComponent from "../Components/StatusComponent";
@@ -131,8 +133,23 @@ const OnboardingComponent = ({profile, userApplications}) => {
   });
 
   return (
+    <>
+    <Row>
+    <Col sm={12}>
+      <NewTabsArrayOfObjects 
+        withIcons
+        tabId="tabId"
+        tabName={(application) => application?.d_form?.name || application.title}
+        active={getActiveTab()}
+        tabs={formatTabs(userApplications)}
+        onChange={(application) => {
+          handleNavClick(application)
+        }}
+        scrollOnStart/>
+        </Col>
+      </Row>
     <Row style={{maxWidth: "1024px", margin: "0 auto"}}>
-      <Col sm={12} style={{borderBottom: "1px solid rgba(115,103,240, 0.03)", marginBottom: "20px"}}>
+      {/* <Col sm={12} style={{borderBottom: "1px solid rgba(115,103,240, 0.03)", marginBottom: "20px"}}>
         <Row>
           <Col sm="12" md={{size: 10, offset: 1}}>
             <div style={{marginBottom: "20px", marginLeft: "100px", marginRight: "100px"}}>
@@ -151,7 +168,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
 
           </Col>
         </Row>
-      </Col>
+      </Col> */}
       <Col sm="12" md={{size: 10, offset: 1}}>
         <Card style={{background: "transparent", boxShadow: "none"}}>
           <CardBody className="pt-0 pl-0">
@@ -231,6 +248,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
         </Card>
       </Col>
     </Row>
+    </>
   )
 };
 
