@@ -1,0 +1,17 @@
+.expandable_item_container {
+  box-sizing: border-box;
+  overflow: hidden;
+  .list_actions {
+    max-height: 0;
+    padding-bottom: 0;
+    transition: .2s;
+    &.expanded {
+      max-height: 30px;
+      padding-bottom: 1rem;
+      transition: .2s;
+      img {
+        cursor: pointer;
+      }
+    }
+  }
+}

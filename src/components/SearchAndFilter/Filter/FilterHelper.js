@@ -1,13 +1,13 @@
 import React from "react";
 
-export const arrayToString = (array) => {
-    if (!array) return ''
+export const filterOptionsToText = (options) => {
+    if (!options) return ''
     let result = ' ';
-    for (let i = 0; i < array.length; ++i) {
+    for (let i = 0; i < options.length; ++i) {
       switch (i) {
-        case array.length - 1: result += array[i] + ' '; break;
-        case array.length - 2: result += array[i] + ' or '; break;
-        default: result += array[i] + ', '; break;
+        case options.length - 1: result += options[i] + ' '; break;
+        case options.length - 2: result += options[i] + ' or '; break;
+        default: result += options[i] + ', '; break;
       }
     }
     return result;
@@ -15,9 +15,9 @@ export const arrayToString = (array) => {
 
   export const filterToText = (currFilter, filterTypes) => {
     let filterText = {}
-    filterTypes.forEach(item => {
+    filterTypes.forEach((item, key) => {
       if (item !== 'type') {
-        filterText[item] = arrayToString(currFilter[item])
+        filterText[item] = filterOptionsToText(currFilter[item])
       }
     })
     return filterText;
@@ -34,4 +34,31 @@ export const arrayToString = (array) => {
         from
         <span className={'blue'}>{footerText.organizations}</span>
       </p>
+  }
+
+  export const getInitialFilter = (filterOptionsList, filterSettings) => {
+    let initialFilter = {
+      selectedFilters: [],
+      selectedOptionKey: 0,
+      savable: filterSettings.savable,
+      crossSelectingDisabled: filterSettings.crossSelectingDisabled,
+    };
+
+    if (filterOptionsList) {
+      filterOptionsList.forEach((item, key) => {
+        initialFilter.selectedFilters.push(
+          {
+            key: key,
+            name: item,
+            selected: [],
+            settings: {
+              addBySelect: true, // if true then by selecting filter, it will be added, otherwise it will be removed
+              searchable: !!filterSettings.hasSearch.find((elem, key) => elem === item)
+            }
+          }
+        )
+      });
+    }
+
+    return initialFilter;
   }

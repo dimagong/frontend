@@ -4,9 +4,10 @@
   padding-top: 20px;
 }
 
+// TODO clear this file totally (all changes)
 .list-header {
   display: grid;
-  grid-template-columns: 2fr 3fr 2fr;
+  grid-template-columns: 2fr 3fr 2fr 2fr 2fr;
   font-size: 15px;
   color: #707070;
   font-weight: bold;
@@ -19,7 +20,7 @@
   .list_item {
     cursor: pointer;
     display: grid;
-    grid-template-columns: 2fr 3fr 2fr;
+    grid-template-columns: 2fr 3fr 2fr 2fr 2fr;
     margin-bottom: 17px;
     background-color: white;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);

@@ -1,0 +1,87 @@
+.folders-component {
+  display: flex;
+  font-family: Montserrat, sans-serif;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+
+  &__loader {
+    display: flex;
+    width: 210px;
+    height: 145px;
+    margin-right: 25px;
+    justify-content: center;
+    align-items: center;
+  }
+  &__folder {
+    display: inline-flex;
+    vertical-align: top;
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 210px;
+    height: 145px;
+    background: #7367F0;
+    border-radius: 10px;
+    margin-right: 25px;
+    color: white;
+
+    font-weight: 500;
+    padding: 12px 14px 20px 14px;
+    cursor: pointer;
+
+    &_selection-state {
+      width: 23px;
+      height: 23px;
+      border-radius: 30px;
+      background: white;
+
+      &.selected {
+        background: #4B484D;
+        border: 3px solid white;
+      }
+    }
+    &_description {
+      &_name {
+        font-size: 18px;
+        margin-bottom: 5px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      &_items-count {
+        font-size: 12px;
+      }
+    }
+
+  }
+  &__scrollbar {
+    div {
+      white-space: nowrap;
+    }
+  }
+  &__add-folder {
+    flex-shrink: 0;
+    width: 210px;
+    height: 145px;
+    background: #eee;
+    border-radius: 10px;
+    display: inline-flex;
+    justify-content: center;
+    font-size: 99px;
+    color: #95989A;
+    align-items: center;
+    outline: none!important;
+  }
+  &__no-folders {
+    padding-left: 20px;
+    font-size: 24px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+  }
+}

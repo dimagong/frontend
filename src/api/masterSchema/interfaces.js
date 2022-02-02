@@ -19,6 +19,27 @@ export const MasterSchemaFieldInterface = yup
     updatedAt: yup.string().required(),
     createdAt: yup.string().required(),
     isSystem: yup.boolean().required(),
+    userFiles: yup.array().nullable(),
+    userValue: yup.mixed().nullable(),
+    memberFirmValue: yup.mixed().nullable(),
+    userDFormsCount: yup.number().nullable(),
+    userMasterSchemaFieldVersionsCount: yup.number().nullable(),
+  })
+  .camelCase();
+
+export const MasterSchemaUnapprovedFieldInterface = yup
+  .object({
+    id: yup.number().required(),
+    name: yup.string().required(),
+    parentId: yup.number().required(),
+    updatedAt: yup.string().required(),
+    createdAt: yup.string().required(),
+    isSystem: yup.boolean().required(),
+    parentGroupName: yup.string().required(),
+    providedByFullName: yup.string().nullable(),
+    applicationNames: yup.array().test((v) => Array.isArray(v)),
+    userDFormsCount: yup.number().nullable(),
+    userMasterSchemaFieldVersionsCount: yup.number().nullable(),
   })
   .camelCase();
 
@@ -50,3 +71,5 @@ export const MasterSchemaHierarchyInterface = yup
   })
   .camelCase()
   .nullable();
+
+export const MasterSchemaUnapprovedInterface = yup.array(MasterSchemaUnapprovedFieldInterface).test(Array.isArray);

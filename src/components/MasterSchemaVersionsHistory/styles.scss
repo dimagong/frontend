@@ -1,0 +1,25 @@
+.versions-table {
+  & &__th {
+    font-size: 1.3rem;
+  }
+
+  & &__td {
+    font-size: 1.1rem;
+  }
+
+  & &__tr--actual,
+  & thead tr {
+    position: relative;
+
+    &:after {
+      content: "";
+      height: 1px;
+      width: calc(100% - 27px);
+
+      left: 0;
+      bottom: 0;
+      position: absolute;
+      background-color: currentColor;
+    }
+  }
+}

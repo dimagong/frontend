@@ -12,6 +12,7 @@ import masterSchemaSagas from './masterSchema/masterSchemaSagas'
 import layoutSaga from './layout'
 import surveysSaga from './surveys'
 import memberFirmsSaga from './memberFirms'
+import resourceManagerSaga from './resourceManager'
 
 export default function *rootSaga() {
   yield all([
@@ -27,5 +28,6 @@ export default function *rootSaga() {
     masterSchemaSagas(),
     surveysSaga(),
     memberFirmsSaga(),
+    resourceManagerSaga(),
   ]);
 }

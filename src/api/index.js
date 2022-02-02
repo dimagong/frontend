@@ -70,7 +70,7 @@ export const requestLayout = async (url, method, data) => {
   try {
     const result = await instance(method === "GET" ? getRequestInstancePayload : defaultRequestInstancePayload);
 
-    return result.data.data;
+    return result.data.data || result.data;
   } catch (err) {
     return err.response.data.error;
   }

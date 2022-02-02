@@ -29,6 +29,7 @@ import MasterSchema from 'features/home/ContextSearch/MasterSchema';
 import Organizations from './Organizations'
 import UserManagement from './UserManagement'
 import Surveys from './Surveys'
+import ResourceManagerContextSearch from "./ResourceManagerContextSearch";
 
 import './styles.scss'
 
@@ -202,12 +203,15 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                               <TabPane tabId={NAV_OPTIONS[5].id}>
                                 <MemberFirmsList />
                               </TabPane>
+                              <TabPane tabId={NAV_OPTIONS[6].id}>
+                                <ResourceManagerContextSearch />
+                              </TabPane>
                             </TabContent>
 
                           </Col>
                         </Row>
                         <div className="search-content-footer">
-                          {selectedNavItem.id !== "MasterSchema" ? (
+                          {!["MasterSchema", "resourceManager"].includes(selectedNavItem.id) ? (
                             <Button
                               onClick={() => {handleAdd()}}
                               color="primary"

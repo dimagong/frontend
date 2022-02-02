@@ -57,33 +57,22 @@ const MemberFirmEditUsers = ({
     }
   };
 
-  const handleFilter = (newManagers, filter) => {
-    setSearchedMembers(newManagers);
-    if (filter.roles.size > 0) {
-      setIsFiltered(true);
-    } else {
-      setIsFiltered(false);
-    }
-  };
-
-  const onCancelFilter = () => {
-    setSearchedMembers([]);
-    setIsFiltered(false);
-  };
-
-  const applyFilter = (managers, filter) => {
+  const applyFilter = (filter, managers) => {
     let newManagers = managers;
-    if (filter?.roles && filter?.roles?.length !== 0) {
+    let currRolesFilter = filter.selectedFilters.find(item => item.name === 'roles');
+    if (currRolesFilter.selected.length !== 0) {
       newManagers = managers.filter((item) => {
-        return filter.roles.find(
+        return currRolesFilter.selected.find(
           (role) =>
             role ===
             item?.permissions?.ability.charAt(0).toUpperCase() + item?.permissions?.ability.replace("_", " ").slice(1)
         );
       });
+      setIsFiltered(true);
+    } else {
+      setIsFiltered(false);
     }
     setSearchedMembers(newManagers);
-    setIsFiltered(true);
   };
 
   useEffect(() => {
@@ -122,8 +111,6 @@ const MemberFirmEditUsers = ({
       <ModalBody className={"member-firm-users-modal-body"} style={{ marginLeft: 15 }}>
         <SearchAndFilter
           handleSearch={handleSearch}
-          handleFilter={handleFilter}
-          onCancelFilter={onCancelFilter}
           dataToFilter={potentialMembers}
           filterTypes={filterTypes}
           applyFilter={applyFilter}

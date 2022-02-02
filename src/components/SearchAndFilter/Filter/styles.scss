@@ -1,0 +1,18 @@
+.left-orientation-tabs {
+  text-align: left;
+  .filter-tab {
+    margin-left: 0;
+    margin-right: 20px;
+    padding-right: 10px;
+    height: 30px
+  }
+}
+
+.search-and-filter-with-icon {
+  border: unset;
+  padding-left: 40px;
+}
+
+.close-nav {
+  cursor: pointer;
+}
