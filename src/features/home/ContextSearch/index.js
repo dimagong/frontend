@@ -203,9 +203,9 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
                               <TabPane tabId={NAV_OPTIONS[5].id}>
                                 <MemberFirmsList />
                               </TabPane>
-                              <TabPane tabId={NAV_OPTIONS[6].id}>
-                                <ResourceManagerContextSearch />
-                              </TabPane>
+                              {/*<TabPane tabId={NAV_OPTIONS[6].id}>*/}
+                              {/*  <ResourceManagerContextSearch />*/}
+                              {/*</TabPane>*/}
                             </TabContent>
 
                           </Col>
