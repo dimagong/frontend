@@ -64,6 +64,8 @@ const submitdFormSuccess = (state, {payload}) => {
 
 const submitdFormNewVersionSuccess = (state, {payload}) => {
   state.isLoading = false;
+  state.isError = null;
+  state.user.manager.onboarding.d_form.updated_at = payload.updated_at;
 }
 
 const submitdFormDataSuccess = (state, {payload}) => {
