@@ -41,7 +41,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
   const surveyNotifications = useSelector(selectSurveyNotifications);
   const applicationNotifications = useSelector(selectApplicationNotifications);
 
-  const notification = context === "dForm" ? applicationNotifications : surveyNotifications;
+  const notification = context === "application" ? applicationNotifications : surveyNotifications;
 
   const managers = useSelector(selectAllowedUserList);
   const [actionData, setActionData] = useState([]);

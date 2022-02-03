@@ -3,21 +3,21 @@ import { useSelector } from "react-redux";
 
 import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
 
+import { useTreeHierarchySelectable } from "components/TreeHierarchy";
+
 import MasterSchemaContext from "./containers/MasterSchemaContext";
 import MasterSchemaContextFeature from "./containers/MasterSchemaContextFeature";
-
-import { useMasterSchemaSelectable } from "./hooks/useMasterSchemaSelectable";
 
 const MasterSchema = () => {
   const hierarchy = useSelector(masterSchemaSelectors.selectSelectedHierarchy);
   const unapproved = useSelector(masterSchemaSelectors.selectSelectedUnapproved);
 
-  const selectable = useMasterSchemaSelectable(hierarchy);
+  const selectable = useTreeHierarchySelectable(hierarchy);
 
   const onSelect = (node) => selectable.toggle(node.nodeId);
 
   return (
-    <div className="d-flex master-schema-container">
+    <div className="d-flex">
       <MasterSchemaContext
         hierarchy={hierarchy}
         unapproved={unapproved}

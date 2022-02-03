@@ -26,12 +26,28 @@ const {
 
 const initRefreshClassName = "bg-hover-icon";
 
+const UpdatedAtText = ({ loading, date }) => {
+  if (loading) {
+    return (
+      <div className="d-flex">
+        <div>Saving progress..</div>
+        {<Spinner className="ml-1" color="success"/>}
+      </div>
+    );
+  }
+
+  // return `Progress saved: ${moment(manager.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`;
+  return `Progress saved: ${moment(date).format('YYYY-MM-DD HH:mm:ss')}`;
+};
+
 const UserOnboardingDForm = () => {
   const [isStateConfig] = useState(false);
   const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
   const manager = useSelector(selectManager);
   const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
+
+  const updatedAt = React.useMemo(() => manager.onboarding.d_form.updated_at, [manager.onboarding.d_form.updated_at]);
   const updatedAtTextLoding = useRef(false);
 
   const debounceOnSave = useRef(debounce((data, dForm, userId) => {
@@ -53,7 +69,6 @@ const UserOnboardingDForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
-
   const submitDForm = (dForm, {name, description, protected_properties}) => {
     dispatch(updateDFormRequest({...dForm, name, description, protected_properties}))
   };
@@ -62,14 +77,6 @@ const UserOnboardingDForm = () => {
     dispatch(changedFormStatusRequest({dForm: manager.onboarding.d_form, status}))
   };
 
-  const updatedAtText = () => {
-    return loading && updatedAtTextLoding.current
-      ? (<div className="d-flex">
-        <div>Saving progress..</div>
-        {<Spinner className="ml-1" color="success"/>}
-      </div>)
-      : `Progress saved: ${moment(manager.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`
-  };
   const submitOnboardingForm = data => {
     dispatch(submitdFormNewVersionRequest({dForm: manager.onboarding.d_form, data}))
   };
@@ -78,6 +85,7 @@ const UserOnboardingDForm = () => {
     setRefreshClassName(`${initRefreshClassName} rotating`)
     setRefreshClassName(`${initRefreshClassName} rotating`)
   };
+
   return (
     <Col md="12" className="mb-4">
       <Card className="dform border">
@@ -113,7 +121,7 @@ const UserOnboardingDForm = () => {
             dForm={manager.onboarding.d_form}
             onboardingUser={manager}
             isStateConfig={isStateConfig}
-            updatedAtText={updatedAtText()}
+            updatedAtText={<UpdatedAtText loading={loading && updatedAtTextLoding.current} date={updatedAt} />}
             onCreateNewVersion={submitDForm}
             onSubmit={(formData) => submitOnboardingForm(formData)}
 

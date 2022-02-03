@@ -1329,6 +1329,14 @@ class FormCreate extends React.Component {
     this.setState({schemaPropertyEdit})
   };
 
+  setMultiSelectTitleAndValue = (event, objKey, index) => {
+    const {target: {value}} = event;
+    let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
+    schemaPropertyEdit['items']['anyOf'][index].title = value;
+    schemaPropertyEdit['items']['anyOf'][index]['enum'][0] = value;
+    this.setState({schemaPropertyEdit})
+  };
+
   addMultiSelectValues = () => {
     let schemaPropertyEdit = clone(this.state.schemaPropertyEdit);
     schemaPropertyEdit['items']['anyOf'].push({

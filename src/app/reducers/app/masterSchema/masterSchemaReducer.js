@@ -1,6 +1,8 @@
 import * as yup from "yup";
 import { toast } from "react-toastify";
-import _, { pipe, get, includes } from "lodash/fp";
+import { pipe, get, includes } from "lodash/fp";
+
+import { normalizeGroups, normalizeHierarchy, normalizeUnapproved } from "api/masterSchema/normalizers";
 
 /* Interfaces */
 
@@ -30,57 +32,12 @@ const masterSchemaFieldInterface = yup.object({
   parentNodeId: yup.string().required(),
 });
 
-const masterSchemaUnapprovedFieldInterface = yup.object({
-  ...masterSchemaNodeSchema,
-  applicationNames: yup.array().test((v) => Array.isArray(v)),
-  providedByFullName: yup.string().nullable(),
-  parentGroupName: yup.string().required(),
-});
-
 const masterSchemaGroupInterface = yup.object(masterSchemaGroupSchema);
-
-const masterSchemaUnapprovedInterface = yup.array(masterSchemaUnapprovedFieldInterface).test((v) => Array.isArray(v));
 
 const masterSchemaAbleMovementGroup = yup.object({
   id: yup.number().required(),
   name: yup.string().required(),
 });
-
-const userInterface = yup.object({
-  id: yup.number().required(),
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  field: yup
-    .object({
-      value: yup.string().required(),
-      type: yup.string().required(),
-      date: yup.string().required(),
-      files: yup
-        .array(
-          yup.object({
-            name: yup.string().required(),
-            mimeType: yup.string().required(),
-            path: yup.string().required(),
-            group: yup.string().required(),
-          })
-        )
-        .test((v) => Array.isArray(v)),
-    })
-    .required(),
-  permissions: yup
-    .object({
-      organization: yup.string().required(),
-      ability: yup.string().required(),
-    })
-    .required(),
-  avatar: yup.string().nullable(),
-  avatarPath: yup.string().nullable(),
-  memberFirm: yup.object().nullable(),
-  memberFirmPermissions: yup.array(yup.string()).test((v) => Array.isArray(v)),
-});
-
-// eslint-disable-next-line no-unused-vars
-const masterSchemaUsersInterface = yup.array(userInterface).test((v) => Array.isArray(v));
 
 /* Serializers */
 
@@ -145,10 +102,6 @@ const serialiseNode = (node, { isContainable, parent = null, children = [] }) =>
   return serialised;
 };
 
-const serialiseUnapproved = (unapproved) => {
-  return unapproved.map((field) => serialiseNode(field, { isContainable: false }));
-};
-
 /* State searchers */
 
 const getHierarchyAndParentByParentId = (state, id) => {
@@ -159,40 +112,6 @@ const getHierarchyAndParentByParentId = (state, id) => {
 };
 
 /* Reducers */
-
-const normalizeNode = (node, { isContainable, parent = null, children = {} }) => {
-  const serialised = {
-    ...node,
-    nodeId: `${isContainable ? "group" : "field"}${node.id}`,
-    parentNodeId: parent ? parent.nodeId : null,
-    path: parent ? [...parent.path, node.name] : [node.name],
-    isContainable,
-  };
-
-  if (node.fields) {
-    serialised.fields = [];
-
-    node.fields.forEach((field) => {
-      const serialisedField = normalizeNode(field, { isContainable: false, parent: serialised, children });
-
-      serialised.fields.push(serialisedField.nodeId);
-      children[serialisedField.nodeId] = serialisedField;
-    });
-  }
-
-  if (node.groups) {
-    serialised.groups = [];
-
-    node.groups.forEach((group) => {
-      const serialisedGroup = normalizeNode(group, { isContainable: true, parent: serialised, children });
-
-      serialised.groups.push(serialisedGroup.nodeId);
-      children[serialisedGroup.nodeId] = serialisedGroup;
-    });
-  }
-
-  return serialised;
-};
 
 const masterSchemaReducer = {
   getMasterSchemaFieldsSuccess: (state, { payload }) => {
@@ -223,27 +142,7 @@ const masterSchemaReducer = {
   getMasterSchemaHierarchySuccess: (state, { payload }) => {
     const { hierarchy, masterSchemaId } = payload;
 
-    if (!hierarchy) {
-      state.masterSchema.hierarchies[masterSchemaId] = null;
-    }
-
-    if (hierarchy) {
-      // Normalize hierarchy
-      const children = {};
-      const root = normalizeNode(hierarchy, { isContainable: true, children });
-      const nodes = _.cloneDeep(children);
-
-      nodes[root.nodeId] = root;
-
-      const normalizedHierarchy = {
-        ...root,
-        children,
-        nodes,
-      };
-
-      state.masterSchema.hierarchies[hierarchy.masterSchemaId] = normalizedHierarchy;
-    }
-
+    state.masterSchema.hierarchies[masterSchemaId] = hierarchy ? normalizeHierarchy(hierarchy) : null;
     state.isLoading = false;
     state.isError = null;
   },
@@ -393,10 +292,8 @@ const masterSchemaReducer = {
 
   setUnapprovedMasterSchemaSuccess(state, { payload }) {
     const { id, unapproved } = payload;
-    const serialised = serialiseUnapproved(unapproved);
-    const valid = masterSchemaUnapprovedInterface.validateSync(serialised);
 
-    state.masterSchema.unapproved[id] = valid;
+    state.masterSchema.unapproved[id] = normalizeUnapproved(unapproved);
     state.isError = false;
     state.isLoading = false;
   },
@@ -419,29 +316,8 @@ const masterSchemaReducer = {
 
   getMasterSchemaGroupsSuccess(state, { payload }) {
     const { groups, masterSchemaId } = payload;
-    // const hierarchy = getHierarchyByMasterSchemaId(state, masterSchemaId);
 
-    const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
-    const serialised = groups.map((group) => {
-      return serialiseNode({ ...group, ...RISKY_CLIENT_LOGIC }, { isContainable: true });
-    });
-    // console.log("get-groups/serialised", serialised);
-    const valid = yup
-      .array(masterSchemaAbleMovementGroup)
-      .test((v) => Array.isArray(v))
-      .validateSync(serialised);
-    // console.log("get-groups/valid", valid);
-
-    state.masterSchema.groups[masterSchemaId] = valid;
-
-    state.isError = false;
-    state.isLoading = false;
-  },
-
-  getVersionsByMasterSchemaFieldSuccess(state, { payload }) {
-    const { versions, fieldId, selectedId } = payload;
-
-    state.masterSchema.versions[`${selectedId}/${fieldId}`] = versions;
+    state.masterSchema.groups[masterSchemaId] = normalizeGroups(groups);
 
     state.isError = false;
     state.isLoading = false;

@@ -458,24 +458,14 @@ export function listControls(properties) {
                 {schemaPropertyEdit.items.anyOf.map((multiSelectObj, index) => {
                   return (
                     <div className="row" key={index}>
-                      <div className="col-md-5 form-group">
+                      <div className="col-md-10 form-group">
                         <input
                           id={`${index}-`}
                           value={multiSelectObj.title}
                           type="text"
-                          onChange={event => this.setMultiSelectTitle(event, objKey, index)}
+                          onChange={event => this.setMultiSelectTitleAndValue(event, objKey, index)}
                           className="form-control"/>
                       </div>
-                      <div className="col-md-5 form-group">
-                        <input
-                          key={index}
-                          id={`${index}-`}
-                          value={multiSelectObj.enum[0]}
-                          type="text"
-                          onChange={event => this.setMultiSelectValues(event, objKey, index)}
-                          className="form-control"/>
-                      </div>
-
                       <div className="col-md-2 form-group">
                         <button type="submit"
                                 onClick={event => this.removeMultiSelectValues(event, objKey, index)}

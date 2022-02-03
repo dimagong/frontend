@@ -10,8 +10,6 @@ export const selectRelatedApplications = fieldId => state => state?.app?.masterS
 
 export const selectSearch = (state) => state?.app?.masterSchema.search;
 
-export const selectVersions = (state) => state?.app?.masterSchema.versions;
-
 export const selectSelectedUnapproved = (state) => {
   const selectedId = selectSelectedId(state);
   const { unapproved } = state?.app?.masterSchema;
@@ -27,6 +25,5 @@ export const selectSelectedHierarchy = (state) => {
 
 export const selectMovementOptions = (state) => {
   const selectedId = selectSelectedId(state);
-  const groups =  state?.app?.masterSchema.groups[selectedId] || [];
-  return groups.map((group) => ({ label: group.name, value: group }));
+  return state?.app?.masterSchema.groups[selectedId] || [];
 };

@@ -23,20 +23,46 @@
     width: 92%;
   }
 
-  .filter-close-button {
-    margin-left: 10px;
+  .filter-shorts-to-right {
+    .filter-tab {
+      text-align: right!important;
+    }
   }
 
-  .small-filter-icon {
-    right: 23%;
-    top: 8px;
-    height: 20px;
-  }
-
-  .large-filter-icon {
+  .filter-in-search {
     right: 3%;
     top: 8px;
-    height: 20px;
+    position: absolute;
+
+    .filter-icon {
+      cursor: pointer;
+      height: 20px;
+    }
+
+    .filter-box {
+      left: unset;
+      right: 5%;
+      top: 50px;
+      margin-bottom: 0;
+    }
+  }
+
+  .filter-in-search-calendar {
+    right: 23%;
+    top: 8px;
+    position: absolute;
+
+    .filter-icon {
+      cursor: pointer;
+      height: 20px;
+    }
+
+    .filter-box {
+      left: unset;
+      right: 26%;
+      top: 50px;
+      margin-bottom: 0;
+    }
   }
 
   .calendar-container {

@@ -1,5 +1,3 @@
-import "./styles.scss";
-
 import _ from "lodash";
 import { isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
@@ -47,25 +45,9 @@ const MasterSchemaUserList = ({ field }) => {
   const memberFirmsInfo = useSelector(getMemberFirms);
   const organizationsInfo = useSelector(selectOrganizations);
 
-  const onFilterCancel = () => setFilterOptions({});
-
   const onFilterSubmit = (filterOptions, filter) => setFilterOptions(filter);
 
   const onSearchSubmit = (value) => value.target.value.length !== 1 && setSearchInput(value.target.value);
-
-  const onFilterOptionCancel = (option) => setFilterOptions(onFilterOptionCancel.cancelOption[option]);
-
-  onFilterOptionCancel.cancelOption = {
-    roles: () => {
-      return { ...filterOptions, roles: [] };
-    },
-    organizations: () => {
-      return { ...filterOptions, organizations: [] };
-    },
-    memberFirms: () => {
-      return { ...filterOptions, memberFirms: [] };
-    },
-  };
 
   useEffect(() => {
     const newAbilities = filterOptions?.roles
@@ -142,10 +124,8 @@ const MasterSchemaUserList = ({ field }) => {
         <div className="w-100">
           <SearchAndFilter
             handleSearch={onSearchSubmit}
-            onCancelFilter={onFilterCancel}
             filterTypes={filterTypes}
             applyFilter={onFilterSubmit}
-            onFilterOptionCancel={onFilterOptionCancel}
             filterTabPosition={"left"}
           />
         </div>

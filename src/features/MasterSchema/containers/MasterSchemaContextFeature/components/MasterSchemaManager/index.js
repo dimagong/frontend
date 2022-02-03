@@ -1,3 +1,5 @@
+import "./styles.scss";
+
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import { get, isEmpty } from "lodash/fp";
