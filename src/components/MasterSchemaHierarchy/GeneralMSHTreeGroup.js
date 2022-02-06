@@ -52,8 +52,8 @@ const GeneralMSHTreeGroup = (props) => {
       className={className}
       name={
         <div className="d-flex w-25" >
-          <div className="tree-hierarchy__name d-inline-block pr-3 position-relative" title={name}>
-            {name}
+          <div className="tree-hierarchy__name pr-3 position-relative" title={name}>
+            <div className="tree-hierarchy__name-text">{name}</div>
             <div className="position-absolute" style={{ right: "1rem", top: "50%", transform: "translateY(-50%)" }} ref={popupRef}>
               <button
                 type="button"
