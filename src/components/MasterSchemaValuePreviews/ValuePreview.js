@@ -5,7 +5,7 @@ import { ExternalLink } from "react-feather";
 import { useBoolean } from "hooks/use-boolean";
 import { stopPropagation } from "utility/event-decorators";
 
-import SurveyModal from "features/Surveys/Components/SurveyModal";
+import CustomModal from "../CustomModal";
 
 const TEMP_LONG_VALUE_LENGTH = 15;
 
@@ -31,9 +31,13 @@ const ValuePreview = ({ value, length }) => {
       <div>This is a long text</div>
       <ExternalLink style={{ marginLeft: "5px" }} size="12" />
 
-      <SurveyModal isOpen={extendedModal} title="Extended input" onClose={closeExtendedModal} actions={false}>
-        <div className="py-2">{value}</div>
-      </SurveyModal>
+      <CustomModal
+        isOpen={extendedModal}
+        title="Extended input"
+        onClose={closeExtendedModal}
+        footerDisabled>
+          <div className="py-2">{value}</div>
+      </CustomModal>
     </button>
   ) : (
     <div>{value}</div>

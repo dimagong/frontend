@@ -7,11 +7,11 @@ import { selectChildOrganizations } from "app/selectors/groupSelector";
 import { selectError } from "app/selectors";
 import { usePrevious } from "hooks/common";
 import { Input, Select } from "features/Surveys/Components/SurveyFormComponents";
-import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import appSlice from "app/slices/appSlice";
 
 import './styles.scss'
+import CustomModal from "../../../../components/CustomModal";
 
 const {
   createMemberFirmRequest,
@@ -101,7 +101,7 @@ const MemberFirmCreateModal = ({isOpen, onClose, isEdit}) => {
   // }, [isEdit, isOpen]);
 
   return (
-    <SurveyModal
+    <CustomModal
       className="survey-create-modal"
       title={isEdit ? "Edit member firm" : "New member firm"}
       isOpen={isOpen}
@@ -129,7 +129,7 @@ const MemberFirmCreateModal = ({isOpen, onClose, isEdit}) => {
         </div>
       )}
 
-    </SurveyModal>
+    </CustomModal>
   )
 };
 

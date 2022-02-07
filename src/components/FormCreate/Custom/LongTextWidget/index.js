@@ -3,8 +3,8 @@ import React, {useEffect, useState} from 'react';
 import FieldLabel from '../FieldLabel'
 
 import './styles.scss'
-import SurveyModal from "../../../../features/Surveys/Components/SurveyModal";
 import WysiwygEditor from "../WysiwygEditor";
+import CustomModal from "../../../CustomModal";
 
 const LongTextWidget = ({props}) => {
   const {
@@ -54,7 +54,7 @@ const LongTextWidget = ({props}) => {
       </div>
       <span className={'long-text-area-open-more'} onClick={() => setIsModalOpened(true)}>Expand text area</span>
 
-      <SurveyModal
+      <CustomModal
         className={'long-text-modal-window'}
         isOpen={isModalOpened}
         onClose={handleModalClose}
@@ -85,7 +85,7 @@ const LongTextWidget = ({props}) => {
 
         </div>
 
-      </SurveyModal>
+      </CustomModal>
     </div>
   )
 }

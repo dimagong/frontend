@@ -8,12 +8,12 @@ import { useTreeData } from "hooks/use-tree";
 import { useBoolean } from "hooks/use-boolean";
 
 import TreeRoot from "components/tree/tree-root";
-import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import MSHTreeElement from "./components/MSHTreeElement";
 import MSHTreeNodeList from "./components/MSHTreeNodeList";
 import MSHCreateElementForm from "./components/MSHCreateElementForm";
 import { ADD_FIELD, ADD_GROUP, addFieldAction, addGroupAction } from "./NodeAdditionActions";
+import CustomModal from "../CustomModal";
 
 const getKey = ({ nodeId }) => nodeId;
 
@@ -116,13 +116,13 @@ const TreeHierarchy = (props) => {
       />
 
       {nodeDataToCreate && (
-        <SurveyModal isOpen={modal} title={creationTitle(nodeDataToCreate.type)} onClose={closeModal} actions={false}>
+        <CustomModal isOpen={modal} title={creationTitle(nodeDataToCreate.type)} onClose={closeModal} footerDisabled>
           <components.CreateElementForm
             submitting={elementCreationLoading}
             placeholder={nodeDataToCreate.parent.path.join(".")}
             onSubmit={onCreateElementSubmit}
           />
-        </SurveyModal>
+        </CustomModal>
       )}
     </div>
   );

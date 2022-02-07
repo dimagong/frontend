@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import classNames from "classnames";
 
-import SurveyModal from "features/Surveys/Components/SurveyModal";
 import { Input, TextArea, Select, Checkbox } from "features/Surveys/Components/SurveyFormComponents";
 import { Plus } from "react-feather";
 
@@ -21,6 +20,7 @@ import * as yup from 'yup';
 import './styles.scss'
 
 import appSlice from "app/slices/appSlice";
+import CustomModal from "../../../../../../../components/CustomModal";
 
 const {
   createQuestionRequest,
@@ -397,7 +397,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
   ));
 
   return (
-    <SurveyModal
+    <CustomModal
       className="question-create-modal"
       title={isEdit ? "Edit question" : "New question"}
       isOpen={isOpen}
@@ -512,7 +512,7 @@ const QuestionCreateModal = ({ isOpen, onClose, selectedFolder, folders, isEdit,
           />
         </div>
       </div>
-    </SurveyModal>
+    </CustomModal>
   )
 };
 
