@@ -15,6 +15,7 @@ const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} 
 const MSHTreeGroup = (props) => {
   const {
     name,
+    index,
     date,
     isLocked,
     expanded,
@@ -50,9 +51,10 @@ const MSHTreeGroup = (props) => {
   return (
     <MSHTreeNode
       className={className}
+      index={index}
       name={
         <div className="d-flex w-25" >
-          <div className="tree-hierarchy__name pr-3 position-relative zindex-1" title={name}>
+          <div className="tree-hierarchy__name pr-3 position-relative" title={name}>
             <div className="tree-hierarchy__name-text">{name}</div>
             <div className="position-absolute" style={{ right: "1rem", top: "50%", transform: "translateY(-50%)" }} ref={popupRef}>
               <button

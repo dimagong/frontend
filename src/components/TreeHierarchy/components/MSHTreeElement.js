@@ -7,6 +7,7 @@ import MSHTreeGroup from "./MSHTreeGroup";
 const MSHTreeElement = (props) => {
   const {
     node,
+    index,
     selected,
     onSelect,
     expanded,
@@ -19,6 +20,7 @@ const MSHTreeElement = (props) => {
 
   return node.isContainable ? (
     <MSHTreeGroup
+      index={index}
       name={node.name}
       date={node.createdAt}
       isLocked={node.isSystem}
@@ -33,6 +35,7 @@ const MSHTreeElement = (props) => {
     />
   ) : (
     <MSHTreeField
+      index={index}
       name={node.name}
       date={node.createdAt}
       value={node.userValue || node.memberFirmValue}
@@ -49,6 +52,7 @@ const MSHTreeElement = (props) => {
 
 MSHTreeElement.propTypes = {
   node: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
 
   selected: PropTypes.bool.isRequired,
   onSelect: PropTypes.func,
