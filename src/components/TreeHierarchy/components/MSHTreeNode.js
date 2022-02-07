@@ -11,6 +11,7 @@ const MSHTreeNode = (props) => {
   const {
     name,
     date,
+    index,
     selected,
     isLocked,
     applicationsCount,
@@ -21,10 +22,10 @@ const MSHTreeNode = (props) => {
     className: propClassName,
     children,
   } = props;
-  const className = classNames("tree-hierarchy__node", propClassName, { "tree-hierarchy__node--selected": selected });
+  const className = classNames("tree-hierarchy__node position-relative", propClassName, { "tree-hierarchy__node--selected": selected });
 
   return (
-    <li className={className} onClick={stopPropagation(onSelect)}>
+    <li className={className} style={{ zIndex: index }} onClick={stopPropagation(onSelect)}>
       <div className="tree-hierarchy__node-content d-flex align-items-center">
         {prepend}
 
@@ -80,7 +81,9 @@ const MSHTreeNode = (props) => {
           </div>
         </div>
       </div>
-      {children}
+      <div className="tree-hierarchy__node-children">
+        {children}
+      </div>
     </li>
   );
 };
@@ -95,6 +98,7 @@ MSHTreeNode.propTypes = {
     PropTypes.node,
     PropTypes.string,
   ]).isRequired,
+  index: PropTypes.number.isRequired,
   date: PropTypes.string.isRequired,
 
   isLocked: PropTypes.bool.isRequired,

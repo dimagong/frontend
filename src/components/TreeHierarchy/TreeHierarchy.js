@@ -99,10 +99,11 @@ const TreeHierarchy = (props) => {
     <div className="tree-hierarchy" {...wrapperAttrs}>
       <TreeRoot
         nodes={tree.items}
-        renderNodeList={({ root, children }) => <components.NodeList root={root} children={children} />}
-        renderNode={({ node: { value: node }, children }) => (
+        renderNodeList={({ root, index, children }) => <components.NodeList root={root} index={index} children={children} />}
+        renderNode={({ index, node: { value: node }, children }) => (
           <components.Element
             node={node}
+            index={index}
             selected={selectedIds.includes(node.nodeId)}
             onSelect={() => onSelect(node)}
             expanded={expandedIds.includes(node.nodeId)}

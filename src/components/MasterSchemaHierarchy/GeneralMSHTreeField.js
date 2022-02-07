@@ -8,6 +8,7 @@ const GeneralMSHTreeField = (props) => {
   const {
     name,
     date,
+    index,
     selected,
     isLocked,
     onSelect,
@@ -18,8 +19,9 @@ const GeneralMSHTreeField = (props) => {
   return (
     <MSHTreeNode
       className={className}
-      name={<div className="tree-hierarchy__name w-25" title={name}>{name}</div>}
+      name={<div className="tree-hierarchy__name-text w-25" title={name}>{name}</div>}
       date={date}
+      index={index}
       selected={selected}
       isLocked={isLocked}
       onSelect={onSelect}
@@ -35,6 +37,7 @@ const GeneralMSHTreeField = (props) => {
 
 GeneralMSHTreeField.propTypes = {
   name: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   date: PropTypes.string.isRequired,
 
   isLocked: PropTypes.bool.isRequired,

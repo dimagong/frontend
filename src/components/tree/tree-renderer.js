@@ -5,18 +5,19 @@ import TreeNode from './tree-node';
 import TreeNodeList from './tree-node-list';
 import { TreeContext } from './tree-context';
 
-const TreeRenderer = ({ root, nodes }) => {
+const TreeRenderer = ({ root, index, nodes }) => {
   const treeContext = useContext(TreeContext);
 
   return (
-    <TreeNodeList root={root}>
-      {nodes.map((node) => {
+    <TreeNodeList root={root} index={index}>
+      {nodes.map((node, index) => {
+        const negativeIndex = nodes.length - index;
         const key = treeContext.getKey(node);
         const children = treeContext.getChildren(node);
 
         return (
-          <TreeNode node={node} key={key}>
-            {children.length > 0 && <TreeRenderer root={false} nodes={children} />}
+          <TreeNode index={negativeIndex} node={node} key={key}>
+            {children.length > 0 && <TreeRenderer root={false} index={negativeIndex} nodes={children} />}
           </TreeNode>
         );
       })}
@@ -26,6 +27,7 @@ const TreeRenderer = ({ root, nodes }) => {
 
 TreeRenderer.propTypes = {
   root: PropTypes.bool.isRequired,
+  index: PropTypes.number.isRequired,
   nodes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 

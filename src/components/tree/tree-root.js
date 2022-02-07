@@ -14,7 +14,7 @@ const TreeRoot = ({ nodes, renderNode, renderNodeList, getKey = defaultGetKey, g
 
   return (
     <TreeContext.Provider value={value}>
-      <TreeRenderer root nodes={nodes} />
+      <TreeRenderer root index={0} nodes={nodes} />
     </TreeContext.Provider>
   );
 };
