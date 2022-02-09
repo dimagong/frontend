@@ -48,11 +48,12 @@
     }
   }
   .page-item {
-    &.prev-item, &.next-item {
+    &.prev-item,
+    &.next-item {
       .page-link {
         background-color: #b1b1b1;
-        padding: 7px 9px!important;
-        border-radius: 25px!important;
+        padding: 7px 9px !important;
+        border-radius: 25px !important;
         color: white;
         &:hover {
           background-color: #7367f0;
@@ -88,8 +89,8 @@
     &::-webkit-scrollbar {
       display: none;
     }
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 
   &_tab {
@@ -109,24 +110,44 @@
 .new-custom-tabs {
   position: fixed;
   z-index: 1;
-  width: 394px;
+  width: 418px;
+  max-height: 60%;
+  overflow-y: auto;
   left: 76px;
-  background: #F8F8F8;
-  border: 1px solid #0070B8;
+  top: 93px;
+  background: #f8f8f8;
+  border-right: 13px solid transparent;
+  outline: 1px solid #0070b8;
   box-sizing: border-box;
   box-shadow: 0px 4px 4px rgba(115, 103, 240, 0.15);
+
+  &__surveys {
+    top: 164px;
+  }
+
   .pagination {
     flex-direction: column;
     margin-bottom: 0;
-    .page-item.active .page-link {
-      background:#fff;
-      transform: initial;
-      border-top: 1px solid #0070b8;
-      border-bottom: 1px solid #0070B8;
 
+    .page-item.active .page-link {
+      background: #0070b8;
+      transform: initial;
+      // border-top: 1px solid #0070b8;
+      // border-bottom: 1px solid #0070B8;
     }
     .page-item.active .page-link .tabs-text-container {
-      // color: #fff;
+      color: #fff;
+    }
+    .page-item.active .page-link .icon-container {
+      background: #fff;
+      border-radius: 50%;
+    }
+    .page-item.active .page-link .icon-container.icon-none {
+      background: transparent;
+    }
+    .page-item.active .page-link .icon-container > img {
+      width: 18px;
+      height: 19px;
     }
   }
   .page {
@@ -134,19 +155,25 @@
       width: 100%;
       border-radius: 0;
       margin-bottom: 10px;
+      margin-right: 10px;
       .page-link .tabs-text-container {
         font-size: 22px;
         color: #707070;
         font-weight: normal;
         line-height: normal;
-
+      }
+      .page-link .icon-container {
+        width: 29px;
+        height: 29px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .page-link {
         background: #fff;
-        border-bottom: 1px solid transparent;
-        border-top: 1px solid transparent;
+        // border-bottom: 1px solid transparent;
+        // border-top: 1px solid transparent;
       }
-
     }
     &-link {
       width: 100%;
@@ -155,9 +182,8 @@
       justify-content: space-between;
       padding: 25px 60px 26px 37px;
       background: #fff;
-      border-radius: 0!important;
+      border-radius: 0 !important;
     }
-
   }
   &_tabs {
     flex-direction: column;
@@ -168,25 +194,61 @@
   .title {
     font-weight: bold;
     font-size: 34px;
-    color: #0070B8;
-    margin-top: 21px;
+    color: #0070b8;
+    margin-top: 25px;
     margin-left: 25px;
     margin-bottom: 29px;
     line-height: 20px;
+    display: flex;
+    justify-content: space-between;
+    &-number {
+      font-weight: normal;
+      font-size: 24px;
+      line-height: 20px;
+      margin-right: 65px;
+    }
   }
 }
 
 .nav-column {
   width: 76px;
   left: 0;
+  top: 92px;
   z-index: 1;
   position: fixed;
   &-item {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #0070B8;
+    background: #0070b8;
     height: 63px;
     cursor: pointer;
+    margin-bottom: 7px;
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
+.new-custom-tabs::-webkit-scrollbar {
+  width: 4px;
+}
+.new-custom-tabs::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 73px;
+}
+.new-custom-tabs::-webkit-scrollbar-thumb {
+  background: #0070b8;
+}
+.new-custom-tabs::-webkit-scrollbar-thumb:hover {
+  background: #0070b8;
+}
+
+// /* Handle */
+// ::-webkit-scrollbar-thumb {
+//   background: #0070B8;
+// }
+
+// /* Handle on hover */
+// ::-webkit-scrollbar-thumb:hover {
+//   background: #0070B8;
+// }
