@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "react-feather";
 import { Pagination, PaginationLink, PaginationItem } from "reactstrap";
 
 import icon from "../../assets/img/icons/new-check.png";
 import appsIcon from "../../assets/img/icons/apps.png";
-import surveyIcon from '../../assets/img/icons/survey.png'
+import surveyIcon from "../../assets/img/icons/survey.png";
+
+import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
 import "./styles.scss";
 
@@ -12,6 +14,8 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
   const [isScrolled, setIsScrolled] = useState(false);
   const [isShowApps, setIsShowApps] = useState(false);
   const [isShowSurveys, setIsShowSurveys] = useState(false);
+
+  const navRef = useRef();
 
   const apps = tabs.filter((tab) => tab.hasOwnProperty("d_form_id"));
   const surveys = tabs.filter((tab) => !tab.hasOwnProperty("d_form_id"));
@@ -31,18 +35,21 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
     }
   };
 
-  const handleTogle = (display) =>{
-    if (display === 'apps') {
-      setIsShowApps(true)
-      setIsShowSurveys(false)
-    } else if (display === 'surveys') {
-      setIsShowSurveys(true)
-      setIsShowApps(false)
+  const handleTogle = (display) => {
+    if (display === "apps") {
+      setIsShowApps(true);
+      setIsShowSurveys(false);
+    } else if (display === "surveys") {
+      setIsShowSurveys(true);
+      setIsShowApps(false);
     } else {
       setIsShowApps(false);
       setIsShowSurveys(false);
     }
-  }
+  };
+
+  useOutsideClick(navRef, handleTogle);
+  useOutsideFocus(navRef, handleTogle);
 
   const scrollIntoContainerView = (tab) => {
     const element = document.getElementById(tab);
@@ -116,35 +123,49 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, document.getElementById(active)]);
-
   //** TODO add mt-1 to other sections
   return (
     <>
       <div className="nav-column">
-        <div className="nav-column-item" onClick={() => !isShowApps ? handleTogle('apps') : handleTogle()}>
+        <div className="nav-column-item" onClick={() => (!isShowApps ? handleTogle("apps") : handleTogle())}>
           <img src={appsIcon} />
         </div>
-        <div className="nav-column-item" onClick={() => !isShowSurveys ? handleTogle('surveys') : handleTogle()}>
+        <div className="nav-column-item" onClick={() => (!isShowSurveys ? handleTogle("surveys") : handleTogle())}>
           <img src={surveyIcon} />
         </div>
       </div>
       {isShowApps && (
-        <Pagination className="new-custom-tabs">
-          <span className="title">Applications<span className={'title-number'}> {apps.filter((app) => app.icon !== 'null').length}/{apps.length}</span></span>
-          <div className="new-custom-tabs_tabs" id={"tabs-container"}>
-            {withIcons ? renderTabsWithIcons(apps) : renderTabsWithoutIcons(apps)}
-          </div>
-        </Pagination>
+        <div ref={navRef}>
+          <Pagination className="new-custom-tabs">
+            <span className="title">
+              Applications
+              <span className={"title-number"}>
+                {" "}
+                {apps.filter((app) => app.icon !== "null").length}/{apps.length}
+              </span>
+            </span>
+            <div className="new-custom-tabs_tabs" id={"tabs-container"}>
+              {withIcons ? renderTabsWithIcons(apps) : renderTabsWithoutIcons(apps)}
+            </div>
+          </Pagination>
+        </div>
       )}
       {isShowSurveys && (
-        <Pagination className="new-custom-tabs new-custom-tabs__surveys">
-          <span className="title">Surveys <span className={'title-number'}> {surveys.filter((survey) => survey.finished_at !== null).length}/{surveys.length}</span></span>
-          <div className="new-custom-tabs_tabs" id={"tabs-container"}>
-            {withIcons ? renderTabsWithIcons(surveys) : renderTabsWithoutIcons(surveys)}
-          </div>
-        </Pagination>
+        <div ref={navRef}>
+          <Pagination className="new-custom-tabs new-custom-tabs__surveys">
+            <span className="title">
+              Surveys{" "}
+              <span className={"title-number"}>
+                {" "}
+                {surveys.filter((survey) => survey.finished_at !== null).length}/{surveys.length}
+              </span>
+            </span>
+            <div className="new-custom-tabs_tabs" id={"tabs-container"}>
+              {withIcons ? renderTabsWithIcons(surveys) : renderTabsWithoutIcons(surveys)}
+            </div>
+          </Pagination>
+        </div>
       )}
-      {console.log(apps)}
     </>
   );
 };
