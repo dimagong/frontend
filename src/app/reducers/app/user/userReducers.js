@@ -272,6 +272,10 @@ const getUserByIdSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.manager = {...payload, onboarding: payload.onboardings.find( onboarding => onboarding.id === state.user.manager.onboarding.id)}
+
+  const userIndex = state.user.managers.findIndex(manager => manager.id === payload.id);
+
+  state.user.managers[userIndex] = payload;
 };
 
 const updateUserSuccess = (state, { payload }) => {

@@ -97,7 +97,8 @@ const UserOnboardingDForm = ({ isManualSave }) => {
       isFormMutated.current = false
     }
 
-    dispatch(submitdFormNewVersionRequest({dForm: manager.onboarding.d_form, data, userId: manager.id}))
+    dispatch(submitdFormNewVersionRequest({dForm: manager.onboarding.d_form, data, userId: manager.id}));
+    dispatch(getUserByIdRequest({userId: manager.id}))
   };
   const handleRefresh = () => {
     refreshOnboarding.current(manager.id);
