@@ -142,8 +142,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
         tabs={formatTabs(userApplications)}
         onChange={(application) => {
           handleNavClick(application)
-        }}
-        scrollOnStart/>
+        }}/>
         </Col>
       </Row>
     <Row style={{maxWidth: "1024px", marginLeft: "95px"}}>
