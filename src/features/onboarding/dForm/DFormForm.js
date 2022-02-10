@@ -166,6 +166,7 @@ const DFormForm = ({isCreate}) => {
             )}
             {!!dForm.groups.length && (isCreate ? isDFormCreationFormInitialized : true) && (
               <FormCreate fileLoader={false}
+                          isShowErrors={true}
                           submitDForm={submitDForm}
                           liveValidate={false}
                           isShowToggleProtectedProperties={true}

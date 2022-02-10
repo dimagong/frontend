@@ -237,7 +237,8 @@ class FormCreate extends React.Component {
       controlTypes: Constants.FIELD_TYPES,
       type: Constants.FIELD_TYPE_TEXT,
       section: '',
-      uiSchema: propsDFormUiSchema
+      uiSchema: propsDFormUiSchema,
+      isShowErrors: props.isShowErrors
     };
 
   }
@@ -312,67 +313,71 @@ class FormCreate extends React.Component {
     });
   }
 
+  requiredFieldsHandle = (formData) => {
+      let requiredFields = this.state.schema.required;
+
+      let getFieldSection = (field) => this.state.uiSchema.sections[field];
+
+      let isFieldEmpty = (field) => (
+          formData[field] === ""
+          || (Array.isArray(formData[field]) && formData[field].length === 0)
+          || formData[field] === null
+          || formData[field] === false
+      );
+
+      // Check is required fields are filled. Stop submitting and show error if true
+      if (requiredFields?.length) {
+          let errors = {
+              field: []
+          };
+          // eslint-disable-next-line array-callback-return
+          requiredFields.map((field) => {
+              if (isFieldEmpty(field)) {
+
+                  const section = getFieldSection(field);
+
+                  // eslint-disable-next-line array-callback-return
+                  if (!section) return;
+
+                  // eslint-disable-next-line no-mixed-operators
+                  if (this.state.uiSchema[field] && (Constants.UI_HIDDEN in this.state.uiSchema[field])
+                      // eslint-disable-next-line no-mixed-operators,array-callback-return
+                      || this.state.uiSchema[field] && (this.state.uiSchema[field][Constants.UI_HIDDEN])) return;
+
+                  if (!errors[section]) {
+                      errors[section] = []
+                  }
+
+                  errors[section].push(field);
+                  errors.field.push(field)
+              }
+          });
+
+          if (Object.keys(errors).length > 1) {
+              this.setState({
+                  ...this.state,
+
+                  uiSchema: {
+                      ...this.state.uiSchema,
+                      errors,
+                  }
+              });
+
+              return false;
+          }
+      }
+
+      return true;
+  }
+
   // submits, changes
   formSubmit = (event) => {
 
     let formData = event.formData;
 
-    // error handling
-
-    let requiredFields = this.state.schema.required;
-
-    let getFieldSection = (field) => this.state.uiSchema.sections[field];
-
-    let isFieldEmpty = (field) => (
-      formData[field] === ""
-      || (Array.isArray(formData[field]) && formData[field].length === 0)
-      || formData[field] === null
-      || formData[field] === false
-    );
-
-    // Check is required fields are filled. Stop submitting and show error if true
-    if (requiredFields?.length) {
-      let errors = {
-        field: []
-      };
-      // eslint-disable-next-line array-callback-return
-      requiredFields.map((field) => {
-        if (isFieldEmpty(field)) {
-
-          const section = getFieldSection(field);
-
-          // eslint-disable-next-line array-callback-return
-          if (!section) return;
-
-          // eslint-disable-next-line no-mixed-operators
-          if (this.state.uiSchema[field] && (Constants.UI_HIDDEN in this.state.uiSchema[field])
-            // eslint-disable-next-line no-mixed-operators,array-callback-return
-            || this.state.uiSchema[field] && (this.state.uiSchema[field][Constants.UI_HIDDEN])) return;
-
-          if (!errors[section]) {
-            errors[section] = []
-          }
-
-          errors[section].push(field);
-          errors.field.push(field)
-        }
-      });
-
-      if (Object.keys(errors).length > 1) {
-        this.setState({
-          ...this.state,
-
-          uiSchema: {
-            ...this.state.uiSchema,
-            errors,
-          }
-        });
-
+    if(this.state.isShowErrors && !this.requiredFieldsHandle(formData)) {
         return;
-      }
     }
-
-    // end error handling
 
     Object.keys(formData).forEach(key => {
       if (key in this.state.uiSchema &&

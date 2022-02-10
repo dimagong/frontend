@@ -183,6 +183,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
                                 />
                               ) : application.d_form.access_type === 'user-lock' ? (
                                 <FormCreate
+                                  isShowErrors={true}
                                   {...commonFormProps}
                                   inputDisabled={true}
                                   onSaveButtonHidden={isDisabledSubmit()}
@@ -191,6 +192,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
                                 />
                               ) : (
                                 <FormCreate
+                                  isShowErrors={true}
                                   {...commonFormProps}
                                   inputDisabled={false}
                                   onSaveButtonHidden={true}
