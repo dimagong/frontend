@@ -65,8 +65,14 @@ const submitdFormSuccess = (state, {payload}) => {
 const submitdFormNewVersionSuccess = (state, {payload}) => {
   state.isLoading = false;
   state.isError = null;
-  state.user.manager.onboarding.d_form.updated_at = payload.updated_at;
-}
+
+  state.user.manager.onboarding.d_form = payload;
+
+  const managerIndex = state.user.managers.findIndex(item => item.id === payload.managerId);
+
+  const managerOnboardingIndex = state.user.managers[managerIndex].onboardings.findIndex(onboarding => onboarding.d_form.id === payload.id);
+  state.user.managers[managerIndex].onboardings[managerOnboardingIndex].d_form = payload;
+};
 
 const submitdFormDataSuccess = (state, {payload}) => {
   state.isLoading = false;

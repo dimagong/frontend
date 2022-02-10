@@ -55,6 +55,7 @@ const {
   changedFormStatusRequest,
   changedFormStatusError,
   setContext,
+  getUserByIdRequest,
 } = appSlice.actions;
 
 function* getdForms() {
@@ -90,12 +91,14 @@ function* submitdForm({payload}) {
 }
 
 function* submitdFormNewVersion({payload}) {
-  try {
-    const response = yield call(dFormApi.submitdFormNewVersion, payload);
-    yield put(submitdFormNewVersionSuccess(response));
-  } catch (error) {
-    yield put(submitdFormNewVersionError(error));
-    console.log(error);
+
+  const response = yield call(dFormApi.submitdFormNewVersion, payload);
+
+  if (response?.message) {
+    yield put(submitdFormNewVersionError(response.message));
+  } else {
+    yield put(getUserByIdRequest({userId: payload.userId}));
+    yield put(submitdFormNewVersionSuccess({...response, managerId: payload.userId}));
   }
 }
 

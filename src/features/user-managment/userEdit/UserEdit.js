@@ -362,7 +362,7 @@ const UserEdit = () => {
                       <Card>
                         <UserOnboardingForm isCreate={isCreate}/>
                         {!isCreate.current && (
-                          <UserOnboardingDForm />
+                          <UserOnboardingDForm isManualSave={true} />
                         )}
                       </Card>
 

@@ -60,7 +60,7 @@ const WorkflowForm = ({ workflowModalType }) => {
 
         break;
       case "Create":
-      dispatch(createWorkflowRequest({...workflow, context: context === "dForm" ? "application" : "survey"}));
+      dispatch(createWorkflowRequest({...workflow, context}));
       break;
       default:
         return <></>

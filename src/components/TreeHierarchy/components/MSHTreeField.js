@@ -10,6 +10,7 @@ import MSHTreeNode from "./MSHTreeNode";
 const MSHTreeField = (props) => {
   const {
     name,
+    index,
     files,
     value,
     date,
@@ -53,7 +54,8 @@ const MSHTreeField = (props) => {
   return (
     <MSHTreeNode
       className={className}
-      name={<div className="tree-hierarchy__name w-25" title={name}>{name}</div>}
+      index={index}
+      name={<div className="tree-hierarchy__name-text w-25" title={name}>{name}</div>}
       date={date}
       selected={selected}
       isLocked={isLocked}
@@ -73,6 +75,7 @@ const MSHTreeField = (props) => {
 
 MSHTreeField.propTypes = {
   name: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   date: PropTypes.string.isRequired,
 
   files: PropTypes.arrayOf(PropTypes.object),

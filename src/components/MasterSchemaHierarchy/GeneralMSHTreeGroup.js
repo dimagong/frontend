@@ -16,6 +16,7 @@ const GeneralMSHTreeGroup = (props) => {
   const {
     name,
     date,
+    index,
     isLocked,
     expanded,
     onExpand,
@@ -50,10 +51,11 @@ const GeneralMSHTreeGroup = (props) => {
   return (
     <MSHTreeNode
       className={className}
+      index={index}
       name={
         <div className="d-flex w-25" >
-          <div className="tree-hierarchy__name d-inline-block pr-3 position-relative" title={name}>
-            {name}
+          <div className="tree-hierarchy__name pr-3 position-relative" title={name}>
+            <div className="tree-hierarchy__name-text">{name}</div>
             <div className="position-absolute" style={{ right: "1rem", top: "50%", transform: "translateY(-50%)" }} ref={popupRef}>
               <button
                 type="button"
@@ -125,6 +127,7 @@ GeneralMSHTreeGroup.defaultProps = {
 
 GeneralMSHTreeGroup.propTypes = {
   name: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   date: PropTypes.string.isRequired,
   isLocked: PropTypes.bool.isRequired,
 

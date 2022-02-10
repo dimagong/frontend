@@ -40,7 +40,7 @@ const UpdatedAtText = ({ loading, date }) => {
   return `Progress saved: ${moment(date).format('YYYY-MM-DD HH:mm:ss')}`;
 };
 
-const UserOnboardingDForm = () => {
+const UserOnboardingDForm = ({ isManualSave }) => {
   const [isStateConfig] = useState(false);
   const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
   const manager = useSelector(selectManager);
@@ -49,17 +49,32 @@ const UserOnboardingDForm = () => {
 
   const updatedAt = React.useMemo(() => manager.onboarding.d_form.updated_at, [manager.onboarding.d_form.updated_at]);
   const updatedAtTextLoding = useRef(false);
+  const isFormMutated = useRef(false);
+  const tempData = useRef(null);
 
-  const debounceOnSave = useRef(debounce((data, dForm, userId) => {
+  const handleSave = (data, dForm, userId) => {
     updatedAtTextLoding.current = true;
 
-    dispatch(submitdFormDataRequest({dForm: dForm, data}))
+    dispatch(submitdFormDataRequest({dForm: dForm, data}));
     // todo for refresh (refactor)
     dispatch(getUserByIdRequest({userId: userId}))
-  }, 1500));
+  };
+
+  const debounceOnSave = useRef(debounce(handleSave, 1500));
   const refreshOnboarding = useRef(debounce((userId) => {
     dispatch(getUserByIdRequest({userId: userId}))
   }, 1500));
+
+  const handleFormChange = (data) => {
+    if (isManualSave) {
+      if (!isFormMutated.current) {
+        isFormMutated.current = true;
+      }
+      tempData.current = data;
+    } else {
+      debounceOnSave.current(data, manager.onboarding.d_form, manager.id)
+    }
+  };
 
   useEffect(() => {
     if (!loading) {
@@ -78,13 +93,41 @@ const UserOnboardingDForm = () => {
   };
 
   const submitOnboardingForm = data => {
-    dispatch(submitdFormNewVersionRequest({dForm: manager.onboarding.d_form, data}))
+    if (isManualSave) {
+      isFormMutated.current = false
+    }
+
+    dispatch(submitdFormNewVersionRequest({dForm: manager.onboarding.d_form, data, userId: manager.id}));
+    dispatch(getUserByIdRequest({userId: manager.id}))
   };
   const handleRefresh = () => {
     refreshOnboarding.current(manager.id);
     setRefreshClassName(`${initRefreshClassName} rotating`)
     setRefreshClassName(`${initRefreshClassName} rotating`)
   };
+
+  const handlePageLeave = (e) => {
+    e.preventDefault();
+    e.returnValue = ''; //required for Chrome
+  };
+
+  useEffect(() => {
+    // Ask user if he want to leave page without saving changes. Work in case if user leave application
+    window.addEventListener("beforeunload", handlePageLeave);
+
+    return () => {
+      window.removeEventListener("beforeunload", handlePageLeave);
+
+      if (isFormMutated.current) {
+        // Ask user if he want to save changes before component will unmount
+        const isSaveChanges = window.confirm("Save changes before leave?");
+
+        if (isSaveChanges) {
+          submitOnboardingForm(tempData.current)
+        }
+      }
+    }
+  }, []);
 
   return (
     <Col md="12" className="mb-4">
@@ -110,6 +153,7 @@ const UserOnboardingDForm = () => {
         <CardBody className="pt-0">
           <hr/>
           <FormCreate
+            isShowErrors={false}
             fileLoader={true}
             submitDForm={submitDForm}
             liveValidate={false}
@@ -117,7 +161,7 @@ const UserOnboardingDForm = () => {
             fill={true}
             onSaveButtonHidden={true}
             statusChanged={statusChanged}
-            onChange={(data) => debounceOnSave.current(data, manager.onboarding.d_form, manager.id)}
+            onChange={handleFormChange}
             dForm={manager.onboarding.d_form}
             onboardingUser={manager}
             isStateConfig={isStateConfig}

@@ -25,6 +25,9 @@
   $accent-color: #63c9ef;
 
   min-height: 400px;
+  z-index: 1;
+  position: relative;
+
   &__list {
     @extend %list-reset;
     padding-left: 13px;
@@ -36,8 +39,6 @@
 
   &__node {
     display: block;
-
-    //min-width: max-content;
 
     padding: 3px 0;
 
@@ -53,6 +54,9 @@
     border-radius: 5px;
     background-color: transparent;
 
+    z-index: 2;
+    position: relative;
+
     transition: background-color 0.2s ease;
 
     &:hover {
@@ -66,6 +70,11 @@
     @at-root .tree-hierarchy__node--selected > & {
       background-color: $color;
     }
+  }
+
+  &__node-children {
+    z-index: 1;
+    position: relative;
   }
 
   &__mark-icon {
@@ -85,9 +94,12 @@
   }
 
   &__name {
+    max-width: 100%;
+  }
+
+  &__name-text {
     font-size: 1.125rem;
 
-    max-width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -141,10 +153,10 @@
     font-size: 0.75rem;
     line-height: 1.3;
 
-    z-index: 1;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.160784);
 
     position: relative;
+
     &:after {
       content: "";
       width: 80%;
