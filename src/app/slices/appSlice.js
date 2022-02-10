@@ -73,19 +73,14 @@ export const initialState = {
     activityTypes: [],
   },
   masterSchema: {
-    fields: [],
-    list: [],
     groups: {},
-    users: {},
-    unapproved: {},
     hierarchies: {},
+    masterSchemas: [],
+    unapprovedFields: {},
+    selectedMasterSchemaId: null,
+    fields: [],
+    users: {},
     related_applications: {},
-    selectedId: null,
-    search: {
-      value: "",
-      dates: [],
-      filters: [],
-    },
   }
 };
 

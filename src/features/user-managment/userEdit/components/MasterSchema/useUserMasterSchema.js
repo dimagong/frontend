@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useDidUpdate } from "hooks/use-did-update";
 
 import masterSchemaApi from "api/masterSchema/masterSchema";
-import { normalizeGroups, normalizeHierarchy, normalizeUnapproved } from "api/masterSchema/normalizers";
+import { normalizeGroups, normalizeHierarchy, normalizeFields } from "api/masterSchema/normalizers";
 
 const useFreshFn = (fn) => {
   const fnRef = React.useRef(fn);
@@ -190,7 +190,7 @@ const useUserMasterSchemaUnapproved = () => {
       return run(
         masterSchemaApi
           .getUnapproved({ id: masterSchemaId })
-          .then((unapproved) => (unapproved ? normalizeUnapproved(unapproved) : null))
+          .then((unapproved) => (unapproved ? normalizeFields(unapproved) : null))
           .catch((error) => {
             toast.error(error);
             return Promise.reject(error);

@@ -1,6 +1,7 @@
 import "./styles.scss";
 
 import _ from "lodash";
+import { Col, Row, Spinner } from "reactstrap";
 import PropTypes from "prop-types";
 import { get, isEmpty } from "lodash/fp";
 import React, { useMemo, useState } from "react";
@@ -9,12 +10,12 @@ import { useDispatch, useSelector } from "react-redux";
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
-import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
+import { selectMasterSchemaHierarchy } from "app/selectors/masterSchemaSelectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
 
 import { useDidMount } from "hooks/use-did-mount";
-import { useDidUpdate } from "hooks/use-did-update";
+import { useStoreQuery } from "hooks/useStoreQuery";
 
 import SearchAndFilter from "components/SearchAndFilter";
 import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
@@ -22,28 +23,36 @@ import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from 
 import GeneralMSHTreeElement from "./GeneralMSHTreeElement";
 
 const {
-  getMasterSchemaHierarchyRequest,
   getdFormsRequest,
-  setMasterSchemaSearch,
+  getMasterSchemaHierarchyRequest,
   addFieldToMasterSchemaRequest,
   addGroupToMasterSchemaRequest,
 } = appSlice.actions;
 
 const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
 
-const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundColor }) => {
-  const dispatch = useDispatch();
-  const allDForms = useSelector(selectdForms);
-  const search = useSelector(masterSchemaSelectors.selectSearch);
-  const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
+const initialSearch = { name: "", application_ids: [], date_begin: null, date_end: null };
 
-  const expandable = useTreeHierarchyExpandable(hierarchy);
+const MasterSchemaHierarchy = ({ masterSchemaId, selectedNodes, onSelect, backgroundColor }) => {
+  const dispatch = useDispatch();
+
+  const allDForms = useStoreQuery(() => getdFormsRequest(), selectdForms);
+
+  const [search, setSearch] = React.useReducer((s, p) => ({ ...s, ...p }), initialSearch);
+
+  const hierarchy = useStoreQuery(
+    () => getMasterSchemaHierarchyRequest({ masterSchemaId, ...search }),
+    selectMasterSchemaHierarchy(masterSchemaId),
+    [masterSchemaId, search]
+  );
+
+  const expandable = useTreeHierarchyExpandable(hierarchy.data);
+  const selectedIds = React.useMemo(() => selectedNodes.map(get("nodeId")), [selectedNodes]);
 
   const [filterTypes, setFilterTypes] = useState([]);
   const filterNames = useMemo(() => filterTypes.map(get("name")), [filterTypes]);
 
   const elementCreationLoading = useSelector(createLoadingSelector(elementAdditionActionTypes, true));
-  const hierarchyLoading = useSelector(createLoadingSelector([getMasterSchemaHierarchyRequest.type], true));
 
   const onElementCreationSubmit = ({ type, ...creationData }) => {
     switch (type) {
@@ -60,7 +69,8 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
 
   const onSearchSubmit = (searchName) => {
     const searchValue = searchName.hasOwnProperty("target") ? searchName.target.value : searchName;
-    dispatch(setMasterSchemaSearch({ ...search, value: searchValue }));
+
+    setSearch({ name: searchValue });
   };
 
   const onFilterSubmit = (filter, filterHierarchy) => {
@@ -76,7 +86,7 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
       "name"
     ).map((item) => item.id);
 
-    dispatch(setMasterSchemaSearch({ ...search, filters }));
+    setSearch({ application_ids: filters });
   };
 
   const getDateFormat = (date) => {
@@ -91,82 +101,120 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
   const onCalendarChange = (date) => {
     const formattedDate = getDateFormat(date);
 
-    dispatch(setMasterSchemaSearch({ ...search, dates: formattedDate }));
+    setSearch({ ...search, dates: formattedDate });
   };
 
   const isSearchEmpty = React.useCallback(
-    () => isEmpty(search.value) && isEmpty(search.filters) && !search.dates.some(Boolean),
-    [search.dates, search.filters, search.value]
+    () => isEmpty(search.name) && isEmpty(search.application_ids) && !search.date_begin && !search.date_begin,
+    [search.application_ids, search.date_begin, search.name]
   );
 
   useDidMount(() => {
-    dispatch(getdFormsRequest());
-
-    if (hierarchy?.name) {
+    if (hierarchy.data?.name) {
       setFilterTypes(
-        allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0)
+        allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.data.name).length > 0)
       );
     }
   });
 
   React.useEffect(() => {
-    if (!hierarchy || hierarchyLoading) return;
+    if (!hierarchy.data || hierarchy.isLoading) return;
     isSearchEmpty() ? expandable.expandOnlyRoot() : expandable.expandAll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hierarchy]);
+  }, [hierarchy.data]);
 
-  useDidUpdate(() => {
-    dispatch(getMasterSchemaHierarchyRequest({ id: selectedId }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
+  if (hierarchy.isLoading) {
+    return (
+      <Row className="position-relative">
+        <Col>
+          <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
+            <SearchAndFilter
+              placeholder=""
+              handleSearch={onSearchSubmit}
+              filterTypes={{ applications: filterNames }}
+              applyFilter={onFilterSubmit}
+              onCalendarChange={onCalendarChange}
+              isCalendar
+              hasIcon
+              filterTabPosition={"left"}
+              dataToFilter={hierarchy.data}
+            />
+          </div>
+
+          <div className="d-flex justify-content-center pt-4">
+            <Spinner />
+          </div>
+        </Col>
+      </Row>
+    );
+  }
+
+  if (hierarchy.data) {
+    return (
+      <Row className="position-relative">
+        <Col>
+          <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
+            <SearchAndFilter
+              placeholder=""
+              handleSearch={onSearchSubmit}
+              filterTypes={{ applications: filterNames }}
+              applyFilter={onFilterSubmit}
+              onCalendarChange={onCalendarChange}
+              isCalendar
+              hasIcon
+              filterTabPosition={"left"}
+              dataToFilter={hierarchy.data}
+            />
+
+            <div className="d-flex justify-content-end pb-1">
+              <MSEButton
+                className="p-0"
+                textColor="currentColor"
+                backgroundColor="transparent"
+                disabled={!expandable.isDecedentsExpanded}
+                onClick={expandable.expandOnlyRoot}
+              >
+                Collapse
+              </MSEButton>
+            </div>
+          </div>
+
+          <TreeHierarchy
+            hierarchy={hierarchy.data}
+            expandedIds={expandable.expandedIds}
+            onExpand={expandable.expand}
+            onCollapse={expandable.collapse}
+            selectedIds={selectedIds}
+            onSelect={onSelect}
+            elementCreationLoading={elementCreationLoading}
+            onElementCreationSubmit={onElementCreationSubmit}
+            components={{ Element: GeneralMSHTreeElement }}
+          />
+        </Col>
+      </Row>
+    );
+  }
 
   return (
-    <div className="position-relative">
-      <div className={hierarchy ? "position-sticky zindex-1" : ""} style={{ top: "0px", left: "0px", backgroundColor }}>
-        <SearchAndFilter
-          placeholder=""
-          handleSearch={onSearchSubmit}
-          filterTypes={{ applications: filterNames }}
-          applyFilter={onFilterSubmit}
-          onCalendarChange={onCalendarChange}
-          isCalendar
-          hasIcon
-          filterTabPosition={"left"}
-          dataToFilter={hierarchy}
-        />
+    <Row>
+      <Col>
+        <div style={{ backgroundColor }}>
+          <SearchAndFilter
+            placeholder=""
+            handleSearch={onSearchSubmit}
+            filterTypes={{ applications: filterNames }}
+            applyFilter={onFilterSubmit}
+            onCalendarChange={onCalendarChange}
+            isCalendar
+            hasIcon
+            filterTabPosition={"left"}
+            dataToFilter={hierarchy.data}
+          />
+        </div>
 
-        {hierarchy && (
-          <div className="d-flex justify-content-end pb-1">
-            <MSEButton
-              className="p-0"
-              textColor="currentColor"
-              backgroundColor="transparent"
-              disabled={!expandable.isDecedentsExpanded}
-              onClick={expandable.expandOnlyRoot}
-            >
-              Collapse
-            </MSEButton>
-          </div>
-        )}
-      </div>
-
-      {hierarchy ? (
-        <TreeHierarchy
-          hierarchy={hierarchy}
-          expandedIds={expandable.expandedIds}
-          onExpand={expandable.expand}
-          onCollapse={expandable.collapse}
-          selectedIds={selectedIds}
-          onSelect={onSelect}
-          elementCreationLoading={elementCreationLoading}
-          onElementCreationSubmit={onElementCreationSubmit}
-          components={{ Element: GeneralMSHTreeElement }}
-          key={hierarchy.name}
-        />
-      ) : (
         <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
-      )}
-    </div>
+      </Col>
+    </Row>
   );
 };
 
@@ -175,11 +223,9 @@ MasterSchemaHierarchy.defaultProps = {
 };
 
 MasterSchemaHierarchy.propTypes = {
-  hierarchy: PropTypes.object,
-
+  masterSchemaId: PropTypes.number.isRequired,
   onSelect: PropTypes.func.isRequired,
-  selectedIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-
+  selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
   backgroundColor: PropTypes.string,
 };
 

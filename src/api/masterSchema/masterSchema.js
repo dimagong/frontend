@@ -5,6 +5,7 @@ import { masterSchemaOrganizations } from "constants/masterSchema";
 
 import * as Urls from "./constants";
 import * as Interfaces from "./interfaces";
+import { MasterSchemaFlatGroupsInterface, MasterSchemaGroupsInterface } from "./interfaces";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
@@ -23,8 +24,7 @@ const masterSchemaApi = {
       url: Urls.getMasterSchemaListUrl,
     })
       .then(flatResponseData, flatResponseError)
-      .then((response) => Interfaces.MasterSchemaArrayInterface.cast(response))
-      .then((casted) => Interfaces.MasterSchemaArrayInterface.validate(casted));
+      .then((data) => Interfaces.MasterSchemaArrayInterface.validate(data));
   },
 
   // renaming refactor - at the end remove getList method.
@@ -32,10 +32,10 @@ const masterSchemaApi = {
     return masterSchemaApi.getList();
   },
 
-  getHierarchy({ id, name, application_ids, date_begin, date_end }) {
+  getHierarchy({ masterSchemaId, name, application_ids, date_begin, date_end }) {
     return instance({
       method: "GET",
-      url: Urls.getMasterSchemaHierarchyUrl(id),
+      url: Urls.getMasterSchemaHierarchyUrl(masterSchemaId),
       params: {
         hidden_groups: [1],
         ...(name ? { name } : {}),
@@ -45,8 +45,7 @@ const masterSchemaApi = {
       },
     })
       .then(flatResponseData, flatResponseError)
-      .then((response) => Interfaces.MasterSchemaHierarchyInterface.cast(response))
-      .then((serialized) => Interfaces.MasterSchemaHierarchyInterface.validate(serialized));
+      .then((data) => Interfaces.MasterSchemaHierarchyInterface.validate(data));
   },
 
   getHierarchyByUserId(user_id, { name, application_ids, only_files, date_begin, date_end, show_empty_folders } = {}) {
@@ -69,6 +68,27 @@ const masterSchemaApi = {
       .then((response) => Interfaces.MasterSchemaHierarchyInterface.cast(response))
       .then((serialized) => Interfaces.MasterSchemaHierarchyInterface.validate(serialized));
   },
+
+  getAllMasterSchemaGroups({ masterSchemaId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaGroupsUrl(masterSchemaId),
+      params: { hidden_groups: [1] },
+    })
+      .then(flatResponseData, flatResponseError)
+      .then((data) => Interfaces.MasterSchemaFlatGroupsInterface.validate(data))
+  },
+
+  getUnapprovedFields({ masterSchemaId }) {
+    return instance({
+      method: "GET",
+      url: Urls.getMasterSchemaUnapprovedUrl(masterSchemaId),
+    })
+      .then(flatResponseData, flatResponseError)
+      .then((data) => Interfaces.MasterSchemaUnapprovedFieldsInterface.validate(data))
+  },
+
+  // refactored above
 
   addField({ name, parentId }) {
     return instance({
@@ -118,16 +138,6 @@ const masterSchemaApi = {
     }).then(flatResponseData, flatResponseError);
   },
 
-  getUnapproved({ id }) {
-    return instance({
-      method: "GET",
-      url: Urls.getMasterSchemaUnapprovedUrl(id),
-    })
-      .then(flatResponseData, flatResponseError)
-      .then((response) => Interfaces.MasterSchemaUnapprovedInterface.cast(response))
-      .then((serialized) => Interfaces.MasterSchemaUnapprovedInterface.validate(serialized))
-  },
-
   fieldsMakeParent({ parentId, fieldsIds }) {
     return instance({
       method: "PUT",
@@ -146,14 +156,6 @@ const masterSchemaApi = {
       data: {
         master_schema_field_ids: fieldsIds,
       },
-    }).then(flatResponseData, flatResponseError);
-  },
-
-  getGroups({ masterSchemaId }) {
-    return instance({
-      method: "GET",
-      url: Urls.getMasterSchemaGroupsUrl(masterSchemaId),
-      params: { hidden_groups: [1] },
     }).then(flatResponseData, flatResponseError);
   },
 

@@ -1,9 +1,10 @@
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { ValidationError } from "yup";
 
 import * as Urls from "./constants";
+import * as Interfaces from "./interfaces";
 import masterSchemaApi from "./masterSchema";
+import { buildRawHierarchy, buildRawMasterSchemas, getRawGroup, getRawField } from "./masterSchemaMockUtils";
 
 const flatPromise = async (promise) => {
   const result = [];
@@ -18,45 +19,61 @@ const flatPromise = async (promise) => {
   return result;
 };
 
-describe("masterSchemaApi", () => {
-  const server = setupServer();
+const server = setupServer();
 
+const mockResponse = (url, data) => server.use(rest.get(url, (req, res, ctx) => res(ctx.json({ data }))));
+
+describe("masterSchemaApi", () => {
   beforeAll(() => server.listen());
   afterEach(() => server.resetHandlers());
   afterAll(() => server.close());
 
-  describe("getAll", () => {
-    it("casting values", async () => {
-      server.use(
-        rest.get(Urls.getMasterSchemaListUrl, (req, res, ctx) => {
-          return res(ctx.json({ data: [{ id: "0", name: ".", organization_id: "0", organization_type: "." }] }));
-        })
-      );
+  it("getAll", async () => {
+    const mockMasterSchemas = buildRawMasterSchemas();
 
-      const [data] = await flatPromise(masterSchemaApi.getAll());
-      expect(data).toStrictEqual([{ id: 0, name: ".", organizationId: 0, organizationType: "." }]);
-    });
+    mockResponse(Urls.getMasterSchemaListUrl, mockMasterSchemas);
 
-    it("flatting error", async () => {
-      server.use(
-        rest.get(Urls.getMasterSchemaListUrl, (req, res, ctx) => {
-          return res(ctx.status(500), ctx.json({ error: "Internal Server Error." }));
-        })
-      );
+    const [data] = await flatPromise(masterSchemaApi.getAll());
+    const expected = Interfaces.MasterSchemaArrayInterface.validateSync(mockMasterSchemas);
 
-      const [, error] = await flatPromise(masterSchemaApi.getAll());
-      expect(error).toBe("Internal Server Error.");
-    });
+    expect(data).toStrictEqual(expected);
+  });
 
-    it("throwing validation error", async () => {
-      server.use(
-        rest.get(Urls.getMasterSchemaListUrl, (req, res, ctx) => {
-          return res(ctx.json({ data: [{ id: 0 }] }));
-        })
-      );
+  it("getHierarchy", async () => {
+    const masterSchemaId = 1;
+    const mockHierarchy = buildRawHierarchy("root", masterSchemaId);
 
-      const [,error] = await flatPromise(masterSchemaApi.getAll());
-      expect(error).toBeInstanceOf(ValidationError);
-    });
+    mockResponse(Urls.getMasterSchemaHierarchyUrl(masterSchemaId), mockHierarchy);
+
+    const [data] = await flatPromise(masterSchemaApi.getHierarchy({ masterSchemaId }));
+    const expected = Interfaces.MasterSchemaHierarchyInterface.validateSync(mockHierarchy);
+
+    expect(data).toStrictEqual(expected);
+  });
+
+  it("getAllMasterSchemaGroups", async () => {
+    const masterSchemaId = 1;
+    const mockGroups = [getRawGroup(1, "group1", 0), getRawGroup(2, "group2", 0)];
+
+    mockResponse(Urls.getMasterSchemaGroupsUrl(masterSchemaId), mockGroups);
+
+    const [data] = await flatPromise(masterSchemaApi.getAllMasterSchemaGroups({ masterSchemaId }));
+    const expected = Interfaces.MasterSchemaFlatGroupsInterface.validateSync(mockGroups);
+
+    expect(data).toStrictEqual(expected);
+  });
+
+  it("getUnapprovedFields", async () => {
+    const masterSchemaId = 1;
+    const mockFields = [
+      getRawField(1, "field1", 0, { application_names: ["someApp"], parent_group_name: "parentDir" }),
+    ];
+
+    mockResponse(Urls.getMasterSchemaUnapprovedUrl(masterSchemaId), mockFields);
+
+    const [data] = await flatPromise(masterSchemaApi.getUnapprovedFields({ masterSchemaId }));
+    const expected = Interfaces.MasterSchemaUnapprovedFieldsInterface.validateSync(mockFields);
+
+    expect(data).toStrictEqual(expected);
   });
 });

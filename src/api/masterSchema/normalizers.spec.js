@@ -1,6 +1,6 @@
 import { buildRawHierarchy } from "./masterSchemaMockUtils";
 import { MasterSchemaHierarchyInterface } from "./interfaces";
-import { normalizeHierarchy, normalizeNode } from "./normalizers";
+import { normalizeHierarchy, normalizeNode, normalizeFields, normalizeGroups } from "./normalizers";
 
 describe("normalizers", () => {
   it("normalizeNode", () => {
@@ -35,6 +35,13 @@ describe("normalizers", () => {
     const group = hierarchy.groups[0];
 
     const normalized = normalizeHierarchy(hierarchy);
+    const memberFirmGroup = normalized.children["group4"];//?
+    const memberFirmField1 = normalized.children["field5"];//?
+    const memberFirmField2 = normalized.children["field6"];//?
+
+    expect(memberFirmGroup.isMemberFirmGroup).toBe(true);
+    expect(memberFirmField1.isMemberFirmField).toBe(true);
+    expect(memberFirmField2.isMemberFirmField).toBe(true);
 
     expect(normalized.nodes[`field${field.id}`].id).toBe(field.id);
     expect(normalized.nodes[`group${group.id}`].id).toBe(group.id);
@@ -44,5 +51,23 @@ describe("normalizers", () => {
     expect(normalized.children[`group${group.id}`].id).toBe(group.id);
 
     expect(hierarchy.masterSchemaId).toBe(normalized.masterSchemaId);
+  });
+
+  it("normalizeFields", () => {
+    const hierarchy = MasterSchemaHierarchyInterface.cast(buildRawHierarchy());
+
+    const normalizedFields = normalizeFields(hierarchy.fields);
+
+    expect(normalizedFields[0]).toStrictEqual(normalizeNode(hierarchy.fields[0], { isContainable: false }));
+    expect(normalizedFields[1]).toStrictEqual(normalizeNode(hierarchy.fields[1], { isContainable: false }));
+  });
+
+  it("normalizeGroups", () => {
+    const hierarchy = MasterSchemaHierarchyInterface.cast(buildRawHierarchy());
+
+    const normalizedGroups = normalizeGroups(hierarchy.groups);
+
+    expect(normalizedGroups[0]).toStrictEqual(normalizeNode(hierarchy.groups[0], { isContainable: true }));
+    expect(normalizedGroups[1]).toStrictEqual(normalizeNode(hierarchy.groups[1], { isContainable: true }));
   });
 });
