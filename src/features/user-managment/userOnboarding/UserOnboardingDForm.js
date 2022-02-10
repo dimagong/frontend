@@ -97,8 +97,7 @@ const UserOnboardingDForm = ({ isManualSave }) => {
       isFormMutated.current = false
     }
 
-    dispatch(submitdFormNewVersionRequest({dForm: manager.onboarding.d_form, data}))
-    dispatch(getUserByIdRequest({userId: manager.id}))
+    dispatch(submitdFormNewVersionRequest({dForm: manager.onboarding.d_form, data, userId: manager.id}))
   };
   const handleRefresh = () => {
     refreshOnboarding.current(manager.id);
@@ -110,10 +109,6 @@ const UserOnboardingDForm = ({ isManualSave }) => {
     e.preventDefault();
     e.returnValue = ''; //required for Chrome
   };
-
-  useEffect(() => {
-    handleRefresh()
-  }, []);
 
   useEffect(() => {
     // Ask user if he want to leave page without saving changes. Work in case if user leave application

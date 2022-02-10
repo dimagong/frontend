@@ -78,6 +78,12 @@ const patchSettingsSuccess = (state, {payload}) => {
   state.user.dashboard.settings = payload;
 }
 
+const updateApllicationsOrderRequest = (state, { payload }) => {
+  state.isLoading = true;
+  state.isError = null;
+
+}
+
 const updateApllicationsOrderSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
