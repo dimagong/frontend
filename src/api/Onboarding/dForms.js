@@ -1,4 +1,4 @@
-import instance from "api";
+import instance, { requestLayout, } from "api";
 import {
   dFormActionsPath,
   dFormTriggersPath,
@@ -51,17 +51,8 @@ const dFormApi = {
     }
   },
   async submitdFormNewVersion({dForm, data}) {
-    try {
-      const result = await instance({
-        url: submitdFormNewVersionPath(dForm.id),
-        method: "PUT",
-        data
-      });
 
-      return result.data.data;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
+    return await requestLayout(submitdFormNewVersionPath(dForm.id), "PUT", data);
   },
   async changedFormStatus({dForm, status}) {
     try {
