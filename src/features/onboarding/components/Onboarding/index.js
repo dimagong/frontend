@@ -18,9 +18,7 @@ import {debounce} from 'lodash';
 import OnboardingSurvey from "../../OnboardingSurvey";
 import './styles.scss'
 
-import TabsArrayOfObjects from 'components/Tabs/TabsArrayOfObjects'
-
-import NewTabsArrayOfObjects from 'components/Tabs/NewTabsArrayOfObjects'
+import NavMenu  from 'components/NavMenu/NavMenu';
 
 import Check from 'assets/img/icons/check.png'
 
@@ -136,7 +134,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
     <>
     <Row>
     <Col sm={12}>
-      <NewTabsArrayOfObjects 
+      <NavMenu
         withIcons
         tabId="tabId"
         tabName={(application) => application?.d_form?.name || application.title}
@@ -149,26 +147,6 @@ const OnboardingComponent = ({profile, userApplications}) => {
         </Col>
       </Row>
     <Row style={{maxWidth: "1024px", marginLeft: "95px"}}>
-      {/* <Col sm={12} style={{borderBottom: "1px solid rgba(115,103,240, 0.03)", marginBottom: "20px"}}>
-        <Row>
-          <Col sm="12" md={{size: 10, offset: 1}}>
-            <div style={{marginBottom: "20px", marginLeft: "100px", marginRight: "100px"}}>
-              <TabsArrayOfObjects
-                withIcons
-                tabId="tabId"
-                tabName={(application) => application?.d_form?.name || application.title}
-                active={getActiveTab()}
-                tabs={formatTabs(userApplications)}
-                onChange={(application) => {
-                  handleNavClick(application)
-                }}
-                scrollOnStart
-              />
-            </div>
-
-          </Col>
-        </Row>
-      </Col> */}
       <Col sm="12" md={{size: 10, offset: 1}}>
         <Card style={{background: "transparent", boxShadow: "none"}}>
           <CardBody className="pt-0 pl-0">

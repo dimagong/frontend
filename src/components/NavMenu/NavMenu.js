@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { ChevronLeft, ChevronRight } from "react-feather";
 import { Pagination, PaginationLink, PaginationItem } from "reactstrap";
 
 import icon from "../../assets/img/icons/new-check.png";
@@ -10,7 +9,7 @@ import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
 import "./styles.scss";
 
-const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false, scrollOnStart = false }) => {
+const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false, scrollOnStart = false }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isShowApps, setIsShowApps] = useState(false);
   const [isShowSurveys, setIsShowSurveys] = useState(false);
@@ -19,21 +18,6 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
 
   const apps = tabs.filter((tab) => tab.hasOwnProperty("d_form_id"));
   const surveys = tabs.filter((tab) => !tab.hasOwnProperty("d_form_id"));
-  const tabsByKey = tabs.map((tab) => tab[tabId]);
-
-  const handlePrevSelect = () => {
-    const tabIndex = tabsByKey.indexOf(active);
-    if (~tabIndex && tabIndex !== 0) {
-      handleTabChange(tabs[tabIndex - 1]);
-    }
-  };
-
-  const handleNextSelect = () => {
-    const tabIndex = tabsByKey.indexOf(active);
-    if (~tabIndex && tabIndex !== tabsByKey.length - 1) {
-      handleTabChange(tabs[tabIndex + 1]);
-    }
-  };
 
   const handleTogle = (display) => {
     if (display === "apps") {
@@ -47,7 +31,6 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
       setIsShowSurveys(false);
     }
   };
-
   useOutsideClick(navRef, handleTogle);
   useOutsideFocus(navRef, handleTogle);
 
@@ -98,7 +81,7 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
     return tabs.map(
       (item) =>
         !item.isHidden && (
-          <span key={item[tabId]} className="new-custom-tabs_tab with-icon" id={item[tabId]}>
+          <span key={item[tabId]} className="nav-menu-tabs_tab with-icon" id={item[tabId]}>
             <PaginationItem active={item[tabId] === active}>
               <PaginationLink
                 onClick={() => {
@@ -136,7 +119,7 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
       </div>
       {isShowApps && (
         <div ref={navRef}>
-          <Pagination className="new-custom-tabs">
+          <Pagination className="nav-menu-tabs">
             <span className="title">
               Applications
               <span className={"title-number"}>
@@ -144,7 +127,7 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
                 {apps.filter((app) => app.icon !== "null").length}/{apps.length}
               </span>
             </span>
-            <div className="new-custom-tabs_tabs" id={"tabs-container"}>
+            <div className="nav-menu-tabs_tabs" id={"tabs-container"}>
               {withIcons ? renderTabsWithIcons(apps) : renderTabsWithoutIcons(apps)}
             </div>
           </Pagination>
@@ -152,7 +135,7 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
       )}
       {isShowSurveys && (
         <div ref={navRef}>
-          <Pagination className="new-custom-tabs new-custom-tabs__surveys">
+          <Pagination className="nav-menu-tabs nav-menu-tabs__surveys">
             <span className="title">
               Surveys{" "}
               <span className={"title-number"}>
@@ -160,7 +143,7 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
                 {surveys.filter((survey) => survey.finished_at !== null).length}/{surveys.length}
               </span>
             </span>
-            <div className="new-custom-tabs_tabs" id={"tabs-container"}>
+            <div className="nav-menu-tabs_tabs" id={"tabs-container"}>
               {withIcons ? renderTabsWithIcons(surveys) : renderTabsWithoutIcons(surveys)}
             </div>
           </Pagination>
@@ -170,4 +153,4 @@ const Tabs = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false
   );
 };
 
-export default Tabs;
+export default NavMenu;
