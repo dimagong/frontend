@@ -76,7 +76,7 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = fa
                 }}
               >
                 <div className={item.icon == "null" ? "icon-container icon-none" : "icon-container"}>
-                  <img src={item.icon == "null" ? "null" : icon} alt="" onError="this.style.display = 'none'" />
+                  <img src={item.icon == "null" ? "null" : icon} alt="" onError={(event) => event.target.style.display = 'none'} />
                 </div>
                 <div className={"tabs-text-container"}>{tabName(item)}</div>
               </PaginationLink>
