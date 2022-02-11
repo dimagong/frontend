@@ -155,7 +155,7 @@ function* getHierarchy({ payload }) {
       call(masterSchemaApi.getHierarchy, payload),
       call(getAllMasterSchemaGroups, { payload: { masterSchemaId: payload.masterSchemaId } })
     ]);
-    yield put(getMasterSchemaHierarchySuccess({ hierarchy }));
+    yield put(getMasterSchemaHierarchySuccess({ hierarchy, masterSchemaId: payload.masterSchemaId }));
   } catch (error) {
     yield put(getMasterSchemaHierarchyError(error));
   }

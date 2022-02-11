@@ -5,7 +5,6 @@ import { masterSchemaOrganizations } from "constants/masterSchema";
 
 import * as Urls from "./constants";
 import * as Interfaces from "./interfaces";
-import { MasterSchemaFlatGroupsInterface, MasterSchemaGroupsInterface } from "./interfaces";
 
 const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));

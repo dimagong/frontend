@@ -73,7 +73,7 @@ const UnapprovedFieldsList = ({ fields, selectedIds, isLoading, onSelect, onUnse
 };
 
 UnapprovedFieldsList.propTypes = {
-  fields: PropTypes.arrayOf(PropTypes.object).isRequired,
+  fields: PropTypes.arrayOf(PropTypes.object),
   isLoading: PropTypes.bool.isRequired,
   selectedIds: PropTypes.arrayOf(PropTypes.string).isRequired,
 

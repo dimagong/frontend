@@ -44,7 +44,7 @@ const SearchAndFilter = (props) => {
 
   const debounceOnChange = useCallback(_.debounce(function(text) {
     handleSearch({target: {value: text}});
-  }, 1000), []);
+  }, 1000), [handleSearch]);
 
   const handleOnChange = (input) => {
     debounceOnChange(input.target.value);

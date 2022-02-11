@@ -24,9 +24,9 @@ const masterSchemaReducer = {
   // Hierarchy
 
   getMasterSchemaHierarchySuccess: (state, { payload }) => {
-    const normalized = normalizeHierarchy(payload.hierarchy);
+    const normalized = payload.hierarchy ? normalizeHierarchy(payload.hierarchy) : null;
 
-    state.masterSchema.hierarchies[normalized.masterSchemaId] = normalized;
+    state.masterSchema.hierarchies[payload.masterSchemaId] = normalized;
     state.isLoading = false;
     state.isError = null;
   },
