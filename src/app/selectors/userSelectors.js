@@ -1,3 +1,5 @@
+import _ from "lodash/fp";
+
 export const selectManagers = state => state?.app?.user?.managers;
 export const selectManager = state => state?.app?.user?.manager;
 
@@ -66,3 +68,5 @@ export const selectSelectedManagerAssignedSurveys = state => state?.app?.selecte
 export const selectOnboardingSurveys = state => state?.app?.onboardingSurveys;
 export const selectAssignedSurveyById = (id) => state => state?.app?.selectedManagerAssignedSurveys.filter(survey => survey.id === id)[0];
 export const selectOnboardingSurveyStats = (id) => state => state?.app?.onboardingSurveys.filter(os => os.id === id)[0].stats;
+
+export const selectUserMasterSchemaHierarchy = _.get("app.user.masterSchema.hierarchy");

@@ -2,45 +2,60 @@ import _ from "lodash/fp";
 import React from "react";
 import { useToggleable } from "hooks/use-toggleable";
 
-export const useMasterSchemaSelectable = () => {
-  const [nodes, { isEmpty, clear, toggle, setKeys, includes }] = useToggleable([], { useRefactored: true });
+const filterGroups = _.filter((node) => node.isContainable);
+const filterFields = _.filter((node) => !node.isContainable);
 
-  const filterContainableNodes = React.useCallback(
-    _.filter((node) => node.isContainable),
-    []
-  );
-  const filterNotContainableNodes = React.useCallback(
-    _.filter((node) => !node.isContainable),
-    []
-  );
-
-  const hierarchyToggle = React.useCallback(
-    (node) => {
-      const containableNodes = filterContainableNodes(nodes);
+const useMasterSchemaSelectStrategies = (nodes, toggle) => {
+  const singleGroupAndMultipleFields = React.useCallback((node) => {
+      const groups = filterGroups(nodes);
 
       // Unable to select field simultaneously with groups
       if (!node.isContainable) {
-        return toggle([node, ...containableNodes]);
+        return toggle([node, ...groups]);
       }
 
       // Unable to select group simultaneously with groups and fields
       if (node.isContainable) {
-        const notContainableNodes = filterNotContainableNodes(nodes);
+        const fields = filterFields(nodes);
 
-        return toggle([node, ...containableNodes, ...notContainableNodes]);
+        return toggle([node, ...groups, ...fields]);
       }
-    },
-    [filterContainableNodes, filterNotContainableNodes, nodes, toggle]
-  );
+    }, [nodes, toggle]);
+
+  const onlySingleField = React.useCallback((node) => {
+    const fields = filterFields(nodes);
+
+    // Unable to select field simultaneously with groups
+    if (!node.isContainable) {
+      return toggle([node, ...fields]);
+    }
+  }, [nodes, toggle]);
+
+  return React.useMemo(() => ({
+    [useMasterSchemaSelectable.Stratagy.OnlySingleField]: onlySingleField,
+    [useMasterSchemaSelectable.Stratagy.SingleGroupAndMultipleFields]: singleGroupAndMultipleFields,
+  }), [onlySingleField, singleGroupAndMultipleFields]);
+};
+
+export const useMasterSchemaSelectable = (strategyId) => {
+  const [nodes, { isEmpty, clear, toggle, setKeys, includes }] = useToggleable([], { useRefactored: true });
+
+  const strategies = useMasterSchemaSelectStrategies(nodes, toggle);
+  const selectStrategy = React.useMemo(() => strategies[strategyId], [strategies, strategyId]);
 
   return [
     nodes,
     {
       isEmpty,
       clear,
-      toggle: hierarchyToggle,
+      select: selectStrategy,
       setKeys,
       includes,
     },
   ];
+};
+
+useMasterSchemaSelectable.Stratagy = {
+  OnlySingleField: Symbol("OnlySingleField"),
+  SingleGroupAndMultipleFields: Symbol("SingleGroupAndMultipleFields"),
 };

@@ -7,6 +7,7 @@ import {selectGroups, selectRoles} from "app/selectors";
 import organizationApi from '../../../api/organizations'
 
 import appSlice from 'app/slices/appSlice'
+import masterSchemaApi from "../../../api/masterSchema/masterSchema";
 
 const {
   getProfileSuccess,
@@ -106,6 +107,10 @@ const {
   updateApllicationsOrderSuccess,
   updateApllicationsOrderError,
   updateApllicationsOrderRequest,
+
+  getUserMasterSchemaHierarchyRequest,
+  getUserMasterSchemaHierarchySuccess,
+  getUserMasterSchemaHierarchyError,
 } = appSlice.actions;
 
 function* getProfile() {
@@ -235,7 +240,6 @@ function* getUserById({payload}) {
   }
 }
 
-
 function* updateUser({payload}) {
   try {
     const response = yield call(userApi.updateUser, payload);
@@ -245,7 +249,6 @@ function* updateUser({payload}) {
     yield put(updateUserError(error));
   }
 }
-
 
 function* createUser({payload}) {
   try {
@@ -394,6 +397,15 @@ function* getUserPermissions({payload}) {
   }
 }
 
+function* getUserMasterSchemaHierarchy({ payload }) {
+  try {
+    const hierarchy = yield call(masterSchemaApi.getHierarchyByUserId, payload)
+    yield put(getUserMasterSchemaHierarchySuccess({ hierarchy }));
+  } catch (error) {
+    yield put(getUserMasterSchemaHierarchyError(error));
+  }
+}
+
 export default function* () {
   yield all([
     yield takeLatest(updateApllicationsOrderRequest.type, updateApllicationsOrder),
@@ -428,5 +440,6 @@ export default function* () {
     yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
     yield takeLatest(setManager.type, handleSetManager),
     yield takeLatest(getUserPermissionsRequest.type, getUserPermissions),
+    yield takeLatest(getUserMasterSchemaHierarchyRequest, getUserMasterSchemaHierarchy),
   ]);
 }

@@ -71,6 +71,9 @@ export const initialState = {
       settings: {},
     },
     activityTypes: [],
+    masterSchema: {
+      hierarchy: null,
+    },
   },
   masterSchema: {
     groups: {},

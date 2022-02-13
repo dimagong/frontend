@@ -47,12 +47,12 @@ const masterSchemaApi = {
       .then((data) => Interfaces.MasterSchemaHierarchyInterface.validate(data));
   },
 
-  getHierarchyByUserId(user_id, { name, application_ids, only_files, date_begin, date_end, show_empty_folders } = {}) {
+  getHierarchyByUserId({ userId, name, application_ids, only_files, date_begin, date_end, show_empty_folders } = {}) {
     return instance({
       method: "GET",
       url: Urls.getMasterSchemaHierarchyByUserUrl,
       params: {
-        user_id,
+        user_id: userId,
         hidden_groups: [1],
         only_user_fields: 0,
         only_files: only_files ? 1 : 0,
