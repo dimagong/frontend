@@ -1,13 +1,20 @@
+import _ from "lodash/fp";
 import {all, put, call, takeLatest, select, takeEvery} from "redux-saga/effects";
 
 import userApi from "api/User/user";
-import {loginWithJWT} from "app/actions/vuexy/auth/loginActions"
-import {prepareSelectGroups} from "utility/select/prepareSelectData";
-import {selectGroups, selectRoles} from "app/selectors";
-import organizationApi from '../../../api/organizations'
+import masterSchemaApi from "api/masterSchema/masterSchema";
 
-import appSlice from 'app/slices/appSlice'
-import masterSchemaApi from "../../../api/masterSchema/masterSchema";
+import organizationApi from "api/organizations";
+import {selectGroups, selectRoles} from "app/selectors";
+import {loginWithJWT} from "app/actions/vuexy/auth/loginActions";
+import appSlice, { initialUserMasterSchemaHierarchySearchParams } from "app/slices/appSlice";
+
+import {
+  selectIsUserMasterSchemaHierarchySearchParamsInitial,
+  selectUserMasterSchemaHierarchySearchParams
+} from "app/selectors/userSelectors";
+
+import {prepareSelectGroups} from "utility/select/prepareSelectData";
 
 const {
   getProfileSuccess,
@@ -244,7 +251,8 @@ function* updateUser({payload}) {
   try {
     const response = yield call(userApi.updateUser, payload);
     yield put(updateUserSuccess(response));
-    yield put(updateActivitiesRequest({managerId: payload.id, page: 1}))
+    yield put(updateActivitiesRequest({managerId: payload.id, page: 1}));
+    yield call(getUserMasterSchemaHierarchy, { payload: { userId: payload.id } });
   } catch (error) {
     yield put(updateUserError(error));
   }
@@ -397,9 +405,18 @@ function* getUserPermissions({payload}) {
   }
 }
 
+// User MasterSchema hierarchy
+
 function* getUserMasterSchemaHierarchy({ payload }) {
+  const searchParams = yield select(selectUserMasterSchemaHierarchySearchParams);
+  const isSearchParamsInitial = yield select(selectIsUserMasterSchemaHierarchySearchParamsInitial);
+
   try {
-    const hierarchy = yield call(masterSchemaApi.getHierarchyByUserId, payload)
+    const hierarchy = yield call(masterSchemaApi.getHierarchyByUserId, {
+      ...payload,
+      ...searchParams,
+      show_empty_folders: isSearchParamsInitial,
+    })
     yield put(getUserMasterSchemaHierarchySuccess({ hierarchy }));
   } catch (error) {
     yield put(getUserMasterSchemaHierarchyError(error));
@@ -440,6 +457,7 @@ export default function* () {
     yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
     yield takeLatest(setManager.type, handleSetManager),
     yield takeLatest(getUserPermissionsRequest.type, getUserPermissions),
+
     yield takeLatest(getUserMasterSchemaHierarchyRequest, getUserMasterSchemaHierarchy),
   ]);
 }

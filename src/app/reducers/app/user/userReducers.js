@@ -416,6 +416,12 @@ const updateUserOnboardingWorkflowSuccess = (state, { payload }) => {
   state.user.managers[managerIndex].onboardings[onboardingIndex] = payload.response
 };
 
+// User Master Schema Hierarchy
+
+const setUserMasterSchemaHierarchySearchParams = (state, { payload }) => {
+  state.user.masterSchema.hierarchySearchParams = payload;
+};
+
 const getUserMasterSchemaHierarchySuccess = (state, { payload }) => {
   const normalized = payload.hierarchy ? normalizeHierarchy(payload.hierarchy) : null;
 
@@ -595,7 +601,9 @@ export default {
   patchSettingsSuccess,
   getDashboardDFormsSuccess,
   getDashboardSnapshotDataSuccess,
+
   getUserMasterSchemaHierarchySuccess,
+  setUserMasterSchemaHierarchySearchParams,
 
   setUser,
   setManager,

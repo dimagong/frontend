@@ -10,7 +10,11 @@ import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
-import { selectUserMasterSchemaHierarchy } from "app/selectors/userSelectors";
+import {
+  selectIsUserMasterSchemaHierarchySearchParamsInitial,
+  selectUserMasterSchemaHierarchy,
+  selectUserMasterSchemaHierarchySearchParams,
+} from "app/selectors/userSelectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
 
@@ -19,46 +23,32 @@ import UserMasterSchemaHierarchySearch from "./UserMasterSchemaHierarchySearch";
 const {
   getdFormsRequest,
   getUserMasterSchemaHierarchyRequest,
+  setUserMasterSchemaHierarchySearchParams,
   addFieldToMasterSchemaRequest,
   addGroupToMasterSchemaRequest,
 } = appSlice.actions;
 
 const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
 
-const initialSearch = {
-  name: "",
-  application_ids: [],
-  only_files: false,
-  date_begin: null,
-  date_end: null,
-  show_empty_folders: false,
-};
-
-const isSearchEmpty = (search) =>
-  _.keys(search).every((key) => {
-    const value = search[key];
-    const expected = initialSearch[key];
-    return _.isEqual(value, expected);
-  });
-
 const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
   const dispatch = useDispatch();
 
-  const [search, setSearch] = React.useReducer((s, p) => ({ ...s, ...p }), initialSearch);
-  const hierarchy = useStoreQuery(
-    () =>
-      getUserMasterSchemaHierarchyRequest({
-        userId,
-        ...(search === initialSearch ? { show_empty_folders: true } : search),
-      }),
-    selectUserMasterSchemaHierarchy,
-    [userId, search]
+  const searchParams = useSelector(selectUserMasterSchemaHierarchySearchParams);
+  const isSearchParamsInitial = useSelector(selectIsUserMasterSchemaHierarchySearchParamsInitial);
+  const setSearchParams = React.useCallback(
+    (newSearchParams) => dispatch(setUserMasterSchemaHierarchySearchParams({ ...searchParams, ...newSearchParams })),
+    [dispatch, searchParams]
   );
+
   const dForms = useStoreQuery(() => getdFormsRequest(), selectdForms);
+  const hierarchy = useStoreQuery(
+    () => getUserMasterSchemaHierarchyRequest({ userId }),
+    selectUserMasterSchemaHierarchy,
+    [userId, searchParams]
+  );
 
   const expandable = useTreeHierarchyExpandable(hierarchy.data);
   const selectedIds = React.useMemo(() => selectedNodes.map(_.get("nodeId")), [selectedNodes]);
-
   const elementCreationLoading = useSelector(createLoadingSelector(elementAdditionActionTypes, true));
 
   const onElementCreationSubmit = ({ type, ...creationData }) => {
@@ -76,16 +66,16 @@ const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
 
   React.useEffect(() => {
     if (!hierarchy.data || hierarchy.isLoading) return;
-    isSearchEmpty(search) ? expandable.expandOnlyRoot() : expandable.expandAll();
+    isSearchParamsInitial ? expandable.expandOnlyRoot() : expandable.expandAll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hierarchy.data]);
+  }, [isSearchParamsInitial]);
 
   if (hierarchy.isLoading || dForms.isLoading) {
     return (
       <Row className="position-relative">
         <Col>
           <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
-            <UserMasterSchemaHierarchySearch hierarchy={null} dForms={null} onSearch={setSearch} />
+            <UserMasterSchemaHierarchySearch hierarchy={null} dForms={null} onSearch={setSearchParams} />
           </div>
 
           <div className="d-flex justify-content-center pt-4">
@@ -101,7 +91,11 @@ const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
       <Row className="position-relative">
         <Col>
           <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
-            <UserMasterSchemaHierarchySearch hierarchy={hierarchy.data} dForms={dForms.data} onSearch={setSearch} />
+            <UserMasterSchemaHierarchySearch
+              hierarchy={hierarchy.data}
+              dForms={dForms.data}
+              onSearch={setSearchParams}
+            />
 
             <div className="d-flex justify-content-end pb-1">
               <MSEButton
@@ -135,7 +129,7 @@ const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
     <Row className="position-relative">
       <Col>
         <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
-          <UserMasterSchemaHierarchySearch hierarchy={hierarchy.data} dForms={dForms.data} onSearch={setSearch} />
+          <UserMasterSchemaHierarchySearch hierarchy={hierarchy.data} dForms={dForms.data} onSearch={setSearchParams} />
         </div>
 
         <h2 className="ms-nothing-was-found py-3">Nothing was found for your query</h2>
