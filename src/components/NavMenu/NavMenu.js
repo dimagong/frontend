@@ -9,7 +9,7 @@ import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
 import "./styles.scss";
 
-const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = false }) => {
+const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
   const [shownMenu, setShownMenu] = useState("none");
 
   const navRef = useRef();
@@ -38,9 +38,8 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = fa
     setShownMenu(menuName === shownMenu ? "none" : menuName);
   };
 
-
-  useOutsideClick(navRef, (e) => e.target.className.includes('ref') ? null : showMenu(shownMenu));
-  useOutsideFocus(navRef, (e) => e.target.className.includes('ref') ? null : showMenu(shownMenu));
+  useOutsideClick(navRef, (e) => (e.target.className.includes("ref") ? null : showMenu(shownMenu)));
+  useOutsideFocus(navRef, (e) => (e.target.className.includes("ref") ? null : showMenu(shownMenu)));
 
   const handleTabChange = (tab) => {
     if (tab[tabId] !== active) {
@@ -48,39 +47,23 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = fa
     }
   };
 
-  const renderTabsWithoutIcons = (tabs) => {
-    return tabs.map((item) => (
-      <span key={item[tabId]} className="custom-tabs_tab" id={item[tabId]}>
-        <PaginationItem active={item[tabId] === active}>
-          <PaginationLink
-            onClick={() => {
-              handleTabChange(item);
-            }}
-          >
-            {tabName(item)}
-          </PaginationLink>
-        </PaginationItem>
-      </span>
-    ));
-  };
-
   const renderTabsWithIcons = (tabs) => {
     return tabs.map(
       (item) =>
         !item.isHidden && (
           <span key={item[tabId]} className="nav-menu-tabs_tab with-icon" id={item[tabId]}>
-            <PaginationItem active={item[tabId] === active}>
-              <PaginationLink
-                onClick={() => {
-                  handleTabChange(item);
-                }}
-              >
+            <li className={`page-item ${item[tabId] === active ? "active" : ""}`}>
+              <button className="page-link" onClick={() => handleTabChange(item)}>
                 <div className={item.icon == "null" ? "icon-container icon-none" : "icon-container"}>
-                  <img src={item.icon == "null" ? "null" : icon} alt="" onError={(event) => event.target.style.display = 'none'} />
+                  <img
+                    src={item.icon == "null" ? "null" : icon}
+                    alt=""
+                    onError={(event) => (event.target.style.display = "none")}
+                  />
                 </div>
                 <div className={"tabs-text-container"}>{tabName(item)}</div>
-              </PaginationLink>
-            </PaginationItem>
+              </button>
+            </li>
           </span>
         )
     );
@@ -91,25 +74,27 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName, withIcons = fa
     <>
       <div className="nav-column">
         <div className="nav-column-item ref" onClick={() => showMenu("apps")}>
-          <img src={appsIcon} className={'ref'}/>
+          <img src={appsIcon} className={"ref"} />
         </div>
         <div className="nav-column-item ref" onClick={() => showMenu("surveys")}>
-          <img src={surveyIcon} className={'ref'} />
+          <img src={surveyIcon} className={"ref"} />
         </div>
       </div>
       {menus
         .filter((menu) => menu.id === shownMenu)
         .map((menu) => (
           <div ref={navRef}>
-            <Pagination className={`nav-menu-tabs ${menu.className || ""}`}>
-              <span className="title">
-                {menu.title}
-                <span className={"title-number"}> {menu.itemsCount}</span>
-              </span>
-              <div className="nav-menu-tabs_tabs" id={"tabs-container"}>
-                {withIcons ? renderTabsWithIcons(menu.items) : renderTabsWithoutIcons(menu.items)}
-              </div>
-            </Pagination>
+            <nav className={`nav-menu-tabs ${menu.className || ""}`}>
+              <ul className="pagination">
+                <span className="title">
+                  {menu.title}
+                  <span className={"title-number"}> {menu.itemsCount}</span>
+                </span>
+                <div className="nav-menu-tabs_tabs" id={"tabs-container"}>
+                  {renderTabsWithIcons(menu.items)}
+                </div>
+              </ul>
+            </nav>
           </div>
         ))}
     </>

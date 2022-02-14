@@ -110,7 +110,6 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
 
   //** TODO add mt-1 to other sections
   return (
-    <>
     <Pagination className=" justify-content-center custom-tabs">
       <PaginationItem href="#" className="prev-item">
         <PaginationLink onClick={handlePrevSelect} first>
@@ -127,7 +126,6 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
         </PaginationLink>
       </PaginationItem>
     </Pagination>
-    </>
   )
 };
 
