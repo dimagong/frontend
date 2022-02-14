@@ -45,7 +45,7 @@ const CustomModal = ({
           {children}
 
         </div>
-        {!footerDisabled ?? (
+        {!footerDisabled && (
           <div className={'custom-modal_actions'}>
             <div>
               {!!deleteBtnText && !!onDelete && (
