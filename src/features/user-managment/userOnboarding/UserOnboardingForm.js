@@ -16,6 +16,7 @@ import {
   selectUserWorkflows,
   selectUserReviewers,
 } from "app/selectors";
+import {prepareSelectReviewers} from "utility/select/prepareSelectData";
 
 import {toast} from "react-toastify";
 import * as yup from "yup";
@@ -60,12 +61,6 @@ const selectStyles = {
   indicatorSeparator: () => ({display: 'none'}),
 };
 
-const prepareSelect = (data) => {
-  return data.map((value) => ({
-    value: value,
-    label: value["first_name"] + " " + value["last_name"]
-  }));
-};
 const prepareDFormSelect = (data) => {
   return data.map((value) => ({
     value: value,
@@ -231,7 +226,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                         components={{DropdownIndicator}}
                         value={selectedReviewer}
                         styles={selectStyles}
-                        options={isReviewersLimitNotExceed ? prepareSelect(availableReviewers).sort(sortByLabel) : []}
+                        options={isReviewersLimitNotExceed ? prepareSelectReviewers(availableReviewers).sort(sortByLabel) : []}
                         noOptionsMessage={() => isReviewersLimitNotExceed ? "No options" : "Maximum reviewers count is 5"}
                         onChange={(value) => {
                           setSelectedReviewer(value)

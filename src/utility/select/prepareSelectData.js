@@ -169,3 +169,10 @@ export const normalizeGroups = (groups) => {
 
   return groupsMultiSelect;
 };
+
+export const prepareSelectReviewers = (data) => {
+  return data.map((value) => ({
+    value: value,
+    label: value["first_name"] + " " + value["last_name"]
+  }));
+};
