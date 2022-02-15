@@ -4,11 +4,7 @@ import React, { useMemo } from "react";
 import { useDidUpdate } from "hooks/use-did-update";
 import { useToggleable } from "hooks/use-toggleable";
 
-// fixme: prevent cases when hierarchy is nullable
-export const useTreeHierarchySelectable = (
-  hierarchy,
-  strategyId = useTreeHierarchySelectable.STRATEGY.MultipleFieldsAndSingleGroup
-) => {
+export const useTreeHierarchySelectable = (hierarchy, strategyId = useTreeHierarchySelectable.defaultStrategy) => {
   const toggleable = useToggleable([]);
 
   const nodes = hierarchy?.nodes || {};
@@ -118,3 +114,5 @@ useTreeHierarchySelectable.STRATEGY = {
   OnlyField: Symbol("Select only single field."),
   MultipleFieldsAndSingleGroup: Symbol("Select multiple fields and single group."),
 };
+
+useTreeHierarchySelectable.defaultStrategy = useTreeHierarchySelectable.STRATEGY.MultipleFieldsAndSingleGroup;

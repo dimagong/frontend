@@ -1,49 +1,58 @@
 import "./styles.scss";
 
-import _ from "lodash";
+import _ from "lodash/fp";
+import React from "react";
 import PropTypes from "prop-types";
-import { get, isEmpty } from "lodash/fp";
-import React, { useMemo, useState } from "react";
+import { Col, Row, Spinner } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
+
+import { useStoreQuery } from "hooks/useStoreQuery";
 
 import appSlice from "app/slices/appSlice";
 import { selectdForms } from "app/selectors";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
-import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
+import { selectMasterSchemaHierarchy } from "app/selectors/masterSchemaSelectors";
+
+import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
 
-import { useDidMount } from "hooks/use-did-mount";
-import { useDidUpdate } from "hooks/use-did-update";
-
-import SearchAndFilter from "components/SearchAndFilter";
-import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
-
 import GeneralMSHTreeElement from "./GeneralMSHTreeElement";
+import MasterSchemaHierarchySearch from "./MasterSchemaHierarchySearch";
 
 const {
-  getMasterSchemaHierarchyRequest,
   getdFormsRequest,
-  setMasterSchemaSearch,
+  getMasterSchemaHierarchyRequest,
   addFieldToMasterSchemaRequest,
   addGroupToMasterSchemaRequest,
 } = appSlice.actions;
 
 const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
 
-const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundColor }) => {
+const initialSearch = { name: "", application_ids: [], date_begin: null, date_end: null };
+
+const isSearchEmpty = (search) =>
+  _.keys(search).every((key) => {
+    const value = search[key];
+    const expected = initialSearch[key];
+    return _.isEqual(value, expected);
+  });
+
+const MasterSchemaHierarchy = ({ masterSchemaId, selectedNodes, onSelect, backgroundColor }) => {
   const dispatch = useDispatch();
-  const allDForms = useSelector(selectdForms);
-  const search = useSelector(masterSchemaSelectors.selectSearch);
-  const selectedId = useSelector(masterSchemaSelectors.selectSelectedId);
 
-  const expandable = useTreeHierarchyExpandable(hierarchy);
+  const [search, setSearch] = React.useReducer((s, p) => ({ ...s, ...p }), initialSearch);
+  const hierarchy = useStoreQuery(
+    () => getMasterSchemaHierarchyRequest({ masterSchemaId, ...search }),
+    selectMasterSchemaHierarchy(masterSchemaId),
+    [masterSchemaId, search]
+  );
+  const dForms = useStoreQuery(() => getdFormsRequest(), selectdForms);
 
-  const [filterTypes, setFilterTypes] = useState([]);
-  const filterNames = useMemo(() => filterTypes.map(get("name")), [filterTypes]);
+  const expandable = useTreeHierarchyExpandable(hierarchy.data);
+  const selectedIds = React.useMemo(() => selectedNodes.map(_.get("nodeId")), [selectedNodes]);
 
   const elementCreationLoading = useSelector(createLoadingSelector(elementAdditionActionTypes, true));
-  const hierarchyLoading = useSelector(createLoadingSelector([getMasterSchemaHierarchyRequest.type], true));
 
   const onElementCreationSubmit = ({ type, ...creationData }) => {
     switch (type) {
@@ -58,115 +67,89 @@ const MasterSchemaHierarchy = ({ hierarchy, selectedIds, onSelect, backgroundCol
     }
   };
 
-  const onSearchSubmit = (searchName) => {
-    const searchValue = searchName.hasOwnProperty("target") ? searchName.target.value : searchName;
-    dispatch(setMasterSchemaSearch({ ...search, value: searchValue }));
-  };
-
-  const onFilterSubmit = (filter, filterHierarchy) => {
-    if (!filterHierarchy) return;
-
-    const filters = _.intersectionBy(
-      allDForms.filter((item) => item.groups.filter((group) => group.name === filterHierarchy.name).length > 0),
-      filter.selectedFilters
-        .find((item) => item.name === "applications")
-        .selected.map((item) => {
-          return { name: item };
-        }),
-      "name"
-    ).map((item) => item.id);
-
-    dispatch(setMasterSchemaSearch({ ...search, filters }));
-  };
-
-  const getDateFormat = (date) => {
-    const options = { day: "numeric", month: "numeric", year: "numeric" };
-    if (date?.length > 1) {
-      return date.map((item) => item.toLocaleString("en-CA", options));
-    } else {
-      return [undefined, undefined];
-    }
-  };
-
-  const onCalendarChange = (date) => {
-    const formattedDate = getDateFormat(date);
-
-    dispatch(setMasterSchemaSearch({ ...search, dates: formattedDate }));
-  };
-
-  const isSearchEmpty = React.useCallback(
-    () => isEmpty(search.value) && isEmpty(search.filters) && !search.dates.some(Boolean),
-    [search.dates, search.filters, search.value]
-  );
-
-  useDidMount(() => {
-    dispatch(getdFormsRequest());
-
-    if (hierarchy?.name) {
-      setFilterTypes(
-        allDForms.filter((item) => item.groups.filter((group) => group.name === hierarchy.name).length > 0)
-      );
-    }
-  });
-
   React.useEffect(() => {
-    if (!hierarchy || hierarchyLoading) return;
-    isSearchEmpty() ? expandable.expandOnlyRoot() : expandable.expandAll();
+    if (!hierarchy.data || hierarchy.isLoading) return;
+    isSearchEmpty(search) ? expandable.expandOnlyRoot() : expandable.expandAll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hierarchy]);
+  }, [hierarchy.data]);
 
-  useDidUpdate(() => {
-    dispatch(getMasterSchemaHierarchyRequest({ id: selectedId }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
+  if (hierarchy.isLoading || dForms.isLoading) {
+    return (
+      <React.Profiler
+        id="master-schema-hierarchy"
+        onRender={(id, phase) => console.log(id, phase, { search, hierarchy })}
+      >
+        <Row className="position-relative">
+          <Col>
+            <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
+              <MasterSchemaHierarchySearch hierarchy={null} dForms={null} onSearch={setSearch} />
+            </div>
+
+            <div className="d-flex justify-content-center pt-4">
+              <Spinner />
+            </div>
+          </Col>
+        </Row>
+      </React.Profiler>
+    );
+  }
+
+  if (hierarchy.data) {
+    return (
+      <React.Profiler
+        id="master-schema-hierarchy"
+        onRender={(id, phase) => console.log(id, phase, { search, hierarchy })}
+      >
+        <Row className="position-relative">
+          <Col>
+            <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
+              <MasterSchemaHierarchySearch hierarchy={hierarchy.data} dForms={dForms.data} onSearch={setSearch} />
+
+              <div className="d-flex justify-content-end pb-1">
+                <MSEButton
+                  className="p-0"
+                  textColor="currentColor"
+                  backgroundColor="transparent"
+                  disabled={!expandable.isDecedentsExpanded}
+                  onClick={expandable.expandOnlyRoot}
+                >
+                  Collapse
+                </MSEButton>
+              </div>
+            </div>
+
+            <TreeHierarchy
+              hierarchy={hierarchy.data}
+              expandedIds={expandable.expandedIds}
+              onExpand={expandable.expand}
+              onCollapse={expandable.collapse}
+              selectedIds={selectedIds}
+              onSelect={onSelect}
+              elementCreationLoading={elementCreationLoading}
+              onElementCreationSubmit={onElementCreationSubmit}
+              components={{ Element: GeneralMSHTreeElement }}
+            />
+          </Col>
+        </Row>
+      </React.Profiler>
+    );
+  }
 
   return (
-    <div className="position-relative">
-      <div className={hierarchy ? "position-sticky zindex-1" : ""} style={{ top: "0px", left: "0px", backgroundColor }}>
-        <SearchAndFilter
-          placeholder=""
-          handleSearch={onSearchSubmit}
-          filterTypes={{ applications: filterNames }}
-          applyFilter={onFilterSubmit}
-          onCalendarChange={onCalendarChange}
-          isCalendar
-          hasIcon
-          filterTabPosition={"left"}
-          dataToFilter={hierarchy}
-        />
-
-        {hierarchy && (
-          <div className="d-flex justify-content-end pb-1">
-            <MSEButton
-              className="p-0"
-              textColor="currentColor"
-              backgroundColor="transparent"
-              disabled={!expandable.isDecedentsExpanded}
-              onClick={expandable.expandOnlyRoot}
-            >
-              Collapse
-            </MSEButton>
+    <React.Profiler
+      id="master-schema-hierarchy"
+      onRender={(id, phase) => console.log(id, phase, { search, hierarchy })}
+    >
+      <Row className="position-relative">
+        <Col>
+          <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
+            <MasterSchemaHierarchySearch hierarchy={hierarchy.data} dForms={dForms.data} onSearch={setSearch} />
           </div>
-        )}
-      </div>
 
-      {hierarchy ? (
-        <TreeHierarchy
-          hierarchy={hierarchy}
-          expandedIds={expandable.expandedIds}
-          onExpand={expandable.expand}
-          onCollapse={expandable.collapse}
-          selectedIds={selectedIds}
-          onSelect={onSelect}
-          elementCreationLoading={elementCreationLoading}
-          onElementCreationSubmit={onElementCreationSubmit}
-          components={{ Element: GeneralMSHTreeElement }}
-          key={hierarchy.name}
-        />
-      ) : (
-        <h2 className="ms-nothing-was-found">Nothing was found for your query</h2>
-      )}
-    </div>
+          <h2 className="ms-nothing-was-found py-3">Nothing was found for your query</h2>
+        </Col>
+      </Row>
+    </React.Profiler>
   );
 };
 
@@ -175,11 +158,9 @@ MasterSchemaHierarchy.defaultProps = {
 };
 
 MasterSchemaHierarchy.propTypes = {
-  hierarchy: PropTypes.object,
-
+  masterSchemaId: PropTypes.number.isRequired,
   onSelect: PropTypes.func.isRequired,
-  selectedIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-
+  selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
   backgroundColor: PropTypes.string,
 };
 

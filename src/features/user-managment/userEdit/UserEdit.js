@@ -136,7 +136,7 @@ const UserEdit = () => {
     setContextFeature("onboarding")
   };
 
-  const setMasterSchemaContextFeature = () => setContextFeature("masterSchema");
+  const setMasterSchemaContextFeature = React.useCallback(() => setContextFeature("masterSchema"), []);
 
   const handleRowClick = (application) => {
     if (application.questions) {

@@ -3,6 +3,7 @@ import _ from "lodash/fp";
 export const normalizeNode = (node, { isContainable, parent = null, children = {} }) => {
   const serialised = {
     ...node,
+    ...(parent && !isContainable ? { isMemberFirmField: parent.isMemberFirmGroup, } : {}),
     nodeId: `${isContainable ? "group" : "field"}${node.id}`,
     parentNodeId: parent ? parent.nodeId : null,
     path: parent ? [...parent.path, node.name] : [node.name],
@@ -48,13 +49,14 @@ export const normalizeHierarchy = (rawHierarchy) => {
   };
 };
 
-export const normalizeUnapproved = (unapproved) =>
+export const normalizeFields = (unapproved) =>
   unapproved.map((field) => normalizeNode(field, { isContainable: false }));
 
 export const normalizeGroups = (groups) =>
   groups.map((group) => {
+    // sometimes api don't response group with children groups or fields
     const RISKY_CLIENT_LOGIC = { groups: [], fields: [] };
-    const normalized = normalizeNode({ ...group, ...RISKY_CLIENT_LOGIC }, { isContainable: true });
+    group = { ...RISKY_CLIENT_LOGIC, ...group };
 
-    return { label: normalized.name, value: normalized };
+    return normalizeNode(group, { isContainable: true });
   });

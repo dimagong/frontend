@@ -1,10 +1,8 @@
-import {initUser} from 'app/slices/appSlice';
-import {toast} from 'react-toastify';
-import {
-  getUserAndUserIndex,
-  getIndexById,
-} from "utility/common";
+import { toast } from "react-toastify";
 
+import {initUser} from "app/slices/appSlice";
+import { normalizeHierarchy } from "api/masterSchema/normalizers";
+import { getUserAndUserIndex, getIndexById } from "utility/common";
 
 const getProfileSuccess = (state, { payload }) => {
   state.isLoading = false;
@@ -428,6 +426,20 @@ const updateUserOnboardingWorkflowSuccess = (state, { payload }) => {
   state.user.managers[managerIndex].onboardings[onboardingIndex] = payload.response
 };
 
+// User Master Schema Hierarchy
+
+const setUserMasterSchemaHierarchySearchParams = (state, { payload }) => {
+  state.user.masterSchema.hierarchySearchParams = payload;
+};
+
+const getUserMasterSchemaHierarchySuccess = (state, { payload }) => {
+  const normalized = payload.hierarchy ? normalizeHierarchy(payload.hierarchy) : null;
+
+  state.user.masterSchema.hierarchy = normalized;
+  state.isLoading = false;
+  state.isError = null;
+};
+
 // SETTERS
 
 const setUser = (state, { payload }) => {
@@ -599,6 +611,9 @@ export default {
   patchSettingsSuccess,
   getDashboardDFormsSuccess,
   getDashboardSnapshotDataSuccess,
+
+  getUserMasterSchemaHierarchySuccess,
+  setUserMasterSchemaHierarchySearchParams,
 
   setUser,
   setManager,

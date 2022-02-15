@@ -1,17 +1,28 @@
-import xor from "lodash/fp/xor";
-import { useMemo, useState } from "react";
+import _ from "lodash/fp";
+import React from "react";
 
-export const useToggleable = (initialKeys = []) => {
-  const [keys, setKeys] = useState(initialKeys);
-  const isEmpty = useMemo(() => keys.length === 0, [keys]);
+export const useToggleable = (initialKeys = [], options) => {
+  options = _.merge(useToggleable.defaultOptions, options);
 
-  const clear = () => setKeys([]);
+  const [keys, setKeys] = React.useState(initialKeys);
+  const isEmpty = React.useMemo(() => keys.length === 0, [keys]);
+
+  const clear = React.useCallback(() => setKeys([]), []);
   // :: string | string[] -> void
-  const toggle = (toSelect) => setKeys((prev) => xor(prev, Array.isArray(toSelect) ? toSelect : [toSelect]));
+  const toggle = React.useCallback((toSelect) => setKeys((prev) => _.xor(prev, Array.isArray(toSelect) ? toSelect : [toSelect])), []);
   // :: string -> boolean
-  const includes = (key) => keys.includes(key);
+  const includes = React.useCallback((key) => keys.includes(key), [keys]);
 
-  return {
+  return options.useRefactored ? [
+    keys,
+    {
+      isEmpty,
+      clear,
+      toggle,
+      setKeys,
+      includes,
+    }
+  ] : {
     keys,
     isEmpty,
     clear,
@@ -20,3 +31,5 @@ export const useToggleable = (initialKeys = []) => {
     includes,
   };
 };
+
+useToggleable.defaultOptions = { useRefactored: false };

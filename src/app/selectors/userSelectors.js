@@ -1,3 +1,6 @@
+import _ from "lodash/fp";
+import { initialUserMasterSchemaHierarchySearchParams } from "../slices/appSlice";
+
 export const selectManagers = state => state?.app?.user?.managers;
 export const selectManager = state => state?.app?.user?.manager;
 
@@ -66,3 +69,15 @@ export const selectSelectedManagerAssignedSurveys = state => state?.app?.selecte
 export const selectOnboardingSurveys = state => state?.app?.onboardingSurveys;
 export const selectAssignedSurveyById = (id) => state => state?.app?.selectedManagerAssignedSurveys.filter(survey => survey.id === id)[0];
 export const selectOnboardingSurveyStats = (id) => state => state?.app?.onboardingSurveys.filter(os => os.id === id)[0].stats;
+
+export const selectUserMasterSchemaHierarchy = _.get("app.user.masterSchema.hierarchy");
+export const selectUserMasterSchemaHierarchySearchParams = _.get("app.user.masterSchema.hierarchySearchParams");
+
+const isUserMasterSchemaHierarchySearchParamsInitial = (searchParams) =>
+  _.keys(searchParams).every((key) => {
+    const current = searchParams[key];
+    const expected = initialUserMasterSchemaHierarchySearchParams[key];
+    return _.isEqual(current, expected);
+  });
+
+export const selectIsUserMasterSchemaHierarchySearchParamsInitial = _.pipe(selectUserMasterSchemaHierarchySearchParams, isUserMasterSchemaHierarchySearchParamsInitial);
