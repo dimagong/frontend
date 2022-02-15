@@ -48,11 +48,12 @@
     }
   }
   .page-item {
-    &.prev-item, &.next-item {
+    &.prev-item,
+    &.next-item {
       .page-link {
         background-color: #b1b1b1;
-        padding: 7px 9px!important;
-        border-radius: 25px!important;
+        padding: 7px 9px !important;
+        border-radius: 25px !important;
         color: white;
         &:hover {
           background-color: #7367f0;
@@ -88,8 +89,8 @@
     &::-webkit-scrollbar {
       display: none;
     }
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 
   &_tab {
@@ -105,3 +106,4 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+

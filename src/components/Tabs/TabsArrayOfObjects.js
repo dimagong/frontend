@@ -119,6 +119,7 @@ const Tabs = ({tabs, onChange, active, tabId = 'id', tabName, withIcons = false,
       <div className="custom-tabs_tabs" id={"tabs-container"}>
         {withIcons ? renderTabsWithIcons(tabs) : renderTabsWithoutIcons(tabs)}
       </div>
+
       <PaginationItem href="#" className="next-item">
         <PaginationLink onClick={handleNextSelect} last>
           <ChevronRight/>
