@@ -36,7 +36,7 @@ const MSHTreeNode = (props) => {
         <div className="d-flex align-items-center ml-auto">
           {applicationsCount == null ? null : (
             <div className="tree-hierarchy__icon position-relative px-1">
-              <span className="tree-hierarchy__icon-count position-absolute">{applicationsCount}</span>
+              <span className="tree-hierarchy__icon-count tree-hierarchy__icon-count--application position-absolute">{applicationsCount}</span>
               <svg width="16" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <clipPath id="a">
@@ -57,7 +57,7 @@ const MSHTreeNode = (props) => {
 
           {versionsCount == null ? null : (
             <div className="tree-hierarchy__icon position-relative px-1">
-              <span className="tree-hierarchy__icon-count position-absolute">{versionsCount}</span>
+              <span className="tree-hierarchy__icon-count tree-hierarchy__icon-count--version position-absolute">{versionsCount}</span>
               <svg width="24" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   fillRule="evenodd"
