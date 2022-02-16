@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useStoreQuery } from "hooks/useStoreQuery";
 
 import appSlice from "app/slices/appSlice";
-import { selectdForms } from "app/selectors";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectMasterSchemaHierarchy } from "app/selectors/masterSchemaSelectors";
 
@@ -21,7 +20,6 @@ import GeneralMSHTreeElement from "./GeneralMSHTreeElement";
 import MasterSchemaHierarchySearch from "./MasterSchemaHierarchySearch";
 
 const {
-  getdFormsRequest,
   getMasterSchemaHierarchyRequest,
   addFieldToMasterSchemaRequest,
   addGroupToMasterSchemaRequest,
@@ -38,7 +36,7 @@ const isSearchEmpty = (search) =>
     return _.isEqual(value, expected);
   });
 
-const MasterSchemaHierarchy = ({ masterSchemaId, selectedNodes, onSelect, backgroundColor }) => {
+const MasterSchemaHierarchy = ({ masterSchemaId, masterSchemaName, selectedNodes, onSelect, backgroundColor }) => {
   const dispatch = useDispatch();
 
   const [search, setSearch] = React.useReducer((s, p) => ({ ...s, ...p }), initialSearch);
@@ -47,7 +45,6 @@ const MasterSchemaHierarchy = ({ masterSchemaId, selectedNodes, onSelect, backgr
     selectMasterSchemaHierarchy(masterSchemaId),
     [masterSchemaId, search]
   );
-  const dForms = useStoreQuery(() => getdFormsRequest(), selectdForms);
 
   const expandable = useTreeHierarchyExpandable(hierarchy.data);
   const selectedIds = React.useMemo(() => selectedNodes.map(_.get("nodeId")), [selectedNodes]);
@@ -73,7 +70,7 @@ const MasterSchemaHierarchy = ({ masterSchemaId, selectedNodes, onSelect, backgr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hierarchy.data]);
 
-  if (hierarchy.isLoading || dForms.isLoading) {
+  if (hierarchy.isLoading) {
     return (
       <React.Profiler
         id="master-schema-hierarchy"
@@ -82,7 +79,7 @@ const MasterSchemaHierarchy = ({ masterSchemaId, selectedNodes, onSelect, backgr
         <Row className="position-relative">
           <Col>
             <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
-              <MasterSchemaHierarchySearch hierarchy={null} dForms={null} onSearch={setSearch} />
+              <MasterSchemaHierarchySearch hierarchyName={masterSchemaName} onSearch={setSearch} />
             </div>
 
             <div className="d-flex justify-content-center pt-4">
@@ -103,7 +100,7 @@ const MasterSchemaHierarchy = ({ masterSchemaId, selectedNodes, onSelect, backgr
         <Row className="position-relative">
           <Col>
             <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
-              <MasterSchemaHierarchySearch hierarchy={hierarchy.data} dForms={dForms.data} onSearch={setSearch} />
+              <MasterSchemaHierarchySearch hierarchy={hierarchy.data} hierarchyName={masterSchemaName} onSearch={setSearch} />
 
               <div className="d-flex justify-content-end pb-1">
                 <MSEButton
@@ -143,7 +140,7 @@ const MasterSchemaHierarchy = ({ masterSchemaId, selectedNodes, onSelect, backgr
       <Row className="position-relative">
         <Col>
           <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
-            <MasterSchemaHierarchySearch hierarchy={hierarchy.data} dForms={dForms.data} onSearch={setSearch} />
+            <MasterSchemaHierarchySearch hierarchyName={masterSchemaName} onSearch={setSearch} />
           </div>
 
           <h2 className="ms-nothing-was-found py-3">Nothing was found for your query</h2>
@@ -159,6 +156,7 @@ MasterSchemaHierarchy.defaultProps = {
 
 MasterSchemaHierarchy.propTypes = {
   masterSchemaId: PropTypes.number.isRequired,
+  masterSchemaName: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired,
   selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
   backgroundColor: PropTypes.string,

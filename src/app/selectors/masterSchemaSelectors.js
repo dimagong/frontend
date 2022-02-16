@@ -2,7 +2,9 @@ import _ from "lodash/fp";
 
 export const selectMasterSchemas = _.get("app.masterSchema.masterSchemas");
 
-export const selectSelectedMasterSchemaId = _.get("app.masterSchema.selectedMasterSchemaId");
+export const selectSelectedMasterSchema = _.get("app.masterSchema.selectedMasterSchema");
+
+export const selectSelectedMasterSchemaId = _.getOr(null, "app.masterSchema.selectedMasterSchema.id");
 
 export const selectMasterSchemaHierarchy = (msId) => _.get(`app.masterSchema.hierarchies.${msId}`);
 

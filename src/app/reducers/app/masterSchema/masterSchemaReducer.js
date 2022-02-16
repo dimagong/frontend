@@ -17,8 +17,8 @@ const masterSchemaReducer = {
     state.isError = null;
   },
 
-  setSelectedMasterSchemaId: (state, { payload }) => {
-    state.masterSchema.selectedMasterSchemaId = payload.id;
+  setSelectedMasterSchema: (state, { payload }) => {
+    state.masterSchema.selectedMasterSchema = payload.masterSchema;
   },
 
   // Hierarchy

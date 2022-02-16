@@ -4,6 +4,11 @@ import { get } from "lodash/fp";
 import PropTypes from "prop-types";
 
 import SearchAndFilter from "../SearchAndFilter";
+import { useStoreQuery } from "../../hooks/useStoreQuery";
+import { selectdForms } from "../../app/selectors";
+import appSlice from "../../app/slices/appSlice";
+
+const { getdFormsRequest } = appSlice.actions;
 
 const formatDate = (date) => {
   const options = { day: "numeric", month: "numeric", year: "numeric" };
@@ -17,10 +22,12 @@ const formatDate = (date) => {
 const filterDFormsByName = (dForms, name) =>
   dForms.filter((item) => item.groups.filter((group) => group.name === name).length > 0);
 
-const MasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
+const MasterSchemaHierarchySearch = ({ hierarchy, hierarchyName, onSearch }) => {
+  const { data: dForms } = useStoreQuery(() => getdFormsRequest(), selectdForms);
+
   const filterTypes = React.useMemo(
-    () => (hierarchy ? filterDFormsByName(dForms, hierarchy.name) : []),
-    [dForms, hierarchy]
+    () => filterDFormsByName(dForms || [], hierarchyName),
+    [dForms, hierarchyName]
   );
   const filterNames = React.useMemo(() => filterTypes.map(get("name")), [filterTypes]);
 
@@ -35,10 +42,8 @@ const MasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
 
   const onFilterSubmit = React.useCallback(
     (filter, filterHierarchy) => {
-      if (!filterHierarchy) return;
-
       const filters = _.intersectionBy(
-        dForms.filter((item) => item.groups.filter((group) => group.name === filterHierarchy.name).length > 0),
+        dForms.filter((item) => item.groups.filter((group) => group.name === hierarchyName).length > 0),
         filter.selectedFilters
           .find((item) => item.name === "applications")
           .selected.map((item) => {
@@ -49,7 +54,7 @@ const MasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
 
       onSearch({ application_ids: filters });
     },
-    [dForms, onSearch]
+    [dForms, hierarchyName, onSearch]
   );
 
   const onCalendarChange = React.useCallback(
@@ -60,21 +65,6 @@ const MasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
     },
     [onSearch]
   );
-
-  if (!hierarchy) {
-    return (
-      <SearchAndFilter
-        hasIcon
-        isCalendar
-        dataToFilter={null}
-        filterTabPosition={"left"}
-        applyFilter={onFilterSubmit}
-        handleSearch={onSearchSubmit}
-        onCalendarChange={onCalendarChange}
-        filterTypes={{ applications: filterNames }}
-      />
-    );
-  }
 
   return (
     <SearchAndFilter
@@ -92,7 +82,7 @@ const MasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
 
 MasterSchemaHierarchySearch.propTypes = {
   hierarchy: PropTypes.object,
-  dForms: PropTypes.arrayOf(PropTypes.object),
+  hierarchyName: PropTypes.string.isRequired,
   onSearch: PropTypes.func.isRequired,
 };
 
