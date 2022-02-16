@@ -1,5 +1,6 @@
 import _ from "lodash/fp";
 import React from "react";
+import { Card, CardBody } from "reactstrap";
 
 import UserMasterSchemaHierarchy from "./UserMasterSchemaHierarchy";
 import { UserMasterSchemaProviderContext } from "./UserMasterSchemaProvider";
@@ -28,7 +29,11 @@ const UserMasterSchemaContext = () => {
       id="user-master-schema-context"
       onRender={(id, phase) => console.log(id, phase, { selectedNodes })}
     >
-      <UserMasterSchemaHierarchy userId={user.id} hierarchyName={user.permissions.organization} selectedNodes={selectedNodes} onSelect={selectNode} />
+      <Card>
+        <CardBody className="pt-0">
+          <UserMasterSchemaHierarchy userId={user.id} hierarchyName={user.permissions.organization} selectedNodes={selectedNodes} onSelect={selectNode} />
+        </CardBody>
+      </Card>
     </React.Profiler>
   );
 };
