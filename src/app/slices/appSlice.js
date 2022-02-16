@@ -89,7 +89,7 @@ export const initialState = {
     hierarchies: {},
     masterSchemas: [],
     unapprovedFields: {},
-    selectedMasterSchemaId: null,
+    selectedMasterSchema: null,
     fields: [],
     users: {},
     related_applications: {},

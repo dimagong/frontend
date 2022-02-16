@@ -7,7 +7,7 @@ import { UserMasterSchemaProviderContext } from "./UserMasterSchemaProvider";
 import UserMasterSchemaVersionsHistoryTable from "./UserMasterSchemaVersionsHistoryTable";
 
 const UserMasterSchemaContextFeature = () => {
-  const { userId, selectedNodes } = React.useContext(UserMasterSchemaProviderContext);
+  const { user, selectedNodes } = React.useContext(UserMasterSchemaProviderContext);
   const selected = useMasterSchemaSelected(selectedNodes);
 
   const contextFeatureTitle = (() => {
@@ -30,7 +30,7 @@ const UserMasterSchemaContextFeature = () => {
   return (
     <React.Profiler
       id="user-master-schema-context-feature"
-      onRender={(id, phase) => console.log(id, phase, { userId, selected })}
+      onRender={(id, phase) => console.log(id, phase, { selected })}
     >
       <div className="context-feature-template_container">
         <div className="context-feature-template_header">
@@ -41,7 +41,7 @@ const UserMasterSchemaContextFeature = () => {
 
         {/* should it check is_system prop of the field */}
         {selected.fields.length === 1 ? (
-          <UserMasterSchemaVersionsHistoryTable userId={userId} fieldId={selected.field.id} />
+          <UserMasterSchemaVersionsHistoryTable userId={user.id} fieldId={selected.field.id} />
         ) : null}
       </div>
     </React.Profiler>

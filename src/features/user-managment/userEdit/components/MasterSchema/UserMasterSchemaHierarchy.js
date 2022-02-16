@@ -8,12 +8,11 @@ import { useStoreQuery } from "hooks/useStoreQuery";
 import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
 import appSlice from "app/slices/appSlice";
-import { selectdForms } from "app/selectors";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import {
-  selectIsUserMasterSchemaHierarchySearchParamsInitial,
   selectUserMasterSchemaHierarchy,
   selectUserMasterSchemaHierarchySearchParams,
+  selectIsUserMasterSchemaHierarchySearchParamsInitial,
 } from "app/selectors/userSelectors";
 
 import MSEButton from "features/MasterSchema/share/mse-button";
@@ -21,7 +20,6 @@ import MSEButton from "features/MasterSchema/share/mse-button";
 import UserMasterSchemaHierarchySearch from "./UserMasterSchemaHierarchySearch";
 
 const {
-  getdFormsRequest,
   getUserMasterSchemaHierarchyRequest,
   setUserMasterSchemaHierarchySearchParams,
   addFieldToMasterSchemaRequest,
@@ -30,7 +28,7 @@ const {
 
 const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
 
-const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
+const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSelect }) => {
   const dispatch = useDispatch();
 
   const searchParams = useSelector(selectUserMasterSchemaHierarchySearchParams);
@@ -40,7 +38,6 @@ const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
     [dispatch, searchParams]
   );
 
-  const dForms = useStoreQuery(() => getdFormsRequest(), selectdForms);
   const hierarchy = useStoreQuery(
     () => getUserMasterSchemaHierarchyRequest({ userId }),
     selectUserMasterSchemaHierarchy,
@@ -70,12 +67,12 @@ const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSearchParamsInitial]);
 
-  if (hierarchy.isLoading || dForms.isLoading) {
+  if (hierarchy.isLoading) {
     return (
       <Row className="position-relative">
         <Col>
           <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
-            <UserMasterSchemaHierarchySearch hierarchy={null} dForms={null} onSearch={setSearchParams} />
+            <UserMasterSchemaHierarchySearch hierarchyName={hierarchyName} onSearch={setSearchParams} />
           </div>
 
           <div className="d-flex justify-content-center pt-4">
@@ -93,7 +90,7 @@ const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
           <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
             <UserMasterSchemaHierarchySearch
               hierarchy={hierarchy.data}
-              dForms={dForms.data}
+              hierarchyName={hierarchyName}
               onSearch={setSearchParams}
             />
 
@@ -129,7 +126,7 @@ const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
     <Row className="position-relative">
       <Col>
         <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
-          <UserMasterSchemaHierarchySearch hierarchy={hierarchy.data} dForms={dForms.data} onSearch={setSearchParams} />
+          <UserMasterSchemaHierarchySearch hierarchyName={hierarchyName} onSearch={setSearchParams} />
         </div>
 
         <h2 className="ms-nothing-was-found py-3">Nothing was found for your query</h2>
@@ -140,6 +137,7 @@ const UserMasterSchemaHierarchy = ({ userId, selectedNodes, onSelect }) => {
 
 UserMasterSchemaHierarchy.propTypes = {
   userId: PropTypes.number.isRequired,
+  hierarchyName: PropTypes.string.isRequired,
   selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSelect: PropTypes.func.isRequired,
 };

@@ -2,7 +2,14 @@ import _ from "lodash/fp";
 import React from "react";
 import PropTypes from "prop-types";
 
+import { useStoreQuery } from "hooks/useStoreQuery";
+
 import SearchAndFilter from "components/SearchAndFilter";
+
+import appSlice from "app/slices/appSlice";
+import { selectdForms } from "app/selectors";
+
+const { getdFormsRequest } = appSlice.actions;
 
 const formatDate = (date) => {
   const options = { day: "numeric", month: "numeric", year: "numeric" };
@@ -14,13 +21,12 @@ const formatDate = (date) => {
 };
 
 const filterDFormsByName = (dForms, name) =>
-  dForms.filter((item) => item.groups.filter((group) => group.name === name).length > 0);
+  dForms.filter((dForm) => dForm.groups.filter((group) => group.name === name).length > 0);
 
-const UserMasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
-  const filterTypes = React.useMemo(
-    () => (hierarchy ? filterDFormsByName(dForms, hierarchy.name) : []),
-    [dForms, hierarchy]
-  );
+const UserMasterSchemaHierarchySearch = ({ hierarchy, hierarchyName, onSearch }) => {
+  const { data: dForms } = useStoreQuery(() => getdFormsRequest(), selectdForms);
+
+  const filterTypes = React.useMemo(() => filterDFormsByName(dForms || [], hierarchyName), [dForms, hierarchyName]);
   const filterNames = React.useMemo(() => filterTypes.map(_.get("name")), [filterTypes]);
 
   const onSearchSubmit = React.useCallback(
@@ -33,20 +39,13 @@ const UserMasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
   );
 
   const onFilterSubmit = React.useCallback(
-    (filter, filterHierarchy) => {
-      if (!filterHierarchy) {
-        debugger;
-        return;
-      }
-
-      const dFormNames = dForms.filter(
-        (item) => item.groups.filter((group) => group.name === filterHierarchy.name).length > 0
-      );
+    (filter) => {
+      const dFormsByHierarchyName = filterDFormsByName(dForms, hierarchyName);
       const selectedApplications = filter.selectedFilters.find(
         _.pipe(_.get("name"), _.isEqual("applications"))
       ).selected;
       const selectedApplicationsNames = selectedApplications.map((item) => ({ name: item }));
-      const intersectedApplicationNames = _.intersectionBy("name", dFormNames, selectedApplicationsNames);
+      const intersectedApplicationNames = _.intersectionBy("name", dFormsByHierarchyName, selectedApplicationsNames);
       const selectedApplicationIds = intersectedApplicationNames.map(_.get("id"));
 
       const selectedTypes = filter.selectedFilters.find(_.pipe(_.get("name"), _.isEqual("types"))).selected;
@@ -54,7 +53,7 @@ const UserMasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
 
       onSearch({ application_ids: selectedApplicationIds, only_files: onlyFiles });
     },
-    [dForms, onSearch]
+    [dForms, hierarchyName, onSearch]
   );
 
   const onCalendarChange = React.useCallback(
@@ -65,22 +64,6 @@ const UserMasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
     },
     [onSearch]
   );
-
-  if (!hierarchy) {
-    return (
-      <SearchAndFilter
-        hasIcon
-        isCalendar
-        crossSelectingDisabled
-        dataToFilter={null}
-        filterTabPosition={"left"}
-        applyFilter={onFilterSubmit}
-        handleSearch={onSearchSubmit}
-        onCalendarChange={onCalendarChange}
-        filterTypes={{ applications: filterNames, types: ["Files only"] }}
-      />
-    );
-  }
 
   return (
     <SearchAndFilter
@@ -99,7 +82,7 @@ const UserMasterSchemaHierarchySearch = ({ hierarchy, dForms, onSearch }) => {
 
 UserMasterSchemaHierarchySearch.propTypes = {
   hierarchy: PropTypes.object,
-  dForms: PropTypes.arrayOf(PropTypes.object),
+  hierarchyName: PropTypes.string.isRequired,
   onSearch: PropTypes.func.isRequired,
 };
 
