@@ -7,14 +7,13 @@ import { getFullName } from "utility/get-full-name";
 
 import masterSchemaApi from "api/masterSchema/masterSchema";
 
-import SurveyModal from "features/Surveys/Components/SurveyModal";
-
 import { UITable } from "components/Table";
 import { TypedValuePreview } from "components/MasterSchemaValuePreviews";
 import { VersionsHistoryTable } from "components/MasterSchemaVersionsHistory";
 
 import BackInTimeIcon from "assets/img/svg/back-in-time.svg";
 import NoneAvatar from "assets/img/portrait/none-avatar.png";
+import CustomModal from "../../../../../../../components/CustomModal";
 
 const normalizeVersionTotal = (total) => (total > 9 ? "+9" : total);
 
@@ -105,19 +104,19 @@ const MSUUserList = ({ users }) => {
         }}
       />
 
-      <SurveyModal
+      <CustomModal
         className="msu-history-modal"
         isOpen={historyData.modal}
         title="Element history"
         onClose={closeHistoryModal}
-        actions={false}
+        footerDisabled
       >
         {historyData.fieldId ? (
           <VersionsHistoryTable
             versionsFactory={() => masterSchemaApi.getFieldVersions({ fieldId: historyData.fieldId })}
           />
         ) : null}
-      </SurveyModal>
+      </CustomModal>
     </>
   );
 };

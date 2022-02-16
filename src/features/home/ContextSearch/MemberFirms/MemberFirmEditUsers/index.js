@@ -96,12 +96,12 @@ const MemberFirmEditUsers = ({
         setIsModalOpen(false);
       }}
     >
-      <div className="survey-modal_header">
-        <div className="survey-modal_header_title">Edit member firm</div>
-        <div className={"survey-modal_header_cross"}>
+      <div className="custom-modal_header">
+        <div className="custom-modal_header_title">Edit member firm</div>
+        <div className={"custom-modal_header_cross"}>
           <X
             size={26}
-            className={"survey-modal_header_cross-icon"}
+            className={"custom-modal_header_cross-icon"}
             onClick={() => {
               setIsModalOpen(false);
             }}

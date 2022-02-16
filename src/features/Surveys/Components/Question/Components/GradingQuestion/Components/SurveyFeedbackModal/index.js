@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {TextArea} from "../../../../../SurveyFormComponents";
-import SurveyModal from "../../../../../SurveyModal";
 import { usePrevious } from "hooks/common";
 import {useSelector} from "react-redux";
 
 import {selectError} from "app/selectors";
+import CustomModal from "../../../../../../../../components/CustomModal";
 
 const SurveyFeedbackModal = ({
   isOpen,
@@ -43,7 +43,7 @@ const SurveyFeedbackModal = ({
   }, [isSubmitProceed]);
 
   return (
-    <SurveyModal
+    <CustomModal
       isOpen={isOpen}
       onClose={handleClose}
       submitBtnText={"Submit"}
@@ -64,7 +64,7 @@ const SurveyFeedbackModal = ({
           disabled={isSubmitProceed}
         />
       </div>
-    </SurveyModal>
+    </CustomModal>
   )
 };
 

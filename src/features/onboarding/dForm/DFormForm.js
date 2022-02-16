@@ -15,15 +15,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectdForms, selectdForm} from "app/selectors/onboardingSelectors";
 import FormCreate from "components/FormCreate/FormCreate"
 import {initDForm} from './settings'
-import {colourStyles} from '../../../utility/select/selectSettigns'
-import Select from 'react-select'
 import Checkbox from "../../Surveys/Components/SurveyFormComponents/Checkbox";
-import SurveyModal from "../../Surveys/Components/SurveyModal";
 import SurveySelectComponent from "../../Surveys/Components/SurveyFormComponents/Select";
 import { toast } from 'react-toastify'
 
 import onboardingSlice from 'app/slices/onboardingSlice';
 import appSlice from 'app/slices/appSlice'
+import CustomModal from "../../../components/CustomModal";
 
 const {
   setdForm,
@@ -178,7 +176,7 @@ const DFormForm = ({isCreate}) => {
         </Card>
       </Col>
 
-      <SurveyModal
+      <CustomModal
         isOpen={isDFormTemplateSelectModalVisible}
         onClose={() => setIsDFormTemplateSelectModalVisible(false)}
         title="Select dForm"
@@ -194,7 +192,7 @@ const DFormForm = ({isCreate}) => {
           noOptionsMessage={() => "There are no dForm that can be used as a template"}
           options={getOptionsByOrganization(dForm.groups[0])}
         />
-      </SurveyModal>
+      </CustomModal>
     </Row>
   );
 };
