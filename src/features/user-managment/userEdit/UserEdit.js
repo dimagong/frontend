@@ -246,7 +246,7 @@ const UserEdit = () => {
 
   return (
     <Row className="user-managment">
-      <UserMasterSchemaProvider userId={manager.id} setContextFeature={setMasterSchemaContextFeature}>
+      <UserMasterSchemaProvider user={manager} setContextFeature={setMasterSchemaContextFeature}>
         <Col sm="12" md="12" lg="12" xl="6" className="pb-3">
           <Scrollbars autoHeight autoHeightMin={550} autoHeightMax={window.innerHeight - INPUT_HEADER_HEIGHT}>
             <div style={{paddingRight: "15px"}}>
