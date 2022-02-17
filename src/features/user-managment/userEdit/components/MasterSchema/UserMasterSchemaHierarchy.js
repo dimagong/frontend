@@ -26,6 +26,8 @@ const {
   addGroupToMasterSchemaRequest,
 } = appSlice.actions;
 
+const stickySearchStyles = { top: "0px", left: "0px", backgroundColor: "#fff" };
+
 const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
 
 const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSelect }) => {
@@ -71,7 +73,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
     return (
       <Row className="position-relative">
         <Col>
-          <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
+          <div className="position-sticky zindex-1 pt-2" style={stickySearchStyles}>
             <UserMasterSchemaHierarchySearch hierarchyName={hierarchyName} onSearch={setSearchParams} />
           </div>
 
@@ -87,7 +89,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
     return (
       <Row className="position-relative">
         <Col>
-          <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
+          <div className="position-sticky zindex-1 pt-2" style={stickySearchStyles}>
             <UserMasterSchemaHierarchySearch
               hierarchy={hierarchy.data}
               hierarchyName={hierarchyName}
@@ -125,7 +127,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
   return (
     <Row className="position-relative">
       <Col>
-        <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
+        <div className="position-sticky zindex-1 pt-2" style={stickySearchStyles}>
           <UserMasterSchemaHierarchySearch hierarchyName={hierarchyName} onSearch={setSearchParams} />
         </div>
 

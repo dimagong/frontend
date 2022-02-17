@@ -273,11 +273,7 @@ const UserEdit = () => {
                   />
                 </TabPane>
                 <TabPane tabId="Master Schema">
-                  <Card>
-                    <CardBody>
-                      {activeModuleTab === "Master Schema" ? <UserMasterSchemaContext key={manager.id} /> : null}
-                    </CardBody>
-                  </Card>
+                  {activeModuleTab === "Master Schema" ? <UserMasterSchemaContext key={manager.id} /> : null}
                 </TabPane>
                 <TabPane tabId="Applications">
                   <Card>
