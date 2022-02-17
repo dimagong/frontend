@@ -52,8 +52,8 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
       (item) =>
         !item.isHidden && (
           <span key={item[tabId]} className="nav-menu-tabs_tab with-icon" id={item[tabId]}>
-            <li className={`page-item ${item[tabId] === active ? "active" : ""}`}>
-              <button className="page-link" onClick={() => handleTabChange(item)}>
+            <li className={`nav-menu-pagination-page_item ${item[tabId] === active ? "active" : ""}`}>
+              <button className="nav-menu-pagination-page_link" onClick={() => handleTabChange(item)}>
                 <div className={item.icon == "null" ? "icon-container icon-none" : "icon-container"}>
                   <img
                     src={item.icon == "null" ? "null" : icon}
@@ -85,7 +85,7 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
         .map((menu) => (
           <div ref={navRef}>
             <nav className={`nav-menu-tabs ${menu.className || ""}`}>
-              <ul className="pagination">
+              <ul className="nav-menu-pagination">
                 <span className="title">
                   {menu.title}
                   <span className={"title-number"}> {menu.itemsCount}</span>

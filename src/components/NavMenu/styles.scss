@@ -24,57 +24,60 @@
     top: 164px;
   }
 
-  .pagination {
+  .nav-menu-pagination {
     flex-direction: column;
     margin-bottom: 0;
+    display: flex;
+    list-style: none;
+    padding-left: 0;
 
-    .page-item.active .page-link {
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link {
       background: #0070b8;
       transform: initial;
       // border-top: 1px solid #0070b8;
       // border-bottom: 1px solid #0070B8;
     }
-    .page-item.active .page-link .tabs-text-container {
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link .tabs-text-container {
       color: #fff;
     }
-    .page-item.active .page-link .icon-container {
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link .icon-container {
       background: #fff;
       border-radius: 50%;
     }
-    .page-item.active .page-link .icon-container.icon-none {
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link .icon-container.icon-none {
       background: transparent;
     }
-    .page-item.active .page-link .icon-container > img {
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link .icon-container > img {
       width: 18px;
       height: 19px;
     }
   }
-  .page {
-    &-item {
+  .nav-menu-pagination-page {
+    &_item {
       width: 100%;
       border-radius: 0;
       margin-bottom: 10px;
       margin-right: 10px;
-      .page-link .tabs-text-container {
+      .nav-menu-pagination-page_link .tabs-text-container {
         font-size: 22px;
         color: #707070;
         font-weight: normal;
         line-height: normal;
       }
-      .page-link .icon-container {
+      .nav-menu-pagination-page_link .icon-container {
         width: 29px;
         height: 29px;
         display: flex;
         align-items: center;
         justify-content: center;
       }
-      .page-link {
+      .nav-menu-pagination_link {
         background: #fff;
         // border-bottom: 1px solid transparent;
         // border-top: 1px solid transparent;
       }
     }
-    &-link {
+    &_link {
       width: 100%;
       display: flex;
       flex-direction: row-reverse;
