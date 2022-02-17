@@ -8,12 +8,12 @@ import { getFullName } from "utility/get-full-name";
 import masterSchemaApi from "api/masterSchema/masterSchema";
 
 import { UITable } from "components/Table";
+import CustomModal from "components/CustomModal";
 import { TypedValuePreview } from "components/MasterSchemaValuePreviews";
 import { VersionsHistoryTable } from "components/MasterSchemaVersionsHistory";
 
 import BackInTimeIcon from "assets/img/svg/back-in-time.svg";
 import NoneAvatar from "assets/img/portrait/none-avatar.png";
-import CustomModal from "../../../../../../../components/CustomModal";
 
 const normalizeVersionTotal = (total) => (total > 9 ? "+9" : total);
 
@@ -33,6 +33,7 @@ const MSUUserList = ({ users }) => {
   return (
     <>
       <UITable
+        className="msu-table"
         rows={users}
         headers={headers}
         customHeader={(header) => {

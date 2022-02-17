@@ -3,6 +3,8 @@
 }
 
 .msu-table {
+  border-collapse: separate;
+
   $total-width: 58px;
 
   &__row--shadowed-partial {
