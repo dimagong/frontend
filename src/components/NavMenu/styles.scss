@@ -86,6 +86,7 @@
       padding: 25px 60px 26px 37px;
       background: #fff;
       border-radius: 0 !important;
+
     }
   }
   &_tabs {
@@ -166,4 +167,12 @@
 }
 .nav-menu-tabs::-webkit-scrollbar-thumb:hover {
   background: #0070b8;
+}
+
+.icon-container {
+  border: 1px solid #0070B8;
+  border-radius: 50%;
+}
+.icon-none {
+  border: 1px solid transparent;
 }
