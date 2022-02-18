@@ -18,7 +18,7 @@ import {debounce} from 'lodash';
 import OnboardingSurvey from "../../OnboardingSurvey";
 import './styles.scss'
 
-import TabsArrayOfObjects from 'components/Tabs/TabsArrayOfObjects'
+import NavMenu  from 'components/NavMenu/NavMenu';
 
 import Check from 'assets/img/icons/check.png'
 
@@ -131,31 +131,26 @@ const OnboardingComponent = ({profile, userApplications}) => {
   });
 
   return (
-    <Row style={{maxWidth: "1024px", margin: "0 auto"}}>
-      <Col sm={12} style={{borderBottom: "1px solid rgba(115,103,240, 0.03)", marginBottom: "20px"}}>
-        <Row>
-          <Col sm="12" md={{size: 10, offset: 1}}>
-            <div style={{marginBottom: "20px", marginLeft: "100px", marginRight: "100px"}}>
-              <TabsArrayOfObjects
-                withIcons
-                tabId="tabId"
-                tabName={(application) => application?.d_form?.name || application.title}
-                active={getActiveTab()}
-                tabs={formatTabs(userApplications)}
-                onChange={(application) => {
-                  handleNavClick(application)
-                }}
-                scrollOnStart
-              />
-            </div>
-
-          </Col>
-        </Row>
-      </Col>
+    <>
+    <Row>
+    <Col sm={12}>
+      <NavMenu
+        withIcons
+        tabId="tabId"
+        tabName={(application) => application?.d_form?.name || application.title}
+        active={getActiveTab()}
+        tabs={formatTabs(userApplications)}
+        onChange={(application) => {
+          handleNavClick(application)
+        }}/>
+        </Col>
+      </Row>
+    <Row style={{maxWidth: "1024px", marginLeft: "95px"}}>
       <Col sm="12" md={{size: 10, offset: 1}}>
         <Card style={{background: "transparent", boxShadow: "none"}}>
           <CardBody className="pt-0 pl-0">
             <TabContent activeTab={getActiveTab()}>
+
               {
                 userApplications.map((application, index) => {
 
@@ -172,6 +167,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
                     return (
                       <TabPane key={index} tabId={application.tabId}>
                         <div style={{marginLeft: "-100px", marginRight: "100px"}}>
+                        <h2 className='onboarding-title'>{application.d_form.name}</h2>
                           {
                             !isEmpty(application) && (
                               isShowStatus(application.d_form.status) && !~forceAppShow.indexOf(application.id) ? (
@@ -215,6 +211,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
 
                     return (
                       <TabPane key={index} tabId={application.tabId}>
+                        <div className='onboarding-title'></div>
                         {application.id === profile.onboarding.id && (
                           <OnboardingSurvey
                             onSurveyFinish={() => setRecentlySubmitted(true)}
@@ -233,6 +230,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
         </Card>
       </Col>
     </Row>
+    </>
   )
 };
 

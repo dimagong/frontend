@@ -1,0 +1,186 @@
+.tabs-text-container {
+  max-width: 300px;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nav-menu-tabs {
+  position: fixed;
+  z-index: 1;
+  width: 418px;
+  max-height: 60%;
+  overflow-y: auto;
+  left: 76px;
+  top: 93px;
+  background: #f8f8f8;
+  border-right: 13px solid transparent;
+  outline: 1px solid #0070b8;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 4px rgba(115, 103, 240, 0.15);
+
+  &__surveys {
+    top: 164px;
+  }
+
+  .nav-menu-pagination {
+    flex-direction: column;
+    margin-bottom: 0;
+    display: flex;
+    list-style: none;
+    padding-left: 0;
+
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link {
+      background: #0070b8;
+      transform: initial;
+      // border-top: 1px solid #0070b8;
+      // border-bottom: 1px solid #0070B8;
+    }
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link .tabs-text-container {
+      color: #fff;
+    }
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link .icon-container {
+      background: #fff;
+      border-radius: 50%;
+    }
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link .icon-container.icon-none {
+      background: transparent;
+    }
+    .nav-menu-pagination-page_item.active .nav-menu-pagination-page_link .icon-container > img {
+      width: 18px;
+      height: 19px;
+    }
+  }
+  .nav-menu-pagination-page {
+    &_item {
+      width: 100%;
+      border-radius: 0;
+      margin-bottom: 10px;
+      margin-right: 10px;
+      .nav-menu-pagination-page_link .tabs-text-container {
+        font-size: 18px;
+        color: #707070;
+        font-weight: normal;
+        line-height: normal;
+      }
+      .nav-menu-pagination-page_link .icon-container {
+        width: 29px;
+        height: 29px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-menu-pagination_link {
+        background: #fff;
+        // border-bottom: 1px solid transparent;
+        // border-top: 1px solid transparent;
+      }
+    }
+    &_link {
+      width: 100%;
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: space-between;
+      padding: 25px 60px 26px 37px;
+      background: #fff;
+      border-radius: 0 !important;
+
+    }
+  }
+  &_tabs {
+    padding-left: 0;
+    flex-direction: column;
+  }
+  &_tab {
+    display: flex;
+  }
+  .title {
+    font-weight: bold;
+    font-size: 24px;
+    color: #0070b8;
+    margin-top: 20px;
+    margin-left: 26px;
+    margin-bottom: 29px;
+    line-height: 20px;
+    display: flex;
+    justify-content: space-between;
+    &-number {
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 20px;
+      margin-right: 68px;
+    }
+  }
+}
+
+.nav-column {
+  width: 76px;
+  left: 0;
+  bottom: 0;
+  top: 62px;
+  box-shadow: 0px 0px 4px rgba(115, 103, 240, 0.15);
+  padding-top: 30px;
+  z-index: 1;
+  position: fixed;
+  &-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    height: 63px;
+    cursor: pointer;
+    margin-bottom: 7px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    &__icon_fill {
+      path {
+        fill: #0070b8;
+      }
+    }
+    &__icon_stroke path {
+        stroke: #0070b8;
+    }
+  }
+  &-item.active {
+    background: #0070b8;
+    .nav-column-item__icon_fill path {
+      fill: #F8F8F8;
+    }
+    .nav-column-item__icon_stroke path {
+        fill: #F8F8F8;
+        stroke: #F8F8F8;
+    }
+  }
+}
+.nav-menu-tabs::-webkit-scrollbar {
+  width: 4px;
+}
+.nav-menu-tabs::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 73px;
+}
+.nav-menu-tabs::-webkit-scrollbar-thumb {
+  background: #0070b8;
+}
+.nav-menu-tabs::-webkit-scrollbar-thumb:hover {
+  background: #0070b8;
+}
+
+.icon-container {
+  border: 1px solid #0070B8;
+  border-radius: 50%;
+}
+.icon-none {
+  border: 1px solid transparent;
+}
+.nav-menu-tab_not-assigned {
+  text-align: center;
+  font-size: 18px;
+  padding-top: 20px;
+  display: block;
+  padding-bottom: 20px;
+  color:#707070;
+
+}
