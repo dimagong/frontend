@@ -4,6 +4,7 @@ import './styles.scss';
 const UsersMSElementType = ({inputValue, ...attrs}) => {
   return (
     <div className={'user-master-schema-type-field'} {...attrs}>
+      <h1 className={'user-master-schema-type-field-title'}>Current</h1>
       <label htmlFor={'element-type'} className="user-master-schema-type-field-label">
         Element Type
       </label>

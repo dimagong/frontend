@@ -8,6 +8,7 @@ import DownloadIcon from 'assets/img/svg/ms-user-cloud-download.svg';
 const UsersMSVersionField = ({inputValue, onDownload, onEdit, onClose, ...attrs}) => {
   return (
     <div className={'user-master-schema-type-field'} {...attrs}>
+      <h1 className={'user-master-schema-type-field-title'}>Current</h1>
       <label htmlFor={'version-field'} className="user-master-schema-type-field-label">
         Version
       </label>

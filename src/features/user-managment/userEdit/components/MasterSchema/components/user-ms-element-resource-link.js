@@ -4,6 +4,7 @@ import './styles.scss';
 const UsersMSResourceLink = ({inputValue, ...attrs}) => {
   return (
     <div className={'user-master-schema-type-field'} {...attrs}>
+      <h1 className={'user-master-schema-type-field-title'}>Current</h1>
       <label htmlFor={'resource-link'} className="user-master-schema-type-field-label">
         Resource link
       </label>
