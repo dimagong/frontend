@@ -15,45 +15,55 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
 
   const navRef = useRef();
 
-  const apps = tabs.filter((tab) => tab.hasOwnProperty("d_form_id"));
-  const surveys = tabs.filter((tab) => !tab.hasOwnProperty("d_form_id"));
+  const apps = React.useMemo(() => tabs.filter((tab) => tab.hasOwnProperty("d_form_id")), [tabs]);
+  const surveys = React.useMemo(() => tabs.filter((tab) => !tab.hasOwnProperty("d_form_id")), [tabs]);
 
-  const menus = [
-    {
-      id: "surveys",
-      title: "Surveys",
-      className: "nav-menu-tabs__surveys",
-      items: surveys,
-      itemsCount: `${surveys.filter((survey) => survey.finished_at !== null).length}/${surveys.length}`,
-    },
-    {
-      id: "apps",
-      title: "Applications",
-      className: "",
-      items: apps,
-      itemsCount: `${apps.filter((app) => app.icon !== "null").length}/${apps.length}`,
-    },
-  ];
+  const menus = React.useMemo(
+    () => [
+      {
+        id: "surveys",
+        title: "Surveys",
+        className: "nav-menu-tabs__surveys",
+        items: surveys,
+        itemsCount: `${surveys.filter((survey) => survey.finished_at !== null).length}/${surveys.length}`,
+      },
+      {
+        id: "apps",
+        title: "Applications",
+        className: "",
+        items: apps,
+        itemsCount: `${apps.filter((app) => app.icon !== "null").length}/${apps.length}`,
+      },
+    ],
+    [apps, surveys]
+  );
 
-  const showMenu = (menuName) => {
-    setShownMenu(menuName === shownMenu ? "none" : menuName);
-  };
+  const showMenu = React.useCallback(
+    (menuName) => setShownMenu(menuName === shownMenu ? "none" : menuName),
+    [shownMenu]
+  );
+
+  const closeMenu = React.useCallback(() => setShownMenu("none"), []);
+
+  const handleTabChange = React.useCallback(
+    (tab) => {
+      if (tab[tabId] !== active) {
+        closeMenu();
+        onChange(tab);
+      }
+    },
+    [active, closeMenu, onChange, tabId]
+  );
 
   useOutsideClick(navRef, (e) => showMenu(shownMenu));
   useOutsideFocus(navRef, (e) => showMenu(shownMenu));
-
-  const handleTabChange = (tab) => {
-    if (tab[tabId] !== active) {
-      onChange(tab);
-    }
-  };
 
   const renderTabsWithIcons = (tabs) => {
     return tabs.map(
       (item) =>
         !item.isHidden && (
-          <span key={item[tabId]} className="nav-menu-tabs_tab with-icon" id={item[tabId]}>
-            <li className={`nav-menu-pagination-page_item ${item[tabId] === active ? "active" : ""}`}>
+          <li key={item[tabId]} className="nav-menu-tabs_tab with-icon" id={item[tabId]}>
+            <div className={`nav-menu-pagination-page_item ${item[tabId] === active ? "active" : ""}`}>
               <button className="btn nav-menu-pagination-page_link" onClick={() => handleTabChange(item)}>
                 <div className={item.icon == "null" ? "icon-container icon-none" : "icon-container"}>
                   <img
@@ -64,8 +74,8 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
                 </div>
                 <div className={"tabs-text-container"}>{tabName(item)}</div>
               </button>
-            </li>
-          </span>
+            </div>
+          </li>
         )
     );
   };
@@ -133,11 +143,11 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
         .map((menu) => (
           <nav className={`nav-menu-tabs ${menu.className || ""}`}>
             <ul className="nav-menu-pagination">
-              <span className="title">
+              <li className="title">
                 {menu.title}
                 <span className={"title-number"}> {menu.itemsCount}</span>
-              </span>
-              <div className="nav-menu-tabs_tabs" id={"tabs-container"}>
+              </li>
+              <ul className="nav-menu-tabs_tabs" id={"tabs-container"}>
                 {menu.items.length !== 0 ? (
                   renderTabsWithIcons(menu.items)
                 ) : (
@@ -145,7 +155,7 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
                     {`There are no assigned ${menu.title.toLocaleLowerCase()}`}
                   </span>
                 )}
-              </div>
+              </ul>
             </ul>
           </nav>
         ))}
