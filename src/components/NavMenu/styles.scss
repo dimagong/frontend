@@ -139,18 +139,17 @@
         fill: #0070b8;
       }
     }
-    &__icon_stroke g > path {
+    &__icon_stroke path {
         stroke: #0070b8;
     }
   }
   &-item.active {
     background: #0070b8;
-    .nav-column-item__icon_fill {
-      path {
-        fill: #F8F8F8;
-      }
+    .nav-column-item__icon_fill path {
+      fill: #F8F8F8;
     }
-    .nav-column-item__icon_stroke g > path {
+    .nav-column-item__icon_stroke path {
+        fill: #F8F8F8;
         stroke: #F8F8F8;
     }
   }
