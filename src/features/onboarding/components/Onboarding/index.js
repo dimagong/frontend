@@ -211,6 +211,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
 
                     return (
                       <TabPane key={index} tabId={application.tabId}>
+                        <div className='onboarding-title'></div>
                         {application.id === profile.onboarding.id && (
                           <OnboardingSurvey
                             onSurveyFinish={() => setRecentlySubmitted(true)}
