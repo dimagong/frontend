@@ -142,7 +142,7 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
                   renderTabsWithIcons(menu.items)
                 ) : (
                   <span className="nav-menu-tab_not-assigned">
-                    {`There are not assigned ${menu.title.toLocaleLowerCase()}`}
+                    {`There are no assigned ${menu.title.toLocaleLowerCase()}`}
                   </span>
                 )}
               </div>
