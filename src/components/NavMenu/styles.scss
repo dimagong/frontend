@@ -9,7 +9,6 @@
 .nav-menu-tabs {
   position: fixed;
   z-index: 1;
-  bottom: 0;
   width: 418px;
   max-height: 60%;
   overflow-y: auto;
@@ -175,4 +174,13 @@
 }
 .icon-none {
   border: 1px solid transparent;
+}
+.nav-menu-tab_not-assigned {
+  text-align: center;
+  font-size: 18px;
+  padding-top: 20px;
+  display: block;
+  padding-bottom: 20px;
+  color:#707070;
+
 }

@@ -54,7 +54,7 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
         !item.isHidden && (
           <span key={item[tabId]} className="nav-menu-tabs_tab with-icon" id={item[tabId]}>
             <li className={`nav-menu-pagination-page_item ${item[tabId] === active ? "active" : ""}`}>
-              <button className="nav-menu-pagination-page_link" onClick={() => handleTabChange(item)}>
+              <button className="btn nav-menu-pagination-page_link" onClick={() => handleTabChange(item)}>
                 <div className={item.icon == "null" ? "icon-container icon-none" : "icon-container"}>
                   <img
                     src={item.icon == "null" ? "null" : icon}
@@ -74,16 +74,36 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
   return (
     <div ref={navRef}>
       <div className="nav-column">
-        <div className={`nav-column-item ${shownMenu === "apps" ? "active" : "" }`} onClick={stopPropagation(() => showMenu("apps"))}>
-          <svg width="20"className={"nav-column-item__icon_fill"} height="28" viewBox="0 0 20 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div
+          className={`nav-column-item ${shownMenu === "apps" ? "active" : ""}`}
+          onClick={stopPropagation(() => showMenu("apps"))}
+        >
+          <svg
+            width="20"
+            className={"nav-column-item__icon_fill"}
+            height="28"
+            viewBox="0 0 20 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M4.54322 13.0093H5.62346V11.9074H4.54322V13.0093ZM4.54322 16.3148H5.62346V15.213H4.54322V16.3148ZM4.54322 9.70373H5.62346V8.60188H4.54322V9.70373ZM4.54322 19.6204H5.62346V18.5185H4.54322V19.6204ZM4.54322 22.926H5.62346V21.8241H4.54322V22.926ZM6.70371 16.3148H15.3457V15.213H6.70371V16.3148ZM6.70371 9.70373H15.3457V8.60188H6.70371V9.70373ZM15.2787 0.888916H0.222229V27.3334H19.6667V5.29632L15.2787 0.888916ZM17.5062 25.0613H2.38272V3.09262H13.1852V6.32986H17.5062V25.0613ZM6.70371 19.6204H15.3457V18.5185H6.70371V19.6204ZM6.70371 13.0093H15.3457V11.9074H6.70371V13.0093ZM6.70371 22.926H15.3457V21.8241H6.70371V22.926Z"
               fill="white"
             />
           </svg>
         </div>
-        <div className={`nav-column-item ${shownMenu === "surveys" ? "active" : "" }`} onClick={stopPropagation(() => showMenu("surveys"))}>
-          <svg width="23" height="28" className={"nav-column-item__icon_stroke"} viewBox="0 0 23 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div
+          className={`nav-column-item ${shownMenu === "surveys" ? "active" : ""}`}
+          onClick={stopPropagation(() => showMenu("surveys"))}
+        >
+          <svg
+            width="23"
+            height="28"
+            className={"nav-column-item__icon_stroke"}
+            viewBox="0 0 23 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <g clip-path="url(#clip0_1174_8)">
               <mask id="path-1-inside-1_1174_8" fill="white">
                 <path
@@ -111,17 +131,23 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
       {menus
         .filter((menu) => menu.id === shownMenu)
         .map((menu) => (
-            <nav  className={`nav-menu-tabs ${menu.className || ""}`}>
-              <ul className="nav-menu-pagination">
-                <span className="title">
-                  {menu.title}
-                  <span className={"title-number"}> {menu.itemsCount}</span>
-                </span>
-                <div className="nav-menu-tabs_tabs" id={"tabs-container"}>
-                  {renderTabsWithIcons(menu.items)}
-                </div>
-              </ul>
-            </nav>
+          <nav className={`nav-menu-tabs ${menu.className || ""}`}>
+            <ul className="nav-menu-pagination">
+              <span className="title">
+                {menu.title}
+                <span className={"title-number"}> {menu.itemsCount}</span>
+              </span>
+              <div className="nav-menu-tabs_tabs" id={"tabs-container"}>
+                {menu.items.length !== 0 ? (
+                  renderTabsWithIcons(menu.items)
+                ) : (
+                  <span className="nav-menu-tab_not-assigned">
+                    {`There are not assigned ${menu.title.toLocaleLowerCase()}`}
+                  </span>
+                )}
+              </div>
+            </ul>
+          </nav>
         ))}
     </div>
   );
