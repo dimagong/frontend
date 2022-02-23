@@ -2,9 +2,10 @@ import { PropTypes } from "prop-types";
 import { toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 
+import './styles.scss';
 import masterSchemaApi from "api/masterSchema/masterSchema";
 
-const style = { color: "currentColor" };
+const style = { color: "currentColor"};
 
 const FileValuePreview = ({ fileId, filename }) => {
   const [fileUrl, setFileUrl] = useState(null);
@@ -26,7 +27,7 @@ const FileValuePreview = ({ fileId, filename }) => {
   }
 
   return (
-    <a href={fileUrl} download={filename} style={style}>
+    <a className={'link-to-file'} href={fileUrl} download={filename} style={style}>
       {filename}
     </a>
   );
