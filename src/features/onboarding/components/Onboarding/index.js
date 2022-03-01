@@ -26,32 +26,21 @@ import StatusComponent from "../Components/StatusComponent";
 
 import appSlice from 'app/slices/appSlice'
 
-const {
-  submitdFormRequest,
-  submitdFormDataRequest,
-  setProfileOnboarding,
-} = appSlice.actions;
+const { submitdFormRequest, setProfileOnboarding, submitdFormDataRequest } = appSlice.actions;
 
 const OnboardingComponent = ({profile, userApplications}) => {
   const [recentlySubmitted, setRecentlySubmitted] = useState(false);
   const [forceAppShow, setForceAppShow] = useState([]);
 
-
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
-
-  const [, setDebounced] = useState(false);
-
 
   const isOnboarding = () => {
 
     return userApplications && !!userApplications.length && profile.onboarding;
   };
 
-  const debounceOnSave = useRef(debounce((data, dForm) => {
-    dispatch(submitdFormDataRequest({dForm, data}));
-    setDebounced(false);
-  }, 1500));
+  const debounceOnSave = useRef((data, dForm) => dispatch(submitdFormDataRequest({ data, dForm })));
 
   const submitOnboardingForm = data => {
     setRecentlySubmitted(true);
@@ -194,7 +183,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
                                   onSaveButtonHidden={true}
                                   onSubmit={(formData) => submitOnboardingForm(formData)}
                                   onChange={(data) => {
-                                    setDebounced(true);
+                                    // setDebounced(true);
                                     debounceOnSave.current(data, application.d_form)
                                   }}
                                   updatedAtText={ loading ? "Saving" : (
