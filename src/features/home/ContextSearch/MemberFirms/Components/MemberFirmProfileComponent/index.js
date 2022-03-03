@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import "./styles.scss";
 
-import ContextTemplate from "components/ContextTemplate";
-import {AtSign, X} from "react-feather";
-import {PhoneEnabled} from "@material-ui/icons";
+import React from "react";
+import { AtSign, X } from "react-feather";
+import { Button, Spinner } from "reactstrap";
+import { PhoneEnabled } from "@material-ui/icons";
 
-import {Button, Spinner} from 'reactstrap';
 import Timeline from "components/Timeline";
+import ContextTemplate from "components/ContextTemplate";
+
+import noneAvatar from "assets/img/portrait/none-avatar.png";
+
 import MemberFirmInfoForm from "./Components/MemberFirmInfoForm";
-
-import noneAvatar from "../../../../../../assets/img/portrait/none-avatar.png";
-
-import './styles.scss'
-
 
 const memberFirmProfileTabs = ["Activity", "Info"];
 
@@ -29,88 +28,79 @@ const MemberFirmProfileComponent = ({
   onLoadMoreDataForActivities,
   memberFirmActivities,
 }) => {
-  const [selectedTab, setSelectedTab] = useState(memberFirmProfileTabs[0]);
+  const [selectedTab, setSelectedTab] = React.useState(memberFirmProfileTabs[0]);
 
   const isProfilePhotoChangeProceeding = false;
 
   return (
     <ContextTemplate contextTitle={"Member firm"}>
-        <div className="member-firm-profile">
-          <div className="member-firm-profile_header">
-            <div className="member-firm-profile_header_logo">
-              <img src={data.logo_path || noneAvatar} alt="member firm logo" />
+      <div className="member-firm-profile">
+        <div className="member-firm-profile_header">
+          <div className="member-firm-profile_header_logo">
+            <img src={data.logo_path || noneAvatar} alt="member firm logo" />
 
-              <Button
-                className="member-firm-profile_header_logo-change_button"
-                disabled={isProfilePhotoChangeProceeding}
-                onClick={(event) => onFileInputDialogOpen(event)}
-                outline
-                size="sm"
-                color="primary"
-              >
-                Change
-              </Button>
-              <input
-                ref={logoFileInputRef}
-                type="file"
-                hidden
-                onChange={(event) => onLogoChange(event)}
-              />
+            <Button
+              className="member-firm-profile_header_logo-change_button"
+              disabled={isProfilePhotoChangeProceeding}
+              onClick={(event) => onFileInputDialogOpen(event)}
+              outline
+              size="sm"
+              color="primary"
+            >
+              Change
+            </Button>
+            <input ref={logoFileInputRef} type="file" hidden onChange={(event) => onLogoChange(event)} />
 
-              {/*HANDLE HERE DELETING OF AVATAR*/}
+            {/*HANDLE HERE DELETING OF AVATAR*/}
 
-              {!!data.logo_path && !isProfilePhotoChangeProceeding && (
-                <X
-                  className="x-closer"
-                  onClick={onLogoRemove}
-                  size={25}
-                />
+            {!!data.logo_path && !isProfilePhotoChangeProceeding && (
+              <X className="x-closer" onClick={onLogoRemove} size={25} />
+            )}
+
+            {isProfilePhotoChangeProceeding && (
+              <div className="user-edit__user-avatar_spinner-wrapper">
+                <Spinner color="primary" />
+              </div>
+            )}
+          </div>
+
+          <div className="member-firm-profile_header-info">
+            <div className="member-firm-profile_header-info-name">
+              <p>{data.main_fields.name}</p>
+            </div>
+
+            <div className="member-firm-profile_header-info-contact_data">
+              {!!data.main_fields.email && (
+                <div className="member-firm-profile_header-info-contact_data-info_tile">
+                  <AtSign className="member-firm-profile_header-info-contact_data-info_tile-icon" />{" "}
+                  {data.main_fields.email}
+                </div>
               )}
 
-              {isProfilePhotoChangeProceeding && (
-                <div
-                  className="user-edit__user-avatar_spinner-wrapper"
-                >
-                  <Spinner color="primary" />
+              {!!data.main_fields.contactNumber && (
+                <div className="member-firm-profile_header-info-contact_data-info_tile">
+                  <PhoneEnabled className="member-firm-profile_header-info-contact_data-info_tile-icon" />{" "}
+                  {data.main_fields.contactNumber}
                 </div>
               )}
             </div>
-
-            <div className="member-firm-profile_header-info">
-
-              <div className="member-firm-profile_header-info-name">
-                <p>
-                  {data.main_fields.name}
-                </p>
-              </div>
-
-              <div className="member-firm-profile_header-info-contact_data">
-                {!!data.main_fields.email && (
-                  <div className="member-firm-profile_header-info-contact_data-info_tile">
-                    <AtSign className="member-firm-profile_header-info-contact_data-info_tile-icon" /> {data.main_fields.email}
-                  </div>
-                )}
-
-                {!!data.main_fields.contactNumber && (
-                  <div className="member-firm-profile_header-info-contact_data-info_tile">
-                    <PhoneEnabled className="member-firm-profile_header-info-contact_data-info_tile-icon" /> {data.main_fields.contactNumber}
-                  </div>
-                )}
-
-              </div>
-            </div>
-
           </div>
+        </div>
 
-          <div className="member-firm-profile_tabs">
-            {memberFirmProfileTabs.map(tab => (
-              <Button className="member-firm-profile_tabs_tab" color={selectedTab === tab ? "primary" : "default"} onClick={() => setSelectedTab(tab)}>
-                {tab}
-              </Button>
-            ))}
-          </div>
-          <div className="member-firm-profile_tab-content">
-            {{
+        <div className="member-firm-profile_tabs">
+          {memberFirmProfileTabs.map((tab) => (
+            <Button
+              className="member-firm-profile_tabs_tab"
+              color={selectedTab === tab ? "primary" : "default"}
+              onClick={() => setSelectedTab(tab)}
+            >
+              {tab}
+            </Button>
+          ))}
+        </div>
+        <div className="member-firm-profile_tab-content">
+          {
+            {
               Activity: (
                 <Timeline
                   className="member-firm-profile-activities"
@@ -127,12 +117,13 @@ const MemberFirmProfileComponent = ({
                   memberFirmFormFields={memberFirmFormFields}
                   masterSchemaMemberFirmFields={masterSchemaMemberFirmFields}
                 />
-              )
-            }[selectedTab]}
-          </div>
+              ),
+            }[selectedTab]
+          }
         </div>
+      </div>
     </ContextTemplate>
-  )
+  );
 };
 
 export default MemberFirmProfileComponent;
