@@ -1,11 +1,11 @@
 import { isNil } from "lodash/fp";
 import PropTypes from "prop-types";
-import { Button, Spinner } from "reactstrap";
+import { Button as RSButton, Spinner } from "reactstrap";
 import React, { useLayoutEffect, useMemo, useRef } from "react";
 
 import { stringIsColor } from "utility/string-is-color";
 
-const MSEButton = ({ loading, textColor, backgroundColor, spinner, spinnerColor, children, ...attrs }) => {
+const Button = ({ loading, textColor, backgroundColor, spinner, spinnerColor, children, ...attrs }) => {
   const buttonRef = useRef();
   const textColorIsColor = useMemo(() => stringIsColor(textColor), [textColor]);
   const backgroundColorIsColor = useMemo(() => stringIsColor(backgroundColor), [backgroundColor]);
@@ -23,7 +23,7 @@ const MSEButton = ({ loading, textColor, backgroundColor, spinner, spinnerColor,
   }, [backgroundColor, backgroundColorIsColor, textColor, textColorIsColor]);
 
   return (
-    <Button innerRef={buttonRef} {...attrs}>
+    <RSButton innerRef={buttonRef} {...attrs}>
       {loading ? (
         <div className="position-relative">
           <div className="invisible">{children}</div>
@@ -34,7 +34,7 @@ const MSEButton = ({ loading, textColor, backgroundColor, spinner, spinnerColor,
       ) : (
         children
       )}
-    </Button>
+    </RSButton>
   );
 };
 
@@ -47,11 +47,11 @@ const hashColorStringPropValidator = (props, propName, componentName) => {
   }
 };
 
-MSEButton.defaultProps = {
+Button.defaultProps = {
   loading: false,
 };
 
-MSEButton.propTypes = {
+Button.propTypes = {
   loading: PropTypes.bool,
 
   textColor: hashColorStringPropValidator,
@@ -63,4 +63,4 @@ MSEButton.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
-export default MSEButton;
+export default Button;

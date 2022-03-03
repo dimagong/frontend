@@ -2,7 +2,7 @@ import Select from "react-select";
 import PropTypes from "prop-types";
 import React, { useMemo, useState } from "react";
 
-import MSEFormField from "./mse-form-field";
+import FormField from "./FormField";
 
 const SelectField = (props) => {
   const {
@@ -64,9 +64,9 @@ const SelectField = (props) => {
   };
 
   return (
-    <MSEFormField label={label} dirty={dirty} invalid={invalid} errors={errors}>
+    <FormField label={label} dirty={dirty} invalid={invalid} errors={errors}>
       {renderChildren()}
-    </MSEFormField>
+    </FormField>
   );
 };
 
@@ -76,7 +76,7 @@ SelectField.defaultProps = {
 
 SelectField.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.any,
+  value: PropTypes.any.isRequired,
   options: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   valid: PropTypes.bool,

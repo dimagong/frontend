@@ -2,7 +2,7 @@ import { Input } from "reactstrap";
 import PropTypes from "prop-types";
 import React, { useMemo, useState, forwardRef } from "react";
 
-import MSEFormField from "./mse-form-field";
+import FormField from "./FormField";
 
 const inputStyles = {
   borderRadius: '0',
@@ -11,7 +11,7 @@ const inputStyles = {
   borderRight: 'none',
 };
 
-const MSETextField = forwardRef((props, ref) => {
+const TextField = forwardRef((props, ref) => {
   const { label, type, name, value, errors, valid, invalid, placeholder, onChange, children, style, ...attrs } = props;
 
   const [dirty, setDirty] = useState(false);
@@ -52,24 +52,24 @@ const MSETextField = forwardRef((props, ref) => {
   };
 
   return (
-    <MSEFormField
+    <FormField
       dirty={dirty}
       invalid={invalid}
       errors={errors}
       label={label}
     >
       {renderChildren()}
-    </MSEFormField>
+    </FormField>
   );
 });
 
-MSETextField.defaultProps = {
+TextField.defaultProps = {
   type: "text",
   errors: [],
   style: inputStyles,
 };
 
-MSETextField.propTypes = {
+TextField.propTypes = {
   type: PropTypes.string,
   name: PropTypes.string.isRequired,
   value: PropTypes.any,
@@ -86,4 +86,4 @@ MSETextField.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
-export default MSETextField;
+export default TextField;
