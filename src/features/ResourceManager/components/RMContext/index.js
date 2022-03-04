@@ -4,7 +4,7 @@ import React from "react";
 import { Spinner } from "reactstrap";
 
 
-import Button from "components/nmp/Button";
+import NmpButton from "components/nmp/NmpButton";
 import { TreeHierarchy } from "components/TreeHierarchy";
 import SearchAndFilter from "components/SearchAndFilter";
 import ContextTemplate from "components/ContextTemplate";
@@ -51,14 +51,14 @@ const RMContextComponent = ({
 
         {hierarchy && (
           <div className="d-flex justify-content-end pb-1">
-            <Button
+            <NmpButton
               className="p-0"
               textColor="currentColor"
               backgroundColor="transparent"
               onClick={expandable.expandOnlyRoot}
             >
               Collapse
-            </Button>
+            </NmpButton>
           </div>
         )}
       </div>

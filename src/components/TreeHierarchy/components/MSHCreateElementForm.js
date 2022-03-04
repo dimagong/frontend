@@ -7,7 +7,7 @@ import { preventDefault } from "utility/event-decorators";
 import { useDidMount } from "hooks/use-did-mount";
 import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 
-import Button from "components/nmp/Button";
+import NmpButton from "components/nmp/NmpButton";
 import TextField from "components/nmp/TextField";
 
 const MSHCreateElementForm = ({ placeholder, submitting, onSubmit: propOnSubmit }) => {
@@ -37,9 +37,9 @@ const MSHCreateElementForm = ({ placeholder, submitting, onSubmit: propOnSubmit 
       <Row className="my-3">
         <Col>
           <div className="d-flex justify-content-end">
-            <Button color="primary" disabled={formGroup.invalid} loading={submitting} type="submit">
+            <NmpButton color="primary" disabled={formGroup.invalid} loading={submitting} type="submit">
               Create
-            </Button>
+            </NmpButton>
           </div>
         </Col>
       </Row>

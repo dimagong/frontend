@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useStoreQuery } from "hooks/useStoreQuery";
 
-import Button from "components/nmp/Button";
+import NmpButton from "components/nmp/NmpButton";
 import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
 import appSlice from "app/slices/appSlice";
@@ -97,7 +97,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
             />
 
             <div className="d-flex justify-content-end pb-1">
-              <Button
+              <NmpButton
                 className="p-0"
                 textColor="currentColor"
                 backgroundColor="transparent"
@@ -105,7 +105,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
                 onClick={expandable.expandOnlyRoot}
               >
                 Collapse
-              </Button>
+              </NmpButton>
             </div>
           </div>
 

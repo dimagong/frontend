@@ -4,8 +4,8 @@ import { CardSubtitle, CardTitle, Col, Label, Row } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import Button from "components/nmp/Button";
-import MSESelectField from "components/nmp/SelectField";
+import NmpButton from "components/nmp/NmpButton";
+import SelectField from "components/nmp/SelectField";
 
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 
@@ -35,7 +35,7 @@ const ApproveFieldsForm = ({ selectedIds, isSubmitting, locationOptions, onAppro
   React.useEffect(() => void setLocation(null), [setLocation]);
 
   return (
-    <MSESelectField
+    <SelectField
       name="elementLocation"
       placeholder="Choose location"
       options={locationOptions}
@@ -63,7 +63,7 @@ const ApproveFieldsForm = ({ selectedIds, isSubmitting, locationOptions, onAppro
                 {error}
               </Col>
               <Col xs={12} className="d-flex mt-3">
-                <Button
+                <NmpButton
                   className="ml-auto"
                   color="primary"
                   type="submit"
@@ -71,13 +71,13 @@ const ApproveFieldsForm = ({ selectedIds, isSubmitting, locationOptions, onAppro
                   disabled={form.invalid}
                 >
                   Approve and move
-                </Button>
+                </NmpButton>
               </Col>
             </Row>
           }
         />
       )}
-    </MSESelectField>
+    </SelectField>
   );
 };
 

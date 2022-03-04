@@ -5,7 +5,7 @@ import { CardTitle, Label, Row, Col } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import Button from "components/nmp/Button";
+import NmpButton from "components/nmp/NmpButton";
 import MSESelectField from "components/nmp/SelectField";
 
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
@@ -83,9 +83,9 @@ const MSENodeRelocationForm = ({
                 {error}
               </Col>
               <Col xs={4}>
-                <Button className="w-100" color="primary" type="submit" disabled={form.invalid}>
+                <NmpButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
                   {action}
-                </Button>
+                </NmpButton>
               </Col>
             </Row>
           }

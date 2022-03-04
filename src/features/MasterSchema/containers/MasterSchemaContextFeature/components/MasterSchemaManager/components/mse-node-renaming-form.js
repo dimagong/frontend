@@ -4,7 +4,7 @@ import { CardTitle, Col, Label, Row } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import Button from "components/nmp/Button";
+import NmpButton from "components/nmp/NmpButton";
 import TextField from "components/nmp/TextField";
 
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
@@ -37,14 +37,14 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onS
                 {error}
               </Col>
               <Col xs={4}>
-                <Button
+                <NmpButton
                   className="w-100"
                   color="primary"
                   type="submit"
                   disabled={form.invalid}
                 >
                   {action}
-                </Button>
+                </NmpButton>
               </Col>
             </Row>
           }
