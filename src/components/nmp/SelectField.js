@@ -37,7 +37,7 @@ const SelectField = (props) => {
       <Select
         inputId={id}
         name={name}
-        defaultValue={value}
+        value={value}
         options={options}
         onChange={onChange}
         placeholder={placeholder}
@@ -76,8 +76,8 @@ SelectField.defaultProps = {
 
 SelectField.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.any.isRequired,
-  options: PropTypes.arrayOf(PropTypes.object).isRequired,
+  value: PropTypes.shape({ label: PropTypes.string, value: PropTypes.any }),
+  options: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.any })).isRequired,
 
   valid: PropTypes.bool,
   invalid: PropTypes.bool,

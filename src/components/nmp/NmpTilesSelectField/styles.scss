@@ -1,0 +1,30 @@
+.nmp-tiles-select-field {
+  &__adder.btn {
+    width: 100%;
+    max-width: 38px;
+    min-height: 38px;
+
+    border: 1px solid #eeeeee;
+
+    color: #4b484d !important;
+    background-color: transparent !important;
+
+    &:hover, &:focus, &:active {
+      color: #4b484d !important;
+    }
+  }
+
+  &__tiles {
+    min-height: 80px;
+
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #eeeeee;
+  }
+
+  &__tile {
+    & + & {
+      margin-left: 8px;
+    }
+  }
+}
