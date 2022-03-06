@@ -2,10 +2,17 @@
   background: white;
   margin-top: 70px;
   border-radius: 10px;
-  &_header {
+
+  &__header {
     display: flex;
     position: relative;
+  }
 
+  &__header-info {
+    max-width: calc(100% - 200px);
+  }
+
+  &_header {
     &_logo {
       position: relative;
       display: flex;
@@ -62,8 +69,6 @@
     }
 
     &-info {
-      // 100% - image width
-      max-width: calc(100% - 200px);
       &-name {
         font-size: 40px;
         color: #444444;

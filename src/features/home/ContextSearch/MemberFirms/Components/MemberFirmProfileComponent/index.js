@@ -11,6 +11,7 @@ import ContextTemplate from "components/ContextTemplate";
 import noneAvatar from "assets/img/portrait/none-avatar.png";
 
 import MemberFirmInfoForm from "./Components/MemberFirmInfoForm";
+import MFAccessManager from "./Components/MFAccessManager";
 
 const memberFirmProfileTabs = ["Activity", "Info"];
 
@@ -35,7 +36,7 @@ const MemberFirmProfileComponent = ({
   return (
     <ContextTemplate contextTitle={"Member firm"}>
       <div className="member-firm-profile">
-        <div className="member-firm-profile_header">
+        <div className="member-firm-profile__header">
           <div className="member-firm-profile_header_logo">
             <img src={data.logo_path || noneAvatar} alt="member firm logo" />
 
@@ -64,7 +65,9 @@ const MemberFirmProfileComponent = ({
             )}
           </div>
 
-          <div className="member-firm-profile_header-info">
+          <MFAccessManager memberFirmId={memberFirmId} />
+
+          <div className="member-firm-profile__header-info">
             <div className="member-firm-profile_header-info-name">
               <p>{data.main_fields.name}</p>
             </div>
