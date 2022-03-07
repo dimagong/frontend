@@ -1,45 +1,50 @@
+import _ from "lodash/fp";
 import React from "react";
 import PropTypes from "prop-types";
 import { Label, Row } from "reactstrap";
 
+import { preventDefault } from "utility/event-decorators";
 import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 
 import NmpButton from "components/nmp/NmpButton";
 import NmpTilesSelectField from "components/nmp/NmpTilesSelectField";
 
-const MFAccessManagerForm = ({ users, submitting, onSubmit: propOnSubmit }) => {
+const MFAccessManagerForm = ({ activeBdmUsers, potentialBdmUsers, submitting, onSubmit: propOnSubmit }) => {
   const [user, setUser] = React.useState(null);
-  const [usersField, setUsersField] = useFormField([], [Validators.required]);
-  const formGroup = useFormGroup({ usersField });
+  const [bdmsField, setBdms] = useFormField(activeBdmUsers, [Validators.required, Validators.identical(activeBdmUsers)]);
+
+  const formGroup = useFormGroup({ bdms: bdmsField });
 
   const options = React.useMemo(() => {
-    const options = users.map((user) => ({ label: `${user.first_name} ${user.last_name}`, value: user }));
-    const notAddedOptions = options.filter(({ value: user }) => !usersField.value.includes(user.name));
+    const options = potentialBdmUsers.map((user) => ({ label: user.full_name, value: user }));
+    const notAddedOptions = options.filter(({ value: user }) => !bdmsField.value.includes(user.full_name));
 
     return notAddedOptions;
-  }, [users, usersField.value]);
+  }, [potentialBdmUsers, bdmsField.value]);
 
-  const onUsersAdding = React.useCallback(({ name }) => setUsersField((prev) => [...prev, name]), [setUsersField]);
+  const bdmUsersNames = React.useMemo(() => bdmsField.value.map(_.get("full_name")), [bdmsField.value]);
+
+  const onUsersAdding = React.useCallback((bdm) => setBdms((prev) => [...prev, bdm]), [setBdms]);
 
   const onUsersRemoving = React.useCallback(
-    (toRemove) => setUsersField((prev) => prev.filter((name) => name !== toRemove.name)),
-    [setUsersField]
+    (toRemove) => setBdms((prev) => prev.filter(({ id }) => id !== toRemove.id)),
+    [setBdms]
   );
 
   const onSubmit = React.useCallback(() => propOnSubmit(formGroup), [formGroup, propOnSubmit]);
 
   return (
-    <form className="pb-2" onSubmit={onSubmit}>
+    <form className="pb-2" onSubmit={preventDefault(onSubmit)}>
       <NmpTilesSelectField
         name="bdm"
         value={user}
         options={options}
         onChange={setUser}
         tileColor="primary"
-        tiles={usersField.value}
+        tiles={bdmUsersNames}
         onTileAdd={onUsersAdding}
         onTileRemove={onUsersRemoving}
-        errors={usersField.errors}
+        errors={bdmsField.errors}
         label={(id) => (
           <Label className="member-firm-role__label" for={id}>
             Managing BDM(s)
@@ -57,7 +62,8 @@ const MFAccessManagerForm = ({ users, submitting, onSubmit: propOnSubmit }) => {
 };
 
 MFAccessManagerForm.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+  activeBdmUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  potentialBdmUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   onSubmit: PropTypes.func.isRequired,
   submitting: PropTypes.bool.isRequired,

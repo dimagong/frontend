@@ -1,23 +1,36 @@
 import React from "react";
+import { merge, concat, toArray, map } from "rxjs";
+
+import { useAsync } from "hooks/useAsync";
 
 import { RoleBdmService } from "api/roleBdm/roleBdmService";
 
-const initialState = { loading: false, error: null, data: null };
+const getAllBdmUsers$ = ({ memberFirmId }) =>
+  merge(
+    RoleBdmService.getBdmUsersByMemberFirm$({ memberFirmId }),
+    RoleBdmService.getPotentialBdmUsersByMemberFirm$({ memberFirmId })
+  ).pipe(
+    toArray(),
+    map(([{ data: active }, { data: potential }]) => ({ active, potential }))
+  );
 
-export const useMFAccessManager = (memberFirmId) => {
-  const [state, dispatch] = React.useReducer((s, p) => ({ ...s, ...p }), initialState);
+const syncBdmUsers$ = ({ memberFirmId, bdmUsersIds }) =>
+  concat(
+    RoleBdmService.putPotentialBdmUsersByMemberFirm$({ memberFirmId, bdmUsersIds}),
+    RoleBdmService.getPotentialBdmUsersByMemberFirm$({ memberFirmId })
+  ).pipe(
+    toArray(),
+    map(([{ data: active }, { data: potential }]) => ({ active, potential }))
+  );
 
-  const dispatchData = React.useCallback((data) => dispatch({ data, loading: false }), []);
+export const useMFAccessManager = (memberFirmId, userId) => {
+  const [state, run] = useAsync({ useObservable: true });
 
-  const dispatchError = React.useCallback((error) => dispatch({ error, loading: false }), []);
+  const getAllBdmUsers = React.useCallback(({ memberFirmId }) => run(getAllBdmUsers$({ memberFirmId })), [run]);
 
-  const dispatchPending = React.useCallback(() => dispatch({ loading: true }), []);
+  const syncBdmUsers = React.useCallback(({ memberFirmId, bdmUsersIds }) => run(syncBdmUsers$({ memberFirmId, bdmUsersIds })), [run]);
 
-  React.useEffect(() => {
-    dispatchPending();
-    RoleBdmService.getBdmUsersByMemberFirm({ memberFirmId }).then(dispatchData, dispatchError);
-    // RoleBdmService.getPotentialsBdmUsersByMemberFirm({ memberFirmId }).then(dispatchData, dispatchError);
-  }, [dispatchData, dispatchError, dispatchPending, memberFirmId]);
+  React.useEffect(() => void getAllBdmUsers({ memberFirmId }).subscribe(), [getAllBdmUsers, memberFirmId]);
 
-  return state;
+  return [state, { syncBdmUsers }];
 };

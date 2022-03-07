@@ -6,31 +6,56 @@ import PropTypes from "prop-types";
 import { Spinner } from "reactstrap";
 
 import MFAccessManagerForm from "./MFAccessManagerForm";
-import MFAccessManagerNoUsers from "./MFAccessManagerNoUsers";
 
 import { useMFAccessManager } from "./useMFAccessManager";
 
-const MFAccessManagerData = ({ memberFirmId }) => {
-  const { data: users, loading } = useMFAccessManager(memberFirmId);
+const MFAccessManagerData = ({ userId, memberFirmId }) => {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const onSubmit = React.useCallback(() => {}, []);
+  const [{ data, error }, { syncBdmUsers }] = useMFAccessManager(memberFirmId, userId);
 
-  if (loading) {
+  const onSubmit = React.useCallback(
+    (submitted) => {
+      const bdmUsersIds = submitted.values.bdms.map(_.get("id"));
+
+      setIsSubmitting(true);
+      syncBdmUsers({ memberFirmId, bdmUsersIds }).subscribe(() => setIsSubmitting(false));
+    },
+    [memberFirmId, syncBdmUsers]
+  );
+
+  if (error) {
     return (
-      <div className="d-flex justify-content-center align-items-center">
+      <div className="text-danger bg-dark">
+        <h1>{error.name}</h1>
+        <pre>{error.message}</pre>
+        <pre>
+          <code>{error.stack}</code>
+        </pre>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="d-flex justify-content-center align-items-center pb-2">
         <Spinner />
       </div>
     );
   }
 
-  if (_.isEmpty(users)) {
-    return <MFAccessManagerNoUsers />;
-  }
-
-  return <MFAccessManagerForm onSubmit={onSubmit} submitting={false} users={users} />;
+  return (
+    <MFAccessManagerForm
+      submitting={isSubmitting}
+      activeBdmUsers={data.active}
+      potentialBdmUsers={data.potential}
+      onSubmit={onSubmit}
+    />
+  );
 };
 
 MFAccessManagerData.propTypes = {
+  userId: PropTypes.number.isRequired,
   memberFirmId: PropTypes.number.isRequired,
 };
 
