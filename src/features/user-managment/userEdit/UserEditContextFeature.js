@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from "react";
 import {
   FormGroup,
   Row,
@@ -15,42 +15,40 @@ import {
 } from "reactstrap";
 
 import { useDispatch, useSelector } from "react-redux";
-import { X, Check } from "react-feather"
-import {selectError} from "app/selectors";
+import { X, Check } from "react-feather";
+import { selectError } from "app/selectors";
 
-import UserInvitationsCreate from '../userInvitations/UserInvitationsCreate'
-import Checkbox from 'components/@vuexy/checkbox/CheckboxesVuexy'
+import UserInvitationsCreate from "../userInvitations/UserInvitationsCreate";
+import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
 
-const {
-  updateUserRequest,
-} = appSlice.actions;
+const { updateUserRequest } = appSlice.actions;
 
-const UserProfileEdit = ({manager, onEditClose}) => {
+const UserProfileEdit = ({ manager, onEditClose }) => {
   const errors = useSelector(selectError) || {};
   const dispatch = useDispatch();
 
   const [managerState, setManagerState] = useState(manager);
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateUserRequest(managerState))
+    dispatch(updateUserRequest(managerState));
   };
 
   const handleCardClose = () => {
-    onEditClose()
+    onEditClose();
   };
 
   const handleFieldChange = (fieldName, fieldValue) => {
     setManagerState({
       ...managerState,
       [fieldName]: fieldValue,
-    })
+    });
   };
 
   useEffect(() => {
-    setManagerState(manager)
+    setManagerState(manager);
   }, [manager]);
 
   return (
@@ -58,16 +56,17 @@ const UserProfileEdit = ({manager, onEditClose}) => {
       <CardHeader>
         <CardTitle className="font-weight-bold">User Edit</CardTitle>
         <div>
-          <X size={15} className="cursor-pointer mr-1" onClick={() => {
-            handleCardClose()
-          }}/>
+          <X
+            size={15}
+            className="cursor-pointer mr-1"
+            onClick={() => {
+              handleCardClose();
+            }}
+          />
         </div>
       </CardHeader>
       <CardBody>
-        <Form
-          // onSubmit={(event) => this.formSubmit(event)}
-          className="user-create"
-        >
+        <Form className="user-create">
           <Row>
             <Col sm="6">
               <FormGroup>
@@ -79,10 +78,31 @@ const UserProfileEdit = ({manager, onEditClose}) => {
                   placeholder="First Name"
                   value={managerState.first_name}
                   onChange={(event) => handleFieldChange("first_name", event.target.value)}
-
-                  {...{invalid: errors['first_name']}}
+                  {...{ invalid: errors["first_name"] }}
                 />
-                <FormFeedback>{errors['first_name'] ? errors['first_name'] : ''}</FormFeedback>
+                <FormFeedback>{errors["first_name"] ? errors["first_name"] : ""}</FormFeedback>
+              </FormGroup>
+              <FormGroup>
+                <Label for="EmailVertical">Email</Label>
+                <Input
+                  type="email"
+                  name="Email"
+                  id="EmailVertical"
+                  placeholder="Email"
+                  value={managerState.email}
+                  onChange={(event) => handleFieldChange("email", event.target.value)}
+                  {...{ invalid: errors["email"] }}
+                />
+                <FormFeedback>{errors["email"] ? errors["email"] : ""}</FormFeedback>
+              </FormGroup>
+              <FormGroup>
+                <Checkbox
+                  color="primary"
+                  icon={<Check className="vx-icon" size={16} />}
+                  label="Show intro page"
+                  checked={+managerState.notify === 1}
+                  onClick={() => handleFieldChange("notify", Number(!managerState.notify))}
+                />
               </FormGroup>
             </Col>
             <Col sm="6">
@@ -95,29 +115,12 @@ const UserProfileEdit = ({manager, onEditClose}) => {
                   placeholder="Last Name"
                   value={managerState.last_name}
                   onChange={(event) => handleFieldChange("last_name", event.target.value)}
-                  {...{invalid: errors['last_name']}}
+                  {...{ invalid: errors["last_name"] }}
                 />
-                <FormFeedback>{errors['last_name'] ? errors['last_name'] : ''}</FormFeedback>
+                <FormFeedback>{errors["last_name"] ? errors["last_name"] : ""}</FormFeedback>
               </FormGroup>
-            </Col>
-            <Col sm="6">
               <FormGroup>
-                <Label for="EmailVertical">Email</Label>
-                <Input
-                  type="email"
-                  name="Email"
-                  id="EmailVertical"
-                  placeholder="Email"
-                  value={managerState.email}
-                  onChange={(event) => handleFieldChange("email", event.target.value)}
-                  {...{invalid: errors['email']}}
-                />
-                <FormFeedback>{errors['email'] ? errors['email'] : ''}</FormFeedback>
-              </FormGroup>
-            </Col>
-            <Col sm="6">
-              <FormGroup>
-                <Label for="">Number</Label>
+                <Label for="mobileVertical">Number</Label>
                 <Input
                   type="text"
                   name="number"
@@ -125,64 +128,51 @@ const UserProfileEdit = ({manager, onEditClose}) => {
                   placeholder="Mobile"
                   value={managerState.number}
                   onChange={(event) => handleFieldChange("number", event.target.value)}
-                  {...{invalid: errors['number']}}
+                  {...{ invalid: errors["number"] }}
                 />
-                <FormFeedback>{errors['number'] ? errors['number'] : ''}</FormFeedback>
+                <FormFeedback>{errors["number"] ? errors["number"] : ""}</FormFeedback>
               </FormGroup>
             </Col>
-            <Col sm="12">
-              <FormGroup>
-                <Checkbox
-                  color="primary"
-                  icon={<Check className="vx-icon" size={16} />}
-                  label="Show intro page"
-                  checked={+managerState.notify === 1 ? true : false}
-                  onClick={() => {
-                    handleFieldChange("notify", Number(!managerState.notify));
-                  }}
-                />
-              </FormGroup>
-            </Col>
-            <Col sm="6">
-              <FormGroup>
-                <Label for="" style={{marginBottom: 5}}>Portal access:</Label>
-                <div>
-                  {
-                    manager.invited && !manager.invited.revoked_at ?
-                      <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
-                                             invitationText="Resend invitation"/> :
-                      manager.invited && !manager.invited.accepted_at ?
-                        <UserInvitationsCreate user={manager} send={false} resend={true} trash={true}
-                                               invitationText="Resend invitation"/> :
-                        manager?.permissions?.ability !== "lead" &&
-                        manager?.permissions?.ability !== "suspect" &&
-                        manager?.permissions?.ability !== "archived" &&
-                        manager.groups.length ?
-                          <UserInvitationsCreate send={true} resend={false} trash={false}
-                                                 user={manager}/>
-                          : <p style={{paddingLeft: "0.2rem"}}>User cannot be invited</p>
-                  }
+          </Row>
 
-                </div>
-              </FormGroup>
+          <Row>
+            <Col sm="6">
+              <p style={{ marginBottom: 5 }}>Portal access:</p>
+              {manager.invited && !manager.invited.revoked_at ? (
+                <UserInvitationsCreate
+                  user={manager}
+                  send={false}
+                  resend={true}
+                  trash={true}
+                  invitationText="Resend invitation"
+                />
+              ) : manager.invited && !manager.invited.accepted_at ? (
+                <UserInvitationsCreate
+                  user={manager}
+                  send={false}
+                  resend={true}
+                  trash={true}
+                  invitationText="Resend invitation"
+                />
+              ) : manager?.permissions?.ability !== "lead" &&
+              manager?.permissions?.ability !== "suspect" &&
+              manager?.permissions?.ability !== "archived" &&
+              manager.groups.length ? (
+                <UserInvitationsCreate send={true} resend={false} trash={false} user={manager} />
+              ) : (
+                <p className="m-0" style={{ paddingLeft: "0.2rem" }}>User cannot be invited</p>
+              )}
             </Col>
-            <Col className="d-flex justify-content-end flex-wrap" sm="12">
-              <FormGroup>
-                <Button.Ripple
-                  color="primary"
-                  type="submit"
-                  className="mr-1"
-                  onClick={onSubmit}
-                >
-                  Save
-                </Button.Ripple>
-              </FormGroup>
+            <Col className="d-flex justify-content-end align-items-end" sm="6">
+              <Button.Ripple className="m-0" color="primary" type="submit" onClick={onSubmit}>
+                Save
+              </Button.Ripple>
             </Col>
           </Row>
         </Form>
       </CardBody>
     </Card>
-  )
+  );
 };
 
 export default UserProfileEdit;

@@ -120,7 +120,7 @@ const UserInvitationsCreate = ({resend, invitationText}) => {
       <Button
         onClick={(event) => formSubmit(event)}
         color="primary"
-        className="mr-1 mb-1"
+        className=""
         size="sm"
         style={{'font-size': '14px'}}
         id="send-invitation-btn"
