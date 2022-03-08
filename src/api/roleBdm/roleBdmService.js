@@ -5,6 +5,14 @@ import { http } from "api";
 import * as Urls from "./constants";
 
 export const RoleBdmService = {
+  getBdmSubordinates({ userId }) {
+    return http.get(Urls.GetBdmSubordinates(userId));
+  },
+
+  getBdmSubordinates$({ userId }) {
+    return from(RoleBdmService.getBdmSubordinates({ userId }));
+  },
+
   getActiveBdmUsers({ userId }) {
     return http.get(Urls.GetActiveBdmUsers(userId));
   },

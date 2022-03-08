@@ -45,8 +45,9 @@ import { CustomTable } from './components/CustomTable/CustomTable';
 
 import { INPUT_HEADER_HEIGHT } from "constants/header";
 
-import { UserMasterSchemaContext, UserMasterSchemaContextFeature } from "./components/MasterSchema";
+import { UserManagementScopeContextFeature } from "./components/ManagementScope";
 import UserMasterSchemaProvider from "./components/MasterSchema/UserMasterSchemaProvider";
+import { UserMasterSchemaContext, UserMasterSchemaContextFeature } from "./components/MasterSchema";
 
 const {
   setManagerOnboarding,
@@ -56,7 +57,7 @@ const {
   getActivitiesRequest
 }  = appSlice.actions;
 
-const tabs = ["Activity", "Master Schema", "Applications", "Permissions"];
+const tabs = ["Activity", "Master Schema", "Applications", "Permissions", "Management scope"];
 
 const selectStyles = {
   control: styles => ({
@@ -137,6 +138,7 @@ const UserEdit = () => {
   };
 
   const setMasterSchemaContextFeature = React.useCallback(() => setContextFeature("masterSchema"), []);
+  const setManagementScopeContextFeature = React.useCallback(() => setContextFeature("managementScope"), []);
 
   const handleRowClick = (application) => {
     if (application.questions) {
@@ -179,8 +181,11 @@ const UserEdit = () => {
 
   const handleChangeTab = (data) => {
     setActiveModuleTab(data);
-    if (data === 'Activity') {
+    if (data === "Activity") {
       dispatch(updateActivitiesRequest({managerId: manager.id, page: 1}))
+    }
+    if (data === "Management scope") {
+      setManagementScopeContextFeature();
     }
   };
 
@@ -325,6 +330,7 @@ const UserEdit = () => {
                 <TabPane tabId="Permissions">
                   <UserRoles manager={manager} userOrganizations={userOrganizations} />
                 </TabPane>
+                <TabPane tabId="managementScope" />
               </TabContent>
             </div>
           </Scrollbars>
@@ -367,7 +373,8 @@ const UserEdit = () => {
                 ),
                 'surveyCreate': <SurveyAssign userId={manager.id} />,
                 'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />,
-                "masterSchema": <UserMasterSchemaContextFeature key={manager.id} />
+                "masterSchema": <UserMasterSchemaContextFeature key={manager.id} />,
+                "managementScope": <UserManagementScopeContextFeature user={manager} />,
               }[contextFeature]}
             </div>
           </Scrollbars>

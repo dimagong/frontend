@@ -13,7 +13,7 @@ const Status = {
 
 const INITIAL_STATE = { data: null, error: null, status: Status.Idle };
 
-export const useAsync = ({ useObservable = false }) => {
+export const useAsync = ({ useObservable } = { useObservable: false }) => {
   const destroy$Ref = React.useRef(new Subject());
 
   const [{ data, error, status }, setState] = React.useReducer((s, p) => ({ ...s, ...p }), INITIAL_STATE);

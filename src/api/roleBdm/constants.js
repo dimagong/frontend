@@ -1,3 +1,5 @@
+export const GetBdmSubordinates = (userId) => `/api/role-bdm/${userId}/subordinates`;
+
 export const GetActiveBdmUsers = (userId) => `/api/role-bdm/${userId}/active-bdms`;
 export const GetPotentialBdmUsers = (userId) => `/api/role-bdm/${userId}/potential-bdms`;
 export const PutPotentialBdmUsers = (userId) => `/api/role-bdm/${userId}/sync-bdms`;
