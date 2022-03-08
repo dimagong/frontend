@@ -4,7 +4,6 @@ import _ from "lodash/fp";
 import React from "react";
 import PropTypes from "prop-types";
 import { Plus } from "react-feather";
-import { Col, Row } from "reactstrap";
 
 import NmpTile from "../NmpTile";
 import NmpButton from "../NmpButton";
@@ -73,9 +72,15 @@ const NmpTilesSelectField = (props) => {
           </div>
 
           <div className="nmp-tiles-select-field__tiles mt-2">
-            {tiles.map((tile, index) => (
-              <NmpTile className="nmp-tiles-select-field__tile" color={tileColor} close onClose={onTileClose(tile)} key={tile}>
-                {tile}
+            {tiles.map((tile) => (
+              <NmpTile
+                className="nmp-tiles-select-field__tile"
+                color={tileColor}
+                close
+                onClose={onTileClose(tile)}
+                key={tile.id}
+              >
+                {tile.label}
               </NmpTile>
             ))}
           </div>

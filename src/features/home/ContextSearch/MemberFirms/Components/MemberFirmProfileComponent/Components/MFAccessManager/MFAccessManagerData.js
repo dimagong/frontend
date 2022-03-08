@@ -9,10 +9,14 @@ import MFAccessManagerForm from "./MFAccessManagerForm";
 
 import { useMFAccessManager } from "./useMFAccessManager";
 
+const userToOption = (user) => ({ label: user.full_name, value: user });
+
 const MFAccessManagerData = ({ userId, memberFirmId }) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const [{ data, error }, { syncBdmUsers }] = useMFAccessManager(memberFirmId, userId);
+
+  const options = React.useMemo(() => (data ? data.potential.map(userToOption) : []), [data]);
 
   const onSubmit = React.useCallback(
     (submitted) => {
@@ -26,10 +30,10 @@ const MFAccessManagerData = ({ userId, memberFirmId }) => {
 
   if (error) {
     return (
-      <div className="text-danger bg-dark">
-        <h1>{error.name}</h1>
-        <pre>{error.message}</pre>
-        <pre>
+      <div className="bg-dark">
+        <h1 className="text-danger">{error.name}</h1>
+        <pre className="text-danger">{error.message}</pre>
+        <pre className="text-danger">
           <code>{error.stack}</code>
         </pre>
       </div>
@@ -44,14 +48,7 @@ const MFAccessManagerData = ({ userId, memberFirmId }) => {
     );
   }
 
-  return (
-    <MFAccessManagerForm
-      submitting={isSubmitting}
-      activeBdmUsers={data.active}
-      potentialBdmUsers={data.potential}
-      onSubmit={onSubmit}
-    />
-  );
+  return <MFAccessManagerForm bdms={data.active} options={options} submitting={isSubmitting} onSubmit={onSubmit} />;
 };
 
 MFAccessManagerData.propTypes = {
