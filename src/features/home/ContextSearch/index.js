@@ -153,13 +153,14 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
   // users without role admin shouldn't see organisations tab
   if(userAbility === "admin") {
-    nav = NAV_OPTIONS
+    nav = NAV_OPTIONS;
   } else if (userAbility === "network_manager" || userAbility === "corporation_manager"){
-    nav = NAV_OPTIONS.filter((n) => n.id !== "organizations")
+    nav = NAV_OPTIONS.filter((n) => n.id !== "organizations");
+  } else if (userAbility === "BDM") {
+    nav = NAV_OPTIONS.filter((n) => ["memberFirms", "managers"].includes(n.id));
   } else {
-    nav = NAV_OPTIONS.filter((n) => n.id !== "organizations" && n.id !== "memberFirms")
+    nav = NAV_OPTIONS.filter((n) => n.id !== "organizations" && n.id !== "memberFirms");
   }
-
 
   return (
     <>
@@ -184,30 +185,42 @@ const ContextSearch = ({isShown, onContextSearchHide}) => {
 
                         <Row className={"contextual-search_wrapper"}>
                           <Col>
-                            <TabContent activeTab={selectedNavItem.id}>
-                              <TabPane tabId={NAV_OPTIONS[0].id}>
-                                <UserManagement allManagers={managers} managers={showManagers} handleContextChange={handleContextChange} />
-                              </TabPane>
-                              <TabPane tabId={NAV_OPTIONS[1].id}>
-                                <Applications />
-                              </TabPane>
-                              <TabPane tabId={NAV_OPTIONS[2].id}>
-                                { NAV_OPTIONS[2].id === selectedNavItem.id && <MasterSchema /> }
-                              </TabPane>
-                              <TabPane tabId={NAV_OPTIONS[3].id}>
-                                <Organizations />
-                              </TabPane>
-                              <TabPane tabId={NAV_OPTIONS[4].id}>
-                                <Surveys />
-                              </TabPane>
-                              <TabPane tabId={NAV_OPTIONS[5].id}>
-                                <MemberFirmsList />
-                              </TabPane>
-                              {/*<TabPane tabId={NAV_OPTIONS[6].id}>*/}
-                              {/*  <ResourceManagerContextSearch />*/}
-                              {/*</TabPane>*/}
-                            </TabContent>
-
+                            { userAbility === "BDM" ? (
+                              <TabContent activeTab={selectedNavItem.id}>
+                                <TabPane tabId={NAV_OPTIONS[0].id}>
+                                  <UserManagement allManagers={managers} managers={showManagers} handleContextChange={handleContextChange} />
+                                </TabPane>
+                                <TabPane tabId={NAV_OPTIONS[5].id}>
+                                  <MemberFirmsList />
+                                </TabPane>
+                              </TabContent>
+                              )
+                              : (
+                                <TabContent activeTab={selectedNavItem.id}>
+                                  <TabPane tabId={NAV_OPTIONS[0].id}>
+                                    <UserManagement allManagers={managers} managers={showManagers} handleContextChange={handleContextChange} />
+                                  </TabPane>
+                                  <TabPane tabId={NAV_OPTIONS[1].id}>
+                                    <Applications />
+                                  </TabPane>
+                                  <TabPane tabId={NAV_OPTIONS[2].id}>
+                                    { NAV_OPTIONS[2].id === selectedNavItem.id && <MasterSchema /> }
+                                  </TabPane>
+                                  <TabPane tabId={NAV_OPTIONS[3].id}>
+                                    <Organizations />
+                                  </TabPane>
+                                  <TabPane tabId={NAV_OPTIONS[4].id}>
+                                    <Surveys />
+                                  </TabPane>
+                                  <TabPane tabId={NAV_OPTIONS[5].id}>
+                                    <MemberFirmsList />
+                                  </TabPane>
+                                  {/*<TabPane tabId={NAV_OPTIONS[6].id}>*/}
+                                  {/*  <ResourceManagerContextSearch />*/}
+                                  {/*</TabPane>*/}
+                                </TabContent>
+                              )
+                             }
                           </Col>
                         </Row>
                         <div className="search-content-footer">
