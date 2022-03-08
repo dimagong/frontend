@@ -14,6 +14,10 @@
     }
   }
 
+  &__adder-wrap {
+    min-width: 38px;
+  }
+
   &__tiles {
     overflow: scroll;
     min-height: 80px;

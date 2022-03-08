@@ -1,3 +1,4 @@
+import _ from "lodash/fp";
 import React, { useState, useEffect } from "react";
 import {
   FormGroup,
@@ -14,26 +15,39 @@ import {
   Card,
 } from "reactstrap";
 
-import { useDispatch, useSelector } from "react-redux";
 import { X, Check } from "react-feather";
-import { selectError } from "app/selectors";
-
-import UserInvitationsCreate from "../userInvitations/UserInvitationsCreate";
-import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
+import { selectError } from "app/selectors";
+
+import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+
+import { useFormField, useFormGroup, Validators } from "hooks/use-form";
+
+import UserInvitationsCreate from "../userInvitations/UserInvitationsCreate";
+
+import UserAccessManager from "./components/UserAccessManager";
+import { useUserAccessManager } from "./components/UserAccessManager/useUserAccessManager";
 
 const { updateUserRequest } = appSlice.actions;
 
 const UserProfileEdit = ({ manager, onEditClose }) => {
-  const errors = useSelector(selectError) || {};
   const dispatch = useDispatch();
-
+  const errors = useSelector(selectError) || {};
   const [managerState, setManagerState] = useState(manager);
+
+  // User Bdm
+  const [{ data: bdms, error }, { syncBdmUsers }] = useUserAccessManager(manager.id);
+  const [bdmsField, setBdmsField] = useFormField([], [Validators.identicalArrayBy([], "id")]);
+  const formGroup = useFormGroup({ bdms: bdmsField });
 
   const onSubmit = (e) => {
     e.preventDefault();
+    const bdmUsersIds = formGroup.values.bdms.map(_.get("id"));
+
     dispatch(updateUserRequest(managerState));
+    syncBdmUsers({ userId: manager.id, bdmUsersIds }).subscribe();
   };
 
   const handleCardClose = () => {
@@ -46,6 +60,9 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
       [fieldName]: fieldValue,
     });
   };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => setBdmsField(bdms ? bdms.active : []), [bdms]);
 
   useEffect(() => {
     setManagerState(manager);
@@ -66,9 +83,9 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
         </div>
       </CardHeader>
       <CardBody>
-        <Form className="user-create">
+        <Form className="user-create" onSubmit={onSubmit}>
           <Row>
-            <Col sm="6">
+            <Col lg={{ size: 4, order: 1 }} xs={{ size: 6, order: 2 }}>
               <FormGroup>
                 <Label for="nameVertical">First Name</Label>
                 <Input
@@ -105,7 +122,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                 />
               </FormGroup>
             </Col>
-            <Col sm="6">
+            <Col lg={{ size: 4, order: 2 }} xs={{ size: 6, order: 2 }}>
               <FormGroup>
                 <Label for="lastNameVertical">Last Name</Label>
                 <Input
@@ -133,6 +150,15 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                 <FormFeedback>{errors["number"] ? errors["number"] : ""}</FormFeedback>
               </FormGroup>
             </Col>
+            <Col lg={{ size: 4, order: 3 }} xs={{ size: 12, order: 1 }}>
+              <UserAccessManager
+                active={bdmsField.value}
+                potential={bdms?.potential}
+                error={error}
+                errors={bdmsField.errors}
+                onChange={setBdmsField}
+              />
+            </Col>
           </Row>
 
           <Row>
@@ -155,16 +181,18 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                   invitationText="Resend invitation"
                 />
               ) : manager?.permissions?.ability !== "lead" &&
-              manager?.permissions?.ability !== "suspect" &&
-              manager?.permissions?.ability !== "archived" &&
-              manager.groups.length ? (
+                manager?.permissions?.ability !== "suspect" &&
+                manager?.permissions?.ability !== "archived" &&
+                manager.groups.length ? (
                 <UserInvitationsCreate send={true} resend={false} trash={false} user={manager} />
               ) : (
-                <p className="m-0" style={{ paddingLeft: "0.2rem" }}>User cannot be invited</p>
+                <p className="m-0" style={{ paddingLeft: "0.2rem" }}>
+                  User cannot be invited
+                </p>
               )}
             </Col>
             <Col className="d-flex justify-content-end align-items-end" sm="6">
-              <Button.Ripple className="m-0" color="primary" type="submit" onClick={onSubmit}>
+              <Button.Ripple className="m-0" color="primary" type="submit">
                 Save
               </Button.Ripple>
             </Col>

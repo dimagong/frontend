@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { Spinner } from "reactstrap";
 
 import MFAccessManagerForm from "./MFAccessManagerForm";
+import MFAccessManagerNoUsers from "./MFAccessManagerNoUsers";
 
 import { useMFAccessManager } from "./useMFAccessManager";
 
@@ -29,15 +30,7 @@ const MFAccessManagerData = ({ userId, memberFirmId }) => {
   );
 
   if (error) {
-    return (
-      <div className="bg-dark">
-        <h1 className="text-danger">{error.name}</h1>
-        <pre className="text-danger">{error.message}</pre>
-        <pre className="text-danger">
-          <code>{error.stack}</code>
-        </pre>
-      </div>
-    );
+    return <MFAccessManagerNoUsers />;
   }
 
   if (!data) {
@@ -52,7 +45,6 @@ const MFAccessManagerData = ({ userId, memberFirmId }) => {
 };
 
 MFAccessManagerData.propTypes = {
-  userId: PropTypes.number.isRequired,
   memberFirmId: PropTypes.number.isRequired,
 };
 

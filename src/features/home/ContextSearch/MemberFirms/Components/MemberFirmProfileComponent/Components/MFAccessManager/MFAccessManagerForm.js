@@ -28,11 +28,7 @@ const MFAccessManagerForm = ({ bdms, options, submitting, onSubmit: propOnSubmit
 
   const onBdmsRemoving = React.useCallback(
     (toRemove) => {
-      setBdmsField((prev) => {
-        const a = prev.filter(({ id }) => id !== toRemove.id);
-        console.log("bdm-remove", a);
-        return a;
-      });
+      setBdmsField((prev) => prev.filter(({ id }) => id !== toRemove.id));
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

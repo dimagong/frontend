@@ -74,7 +74,7 @@ const UserInvitationsCreate = ({resend, invitationText}) => {
       <Button
         onClick={(event) => remove(event)}
         color="primary"
-        className="mr-1 mb-1 btn-icon"
+        className="mr-1 btn-icon"
         size="sm"
         style={{'font-size': '14px'}}
         id="trash-invitation-btn"
@@ -89,7 +89,7 @@ const UserInvitationsCreate = ({resend, invitationText}) => {
 
         <Button
           color="primary"
-          className="mr-1 mb-1"
+          className="mr-1"
           size="sm"
           style={{'font-size': '14px'}}
           id="send-invitation-btn"
@@ -104,7 +104,7 @@ const UserInvitationsCreate = ({resend, invitationText}) => {
       >
         <Button
           color="primary"
-          className="mr-1 mb-1"
+          className="mr-1"
           size="sm"
           style={{'font-size': '14px'}}
         >
@@ -120,7 +120,7 @@ const UserInvitationsCreate = ({resend, invitationText}) => {
       <Button
         onClick={(event) => formSubmit(event)}
         color="primary"
-        className=""
+        className="mr-1"
         size="sm"
         style={{'font-size': '14px'}}
         id="send-invitation-btn"
@@ -142,9 +142,8 @@ const UserInvitationsCreate = ({resend, invitationText}) => {
     }
 
     return <div><Button
-      onClick={() => {}}
       color="primary"
-      className="mr-1 mb-1"
+      className="mr-1"
       size="sm"
       style={{'font-size': '14px'}}
     >

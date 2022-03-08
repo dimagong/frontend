@@ -9,12 +9,24 @@ export const RoleBdmService = {
     return http.get(Urls.GetActiveBdmUsers(userId));
   },
 
+  getActiveBdmUsers$({ userId }) {
+    return from(RoleBdmService.getActiveBdmUsers({ userId }));
+  },
+
   getPotentialBdmUsers({ userId }) {
     return http.get(Urls.GetPotentialBdmUsers(userId));
   },
 
+  getPotentialBdmUsers$({ userId }) {
+    return from(RoleBdmService.getPotentialBdmUsers({ userId }));
+  },
+
   putPotentialBdmUsers({ userId, bdmUsersIds }) {
     return http.put(Urls.PutPotentialBdmUsers(userId), { bdm_user_ids: bdmUsersIds });
+  },
+
+  putPotentialBdmUsers$({ userId, bdmUsersIds }) {
+    return from(RoleBdmService.putPotentialBdmUsers({ userId, bdmUsersIds }));
   },
 
   // MemberFirm

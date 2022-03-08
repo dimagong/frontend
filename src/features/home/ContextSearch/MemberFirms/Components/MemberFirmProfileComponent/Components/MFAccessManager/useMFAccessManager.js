@@ -23,7 +23,7 @@ const syncBdmUsers$ = ({ memberFirmId, bdmUsersIds }) =>
     map(([{ data: active }, { data: potential }]) => ({ active, potential }))
   );
 
-export const useMFAccessManager = (memberFirmId, userId) => {
+export const useMFAccessManager = (memberFirmId) => {
   const [state, run] = useAsync({ useObservable: true });
 
   const getAllBdmUsers = React.useCallback(({ memberFirmId }) => run(getAllBdmUsers$({ memberFirmId })), [run]);

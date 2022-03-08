@@ -61,7 +61,7 @@ const NmpTilesSelectField = (props) => {
 
           <div className="d-flex">
             <div className="width-90-per pr-1">{select}</div>
-            <div className="width-10-per d-flex justify-content-end">
+            <div className="nmp-tiles-select-field__adder-wrap width-10-per d-flex justify-content-end">
               <NmpButton
                 className="nmp-tiles-select-field__adder d-flex align-items-center justify-content-center p-0"
                 onClick={onAdderClick}
@@ -77,6 +77,7 @@ const NmpTilesSelectField = (props) => {
                 className="nmp-tiles-select-field__tile"
                 color={tileColor}
                 close
+                size="sm"
                 onClose={onTileClose(tile)}
                 key={tile.id}
               >
