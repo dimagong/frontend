@@ -4,8 +4,9 @@ import { CardTitle, Col, Label, Row } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import MSEButton from "features/MasterSchema/share/mse-button";
-import MSETextField from "features/MasterSchema/share/mse-text-field";
+import NmpButton from "components/nmp/NmpButton";
+import TextField from "components/nmp/TextField";
+
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 
 const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onSubmit: propOnSubmit, ...attrs }) => {
@@ -15,7 +16,7 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onS
   const onSubmit = () => propOnSubmit(form);
 
   return (
-    <MSETextField
+    <TextField
       name="elementName"
       onChange={({ target }) => setName(target.value)}
       {...name}
@@ -36,21 +37,21 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onS
                 {error}
               </Col>
               <Col xs={4}>
-                <MSEButton
+                <NmpButton
                   className="w-100"
                   color="primary"
                   type="submit"
                   disabled={form.invalid}
                 >
                   {action}
-                </MSEButton>
+                </NmpButton>
               </Col>
             </Row>
           }
           {...attrs}
         />
       )}
-    </MSETextField>
+    </TextField>
   );
 };
 

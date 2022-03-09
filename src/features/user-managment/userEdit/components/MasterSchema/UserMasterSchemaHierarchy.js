@@ -5,6 +5,8 @@ import { Col, Row, Spinner } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useStoreQuery } from "hooks/useStoreQuery";
+
+import NmpButton from "components/nmp/NmpButton";
 import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
 import appSlice from "app/slices/appSlice";
@@ -14,8 +16,6 @@ import {
   selectUserMasterSchemaHierarchySearchParams,
   selectIsUserMasterSchemaHierarchySearchParamsInitial,
 } from "app/selectors/userSelectors";
-
-import MSEButton from "features/MasterSchema/share/mse-button";
 
 import UserMasterSchemaHierarchySearch from "./UserMasterSchemaHierarchySearch";
 
@@ -97,7 +97,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
             />
 
             <div className="d-flex justify-content-end pb-1">
-              <MSEButton
+              <NmpButton
                 className="p-0"
                 textColor="currentColor"
                 backgroundColor="transparent"
@@ -105,7 +105,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
                 onClick={expandable.expandOnlyRoot}
               >
                 Collapse
-              </MSEButton>
+              </NmpButton>
             </div>
           </div>
 
