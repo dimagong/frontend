@@ -40,8 +40,8 @@ const MSHTreeElement = (props) => {
       date={node.createdAt}
       value={node.userValue || node.memberFirmValue}
       files={node.userFiles}
-      applicationsCount={node.userDFormsCount}
       versionsCount={node.userMasterSchemaFieldVersionsCount}
+      applicationsCount={node.userDFormsCount}
       isLocked={node.isSystem}
       selected={selected}
       onSelect={onSelect}

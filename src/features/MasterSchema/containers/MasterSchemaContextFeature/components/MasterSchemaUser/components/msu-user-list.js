@@ -7,9 +7,8 @@ import { getFullName } from "utility/get-full-name";
 
 import masterSchemaApi from "api/masterSchema/masterSchema";
 
-import SurveyModal from "features/Surveys/Components/SurveyModal";
-
 import { UITable } from "components/Table";
+import CustomModal from "components/CustomModal";
 import { TypedValuePreview } from "components/MasterSchemaValuePreviews";
 import { VersionsHistoryTable } from "components/MasterSchemaVersionsHistory";
 
@@ -34,6 +33,7 @@ const MSUUserList = ({ users }) => {
   return (
     <>
       <UITable
+        className="msu-table"
         rows={users}
         headers={headers}
         customHeader={(header) => {
@@ -105,19 +105,19 @@ const MSUUserList = ({ users }) => {
         }}
       />
 
-      <SurveyModal
+      <CustomModal
         className="msu-history-modal"
         isOpen={historyData.modal}
         title="Element history"
         onClose={closeHistoryModal}
-        actions={false}
+        footerDisabled
       >
         {historyData.fieldId ? (
           <VersionsHistoryTable
             versionsFactory={() => masterSchemaApi.getFieldVersions({ fieldId: historyData.fieldId })}
           />
         ) : null}
-      </SurveyModal>
+      </CustomModal>
     </>
   );
 };

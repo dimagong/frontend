@@ -1,31 +1,30 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import * as masterSchemaSelectors from "app/selectors/masterSchemaSelectors";
+import { selectSelectedMasterSchema } from "app/selectors/masterSchemaSelectors";
 
-import { useTreeHierarchySelectable } from "components/TreeHierarchy";
+import { useMasterSchemaSelectable } from "./hooks/useMasterSchemaSelectable";
 
 import MasterSchemaContext from "./containers/MasterSchemaContext";
 import MasterSchemaContextFeature from "./containers/MasterSchemaContextFeature";
 
 const MasterSchema = () => {
-  const hierarchy = useSelector(masterSchemaSelectors.selectSelectedHierarchy);
-  const unapproved = useSelector(masterSchemaSelectors.selectSelectedUnapproved);
+  const masterSchema = useSelector(selectSelectedMasterSchema);
 
-  const selectable = useTreeHierarchySelectable(hierarchy);
+  const [selectedNodes, { select, clear }] = useMasterSchemaSelectable(
+    useMasterSchemaSelectable.Stratagy.SingleGroupAndMultipleFields
+  );
 
-  const onSelect = (node) => selectable.toggle(node.nodeId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => void clear(), [masterSchema.id]);
 
   return (
-    <div className="d-flex">
-      <MasterSchemaContext
-        hierarchy={hierarchy}
-        unapproved={unapproved}
-        selectedIds={selectable.keys}
-        onSelect={onSelect}
-      />
-      <MasterSchemaContextFeature selectable={selectable} />
-    </div>
+    <React.Profiler id="general-master-schema" onRender={(id, phase) => console.log(id, phase, { masterSchema, selectedNodes })}>
+      <div className="d-flex" key={masterSchema.id}>
+        <MasterSchemaContext masterSchemaId={masterSchema.id} masterSchemaName={masterSchema.name} selectedNodes={selectedNodes} onSelect={select} />
+        <MasterSchemaContextFeature masterSchemaId={masterSchema.id} selectedNodes={selectedNodes} />
+      </div>
+    </React.Profiler>
   );
 };
 

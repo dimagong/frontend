@@ -1,34 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { useDidUpdate } from "hooks/use-did-update";
-import { useTreeHierarchySelectable } from "components/TreeHierarchy";
-
-import { useUserMasterSchema } from "./useUserMasterSchema";
+import { useMasterSchemaSelectable } from "features/MasterSchema/hooks/useMasterSchemaSelectable";
 
 export const UserMasterSchemaProviderContext = React.createContext();
 
-const UserMasterSchemaProvider = ({ userId, setContextFeature, children }) => {
-  const userMS = useUserMasterSchema(userId);
-  const selectable = useTreeHierarchySelectable(userMS.hierarchy.data, useTreeHierarchySelectable.STRATEGY.OnlyField);
-
-  const onSelect = React.useCallback(
-    (node) => {
-      setContextFeature();
-      selectable.toggle(node.nodeId);
-    },
-    [selectable, setContextFeature]
+const UserMasterSchemaProvider = React.memo(({ user, setContextFeature, children }) => {
+  const [selectedNodes, { select: selectNode, clear: resetSelected }] = useMasterSchemaSelectable(
+    useMasterSchemaSelectable.Stratagy.OnlySingleField
   );
 
-  const value = React.useMemo(() => ({ userId, userMS, selectable, onSelect }), [userId, userMS, selectable, onSelect]);
+  const provided = React.useMemo(
+    () => ({ user, selectedNodes, selectNode, resetSelected, setContextFeature }),
+    [resetSelected, selectNode, selectedNodes, setContextFeature, user]
+  );
 
-  useDidUpdate(() => selectable.clear(), [userId]);
-
-  return <UserMasterSchemaProviderContext.Provider value={value} children={children} />;
-};
+  return (
+    <React.Profiler id="user-master-schema-provider" onRender={(id, phase) => console.log(id, phase, { selectedNodes })}>
+      <UserMasterSchemaProviderContext.Provider value={provided} children={children} />
+    </React.Profiler>
+  );
+});
 
 UserMasterSchemaProvider.propTypes = {
-  userId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  user: PropTypes.object.isRequired,
   setContextFeature: PropTypes.func.isRequired,
 };
 

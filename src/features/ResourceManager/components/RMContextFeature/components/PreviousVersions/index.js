@@ -3,7 +3,6 @@ import {useSelector} from "react-redux";
 import {createLoadingSelector} from "app/selectors/loadingSelector";
 import {Scrollbars} from "react-custom-scrollbars";
 import AddButton from "components/AddButton";
-import SurveyModal from "../../../../../Surveys/Components/SurveyModal";
 import FileInput from "../../../../../../components/formElements/FileInput";
 import {toast} from "react-toastify";
 import {usePrevious} from "hooks/common";
@@ -16,6 +15,7 @@ import DownloadIcon from 'assets/img/icons/cloud-download.png';
 import DeleteIcon from "assets/img/icons/x.png";
 
 import './styles.scss';
+import CustomModal from "../../../../../../components/CustomModal";
 
 const {
   uploadResourceRequest,
@@ -122,7 +122,7 @@ const PreviousVersions = ({
         </div>
       </div>
 
-      <SurveyModal
+      <CustomModal
         isSubmitProceed={isUploadInProgress}
         isOpen={isAddModalVisible}
         title="Upload file"
@@ -138,7 +138,7 @@ const PreviousVersions = ({
             loading={false}
           />
         </div>
-      </SurveyModal>
+      </CustomModal>
     </div>
   )
 };

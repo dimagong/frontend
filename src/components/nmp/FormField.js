@@ -12,7 +12,7 @@ const labelStyles = {
 
 let formFieldCounter = 0;
 
-const MSEFormField = ({ dirty, invalid, errors, label, error, children }) => {
+const FormField = ({ dirty, invalid, errors, label, error, children }) => {
   const id = `form-field-${formFieldCounter++}`;
 
   const renderLabel = () => {
@@ -38,12 +38,12 @@ const MSEFormField = ({ dirty, invalid, errors, label, error, children }) => {
   return children({ id, label: renderLabel(), error: renderError() });
 };
 
-MSEFormField.defaultProps = {
+FormField.defaultProps = {
   errors: [],
   invalid: false,
 };
 
-MSEFormField.propTypes = {
+FormField.propTypes = {
   dirty: PropTypes.bool.isRequired,
   invalid: PropTypes.bool,
   errors: PropTypes.arrayOf(PropTypes.string),
@@ -53,4 +53,4 @@ MSEFormField.propTypes = {
   children: PropTypes.func.isRequired,
 };
 
-export default MSEFormField;
+export default FormField;

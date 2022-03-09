@@ -2,20 +2,32 @@ import { all, put, call, takeLatest, select } from "redux-saga/effects";
 
 import appSlice from "app/slices/appSlice";
 import masterSchemaApi from "api/masterSchema/masterSchema";
-import { selectSearch } from "app/selectors/masterSchemaSelectors";
+import { selectSelectedMasterSchemaId } from "app/selectors/masterSchemaSelectors";
 
 const {
   getMasterSchemaFieldsRequest,
   getMasterSchemaFieldsSuccess,
   getMasterSchemaFieldsError,
 
-  getMasterSchemaListRequest,
-  getMasterSchemaListSuccess,
-  getMasterSchemaListError,
+  getMasterSchemasRequest,
+  getMasterSchemasSuccess,
+  getMasterSchemasError,
 
   getMasterSchemaHierarchyRequest,
   getMasterSchemaHierarchySuccess,
   getMasterSchemaHierarchyError,
+
+  getAllMasterSchemaGroupsRequest,
+  getAllMasterSchemaGroupsSuccess,
+  getAllMasterSchemaGroupsError,
+
+  getUnapprovedFieldsMasterSchemaRequest,
+  getUnapprovedFieldsMasterSchemaSuccess,
+  getUnapprovedFieldsMasterSchemaError,
+
+  approveUnapprovedFieldsRequest,
+  approveUnapprovedFieldsSuccess,
+  approveUnapprovedFieldsError,
 
   addFieldToMasterSchemaRequest,
   addFieldToMasterSchemaSuccess,
@@ -44,18 +56,6 @@ const {
   groupMakeParentMasterSchemaRequest,
   groupMakeParentMasterSchemaSuccess,
   groupMakeParentMasterSchemaError,
-
-  setUnapprovedMasterSchemaRequest,
-  setUnapprovedMasterSchemaSuccess,
-  setUnapprovedMasterSchemaError,
-
-  approveUnapprovedFieldsRequest,
-  approveUnapprovedFieldsSuccess,
-  approveUnapprovedFieldsError,
-
-  getMasterSchemaGroupsRequest,
-  getMasterSchemaGroupsSuccess,
-  getMasterSchemaGroupsError,
 
   getUsersByMasterSchemaFieldRequest,
   getUsersByMasterSchemaFieldSuccess,
@@ -140,107 +140,113 @@ function* getMasterSchemaFields() {
 
 // NEW SAGA  -----------------------------
 
-function* getList() {
+function* getAllMasterSchemas() {
   try {
-    const list = yield call(masterSchemaApi.getList);
-    yield put(getMasterSchemaListSuccess({ list }));
-    // ToDo: refactor this
-    yield all(list.map(({ id }) => call(getHierarchy, { payload: { id } })));
-    // ToDo: refactor this
-    yield all(list.map(({ id }) => call(getUnapproved, { payload: { id } })));
+    const masterSchemas = yield call(masterSchemaApi.getAll);
+    yield put(getMasterSchemasSuccess(masterSchemas));
   } catch (error) {
-    yield put(getMasterSchemaListError(error));
+    yield put(getMasterSchemasError(error));
   }
 }
 
-function* getHierarchy({ payload: { id } }) {
-  const search = yield select(selectSearch);
+function* getHierarchy({ payload }) {
   try {
-    const hierarchy = yield call(masterSchemaApi.getHierarchy, {
-      id,
-      name: search.value,
-      application_ids: search.filters,
-      date_begin: search.dates[0],
-      date_end: search.dates[1]
-    });
-    yield put(getMasterSchemaHierarchySuccess({ hierarchy, masterSchemaId: id }));
-    // ToDo: refactor this
-    yield call(getGroups, { payload: { masterSchemaId: id } });
+    const [hierarchy] = yield all([
+      call(masterSchemaApi.getHierarchy, payload),
+      call(getAllMasterSchemaGroups, { payload: { masterSchemaId: payload.masterSchemaId } })
+    ]);
+    yield put(getMasterSchemaHierarchySuccess({ hierarchy, masterSchemaId: payload.masterSchemaId }));
   } catch (error) {
     yield put(getMasterSchemaHierarchyError(error));
   }
 }
 
-function* getUnapproved({ payload }) {
-  const { id } = payload;
+function* getAllMasterSchemaGroups({ payload }) {
   try {
-    const unapproved = yield call(masterSchemaApi.getUnapproved, { id });
-    yield put(setUnapprovedMasterSchemaSuccess({ unapproved, id }));
+    const groups = yield call(masterSchemaApi.getAllMasterSchemaGroups, payload);
+    yield put(getAllMasterSchemaGroupsSuccess({ groups, masterSchemaId: payload.masterSchemaId }));
   } catch (error) {
-    yield put(setUnapprovedMasterSchemaError(error));
+    yield put(getAllMasterSchemaGroupsError(error));
+  }
+}
+
+function* getUnapprovedFields({ payload }) {
+  try {
+    const unapprovedFields = yield call(masterSchemaApi.getUnapprovedFields, payload);
+    yield put(getUnapprovedFieldsMasterSchemaSuccess({ unapprovedFields, masterSchemaId: payload.masterSchemaId }));
+  } catch (error) {
+    yield put(getUnapprovedFieldsMasterSchemaError(error));
+  }
+}
+
+function* approveUnapprovedFields({ payload }) {
+  try {
+    yield call(masterSchemaApi.fieldsMakeParent, payload);
+    // update whole hierarchy and unapproved fields
+    yield call(getHierarchy, { payload: { masterSchemaId: payload.masterSchemaId } });
+    yield call(getUnapprovedFields, { payload: { masterSchemaId: payload.masterSchemaId } });
+    yield put(approveUnapprovedFieldsSuccess());
+  } catch (error) {
+    yield put(approveUnapprovedFieldsError(error));
   }
 }
 
 function* addField({ payload }) {
   const { name, parentId } = payload;
+  const masterSchemaId = yield select(selectSelectedMasterSchemaId);
   try {
     const field = yield call(masterSchemaApi.addField, { name, parentId });
-    // console.log("add_field/api", field);
+    yield call(getHierarchy, { payload: { masterSchemaId } });
     yield put(addFieldToMasterSchemaSuccess({ field }));
-    yield call(getList);
   } catch (error) {
-    // console.error("add_field/error", error);
     yield put(addFieldToMasterSchemaError(error));
   }
 }
 
 function* addGroup({ payload }) {
   const { name, parentId } = payload;
+  const masterSchemaId = yield select(selectSelectedMasterSchemaId);
   try {
     const group = yield call(masterSchemaApi.addGroup, { name, parentId });
-    // console.log("add_group/api", group);
+    yield call(getHierarchy, { payload: { masterSchemaId } });
     yield put(addGroupToMasterSchemaSuccess({ group }));
-    yield call(getList);
   } catch (error) {
-    // console.log("add_group/error", error);
     yield put(addGroupToMasterSchemaError(error));
   }
 }
 
 function* updateField({ payload }) {
   const { id, name } = payload;
+  const masterSchemaId = yield select(selectSelectedMasterSchemaId);
   try {
     const field = yield call(masterSchemaApi.updateField, { id, name });
-    // console.log("update_field/api", field);
+    yield call(getHierarchy, { payload: { masterSchemaId } });
     yield put(updateFieldMasterSchemaSuccess({ field }));
   } catch (error) {
-    // console.error("update_field/error", error);
     yield put(updateFieldMasterSchemaError(error));
   }
 }
 
 function* updateGroup({ payload }) {
   const { id, name } = payload;
+  const masterSchemaId = yield select(selectSelectedMasterSchemaId);
   try {
     const group = yield call(masterSchemaApi.updateGroup, { id, name });
-    // console.log("update_group/api", group);
+    yield call(getHierarchy, { payload: { masterSchemaId } });
     yield put(updateGroupMasterSchemaSuccess({ group }));
-    yield call(getList);
   } catch (error) {
-    // console.error("update_group/error", error);
     yield put(updateGroupMasterSchemaError(error));
   }
 }
 
 function* fieldMakeParent({ payload }) {
   const { nodeId, parentId } = payload;
+  const masterSchemaId = yield select(selectSelectedMasterSchemaId);
   try {
     const field = yield call(masterSchemaApi.fieldMakeParent, { nodeId, parentId });
-    // console.log("field-make-parent/api", field);
+    yield call(getHierarchy, { payload: { masterSchemaId } });
     yield put(fieldMakeParentMasterSchemaSuccess({ field }));
-    yield call(getList);
   } catch (error) {
-    // console.error("field-make-parent/error", error);
     yield put(fieldMakeParentMasterSchemaError(error));
   }
 }
@@ -249,63 +255,34 @@ function* fieldsMakeParent({ payload }) {
   const { masterSchemaId, parentId, fieldsIds } = payload;
   try {
     const fields = yield call(masterSchemaApi.fieldsMakeParent, { parentId, fieldsIds });
-    // console.log("fields-make-parent/api", fields);
+    yield call(getHierarchy, { payload: { masterSchemaId } });
     yield put(fieldsMakeParentMasterSchemaSuccess({ fields, masterSchemaId, fieldsIds }));
-    yield call(getList);
   } catch (error) {
-    // console.error("fields-make-parent/error", error);
     yield put(fieldsMakeParentMasterSchemaError(error));
   }
 }
 
 function* fieldsMerge({ payload }) {
   const { parentId, fieldsIds } = payload;
+  const masterSchemaId = yield select(selectSelectedMasterSchemaId);
   try {
     const fields = yield call(masterSchemaApi.fieldsMerge, { parentId, fieldsIds });
-    // console.log("fields-merge/api", fields);
+    yield call(getHierarchy, { payload: { masterSchemaId } });
     yield put(fieldsMergeMasterSchemaSuccess({ fields, fieldsIds }));
-    yield call(getList);
   } catch (error) {
-    // console.error("fields-merge/error", error);
     yield put(fieldsMergeMasterSchemaError(error));
   }
 }
 
 function* groupMakeParent({ payload }) {
   const { nodeId, parentId } = payload;
+  const masterSchemaId = yield select(selectSelectedMasterSchemaId);
   try {
     const group = yield call(masterSchemaApi.groupMakeParent, { nodeId, parentId });
-    // console.log("group-make-parent/api", group);
+    yield call(getHierarchy, { payload: { masterSchemaId } });
     yield put(groupMakeParentMasterSchemaSuccess({ group }));
-    yield call(getList);
   } catch (error) {
-    // console.error("group-make-parent/error", error);
     yield put(groupMakeParentMasterSchemaError(error));
-  }
-}
-
-function* approveFields({ payload }) {
-  const { masterSchemaId, parentId, fieldsIds } = payload;
-  try {
-    const fields = yield call(masterSchemaApi.fieldsMakeParent, { parentId, fieldsIds });
-    // console.log("approve-fields/api", fields);
-    yield put(approveUnapprovedFieldsSuccess({ fields, masterSchemaId, fieldsIds }));
-    yield call(getList);
-  } catch (error) {
-    // console.error("approve-fields/error", error);
-    yield put(approveUnapprovedFieldsError(error));
-  }
-}
-
-function* getGroups({ payload }) {
-  const { masterSchemaId } = payload;
-  try {
-    const groups = yield call(masterSchemaApi.getGroups, { masterSchemaId });
-    // console.log("get-groups/api", groups);
-    yield put(getMasterSchemaGroupsSuccess({ groups, masterSchemaId }));
-  } catch (error) {
-    // console.error("get-groups/error", error);
-    yield put(getMasterSchemaGroupsError(error));
   }
 }
 
@@ -339,10 +316,11 @@ function* getRelatedApplications({ payload }) {
 
 export default function* () {
   yield all([
-    yield takeLatest(getMasterSchemaListRequest, getList),
+    yield takeLatest(getMasterSchemasRequest, getAllMasterSchemas),
     yield takeLatest(getMasterSchemaHierarchyRequest, getHierarchy),
-    yield takeLatest(setUnapprovedMasterSchemaRequest, getUnapproved),
-    yield takeLatest(approveUnapprovedFieldsRequest, approveFields),
+    yield takeLatest(getAllMasterSchemaGroupsRequest, getAllMasterSchemaGroups),
+    yield takeLatest(getUnapprovedFieldsMasterSchemaRequest, getUnapprovedFields),
+    yield takeLatest(approveUnapprovedFieldsRequest, approveUnapprovedFields),
     yield takeLatest(getUsersByMasterSchemaFieldRequest, getUsersByField),
     yield takeLatest(addFieldToMasterSchemaRequest, addField),
     yield takeLatest(addGroupToMasterSchemaRequest, addGroup),
@@ -352,8 +330,8 @@ export default function* () {
     yield takeLatest(fieldsMakeParentMasterSchemaRequest, fieldsMakeParent),
     yield takeLatest(fieldsMergeMasterSchemaRequest, fieldsMerge),
     yield takeLatest(groupMakeParentMasterSchemaRequest, groupMakeParent),
-    yield takeLatest(getMasterSchemaGroupsRequest, getGroups),
     yield takeLatest(getRelatedApplicationsRequest, getRelatedApplications),
+
     yield takeLatest(getMasterSchemaFieldsRequest.type, getMasterSchemaFields),
   ]);
 }

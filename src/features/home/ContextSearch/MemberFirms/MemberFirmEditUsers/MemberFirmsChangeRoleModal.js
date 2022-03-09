@@ -1,10 +1,10 @@
 import Select from "react-select"
 import React, {useEffect, useState} from "react";
-import SurveyModal from "../../../../Surveys/Components/SurveyModal";
 import {useDispatch, useSelector} from "react-redux";
 import appSlice from "app/slices/appSlice";
 import {toast} from "react-toastify";
 import {createLoadingSelector} from "app/selectors/loadingSelector";
+import CustomModal from "../../../../../components/CustomModal";
 
 const {
   addMemberFirmUsersRequest
@@ -62,7 +62,7 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, princi
   }, [isLoading])
 
 
-  return <SurveyModal
+  return <CustomModal
       className="survey-create-modal"
       title={"Member firm role"}
       isOpen={isOpen}
@@ -84,7 +84,7 @@ const MemberFirmsChangeRoleModal = ({isOpen, setIsOpen, user, memberFirm, princi
         />
       </div>
 
-    </SurveyModal>
+    </CustomModal>
 }
 
 export default MemberFirmsChangeRoleModal;

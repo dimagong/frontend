@@ -15,10 +15,10 @@
 
 .unapproved_fields {
   font-family: Montserrat, sans-serif;
-  margin-bottom: 50px;
-  border-bottom: 1px solid #c8c8c8;
 
   &-list {
+    border-bottom: 1px solid #c8c8c8;
+
     &-header {
       display: flex;
       justify-content: space-between;

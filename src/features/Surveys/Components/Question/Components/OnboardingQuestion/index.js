@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 import { getTimeDifference } from "utility/common";
-import SurveyModal from "../../../SurveyModal";
 import HintIcon from "assets/img/svg/help-with-circle.svg"
 import {useSmallOptionsSurveyStyles} from "hooks/useSmallOptionsSurveyStyles";
+import CustomModal from "../../../../../../components/CustomModal";
 
 const MultipleChoice = ({ options, correctAnswerId, onChange }) => {
   const [IsSmallOptionsStylesUsed, setIsSmallOptionsStylesUsed] = useState(null);
@@ -133,7 +133,7 @@ const OnboardingQuestion = ({
         "text": <FreeText onChange={onAnswerChange} answer={answer} onClick={handleOnClick}/>
       }[type]}
 
-      <SurveyModal
+      <CustomModal
         title={"Hint"}
         isOpen={isHintOpen}
         onClose={() => setIsHintOpen(false)}
@@ -141,7 +141,7 @@ const OnboardingQuestion = ({
         onSubmit={() => setIsHintOpen(false)}
       >
         <h3 style={{fontWeight: 'initial', marginBottom: 50}}>{hint}</h3>
-      </SurveyModal>
+      </CustomModal>
     </div>
   );
 };

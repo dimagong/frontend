@@ -5,9 +5,10 @@ import { CardTitle, Label, Row, Col } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import MSEButton from "features/MasterSchema/share/mse-button";
+import NmpButton from "components/nmp/NmpButton";
+import MSESelectField from "components/nmp/SelectField";
+
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
-import MSESelectField from "features/MasterSchema/share/mse-select-field";
 
 const customSelectStyles = {
   control: (provided) => ({
@@ -82,9 +83,9 @@ const MSENodeRelocationForm = ({
                 {error}
               </Col>
               <Col xs={4}>
-                <MSEButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
+                <NmpButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
                   {action}
-                </MSEButton>
+                </NmpButton>
               </Col>
             </Row>
           }

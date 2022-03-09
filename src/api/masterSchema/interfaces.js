@@ -27,6 +27,8 @@ export const MasterSchemaFieldInterface = yup
   })
   .camelCase();
 
+// ToDo: NormalizedMasterSchemaFieldInterface
+
 export const MasterSchemaUnapprovedFieldInterface = yup
   .object({
     id: yup.number().required(),
@@ -38,8 +40,6 @@ export const MasterSchemaUnapprovedFieldInterface = yup
     parentGroupName: yup.string().required(),
     providedByFullName: yup.string().nullable(),
     applicationNames: yup.array().test((v) => Array.isArray(v)),
-    userDFormsCount: yup.number().nullable(),
-    userMasterSchemaFieldVersionsCount: yup.number().nullable(),
   })
   .camelCase();
 
@@ -53,6 +53,20 @@ export const MasterSchemaGroupInterface = yup
     isSystem: yup.boolean().required(),
     fields: yup.array(MasterSchemaFieldInterface).test(Array.isArray),
     groups: yup.array(yup.lazy(() => MasterSchemaGroupInterface)).test(Array.isArray),
+    isMemberFirmGroup: yup.boolean().required(),
+  })
+  .camelCase();
+
+// ToDo: NormalizedMasterSchemaGroupInterface
+
+export const MasterSchemaFlatGroupInterface = yup
+  .object({
+    id: yup.number().required(),
+    name: yup.string().required(),
+    parentId: yup.number().nullable(),
+    updatedAt: yup.string().required(),
+    createdAt: yup.string().required(),
+    isSystem: yup.boolean().required(),
     isMemberFirmGroup: yup.boolean().required(),
   })
   .camelCase();
@@ -72,4 +86,8 @@ export const MasterSchemaHierarchyInterface = yup
   .camelCase()
   .nullable();
 
-export const MasterSchemaUnapprovedInterface = yup.array(MasterSchemaUnapprovedFieldInterface).test(Array.isArray);
+// ToDo: NormalizedMasterSchemaHierarchyInterface
+
+export const MasterSchemaFlatGroupsInterface = yup.array(MasterSchemaFlatGroupInterface).test(Array.isArray);
+
+export const MasterSchemaUnapprovedFieldsInterface = yup.array(MasterSchemaUnapprovedFieldInterface).test(Array.isArray);

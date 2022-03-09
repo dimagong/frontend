@@ -2,7 +2,7 @@ import React from "react";
 import _ from "lodash/fp";
 import { render, unmountComponentAtNode } from "react-dom";
 
-import { buildHierarchy } from "components/TreeHierarchy/hooks/hierarchy-mock-utils";
+import { buildHierarchy } from "api/masterSchema/masterSchemaMockUtils";
 import { useTreeHierarchySelectable } from "./useTreeHierarchySelectable";
 
 describe("useMasterSchemaSelectable", () => {

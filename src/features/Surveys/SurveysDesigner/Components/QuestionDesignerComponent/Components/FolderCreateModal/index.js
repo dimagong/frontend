@@ -6,10 +6,10 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import {usePrevious} from "hooks/common";
 
-import SurveyModal from "features/Surveys/Components/SurveyModal";
 import { Input } from "features/Surveys/Components/SurveyFormComponents";
 
 import appSlice from "app/slices/appSlice";
+import CustomModal from "../../../../../../../components/CustomModal";
 
 const {
   createFolderRequest,
@@ -54,7 +54,7 @@ const FolderCreateModal = ({title, isOpen, onClose }) => {
 
 
   return (
-    <SurveyModal
+    <CustomModal
       title={title}
       isOpen={isOpen}
       onClose={handleModalClose}
@@ -68,7 +68,7 @@ const FolderCreateModal = ({title, isOpen, onClose }) => {
         value={folderName}
         onChange={(e) => setFolderName(e.target.value)}
       />
-    </SurveyModal>
+    </CustomModal>
   )
 };
 

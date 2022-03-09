@@ -1,13 +1,13 @@
-import React from 'react';
+import "./styles.scss";
 
-import ContextTemplate from "components/ContextTemplate";
+import React from "react";
+import { Spinner } from "reactstrap";
 
+
+import NmpButton from "components/nmp/NmpButton";
 import { TreeHierarchy } from "components/TreeHierarchy";
-
-import './styles.scss';
-import SearchAndFilter from "../../../../components/SearchAndFilter";
-import MSEButton from "../../../MasterSchema/share/mse-button";
-import { Spinner } from 'reactstrap';
+import SearchAndFilter from "components/SearchAndFilter";
+import ContextTemplate from "components/ContextTemplate";
 
 const RMContextComponent = ({
   hierarchy,
@@ -51,14 +51,14 @@ const RMContextComponent = ({
 
         {hierarchy && (
           <div className="d-flex justify-content-end pb-1">
-            <MSEButton
+            <NmpButton
               className="p-0"
               textColor="currentColor"
               backgroundColor="transparent"
               onClick={expandable.expandOnlyRoot}
             >
               Collapse
-            </MSEButton>
+            </NmpButton>
           </div>
         )}
       </div>

@@ -7,11 +7,11 @@ import { selectOrganizations } from "app/selectors/groupSelector";
 import { selectError } from "app/selectors";
 import { usePrevious } from "hooks/common";
 import { Input, Select, Checkbox, TextArea } from "features/Surveys/Components/SurveyFormComponents";
-import SurveyModal from "features/Surveys/Components/SurveyModal";
 
 import appSlice from "app/slices/appSlice";
 
 import './styles.scss'
+import CustomModal from "../../../../components/CustomModal";
 
 const {
   createSurveyRequest,
@@ -149,7 +149,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
   }, [isEdit, isOpen]);
 
   return (
-    <SurveyModal
+    <CustomModal
       className="survey-create-modal"
       title={isEdit ? "Edit Survey" : "Create Survey"}
       isOpen={isOpen}
@@ -207,7 +207,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
         </div>
       )}
 
-    </SurveyModal>
+    </CustomModal>
   )
 };
 

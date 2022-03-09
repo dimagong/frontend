@@ -1,37 +1,33 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 
-import { createLoadingSelector } from "app/selectors/loadingSelector";
-import { selectMasterSchemaList } from "app/selectors/masterSchemaSelectors";
-
-import MasterSchemaContextSearchComponent from "./components/MasterSchemaComponent";
+import { useStoreQuery } from "hooks/useStoreQuery";
 
 import appSlice from "app/slices/appSlice";
+import { selectMasterSchemas } from "app/selectors/masterSchemaSelectors";
 
-const { setContext, setSelectedMasterSchema, getMasterSchemaListRequest } = appSlice.actions;
+import { useMasterSchemas } from "./useMasterSchemas";
+import MasterSchemaContextSearchComponent from "./components/MasterSchemaComponent";
+
+const { getMasterSchemasRequest } = appSlice.actions;
 
 const MasterSchemaContextSearch = () => {
-  const dispatch = useDispatch();
+  const masterSchemas = useStoreQuery(getMasterSchemasRequest, selectMasterSchemas);
+  const [selectedId, { select, reset }] = useMasterSchemas();
 
-  const masterSchemas = useSelector(selectMasterSchemaList);
-  const isMasterSchemasLoading = useSelector(createLoadingSelector([getMasterSchemaListRequest.type]));
-
-  const handleMasterSchemaSelect = (masterSchema) => {
-    dispatch(setSelectedMasterSchema({ id: masterSchema.id }));
-    dispatch(setContext("MasterSchema"));
-  };
-
-  useEffect(() => {
-    dispatch(getMasterSchemaListRequest());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  React.useEffect(() => void reset(), [reset]);
 
   return (
-    <MasterSchemaContextSearchComponent
-      masterSchemas={masterSchemas}
-      loading={isMasterSchemasLoading}
-      onMasterSchemaSelect={handleMasterSchemaSelect}
-    />
+    <React.Profiler
+      id="master-schema-context-search"
+      onRender={(id, phase) => console.log(id, phase, { masterSchemas, selectedId })}
+    >
+      <MasterSchemaContextSearchComponent
+        masterSchemas={masterSchemas.data}
+        isLoading={masterSchemas.isLoading}
+        selectedId={selectedId}
+        onSelect={select}
+      />
+    </React.Profiler>
   );
 };
 

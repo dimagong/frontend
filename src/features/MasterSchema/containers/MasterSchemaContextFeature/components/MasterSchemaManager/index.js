@@ -1,20 +1,16 @@
 import "./styles.scss";
 
+import _ from "lodash/fp";
+import React from "react";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
-import { get, isEmpty } from "lodash/fp";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
-import {
-  selectMovementOptions,
-  selectRelatedApplications,
-  selectSelectedId,
-} from "app/selectors/masterSchemaSelectors";
+import { selectAllMasterSchemaGroupsAsOptions, selectRelatedApplications } from "app/selectors/masterSchemaSelectors";
 
 import MSENodeRenamingForm from "./components/mse-node-renaming-form";
-import MSENodeRelocationForm from "./components/mse-node-relocation-form";
 import MSENodeRelatedTable from "./components/mse-node-related-table";
+import MSENodeRelocationForm from "./components/mse-node-relocation-form";
 
 const {
   updateFieldMasterSchemaRequest,
@@ -26,57 +22,66 @@ const {
   fieldsMergeMasterSchemaRequest,
 } = appSlice.actions;
 
-const MasterSchemaManager = ({ selectable }) => {
-  const { selected } = selectable;
-
+const MasterSchemaManager = ({ masterSchemaId, selected }) => {
   const dispatch = useDispatch();
-  const selectedId = useSelector(selectSelectedId);
-  const movementOptions = useSelector(selectMovementOptions);
+  const locationOptions = useSelector(selectAllMasterSchemaGroupsAsOptions(masterSchemaId));
   const relatedApplications = useSelector(selectRelatedApplications(selected.node?.id));
 
-  const onRenameSubmit = (submitted) => {
-    if (submitted.invalid) return;
+  const onRenameSubmit = React.useCallback(
+    (submitted) => {
+      if (submitted.invalid) return;
 
-    const { name } = submitted.values;
-    const { id, isContainable } = selected.node;
-    const payload = { id, name };
-    const action = isContainable ? updateGroupMasterSchemaRequest : updateFieldMasterSchemaRequest;
+      const { name } = submitted.values;
+      const { id, isContainable } = selected.node;
+      const payload = { id, name };
+      const action = isContainable ? updateGroupMasterSchemaRequest : updateFieldMasterSchemaRequest;
 
-    dispatch(action(payload));
-  };
+      dispatch(action(payload));
+    },
+    [dispatch, selected.node]
+  );
 
-  const onRelocateSubmit = (submitted) => {
-    if (submitted.invalid) return;
+  const onRelocateSubmit = React.useCallback(
+    (submitted) => {
+      if (submitted.invalid) return;
 
-    const { id, isContainable } = selected.node;
-    const { value } = submitted.values.location;
-    const payload = { nodeId: id, parentId: value.id };
-    const action = isContainable ? groupMakeParentMasterSchemaRequest : fieldMakeParentMasterSchemaRequest;
+      const { id, isContainable } = selected.node;
+      const { value } = submitted.values.location;
+      const payload = { nodeId: id, parentId: value.id };
+      const action = isContainable ? groupMakeParentMasterSchemaRequest : fieldMakeParentMasterSchemaRequest;
 
-    dispatch(action(payload));
-  };
+      dispatch(action(payload));
+    },
+    [dispatch, selected.node]
+  );
 
-  const onMultipleRelocateSubmit = (submitted) => {
-    if (submitted.invalid) return;
+  const onMultipleRelocateSubmit = React.useCallback(
+    (submitted) => {
+      if (submitted.invalid) return;
 
-    const fieldsIds = selected.fields.map(get("id"));
-    const parentId = submitted.values.location.value.id;
-    const payload = { masterSchemaId: selectedId, parentId, fieldsIds };
+      const fieldsIds = selected.fields.map(_.get("id"));
+      const parentId = submitted.values.location.value.id;
+      const payload = { masterSchemaId, parentId, fieldsIds };
 
-    dispatch(fieldsMakeParentMasterSchemaRequest(payload));
-  };
+      dispatch(fieldsMakeParentMasterSchemaRequest(payload));
+    },
+    [dispatch, masterSchemaId, selected.fields]
+  );
 
-  const onMergeSubmit = (submitted) => {
-    if (submitted.invalid) return;
+  const onMergeSubmit = React.useCallback(
+    (submitted) => {
+      if (submitted.invalid) return;
 
-    const parentId = submitted.values.location.value.id;
-    const fieldsIds = selected.fields.map(get("id")).filter((item) => item !== parentId);
-    const payload = { parentId, fieldsIds };
+      const parentId = submitted.values.location.value.id;
+      const fieldsIds = selected.fields.map(_.get("id")).filter((item) => item !== parentId);
+      const payload = { parentId, fieldsIds };
 
-    dispatch(fieldsMergeMasterSchemaRequest(payload));
-  };
+      dispatch(fieldsMergeMasterSchemaRequest(payload));
+    },
+    [dispatch, selected.fields]
+  );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (selected.field) {
       dispatch(getRelatedApplicationsRequest({ fieldId: selected.field.id }));
     }
@@ -111,7 +116,7 @@ const MasterSchemaManager = ({ selectable }) => {
             label="Move datapoints to:"
             action="Move"
             multiple
-            options={movementOptions}
+            options={locationOptions}
             submitting={false}
             onSubmit={onMultipleRelocateSubmit}
           />
@@ -123,9 +128,9 @@ const MasterSchemaManager = ({ selectable }) => {
       return (
         <div key={selected.node.name}>
           <div className="context-feature-template_header_title">Manage Datapoint</div>
-          {!isEmpty(relatedApplications) && (
+          {!_.isEmpty(relatedApplications) ? (
             <MSENodeRelatedTable className="my-2" relatedApplications={relatedApplications} />
-          )}
+          ) : null}
           <MSENodeRenamingForm
             className="my-2"
             label="Rename datapoint to:"
@@ -139,7 +144,7 @@ const MasterSchemaManager = ({ selectable }) => {
             label="Move datapoint to:"
             action="Move"
             node={selected.field}
-            options={movementOptions}
+            options={locationOptions}
             submitting={false}
             onSubmit={onRelocateSubmit}
           />
@@ -164,7 +169,7 @@ const MasterSchemaManager = ({ selectable }) => {
             label="Migrate branch contents to:"
             action="Migrate"
             node={selected.group}
-            options={movementOptions}
+            options={locationOptions}
             submitting={false}
             onSubmit={onRelocateSubmit}
           />
@@ -179,7 +184,8 @@ const MasterSchemaManager = ({ selectable }) => {
 };
 
 MasterSchemaManager.propTypes = {
-  selectable: PropTypes.object.isRequired,
+  masterSchemaId: PropTypes.number.isRequired,
+  selected: PropTypes.object.isRequired,
 };
 
 export default MasterSchemaManager;

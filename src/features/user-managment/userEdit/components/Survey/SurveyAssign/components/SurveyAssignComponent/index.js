@@ -15,6 +15,7 @@ import appSlice from "app/slices/appSlice";
 import {selectError} from "app/selectors";
 import * as yup from "yup";
 import {toast} from "react-toastify";
+import {prepareSelectReviewers} from "utility/select/prepareSelectData";
 
 const {
   assignSurveyRequest,
@@ -105,12 +106,9 @@ const SurveyAssignComponent = ({ workFlows, reviewers, surveys, isLoading, onSur
     }
   };
 
-  const reviewersSelectOptions = reviewers
-                        .map(reviewer => ({label: `${reviewer.first_name} ${reviewer.last_name}`, value: reviewer}))
-                        .filter(({value}) => !~selectedReviewers.indexOf(value)).sort(sortByLabel);
-
   const surveyOptions = surveys.map(survey => ({label: survey.latest_version.title, value: survey})).sort(sortByLabel);
   const workFlowsOptions = workFlows.map(workFlow => ({label: workFlow.name, value: workFlow})).sort(sortByLabel);
+  const reviewersOptions = prepareSelectReviewers(reviewers).filter(({value}) => !~selectedReviewers.indexOf(value)).sort(sortByLabel);
 
   useEffect(() => {
     if (!isSurveyAddProceeding && prevSurveyAddLoadingState && !error) {
@@ -174,7 +172,7 @@ const SurveyAssignComponent = ({ workFlows, reviewers, surveys, isLoading, onSur
                         <Select
                           styles={selectStyles}
                           components={{ DropdownIndicator }}
-                          options={reviewersSelectOptions}
+                          options={reviewersOptions}
                           isLoading={isLoading}
                           value={reviewerSelectValue}
                           onChange={handleReviewerSelect}

@@ -9,10 +9,10 @@ import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { getSelectedMemberFirm } from "app/selectors/memberFirmsSelector";
 
-import SurveyModal from "features/Surveys/Components/SurveyModal";
 import { Input, Select, Checkbox } from "features/Surveys/Components/SurveyFormComponents";
 
 import getValidationDependingOnComponent from "./validations";
+import CustomModal from "../../../../../../../../../../../../components/CustomModal";
 
 const inputTypes = [
   {
@@ -129,7 +129,7 @@ const AddFieldModal = ({
   }, [isNewPropertyLoading, propertyOptions]);
 
   return (
-    <SurveyModal
+    <CustomModal
       title={"Add field"}
       isOpen={isOpen}
       onClose={onClose}
@@ -169,7 +169,7 @@ const AddFieldModal = ({
         onChange={(e) => setIsFieldRequired(e.target.checked)}
         checked={isFieldRequired}
       />
-    </SurveyModal>
+    </CustomModal>
   );
 };
 
