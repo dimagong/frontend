@@ -45,10 +45,13 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const bdmUsersIds = formGroup.values.bdms.map(_.get("id"));
+
+    if (isBdmVisible) {
+      const bdmUsersIds = formGroup.values.bdms.map(_.get("id"));
+      syncBdmUsers({ userId: manager.id, bdmUsersIds }).subscribe();
+    }
 
     dispatch(updateUserRequest(managerState));
-    syncBdmUsers({ userId: manager.id, bdmUsersIds }).subscribe();
   };
 
   const handleCardClose = () => {
