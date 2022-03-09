@@ -1,25 +1,15 @@
-import _ from "lodash/fp";
 import React from "react";
-import { map } from "rxjs";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 
-import { useAsync } from "hooks/useAsync";
-
 import appSlice from "app/slices/appSlice";
-
-import { RoleBdmService } from "api/roleBdm/roleBdmService";
 
 import MemberFirmUsersList from "../../../../home/ContextSearch/MemberFirms/Containers/MemberFirmMembersContainer/Components/MemberFirmMembersComponent/Components/MemberFirmUsersList";
 
 const { setContext, setManager } = appSlice.actions;
 
-const fetchBdmSubordinates$ = ({ userId }) =>
-  RoleBdmService.getBdmSubordinates$({ userId }).pipe(map((response) => response.data));
-
-const UserManagementScopeContextFeature = React.memo(({ user }) => {
+const UserManagementScopeContextFeature = React.memo(({ user, members, isLoading }) => {
   const dispatch = useDispatch();
-  const [{ data: members, IsLoading: isMembersLoading }, run] = useAsync({ useObservable: true });
 
   const onNavigateToUserProfile = () => {
     dispatch(setContext(null));
@@ -28,9 +18,6 @@ const UserManagementScopeContextFeature = React.memo(({ user }) => {
       dispatch(setContext("User"));
     });
   };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => void run(fetchBdmSubordinates$({ userId: user.id })).subscribe(), [user.id]);
 
   return (
     <div className="context-feature-template_container">
@@ -43,7 +30,7 @@ const UserManagementScopeContextFeature = React.memo(({ user }) => {
         users={members || []}
         label={`Users currently managed by ${user.first_name} ${user.last_name}`}
         titleForEmpty={`There are no currently managed users by ${user.first_name} ${user.last_name}`}
-        isLoading={isMembersLoading}
+        isLoading={isLoading}
         isSearch={false}
         onUserClick={onNavigateToUserProfile}
       />
@@ -53,6 +40,8 @@ const UserManagementScopeContextFeature = React.memo(({ user }) => {
 
 UserManagementScopeContextFeature.propTypes = {
   user: PropTypes.object.isRequired,
+  members: PropTypes.arrayOf(PropTypes.object),
+  isLoading: PropTypes.bool,
 };
 
 export default UserManagementScopeContextFeature;
