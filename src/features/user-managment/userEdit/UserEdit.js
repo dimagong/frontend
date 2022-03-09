@@ -1,3 +1,4 @@
+import { map } from "rxjs";
 import React, {useState, useRef, useEffect} from 'react'
 import {
   Card,
@@ -39,6 +40,9 @@ import {
   selectCurrentManager,
   selectSelectedManagerAssignedSurveys, selectUserActivity,
 } from 'app/selectors/userSelectors'
+
+import { useAsync } from "hooks/useAsync";
+import { RoleBdmService } from "api/roleBdm/roleBdmService";
 
 import appSlice from 'app/slices/appSlice'
 import { CustomTable } from './components/CustomTable/CustomTable';
@@ -96,6 +100,9 @@ const selectOptions = [
   },
 ];
 
+const fetchBdmSubordinates$ = ({ userId }) =>
+  RoleBdmService.getBdmSubordinates$({ userId }).pipe(map((response) => response.data));
+
 const UserEdit = () => {
   const dispatch = useDispatch();
 
@@ -152,6 +159,11 @@ const UserEdit = () => {
     }
   };
 
+  const [{ data: members, IsLoading: isMembersLoading }, run] = useAsync({ useObservable: true });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => void run(fetchBdmSubordinates$({ userId: manager.id })).subscribe(), [manager.id]);
+
   useEffect(() => {
     if (!dForms.length && !reviewers.length && !workflows.length) {
     }
@@ -171,12 +183,12 @@ const UserEdit = () => {
   }, [manager.id]);
 
   React.useEffect(() => {
-    if (manager.permissions.ability === "BDM") {
+    if (members && members.length !== 0) {
       setTabs(["Activity", "Master Schema", "Applications", "Permissions", "Management scope"]);
     } else {
       setTabs(["Activity", "Master Schema", "Applications", "Permissions"]);
     }
-  }, [manager.permissions.ability]);
+  }, [members]);
 
   const handleEdit = () => {
     setContextFeature("edit")
@@ -238,7 +250,7 @@ const UserEdit = () => {
         setActiveModuleTab(tabs[0]);
       }
     }
-  }, [selectedManager.selectedInfo]);
+  }, [selectedManager.selectedInfo, tabs]);
 
   useEffect(() => {
     if (!selectedManager.onboarding && openOnboarding && manager.onboardings.length > 0) {
@@ -381,7 +393,7 @@ const UserEdit = () => {
                 'surveyCreate': <SurveyAssign userId={manager.id} />,
                 'assignedSurvey': <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />,
                 "masterSchema": <UserMasterSchemaContextFeature key={manager.id} />,
-                "managementScope": <UserManagementScopeContextFeature user={manager} />,
+                "managementScope": <UserManagementScopeContextFeature user={manager} members={members} isLoading={isMembersLoading} />,
               }[contextFeature]}
             </div>
           </Scrollbars>
