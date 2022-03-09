@@ -57,8 +57,6 @@ const {
   getActivitiesRequest
 }  = appSlice.actions;
 
-const tabs = ["Activity", "Master Schema", "Applications", "Permissions", "Management scope"];
-
 const selectStyles = {
   control: styles => ({
     ...styles,
@@ -107,6 +105,7 @@ const UserEdit = () => {
   //* TODO add fetch user by id since we are going to add pagination and wouldn't have all users fetched
 
   const manager = useSelector(selectCurrentManager);
+  const [tabs, setTabs] = React.useState([]);
 
   const dForms = useSelector(selectUserDForms);
   const workflows = useSelector(selectUserWorkflows);
@@ -170,6 +169,14 @@ const UserEdit = () => {
     dispatch(getAssignedSurveysRequest(manager.id))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manager.id]);
+
+  React.useEffect(() => {
+    if (manager.permissions.ability === "BDM") {
+      setTabs(["Activity", "Master Schema", "Applications", "Permissions", "Management scope"]);
+    } else {
+      setTabs(["Activity", "Master Schema", "Applications", "Permissions"]);
+    }
+  }, [manager.permissions.ability]);
 
   const handleEdit = () => {
     setContextFeature("edit")
