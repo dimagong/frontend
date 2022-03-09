@@ -39,6 +39,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
 
   // User Bdm
   const [{ data: bdms, error }, { syncBdmUsers }] = useUserAccessManager(manager.id);
+  const isBdmVisible = React.useMemo(() => !(!bdms || bdms.potential.length === 0), [bdms]);
   const [bdmsField, setBdmsField] = useFormField([], [Validators.identicalArrayBy([], "id")]);
   const formGroup = useFormGroup({ bdms: bdmsField });
 
@@ -85,7 +86,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
       <CardBody>
         <Form className="user-create" onSubmit={onSubmit}>
           <Row>
-            <Col lg={{ size: 4, order: 1 }} xs={{ size: 6, order: 2 }}>
+            <Col lg={isBdmVisible ? { size: 4, order: 2 } : { size: 6, order: 2 }} xs={{ size: 6, order: 2 }}>
               <FormGroup>
                 <Label for="nameVertical">First Name</Label>
                 <Input
@@ -122,7 +123,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                 />
               </FormGroup>
             </Col>
-            <Col lg={{ size: 4, order: 2 }} xs={{ size: 6, order: 2 }}>
+            <Col lg={isBdmVisible ? { size: 4, order: 2 } : { size: 6, order: 2 }} xs={{ size: 6, order: 2 }}>
               <FormGroup>
                 <Label for="lastNameVertical">Last Name</Label>
                 <Input
@@ -150,15 +151,17 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                 <FormFeedback>{errors["number"] ? errors["number"] : ""}</FormFeedback>
               </FormGroup>
             </Col>
-            <Col lg={{ size: 4, order: 3 }} xs={{ size: 12, order: 1 }}>
-              <UserAccessManager
-                active={bdmsField.value}
-                potential={bdms?.potential}
-                error={error}
-                errors={bdmsField.errors}
-                onChange={setBdmsField}
-              />
-            </Col>
+            {isBdmVisible ? (
+              <Col lg={{ size: 4, order: 3 }} xs={{ size: 12, order: 1 }}>
+                <UserAccessManager
+                  active={bdmsField.value}
+                  potential={bdms?.potential}
+                  error={error}
+                  errors={bdmsField.errors}
+                  onChange={setBdmsField}
+                />
+              </Col>
+            ) : null}
           </Row>
 
           <Row>
