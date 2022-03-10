@@ -1,11 +1,18 @@
 .expandable_item_container {
   box-sizing: border-box;
   overflow: hidden;
+  &-finish-edit {
+    background-color: #7367F0!important;
+    line-height: 0;
+    height: 30px;
+    margin-right: 5px;
+  }
   .list_actions {
     max-height: 0;
     padding-bottom: 0;
     transition: .2s;
     &.expanded {
+      margin-bottom: 2px;
       max-height: 30px;
       padding-bottom: 1rem;
       transition: .2s;

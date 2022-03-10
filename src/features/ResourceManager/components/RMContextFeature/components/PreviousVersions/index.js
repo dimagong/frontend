@@ -16,6 +16,8 @@ import DeleteIcon from "assets/img/icons/x.png";
 
 import './styles.scss';
 import CustomModal from "../../../../../../components/CustomModal";
+import resourceManagerApi from "../../../../../../api/resourceManager";
+import {Button} from "reactstrap";
 
 const {
   uploadResourceRequest,
@@ -31,12 +33,14 @@ const PreviousVersions = ({
 }) => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const error = useSelector(selectError);
   const isUploadInProgress = useSelector(createLoadingSelector([uploadResourceRequest.type], true));
   const isUploadInProgressPrevValue = usePrevious(isUploadInProgress);
 
   const expandedItems = useToggleable([]);
+  const editingItems = useToggleable([]);
 
   const handleResourceUpload = () => {
     if (selectedFile) {
@@ -49,6 +53,25 @@ const PreviousVersions = ({
   const handleListItemExpand = (itemId) => {
     expandedItems.setKeys([itemId])
   };
+
+  const onEditField = (fieldId) => {
+    editingItems.setKeys([...editingItems.keys, fieldId])
+    setIsLoading(true);
+    resourceManagerApi.postFieldEdit({fieldId: fieldId})
+      .then((response) => console.log('response', response))
+      .catch((error) => toast.error(error))
+      .finally(() => setIsLoading(false));
+  }
+
+  const onFinishEditField = (fieldId) => {
+    editingItems.setKeys([...editingItems.keys.filter(item => item !== fieldId)]);
+    setIsLoading(true);
+    resourceManagerApi.postEndFieldEdit({fieldId: fieldId})
+      .then((response) => console.log('response', response))
+      .catch((error) => toast.error(error))
+      .finally(() => setIsLoading(false));
+  }
+  console.log('editingItems', editingItems)
 
   useEffect(() => {
     if (!error && isUploadInProgressPrevValue === true && !isUploadInProgress) {
@@ -85,6 +108,7 @@ const PreviousVersions = ({
             <div className="items-list">
               {previousVersions.map((item, index) => (
                 <div className={"expandable_item_container"} onClick={() => handleListItemExpand(item.id)}>
+                  {/*console.log("item", item)*/}
                   <div
                     className={`list_item selected`}
                     key={` ${index}`}
@@ -105,13 +129,22 @@ const PreviousVersions = ({
                       {item.provided.first_name}
                     </div>
                   </div>
-                  <div className={`list_actions d-flex justify-content-end ${expandedItems.includes(item.id) ? "expanded" : ""}`}>
-                    <img onClick={() => onTemplateDownload(item.id, item.name)} className="mr-1" src={DownloadIcon} alt="Download"/>
-                    <img className="mr-1" src={EditIcon} alt="Edit"/>
-                    {index === 0 && (
-                      <img onClick={() => onTemplateRemove(item.id)} className="mr-1" src={DeleteIcon} alt="Delete"/>
-                    )}
-                  </div>
+                  {
+                    editingItems.includes(item.id)
+                      ? <div className={`list_actions d-flex justify-content-end ${expandedItems.includes(item.id) ? "expanded" : ""}`}>
+                          <Button className={'expandable_item_container-finish-edit'}
+                                  onClick={() => onFinishEditField(item.id)} variant="primary">
+                            Finish editing
+                          </Button>
+                        </div>
+                      : <div className={`list_actions d-flex justify-content-end ${expandedItems.includes(item.id) ? "expanded" : ""}`}>
+                          <img onClick={() => onTemplateDownload(item.id, item.name)} className="mr-1" src={DownloadIcon} alt="Download"/>
+                          <img onClick={() => onEditField(item.id)} className="mr-1" src={EditIcon} alt="Edit"/>
+                          {index === 0 && (
+                            <img onClick={() => onTemplateRemove(item.id)} className="mr-1" src={DeleteIcon} alt="Delete"/>
+                          )}
+                        </div>
+                  }
                 </div>
               ))}
             </div>
