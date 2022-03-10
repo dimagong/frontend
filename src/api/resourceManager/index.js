@@ -12,7 +12,7 @@ import {
   endEditField,
 } from './contants'
 import {get, pipe} from "lodash/fp";
-const flatResponseData = get("data");
+const flatResponseData = get("data.data");
 const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
 
 const resourceManagerApi = {

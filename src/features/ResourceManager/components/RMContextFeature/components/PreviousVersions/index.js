@@ -38,6 +38,7 @@ const PreviousVersions = ({
   const error = useSelector(selectError);
   const isUploadInProgress = useSelector(createLoadingSelector([uploadResourceRequest.type], true));
   const isUploadInProgressPrevValue = usePrevious(isUploadInProgress);
+  const [allVersions, setAllVersions] = useState([])
 
   const expandedItems = useToggleable([]);
   const editingItems = useToggleable([]);
@@ -58,7 +59,13 @@ const PreviousVersions = ({
     editingItems.setKeys([...editingItems.keys, fieldId])
     setIsLoading(true);
     resourceManagerApi.postFieldEdit({fieldId: fieldId})
-      .then((response) => console.log('response', response))
+      .then((response) => {
+        if (response.status === 'forbidden') {
+          window.open(response.message, '_blank')
+        } else {
+          window.open(response.google_drive_doc.file.webViewLink, '_blank')
+        }
+      })
       .catch((error) => toast.error(error))
       .finally(() => setIsLoading(false));
   }
@@ -67,11 +74,17 @@ const PreviousVersions = ({
     editingItems.setKeys([...editingItems.keys.filter(item => item !== fieldId)]);
     setIsLoading(true);
     resourceManagerApi.postEndFieldEdit({fieldId: fieldId})
-      .then((response) => console.log('response', response))
+      .then((response) => {
+        setAllVersions([response, ...allVersions])
+        toast.success('File was successfully edited')
+      })
       .catch((error) => toast.error(error))
       .finally(() => setIsLoading(false));
   }
-  console.log('editingItems', editingItems)
+
+  useEffect(() => {
+    setAllVersions(previousVersions)
+  }, [previousVersions])
 
   useEffect(() => {
     if (!error && isUploadInProgressPrevValue === true && !isUploadInProgress) {
@@ -100,13 +113,13 @@ const PreviousVersions = ({
         </div>
 
         <Scrollbars  autoHeight autoHeightMax={350}>
-          {!previousVersions?.length ? (
+          {!allVersions?.length ? (
             <div className="d-flex justify-content-center pt-5 text-black-50 font-large-1 pb-5">
               No versions found
             </div>
           ) : (
             <div className="items-list">
-              {previousVersions.map((item, index) => (
+              {allVersions.map((item, index) => (
                 <div className={"expandable_item_container"} onClick={() => handleListItemExpand(item.id)}>
                   {/*console.log("item", item)*/}
                   <div
