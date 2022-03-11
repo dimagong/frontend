@@ -1,36 +1,29 @@
-import React, {useState, useEffect} from 'react';
-import {useSelector} from "react-redux";
-import {createLoadingSelector} from "app/selectors/loadingSelector";
-import {Scrollbars} from "react-custom-scrollbars";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { Scrollbars } from "react-custom-scrollbars";
 import AddButton from "components/AddButton";
 import FileInput from "../../../../../../components/formElements/FileInput";
-import {toast} from "react-toastify";
-import {usePrevious} from "hooks/common";
+import { toast } from "react-toastify";
+import { usePrevious } from "hooks/common";
 import { selectError } from "app/selectors";
 import moment from "moment";
 import appSlice from "app/slices/appSlice";
 import { useToggleable } from "hooks/use-toggleable";
-import EditIcon from 'assets/img/icons/edit.png';
-import DownloadIcon from 'assets/img/icons/cloud-download.png';
+import EditIcon from "assets/img/icons/edit.png";
+import DownloadIcon from "assets/img/icons/cloud-download.png";
 import DeleteIcon from "assets/img/icons/x.png";
 
-import './styles.scss';
+import "./styles.scss";
 import CustomModal from "../../../../../../components/CustomModal";
 import resourceManagerApi from "../../../../../../api/resourceManager";
-import {Button} from "reactstrap";
+import NmpButton from "components/nmp/NmpButton";
 
-const {
-  uploadResourceRequest,
-} = appSlice.actions;
+const { uploadResourceRequest } = appSlice.actions;
 
 const HEADERS = ["Action", "Version", "Users", "Date", "Author"];
 
-const PreviousVersions = ({
-  previousVersions,
-  onResourceUpload,
-  onTemplateDownload,
-  onTemplateRemove,
-}) => {
+const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownload, onTemplateRemove }) => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,57 +31,59 @@ const PreviousVersions = ({
   const error = useSelector(selectError);
   const isUploadInProgress = useSelector(createLoadingSelector([uploadResourceRequest.type], true));
   const isUploadInProgressPrevValue = usePrevious(isUploadInProgress);
-  const [allVersions, setAllVersions] = useState([])
+  const [allVersions, setAllVersions] = useState([]);
 
   const expandedItems = useToggleable([]);
   const editingItems = useToggleable([]);
 
   const handleResourceUpload = () => {
     if (selectedFile) {
-      onResourceUpload(selectedFile)
+      onResourceUpload(selectedFile);
     } else {
-      toast.warn("Please select file to upload")
+      toast.warn("Please select file to upload");
     }
   };
 
   const handleListItemExpand = (itemId) => {
-    expandedItems.setKeys([itemId])
+    expandedItems.setKeys([itemId]);
   };
 
   const onEditField = (fieldId) => {
-    editingItems.setKeys([...editingItems.keys, fieldId])
+    editingItems.setKeys([...editingItems.keys, fieldId]);
     setIsLoading(true);
-    resourceManagerApi.postFieldEdit({fieldId: fieldId})
+    resourceManagerApi
+      .postFieldEdit({ fieldId: fieldId })
       .then((response) => {
-        if (response.status === 'forbidden') {
-          window.open(response.message, '_blank')
+        if (response.status === "forbidden") {
+          window.open(response.message, "_blank");
         } else {
-          window.open(response.google_drive_doc.file.webViewLink, '_blank')
+          window.open(response.google_drive_doc.file.webViewLink, "_blank");
         }
       })
       .catch((error) => toast.error(error))
       .finally(() => setIsLoading(false));
-  }
+  };
 
   const onFinishEditField = (fieldId) => {
-    editingItems.setKeys([...editingItems.keys.filter(item => item !== fieldId)]);
+    editingItems.setKeys([...editingItems.keys.filter((item) => item !== fieldId)]);
     setIsLoading(true);
-    resourceManagerApi.postEndFieldEdit({fieldId: fieldId})
+    resourceManagerApi
+      .postEndFieldEdit({ fieldId: fieldId })
       .then((response) => {
-        setAllVersions([response, ...allVersions])
-        toast.success('File was successfully edited')
+        setAllVersions([response, ...allVersions]);
+        toast.success("File was successfully edited");
       })
       .catch((error) => toast.error(error))
       .finally(() => setIsLoading(false));
-  }
+  };
 
   useEffect(() => {
-    setAllVersions(previousVersions)
-  }, [previousVersions])
+    setAllVersions(previousVersions);
+  }, [previousVersions]);
 
   useEffect(() => {
     if (!error && isUploadInProgressPrevValue === true && !isUploadInProgress) {
-      setIsAddModalVisible(false)
+      setIsAddModalVisible(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUploadInProgress]);
@@ -96,75 +91,78 @@ const PreviousVersions = ({
   return (
     <div>
       <div className="d-flex align-items-center">
-        <div className="title">
-          Parent File Version
-        </div>
-
+        <div className="title">Parent File Version</div>
       </div>
       <div>
-
-
         <div className="list-header">
           {HEADERS.map((header) => (
-            <div>
-              {header}
-            </div>
+            <div>{header}</div>
           ))}
         </div>
 
-        <Scrollbars  autoHeight autoHeightMax={350}>
+        <Scrollbars autoHeight autoHeightMax={350}>
           {!allVersions?.length ? (
-            <div className="d-flex justify-content-center pt-5 text-black-50 font-large-1 pb-5">
-              No versions found
-            </div>
+            <div className="d-flex justify-content-center pt-5 text-black-50 font-large-1 pb-5">No versions found</div>
           ) : (
             <div className="items-list">
-              {allVersions.map((item, index) => (
-                <div className={"expandable_item_container"} onClick={() => handleListItemExpand(item.id)}>
-                  {/*console.log("item", item)*/}
-                  <div
-                    className={`list_item selected`}
-                    key={` ${index}`}
-                  >
-                    <div className="list_item_name">
-                      {item.status}
-                    </div>
-                    <div className="list_item_description">
-                      {"v"+moment(item.created_at).format('YYYY.DD.MM')}
-                    </div>
-                    <div className="list_item_description">
-                      0
-                    </div>
-                    <div className="list_item_description">
-                      {moment(item.updated_at).format('DD/MM/YYYY')}
-                    </div>
-                    <div className="list_item_description">
-                      {item.provided.first_name}
-                    </div>
+              {allVersions.map((version, index) => (
+                <div className={"expandable_item_container"} onClick={() => handleListItemExpand(version.id)}>
+                  <div className={`list_item selected`} key={` ${index}`}>
+                    <div className="list_item_name">{version.status}</div>
+                    <div className="list_item_description">{"v" + moment(version.created_at).format("YYYY.DD.MM")}</div>
+                    <div className="list_item_description">0</div>
+                    <div className="list_item_description">{moment(version.updated_at).format("DD/MM/YYYY")}</div>
+                    <div className="list_item_description">{version.provided.first_name}</div>
                   </div>
-                  {
-                    editingItems.includes(item.id)
-                      ? <div className={`list_actions d-flex justify-content-end ${expandedItems.includes(item.id) ? "expanded" : ""}`}>
-                          <Button className={'expandable_item_container-finish-edit'}
-                                  onClick={() => onFinishEditField(item.id)} variant="primary">
-                            Finish editing
-                          </Button>
-                        </div>
-                      : <div className={`list_actions d-flex justify-content-end ${expandedItems.includes(item.id) ? "expanded" : ""}`}>
-                          <img onClick={() => onTemplateDownload(item.id, item.name)} className="mr-1" src={DownloadIcon} alt="Download"/>
-                          <img onClick={() => onEditField(item.id)} className="mr-1" src={EditIcon} alt="Edit"/>
-                          {index === 0 && (
-                            <img onClick={() => onTemplateRemove(item.id)} className="mr-1" src={DeleteIcon} alt="Delete"/>
-                          )}
-                        </div>
-                  }
+                  {editingItems.includes(version.id) ? (
+                    <div
+                      className={`list_actions d-flex justify-content-end ${
+                        expandedItems.includes(version.id) ? "expanded" : ""
+                      }`}
+                    >
+                      <NmpButton
+                        className={"expandable_item_container-finish-edit"}
+                        onClick={() => onFinishEditField(version.id)}
+                        variant="primary"
+                        loading={isLoading}
+                      >
+                        Finish editing
+                      </NmpButton>
+                    </div>
+                  ) : (
+                    <div
+                      className={`list_actions d-flex justify-content-end ${
+                        expandedItems.includes(version.id) ? "expanded" : ""
+                      }`}
+                    >
+                      <img
+                        onClick={() => onTemplateDownload(version.id, version.name)}
+                        className="mr-1"
+                        src={DownloadIcon}
+                        alt="Download"
+                      />
+                      <img onClick={() => onEditField(version.id)} className="mr-1" src={EditIcon} alt="Edit" />
+                      {index === 0 && (
+                        <img
+                          onClick={() => onTemplateRemove(version.id)}
+                          className="mr-1"
+                          src={DeleteIcon}
+                          alt="Delete"
+                        />
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           )}
         </Scrollbars>
         <div className="d-flex justify-content-end py-2">
-          <AddButton onClick={() => {setIsAddModalVisible(true)}} />
+          <AddButton
+            onClick={() => {
+              setIsAddModalVisible(true);
+            }}
+          />
         </div>
       </div>
 
@@ -186,7 +184,7 @@ const PreviousVersions = ({
         </div>
       </CustomModal>
     </div>
-  )
+  );
 };
 
 export default PreviousVersions;

@@ -23,8 +23,8 @@ export const NAV_OPTIONS = [
     title: "Member Firms",
     id: "memberFirms",
   },
-  {
-    title: "Resource Manager",
-    id: "resourceManager",
-  },
+  // {
+  //   title: "Resource Manager",
+  //   id: "resourceManager",
+  // },
 ];
