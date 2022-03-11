@@ -45,6 +45,8 @@ const NmpTile = React.forwardRef((props, ref) => {
   );
 });
 
+NmpTile.displayName = "NmpTile";
+
 NmpTile.propTypes = {
   ..._.omit(["innerRef"], Badge.propTypes),
   href: PropTypes.string,
