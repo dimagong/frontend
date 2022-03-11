@@ -5,6 +5,8 @@ import { Col, Row, Spinner } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useStoreQuery } from "hooks/useStoreQuery";
+
+import NmpButton from "components/nmp/NmpButton";
 import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
 import appSlice from "app/slices/appSlice";
@@ -15,8 +17,6 @@ import {
   selectIsUserMasterSchemaHierarchySearchParamsInitial,
 } from "app/selectors/userSelectors";
 
-import MSEButton from "features/MasterSchema/share/mse-button";
-
 import UserMasterSchemaHierarchySearch from "./UserMasterSchemaHierarchySearch";
 
 const {
@@ -25,6 +25,8 @@ const {
   addFieldToMasterSchemaRequest,
   addGroupToMasterSchemaRequest,
 } = appSlice.actions;
+
+const stickySearchStyles = { top: "0px", left: "0px", backgroundColor: "#fff" };
 
 const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
 
@@ -71,7 +73,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
     return (
       <Row className="position-relative">
         <Col>
-          <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
+          <div className="position-sticky zindex-1 pt-2" style={stickySearchStyles}>
             <UserMasterSchemaHierarchySearch hierarchyName={hierarchyName} onSearch={setSearchParams} />
           </div>
 
@@ -87,7 +89,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
     return (
       <Row className="position-relative">
         <Col>
-          <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
+          <div className="position-sticky zindex-1 pt-2" style={stickySearchStyles}>
             <UserMasterSchemaHierarchySearch
               hierarchy={hierarchy.data}
               hierarchyName={hierarchyName}
@@ -95,7 +97,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
             />
 
             <div className="d-flex justify-content-end pb-1">
-              <MSEButton
+              <NmpButton
                 className="p-0"
                 textColor="currentColor"
                 backgroundColor="transparent"
@@ -103,7 +105,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
                 onClick={expandable.expandOnlyRoot}
               >
                 Collapse
-              </MSEButton>
+              </NmpButton>
             </div>
           </div>
 
@@ -125,7 +127,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
   return (
     <Row className="position-relative">
       <Col>
-        <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px" }}>
+        <div className="position-sticky zindex-1 pt-2" style={stickySearchStyles}>
           <UserMasterSchemaHierarchySearch hierarchyName={hierarchyName} onSearch={setSearchParams} />
         </div>
 

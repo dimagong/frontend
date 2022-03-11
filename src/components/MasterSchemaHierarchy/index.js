@@ -12,9 +12,8 @@ import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectMasterSchemaHierarchy } from "app/selectors/masterSchemaSelectors";
 
+import NmpButton from "components/nmp/NmpButton";
 import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
-
-import MSEButton from "features/MasterSchema/share/mse-button";
 
 import GeneralMSHTreeElement from "./GeneralMSHTreeElement";
 import MasterSchemaHierarchySearch from "./MasterSchemaHierarchySearch";
@@ -24,6 +23,8 @@ const {
   addFieldToMasterSchemaRequest,
   addGroupToMasterSchemaRequest,
 } = appSlice.actions;
+
+const stickySearchStyles = { top: "0px", left: "0px", backgroundColor: "#f8f8f8" };
 
 const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
 
@@ -78,7 +79,7 @@ const MasterSchemaHierarchy = ({ masterSchemaId, masterSchemaName, selectedNodes
       >
         <Row className="position-relative">
           <Col>
-            <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
+            <div className="position-sticky zindex-1" style={stickySearchStyles}>
               <MasterSchemaHierarchySearch hierarchyName={masterSchemaName} onSearch={setSearch} />
             </div>
 
@@ -99,11 +100,11 @@ const MasterSchemaHierarchy = ({ masterSchemaId, masterSchemaName, selectedNodes
       >
         <Row className="position-relative">
           <Col>
-            <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
+            <div className="position-sticky zindex-1" style={stickySearchStyles}>
               <MasterSchemaHierarchySearch hierarchy={hierarchy.data} hierarchyName={masterSchemaName} onSearch={setSearch} />
 
               <div className="d-flex justify-content-end pb-1">
-                <MSEButton
+                <NmpButton
                   className="p-0"
                   textColor="currentColor"
                   backgroundColor="transparent"
@@ -111,7 +112,7 @@ const MasterSchemaHierarchy = ({ masterSchemaId, masterSchemaName, selectedNodes
                   onClick={expandable.expandOnlyRoot}
                 >
                   Collapse
-                </MSEButton>
+                </NmpButton>
               </div>
             </div>
 
@@ -139,7 +140,7 @@ const MasterSchemaHierarchy = ({ masterSchemaId, masterSchemaName, selectedNodes
     >
       <Row className="position-relative">
         <Col>
-          <div className="position-sticky zindex-1" style={{ top: "0px", left: "0px", backgroundColor }}>
+          <div className="position-sticky zindex-1" style={stickySearchStyles}>
             <MasterSchemaHierarchySearch hierarchyName={masterSchemaName} onSearch={setSearch} />
           </div>
 
@@ -150,16 +151,12 @@ const MasterSchemaHierarchy = ({ masterSchemaId, masterSchemaName, selectedNodes
   );
 };
 
-MasterSchemaHierarchy.defaultProps = {
-  backgroundColor: "#f8f8f8",
-};
-
 MasterSchemaHierarchy.propTypes = {
   masterSchemaId: PropTypes.number.isRequired,
   masterSchemaName: PropTypes.string.isRequired,
+
   onSelect: PropTypes.func.isRequired,
   selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
-  backgroundColor: PropTypes.string,
 };
 
 export default MasterSchemaHierarchy;

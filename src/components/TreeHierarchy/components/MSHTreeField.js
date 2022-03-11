@@ -7,6 +7,17 @@ import TypedValuePreview from "components/MasterSchemaValuePreviews/TypedValuePr
 
 import MSHTreeNode from "./MSHTreeNode";
 
+const normalizeCount = (count) => {
+  // Do not show zero count
+  count = count > 0 ? count : null;
+
+  if (_.isNumber(count)) {
+    return count > 9 ? "+9" : `${count}`;
+  }
+
+  return null;
+};
+
 const MSHTreeField = (props) => {
   const {
     name,
@@ -59,8 +70,8 @@ const MSHTreeField = (props) => {
       date={date}
       selected={selected}
       isLocked={isLocked}
-      applicationsCount={applicationsCount > 0 ? applicationsCount : null}
-      versionsCount={versionsCount > 0 ? versionsCount : null}
+      versionsCount={normalizeCount(versionsCount)}
+      applicationsCount={normalizeCount(applicationsCount)}
       onSelect={onSelect}
       prepend={
         <div className="tree-hierarchy__mark-icon d-flex justify-content-center align-items-center">

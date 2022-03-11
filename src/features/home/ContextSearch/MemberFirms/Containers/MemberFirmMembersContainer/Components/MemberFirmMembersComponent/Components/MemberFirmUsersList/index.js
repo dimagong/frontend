@@ -6,7 +6,7 @@ import { Spinner } from "reactstrap";
 import './styles.scss';
 
 
-const MemberFirmUsersList = ({ className, label, users = [], isLoading, isSearch, onUserClick }) => {
+const MemberFirmUsersList = ({ className, label, users = [], titleForEmpty, isLoading, isSearch, onUserClick }) => {
 
   const Loader = () => (
     <div className="member-firm-users-list_list_loader">
@@ -29,7 +29,7 @@ const MemberFirmUsersList = ({ className, label, users = [], isLoading, isSearch
          {isSearch ? (
            `No ${label} found for your search query`
          ) : (
-           `There are no ${label} in that member firm`
+           titleForEmpty ? titleForEmpty : `There are no ${label} in that member firm`
          )}
        </div>
      )
