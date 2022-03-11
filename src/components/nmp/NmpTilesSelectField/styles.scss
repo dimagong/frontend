@@ -19,6 +19,7 @@
   }
 
   &__tiles {
+    padding: 4px;
     overflow: scroll;
     min-height: 80px;
     max-height: 80px;
@@ -28,11 +29,6 @@
   }
 
   &__tile {
-    margin: 8px;
-
-    & + & {
-      margin-top: 0;
-      margin-left: 0;
-    }
+    margin: 4px;
   }
 }

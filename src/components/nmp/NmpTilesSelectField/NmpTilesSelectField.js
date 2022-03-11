@@ -13,45 +13,82 @@ const NmpTilesSelectField = (props) => {
   const {
     label,
     name,
-    value,
+    placeholder,
+
+    value: tiles = [],
+    onChange = _.noop,
     options,
+
     errors,
     valid,
     invalid,
-    placeholder,
-    tiles,
+
+    tile: tileSlot,
     tileColor,
-    onTileAdd = _.noop,
-    onTileRemove = _.noop,
-    onChange = _.noop,
+
     innerChildren,
     children,
     ...attrs
   } = props;
 
+  const [selectValue, setSelectValue] = React.useState(null);
+
+  const parsedTiles = React.useMemo(() => tiles.map(_.get("value")), [tiles]);
+
+  const privateOptions = React.useMemo(() => {
+    return options.filter(({ value }) => !parsedTiles.includes(value));
+  }, [options, parsedTiles]);
+
   const onAdderClick = React.useCallback(() => {
-    if (!value?.value) {
-      throw new Error("It's impossible to add a nullable value.");
+    if (!selectValue?.value) {
+      throw new Error("Unable add nullable value by to selected tiles.");
     }
 
-    onTileAdd(value.value);
-    // reset value
-    onChange(null);
-  }, [onChange, onTileAdd, value]);
+    const newTiles = [...tiles, selectValue];
 
-  const onTileClose = React.useCallback((tile) => () => onTileRemove(tile), [onTileRemove]);
+    onChange(newTiles);
+    setSelectValue(null);
+  }, [onChange, selectValue, tiles]);
+
+  const onTileClose = React.useCallback(
+    (toRemove) => () => {
+      const newTiles = tiles.filter((tile) => tile.value !== toRemove.value);
+
+      onChange(newTiles);
+    },
+    [onChange, tiles]
+  );
+
+  const renderTile = (tile, index) => {
+    if (tileSlot) {
+      return tileSlot({ onClose: onTileClose(tile), tile, index });
+    }
+
+    return (
+      <NmpTile
+        className="nmp-tiles-select-field__tile"
+        color={tileColor}
+        close
+        size="sm"
+        onClose={onTileClose(tile)}
+        key={`nmp-select-tile-${index}`}
+      >
+        {tile.label}
+      </NmpTile>
+    );
+  };
 
   return (
     <SelectField
       label={label}
       name={name}
-      value={value}
-      options={options}
+      value={selectValue}
+      onChange={setSelectValue}
+      options={privateOptions}
       errors={errors}
       valid={valid}
       invalid={invalid}
       placeholder={placeholder}
-      onChange={onChange}
       innerChildren={innerChildren}
       {...attrs}
     >
@@ -60,31 +97,20 @@ const NmpTilesSelectField = (props) => {
           {label}
 
           <div className="d-flex">
-            <div className="width-90-per pr-1">{select}</div>
-            <div className="nmp-tiles-select-field__adder-wrap width-10-per d-flex justify-content-end">
+            <div className="pr-1 full-width">{select}</div>
+
+            <div className="nmp-tiles-select-field__adder-wrap d-flex justify-content-end">
               <NmpButton
                 className="nmp-tiles-select-field__adder d-flex align-items-center justify-content-center p-0"
                 onClick={onAdderClick}
-                disabled={!value}
+                disabled={!selectValue}
                 icon={<Plus />}
               />
             </div>
           </div>
 
-          <div className="nmp-tiles-select-field__tiles mt-2">
-            {tiles.map((tile) => (
-              <NmpTile
-                className="nmp-tiles-select-field__tile"
-                color={tileColor}
-                close
-                size="sm"
-                onClose={onTileClose(tile)}
-                key={tile.id}
-              >
-                {tile.label}
-              </NmpTile>
-            ))}
-          </div>
+          <div className="nmp-tiles-select-field__tiles mt-2">{tiles.map(renderTile)}</div>
+
           {error}
         </>
       )}
@@ -93,8 +119,10 @@ const NmpTilesSelectField = (props) => {
 };
 
 NmpTilesSelectField.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.shape({ label: PropTypes.string, value: PropTypes.any }),
+  value: PropTypes.arrayOf(
+    PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), label: PropTypes.string })
+  ).isRequired,
+  onChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.any })).isRequired,
 
   valid: PropTypes.bool,
@@ -104,15 +132,11 @@ NmpTilesSelectField.propTypes = {
   placeholder: PropTypes.string,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 
-  onChange: PropTypes.func.isRequired,
+  tile: PropTypes.func,
+  tileColor: PropTypes.string,
 
   innerChildren: PropTypes.node,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-
-  tileColor: PropTypes.string,
-  tiles: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onTileAdd: PropTypes.func.isRequired,
-  onTileRemove: PropTypes.func.isRequired,
 };
 
 export default NmpTilesSelectField;
