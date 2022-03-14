@@ -7,7 +7,7 @@ import { Plus } from "react-feather";
 
 import NmpTile from "../NmpTile";
 import NmpButton from "../NmpButton";
-import SelectField from "../SelectField";
+import NmpSelect from "../NmpSelect";
 
 const NmpTilesSelectField = (props) => {
   const {
@@ -26,7 +26,6 @@ const NmpTilesSelectField = (props) => {
     tile: tileSlot,
     tileColor,
 
-    innerChildren,
     children,
     ...attrs
   } = props;
@@ -79,42 +78,34 @@ const NmpTilesSelectField = (props) => {
   };
 
   return (
-    <SelectField
-      label={label}
-      name={name}
-      value={selectValue}
-      onChange={setSelectValue}
-      options={privateOptions}
-      errors={errors}
-      valid={valid}
-      invalid={invalid}
-      placeholder={placeholder}
-      innerChildren={innerChildren}
-      {...attrs}
-    >
-      {({ label, select, error }) => (
-        <>
-          {label}
+    <>
+      {label}
 
-          <div className="d-flex">
-            <div className="pr-1 full-width">{select}</div>
+      <div className="d-flex">
+        <div className="pr-1 full-width">
+          <NmpSelect
+            name={name}
+            value={selectValue}
+            onChange={setSelectValue}
+            options={privateOptions}
+            valid={valid}
+            placeholder={placeholder}
+            {...attrs}
+          />
+        </div>
 
-            <div className="nmp-tiles-select-field__adder-wrap d-flex justify-content-end">
-              <NmpButton
-                className="nmp-tiles-select-field__adder d-flex align-items-center justify-content-center p-0"
-                onClick={onAdderClick}
-                disabled={!selectValue}
-                icon={<Plus />}
-              />
-            </div>
-          </div>
+        <div className="nmp-tiles-select-field__adder-wrap d-flex justify-content-end">
+          <NmpButton
+            className="nmp-tiles-select-field__adder d-flex align-items-center justify-content-center p-0"
+            onClick={onAdderClick}
+            disabled={!selectValue}
+            icon={<Plus />}
+          />
+        </div>
+      </div>
 
-          <div className="nmp-tiles-select-field__tiles mt-2">{tiles.map(renderTile)}</div>
-
-          {error}
-        </>
-      )}
-    </SelectField>
+      <div className="nmp-tiles-select-field__tiles mt-2">{tiles.map(renderTile)}</div>
+    </>
   );
 };
 
