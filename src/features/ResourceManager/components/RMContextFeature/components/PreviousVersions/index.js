@@ -26,7 +26,7 @@ const HEADERS = ["Action", "Version", "Users", "Date", "Author"];
 const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownload, onTemplateRemove }) => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [fileEditLoading, setFileEditLoading] = useState(false);
 
   const error = useSelector(selectError);
   const isUploadInProgress = useSelector(createLoadingSelector([uploadResourceRequest.type], true));
@@ -50,7 +50,7 @@ const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownlo
 
   const onEditField = (fieldId) => {
     editingItems.setKeys([...editingItems.keys, fieldId]);
-    setIsLoading(true);
+    setFileEditLoading(true);
     resourceManagerApi
       .postFieldEdit({ fieldId: fieldId })
       .then((response) => {
@@ -61,12 +61,10 @@ const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownlo
         }
       })
       .catch((error) => toast.error(error))
-      .finally(() => setIsLoading(false));
+      .finally(() => setFileEditLoading(false));
   };
 
-  const onFinishEditField = (fieldId) => {
-    editingItems.setKeys([...editingItems.keys.filter((item) => item !== fieldId)]);
-    setIsLoading(true);
+  const openResourceFileEditLink = (fieldId) => {
     resourceManagerApi
       .postEndFieldEdit({ fieldId: fieldId })
       .then((response) => {
@@ -74,7 +72,13 @@ const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownlo
         toast.success("File was successfully edited");
       })
       .catch((error) => toast.error(error))
-      .finally(() => setIsLoading(false));
+      .finally(() => setFileEditLoading(false));
+  };
+
+  const onFinishEditField = (fieldId) => {
+    editingItems.setKeys([...editingItems.keys.filter((item) => item !== fieldId)]);
+    setFileEditLoading(true);
+    openResourceFileEditLink(fieldId);
   };
 
   useEffect(() => {
@@ -124,7 +128,7 @@ const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownlo
                         className={"expandable_item_container-finish-edit"}
                         onClick={() => onFinishEditField(version.id)}
                         variant="primary"
-                        loading={isLoading}
+                        loading={fileEditLoading}
                       >
                         Finish editing
                       </NmpButton>
@@ -141,14 +145,16 @@ const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownlo
                         src={DownloadIcon}
                         alt="Download"
                       />
-                      <img onClick={() => onEditField(version.id)} className="mr-1" src={EditIcon} alt="Edit" />
                       {index === 0 && (
-                        <img
-                          onClick={() => onTemplateRemove(version.id)}
-                          className="mr-1"
-                          src={DeleteIcon}
-                          alt="Delete"
-                        />
+                        <span>
+                          <img onClick={() => onEditField(version.id)} className="mr-1" src={EditIcon} alt="Edit" />
+                          <img
+                            onClick={() => onTemplateRemove(version.id)}
+                            className="mr-1"
+                            src={DeleteIcon}
+                            alt="Delete"
+                          />
+                        </span>
                       )}
                     </div>
                   )}
