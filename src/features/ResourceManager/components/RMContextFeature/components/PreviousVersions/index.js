@@ -48,9 +48,7 @@ const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownlo
     expandedItems.setKeys([itemId]);
   };
 
-  const onEditField = (fieldId) => {
-    editingItems.setKeys([...editingItems.keys, fieldId]);
-    setFileEditLoading(true);
+  const openResourceFileEditLink = (fieldId) => {
     resourceManagerApi
       .postFieldEdit({ fieldId: fieldId })
       .then((response) => {
@@ -64,7 +62,14 @@ const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownlo
       .finally(() => setFileEditLoading(false));
   };
 
-  const openResourceFileEditLink = (fieldId) => {
+  const onEditField = (fieldId) => {
+    editingItems.setKeys([...editingItems.keys, fieldId]);
+    setFileEditLoading(true);
+    openResourceFileEditLink(fieldId);
+  };
+
+  const onFinishEditField = (fieldId) => {
+    setFileEditLoading(true);
     resourceManagerApi
       .postEndFieldEdit({ fieldId: fieldId })
       .then((response) => {
@@ -72,13 +77,10 @@ const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownlo
         toast.success("File was successfully edited");
       })
       .catch((error) => toast.error(error))
-      .finally(() => setFileEditLoading(false));
-  };
-
-  const onFinishEditField = (fieldId) => {
-    editingItems.setKeys([...editingItems.keys.filter((item) => item !== fieldId)]);
-    setFileEditLoading(true);
-    openResourceFileEditLink(fieldId);
+      .finally(() => {
+        setFileEditLoading(false);
+        editingItems.setKeys([...editingItems.keys.filter((item) => item !== fieldId)]);
+      });
   };
 
   useEffect(() => {
