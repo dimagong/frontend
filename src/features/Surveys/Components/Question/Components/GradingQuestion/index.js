@@ -159,36 +159,45 @@ const GradingQuestion = ({
   return (
     <div className={`question question-${displayType}`}>
       <div className={"question-title"}>
-        {`Question ${questionNumber}`} <SmsOutlined className="question-feedback_icon" onClick={() => setIsFeedbackModalVisible(true)} />
+        {`Question ${questionNumber}`}{" "}
+        <SmsOutlined className="question-feedback_icon" onClick={() => setIsFeedbackModalVisible(true)} />
       </div>
       <div className="question-time">
-        <QueryBuilder style={{fontSize: "18px", color: "#444", marginRight: "5px", paddingTop: "1px"}} /> {getTimeDifference(answer.started_at, answer.finished_at)}
+        <QueryBuilder
+          style={{
+            fontSize: "18px",
+            color: "#444",
+            marginRight: "5px",
+            paddingTop: "1px",
+          }}
+        />{" "}
+        {getTimeDifference(answer.started_at, answer.finished_at)}
       </div>
-      <div className={"question-description"}>
-        {body}
-      </div>
+      <div className={"question-description"}>{body}</div>
 
-      {{
-        "multiple_choice": (
-          <MultipleChoice
-            answer={answer}
-            options={options}
-            correctAnswerId={questionData.correct_answer}
-            points={points}
-          />
-        ),
-        "text": (
-          <FreeText
-            answer={answer}
-            maxPoints={max_points}
-            gradingPoints={gradingPoints}
-            reviewerNotes={reviewerNotes}
-            isGradingReview={isGradingReview}
-            onGradingPointsChange={handleGradingPointsChange}
-            onReviewerNotesChange={handleReviewerNotesChange}
-          />
-        )
-      }[type]}
+      {
+        {
+          multiple_choice: (
+            <MultipleChoice
+              answer={answer}
+              options={options}
+              correctAnswerId={questionData.correct_answer}
+              points={points}
+            />
+          ),
+          text: (
+            <FreeText
+              answer={answer}
+              maxPoints={max_points}
+              gradingPoints={gradingPoints}
+              reviewerNotes={reviewerNotes}
+              isGradingReview={isGradingReview}
+              onGradingPointsChange={handleGradingPointsChange}
+              onReviewerNotesChange={handleReviewerNotesChange}
+            />
+          ),
+        }[type]
+      }
 
       <SurveyFeedbackModal
         isSubmitProceed={isFeedbackSubmitProceeding}
@@ -196,7 +205,8 @@ const GradingQuestion = ({
         isOpen={isFeedbackModalVisible}
         onSubmit={onFeedbackSubmit}
         questionId={questionData.id}
-        onClose={() => setIsFeedbackModalVisible(false)} />
+        onClose={() => setIsFeedbackModalVisible(false)}
+      />
     </div>
   );
 };
