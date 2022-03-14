@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { TextArea } from "features/Surveys/Components/SurveyFormComponents";
-import { getTimeDifference } from "utility/common";
 import HintIcon from "assets/img/svg/help-with-circle.svg";
 import { useSmallOptionsSurveyStyles } from "hooks/useSmallOptionsSurveyStyles";
 import CustomModal from "../../../../../../components/CustomModal";

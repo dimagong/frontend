@@ -1,8 +1,7 @@
 import React, {useState, useMemo, useEffect} from 'react';
 import { TextArea } from 'features/Surveys/Components/SurveyFormComponents'
 import { CheckCircleOutline, HighlightOff } from '@material-ui/icons'
-import { getTimeDifference } from "utility/common";
-import { QueryBuilder, SmsOutlined } from "@material-ui/icons";
+import { SmsOutlined } from "@material-ui/icons";
 
 import SurveyFeedbackModal from "./Components/SurveyFeedbackModal";
 
