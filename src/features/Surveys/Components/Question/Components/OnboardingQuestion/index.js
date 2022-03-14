@@ -70,14 +70,6 @@ const FreeText = ({ onClick, onChange, answer }) => {
   );
 };
 
-const TimerComponent = ({ startTime }) => {
-  const [stopwatchTime, setStopwatchTime] = useState(getTimeDifference(startTime));
-
-  setInterval(() => setStopwatchTime(getTimeDifference(startTime)), 1000);
-
-  return stopwatchTime;
-};
-
 const OnboardingQuestion = ({ displayType, questionNumber, questionData, onAnswerChange, answer, initAnswer }) => {
   const [isHintOpen, setIsHintOpen] = useState(false);
 
@@ -100,11 +92,7 @@ const OnboardingQuestion = ({ displayType, questionNumber, questionData, onAnswe
   return (
     <div className={`question question-${displayType}`}>
       <div className={"question-title"}>{`Question ${questionNumber}`}</div>
-      <div className="question-time">
-        <TimerComponent startTime={questionData.started_at} />
-      </div>
       <div className={"question-description"}>{body}</div>
-
       {
         {
           multiple_choice: <MultipleChoice options={options} onChange={onAnswerChange} correctAnswerId={answer} />,

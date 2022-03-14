@@ -14,12 +14,6 @@ const stats = [
     suffix: "%",
   },
   {
-    color: "#7367F0",
-    key: "totalTime",
-    label: "Total Time",
-    suffix: "",
-  },
-  {
     color: "#4B484D",
     key: "percentile",
     label: "Percentile",

@@ -162,17 +162,6 @@ const GradingQuestion = ({
         {`Question ${questionNumber}`}{" "}
         <SmsOutlined className="question-feedback_icon" onClick={() => setIsFeedbackModalVisible(true)} />
       </div>
-      <div className="question-time">
-        <QueryBuilder
-          style={{
-            fontSize: "18px",
-            color: "#444",
-            marginRight: "5px",
-            paddingTop: "1px",
-          }}
-        />{" "}
-        {getTimeDifference(answer.started_at, answer.finished_at)}
-      </div>
       <div className={"question-description"}>{body}</div>
 
       {

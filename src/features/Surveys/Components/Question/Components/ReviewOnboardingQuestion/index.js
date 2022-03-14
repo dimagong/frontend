@@ -85,7 +85,6 @@ const OnboardingQuestion = ({ displayType, questionNumber, questionData, currAns
   return (
     <div className={`question question-${displayType}`}>
       <div className={"question-title"}>{`Question ${questionNumber}`}</div>
-      <div className="question-time">{getTimeDifference(currAnswer.started_at, currAnswer.finished_at)}</div>
       <div className={"question-description"}>{body}</div>
 
       {
