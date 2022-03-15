@@ -2,6 +2,9 @@ import React from "react";
 import Select from "react-select";
 import PropTypes from "prop-types";
 
+import { useForkRef } from "hooks/useForkRef";
+import { stopAndPrevent } from "utility/event-decorators";
+
 const baseControlStyles = {
   borderRadius: 0,
   borderTop: "none",
@@ -43,23 +46,61 @@ const selectStyles = {
   },
 };
 
-const defaultComponents = { IndicatorSeparator: null };
+const getMultiValueContainer = (selectRef) => {
+  const MultiValueContainer = ({ data, children }) => {
+    const clickHandler = React.useCallback(() => selectRef.current.select.removeValue(data), [data]);
+
+    return (
+      <div onClick={clickHandler} onMouseDown={stopAndPrevent()}>
+        {data.label}
+      </div>
+    );
+  };
+
+  return MultiValueContainer;
+};
+
+const defaultComponents = {
+  IndicatorSeparator: null,
+  MultiValueLabel: () => null,
+  MultiValueRemove: () => null,
+};
 
 const NmpSelect = React.forwardRef((props, ref) => {
-  const { value, options, onChange, valid, disabled, placeholder, children, ...attrs } = props;
+  const {
+    value,
+    options,
+    onChange,
+    valid,
+    disabled,
+    placeholder,
+    searchable = false,
+    multiple = false,
+    children,
+    ...attrs
+  } = props;
+
+  const innerRef = React.useRef(null);
+  const forkedRef = useForkRef(ref, innerRef);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const MultiValueContainer = React.useMemo(() => getMultiValueContainer(forkedRef), []);
+  const components = React.useMemo(() => ({ ...defaultComponents, MultiValueContainer }), [MultiValueContainer]);
 
   return (
     <Select
       value={value}
       options={options}
       onChange={onChange}
-      isSearchable={false}
-      isDisabled={disabled}
-      placeholder={placeholder}
       valid={valid}
-      components={defaultComponents}
+      placeholder={placeholder}
+      isMulti={multiple}
+      isSearchable={searchable}
+      isDisabled={disabled}
+      components={components}
+      getOptionValue={(option) => option.value.name}
       styles={selectStyles}
-      ref={ref}
+      ref={forkedRef}
       {...attrs}
     >
       {children}
@@ -80,7 +121,9 @@ NmpSelect.propTypes = {
   disabled: PropTypes.bool,
   placeholder: PropTypes.string,
 
-  // Take rest props from 'react-select'
+  multiple: PropTypes.bool,
+  searchable: PropTypes.bool,
+  getOptionValue: PropTypes.func,
 };
 
 export default NmpSelect;

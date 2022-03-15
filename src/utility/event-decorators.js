@@ -1,9 +1,15 @@
 export const preventDefault = (callback) => (event) => {
   event.preventDefault();
-  callback(event);
+  callback && callback(event);
 };
 
 export const stopPropagation = (callback) => (event) => {
-  callback(event);
   event.stopPropagation();
+  callback && callback(event);
+};
+
+export const stopAndPrevent = (callback) => (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  callback && callback(event);
 };
