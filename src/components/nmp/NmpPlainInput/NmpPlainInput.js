@@ -6,18 +6,24 @@ import { Input } from "reactstrap";
 import classNames from "classnames";
 
 import { useForkRef } from "hooks/useForkRef";
+import { stopAndPrevent } from "utility/event-decorators";
 
 const NmpPlainInput = React.forwardRef((props, ref) => {
   const {
     type,
-    valid,
-    disabled,
-    readonly,
-    placeholder,
     value,
     onChange: propOnChange,
+
+    valid = false,
+    invalid = false,
+    disabled = false,
+    readonly = false,
+
+    placeholder,
+
     prepend,
     append,
+
     className,
     wrapperAttrs,
     ...attrs
@@ -36,16 +42,14 @@ const NmpPlainInput = React.forwardRef((props, ref) => {
 
   const safeFocus = React.useCallback(() => safeInput((input) => input.focus()), [safeInput]);
 
-  const onSlotClick = React.useCallback((event) => {
-    safeFocus();
-    event.preventDefault();
-    event.stopPropagation();
-  }, [safeFocus]);
-
-  const onSlotMouseUp = React.useCallback((event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  }, []);
+  const onSlotClick = React.useCallback(
+    (event) => {
+      safeFocus();
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    [safeFocus]
+  );
 
   return (
     <div
@@ -62,14 +66,15 @@ const NmpPlainInput = React.forwardRef((props, ref) => {
       )}
     >
       {prepend ? (
-        <div className="d-flex" onClick={onSlotClick} onMouseUp={onSlotMouseUp}>
+        <div className="d-flex" onClick={onSlotClick} onMouseDown={stopAndPrevent}>
           {prepend}
         </div>
       ) : null}
+
       <Input
         type={type}
-        valid={valid == null ? void 0 : valid === true}
-        invalid={valid == null ? void 0 : valid === false}
+        valid={valid}
+        invalid={invalid}
         disabled={disabled}
         readonly={readonly}
         plaintext={readonly}
@@ -80,8 +85,9 @@ const NmpPlainInput = React.forwardRef((props, ref) => {
         className={classNames("nmp-input__input", className)}
         {...attrs}
       />
+
       {append ? (
-        <div className="d-flex" onClick={onSlotClick} onMouseUp={onSlotMouseUp}>
+        <div className="d-flex" onClick={onSlotClick} onMouseDown={stopAndPrevent}>
           {append}
         </div>
       ) : null}
@@ -93,13 +99,15 @@ const TYPES = ["email", "number", "password", "search", "tel", "text", "url"];
 
 NmpPlainInput.propTypes = {
   type: PropTypes.oneOf(TYPES),
-  valid: PropTypes.bool,
-  disabled: PropTypes.bool,
-  readonly: PropTypes.bool,
-  placeholder: PropTypes.string,
-
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+
+  valid: PropTypes.bool,
+  invalid: PropTypes.bool,
+  disabled: PropTypes.bool,
+  readonly: PropTypes.bool,
+
+  placeholder: PropTypes.string,
 
   prepend: PropTypes.node,
   append: PropTypes.node,

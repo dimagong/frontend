@@ -9,6 +9,86 @@ import NmpTile from "../NmpTile";
 import NmpButton from "../NmpButton";
 import NmpSelect from "../NmpSelect";
 
+/*
+// ToDo: Reuse NmpSelect and code below to refactor
+import { components } from "react-select";
+import { stopAndPrevent } from "utility/event-decorators";
+
+const SelectValuesContainer = ({ isDisabled, getValue, ...restProps }) => {
+  const { getOptionValue, formatOptionLabel, removeValue } = restProps.selectProps;
+
+  const getValueLabel = (opt) => formatOptionLabel?.(opt, "value") || opt.label;
+  const getKey = (opt, index) => `${getOptionValue(opt)}-${index}`;
+
+  const toMultiValue = (option, index) => {
+    return (
+      <components.MultiValue
+        getValue={getValue}
+        {...restProps}
+        components={{
+          Container: components.MultiValueContainer,
+          Label: components.MultiValueLabel,
+          Remove: components.MultiValueRemove,
+        }}
+        isDisabled={isDisabled}
+        key={getKey(option, index)}
+        index={index}
+        removeProps={{
+          onClick: () => removeValue(option),
+          onTouchEnd: () => removeValue(option),
+          onMouseDown: (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          },
+        }}
+        data={option}
+      >
+        {getValueLabel(option)}
+      </components.MultiValue>
+    );
+  };
+
+  return (
+    <div
+      className="align-items-start"
+      style={{ margin: ".5rem 0", display: "flex", flexFlow: "row wrap", border: "1px solid #ccc", minHeight: "80px" }}
+    >
+      {getValue().map(toMultiValue)}
+    </div>
+  );
+};
+
+const SelectContainer = ({ isFocused, innerProps, className, children, ...restProps }) => {
+  const selectContainerProps = { ...restProps };
+
+  return (
+    <components.SelectContainer
+      className={className}
+      innerProps={innerProps}
+      isFocused={isFocused}
+      {...selectContainerProps}
+    >
+      {children}
+      <SelectValuesContainer {...restProps} />
+    </components.SelectContainer>
+  );
+};
+
+const getMultiValueContainer = ({ selectRef }) => {
+  const MultiValueContainer = ({ data }) => {
+    const clickHandler = React.useCallback(() => selectRef.current.select.removeValue(data), [data]);
+
+    return (
+      <div onClick={clickHandler} onMouseDown={stopAndPrevent()}>
+        {data.label}
+      </div>
+    );
+  };
+
+  return MultiValueContainer;
+};
+*/
+
 const NmpTilesSelectField = (props) => {
   const {
     label,

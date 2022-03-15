@@ -1,41 +1,77 @@
 import React from "react";
-import Select from "react-select";
 import PropTypes from "prop-types";
+import Select, { components } from "react-select";
 
 import { useForkRef } from "hooks/useForkRef";
-import { stopAndPrevent } from "utility/event-decorators";
 
 const baseControlStyles = {
+  fontSize: "1rem",
+
   borderRadius: 0,
   borderTop: "none",
   borderLeft: "none",
   borderRight: "none",
+  borderColor: "currentColor",
+
+  color: "#707070",
+
   boxShadow: "none",
+  "&:hover": {
+    borderColor: "rgba(112,112,112,0.6)",
+  },
 };
 
 const validControlStyles = {
   ...baseControlStyles,
   borderColor: "var(--success)",
+  "&:hover": {
+    borderColor: "var(--success)",
+  },
 };
 
 const invalidControlStyles = {
   ...baseControlStyles,
   borderColor: "var(--danger)",
+  "&:hover": {
+    borderColor: "var(--danger)",
+  },
 };
 
 const selectStyles = {
+  multiValue: () => ({
+    margin: ".5rem .5rem .5rem 0",
+  }),
+  multiValueLabel: (provided) => ({
+    ...provided,
+    padding: 0,
+    paddingLeft: 0,
+    fontSize: "inherit",
+    color: "currentColor",
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    fontSize: "inherit",
+    color: "currentColor",
+  }),
   control: (provided, state) => {
-    if (state.selectProps.valid === true) {
+    if (state.selectProps.isDisabled) {
       return {
         ...provided,
-        ...validControlStyles,
+        ...baseControlStyles,
       };
     }
 
-    if (state.selectProps.valid === false) {
+    if (state.selectProps.invalid) {
       return {
         ...provided,
         ...invalidControlStyles,
+      };
+    }
+
+    if (state.selectProps.valid) {
+      return {
+        ...provided,
+        ...validControlStyles,
       };
     }
 
@@ -46,23 +82,37 @@ const selectStyles = {
   },
 };
 
-const getMultiValueContainer = (selectRef) => {
-  const MultiValueContainer = ({ data, children }) => {
-    const clickHandler = React.useCallback(() => selectRef.current.select.removeValue(data), [data]);
+const MultiValue = ({ index, data, getValue, selectProps, ...restProps }) => {
+  const valueSeparator = selectProps.valueSeparator;
+  const getValueLabel = (option) => selectProps.formatOptionLabel?.(option, "value") || option.label;
+  const label = index > 0 ? `${valueSeparator}${getValueLabel(data)}` : `${getValueLabel(data)}`;
 
-    return (
-      <div onClick={clickHandler} onMouseDown={stopAndPrevent()}>
-        {data.label}
-      </div>
-    );
-  };
+  return (
+    <components.MultiValue
+      getValue={getValue}
+      {...restProps}
+      index={index}
+      data={data}
+      selectProps={selectProps}
+      components={{
+        Container: selectProps.components.MultiValueContainer || components.MultiValueContainer,
+        Label: selectProps.components.MultiValueLabel || components.MultiValueLabel,
+        Remove: selectProps.components.MultiValueRemove || components.MultiValueRemove,
+      }}
+    >
+      {label}
+    </components.MultiValue>
+  );
+};
 
-  return MultiValueContainer;
+const MultiValueContainer = ({ innerProps, children }) => {
+  return <div {...innerProps}>{children}</div>;
 };
 
 const defaultComponents = {
   IndicatorSeparator: null,
-  MultiValueLabel: () => null,
+  MultiValue,
+  MultiValueContainer,
   MultiValueRemove: () => null,
 };
 
@@ -71,21 +121,27 @@ const NmpSelect = React.forwardRef((props, ref) => {
     value,
     options,
     onChange,
-    valid,
-    disabled,
+
+    valid = false,
+    invalid = false,
+    disabled = false,
+    readonly = false,
+
     placeholder,
+    valueSeparator = ",",
+
+    clearable = false,
     searchable = false,
     multiple = false,
+
+    menuIsOpen,
+
     children,
     ...attrs
   } = props;
 
   const innerRef = React.useRef(null);
-  const forkedRef = useForkRef(ref, innerRef);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const MultiValueContainer = React.useMemo(() => getMultiValueContainer(forkedRef), []);
-  const components = React.useMemo(() => ({ ...defaultComponents, MultiValueContainer }), [MultiValueContainer]);
+  const forkedRef = useForkRef(innerRef, ref);
 
   return (
     <Select
@@ -93,11 +149,15 @@ const NmpSelect = React.forwardRef((props, ref) => {
       options={options}
       onChange={onChange}
       valid={valid}
+      invalid={invalid}
       placeholder={placeholder}
-      isMulti={multiple}
-      isSearchable={searchable}
+      valueSeparator={valueSeparator}
       isDisabled={disabled}
-      components={components}
+      isClearable={readonly ? false : clearable}
+      isMulti={multiple}
+      isSearchable={readonly ? false : searchable}
+      menuIsOpen={readonly ? false : menuIsOpen}
+      components={defaultComponents}
       getOptionValue={(option) => option.value.name}
       styles={selectStyles}
       ref={forkedRef}
@@ -118,12 +178,18 @@ NmpSelect.propTypes = {
   onChange: PropTypes.func,
 
   valid: PropTypes.bool,
+  invalid: PropTypes.bool,
   disabled: PropTypes.bool,
+  readonly: PropTypes.bool,
+
   placeholder: PropTypes.string,
+  valueSeparator: PropTypes.string,
 
   multiple: PropTypes.bool,
   searchable: PropTypes.bool,
   getOptionValue: PropTypes.func,
+
+  menuIsOpen: PropTypes.bool,
 };
 
 export default NmpSelect;

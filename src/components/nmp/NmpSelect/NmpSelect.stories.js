@@ -17,13 +17,16 @@ const Template = (props) => {
 
   React.useEffect(() => console.log("forwarding ref", ref), []);
 
-  return <NmpSelect {...props} value={value} options={options} onChange={setValue} />;
+  return <NmpSelect {...props} value={value} options={options} onChange={setValue} ref={ref} />;
 };
 
 const defaultArguments = {
-  valid: void 0,
+  valid: false,
+  invalid: false,
   disabled: false,
+  readonly: false,
   placeholder: void 0,
+  clearable: false,
   searchable: false,
 };
 
