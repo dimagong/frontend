@@ -1,0 +1,7 @@
+.expandable_item_container {
+  box-sizing: border-box;
+  overflow: hidden;
+  .list_actions img {
+    cursor: pointer;
+  }
+}

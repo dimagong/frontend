@@ -1,17 +1,16 @@
 import React, { useState }from 'react';
 
 import SharedWith from "./components/SharedWith";
-import PreviousVersions from "./components/PreviousVersions";
+import PreviousVersionsCF from "./components/PreviousVersionsCF";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 import Folders from "components/Folders";
 
 import './styles.scss';
 
 const RMContextFeatureComponent = ({
+  selectableNodes,
   connectionsAndVersions,
   onResourceUpload,
-  onTemplateDownload,
-  onTemplateRemove,
 }) => {
 
   const dumbData = [
@@ -46,11 +45,10 @@ const RMContextFeatureComponent = ({
 
       <div>
         {selectedFolder.name === dumbData[0].name ? (
-          <PreviousVersions
+          <PreviousVersionsCF
+            versions={connectionsAndVersions?.versions || []}
+            selectableNodes={selectableNodes}
             onResourceUpload={onResourceUpload}
-            previousVersions={connectionsAndVersions?.versions || []}
-            onTemplateDownload={onTemplateDownload}
-            onTemplateRemove={onTemplateRemove}
           />
         ) : (
           <SharedWith
@@ -58,9 +56,6 @@ const RMContextFeatureComponent = ({
           />
         )}
       </div>
-
-
-
     </ContextFeatureTemplate>
   )
 };

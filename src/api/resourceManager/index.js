@@ -1,4 +1,4 @@
-import instance, { requestLayout } from "api";
+import { requestLayout } from "api";
 
 import {
   getResourceManagersListUrl,
@@ -8,12 +8,7 @@ import {
   getResourcePreviousVersions,
   uploadResourceUrl,
   removeResourceTemplateUrl,
-  postEditField,
-  endEditField,
 } from './contants'
-import {get, pipe} from "lodash/fp";
-const flatResponseData = get("data.data");
-const flatResponseError = pipe(get("response.data.error"), (e) => Promise.reject(e));
 
 const resourceManagerApi = {
   async getResourceManagersList() {
@@ -43,20 +38,6 @@ const resourceManagerApi = {
 
   async removeResource(fileId) {
     return await requestLayout(removeResourceTemplateUrl(fileId), "DELETE")
-  },
-
-  postFieldEdit({ fieldId }) {
-    return instance({
-      method: "POST",
-      url: postEditField(fieldId),
-    }).then(flatResponseData, flatResponseError);
-  },
-
-  postEndFieldEdit({ fieldId }) {
-    return instance({
-      method: "POST",
-      url: endEditField(fieldId),
-    }).then(flatResponseData, flatResponseError);
   },
 };
 
