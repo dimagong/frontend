@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Collapse } from "reactstrap";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { Scrollbars } from "react-custom-scrollbars";
 import AddButton from "components/AddButton";
@@ -120,46 +121,40 @@ const PreviousVersions = ({ previousVersions, onResourceUpload, onTemplateDownlo
                     <div className="list_item_description">{moment(version.updated_at).format("DD/MM/YYYY")}</div>
                     <div className="list_item_description">{version.provided.first_name}</div>
                   </div>
-                  {editingItems.includes(version.id) ? (
-                    <div
-                      className={`list_actions d-flex justify-content-end ${
-                        expandedItems.includes(version.id) ? "expanded" : ""
-                      }`}
-                    >
-                      <NmpButton
-                        className={"expandable_item_container-finish-edit"}
-                        onClick={() => onFinishEditField(version.id)}
-                        variant="primary"
-                        loading={fileEditLoading}
-                      >
-                        Finish editing
-                      </NmpButton>
-                    </div>
-                  ) : (
-                    <div
-                      className={`list_actions d-flex justify-content-end ${
-                        expandedItems.includes(version.id) ? "expanded" : ""
-                      }`}
-                    >
-                      <img
-                        onClick={() => onTemplateDownload(version.id, version.name)}
-                        className="mr-1"
-                        src={DownloadIcon}
-                        alt="Download"
-                      />
-                      {index === 0 && (
+                  <Collapse isOpen={expandedItems.includes(version.id)}>
+                    <div className={`list_actions d-flex justify-content-end expanded`}>
+                      {editingItems.includes(version.id) ? (
+                        <NmpButton
+                          onClick={() => onFinishEditField(version.id)}
+                          color="primary"
+                          loading={fileEditLoading}
+                          size={"sm"}
+                        >
+                          Finish editing
+                        </NmpButton>
+                      ) : (
                         <span>
-                          <img onClick={() => onEditField(version.id)} className="mr-1" src={EditIcon} alt="Edit" />
                           <img
-                            onClick={() => onTemplateRemove(version.id)}
+                            onClick={() => onTemplateDownload(version.id, version.name)}
                             className="mr-1"
-                            src={DeleteIcon}
-                            alt="Delete"
+                            src={DownloadIcon}
+                            alt="Download"
                           />
+                          {index === 0 && (
+                            <span>
+                              <img onClick={() => onEditField(version.id)} className="mr-1" src={EditIcon} alt="Edit" />
+                              <img
+                                onClick={() => onTemplateRemove(version.id)}
+                                className="mr-1"
+                                src={DeleteIcon}
+                                alt="Delete"
+                              />
+                            </span>
+                          )}
                         </span>
                       )}
                     </div>
-                  )}
+                  </Collapse>
                 </div>
               ))}
             </div>
