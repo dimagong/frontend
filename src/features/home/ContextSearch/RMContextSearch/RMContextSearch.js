@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
 
-import resourceManagerApi from "api/resourceManager";
+import { resourceManagerService } from "api/resourceManager";
 
 import RMList from "./RMList";
 
@@ -13,7 +13,7 @@ const { setContext, setSelectedResourceManager } = appSlice.actions;
 
 const RMContextSearch = () => {
   const dispatch = useDispatch();
-  const { data: rManagers, isLoading } = useQuery("resource-managers", resourceManagerApi.getResourceManagersList);
+  const { data: rManagers, isLoading } = useQuery("resource-managers", resourceManagerService.getResourceManagers);
 
   const onRManagerSelect = (rManager) => {
     dispatch(setSelectedResourceManager(rManager));

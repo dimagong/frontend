@@ -9,7 +9,7 @@ import NmpButton from "components/nmp/NmpButton";
 
 import appSlice from "app/slices/appSlice";
 
-import { ResourceManagerPreviousVersionService } from "api/resourceManager/resourceManagerPreviousVersionService";
+import { resourceManagerService } from "api/resourceManager";
 
 import EditIcon from "assets/img/icons/edit.png";
 import DeleteIcon from "assets/img/icons/x.png";
@@ -28,7 +28,7 @@ const LatestVersionItem = ({ version, expandable, selectableNodes, ...attrs }) =
 
   const onFinish = () => {
     finishingStart();
-    ResourceManagerPreviousVersionService.finishEditVersion({ versionId: version.id })
+    resourceManagerService.finishEditVersion({ versionId: version.id })
       .then((response) => {
         dispatch(getResourcePreviousVersionsRequest(selectableNodes.selected.node.id));
         toast.success("File was successfully edited");
@@ -42,7 +42,7 @@ const LatestVersionItem = ({ version, expandable, selectableNodes, ...attrs }) =
 
   const tryToEdit = () => {
     tryingToEditStart();
-    ResourceManagerPreviousVersionService.editVersion({ versionId: version.id })
+    resourceManagerService.editVersion({ versionId: version.id })
       .then(editingStart)
       .finally(tryingToEditStop);
   };

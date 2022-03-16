@@ -33,3 +33,5 @@ const resourceManagerApi = {
 };
 
 export default resourceManagerApi;
+
+export { resourceManagerService } from "./resourceManagerService";

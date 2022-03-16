@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 
 import NmpButton from "components/nmp/NmpButton";
 
-import { ResourceManagerPreviousVersionService } from "api/resourceManager/resourceManagerPreviousVersionService";
+import { resourceManagerService } from "api/resourceManager";
 
 import DownloadIcon from "assets/img/icons/cloud-download.png";
 
 const VersionDownloadButton = ({ versionId, name, ...attrs }) => {
-  const onDownload = () => ResourceManagerPreviousVersionService.downloadVersion({ versionId, name });
+  const onDownload = () => resourceManagerService.downloadVersion({ versionId, name });
 
   return (
     <NmpButton
