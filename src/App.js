@@ -1,20 +1,20 @@
+import "react-toastify/dist/ReactToastify.css";
+import "assets/scss/plugins/extensions/toastr.scss";
+
 import React, { useEffect } from "react";
-import { Router } from "react-router-dom";
-import Routes from "routes";
-import { history } from "./history";
-import { ConnectedRouter } from "connected-react-router";
 import { useDispatch } from "react-redux";
+import { Router } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { Scrollbars } from "react-custom-scrollbars";
+import { ConnectedRouter } from "connected-react-router";
+
+import Routes from "routes";
 import authService from "services/auth";
-import {ToastContainer} from 'react-toastify'
-import "react-toastify/dist/ReactToastify.css"
-import "assets/scss/plugins/extensions/toastr.scss"
+import appSlice from "app/slices/appSlice";
 
-import { Scrollbars } from 'react-custom-scrollbars';
+import { history } from "./history";
 
-import appSlice from 'app/slices/appSlice'
-
-const {getProfileRequest} = appSlice.actions;
-
+const { getProfileRequest } = appSlice.actions;
 
 function App() {
   const dispatch = useDispatch();
