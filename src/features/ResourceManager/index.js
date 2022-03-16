@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import RMContextComponent from "./components/RMContext";
 import RMContextFeatureComponent from "./components/RMContextFeature";
 
+import { usePrevious } from "hooks/common";
+import { useTreeHierarchyExpandable, useTreeHierarchySelectable, ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
+
+import appSlice from "app/slices/appSlice";
 import {
   selectSelectedResourceManager,
   selectResourceManagerHierarchy,
   selectResourceManagerConnectionsAndVersions,
 } from "app/selectors/resourceManagerSelector";
-import {useTreeHierarchyExpandable, useTreeHierarchySelectable} from "components/TreeHierarchy";
-import { usePrevious } from "hooks/common";
-import appSlice from "../../app/slices/appSlice";
 
 import { createLoadingSelector } from "app/selectors/loadingSelector";
-
-import { ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
 
 const {
   getResourceManagerHierarchyRequest,
@@ -26,7 +26,7 @@ const {
 
 const createResourceManagerElementTypes = [
   createResourceManagerFieldRequest.type,
-  createResourceManagerGroupRequest.type
+  createResourceManagerGroupRequest.type,
 ];
 
 const ResourceManager = () => {
@@ -36,7 +36,9 @@ const ResourceManager = () => {
   const hierarchy = useSelector(selectResourceManagerHierarchy);
   const resourceConnectionsAndVersions = useSelector(selectResourceManagerConnectionsAndVersions);
   const isHierarchyLoading = useSelector(createLoadingSelector([getResourceManagerHierarchyRequest.type]));
-  const isResourceManagerElementCreationLoading = useSelector(createLoadingSelector(createResourceManagerElementTypes, true));
+  const isResourceManagerElementCreationLoading = useSelector(
+    createLoadingSelector(createResourceManagerElementTypes, true)
+  );
 
   const hierarchyPrevious = usePrevious(hierarchy);
 
@@ -51,7 +53,7 @@ const ResourceManager = () => {
         selectableNodes.clear();
         selectableNodes.toggle(node.nodeId);
 
-        dispatch(getResourcePreviousVersionsRequest(node.id))
+        dispatch(getResourcePreviousVersionsRequest(node.id));
       }
     } else {
       if (expandable.expandedIds.includes(node.nodeId)) {
@@ -65,12 +67,25 @@ const ResourceManager = () => {
   const onElementCreationSubmit = ({ type, name, parentId }) => {
     switch (type) {
       case ADD_FIELD:
-        dispatch(createResourceManagerFieldRequest({name, resource_manager_directory_id: parentId, provided_by: selectedResourceManager.id}));
+        dispatch(
+          createResourceManagerFieldRequest({
+            name,
+            resource_manager_directory_id: parentId,
+            provided_by: selectedResourceManager.id,
+          })
+        );
         break;
       case ADD_GROUP:
-        dispatch(createResourceManagerGroupRequest({name, parent_id: parentId, resource_manager_id: selectedResourceManager.id}))
+        dispatch(
+          createResourceManagerGroupRequest({
+            name,
+            parent_id: parentId,
+            resource_manager_id: selectedResourceManager.id,
+          })
+        );
         break;
-      default: throw new Error(`Unhandled type: [${type}] of hierarchy element creation.`);
+      default:
+        throw new Error(`Unhandled type: [${type}] of hierarchy element creation.`);
     }
   };
 
@@ -80,18 +95,20 @@ const ResourceManager = () => {
     dataToSubmit.append("file", resource);
     dataToSubmit.append("field_id", selectableNodes.selected.field.id);
 
-    dispatch(uploadResourceRequest(dataToSubmit))
+    dispatch(uploadResourceRequest(dataToSubmit));
   };
 
   useEffect(() => {
     selectableNodes.clear();
-    dispatch(getResourceManagerHierarchyRequest(selectedResourceManager.id))
+    dispatch(getResourceManagerHierarchyRequest(selectedResourceManager.id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedResourceManager]);
 
   useEffect(() => {
     if (hierarchyPrevious?.length === 0) {
-      expandable.expandOnlyRoot()
+      expandable.expandOnlyRoot();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hierarchy]);
 
   return (
@@ -113,7 +130,7 @@ const ResourceManager = () => {
         />
       )}
     </div>
-  )
+  );
 };
 
 export default ResourceManager;

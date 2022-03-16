@@ -3,21 +3,21 @@ import "./styles.scss";
 import React from "react";
 import { Spinner } from "reactstrap";
 
-
 import NmpButton from "components/nmp/NmpButton";
 import { TreeHierarchy } from "components/TreeHierarchy";
 import SearchAndFilter from "components/SearchAndFilter";
 import ContextTemplate from "components/ContextTemplate";
 
-const RMContextComponent = ({
-  hierarchy,
-  onSelect,
-  selectedNodes,
-  isLoading,
-  expandable,
-  isElementCreationLoading,
-  onElementCreationSubmit,
-}) => {
+const RMContextComponent = (props) => {
+  const {
+    hierarchy,
+    onSelect,
+    selectedNodes,
+    isLoading,
+    expandable,
+    isElementCreationLoading,
+    onElementCreationSubmit,
+  } = props;
 
   if (isLoading) {
     return (
@@ -26,7 +26,7 @@ const RMContextComponent = ({
           <Spinner color="primary" size="lg" />
         </div>
       </ContextTemplate>
-    )
+    );
   }
 
   return (
@@ -72,10 +72,8 @@ const RMContextComponent = ({
         elementCreationLoading={isElementCreationLoading}
         onElementCreationSubmit={onElementCreationSubmit}
       />
-
     </ContextTemplate>
   );
-
 };
 
 export default RMContextComponent;
