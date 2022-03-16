@@ -1,43 +1,34 @@
 import { requestLayout } from "api";
 
-import {
-  getResourceManagersListUrl,
-  getResourceManagerHierarchy,
-  createFieldInResourceManagerHierarchy,
-  createFolderInResourceManagerHierarchy,
-  getResourcePreviousVersions,
-  uploadResourceUrl,
-  removeResourceTemplateUrl,
-} from './contants'
+import * as Urls from './contants'
 
 const resourceManagerApi = {
   async getResourceManagersList() {
-
-    return await requestLayout(getResourceManagersListUrl, "GET");
+    return await requestLayout(Urls.getResourceManagersListUrl, "GET");
   },
 
   async getResourceManagerHierarchy({ payload }) {
-    return await requestLayout(getResourceManagerHierarchy(payload), "GET");
+    return await requestLayout(Urls.getResourceManagerHierarchy(payload), "GET");
   },
 
   async createResourceManagerField({ payload }) {
-    return await requestLayout(createFieldInResourceManagerHierarchy, "POST", payload)
+    return await requestLayout(Urls.createFieldInResourceManagerHierarchy, "POST", payload)
   },
 
   async createResourceManagerGroup({ payload }) {
-    return await requestLayout(createFolderInResourceManagerHierarchy, "POST", payload)
+    return await requestLayout(Urls.createFolderInResourceManagerHierarchy, "POST", payload)
   },
 
   async getResourcePreviousVersions({ payload }) {
-    return await requestLayout(getResourcePreviousVersions(payload), "GET")
+    return await requestLayout(Urls.getResourcePreviousVersions(payload), "GET")
   },
 
   async uploadResource({ payload }) {
-    return await requestLayout(uploadResourceUrl, "POST", payload)
+    return await requestLayout(Urls.uploadResourceUrl, "POST", payload)
   },
 
   async removeResource(fileId) {
-    return await requestLayout(removeResourceTemplateUrl(fileId), "DELETE")
+    return await requestLayout(Urls.removeResourceTemplateUrl(fileId), "DELETE")
   },
 };
 

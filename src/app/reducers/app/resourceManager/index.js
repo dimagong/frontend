@@ -1,13 +1,6 @@
 import { normalizeHierarchy } from "api/masterSchema/normalizers";
 
 const resourceManagerReducer = {
-  getResourceManagersListSuccess: (state, { payload }) => {
-    state.resourceManager.list = payload;
-
-    state.isLoading = false;
-    state.error = null;
-  },
-
   getResourceManagerHierarchySuccess: (state, { payload }) => {
     state.resourceManager.hierarchy = payload ? normalizeHierarchy(payload) : null;
 

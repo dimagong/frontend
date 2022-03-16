@@ -17,7 +17,7 @@ import MasterSchema from "features/home/ContextSearch/MasterSchema";
 import Organizations from "./Organizations";
 import UserManagement from "./UserManagement";
 import Surveys from "./Surveys";
-import ResourceManagerContextSearch from "./ResourceManagerContextSearch";
+import { RMContextSearch } from "./RMContextSearch";
 
 import "./styles.scss";
 
@@ -197,7 +197,7 @@ const ContextSearch = ({ isShown, onContextSearchHide }) => {
                                   <Applications />
                                 </TabPane>
                                 <TabPane tabId={NAV_OPTIONS[2].id}>
-                                  {NAV_OPTIONS[2].id === selectedNavItem.id && <MasterSchema />}
+                                  {NAV_OPTIONS[2].id === selectedNavItem.id ? <MasterSchema /> : null}
                                 </TabPane>
                                 <TabPane tabId={NAV_OPTIONS[3].id}>
                                   <Organizations />
@@ -209,7 +209,7 @@ const ContextSearch = ({ isShown, onContextSearchHide }) => {
                                   <MemberFirmsList />
                                 </TabPane>
                                 <TabPane tabId={NAV_OPTIONS[6].id}>
-                                <ResourceManagerContextSearch />
+                                  {NAV_OPTIONS[6].id === selectedNavItem.id ? <RMContextSearch /> : null}
                                 </TabPane>
                               </TabContent>
                             )}

@@ -5,10 +5,6 @@ import resourceManagerApi from "api/resourceManager";
 import appSlice from 'app/slices/appSlice';
 
 const {
-  getResourceManagersListRequest,
-  getResourceManagersListSuccess,
-  getResourceManagersListError,
-
   getResourceManagerHierarchyRequest,
   getResourceManagerHierarchySuccess,
   getResourceManagerHierarchyError,
@@ -34,16 +30,6 @@ const {
   removeResourceTemplateError,
 
 }  = appSlice.actions;
-
-function* getResourceManagersList() {
-  const response = yield call(resourceManagerApi.getResourceManagersList);
-
-  if (response?.message) {
-    yield put(getResourceManagersListError(response.message))
-  } else {
-    yield put(getResourceManagersListSuccess(response))
-  }
-}
 
 function* getResourceManagerHierarchy(resourceManagerId) {
   const response = yield call(resourceManagerApi.getResourceManagerHierarchy, resourceManagerId);
@@ -111,7 +97,6 @@ function* removeResourceTemplate({ payload }) {
 
 export default function* () {
   yield all([
-    takeLatest(getResourceManagersListRequest.type, getResourceManagersList),
     takeLatest(getResourceManagerHierarchyRequest.type, getResourceManagerHierarchy),
     takeLatest(createResourceManagerFieldRequest.type, createResourceManagerField),
     takeLatest(createResourceManagerGroupRequest.type, createResourceManagerGroup),
