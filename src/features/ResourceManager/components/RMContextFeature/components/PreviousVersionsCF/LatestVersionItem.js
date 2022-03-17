@@ -1,13 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useMutation, useQueryClient } from "react-query";
 
 import { useBoolean } from "hooks/use-boolean";
-
 import NmpButton from "components/nmp/NmpButton";
-
-import appSlice from "app/slices/appSlice";
 
 import { resourceManagerService } from "api/resourceManager";
 
@@ -17,41 +14,42 @@ import DeleteIcon from "assets/img/icons/x.png";
 import VersionItem from "./VersionItem";
 import VersionDownloadButton from "./VersionDownloadButton";
 
-const { getResourcePreviousVersionsRequest, removeResourceTemplateRequest } = appSlice.actions;
-
-const LatestVersionItem = ({ version, expandable, selectableNodes, ...attrs }) => {
-  const dispatch = useDispatch();
+const LatestVersionItem = ({ field, version, expandable, ...attrs }) => {
+  const queryClient = useQueryClient();
 
   const [editing, editingStart, editingStop] = useBoolean(false);
-  const [finishing, finishingStart, finishingStop] = useBoolean(false);
-  const [tryingToEdit, tryingToEditStart, tryingToEditStop] = useBoolean(false);
 
-  const onFinish = () => {
-    finishingStart();
-    resourceManagerService.finishEditVersion({ versionId: version.id })
-      .then((response) => {
-        dispatch(getResourcePreviousVersionsRequest(selectableNodes.selected.node.id));
-        toast.success("File was successfully edited");
-        expandable.clear();
-      })
-      .finally(() => {
-        editingStop();
-        finishingStop();
-      });
+  const editResource = useMutation((versionId) => resourceManagerService.editVersion({ versionId }), {
+    onSuccess: () => {
+      editingStart();
+      queryClient.invalidateQueries(["resource-manager-field-versions", field.id]);
+    },
+  });
+
+  const finishResource = useMutation((versionId) => resourceManagerService.finishEditVersion({ versionId }), {
+    onSuccess: () => {
+      editingStop();
+      toast.success("File was successfully edited");
+      queryClient.invalidateQueries(["resource-manager-field-versions", field.id]);
+      expandable.clear();
+    },
+  });
+
+  const removeResource = useMutation((versionId) => resourceManagerService.removeResource({ versionId }), {
+    onSuccess: () => {
+      toast.success("File was successfully removed");
+      queryClient.invalidateQueries(["resource-manager-field-versions", field.id]);
+      expandable.clear();
+    },
+  });
+
+  const onEdit = () => {
+    editResource.mutate(version.id);
   };
 
-  const tryToEdit = () => {
-    tryingToEditStart();
-    resourceManagerService.editVersion({ versionId: version.id })
-      .then(editingStart)
-      .finally(tryingToEditStop);
-  };
+  const onRemove = () => removeResource.mutate(version.id);
 
-  const onRemove = () => {
-    dispatch(
-      removeResourceTemplateRequest({ fileId: version.id, resourceManagerFieldId: selectableNodes.selected.node.id })
-    );
-  };
+  const onFinish = () => finishResource.mutate(version.id);
 
   return (
     <VersionItem
@@ -59,7 +57,7 @@ const LatestVersionItem = ({ version, expandable, selectableNodes, ...attrs }) =
       expandable={expandable}
       controls={
         editing ? (
-          <NmpButton onClick={onFinish} size="sm" color="primary" loading={finishing}>
+          <NmpButton onClick={onFinish} size="sm" color="primary" loading={finishResource.isLoading}>
             Finish editing
           </NmpButton>
         ) : (
@@ -71,8 +69,8 @@ const LatestVersionItem = ({ version, expandable, selectableNodes, ...attrs }) =
               textColor="#95989a"
               backgroundColor="transparent"
               icon={<img src={EditIcon} alt="Edit" />}
-              onClick={tryToEdit}
-              loading={tryingToEdit}
+              onClick={onEdit}
+              loading={editResource.isLoading}
             />
             <NmpButton
               className="mr-1"
@@ -81,6 +79,7 @@ const LatestVersionItem = ({ version, expandable, selectableNodes, ...attrs }) =
               backgroundColor="transparent"
               icon={<img src={DeleteIcon} alt="Delete" />}
               onClick={onRemove}
+              loading={removeResource.isLoading}
             />
           </>
         )
@@ -91,9 +90,9 @@ const LatestVersionItem = ({ version, expandable, selectableNodes, ...attrs }) =
 };
 
 LatestVersionItem.propTypes = {
+  field: PropTypes.object.isRequired,
   version: PropTypes.object.isRequired,
   expandable: PropTypes.object.isRequired,
-  selectableNodes: PropTypes.object.isRequired,
 };
 
 export default LatestVersionItem;

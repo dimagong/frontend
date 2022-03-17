@@ -13,7 +13,7 @@ const { setContext, setSelectedResourceManager } = appSlice.actions;
 
 const RMContextSearch = () => {
   const dispatch = useDispatch();
-  const { data: rManagers, isLoading } = useQuery("resource-managers", resourceManagerService.getResourceManagers);
+  const { data: rManagers, isLoading } = useQuery("resource-managers", resourceManagerService.getAll);
 
   const onRManagerSelect = (rManager) => {
     dispatch(setSelectedResourceManager(rManager));

@@ -9,4 +9,3 @@ export const removeResourceTemplateUrl = (resourceFileId) => `api/resource-manag
 export const downloadResourceFile = (resourceFileId) => `api/resource-manager-field-file/${resourceFileId}/download`;
 export const postEditField = (resourceFileId) => `api/resource-manager-field-file/${resourceFileId}/edit`;
 export const endEditField = (resourceFileId) => `api/resource-manager-field-file/${resourceFileId}`;
-

@@ -1,32 +1,25 @@
 import "./styles.scss";
 
+import PropTypes from "prop-types";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
-import React, { useState, useEffect } from "react";
-
-import { usePrevious } from "hooks/common";
+import React, { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 
 import AddButton from "components/AddButton";
 import CustomModal from "components/CustomModal";
 import FileInput from "components/formElements/FileInput";
 
-import appSlice from "app/slices/appSlice";
-import { selectError } from "app/selectors";
-import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { resourceManagerService } from "api/resourceManager";
 
 import PreviousVersions from "./PreviousVersions";
 
-const { uploadResourceRequest } = appSlice.actions;
-
 const HEADERS = ["Action", "Version", "Users", "Date", "Author"];
 
-const PreviousVersionsCF = ({ versions, selectableNodes, onResourceUpload, onTemplateDownload }) => {
-  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+const PreviousVersionsCF = ({ versions, field }) => {
+  const queryClient = useQueryClient();
 
-  const error = useSelector(selectError);
-  const isUploadInProgress = useSelector(createLoadingSelector([uploadResourceRequest.type], true));
-  const isUploadInProgressPrevValue = usePrevious(isUploadInProgress);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
 
   const { latestVersion, previousVersions } = React.useMemo(() => {
     const previousVersions = [...versions];
@@ -34,20 +27,23 @@ const PreviousVersionsCF = ({ versions, selectableNodes, onResourceUpload, onTem
     return { latestVersion, previousVersions };
   }, [versions]);
 
-  const handleResourceUpload = () => {
+  const uploadResource = useMutation((newResource) => resourceManagerService.uploadResource(newResource), {
+    onSettled: () => setIsAddModalVisible(false),
+    onSuccess: () => queryClient.invalidateQueries(["resource-manager-field-versions", field.id]),
+  });
+
+  const onResourceUploadSubmit = (resource) => {
     if (selectedFile) {
-      onResourceUpload(selectedFile);
+      const formData = new FormData();
+
+      formData.append("file", selectedFile);
+      formData.append("field_id", field.id);
+
+      uploadResource.mutate(formData);
     } else {
       toast.warn("Please select file to upload");
     }
   };
-
-  useEffect(() => {
-    if (!error && isUploadInProgressPrevValue === true && !isUploadInProgress) {
-      setIsAddModalVisible(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUploadInProgress]);
 
   return (
     <div>
@@ -61,11 +57,7 @@ const PreviousVersionsCF = ({ versions, selectableNodes, onResourceUpload, onTem
           ))}
         </div>
 
-        <PreviousVersions
-          latestVersion={latestVersion}
-          previousVersions={previousVersions}
-          selectableNodes={selectableNodes}
-        />
+        <PreviousVersions field={field} latestVersion={latestVersion} previousVersions={previousVersions} />
 
         <div className="d-flex justify-content-end py-2">
           <AddButton
@@ -77,12 +69,12 @@ const PreviousVersionsCF = ({ versions, selectableNodes, onResourceUpload, onTem
       </div>
 
       <CustomModal
-        isSubmitProceed={isUploadInProgress}
+        isSubmitProceed={uploadResource.isLoading}
         isOpen={isAddModalVisible}
         title="Upload file"
         submitBtnText="Submit"
         onClose={() => setIsAddModalVisible(false)}
-        onSubmit={handleResourceUpload}
+        onSubmit={onResourceUploadSubmit}
       >
         <div className={"pb-2"}>
           <FileInput
@@ -95,6 +87,11 @@ const PreviousVersionsCF = ({ versions, selectableNodes, onResourceUpload, onTem
       </CustomModal>
     </div>
   );
+};
+
+PreviousVersionsCF.propTypes = {
+  field: PropTypes.object.isRequired,
+  versions: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default PreviousVersionsCF;
