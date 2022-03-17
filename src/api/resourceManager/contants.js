@@ -7,3 +7,6 @@ export const getResourceConnections = "api/resource-manager-field-value";
 export const uploadResourceUrl = "api/resource-manager-field-file";
 export const removeResourceTemplateUrl = (resourceFileId) => `api/resource-manager-field-file/${resourceFileId}`;
 export const downloadResourceFile = (resourceFileId) => `api/resource-manager-field-file/${resourceFileId}/download`;
+export const postEditField = (resourceFileId) => `api/resource-manager-field-file/${resourceFileId}/edit`;
+export const endEditField = (resourceFileId) => `api/resource-manager-field-file/${resourceFileId}`;
+
