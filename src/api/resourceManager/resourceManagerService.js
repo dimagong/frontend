@@ -4,38 +4,50 @@ import api from "api";
 import { downloadBlob } from "services/files.service";
 
 import * as Urls from "./contants";
+import { normalizeHierarchy } from "../masterSchema/normalizers";
 
 const flatResponseData = _.get("data.data");
 const flatResponseError = _.pipe(_.get("response.data.error"), (e) => Promise.reject(e));
 
 export const resourceManagerService = {
-  getResourceManagers() {
+  getAll() {
     return api.get(Urls.getResourceManagersListUrl).then(flatResponseData, flatResponseError);
   },
 
-  // async getResourceManagerHierarchy({ payload }) {
-  //   return await requestLayout(Urls.getResourceManagerHierarchy(payload), "GET");
-  // },
-  //
-  // async createResourceManagerField({ payload }) {
-  //   return await requestLayout(Urls.createFieldInResourceManagerHierarchy, "POST", payload)
-  // },
-  //
-  // async createResourceManagerGroup({ payload }) {
-  //   return await requestLayout(Urls.createFolderInResourceManagerHierarchy, "POST", payload)
-  // },
-  //
-  // async getResourcePreviousVersions({ payload }) {
-  //   return await requestLayout(Urls.getResourcePreviousVersions(payload), "GET")
-  // },
-  //
-  // async uploadResource({ payload }) {
-  //   return await requestLayout(Urls.uploadResourceUrl, "POST", payload)
-  // },
-  //
-  // async removeResource(fileId) {
-  //   return await requestLayout(Urls.removeResourceTemplateUrl(fileId), "DELETE")
-  // },
+  getHierarchy({ resourceManagerId }) {
+    return api
+      .get(Urls.getResourceManagerHierarchy(resourceManagerId))
+      .then(flatResponseData, flatResponseError)
+      .then((hierarchy) => (hierarchy ? normalizeHierarchy(hierarchy) : hierarchy));
+  },
+
+  createField({ name, parentId, resourceManagerId }) {
+    return api.post(Urls.createFieldInResourceManagerHierarchy, {
+      name,
+      resource_manager_directory_id: parentId,
+      provided_by: resourceManagerId,
+    });
+  },
+
+  createGroup({ name, parentId, resourceManagerId }) {
+    return api.post(Urls.createFolderInResourceManagerHierarchy, {
+      name,
+      parent_id: parentId,
+      resource_manager_id: resourceManagerId,
+    });
+  },
+
+  getVersions({ fieldId }) {
+    return api.get(Urls.getResourcePreviousVersions(fieldId)).then(flatResponseData, flatResponseError);
+  },
+
+  uploadResource(formData) {
+    return api.post(Urls.uploadResourceUrl, formData);
+  },
+
+  removeResource({ versionId }) {
+    return api.delete(Urls.removeResourceTemplateUrl(versionId));
+  },
 
   editVersion({ versionId }) {
     return api
@@ -59,8 +71,6 @@ export const resourceManagerService = {
       .get(`api/resource-manager-field-file/${versionId}/download`, {
         responseType: "blob",
       })
-      .then((response) => {
-        downloadBlob(response.data, name);
-      });
+      .then((response) => downloadBlob(response.data, name));
   },
 };

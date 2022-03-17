@@ -7,10 +7,10 @@ import { useToggleable } from "hooks/use-toggleable";
 import LatestVersionItem from "./LatestVersionItem";
 import PreviousVersionsList from "./PreviousVersionsList";
 
-const PreviousVersions = ({ latestVersion, previousVersions, selectableNodes }) => {
+const PreviousVersions = ({ field, latestVersion, previousVersions }) => {
   const [, expandable] = useToggleable([], { useRefactored: true });
 
-  if (latestVersion == null || previousVersions.length === 0) {
+  if (latestVersion == null) {
     return (
       <strong className="d-flex justify-content-center pt-5 text-black-50 font-large-1 pb-5">No versions found</strong>
     );
@@ -19,16 +19,16 @@ const PreviousVersions = ({ latestVersion, previousVersions, selectableNodes }) 
   return (
     <Scrollbars autoHeight autoHeightMax={350}>
       <PreviousVersionsList versions={previousVersions} expandable={expandable}>
-        <LatestVersionItem version={latestVersion} expandable={expandable} selectableNodes={selectableNodes} />
+        <LatestVersionItem version={latestVersion} expandable={expandable} field={field} />
       </PreviousVersionsList>
     </Scrollbars>
   );
 };
 
 PreviousVersions.propTypes = {
+  field: PropTypes.object.isRequired,
   latestVersion: PropTypes.object,
   previousVersions: PropTypes.arrayOf(PropTypes.object),
-  selectableNodes: PropTypes.object.isRequired,
 };
 
 export default PreviousVersions;

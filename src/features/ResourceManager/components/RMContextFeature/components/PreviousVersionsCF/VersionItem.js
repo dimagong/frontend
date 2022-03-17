@@ -12,7 +12,7 @@ const VersionItem = ({ version, expandable, controls, ...attrs }) => {
     <li className="expandable_item_container mb-1" onClick={expand} {...attrs}>
       <div className="list_item selected mb-0" key={version.id}>
         <div className="list_item_name">{version.status}</div>
-        <div className="list_item_description">{"v" + moment(version.created_at).format("YYYY.DD.MM")}</div>
+        <div className="list_item_description">{"v" + moment(version.created_at).format("YYYY.DD.MM HH:mm")}</div>
         <div className="list_item_description">0</div>
         <div className="list_item_description">{moment(version.updated_at).format("DD/MM/YYYY")}</div>
         <div className="list_item_description">{version.provided.first_name}</div>
