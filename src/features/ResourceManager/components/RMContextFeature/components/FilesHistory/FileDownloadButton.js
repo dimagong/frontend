@@ -1,17 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useMutation } from "react-query";
 
+import { IdType } from "utility/prop-types";
 import NmpButton from "components/nmp/NmpButton";
-
-import { resourceManagerService } from "api/resourceManager";
 
 import DownloadIcon from "assets/img/icons/cloud-download.png";
 
-const VersionDownloadButton = ({ versionId, name, ...attrs }) => {
-  const downloadResource = useMutation((payload) => resourceManagerService.downloadVersion(payload));
+import { useDownloadRMFile } from "../../../../resourceManagerQueries";
 
-  const onDownload = () => downloadResource.mutate({ versionId, name });
+const FileDownloadButton = ({ name, fileId }) => {
+  const downloadResource = useDownloadRMFile({ fileId, name });
+
+  const onDownload = () => downloadResource.mutate();
 
   return (
     <NmpButton
@@ -22,14 +22,13 @@ const VersionDownloadButton = ({ versionId, name, ...attrs }) => {
       icon={<img src={DownloadIcon} alt="Download" />}
       onClick={onDownload}
       loading={downloadResource.isLoading}
-      {...attrs}
     />
   );
 };
 
-VersionDownloadButton.propTypes = {
-  versionId: PropTypes.number.isRequired,
+FileDownloadButton.propTypes = {
   name: PropTypes.string.isRequired,
+  fileId: IdType.isRequired,
 };
 
-export default VersionDownloadButton;
+export default FileDownloadButton;

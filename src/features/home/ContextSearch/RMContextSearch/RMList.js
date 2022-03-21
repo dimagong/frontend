@@ -5,16 +5,16 @@ import PropTypes from "prop-types";
 
 import OrganizationCard from "components/OrganizationCard";
 
-const RMList = ({ rManagers, onSelect: propOnSelect }) => {
-  const onSelect = (rManager) => () => propOnSelect(rManager);
+const RMList = ({ resourceManagers, onSelect: propOnSelect }) => {
+  const onSelect = (resourceManager) => () => propOnSelect(resourceManager);
 
   return (
     <>
-      {rManagers.map((rManager) => (
+      {resourceManagers.map((resourceManager) => (
         <OrganizationCard
-          key={rManager.organization_id + rManager.organization_type}
-          org={rManager.organization}
-          onSelect={onSelect(rManager)}
+          key={resourceManager.id}
+          org={resourceManager.organization}
+          onSelect={onSelect(resourceManager)}
         />
       ))}
     </>
@@ -22,7 +22,7 @@ const RMList = ({ rManagers, onSelect: propOnSelect }) => {
 };
 
 RMList.propTypes = {
-  rManagers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  resourceManagers: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSelect: PropTypes.func.isRequired,
 };
 
