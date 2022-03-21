@@ -5,7 +5,6 @@ import { IntlProviderWrapper } from "./utility/context/Internationalization";
 import { Layout } from "./utility/context/Layout";
 import store from "./app/store";
 import Spinner from "./components/@vuexy/spinner/Fallback-spinner";
-import "bootstrap/dist/css/bootstrap.css";
 import "assets/styles/index.scss";
 import "react-toastify/dist/ReactToastify.css"
 import "assets/scss/plugins/extensions/toastr.scss"
