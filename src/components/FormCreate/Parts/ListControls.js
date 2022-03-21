@@ -167,6 +167,15 @@ export function listControls(properties) {
       this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: fieldId}})
     };
 
+    const renderNumberColumn = (column, text) => (
+      <Col md="6">
+        <FormGroup>
+          {renderLabel(column, text)}
+          {renderInputNumberColumn(column, text)}
+        </FormGroup>
+      </Col>
+    );
+
     const renderSpecificType = () => {
 
       let labelForControls = <div>
@@ -189,20 +198,9 @@ export function listControls(properties) {
               <Col md="12">
                 {labelForControls}
               </Col>
+              {renderNumberColumn("minLength", "Min Length")}
+              {renderNumberColumn("maxLength", "Max Length")}
 
-              <Col md="6">
-                <FormGroup>
-                  {renderLabel('minLength', 'Min length')}
-                  {renderInputNumberColumn('minLength', 'Min length')}
-                </FormGroup>
-              </Col>
-
-              <Col md="6">
-                <FormGroup>
-                  {renderLabel('maxLength', 'Max length')}
-                  {renderInputNumberColumn('maxLength', 'Max length')}
-                </FormGroup>
-              </Col>
               <Col md="12">
                 <FormGroup>
                   {renderRequiredColumn(objKey, 'Required?')}
@@ -223,19 +221,9 @@ export function listControls(properties) {
                 {labelForControls}
               </Col>
 
-              <Col md="6">
-                <FormGroup>
-                  {renderLabel('minimum', 'Min length')}
-                  {renderInputNumberColumn('minimum', 'Min length')}
-                </FormGroup>
-              </Col>
+              {renderNumberColumn("minimum", "Min Length")}
+              {renderNumberColumn("maximum", "Max Length")}
 
-              <Col md="6">
-                <FormGroup>
-                  {renderLabel('maximum', 'Max length')}
-                  {renderInputNumberColumn('maximum', 'Max length')}
-                </FormGroup>
-              </Col>
               <Col md="12">
                 <FormGroup>
                   {renderRequiredColumn(objKey, 'Required?')}
@@ -316,19 +304,9 @@ export function listControls(properties) {
                 {labelForControls}
               </Col>
 
-              <Col md="6">
-                <FormGroup>
-                  {renderLabel('minLength', 'Min length')}
-                  {renderInputNumberColumn('minLength', 'Min length')}
-                </FormGroup>
-              </Col>
+              {renderNumberColumn("minLength", "Min Length")}
+              {renderNumberColumn("maxLength", "Max Length")}
 
-              <Col md="6">
-                <FormGroup>
-                  {renderLabel('maxLength', 'Max length')}
-                  {renderInputNumberColumn('maxLength', 'Max length')}
-                </FormGroup>
-              </Col>
               <Col md="12">
                 <FormGroup>
                   {renderRequiredColumn(objKey, 'Required?')}
@@ -349,19 +327,9 @@ export function listControls(properties) {
                 {labelForControls}
               </Col>
 
-              <Col md="6">
-                <FormGroup>
-                  {renderLabel('minLength', 'Min length')}
-                  {renderInputNumberColumn('minLength', 'Min length')}
-                </FormGroup>
-              </Col>
+              {renderNumberColumn("minLength", "Min Length")}
+              {renderNumberColumn("maxLength", "Max Length")}
 
-              <Col md="6">
-                <FormGroup>
-                  {renderLabel('maxLength', 'Max length')}
-                  {renderInputNumberColumn('maxLength', 'Max length')}
-                </FormGroup>
-              </Col>
               <Col md="12">
                 <FormGroup>
                   {renderRequiredColumn(objKey, 'Required?')}
