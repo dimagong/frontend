@@ -176,6 +176,21 @@ export function listControls(properties) {
       </Col>
     );
 
+    const renderRequiredAndLabelShowCheckboxes = () => (
+      <>
+        <Col md="12">
+          <FormGroup>
+            {renderRequiredColumn(objKey)}
+          </FormGroup>
+        </Col>
+        <Col md="12">
+          <FormGroup>
+            {renderLabelShowing(objKey)}
+          </FormGroup>
+        </Col>
+      </>
+    );
+
     const renderSpecificType = () => {
 
       let labelForControls = <div>
@@ -201,16 +216,7 @@ export function listControls(properties) {
               {renderNumberColumn("minLength", "Min Length")}
               {renderNumberColumn("maxLength", "Max Length")}
 
-              <Col md="12">
-                <FormGroup>
-                  {renderRequiredColumn(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
+              {renderRequiredAndLabelShowCheckboxes()}
             </Row>
           );
         }
@@ -224,16 +230,7 @@ export function listControls(properties) {
               {renderNumberColumn("minimum", "Min Length")}
               {renderNumberColumn("maximum", "Max Length")}
 
-              <Col md="12">
-                <FormGroup>
-                  {renderRequiredColumn(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
+              {renderRequiredAndLabelShowCheckboxes()}
             </Row>
           );
         }
@@ -244,16 +241,7 @@ export function listControls(properties) {
                 {labelForControls}
               </Col>
 
-              <Col md="12">
-                <FormGroup>
-                  {renderRequiredColumn(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
+              {renderRequiredAndLabelShowCheckboxes()}
             </Row>
           );
         }
@@ -264,16 +252,7 @@ export function listControls(properties) {
                 {labelForControls}
               </Col>
 
-              <Col md="12">
-                <FormGroup>
-                  {renderRequiredColumn(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
+              {renderRequiredAndLabelShowCheckboxes()}
             </Row>
           );
         }
@@ -284,16 +263,7 @@ export function listControls(properties) {
                 {labelForControls}
               </Col>
 
-              <Col md="12">
-                <FormGroup>
-                  {renderRequiredColumn(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
+              {renderRequiredAndLabelShowCheckboxes()}
             </Row>
           );
         }
@@ -307,16 +277,7 @@ export function listControls(properties) {
               {renderNumberColumn("minLength", "Min Length")}
               {renderNumberColumn("maxLength", "Max Length")}
 
-              <Col md="12">
-                <FormGroup>
-                  {renderRequiredColumn(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
+              {renderRequiredAndLabelShowCheckboxes()}
             </Row>
           );
         }
@@ -330,16 +291,7 @@ export function listControls(properties) {
               {renderNumberColumn("minLength", "Min Length")}
               {renderNumberColumn("maxLength", "Max Length")}
 
-              <Col md="12">
-                <FormGroup>
-                  {renderRequiredColumn(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
-              <Col md="12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </Col>
+              {renderRequiredAndLabelShowCheckboxes()}
             </Row>
           );
         }
@@ -353,12 +305,8 @@ export function listControls(properties) {
 
             {renderLabel('format', 'Format')}
             {renderSelectColumn('format', ['date', 'date-time'])}
-            <div className="mt-1">
-              {renderRequiredColumn(objKey, 'Required?')}
-            </div>
-            <div>
-              {renderLabelShowing(objKey)}
-            </div>
+
+            {renderRequiredAndLabelShowCheckboxes()}
           </div>)
         }
         case Constants.FIELD_TYPE_SELECT: {
@@ -396,14 +344,8 @@ export function listControls(properties) {
                       className="btn btn-primary">Add
               </button>
             </div>
-            <div>
-              {renderRequiredColumn(objKey, 'Required?')}
-            </div>
-            <div>
-              <FormGroup>
-                {renderLabelShowing(objKey, 'Required?')}
-              </FormGroup>
-            </div>
+
+            {renderRequiredAndLabelShowCheckboxes()}
           </div>)
         }
         case Constants.FIELD_TYPE_MULTI_SELECT: {
@@ -451,14 +393,8 @@ export function listControls(properties) {
                   </button>
                 </div>
               </div>
-              <div className="col-md-12">
-                {renderRequiredColumn(objKey, 'Required?')}
-              </div>
-              <div className="col-md-12">
-                <FormGroup>
-                  {renderLabelShowing(objKey, 'Required?')}
-                </FormGroup>
-              </div>
+
+              {renderRequiredAndLabelShowCheckboxes()}
             </div>
           </div>)
         }
