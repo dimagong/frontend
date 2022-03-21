@@ -1,11 +1,10 @@
 import React from "react";
 import { Spinner } from "reactstrap";
-import { useQuery } from "react-query";
 import { useDispatch } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
 
-import { resourceManagerService } from "api/resourceManager";
+import { useResourceManagers } from "features/ResourceManager/resourceManagerQueries";
 
 import RMList from "./RMList";
 
@@ -13,10 +12,10 @@ const { setContext, setSelectedResourceManager } = appSlice.actions;
 
 const RMContextSearch = () => {
   const dispatch = useDispatch();
-  const { data: rManagers, isLoading } = useQuery("resource-managers", resourceManagerService.getAll);
+  const { data: resourceManagers, isLoading } = useResourceManagers();
 
-  const onRManagerSelect = (rManager) => {
-    dispatch(setSelectedResourceManager(rManager));
+  const onSelect = (resourceManager) => {
+    dispatch(setSelectedResourceManager(resourceManager));
     dispatch(setContext("resourceManager"));
   };
 
@@ -30,7 +29,7 @@ const RMContextSearch = () => {
 
   return (
     <div className="home__card-wrapper">
-      <RMList rManagers={rManagers} onSelect={onRManagerSelect} />
+      <RMList resourceManagers={resourceManagers} onSelect={onSelect} />
     </div>
   );
 };

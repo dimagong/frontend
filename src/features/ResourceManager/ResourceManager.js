@@ -4,8 +4,8 @@ import React, { useEffect, useMemo } from "react";
 
 import { selectSelectedResourceManager } from "app/selectors/resourceManagerSelector";
 
-import RMContextComponent from "./components/RMContext";
-import RMContextFeatureComponent from "./components/RMContextFeature";
+import RMContext from "./components/RMContext";
+import RMContextFeature from "./components/RMContextFeature";
 
 import { useMasterSchemaSelectable } from "../MasterSchema/hooks/useMasterSchemaSelectable";
 import { useMasterSchemaSelected } from "../MasterSchema/hooks/useMasterSchemaSelected";
@@ -23,13 +23,8 @@ const ResourceManager = () => {
 
   return (
     <div className="d-flex">
-      <RMContextComponent
-        selectedIds={selectedIds}
-        onSelect={selectable.select}
-        resourceManagerId={resourceManager.id}
-      />
-
-      {selected.field ? <RMContextFeatureComponent field={selected.field} /> : null}
+      <RMContext selectedIds={selectedIds} onSelect={selectable.select} resourceManagerId={resourceManager.id} />
+      {selected.field ? <RMContextFeature field={selected.field} /> : null}
     </div>
   );
 };
