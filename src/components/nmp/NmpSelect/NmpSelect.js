@@ -158,8 +158,9 @@ const NmpSelect = React.forwardRef((props, ref) => {
     valueSeparator = ",",
 
     clearable = false,
-    searchable = false,
     multiple = false,
+    searchable = false,
+    getOptionValue,
 
     menuIsOpen,
 
@@ -187,7 +188,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
       isSearchable={readonly ? false : searchable}
       menuIsOpen={readonly ? false : menuIsOpen}
       components={defaultComponents}
-      getOptionValue={(option) => option.value.name}
+      getOptionValue={getOptionValue}
       styles={selectStyles}
       ref={forkedRef}
       readonly={readonly}
@@ -216,6 +217,7 @@ NmpSelect.propTypes = {
   placeholder: PropTypes.string,
   valueSeparator: PropTypes.string,
 
+  clearable: PropTypes.bool,
   multiple: PropTypes.bool,
   searchable: PropTypes.bool,
   getOptionValue: PropTypes.func,
