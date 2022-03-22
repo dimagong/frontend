@@ -16,13 +16,18 @@ const baseControlStyles = {
   color: "#707070",
 
   boxShadow: "none",
+  "&:hover": {},
+};
+
+const defaultControlStyles = {
+  ...baseControlStyles,
   "&:hover": {
     borderColor: "rgba(112,112,112,0.6)",
   },
 };
 
 const validControlStyles = {
-  ...baseControlStyles,
+  ...defaultControlStyles,
   borderColor: "var(--success)",
   "&:hover": {
     borderColor: "var(--success)",
@@ -30,7 +35,7 @@ const validControlStyles = {
 };
 
 const invalidControlStyles = {
-  ...baseControlStyles,
+  ...defaultControlStyles,
   borderColor: "var(--danger)",
   "&:hover": {
     borderColor: "var(--danger)",
@@ -53,8 +58,30 @@ const selectStyles = {
     fontSize: "inherit",
     color: "currentColor",
   }),
+  dropdownIndicator: (provided, state) => {
+    if (state.selectProps.readonly) {
+      return {
+        ...provided,
+        ":hover": {},
+        color: "hsl(0,0%,80%)",
+      };
+    }
+    return provided;
+  },
   control: (provided, state) => {
+    provided = {
+      ...provided,
+      backgroundColor: state.selectProps.backgroundColor,
+    };
+
     if (state.selectProps.isDisabled) {
+      return {
+        ...provided,
+        ...defaultControlStyles,
+      };
+    }
+
+    if (state.selectProps.readonly) {
       return {
         ...provided,
         ...baseControlStyles,
@@ -136,6 +163,8 @@ const NmpSelect = React.forwardRef((props, ref) => {
 
     menuIsOpen,
 
+    backgroundColor = "hsl(0,0%,100%)",
+
     children,
     ...attrs
   } = props;
@@ -161,6 +190,8 @@ const NmpSelect = React.forwardRef((props, ref) => {
       getOptionValue={(option) => option.value.name}
       styles={selectStyles}
       ref={forkedRef}
+      readonly={readonly}
+      backgroundColor={backgroundColor}
       {...attrs}
     >
       {children}
@@ -190,6 +221,8 @@ NmpSelect.propTypes = {
   getOptionValue: PropTypes.func,
 
   menuIsOpen: PropTypes.bool,
+
+  backgroundColor: PropTypes.string,
 };
 
 export default NmpSelect;
