@@ -3,12 +3,10 @@ import _ from "lodash/fp";
 
 import { useMasterSchemaSelected } from "features/MasterSchema/hooks/useMasterSchemaSelected";
 
-import UsersMSElementType from "./components/users-ms-element-type-field";
-import UsersMSResourceLink from "./components/user-ms-element-resource-link";
-import UsersMSVersionField from "./components/user-ms-element-version-field";
-
 import { UserMasterSchemaProviderContext } from "./UserMasterSchemaProvider";
 import UserMasterSchemaVersionsHistoryTable from "./UserMasterSchemaVersionsHistoryTable";
+
+import UserMSFieldManager from "./components/UserMSFieldManager";
 
 const UserMasterSchemaContextFeature = () => {
   const { user, selectedNodes } = React.useContext(UserMasterSchemaProviderContext);
@@ -43,13 +41,11 @@ const UserMasterSchemaContextFeature = () => {
           ) : null}
         </div>
 
-        <UsersMSElementType inputValue={"Initial value"} />
-        <UsersMSResourceLink inputValue={"Initial value"} />
-        <UsersMSVersionField inputValue={"Initial value"} />
-
-        {/* should it check is_system prop of the field */}
         {selected.fields.length === 1 ? (
-          <UserMasterSchemaVersionsHistoryTable userId={user.id} fieldId={selected.field.id} />
+          <>
+            <UserMSFieldManager userId={user.id} msFieldId={selected.field.id} />
+            <UserMasterSchemaVersionsHistoryTable userId={user.id} fieldId={selected.field.id} />
+          </>
         ) : null}
       </div>
     </React.Profiler>
