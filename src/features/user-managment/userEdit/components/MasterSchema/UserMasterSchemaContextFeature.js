@@ -1,7 +1,11 @@
-import _ from "lodash/fp";
 import React from "react";
+import _ from "lodash/fp";
 
 import { useMasterSchemaSelected } from "features/MasterSchema/hooks/useMasterSchemaSelected";
+
+import UsersMSElementType from "./components/users-ms-element-type-field";
+import UsersMSResourceLink from "./components/user-ms-element-resource-link";
+import UsersMSVersionField from "./components/user-ms-element-version-field";
 
 import { UserMasterSchemaProviderContext } from "./UserMasterSchemaProvider";
 import UserMasterSchemaVersionsHistoryTable from "./UserMasterSchemaVersionsHistoryTable";
@@ -38,6 +42,10 @@ const UserMasterSchemaContextFeature = () => {
             <div className="context-feature-template_header_title">{contextFeatureTitle}</div>
           ) : null}
         </div>
+
+        <UsersMSElementType inputValue={"Initial value"} />
+        <UsersMSResourceLink inputValue={"Initial value"} />
+        <UsersMSVersionField inputValue={"Initial value"} />
 
         {/* should it check is_system prop of the field */}
         {selected.fields.length === 1 ? (

@@ -33,7 +33,12 @@ const LatestFileItem = ({ fieldId, file, expandable, ...attrs }) => {
       expandable={expandable}
       controls={
         editing ? (
-          <FileFinishButton fileId={file.id} fieldId={fieldId} onFinishSuccess={onFinishSuccess} />
+          <>
+            <FileDownloadButton name={file.name} fileId={file.id} />
+            <FileEditButton fileId={file.id} onEditSuccess={onEditSuccess} />
+            <FileDeleteButton fileId={file.id} fieldId={fieldId} onDeleteSuccess={onDeleteSuccess} />
+            <FileFinishButton fileId={file.id} fieldId={fieldId} onFinishSuccess={onFinishSuccess} />
+          </>
         ) : (
           <>
             <FileDownloadButton name={file.name} fileId={file.id} />

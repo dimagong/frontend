@@ -1,44 +1,25 @@
+import _ from "lodash/fp";
 import React from "react";
 import PropTypes from "prop-types";
 import { Label } from "reactstrap";
 
 import NmpTilesSelectField from "components/nmp/NmpTilesSelectField";
 
-const bdmToTile = ({ id, full_name }) => ({ id, label: full_name });
+const bdmToOption = (bdm) => ({ label: bdm.full_name, value: bdm });
 
-const UserAccessManagerSelect = ({ bdms, options, errors = [], onChange }) => {
-  const [selected, setSelected] = React.useState(null);
+const UserAccessManagerSelect = ({ bdms, options, errors = [], onChange: propOnChange }) => {
+  const tiles = React.useMemo(() => bdms.map(bdmToOption), [bdms]);
 
-  const optionsWithoutBdms = React.useMemo(() => {
-    return options.filter(({ value }) => !bdms.find((bdm) => bdm.id === value.id));
-  }, [bdms, options]);
-
-  const tiles = React.useMemo(() => bdms.map(bdmToTile), [bdms]);
-
-  const onBdmsAdding = React.useCallback((bdm) => {
-    onChange((prev) => [...prev, bdm]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onBdmsRemoving = React.useCallback(
-    (toRemove) => {
-      onChange((prev) => prev.filter(({ id }) => id !== toRemove.id));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  const onChange = React.useCallback((newBdms) => propOnChange(newBdms.map(_.get("value"))), [propOnChange]);
 
   return (
     <NmpTilesSelectField
       name="bdm"
-      value={selected}
-      options={optionsWithoutBdms}
-      onChange={setSelected}
-      tileColor="primary"
-      tiles={tiles}
-      onTileAdd={onBdmsAdding}
-      onTileRemove={onBdmsRemoving}
+      value={tiles}
+      options={options}
+      onChange={onChange}
       errors={errors}
+      tileColor="primary"
       label={(id) => <Label for={id}>Managing BDM(s)</Label>}
     />
   );
