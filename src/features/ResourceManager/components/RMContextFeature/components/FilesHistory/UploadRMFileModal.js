@@ -46,12 +46,7 @@ const UploadRMFileModal = ({ fieldId }) => {
         onSubmit={onResourceUploadSubmit}
       >
         <div className="pb-2">
-          <FileInput
-            acceptTypes={["application/pdf", "application/msword"]}
-            onChange={setFile}
-            value={file}
-            loading={false}
-          />
+          <FileInput onChange={setFile} value={file} loading={false} />
         </div>
       </CustomModal>
     </>
