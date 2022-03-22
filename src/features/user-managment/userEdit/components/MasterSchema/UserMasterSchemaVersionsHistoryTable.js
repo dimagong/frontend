@@ -6,19 +6,12 @@ import masterSchemaApi from "api/masterSchema/masterSchema";
 
 import VersionsHistoryTable from "components/MasterSchemaVersionsHistory/VersionsHistoryTable";
 
-const titleStyle = {
-  fontSize: "2.4rem",
-  color: "#707070",
-};
-
 const UserMasterSchemaVersionsHistoryTable = React.memo(({ userId, fieldId }) => {
   const versionsFactory = () => masterSchemaApi.getVersionsByFieldAndUser({ userId, fieldId });
 
   return (
     <>
-      <h1 className="font-weight-bold mb-1" style={titleStyle}>
-        History
-      </h1>
+      <h1 className="font-weight-bold mb-1">History</h1>
       <Card>
         <CardBody>
           <VersionsHistoryTable versionsFactory={versionsFactory} />

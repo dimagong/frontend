@@ -40,7 +40,6 @@ export const useCreateRMGroup = ({ resourceManagerId }) => {
   });
 };
 
-// Fixme: API didn't response
 export const useRMFieldFiles = ({ fieldId }, options = {}) => {
   return useQuery({
     queryKey: ["resource-manager-field-files", fieldId],
