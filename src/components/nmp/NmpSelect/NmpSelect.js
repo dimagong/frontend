@@ -157,6 +157,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
     placeholder,
     valueSeparator = ",",
 
+    loading = false,
     clearable = false,
     multiple = false,
     searchable = false,
@@ -183,6 +184,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
       placeholder={placeholder}
       valueSeparator={valueSeparator}
       isDisabled={disabled}
+      isLoading={loading}
       isClearable={readonly ? false : clearable}
       isMulti={multiple}
       isSearchable={readonly ? false : searchable}
@@ -217,6 +219,7 @@ NmpSelect.propTypes = {
   placeholder: PropTypes.string,
   valueSeparator: PropTypes.string,
 
+  loading: PropTypes.bool,
   clearable: PropTypes.bool,
   multiple: PropTypes.bool,
   searchable: PropTypes.bool,
