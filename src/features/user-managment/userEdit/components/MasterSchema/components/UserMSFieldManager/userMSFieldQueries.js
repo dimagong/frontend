@@ -3,14 +3,14 @@ import { useQuery } from "react-query";
 import { clientAPI } from "api/clientAPI";
 import { useGenericMutation } from "api/useGenericMutation";
 
-// export const useMSUserResource = ({ msFieldId, userId }, options = {}) => {
-//   return useQuery({
-//     queryKey: ["user-resource", msFieldId, userId],
-//     queryFn: ({ signal }) =>
-//       clientAPI.get("/api/user-resource", { signal, params: { master_schema_field_id: msFieldId, user_id: userId } }),
-//     ...options,
-//   });
-// };
+export const useMSUserResource = ({ msFieldId, userId }, options = {}) => {
+  return useQuery({
+    queryKey: ["user-resource", msFieldId, userId],
+    queryFn: ({ signal }) =>
+      clientAPI.get("/api/user-resource", { signal, params: { master_schema_field_id: msFieldId, user_id: userId } }),
+    ...options,
+  });
+};
 
 export const useUserResourceFields = ({ userId }, options = {}) => {
   return useQuery({
@@ -20,22 +20,11 @@ export const useUserResourceFields = ({ userId }, options = {}) => {
   });
 };
 
-export const useUserResourceFieldFiles = ({ msFieldId, rmFieldId, userId }, options = {}) => {
+export const useUserResourceFieldFiles = ({ rmFieldId, userId }, options = {}) => {
   return useQuery({
     queryKey: ["user-resource-field-files", rmFieldId, userId],
     queryFn: ({ signal }) =>
-      Promise.all([
-        clientAPI.get("/api/user-resource", { signal, params: { master_schema_field_id: msFieldId, user_id: userId } }),
-        clientAPI.get(`/api/user-resource/fields/${rmFieldId}/files`, { signal, params: { user_id: userId } }),
-      ]).then(([related, files]) => {
-        let current = null;
-
-        if (related) {
-          current = files.find((file) => file.id === related.resource_manager_field_file_id);
-        }
-
-        return { files, current };
-      }),
+      clientAPI.get(`/api/user-resource/fields/${rmFieldId}/files`, { signal, params: { user_id: userId } }),
     enabled: !!(rmFieldId && userId),
     ...options,
   });

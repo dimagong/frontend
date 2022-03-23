@@ -1,5 +1,5 @@
 import _ from "lodash/fp";
-import React from "react";
+import { useMemo, useState } from "react";
 
 // Validator :: <T>(value: T) -> string | true | false
 export const Validators = {
@@ -27,7 +27,7 @@ const validatorsReducer =
   };
 
 const useFormControl = (value, validators) => {
-  const { valid, errors } = React.useMemo(
+  const { valid, errors } = useMemo(
     () => validators.reduce(validatorsReducer(value), initialValidationState),
     [validators, value]
   );
@@ -37,18 +37,35 @@ const useFormControl = (value, validators) => {
 
 // ToDo: consider, how to reset pristine state on submit.
 // ToDo: consider, is field valid when it is pristine ?
-export const useFormField = (initialValue, validators = []) => {
-  const [value, setValue] = React.useState(initialValue);
+
+export const useBasicFormField = (initialValue, validators = []) => {
+  const [value, setValue] = useState(initialValue);
   const control = useFormControl(value, validators);
 
   return [control, setValue];
+};
+
+export const useAdvancedFormField = (initialValue, validators = []) => {
+  const [value, setValue] = useState(initialValue);
+  const control = useFormControl(value, validators);
+
+  const onChange = (value) => setValue(value);
+
+  return useMemo(() => ({ ...control, onChange, setValue }), [control]);
+};
+
+const defaultOptions = { useAdvanced: false };
+
+export const useFormField = (initialValue, validators, { useAdvanced } = defaultOptions) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useAdvanced ? useAdvancedFormField(initialValue, validators) : useBasicFormField(initialValue, validators);
 };
 
 const groupControlsValidator = (controls) => _.every(({ valid }) => valid, controls);
 
 export const useFormGroup = (controls) => {
   const { valid, invalid, errors } = useFormControl(controls, [groupControlsValidator]);
-  const values = React.useMemo(() => _.mapValues(({ value }) => value, controls), [controls]);
+  const values = useMemo(() => _.mapValues(({ value }) => value, controls), [controls]);
 
   return { valid, errors, invalid, values, controls };
 };
