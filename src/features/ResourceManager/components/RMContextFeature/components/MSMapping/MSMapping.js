@@ -1,7 +1,8 @@
 import "./styles.scss";
 
+import moment from "moment";
 import { Col, Row } from "reactstrap";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Scrollbars from "react-custom-scrollbars";
 
 import NmpButton from "components/nmp/NmpButton";
@@ -9,13 +10,17 @@ import NmpSelect from "components/nmp/NmpSelect";
 
 import FileInfoFolderContentTemplate from "../FileInfoFolderContentTemplate";
 
-const typeToOption = (type) => ({ label: `MS.ValidPath.profile.${type}`, value: type });
+const getFileLabel = (file) => `${file.name} v${moment(file.updated_at).format("YYYY.MM.DD HH:mm:ss")}`;
 
-const versionToOption = (version) => ({ label: `${version.name} ${version.version}`, value: version });
+const getOptionFromFile = (file) => ({ label: getFileLabel(file), value: file });
 
-const MSMapping = ({ document, versions }) => {
-  const typeOptions = useMemo(() => document.types.map(typeToOption), [document.types]);
-  const versionOptions = useMemo(() => versions.map(versionToOption), [versions]);
+const getOptionFromType = (type) => ({ label: `MS.ValidPath.profile.${type}`, value: type });
+
+const MSMapping = ({ files, document, versions }) => {
+  const fileOptions = useMemo(() => files.map(getOptionFromFile), [files]);
+  const [file, setFile] = useState(fileOptions[0]);
+
+  const typeOptions = useMemo(() => document.types.map(getOptionFromType), [document.types]);
 
   if (!document) {
     return <FileInfoFolderContentTemplate title="Document Mapping" noDataTitle="No connections found" />;
@@ -24,7 +29,7 @@ const MSMapping = ({ document, versions }) => {
   return (
     <FileInfoFolderContentTemplate title="Document Mapping">
       <div className="mb-2">
-        <NmpSelect options={versionOptions} value={versionOptions[0]} backgroundColor="transparent" />
+        <NmpSelect options={fileOptions} value={file} onChange={setFile} backgroundColor="transparent" />
       </div>
 
       <Scrollbars className="mb-2" autoHeight autoHeightMax={350}>
@@ -44,6 +49,7 @@ const MSMapping = ({ document, versions }) => {
                   value={typeOptions[0]}
                   backgroundColor="transparent"
                   placeholder="Select a MasterSchema reference"
+                  menuPosition="fixed"
                 />
               </div>
             </Col>
@@ -54,10 +60,11 @@ const MSMapping = ({ document, versions }) => {
       <div className="ms-mapping__preview d-flex justify-content-end pb-2 mb-2">
         <div className="flex-grow-1 px-2">
           <NmpSelect
+            value={null}
             options={typeOptions}
-            value={typeOptions[0]}
             backgroundColor="transparent"
             placeholder="Select a user to preview prefilled document against"
+            menuPosition="fixed"
           />
         </div>
 
