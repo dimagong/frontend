@@ -4,7 +4,6 @@ import { Row, Col, Card, Button, ListGroup, ListGroupItem } from "reactstrap";
 import FilterOptions from "./FilterComponents/FilterOptions";
 import FilterOptionTitles from "./FilterComponents/FilterOptionTitles";
 import FilterFooter from "./FilterComponents/FilterFooter";
-import Filter from "./Filter";
 import PropTypes from "prop-types";
 
 const FilterComponent = (props) => {

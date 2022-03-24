@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "reactstrap";
 import { FilterCheckIcon, FilterCrossIcon } from "./FilterAssets";
 import PropTypes from "prop-types";
+import Select from "react-select";
 
 const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
   const currSelectedFilters = JSON.parse(JSON.stringify(filter)).selectedFilters.find(
@@ -63,23 +64,38 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
     },
   };
 
-  return filterOptionsDictionary[currSelectedFilters.name].map((item, key) => (
-    <Button className={"filter-option not-active"} variant="primary" key={key}>
-      <span className={"filter-name"}>{item}</span>
-      <span className={"filter-right"}>
-        <span>
-          {!filter.crossSelectingDisabled && (
-            <span className={"filter-check"} onClick={() => handleFilterSelectCross(item)}>
-              <FilterCrossIcon filter={filter} currOption={item} />
+  return (
+    <>
+      {filter.hasSearch && filter.hasSearch.includes(filter.selectedFilters[filter.selectedOptionKey].name) && (
+        <Select
+          options={filterOptionsDictionary[filter.selectedFilters[filter.selectedOptionKey].name].map((item) => {
+            return { label: item, value: item };
+          })}
+          onChange={onSelectFilterOption}
+          isSearchabl
+          isClearable
+        />
+      )}
+
+      {filterOptionsDictionary[currSelectedFilters.name].map((item, key) => (
+        <Button className={"filter-option not-active"} variant="primary" key={key}>
+          <span className={"filter-name"}>{item}</span>
+          <span className={"filter-right"}>
+            <span>
+              {!filter.crossSelectingDisabled && (
+                <span className={"filter-check"} onClick={() => handleFilterSelectCross(item)}>
+                  <FilterCrossIcon filter={filter} currOption={item} />
+                </span>
+              )}
+              <span className={"filter-check"} onClick={() => handleFilterSelectCheck(item)}>
+                <FilterCheckIcon filter={filter} currOption={item} />
+              </span>
             </span>
-          )}
-          <span className={"filter-check"} onClick={() => handleFilterSelectCheck(item)}>
-            <FilterCheckIcon filter={filter} currOption={item} />
           </span>
-        </span>
-      </span>
-    </Button>
-  ));
+        </Button>
+      ))}
+    </>
+  );
 };
 
 FilterOptions.propTypes = {
