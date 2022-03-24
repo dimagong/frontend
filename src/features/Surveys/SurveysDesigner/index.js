@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import { Row } from 'reactstrap'
+import { Row } from "reactstrap";
 
 import { useSelector, useDispatch } from "react-redux";
 
 import { usePrevious } from "hooks/common";
 import { toast } from "react-toastify";
 
-import {
-  selectFolders,
-  selectSelectedSurvey,
-} from "app/selectors/userSelectors";
+import { selectFolders, selectSelectedSurvey } from "app/selectors/userSelectors";
 
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 
 import SurveysDesignerComponent from "./Components/SurveyDesignerComponent";
-import QuestionDesignerComponent from './Components/QuestionDesignerComponent';
+import QuestionDesignerComponent from "./Components/QuestionDesignerComponent";
 
 import appSlice from "app/slices/appSlice";
 
-import {selectError} from "app/selectors";
+import { selectError } from "app/selectors";
 
 const {
   getFoldersRequest,
@@ -34,7 +31,6 @@ const {
 } = appSlice.actions;
 
 const SurveysDesigner = () => {
-
   const dispatch = useDispatch();
 
   const [selectedFolderId, setSelectedFolderId] = useState(-1);
@@ -44,15 +40,15 @@ const SurveysDesigner = () => {
 
   const folders = useSelector(selectFolders);
 
-
-
   const selectedSurvey = useSelector(selectSelectedSurvey);
 
   const isSurveyLoading = useSelector(createLoadingSelector([getSurveyRequest.type]));
   const isFoldersLoading = useSelector(createLoadingSelector([getFoldersRequest.type]));
   const isSurveyUpdateProceed = useSelector(createLoadingSelector([updateSurveyRequest.type], true));
   const isFolderDeleteProceed = useSelector(createLoadingSelector([deleteFolderRequest.type], true));
-  const isSurveyDeleteLatestVersionProceed = useSelector(createLoadingSelector([deleteSurveyLatestVersionRequest.type], true));
+  const isSurveyDeleteLatestVersionProceed = useSelector(
+    createLoadingSelector([deleteSurveyLatestVersionRequest.type], true)
+  );
 
   const prevFolderDeleteState = usePrevious(isFolderDeleteProceed);
   const prevSurveyDeleteLatestVersionValue = usePrevious(isSurveyDeleteLatestVersionProceed);
@@ -64,20 +60,18 @@ const SurveysDesigner = () => {
   };
 
   const handleSurveyVersionChange = (surveyVersion) => {
-
-    dispatch(handleSurveyVersionSelect(surveyVersion))
+    dispatch(handleSurveyVersionSelect(surveyVersion));
   };
 
   const handleQuestionSelectToggle = (questionData) => {
     if (questionData === selectedQuestion) {
-      setSelectedQuestion(null)
+      setSelectedQuestion(null);
     } else {
       setSelectedQuestion(questionData);
     }
   };
 
   const handleQuestionInsert = (insertIndex) => {
-
     const questionData = JSON.parse(JSON.stringify(selectedQuestion));
 
     questionData.latest_version.question.order = insertIndex;
@@ -87,11 +81,11 @@ const SurveysDesigner = () => {
   };
 
   const surveyAddedQuestionIds = selectedSurvey?.latest_version.latest_questions.map((question) => {
-    return question.latest_version.question_id
+    return question.latest_version.question_id;
   });
 
   const handleQuestionOrderChange = (question, newOrder) => {
-    dispatch(swapQuestions({question, newOrder}))
+    dispatch(swapQuestions({ question, newOrder }));
   };
 
   const handleRemoveQuestionFromSurvey = (question) => {
@@ -99,7 +93,7 @@ const SurveysDesigner = () => {
   };
 
   const handleSurveyUpdate = () => {
-    const {title, description, interaction_id, is_can_return, min_percent_pass} = selectedSurvey.latest_version;
+    const { title, description, interaction_id, is_can_return, min_percent_pass } = selectedSurvey.latest_version;
 
     const surveyData = {
       title,
@@ -107,14 +101,16 @@ const SurveysDesigner = () => {
       interaction_id,
       is_can_return,
       min_percent_pass,
-      question_versions: selectedSurvey.latest_version.latest_questions.map((question) => ({order: question.latest_version.question.order, question_version_id: question.latest_version.id})),
+      question_versions: selectedSurvey.latest_version.latest_questions.map((question) => ({
+        order: question.latest_version.question.order,
+        question_version_id: question.latest_version.id,
+      })),
     };
 
-    dispatch(updateSurveyRequest({data: surveyData, surveyId: selectedSurvey.latest_version.id}))
+    dispatch(updateSurveyRequest({ data: surveyData, surveyId: selectedSurvey.latest_version.id }));
   };
 
   const handleFolderDelete = (folderId) => {
-
     const folder = folders.filter((item) => item.id === folderId)[0];
     if (folder.questions.length > 0) {
       toast.warn("You cannot delete folder while it has questions. Please delete all questions and try again");
@@ -122,12 +118,12 @@ const SurveysDesigner = () => {
       return;
     }
 
-    if(!window.confirm("Are you sure you want to delete this folder?")) return;
+    if (!window.confirm("Are you sure you want to delete this folder?")) return;
 
-    const folderIndex = folders.findIndex(folder => folder.id === folderId);
+    const folderIndex = folders.findIndex((folder) => folder.id === folderId);
     setDeletingFolderIndex(folderIndex);
 
-    dispatch(deleteFolderRequest(folderId))
+    dispatch(deleteFolderRequest(folderId));
   };
 
   const handleSearchValueChange = (e) => {
@@ -144,9 +140,9 @@ const SurveysDesigner = () => {
   useEffect(() => {
     if (prevFolderDeleteState === true && !errors) {
       if (deletingFolderIndex !== 0) {
-        setSelectedFolderId(folders[deletingFolderIndex - 1].id)
+        setSelectedFolderId(folders[deletingFolderIndex - 1].id);
       } else if (folders.length >= 1) {
-        setSelectedFolderId(folders[deletingFolderIndex].id)
+        setSelectedFolderId(folders[deletingFolderIndex].id);
       } else {
         setSelectedFolderId(-1);
       }
@@ -155,7 +151,7 @@ const SurveysDesigner = () => {
   }, [isFolderDeleteProceed]);
 
   useEffect(() => {
-    dispatch(getFoldersRequest())
+    dispatch(getFoldersRequest());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -186,8 +182,7 @@ const SurveysDesigner = () => {
         searchValue={searchValue}
       />
     </Row>
-
-  )
+  );
 };
 
 export default SurveysDesigner;
