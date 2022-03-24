@@ -107,6 +107,13 @@ const selectStyles = {
       ...baseControlStyles,
     };
   },
+  placeholder: (provided) => ({
+    ...provided,
+    width: "100%",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  }),
 };
 
 const MultiValue = ({ index, data, getValue, selectProps, ...restProps }) => {
