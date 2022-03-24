@@ -9,7 +9,7 @@ import RMContextFeatureTemplate from "./RMContextFeatureTemplate";
 const RMContextFeatureLoading = ({ field }) => {
   return (
     <RMContextFeatureTemplate field={field}>
-      <div className="d-flex justify-content-center align-items-center">
+      <div className="d-flex justify-content-center align-items-center py-4">
         <Spinner color="primary" />
       </div>
     </RMContextFeatureTemplate>

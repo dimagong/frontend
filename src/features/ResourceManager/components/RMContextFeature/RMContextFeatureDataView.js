@@ -36,7 +36,7 @@ const RMContextFeatureDataView = ({ field }) => {
 
       {
         {
-          "Previous Versions": <FilesHistory fieldId={field.id} />,
+          "Previous Versions": <FilesHistory fieldId={field.id} files={files} />,
           "MS Mapping": (
             <MSMapping
               document={{ id: 1, types: ["firstName", "lastName", "email", "number"] }}
