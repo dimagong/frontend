@@ -72,7 +72,7 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
             return { label: item, value: item };
           })}
           onChange={onSelectFilterOption}
-          isSearchabl
+          isSearchable
           isClearable
         />
       )}
