@@ -1,81 +1,97 @@
 import "./styles.scss";
 
 import moment from "moment";
-import { Col, Row } from "reactstrap";
-import React, { useMemo, useState } from "react";
-import Scrollbars from "react-custom-scrollbars";
+import React, { useState } from "react";
 
-import NmpButton from "components/nmp/NmpButton";
+import { IdType } from "utility/prop-types";
+
 import NmpSelect from "components/nmp/NmpSelect";
 
+import MappingFileForm from "./MappingFileForm";
+
 import FileInfoFolderContentTemplate from "../FileInfoFolderContentTemplate";
+
+import {
+  useRMFieldFiles,
+  useMSUserFields,
+  useRMFieldFileReferences,
+  useRMFieldFileReferenceUsers,
+} from "../../../../resourceManagerQueries";
 
 const getFileLabel = (file) => `${file.name} v${moment(file.updated_at).format("YYYY.MM.DD HH:mm:ss")}`;
 
 const getOptionFromFile = (file) => ({ label: getFileLabel(file), value: file });
 
-const getOptionFromType = (type) => ({ label: `MS.ValidPath.profile.${type}`, value: type });
+const getOptionFromUser = (user) => ({ label: user.full_name, value: user });
 
-const MSMapping = ({ files, document, versions }) => {
-  const fileOptions = useMemo(() => files.map(getOptionFromFile), [files]);
-  const [file, setFile] = useState(fileOptions[0]);
+const getOptionFromMSField = (field) => ({ label: `${field.breadcrumbs}.${field.name}`, value: field });
 
-  const typeOptions = useMemo(() => document.types.map(getOptionFromType), [document.types]);
-
-  if (!document) {
-    return <FileInfoFolderContentTemplate title="Document Mapping" noDataTitle="No connections found" />;
-  }
+const MSMapping = ({ fieldId }) => {
+  // Mapping related files
+  const [file, setFile] = useState(null);
+  const { data: fileOptions, fileIsLoading } = useRMFieldFiles(
+    { fieldId, assigned: true },
+    {
+      select: (files) => files.map(getOptionFromFile),
+    }
+  );
+  // Mapping related users
+  const [user, setUser] = useState(null);
+  const { data: userOptions, usersIsLoading } = useRMFieldFileReferenceUsers(
+    { fileId: file?.value?.id },
+    {
+      select: (users) => users.map(getOptionFromUser),
+    }
+  );
+  // Mapping related references
+  const { data: references, referencesIsLoading } = useRMFieldFileReferences({ fileId: file?.value?.id });
+  // Mapping related users
+  const { data: fieldOptions, fieldsIsLoading } = useMSUserFields(
+    { userId: user?.value?.id },
+    {
+      select: (fields) => fields.map(getOptionFromMSField),
+    }
+  );
 
   return (
     <FileInfoFolderContentTemplate title="Document Mapping">
       <div className="mb-2">
-        <NmpSelect options={fileOptions} value={file} onChange={setFile} backgroundColor="transparent" />
+        <NmpSelect
+          value={file}
+          options={fileOptions}
+          onChange={setFile}
+          loading={fileIsLoading}
+          backgroundColor="transparent"
+        />
       </div>
 
-      <Scrollbars className="mb-2" autoHeight autoHeightMax={350}>
-        {document.types.map((element) => (
-          <Row className="py-1" noGutters>
-            <Col xs="4">
-              <div
-                className="ms-mapping__template-key py-2 px-1 bg-white"
-                title={`{{ msRef: ${element} }}`}
-              >{`{{ msRef: ${element} }}`}</div>
-            </Col>
-
-            <Col className="d-flex align-items-center" xs="8">
-              <div className="full-width pl-2">
-                <NmpSelect
-                  options={typeOptions}
-                  value={typeOptions[0]}
-                  backgroundColor="transparent"
-                  placeholder="Select a MasterSchema reference"
-                  menuPosition="fixed"
-                />
-              </div>
-            </Col>
-          </Row>
-        ))}
-      </Scrollbars>
-
-      <div className="ms-mapping__preview d-flex justify-content-end pb-2 mb-2">
-        <div className="flex-grow-1 px-2">
+      {file ? (
+        <div className="mb-2">
           <NmpSelect
-            value={null}
-            options={typeOptions}
+            value={user}
+            options={userOptions}
+            onChange={setUser}
+            loading={usersIsLoading}
             backgroundColor="transparent"
-            placeholder="Select a user to preview prefilled document against"
-            menuPosition="fixed"
           />
         </div>
+      ) : null}
 
-        <NmpButton color="white">Preview</NmpButton>
-      </div>
-
-      <div className="d-flex justify-content-end">
-        <NmpButton color="primary">Save</NmpButton>
-      </div>
+      {file && user && fieldOptions ? (
+        <MappingFileForm
+          fileId={file.value.id}
+          userId={user.value.id}
+          references={references}
+          fieldOptions={fieldOptions}
+          loading={referencesIsLoading || fieldsIsLoading}
+        />
+      ) : null}
     </FileInfoFolderContentTemplate>
   );
+};
+
+MSMapping.propTypes = {
+  fieldId: IdType.isRequired,
 };
 
 export default MSMapping;

@@ -36,18 +36,8 @@ const RMContextFeatureDataView = ({ field }) => {
 
       {
         {
-          "Previous Versions": <FilesHistory fieldId={field.id} files={files} />,
-          "MS Mapping": (
-            <MSMapping
-              files={files}
-              document={{ id: 1, types: ["firstName", "lastName", "email", "number"] }}
-              versions={[
-                { name: "AR Agreement", version: "v2021.03.01 [26/02/2021]" },
-                { name: "AR Agreement", version: "v2021.02.02 [24/01/2020]" },
-                { name: "AR Agreement", version: "v2020.07.21 [22/02/2019]" },
-              ]}
-            />
-          ),
+          "Previous Versions": <FilesHistory fieldId={field.id} />,
+          "MS Mapping": <MSMapping fieldId={field.id} />,
         }[selectedFolder.name]
       }
     </RMContextFeatureTemplate>
