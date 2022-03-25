@@ -33,8 +33,8 @@ const UserMSFieldManager = ({ userId, msFieldId }) => {
   return (
     <UserMSFieldManagerForm
       userId={userId}
-      rmFieldId={MSUserResource.resource_manager_field_id}
-      rmFieldFileId={MSUserResource.resource_manager_field_file_id}
+      rmFieldId={MSUserResource?.resource_manager_field_id}
+      rmFieldFileId={MSUserResource?.resource_manager_field_file_id}
       submitting={attachRMFile.isLoading}
       onSubmit={onSubmit}
     />
