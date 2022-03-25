@@ -1,20 +1,33 @@
+import _ from "lodash/fp";
 import React from "react";
 
 import { IdType } from "utility/prop-types";
 
-import FilesHistoryNoData from "./FilesHistoryNoData";
-import FilesHistoryDataView from "./FilesHistoryDataView";
+import UploadRMFileModal from "./UploadRMFileModal";
+import FilesHistoryTable from "./FilesHistoryTable";
+
+import FileInfoFolderContentTemplate from "../FileInfoFolderContentTemplate";
 
 import { useRMFieldFiles } from "../../../../resourceManagerQueries";
 
 const FilesHistory = ({ fieldId }) => {
+  // Warning: here is not using isLoading cause this prefetched in RMContextFeature
   const { data: files } = useRMFieldFiles({ fieldId });
 
-  if (files == null || files.length === 0) {
-    return <FilesHistoryNoData fieldId={fieldId} />;
+  if (_.isEmpty(files)) {
+    return (
+      <FileInfoFolderContentTemplate title="Parent File Version" noDataTitle="No versions found">
+        <UploadRMFileModal fieldId={fieldId} />
+      </FileInfoFolderContentTemplate>
+    );
   }
 
-  return <FilesHistoryDataView fieldId={fieldId} files={files} />;
+  return (
+    <FileInfoFolderContentTemplate title="Parent File Version">
+      <FilesHistoryTable fieldId={fieldId} files={files} />
+      <UploadRMFileModal fieldId={fieldId} />
+    </FileInfoFolderContentTemplate>
+  );
 };
 
 FilesHistory.propTypes = {

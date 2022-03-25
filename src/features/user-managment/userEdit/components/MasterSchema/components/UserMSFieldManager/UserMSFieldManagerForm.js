@@ -79,31 +79,6 @@ const UserMSFieldManagerForm = (props) => {
 
   const onSubmit = () => propOnSubmit(form);
 
-  // if (fieldsIsLoading || filesIsLoading || !fieldOptions || !fileOptions) {
-  //   return (
-  //     <form className="d-flex flex-wrap mb-1" onSubmit={preventDefault(onSubmit)}>
-  //       <h2 className="h1 font-weight-bold">Current</h2>
-  //
-  //       <div className="full-width py-1">
-  //         <label className="label mb-1" htmlFor="element-type">
-  //           Element type
-  //         </label>
-  //         <NmpSelect
-  //           options={ElementTypes.Options}
-  //           value={ElementTypes.Options[0]}
-  //           readonly
-  //           backgroundColor="transparent"
-  //           inputId="element-type"
-  //         />
-  //       </div>
-  //
-  //       <div className="d-flex justify-content-center full-width py-1">
-  //         <Spinner />
-  //       </div>
-  //     </form>
-  //   );
-  // }
-
   return (
     <form className="d-flex flex-wrap mb-1" onSubmit={preventDefault(onSubmit)}>
       <h2 className="h1 font-weight-bold">Current</h2>
