@@ -12,8 +12,7 @@ import FileFinishButton from "./FileFinishButton";
 import FileDownloadButton from "./FileDownloadButton";
 
 const LatestFileItem = ({ fieldId, file, expandable, ...attrs }) => {
-  // ToDo: Get initial editing state from API
-  const [editing, editingStart, editingStop] = useBoolean(false);
+  const [editing, editingStart, editingStop] = useBoolean(file.google_drive_doc !== null);
 
   const onEditSuccess = () => editingStart();
 
@@ -33,20 +32,12 @@ const LatestFileItem = ({ fieldId, file, expandable, ...attrs }) => {
       file={file}
       expandable={expandable}
       controls={
-        editing ? (
-          <>
-            <FileDownloadButton name={file.name} fileId={file.id} />
-            <FileEditButton fileId={file.id} onEditSuccess={onEditSuccess} />
-            <FileDeleteButton fileId={file.id} fieldId={fieldId} onDeleteSuccess={onDeleteSuccess} />
-            <FileFinishButton fileId={file.id} fieldId={fieldId} onFinishSuccess={onFinishSuccess} />
-          </>
-        ) : (
-          <>
-            <FileDownloadButton name={file.name} fileId={file.id} />
-            <FileEditButton fileId={file.id} onEditSuccess={onEditSuccess} />
-            <FileDeleteButton fileId={file.id} fieldId={fieldId} onDeleteSuccess={onDeleteSuccess} />
-          </>
-        )
+        <>
+          <FileDownloadButton name={file.name} fileId={file.id} />
+          <FileEditButton fileId={file.id} onEditSuccess={onEditSuccess} />
+          <FileDeleteButton fileId={file.id} fieldId={fieldId} onDeleteSuccess={onDeleteSuccess} />
+          {editing ? <FileFinishButton fileId={file.id} fieldId={fieldId} onFinishSuccess={onFinishSuccess} /> : null}
+        </>
       }
       {...attrs}
     />
