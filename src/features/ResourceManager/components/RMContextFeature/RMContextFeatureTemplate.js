@@ -10,9 +10,9 @@ const RMContextFeatureTemplate = ({ field, children }) => {
 
   return (
     <ContextFeatureTemplate contextFeatureTitle="File information">
-      <strong className="d-block font-size-large" style={{ marginTop: -20 }}>
+      <p className="font-medium-5" style={{ marginTop: -20 }}>
         {fieldLocation}
-      </strong>
+      </p>
 
       {children}
     </ContextFeatureTemplate>

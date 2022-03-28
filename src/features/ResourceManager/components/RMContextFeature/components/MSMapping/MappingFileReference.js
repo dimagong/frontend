@@ -1,15 +1,13 @@
 import { Col, Row } from "reactstrap";
 import React, { useEffect, useMemo } from "react";
 
-import { useFormField, Validators } from "hooks/use-form";
+import { useFormField } from "hooks/use-form";
 
 import NmpSelect from "components/nmp/NmpSelect";
 
 const MappingFileReference = ({ value, options, onChange, fieldTemplate: propFieldTemplate, }) => {
   const fieldTemplate = useMemo(() => `{{ msRef: ${propFieldTemplate} }}`, [propFieldTemplate]);
-
-  // Fixme: Pristine & Dirty case within invalid/valid then use Validators.identical(value)
-  const field = useFormField(value, [Validators.required], { useAdvanced: true });
+  const field = useFormField(value, [], { useAdvanced: true });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => onChange(field), [field.value]);

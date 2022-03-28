@@ -1,7 +1,7 @@
 import _ from "lodash/fp";
 import PropTypes from "prop-types";
-import { Spinner } from "reactstrap";
-import React, { useReducer } from "react";
+import { Col, Row, Spinner } from "reactstrap";
+import React, { useMemo, useReducer } from "react";
 import Scrollbars from "react-custom-scrollbars";
 
 import { useFormGroup } from "hooks/use-form";
@@ -10,14 +10,11 @@ import { IdType, OptionsType } from "utility/prop-types";
 import { preventDefault } from "utility/event-decorators";
 
 import NmpButton from "components/nmp/NmpButton";
+import NmpSelect from "components/nmp/NmpSelect";
 
 import MappingFileReference from "./MappingFileReference";
 
-import {
-  useExportRMFileReferencesToMS,
-  useOpenRMFileReferencesPreview,
-  useSaveRMFileReferences,
-} from "api/resourceManager/useRMFieldFileReferences";
+import { useOpenRMFileReferencesPreview, useSaveRMFileReferences } from "api/resourceManager/useRMFieldFileReferences";
 
 const getReferenceFieldFromReference = (reference, fieldOptions) => {
   return { value: fieldOptions.find(({ value }) => value.id === reference.master_schema_field_id) };
@@ -29,16 +26,23 @@ const getReferenceFieldsFromReferences = (references, fieldOptions) => {
   );
 };
 
-// ToDo: filter fieldOption with selected
-const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) => {
+const MappingFileForm = ({ fileId, userId, references, fieldOptions: propFieldOptions, loading }) => {
   const saveReferences = useSaveRMFileReferences({ fileId });
   const openPreview = useOpenRMFileReferencesPreview({ fileId, userId });
-  const exportReferencesToMS = useExportRMFileReferencesToMS({ fileId, userId });
 
   const [referenceFields, setReferenceFields] = useReducer(
     (p, s) => ({ ...p, ...s }),
-    getReferenceFieldsFromReferences(references, fieldOptions)
+    getReferenceFieldsFromReferences(references, propFieldOptions)
   );
+
+  // Filter fieldOptions with selectedFieldOptions from reference fields
+  const fieldOptions = useMemo(() => {
+    const referenceFieldsArray = Object.values(referenceFields);
+
+    return propFieldOptions.filter((fieldOption) => {
+      return referenceFieldsArray.find(({ value }) => fieldOption.value.id !== value.value.id);
+    });
+  }, [propFieldOptions, referenceFields]);
 
   const form = useFormGroup(referenceFields);
 
@@ -64,7 +68,6 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
   }
 
   if (_.isEmpty(references)) {
-    // ToDo: style it
     return (
       <div className="d-flex justify-content-center align-items-center height-300">
         <strong>No templates bindings was found.</strong>
@@ -86,27 +89,33 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
         ))}
       </Scrollbars>
 
-      <div className="d-flex justify-content-between py-1">
-        <NmpButton
-          color="white"
-          type="button"
-          disabled={form.invalid}
-          onClick={openPreview.mutate}
-          loading={openPreview.isLoading}
-        >
-          Preview
-        </NmpButton>
+      <div className="ms-mapping__preview py-2 mb-2">
+        <Row>
+          <Col xs={{ size: 8, offset: 1 }}>
+            {/* ToDo: Finish preview button */}
+            <NmpSelect
+              value={null}
+              options={[]}
+              // onChange={setUser}
+              // loading={usersIsLoading}
+              backgroundColor="transparent"
+            />
+          </Col>
+          <Col xs={3}>
+            <NmpButton
+              color="white"
+              type="button"
+              disabled={form.invalid}
+              onClick={openPreview.mutate}
+              loading={openPreview.isLoading}
+            >
+              Preview
+            </NmpButton>
+          </Col>
+        </Row>
+      </div>
 
-        <NmpButton
-          color="secondary"
-          type="button"
-          disabled={form.invalid}
-          onClick={exportReferencesToMS.mutate}
-          loading={exportReferencesToMS.isLoading}
-        >
-          Export to MasterSchema
-        </NmpButton>
-
+      <div className="d-flex justify-content-end py-1">
         <NmpButton color="primary" disabled={form.invalid} loading={saveReferences.isLoading}>
           Save
         </NmpButton>

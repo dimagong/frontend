@@ -10,9 +10,10 @@ import FilesHistory from "./components/FilesHistory";
 import RMContextFeatureTemplate from "./RMContextFeatureTemplate";
 
 import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
+import { useRMFieldFileReferences } from "api/resourceManager/useRMFieldFileReferences";
 
 let folderId = 0;
-const getFolder = (name, count, itemsName) => ({ id: folderId++, name, items: Array(count), itemsName });
+const getFolder = (name, count, itemsName) => ({ id: folderId++, name, items: count ? Array(count) : [], itemsName });
 const getFolders = ({ previousFilesCount, mappedElementsCount }) => ({
   PreviousVersions: getFolder("Previous Versions", previousFilesCount, "revisions"),
   // SharedWith: getFolder("Shared With"),
@@ -23,8 +24,13 @@ const RMContextFeatureDataView = ({ field }) => {
   // Warning: here is a fallback, so, there is no need to handle nullable value
   // This query is need here to show the files count in Folder preview
   const { data: files = [] } = useRMFieldFiles({ fieldId: field.id });
+  const file = useMemo(() => files.find((file) => file.is_latest_version), [files]);
+  const { data: references = [] } = useRMFieldFileReferences({ fileId: file?.id });
 
-  const folders = useMemo(() => getFolders({ previousFilesCount: files.length }), [files.length]);
+  const folders = useMemo(
+    () => getFolders({ previousFilesCount: files.length, mappedElementsCount: references.length }),
+    [references.length, files.length]
+  );
   const foldersAsArray = useMemo(() => Object.values(folders), [folders]);
   const [selectedFolder, setSelectedFolder] = useState(folders.PreviousVersions);
 

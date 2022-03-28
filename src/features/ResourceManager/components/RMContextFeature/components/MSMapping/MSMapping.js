@@ -27,24 +27,25 @@ const getOptionFromMSField = (field) => ({ label: `${field.breadcrumbs}.${field.
 const MSMapping = ({ fieldId }) => {
   // Mapping related files
   const [file, setFile] = useState(null);
-  const { data: fileOptions, fileIsLoading } = useRMFieldFiles(
-    { fieldId, assigned: true },
+  const { data: fileOptions = [], isLoading: fileIsLoading } = useRMFieldFiles(
+    { fieldId },
     {
       select: (files) => files.map(getOptionFromFile),
+      onSuccess: (options) => setFile(options.find(({ value }) => value.is_latest_version)),
     }
   );
   // Mapping related users
   const [user, setUser] = useState(null);
-  const { data: userOptions, usersIsLoading } = useRMFieldFileReferenceUsers(
+  const { data: userOptions, isLoading: usersIsLoading } = useRMFieldFileReferenceUsers(
     { fileId: file?.value?.id },
     {
       select: (users) => users.map(getOptionFromUser),
     }
   );
   // Mapping related references
-  const { data: references, referencesIsLoading } = useRMFieldFileReferences({ fileId: file?.value?.id });
+  const { data: references, isLoading: referencesIsLoading } = useRMFieldFileReferences({ fileId: file?.value?.id });
   // Mapping related users
-  const { data: fieldOptions, fieldsIsLoading } = useMSUserFields(
+  const { data: fieldOptions, isLoading: fieldsIsLoading } = useMSUserFields(
     { userId: user?.value?.id },
     {
       select: (fields) => fields.map(getOptionFromMSField),
@@ -75,10 +76,9 @@ const MSMapping = ({ fieldId }) => {
         </div>
       ) : null}
 
-      {file && user && fieldOptions ? (
+      {file && fieldOptions ? (
         <MappingFileForm
           fileId={file.value.id}
-          userId={user.value.id}
           references={references}
           fieldOptions={fieldOptions}
           loading={referencesIsLoading || fieldsIsLoading}
