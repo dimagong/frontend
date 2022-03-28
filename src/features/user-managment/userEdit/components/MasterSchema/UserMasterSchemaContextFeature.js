@@ -42,10 +42,10 @@ const UserMasterSchemaContextFeature = () => {
         </div>
 
         {selected.fields.length === 1 ? (
-          <>
+          <React.Fragment key={selected.field.id}>
             <UserMSFieldManager userId={user.id} msFieldId={selected.field.id} />
             <UserMasterSchemaVersionsHistoryTable userId={user.id} fieldId={selected.field.id} />
-          </>
+          </React.Fragment>
         ) : null}
       </div>
     </React.Profiler>
