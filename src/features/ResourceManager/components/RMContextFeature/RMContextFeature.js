@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import RMContextFeatureLoading from "./RMContextFeatureLoading";
 import RMContextFeatureDataView from "./RMContextFeatureDataView";
 
-import { useRMFieldFiles } from "../../resourceManagerQueries";
+import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
 
 const RMContextFeature = ({ field }) => {
   const { isLoading } = useRMFieldFiles({ fieldId: field.id });

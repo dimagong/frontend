@@ -8,7 +8,7 @@ import FilesHistoryTable from "./FilesHistoryTable";
 
 import FileInfoFolderContentTemplate from "../FileInfoFolderContentTemplate";
 
-import { useRMFieldFiles } from "../../../../resourceManagerQueries";
+import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
 
 const FilesHistory = ({ fieldId }) => {
   // Warning: here is not using isLoading cause this prefetched in RMContextFeature

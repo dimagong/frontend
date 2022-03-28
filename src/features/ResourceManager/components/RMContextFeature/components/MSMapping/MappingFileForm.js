@@ -13,7 +13,11 @@ import NmpButton from "components/nmp/NmpButton";
 
 import MappingFileReference from "./MappingFileReference";
 
-import { useExportRMFileToMS, useOpenRMFilePreview, useSaveMappingReference } from "../../../../resourceManagerQueries";
+import {
+  useExportRMFileReferencesToMS,
+  useOpenRMFileReferencesPreview,
+  useSaveRMFileReferences,
+} from "api/resourceManager/useRMFieldFileReferences";
 
 const getReferenceFieldFromReference = (reference, fieldOptions) => {
   return { value: fieldOptions.find(({ value }) => value.id === reference.master_schema_field_id) };
@@ -27,9 +31,9 @@ const getReferenceFieldsFromReferences = (references, fieldOptions) => {
 
 // ToDo: filter fieldOption with selected
 const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) => {
-  const saveMappingReference = useSaveMappingReference({ fileId });
-  const downloadMappingPreview = useOpenRMFilePreview({ fileId, userId });
-  const exportRMFileToMS = useExportRMFileToMS({ fileId, userId });
+  const saveReferences = useSaveRMFileReferences({ fileId });
+  const openPreview = useOpenRMFileReferencesPreview({ fileId, userId });
+  const exportReferencesToMS = useExportRMFileReferencesToMS({ fileId, userId });
 
   const [referenceFields, setReferenceFields] = useReducer(
     (p, s) => ({ ...p, ...s }),
@@ -46,7 +50,7 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
       master_schema_field_id: field.value.id,
     }));
 
-    saveMappingReference.mutate(data);
+    saveReferences.mutate(data);
   };
 
   const onReferenceChange = (referenceId) => (field) => setReferenceFields({ [referenceId]: field });
@@ -87,8 +91,8 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
           color="white"
           type="button"
           disabled={form.invalid}
-          onClick={downloadMappingPreview.mutate}
-          loading={downloadMappingPreview.isLoading}
+          onClick={openPreview.mutate}
+          loading={openPreview.isLoading}
         >
           Preview
         </NmpButton>
@@ -97,13 +101,13 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
           color="secondary"
           type="button"
           disabled={form.invalid}
-          onClick={exportRMFileToMS.mutate}
-          loading={exportRMFileToMS.isLoading}
+          onClick={exportReferencesToMS.mutate}
+          loading={exportReferencesToMS.isLoading}
         >
           Export to MasterSchema
         </NmpButton>
 
-        <NmpButton color="primary" disabled={form.invalid} loading={saveMappingReference.isLoading}>
+        <NmpButton color="primary" disabled={form.invalid} loading={saveReferences.isLoading}>
           Save
         </NmpButton>
       </div>

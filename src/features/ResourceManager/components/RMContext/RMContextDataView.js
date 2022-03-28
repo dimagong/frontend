@@ -8,13 +8,13 @@ import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from 
 
 import RMContextTemplate from "./RMContextTemplate";
 
-import { useCreateRMField, useCreateRMGroup } from "../../resourceManagerQueries";
+import { useCreateRMHierarchyField, useCreateRMHierarchyGroup } from "api/resourceManager/useRMHierarchies";
 
 const stickyStyle = { top: "0px", left: "0px", backgroundColor: "#f8f8f8" };
 
 const RMContextDataView = ({ resourceManagerId, hierarchy, selectedIds, onSelect, }) => {
-  const createField = useCreateRMField({ resourceManagerId });
-  const createGroup = useCreateRMGroup({ resourceManagerId });
+  const createField = useCreateRMHierarchyField({ resourceManagerId });
+  const createGroup = useCreateRMHierarchyGroup({ resourceManagerId });
 
   const onElementCreationSubmit = ({ type, name, parentId }) => {
     switch (type) {

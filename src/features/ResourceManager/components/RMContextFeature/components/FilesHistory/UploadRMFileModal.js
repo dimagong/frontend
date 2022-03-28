@@ -8,7 +8,7 @@ import AddButton from "components/AddButton";
 import CustomModal from "components/CustomModal";
 import FileInput from "components/formElements/FileInput";
 
-import { useUploadRMFile } from "../../../../resourceManagerQueries";
+import { useUploadRMFile } from "api/resourceManager/useRMFieldFiles";
 
 const UploadRMFileModal = ({ fieldId }) => {
   const [file, setFile] = useState(null);

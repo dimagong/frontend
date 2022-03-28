@@ -11,12 +11,10 @@ import MappingFileForm from "./MappingFileForm";
 
 import FileInfoFolderContentTemplate from "../FileInfoFolderContentTemplate";
 
-import {
-  useRMFieldFiles,
-  useMSUserFields,
-  useRMFieldFileReferences,
-  useRMFieldFileReferenceUsers,
-} from "../../../../resourceManagerQueries";
+import { useMSUserFields } from "api/masterSchema/useMSUserFields";
+import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
+import { useRMFieldFileReferences } from "api/resourceManager/useRMFieldFileReferences";
+import { useRMFieldFileReferenceUsers } from "api/resourceManager/useRMFieldFileReferenceUsers";
 
 const getFileLabel = (file) => `${file.name} v${moment(file.updated_at).format("YYYY.MM.DD HH:mm:ss")}`;
 

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import NmpButton from "components/nmp/NmpButton";
 
-import { useFinishRMFile } from "../../../../resourceManagerQueries";
+import { useFinishRMFile } from "api/resourceManager/useRMFieldFiles";
 
 const FileFinishButton = ({ fileId, fieldId, onFinishSuccess }) => {
   const finishFile = useFinishRMFile({ fileId, fieldId }, { onSuccess: onFinishSuccess });

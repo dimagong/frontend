@@ -9,7 +9,7 @@ import MSMapping from "./components/MSMapping";
 import FilesHistory from "./components/FilesHistory";
 import RMContextFeatureTemplate from "./RMContextFeatureTemplate";
 
-import { useRMFieldFiles } from "../../resourceManagerQueries";
+import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
 
 let folderId = 0;
 const getFolder = (name, count, itemsName) => ({ id: folderId++, name, items: Array(count), itemsName });

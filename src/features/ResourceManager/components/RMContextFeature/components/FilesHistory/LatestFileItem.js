@@ -12,6 +12,7 @@ import FileFinishButton from "./FileFinishButton";
 import FileDownloadButton from "./FileDownloadButton";
 
 const LatestFileItem = ({ fieldId, file, expandable, ...attrs }) => {
+  // ToDo: Get initial editing state from API
   const [editing, editingStart, editingStop] = useBoolean(false);
 
   const onEditSuccess = () => editingStart();

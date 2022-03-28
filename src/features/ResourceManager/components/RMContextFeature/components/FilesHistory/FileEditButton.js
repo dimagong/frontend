@@ -5,7 +5,7 @@ import NmpButton from "components/nmp/NmpButton";
 
 import EditIcon from "assets/img/icons/edit.png";
 
-import { useEditRMFile } from "../../../../resourceManagerQueries";
+import { useEditRMFile } from "api/resourceManager/useRMFieldFiles";
 
 const FileEditButton = ({ fileId, onEditSuccess }) => {
   const editFile = useEditRMFile({ fileId }, { onSuccess: onEditSuccess });

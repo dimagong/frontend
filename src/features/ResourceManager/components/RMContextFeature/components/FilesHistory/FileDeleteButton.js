@@ -5,7 +5,7 @@ import NmpButton from "components/nmp/NmpButton";
 
 import DeleteIcon from "assets/img/icons/x.png";
 
-import { useDeleteRMFile } from "../../../../resourceManagerQueries";
+import { useDeleteRMFile } from "api/resourceManager/useRMFieldFiles";
 
 const FileDeleteButton = ({ fileId, fieldId, onDeleteSuccess }) => {
   const deleteFile = useDeleteRMFile({ fileId, fieldId }, { onSuccess: onDeleteSuccess });

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
 
-import { useResourceManagers } from "features/ResourceManager/resourceManagerQueries";
+import { useResourceManagers } from "api/resourceManager/useResourceManagers";
 
 import RMList from "./RMList";
 

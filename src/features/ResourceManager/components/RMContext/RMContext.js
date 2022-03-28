@@ -7,7 +7,7 @@ import RMContextNoData from "./RMContextNoData";
 import RMContextLoading from "./RMContextLoading";
 import RMContextDataView from "./RMContextDataView";
 
-import { useRMHierarchy } from "../../resourceManagerQueries";
+import { useRMHierarchy } from "api/resourceManager/useRMHierarchies";
 
 const RMContext = ({ resourceManagerId, selectedIds, onSelect }) => {
   const { data: hierarchy, isLoading } = useRMHierarchy({ resourceManagerId });

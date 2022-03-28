@@ -6,7 +6,7 @@ import NmpButton from "components/nmp/NmpButton";
 
 import DownloadIcon from "assets/img/icons/cloud-download.png";
 
-import { useDownloadRMFile } from "../../../../resourceManagerQueries";
+import { useDownloadRMFile } from "api/resourceManager/useRMFieldFiles";
 
 const FileDownloadButton = ({ name, fileId }) => {
   const downloadResource = useDownloadRMFile({ fileId, name });
