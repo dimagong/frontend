@@ -24,7 +24,7 @@ const ResourceManager = () => {
   return (
     <div className="d-flex">
       <RMContext selectedIds={selectedIds} onSelect={selectable.select} resourceManagerId={resourceManager.id} />
-      {selected.field ? <RMContextFeature field={selected.field} /> : null}
+      {selected.field ? <RMContextFeature field={selected.field} key={selected.field.id} /> : null}
     </div>
   );
 };
