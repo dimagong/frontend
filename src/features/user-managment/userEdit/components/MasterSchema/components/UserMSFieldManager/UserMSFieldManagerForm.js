@@ -17,8 +17,10 @@ const ElementTypes = {
   Options: [{ label: "Resource Manager", value: ResourceManagerType }],
 };
 
+const fieldLabel = (field) => `${field.breadcrumbs.replace(".", "/")}/${field.name}`;
+
 const fieldsToOption = (resourceField) => ({
-  label: `${resourceField.breadcrumbs}/${resourceField.name}`,
+  label: fieldLabel(resourceField),
   value: resourceField,
 });
 
