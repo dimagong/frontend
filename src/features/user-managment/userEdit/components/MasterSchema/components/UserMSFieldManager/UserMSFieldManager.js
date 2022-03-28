@@ -5,14 +5,14 @@ import { Spinner } from "reactstrap";
 import { IdType } from "utility/prop-types";
 
 import UserMSFieldManagerForm from "./UserMSFieldManagerForm";
-import { useMSUserResource, useAttachRMFileToMS } from "./userMSFieldQueries";
+import { useUserMSResource, useAttachResourceFileToMS } from "api/User/useUserMSResources";
 
 const UserMSFieldManager = ({ userId, msFieldId }) => {
-  const attachRMFile = useAttachRMFileToMS({ msFieldId, userId }, {
+  const attachRMFile = useAttachResourceFileToMS({ msFieldId, userId }, {
     onSuccess: () => toast.success("The resource file was successfully attached."),
   });
 
-  const { data: MSUserResource, isLoading } = useMSUserResource({ msFieldId, userId });
+  const { data: MSUserResource, isLoading } = useUserMSResource({ msFieldId, userId });
 
   const onSubmit = (submitted) => {
     if (submitted.invalid) return;

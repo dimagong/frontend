@@ -9,7 +9,8 @@ import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 import NmpSelect from "components/nmp/NmpSelect";
 import NmpButton from "components/nmp/NmpButton";
 
-import { useUserResourceFieldFiles, useUserResourceFields } from "./userMSFieldQueries";
+import { useUserMSResourceFields } from "api/User/useUserMSResourceFields";
+import { useUserResourceFieldFiles } from "api/User/useUserMSResourceFieldFiles";
 
 const ResourceManagerType = Symbol("Types#ResourceManager");
 
@@ -46,7 +47,7 @@ const UserMSFieldManagerForm = (props) => {
 
   // Resource Field
   const [field, setField] = useState(null);
-  const { data: fieldOptions = [], isLoading: fieldsIsLoading } = useUserResourceFields(
+  const { data: fieldOptions = [], isLoading: fieldsIsLoading } = useUserMSResourceFields(
     { userId },
     {
       select: (fields) => fields.map(fieldsToOption),
