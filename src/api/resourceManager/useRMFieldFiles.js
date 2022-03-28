@@ -9,7 +9,7 @@ export const RMFieldFilesQueryKey = "resource-manager-field-files";
 
 export const useRMFieldFiles = ({ fieldId, assigned = false }, options = {}) => {
   return useQuery({
-    queryKey: [RMFieldFilesQueryKey, fieldId, assigned],
+    queryKey: [RMFieldFilesQueryKey, fieldId, { assigned }],
     queryFn: ({ signal }) =>
       clientAPI.get(`api/resource-manager-field-file`, {
         signal,
