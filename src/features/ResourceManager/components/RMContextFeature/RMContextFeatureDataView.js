@@ -12,12 +12,11 @@ import RMContextFeatureTemplate from "./RMContextFeatureTemplate";
 import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
 import { useRMFieldFileReferences } from "api/resourceManager/useRMFieldFileReferences";
 
-let folderId = 0;
-const getFolder = (name, count, itemsName) => ({ id: folderId++, name, items: count ? Array(count) : [], itemsName });
+const getFolder = (id, name, length, itemsName) => ({ id, name, items: { length }, itemsName });
 const getFolders = ({ previousFilesCount, mappedElementsCount }) => ({
-  PreviousVersions: getFolder("Previous Versions", previousFilesCount, "revisions"),
+  PreviousVersions: getFolder(1, "Previous Versions", previousFilesCount, "revisions"),
   // SharedWith: getFolder("Shared With"),
-  Mapping: getFolder("MS Mapping", mappedElementsCount, "mapped elements"),
+  Mapping: getFolder(2, "MS Mapping", mappedElementsCount, "mapped elements"),
 });
 
 const RMContextFeatureDataView = ({ field }) => {
