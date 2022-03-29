@@ -191,12 +191,12 @@ const Organization = ({ create = false }) => {
           </div>
           <div className="form-element">
             <FileInput
-              acceptTypes={["image/png", "image/jpeg"]}
               value={organizationData.logo}
               preview={organizationData.logo?.base64 || organizationData.logo instanceof File && URL.createObjectURL(organizationData.logo)}
               onChange={(file) => {handleFieldValueChange("logo", file)}}
               loading={isFilesLoading || isLoading}
               disabled={isFilesLoading || isLoading}
+              accept="image/png, image/jpeg"
             />
           </div>
         </div>
@@ -222,7 +222,7 @@ const Organization = ({ create = false }) => {
           </div>
           <div className="form-element">
             <FileInput
-              acceptTypes={["application/pdf"]}
+              accept="application/pdf"
               value={organizationData.brochure}
               onChange={(file) => {handleFieldValueChange("brochure", file)}}
               loading={isFilesLoading || isLoading}
