@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { ArrayOfString, IdType } from "utility/prop-types";
 
 import NmpButton from "components/nmp/NmpButton";
+import GeneralMSHTreeElement from "components/MasterSchemaHierarchy/GeneralMSHTreeElement";
 import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
 import RMContextTemplate from "./RMContextTemplate";
@@ -56,6 +57,7 @@ const RMContextDataView = ({ resourceManagerId, hierarchy, selectedIds, onSelect
         selectedIds={selectedIds}
         elementCreationLoading={createField.isLoading || createGroup.isLoading}
         onElementCreationSubmit={onElementCreationSubmit}
+        components={{ Element: GeneralMSHTreeElement }}
       />
     </RMContextTemplate>
   );

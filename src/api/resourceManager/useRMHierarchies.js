@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { clientAPI } from "../clientAPI";
 import { useGenericMutation } from "../useGenericMutation";
 import { normalizeHierarchy } from "../masterSchema/normalizers";
+import * as Interfaces from "../masterSchema/interfaces";
 
 export const RMHierarchyQueryKey = "resource-manager-hierarchies";
 
@@ -12,6 +13,7 @@ export const useRMHierarchy = ({ resourceManagerId }, options = {}) => {
     queryFn: ({ signal }) =>
       clientAPI
         .get(`api/resource-manager/${resourceManagerId}/hierarchy`, { signal })
+        .then((data) => Interfaces.MasterSchemaHierarchyInterface.cast(data))
         .then((data) => (data ? normalizeHierarchy(data) : null)),
 
     ...options,
