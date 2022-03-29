@@ -77,7 +77,7 @@ const MSHTreeNode = (props) => {
 
           <div className="tree-hierarchy__date">
             <div>{moment(date).format("DD.MM.YYYY")}</div>
-            <div>{moment(date).format("HH:MM")}</div>
+            <div>{moment(date).format("HH:mm")}</div>
           </div>
         </div>
       </div>

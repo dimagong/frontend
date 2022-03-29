@@ -14,7 +14,8 @@ const MasterSchemaContextSearch = () => {
   const masterSchemas = useStoreQuery(getMasterSchemasRequest, selectMasterSchemas);
   const [selectedId, { select, reset }] = useMasterSchemas();
 
-  React.useEffect(() => void reset(), [reset]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => () => reset(), []);
 
   return (
     <React.Profiler
