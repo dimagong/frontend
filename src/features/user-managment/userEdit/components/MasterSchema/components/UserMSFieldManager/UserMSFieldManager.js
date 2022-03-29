@@ -1,17 +1,31 @@
 import React from "react";
 import { Spinner } from "reactstrap";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 
 import { IdType } from "utility/prop-types";
 
+import appSlice from "app/slices/appSlice";
 import { useUserMSResource, useAttachResourceFileToMS } from "api/User/useUserMSResources";
 
 import UserMSFieldManagerForm from "./UserMSFieldManagerForm";
 
+const { getUserMasterSchemaHierarchyRequest } = appSlice.actions;
+
 const UserMSFieldManager = ({ userId, msFieldId }) => {
-  const attachRMFile = useAttachResourceFileToMS({ msFieldId, userId }, {
-    onSuccess: () => toast.success("The resource file was successfully saved."),
-  });
+  const dispatch = useDispatch();
+
+  // ToDo: rename it to save
+  const attachRMFile = useAttachResourceFileToMS(
+    { msFieldId, userId },
+    {
+      onSuccess: () => {
+        toast.success("The resource file was successfully saved.");
+        // Fixme: Critical!!! Hack to update versions when hierarchy is updating
+        dispatch(getUserMasterSchemaHierarchyRequest({ userId }));
+      },
+    }
+  );
 
   const { data: MSUserResource, isLoading } = useUserMSResource({ msFieldId, userId });
 
