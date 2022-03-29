@@ -17,19 +17,15 @@ import { useOpenRMFileReferencesPreview, useSaveRMFileReferences } from "api/res
 
 import MappingFileReference from "./MappingFileReference";
 
-const getReferenceFieldFromReference = (reference, fieldOptions) => {
-  const value = fieldOptions.find(({ value }) => value.id === reference.master_schema_field_id) || null;
-
-  return { value };
-};
-
 const getReferenceFieldsFromReferences = (references, fieldOptions) => {
-  const referenceFieldPairs = references.map((reference) => [
-    reference.id,
-    getReferenceFieldFromReference(reference, fieldOptions),
-  ]);
+  const referenceFields = Object.fromEntries(
+    references.map((reference) => {
+      const fieldOption = fieldOptions.find(({ value }) => value.id === reference.master_schema_field_id);
+      return [reference.id, { value: fieldOption || null }];
+    })
+  );
 
-  return Object.fromEntries(referenceFieldPairs);
+  return referenceFields;
 };
 
 const getOptionFromUser = (user) => ({ label: user.full_name, value: user });
@@ -45,16 +41,21 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
 
   const onPreview = () => openPreview.mutate({ userId: user.value.id });
 
+  // const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
   const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
 
-  // Re-calculate referenceFields for fileId
+  // Re-calculate referenceFields
   useEffect(() => {
-    setReferenceFields(() => getReferenceFieldsFromReferences(references, fieldOptions));
+    const referenceFields = getReferenceFieldsFromReferences(references, fieldOptions);
+
+    setReferenceFields(referenceFields);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileId]);
+  }, [references, fieldOptions]);
 
   const onReferenceChange = (referenceId) => (field) =>
-    setReferenceFields((prev) => ({ ...prev, [referenceId]: field }));
+    setReferenceFields((prev) => {
+      return { ...prev, [referenceId]: field };
+    });
 
   // ToDo it
   // Filter fieldOptions with selectedFieldOptions from reference fields
