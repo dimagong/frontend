@@ -30,16 +30,15 @@ export const useUploadRMFile = ({ fieldId }, options = {}) => {
   });
 };
 
-export const useDownloadRMFile = ({ fileId, name }, options = {}) => {
+export const useDownloadRMFile = ({ fileId, filename }, options = {}) => {
   return useGenericMutation({
-    mutationFn: () =>
-      clientAPI
-        .get(`api/resource-manager-field-file/${fileId}/download`, {
-          responseType: "blob",
-          onlyData: false,
-          flatData: false,
-        })
-        .then((response) => downloadBlob(response.data, name)),
+    mutationFn: () => clientAPI
+      .get(`api/resource-manager-field-file/${fileId}/download`, {
+        responseType: "blob",
+        onlyData: false,
+        flatData: false,
+      })
+      .then((response) => downloadBlob(response.data, filename)),
     ...options,
   });
 };

@@ -1,16 +1,22 @@
 import moment from "moment";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { IdType } from "utility/prop-types";
 import { preventDefault } from "utility/event-decorators";
+
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
 import NmpSelect from "components/nmp/NmpSelect";
 import NmpButton from "components/nmp/NmpButton";
 
 import { useUserMSResourceFields } from "api/User/useUserMSResourceFields";
-import { useUserResourceFieldFiles } from "api/User/useUserMSResourceFieldFiles";
+import { useDownloadRMFile, useEditRMFile } from "api/resourceManager/useRMFieldFiles";
+import { useDeleteUserRMFile, useFinishUserRMFile, useUserRMFieldFiles } from "api/User/useUserRMFieldFiles";
+
+import RMFileControls from "features/ResourceManager/components/RMContextFeature/components/FilesHistory/RMFileControls";
+import FileDownloadButton from "features/ResourceManager/components/RMContextFeature/components/FilesHistory/FileDownloadButton";
 
 const ResourceManagerType = Symbol("Types#ResourceManager");
 
@@ -44,7 +50,6 @@ const UserMSFieldManagerForm = (props) => {
     submitting,
     onSubmit: propOnSubmit,
   } = props;
-
   // Resource Field
   const [field, setField] = useState(null);
   const { data: fieldOptions = [], isLoading: fieldsIsLoading } = useUserMSResourceFields(
@@ -58,27 +63,58 @@ const UserMSFieldManagerForm = (props) => {
       },
     }
   );
-
   // Resource Field Files
   const rmFieldId = field?.value?.id;
-  const file = useFormField(null, [Validators.required], { useAdvanced: true });
-  const { data: fileOptions = [], isLoading: filesIsLoading } = useUserResourceFieldFiles(
+  const fileFormField = useFormField(null, [Validators.required], { useAdvanced: true });
+  const { data: fileOptions = [], isLoading: filesIsLoading } = useUserRMFieldFiles(
     { rmFieldId, userId },
     {
+      refetchOnWindowFocus: false,
       select: (files) => files.map(filesToOption),
       onSuccess: (options) => {
         const option = findOptionByValueId(options, initialRmFieldFileId);
 
-        option && file.setValue(option);
+        option && fileFormField.setValue(option);
       },
     }
   );
 
+  const [isEditing, setEditing] = useState(false);
+  const file = useMemo(() => fileFormField.value?.value, [fileFormField]);
+
+  useEffect(() => {
+    if (!file || !file.is_latest_version) {
+      setEditing(false);
+      return;
+    }
+
+    setEditing(file.google_drive_doc !== null);
+  }, [file]);
+
+  const onEditSuccess = () => setEditing(true);
+
+  const onDeleteSuccess = () => toast.success("File was successfully removed");
+
+  const onFinishEditingSuccess = () => {
+    setEditing(false);
+    toast.success("File was successfully edited");
+  };
+
+  const fileId = file?.id;
+  const downloadRMFIle = useDownloadRMFile({ fileId, filename: file?.name });
+  const editRMFile = useEditRMFile({ fileId }, { onSuccess: onEditSuccess });
+  // That mutations used for user scope (with user QueryKey)
+  const deleteRMFile = useDeleteUserRMFile({ fileId, fieldId: rmFieldId, userId }, { onSuccess: onDeleteSuccess });
+  const finishRMFile = useFinishUserRMFile(
+    { fileId, fieldId: rmFieldId, userId },
+    { onSuccess: onFinishEditingSuccess }
+  );
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => void file.setValue(null), [field]);
+  useEffect(() => void fileFormField.setValue(null), [field]);
 
   // Form control
-  const form = useFormGroup({ file });
+  const form = useFormGroup({ file: fileFormField });
 
   const onSubmit = () => propOnSubmit(form);
 
@@ -120,18 +156,38 @@ const UserMSFieldManagerForm = (props) => {
             Version
           </label>
           <NmpSelect
-            value={file.value}
+            value={fileFormField.value}
             options={fileOptions}
-            onChange={file.onChange}
+            onChange={fileFormField.onChange}
             loading={filesIsLoading}
             searchable
             backgroundColor="transparent"
             inputId="resource-version"
           />
+
+          {file?.is_latest_version ? (
+            <div className="d-flex justify-content-end py-1" key={file.id}>
+              <RMFileControls
+                isEditing={isEditing}
+                onDownload={downloadRMFIle.mutate}
+                downloadIsLoading={downloadRMFIle.isLoading}
+                onEdit={editRMFile.mutate}
+                editIsLoading={editRMFile.isLoading}
+                onDelete={deleteRMFile.mutate}
+                deleteIsLoading={deleteRMFile.isLoading}
+                onFinishEditing={finishRMFile.mutate}
+                finishEditingIsLoading={finishRMFile.isLoading}
+              />
+            </div>
+          ) : (
+            <div className="d-flex justify-content-end py-1">
+              <FileDownloadButton onDownload={downloadRMFIle.mutate} isLoading={downloadRMFIle.isLoading} />
+            </div>
+          )}
         </div>
       ) : null}
 
-      <NmpButton className="ml-auto mt-1" color="primary" disabled={form.invalid} loading={submitting}>
+      <NmpButton className="ml-auto" color="primary" disabled={form.invalid} loading={submitting}>
         Save
       </NmpButton>
     </form>

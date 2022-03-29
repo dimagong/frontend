@@ -1,18 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { IdType } from "utility/prop-types";
 import NmpButton from "components/nmp/NmpButton";
 
 import DownloadIcon from "assets/img/icons/cloud-download.png";
 
-import { useDownloadRMFile } from "api/resourceManager/useRMFieldFiles";
-
-const FileDownloadButton = ({ name, fileId }) => {
-  const downloadResource = useDownloadRMFile({ fileId, name });
-
-  const onDownload = () => downloadResource.mutate();
-
+const FileDownloadButton = ({ onDownload, isLoading }) => {
   return (
     <NmpButton
       className="mr-1"
@@ -21,14 +14,14 @@ const FileDownloadButton = ({ name, fileId }) => {
       backgroundColor="transparent"
       icon={<img src={DownloadIcon} alt="Download" />}
       onClick={onDownload}
-      loading={downloadResource.isLoading}
+      loading={isLoading}
     />
   );
 };
 
 FileDownloadButton.propTypes = {
-  name: PropTypes.string.isRequired,
-  fileId: IdType.isRequired,
+  onDownload: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default FileDownloadButton;
