@@ -13,6 +13,7 @@ import NmpButton from "components/nmp/NmpButton";
 
 import { useUserMSResourceFields } from "api/User/useUserMSResourceFields";
 import { useDownloadRMFile, useEditRMFile } from "api/resourceManager/useRMFieldFiles";
+import { useOpenRMFileReferencesPreview } from "api/resourceManager/useRMFieldFileReferences";
 import { useDeleteUserRMFile, useFinishUserRMFile, useUserRMFieldFiles } from "api/User/useUserRMFieldFiles";
 
 import RMFileControls from "features/ResourceManager/components/RMContextFeature/components/FilesHistory/RMFileControls";
@@ -118,6 +119,10 @@ const UserMSFieldManagerForm = (props) => {
 
   const onSubmit = () => propOnSubmit(form);
 
+  const openPreview = useOpenRMFileReferencesPreview({ fileId });
+
+  const onPreview = () => openPreview.mutate({ userId });
+
   return (
     <form className="d-flex flex-wrap mb-1" onSubmit={preventDefault(onSubmit)}>
       <h2 className="h1 font-weight-bold">Current</h2>
@@ -165,25 +170,29 @@ const UserMSFieldManagerForm = (props) => {
             inputId="resource-version"
           />
 
-          {file?.is_latest_version ? (
-            <div className="d-flex justify-content-end py-1" key={file.id}>
-              <RMFileControls
-                isEditing={isEditing}
-                onDownload={downloadRMFIle.mutate}
-                downloadIsLoading={downloadRMFIle.isLoading}
-                onEdit={editRMFile.mutate}
-                editIsLoading={editRMFile.isLoading}
-                onDelete={deleteRMFile.mutate}
-                deleteIsLoading={deleteRMFile.isLoading}
-                onFinishEditing={finishRMFile.mutate}
-                finishEditingIsLoading={finishRMFile.isLoading}
-              />
+          {file ? (
+            <div className="d-flex justify-content-end align-items-center py-1" key={file.id}>
+              <NmpButton className="mx-1" color="white" type="button" onClick={onPreview} loading={openPreview.isLoading}>
+                Preview
+              </NmpButton>
+
+              {file?.is_latest_version ? (
+                <RMFileControls
+                  isEditing={isEditing}
+                  onDownload={downloadRMFIle.mutate}
+                  downloadIsLoading={downloadRMFIle.isLoading}
+                  onEdit={editRMFile.mutate}
+                  editIsLoading={editRMFile.isLoading}
+                  onDelete={deleteRMFile.mutate}
+                  deleteIsLoading={deleteRMFile.isLoading}
+                  onFinishEditing={finishRMFile.mutate}
+                  finishEditingIsLoading={finishRMFile.isLoading}
+                />
+              ) : (
+                <FileDownloadButton onDownload={downloadRMFIle.mutate} isLoading={downloadRMFIle.isLoading} />
+              )}
             </div>
-          ) : (
-            <div className="d-flex justify-content-end py-1">
-              <FileDownloadButton onDownload={downloadRMFIle.mutate} isLoading={downloadRMFIle.isLoading} />
-            </div>
-          )}
+          ) : null}
         </div>
       ) : null}
 
