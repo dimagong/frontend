@@ -440,6 +440,20 @@ const getUserMasterSchemaHierarchySuccess = (state, { payload }) => {
   state.isError = null;
 };
 
+const addFieldToUserMasterSchemaSuccess = (state, { payload }) => {
+  toast.success("The field added successfully.");
+
+  state.isError = false;
+  state.isLoading = false;
+};
+
+const addGroupToUserMasterSchemaSuccess = (state, { payload }) => {
+  toast.success("The group added successfully.");
+
+  state.isError = false;
+  state.isLoading = false;
+};
+
 // SETTERS
 
 const setUser = (state, { payload }) => {
@@ -614,6 +628,8 @@ export default {
 
   getUserMasterSchemaHierarchySuccess,
   setUserMasterSchemaHierarchySearchParams,
+  addFieldToUserMasterSchemaSuccess,
+  addGroupToUserMasterSchemaSuccess,
 
   setUser,
   setManager,
