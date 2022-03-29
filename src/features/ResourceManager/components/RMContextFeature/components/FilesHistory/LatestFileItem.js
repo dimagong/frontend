@@ -18,10 +18,7 @@ import RMFileControls from "./RMFileControls";
 const LatestFileItem = ({ fieldId, file, expandable, ...attrs }) => {
   const [isEditing, editingStart, editingStop] = useBoolean(file.google_drive_doc !== null);
 
-  const onEditSuccess = () => {
-    editingStart();
-    expandable.clear();
-  };
+  const onEditSuccess = () => editingStart();
 
   const onDeleteSuccess = () => {
     expandable.clear();
