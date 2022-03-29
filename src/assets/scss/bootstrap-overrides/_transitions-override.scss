@@ -1,0 +1,27 @@
+// Took from Bootstrap 5.0.0
+
+// It is redundant and sometimes leads to unexpected behaviors and page 's crashes
+// Fixed in #29288 https://github.com/twbs/bootstrap/pull/29288
+
+// Took _transitions from Bootstrap 5.0.0 https://github.com/twbs/bootstrap/blob/v5.0.0/scss/_transitions.scss
+
+.fade {
+  @include transition($transition-fade);
+
+  &:not(.show) {
+    opacity: 0;
+  }
+}
+
+// scss-docs-start collapse-classes
+.collapse {
+  &:not(.show) {
+    display: none;
+  }
+}
+
+.collapsing {
+  height: 0;
+  overflow: hidden;
+  @include transition($transition-collapse);
+}

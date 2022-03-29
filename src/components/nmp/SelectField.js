@@ -7,10 +7,9 @@ import FormField from "./FormField";
 const SelectField = (props) => {
   const {
     label,
-    name,
     value,
     options,
-    errors,
+    errors = [],
     valid,
     invalid,
     placeholder,
@@ -36,7 +35,6 @@ const SelectField = (props) => {
     return (
       <Select
         inputId={id}
-        name={name}
         value={value}
         options={options}
         onChange={onChange}
@@ -70,12 +68,7 @@ const SelectField = (props) => {
   );
 };
 
-SelectField.defaultProps = {
-  errors: [],
-};
-
 SelectField.propTypes = {
-  name: PropTypes.string.isRequired,
   value: PropTypes.shape({ label: PropTypes.string, value: PropTypes.any }),
   options: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.any })).isRequired,
 

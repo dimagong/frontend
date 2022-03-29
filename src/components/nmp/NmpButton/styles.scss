@@ -1,4 +1,8 @@
 .nmp-btn {
+  &--initial {
+    transition: none;
+  }
+
   &--icon {
     padding: 0.5rem;
 
