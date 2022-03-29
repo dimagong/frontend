@@ -22,9 +22,9 @@ export const useSaveRMFileReferences = ({ fileId }, options = {}) => {
   });
 };
 
-export const useOpenRMFileReferencesPreview = ({ fileId, userId }, options = {}) => {
+export const useOpenRMFileReferencesPreview = ({ fileId }, options = {}) => {
   return useGenericMutation({
-    mutationFn: () =>
+    mutationFn: ({ userId }) =>
       clientAPI
         .get(`api/resource-manager-field-file/${fileId}/references/preview`, {
           responseType: "blob",
