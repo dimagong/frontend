@@ -1,15 +1,16 @@
 import React from "react";
-import { toast } from "react-toastify"
 import { Spinner } from "reactstrap";
+import { toast } from "react-toastify";
 
 import { IdType } from "utility/prop-types";
 
-import UserMSFieldManagerForm from "./UserMSFieldManagerForm";
 import { useUserMSResource, useAttachResourceFileToMS } from "api/User/useUserMSResources";
+
+import UserMSFieldManagerForm from "./UserMSFieldManagerForm";
 
 const UserMSFieldManager = ({ userId, msFieldId }) => {
   const attachRMFile = useAttachResourceFileToMS({ msFieldId, userId }, {
-    onSuccess: () => toast.success("The resource file was successfully attached."),
+    onSuccess: () => toast.success("The resource file was successfully saved."),
   });
 
   const { data: MSUserResource, isLoading } = useUserMSResource({ msFieldId, userId });

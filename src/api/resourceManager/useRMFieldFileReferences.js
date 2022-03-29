@@ -43,16 +43,3 @@ export const useOpenRMFileReferencesPreview = ({ fileId }, options = {}) => {
   });
 };
 
-export const useExportRMFileReferencesToMS = ({ fileId, userId }, options = {}) => {
-  return useGenericMutation({
-    mutationFn: () =>
-      clientAPI
-        .post(`api/resource-manager-field-file/${fileId}/references/export`, { user_id: userId })
-        .then((response) => {
-          const url = window.URL.createObjectURL(response.data);
-
-          window.open(url, "_blank");
-        }),
-    ...options,
-  });
-};

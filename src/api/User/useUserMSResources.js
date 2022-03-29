@@ -17,11 +17,15 @@ export const useUserMSResource = ({ msFieldId, userId }, options = {}) => {
 export const useAttachResourceFileToMS = ({ msFieldId, userId }, options = {}) => {
   return useGenericMutation({
     mutationFn: ({ rmFieldFileId }) =>
-      clientAPI.put("api/user-resource", {
-        user_id: userId,
-        master_schema_field_id: msFieldId,
-        resource_manager_field_file_id: rmFieldFileId,
-      }),
+      clientAPI
+        .put("api/user-resource", {
+          user_id: userId,
+          master_schema_field_id: msFieldId,
+          resource_manager_field_file_id: rmFieldFileId,
+        })
+        .then(() =>
+          clientAPI.post(`api/resource-manager-field-file/${rmFieldFileId}/references/export`, { user_id: userId })
+        ),
     queryKey: [UserMSResourcesQueryKey, msFieldId, userId],
     ...options,
   });
