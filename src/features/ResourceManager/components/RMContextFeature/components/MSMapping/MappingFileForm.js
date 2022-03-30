@@ -1,8 +1,8 @@
 import _ from "lodash/fp";
 import PropTypes from "prop-types";
-import { Spinner } from "reactstrap";
-import React, { useReducer } from "react";
+import { Col, Row, Spinner } from "reactstrap";
 import Scrollbars from "react-custom-scrollbars";
+import React, { useEffect, useState } from "react";
 
 import { useFormGroup } from "hooks/use-form";
 
@@ -10,31 +10,62 @@ import { IdType, OptionsType } from "utility/prop-types";
 import { preventDefault } from "utility/event-decorators";
 
 import NmpButton from "components/nmp/NmpButton";
+import NmpSelect from "components/nmp/NmpSelect";
+
+import { useAccessQueryUsers } from "api/resourceManager/useRMFieldFileReferenceUsers";
+import { useOpenRMFileReferencesPreview, useSaveRMFileReferences } from "api/resourceManager/useRMFieldFileReferences";
 
 import MappingFileReference from "./MappingFileReference";
 
-import { useExportRMFileToMS, useOpenRMFilePreview, useSaveMappingReference } from "../../../../resourceManagerQueries";
-
-const getReferenceFieldFromReference = (reference, fieldOptions) => {
-  return { value: fieldOptions.find(({ value }) => value.id === reference.master_schema_field_id) };
-};
-
 const getReferenceFieldsFromReferences = (references, fieldOptions) => {
-  return Object.fromEntries(
-    references.map((reference) => [reference.id, getReferenceFieldFromReference(reference, fieldOptions)])
+  const referenceFields = Object.fromEntries(
+    references.map((reference) => {
+      const fieldOption = fieldOptions.find(({ value }) => value.id === reference.master_schema_field_id);
+      return [reference.id, { value: fieldOption || null }];
+    })
   );
+
+  return referenceFields;
 };
 
-// ToDo: filter fieldOption with selected
-const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) => {
-  const saveMappingReference = useSaveMappingReference({ fileId });
-  const downloadMappingPreview = useOpenRMFilePreview({ fileId, userId });
-  const exportRMFileToMS = useExportRMFileToMS({ fileId, userId });
+const getOptionFromUser = (user) => ({ label: user.full_name, value: user });
 
-  const [referenceFields, setReferenceFields] = useReducer(
-    (p, s) => ({ ...p, ...s }),
-    getReferenceFieldsFromReferences(references, fieldOptions)
-  );
+const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
+  const saveReferences = useSaveRMFileReferences({ fileId });
+  const openPreview = useOpenRMFileReferencesPreview({ fileId });
+  // Users
+  const [user, setUser] = useState(null);
+  const { data: userOptions, isLoading: usersIsLoading } = useAccessQueryUsers({
+    select: (users) => users.map(getOptionFromUser),
+  });
+
+  const onPreview = () => openPreview.mutate({ userId: user.value.id });
+
+  // const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
+  const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
+
+  // Re-calculate referenceFields
+  useEffect(() => {
+    const referenceFields = getReferenceFieldsFromReferences(references, fieldOptions);
+
+    setReferenceFields(referenceFields);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [references, fieldOptions]);
+
+  const onReferenceChange = (referenceId) => (field) =>
+    setReferenceFields((prev) => {
+      return { ...prev, [referenceId]: field };
+    });
+
+  // ToDo it
+  // Filter fieldOptions with selectedFieldOptions from reference fields
+  // const fieldOptions = useMemo(() => {
+  //   const referenceFieldsArray = Object.values(referenceFields);
+  //
+  //   return propFieldOptions.filter((fieldOption) => {
+  //     return referenceFieldsArray.find(({ value }) => fieldOption.value.id !== value?.value?.id);
+  //   });
+  // }, [propFieldOptions, referenceFields]);
 
   const form = useFormGroup(referenceFields);
 
@@ -46,12 +77,10 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
       master_schema_field_id: field.value.id,
     }));
 
-    saveMappingReference.mutate(data);
+    saveReferences.mutate(data);
   };
 
-  const onReferenceChange = (referenceId) => (field) => setReferenceFields({ [referenceId]: field });
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center height-300">
         <Spinner />
@@ -60,7 +89,6 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
   }
 
   if (_.isEmpty(references)) {
-    // ToDo: style it
     return (
       <div className="d-flex justify-content-center align-items-center height-300">
         <strong>No templates bindings was found.</strong>
@@ -73,7 +101,7 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
       <Scrollbars className="mb-2" autoHeight autoHeightMax={350}>
         {references.map((reference) => (
           <MappingFileReference
-            value={referenceFields[reference.id].value}
+            value={referenceFields[reference.id]?.value}
             options={fieldOptions}
             onChange={onReferenceChange(reference.id)}
             fieldTemplate={reference.field_template}
@@ -82,28 +110,27 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
         ))}
       </Scrollbars>
 
-      <div className="d-flex justify-content-between py-1">
-        <NmpButton
-          color="white"
-          type="button"
-          disabled={form.invalid}
-          onClick={downloadMappingPreview.mutate}
-          loading={downloadMappingPreview.isLoading}
-        >
-          Preview
-        </NmpButton>
+      <div className="ms-mapping__preview py-2 mb-2">
+        <Row>
+          <Col xs={{ size: 8, offset: 1 }}>
+            <NmpSelect
+              value={user}
+              options={userOptions}
+              onChange={setUser}
+              loading={usersIsLoading}
+              backgroundColor="transparent"
+            />
+          </Col>
+          <Col xs={3}>
+            <NmpButton color="white" type="button" disabled={!user} onClick={onPreview} loading={openPreview.isLoading}>
+              Preview
+            </NmpButton>
+          </Col>
+        </Row>
+      </div>
 
-        <NmpButton
-          color="secondary"
-          type="button"
-          disabled={form.invalid}
-          onClick={exportRMFileToMS.mutate}
-          loading={exportRMFileToMS.isLoading}
-        >
-          Export to MasterSchema
-        </NmpButton>
-
-        <NmpButton color="primary" disabled={form.invalid} loading={saveMappingReference.isLoading}>
+      <div className="d-flex justify-content-end py-1">
+        <NmpButton color="primary" disabled={form.invalid} loading={saveReferences.isLoading}>
           Save
         </NmpButton>
       </div>
@@ -112,11 +139,10 @@ const MappingFileForm = ({ fileId, userId, references, fieldOptions, loading }) 
 };
 
 MappingFileForm.propTypes = {
-  userId: IdType.isRequired,
   fileId: IdType.isRequired,
-  references: PropTypes.arrayOf(PropTypes.object),
-  fieldOptions: OptionsType,
-  loading: PropTypes.bool.isRequired,
+  fieldOptions: OptionsType.isRequired,
+  references: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default MappingFileForm;

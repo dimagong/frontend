@@ -15,6 +15,7 @@ import {
 } from "app/selectors/userSelectors";
 
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
+import { selectSelectedMasterSchemaId } from "../../selectors/masterSchemaSelectors";
 
 const {
   getProfileSuccess,
@@ -118,6 +119,16 @@ const {
   getUserMasterSchemaHierarchyRequest,
   getUserMasterSchemaHierarchySuccess,
   getUserMasterSchemaHierarchyError,
+
+  addFieldToUserMasterSchemaRequest,
+  addFieldToUserMasterSchemaSuccess,
+  addFieldToUserMasterSchemaError,
+
+  addGroupToUserMasterSchemaRequest,
+  addGroupToUserMasterSchemaSuccess,
+  addGroupToUserMasterSchemaError,
+
+  setSelectedMasterSchema,
 } = appSlice.actions;
 
 function* getProfile() {
@@ -418,8 +429,33 @@ function* getUserMasterSchemaHierarchy({ payload }) {
       show_empty_folders: isSearchParamsInitial,
     })
     yield put(getUserMasterSchemaHierarchySuccess({ hierarchy }));
+    yield put(setSelectedMasterSchema({ masterSchema: { id: hierarchy.masterSchemaId } }));
   } catch (error) {
     yield put(getUserMasterSchemaHierarchyError(error));
+  }
+}
+
+function* addField({ payload }) {
+  const { name, parentId, userId } = payload;
+
+  try {
+    const field = yield call(masterSchemaApi.addField, { name, parentId });
+    yield call(getUserMasterSchemaHierarchy, { payload: { userId } });
+    yield put(addFieldToUserMasterSchemaSuccess({ field }));
+  } catch (error) {
+    yield put(addFieldToUserMasterSchemaError(error));
+  }
+}
+
+function* addGroup({ payload }) {
+  const { name, parentId, userId } = payload;
+
+  try {
+    const group = yield call(masterSchemaApi.addGroup, { name, parentId });
+    yield call(getUserMasterSchemaHierarchy, { payload: { userId } });
+    yield put(addGroupToUserMasterSchemaSuccess({ group }));
+  } catch (error) {
+    yield put(addGroupToUserMasterSchemaError(error));
   }
 }
 
@@ -459,5 +495,7 @@ export default function* () {
     yield takeLatest(getUserPermissionsRequest.type, getUserPermissions),
 
     yield takeLatest(getUserMasterSchemaHierarchyRequest, getUserMasterSchemaHierarchy),
+    yield takeLatest(addFieldToUserMasterSchemaRequest, addField),
+    yield takeLatest(addGroupToUserMasterSchemaRequest, addGroup),
   ]);
 }

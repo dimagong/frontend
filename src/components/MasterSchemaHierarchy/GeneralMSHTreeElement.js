@@ -23,7 +23,7 @@ const GeneralMSHTreeElement = (props) => {
       index={index}
       name={node.name}
       date={node.createdAt}
-      isLocked={node.isSystem}
+      isLocked={node.isSystem || false}
       expanded={expanded}
       onExpand={onExpand}
       onCollapse={onCollapse}
@@ -38,7 +38,7 @@ const GeneralMSHTreeElement = (props) => {
       name={node.name}
       index={index}
       date={node.createdAt}
-      isLocked={node.isSystem}
+      isLocked={node.isSystem || false}
       selected={selected}
       onSelect={onSelect}
       children={children}

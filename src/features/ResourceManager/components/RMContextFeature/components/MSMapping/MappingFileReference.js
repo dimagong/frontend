@@ -1,18 +1,23 @@
+import PropTypes from "prop-types";
 import { Col, Row } from "reactstrap";
 import React, { useEffect, useMemo } from "react";
 
-import { useFormField, Validators } from "hooks/use-form";
+import { useFormField } from "hooks/use-form";
+
+import { OptionsType } from "utility/prop-types";
 
 import NmpSelect from "components/nmp/NmpSelect";
 
 const MappingFileReference = ({ value, options, onChange, fieldTemplate: propFieldTemplate, }) => {
   const fieldTemplate = useMemo(() => `{{ msRef: ${propFieldTemplate} }}`, [propFieldTemplate]);
 
-  // Fixme: Pristine & Dirty case within invalid/valid then use Validators.identical(value)
-  const field = useFormField(value, [Validators.required], { useAdvanced: true });
-
+  const field = useFormField(value, [], { useAdvanced: true });
+  // Call onChange when field.value changing
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => onChange(field), [field.value]);
+  // Update value
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => field.onChange(value), [value]);
 
   return (
     <Row className="py-1" noGutters>
@@ -44,6 +49,12 @@ const MappingFileReference = ({ value, options, onChange, fieldTemplate: propFie
   );
 };
 
-MappingFileReference.propTypes = {};
+MappingFileReference.propTypes = {
+  value: PropTypes.any.isRequired,
+  // defaultValue: PropTypes.any,
+  options: OptionsType.isRequired,
+  onChange: PropTypes.func.isRequired,
+  fieldTemplate: PropTypes.string.isRequired,
+};
 
 export default MappingFileReference;

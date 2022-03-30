@@ -8,7 +8,7 @@ import AddButton from "components/AddButton";
 import CustomModal from "components/CustomModal";
 import FileInput from "components/formElements/FileInput";
 
-import { useUploadRMFile } from "../../../../resourceManagerQueries";
+import { useUploadRMFile } from "api/resourceManager/useRMFieldFiles";
 
 const UploadRMFileModal = ({ fieldId }) => {
   const [file, setFile] = useState(null);
@@ -46,7 +46,12 @@ const UploadRMFileModal = ({ fieldId }) => {
         onSubmit={onResourceUploadSubmit}
       >
         <div className="pb-2">
-          <FileInput onChange={setFile} value={file} loading={false} />
+          <FileInput
+            onChange={setFile}
+            value={file}
+            loading={false}
+            accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          />
         </div>
       </CustomModal>
     </>

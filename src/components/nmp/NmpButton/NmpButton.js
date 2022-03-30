@@ -1,11 +1,12 @@
 import "./styles.scss";
 
 import _ from "lodash/fp";
-import React from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
-import { useForkRef } from "@material-ui/core"; // ToDo replace it by own
+// ToDo replace it by own
+import { useForkRef } from "@material-ui/core";
 import { Button as RSButton, Spinner as RSSpinner } from "reactstrap";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { stringIsColor } from "utility/string-is-color";
 
@@ -34,12 +35,15 @@ const NmpButton = React.forwardRef((props, ref) => {
     ...attrs
   } = props;
 
-  const buttonRef = React.useRef();
+  const buttonRef = useRef();
   const forkedRef = useForkRef(buttonRef, ref);
-  const textColorIsColor = React.useMemo(() => stringIsColor(textColor), [textColor]);
-  const backgroundColorIsColor = React.useMemo(() => stringIsColor(backgroundColor), [backgroundColor]);
+  const [isFirstRender, setFirstRender] = useState(true);
+  const textColorIsColor = useMemo(() => stringIsColor(textColor), [textColor]);
+  const backgroundColorIsColor = useMemo(() => stringIsColor(backgroundColor), [backgroundColor]);
 
-  React.useLayoutEffect(() => {
+  useEffect(() => void setTimeout(() => setFirstRender(false)), []);
+
+  useLayoutEffect(() => {
     if (!buttonRef.current) return;
 
     if (textColorIsColor) {
@@ -59,7 +63,11 @@ const NmpButton = React.forwardRef((props, ref) => {
 
   return (
     <RSButton
-      className={classnames(className, { "d-inline-flex nmp-btn--icon": Boolean(icon) })}
+      className={classnames(className, {
+        // Solve it in another way because this will break all case when transition style needs in initial rendering
+        "nmp-btn--initial": isFirstRender,
+        "d-inline-flex nmp-btn--icon": Boolean(icon),
+      })}
       innerRef={forkedRef}
       active={active}
       aria-label={ariaLabel}
@@ -80,7 +88,9 @@ const NmpButton = React.forwardRef((props, ref) => {
             {spinner || <RSSpinner color={spinnerColor} size="sm" />}
           </div>
         </div>
-      ) : renderChildren() }
+      ) : (
+        renderChildren()
+      )}
     </RSButton>
   );
 });

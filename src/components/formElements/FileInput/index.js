@@ -8,7 +8,7 @@ const dropZoneStatus = {
   drop: "Drop here",
 };
 
-const FileInput = ({ multiple = false, value, onChange, loading, preview }) => {
+const FileInput = ({ multiple = false, value, onChange, loading, preview, accept }) => {
   const inputFileRef = useRef(null);
   const [status, setStatus] = useState(dropZoneStatus.ready);
   const [, setIsDropZoneVisible] = useState(value === null);
@@ -105,7 +105,7 @@ const FileInput = ({ multiple = false, value, onChange, loading, preview }) => {
             className={"form-element_file-input_hidden-input-file"}
             onChange={handleFiles}
             type="file"
-            accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            accept={accept}
             ref={inputFileRef}
           />
         </div>

@@ -1,18 +1,33 @@
 import React from "react";
-import { toast } from "react-toastify"
 import { Spinner } from "reactstrap";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 
 import { IdType } from "utility/prop-types";
 
+import appSlice from "app/slices/appSlice";
+import { useUserMSResource, useAttachResourceFileToMS } from "api/User/useUserMSResources";
+
 import UserMSFieldManagerForm from "./UserMSFieldManagerForm";
-import { useMSUserResource, useAttachRMFileToMS } from "./userMSFieldQueries";
+
+const { getUserMasterSchemaHierarchyRequest } = appSlice.actions;
 
 const UserMSFieldManager = ({ userId, msFieldId }) => {
-  const attachRMFile = useAttachRMFileToMS({ msFieldId, userId }, {
-    onSuccess: () => toast.success("The resource file was successfully attached."),
-  });
+  const dispatch = useDispatch();
 
-  const { data: MSUserResource, isLoading } = useMSUserResource({ msFieldId, userId });
+  // ToDo: rename it to save
+  const attachRMFile = useAttachResourceFileToMS(
+    { msFieldId, userId },
+    {
+      onSuccess: () => {
+        toast.success("The resource file was successfully saved.");
+        // Fixme: Critical!!! Hack to update versions when hierarchy is updating
+        dispatch(getUserMasterSchemaHierarchyRequest({ userId }));
+      },
+    }
+  );
+
+  const { data: MSUserResource, isLoading } = useUserMSResource({ msFieldId, userId });
 
   const onSubmit = (submitted) => {
     if (submitted.invalid) return;
