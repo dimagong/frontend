@@ -29,6 +29,7 @@ export const FIELD_TYPE_TEXT = 'text',
   FIELD_TYPE_MULTI_SELECT = 'multiSelect',
   FIELD_TYPE_FILE = 'file',
   FIELD_TYPE_FILE_LIST = 'fileList',
+  FIELD_TYPE_RESOURCE = 'resource',
   FIELD_TYPE_HELP_TEXT = 'helpText';
 
 export const FIELD_TYPES = [
@@ -41,7 +42,8 @@ export const FIELD_TYPES = [
   FIELD_TYPE_MULTI_SELECT,
   FIELD_TYPE_FILE,
   FIELD_TYPE_FILE_LIST,
-  FIELD_TYPE_HELP_TEXT
+  FIELD_TYPE_HELP_TEXT,
+  FIELD_TYPE_RESOURCE
 ];
 
 export const RJSF_FIELD_TYPE_STRING = 'string',
@@ -49,6 +51,7 @@ export const RJSF_FIELD_TYPE_STRING = 'string',
   RJSF_FIELD_TYPE_BOOLEAN = 'boolean',
   RJSF_FIELD_TYPE_INTEGER = 'integer',
   RJSF_FIELD_TYPE_ARRAY = 'array',
+  RJSF_FIELD_TYPE_RESOURCE = 'resource',
   RJSF_FIELD_TYPE_HELP_TEXT = 'helpText';
 
 export default {
