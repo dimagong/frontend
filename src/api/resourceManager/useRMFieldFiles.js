@@ -37,6 +37,7 @@ export const useDownloadRMFile = ({ fileId, filename }, options = {}) => {
         responseType: "blob",
         onlyData: false,
         flatData: false,
+        flatError: false,
       })
       .then((response) => downloadBlob(response.data, filename)),
     ...options,
