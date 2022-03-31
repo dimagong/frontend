@@ -7,7 +7,7 @@ import FileItem from "./FileItem";
 import FileDownloadButton from "./FileDownloadButton";
 
 const PreviousFileItem = ({ file, expandable, ...attrs }) => {
-  const downloadRMFIle = useDownloadRMFile({ fileId: file.is, filename: file.name });
+  const downloadRMFIle = useDownloadRMFile({ fileId: file.id, filename: file.name });
 
   return (
     <FileItem
