@@ -159,33 +159,6 @@ html[dir="rtl"] {
     }
   }
 
-  // swiper
-  .swiper-container {
-    .swiper-button-next,
-    .swiper-button-prev {
-      &:after {
-        transform: rotate(180deg);
-      }
-    }
-  }
-  .swiper-container-cube {
-    &.swiper-container-rtl {
-      .swiper-slide {
-        transform-origin: 100% 0 !important;
-      }
-    }
-  }
-
-  //slider
-  .rc-slider-tooltip {
-    right: 50%;
-    width: 30px;
-  }
-  .rc-slider-vertical {
-    .rc-slider-dot {
-      right: -1px;
-    }
-  }
   // Horizontal
   .horizontal-layout {
     .horizontal-menu-wrapper {
@@ -205,7 +178,7 @@ html[dir="rtl"] {
             left: auto !important;
             right: 100% !important;
             top: 0 !important;
-           
+
           }
         }
       }
