@@ -30,9 +30,12 @@ import Constants, {
   FIELD_TYPE_MULTI_SELECT,
   FIELD_TYPE_NUMBER,
   FIELD_TYPE_REFERENCE,
+  FIELD_TYPE_RESOURCE,
   FIELD_TYPE_SELECT,
   FIELD_TYPE_TEXT,
-  FIELD_TYPE_TEXT_AREA
+  FIELD_TYPE_TEXT_AREA,
+  RJSF_FIELD_TYPE_HELP_TEXT,
+  RJSF_FIELD_TYPE_RESOURCE
 } from './Parts/Constants';
 
 import Controls, { referenceObject } from './Parts/Controls';
@@ -392,6 +395,9 @@ class FormCreate extends React.Component {
       if (key in this.state.schema.properties && this.state.schema.properties[key]?.type === Constants.FIELD_TYPE_HELP_TEXT) {
         delete formData[key];
       }
+      if (key in this.state.schema.properties && this.state.schema.properties[key]?.type === Constants.FIELD_TYPE_RESOURCE) {
+        delete formData[key];
+      }
     });
 
     document.querySelectorAll('.error-detail').forEach(nextElement => {
@@ -459,6 +465,9 @@ class FormCreate extends React.Component {
   removeRudimentFormData(formData) {
     Object.keys(formData).forEach(key => {
       if (key in this.state.schema.properties && this.state.schema.properties[key]?.type === Constants.FIELD_TYPE_HELP_TEXT) {
+        delete formData[key];
+      }
+      if (key in this.state.schema.properties && this.state.schema.properties[key]?.type === Constants.FIELD_TYPE_RESOURCE) {
         delete formData[key];
       }
     });
@@ -1409,7 +1418,10 @@ class FormCreate extends React.Component {
 
 
     const title = this.state.schemaPropertyEdit.title;
-    if (typeof title === "string" && title.trim() === "" && this.state.schemaPropertyEdit.type !== "helpText") {
+    if (
+        typeof title === "string" && title.trim() === "" &&
+         [RJSF_FIELD_TYPE_HELP_TEXT, RJSF_FIELD_TYPE_RESOURCE].indexOf(this.state.schemaPropertyEdit.type) === -1
+    ) {
       toast.error("Title should not be empty");
 
       return;
