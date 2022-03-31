@@ -42,4 +42,3 @@ export const useOpenRMFileReferencesPreview = ({ fileId }, options = {}) => {
     ...options,
   });
 };
-
