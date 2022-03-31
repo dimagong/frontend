@@ -34,7 +34,7 @@ const privateClientAPI = (method, url, config) => {
 
       return response;
     },
-    (error) => Promise.reject(flatError ? error.response.data.error : error)
+    (error) => Promise.reject(flatError ? error?.response?.data?.error : error)
   );
 };
 
