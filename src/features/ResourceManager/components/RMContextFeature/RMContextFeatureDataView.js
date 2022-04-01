@@ -19,7 +19,7 @@ const getFolders = ({ previousFilesCount, mappedElementsCount }) => ({
   Mapping: getFolder(2, "MS Mapping", mappedElementsCount, "mapped elements"),
 });
 
-const RMContextFeatureDataView = ({ field }) => {
+const RMContextFeatureDataView = ({ field, resourceManager }) => {
   // Warning: here is a fallback, so, there is no need to handle nullable value
   // This query is need here to show the files count in Folder preview
   const { data: files = [] } = useRMFieldFiles({ fieldId: field.id });
@@ -42,7 +42,7 @@ const RMContextFeatureDataView = ({ field }) => {
       {
         {
           "Previous Versions": <FilesHistory fieldId={field.id} />,
-          "MS Mapping": <MSMapping fieldId={field.id} />,
+          "MS Mapping": <MSMapping fieldId={field.id} resourceManager={resourceManager} />,
         }[selectedFolder.name]
       }
     </RMContextFeatureTemplate>

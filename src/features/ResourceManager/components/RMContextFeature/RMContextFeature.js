@@ -8,14 +8,14 @@ import RMContextFeatureDataView from "./RMContextFeatureDataView";
 
 import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
 
-const RMContextFeature = ({ field }) => {
+const RMContextFeature = ({ field, resourceManager }) => {
   const { isLoading } = useRMFieldFiles({ fieldId: field.id });
 
   if (isLoading) {
     return <RMContextFeatureLoading field={field} />;
   }
 
-  return <RMContextFeatureDataView field={field} />;
+  return <RMContextFeatureDataView field={field} resourceManager={resourceManager} />;
 };
 
 RMContextFeature.propTypes = {

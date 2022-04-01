@@ -62,6 +62,8 @@ export default {
   },
   [Constants.FIELD_TYPE_RESOURCE]: {
     title: "",
+    resource_manager_field_file_id: null,
+    action: 'default',
     description: "resource",
     type: Constants.RJSF_FIELD_TYPE_RESOURCE,
     reference: {...referenceObject}

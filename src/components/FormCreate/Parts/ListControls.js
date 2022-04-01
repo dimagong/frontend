@@ -25,6 +25,7 @@ import { getSpecificType } from '../helper';
 import WysiwygEditor from '../Custom/WysiwygEditor';
 import MasterSchemaProperty from '../Fields/MasterSchemaProperty';
 import MasterSchemaPropertyConfig from '../Fields/MasterSchemaPropertyConfig';
+import ResourceManagerFieldFiles from "../Fields/ResourceManagerFieldFiles";
 
 export function listControls(properties) {
 
@@ -82,6 +83,7 @@ export function listControls(properties) {
 
       return (
         <div>
+            1231231231
           <MasterSchemaProperty
             onChangeFieldId={(fieldId) => {
               onChangeMasterSchemaProperty(fieldId)
@@ -122,6 +124,24 @@ export function listControls(properties) {
           {values.map((type, indexType) => <option
             key={indexType}>{type}</option>)}
         </select>
+      );
+    };
+
+    const renderReactSelectColumn = (column, options) => {
+
+      return (<select
+              id={`${index}-${column}`}
+              className="form-control"
+              value={schemaPropertyEdit[column]}
+              onInput={event => this.inputChangeHandler(event, objKey, column)}
+          >
+              <option key={-1} value={null}></option>
+              {
+                  options.map(
+                      (option, key) => <option key={key} value={option.value}>{option.label}</option>
+                  )
+              }
+          </select>
       );
     };
 
@@ -273,12 +293,28 @@ export function listControls(properties) {
           return (
               <Row>
                 <Col md="12">
+                  <FormGroup>
+                      {renderLabel('resource_manager_field_file_id', 'Resource link')}
+                      {renderReactSelectColumn('resource_manager_field_file_id', [
+                          { value: 1, label: 'ResourceManagerLink' },
+                      ])}
+                  </FormGroup>
+                </Col>
+                <Col md="12">
                   {labelForControls}
                 </Col>
-
                 <Col md="12">
                   <FormGroup>
                     {renderLabelShowing(objKey, 'Required?')}
+                  </FormGroup>
+                </Col>
+                <Col md="12">
+                  <FormGroup>
+                    {renderLabel('action', 'Compile option')}
+                    {renderReactSelectColumn('action', [
+                      { value: 'default', label: 'Compile on dForm association' },
+                    ])}
+                    <ResourceManagerFieldFiles organizations={this.state.dFormTemplate.groups || []}/>
                   </FormGroup>
                 </Col>
               </Row>
