@@ -14,9 +14,12 @@ const ResourceElement = (props) => {
     { msFieldId: fieldId, userId },
     {
       select: (response) => {
+        const regExp = new RegExp(/filename=(.*)/gi);
+        const header = response.headers["content-disposition"];
+        const name = regExp.exec(header)[1];
         const url = window.URL.createObjectURL(response.data);
 
-        return { url };
+        return { url, name };
       },
     }
   );
@@ -24,7 +27,8 @@ const ResourceElement = (props) => {
   if (isLoading) {
     return (
       <div>
-        <strong>Resource file is loading ...</strong>
+        <Label>{title}</Label>
+        <strong className="d-block">Resource file is loading ...</strong>
       </div>
     );
   }
@@ -41,8 +45,8 @@ const ResourceElement = (props) => {
   return (
     <div>
       <Label>{title}</Label>
-      <a className="d-block" href={file.url} download="resource-file.pdf" style={style}>
-        Resource file
+      <a className="d-block" href={file.url} download={file.name} style={style}>
+        {file.name}
       </a>
     </div>
   );
