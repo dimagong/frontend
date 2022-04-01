@@ -226,7 +226,9 @@ export function getFieldsByGroup(state, groupName) {
 }
 
 export function getSpecificType(property) {
-  if (property.type === Constants.RJSF_FIELD_TYPE_HELP_TEXT) {
+  if (property.type === Constants.RJSF_FIELD_TYPE_RESOURCE) {
+    return Constants.FIELD_TYPE_RESOURCE;
+  } else if (property.type === Constants.RJSF_FIELD_TYPE_HELP_TEXT) {
     return Constants.FIELD_TYPE_HELP_TEXT;
   } else if (
     property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&

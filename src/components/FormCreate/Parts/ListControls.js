@@ -269,6 +269,21 @@ export function listControls(properties) {
             </Row>
           );
         }
+        case Constants.FIELD_TYPE_RESOURCE: {
+          return (
+              <Row>
+                <Col md="12">
+                  {labelForControls}
+                </Col>
+
+                <Col md="12">
+                  <FormGroup>
+                    {renderLabelShowing(objKey, 'Required?')}
+                  </FormGroup>
+                </Col>
+              </Row>
+          );
+        }
         case Constants.FIELD_TYPE_FILE_LIST: {
           return (
             <Row>
