@@ -3,42 +3,26 @@ import React from "react";
 import textValidationSchema from "./validationSchema";
 import "./styles.scss";
 
-const Text = ({
-                     name,
-                     value,
-                     label,
-                     onChange,
-                     disabled,
-                     isRequired,
-                     placeholder,
-                     fieldId,
-                     error,
-                   }) => {
-  const handleInputChange = (e) => {
-    onChange(e.target.value, fieldId);
-  };
+import FieldLabel from '../FieldLabel'
+
+import './styles.scss'
+
+const Text = (props) => {
+  let fieldType = 'text';
 
   return (
-    <div
-      className={`member_firm-form_field ${error ? "field_with_error" : ""}`}
-    >
-      <label htmlFor={name || label} className="member_firm-form_field-label">
-        {label} {!!isRequired && "*"}
-      </label>
+    <div className="custom-form-filed form-create_custom-text-widget">
+      <FieldLabel label={props.label} required={true}/>
       <input
-        className="member_firm-form_field-input text_input"
-        name={name || label}
-        type="text"
-        onChange={handleInputChange}
-        disabled={disabled}
-        value={value}
-        placeholder={placeholder || `Type ${name}`}
+        id={123}
+        type={fieldType}
+        disabled={false}
+        value={""}
+        onChange={() => {}}
+        placeholder={props.placeholder || "Enter your answer here"}
       />
-      {error && (
-        <div className="member_firm-form_field-validation_error">{error}</div>
-      )}
     </div>
-  );
+  )
 };
 
 Text.validationSchema = textValidationSchema;
