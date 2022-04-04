@@ -2,7 +2,7 @@ import React from "react";
 import Constants from "../Parts/Constants";
 import {isElementProtected} from "../helper";
 import HelpText from "./HelpText";
-import ResourceElement from "./ResourceElement";
+import ResourceElement from "./ResourceElement/ResourceElement";
 import Sections from '../Elements/Sections'
 import Groups from '../Elements/Groups'
 import Field from "../Elements/Field";
@@ -16,7 +16,11 @@ export function ObjectFieldTemplate(props) {
         return HelpText(element.content.props);
       }
       case Constants.FIELD_TYPE_RESOURCE: {
-        return ResourceElement({ ...element.content.props, userId: this.state.dFormTemplate.onboarding.user_id });
+        return ResourceElement({
+          ...element.content.props,
+          userId: this.state.dFormTemplate.onboarding.user_id,
+          onboardingId: this.state.dFormTemplate.onboarding.id
+        });
       }
       default: {
         return element.content;
