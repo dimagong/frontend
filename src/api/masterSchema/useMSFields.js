@@ -5,7 +5,6 @@ import { clientAPI } from "../clientAPI";
 export const MSUserFieldsQueryKey = "master-schema-user-fields";
 
 export const useMSFields = ({ organization_id, organization_type }, options = {}) => {
-    console.log(organization_id, organization_type);
   return useQuery({
     queryKey: [MSUserFieldsQueryKey, { organization_id: !!organization_id, organization_type: !!organization_type }],
     queryFn: ({ signal }) =>

@@ -167,7 +167,6 @@ const dFormApi = {
     }
   },
   async updateViewedSections(id, isViewedSectionsList) {
-    console.log(isViewedSectionsList);
     try {
       const result = await instance({
         url: `api/dform/${id}/viewed-sections`,
