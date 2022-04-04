@@ -31,6 +31,8 @@ const ResourceElement = (props) => {
 
         return {url, name};
       },
+      refetchIntervalInBackground: true,
+      refetchInterval: (latestData) => latestData ? 1000 : -1,
     }
   );
 
@@ -50,17 +52,6 @@ const ResourceElement = (props) => {
     );
   }
 
-  if (!file) {
-    return (
-      <div>
-        <FieldLabel label={title} required={false}/>
-        <div className="rendered-files">
-          <span className="d-block file">empty</span>
-        </div>
-      </div>
-    );
-  }
-
   const mapping = async () => {
     setMappingLoading(true);
     try {
@@ -73,6 +64,29 @@ const ResourceElement = (props) => {
       setMappingLoading(false)
     }
   }
+
+  if (!file) {
+    return (
+      <div>
+        <FieldLabel label={title} required={false}/>
+        <div className="rendered-files">
+          <span className="d-block file">
+            empty
+            <NmpButton
+              style={{float: 'right'}}
+              size="sm"
+              textColor="#95989a"
+              backgroundColor="transparent"
+              icon={<img src={DownloadIcon} alt="Download"/>}
+              onClick={mapping}
+              loading={mappingLoading}
+            />
+          </span>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div>
