@@ -1,5 +1,5 @@
 import Checkbox from 'components/@vuexy/checkbox/CheckboxesVuexy';
-import { Check, Plus } from 'react-feather';
+import {Check, Plus} from 'react-feather';
 import Constants from './Constants';
 import {
   Badge,
@@ -18,10 +18,10 @@ import {
 } from 'reactstrap';
 import ElementEditModal from '../ElementEditModal';
 import DependencyEditModal from '../DependencyEditModal';
-import { isEmpty } from 'lodash';
+import {isEmpty} from 'lodash';
 import classnames from 'classnames';
 import React from 'react';
-import { getSpecificType } from '../helper';
+import {getSpecificType} from '../helper';
 import WysiwygEditor from '../Custom/WysiwygEditor';
 import MasterSchemaProperty from '../Fields/MasterSchemaProperty';
 import MasterSchemaPropertyConfig from '../Fields/MasterSchemaPropertyConfig';
@@ -83,7 +83,6 @@ export function listControls(properties) {
 
       return (
         <div>
-            1231231231
           <MasterSchemaProperty
             onChangeFieldId={(fieldId) => {
               onChangeMasterSchemaProperty(fieldId)
@@ -128,14 +127,13 @@ export function listControls(properties) {
     };
 
     const renderReactSelectColumn = (column, options) => {
-
+      // todo temporary select for one value
       return (<select
               id={`${index}-${column}`}
               className="form-control"
               value={schemaPropertyEdit[column]}
               onInput={event => this.inputChangeHandler(event, objKey, column)}
           >
-              <option key={-1} value={null}></option>
               {
                   options.map(
                       (option, key) => <option key={key} value={option.value}>{option.label}</option>
@@ -186,6 +184,11 @@ export function listControls(properties) {
       this.changeMasterSchemaFieldId(fieldId);
       this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: fieldId}})
     };
+
+    const onChangeResourceManagerFieldFile = (resourceManagerFieldFileId) => {
+        this.setState({schemaPropertyEdit: {...this.state.schemaPropertyEdit, resource_manager_field_file_id: resourceManagerFieldFileId}})
+        console.log(this.state.schemaPropertyEdit);
+    }
 
     const renderSpecificType = () => {
 
@@ -291,33 +294,34 @@ export function listControls(properties) {
         }
         case Constants.FIELD_TYPE_RESOURCE: {
           return (
-              <Row>
-                <Col md="12">
-                  <FormGroup>
-                      {renderLabel('resource_manager_field_file_id', 'Resource link')}
-                      {renderReactSelectColumn('resource_manager_field_file_id', [
-                          { value: 1, label: 'ResourceManagerLink' },
-                      ])}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  {labelForControls}
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderLabelShowing(objKey, 'Required?')}
-                  </FormGroup>
-                </Col>
-                <Col md="12">
-                  <FormGroup>
-                    {renderLabel('action', 'Compile option')}
-                    {renderReactSelectColumn('action', [
-                      { value: 'default', label: 'Compile on dForm association' },
-                    ])}
-                    <ResourceManagerFieldFiles organizations={this.state.dFormTemplate.groups || []}/>
-                  </FormGroup>
-                </Col>
-              </Row>
+            <Row>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabel('resource_manager_field_file_id', 'Resource link')}
+                  <ResourceManagerFieldFiles
+                    organizations={this.state.dFormTemplate.groups || []}
+                    resourceManagerFieldFileId={schemaPropertyEdit['resource_manager_field_file_id']}
+                    onChange={(event) => onChangeResourceManagerFieldFile(event.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabel('action', 'Compile option')}
+                  {renderReactSelectColumn('action', [
+                    {value: 'default', label: 'Compile on dForm association'},
+                  ])}
+                </FormGroup>
+              </Col>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabelShowing(objKey, 'Required?')}
+                </FormGroup>
+              </Col>
+            </Row>
           );
         }
         case Constants.FIELD_TYPE_FILE_LIST: {

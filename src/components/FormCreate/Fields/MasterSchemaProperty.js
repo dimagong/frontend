@@ -91,7 +91,6 @@ export default function MasterSchemaProperty(props) {
 
       setOrganizations(formattedOrganizations);
       initCurrentStateField(formattedOrganizations);
-      console.log(props);
     } catch (exception) {
       console.log(exception);
     }

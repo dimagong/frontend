@@ -1,13 +1,18 @@
 import _ from "lodash/fp";
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
+import React from 'react';
 
 import authService from "services/auth";
 
 import store from "app/store";
 import appSlice from "app/slices/appSlice";
+import { GoogleDriveAuthRequestToast } from 'components/Toasts/GoogleDriveAuthRequestToast';
 
-const { logout } = appSlice.actions;
+const {logout} = appSlice.actions;
+
+const INTERNAL_CODE_UNAUTHENTICATED = 101;
+const INTERNAL_CODE_GOOGLE_AUTH_REQUEST = 201;
 
 const requestResolveInterceptor = (config) => {
   const token = authService.getToken();
@@ -25,8 +30,7 @@ const responseResolveInterceptor = (config) => {
 };
 const responseRejectInterceptor = (error) => {
   if (
-    "error" in error.response.data &&
-    error.response.data.error.status === 401 &&
+    error.response.data?.error?.internal_code === INTERNAL_CODE_UNAUTHENTICATED &&
     error.config.url.indexOf("login") === -1 &&
     error.config.url.indexOf("logout") === -1
   ) {
@@ -36,6 +40,13 @@ const responseRejectInterceptor = (error) => {
     } else {
       authService.logout();
     }
+  } else if (error.response.data?.error?.internal_code === INTERNAL_CODE_GOOGLE_AUTH_REQUEST) {
+    toast(<GoogleDriveAuthRequestToast link={error.response.data.error.message}/>, {
+      draggable: true,
+      closeOnClick: false,
+      autoClose: false,
+      toastId: 'GoogleDriveAuthRequestToast'
+    });
   } else if (error.response.data?.error?.message) {
     toast.error(error.response.data.error.message);
   }
@@ -45,7 +56,7 @@ const responseRejectInterceptor = (error) => {
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: {"Content-Type": "application/json"},
 });
 
 instance.defaults.withCredentials = true;

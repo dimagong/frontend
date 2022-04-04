@@ -10,6 +10,16 @@ class ResourceManagerFieldFileService {
       }
     });
   }
+
+  exportResourceFromOnboarding(onboardingId, masterSchemaFieldId, resourceManagerFieldFileId) {
+    return axios.post(
+      `/api/resource-manager-field-file/${resourceManagerFieldFileId}/references/export-from-onboarding`,
+      {
+        master_schema_field_id: masterSchemaFieldId,
+        onboarding_id: onboardingId,
+      }
+    );
+  }
 }
 
 const fileService = new ResourceManagerFieldFileService();
