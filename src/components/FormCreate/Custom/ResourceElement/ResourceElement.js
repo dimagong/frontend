@@ -20,8 +20,8 @@ const ResourceElement = (props) => {
 
   const [mappingLoading, setMappingLoading] = useState(false);
 
-  const {data: file, isLoading} = useMSFieldUsersFile(
-    {msFieldId: masterSchemaFieldId, userId},
+  const {data: file, isLoading, refetch} = useMSFieldUsersFile(
+    {msFieldId: masterSchemaFieldId, userId, resourceManagerFieldFileId},
     {
       select: (response) => {
         const regExp = new RegExp(/filename=(.*)/gi);
@@ -31,8 +31,6 @@ const ResourceElement = (props) => {
 
         return {url, name};
       },
-      refetchIntervalInBackground: true,
-      refetchInterval: (latestData) => latestData ? 1000 : -1,
     }
   );
 
@@ -60,6 +58,7 @@ const ResourceElement = (props) => {
         masterSchemaFieldId,
         resourceManagerFieldFileId,
       );
+      await refetch();
     } finally {
       setMappingLoading(false)
     }
