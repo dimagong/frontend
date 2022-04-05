@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import resourceManagerFieldFileService from '../services/resourceManagerFieldFile.service'
 import moment from "moment";
 
-export default function ResourceManagerFieldFiles({ organizations, resourceManagerFieldFileId, onChange }) {
+export default function ResourceManagerFieldFiles({ organizations, resourceManagerFieldId, onChange }) {
 
     const [files, setFiles] = useState([]);
 
@@ -12,7 +12,7 @@ export default function ResourceManagerFieldFiles({ organizations, resourceManag
         // todo organization related to dform can be only one, this is legacy array of organization
         const organization = organizations[0];
 
-        resourceManagerFieldFileService.resourceManagerFieldFiles(
+        resourceManagerFieldFileService.resourceManagerFields(
             organization.id,
             organization.type,
         ).then((response) => {
@@ -24,13 +24,12 @@ export default function ResourceManagerFieldFiles({ organizations, resourceManag
         let label = [
             'ResourceManager',
             file.breadcrumbs,
-            file.parent_name,
+            file.name,
         ].join('.');
 
-        const name = file.name;
         const updatedAt = moment(file.updated_at).format("YYYY.MM.DD HH:mm:ss");
 
-        label +=` (${name}:v${updatedAt})`;
+        label +=` v${updatedAt}`;
 
         return label;
     }
@@ -51,7 +50,7 @@ export default function ResourceManagerFieldFiles({ organizations, resourceManag
 
     const findSelectedValue = (options) => {
         return options.filter(function(option) {
-            return option.value === resourceManagerFieldFileId;
+            return option.value === resourceManagerFieldId;
         })
     }
 
