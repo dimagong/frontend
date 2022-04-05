@@ -42,7 +42,7 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
   const onPreview = () => openPreview.mutate({ userId: user.value.id });
 
   // const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
-  const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
+  const [referenceFields, setReferenceFields] = useState({});
 
   // Re-calculate referenceFields
   useEffect(() => {
@@ -130,7 +130,7 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
       </div>
 
       <div className="d-flex justify-content-end py-1">
-        <NmpButton color="primary" disabled={form.invalid} loading={saveReferences.isLoading}>
+        <NmpButton color="primary" loading={saveReferences.isLoading}>
           Save
         </NmpButton>
       </div>
