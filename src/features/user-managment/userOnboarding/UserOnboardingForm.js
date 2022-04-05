@@ -22,6 +22,8 @@ import {toast} from "react-toastify";
 import * as yup from "yup";
 
 import appSlice from 'app/slices/appSlice'
+import { createLoadingSelector } from "../../../app/selectors/loadingSelector";
+import NmpButton from "../../../components/nmp/NmpButton";
 
 const {
   setManagerOnboardingProperty,
@@ -91,6 +93,7 @@ const UserOnboardingCreate = ({isCreate}) => {
   const dForms = useSelector(selectUserDForms);
   const workflows = useSelector(selectUserWorkflows);
   const reviewers = useSelector(selectUserReviewers);
+  const isOnboardingCreateLoading = useSelector(createLoadingSelector([createUserOnboardingRequest.type], true));
 
   const dFormWorkFlows = workflows.filter(wf => wf.context === "application");
 
@@ -287,7 +290,9 @@ const UserOnboardingCreate = ({isCreate}) => {
               {
                 isCreate.current
                   ?<div>
-                    <Button className="px-4" color="primary" onClick={createOnboarding}>Create</Button>
+                  <NmpButton className="px-4" color="primary" loading={isOnboardingCreateLoading} onClick={createOnboarding}>
+                    Create
+                  </NmpButton>
                   </div>
                   : <div>
                     <Button disabled={!!!manager.onboarding.id} color="danger" onClick={deleteOnboarding}>Delete onboarding</Button>
