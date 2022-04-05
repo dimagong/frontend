@@ -40,13 +40,33 @@ const responseRejectInterceptor = (error) => {
     } else {
       authService.logout();
     }
+  // ToDo: refactor it
+  } else if (error.response.data instanceof Blob) {
+    // When response type is Blob.
+
+    error.response.data.text().then((text) => {
+      const data = JSON.parse(text);
+
+      if (data?.error?.internal_code === INTERNAL_CODE_GOOGLE_AUTH_REQUEST) {
+        toast(<GoogleDriveAuthRequestToast link={data?.error?.message}/>, {
+          draggable: true,
+          closeOnClick: false,
+          autoClose: false,
+          toastId: 'GoogleDriveAuthRequestToast'
+        });
+      }
+    });
+
+  // ToDo: refactor it
   } else if (error.response.data?.error?.internal_code === INTERNAL_CODE_GOOGLE_AUTH_REQUEST) {
+
     toast(<GoogleDriveAuthRequestToast link={error.response.data.error.message}/>, {
       draggable: true,
       closeOnClick: false,
       autoClose: false,
       toastId: 'GoogleDriveAuthRequestToast'
     });
+
   } else if (error.response.data?.error?.message) {
     toast.error(error.response.data.error.message);
   }
