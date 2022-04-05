@@ -6,7 +6,13 @@ import SectionsComponent from './Components/Sections';
 
 import './styles.scss';
 
-const DForm = () => {
+const DForm = ({
+  isConfigurable = true,
+  onElementClick,
+  onSectionCreate,
+  onGroupCreate,
+  onFieldCreate,
+}) => {
 
   const [selectedSection, setSelectedSection] = useState("");
   const [sectionsProgress, setSectionsProgress] = useState(null);
@@ -29,34 +35,44 @@ const DForm = () => {
     },
     "groups": {
       "Group one": {
+        "id": "Group one",
         "isProtected": false,
         "relatedFields": [1, 2, 3]
       },
       "Second group": {
+        "id": "Second group",
         "isProtected": false,
         "relatedFields": [4]
       }
     },
     "fields": {
       "1": {
+        "id": "1",
         "isMasterSchemaRelated": false,
         "type": "Text",
-        "name": "Some text"
+        "title": "Some text",
+        "isRequired": true,
+        "classes": "col-md-6",
       },
       "2": {
+        "id": "2",
         "isMasterSchemaRelated": true,
         "type": "TextArea",
-        "name": "Your biography"
+        "title": "Your biography",
+        "isRequired": true,
+        "classes": "col-md-6",
       },
       "3": {
+        "id": "3",
         "isMasterSchemaRelated": true,
         "type": "Select",
-        "name": "Select your country"
+        "title": "Select your country"
       },
       "4": {
+        "id": "4",
         "isMasterSchemaRelated": true,
         "type": "Text",
-        "name": "Email of your best friend"
+        "title": "Email of your best friend"
       }
     },
     errors: {
@@ -64,6 +80,10 @@ const DForm = () => {
     }
   };
 
+  const handleElementClick = (event, element) => {
+    event.stopPropagation();
+    console.log("ELEMENT click", element)
+  };
 
   const sectionsWithErrors = Object.keys(data.errors);
 
@@ -90,6 +110,7 @@ const DForm = () => {
   const init = () => {
     initialiseSectionsProgress();
     //**TODO set first selected tab (default tab). Select first that occur and doesn't hidden
+    setSelectedSection(Object.keys(data.sections)[0])
   };
 
   useEffect(() => {
@@ -106,8 +127,15 @@ const DForm = () => {
         sectionsProgress={sectionsProgress}
         errors={sectionsWithErrors}
         sections={Object.values(data.sections)}
+        onSectionCreate={onSectionCreate}
       />
-      <SectionsComponent data={data} selectedSection={selectedSection} />
+      <SectionsComponent
+        data={data}
+        selectedSection={selectedSection}
+        onElementClick={isConfigurable ? handleElementClick : ()=>{}}
+        onGroupCreate={onGroupCreate}
+        onFieldCreate={onFieldCreate}
+      />
     </div>
   )
 };

@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux'
 
 import {Nav, NavItem, NavLink} from "reactstrap";
 import classnames from "classnames";
+import {Plus} from "react-feather";
 
 import ProgressBar from './Components/ProgressBar'
 
@@ -10,14 +11,15 @@ import './styles.scss'
 
 import {selectUserOnboarding} from 'app/selectors/userSelectors'
 
-const SectionsSideBar = ( {
-                            onSectionSelect,
-                            selectedSection,
-                            sections,
-                            errors,
-                            sectionsProgress,
-                            completed,
-                          }) => {
+const SectionsSideBar = ({
+  onSectionSelect,
+  selectedSection,
+  sections,
+  errors,
+  sectionsProgress,
+  completed,
+  onSectionCreate,
+}) => {
 
   const onboarding = useSelector(selectUserOnboarding);
 
@@ -58,6 +60,20 @@ const SectionsSideBar = ( {
             </NavItem>
           )
         }
+        {!!onSectionCreate && (
+          <NavItem>
+            <NavLink className={"sections-nav_item"}>
+              <div className={`sections-nav_item_title`}>
+                <span className="align-middle ml-50">New tab</span>
+              </div>
+              <div className="sections-nav_item-add">
+                <Plus size={18} color={"white"}/>
+              </div>
+              <div className={"sections-nav_item_delimiter"}/>
+            </NavLink>
+          </NavItem>
+        )}
+
       </Nav>
     </div>
   )

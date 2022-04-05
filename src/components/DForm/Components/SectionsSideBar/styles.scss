@@ -51,6 +51,21 @@
         }
         //display: none;
       }
+      &-add {
+        padding-top: 1px;
+        display: flex;
+        width: 20px;
+        height: 20px;
+        align-self: center;
+        justify-content: center;
+        align-items: center;
+        margin-top: 8px;
+        justify-self: center;
+        border-radius: 100%;
+        background-color: #7367F0;
+        position: relative;
+      }
+
       &_index {
         padding-top: 1px;
         display: flex;

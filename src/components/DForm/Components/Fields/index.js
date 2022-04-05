@@ -5,7 +5,7 @@ import {toast} from "react-toastify";
 
 import formComponents from './Components/DFormWidgets'
 
-const FormComponent = ({groupFields, data}) => {
+const FormComponent = ({groupFields, data, onElementClick}) => {
 
   const [formData, setFormData] = useState({});
 
@@ -88,36 +88,29 @@ const FormComponent = ({groupFields, data}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [groupFields]);
 
-  return (
-    <div>
+  return groupFields.map((formField) => {
+    const field = data.fields[formField];
+    const FormFieldElement = formComponents[field.type];
+    // const fieldId = formField.master_schema_field_id;
 
-      <div>
-        {groupFields.map((formField) => {
-
-          const field = data.fields[formField];
-          const FormFieldElement = formComponents[field.type];
-          // const fieldId = formField.master_schema_field_id;
-
-          return (
-            <div className={"custom-form-field"}>
-              <FormFieldElement
-                fieldId={123}
-                isRequired={true}
-                key={123}
-                name={field.name}
-                label={field.name}
-                value={""}
-                // onChange={handleInputChange}
-                onChange={() => {}}
-                disabled={false} // TODO handle disabled
-                error={""}
-              />
-            </div>
-          )
-        })}
+    return (
+      <div className={`custom-form-field ${field.classes ? field.classes : "col-12"}`} onClick={(e) => onElementClick(e, field)}>
+        <FormFieldElement
+          fieldId={field.id}
+          isRequired={field.isRequired}
+          key={field.id}
+          name={field.title}
+          label={field.title}
+          value={""}
+          // onChange={handleInputChange}
+          onChange={() => {}}
+          disabled={false} // TODO handle disabled
+          error={""}
+          fieldClasses={field.classes}
+        />
       </div>
-    </div>
-  )
+    )
+  });
 };
 
 export default FormComponent;
