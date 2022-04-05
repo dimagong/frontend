@@ -14,10 +14,10 @@ const ResourceElement = (props) => {
   const title = props.schema.title;
 
   const masterSchemaFieldId = Number(props.schema.reference.field_id);
-  const resourceManagerFieldFileId = Number(props.schema.resource_manager_field_file_id);
+  const resourceManagerFieldId = Number(props.schema.resource_manager_field_id);
 
   const { data: file, isLoading } = useMSFieldUsersFile(
-    { msFieldId: masterSchemaFieldId, userId, resourceManagerFieldFileId },
+    { msFieldId: masterSchemaFieldId, userId, resourceManagerFieldId },
     {
       select: (response) => {
         const regExp = new RegExp(/filename=(.*)/gi);
