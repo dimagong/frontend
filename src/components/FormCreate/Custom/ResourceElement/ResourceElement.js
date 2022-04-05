@@ -3,6 +3,8 @@ import "./index.scss";
 import React from "react";
 import { Spinner } from "reactstrap";
 
+import NmpButton from "components/nmp/NmpButton";
+import DownloadIcon from "assets/img/icons/cloud-download.png";
 import { useMSFieldUsersFile } from "api/masterSchema/useMSFieldUsersFile";
 
 import FieldLabel from "../FieldLabel";
@@ -62,9 +64,22 @@ const ResourceElement = (props) => {
       <FieldLabel label={title} required={false} />
       <div className="rendered-files">
         <div className="file">
-          <a className="d-block" href={file.url} download={file.name} style={style}>
+          <span className="d-block" style={style}>
             {file.name}
-          </a>
+          </span>
+
+          <div className="action">
+            <NmpButton
+              style={{ float: "right" }}
+              size="sm"
+              textColor="#95989a"
+              backgroundColor="transparent"
+              icon={<img src={DownloadIcon} alt="Download" />}
+              tag="a"
+              href={file.url}
+              download={file.name}
+            />
+          </div>
         </div>
       </div>
     </div>
