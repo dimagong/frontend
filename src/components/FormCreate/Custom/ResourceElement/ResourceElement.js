@@ -1,14 +1,11 @@
 import "./index.scss";
 
+import React from "react";
 import { Spinner } from "reactstrap";
-import React, { useState } from "react";
 
-import NmpButton from "components/nmp/NmpButton";
-import DownloadIcon from "assets/img/icons/cloud-download.png";
 import { useMSFieldUsersFile } from "api/masterSchema/useMSFieldUsersFile";
 
 import FieldLabel from "../FieldLabel";
-import resourceManagerFieldFileService from "../../services/resourceManagerFieldFile.service";
 
 const style = { color: "currentColor" };
 
@@ -18,15 +15,8 @@ const ResourceElement = (props) => {
 
   const masterSchemaFieldId = Number(props.schema.reference.field_id);
   const resourceManagerFieldFileId = Number(props.schema.resource_manager_field_file_id);
-  const onboardingId = Number(props.onboardingId);
 
-  const [mappingLoading, setMappingLoading] = useState(false);
-
-  const {
-    data: file,
-    isLoading,
-    refetch,
-  } = useMSFieldUsersFile(
+  const { data: file, isLoading } = useMSFieldUsersFile(
     { msFieldId: masterSchemaFieldId, userId, resourceManagerFieldFileId },
     {
       select: (response) => {
@@ -56,37 +46,12 @@ const ResourceElement = (props) => {
     );
   }
 
-  const mapping = async () => {
-    setMappingLoading(true);
-    try {
-      await resourceManagerFieldFileService.exportResourceFromOnboarding(
-        onboardingId,
-        masterSchemaFieldId,
-        resourceManagerFieldFileId
-      );
-      await refetch();
-    } finally {
-      setMappingLoading(false);
-    }
-  };
-
   if (!file) {
     return (
       <div>
         <FieldLabel label={title} required={false} />
         <div className="rendered-files">
-          <span className="d-block file">
-            empty
-            <NmpButton
-              style={{ float: "right" }}
-              size="sm"
-              textColor="#95989a"
-              backgroundColor="transparent"
-              icon={<img src={DownloadIcon} alt="Download" />}
-              onClick={mapping}
-              loading={mappingLoading}
-            />
-          </span>
+          <span className="d-block file">Empty</span>
         </div>
       </div>
     );
@@ -100,16 +65,6 @@ const ResourceElement = (props) => {
           <a className="d-block" href={file.url} download={file.name} style={style}>
             {file.name}
           </a>
-          <div className="action">
-            <NmpButton
-              size="sm"
-              textColor="#95989a"
-              backgroundColor="transparent"
-              icon={<img src={DownloadIcon} alt="Download" />}
-              onClick={mapping}
-              loading={mappingLoading}
-            />
-          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import axios from 'api';
 
+// ToDo: Refactor it
 class ResourceManagerFieldFileService {
   resourceManagerFieldFiles(organizationId, organizationType) {
     return axios.get('/api/resource-manager-field-file', {
