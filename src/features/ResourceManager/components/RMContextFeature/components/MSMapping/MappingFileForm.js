@@ -1,5 +1,6 @@
 import _ from "lodash/fp";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 import { Col, Row, Spinner } from "reactstrap";
 import Scrollbars from "react-custom-scrollbars";
 import React, { useEffect, useState } from "react";
@@ -31,7 +32,7 @@ const getReferenceFieldsFromReferences = (references, fieldOptions) => {
 const getOptionFromUser = (user) => ({ label: user.full_name, value: user });
 
 const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
-  const saveReferences = useSaveRMFileReferences({ fileId });
+  const saveReferences = useSaveRMFileReferences({ fileId }, { onSuccess: () => toast.success("Saved successfully") });
   const openPreview = useOpenRMFileReferencesPreview({ fileId });
   // Users
   const [user, setUser] = useState(null);
@@ -41,8 +42,8 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
 
   const onPreview = () => openPreview.mutate({ userId: user.value.id });
 
-  // const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
-  const [referenceFields, setReferenceFields] = useState({});
+  const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
+  // const [referenceFields, setReferenceFields] = useState({});
 
   // Re-calculate referenceFields
   useEffect(() => {
@@ -70,8 +71,6 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
   const form = useFormGroup(referenceFields);
 
   const onSubmit = () => {
-    if (form.invalid) return;
-
     const data = Object.entries(form.values).map(([referenceId, field]) => ({
       id: Number(referenceId),
       master_schema_field_id: field.value.id,
