@@ -185,8 +185,8 @@ export function listControls(properties) {
       this.setState({fieldEdit: {...this.state.fieldEdit, propertyKey: fieldId}})
     };
 
-    const onChangeResourceManagerFieldFile = (resourceManagerFieldFileId) => {
-        this.setState({schemaPropertyEdit: {...this.state.schemaPropertyEdit, resource_manager_field_file_id: resourceManagerFieldFileId}})
+    const onChangeResourceManagerFieldFile = (resourceManagerFieldId) => {
+        this.setState({schemaPropertyEdit: {...this.state.schemaPropertyEdit, resource_manager_field_id: resourceManagerFieldId}})
         console.log(this.state.schemaPropertyEdit);
     }
 
@@ -297,10 +297,10 @@ export function listControls(properties) {
             <Row>
               <Col md="12">
                 <FormGroup>
-                  {renderLabel('resource_manager_field_file_id', 'Resource link')}
+                  {renderLabel('resource_manager_field_id', 'Resource link')}
                   <ResourceManagerFieldFiles
                     organizations={this.state.dFormTemplate.groups || []}
-                    resourceManagerFieldFileId={schemaPropertyEdit['resource_manager_field_file_id']}
+                    resourceManagerFieldId={schemaPropertyEdit['resource_manager_field_id']}
                     onChange={(event) => onChangeResourceManagerFieldFile(event.value)}
                   />
                 </FormGroup>
