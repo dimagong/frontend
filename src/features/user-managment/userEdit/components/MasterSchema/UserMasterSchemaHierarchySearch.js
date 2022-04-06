@@ -2,14 +2,9 @@ import _ from "lodash/fp";
 import React from "react";
 import PropTypes from "prop-types";
 
-import { useStoreQuery } from "hooks/useStoreQuery";
-
 import SearchAndFilter from "components/SearchAndFilter";
 
-import appSlice from "app/slices/appSlice";
-import { selectdForms } from "app/selectors";
-
-const { getdFormsRequest } = appSlice.actions;
+import {useDForms} from "./hooks/useDForms";
 
 const formatDate = (date) => {
   const options = { day: "numeric", month: "numeric", year: "numeric" };
@@ -24,7 +19,7 @@ const filterDFormsByName = (dForms, name) =>
   dForms.filter((dForm) => dForm.groups.filter((group) => group.name === name).length > 0);
 
 const UserMasterSchemaHierarchySearch = ({ hierarchy, hierarchyName, onSearch }) => {
-  const { data: dForms } = useStoreQuery(() => getdFormsRequest(), selectdForms);
+  const { data: dForms } = useDForms();
 
   const filterTypes = React.useMemo(() => filterDFormsByName(dForms || [], hierarchyName), [dForms, hierarchyName]);
   const filterNames = React.useMemo(() => filterTypes.map(_.get("name")), [filterTypes]);

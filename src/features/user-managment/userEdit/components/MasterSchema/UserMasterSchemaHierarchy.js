@@ -4,31 +4,25 @@ import PropTypes from "prop-types";
 import { Col, Row, Spinner } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useStoreQuery } from "hooks/useStoreQuery";
-
 import NmpButton from "components/nmp/NmpButton";
 import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
 import appSlice from "app/slices/appSlice";
-import { createLoadingSelector } from "app/selectors/loadingSelector";
 import {
-  selectUserMasterSchemaHierarchy,
   selectUserMasterSchemaHierarchySearchParams,
   selectIsUserMasterSchemaHierarchySearchParamsInitial,
 } from "app/selectors/userSelectors";
 
 import UserMasterSchemaHierarchySearch from "./UserMasterSchemaHierarchySearch";
+import {useMSHierarchy} from "./hooks/useMSHierarchy";
+import {useMSAddField} from "./hooks/useMSAddField";
+import {useMSAddGroup} from "./hooks/useMSAddGroup";
 
 const {
-  getUserMasterSchemaHierarchyRequest,
   setUserMasterSchemaHierarchySearchParams,
-  addFieldToUserMasterSchemaRequest,
-  addGroupToUserMasterSchemaRequest,
 } = appSlice.actions;
 
 const stickySearchStyles = { top: "0px", left: "0px", backgroundColor: "#fff" };
-
-const elementAdditionActionTypes = [addFieldToUserMasterSchemaRequest.type, addGroupToUserMasterSchemaRequest.type];
 
 const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSelect }) => {
   const dispatch = useDispatch();
@@ -40,23 +34,26 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
     [dispatch, searchParams]
   );
 
-  const hierarchy = useStoreQuery(
-    () => getUserMasterSchemaHierarchyRequest({ userId }),
-    selectUserMasterSchemaHierarchy,
-    [userId, searchParams]
-  );
+  const hierarchy = useMSHierarchy({
+    userId,
+    ...searchParams,
+    show_empty_folders: isSearchParamsInitial
+  }, {});
+
+  const addFieldToMS = useMSAddField(userId, hierarchy)
+  const addGroupToMS = useMSAddGroup(userId, hierarchy)
+
 
   const expandable = useTreeHierarchyExpandable(hierarchy.data);
   const selectedIds = React.useMemo(() => selectedNodes.map(_.get("nodeId")), [selectedNodes]);
-  const elementCreationLoading = useSelector(createLoadingSelector(elementAdditionActionTypes, true));
 
   const onElementCreationSubmit = ({ type, ...creationData }) => {
     switch (type) {
       case ADD_FIELD:
-        dispatch(addFieldToUserMasterSchemaRequest({ ...creationData, userId }));
+        addFieldToMS.mutate(creationData);
         break;
       case ADD_GROUP:
-        dispatch(addGroupToUserMasterSchemaRequest({ ...creationData, userId }));
+        addGroupToMS.mutate(creationData);
         break;
       default:
         throw new Error("Unexpected element addition type.");
@@ -116,7 +113,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
             onCollapse={expandable.collapse}
             selectedIds={selectedIds}
             onSelect={onSelect}
-            elementCreationLoading={elementCreationLoading}
+            elementCreationLoading={addFieldToMS.isLoading || addGroupToMS.isLoading}
             onElementCreationSubmit={onElementCreationSubmit}
           />
         </Col>
