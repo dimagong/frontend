@@ -18,8 +18,7 @@ export function ObjectFieldTemplate(props) {
       case Constants.FIELD_TYPE_RESOURCE: {
         return ResourceElement({
           ...element.content.props,
-          userId: this.state.dFormTemplate.onboarding.user_id,
-          onboardingId: this.state.dFormTemplate.onboarding.id
+          userId: this.state.dFormTemplate?.onboarding?.user_id,
         });
       }
       default: {

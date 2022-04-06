@@ -12,7 +12,7 @@ import FieldLabel from "../FieldLabel";
 const style = { color: "currentColor" };
 
 const ResourceElement = (props) => {
-  const userId = props.userId;
+  const userId = props?.userId;
   const title = props.schema.title;
 
   const masterSchemaFieldId = Number(props.schema.reference.field_id);
@@ -38,7 +38,7 @@ const ResourceElement = (props) => {
         <FieldLabel label={title} required={false} />
         <div className="rendered-files">
           <div className="file">
-            <span className="d-block">loading...</span>
+            <span className="d-block">Loading...</span>
             <div className="action">
               <Spinner color="primary" className="ml-1" size="sm" />
             </div>

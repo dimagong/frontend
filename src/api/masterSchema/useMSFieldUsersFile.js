@@ -18,7 +18,7 @@ export const useMSFieldUsersFile = ({ msFieldId, userId, resourceManagerFieldId 
         flatError: false,
         signal,
       }),
-    enabled: [msFieldId, userId].every(Boolean),
+    enabled: [msFieldId, userId, resourceManagerFieldId].every(Boolean),
     ...options,
   });
 };
