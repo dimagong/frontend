@@ -1,23 +1,13 @@
 import PropTypes from "prop-types";
 import { Col, Row } from "reactstrap";
-import React, { useEffect, useMemo } from "react";
-
-import { useFormField } from "hooks/use-form";
-
-import { OptionsType } from "utility/prop-types";
+import React, { useMemo } from "react";
 
 import NmpSelect from "components/nmp/NmpSelect";
 
-const MappingFileReference = ({ value, options, onChange, fieldTemplate: propFieldTemplate, }) => {
-  const fieldTemplate = useMemo(() => `{{ msRef: ${propFieldTemplate} }}`, [propFieldTemplate]);
+import { OptionsType, OptionType } from "utility/prop-types";
 
-  const field = useFormField(value, [], { useAdvanced: true });
-  // Call onChange when field.value changing
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => onChange(field), [field.value]);
-  // Update value
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => field.onChange(value), [value]);
+const MappingFileReference = ({ name, value, options, onChange, fieldTemplate: propFieldTemplate, }) => {
+  const fieldTemplate = useMemo(() => `{{ msRef: ${propFieldTemplate} }}`, [propFieldTemplate]);
 
   return (
     <Row className="py-1" noGutters>
@@ -30,19 +20,14 @@ const MappingFileReference = ({ value, options, onChange, fieldTemplate: propFie
       <Col className="d-flex align-items-center" xs="8">
         <div className="full-width pl-2">
           <NmpSelect
-            value={field.value}
+            name={name}
+            value={value}
             options={options}
-            onChange={field.onChange}
+            onChange={onChange}
             backgroundColor="transparent"
             placeholder="Select a MasterSchema reference"
             menuPosition="fixed"
           />
-
-          {field.errors.length > 0 ? (
-            <div>
-              <span className="text-danger">{field.errors[0]}</span>
-            </div>
-          ) : null}
         </div>
       </Col>
     </Row>
@@ -50,8 +35,8 @@ const MappingFileReference = ({ value, options, onChange, fieldTemplate: propFie
 };
 
 MappingFileReference.propTypes = {
-  value: PropTypes.any.isRequired,
-  // defaultValue: PropTypes.any,
+  name: PropTypes.string.isRequired,
+  value: OptionType,
   options: OptionsType.isRequired,
   onChange: PropTypes.func.isRequired,
   fieldTemplate: PropTypes.string.isRequired,
