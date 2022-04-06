@@ -42,7 +42,7 @@ const getReferenceValues = (references = []) => {
 
 const findReferenceFieldOptionById = (options, id) => options.find(({ value }) => value.id === id) || null;
 
-const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
+const MappingFileForm = ({ fileId, msFieldOptions, references, isLoading }) => {
   const openPreview = useOpenRMFileReferencesPreview({ fileId });
   const saveReferences = useSaveRMFileReferences({ fileId }, { onSuccess: () => toast.success("Saved successfully") });
   // Users
@@ -105,13 +105,13 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
       <Scrollbars className="mb-2" autoHeight autoHeightMax={350}>
         {references.map((reference) => {
           const name = getReferenceName(reference);
-          const value = findReferenceFieldOptionById(fieldOptions, form.values[name]?.masterSchemaFieldId);
+          const value = findReferenceFieldOptionById(msFieldOptions, form.values[name]?.masterSchemaFieldId);
 
           return (
             <MappingFileReference
               name={name}
               value={value}
-              options={fieldOptions}
+              options={msFieldOptions}
               onChange={getOnChangeForReference(reference)}
               fieldTemplate={reference.field_template}
               key={reference.id}
@@ -150,9 +150,9 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
 
 MappingFileForm.propTypes = {
   fileId: IdType.isRequired,
-  fieldOptions: OptionsType.isRequired,
-  references: PropTypes.arrayOf(PropTypes.object).isRequired,
   isLoading: PropTypes.bool.isRequired,
+  references: PropTypes.arrayOf(PropTypes.object).isRequired,
+  msFieldOptions: OptionsType.isRequired,
 };
 
 export default MappingFileForm;

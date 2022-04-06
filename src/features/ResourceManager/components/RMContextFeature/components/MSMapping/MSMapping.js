@@ -1,6 +1,7 @@
 import "./styles.scss";
 
 import moment from "moment";
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 
 import { IdType } from "utility/prop-types";
@@ -14,7 +15,6 @@ import { useRMFieldFileReferences } from "api/resourceManager/useRMFieldFileRefe
 import FileInfoFolderContentTemplate from "../FileInfoFolderContentTemplate";
 
 import MappingFileForm from "./MappingFileForm";
-import PropTypes from "prop-types";
 
 const getFileLabel = (file) => `${file.id} ${file.name} v${moment(file.created_at).format("YYYY.MM.DD HH:mm:ss")}`;
 
@@ -24,7 +24,7 @@ const getOptionFromMSField = (field) => ({ label: `${field.breadcrumbs}.${field.
 
 const MSMapping = ({ fieldId, organizationId, organizationType }) => {
   // MasterSchema fields
-  const { data: fieldOptions = [], isLoading: fieldsIsLoading } = useMSFields(
+  const { data: msFieldOptions = [], isLoading: fieldsIsLoading } = useMSFields(
     { organizationId, organizationType },
     { select: (fields) => fields.map(getOptionFromMSField) }
   );
@@ -51,17 +51,16 @@ const MSMapping = ({ fieldId, organizationId, organizationType }) => {
           onChange={setFile}
           loading={fileIsLoading}
           backgroundColor="transparent"
+          searchable
         />
       </div>
 
-      {file ? (
-        <MappingFileForm
-          fileId={file.value.id}
-          references={references}
-          fieldOptions={fieldOptions}
-          isLoading={referencesIsLoading || fieldsIsLoading}
-        />
-      ) : null}
+      <MappingFileForm
+        fileId={file?.value?.id}
+        references={references}
+        msFieldOptions={msFieldOptions}
+        isLoading={referencesIsLoading || fieldsIsLoading || !file}
+      />
     </FileInfoFolderContentTemplate>
   );
 };

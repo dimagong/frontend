@@ -4,14 +4,14 @@ import PropTypes from "prop-types";
 import React, { useMemo, useState } from "react";
 
 import Folders from "components/Folders";
+import { IdType } from "utility/prop-types";
+
+import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
+import { useRMFieldFileReferences } from "api/resourceManager/useRMFieldFileReferences";
 
 import MSMapping from "./components/MSMapping";
 import FilesHistory from "./components/FilesHistory";
 import RMContextFeatureTemplate from "./RMContextFeatureTemplate";
-
-import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
-import { useRMFieldFileReferences } from "api/resourceManager/useRMFieldFileReferences";
-import { IdType } from "../../../../utility/prop-types";
 
 const getFolder = (id, name, length, itemsName) => ({ id, name, items: { length }, itemsName });
 const getFolders = ({ previousFilesCount, mappedElementsCount }) => ({
