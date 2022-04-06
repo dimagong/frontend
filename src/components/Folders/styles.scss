@@ -11,8 +11,10 @@
 
   &__loader {
     display: flex;
+
     width: 210px;
     height: 145px;
+
     margin-right: 25px;
     justify-content: center;
     align-items: center;
@@ -23,7 +25,10 @@
     flex-shrink: 0;
     flex-direction: column;
     justify-content: space-between;
-    width: 210px;
+
+    width: calc(50% - 25px);
+    max-width: 210px;
+
     height: 145px;
     background: #7367F0;
     border-radius: 10px;
