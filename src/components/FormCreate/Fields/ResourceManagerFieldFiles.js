@@ -1,70 +1,58 @@
-import {isObject} from "lodash";
-import { CustomSelect } from "./Parts/CustomSelect";
-import React, { useEffect, useState } from "react";
-import resourceManagerFieldFileService from '../services/resourceManagerFieldFile.service'
 import moment from "moment";
+import React, { useEffect, useState } from "react";
 
-export default function ResourceManagerFieldFiles({ organizations, resourceManagerFieldId, onChange }) {
+import resourceManagerFieldFileService from "../services/resourceManagerFieldFile.service";
 
-    const [files, setFiles] = useState([]);
+import { CustomSelect } from "./Parts/CustomSelect";
 
-    useEffect(() => {
-        // todo organization related to dform can be only one, this is legacy array of organization
-        const organization = organizations[0];
+const ResourceManagerFieldFiles = ({ organizations, resourceManagerFieldId, onChange }) => {
+  const [files, setFiles] = useState([]);
 
-        resourceManagerFieldFileService.resourceManagerFields(
-            organization.id,
-            organization.type,
-        ).then((response) => {
-            setFiles(response.data.data);
-        });
-    }, []);
+  useEffect(() => {
+    // todo organization related to dform can be only one, this is legacy array of organization
+    const organization = organizations[0];
 
-    const formatLabel = (file) => {
-        let label = [
-            'ResourceManager',
-            file.breadcrumbs,
-            file.name,
-        ].join('.');
+    resourceManagerFieldFileService.resourceManagerFields(organization.id, organization.type).then((response) => {
+      setFiles(response.data.data);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-        const updatedAt = moment(file.updated_at).format("YYYY.MM.DD HH:mm:ss");
+  const formatLabel = (file) => {
+    let label = ["ResourceManager", file.breadcrumbs, file.name].join(".");
 
-        label +=` v${updatedAt}`;
+    const updatedAt = moment(file.updated_at).format("YYYY.MM.DD HH:mm:ss");
 
-        return label;
-    }
+    label += ` v${updatedAt}`;
 
-    const mapToOption = (file) => {
+    return label;
+  };
 
-        return {
-            label: formatLabel(file),
-            value: file.id
-        }
-    }
+  const mapToOption = (file) => {
+    return {
+      label: formatLabel(file),
+      value: file.id,
+    };
+  };
 
-    const mapToOptions = () => {
-        return files.map((file) => {
-            return mapToOption(file)
-        });
-    }
+  const mapToOptions = () => {
+    return files.map((file) => {
+      return mapToOption(file);
+    });
+  };
 
-    const findSelectedValue = (options) => {
-        return options.filter(function(option) {
-            return option.value === resourceManagerFieldId;
-        })
-    }
+  const findSelectedValue = (options) => {
+    return options.filter(function (option) {
+      return option.value === resourceManagerFieldId;
+    });
+  };
 
-    const options = mapToOptions();
-    const selectedValue = findSelectedValue(options);
+  const options = mapToOptions();
+  const selectedValue = findSelectedValue(options);
 
-    return <CustomSelect
-        id="select-ms-property"
-        options={options}
-        value={selectedValue}
-        onChange={(event) => {
-            console.log('event', event);
-            onChange(event)
-        }}
-        invalid={false}
-    />
-}
+  return (
+    <CustomSelect id="select-ms-property" options={options} value={selectedValue} onChange={onChange} invalid={false} />
+  );
+};
+
+export default ResourceManagerFieldFiles;
