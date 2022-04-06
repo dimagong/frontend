@@ -1,70 +1,38 @@
-import {isObject} from "lodash";
-import { CustomSelect } from "./Parts/CustomSelect";
-import React, { useEffect, useState } from "react";
-import resourceManagerFieldFileService from '../services/resourceManagerFieldFile.service'
 import moment from "moment";
+import React, { useMemo } from "react";
 
-export default function ResourceManagerFieldFiles({ organizations, resourceManagerFieldId, onChange }) {
+import { useRMFields } from "api/resourceManager/useRMFields";
 
-    const [files, setFiles] = useState([]);
+import { CustomSelect } from "./Parts/CustomSelect";
 
-    useEffect(() => {
-        // todo organization related to dform can be only one, this is legacy array of organization
-        const organization = organizations[0];
+const getLabel = (file) => {
+  return `ResourceManager.${file.breadcrumbs}.${file.name} v${moment(file.updated_at).format(
+    "YYYY.MM.DD HH:mm:ss"
+  )}`;
+};
 
-        resourceManagerFieldFileService.resourceManagerFields(
-            organization.id,
-            organization.type,
-        ).then((response) => {
-            setFiles(response.data.data);
-        });
-    }, []);
+const getOption = (file) => ({ label: getLabel(file), value: file.id });
 
-    const formatLabel = (file) => {
-        let label = [
-            'ResourceManager',
-            file.breadcrumbs,
-            file.name,
-        ].join('.');
+const mapToOptions = (files) => files.map(getOption);
 
-        const updatedAt = moment(file.updated_at).format("YYYY.MM.DD HH:mm:ss");
+const findSelectedValue = (options, resourceManagerFieldId) => {
+  return options.filter((option) => option.value === resourceManagerFieldId);
+};
 
-        label +=` v${updatedAt}`;
+const ResourceManagerFieldFiles = ({ organizations, resourceManagerFieldId, onChange }) => {
+  const { data: fileOptions = [] } = useRMFields(
+    { organizationId: organizations[0]?.id, organizationType: organizations[0]?.type },
+    { select: mapToOptions }
+  );
 
-        return label;
-    }
+  const value = useMemo(
+    () => findSelectedValue(fileOptions, resourceManagerFieldId),
+    [fileOptions, resourceManagerFieldId]
+  );
 
-    const mapToOption = (file) => {
+  return (
+    <CustomSelect id="select-ms-property" options={fileOptions} value={value} onChange={onChange} invalid={false} />
+  );
+};
 
-        return {
-            label: formatLabel(file),
-            value: file.id
-        }
-    }
-
-    const mapToOptions = () => {
-        return files.map((file) => {
-            return mapToOption(file)
-        });
-    }
-
-    const findSelectedValue = (options) => {
-        return options.filter(function(option) {
-            return option.value === resourceManagerFieldId;
-        })
-    }
-
-    const options = mapToOptions();
-    const selectedValue = findSelectedValue(options);
-
-    return <CustomSelect
-        id="select-ms-property"
-        options={options}
-        value={selectedValue}
-        onChange={(event) => {
-            console.log('event', event);
-            onChange(event)
-        }}
-        invalid={false}
-    />
-}
+export default ResourceManagerFieldFiles;
