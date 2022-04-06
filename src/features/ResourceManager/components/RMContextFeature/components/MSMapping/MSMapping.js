@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import { IdType } from "utility/prop-types";
 
 import NmpSelect from "components/nmp/NmpSelect";
-import { getOrganizationType } from "constants/organization";
 
 import { useMSFields } from "api/masterSchema/useMSFields";
 import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
@@ -15,6 +14,7 @@ import { useRMFieldFileReferences } from "api/resourceManager/useRMFieldFileRefe
 import FileInfoFolderContentTemplate from "../FileInfoFolderContentTemplate";
 
 import MappingFileForm from "./MappingFileForm";
+import PropTypes from "prop-types";
 
 const getFileLabel = (file) => `${file.id} ${file.name} v${moment(file.created_at).format("YYYY.MM.DD HH:mm:ss")}`;
 
@@ -22,16 +22,11 @@ const getOptionFromFile = (file) => ({ label: getFileLabel(file), value: file })
 
 const getOptionFromMSField = (field) => ({ label: `${field.breadcrumbs}.${field.name}`, value: field });
 
-const MSMapping = ({ fieldId, resourceManager }) => {
+const MSMapping = ({ fieldId, organizationId, organizationType }) => {
   // MasterSchema fields
   const { data: fieldOptions = [], isLoading: fieldsIsLoading } = useMSFields(
-    {
-      organization_type: getOrganizationType(resourceManager.organization_type),
-      organization_id: resourceManager.organization_id,
-    },
-    {
-      select: (fields) => fields.map(getOptionFromMSField),
-    }
+    { organizationId, organizationType },
+    { select: (fields) => fields.map(getOptionFromMSField) }
   );
   // ResourceManager field files
   const [file, setFile] = useState(null);
@@ -73,6 +68,8 @@ const MSMapping = ({ fieldId, resourceManager }) => {
 
 MSMapping.propTypes = {
   fieldId: IdType.isRequired,
+  organizationId: IdType.isRequired,
+  organizationType: PropTypes.string.isRequired,
 };
 
 export default MSMapping;
