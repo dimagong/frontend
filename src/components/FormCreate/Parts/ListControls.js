@@ -187,7 +187,6 @@ export function listControls(properties) {
 
     const onChangeResourceManagerFieldFile = (resourceManagerFieldId) => {
         this.setState({schemaPropertyEdit: {...this.state.schemaPropertyEdit, resource_manager_field_id: resourceManagerFieldId}})
-        console.log(this.state.schemaPropertyEdit);
     }
 
     const renderSpecificType = () => {
