@@ -2,8 +2,8 @@ import _ from "lodash/fp";
 import * as yup from "yup";
 import PropTypes from "prop-types";
 import { useFormik } from "formik";
+import { Col, Row } from "reactstrap";
 import { toast } from "react-toastify";
-import { Col, Row, Spinner } from "reactstrap";
 import Scrollbars from "react-custom-scrollbars";
 import React, { useEffect, useState } from "react";
 
@@ -42,7 +42,7 @@ const getReferenceValues = (references = []) => {
 
 const findReferenceFieldOptionById = (options, id) => options.find(({ value }) => value.id === id) || null;
 
-const MappingFileForm = ({ fileId, msFieldOptions, references, isLoading }) => {
+const MappingFileForm = ({ fileId, msFieldOptions, references }) => {
   const openPreview = useOpenRMFileReferencesPreview({ fileId });
   const saveReferences = useSaveRMFileReferences({ fileId }, { onSuccess: () => toast.success("Saved successfully") });
   // Users
@@ -83,22 +83,6 @@ const MappingFileForm = ({ fileId, msFieldOptions, references, isLoading }) => {
   // Re-validate when references change
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => void form.validateForm(getReferenceValues(references)), [references]);
-
-  if (isLoading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center height-300">
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (_.isEmpty(references)) {
-    return (
-      <div className="d-flex justify-content-center align-items-center height-300">
-        <strong>No templates bindings was found.</strong>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={form.handleSubmit}>
@@ -150,7 +134,6 @@ const MappingFileForm = ({ fileId, msFieldOptions, references, isLoading }) => {
 
 MappingFileForm.propTypes = {
   fileId: IdType.isRequired,
-  isLoading: PropTypes.bool.isRequired,
   references: PropTypes.arrayOf(PropTypes.object).isRequired,
   msFieldOptions: OptionsType.isRequired,
 };
