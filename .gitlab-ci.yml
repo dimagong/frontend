@@ -21,7 +21,7 @@ deploy to dev:
     - printf "[profile nmpdev]\nregion=eu-west-2\noutput=json" >> ~/.aws/config
     - cp .ebenviroments/config.dev.yml .elasticbeanstalk/config.yml
     - apt-get --yes --force-yes install curl
-    - curl -sL https://deb.nodesource.com/setup_10.x | bash
+    - curl -sL https://deb.nodesource.com/setup_14.x | bash
     - apt-get --yes --force-yes install --yes --force-yes nodejs
   script:
     - git checkout dev
