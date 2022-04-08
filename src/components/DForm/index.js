@@ -7,7 +7,7 @@ import SectionsComponent from './Components/Sections';
 import './styles.scss';
 
 const DForm = ({
-  isConfigurable = true,
+  isConfigurable,
   onElementClick,
   onSectionCreate,
   onGroupCreate,
@@ -52,7 +52,7 @@ const DForm = ({
         "type": "Text",
         "title": "Some text",
         "isRequired": true,
-        "classes": "col-md-6",
+        "classes": "col-md-12",
       },
       "2": {
         "id": "2",
@@ -60,7 +60,7 @@ const DForm = ({
         "type": "TextArea",
         "title": "Your biography",
         "isRequired": true,
-        "classes": "col-md-6",
+        "classes": "col-md-12",
       },
       "3": {
         "id": "3",
@@ -80,9 +80,8 @@ const DForm = ({
     }
   };
 
-  const handleElementClick = (event, element) => {
-    event.stopPropagation();
-    console.log("ELEMENT click", element)
+  const handleElementClick = (element) => {
+    onElementClick(element);
   };
 
   const sectionsWithErrors = Object.keys(data.errors);
@@ -120,21 +119,21 @@ const DForm = ({
   useEffect(init, []);
 
   return (
-    <div className="new-dform">
+    <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
       <SectionsSideBar
         onSectionSelect={handleSectionSelect}
         selectedSection={selectedSection}
         sectionsProgress={sectionsProgress}
         errors={sectionsWithErrors}
         sections={Object.values(data.sections)}
-        onSectionCreate={onSectionCreate}
+        onSectionCreate={isConfigurable && onSectionCreate}
       />
       <SectionsComponent
         data={data}
         selectedSection={selectedSection}
         onElementClick={isConfigurable ? handleElementClick : ()=>{}}
-        onGroupCreate={onGroupCreate}
-        onFieldCreate={onFieldCreate}
+        onGroupCreate={isConfigurable && onGroupCreate}
+        onFieldCreate={isConfigurable && onFieldCreate}
       />
     </div>
   )

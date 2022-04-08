@@ -7,27 +7,40 @@ import DFormElementEdit from "./Components/DFormElementEdit";
 
 const Applications = ({ isConfigurable }) => {
 
+  const [isModuleEditComponentVisible, setIsModuleEditComponentVisible] = useState(false);
   const [selectedElement, setSelectedElement] = useState(null);
 
   const handleSelectElementForEdit = (element) => {
+    console.log(element);
     setSelectedElement(element);
+    setIsModuleEditComponentVisible(true);
   };
 
   const handleSectionCreate = () => {
 
   };
 
+  const handleGroupCreate = () => {
+
+  };
+
+  const handleFieldCreate = () => {
+
+  };
+
   return (
-    <div>
-      <ContextTemplate contextTitle="Applications" contextName="dForm > introduction">
+    <div className="d-flex">
+      <ContextTemplate contextTitle="Applications" contextName="dForm » introduction">
         <DForm
           isConfigurable={isConfigurable}
           onElementClick={handleSelectElementForEdit}
           onSectionCreate={handleSectionCreate}
+          onGroupCreate={handleGroupCreate}
+          onFieldCreate={handleFieldCreate}
         />
       </ContextTemplate>
-      {!!selectedElement && (
-        <ContextFeatureTemplate>
+      {isModuleEditComponentVisible && (
+        <ContextFeatureTemplate contextFeatureTitle="dForm">
           <DFormElementEdit />
         </ContextFeatureTemplate>
       )}

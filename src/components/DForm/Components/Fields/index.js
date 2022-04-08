@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import {toast} from "react-toastify";
 
 import formComponents from './Components/DFormWidgets'
+import {Plus} from "react-feather";
 
-const FormComponent = ({groupFields, data, onElementClick}) => {
+const FormComponent = ({groupFields, data, onElementClick, onFieldCreate}) => {
 
   const [formData, setFormData] = useState({});
 
@@ -88,29 +89,45 @@ const FormComponent = ({groupFields, data, onElementClick}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [groupFields]);
 
-  return groupFields.map((formField) => {
-    const field = data.fields[formField];
-    const FormFieldElement = formComponents[field.type];
-    // const fieldId = formField.master_schema_field_id;
+  return (
+    <>
+      {groupFields.map((formField) => {
+        const field = data.fields[formField];
+        const FormFieldElement = formComponents[field.type];
+        // const fieldId = formField.master_schema_field_id;
 
-    return (
-      <div className={`custom-form-field ${field.classes ? field.classes : "col-12"}`} onClick={(e) => onElementClick(e, field)}>
-        <FormFieldElement
-          fieldId={field.id}
-          isRequired={field.isRequired}
-          key={field.id}
-          name={field.title}
-          label={field.title}
-          value={""}
-          // onChange={handleInputChange}
-          onChange={() => {}}
-          disabled={false} // TODO handle disabled
-          error={""}
-          fieldClasses={field.classes}
-        />
-      </div>
-    )
-  });
+        return (
+          <div className={`editable custom-form-field ${field.classes ? field.classes : "col-12"}`} onClick={() => onElementClick(field)}>
+            <FormFieldElement
+              fieldId={field.id}
+              isRequired={field.isRequired}
+              key={field.id}
+              name={field.title}
+              label={field.title}
+              value={""}
+              // onChange={handleInputChange}
+              onChange={() => {}}
+              disabled={false} // TODO handle disabled
+              error={""}
+              fieldClasses={field.classes}
+            />
+          </div>
+        )
+      })}
+      {!!onFieldCreate && (
+        <div className="custom-form-field col-12">
+          <div className="element-add">
+            <div className="element-add_icon">
+              <Plus color="white" size={23} />
+            </div>
+            <div className="element-add_description">
+              Add new form element
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default FormComponent;
