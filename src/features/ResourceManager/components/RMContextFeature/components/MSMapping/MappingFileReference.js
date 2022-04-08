@@ -27,6 +27,7 @@ const MappingFileReference = ({ name, value, options, onChange, fieldTemplate: p
             backgroundColor="transparent"
             placeholder="Select a MasterSchema reference"
             menuPosition="fixed"
+            searchable
           />
         </div>
       </Col>
