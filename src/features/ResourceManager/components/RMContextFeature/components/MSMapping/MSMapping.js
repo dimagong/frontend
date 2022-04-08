@@ -59,6 +59,17 @@ const MSMapping = ({ fieldId, organizationId, organizationType }) => {
   if (_.isEmpty(references)) {
     return (
       <FileInfoFolderContentTemplate title="Document Mapping">
+        <div className="mb-2">
+          <NmpSelect
+            value={file}
+            options={fileOptions}
+            onChange={setFile}
+            loading={filesIsLoading}
+            backgroundColor="transparent"
+            searchable
+          />
+        </div>
+
         <div className="d-flex justify-content-center align-items-center py-2">
           <strong>No templates bindings was found.</strong>
         </div>
