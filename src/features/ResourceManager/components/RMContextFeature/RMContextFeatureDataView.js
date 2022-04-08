@@ -15,9 +15,9 @@ import RMContextFeatureTemplate from "./RMContextFeatureTemplate";
 
 const getFolder = (id, name, length, itemsName) => ({ id, name, items: { length }, itemsName });
 const getFolders = ({ previousFilesCount, mappedElementsCount }) => ({
-  PreviousVersions: getFolder(1, "Previous Versions", previousFilesCount, "revisions"),
+  PreviousVersions: getFolder(1, "Previous Versions", previousFilesCount, "revision"),
   // SharedWith: getFolder("Shared With"),
-  Mapping: getFolder(2, "MS Mapping", mappedElementsCount, "mapped elements"),
+  Mapping: getFolder(2, "MS Mapping", mappedElementsCount, "mapped element"),
 });
 
 const RMContextFeatureDataView = ({ field, organizationId, organizationType }) => {
