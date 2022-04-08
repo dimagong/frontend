@@ -61,8 +61,7 @@
   src: local('Montserrat light'), url("../fonts/Montserrat/Montserrat-Light.ttf") format('ttf');
 }
 
-
-@import "./bootstrap.scss";
+@import "./bootstrap-overrides/bootstrap-overrides";
 @import "./components.scss";
 @import "./bootstrap-extended.scss";
 @import "./colors.scss";

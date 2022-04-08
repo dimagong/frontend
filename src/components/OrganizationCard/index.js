@@ -32,9 +32,9 @@ const OrganizationCard = ({org, onSelect, className}) => {
 
 OrganizationCard.propTypes = {
   org: propTypes.shape({
-    name: propTypes.string.isRequired,
-    type: propTypes.string.isRequired,
     id: propTypes.number.isRequired,
+    name: propTypes.string.isRequired,
+    type: propTypes.string,
   }),
   onSelect: propTypes.func,
 };

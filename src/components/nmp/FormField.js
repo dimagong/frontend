@@ -20,7 +20,7 @@ const FormField = ({ dirty, invalid, errors, label, error, children }) => {
       case "function":
         return label(id);
       default:
-        return <Label for={id} style={labelStyles}>{label}</Label>;
+         return label ? <Label for={id} style={labelStyles}>{label}</Label> : null;
     }
   };
 

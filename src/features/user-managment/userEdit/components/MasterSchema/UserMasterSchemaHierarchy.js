@@ -22,13 +22,13 @@ import UserMasterSchemaHierarchySearch from "./UserMasterSchemaHierarchySearch";
 const {
   getUserMasterSchemaHierarchyRequest,
   setUserMasterSchemaHierarchySearchParams,
-  addFieldToMasterSchemaRequest,
-  addGroupToMasterSchemaRequest,
+  addFieldToUserMasterSchemaRequest,
+  addGroupToUserMasterSchemaRequest,
 } = appSlice.actions;
 
 const stickySearchStyles = { top: "0px", left: "0px", backgroundColor: "#fff" };
 
-const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
+const elementAdditionActionTypes = [addFieldToUserMasterSchemaRequest.type, addGroupToUserMasterSchemaRequest.type];
 
 const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSelect }) => {
   const dispatch = useDispatch();
@@ -53,10 +53,10 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
   const onElementCreationSubmit = ({ type, ...creationData }) => {
     switch (type) {
       case ADD_FIELD:
-        dispatch(addFieldToMasterSchemaRequest(creationData));
+        dispatch(addFieldToUserMasterSchemaRequest({ ...creationData, userId }));
         break;
       case ADD_GROUP:
-        dispatch(addGroupToMasterSchemaRequest(creationData));
+        dispatch(addGroupToUserMasterSchemaRequest({ ...creationData, userId }));
         break;
       default:
         throw new Error("Unexpected element addition type.");

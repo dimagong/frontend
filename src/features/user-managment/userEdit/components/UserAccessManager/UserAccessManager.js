@@ -6,7 +6,7 @@ import UserAccessManagerNoUsers from "./UserAccessManagerNoUsers";
 
 const userToOption = (user) => ({ label: user.full_name, value: user });
 
-const MFAccessManagerData = ({ active = [], potential = [], error, errors, onChange }) => {
+const UserAccessManager = ({ active = [], potential = [], error, errors, onChange }) => {
   const options = React.useMemo(() => (potential.map(userToOption)), [potential]);
 
   if (error) {
@@ -16,7 +16,7 @@ const MFAccessManagerData = ({ active = [], potential = [], error, errors, onCha
   return <UserAccessManagerSelect bdms={active} options={options} onChange={onChange} errors={errors} />;
 };
 
-MFAccessManagerData.propTypes = {
+UserAccessManager.propTypes = {
   error: PropTypes.any,
   active: PropTypes.arrayOf(PropTypes.object),
   potential: PropTypes.arrayOf(PropTypes.object),
@@ -24,4 +24,4 @@ MFAccessManagerData.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default MFAccessManagerData;
+export default UserAccessManager;

@@ -7,31 +7,17 @@ export default {
   component: NmpTilesSelectField,
 };
 
-const options = ["Brad Powar", "Richard Philips"].map((value) => ({ label: value, value }));
+const options = ["Brad Powar", "Brad Powar", "Richard Philips"].map((value, index) => ({
+  label: value,
+  value: { id: index, name: value },
+}));
 
 export const Base = (props) => {
-  const [value, setValue] = React.useState(null);
   const [tiles, setTiles] = React.useState([]);
 
-  const addTile = React.useCallback((tile) => setTiles((prev) => [...prev, tile]), []);
-  const removeTile = React.useCallback((toRemove) => setTiles((prev) => prev.filter((tile) => tile !== toRemove)), []);
-
-  const notAddedOptions = React.useMemo(() => options.filter(({ value }) => !tiles.includes(value)), [tiles]);
-
-  return (
-    <NmpTilesSelectField
-      {...props}
-      value={value}
-      onChange={setValue}
-      options={notAddedOptions}
-      tiles={tiles}
-      onTileAdd={addTile}
-      onTileRemove={removeTile}
-    />
-  );
+  return <NmpTilesSelectField {...props} value={tiles} onChange={setTiles} options={options} />;
 };
 
 Base.args = {
-  name: "roles",
   tileColor: "primary",
 };

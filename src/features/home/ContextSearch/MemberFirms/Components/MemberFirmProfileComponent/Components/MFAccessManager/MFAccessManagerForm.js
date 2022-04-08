@@ -1,3 +1,4 @@
+import _ from "lodash/fp";
 import React from "react";
 import PropTypes from "prop-types";
 import { Label, Row } from "reactstrap";
@@ -8,31 +9,16 @@ import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 import NmpButton from "components/nmp/NmpButton";
 import NmpTilesSelectField from "components/nmp/NmpTilesSelectField";
 
-const bdmToTile = ({ id, full_name }) => ({ id, label: full_name });
+const bdmToOption = (bdm) => ({ label: bdm.full_name, value: bdm });
 
 const MFAccessManagerForm = ({ bdms, options, submitting, onSubmit: propOnSubmit }) => {
-  const [selected, setSelected] = React.useState(null);
   const [bdmsField, setBdmsField] = useFormField(bdms, [Validators.identicalArrayBy(bdms, "id")]);
   const formGroup = useFormGroup({ bdms: bdmsField });
 
-  const optionsWithoutBdms = React.useMemo(() => {
-    return options.filter(({ value }) => !bdmsField.value.find((bdm) => bdm.id === value.id));
-  }, [bdmsField.value, options]);
+  const tiles = React.useMemo(() => bdmsField.value.map(bdmToOption), [bdmsField.value]);
 
-  const tiles = React.useMemo(() => bdmsField.value.map(bdmToTile), [bdmsField.value]);
-
-  const onBdmsAdding = React.useCallback((bdm) => {
-    setBdmsField((prev) => [...prev, bdm]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onBdmsRemoving = React.useCallback(
-    (toRemove) => {
-      setBdmsField((prev) => prev.filter(({ id }) => id !== toRemove.id));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChange = React.useCallback((newTiles) => setBdmsField(newTiles.map(_.get("value"))), []);
 
   const onSubmit = React.useCallback(() => propOnSubmit(formGroup), [formGroup, propOnSubmit]);
 
@@ -40,14 +26,11 @@ const MFAccessManagerForm = ({ bdms, options, submitting, onSubmit: propOnSubmit
     <form className="pb-2" onSubmit={preventDefault(onSubmit)}>
       <NmpTilesSelectField
         name="bdm"
-        value={selected}
-        options={optionsWithoutBdms}
-        onChange={setSelected}
-        tileColor="primary"
-        tiles={tiles}
-        onTileAdd={onBdmsAdding}
-        onTileRemove={onBdmsRemoving}
+        value={tiles}
+        options={options}
+        onChange={onChange}
         errors={bdmsField.errors}
+        tileColor="primary"
         label={(id) => (
           <Label className="member-firm-role__label" for={id}>
             Managing BDM(s)
