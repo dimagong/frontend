@@ -30,6 +30,7 @@ export const useOpenRMFileReferencesPreview = ({ fileId }, options = {}) => {
           responseType: "blob",
           onlyData: false,
           flatData: false,
+          flatError: false,
           params: {
             user_id: userId,
           },
@@ -42,4 +43,3 @@ export const useOpenRMFileReferencesPreview = ({ fileId }, options = {}) => {
     ...options,
   });
 };
-

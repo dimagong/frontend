@@ -1,38 +1,56 @@
 import _ from "lodash/fp";
+import * as yup from "yup";
 import PropTypes from "prop-types";
-import { Col, Row, Spinner } from "reactstrap";
+import { useFormik } from "formik";
+import { Col, Row } from "reactstrap";
+import { toast } from "react-toastify";
 import Scrollbars from "react-custom-scrollbars";
 import React, { useEffect, useState } from "react";
 
-import { useFormGroup } from "hooks/use-form";
-
-import { IdType, OptionsType } from "utility/prop-types";
-import { preventDefault } from "utility/event-decorators";
-
 import NmpButton from "components/nmp/NmpButton";
 import NmpSelect from "components/nmp/NmpSelect";
+
+import { IdType, OptionsType } from "utility/prop-types";
 
 import { useAccessQueryUsers } from "api/resourceManager/useRMFieldFileReferenceUsers";
 import { useOpenRMFileReferencesPreview, useSaveRMFileReferences } from "api/resourceManager/useRMFieldFileReferences";
 
 import MappingFileReference from "./MappingFileReference";
 
-const getReferenceFieldsFromReferences = (references, fieldOptions) => {
-  const referenceFields = Object.fromEntries(
-    references.map((reference) => {
-      const fieldOption = fieldOptions.find(({ value }) => value.id === reference.master_schema_field_id);
-      return [reference.id, { value: fieldOption || null }];
-    })
-  );
-
-  return referenceFields;
-};
+const validationSchema = yup.lazy((obj) =>
+  yup.object(
+    _.mapValues(
+      () =>
+        yup.object({
+          id: yup.number().required("Required"),
+          masterSchemaFieldId: yup.number().nullable().required("Required"),
+        }),
+      obj
+    )
+  )
+);
 
 const getOptionFromUser = (user) => ({ label: user.full_name, value: user });
 
-const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
-  const saveReferences = useSaveRMFileReferences({ fileId });
+const getReferenceName = (reference) => {
+  // Fixed issue: formik setFieldValue first argument is a string like path
+  // So, we need to remove all dots and slashes from template name.
+  const templateName = reference.field_template.replace(/\.|\//g, "-");
+
+  return `${templateName}-${reference.id}`
+};
+
+const getReferenceValue = ({ id, master_schema_field_id }) => ({ id, masterSchemaFieldId: master_schema_field_id });
+
+const getReferenceValues = (references = []) => {
+  return Object.fromEntries(references.map((reference) => [getReferenceName(reference), getReferenceValue(reference)]));
+};
+
+const findReferenceFieldOptionById = (options, id) => options.find(({ value }) => value.id === id) || null;
+
+const MappingFileForm = ({ fileId, msFieldOptions, references }) => {
   const openPreview = useOpenRMFileReferencesPreview({ fileId });
+  const saveReferences = useSaveRMFileReferences({ fileId }, { onSuccess: () => toast.success("Saved successfully") });
   // Users
   const [user, setUser] = useState(null);
   const { data: userOptions, isLoading: usersIsLoading } = useAccessQueryUsers({
@@ -41,73 +59,55 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
 
   const onPreview = () => openPreview.mutate({ userId: user.value.id });
 
-  // const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
-  const [referenceFields, setReferenceFields] = useState(getReferenceFieldsFromReferences(references, fieldOptions));
-
-  // Re-calculate referenceFields
-  useEffect(() => {
-    const referenceFields = getReferenceFieldsFromReferences(references, fieldOptions);
-
-    setReferenceFields(referenceFields);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [references, fieldOptions]);
-
-  const onReferenceChange = (referenceId) => (field) =>
-    setReferenceFields((prev) => {
-      return { ...prev, [referenceId]: field };
-    });
-
-  // ToDo it
-  // Filter fieldOptions with selectedFieldOptions from reference fields
-  // const fieldOptions = useMemo(() => {
-  //   const referenceFieldsArray = Object.values(referenceFields);
-  //
-  //   return propFieldOptions.filter((fieldOption) => {
-  //     return referenceFieldsArray.find(({ value }) => fieldOption.value.id !== value?.value?.id);
-  //   });
-  // }, [propFieldOptions, referenceFields]);
-
-  const form = useFormGroup(referenceFields);
-
-  const onSubmit = () => {
-    if (form.invalid) return;
-
-    const data = Object.entries(form.values).map(([referenceId, field]) => ({
-      id: Number(referenceId),
-      master_schema_field_id: field.value.id,
+  const onSubmit = (values) => {
+    const data = Object.values(values).map(({ id, masterSchemaFieldId }) => ({
+      id,
+      master_schema_field_id: masterSchemaFieldId,
     }));
 
     saveReferences.mutate(data);
   };
 
-  if (isLoading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center height-300">
-        <Spinner />
-      </div>
-    );
-  }
+  // Form
+  const form = useFormik({
+    onSubmit,
+    initialValues: getReferenceValues(references),
+    validationSchema,
+    validateOnMount: true,
+    enableReinitialize: true,
+  });
 
-  if (_.isEmpty(references)) {
-    return (
-      <div className="d-flex justify-content-center align-items-center height-300">
-        <strong>No templates bindings was found.</strong>
-      </div>
-    );
-  }
+  const getOnChangeForReference = (reference) => {
+    const onChange = (option) => {
+      const name = getReferenceName(reference);
+      form.setFieldValue(name, { id: reference.id, masterSchemaFieldId: option?.value?.id });
+    };
+
+    return onChange;
+  };
+
+  // Re-validate when references change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => void form.validateForm(getReferenceValues(references)), [references]);
 
   return (
-    <form onSubmit={preventDefault(onSubmit)}>
+    <form onSubmit={form.handleSubmit}>
       <Scrollbars className="mb-2" autoHeight autoHeightMax={350}>
-        {references.map((reference) => (
-          <MappingFileReference
-            value={referenceFields[reference.id]?.value}
-            options={fieldOptions}
-            onChange={onReferenceChange(reference.id)}
-            fieldTemplate={reference.field_template}
-            key={reference.id}
-          />
-        ))}
+        {references.map((reference) => {
+          const name = getReferenceName(reference);
+          const value = findReferenceFieldOptionById(msFieldOptions, form.values[name]?.masterSchemaFieldId);
+
+          return (
+            <MappingFileReference
+              name={name}
+              value={value}
+              options={msFieldOptions}
+              onChange={getOnChangeForReference(reference)}
+              fieldTemplate={reference.field_template}
+              key={reference.id}
+            />
+          );
+        })}
       </Scrollbars>
 
       <div className="ms-mapping__preview py-2 mb-2">
@@ -118,6 +118,8 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
               options={userOptions}
               onChange={setUser}
               loading={usersIsLoading}
+              menuPosition="fixed"
+              searchable
               backgroundColor="transparent"
             />
           </Col>
@@ -130,7 +132,7 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
       </div>
 
       <div className="d-flex justify-content-end py-1">
-        <NmpButton color="primary" disabled={form.invalid} loading={saveReferences.isLoading}>
+        <NmpButton color="primary" disabled={!form.isValid || !form.dirty} loading={saveReferences.isLoading}>
           Save
         </NmpButton>
       </div>
@@ -140,9 +142,8 @@ const MappingFileForm = ({ fileId, fieldOptions, references, isLoading }) => {
 
 MappingFileForm.propTypes = {
   fileId: IdType.isRequired,
-  fieldOptions: OptionsType.isRequired,
   references: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isLoading: PropTypes.bool.isRequired,
+  msFieldOptions: OptionsType.isRequired,
 };
 
 export default MappingFileForm;

@@ -1,37 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Col, FormGroup, Row, Alert} from "reactstrap";
-import Select from "react-select";
 import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
 import {isEmpty, isObject} from 'lodash'
+import { CustomSelect } from './Parts/CustomSelect'
 
 import appSlice from 'app/slices/appSlice'
 
 const {
   getMasterSchemaFieldsRequest,
 }  = appSlice.actions;
-
-class CustomSelect extends React.Component {
-  render() {
-    const {
-      invalid
-    } = this.props;
-
-    const customStyles = {
-      control: (base, state) => ({
-        ...base,
-        // state.isFocused can display different borderColor if you need it
-        borderColor: state.isFocused ?
-          '#ddd' : !invalid ? '#ddd' : '#dc3545',
-        // overwrittes hover style
-        '&:hover': {
-          borderColor: state.isFocused ? '#ddd' : !invalid ? '#ddd' : 'red'
-        }
-      })
-    };
-    return <Select styles={customStyles} {...this.props}/>
-  }
-}
 
 export default function MasterSchemaProperty(props) {
 

@@ -1,19 +1,23 @@
 import { useQuery } from "react-query";
 
+import { getOrganizationType } from "constants/organization";
+
 import { clientAPI } from "../clientAPI";
 
 export const MSUserFieldsQueryKey = "master-schema-user-fields";
 
-export const useMSFields = ({ userId }, options = {}) => {
+export const useMSFields = ({ organizationId, organizationType }, options = {}) => {
   return useQuery({
-    queryKey: [MSUserFieldsQueryKey, { userId: !!userId }],
+    queryKey: [MSUserFieldsQueryKey, { organizationId, organizationType }],
     queryFn: ({ signal }) =>
       clientAPI.get(`/api/master-schema-field`, {
         signal,
         params: {
-          ...(userId ? { user_id: userId } : {}),
+          organization_id: organizationId,
+          organization_type: getOrganizationType(organizationType),
         },
       }),
+    enabled: [organizationId, organizationType].every(Boolean),
     ...options,
   });
 };
