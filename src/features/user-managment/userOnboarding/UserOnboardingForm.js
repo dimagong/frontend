@@ -150,7 +150,7 @@ const UserOnboardingCreate = ({isCreate}) => {
       dispatch(createUserOnboardingRequest({
         ...manager.onboarding,
         is_private: manager?.onboarding?.d_form?.is_private,
-        is_internal: manager?.onboarding?.d_form?.is_private
+        is_internal: manager?.onboarding?.is_internal
       }))
     }
   };
