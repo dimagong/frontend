@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import {
   Card,
   CardBody,
@@ -9,7 +9,7 @@ import {
 import {X, Check, Plus, ChevronDown} from "react-feather"
 import Select, {components} from "react-select"
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
   selectManager,
   selectUserDForms,
@@ -22,7 +22,7 @@ import {toast} from "react-toastify";
 import * as yup from "yup";
 
 import appSlice from 'app/slices/appSlice'
-import { createLoadingSelector } from "../../../app/selectors/loadingSelector";
+import {createLoadingSelector} from "../../../app/selectors/loadingSelector";
 import NmpButton from "../../../components/nmp/NmpButton";
 
 const {
@@ -73,7 +73,7 @@ const prepareDFormSelect = (data) => {
 const DropdownIndicator = props => {
   return (
     <components.DropdownIndicator {...props}>
-      <ChevronDown />
+      <ChevronDown/>
     </components.DropdownIndicator>
   );
 };
@@ -118,7 +118,7 @@ const UserOnboardingCreate = ({isCreate}) => {
     );
 
     // update reviewers for existing onboarding
-    if(!isCreate.current && values) {
+    if (!isCreate.current && values) {
       dispatch(updateUserOnboardingReviewersRequest({
         reviewersIds: values.map(reviewer => reviewer.id),
         onboardingId: manager.onboarding.id,
@@ -130,7 +130,7 @@ const UserOnboardingCreate = ({isCreate}) => {
   const onSelectWorkflowChange = (value) => {
     value ? dispatch(setUserWorkflows(value.value)) : dispatch(setUserWorkflows(null));
 
-    if(!isCreate.current && value) {
+    if (!isCreate.current && value) {
       dispatch(updateUserOnboardingWorkflowRequest({
         workflowId: value.value.id,
         onboardingId: manager.onboarding.id,
@@ -142,15 +142,21 @@ const UserOnboardingCreate = ({isCreate}) => {
   const createOnboarding = async () => {
     const isValid = await onboardingCreateValidationSchema
       .validate(manager.onboarding)
-      .catch((err) => { toast.error(err.message) });
+      .catch((err) => {
+        toast.error(err.message)
+      });
 
     if (isValid) {
-      dispatch(createUserOnboardingRequest({...manager.onboarding, is_private: manager?.onboarding?.d_form?.is_private, is_internal: manager?.onboarding?.d_form?.is_private}))
+      dispatch(createUserOnboardingRequest({
+        ...manager.onboarding,
+        is_private: manager?.onboarding?.d_form?.is_private,
+        is_internal: manager?.onboarding?.is_internal
+      }))
     }
   };
 
   const deleteOnboarding = () => {
-    if(window.confirm("Are you sure?")){
+    if (window.confirm("Are you sure?")) {
       dispatch(deleteUserOnboardingRequest(manager.onboarding))
     }
   };
@@ -189,7 +195,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                   <Select
                     isDisabled={!isCreate.current}
                     styles={selectStyles}
-                    components={{ DropdownIndicator }}
+                    components={{DropdownIndicator}}
                     value={prepareDFormSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])}
                     options={prepareDFormSelect(dForms).sort(sortByLabel)}
                     onChange={(value) => {
@@ -206,7 +212,7 @@ const UserOnboardingCreate = ({isCreate}) => {
                   <Select
                     isDisabled={!isCreate.current}
                     styles={selectStyles}
-                    components={{ DropdownIndicator }}
+                    components={{DropdownIndicator}}
                     value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
                     options={prepareDFormSelect(dFormWorkFlows).sort(sortByLabel)}
                     onChange={(value) => {
@@ -236,8 +242,10 @@ const UserOnboardingCreate = ({isCreate}) => {
                         }}
                       />
                     </div>
-                    <button onClick={() =>{handleReviewerAdd()}}>
-                      <Plus />
+                    <button onClick={() => {
+                      handleReviewerAdd()
+                    }}>
+                      <Plus/>
                     </button>
                   </div>
                 </Col>
@@ -250,8 +258,10 @@ const UserOnboardingCreate = ({isCreate}) => {
                         <div className="reviewer-tile_name">
                           {`${reviewer.first_name} ${reviewer.last_name}`}
                         </div>
-                        <div className="reviewer-tile_cross" onClick={() => {handleReviewerRemove(reviewer)}}>
-                          <X color="white" size={15} />
+                        <div className="reviewer-tile_cross" onClick={() => {
+                          handleReviewerRemove(reviewer)
+                        }}>
+                          <X color="white" size={15}/>
                         </div>
 
                       </div>
@@ -289,13 +299,15 @@ const UserOnboardingCreate = ({isCreate}) => {
             <div>
               {
                 isCreate.current
-                  ?<div>
-                  <NmpButton className="px-4" color="primary" loading={isOnboardingCreateLoading} onClick={createOnboarding}>
-                    Create
-                  </NmpButton>
+                  ? <div>
+                    <NmpButton className="px-4" color="primary" loading={isOnboardingCreateLoading}
+                               onClick={createOnboarding}>
+                      Create
+                    </NmpButton>
                   </div>
                   : <div>
-                    <Button disabled={!!!manager.onboarding.id} color="danger" onClick={deleteOnboarding}>Delete onboarding</Button>
+                    <Button disabled={!!!manager.onboarding.id} color="danger" onClick={deleteOnboarding}>Delete
+                      onboarding</Button>
                   </div>
               }
             </div>
