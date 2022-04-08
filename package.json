@@ -94,7 +94,6 @@
     "redux-thunk": "~2.3.0",
     "rfdc": "^1.1.4",
     "rxjs": "^7.5.4",
-    "styled-components": "^5.0.1",
     "uuid": "^8.3.0",
     "yup": "^0.28.1"
   },
