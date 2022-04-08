@@ -19,7 +19,7 @@ const GeneralMSHTreeField = (props) => {
   return (
     <MSHTreeNode
       className={className}
-      name={<div className="tree-hierarchy__name-text w-25" title={name}>{name}</div>}
+      name={<div className="tree-hierarchy__name-text w-75" title={name}>{name}</div>}
       date={date}
       index={index}
       selected={selected}
