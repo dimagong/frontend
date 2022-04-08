@@ -119,6 +119,7 @@ const MappingFileForm = ({ fileId, msFieldOptions, references }) => {
               onChange={setUser}
               loading={usersIsLoading}
               menuPosition="fixed"
+              searchable
               backgroundColor="transparent"
             />
           </Col>
