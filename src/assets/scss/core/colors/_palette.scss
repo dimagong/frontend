@@ -46,6 +46,11 @@
 
 @each $color_name, $color in $colors {
   @each $color_type, $color_value in $color {
+    $darken1: color-function($color_name, "darken-1");
+    $darken2: color-function($color_name, "darken-2");
+    $darken3: color-function($color_name, "darken-3");
+    $darken4: color-function($color_name, "darken-4");
+
     @if $color_type== "base" {
       .#{$color_name} {
         color: $color_value !important;
@@ -124,20 +129,22 @@
       }
 
       // Basic buttons
-      .btn-#{$color_name} {
-        border-color: color-function($color_name, "darken-2") !important;
-        background-color: $color_value !important;
-        color: #fff;
+      @if ($darken1 != null and $darken2 != null) {
+        .btn-#{$color_name} {
+          border-color: color-function($color_name, "darken-2") !important;
+          background-color: $color_value !important;
+          color: #fff;
 
-        &:hover {
-          border-color: color-function($color_name, "darken-1") !important;
-          color: #fff !important;
-          box-shadow: 0 8px 25px -8px rgba($color-value, 1);
-        }
+          &:hover {
+            border-color: color-function($color_name, "darken-1") !important;
+            color: #fff !important;
+            box-shadow: 0 8px 25px -8px rgba($color-value, 1);
+          }
 
-        &:focus,
-        &:active {
-          color: #fff !important;
+          &:focus,
+          &:active {
+            color: #fff !important;
+          }
         }
       }
 
@@ -321,7 +328,7 @@
         }
       }
 
-      // Vertical Layout Menu Themes 
+      // Vertical Layout Menu Themes
       .vertical-layout {
         .main-menu.theme-#{$color_name} {
           .navbar-header {
@@ -422,6 +429,7 @@
         background-color: $color_value !important;
       }
 
+      @if ($darken1 != null and $darken2 != null and $darken3 != null and $darken4 != null) {
       .btn-#{$color_name}.btn-#{$color_type} {
         border-color: color-function($color_name, "darken-2") !important;
         background-color: $color_value !important;
@@ -437,6 +445,7 @@
           background-color: color-function($color_name, "darken-4") !important;
         }
       }
+    }
 
       .btn-outline-#{$color_name}.btn-outline-#{$color_type} {
         border-color: $color_value !important;
