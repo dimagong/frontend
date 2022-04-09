@@ -16,7 +16,7 @@ const Groups = ({data, sectionGroups, onElementClick, onGroupCreate, onFieldCrea
           <div className="group-title editable" onClick={(e) => onElementClick(data.groups[sectionGroup])}>
             <span className="text-bold-500">{sectionGroup}</span>
           </div>
-          <div className="group-content row">
+          <div className="group-content">
             <Fields data={data} groupFields={data.groups[sectionGroup].relatedFields} onElementClick={onElementClick} onFieldCreate={onFieldCreate} />
           </div>
         </div>

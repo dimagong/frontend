@@ -62,7 +62,7 @@ const SectionsSideBar = ({
         }
         {!!onSectionCreate && (
           <NavItem>
-            <NavLink className={"sections-nav_item"}>
+            <NavLink className={"sections-nav_item"} onClick={onSectionCreate}>
               <div className={`sections-nav_item_title`}>
                 <span className="align-middle ml-50">New tab</span>
               </div>

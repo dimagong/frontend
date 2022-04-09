@@ -17,15 +17,47 @@ const Applications = ({ isConfigurable }) => {
   };
 
   const handleSectionCreate = () => {
+    const initialSectionData = {
+      "name": "New Tab",
+      "isProtected": false,
+      "isDisabled": false,
+      "isHidden": false,
+      "isAlreadyViewed": false,
+      "relatedGroups": [],
+      "conditions": "",
+    };
 
+    initialSectionData.isNew = true;
+    initialSectionData.type = "section";
+
+    setSelectedElement(initialSectionData);
+    setIsModuleEditComponentVisible(true);
   };
 
   const handleGroupCreate = () => {
+    const initialGroupData = {
+      "id": "New group",
+      "isProtected": false,
+      "relatedFields": []
+    };
 
+    initialGroupData.isNew = true;
+
+    setSelectedElement(initialGroupData)
   };
 
   const handleFieldCreate = () => {
+    const initialFieldData = {
+      "id": "1",
+      "type": "Text",
+      "title": "New field",
+      "isRequired": false,
+      "classes": "col-md-12",
+    };
 
+    initialFieldData.isNew = true;
+
+    setSelectedElement(initialFieldData)
   };
 
   return (
@@ -41,7 +73,7 @@ const Applications = ({ isConfigurable }) => {
       </ContextTemplate>
       {isModuleEditComponentVisible && (
         <ContextFeatureTemplate contextFeatureTitle="dForm">
-          <DFormElementEdit />
+          <DFormElementEdit element={selectedElement} />
         </ContextFeatureTemplate>
       )}
     </div>

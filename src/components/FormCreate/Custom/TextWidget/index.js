@@ -7,11 +7,11 @@ import LongTextWidget from "../LongTextWidget";
 const Index = (props) => {
   let fieldType = 'text';
 
-  if(props.schema?.type === 'number') {
+  if(props?.schema?.type === 'number') {
     fieldType = 'number';
   }
 
-  if (props.schema.format === 'longText') {
+  if (props?.schema?.format === 'longText') {
     return <LongTextWidget props={props}/>
   }
 

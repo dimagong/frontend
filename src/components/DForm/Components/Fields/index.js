@@ -97,7 +97,7 @@ const FormComponent = ({groupFields, data, onElementClick, onFieldCreate}) => {
         // const fieldId = formField.master_schema_field_id;
 
         return (
-          <div className={`editable custom-form-field ${field.classes ? field.classes : "col-12"}`} onClick={() => onElementClick(field)}>
+          <div className={`editable px-0 custom-form-field ${field.classes ? field.classes : "col-12"}`} onClick={() => onElementClick(field)}>
             <FormFieldElement
               fieldId={field.id}
               isRequired={field.isRequired}
@@ -115,7 +115,7 @@ const FormComponent = ({groupFields, data, onElementClick, onFieldCreate}) => {
         )
       })}
       {!!onFieldCreate && (
-        <div className="custom-form-field col-12">
+        <div className="custom-form-field col-12 px-0">
           <div className="element-add">
             <div className="element-add_icon">
               <Plus color="white" size={23} />
