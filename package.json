@@ -72,7 +72,6 @@
     "react-joyride": "^2.2.1",
     "react-leaflet": "^2.6.1",
     "react-numeric-input": "~2.2.3",
-    "react-paginate": "~6.3.2",
     "react-perfect-scrollbar": "^1.5.5",
     "react-query": "^3.34.16",
     "react-redux": "~7.1.3",
