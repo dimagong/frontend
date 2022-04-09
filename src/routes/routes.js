@@ -9,7 +9,6 @@ import {
   workflowsPath,
   invitationPath,
   onboardingProcessPath,
-  masterSchemaPath,
   userProfilePath,
 } from "constants/paths";
 
@@ -22,7 +21,6 @@ const OnboardingUser = lazy(() => import("features/onboarding/OnboardingUser"));
 const Invitation = lazy(() => import("features/invitation/Invitation"));
 const Home = lazy(() => import("features/home/Home"));
 const Error404 = lazy(() => import("components/misc/error/404"));
-const MasterSchema = lazy(() => import("views/pages/master-schema/index"));
 const UserProfile = lazy(() => import("features/user-managment/userEdit/UserEdit"));
 
 const routes = [
@@ -79,13 +77,6 @@ const routes = [
   {
     path: homePath,
     Component: Home,
-    isPrivate: true,
-    redirect: loginPath,
-    exact: true,
-  },
-  {
-    path: masterSchemaPath,
-    Component: MasterSchema,
     isPrivate: true,
     redirect: loginPath,
     exact: true,

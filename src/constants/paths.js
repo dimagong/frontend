@@ -9,7 +9,6 @@ export const workflowsPath = "/onboarding/workflows";
 export const userManagmentPath = "/user-management";
 export const userManagmentOptionsPath = id => `${userManagmentPath}?${qs.stringify({user_id: id}, {arrayFormat: 'comma'})}`;
 export const invitationPath = "/invitation-accept/:invitationId";
-export const masterSchemaPath = "/master-schema";
 export const onboardingProcessPath = "/onboarding-process";
 export const surveysDesignerExplore = "/surveys/:id";
 export const surveysDesignerCreate = "/surveys/create";
