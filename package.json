@@ -67,7 +67,6 @@
     "react-feather": "~2.0.3",
     "react-flatpickr": "^3.9.1",
     "react-hammerjs": "^1.0.1",
-    "react-input-mask": "~2.0.4",
     "react-intl": "^3.11.0",
     "react-perfect-scrollbar": "^1.5.5",
     "react-query": "^3.34.16",
