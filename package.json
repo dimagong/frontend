@@ -56,7 +56,6 @@
     "react-beautiful-dnd": "^12.2.0",
     "react-bootstrap": "^1.0.1",
     "react-calendar": "^3.5.0",
-    "react-contexify": "~4.1.1",
     "react-copy-to-clipboard": "~5.0.2",
     "react-countdown-now": "^2.1.2",
     "react-custom-scrollbars": "4.2.1",
