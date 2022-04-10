@@ -51,7 +51,6 @@
     "prismjs": "^1.19.0",
     "prop-types": "~15.7.2",
     "qs": "^6.10.1",
-    "query-string": "^6.10.1",
     "react": "^16.13.0",
     "react-beautiful-dnd": "^12.2.0",
     "react-bootstrap": "^1.0.1",
