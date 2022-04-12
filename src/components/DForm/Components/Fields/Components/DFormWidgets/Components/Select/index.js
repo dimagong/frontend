@@ -69,7 +69,7 @@ const SelectWidget = (props) => {
 
   return (
     <div className={"custom-react-select"}>
-      <FieldLabel label={props.label} required={false}/>
+      <FieldLabel label={props.label} required={props.isRequired}/>
       <Select
         maxMenuHeight={175}
         isDisabled={false}

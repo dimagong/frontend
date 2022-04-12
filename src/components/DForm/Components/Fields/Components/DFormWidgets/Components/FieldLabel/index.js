@@ -4,6 +4,8 @@ import './styles.scss'
 
 const FieldLabel = ({ label, className, required }) => {
 
+  if(!label) return null;
+
   return (
     <div className={`field-label ${className ? className : ""}`}>
       <span>

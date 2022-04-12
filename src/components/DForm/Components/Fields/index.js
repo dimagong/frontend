@@ -6,7 +6,7 @@ import {toast} from "react-toastify";
 import formComponents from './Components/DFormWidgets'
 import {Plus} from "react-feather";
 
-const FormComponent = ({groupFields, data, onElementClick, onFieldCreate}) => {
+const FormComponent = ({groupFields, data, onElementClick, onFieldCreate, group}) => {
 
   const [formData, setFormData] = useState({});
 
@@ -97,13 +97,13 @@ const FormComponent = ({groupFields, data, onElementClick, onFieldCreate}) => {
         // const fieldId = formField.master_schema_field_id;
 
         return (
-          <div className={`editable px-0 custom-form-field ${field.classes ? field.classes : "col-12"}`} onClick={() => onElementClick(field)}>
+          <div className={`editable px-0 custom-form-field ${field.classes ? field.classes : "col-12"}`} onClick={() => onElementClick(field, "field")}>
             <FormFieldElement
               fieldId={field.id}
               isRequired={field.isRequired}
               key={field.id}
               name={field.title}
-              label={field.title}
+              label={field.isLabelShowing ? field.title : ""}
               value={""}
               // onChange={handleInputChange}
               onChange={() => {}}
@@ -116,7 +116,7 @@ const FormComponent = ({groupFields, data, onElementClick, onFieldCreate}) => {
       })}
       {!!onFieldCreate && (
         <div className="custom-form-field col-12 px-0">
-          <div className="element-add">
+          <div className="element-add" onClick={() => onFieldCreate(group)}>
             <div className="element-add_icon">
               <Plus color="white" size={23} />
             </div>

@@ -5,11 +5,13 @@ import {Nav, NavItem, NavLink} from "reactstrap";
 import classnames from "classnames";
 import {Plus} from "react-feather";
 
+import {Edit} from 'react-feather';
+
 import ProgressBar from './Components/ProgressBar'
 
 import './styles.scss'
 
-import {selectUserOnboarding} from 'app/selectors/userSelectors'
+// import {selectUserOnboarding} from 'app/selectors/userSelectors'
 
 const SectionsSideBar = ({
   onSectionSelect,
@@ -21,29 +23,30 @@ const SectionsSideBar = ({
   onSectionCreate,
 }) => {
 
-  const onboarding = useSelector(selectUserOnboarding);
+  // const onboarding = useSelector(selectUserOnboarding);
 
   return (
     <div className="sections">
       <Nav tabs className="my-0 sections-nav">
         {
           sections.map((section, index) =>
-            <NavItem style={section.isHidden ? {display: "none"} : {}} key={`tab-display-${section.name}`} disabled={section.isDisabled}>
+            <NavItem style={section.isHidden ? {display: "none"} : {}} key={`tab-display-${section.id}`} disabled={section.isDisabled}>
               <NavLink
                 className={classnames({
                   // eslint-disable-next-line
-                  active: selectedSection === section.name
+                  active: selectedSection === section.id
                 }, "sections-nav_item")}
-                onClick={() => {onSectionSelect(section.name)}}
+                onClick={() => {onSectionSelect(section.id)}}
               >
-                <div className={`sections-nav_item_title ${errors[section.name] ? "with-errors" : ""}`}>
+                <div className={`sections-nav_item_title ${errors[section.id] ? "with-errors" : ""}`}>
                   <span className="align-middle ml-50">{section.name}</span>
                 </div>
                 <div className="sections-nav_item_index">
 
                   <ProgressBar
-                    completed={completed || onboarding.d_form?.status === "submitted" || onboarding.d_form?.status === "approved" }
-                    progress={(sectionsProgress && sectionsProgress[section.name]) || 0}
+                    // completed={completed || onboarding.d_form?.status === "submitted" || onboarding.d_form?.status === "approved" } //todo handle it later
+                    completed={completed}
+                    progress={(sectionsProgress && sectionsProgress[section.id]) || 0}
                     size={33}
                     strokeWidth={2}
                     circleOneStroke='transparent'
@@ -53,7 +56,7 @@ const SectionsSideBar = ({
                 </div>
                 <div
                   className={classnames({
-                    active: selectedSection === section.name
+                    active: selectedSection === section.id
                   }, "sections-nav_item_delimiter")}
                 />
               </NavLink>

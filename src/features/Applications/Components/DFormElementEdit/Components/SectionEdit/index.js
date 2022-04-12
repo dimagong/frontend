@@ -1,15 +1,24 @@
 import React from 'react';
 
-import TextInput from 'components/FormCreate/Custom/TextWidget'
+import { EDIT_OPTIONS } from "../../../../constants";
 
-const SectionEdit = () => {
+import SectionProperties from "./Components/SectionProperties";
+import SectionStyles from "./Components/SectionStyles";
+import SectionDynamicRendering from "./Components/SectionDynamicRendering";
+
+const SectionEdit = ({ editProperty, element, onElementChange }) => {
 
 
-  return (
-    <div>
-      <TextInput label={"Section name"} placeholder={"Enter section name"} />
-    </div>
-  )
+  const commonProps = {
+    element,
+    onElementChange,
+  };
+
+  return {
+    [EDIT_OPTIONS.properties]: <SectionProperties {...commonProps} />,
+    [EDIT_OPTIONS.styling]: <SectionStyles {...commonProps} />,
+    [EDIT_OPTIONS.dynamicRendering]: <SectionDynamicRendering {...commonProps} />
+  }[editProperty];
 };
 
 export default SectionEdit;

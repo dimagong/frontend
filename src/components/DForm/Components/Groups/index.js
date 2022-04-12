@@ -13,17 +13,17 @@ const Groups = ({data, sectionGroups, onElementClick, onGroupCreate, onFieldCrea
       {sectionGroups.map((sectionGroup) => (
 
         <div className="group" key={sectionGroup}>
-          <div className="group-title editable" onClick={(e) => onElementClick(data.groups[sectionGroup])}>
-            <span className="text-bold-500">{sectionGroup}</span>
+          <div className="group-title editable" onClick={(e) => onElementClick(data.groups[sectionGroup], "group")}>
+            <span className="text-bold-500">{data.groups[sectionGroup].name}</span>
           </div>
           <div className="group-content">
-            <Fields data={data} groupFields={data.groups[sectionGroup].relatedFields} onElementClick={onElementClick} onFieldCreate={onFieldCreate} />
+            <Fields group={sectionGroup} data={data} groupFields={data.groups[sectionGroup].relatedFields} onElementClick={onElementClick} onFieldCreate={onFieldCreate} />
           </div>
         </div>
       ))}
       {!!onGroupCreate && (
         <div className="group">
-          <div className="element-add">
+          <div className="element-add" onClick={onGroupCreate}>
             <div className="element-add_icon">
               <Plus color="white" size={23} />
             </div>

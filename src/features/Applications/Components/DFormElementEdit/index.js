@@ -8,11 +8,11 @@ import FieldEdit from "./Components/FieldEdit";
 
 import './styles.scss'
 
-const EDIT_OPTIONS = [ "Properties", "Styling", "Dynamic rendering"];
+import { EDIT_OPTIONS } from "../../constants";
 
-const DFormElementEdit = ({ element }) => {
+const DFormElementEdit = ({ element, onElementChange, onElementChangesSave, onElementChangesCancel }) => {
 
-  const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS[0]);
+  const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS.properties);
 
 
   const handleEditOptionSelect = (editOption) => {
@@ -22,23 +22,44 @@ const DFormElementEdit = ({ element }) => {
   const commonProps = {
     editProperty: selectedEditOption,
     element: element,
+    onElementChange: onElementChange,
   };
 
   return (
     <Row className="dform-element-edit">
       <Col className="col-8">
-        {{
-          "group": <GroupEdit {...commonProps} />,
-          "section": <SectionEdit {...commonProps} />,
-          "field": <FieldEdit {...commonProps} />
-        }[element.type]}
+        <div className={"pb-2"}>
+          {{
+            "group": <GroupEdit {...commonProps} />,
+            "section": <SectionEdit {...commonProps} />,
+            "field": <FieldEdit {...commonProps} />
+          }[element.elementType]}
+        </div>
+
+        <div className="d-flex justify-content-between">
+          <Button onClick={onElementChangesCancel}>
+            Cancel
+          </Button>
+          <Button color={"primary"} onClick={onElementChangesSave}>
+            {/*{element.isNew ? "Create" : "Save"}*/}
+            Save
+          </Button>
+        </div>
       </Col>
       <Col className="col-4 dform-element-edit_options">
-        {EDIT_OPTIONS.map((option) => (
-          <div className={`dform-element-edit_options-option ${option === selectedEditOption ? "selected" : ""}`} onClick={() => handleEditOptionSelect(option)}>
-            {option}
-          </div>
-        ))}
+        {Object.values(EDIT_OPTIONS).map((option) => {
+
+          //TODO remove hot fix with normal solution
+          if (["group", "section"].includes(element.elementType) && option === EDIT_OPTIONS.styling) {
+            return null;
+          }
+
+          return (
+            <div className={`dform-element-edit_options-option ${option === selectedEditOption ? "selected" : ""}`} onClick={() => handleEditOptionSelect(option)}>
+              {option}
+            </div>
+          )
+        })}
       </Col>
 
     </Row>

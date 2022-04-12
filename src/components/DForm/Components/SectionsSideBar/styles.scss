@@ -37,7 +37,7 @@
         color: #707070;
         padding-right: 7px;
         font-family: Montserrat, sans-serif;
-
+        word-break: break-word;
         span {
           width: 100%;
           text-align: right;
@@ -102,5 +102,5 @@
   .tab-pane.active { animation-name: fadeIn; animation-duration: 300ms; animation-timing-function: linear; }
 }
 
-
+//TODO make animation work in new dform
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
