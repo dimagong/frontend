@@ -7,13 +7,17 @@ import { IdType } from "utility/prop-types";
 import { useUserMSResource, useAttachResourceFileToMS } from "api/User/useUserMSResources";
 
 import UserMSFieldManagerForm from "./UserMSFieldManagerForm";
-import {useMSHierarchy} from "../../hooks/useMSHierarchy";
+import {useSelector} from "react-redux";
+import {
+  selectIsUserMasterSchemaHierarchySearchParamsInitial,
+  selectUserMasterSchemaHierarchySearchParams
+} from "app/selectors/userSelectors";
+import {queryClient} from "../../../../../../../api/queryClient";
+import {MSHierarchySearchKey} from "../../hooks/useMSHierarchySearch";
 
 const UserMSFieldManager = ({ userId, msFieldId }) => {
-  const hierarchy = useMSHierarchy({
-    userId,
-    show_empty_folders: false
-  }, {});
+  const searchParams = useSelector(selectUserMasterSchemaHierarchySearchParams);
+  const isSearchParamsInitial = useSelector(selectIsUserMasterSchemaHierarchySearchParamsInitial);
 
   // ToDo: rename it to save
   const attachRMFile = useAttachResourceFileToMS(
@@ -22,7 +26,11 @@ const UserMSFieldManager = ({ userId, msFieldId }) => {
       onSuccess: () => {
         toast.success("The resource file was successfully saved.");
         // Fixme: Critical!!! Hack to update versions when hierarchy is updating
-        hierarchy.refetch();
+        queryClient.invalidateQueries([MSHierarchySearchKey, {
+          userId, ...searchParams,
+          show_empty_folders: isSearchParamsInitial
+        }]);
+
       },
     }
   );
