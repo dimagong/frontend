@@ -1403,16 +1403,6 @@ body {
       }
     }
 
-    // React Number Input
-    .react-numeric-input {
-      background-color: $content-dark-bg !important;
-
-      input {
-        background-color: $content-dark-bg !important;
-        color: $theme-dark-text-color !important;
-      }
-    }
-
     // React Toggle
     .react-toggle-wrapper {
       .react-toggle {
@@ -3032,20 +3022,6 @@ body {
         background-color: $content-dark-bg;
 
         a {
-          color: $theme-dark-text-color;
-        }
-      }
-    }
-
-    // React Contexify
-    .react-contexify {
-      background-color: $content-dark-bg;
-      box-shadow: none;
-
-      .react-contexify__item {
-        border-color: $theme-dark-border-color;
-
-        .react-contexify__item__content {
           color: $theme-dark-text-color;
         }
       }

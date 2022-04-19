@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Col, FormGroup, Row} from "reactstrap";
 import Select from "react-select";
-import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
+import masterSchemaService from "../../../services/masterSchema.service";
 import { isEmpty } from 'lodash'
 
 export default function MasterSchemaField(props) {

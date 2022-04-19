@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react'
-import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
+import masterSchemaService from "../../../services/masterSchema.service";
 import {Input} from '@material-ui/core'
 import {debounce, isEmpty} from 'lodash'
 
