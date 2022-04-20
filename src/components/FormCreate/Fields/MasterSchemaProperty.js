@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Col, FormGroup, Row, Alert} from "reactstrap";
-import masterSchemaService from "../../../views/pages/master-schema/services/masterSchema.service";
+import masterSchemaService from "services/masterSchema.service";
 import {isEmpty, isObject} from 'lodash'
 import { CustomSelect } from './Parts/CustomSelect'
 
