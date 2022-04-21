@@ -22,9 +22,9 @@ import {
 const {
   setContext,
   getMemberFirmsRequest,
+  getOrganizationsRequest,
   setSelectedMemberFirmId,
 } = appSlice.actions;
-
 
 const UserCardTemplate = ({className, onClick, data }) => {
 
@@ -79,8 +79,6 @@ const UserCardTemplate = ({className, onClick, data }) => {
   )
 }
 
-
-
 const MemberFirmsList = () => {
   const dispatch = useDispatch();
 
@@ -95,7 +93,8 @@ const MemberFirmsList = () => {
   };
 
   useEffect(() => {
-    dispatch(getMemberFirmsRequest())
+    dispatch(getMemberFirmsRequest());
+    dispatch(getOrganizationsRequest());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

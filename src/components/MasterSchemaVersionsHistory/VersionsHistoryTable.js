@@ -62,8 +62,8 @@ const VersionsHistoryTable = ({ versionsFactory }) => {
         return (
           <tr className={rowClassName} key={version.id}>
             <td className="versions-table__td text-left">
-              <div>{moment(version?.created_at).format("DD/MM/YYYY")}</div>
-              <div>{moment(version?.created_at).format("HH:MM")}</div>
+              <div>{moment(version?.updated_at).format("DD/MM/YYYY")}</div>
+              <div>{moment(version?.updated_at).format("HH:mm:ss")}</div>
             </td>
             <td className="versions-table__td">
               <TypedValuePreview type={version.type} value={version.type === "files" ? version.files : version.value} />

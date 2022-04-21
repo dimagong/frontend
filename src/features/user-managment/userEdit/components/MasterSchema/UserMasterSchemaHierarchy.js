@@ -5,6 +5,8 @@ import { Col, Row, Spinner } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useStoreQuery } from "hooks/useStoreQuery";
+
+import NmpButton from "components/nmp/NmpButton";
 import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
 import appSlice from "app/slices/appSlice";
@@ -15,20 +17,18 @@ import {
   selectIsUserMasterSchemaHierarchySearchParamsInitial,
 } from "app/selectors/userSelectors";
 
-import MSEButton from "features/MasterSchema/share/mse-button";
-
 import UserMasterSchemaHierarchySearch from "./UserMasterSchemaHierarchySearch";
 
 const {
   getUserMasterSchemaHierarchyRequest,
   setUserMasterSchemaHierarchySearchParams,
-  addFieldToMasterSchemaRequest,
-  addGroupToMasterSchemaRequest,
+  addFieldToUserMasterSchemaRequest,
+  addGroupToUserMasterSchemaRequest,
 } = appSlice.actions;
 
 const stickySearchStyles = { top: "0px", left: "0px", backgroundColor: "#fff" };
 
-const elementAdditionActionTypes = [addFieldToMasterSchemaRequest.type, addGroupToMasterSchemaRequest.type];
+const elementAdditionActionTypes = [addFieldToUserMasterSchemaRequest.type, addGroupToUserMasterSchemaRequest.type];
 
 const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSelect }) => {
   const dispatch = useDispatch();
@@ -53,10 +53,10 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
   const onElementCreationSubmit = ({ type, ...creationData }) => {
     switch (type) {
       case ADD_FIELD:
-        dispatch(addFieldToMasterSchemaRequest(creationData));
+        dispatch(addFieldToUserMasterSchemaRequest({ ...creationData, userId }));
         break;
       case ADD_GROUP:
-        dispatch(addGroupToMasterSchemaRequest(creationData));
+        dispatch(addGroupToUserMasterSchemaRequest({ ...creationData, userId }));
         break;
       default:
         throw new Error("Unexpected element addition type.");
@@ -97,7 +97,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
             />
 
             <div className="d-flex justify-content-end pb-1">
-              <MSEButton
+              <NmpButton
                 className="p-0"
                 textColor="currentColor"
                 backgroundColor="transparent"
@@ -105,7 +105,7 @@ const UserMasterSchemaHierarchy = ({ userId, hierarchyName, selectedNodes, onSel
                 onClick={expandable.expandOnlyRoot}
               >
                 Collapse
-              </MSEButton>
+              </NmpButton>
             </div>
           </div>
 

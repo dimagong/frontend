@@ -4,9 +4,10 @@ import { CardSubtitle, CardTitle, Col, Label, Row } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import MSEButton from "features/MasterSchema/share/mse-button";
+import NmpButton from "components/nmp/NmpButton";
+import SelectField from "components/nmp/SelectField";
+
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
-import MSESelectField from "features/MasterSchema/share/mse-select-field";
 
 const customSelectStyles = {
   control: (provided) => ({
@@ -34,7 +35,7 @@ const ApproveFieldsForm = ({ selectedIds, isSubmitting, locationOptions, onAppro
   React.useEffect(() => void setLocation(null), [setLocation]);
 
   return (
-    <MSESelectField
+    <SelectField
       name="elementLocation"
       placeholder="Choose location"
       options={locationOptions}
@@ -62,7 +63,7 @@ const ApproveFieldsForm = ({ selectedIds, isSubmitting, locationOptions, onAppro
                 {error}
               </Col>
               <Col xs={12} className="d-flex mt-3">
-                <MSEButton
+                <NmpButton
                   className="ml-auto"
                   color="primary"
                   type="submit"
@@ -70,13 +71,13 @@ const ApproveFieldsForm = ({ selectedIds, isSubmitting, locationOptions, onAppro
                   disabled={form.invalid}
                 >
                   Approve and move
-                </MSEButton>
+                </NmpButton>
               </Col>
             </Row>
           }
         />
       )}
-    </MSESelectField>
+    </SelectField>
   );
 };
 

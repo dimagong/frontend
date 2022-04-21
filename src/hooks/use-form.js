@@ -1,13 +1,17 @@
+import _ from "lodash/fp";
 import { useMemo, useState } from "react";
-import { every, mapValues, isNil } from "lodash/fp";
 
 // Validator :: <T>(value: T) -> string | true | false
 export const Validators = {
-  required: (value) => !!value || "Value is required",
+  required: (value) => (!!value && !_.isEmpty(value)) || "Value is required",
   identical: (initial) => (value) => initial === value ? "Value should be changed" : true,
+  identicalArrayBy: (initial, by) => (v) => {
+    const diff = _.xorBy(by, initial, v);
+    return _.isEmpty(diff) ? "Value should be changed" : true;
+  },
 };
 
-const initialValidationState = { valid: null, errors: [] };
+const initialValidationState = { valid: true, errors: [] };
 
 const validatorsReducer =
   (value) =>
@@ -18,7 +22,7 @@ const validatorsReducer =
       case "string":
         return { errors: [...errors, errorOrBool], valid: false };
       default:
-        return { errors: errors, valid: isNil(valid) ? errorOrBool : errorOrBool && valid };
+        return { errors, valid: errorOrBool && valid };
     }
   };
 
@@ -33,18 +37,35 @@ const useFormControl = (value, validators) => {
 
 // ToDo: consider, how to reset pristine state on submit.
 // ToDo: consider, is field valid when it is pristine ?
-export const useFormField = (initialValue, validators = []) => {
+
+export const useBasicFormField = (initialValue, validators = []) => {
   const [value, setValue] = useState(initialValue);
   const control = useFormControl(value, validators);
 
   return [control, setValue];
 };
 
-const groupControlsValidator = (controls) => every(({ valid }) => valid, controls);
+export const useAdvancedFormField = (initialValue, validators = []) => {
+  const [value, setValue] = useState(initialValue);
+  const control = useFormControl(value, validators);
+
+  const onChange = (value) => setValue(value);
+
+  return useMemo(() => ({ ...control, onChange, setValue }), [control]);
+};
+
+const defaultOptions = { useAdvanced: false };
+
+export const useFormField = (initialValue, validators, { useAdvanced } = defaultOptions) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useAdvanced ? useAdvancedFormField(initialValue, validators) : useBasicFormField(initialValue, validators);
+};
+
+const groupControlsValidator = (controls) => _.every(({ valid }) => valid, controls);
 
 export const useFormGroup = (controls) => {
   const { valid, invalid, errors } = useFormControl(controls, [groupControlsValidator]);
-  const values = useMemo(() => mapValues(({ value }) => value, controls), [controls]);
+  const values = useMemo(() => _.mapValues(({ value }) => value, controls), [controls]);
 
   return { valid, errors, invalid, values, controls };
 };

@@ -42,7 +42,6 @@ export const initialState = {
   selectedMemberFirmPotentialUsers: [],
   selectedMemberFirmMSFields: null,
   resourceManager: {
-    list: [],
     selectedResourceManager: null,
   },
   organizations: {

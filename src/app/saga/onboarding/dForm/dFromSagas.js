@@ -1,4 +1,4 @@
-import {all, put, call, takeLatest, select} from "redux-saga/effects";
+import { all, put, call, takeLatest, select, delay } from "redux-saga/effects";
 
 import dFormApi from "api/Onboarding/dForms";
 import {prepareSelectGroups} from "utility/select/prepareSelectData";
@@ -70,22 +70,21 @@ function* getdForms() {
   }
 }
 
-function* submitdFormData({payload}) {
+function* submitDFormData({ payload }) {
   try {
-    const responce = yield call(dFormApi.submitdFormData, payload);
-    yield put(submitdFormDataSuccess(responce));
+    yield delay(1500);
+    const response = yield call(dFormApi.submitdFormData, payload);
+    yield put(submitdFormDataSuccess(response));
   } catch (error) {
-    console.log(error);
     yield put(submitdFormDataError(error));
   }
 }
 
 function* submitdForm({payload}) {
   try {
-    const responce = yield call(dFormApi.submitdForm, payload);
-    yield put(submitdFormSuccess(responce));
+    const response = yield call(dFormApi.submitdForm, payload);
+    yield put(submitdFormSuccess(response));
   } catch (error) {
-    console.log(error);
     yield put(submitdFormError(error));
   }
 }
@@ -222,8 +221,9 @@ export default function* () {
 
     yield takeLatest(getSurveyTriggersRequest.type, getSurveyTriggers),
 
-    yield takeLatest(submitdFormDataRequest.type, submitdFormData),
-    yield takeLatest(submitdFormRequest.type, submitdForm),
+    yield takeLatest(submitdFormRequest, submitdForm),
+    yield takeLatest(submitdFormDataRequest, submitDFormData),
+
     yield takeLatest(submitdFormNewVersionRequest.type, submitdFormNewVersion),
     yield takeLatest(changedFormStatusRequest.type, changedFormStatus),
   ]);

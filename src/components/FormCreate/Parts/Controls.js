@@ -60,6 +60,14 @@ export default {
     type: Constants.RJSF_FIELD_TYPE_HELP_TEXT,
     reference: {...referenceObject}
   },
+  [Constants.FIELD_TYPE_RESOURCE]: {
+    title: "",
+    resource_manager_field_id: null,
+    action: 'default',
+    description: "resource",
+    type: Constants.RJSF_FIELD_TYPE_RESOURCE,
+    reference: {...referenceObject}
+  },
   number: {
     type: "number",
     title: "Some Title",

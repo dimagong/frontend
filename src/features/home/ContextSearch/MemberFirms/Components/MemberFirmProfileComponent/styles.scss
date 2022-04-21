@@ -2,10 +2,17 @@
   background: white;
   margin-top: 70px;
   border-radius: 10px;
-  &_header {
+
+  &__header {
     display: flex;
     position: relative;
+  }
 
+  &__header-info {
+    max-width: calc(100% - 200px);
+  }
+
+  &_header {
     &_logo {
       position: relative;
       display: flex;
@@ -13,7 +20,7 @@
       margin-top: -70px;
       border-radius: 10px;
       border-bottom-left-radius: 0;
-      border: 3px solid #7367F0;
+      border: 3px solid #7367f0;
       width: 200px;
       height: 200px;
       min-width: 200px;
@@ -33,7 +40,7 @@
         transform: translate(-50%, 0);
         transition: 0.2s;
         &:hover {
-          background: white!important;
+          background: white !important;
         }
       }
 
@@ -62,12 +69,10 @@
     }
 
     &-info {
-      // 100% - image width
-      max-width: calc(100% - 200px);
       &-name {
         font-size: 40px;
         color: #444444;
-        font-family: 'Segoe UI', sans-serif;
+        font-family: "Segoe UI", sans-serif;
         padding: 0 27px;
         position: absolute;
         top: -73px;
@@ -100,19 +105,16 @@
 
             &-icon {
               margin-right: 10px;
-              color: #7367F0;
+              color: #7367f0;
             }
           }
         }
       }
     }
-
   }
 
-
-
   &_tabs {
-    border-bottom: 1px solid rgba($color: #7367F0, $alpha: .43);
+    border-bottom: 1px solid rgba($color: #7367f0, $alpha: 0.43);
     margin: 0 45px;
     padding: 29px 14px 22px;
     &_tab {
@@ -132,12 +134,12 @@
       }
 
       &:hover {
-        background: #7367F0!important;
+        background: #7367f0 !important;
         color: white !important;
       }
       &.active {
-        background: #7367F0!important;
-        color: white!important;
+        background: #7367f0 !important;
+        color: white !important;
       }
     }
   }
@@ -146,10 +148,10 @@
   }
   &-activities {
     &.card {
-      box-shadow: none!important;
+      box-shadow: none !important;
     }
     .card-body {
-      padding: 0!important;
+      padding: 0 !important;
     }
   }
 }

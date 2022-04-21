@@ -1,0 +1,25 @@
+.ms-mapping {
+  &__template-key {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.160784);
+  }
+
+  &__preview {
+    position: relative;
+
+    &:after {
+      content: "";
+
+      left: 0;
+      right: 0;
+      bottom: 0;
+      position: absolute;
+
+      border: 1px solid rgba(112, 112, 112, 0.141176);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.160784);
+    }
+  }
+}

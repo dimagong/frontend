@@ -163,15 +163,17 @@ export function FileWidget(props) {
   const renderSingleFile = (fileDataUrl) => {
     if (!fileDataUrl) return <div />;
 
-    // if (!fileDataUrl.property_value) {
-    //   return <div></div>;
-    // }
-
     if (Array.isArray(fileDataUrl) && fileDataUrl.length) {
       fileDataUrl = fileDataUrl[0];
     }
 
-    let file = dataURItoBlob(fileDataUrl.property_value);
+    let file;
+    try {
+      file = dataURItoBlob(fileDataUrl.property_value);
+    } catch (error) {
+      return <div />;
+    }
+
     let fileUrl = window.URL.createObjectURL(
       new Blob([file.blob], {type: file.blob.type})
     );
@@ -195,7 +197,14 @@ export function FileWidget(props) {
 
     return filesDataUrl.map((fileDataUrl, index) => {
       if (!fileDataUrl.property_value) return <></>;
-      let file = dataURItoBlob(fileDataUrl.property_value);
+
+      let file;
+      try {
+        file = dataURItoBlob(fileDataUrl.property_value);
+      } catch (error) {
+        return <></>;
+      }
+
       let fileUrl = window.URL.createObjectURL(
         new Blob([file.blob], {type: file.blob.type, name: 'test'})
       );

@@ -16,12 +16,24 @@ const MasterSchema = () => {
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => void clear(), [masterSchema.id]);
+  React.useEffect(() => void clear(), [masterSchema?.id]);
+
+  if (!masterSchema) {
+    return null;
+  }
 
   return (
-    <React.Profiler id="general-master-schema" onRender={(id, phase) => console.log(id, phase, { masterSchema, selectedNodes })}>
+    <React.Profiler
+      id="general-master-schema"
+      onRender={(id, phase) => console.log(id, phase, { masterSchema, selectedNodes })}
+    >
       <div className="d-flex" key={masterSchema.id}>
-        <MasterSchemaContext masterSchemaId={masterSchema.id} masterSchemaName={masterSchema.name} selectedNodes={selectedNodes} onSelect={select} />
+        <MasterSchemaContext
+          masterSchemaId={masterSchema.id}
+          masterSchemaName={masterSchema.name}
+          selectedNodes={selectedNodes}
+          onSelect={select}
+        />
         <MasterSchemaContextFeature masterSchemaId={masterSchema.id} selectedNodes={selectedNodes} />
       </div>
     </React.Profiler>

@@ -1,5 +1,5 @@
 import Checkbox from 'components/@vuexy/checkbox/CheckboxesVuexy';
-import { Check, Plus } from 'react-feather';
+import {Check, Plus} from 'react-feather';
 import Constants from './Constants';
 import {
   Badge,
@@ -18,13 +18,14 @@ import {
 } from 'reactstrap';
 import ElementEditModal from '../ElementEditModal';
 import DependencyEditModal from '../DependencyEditModal';
-import { isEmpty } from 'lodash';
+import {isEmpty} from 'lodash';
 import classnames from 'classnames';
 import React from 'react';
-import { getSpecificType } from '../helper';
+import {getSpecificType} from '../helper';
 import WysiwygEditor from '../Custom/WysiwygEditor';
 import MasterSchemaProperty from '../Fields/MasterSchemaProperty';
 import MasterSchemaPropertyConfig from '../Fields/MasterSchemaPropertyConfig';
+import ResourceManagerFieldFiles from "../Fields/ResourceManagerFieldFiles";
 
 export function listControls(properties) {
 
@@ -125,6 +126,23 @@ export function listControls(properties) {
       );
     };
 
+    const renderReactSelectColumn = (column, options) => {
+      // todo temporary select for one value
+      return (<select
+              id={`${index}-${column}`}
+              className="form-control"
+              value={schemaPropertyEdit[column]}
+              onInput={event => this.inputChangeHandler(event, objKey, column)}
+          >
+              {
+                  options.map(
+                      (option, key) => <option key={key} value={option.value}>{option.label}</option>
+                  )
+              }
+          </select>
+      );
+    };
+
     const renderRequiredColumn = (column) => {
       return (
         <div className="w-100">
@@ -191,6 +209,10 @@ export function listControls(properties) {
       </>
     );
 
+    const onChangeResourceManagerFieldFile = (resourceManagerFieldId) => {
+        this.setState({schemaPropertyEdit: {...this.state.schemaPropertyEdit, resource_manager_field_id: resourceManagerFieldId}})
+    }
+
     const renderSpecificType = () => {
 
       let labelForControls = <div>
@@ -242,6 +264,38 @@ export function listControls(properties) {
               </Col>
 
               {renderRequiredAndLabelShowCheckboxes()}
+            </Row>
+          );
+        }
+        case Constants.FIELD_TYPE_RESOURCE: {
+          return (
+            <Row>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabel('resource_manager_field_id', 'Resource link')}
+                  <ResourceManagerFieldFiles
+                    organizations={this.state.dFormTemplate.groups || []}
+                    resourceManagerFieldId={schemaPropertyEdit['resource_manager_field_id']}
+                    onChange={(event) => onChangeResourceManagerFieldFile(event.value)}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabel('action', 'Compile option')}
+                  {renderReactSelectColumn('action', [
+                    {value: 'default', label: 'Compile on dForm association'},
+                  ])}
+                </FormGroup>
+              </Col>
+              <Col md="12">
+                {labelForControls}
+              </Col>
+              <Col md="12">
+                <FormGroup>
+                  {renderLabelShowing(objKey, 'Required?')}
+                </FormGroup>
+              </Col>
             </Row>
           );
         }
