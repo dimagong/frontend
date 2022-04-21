@@ -24,7 +24,8 @@ const ResourceElement = (props) => {
       select: (response) => {
         const regExp = new RegExp(/filename=(.*)/gi);
         const header = response.headers["content-disposition"];
-        const name = regExp.exec(header)[1];
+        let name = window.decodeURI(regExp.exec(header)[1]);
+        name = name[0] === '"' ? name.substring(1, name.length - 1) : name;
         const url = window.URL.createObjectURL(response.data);
 
         return { url, name };
