@@ -23,6 +23,7 @@
     "chroma-js": "~2.1.0",
     "classnames": "~2.2.6",
     "connected-react-router": "^6.8.0",
+    "dotenv-cli": "^4.0.0",
     "draft-js": "^0.11.4",
     "draftjs-to-html": "^0.9.1",
     "flatpickr": "^4.6.3",
@@ -100,7 +101,6 @@
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.4.19",
     "@storybook/testing-library": "0.0.9",
-    "dotenv-cli": "^4.0.0",
     "jest": "^27.4.5",
     "msw": "^0.36.8",
     "prettier": "^2.5.1"
