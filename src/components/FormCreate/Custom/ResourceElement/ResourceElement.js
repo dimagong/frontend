@@ -24,7 +24,8 @@ const ResourceElement = (props) => {
       select: (response) => {
         const regExp = new RegExp(/filename=(.*)/gi);
         const header = response.headers["content-disposition"];
-        const name = regExp.exec(header)[1];
+        let name = window.decodeURI(regExp.exec(header)[1]);
+        name = name[0] === '"' ? name.substring(1, name.length - 1) : name;
         const url = window.URL.createObjectURL(response.data);
 
         return { url, name };
@@ -63,24 +64,24 @@ const ResourceElement = (props) => {
     <div>
       <FieldLabel label={title} required={false} />
       <div className="rendered-files">
-        <div className="file">
+        <NmpButton
+          className="file"
+          style={{ float: "right" }}
+          size="sm"
+          textColor="#95989a"
+          backgroundColor="transparent"
+          tag="a"
+          href={file.url}
+          download={file.name}
+        >
           <span className="d-block" style={style}>
             {file.name}
           </span>
 
           <div className="action">
-            <NmpButton
-              style={{ float: "right" }}
-              size="sm"
-              textColor="#95989a"
-              backgroundColor="transparent"
-              icon={<img src={DownloadIcon} alt="Download" />}
-              tag="a"
-              href={file.url}
-              download={file.name}
-            />
+            <img src={DownloadIcon} alt="Download" />
           </div>
-        </div>
+        </NmpButton>
       </div>
     </div>
   );
