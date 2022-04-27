@@ -13,7 +13,8 @@ const {
   setManager,
   setPreview,
   setSearch,
-  getUserAvatarRequest
+  getUserAvatarRequest,
+  setSelectedMemberFirmId
 } = appSlice.actions;
 
 
@@ -30,7 +31,11 @@ const SearchInput = ({ suggestions }) => {
     onSuggestionItemHover
   ) => {
 
-    if (!!suggestion.avatar_path && !suggestion.url) dispatch(getUserAvatarRequest({ managerId: suggestion.id }));
+    let suggestionIsUser = suggestion.hasOwnProperty("status");
+
+    if (suggestionIsUser) {
+      if (!!suggestion.avatar_path && !suggestion.url) dispatch(getUserAvatarRequest({ managerId: suggestion.id }));
+    }
 
     return (
       <li
@@ -43,12 +48,18 @@ const SearchInput = ({ suggestions }) => {
         }
         onClick={e => {
           onSuggestionItemClick(null, e);
-          if (e.ctrlKey) {
-            dispatch(showContextSearch());
-            dispatch(setPreview({ type: "user", first_name: suggestion.name, ...suggestion }));
+          if (suggestionIsUser) {
+            if (e.ctrlKey) {
+              dispatch(showContextSearch());
+              dispatch(setPreview({ type: "user", first_name: suggestion.name, ...suggestion }));
+            } else {
+              dispatch(setManager({ first_name: suggestion.name, ...suggestion }));
+              dispatch(setContext("User"));
+            }
           } else {
-            dispatch(setManager({ first_name: suggestion.name, ...suggestion }));
-            dispatch(setContext("User"));
+            dispatch(showContextSearch());
+            dispatch(setSelectedMemberFirmId(suggestion.id));
+            dispatch(setContext(`Member Firms`));
           }
         }}
       >
@@ -56,7 +67,10 @@ const SearchInput = ({ suggestions }) => {
           <div className="d-flex flex-row">
             <div className="d-flex align-items-center">
               <img
-                src={suggestion.url || noneAvatar}
+                src={suggestionIsUser
+                  ? (suggestion.url || noneAvatar)
+                  : (suggestion.logo || noneAvatar)
+                }
                 alt={suggestion.name}
                 height="32"
                 width="32"
@@ -66,14 +80,16 @@ const SearchInput = ({ suggestions }) => {
             <div className="d-flex flex-column justify-content-between">
               <span className="h4">{suggestion.name}</span>
               <span>
-                {suggestion?.permissions?.organization || ""}
+                {suggestionIsUser
+                  ? (suggestion?.permissions?.organization || "")
+                  : (suggestion?.network?.name || "")}
               </span>
 
             </div>
           </div>
           <div className="d-flex flex-column justify-content-between text-right">
-            <span>User Profile</span>
-            <span>{suggestion.status}</span>
+            <span>{suggestionIsUser ? "User Profile" : "Member Firm"}</span>
+            <span>{suggestion.status || ""}</span>
           </div>
         </div>
       </li>

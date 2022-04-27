@@ -6,7 +6,7 @@ import {
   DropdownItem,
   DropdownMenu
 } from "reactstrap";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import classnames from "classnames";
 import { useDispatch } from "react-redux";
 import {
@@ -27,6 +27,7 @@ import { userService } from "services/user";
 import SearchInput from "./SearchInput";
 
 import appSlice from "app/slices/appSlice";
+import { getMemberFirms } from "app/selectors/memberFirmsSelector";
 
 const {
   logout,
@@ -48,6 +49,7 @@ const ThemeNavbar = props => {
   const { managers, userProfile } = props;
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"];
   const navbarTypes = ["floating", "static", "sticky", "hidden"];
+  const memberFirms = useSelector(getMemberFirms);
 
   const logoutJWT = async () => {
     store.dispatch(logout());
@@ -137,11 +139,13 @@ const ThemeNavbar = props => {
 
                 {!userService.isOnboarding(userProfile) && (
                   <div className="search-input_container">
-                    <SearchInput suggestions={managers.map(({
-                                                              first_name,
-                                                              last_name,
-                                                              ...rest
-                                                            }) => ({ name: first_name + " " + last_name, ...rest }))} />
+                    <SearchInput suggestions={
+                      managers.map(({
+                                      first_name,
+                                      last_name,
+                                      ...rest
+                                    }) => ({ name: first_name + " " + last_name, ...rest }))
+                        .concat(memberFirms.map(item => ({ ...item, name: item.main_fields.name })))} />
                     {props.isContextSearchVisible ? (
                       <ChevronUp
                         className="autocomplete-expand-icon"
