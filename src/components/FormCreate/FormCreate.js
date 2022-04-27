@@ -1796,7 +1796,7 @@ class FormCreate extends React.Component {
 
   changeNameByDependencyType(previousFieldKey, dependencyType, stateOut = false) {
     if (dependencyType === 'sections') {
-      const newFieldKey = this.state.fieldEdit.propertyKey;
+      const newFieldKey = this.state.fieldEdit.propertyKey.trim();
 
       if (newFieldKey === previousFieldKey) return;
 
@@ -1861,7 +1861,7 @@ class FormCreate extends React.Component {
       this.setState(state);
     }
     if (dependencyType === 'groups') {
-      const newFieldKey = this.state.fieldEdit.propertyKey;
+      const newFieldKey = this.state.fieldEdit.propertyKey.trim();
 
       if (newFieldKey === previousFieldKey) return;
 
