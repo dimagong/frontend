@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
-import AutoComplete from 'components/@vuexy/autoComplete/AutoCompleteComponent'
-import classnames from 'classnames'
-import noneAvatar from 'assets/img/portrait/none-avatar.png'
-import {useDispatch} from 'react-redux'
+import AutoComplete from "components/@vuexy/autoComplete/AutoCompleteComponent";
+import classnames from "classnames";
+import noneAvatar from "assets/img/portrait/none-avatar.png";
+import { useDispatch } from "react-redux";
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
 
 const {
   showContextSearch,
@@ -13,13 +13,13 @@ const {
   setManager,
   setPreview,
   setSearch,
-  getUserAvatarRequest,
+  getUserAvatarRequest
 } = appSlice.actions;
 
 
 const SearchInput = ({ suggestions }) => {
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const SearchInputSuggestionsLayout = (
     suggestion,
@@ -30,7 +30,7 @@ const SearchInput = ({ suggestions }) => {
     onSuggestionItemHover
   ) => {
 
-    if(!!suggestion.avatar_path && !suggestion.url) dispatch(getUserAvatarRequest({managerId: suggestion.id}))
+    if (!!suggestion.avatar_path && !suggestion.url) dispatch(getUserAvatarRequest({ managerId: suggestion.id }));
 
     return (
       <li
@@ -42,13 +42,13 @@ const SearchInput = ({ suggestions }) => {
           onSuggestionItemHover(filteredData.indexOf(suggestion))
         }
         onClick={e => {
-          onSuggestionItemClick(null, e)
+          onSuggestionItemClick(null, e);
           if (e.ctrlKey) {
-            dispatch(showContextSearch())
-            dispatch(setPreview({type: "user", first_name: suggestion.name, ...suggestion}))
+            dispatch(showContextSearch());
+            dispatch(setPreview({ type: "user", first_name: suggestion.name, ...suggestion }));
           } else {
-            dispatch(setManager({first_name: suggestion.name, ...suggestion}))
-            dispatch(setContext("User"))
+            dispatch(setManager({ first_name: suggestion.name, ...suggestion }));
+            dispatch(setContext("User"));
           }
         }}
       >
@@ -77,15 +77,15 @@ const SearchInput = ({ suggestions }) => {
           </div>
         </div>
       </li>
-    )
-  }
+    );
+  };
 
-  const handleEnter = (inputText) =>{
+  const handleEnter = (inputText) => {
     //dispatch(setManager({first_name: suggestion.name, ...suggestion}))
     //dispatch(setContext("User"))
-    dispatch(setSearch(inputText))
-    dispatch(showContextSearch())
-  }
+    dispatch(setSearch(inputText));
+    dispatch(showContextSearch());
+  };
 
   return (
     <AutoComplete
@@ -99,7 +99,7 @@ const SearchInput = ({ suggestions }) => {
       customRender={SearchInputSuggestionsLayout}
       showClear={true}
     />
-  )
-}
+  );
+};
 
-export default SearchInput
+export default SearchInput;
