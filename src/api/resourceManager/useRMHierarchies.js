@@ -1,9 +1,9 @@
 import { useQuery } from "react-query";
 
 import { clientAPI } from "../clientAPI";
+import * as Interfaces from "../masterSchema/interfaces";
 import { useGenericMutation } from "../useGenericMutation";
 import { normalizeHierarchy } from "../masterSchema/normalizers";
-import * as Interfaces from "../masterSchema/interfaces";
 
 export const RMHierarchyQueryKey = "resource-manager-hierarchies";
 
@@ -24,6 +24,14 @@ export const useCreateRMHierarchyField = ({ resourceManagerId }) => {
   return useGenericMutation({
     mutationFn: (data) => clientAPI.post("api/resource-manager-field", data),
     queryKey: [RMHierarchyQueryKey, resourceManagerId],
+  });
+};
+
+export const useSetRMHierarchyFieldCustomFilename = ({ resourceManagerId, fieldId }, options = {}) => {
+  return useGenericMutation({
+    mutationFn: ({ custom_filename }) => clientAPI.put(`api/resource-manager-field/${fieldId}`, { custom_filename }),
+    queryKey: [RMHierarchyQueryKey, resourceManagerId],
+    ...options,
   });
 };
 
