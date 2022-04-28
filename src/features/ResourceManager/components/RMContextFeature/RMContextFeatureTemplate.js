@@ -1,7 +1,7 @@
 import "./styles.scss";
 
-import React, { useMemo } from "react";
 import PropTypes from "prop-types";
+import React, { useMemo } from "react";
 
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 

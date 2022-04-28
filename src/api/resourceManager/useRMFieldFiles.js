@@ -7,15 +7,14 @@ import { downloadBlob } from "../../services/files.service";
 
 export const RMFieldFilesQueryKey = "resource-manager-field-files";
 
-export const useRMFieldFiles = ({ fieldId, assigned = false }, options = {}) => {
+export const useRMFieldFiles = ({ fieldId }, options = {}) => {
   return useQuery({
-    queryKey: [RMFieldFilesQueryKey, fieldId, { assigned }],
+    queryKey: [RMFieldFilesQueryKey, fieldId],
     queryFn: ({ signal }) =>
       clientAPI.get(`api/resource-manager-field-file`, {
         signal,
         params: {
-          resource_manager_field_id: fieldId,
-          ...(assigned ? { filter: "assigned-users" } : {}),
+          resource_manager_field_id: fieldId
         },
       }),
     ...options,
