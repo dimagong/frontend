@@ -10,6 +10,7 @@ import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
 import { useRMFieldFileReferences } from "api/resourceManager/useRMFieldFileReferences";
 
 import MSMapping from "./components/MSMapping";
+import RMFieldRenameForm from "./RMFieldRenameForm";
 import FilesHistory from "./components/FilesHistory";
 import RMContextFeatureTemplate from "./RMContextFeatureTemplate";
 
@@ -38,6 +39,8 @@ const RMContextFeatureDataView = ({ field, organizationId, organizationType }) =
 
   return (
     <RMContextFeatureTemplate field={field}>
+      <RMFieldRenameForm field={field} />
+
       <div className="mt-3">
         <Folders onFolderSelect={setSelectedFolder} folders={foldersAsArray} selectedFolder={selectedFolder} />
       </div>
@@ -45,7 +48,9 @@ const RMContextFeatureDataView = ({ field, organizationId, organizationType }) =
       {
         {
           "Previous Versions": <FilesHistory fieldId={field.id} />,
-          "MS Mapping": <MSMapping fieldId={field.id} organizationId={organizationId} organizationType={organizationType} />,
+          "MS Mapping": (
+            <MSMapping fieldId={field.id} organizationId={organizationId} organizationType={organizationType} />
+          ),
         }[selectedFolder.name]
       }
     </RMContextFeatureTemplate>
