@@ -25,13 +25,15 @@ const UserMasterSchemaContext = () => {
   }, [selectedNodes]);
 
   return (
-    <React.Profiler
-      id="user-master-schema-context"
-      onRender={(id, phase) => console.log(id, phase, { selectedNodes })}
-    >
+    <React.Profiler id="user-master-schema-context" onRender={(id, phase) => console.log(id, phase, { selectedNodes })}>
       <Card>
         <CardBody className="pt-0">
-          <UserMasterSchemaHierarchy userId={user.id} hierarchyName={user.permissions.organization} selectedNodes={selectedNodes} onSelect={selectNode} />
+          <UserMasterSchemaHierarchy
+            userId={user.id}
+            hierarchyName={user.permissions.organization}
+            selectedNodes={selectedNodes}
+            onSelect={selectNode}
+          />
         </CardBody>
       </Card>
     </React.Profiler>

@@ -2,7 +2,7 @@ import { all, put, call, takeLatest, takeEvery } from "redux-saga/effects";
 
 import surveysApi from "api/surveys";
 
-import appSlice from 'app/slices/appSlice';
+import appSlice from "app/slices/appSlice";
 
 const {
   setContext,
@@ -135,15 +135,15 @@ const {
   updateSurveyMainDataSuccess,
   updateSurveyMainDataRequest,
   updateSurveyMainDataError,
-}  = appSlice.actions;
+} = appSlice.actions;
 
 function* getSurveys() {
   const response = yield call(surveysApi.getSurveys);
 
   if (response?.message) {
-    yield put(getSurveysError(response.message))
+    yield put(getSurveysError(response.message));
   } else {
-    yield put(getSurveysSuccess(response))
+    yield put(getSurveysSuccess(response));
   }
 }
 
@@ -151,9 +151,9 @@ function* createSurvey(payload) {
   const response = yield call(surveysApi.createSurvey, payload);
 
   if (response?.message) {
-    yield put(createSurveyError(response.message))
+    yield put(createSurveyError(response.message));
   } else {
-    yield put(createSurveySuccess(response))
+    yield put(createSurveySuccess(response));
   }
 }
 
@@ -161,59 +161,59 @@ function* createFolder(payload) {
   const response = yield call(surveysApi.createFolder, payload);
 
   if (response?.message) {
-    yield put(createFolderError(response.message))
+    yield put(createFolderError(response.message));
   } else {
-    yield put(createFolderSuccess(response))
+    yield put(createFolderSuccess(response));
   }
 }
 
 function* getFolders() {
   const response = yield call(surveysApi.getFolders);
 
-  if(response?.message) {
-    yield put(getFoldersError(response.message))
+  if (response?.message) {
+    yield put(getFoldersError(response.message));
   } else {
-    yield put(getFoldersSuccess(response))
+    yield put(getFoldersSuccess(response));
   }
 }
 
 function* createQuestion(payload) {
   const response = yield call(surveysApi.createQuestion, payload);
 
-  if(response?.message) {
-    yield put(createQuestionError(response.message))
+  if (response?.message) {
+    yield put(createQuestionError(response.message));
   } else {
-    yield put(createQuestionSuccess({response, folderId: payload.payload.folder_id}))
+    yield put(createQuestionSuccess({ response, folderId: payload.payload.folder_id }));
   }
 }
 
 function* updateQuestion(payload) {
   const response = yield call(surveysApi.updateQuestion, payload);
 
-  if(response?.message) {
-    yield put(updateQuestionError(response.message))
+  if (response?.message) {
+    yield put(updateQuestionError(response.message));
   } else {
-    yield put(updateQuestionSuccess({response, folderId: payload.payload.data.folder_id}))
+    yield put(updateQuestionSuccess({ response, folderId: payload.payload.data.folder_id }));
   }
 }
 
 function* getSurvey(payload) {
   const response = yield call(surveysApi.getSurvey, payload);
 
-  if(response?.message) {
-    yield put(getSurveyError(response.message))
+  if (response?.message) {
+    yield put(getSurveyError(response.message));
   } else {
-    yield put(getSurveySuccess(response))
+    yield put(getSurveySuccess(response));
   }
 }
 
 function* updateSurvey(payload) {
   const response = yield call(surveysApi.updateSurvey, payload);
 
-  if(response?.message) {
-    yield put(updateSurveyError(response.message))
+  if (response?.message) {
+    yield put(updateSurveyError(response.message));
   } else {
-    yield put(updateSurveySuccess(response))
+    yield put(updateSurveySuccess(response));
   }
 }
 
@@ -221,9 +221,9 @@ function* deleteFolder(payload) {
   const response = yield call(surveysApi.deleteFolder, payload);
 
   if (response?.message) {
-    yield put(deleteFolderError(response.message))
+    yield put(deleteFolderError(response.message));
   } else {
-    yield put(deleteFolderSuccess(payload))
+    yield put(deleteFolderSuccess(payload));
   }
 }
 
@@ -231,9 +231,9 @@ function* getSelectedQuestionVersions(payload) {
   const response = yield call(surveysApi.getQuestionVersions, payload);
 
   if (response?.message) {
-    yield put(getSelectedQuestionVersionsError(response.message))
+    yield put(getSelectedQuestionVersionsError(response.message));
   } else {
-    yield put(getSelectedQuestionVersionsSuccess(response))
+    yield put(getSelectedQuestionVersionsSuccess(response));
   }
 }
 
@@ -241,35 +241,35 @@ function* deleteQuestionVersion(payload) {
   const response = yield call(surveysApi.deleteQuestionVersion, payload);
 
   if (response?.message) {
-    yield put(deleteQuestionVersionError(response.message))
+    yield put(deleteQuestionVersionError(response.message));
   } else {
-    yield put(deleteQuestionVersionSuccess(payload))
+    yield put(deleteQuestionVersionSuccess(payload));
   }
 }
 
 function* deleteLatestQuestionVersion(payload) {
-  const response = yield call(surveysApi.deleteQuestionVersion, {payload: payload.payload.questionVersion});
+  const response = yield call(surveysApi.deleteQuestionVersion, { payload: payload.payload.questionVersion });
 
   if (response?.message) {
     yield put(deleteLatestQuestionVersionError(response.message));
   } else {
-    const newVersions = yield call(surveysApi.getQuestionVersions, {payload: payload.payload.questionId});
+    const newVersions = yield call(surveysApi.getQuestionVersions, { payload: payload.payload.questionId });
 
     if (newVersions?.message) {
-      yield put(deleteLatestQuestionVersionError(response.message))
+      yield put(deleteLatestQuestionVersionError(response.message));
     } else {
-      yield put(deleteLatestQuestionVersionSuccess({newVersions, folderId: payload.payload.folderId}))
+      yield put(deleteLatestQuestionVersionSuccess({ newVersions, folderId: payload.payload.folderId }));
     }
   }
 }
 
 function* deleteQuestion(payload) {
-  const response = yield call(surveysApi.deleteQuestionVersion, {payload: payload.payload.questionVersion});
+  const response = yield call(surveysApi.deleteQuestionVersion, { payload: payload.payload.questionVersion });
 
   if (response?.message) {
-    yield put(deleteQuestionError(response.message))
+    yield put(deleteQuestionError(response.message));
   } else {
-    yield put(deleteQuestionSuccess({folderId: payload.payload.folderId, questionId: payload.payload.questionId}))
+    yield put(deleteQuestionSuccess({ folderId: payload.payload.folderId, questionId: payload.payload.questionId }));
   }
 }
 
@@ -277,9 +277,9 @@ function* getSurveyVersions(payload) {
   const response = yield call(surveysApi.getSurveyVersions, payload);
 
   if (response?.message) {
-    yield put(getSurveyVersionsError(response.message))
+    yield put(getSurveyVersionsError(response.message));
   } else {
-    yield put(getSurveyVersionsSuccess(response))
+    yield put(getSurveyVersionsSuccess(response));
   }
 }
 
@@ -287,11 +287,10 @@ function* deleteSurvey(payload) {
   const response = yield call(surveysApi.deleteSurveyVersion, payload);
 
   if (response?.message) {
-    yield put(deleteSurveyError(response.message))
+    yield put(deleteSurveyError(response.message));
   } else {
-
     yield put(setContext(null));
-    yield put(deleteSurveySuccess(payload))
+    yield put(deleteSurveySuccess(payload));
   }
 }
 
@@ -301,7 +300,7 @@ function* deleteSurveyLatestVersion(payload) {
   if (response?.message) {
     yield put(deleteSurveyLatestVersionError(response.message));
   } else {
-    yield put(deleteSurveyLatestVersionSuccess())
+    yield put(deleteSurveyLatestVersionSuccess());
   }
 }
 
@@ -311,7 +310,7 @@ function* deleteSurveyVersion(payload) {
   if (response?.message) {
     yield put(deleteSurveyVersionError(response.message));
   } else {
-    yield put(deleteSurveyVersionSuccess(payload))
+    yield put(deleteSurveyVersionSuccess(payload));
   }
 }
 
@@ -321,7 +320,7 @@ function* getSurveyWorkFlowsAndReviewers() {
   if (response?.message) {
     yield put(getSurveyWorkFlowsAndReviewersError(response.message));
   } else {
-    yield put(getSurveyWorkFlowsAndReviewersSuccess(response))
+    yield put(getSurveyWorkFlowsAndReviewersSuccess(response));
   }
 }
 
@@ -331,7 +330,7 @@ function* assignSurvey(payload) {
   if (response?.message) {
     yield put(assignSurveyError(response.message));
   } else {
-    yield put(assignSurveySuccess(response))
+    yield put(assignSurveySuccess(response));
   }
 }
 
@@ -341,7 +340,7 @@ function* getAssignedSurveys(payload) {
   if (response?.message) {
     yield put(getAssignedSurveysError(response.message));
   } else {
-    yield put(getAssignedSurveysSuccess(response))
+    yield put(getAssignedSurveysSuccess(response));
   }
 }
 
@@ -351,7 +350,7 @@ function* getAssignedSurveysForOnboarding() {
   if (response?.message) {
     yield put(getAssignedSurveysForOnboardingError(response.message));
   } else {
-    yield put(getAssignedSurveysForOnboardingSuccess(response))
+    yield put(getAssignedSurveysForOnboardingSuccess(response));
   }
 }
 
@@ -359,9 +358,9 @@ function* getCurrentQuestionForAssignedSurvey(payload) {
   const response = yield call(surveysApi.getCurrentQuestionForAssignedSurvey, payload);
 
   if (response?.message) {
-    yield put(getCurrentQuestionForAssignedSurveyError(response.message))
+    yield put(getCurrentQuestionForAssignedSurveyError(response.message));
   } else {
-    yield put(getCurrentQuestionForAssignedSurveySuccess(response))
+    yield put(getCurrentQuestionForAssignedSurveySuccess(response));
   }
 }
 
@@ -369,12 +368,11 @@ function* beginSurvey(payload) {
   const response = yield call(surveysApi.beginSurvey, payload);
 
   if (response?.message) {
-    yield put(beginSurveyError(response.message))
+    yield put(beginSurveyError(response.message));
   } else {
-
     yield put(getCurrentQuestionForAssignedSurveyRequest(payload.payload));
 
-    yield put(beginSurveySuccess(response))
+    yield put(beginSurveySuccess(response));
   }
 }
 
@@ -382,10 +380,10 @@ function* pushAnswer(payload) {
   const response = yield call(surveysApi.pushSurveyQuestionAnswer, payload);
 
   if (response?.message) {
-    yield put(pushAnswerError(response.message))
+    yield put(pushAnswerError(response.message));
   } else {
     yield put(getCurrentQuestionForAssignedSurveyRequest(payload.payload.surveyId));
-    yield put(pushAnswerSuccess())
+    yield put(pushAnswerSuccess());
   }
 }
 
@@ -393,9 +391,9 @@ function* gradeSurveyQuestionAnswer(payload) {
   const response = yield call(surveysApi.gradeSurveyQuestionAnswer, payload);
 
   if (response?.message) {
-    yield put(gradeSurveyQuestionAnswerError(response.message))
+    yield put(gradeSurveyQuestionAnswerError(response.message));
   } else {
-    yield put(gradeSurveyQuestionAnswerSuccess(response))
+    yield put(gradeSurveyQuestionAnswerSuccess(response));
   }
 }
 
@@ -403,9 +401,9 @@ function* finishGrading(payload) {
   const response = yield call(surveysApi.finishGrading, payload);
 
   if (response?.message) {
-    yield put(finishGradingError(response.message))
+    yield put(finishGradingError(response.message));
   } else {
-    yield put(finishGradingSuccess(response))
+    yield put(finishGradingSuccess(response));
   }
 }
 
@@ -413,9 +411,9 @@ function* deleteAssignedSurvey({ payload }) {
   const response = yield call(surveysApi.deleteAssignedSurvey, payload);
 
   if (response?.message) {
-    yield put(deleteAssignedSurveyError(response.message))
+    yield put(deleteAssignedSurveyError(response.message));
   } else {
-    yield put(deleteAssignedSurveySuccess(payload))
+    yield put(deleteAssignedSurveySuccess(payload));
   }
 }
 
@@ -423,9 +421,9 @@ function* switchToPreviousQuestion({ payload }) {
   const response = yield call(surveysApi.switchToPreviousQuestion, payload);
 
   if (response?.message) {
-    yield put(switchToPreviousQuestionError(response.message))
+    yield put(switchToPreviousQuestionError(response.message));
   } else {
-    yield put(switchToPreviousQuestionSuccess(response))
+    yield put(switchToPreviousQuestionSuccess(response));
   }
 }
 
@@ -433,9 +431,9 @@ function* addFeedbackToQuestion(payload) {
   const response = yield call(surveysApi.addFeedbackToQuestion, payload);
 
   if (response?.message) {
-    yield put(addFeedbackToQuestionError(response.message))
+    yield put(addFeedbackToQuestionError(response.message));
   } else {
-    yield put(addFeedbackToQuestionSuccess(response))
+    yield put(addFeedbackToQuestionSuccess(response));
   }
 }
 
@@ -443,9 +441,9 @@ function* getAllSurveyQuestions({ payload }) {
   const response = yield call(surveysApi.getAllSurveyQuestions, payload);
 
   if (response?.message) {
-    yield put(getAllSurveyQuestionsError(response.message))
+    yield put(getAllSurveyQuestionsError(response.message));
   } else {
-    yield put(getAllSurveyQuestionsSuccess({data: response, id: payload}))
+    yield put(getAllSurveyQuestionsSuccess({ data: response, id: payload }));
   }
 }
 

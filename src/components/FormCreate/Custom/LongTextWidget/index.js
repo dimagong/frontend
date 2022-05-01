@@ -1,49 +1,45 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 
-import FieldLabel from '../FieldLabel'
+import FieldLabel from "../FieldLabel";
 
-import './styles.scss'
+import "./styles.scss";
 import WysiwygEditor from "../WysiwygEditor";
 import CustomModal from "../../../CustomModal";
 
-const LongTextWidget = ({props}) => {
-  const {
-    value,
-    onChange,
-    label,
-    required
-  } = props
+const LongTextWidget = ({ props }) => {
+  const { value, onChange, label, required } = props;
   const [isModalOpened, setIsModalOpened] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [inputHTML, setInputHTML] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const [inputHTML, setInputHTML] = useState("");
   const inputRef = React.useRef();
 
   const wysiwygChange = (event) => {
-    setInputValue(event)
-  }
+    setInputValue(event);
+  };
 
   const handleModalClose = () => {
     setIsModalOpened(false);
-    setInputHTML(inputValue)
+    setInputHTML(inputValue);
     onChange(inputValue);
-  }
+  };
 
   useEffect(() => {
     if (!inputValue) {
-      setInputHTML(value)
-      setInputValue(value)
+      setInputHTML(value);
+      setInputValue(value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+  }, [value]);
 
   return (
-    <div className={'long-text-area-container'}>
-      <FieldLabel label={label} required={required}/>
+    <div className={"long-text-area-container"}>
+      <FieldLabel label={label} required={required} />
       <div className="custom-form-filed form-create_custom-text-widget custom-long-text-area-widget">
-        <div className={'textarea custom-longtext'}
+        <div
+          className={"textarea custom-longtext"}
           ref={inputRef}
           contentEditable
-          dangerouslySetInnerHTML={{__html: inputHTML}}
+          dangerouslySetInnerHTML={{ __html: inputHTML }}
           placeholder={"Enter your answer here"}
           onInput={() => {
             let obj = inputRef.current;
@@ -52,42 +48,43 @@ const LongTextWidget = ({props}) => {
           }}
         />
       </div>
-      <span className={'long-text-area-open-more'} onClick={() => setIsModalOpened(true)}>Expand text area</span>
+      <span className={"long-text-area-open-more"} onClick={() => setIsModalOpened(true)}>
+        Expand text area
+      </span>
 
       <CustomModal
-        className={'long-text-modal-window'}
+        className={"long-text-modal-window"}
         isOpen={isModalOpened}
         onClose={handleModalClose}
         submitBtnText={"Close"}
         onSubmit={handleModalClose}
         title={"Extended input"}
       >
-
         <div className="custom-form-filed form-create_custom-text-widget custom-long-text-area-widget modal-long-text-area-widget">
-          <h2 className={'modal-label'}>{label} {!!required && <span className="field-label_asterix">*</span>}</h2>
+          <h2 className={"modal-label"}>
+            {label} {!!required && <span className="field-label_asterix">*</span>}
+          </h2>
           <WysiwygEditor
-            type={'text'}
+            type={"text"}
             data={inputValue}
-            onChange={event => wysiwygChange(event)}
+            onChange={(event) => wysiwygChange(event)}
             className="form-control"
             toolbar={{
-              options: ['inline', 'list', 'textAlign', 'link'],
+              options: ["inline", "list", "textAlign", "link"],
               inline: {
                 inDropdown: false,
-                options: ['bold', 'italic', 'underline'],
+                options: ["bold", "italic", "underline"],
               },
               textAlign: {
                 inDropdown: false,
-                options: ['indent', 'outdent'],
-              }
+                options: ["indent", "outdent"],
+              },
             }}
           />
-
         </div>
-
       </CustomModal>
     </div>
-  )
-}
+  );
+};
 
 export default LongTextWidget;

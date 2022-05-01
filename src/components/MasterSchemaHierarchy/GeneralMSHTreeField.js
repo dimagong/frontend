@@ -5,21 +5,16 @@ import { FiberManualRecord } from "@material-ui/icons";
 import MSHTreeNode from "components/TreeHierarchy/components/MSHTreeNode";
 
 const GeneralMSHTreeField = (props) => {
-  const {
-    name,
-    date,
-    index,
-    selected,
-    isLocked,
-    onSelect,
-    className,
-    children,
-  } = props;
+  const { name, date, index, selected, isLocked, onSelect, className, children } = props;
 
   return (
     <MSHTreeNode
       className={className}
-      name={<div className="tree-hierarchy__name-text w-75" title={name}>{name}</div>}
+      name={
+        <div className="tree-hierarchy__name-text w-75" title={name}>
+          {name}
+        </div>
+      }
       date={date}
       index={index}
       selected={selected}

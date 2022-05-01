@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 
 import DesignerQuestion from "./Components/DesignerQuestion";
 import ReviewQuestion from "./Components/ReviewQuestion";
-import OnboardingQuestion from './Components/OnboardingQuestion';
+import OnboardingQuestion from "./Components/OnboardingQuestion";
 import GradingQuestion from "./Components/GradingQuestion";
-import ReviewOnboardingQuestion from "./Components/ReviewOnboardingQuestion"
+import ReviewOnboardingQuestion from "./Components/ReviewOnboardingQuestion";
 
-import './styles.scss'
+import "./styles.scss";
 
 const Question = ({
   displayType,
@@ -29,7 +29,6 @@ const Question = ({
   onFeedbackSubmit,
   isFeedbackSubmitProceeding,
 }) => {
-
   const commonProps = {
     displayType,
     questionNumber,
@@ -37,19 +36,28 @@ const Question = ({
   };
 
   return {
-    "designer-view": <DesignerQuestion
-                  {...commonProps}
-                  isSurveyDesigner={isSurveyDesigner}
-                  onEdit={onEdit}
-                  onClick={onClick}
-                  isInSurvey={isInSurvey}
-                  isSelected={isSelected}
-                  onRemove={handleRemoveQuestionFromSurvey}
-                />,
-    "review": <ReviewQuestion {...commonProps} currAnswer={currAnswer}/>,
+    "designer-view": (
+      <DesignerQuestion
+        {...commonProps}
+        isSurveyDesigner={isSurveyDesigner}
+        onEdit={onEdit}
+        onClick={onClick}
+        isInSurvey={isInSurvey}
+        isSelected={isSelected}
+        onRemove={handleRemoveQuestionFromSurvey}
+      />
+    ),
+    review: <ReviewQuestion {...commonProps} currAnswer={currAnswer} />,
     "review-onboarding": <ReviewOnboardingQuestion {...commonProps} currAnswer={currAnswer} />,
-    "onboarding": <OnboardingQuestion initAnswer={initAnswer} {...commonProps} onAnswerChange={onAnswerChange} answer={selectedAnswer} />,
-    "grading": (
+    onboarding: (
+      <OnboardingQuestion
+        initAnswer={initAnswer}
+        {...commonProps}
+        onAnswerChange={onAnswerChange}
+        answer={selectedAnswer}
+      />
+    ),
+    grading: (
       <GradingQuestion
         {...commonProps}
         answer={answer}
@@ -59,8 +67,8 @@ const Question = ({
         isGradingReview={isGradingReview}
         onFeedbackSubmit={onFeedbackSubmit}
       />
-    )
-  }[displayType]
+    ),
+  }[displayType];
 };
 
 export default Question;

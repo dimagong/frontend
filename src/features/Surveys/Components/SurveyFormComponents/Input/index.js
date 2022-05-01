@@ -1,24 +1,12 @@
-import React from 'react';
+import React from "react";
 
-import './styles.scss'
+import "./styles.scss";
 
-const Input = ({
-    value,
-    onChange,
-    placeholder,
-    className,
-    label,
-    name,
-    ...rest
-  }) => {
-
+const Input = ({ value, onChange, placeholder, className, label, name, ...rest }) => {
   return (
     <div className={`survey-input-component ${className || ""}`}>
       {!!label && (
-        <label
-          className="survey-input-component_label"
-          htmlFor={name}
-        >
+        <label className="survey-input-component_label" htmlFor={name}>
           {label}
         </label>
       )}
@@ -32,7 +20,7 @@ const Input = ({
         {...rest}
       />
     </div>
-  )
+  );
 };
 
 export default Input;

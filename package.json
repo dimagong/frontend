@@ -3,8 +3,20 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "14.16.0",
+    "node": "14.17.0",
     "npm": "6.14.4"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "start-local": "react-scripts start",
+    "start-default": "react-scripts start",
+    "build-dev": "dotenv -e .env.dev react-scripts build",
+    "build-stage": "dotenv -e .env.staging react-scripts build",
+    "build-prod": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "dependencies": {
     "@babel/runtime": "^7.17.9",
@@ -68,30 +80,6 @@
     "uuid": "^8.3.0",
     "yup": "^0.28.1"
   },
-  "scripts": {
-    "start-local": "react-scripts start",
-    "start-default": "react-scripts start",
-    "build-dev": "dotenv -e .env.dev react-scripts build",
-    "build-stage": "dotenv -e .env.staging react-scripts build",
-    "build-prod": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
-  },
-  "eslintConfig": {
-    "extends": "react-app",
-    "overrides": [
-      {
-        "files": [
-          "**/*.stories.*"
-        ],
-        "rules": {
-          "import/no-anonymous-default-export": "off"
-        }
-      }
-    ]
-  },
   "devDependencies": {
     "@storybook/addon-actions": "^6.4.19",
     "@storybook/addon-essentials": "^6.4.19",
@@ -101,9 +89,22 @@
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.4.19",
     "@storybook/testing-library": "0.0.9",
+    "husky": "^7.0.0",
     "jest": "^27.4.5",
+    "lint-staged": "^12.4.1",
     "msw": "^0.36.8",
     "prettier": "^2.5.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
   },
   "browserslist": {
     "production": [

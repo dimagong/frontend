@@ -18,11 +18,8 @@ import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from 
 import GeneralMSHTreeElement from "./GeneralMSHTreeElement";
 import MasterSchemaHierarchySearch from "./MasterSchemaHierarchySearch";
 
-const {
-  getMasterSchemaHierarchyRequest,
-  addFieldToMasterSchemaRequest,
-  addGroupToMasterSchemaRequest,
-} = appSlice.actions;
+const { getMasterSchemaHierarchyRequest, addFieldToMasterSchemaRequest, addGroupToMasterSchemaRequest } =
+  appSlice.actions;
 
 const stickySearchStyles = { top: "0px", left: "0px", backgroundColor: "#f8f8f8" };
 
@@ -101,7 +98,11 @@ const MasterSchemaHierarchy = ({ masterSchemaId, masterSchemaName, selectedNodes
         <Row className="position-relative">
           <Col>
             <div className="position-sticky zindex-1" style={stickySearchStyles}>
-              <MasterSchemaHierarchySearch hierarchy={hierarchy.data} hierarchyName={masterSchemaName} onSearch={setSearch} />
+              <MasterSchemaHierarchySearch
+                hierarchy={hierarchy.data}
+                hierarchyName={masterSchemaName}
+                onSearch={setSearch}
+              />
 
               <div className="d-flex justify-content-end pb-1">
                 <NmpButton

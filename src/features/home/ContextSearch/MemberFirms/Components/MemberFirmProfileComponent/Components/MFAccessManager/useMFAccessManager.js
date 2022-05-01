@@ -16,7 +16,7 @@ const getAllBdmUsers$ = ({ memberFirmId }) =>
 
 const syncBdmUsers$ = ({ memberFirmId, bdmUsersIds }) =>
   concat(
-    RoleBdmService.putPotentialBdmUsersByMemberFirm$({ memberFirmId, bdmUsersIds}),
+    RoleBdmService.putPotentialBdmUsersByMemberFirm$({ memberFirmId, bdmUsersIds }),
     RoleBdmService.getPotentialBdmUsersByMemberFirm$({ memberFirmId })
   ).pipe(
     toArray(),
@@ -28,7 +28,10 @@ export const useMFAccessManager = (memberFirmId) => {
 
   const getAllBdmUsers = React.useCallback(({ memberFirmId }) => run(getAllBdmUsers$({ memberFirmId })), [run]);
 
-  const syncBdmUsers = React.useCallback(({ memberFirmId, bdmUsersIds }) => run(syncBdmUsers$({ memberFirmId, bdmUsersIds })), [run]);
+  const syncBdmUsers = React.useCallback(
+    ({ memberFirmId, bdmUsersIds }) => run(syncBdmUsers$({ memberFirmId, bdmUsersIds })),
+    [run]
+  );
 
   React.useEffect(() => void getAllBdmUsers({ memberFirmId }).subscribe(), [getAllBdmUsers, memberFirmId]);
 

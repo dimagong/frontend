@@ -1,19 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 import appReducer from "app/reducers/app/appReducer";
-import { generateRequestAndErrorActions } from 'utility/store'
+import { generateRequestAndErrorActions } from "utility/store";
 
 const token = localStorage.getItem("token");
 
 export const initUser = {
-  first_name: '',
-  last_name: '',
-  email: '',
-  number: '',
+  first_name: "",
+  last_name: "",
+  email: "",
+  number: "",
   valid_until: null,
-  password: '',
+  password: "",
   groups: [],
   roles: [],
-  errors: {}
+  errors: {},
 };
 
 export const initialUserMasterSchemaHierarchySearchParams = {
@@ -45,7 +45,7 @@ export const initialState = {
     selectedResourceManager: null,
   },
   organizations: {
-    selectedOrganizationIdAndType: {id: null, type: null},
+    selectedOrganizationIdAndType: { id: null, type: null },
     corporation: [],
     network: [],
     member_firm: [],
@@ -70,9 +70,9 @@ export const initialState = {
     reviewers: [],
     filters: {
       data: [],
-      id: null
+      id: null,
     },
-    searchText: '',
+    searchText: "",
     dashboard: {
       data: [],
       settings: {},
@@ -92,19 +92,18 @@ export const initialState = {
     fields: [],
     users: {},
     related_applications: {},
-  }
+  },
 };
 
 export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    ...(generateRequestAndErrorActions(appReducer)),
+    ...generateRequestAndErrorActions(appReducer),
     resetAppSlice: (state) => {
-      Object.assign(state, {...initialState, isAuth:false})
-    }
+      Object.assign(state, { ...initialState, isAuth: false });
+    },
   },
 });
 
 export default appSlice;
-

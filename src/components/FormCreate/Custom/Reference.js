@@ -1,11 +1,10 @@
-import React, {useEffect, useState, useCallback} from 'react'
+import React, { useEffect, useState, useCallback } from "react";
 import masterSchemaService from "../../../services/masterSchema.service";
-import {Input} from '@material-ui/core'
-import {debounce, isEmpty} from 'lodash'
-
+import { Input } from "@material-ui/core";
+import { debounce, isEmpty } from "lodash";
 
 function OnboardingReference(props) {
-  const {fieldId, userId} = props;
+  const { fieldId, userId } = props;
 
   const [fieldValue, setFieldValue] = useState({});
 
@@ -17,14 +16,14 @@ function OnboardingReference(props) {
       } catch (exception) {
         console.log(exception);
       }
-    }, 1200), []
+    }, 1200),
+    []
   );
 
   useEffect(() => {
     getUserValueByFieldId(fieldId, userId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   const getUserValueByFieldId = async (fieldId, userId) => {
     try {
@@ -35,22 +34,23 @@ function OnboardingReference(props) {
     }
   };
 
-
-  return <div>
-    {
-      !isEmpty(fieldValue) ?
+  return (
+    <div>
+      {!isEmpty(fieldValue) ? (
         <Input
           fullWidth
           disabled={props.disabled}
           onChange={(event) => {
-            setFieldValue({value: event.target.value});
+            setFieldValue({ value: event.target.value });
             onChangeFieldValue(event.target.value);
           }}
           value={fieldValue.value}
         />
-        : <Input fullWidth disabled={true} />
-    }
-  </div>;
+      ) : (
+        <Input fullWidth disabled={true} />
+      )}
+    </div>
+  );
 }
 
 export default function Reference(props) {
@@ -58,12 +58,12 @@ export default function Reference(props) {
   // bind to context FormCreate
   const user = this.state.onboardingUser;
 
-  if(user) {
+  if (user) {
     const fieldId = props.schema.field_id;
     const userId = this.state.onboardingUser.id;
-    const data = {fieldId, userId};
-    return <OnboardingReference {...data} {...props} />
+    const data = { fieldId, userId };
+    return <OnboardingReference {...data} {...props} />;
   }
 
-  return <Input fullWidth placeholder="Reference" disabled={true} />
+  return <Input fullWidth placeholder="Reference" disabled={true} />;
 }

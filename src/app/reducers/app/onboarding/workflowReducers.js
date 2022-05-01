@@ -1,11 +1,11 @@
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 
 const getWorkflowsSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
 };
 
-const getAllowedUserListSuccess = (state, {payload}) => {
+const getAllowedUserListSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
 };
@@ -13,13 +13,13 @@ const getAllowedUserListSuccess = (state, {payload}) => {
 const createWorkflowSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
-  toast.success("Created")
+  toast.success("Created");
 };
 
 const updateWorkflowSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
-  toast.success("Saved")
+  toast.success("Saved");
 };
 
 const deleteWorkflowSuccess = (state) => {
@@ -32,5 +32,5 @@ export default {
   createWorkflowSuccess,
   updateWorkflowSuccess,
   deleteWorkflowSuccess,
-  getAllowedUserListSuccess
+  getAllowedUserListSuccess,
 };

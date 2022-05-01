@@ -5,14 +5,6 @@ import avatarSagas from "./avatarSagas";
 import onboardingSagas from "./onboardingSagas";
 import userSagas from "./userSagas";
 
-
-
-
 export default function* () {
-  yield all([
-    invitationsSagas(),
-    avatarSagas(),
-    onboardingSagas(),
-    userSagas()
-  ]);
+  yield all([invitationsSagas(), avatarSagas(), onboardingSagas(), userSagas()]);
 }

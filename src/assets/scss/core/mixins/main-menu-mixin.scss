@@ -256,11 +256,7 @@
         }
 
         .active {
-          background: linear-gradient(
-            118deg,
-            rgba($primary, 1),
-            rgba($primary, 0.7)
-          );
+          background: linear-gradient(118deg, rgba($primary, 1), rgba($primary, 0.7));
           box-shadow: 0 0 10px 1px rgba($primary, 0.7);
           border-radius: 4px;
           > a {
@@ -350,12 +346,7 @@
 // $menu-expanded-width : Expanded menu width
 // $menu-collapsed-width: Collapsed menu width
 // ================================================
-@mixin menu-content(
-  $menu-expanded-width,
-  $menu-collapsed-width,
-  $theme-color,
-  $theme-bg
-) {
+@mixin menu-content($menu-expanded-width, $menu-collapsed-width, $theme-color, $theme-bg) {
   .main-menu-content {
     > span.menu-title,
     a.menu-title {

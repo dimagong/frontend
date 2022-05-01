@@ -3,7 +3,6 @@ body {
   padding: 0;
   display: flex;
   overflow-y: auto;
-
 }
 html body {
   line-height: initial;
@@ -27,14 +26,18 @@ html body {
 input {
   outline: none;
   ::placeholder {
-    opacity: .5;
+    opacity: 0.5;
   }
 }
 p {
   margin-bottom: 0;
 }
-a, a:hover, a:active, a:visited, a:focus {
-  text-decoration:none;
+a,
+a:hover,
+a:active,
+a:visited,
+a:focus {
+  text-decoration: none;
 }
 .no-gutters {
   margin-right: 0;
@@ -46,33 +49,39 @@ a, a:hover, a:active, a:visited, a:focus {
     padding-left: 0;
   }
 }
-.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active {
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active {
   border: none;
   box-shadow: none;
 }
 .custom-button {
-  &:hover, &:disabled, &:active {
+  &:hover,
+  &:disabled,
+  &:active {
     border-radius: 0;
     border: none;
     box-shadow: none;
   }
 }
-button{
+button {
   background: none;
   padding: 0;
   border: 0;
-  &:active{
-    outline:none;
+  &:active {
+    outline: none;
   }
-  &:focus{
-    outline:none;
+  &:focus {
+    outline: none;
   }
 }
-.btn-primary:not(:disabled):not(.disabled).focus, .btn-primary:not(:disabled):not(.disabled):focus {
+.btn-primary:not(:disabled):not(.disabled).focus,
+.btn-primary:not(:disabled):not(.disabled):focus {
   border: none;
   box-shadow: none;
 }
-.btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show>.btn-primary.dropdown-toggle:focus {
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
   box-shadow: none;
 }
 .btn-primary:not(:disabled):hover {
@@ -85,12 +94,12 @@ button{
 }
 @media screen and (min-width: 1400px) {
   .container {
-    max-width: 1370px!important;
+    max-width: 1370px !important;
   }
 }
 @media screen and (min-width: 1600px) {
   .container {
-    max-width: 1560px!important;
+    max-width: 1560px !important;
   }
   .container-lg {
     max-width: 1270px;
@@ -98,7 +107,7 @@ button{
 }
 
 .bottom-logo {
-  position: absolute!important;
+  position: absolute !important;
   left: 15px;
   bottom: 0px;
   color: #007bff;

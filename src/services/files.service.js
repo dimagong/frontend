@@ -4,7 +4,7 @@ const downloadBLobAsCsv = (blob, filename) => {
   if (window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveOrOpenBlob(blob, filename);
   } else {
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     document.body.appendChild(a);
     const url = window.URL.createObjectURL(blob);
     a.href = url;
@@ -13,30 +13,27 @@ const downloadBLobAsCsv = (blob, filename) => {
     setTimeout(() => {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-    }, 0)
+    }, 0);
   }
 };
 
 const downloadBlob = (blob, name) => {
-  if (
-    window.navigator &&
-    window.navigator.msSaveOrOpenBlob
-  ) return window.navigator.msSaveOrOpenBlob(blob);
+  if (window.navigator && window.navigator.msSaveOrOpenBlob) return window.navigator.msSaveOrOpenBlob(blob);
 
   // For other browsers:
   // Create a link pointing to the ObjectURL containing the blob.
   const data = window.URL.createObjectURL(blob);
 
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   link.href = data;
   link.download = name;
 
   // this is necessary as link.click() does not work on the latest firefox
   link.dispatchEvent(
-    new MouseEvent('click', {
+    new MouseEvent("click", {
       bubbles: true,
       cancelable: true,
-      view: window
+      view: window,
     })
   );
 
@@ -55,14 +52,7 @@ const handleMasterSchemaDataExport = async (targetName, organization_type, organ
     user_id,
   });
 
-  downloadBLobAsCsv(
-    masterSchemaDataBlob,
-    encodeURI( `${targetName}'s master schema data`).replace(/%20/g, " ")
-  );
+  downloadBLobAsCsv(masterSchemaDataBlob, encodeURI(`${targetName}'s master schema data`).replace(/%20/g, " "));
 };
 
-export {
-  downloadBLobAsCsv,
-  handleMasterSchemaDataExport,
-  downloadBlob,
-}
+export { downloadBLobAsCsv, handleMasterSchemaDataExport, downloadBlob };

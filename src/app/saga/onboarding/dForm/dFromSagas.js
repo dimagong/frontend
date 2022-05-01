@@ -1,18 +1,13 @@
 import { all, put, call, takeLatest, select, delay } from "redux-saga/effects";
 
 import dFormApi from "api/Onboarding/dForms";
-import {prepareSelectGroups} from "utility/select/prepareSelectData";
-import {selectdForms} from "app/selectors/onboardingSelectors";
+import { prepareSelectGroups } from "utility/select/prepareSelectData";
+import { selectdForms } from "app/selectors/onboardingSelectors";
 
-import onboardingSlice from 'app/slices/onboardingSlice';
-import appSlice from 'app/slices/appSlice'
+import onboardingSlice from "app/slices/onboardingSlice";
+import appSlice from "app/slices/appSlice";
 
-const {
-  setdForms,
-  setdFormActions,
-  setdFormTriggers,
-  setSurveyTriggers,
-} = onboardingSlice.actions;
+const { setdForms, setdFormActions, setdFormTriggers, setSurveyTriggers } = onboardingSlice.actions;
 
 const {
   getdFormsRequest,
@@ -60,7 +55,6 @@ const {
 
 function* getdForms() {
   try {
-
     const responce = yield call(dFormApi.getdForms);
 
     yield put(getdFormsSuccess());
@@ -80,7 +74,7 @@ function* submitDFormData({ payload }) {
   }
 }
 
-function* submitdForm({payload}) {
+function* submitdForm({ payload }) {
   try {
     const response = yield call(dFormApi.submitdForm, payload);
     yield put(submitdFormSuccess(response));
@@ -89,19 +83,18 @@ function* submitdForm({payload}) {
   }
 }
 
-function* submitdFormNewVersion({payload}) {
-
+function* submitdFormNewVersion({ payload }) {
   const response = yield call(dFormApi.submitdFormNewVersion, payload);
 
   if (response?.message) {
     yield put(submitdFormNewVersionError(response.message));
   } else {
-    yield put(getUserByIdRequest({userId: payload.userId}));
-    yield put(submitdFormNewVersionSuccess({...response, managerId: payload.userId}));
+    yield put(getUserByIdRequest({ userId: payload.userId }));
+    yield put(submitdFormNewVersionSuccess({ ...response, managerId: payload.userId }));
   }
 }
 
-function* changedFormStatus({payload}) {
+function* changedFormStatus({ payload }) {
   try {
     yield call(dFormApi.changedFormStatus, payload);
     yield put(changedFormStatusSuccess(payload));
@@ -110,7 +103,7 @@ function* changedFormStatus({payload}) {
   }
 }
 
-function* updateDForm({payload}) {
+function* updateDForm({ payload }) {
   try {
     const response = yield call(dFormApi.updateDForm, {
       ...payload,
@@ -122,7 +115,7 @@ function* updateDForm({payload}) {
   }
 }
 
-function* createDFormTemplate({payload}) {
+function* createDFormTemplate({ payload }) {
   try {
     const responce = yield call(dFormApi.createDFormTemplate, {
       ...payload,
@@ -132,14 +125,14 @@ function* createDFormTemplate({payload}) {
     yield put(createDFormTemplateSuccess());
     const notifications = yield select(selectdForms);
     yield put(setdForms([...notifications, responce]));
-    yield put(setContext(null))
+    yield put(setContext(null));
   } catch (error) {
     yield put(createDFormTemplateError(error));
   }
 }
 
 // todo only for dFormTemplate
-function* updateDFormTemplate({payload}) {
+function* updateDFormTemplate({ payload }) {
   try {
     const responce = yield call(dFormApi.updateDFormTemplate, {
       ...payload,
@@ -148,11 +141,7 @@ function* updateDFormTemplate({payload}) {
     yield put(updateDFormTemplateSuccess());
     const notifications = yield select(selectdForms);
     yield put(
-      setdForms(
-        notifications.map((notification) =>
-          notification.id === responce.id ? responce : notification
-        )
-      )
+      setdForms(notifications.map((notification) => (notification.id === responce.id ? responce : notification)))
     );
   } catch (error) {
     console.log(error);
@@ -160,16 +149,12 @@ function* updateDFormTemplate({payload}) {
   }
 }
 
-function* deleteDFormTemplate({payload}) {
+function* deleteDFormTemplate({ payload }) {
   try {
     yield call(dFormApi.deleteDFormTemplate, payload);
     yield put(deletedFormSuccess());
     const dForm = yield select(selectdForms);
-    yield put(
-      setdForms(
-        dForm.filter((notification) => notification.id !== payload.id)
-      )
-    );
+    yield put(setdForms(dForm.filter((notification) => notification.id !== payload.id)));
   } catch (error) {
     console.log(error);
     yield put(deletedFormError(error));
@@ -180,7 +165,7 @@ function* getdFormActions() {
   try {
     const responce = yield call(dFormApi.getdFormActions);
     yield put(getdFormActionsSuccess());
-    yield put(setdFormActions(responce))
+    yield put(setdFormActions(responce));
   } catch (error) {
     console.log(error);
     yield put(getdFormActionsError());
@@ -191,7 +176,7 @@ function* getdFormTriggers() {
   try {
     const responce = yield call(dFormApi.getdFormTriggers);
     yield put(getdFormTriggersSuccess());
-    yield put(setdFormTriggers(responce))
+    yield put(setdFormTriggers(responce));
   } catch (error) {
     console.log(error);
     yield put(getdFormTriggersError());
@@ -202,7 +187,7 @@ function* getSurveyTriggers() {
   try {
     const response = yield call(dFormApi.getSurveyTriggers);
     yield put(getSurveyTriggersSuccess());
-    yield put(setSurveyTriggers(response))
+    yield put(setSurveyTriggers(response));
   } catch (error) {
     console.log(error);
     yield put(getSurveyTriggersError());

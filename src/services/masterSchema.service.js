@@ -1,8 +1,8 @@
-import axios from 'api';
+import axios from "api";
 
 class MasterSchemaService {
   getOrganizations() {
-    return axios.get('/api/master-schema/organizations');
+    return axios.get("/api/master-schema/organizations");
   }
 
   getByOrganization(type, id) {
@@ -10,43 +10,43 @@ class MasterSchemaService {
   }
 
   create(type, id) {
-    return axios.post('/api/master-schema', {
+    return axios.post("/api/master-schema", {
       organization_id: id,
-      organization_type: type
+      organization_type: type,
     });
   }
 
-  updateField({id, name}) {
+  updateField({ id, name }) {
     return axios.put(`/api/master-schema-field/${id}`, {
-      name
+      name,
     });
   }
 
-  deleteField({id}) {
+  deleteField({ id }) {
     return axios.delete(`/api/master-schema-field/${id}`);
   }
 
-  updateGroup({id, name}) {
+  updateGroup({ id, name }) {
     return axios.put(`/api/master-schema-group/${id}`, {
-      name
+      name,
     });
   }
 
-  deleteGroup({id}) {
+  deleteGroup({ id }) {
     return axios.delete(`/api/master-schema-group/${id}`);
   }
 
-  addField({name, master_schema_group_id}) {
+  addField({ name, master_schema_group_id }) {
     return axios.post(`/api/master-schema-field`, {
       name,
-      master_schema_group_id
+      master_schema_group_id,
     });
   }
 
-  addGroup({name, parent_id}) {
+  addGroup({ name, parent_id }) {
     return axios.post(`/api/master-schema-group`, {
       name,
-      parent_id
+      parent_id,
     });
   }
 
@@ -57,14 +57,14 @@ class MasterSchemaService {
   getUserValueByFieldId(fieldId, userId) {
     return axios.post(`/api/master-schema-field-value`, {
       field_id: fieldId,
-      user_id: userId
+      user_id: userId,
     });
   }
   changeFieldValue(fieldId, userId, value) {
     return axios.put(`/api/master-schema-field-value`, {
       field_id: fieldId,
       user_id: userId,
-      value: value
+      value: value,
     });
   }
 
@@ -72,18 +72,18 @@ class MasterSchemaService {
     return axios.post(`/api/master-schema-field/create-unapproved`, {
       name: fieldName,
       organizationId,
-      organizationType
+      organizationType,
     });
   }
 
   masterSchemaGroupMakeParent(groupId, parent_id) {
     return axios.put(`/api/master-schema-group/${groupId}/make-parent`, {
-      parent_id
+      parent_id,
     });
   }
   masterSchemaFieldMakeParent(fieldId, master_schema_group_id) {
     return axios.put(`/api/master-schema-field/${fieldId}/make-parent`, {
-        master_schema_group_id
+      master_schema_group_id,
     });
   }
 }

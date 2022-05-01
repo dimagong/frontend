@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import React  from "react";
+import React from "react";
 import { Col } from "reactstrap";
 import PropTypes from "prop-types";
 

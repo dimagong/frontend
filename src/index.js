@@ -6,31 +6,31 @@ import { Layout } from "./utility/context/Layout";
 import store from "./app/store";
 import Spinner from "./components/@vuexy/spinner/Fallback-spinner";
 import "assets/styles/index.scss";
-import "react-toastify/dist/ReactToastify.css"
-import "assets/scss/plugins/extensions/toastr.scss"
-import "assets/scss/pages/authentication.scss"
+import "react-toastify/dist/ReactToastify.css";
+import "assets/scss/plugins/extensions/toastr.scss";
+import "assets/scss/pages/authentication.scss";
 import "assets/scss/plugins/tables/_agGridStyleOverride.scss";
 import "flatpickr/dist/themes/light.css";
 import "assets/scss/plugins/forms/flatpickr/flatpickr.scss";
-import "assets/scss/pages/users.scss"
-import "assets/scss/pages/coming-soon.scss"
-import "./components/@vuexy/rippleButton/RippleButton"
-import "react-perfect-scrollbar/dist/css/styles.css"
+import "assets/scss/pages/users.scss";
+import "assets/scss/pages/coming-soon.scss";
+import "./components/@vuexy/rippleButton/RippleButton";
+import "react-perfect-scrollbar/dist/css/styles.css";
 // import * as serviceWorker from './serviceWorker';
 
 const LazyApp = lazy(() => import("./App"));
 
 ReactDOM.render(
   <React.StrictMode>
-      <Provider store={store}>
-        <Suspense fallback={<Spinner />}>
-          <Layout>
-            <IntlProviderWrapper>
-              <LazyApp />
-            </IntlProviderWrapper>
-          </Layout>
-        </Suspense>
-      </Provider>
+    <Provider store={store}>
+      <Suspense fallback={<Spinner />}>
+        <Layout>
+          <IntlProviderWrapper>
+            <LazyApp />
+          </IntlProviderWrapper>
+        </Layout>
+      </Suspense>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

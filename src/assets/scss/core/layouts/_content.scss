@@ -29,7 +29,7 @@ html {
       margin-left: $menu-expanded-width;
 
       &.is-onboarding {
-        margin-left: 0!important;
+        margin-left: 0 !important;
         transition: none !important;
       }
 
@@ -43,10 +43,10 @@ html {
 
             ~ .header-navbar-shadow {
               background: linear-gradient(
-                  180deg,
-                  rgba(44, 48, 60, 0.9) 44%,
-                  rgba(44, 48, 60, 0.43) 73%,
-                  rgba(44, 48, 60, 0)
+                180deg,
+                rgba(44, 48, 60, 0.9) 44%,
+                rgba(44, 48, 60, 0.43) 73%,
+                rgba(44, 48, 60, 0)
               );
             }
           }
@@ -417,25 +417,25 @@ html {
   }
 }
 
-  .vertical-layout {
-    .app-content {
-      margin-left: 0;
+.vertical-layout {
+  .app-content {
+    margin-left: 0;
 
-      .header-navbar.floating-nav {
-        //width: calc(100% - 4.4rem) !important;
-      }
-    }
-
-    .footer {
-      margin-left: 0;
-    }
-
-    .main-menu:not(.hide-sidebar) {
-      & ~ .sidenav-overlay {
-        display: block;
-      }
+    .header-navbar.floating-nav {
+      //width: calc(100% - 4.4rem) !important;
     }
   }
+
+  .footer {
+    margin-left: 0;
+  }
+
+  .main-menu:not(.hide-sidebar) {
+    & ~ .sidenav-overlay {
+      display: block;
+    }
+  }
+}
 
 @media (max-width: 576px) {
   .vertical-layout {

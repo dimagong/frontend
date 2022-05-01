@@ -1,4 +1,4 @@
-import { lazy } from "react"
+import { lazy } from "react";
 
 import {
   loginPath,
@@ -36,7 +36,7 @@ const routes = [
     isPrivate: false,
     exact: true,
     redirect: homePath,
-    fullLayout: true
+    fullLayout: true,
   },
   {
     path: forgotPasswordPath,
@@ -72,7 +72,7 @@ const routes = [
     isPrivate: false,
     exact: true,
     redirect: loginPath,
-    fullLayout: true
+    fullLayout: true,
   },
   {
     path: homePath,
@@ -93,7 +93,7 @@ const routes = [
     Component: Error404,
     isPrivate: false,
     exact: true,
-    fullLayout: true
+    fullLayout: true,
   },
 ];
 

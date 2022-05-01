@@ -17,22 +17,24 @@
     overflow-x: hidden;
     height: 200px;
   }
-  .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active, .show > .btn-secondary.dropdown-toggle {
-    color: #fff!important;
+  .btn-secondary:not(:disabled):not(.disabled):active,
+  .btn-secondary:not(:disabled):not(.disabled).active,
+  .show > .btn-secondary.dropdown-toggle {
+    color: #fff !important;
   }
   .filter-header {
     font-size: 13px;
   }
   .card {
-    background: #FFFFFF;
+    background: #ffffff;
   }
   .not-active {
-    background: #cccccc!important;
+    background: #cccccc !important;
   }
   .active {
-    padding-top: 20px!important;
-    color: #FFFFFF!important;
-    background: #707070!important;
+    padding-top: 20px !important;
+    color: #ffffff !important;
+    background: #707070 !important;
   }
   .filter-remove-save {
     cursor: pointer;
@@ -42,7 +44,7 @@
     font-size: small;
     border-radius: 4px;
     svg {
-      color: #FFFFFF!important;
+      color: #ffffff !important;
       font-size: small;
     }
   }
@@ -53,13 +55,13 @@
     font-size: small;
     border-radius: 4px;
     svg {
-      color: blue!important;
+      color: blue !important;
       font-size: 22px;
       padding-bottom: 2px;
     }
   }
   .btn-secondary {
-    color: #919191!important;
+    color: #919191 !important;
     margin-bottom: 10px;
     padding: 15px 10px;
     width: 220px;
@@ -68,7 +70,7 @@
   .filter-option {
     padding-top: 10px;
     padding-bottom: 10px;
-    cursor: unset!important;
+    cursor: unset !important;
     .filter-check {
       cursor: pointer;
       margin-left: 2px;
@@ -76,7 +78,7 @@
       font-size: small;
       border-radius: 4px;
       svg {
-        color: #FFFFFF!important;
+        color: #ffffff !important;
         font-size: small;
       }
     }
@@ -101,9 +103,9 @@
   .filter-footer {
     .btn {
       float: right;
-      background-color: #7367f0!important;
+      background-color: #7367f0 !important;
       text-align: center;
-      color: white!important;
+      color: white !important;
     }
   }
   .filter-text {
@@ -114,14 +116,14 @@
   }
   .saved-filters {
     .btn-primary {
-      background: white!important;
-      cursor: unset!important;
+      background: white !important;
+      cursor: unset !important;
       input {
         border: 0;
       }
     }
     .dropdown-toggle {
-      cursor: pointer!important;
+      cursor: pointer !important;
     }
   }
   .dropdown-item {
@@ -135,7 +137,7 @@
         font-size: small;
         border-radius: 4px;
         svg {
-          color: #FFFFFF!important;
+          color: #ffffff !important;
           font-size: small;
         }
       }
@@ -154,7 +156,7 @@
     font-size: small;
     margin-left: 15px;
     padding: 10px;
-    cursor: unset!important;
+    cursor: unset !important;
     .nav-text {
       margin-right: 10px;
       float: left;
@@ -163,12 +165,12 @@
       cursor: pointer;
       float: right;
       margin-left: 10px;
-      background: #FFFFFF!important;
+      background: #ffffff !important;
       padding: 0 1px 1px 1px;
       font-size: small;
       border-radius: 10px;
       svg {
-        color: #95989a!important;
+        color: #95989a !important;
         font-size: small;
       }
     }
@@ -210,10 +212,10 @@
 }
 
 .closed {
-  display: none!important;
+  display: none !important;
 }
 .opened {
-  display: block!important;
+  display: block !important;
 }
 .filter-icon {
   cursor: pointer;

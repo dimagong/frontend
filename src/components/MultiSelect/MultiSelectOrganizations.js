@@ -1,18 +1,18 @@
 import React from "react";
-import Select, {components} from "react-select";
-import {DropdownIndicator, colourStyles} from '../../utility/select/selectSettigns'
+import Select, { components } from "react-select";
+import { DropdownIndicator, colourStyles } from "../../utility/select/selectSettigns";
 
 export function MultiSelectOrganization(props) {
   const selectRef = React.createRef();
 
   const handleMultiValueClick = (e, innerProps) => {
-    props.onSelectElement && props.onSelectElement({name: innerProps.data.label, ...innerProps.data.value});
+    props.onSelectElement && props.onSelectElement({ name: innerProps.data.label, ...innerProps.data.value });
     selectRef.current.select.blur();
   };
 
-  const MultiValueLabel = props => {
+  const MultiValueLabel = (props) => {
     return (
-      <div onClick={e => handleMultiValueClick(e, props)}>
+      <div onClick={(e) => handleMultiValueClick(e, props)}>
         <components.MultiValueLabel {...props} />
       </div>
     );
@@ -21,7 +21,7 @@ export function MultiSelectOrganization(props) {
   return (
     <Select
       closeMenuOnSelect={true}
-      components={{MultiValueLabel, DropdownIndicator}}
+      components={{ MultiValueLabel, DropdownIndicator }}
       isMulti
       openMenuOnClick={false}
       ref={selectRef}

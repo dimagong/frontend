@@ -1,1 +1,1 @@
-export {  default as UITable } from "./UITable";
+export { default as UITable } from "./UITable";

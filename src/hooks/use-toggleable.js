@@ -9,27 +9,32 @@ export const useToggleable = (initialKeys = [], options) => {
 
   const clear = React.useCallback(() => setKeys([]), []);
   // :: string | string[] -> void
-  const toggle = React.useCallback((toSelect) => setKeys((prev) => _.xor(prev, Array.isArray(toSelect) ? toSelect : [toSelect])), []);
+  const toggle = React.useCallback(
+    (toSelect) => setKeys((prev) => _.xor(prev, Array.isArray(toSelect) ? toSelect : [toSelect])),
+    []
+  );
   // :: string -> boolean
   const includes = React.useCallback((key) => keys.includes(key), [keys]);
 
-  return options.useRefactored ? [
-    keys,
-    {
-      isEmpty,
-      clear,
-      toggle,
-      setKeys,
-      includes,
-    }
-  ] : {
-    keys,
-    isEmpty,
-    clear,
-    toggle,
-    setKeys,
-    includes,
-  };
+  return options.useRefactored
+    ? [
+        keys,
+        {
+          isEmpty,
+          clear,
+          toggle,
+          setKeys,
+          includes,
+        },
+      ]
+    : {
+        keys,
+        isEmpty,
+        clear,
+        toggle,
+        setKeys,
+        includes,
+      };
 };
 
 useToggleable.defaultOptions = { useRefactored: false };

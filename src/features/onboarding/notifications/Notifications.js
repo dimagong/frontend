@@ -1,43 +1,29 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  Card,
-  CardBody,
-  Row,
-  Col,
-  Button,
-} from "reactstrap";
+import { Card, CardBody, Row, Col, Button } from "reactstrap";
 import "assets/scss/plugins/extensions/toastr.scss";
 import { ContextLayout } from "utility/context/Layout";
 import { AgGridReact } from "ag-grid-react";
 import { columnDefs } from "./gridSettings";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  selectNotifications,
-  selectNotification,
-} from "app/selectors/onboardingSelectors";
+import { selectNotifications, selectNotification } from "app/selectors/onboardingSelectors";
 import NotificationsForm from "./NotificationsForm";
-import { ChangeDetectionStrategyType } from 'ag-grid-react/lib/changeDetectionService'
+import { ChangeDetectionStrategyType } from "ag-grid-react/lib/changeDetectionService";
 
-import onboardingSlice from 'app/slices/onboardingSlice';
-import appSlice from 'app/slices/appSlice'
+import onboardingSlice from "app/slices/onboardingSlice";
+import appSlice from "app/slices/appSlice";
 
-const {
-  setNotification,
-} = onboardingSlice.actions;
+const { setNotification } = onboardingSlice.actions;
 
-const {
-  getNotificationsRequest,
-  deleteNotificationRequest,
-} = appSlice.actions;
+const { getNotificationsRequest, deleteNotificationRequest } = appSlice.actions;
 
-const initNotification = {name: '',description:"", content: "", groups: []};
+const initNotification = { name: "", description: "", content: "", groups: [] };
 
 const Notification = () => {
   const [gridApi, setGridApi] = useState(null);
   const notifications = useSelector(selectNotifications);
   const notification = useSelector(selectNotification);
   const dispatch = useDispatch();
-  const isCreate = useRef(false)
+  const isCreate = useRef(false);
 
   useEffect(() => {
     !notifications.length && dispatch(getNotificationsRequest());
@@ -55,7 +41,7 @@ const Notification = () => {
   }
 
   const onSelectionChanged = () => {
-        const [selectedRow] = gridApi.getSelectedRows();
+    const [selectedRow] = gridApi.getSelectedRows();
     dispatch(setNotification(selectedRow));
     isCreate.current = false;
   };
@@ -68,15 +54,15 @@ const Notification = () => {
 
   const createNotification = (e) => {
     e.preventDefault();
-    dispatch(setNotification(initNotification))
+    dispatch(setNotification(initNotification));
     isCreate.current = true;
-  }
+  };
 
   function handleDelete(params) {
-    if(window.confirm("Are you sure?")) {
-        dispatch(deleteNotificationRequest(params.data))
+    if (window.confirm("Are you sure?")) {
+      dispatch(deleteNotificationRequest(params.data));
     }
-}
+  }
 
   return (
     <div className="notifications">
@@ -86,10 +72,7 @@ const Notification = () => {
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-end flex-wrap mt-2">
-                  <Button
-                    onClick={createNotification}
-                    color="primary d-flex-left"
-                  >
+                  <Button onClick={createNotification} color="primary d-flex-left">
                     Create
                   </Button>
                 </div>
@@ -101,7 +84,7 @@ const Notification = () => {
                         gridOptions={{}}
                         rowSelection="multiple"
                         defaultColDef={{ resizable: true }}
-                        columnDefs={columnDefs({handleDelete})}
+                        columnDefs={columnDefs({ handleDelete })}
                         rowData={notifications}
                         onGridReady={onGridReady}
                         colResizeDefault={"shift"}
@@ -120,7 +103,7 @@ const Notification = () => {
               </CardBody>
             </Card>
           </Col>
-          {notification ? <NotificationsForm clearGridSelection={clearGridSelection} isCreate={isCreate}/> : null}
+          {notification ? <NotificationsForm clearGridSelection={clearGridSelection} isCreate={isCreate} /> : null}
         </Row>
       </div>
     </div>

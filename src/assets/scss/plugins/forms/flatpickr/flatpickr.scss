@@ -11,17 +11,17 @@
 // Overrides user variable
 @import "../../../core/variables/components-variables";
 
-.form-control.flatpickr-input{
+.form-control.flatpickr-input {
   background-color: $white;
-  & ~ input{
+  & ~ input {
     background-color: $white;
   }
 }
 
-.flatpickr-calendar{
-  &.arrowTop{
+.flatpickr-calendar {
+  &.arrowTop {
     &:before,
-    &:after{
+    &:after {
       border-bottom-color: $primary;
     }
   }
@@ -29,49 +29,49 @@
     .flatpickr-prev-month,
     .flatpickr-next-month,
     .flatpickr-prev-month:hover svg,
-    .flatpickr-next-month:hover svg{
-      fill : $white;
-      color : $white;
+    .flatpickr-next-month:hover svg {
+      fill: $white;
+      color: $white;
     }
-    .flatpickr-month{
+    .flatpickr-month {
       background: $primary;
-      select:hover{
+      select:hover {
         background: $white;
       }
     }
-    .numInputWrapper{
-      .numInput{
+    .numInputWrapper {
+      .numInput {
         color: $white;
       }
     }
   }
-  .flatpickr-weekdays{
+  .flatpickr-weekdays {
     width: calc(100% + 1px);
   }
   .flatpickr-weekdays,
-  .flatpickr-weekday{        
+  .flatpickr-weekday {
     background: $primary;
-    color : $white;
+    color: $white;
   }
-  .flatpickr-days{
-    .dayContainer{
-      .flatpickr-day{
+  .flatpickr-days {
+    .dayContainer {
+      .flatpickr-day {
         &.selected,
-        &.selected:hover{
-          background : $primary;
-          border-color : $primary;
+        &.selected:hover {
+          background: $primary;
+          border-color: $primary;
         }
         &:hover,
-        &.inRange{
-          background : $gray-200;
-          border-color : $gray-200;
+        &.inRange {
+          background: $gray-200;
+          border-color: $gray-200;
         }
 
-        &.inRange{
+        &.inRange {
           box-shadow: -5px 0 0 $gray-200, 5px 0 0 $gray-200;
         }
 
-        &.flatpickr-disabled{
+        &.flatpickr-disabled {
           color: $secondary;
         }
       }

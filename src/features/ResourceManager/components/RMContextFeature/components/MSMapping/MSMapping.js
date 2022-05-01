@@ -90,11 +90,7 @@ const MSMapping = ({ fieldId, organizationId, organizationType }) => {
         />
       </div>
 
-      <MappingFileForm
-        fileId={file?.value?.id}
-        references={references}
-        msFieldOptions={msFieldOptions}
-      />
+      <MappingFileForm fileId={file?.value?.id} references={references} msFieldOptions={msFieldOptions} />
     </FileInfoFolderContentTemplate>
   );
 };

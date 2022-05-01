@@ -33,14 +33,7 @@ const SelectField = (props) => {
 
   const renderSelect = (id) => {
     return (
-      <Select
-        inputId={id}
-        value={value}
-        options={options}
-        onChange={onChange}
-        placeholder={placeholder}
-        {...attrs}
-      >
+      <Select inputId={id} value={value} options={options} onChange={onChange} placeholder={placeholder} {...attrs}>
         {innerChildren}
       </Select>
     );

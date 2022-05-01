@@ -1,6 +1,6 @@
-import {useEffect, useRef} from 'react';
+import { useEffect, useRef } from "react";
 
-export default function useEventListener(eventName, handler, element = window){
+export default function useEventListener(eventName, handler, element = window) {
   // Create a ref that stores handler
   const savedHandler = useRef();
 
@@ -20,7 +20,7 @@ export default function useEventListener(eventName, handler, element = window){
       if (!isSupported) return;
 
       // Create event listener that calls handler function stored in ref
-      const eventListener = event => savedHandler.current(event);
+      const eventListener = (event) => savedHandler.current(event);
 
       // Add event listener
       element.addEventListener(eventName, eventListener);
@@ -32,4 +32,4 @@ export default function useEventListener(eventName, handler, element = window){
     },
     [eventName, element] // Re-run if eventName or element changes
   );
-};
+}

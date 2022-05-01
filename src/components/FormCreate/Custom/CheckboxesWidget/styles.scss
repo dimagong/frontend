@@ -11,7 +11,7 @@
     cursor: pointer;
     z-index: 299;
     &:checked {
-      ~.custom-checkbox_check {
+      ~ .custom-checkbox_check {
         position: relative;
         .custom-checkbox_check-icon {
           opacity: 1;

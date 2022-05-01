@@ -1,13 +1,13 @@
-import React from "react"
-import ExtensionsHeader from "../extensionsHeader"
-import { Row, Col } from "reactstrap"
-import ToastrTypes from "./ToastTypes"
-import ToastrPositions from "./ToastPositions"
-import ToastrAnimations from "./ToastrAnimations"
-import ToastrOptions from "./ToastifyOptions"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import "../../assets/scss/plugins/extensions/toastr.scss"
+import React from "react";
+import ExtensionsHeader from "../extensionsHeader";
+import { Row, Col } from "reactstrap";
+import ToastrTypes from "./ToastTypes";
+import ToastrPositions from "./ToastPositions";
+import ToastrAnimations from "./ToastrAnimations";
+import ToastrOptions from "./ToastifyOptions";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../../assets/scss/plugins/extensions/toastr.scss";
 
 class Toastr extends React.Component {
   render() {
@@ -35,8 +35,8 @@ class Toastr extends React.Component {
           <ToastContainer />
         </Row>
       </React.Fragment>
-    )
+    );
   }
 }
 
-export default Toastr
+export default Toastr;

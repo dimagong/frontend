@@ -5,10 +5,10 @@ import React, { useMemo, useState, forwardRef } from "react";
 import FormField from "./FormField";
 
 const inputStyles = {
-  borderRadius: '0',
-  borderTop: 'none',
-  borderLeft: 'none',
-  borderRight: 'none',
+  borderRadius: "0",
+  borderTop: "none",
+  borderLeft: "none",
+  borderRight: "none",
 };
 
 const TextField = forwardRef((props, ref) => {
@@ -52,12 +52,7 @@ const TextField = forwardRef((props, ref) => {
   };
 
   return (
-    <FormField
-      dirty={dirty}
-      invalid={invalid}
-      errors={errors}
-      label={label}
-    >
+    <FormField dirty={dirty} invalid={invalid} errors={errors} label={label}>
       {renderChildren()}
     </FormField>
   );

@@ -35,9 +35,9 @@ describe("normalizers", () => {
     const group = hierarchy.groups[0];
 
     const normalized = normalizeHierarchy(hierarchy);
-    const memberFirmGroup = normalized.children["group4"];//?
-    const memberFirmField1 = normalized.children["field5"];//?
-    const memberFirmField2 = normalized.children["field6"];//?
+    const memberFirmGroup = normalized.children["group4"]; //?
+    const memberFirmField1 = normalized.children["field5"]; //?
+    const memberFirmField2 = normalized.children["field6"]; //?
 
     expect(memberFirmGroup.isMemberFirmGroup).toBe(true);
     expect(memberFirmField1.isMemberFirmField).toBe(true);

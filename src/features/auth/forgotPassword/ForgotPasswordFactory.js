@@ -1,23 +1,8 @@
 import React from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  Button,
-  Label,
-} from "reactstrap";
+import { Card, CardHeader, CardTitle, CardBody, FormGroup, Form, Input, Button, Label } from "reactstrap";
 import { useRouter } from "hooks/useRouter";
 import { loginPath } from "constants/paths";
-import {
-  STEP_FORGOT,
-  STEP_FORGOT_SUCCESS,
-  STEP_VERYFI,
-  STEP_VERYFI_SUCCESS,
-} from "constants/resetPasswordSteps";
+import { STEP_FORGOT, STEP_FORGOT_SUCCESS, STEP_VERYFI, STEP_VERYFI_SUCCESS } from "constants/resetPasswordSteps";
 
 const ForgotPasswordFactory = ({
   step,
@@ -38,17 +23,9 @@ const ForgotPasswordFactory = ({
       return (
         <Card className="rounded-0 mb-0 px-2 py-1 h-100">
           <CardBody className="pt-1 pb-0 recover-link-send">
-            <h4 className="mb-0">
-              Password recovery link was successfully sent to your email
-              address
-            </h4>
+            <h4 className="mb-0">Password recovery link was successfully sent to your email address</h4>
             <div className="float-md-left d-block mb-1">
-              <Button
-                color="primary"
-                outline
-                className="px-75 btn-block"
-                onClick={goToLogin}
-              >
+              <Button color="primary" outline className="px-75 btn-block" onClick={goToLogin}>
                 Back to Login
               </Button>
             </div>
@@ -65,12 +42,7 @@ const ForgotPasswordFactory = ({
           </CardHeader>
           <CardBody className="pt-1 pb-0 password-changed">
             <div className="float-md-left d-block mb-1">
-              <Button
-                color="primary"
-                outline
-                className="px-75 btn-block"
-                onClick={goToLogin}
-              >
+              <Button color="primary" outline className="px-75 btn-block" onClick={goToLogin}>
                 Back to Login
               </Button>
             </div>
@@ -89,24 +61,11 @@ const ForgotPasswordFactory = ({
           <CardBody className="pt-1 pb-0">
             <Form>
               <FormGroup className="form-label-group">
-                <Input
-                  type="text"
-                  placeholder="Email"
-                  required
-                  value={email}
-                  disabled
-                  onChange={changeEmail}
-                />
+                <Input type="text" placeholder="Email" required value={email} disabled onChange={changeEmail} />
                 <Label>Email</Label>
               </FormGroup>
               <FormGroup className="form-label-group">
-                <Input
-                  type="password"
-                  placeholder="Password"
-                  required
-                  value={password}
-                  onChange={changePassword}
-                />
+                <Input type="password" placeholder="Password" required value={password} onChange={changePassword} />
                 <Label>Password</Label>
               </FormGroup>
               <FormGroup className="form-label-group">
@@ -120,22 +79,12 @@ const ForgotPasswordFactory = ({
                 <Label>Password confirmation</Label>
               </FormGroup>
               <div className="float-md-left d-block mb-1">
-                <Button
-                  color="primary"
-                  outline
-                  className="px-75 btn-block"
-                  onClick={goToLogin}
-                >
+                <Button color="primary" outline className="px-75 btn-block" onClick={goToLogin}>
                   Back to Login
                 </Button>
               </div>
               <div className="float-md-right d-block mb-1">
-                <Button
-                  color="primary"
-                  type="submit"
-                  className="px-75 btn-block"
-                  onClick={recoveryPasswordSubmit}
-                >
+                <Button color="primary" type="submit" className="px-75 btn-block" onClick={recoveryPasswordSubmit}>
                   Change password
                 </Button>
               </div>
@@ -152,38 +101,21 @@ const ForgotPasswordFactory = ({
             </CardTitle>
           </CardHeader>
           <p className="px-2 auth-title">
-            Please enter your email address and we'll send you instructions on
-            how to reset your password.
+            Please enter your email address and we'll send you instructions on how to reset your password.
           </p>
           <CardBody className="pt-1 pb-0">
             <Form>
               <FormGroup className="form-label-group">
-                <Input
-                  type="text"
-                  placeholder="Email"
-                  required
-                  value={email}
-                  onChange={changeEmail}
-                />
+                <Input type="text" placeholder="Email" required value={email} onChange={changeEmail} />
                 <Label>Email</Label>
               </FormGroup>
               <div className="float-md-left d-block mb-1">
-                <Button
-                  color="primary"
-                  outline
-                  className="px-75 btn-block"
-                  onClick={goToLogin}
-                >
+                <Button color="primary" outline className="px-75 btn-block" onClick={goToLogin}>
                   Back to Login
                 </Button>
               </div>
               <div className="float-md-right d-block mb-1">
-                <Button
-                  color="primary"
-                  type="submit"
-                  className="px-75 btn-block"
-                  onClick={forgotPasswordSubmit}
-                >
+                <Button color="primary" type="submit" className="px-75 btn-block" onClick={forgotPasswordSubmit}>
                   Recover Password
                 </Button>
               </div>

@@ -1,10 +1,9 @@
-import React from 'react';
+import React from "react";
 
 import Question from "features/Surveys/Components/Question";
 import LoadingButton from "components/LoadingButton";
 
-
-import './styles.scss'
+import "./styles.scss";
 
 const SurveyGradingComponent = ({
   surveyData,
@@ -19,17 +18,14 @@ const SurveyGradingComponent = ({
   onFeedbackSubmit,
   isFeedbackSubmitProceeding,
 }) => {
-
   const handleFinishGrading = () => {
-
     if (!surveyData.graded_at) {
-      onFinishGrading(surveyData.id)
+      onFinishGrading(surveyData.id);
     }
   };
 
-
   const handleGradingAnswerSave = (gradingData) => {
-    onQuestionAnswerGradingSave(gradingData)
+    onQuestionAnswerGradingSave(gradingData);
   };
 
   return (
@@ -72,9 +68,8 @@ const SurveyGradingComponent = ({
           />
         )}
       </div>
-
     </div>
-  )
+  );
 };
 
 export default SurveyGradingComponent;

@@ -1,114 +1,114 @@
-import axios from "axios"
+import axios from "axios";
 
 export const getChats = () => {
-  return dispatch => {
+  return (dispatch) => {
     axios
       .get("api/app/chat/chats")
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: "GET_CONTACTS",
           contacts: response.data.contacts,
-          chats: response.data.chats
-        })
+          chats: response.data.chats,
+        });
       })
-      .catch(err => console.log(err))
-  }
-}
+      .catch((err) => console.log(err));
+  };
+};
 
 export const getContactChats = () => {
-  return dispatch => {
+  return (dispatch) => {
     axios
       .get("api/app/chat/chat-contacts")
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: "GET_CHAT_CONTACTS",
-          chats: response.data
-        })
+          chats: response.data,
+        });
       })
-      .catch(err => console.log(err))
-  }
-}
+      .catch((err) => console.log(err));
+  };
+};
 
 export const togglePinned = (id, value) => {
-  return dispatch => {
+  return (dispatch) => {
     axios
       .post("/api/apps/chat/set-pinned/", {
         contactId: id,
-        value
+        value,
       })
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: "SET_PINNED",
           id,
-          value
-        })
+          value,
+        });
       })
-      .catch(err => console.log(err))
-  }
-}
+      .catch((err) => console.log(err));
+  };
+};
 
 export const sendMessage = (id, isPinned, text) => {
   if (text.length > 0) {
-    return dispatch => {
+    return (dispatch) => {
       let newMsg = {
         textContent: text,
         isSent: true,
         isSeen: false,
-        time: new Date().toString()
-      }
+        time: new Date().toString(),
+      };
       axios
         .post("/api/app/chat/send-message", {
           contactId: id,
           message: newMsg,
-          isPinned
+          isPinned,
         })
-        .then(response => {
+        .then((response) => {
           dispatch({
             type: "SEND_MESSAGE",
             msg: newMsg,
             id,
             isPinned,
-            text
-          })
-          dispatch(getChats())
+            text,
+          });
+          dispatch(getChats());
         })
-        .catch(err => console.log(err))
-    }
+        .catch((err) => console.log(err));
+    };
   } else {
-    return
+    return;
   }
-}
+};
 
-export const changeStatus = status => {
-  return dispatch => {
+export const changeStatus = (status) => {
+  return (dispatch) => {
     dispatch({
       type: "CHANGE_STATUS",
-      status
-    })
-  }
-}
+      status,
+    });
+  };
+};
 
-export const searchContacts = query => {
-  return dispatch => {
+export const searchContacts = (query) => {
+  return (dispatch) => {
     dispatch({
       type: "SEARCH_CONTACTS",
-      query
-    })
-  }
-}
+      query,
+    });
+  };
+};
 
-export const markSeenAllMessages = id => {
-  return dispatch => {
+export const markSeenAllMessages = (id) => {
+  return (dispatch) => {
     axios
       .post("/api/apps/chat/mark-all-seen/", {
-        contactId: id
+        contactId: id,
       })
-      .then(response => {
+      .then((response) => {
         dispatch({
           type: "MARK_AS_SEEN",
-          id
-        })
+          id,
+        });
       })
-      .catch(err => console.log(err))
-  }
-}
+      .catch((err) => console.log(err));
+  };
+};

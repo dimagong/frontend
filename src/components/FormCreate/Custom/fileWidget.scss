@@ -1,5 +1,4 @@
 .file-input {
-
   .drop-zone {
     display: flex;
     height: 123px;
@@ -28,9 +27,9 @@
   margin-bottom: 10px;
   padding: 12px 8px;
 
-  -webkit-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16)!important;
-  -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16)!important;
-  box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16)!important;
+  -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16) !important;
+  -moz-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16) !important;
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16) !important;
 
   &:last-child {
     margin-bottom: 38px;
@@ -43,7 +42,7 @@
     word-break: break-all;
     color: #707070;
     a {
-      color:#707070;
+      color: #707070;
     }
   }
 

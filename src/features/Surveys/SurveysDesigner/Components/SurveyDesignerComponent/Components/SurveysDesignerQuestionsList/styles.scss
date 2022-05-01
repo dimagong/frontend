@@ -1,5 +1,4 @@
 .survey-designer_question-list {
-
   .question-insert-button {
     display: flex;
     justify-content: center;
@@ -19,14 +18,14 @@
       flex-direction: column;
       margin-right: 10px;
       button {
-        background: #4B484D;
+        background: #4b484d;
         width: 33px;
         height: 57px;
         border-radius: 10px;
         outline: none;
 
         &:disabled {
-          background: #A7A2A9;
+          background: #a7a2a9;
           cursor: default;
         }
 
@@ -36,7 +35,6 @@
           display: flex;
           justify-content: center;
           align-items: flex-start;
-
         }
         &:last-child {
           display: flex;

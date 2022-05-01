@@ -1,20 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {TextArea} from "../../../../../SurveyFormComponents";
+import React, { useState, useEffect } from "react";
+import { TextArea } from "../../../../../SurveyFormComponents";
 import { usePrevious } from "hooks/common";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
-import {selectError} from "app/selectors";
+import { selectError } from "app/selectors";
 import CustomModal from "../../../../../../../../components/CustomModal";
 
-const SurveyFeedbackModal = ({
-  isOpen,
-  onClose,
-  isSubmitProceed,
-  onSubmit,
-  initFeedback,
-  questionId,
-}) => {
-
+const SurveyFeedbackModal = ({ isOpen, onClose, isSubmitProceed, onSubmit, initFeedback, questionId }) => {
   const [feedback, setFeedback] = useState("");
 
   const error = useSelector(selectError);
@@ -36,7 +28,7 @@ const SurveyFeedbackModal = ({
   }, [isOpen, initFeedback]);
 
   useEffect(() => {
-    if(!isSubmitProceed && isSubmitProceedPrevState && !error) {
+    if (!isSubmitProceed && isSubmitProceedPrevState && !error) {
       handleClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,9 +45,7 @@ const SurveyFeedbackModal = ({
       className="survey_feedback_modal"
     >
       <div className="survey_feedback_modal-body">
-        <label className="survey_feedback_modal-body-label" >
-          Enter your feedback below
-        </label>
+        <label className="survey_feedback_modal-body-label">Enter your feedback below</label>
         <TextArea
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
@@ -65,7 +55,7 @@ const SurveyFeedbackModal = ({
         />
       </div>
     </CustomModal>
-  )
+  );
 };
 
 export default SurveyFeedbackModal;
