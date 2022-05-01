@@ -1,4 +1,3 @@
-import qs from "query-string"
 export const getProfilePath =  "/api/user/profile";
 export const getFilterPath =  "/api/user-filter";
 export const getFilterPathByID = (id) =>  `/api/user-filter/${id}`;
@@ -17,10 +16,7 @@ export const createUserOnboarding = "api/onboarding";
 export const deleteUserOnboarding = "api/onboarding";
 export const createUserPath = "/api/user"
 export const getInvitationsPath = "/api/invitation"
-export const createInvitationsPath = ({managerId, resend}) => `/api/invitation?${qs.stringify({
-    user_id: managerId,
-    resend: resend
-}, {arrayFormat: 'comma'})} `
+export const createInvitationsPath = ({managerId, resend}) => `/api/invitation?${new URLSearchParams({ user_id: managerId, resend })}`;
 export const deleteInvitationsPath = (id) => `/api/invitation/${id}`;
 export const revokeInvitationsPath = (id) => `/api/invitation/${id}/revoke`;
 export const getInvitationPath = (id) => `/api/invitation/${id}`;
