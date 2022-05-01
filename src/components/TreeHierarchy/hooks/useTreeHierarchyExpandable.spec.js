@@ -5,6 +5,8 @@ import { render, unmountComponentAtNode } from "react-dom";
 import { buildHierarchy } from "api/masterSchema/masterSchemaMockUtils";
 import { useTreeHierarchyExpandable } from "./useTreeHierarchyExpandable";
 
+const tick = () => new Promise((r) => setTimeout(r));
+
 describe("useMasterSchemaSelectable", () => {
   let container = null;
   let expandable = null;
@@ -17,7 +19,10 @@ describe("useMasterSchemaSelectable", () => {
     return expandable.expandedIds.join();
   };
 
-  const renderTestComponent = (hierarchy) => render(<TestComponent hierarchy={hierarchy} />, container);
+  const renderTestComponent = async (hierarchy) => {
+    render(<TestComponent hierarchy={hierarchy} />, container);
+    await tick();
+  };
 
   beforeEach(() => {
     container = document.createElement("div");
@@ -34,8 +39,8 @@ describe("useMasterSchemaSelectable", () => {
     expandable = null;
   });
 
-  it("nullable hierarchy", () => {
-    renderTestComponent();
+  it("nullable hierarchy", async () => {
+    await renderTestComponent();
 
     const root = testHierarchy.nodes["root"];
 
@@ -44,30 +49,32 @@ describe("useMasterSchemaSelectable", () => {
   });
 
   describe("isDecedentsExpanded", () => {
-    it("initially only root expanded", () => {
-      renderTestComponent(testHierarchy);
+    it("initially only root expanded", async () => {
+      await renderTestComponent();
 
       expect(expandable.isDecedentsExpanded).toBe(false);
-      expect(expandable.expandedIds).toStrictEqual(["root"]);
     });
 
-    it("root is collapsed", () => {
-      renderTestComponent(testHierarchy);
+    it("root is collapsed", async () => {
+      await renderTestComponent(testHierarchy);
 
+      expect(expandable.expandedIds).toStrictEqual(["root"]);
+      expect(expandable.isDecedentsExpanded).toBe(false);
       expandable.setKeys([]);
       expect(expandable.isDecedentsExpanded).toBe(false);
     });
 
-    it("some root's decedent is expanded", () => {
-      renderTestComponent(testHierarchy);
+    it("some root's decedent is expanded", async () => {
+      await renderTestComponent(testHierarchy);
 
+      expect(expandable.isDecedentsExpanded).toBe(false);
       expandable.setKeys(_.concat(["group1"]));
       expect(expandable.isDecedentsExpanded).toBe(true);
     });
   });
 
-  it("expandOnlyRoot", () => {
-    renderTestComponent(testHierarchy);
+  it("expandOnlyRoot", async () => {
+    await renderTestComponent(testHierarchy);
 
     expandable.setKeys(_.concat(["group1", "group2", "group3"]));
 
@@ -76,8 +83,8 @@ describe("useMasterSchemaSelectable", () => {
     expect(expandable.expandedIds).toStrictEqual(["root"]);
   });
 
-  it("expand", () => {
-    renderTestComponent(testHierarchy);
+  it("expand", async () => {
+    await renderTestComponent(testHierarchy);
 
     const root = testHierarchy.nodes["root"];
     const group = testHierarchy.nodes["group1"];
@@ -89,8 +96,8 @@ describe("useMasterSchemaSelectable", () => {
     expect(expandable.expandedIds).toStrictEqual(["root", "group1"]);
   });
 
-  it("collapse", () => {
-    renderTestComponent(testHierarchy);
+  it("collapse", async () => {
+    await renderTestComponent(testHierarchy);
 
     const root = testHierarchy.nodes["root"];
 
@@ -101,8 +108,8 @@ describe("useMasterSchemaSelectable", () => {
     expect(expandable.expandedIds).toStrictEqual([]);
   });
 
-  it("expandAll", () => {
-    renderTestComponent(testHierarchy);
+  it("expandAll", async () => {
+    await renderTestComponent(testHierarchy);
 
     expandable.expandAll();
     expect(expandable.expandedIds).toStrictEqual(
@@ -112,12 +119,12 @@ describe("useMasterSchemaSelectable", () => {
 
   describe("effects", () => {
     it("clear selected when hierarchy.masterSchemaId changed", async () => {
-      renderTestComponent(testHierarchy);
+      await renderTestComponent(testHierarchy);
+
       expect(expandable.expandedIds).toStrictEqual(["root"]);
 
-      renderTestComponent(buildHierarchy("root1", 2));
+      await renderTestComponent(buildHierarchy("root1", 2));
 
-      await new Promise((r) => setTimeout(r));
       expect(expandable.expandedIds).toStrictEqual(["root1"]);
     });
   });

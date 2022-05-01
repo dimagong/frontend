@@ -14,7 +14,6 @@ import {
   Label,
   FormFeedback,
 } from "reactstrap";
-// import SweetAlert from "react-bootstrap-sweetalert";
 import { Mail, Lock, Check } from "react-feather";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import { Link } from "react-router-dom";

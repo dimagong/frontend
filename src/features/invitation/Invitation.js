@@ -13,7 +13,6 @@ import {
     Label,
     FormFeedback
   } from "reactstrap";
-import SweetAlert from 'react-bootstrap-sweetalert';
 import { selectError } from "app/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from 'hooks/useRouter';
@@ -58,9 +57,6 @@ const Invitation = () => {
         })
       }
 
-    const confirmCode = () => {
-
-    }
     return (
         <Row className="m-0 justify-content-center">
         <Col
@@ -125,16 +121,6 @@ const Invitation = () => {
             </Row>
           </Card>
         </Col>
-        <SweetAlert title="Code Verification"
-                    input
-                    show={false}
-                    placeHolder="Your code"
-                    onConfirm={(response) => confirmCode(response)}
-        >
-          <p className="sweet-alert-text">
-            Please check your email address and enter the code
-          </p>
-        </SweetAlert>
       </Row>
     )
 }

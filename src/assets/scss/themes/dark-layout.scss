@@ -2861,15 +2861,6 @@ body {
       .item-features {
         background-color: $dark-chat-bg-color;
       }
-
-      .swiper-slide {
-        background-color: $content-dark-bg;
-      }
-
-      .swiper-button-next,
-      .swiper-button-prev {
-        color: $primary;
-      }
     }
 
     // calendar
@@ -2985,18 +2976,6 @@ body {
 
     /********** EXTENSIONS **********/
 
-    // RC slider
-    .rc-slider {
-      .rc-slider-rail {
-        background-color: $content-dark-bg !important;
-      }
-
-      &.rc-slider-disabled {
-        background-color: $content-dark-bg;
-        opacity: 0.7;
-      }
-    }
-
     // dropzone
     .dropzone {
       background-color: $content-dark-bg;
@@ -3068,37 +3047,6 @@ body {
 
         .react-contexify__item__content {
           color: $theme-dark-text-color;
-        }
-      }
-    }
-
-    // Swiper
-    .swiper-container {
-      .swiper-slide.swiper-slide-active {
-
-        span,
-        svg {
-          color: $white;
-        }
-      }
-
-      &.centered-style-1 {
-        .swiper-slide {
-          background-color: $dark-chat-bg-color;
-        }
-      }
-
-      &.centered-style-2 {
-        .swiper-slide:not(.swiper-slide-active) {
-          background-color: $dark-chat-bg-color;
-        }
-      }
-
-      &.swiper-parallax {
-
-        .swiper-slide,
-        .swiper-slide p {
-          color: $black;
         }
       }
     }
