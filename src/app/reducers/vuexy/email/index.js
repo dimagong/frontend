@@ -1,8 +1,8 @@
-import { combineReducers } from "redux"
-import mails from "./emails"
+import { combineReducers } from "redux";
+import mails from "./emails";
 
 const emailReducer = combineReducers({
-  mails
-})
+  mails,
+});
 
-export default emailReducer
+export default emailReducer;

@@ -28,12 +28,7 @@ body {
     .main-menu {
       background-color: $dark-card-color;
       .shadow-bottom {
-        background: linear-gradient(
-          180deg,
-          #0f1642 44%,
-          rgba(15, 22, 66, 0.51) 73%,
-          rgba(44, 48, 60, 0)
-        );
+        background: linear-gradient(180deg, #0f1642 44%, rgba(15, 22, 66, 0.51) 73%, rgba(44, 48, 60, 0));
       }
       &:not(.expanded) {
         .navigation {
@@ -59,21 +54,13 @@ body {
           .nav-item {
             &.active {
               a {
-                background: linear-gradient(
-                  118deg,
-                  $gray-500,
-                  rgba($gray-500, 0.7)
-                );
+                background: linear-gradient(118deg, $gray-500, rgba($gray-500, 0.7));
                 box-shadow: 0 0 10px 1px rgba($gray-500, 0.7);
               }
             }
             .menu-content {
               li.active {
-                background: linear-gradient(
-                  118deg,
-                  $gray-500,
-                  rgba($gray-500, 0.7)
-                );
+                background: linear-gradient(118deg, $gray-500, rgba($gray-500, 0.7));
                 box-shadow: 0 0 10px 1px rgba($gray-500, 0.7);
               }
             }

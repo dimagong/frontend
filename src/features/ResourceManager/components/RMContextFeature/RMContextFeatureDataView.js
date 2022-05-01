@@ -45,7 +45,9 @@ const RMContextFeatureDataView = ({ field, organizationId, organizationType }) =
       {
         {
           "Previous Versions": <FilesHistory fieldId={field.id} />,
-          "MS Mapping": <MSMapping fieldId={field.id} organizationId={organizationId} organizationType={organizationType} />,
+          "MS Mapping": (
+            <MSMapping fieldId={field.id} organizationId={organizationId} organizationType={organizationType} />
+          ),
         }[selectedFolder.name]
       }
     </RMContextFeatureTemplate>

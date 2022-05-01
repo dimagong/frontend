@@ -1,8 +1,8 @@
 import { all, put, call, takeLatest, delay } from "redux-saga/effects";
 
-import memberFirmsApi from 'api/memberFirms';
+import memberFirmsApi from "api/memberFirms";
 
-import appSlice from 'app/slices/appSlice';
+import appSlice from "app/slices/appSlice";
 
 const {
   createMemberFirmSuccess,
@@ -66,24 +66,23 @@ const {
   createMasterSchemaFieldForMemberFirmError,
 } = appSlice.actions;
 
-
 function* createMemberFirm(payload) {
   const response = yield call(memberFirmsApi.createMemberFirm, payload);
 
   if (response?.message) {
-    yield put(createMemberFirmError(response.message))
+    yield put(createMemberFirmError(response.message));
   } else {
-    yield put(createMemberFirmSuccess(response))
+    yield put(createMemberFirmSuccess(response));
   }
 }
 
-function* getMemberFirmActivities({payload}) {
+function* getMemberFirmActivities({ payload }) {
   const response = yield call(memberFirmsApi.getMemberFirmActivities, payload);
 
   if (response?.message) {
     yield put(getMemberFirmActivitiesError(response.message));
   } else {
-    yield put(getMemberFirmActivitiesSuccess(response))
+    yield put(getMemberFirmActivitiesSuccess(response));
   }
 }
 
@@ -91,9 +90,9 @@ function* getMemberFirms() {
   const response = yield call(memberFirmsApi.getMemberFirms);
 
   if (response?.message) {
-    yield put(getMemberFirmsError(response.message))
+    yield put(getMemberFirmsError(response.message));
   } else {
-    yield put(getMemberFirmsSuccess(response))
+    yield put(getMemberFirmsSuccess(response));
   }
 }
 
@@ -101,109 +100,109 @@ function* getMemberFirm({ payload }) {
   const response = yield call(memberFirmsApi.getMemberFirm, payload);
 
   if (response?.message) {
-    yield put(getMemberFirmError(response.message))
+    yield put(getMemberFirmError(response.message));
   } else {
-    yield put(getMemberFirmSuccess(response))
+    yield put(getMemberFirmSuccess(response));
   }
 }
 
-function* getMemberFirmUsers({payload}) {
+function* getMemberFirmUsers({ payload }) {
   const response = yield call(memberFirmsApi.getMemberFirmUsers, payload);
 
   if (response?.message) {
-    yield put(getMemberFirmUsersError(response.message))
+    yield put(getMemberFirmUsersError(response.message));
   } else {
-    yield put(getMemberFirmUsersSuccess(response))
+    yield put(getMemberFirmUsersSuccess(response));
   }
 }
 
-function* getMemberFirmPotentialUsers({payload}) {
+function* getMemberFirmPotentialUsers({ payload }) {
   const response = yield call(memberFirmsApi.getMemberFirmPotentialUsers, payload);
 
   if (response?.message) {
-    yield put(getMemberFirmPotentialUsersError(response.message))
+    yield put(getMemberFirmPotentialUsersError(response.message));
   } else {
-    yield put(getMemberFirmPotentialUsersSuccess(response))
+    yield put(getMemberFirmPotentialUsersSuccess(response));
   }
 }
 
-function* addMemberFirmUsers({payload}) {
+function* addMemberFirmUsers({ payload }) {
   const response = yield call(memberFirmsApi.addMemberFirmUsers, payload);
 
   if (response?.message) {
-    yield put(addMemberFirmUsersError(response.message))
+    yield put(addMemberFirmUsersError(response.message));
   } else {
     yield put(getMemberFirmRequest(payload.memberFirmId));
-    yield put(addMemberFirmUsersSuccess({response, isEdit: payload.isEdit}));
+    yield put(addMemberFirmUsersSuccess({ response, isEdit: payload.isEdit }));
     yield delay(3000);
-    yield put(getMemberFirmActivitiesRequest({memberFirmId: payload.memberFirmId, page: 1}));
+    yield put(getMemberFirmActivitiesRequest({ memberFirmId: payload.memberFirmId, page: 1 }));
   }
 }
 
-function* removeMemberFirmUsers({payload}) {
+function* removeMemberFirmUsers({ payload }) {
   const response = yield call(memberFirmsApi.removeMemberFirmUsers, payload);
 
   if (response?.message) {
-    yield put(removeMemberFirmUsersError(response.message))
+    yield put(removeMemberFirmUsersError(response.message));
   } else {
     yield put(getMemberFirmRequest(payload.memberFirmId));
-    yield put(removeMemberFirmUsersSuccess({response, isEdit: payload.isEdit}));
+    yield put(removeMemberFirmUsersSuccess({ response, isEdit: payload.isEdit }));
     yield delay(3000);
-    yield put(getMemberFirmActivitiesRequest({memberFirmId: payload.memberFirmId, page: 1}));
+    yield put(getMemberFirmActivitiesRequest({ memberFirmId: payload.memberFirmId, page: 1 }));
   }
 }
 
-function* getMasterSchemaFieldsForMemberFirm({payload}) {
+function* getMasterSchemaFieldsForMemberFirm({ payload }) {
   const response = yield call(memberFirmsApi.getMasterSchemaFieldsForMemberFirm, payload);
 
   if (response?.message) {
-    yield put(getMasterSchemaFieldsForMemberFirmError(response.message))
+    yield put(getMasterSchemaFieldsForMemberFirmError(response.message));
   } else {
-    yield put(getMasterSchemaFieldsForMemberFirmSuccess(response))
+    yield put(getMasterSchemaFieldsForMemberFirmSuccess(response));
   }
 }
 
-function* getMemberFirmFormFields({payload}) {
+function* getMemberFirmFormFields({ payload }) {
   const response = yield call(memberFirmsApi.getMemberFirmFormFields, payload);
 
   if (response?.message) {
-    yield put(getMemberFirmFormFieldsError(response.message))
+    yield put(getMemberFirmFormFieldsError(response.message));
   } else {
-    yield put(getMemberFirmFormFieldsSuccess(response))
+    yield put(getMemberFirmFormFieldsSuccess(response));
   }
 }
 
-function* updateMemberFirmFormValues({payload}) {
+function* updateMemberFirmFormValues({ payload }) {
   const response = yield call(memberFirmsApi.updateMemberFirmFormValues, payload);
 
   if (response?.message) {
-    yield put(updateMemberFirmFormValuesError(response.message))
+    yield put(updateMemberFirmFormValuesError(response.message));
   } else {
     yield put(getMemberFirmRequest(payload.memberFirmId));
     yield put(getMemberFirmFormFieldsRequest(payload.memberFirmId));
     yield put(updateMemberFirmFormValuesSuccess(response));
     yield delay(3000);
-    yield put(getMemberFirmActivitiesRequest({memberFirmId: payload.memberFirmId, page: 1}));
+    yield put(getMemberFirmActivitiesRequest({ memberFirmId: payload.memberFirmId, page: 1 }));
   }
 }
 
-function* updateMemberFirmProfileImage({payload}) {
+function* updateMemberFirmProfileImage({ payload }) {
   const response = yield call(memberFirmsApi.updateMemberFirmLogo, payload);
 
   if (response?.message) {
-    yield put(updateMemberFirmProfileImageError(response.message))
+    yield put(updateMemberFirmProfileImageError(response.message));
   } else {
-    yield put(updateMemberFirmProfileImageSuccess(response))
+    yield put(updateMemberFirmProfileImageSuccess(response));
   }
 }
 
-function* removeMemberFirmLogo({payload}) {
+function* removeMemberFirmLogo({ payload }) {
   const response = yield call(memberFirmsApi.removeMemberFirmLogo, payload);
 
   if (response?.message) {
-    yield put(removeMemberFirmLogoError(response.message))
+    yield put(removeMemberFirmLogoError(response.message));
   } else {
-    yield put(removeMemberFirmLogoSuccess(response))
+    yield put(removeMemberFirmLogoSuccess(response));
   }
 }
 

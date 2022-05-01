@@ -1,9 +1,16 @@
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 .user-card {
   animation-name: fadeIn;
   animation-duration: 200ms;
   animation-timing-function: linear;
-  color: #707070!important;
+  color: #707070 !important;
   * {
     white-space: nowrap;
   }
@@ -16,7 +23,7 @@
       left: 50%;
       background-color: white;
       transform: translateX(-50%);
-      opacity: 0!important;
+      opacity: 0 !important;
     }
     .x-closer {
       position: absolute;
@@ -25,14 +32,16 @@
       opacity: 0;
       cursor: pointer;
     }
-    &_change-button, .x-closer {
+    &_change-button,
+    .x-closer {
       opacity: 0;
       transition: 0.2s;
     }
 
     &:hover {
-      .user-avatar-management_change-button, .x-closer {
-        opacity: 1!important;
+      .user-avatar-management_change-button,
+      .x-closer {
+        opacity: 1 !important;
         transition: 0.2s;
       }
       .user-avatar-management_change-button {
@@ -48,8 +57,8 @@
     }
   }
   &-img {
-    height: 150px!important;
-    width: 150px!important;
+    height: 150px !important;
+    width: 150px !important;
     border-radius: 25px;
     &-fit-contain {
       object-fit: contain;
@@ -60,10 +69,10 @@
     justify-content: space-between;
     min-width: 0;
     &_title {
-      font-weight: bold!important;
-      color: #707070!important;
+      font-weight: bold !important;
+      color: #707070 !important;
       padding-top: 4px;
-      font-family: "Segoe UI"!important;
+      font-family: "Segoe UI" !important;
     }
     &-left {
       text-overflow: ellipsis;
@@ -74,9 +83,10 @@
       justify-content: space-between;
       padding-bottom: 20px;
       .card-title {
-        font-size: 22px!important;
+        font-size: 22px !important;
       }
-      .card-title, .card-text {
+      .card-title,
+      .card-text {
         text-overflow: ellipsis;
         overflow: hidden;
       }
@@ -116,16 +126,16 @@
   .user-card {
     padding: 0;
     &-img {
-      border-radius: inherit!important;
-      width: 136px!important;
-      height: 136px!important;
+      border-radius: inherit !important;
+      width: 136px !important;
+      height: 136px !important;
     }
     &-body {
       &-left {
         padding-top: 4px;
         padding-bottom: 10px;
         .card-title {
-          font-size: 20px!important;
+          font-size: 20px !important;
         }
       }
       &-right {
@@ -133,13 +143,11 @@
         padding-right: 9px;
         padding-bottom: 6px;
         .organization-name {
-
           &:last-child {
-
           }
         }
       }
-      &_last-seen.card-text{
+      &_last-seen.card-text {
         font-size: 9px !important;
       }
     }
@@ -149,8 +157,8 @@
 @media (max-width: 1280px) {
   .user-card {
     &-img {
-      width: 117px!important;
-      height: 117px!important;
+      width: 117px !important;
+      height: 117px !important;
     }
   }
 }

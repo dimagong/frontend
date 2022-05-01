@@ -3,11 +3,10 @@
   background: white;
   border-radius: 0.5rem;
   padding: 20px 66px 20px 66px;
-  box-shadow: 0 3px 6px 0 rgba(0,0,0, 0.16);
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   border: 2px solid transparent;
   margin-bottom: 40px;
   cursor: pointer;
-
 
   &-feedback_icon {
     cursor: pointer;
@@ -19,7 +18,7 @@
 
   &-title {
     font-weight: bold;
-    color: #4B484D;
+    color: #4b484d;
     font-size: 22px;
     font-family: Montserrat;
     margin-bottom: 21px;
@@ -33,7 +32,7 @@
   }
 
   &.selected {
-    border-color: #7367F0;
+    border-color: #7367f0;
   }
 
   &.added {
@@ -53,7 +52,7 @@
   }
 
   &-description {
-    color: #4B484D;
+    color: #4b484d;
     font-size: 20px;
     font-family: Montserrat;
     font-weight: 300;
@@ -62,7 +61,7 @@
   &-points {
     font-weight: 500;
     font-family: Montserrat;
-    color: #4B484D;
+    color: #4b484d;
     font-size: 20px;
     text-align: right;
     margin-top: 35px;
@@ -75,7 +74,7 @@
       font-family: Montserrat;
       font-size: 15px;
       padding-bottom: 20px;
-      color: #4B484D;
+      color: #4b484d;
     }
   }
 
@@ -96,26 +95,25 @@
 
     .options {
       .option-small {
-          width: 45%;
-          margin-right: 2.5%;
-          margin-left: 2.5%;
-          display: inline-flex!important;
-        }
-
+        width: 45%;
+        margin-right: 2.5%;
+        margin-left: 2.5%;
+        display: inline-flex !important;
+      }
 
       .option {
-        box-shadow: 0 3px 6px 0 rgba(0,0,0, 0.16);
+        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         margin-bottom: 25px;
         border-radius: 0.5rem;
         padding: 12px 20px;
-        color: #4B484D;
+        color: #4b484d;
         font-size: 16px;
         font-weight: 300;
         font-family: Montserrat;
         display: flex;
         &-circle {
           border-radius: 100px;
-          border: 2px solid #4B484D;
+          border: 2px solid #4b484d;
           width: 14px;
           height: 14px;
           margin-top: 2px;
@@ -126,13 +124,12 @@
           padding-left: 10px;
         }
 
-
         &.selected {
-          color: #7367F0!important;
+          color: #7367f0 !important;
 
           .option-circle {
-            border-color: #7367F0!important;
-            background: #7367F0!important;
+            border-color: #7367f0 !important;
+            background: #7367f0 !important;
           }
         }
 
@@ -149,14 +146,13 @@
   }
 
   &.question-designer {
-
   }
 
   &.question-grading {
     background: transparent;
     box-shadow: none;
     padding: 0 0 35px 0;
-    border-bottom: 1px solid #EEEEEE;
+    border-bottom: 1px solid #eeeeee;
     cursor: default;
     .options {
       display: flex;
@@ -179,7 +175,7 @@
         .answer-review {
           .score {
             font-size: 16px;
-            color: #4B484D;
+            color: #4b484d;
             padding-top: 5px;
             display: flex;
             justify-content: flex-end;
@@ -213,7 +209,7 @@
           .correct-answer {
             &_label {
               font-size: 16px;
-              color: #7367F0;
+              color: #7367f0;
               padding-left: 5px;
             }
           }
@@ -223,11 +219,12 @@
   }
 
   &.question-review {
-    cursor: default!important;
+    cursor: default !important;
     padding-top: 40px;
   }
 
-  &.question-onboarding, &.question-review-onboarding {
+  &.question-onboarding,
+  &.question-review-onboarding {
     cursor: default;
     box-shadow: none;
     padding: 0 6px 0 6px;
@@ -238,26 +235,26 @@
       font-size: 15px;
       color: #4b484d;
     }
-    .options{
+    .options {
       .option {
         cursor: pointer;
 
         &:hover {
           .option-circle {
-            border-color: #7367F0;
+            border-color: #7367f0;
           }
         }
       }
     }
   }
   &.question-review-onboarding {
-    .options{
+    .options {
       .option {
         cursor: default;
 
         &:hover {
           .option-circle {
-            border-color: #4B484D;
+            border-color: #4b484d;
           }
         }
       }
@@ -265,11 +262,8 @@
   }
 
   &.question-review {
-
   }
-
 }
-
 
 .survey_feedback_modal {
   &-body {

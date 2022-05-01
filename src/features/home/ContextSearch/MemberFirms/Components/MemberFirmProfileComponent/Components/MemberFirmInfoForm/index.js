@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
 import FormComponent from "./Components/FormComponent";
 
-import './styles.scss';
+import "./styles.scss";
 
 const MemberFirmInfoForm = ({
   isMemberFirmFormFieldsLoading,
@@ -11,10 +11,7 @@ const MemberFirmInfoForm = ({
   masterSchemaMemberFirmFields,
   memberFirmId,
 }) => {
-
-  const handleFieldAdd = () => {
-
-  };
+  const handleFieldAdd = () => {};
 
   return (
     <div className="member_firm_info_form">
@@ -27,7 +24,7 @@ const MemberFirmInfoForm = ({
         masterSchemaMemberFirmFields={masterSchemaMemberFirmFields}
       />
     </div>
-  )
+  );
 };
 
 export default MemberFirmInfoForm;

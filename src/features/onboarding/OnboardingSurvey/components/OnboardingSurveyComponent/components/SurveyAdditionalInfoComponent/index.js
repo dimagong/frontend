@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 import ArrowButton from "components/ArrowButton";
 
-import './styles.scss';
+import "./styles.scss";
 
-const SurveyAdditionalInfoComponent = ({
-  label,
-  text,
-  className,
-}) => {
-
+const SurveyAdditionalInfoComponent = ({ label, text, className }) => {
   const [isTextVisible, setIsTextVisible] = useState(true);
 
   const handleToggle = () => {
@@ -17,8 +12,7 @@ const SurveyAdditionalInfoComponent = ({
   };
 
   const combineLinksWithText = (textArray, linksArray) => {
-
-    const LinkTemplate = ({link}) => (
+    const LinkTemplate = ({ link }) => (
       <a
         target={"_blank"}
         rel="noopener noreferrer"
@@ -31,7 +25,8 @@ const SurveyAdditionalInfoComponent = ({
 
     return textArray.map((textFragment, index) => (
       <>
-        {textFragment}{linksArray[index] && <LinkTemplate link={linksArray[index]} />}
+        {textFragment}
+        {linksArray[index] && <LinkTemplate link={linksArray[index]} />}
       </>
     ));
   };
@@ -50,20 +45,13 @@ const SurveyAdditionalInfoComponent = ({
 
   return (
     <div className={`survey_additional_info_component ${className ? className : ""}`}>
-
       <div className="survey_additional_info_component-header">
-        <div className="survey_additional_info_component-header-label">
-          {label}
-        </div>
+        <div className="survey_additional_info_component-header-label">{label}</div>
         <ArrowButton onClick={handleToggle} direction={isTextVisible ? "up" : "down"} chevronSize={20} />
       </div>
-      {isTextVisible && (
-        <div className="survey_additional_info_component-content">
-          {handleAllLinksInText(text)}
-        </div>
-      )}
+      {isTextVisible && <div className="survey_additional_info_component-content">{handleAllLinksInText(text)}</div>}
     </div>
-  )
+  );
 };
 
 export default SurveyAdditionalInfoComponent;

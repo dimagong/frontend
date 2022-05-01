@@ -1,5 +1,5 @@
-import instance, {requestLayout} from "api";
-import qs from 'qs'
+import instance, { requestLayout } from "api";
+import qs from "qs";
 import {
   getProfilePath,
   getUsersPath,
@@ -22,28 +22,27 @@ import {
   getOnboardingsByUserPath,
   updateUserApplicationsOrder,
 } from "constants/user";
-import {addUserGroupsPath, removeUserGroupsPath} from "../../constants/user";
+import { addUserGroupsPath, removeUserGroupsPath } from "../../constants/user";
 
 const userApi = {
   async getFilter() {
-    return await requestLayout(`/api/settings`, "GET")
+    return await requestLayout(`/api/settings`, "GET");
   },
   async updateApllicationsOrder({ userId, orderedArray }) {
-    return await requestLayout(updateUserApplicationsOrder(userId), 'PUT', orderedArray)
+    return await requestLayout(updateUserApplicationsOrder(userId), "PUT", orderedArray);
   },
   async getActivities(payload) {
     try {
       const result = await instance({
-        url: '/api/user/activities',
+        url: "/api/user/activities",
         method: "GET",
         params: {
           user_id: payload.managerId,
-          page: payload.page
+          page: payload.page,
         },
       });
 
       return result.data.data;
-
     } catch (err) {
       throw err.response.data.error.errors;
     }
@@ -51,12 +50,11 @@ const userApi = {
   async getSettings() {
     try {
       const result = await instance({
-        url: '/api/settings',
+        url: "/api/settings",
         method: "GET",
       });
 
       return result.data.data;
-
     } catch (err) {
       throw err.response.data.error.errors;
     }
@@ -64,11 +62,10 @@ const userApi = {
   async getDashboardDForms() {
     try {
       const result = await instance({
-        url: '/api/user/dforms-dashboard',
+        url: "/api/user/dforms-dashboard",
         method: "GET",
       });
       return result.data.data;
-
     } catch (err) {
       throw err.response.data.error.errors;
     }
@@ -76,18 +73,17 @@ const userApi = {
   async postSettings(payload) {
     try {
       const result = await instance({
-        url: '/api/settings',
+        url: "/api/settings",
         method: "POST",
         params: {
-          key: 'dashboard',
+          key: "dashboard",
         },
         data: {
-          value: payload
-        }
+          value: payload,
+        },
       });
 
       return result.data.data;
-
     } catch (err) {
       throw err.response.data.error.errors;
     }
@@ -98,12 +94,11 @@ const userApi = {
         url: `/api/settings/${payload.id}`,
         method: "PATCH",
         data: {
-          value: payload.value
-        }
+          value: payload.value,
+        },
       });
 
       return result.data.data;
-
     } catch (err) {
       throw err.response.data.error.errors;
     }
@@ -111,49 +106,47 @@ const userApi = {
   async getDashboardData(payload, path) {
     let params = payload?.dForm?.id
       ? {
-        page: payload.page,
-        'created_at[from]': payload.from,
-        app_ids: payload.dForm?.id
-      }
+          page: payload.page,
+          "created_at[from]": payload.from,
+          app_ids: payload.dForm?.id,
+        }
       : {
-        page: payload.page,
-        'created_at[from]': payload.from,
-      }
+          page: payload.page,
+          "created_at[from]": payload.from,
+        };
 
-      if (payload?.settings?.dForm?.id) {
-        params.app_ids = payload.settings.dForm.id;
-      } else {
-        params.app_ids = [];
-      }
+    if (payload?.settings?.dForm?.id) {
+      params.app_ids = payload.settings.dForm.id;
+    } else {
+      params.app_ids = [];
+    }
 
-    ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
+    ["filter[type]", "filter[value]", "user_groups", "ability_user_ids"].forEach((item) => {
       if (payload.settings && payload.settings[item]) {
         params[item] = payload.settings[item];
       }
     });
     try {
-
       const result = await instance({
         url: `${path}?` + qs.stringify(params),
         method: "GET",
       });
 
       return result.data.data;
-
     } catch (err) {
       throw err.response.data.error.errors;
     }
   },
   async getDashboardActivity(payload) {
     let params = {
-        page: payload.page,
-        'created_at[from]': payload.from
-      };
-    ['filter[type]', 'filter[value]', 'user_groups', 'ability_user_ids'].forEach(item => {
+      page: payload.page,
+      "created_at[from]": payload.from,
+    };
+    ["filter[type]", "filter[value]", "user_groups", "ability_user_ids"].forEach((item) => {
       if (payload.settings[item]) {
         params[item] = payload.settings[item];
       }
-    })
+    });
     try {
       const result = await instance({
         url: `/api/user/activities-dashboard?` + qs.stringify(params),
@@ -161,7 +154,6 @@ const userApi = {
         //params: params
       });
       return result.data.data;
-
     } catch (err) {
       throw err.response.data.error.errors;
     }
@@ -169,11 +161,10 @@ const userApi = {
   async getActivityTypes() {
     try {
       const result = await instance({
-        url: '/api/user/activity-types',
+        url: "/api/user/activity-types",
         method: "GET",
       });
       return result.data.data;
-
     } catch (err) {
       throw err.response.data.error.errors;
     }
@@ -206,7 +197,7 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async getUserById({userId}) {
+  async getUserById({ userId }) {
     try {
       const result = await instance({
         url: getUserByIdPath(userId),
@@ -230,7 +221,7 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async getOnboradingsByUser({id}) {
+  async getOnboradingsByUser({ id }) {
     try {
       const result = await instance({
         url: getOnboardingsByUserPath(id),
@@ -305,12 +296,12 @@ const userApi = {
     }
   },
 
-  async updateUserOnboardingReviewers({reviewersIds, onboardingId}) {
+  async updateUserOnboardingReviewers({ reviewersIds, onboardingId }) {
     try {
       const result = await instance({
-        url: "api/onboarding/" + onboardingId +  "/update-reviewers",
+        url: "api/onboarding/" + onboardingId + "/update-reviewers",
         method: "PUT",
-        data:  {reviewer_ids: reviewersIds}
+        data: { reviewer_ids: reviewersIds },
       });
       return result ? result.data : result;
     } catch (error) {
@@ -318,15 +309,15 @@ const userApi = {
     }
   },
   async postFilter(filter) {
-    return await requestLayout('/api/settings', "POST", {
-          key: 'user_filter',
-          value: filter.value,
-        })
+    return await requestLayout("/api/settings", "POST", {
+      key: "user_filter",
+      value: filter.value,
+    });
   },
   async patchFilter(filters) {
     return await requestLayout(`/api/settings/${filters.id}`, "PATCH", {
-          value: filters.value,
-        })
+      value: filters.value,
+    });
   },
   async deleteFilter(id) {
     try {
@@ -340,12 +331,12 @@ const userApi = {
     }
   },
 
-  async updateUserOnboardingWorkflow({workflowId, onboardingId}) {
+  async updateUserOnboardingWorkflow({ workflowId, onboardingId }) {
     try {
       const result = await instance({
-        url: "api/onboarding/" + onboardingId +  "/update-workflow",
+        url: "api/onboarding/" + onboardingId + "/update-workflow",
         method: "PUT",
-        data:  {workflow_id: workflowId}
+        data: { workflow_id: workflowId },
       });
       return result ? result.data : result;
     } catch (error) {
@@ -372,8 +363,8 @@ const userApi = {
       last_name: data.last_name,
       email: data.email,
       number: data.number,
-      notify: data.notify
-    }
+      notify: data.notify,
+    };
 
     try {
       const result = await instance({
@@ -394,7 +385,7 @@ const userApi = {
         method: "POST",
         data: payload,
       });
-      return  result ? result.data.data : result;
+      return result ? result.data.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
     }
@@ -405,7 +396,7 @@ const userApi = {
       const result = await instance({
         url: updateUserRolesPath(id),
         method: "PUT",
-        data: {roles},
+        data: { roles },
       });
 
       return result ? result.data.data : result;
@@ -413,14 +404,14 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async addUsersGroup({userId, group}) {
+  async addUsersGroup({ userId, group }) {
     try {
       const result = await instance({
         url: addUserGroupsPath(userId),
         method: "PUT",
         data: {
           group_id: group.group_id,
-          type: group.type
+          type: group.type,
         },
       });
 
@@ -429,14 +420,14 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async removeUsersGroup({userId, group}) {
+  async removeUsersGroup({ userId, group }) {
     try {
       const result = await instance({
         url: removeUserGroupsPath(userId),
         method: "PUT",
         data: {
           group_id: group.group_id,
-          type: group.type
+          type: group.type,
         },
       });
 
@@ -451,69 +442,69 @@ const userApi = {
         url: getInvitationsPath,
         method: "GET",
       });
-      return  result ? result.data.data : result;
+      return result ? result.data.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
     }
   },
-  async createInvitations({payload}) {
+  async createInvitations({ payload }) {
     try {
       const result = await instance({
         url: createInvitationsPath(payload),
         method: "POST",
       });
-      return  result ? result?.data?.data : result;
+      return result ? result?.data?.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
     }
   },
-  async deleteInvitations({payload: {managerInvitedId}}) {
+  async deleteInvitations({ payload: { managerInvitedId } }) {
     try {
       const result = await instance({
         url: deleteInvitationsPath(managerInvitedId),
         method: "DELETE",
       });
-      return  result ? result?.data?.data : result;
+      return result ? result?.data?.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
     }
   },
-  async revokeInvitations({payload: {invitationId}}) {
+  async revokeInvitations({ payload: { invitationId } }) {
     try {
       const result = await instance({
         url: revokeInvitationsPath(invitationId),
         method: "PUT",
       });
-      return  result ? result?.data?.data : result;
+      return result ? result?.data?.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
     }
   },
-  async getInvitation({payload: {invitationId}}) {
+  async getInvitation({ payload: { invitationId } }) {
     try {
       const result = await instance({
         url: getInvitationPath(invitationId),
         method: "GET",
       });
-      return  result ? result?.data?.data : result;
+      return result ? result?.data?.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
     }
   },
-  async sendInvitationAccept({data}) {
+  async sendInvitationAccept({ data }) {
     try {
       const result = await instance({
         url: sendInvitationAcceptPath,
         method: "POST",
-        data
+        data,
       });
-      return  result ? result?.data?.data : result;
+      return result ? result?.data?.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
     }
   },
 
-  async userAbilityAllow (data) {
+  async userAbilityAllow(data) {
     try {
       const result = await instance({
         url: "api/ability/allow",
@@ -527,7 +518,7 @@ const userApi = {
     }
   },
 
-  async userAbilityDisallow (data) {
+  async userAbilityDisallow(data) {
     try {
       const result = await instance({
         url: "api/ability/disallow",
@@ -541,8 +532,7 @@ const userApi = {
     }
   },
 
-  async addUserOrganization ({id, orgId, type}) {
-
+  async addUserOrganization({ id, orgId, type }) {
     try {
       const result = await instance({
         url: `api/user/${id}/groups/add`,
@@ -550,7 +540,7 @@ const userApi = {
         data: {
           group_id: orgId,
           type: type,
-        }
+        },
       });
 
       return result.data.data;
@@ -559,7 +549,7 @@ const userApi = {
     }
   },
 
-  async removeUserOrganization ({userId, group_id, type}) {
+  async removeUserOrganization({ userId, group_id, type }) {
     try {
       await instance({
         url: `api/user/${userId}/groups/remove`,
@@ -567,16 +557,14 @@ const userApi = {
         data: {
           group_id,
           type,
-        }
-      })
+        },
+      });
     } catch (err) {
       throw err.response.data.error.errors;
     }
-
   },
 
-  async getUserOrganizations({payload}) {
-
+  async getUserOrganizations({ payload }) {
     try {
       const result = await instance({
         url: `api/organization/user/${payload}`,
@@ -614,6 +602,5 @@ const userApi = {
       return err;
     }
   },
-
-  };
+};
 export default userApi;

@@ -9,114 +9,107 @@ export default {
   default: {
     type: "string",
     title: "Some Title",
-    default: '',
-    reference: {...referenceObject}
+    default: "",
+    reference: { ...referenceObject },
   },
   text: {
     type: "string",
     title: "Some Title",
-    default: '',
-    reference: {...referenceObject}
+    default: "",
+    reference: { ...referenceObject },
   },
   reference: {
     type: Constants.FIELD_TYPE_REFERENCE,
     title: "Reference",
     field_id: null,
     value_id: null,
-    default: '',
-    reference: {...referenceObject}
+    default: "",
+    reference: { ...referenceObject },
   },
   textarea: {
     type: "string",
-    format: 'textarea',
+    format: "textarea",
     title: "Some Title",
-    default: '',
-    reference: {...referenceObject}
+    default: "",
+    reference: { ...referenceObject },
   },
   longText: {
     type: "string",
-    format: 'longText',
+    format: "longText",
     title: "Some Title",
-    default: '',
-    reference: {...referenceObject}
+    default: "",
+    reference: { ...referenceObject },
   },
   boolean: {
     type: "boolean",
     title: "Some Title",
-    reference: {...referenceObject}
+    reference: { ...referenceObject },
   },
   fileList: {
     type: "array",
     title: "A list of files",
     items: {
       type: "string",
-      format: "data-url"
+      format: "data-url",
     },
-    reference: {...referenceObject}
+    reference: { ...referenceObject },
   },
   [Constants.FIELD_TYPE_HELP_TEXT]: {
     title: "",
     description: "help text",
     type: Constants.RJSF_FIELD_TYPE_HELP_TEXT,
-    reference: {...referenceObject}
+    reference: { ...referenceObject },
   },
   [Constants.FIELD_TYPE_RESOURCE]: {
     title: "",
     resource_manager_field_id: null,
-    action: 'default',
+    action: "default",
     description: "resource",
     type: Constants.RJSF_FIELD_TYPE_RESOURCE,
-    reference: {...referenceObject}
+    reference: { ...referenceObject },
   },
   number: {
     type: "number",
     title: "Some Title",
-    default: '',
-    reference: {...referenceObject}
+    default: "",
+    reference: { ...referenceObject },
   },
   file: {
     title: "Some Title",
     type: "string",
     format: "data-url",
-    reference: {...referenceObject}
+    reference: { ...referenceObject },
   },
   date: {
     type: "string",
     format: "date-time",
-    reference: {...referenceObject}
+    reference: { ...referenceObject },
   },
   select: {
-    "type": "string",
-    "title": "Enum",
-    "enum": [
-      "test1",
-      "test2"
-    ],
-    reference: {...referenceObject}
+    type: "string",
+    title: "Enum",
+    enum: ["test1", "test2"],
+    reference: { ...referenceObject },
   },
   multiSelect: {
-    "type": "array",
-    "uniqueItems": true,
-    "items": {
-      "title": "Color",
-      "type": "string",
-      "anyOf": [
+    type: "array",
+    uniqueItems: true,
+    items: {
+      title: "Color",
+      type: "string",
+      anyOf: [
         {
-          "type": "string",
-          "enum": [
-            "value1"
-          ],
-          "title": "key1"
+          type: "string",
+          enum: ["value1"],
+          title: "key1",
         },
         {
-          "type": "string",
-          "enum": [
-            "value2"
-          ],
-          "title": "key2"
-        }
-      ]
+          type: "string",
+          enum: ["value2"],
+          title: "key2",
+        },
+      ],
     },
-    reference: {...referenceObject}
-  }
+    reference: { ...referenceObject },
+  },
 };

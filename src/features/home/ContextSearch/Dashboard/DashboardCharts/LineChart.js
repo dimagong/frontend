@@ -1,17 +1,16 @@
-import React, {useEffect, useState} from 'react'
-import Chart from 'chart.js/auto';
-import {getChartConfig} from "./chartConfigs";
-import {getChartData} from "./chartData";
-import {useSelector} from "react-redux";
-import {selectDashboardDForms} from "../../../../../app/selectors/userSelectors";
+import React, { useEffect, useState } from "react";
+import Chart from "chart.js/auto";
+import { getChartConfig } from "./chartConfigs";
+import { getChartData } from "./chartData";
+import { useSelector } from "react-redux";
+import { selectDashboardDForms } from "../../../../../app/selectors/userSelectors";
 
-
-const LineChart = ({ settings, data, chartId, title}) => {
-  let isSmall= settings.state === 'small'
-  let daysNumber = settings.daysNumber
+const LineChart = ({ settings, data, chartId, title }) => {
+  let isSmall = settings.state === "small";
+  let daysNumber = settings.daysNumber;
   const [chartIsCreated, setChartIsCreated] = useState(false);
   const [currChart, setCurrChart] = useState(null);
-  const dashboardDForms = useSelector(selectDashboardDForms)
+  const dashboardDForms = useSelector(selectDashboardDForms);
 
   const dataToShow = getChartData({
     data: {
@@ -21,9 +20,9 @@ const LineChart = ({ settings, data, chartId, title}) => {
       isSmall: isSmall,
       dForm: settings.dForm?.name,
       dFormIds: settings.dForm?.id,
-      dashboardDForms: dashboardDForms
+      dashboardDForms: dashboardDForms,
     },
-    type: title.toLowerCase()
+    type: title.toLowerCase(),
   });
 
   const config = getChartConfig({
@@ -33,43 +32,34 @@ const LineChart = ({ settings, data, chartId, title}) => {
       title: title,
       daysNumber: daysNumber,
       dForm: settings.dForm?.name,
-      titleName: settings.titleName
+      titleName: settings.titleName,
     },
-    type: title.toLowerCase()
+    type: title.toLowerCase(),
   });
-
 
   useEffect(() => {
     if (!chartIsCreated && data) {
-      let myChart = new Chart(
-        document.getElementById(chartId),
-        config
-      );
-      setCurrChart(myChart)
-      setChartIsCreated(true)
+      let myChart = new Chart(document.getElementById(chartId), config);
+      setCurrChart(myChart);
+      setChartIsCreated(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
     if (currChart && data) {
-      currChart.destroy()
-      let myChart = new Chart(
-        document.getElementById(chartId),
-        config
-      );
-      setCurrChart(myChart)
+      currChart.destroy();
+      let myChart = new Chart(document.getElementById(chartId), config);
+      setCurrChart(myChart);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, settings.state, settings?.dForm, settings.titleName])
+  }, [data, settings.state, settings?.dForm, settings.titleName]);
 
-  return ( <div style={{width: '100%', height: "auto", position: 'relative', zIndex: 10}}>
-    <canvas
-      id={chartId}
-      className={'dashboard-chart'}
-    />
-  </div>
-  )
-}
+  return (
+    <div style={{ width: "100%", height: "auto", position: "relative", zIndex: 10 }}>
+      <canvas id={chartId} className={"dashboard-chart"} />
+    </div>
+  );
+};
 
 export default LineChart;

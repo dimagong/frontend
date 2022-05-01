@@ -8,7 +8,7 @@
     z-index: 10;
   }
 
-  &_header{
+  &_header {
     padding-bottom: 40px;
     display: flex;
     justify-content: space-between;
@@ -19,7 +19,7 @@
       font-size: 34px;
       color: #707070;
       padding-right: 30px;
-      border-right: 1px solid rgba(112,112,112, 0.5);
+      border-right: 1px solid rgba(112, 112, 112, 0.5);
     }
     &_survey-name {
       display: flex;
@@ -34,10 +34,9 @@
       cursor: pointer;
     }
   }
-
 }
 
-@media screen and (max-width: 1200px){
+@media screen and (max-width: 1200px) {
   .context-template {
     &_header {
       &_title {

@@ -5,7 +5,7 @@ export const notificationsPath = "/onboarding/notifications";
 export const dformsPath = "/onboarding/dforms";
 export const workflowsPath = "/onboarding/workflows";
 export const userManagmentPath = "/user-management";
-export const userManagmentOptionsPath = id => `${userManagmentPath}?${new URLSearchParams({ user_id: id })}`;
+export const userManagmentOptionsPath = (id) => `${userManagmentPath}?${new URLSearchParams({ user_id: id })}`;
 export const invitationPath = "/invitation-accept/:invitationId";
 export const onboardingProcessPath = "/onboarding-process";
 export const surveysDesignerExplore = "/surveys/:id";

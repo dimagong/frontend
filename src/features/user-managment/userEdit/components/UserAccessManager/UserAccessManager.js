@@ -7,7 +7,7 @@ import UserAccessManagerNoUsers from "./UserAccessManagerNoUsers";
 const userToOption = (user) => ({ label: user.full_name, value: user });
 
 const UserAccessManager = ({ active = [], potential = [], error, errors, onChange }) => {
-  const options = React.useMemo(() => (potential.map(userToOption)), [potential]);
+  const options = React.useMemo(() => potential.map(userToOption), [potential]);
 
   if (error) {
     return <UserAccessManagerNoUsers />;

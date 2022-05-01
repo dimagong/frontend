@@ -4,11 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectWorkflow } from "app/selectors/onboardingSelectors";
 import WorkflowTrigger from "./WorkflowTrigger";
 
-import onboardingSlice from 'app/slices/onboardingSlice';
+import onboardingSlice from "app/slices/onboardingSlice";
 
-const {
-  setWorkflowTriggers,
-} = onboardingSlice.actions;
+const { setWorkflowTriggers } = onboardingSlice.actions;
 
 const WorkflowTriggers = ({ context }) => {
   const workflow = useSelector(selectWorkflow);
@@ -20,9 +18,7 @@ const WorkflowTriggers = ({ context }) => {
         ...workflow.triggers,
         {
           actions: [],
-          id: workflow.triggers.length
-            ? workflow.triggers[workflow.triggers.length - 1].id + 1
-            : 0,
+          id: workflow.triggers.length ? workflow.triggers[workflow.triggers.length - 1].id + 1 : 0,
         },
       ])
     );

@@ -66,7 +66,11 @@ const MSHTreeField = (props) => {
     <MSHTreeNode
       className={className}
       index={index}
-      name={<div className="tree-hierarchy__name-text w-25" title={name}>{name}</div>}
+      name={
+        <div className="tree-hierarchy__name-text w-25" title={name}>
+          {name}
+        </div>
+      }
       date={date}
       selected={selected}
       isLocked={isLocked}

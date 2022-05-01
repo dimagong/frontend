@@ -59,7 +59,7 @@ const MemberFirmEditUsers = ({
 
   const applyFilter = (filter, managers) => {
     let newManagers = managers;
-    let currRolesFilter = filter.selectedFilters.find(item => item.name === 'roles');
+    let currRolesFilter = filter.selectedFilters.find((item) => item.name === "roles");
     if (currRolesFilter.selected.length !== 0) {
       newManagers = managers.filter((item) => {
         return currRolesFilter.selected.find(

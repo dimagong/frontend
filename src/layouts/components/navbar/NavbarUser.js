@@ -1,13 +1,8 @@
-import React from "react"
-import {
-  UncontrolledDropdown,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-} from "reactstrap"
-import * as Icon from "react-feather"
+import React from "react";
+import { UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle } from "reactstrap";
+import * as Icon from "react-feather";
 
-const UserDropdown = props => {
+const UserDropdown = (props) => {
   return (
     <DropdownMenu right>
       {/* <DropdownItem
@@ -29,7 +24,7 @@ const UserDropdown = props => {
       {/* <DropdownItem divider /> */}
       <DropdownItem
         tag="a"
-        onClick={e => {
+        onClick={(e) => {
           props.logoutWithJWT();
         }}
       >
@@ -37,33 +32,24 @@ const UserDropdown = props => {
         <span className="align-middle">Log Out</span>
       </DropdownItem>
     </DropdownMenu>
-  )
-}
+  );
+};
 
-const NavbarUser = ({userImg, userName, email, ...props}) => (
+const NavbarUser = ({ userImg, userName, email, ...props }) => (
+  <ul className="nav navbar-nav navbar-nav-user float-right">
+    <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
+      <DropdownToggle tag="a" className="nav-link dropdown-user-link">
+        <div className="user-nav d-sm-flex d-none">
+          <span className="user-name">{userName}</span>
+          <span className="user-status">{email}</span>
+        </div>
+        <span data-tour="user">
+          <img src={userImg} className="round" height="40" width="40" alt="avatar" />
+        </span>
+      </DropdownToggle>
+      <UserDropdown {...props} />
+    </UncontrolledDropdown>
+  </ul>
+);
 
-      <ul className="nav navbar-nav navbar-nav-user float-right">
-        <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
-          <DropdownToggle tag="a" className="nav-link dropdown-user-link">
-            <div className="user-nav d-sm-flex d-none">
-              <span className="user-name">
-                {userName}
-              </span>
-              <span className="user-status">{email}</span>
-            </div>
-            <span data-tour="user">
-              <img
-                src={userImg}
-                className="round"
-                height="40"
-                width="40"
-                alt="avatar"
-              />
-            </span>
-          </DropdownToggle>
-          <UserDropdown {...props} />
-        </UncontrolledDropdown>
-      </ul>
-    )
-
-export default NavbarUser
+export default NavbarUser;

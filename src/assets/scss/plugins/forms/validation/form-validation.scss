@@ -9,29 +9,34 @@
 // Overrides user variable
 @import "../../../core/variables/components-variables";
 
-.form-group{
+.form-group {
   // when an issue or error occured
-  &.issue, &.error{
-    .help-block, .help-inline{
+  &.issue,
+  &.error {
+    .help-block,
+    .help-inline {
       color: $danger;
     }
-    input, select, textarea{
+    input,
+    select,
+    textarea {
       border-color: $danger;
     }
-    input:focus, select:focus, textarea:focus{
+    input:focus,
+    select:focus,
+    textarea:focus {
       border-color: $danger;
       -webkit-box-shadow: 0 3 10px 0 $danger;
-         -moz-box-shadow: 0 3 10px 0 $danger;
-              box-shadow: 0 3 10px 0 $danger;
+      -moz-box-shadow: 0 3 10px 0 $danger;
+      box-shadow: 0 3 10px 0 $danger;
     }
   }
 
-
   // Validation Message Scss
-  .help-block ul{
+  .help-block ul {
     padding-left: 0;
 
-    li{
+    li {
       list-style-type: none;
       font-size: 0.875rem;
       padding-top: 0.2rem;

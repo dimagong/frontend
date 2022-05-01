@@ -24,19 +24,19 @@
       padding-top: 40px;
       padding-bottom: 20px;
       .preview-action-buttons {
-
-
         position: absolute;
         bottom: -48px;
         left: 50%;
         transform: translate(-50%);
 
         button.btn.btn-secondary {
-          background-color: #f0f0f0!important;
+          background-color: #f0f0f0 !important;
           color: #707070;
           margin-right: 10px;
-          &:hover, &:active, &:focus {
-            color: #707070!important;
+          &:hover,
+          &:active,
+          &:focus {
+            color: #707070 !important;
           }
         }
       }
@@ -77,8 +77,6 @@
     }
   }
   &__card {
-
-
     .card-body {
       padding: 0;
       .card-text {
@@ -98,15 +96,15 @@
     margin: 0;
   }
   .pagination .page-item.active .page-link {
-    background-color: #7367F0!important;
+    background-color: #7367f0 !important;
   }
   .nav-item {
     .nav-link {
       color: #000000;
     }
     .nav-link:hover {
-        color: #000000;
-      }
+      color: #000000;
+    }
   }
   .card {
     margin: 0;
@@ -143,18 +141,22 @@
     justify-content: space-between;
     padding: 10px 5px;
     .add-icon {
-      padding: 5px!important;
-      background-color: #7367F0!important;
+      padding: 5px !important;
+      background-color: #7367f0 !important;
       border-radius: 25px;
-      &:hover, &:active, &:focus {
+      &:hover,
+      &:active,
+      &:focus {
         border-radius: 25px;
       }
     }
     .hide-context-icon {
-      background-color: #7367F0!important;
+      background-color: #7367f0 !important;
       border-radius: 25px;
       min-height: 38px;
-      &:hover, &:active, &:focus {
+      &:hover,
+      &:active,
+      &:focus {
         border-radius: 25px;
       }
     }
@@ -169,7 +171,7 @@
     .pagination-arrow {
       border-radius: 25px;
       padding: 0;
-      background-color: #f0f0f0!important;
+      background-color: #f0f0f0 !important;
       &:first-child {
         margin-right: 16px;
       }

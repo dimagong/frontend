@@ -434,8 +434,7 @@ select.form-control {
     }
     .vx-radio--border {
       background: transparent;
-      border: $vs-checkbox-radio-border-width solid
-        $vs-checkbox-radio-border-color;
+      border: $vs-checkbox-radio-border-width solid $vs-checkbox-radio-border-color;
     }
     .vx-radio--circle {
       opacity: 0;

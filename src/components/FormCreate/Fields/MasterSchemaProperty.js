@@ -1,21 +1,18 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
-import {Col, FormGroup, Row, Alert} from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Col, FormGroup, Row, Alert } from "reactstrap";
 import masterSchemaService from "services/masterSchema.service";
-import {isEmpty, isObject} from 'lodash'
-import { CustomSelect } from './Parts/CustomSelect'
+import { isEmpty, isObject } from "lodash";
+import { CustomSelect } from "./Parts/CustomSelect";
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
 
-const {
-  getMasterSchemaFieldsRequest,
-}  = appSlice.actions;
+const { getMasterSchemaFieldsRequest } = appSlice.actions;
 
 export default function MasterSchemaProperty(props) {
-
   const [organizations, setOrganizations] = useState([]);
   const [currentField, setCurrentField] = useState({});
-  const [searchableValue, setSearchableValue] = useState('');
+  const [searchableValue, setSearchableValue] = useState("");
 
   const dispatch = useDispatch();
 
@@ -31,13 +28,13 @@ export default function MasterSchemaProperty(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentField]);
 
-  const convertMasterSchemaToFieldsList = (node, list, path = '') => {
+  const convertMasterSchemaToFieldsList = (node, list, path = "") => {
     for (let field of node.fields) {
-      list[field.id] = path + '.' + field.name;
+      list[field.id] = path + "." + field.name;
     }
 
     for (let group of node.groups) {
-      convertMasterSchemaToFieldsList(group, list, path + '.' + group.name);
+      convertMasterSchemaToFieldsList(group, list, path + "." + group.name);
     }
   };
 
@@ -49,30 +46,29 @@ export default function MasterSchemaProperty(props) {
       }
       return {
         organization: organization,
-        masterSchemaFields: list
+        masterSchemaFields: list,
       };
     });
   };
 
   const initCurrentStateField = (formattedOrganizations) => {
-
     if (!isEmpty(props.fieldId)) {
       const formattedOrganization = formattedOrganizations.find((formattedOrganization) => {
         return parseInt(props.fieldId) in formattedOrganization.masterSchemaFields;
       });
 
-      let label = 'MasterSchema';
-      label += '.' + formattedOrganization.masterSchemaFields[props.fieldId];
+      let label = "MasterSchema";
+      label += "." + formattedOrganization.masterSchemaFields[props.fieldId];
 
       setCurrentField({
         label: label,
-        value: props.fieldId
+        value: props.fieldId,
       });
     }
   };
 
   const getOrganizations = async () => {
-    if(!props.organizations.length) return;
+    if (!props.organizations.length) return;
 
     const organization = props.organizations[0];
     const response = await masterSchemaService.getByOrganization(organization.type, organization.id);
@@ -101,19 +97,23 @@ export default function MasterSchemaProperty(props) {
       return formattedOrganization.organization.master_schema?.root?.name;
     });
 
-    if(!formattedOrganization) return [];
+    if (!formattedOrganization) return [];
 
-    const searchValue = searchableValue ? searchableValue : '<newField>';
-    return [{
-      label: 'MasterSchema.' + formattedOrganization.organization.master_schema.root.name + '.Unapproved.' + searchValue, value: {
-        isNew: true,
-        name: searchableValue,
-        organization: formattedOrganization.organization
-      }
-    }]
+    const searchValue = searchableValue ? searchableValue : "<newField>";
+    return [
+      {
+        label:
+          "MasterSchema." + formattedOrganization.organization.master_schema.root.name + ".Unapproved." + searchValue,
+        value: {
+          isNew: true,
+          name: searchableValue,
+          organization: formattedOrganization.organization,
+        },
+      },
+    ];
   };
 
-  const createUnapprovedField = async (organization, fieldName) =>{
+  const createUnapprovedField = async (organization, fieldName) => {
     try {
       const response = await masterSchemaService.createUnapprovedField(organization.id, organization.type, fieldName);
       const field = response.data.data;
@@ -126,14 +126,13 @@ export default function MasterSchemaProperty(props) {
       const masterSchemaFields = transformToSelectFields(formattedOrganizations);
 
       masterSchemaFields.some((masterSchemaField) => {
-        if(parseInt(masterSchemaField.value) ===  parseInt(field.id)) {
+        if (parseInt(masterSchemaField.value) === parseInt(field.id)) {
           setCurrentField(masterSchemaField);
           dispatch(getMasterSchemaFieldsRequest());
           return true;
         }
         return false;
       });
-
     } catch (exception) {
       console.log(exception);
     }
@@ -142,13 +141,13 @@ export default function MasterSchemaProperty(props) {
   const transformToSelectFields = (organizationList) => {
     let masterSchemaFields = organizationList.map((formattedOrganization) => {
       return Object.keys(formattedOrganization.masterSchemaFields).map((masterSchemaFieldId) => {
-        let label = 'MasterSchema';
-        label += '.' + formattedOrganization.masterSchemaFields[masterSchemaFieldId];
+        let label = "MasterSchema";
+        label += "." + formattedOrganization.masterSchemaFields[masterSchemaFieldId];
         return {
           label: label,
-          value: masterSchemaFieldId
-        }
-      })
+          value: masterSchemaFieldId,
+        };
+      });
     });
 
     if (masterSchemaFields.length) {
@@ -156,48 +155,50 @@ export default function MasterSchemaProperty(props) {
     }
 
     return masterSchemaFields;
-  }
+  };
 
   const getFieldsSelect = () => {
     const masterSchemaFields = transformToSelectFields(organizations);
-    return <FormGroup>
-
-      <CustomSelect
-        id="select-ms-property"
-        options={masterSchemaFields.concat(getAddNewOption())}
-        value={masterSchemaFields.find(next => parseInt(next.value) === parseInt(props.fieldId))}
-        onChange={(event) => {
-          if(isObject(event.value) && event.value.isNew) {
-            if(!searchableValue) {
+    return (
+      <FormGroup>
+        <CustomSelect
+          id="select-ms-property"
+          options={masterSchemaFields.concat(getAddNewOption())}
+          value={masterSchemaFields.find((next) => parseInt(next.value) === parseInt(props.fieldId))}
+          onChange={(event) => {
+            if (isObject(event.value) && event.value.isNew) {
+              if (!searchableValue) {
+                return;
+              }
+              if (window.confirm(`Are you sure you want to create a field: "${event.label}"?`)) {
+                const { name, organization } = event.value;
+                createUnapprovedField(organization, name);
+                return;
+              }
               return;
             }
-            if(window.confirm(`Are you sure you want to create a field: "${event.label}"?`)) {
-              const {name, organization} = event.value;
-              createUnapprovedField(organization, name);
-              return;
-            }
-            return;
-          }
-          setCurrentField(event);
-        }}
-        invalid={props.invalid}
-        onInputChange={(event) => {
-          setSearchableValue(event);
-        }}
-      />
-      {
-        !props.invalid ? null : <Alert className="mt-1" color="danger">
-          {props.errorMsg}
-        </Alert>
-      }
-    </FormGroup>
+            setCurrentField(event);
+          }}
+          invalid={props.invalid}
+          onInputChange={(event) => {
+            setSearchableValue(event);
+          }}
+        />
+        {!props.invalid ? null : (
+          <Alert className="mt-1" color="danger">
+            {props.errorMsg}
+          </Alert>
+        )}
+      </FormGroup>
+    );
   };
 
-  return <Row>
-    <Col md="12">
-      <label for="select-ms-property">Property</label>
-      {getFieldsSelect()}
-    </Col>
-  </Row>
-
+  return (
+    <Row>
+      <Col md="12">
+        <label for="select-ms-property">Property</label>
+        {getFieldsSelect()}
+      </Col>
+    </Row>
+  );
 }

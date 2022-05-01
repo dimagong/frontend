@@ -3,7 +3,7 @@
   margin-left: 110px;
 
   &-grade_time {
-    font-family: 'Montserrat';
+    font-family: "Montserrat";
     font-weight: 500;
     font-size: 18px;
   }
@@ -15,7 +15,7 @@
 
     &.stats-loading {
       .onboarding_survey_result-stats_stat_value {
-        border-color: #dedede!important;
+        border-color: #dedede !important;
       }
     }
     &_stat {
@@ -31,7 +31,7 @@
         align-items: center;
       }
       &_label {
-        color: #4B484D;
+        color: #4b484d;
         padding-top: 9px;
         text-align: center;
         font-size: 14px;

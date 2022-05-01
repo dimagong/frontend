@@ -20,22 +20,15 @@ import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { selectWorkflow } from "app/selectors/onboardingSelectors";
 import { selectNotificationsAndWorkFlowsContext } from "app/selectors/layoutSelector";
 import { useDispatch, useSelector } from "react-redux";
-import WorkflowTriggers from './WorkflowTriggers'
-import {initWorkflow} from './constants'
+import WorkflowTriggers from "./WorkflowTriggers";
+import { initWorkflow } from "./constants";
 
-import onboardingSlice from 'app/slices/onboardingSlice';
-import appSlice from 'app/slices/appSlice'
+import onboardingSlice from "app/slices/onboardingSlice";
+import appSlice from "app/slices/appSlice";
 
-const {
-  setWorkflow,
-  setWorkflowGroups,
-} = onboardingSlice.actions;
+const { setWorkflow, setWorkflowGroups } = onboardingSlice.actions;
 
-const {
-  setContext,
-  createWorkflowRequest,
-  updateWorkflowRequest,
-} = appSlice.actions;
+const { setContext, createWorkflowRequest, updateWorkflowRequest } = appSlice.actions;
 
 const WorkflowForm = ({ workflowModalType }) => {
   const context = useSelector(selectNotificationsAndWorkFlowsContext);
@@ -44,7 +37,7 @@ const WorkflowForm = ({ workflowModalType }) => {
   const dispatch = useDispatch();
 
   const closeWorkflow = () => {
-    dispatch(setContext(null))
+    dispatch(setContext(null));
     dispatch(setWorkflow(null));
   };
 
@@ -56,25 +49,25 @@ const WorkflowForm = ({ workflowModalType }) => {
     e.preventDefault();
     switch (workflowModalType) {
       case "Edit":
-        dispatch(updateWorkflowRequest(workflow))
+        dispatch(updateWorkflowRequest(workflow));
 
         break;
       case "Create":
-      dispatch(createWorkflowRequest({...workflow, context}));
-      break;
+        dispatch(createWorkflowRequest({ ...workflow, context }));
+        break;
       default:
-        return <></>
+        return <></>;
     }
-  }
+  };
 
   useEffect(() => {
-    if(workflowModalType === "Create") {
-      dispatch(setWorkflow(initWorkflow))
+    if (workflowModalType === "Create") {
+      dispatch(setWorkflow(initWorkflow));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [workflowModalType])
+  }, [workflowModalType]);
 
-  if(!workflow) return null;
+  if (!workflow) return null;
 
   return (
     <Row>
@@ -84,11 +77,7 @@ const WorkflowForm = ({ workflowModalType }) => {
             <CardTitle className="font-weight-bold">
               {workflow.name} <Badge color="info">{workflowModalType}</Badge>
             </CardTitle>
-            <X
-              size={15}
-              className="cursor-pointer"
-              onClick={closeWorkflow}
-            />
+            <X size={15} className="cursor-pointer" onClick={closeWorkflow} />
           </CardHeader>
           <CardBody className="card-top-padding">
             <Row className="mt-2">
@@ -101,7 +90,7 @@ const WorkflowForm = ({ workflowModalType }) => {
                     id="mobileVertical"
                     placeholder="Name"
                     value={name}
-                    onChange={(event) => handleWorkflow({name: event.target.value})}
+                    onChange={(event) => handleWorkflow({ name: event.target.value })}
                   />
                   <FormFeedback />
                 </FormGroup>
@@ -115,22 +104,19 @@ const WorkflowForm = ({ workflowModalType }) => {
                     id="mobileVertical"
                     placeholder="description"
                     value={description}
-                    onChange={(event) => handleWorkflow({description: event.target.value})}
+                    onChange={(event) => handleWorkflow({ description: event.target.value })}
                   />
                   <FormFeedback />
                 </FormGroup>
               </Col>
               <Col>
-                <MultiSelect groups={prepareSelectGroups(workflow.groups)} setGroups={setWorkflowGroups}/>
+                <MultiSelect groups={prepareSelectGroups(workflow.groups)} setGroups={setWorkflowGroups} />
               </Col>
               <WorkflowTriggers context={context} />
 
               <Col md="12">
                 <div className="d-flex justify-content-center flex-wrap mt-2">
-                  <Button
-                    color="primary d-flex-left"
-                    onClick={submitWorkflow}
-                  >
+                  <Button color="primary d-flex-left" onClick={submitWorkflow}>
                     {workflowModalType === "Create" ? "Create" : "Save"}
                   </Button>
                 </div>

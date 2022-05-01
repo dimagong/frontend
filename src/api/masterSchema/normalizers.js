@@ -3,7 +3,7 @@ import _ from "lodash/fp";
 export const normalizeNode = (node, { isContainable, parent = null, children = {} }) => {
   const serialised = {
     ...node,
-    ...(parent && !isContainable ? { isMemberFirmField: parent.isMemberFirmGroup, } : {}),
+    ...(parent && !isContainable ? { isMemberFirmField: parent.isMemberFirmGroup } : {}),
     nodeId: `${isContainable ? "group" : "field"}${node.id}`,
     parentNodeId: parent ? parent.nodeId : null,
     path: parent ? [...parent.path, node.name] : [node.name],

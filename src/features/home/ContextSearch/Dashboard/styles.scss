@@ -64,33 +64,33 @@
   }
   .change-chart-days-smaller {
     top: 3px;
-    font-size: smaller!important;
+    font-size: smaller !important;
     .chart-days {
-      width: 21px!important;
-      height: 15px!important;
-      line-height: 14px!important;
+      width: 21px !important;
+      height: 15px !important;
+      line-height: 14px !important;
     }
   }
 
   .dashboard-activities-open {
-    height: 370px!important;
-    padding-top: 10px!important;
-    padding-bottom: 10px!important;
+    height: 370px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
   }
 
   .dashboard-activities-closed {
     overflow: hidden;
-    height: 0!important;
-    padding-top: 0!important;
-    padding-bottom: 0!important;
-    margin: 0!important;
+    height: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
   }
 
   .dashboard-activities {
-    -moz-transition: height .5s;
-    -o-transition: height .5s;
-    -webkit-transition: height .5s;
-    transition: height .5s;
+    -moz-transition: height 0.5s;
+    -o-transition: height 0.5s;
+    -webkit-transition: height 0.5s;
+    transition: height 0.5s;
     height: 0;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -111,7 +111,7 @@
     .filter-tab {
       margin-left: 30px;
       font-size: small;
-      cursor: unset!important;
+      cursor: unset !important;
       border-color: #9aa9b7 !important;
       background-color: #b8c2cc !important;
       z-index: 100;
@@ -123,19 +123,19 @@
         cursor: pointer;
         float: right;
         margin-left: 10px;
-        background: #FFFFFF!important;
+        background: #ffffff !important;
         padding: 0 1px 1px 1px;
         font-size: small;
         border-radius: 10px;
         svg {
-          color: #95989a!important;
+          color: #95989a !important;
           font-size: small;
         }
       }
     }
     span h5 {
       font-weight: bold;
-      color: #707070
+      color: #707070;
     }
     .dashboard-titles {
       position: absolute;
@@ -146,12 +146,12 @@
     }
 
     .users-activities-title {
-        position: absolute;
-        margin-top: 15px;
-        left: 25px;
-        color: #707070;
-        font-weight: bold;
-      }
+      position: absolute;
+      margin-top: 15px;
+      left: 25px;
+      color: #707070;
+      font-weight: bold;
+    }
     .arrow-close-activities {
       position: absolute;
       right: 18px;
@@ -167,12 +167,11 @@
       color: #707070;
       font-weight: bold;
     }
-
   }
 }
 
 .combined-dashboard-component-filtered {
-  overflow: unset!important;
+  overflow: unset !important;
 }
 
 .combined-dashboard-component-small {
@@ -188,10 +187,10 @@
 .combined-dashboard-component {
   overflow: hidden;
   background: white;
-  -moz-transition: width .5s;
-  -o-transition: width .5s;
-  -webkit-transition: width .5s;
-  transition: width .5s;
+  -moz-transition: width 0.5s;
+  -o-transition: width 0.5s;
+  -webkit-transition: width 0.5s;
+  transition: width 0.5s;
   margin-bottom: 1%;
   display: inline-block;
   vertical-align: top;
@@ -217,10 +216,12 @@
     float: right;
     .add-icon {
       padding: 5px !important;
-      background-color: #7367F0 !important;
+      background-color: #7367f0 !important;
       border-radius: 25px;
 
-      &:hover, &:active, &:focus {
+      &:hover,
+      &:active,
+      &:focus {
         border-radius: 25px;
       }
     }
@@ -234,7 +235,7 @@
 .edit-chart-icon {
   cursor: pointer;
   svg {
-    color: #aeaeae
+    color: #aeaeae;
   }
 }
 
@@ -243,66 +244,66 @@
     width: 110px;
   }
   .rename-button {
-    background-color: #7367F0 !important;
+    background-color: #7367f0 !important;
     float: right;
     width: 110px;
   }
 }
 
 .dashboard-action:hover {
-      border-right: #7367F0 solid 3px;
-    }
-    .dashboard-action {
-      position: relative;
-      font-size: smaller;
+  border-right: #7367f0 solid 3px;
+}
+.dashboard-action {
+  position: relative;
+  font-size: smaller;
+  cursor: pointer;
+  height: 40px;
+  line-height: 40px;
+  margin: 10px 21px 10px 0;
+  //box-shadow: 0 2px 5px #dfdfdf;
+  border: none;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  border-right: #9aa9b7 solid 3px;
+  .action-user-avatar {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+  }
+  .action-user-name {
+    margin-left: 50px;
+    width: 120px;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    span {
       cursor: pointer;
-      height: 40px;
-      line-height: 40px;
-      margin: 10px 21px 10px 0;
-      //box-shadow: 0 2px 5px #dfdfdf;
-      border: none;
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-      border-right: #9aa9b7 solid 3px;
-      .action-user-avatar {
-        width: 40px;
-        height: 40px;
-        position: absolute;
-        top: 0;
-      }
-      .action-user-name {
-        margin-left: 50px;
-        width: 120px;
-        display: inline-block;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        span {
-          cursor: pointer;
-        }
-        overflow: hidden;
-      }
-      .action-user-org {
-        display: inline-block;
-        width: 75px;
-        overflow: hidden;
-      }
-      .action-user-description {
-        display: inline-block;
-        //width: 40%;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-      .action-user-time {
-        display: inline-block;
-        float: right;
-        padding-right: 10px;
-      }
-      .action-user {
-        padding-right: 10px;
-        display: inline-block;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        width: 130px;
-      }
     }
+    overflow: hidden;
+  }
+  .action-user-org {
+    display: inline-block;
+    width: 75px;
+    overflow: hidden;
+  }
+  .action-user-description {
+    display: inline-block;
+    //width: 40%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .action-user-time {
+    display: inline-block;
+    float: right;
+    padding-right: 10px;
+  }
+  .action-user {
+    padding-right: 10px;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 130px;
+  }
+}

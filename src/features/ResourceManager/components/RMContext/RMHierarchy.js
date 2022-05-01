@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const RMHierarchy = () => {
-
-};
+const RMHierarchy = () => {};
 
 RMHierarchy.propTypes = {};
 

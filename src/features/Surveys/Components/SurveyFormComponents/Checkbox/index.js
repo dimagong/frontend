@@ -1,9 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import './styles.scss';
+import "./styles.scss";
 
 const Checkbox = ({ name, label, className, checked, onChange }) => {
-
   return (
     <div className={`survey-checkbox-component ${className && className}`}>
       <input
@@ -13,14 +12,11 @@ const Checkbox = ({ name, label, className, checked, onChange }) => {
         id={name}
         type="checkbox"
       />
-      <label
-        className="survey-checkbox-component_label"
-        htmlFor={name}
-      >
+      <label className="survey-checkbox-component_label" htmlFor={name}>
         {label}
       </label>
     </div>
-  )
+  );
 };
 
 export default Checkbox;

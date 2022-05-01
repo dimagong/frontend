@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 import appSlice from "../../../../../../../../../../app/slices/appSlice";
-import {useDispatch, useSelector} from "react-redux";
-import {createLoadingSelector} from "app/selectors/loadingSelector";
-import {
-  Spinner,
-  Button,
-} from 'reactstrap';
+import { useDispatch, useSelector } from "react-redux";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { Spinner, Button } from "reactstrap";
 
 import LoadingButton from "components/LoadingButton";
 import AddFieldModal from "./Components/AddFieldModal";
@@ -15,14 +12,11 @@ import formComponents from "../../../../../formComponents";
 
 import { selectError } from "app/selectors";
 
-import {Plus} from "react-feather";
-import './styles.scss';
-import {toast} from "react-toastify";
+import { Plus } from "react-feather";
+import "./styles.scss";
+import { toast } from "react-toastify";
 
-const {
-  updateMemberFirmFormValuesRequest,
-  addFieldToMemberFirmRequest,
-} = appSlice.actions;
+const { updateMemberFirmFormValuesRequest, addFieldToMemberFirmRequest } = appSlice.actions;
 
 const FormComponent = ({
   isMemberFirmFormFieldsLoading,
@@ -57,8 +51,8 @@ const FormComponent = ({
         ...formData[id],
         value,
         error: "",
-      }
-    })
+      },
+    });
   };
 
   const handleError = (id, error) => {
@@ -67,30 +61,33 @@ const FormComponent = ({
       [id]: {
         ...formData[id],
         error,
-      }
-    })
+      },
+    });
   };
 
   const isFormValid = async (fields) => {
     let isFormValid = true;
 
-    await Promise.all(fields.map( async (field) => {
-      await validationSchemas[field.type]
-        .validate(field.value, {context: {isRequired: field.isRequired}})
-        .catch((err) => {
-          handleError(field.id, err.message)
+    await Promise.all(
+      fields.map(async (field) => {
+        await validationSchemas[field.type]
+          .validate(field.value, { context: { isRequired: field.isRequired } })
+          .catch((err) => {
+            handleError(field.id, err.message);
+          });
+
+        const isValid = await validationSchemas[field.type].isValid(field.value, {
+          context: { isRequired: field.isRequired },
         });
 
-      const isValid = await validationSchemas[field.type].isValid(field.value, {context: {isRequired: field.isRequired}});
-
-      if (!isValid) isFormValid = false;
-    }));
+        if (!isValid) isFormValid = false;
+      })
+    );
 
     return isFormValid;
   };
 
   const handleSave = async () => {
-
     const fields = Object.values(formData);
 
     const isValid = await isFormValid(fields);
@@ -101,16 +98,18 @@ const FormComponent = ({
       return;
     }
 
-    const dataToSave = (Object.values(formData).map((field) => ({master_schema_field_id: field.id, value: field.value})));
+    const dataToSave = Object.values(formData).map((field) => ({
+      master_schema_field_id: field.id,
+      value: field.value,
+    }));
 
-    dispatch(updateMemberFirmFormValuesRequest({memberFirmId: memberFirmId, data: {fields: dataToSave}}))
+    dispatch(updateMemberFirmFormValuesRequest({ memberFirmId: memberFirmId, data: { fields: dataToSave } }));
   };
 
   const initForm = () => {
     const initialData = {};
 
     [...memberFirmFormFields].map((formField) => {
-
       // Handle different default values for different field types here
       const defaultValue = "";
 
@@ -132,17 +131,17 @@ const FormComponent = ({
   };
 
   const handleAddFieldModalClose = () => {
-    setIsAddFieldModalVisible(false)
+    setIsAddFieldModalVisible(false);
   };
 
   const handleAddFieldSubmit = (data) => {
-    dispatch(addFieldToMemberFirmRequest({memberFirmId: memberFirmId, data}))
+    dispatch(addFieldToMemberFirmRequest({ memberFirmId: memberFirmId, data }));
   };
 
   // Init form
   useEffect(() => {
-    if(memberFirmFormFields.length) {
-      initForm()
+    if (memberFirmFormFields.length) {
+      initForm();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberFirmFormFields]);
@@ -151,12 +150,11 @@ const FormComponent = ({
     <div className="member_firm-form_component">
       {isMemberFirmFormFieldsLoading && !isSubmitProceeding && !memberFirmFormFields.length ? (
         <div className="member_firm-form_component-loader">
-          <Spinner size={40} color="primary"/>
+          <Spinner size={40} color="primary" />
         </div>
       ) : (
         <div className="member_firm-form_component-fields">
           {memberFirmFormFields.map((formField) => {
-
             const FormFieldElement = formComponents[formField.type];
             const fieldId = formField.master_schema_field_id;
 
@@ -172,13 +170,17 @@ const FormComponent = ({
                 disabled={isSubmitProceeding}
                 error={formData[fieldId]?.error || ""}
               />
-            )
+            );
           })}
 
           <div className={`member_firm-form_component-fields-actions ${onFieldAdd ? "with_add_button" : ""}`}>
             {onFieldAdd && (
-              <Button onClick={handleAddFieldModalOpen} className="member_firm-form_component-fields-actions-add_field" color="primary">
-                <Plus size={28}/>
+              <Button
+                onClick={handleAddFieldModalOpen}
+                className="member_firm-form_component-fields-actions-add_field"
+                color="primary"
+              >
+                <Plus size={28} />
               </Button>
             )}
 
@@ -203,7 +205,7 @@ const FormComponent = ({
         error={error}
       />
     </div>
-  )
+  );
 };
 
 export default FormComponent;

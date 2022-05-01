@@ -2,7 +2,7 @@
   font-family: Montserrat;
   &_label {
     font-size: 22px;
-    color: #4B484D;
+    color: #4b484d;
     font-weight: 500;
     margin-bottom: 5px;
   }
@@ -12,7 +12,7 @@
     border: 1px solid #707070;
     border-radius: 5px;
     outline: none;
-    color: #4B484D;
+    color: #4b484d;
     font-family: Montserrat;
     font-weight: 400;
     padding: 10px 12px;
@@ -21,7 +21,7 @@
     &::-webkit-scrollbar {
       display: none;
     }
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }

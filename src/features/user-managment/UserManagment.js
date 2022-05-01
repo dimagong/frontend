@@ -1,45 +1,32 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardBody,
-  Row,
-  Col,
-  Nav,
-  NavItem,
-  NavLink,
-  TabContent,
-  TabPane,
-} from "reactstrap";
+import { Card, CardBody, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 import classnames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import { selectManager, selectManagers } from "app/selectors";
 import { navItemFactory } from "./contants";
-import UserEdit from './userEdit/UserEdit'
+import UserEdit from "./userEdit/UserEdit";
 import { useRouter } from "hooks/useRouter";
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
 
-const {
-  getUserManagment,
-  setManager,
-} = appSlice.actions;
+const { getUserManagment, setManager } = appSlice.actions;
 
 const UserManagment = () => {
   const manager = useSelector(selectManager);
   const managers = useSelector(selectManagers);
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("1");
-  const {query} = useRouter()
+  const { query } = useRouter();
 
   useEffect(() => {
     !managers.length && dispatch(getUserManagment());
   }, []);
 
   useEffect(() => {
-    if(query.user_id && managers.length){
-      dispatch(setManager(managers.find( manager => manager.id === +query.user_id)))
+    if (query.user_id && managers.length) {
+      dispatch(setManager(managers.find((manager) => manager.id === +query.user_id)));
     }
-  }, [managers])
+  }, [managers]);
 
   return (
     <Row className="user-managment">
@@ -65,7 +52,7 @@ const UserManagment = () => {
             </Nav>
             <TabContent activeTab={activeTab}>
               {navItemFactory.map(({ component }, index) => (
-                <TabPane tabId={`${index + 1}`}>{component({activeTab})}</TabPane>
+                <TabPane tabId={`${index + 1}`}>{component({ activeTab })}</TabPane>
               ))}
             </TabContent>
           </CardBody>

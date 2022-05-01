@@ -1,15 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import FieldLabel from '../FieldLabel'
+import FieldLabel from "../FieldLabel";
 
-import './styles.scss'
+import "./styles.scss";
 
-const TextAreaWidget = ({value, onChange, options, label, disabled, required}) => {
-
-
+const TextAreaWidget = ({ value, onChange, options, label, disabled, required }) => {
   return (
     <div>
-      {options.label !== false ? <FieldLabel label={label} required={required}/> : null}
+      {options.label !== false ? <FieldLabel label={label} required={required} /> : null}
       <textarea
         placeholder={"Enter your answer here"}
         value={value}
@@ -20,7 +18,7 @@ const TextAreaWidget = ({value, onChange, options, label, disabled, required}) =
         // required={required}
       />
     </div>
-  )
-}
+  );
+};
 
 export default TextAreaWidget;

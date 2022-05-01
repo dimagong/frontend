@@ -6,7 +6,8 @@ const filterGroups = _.filter((node) => node.isContainable);
 const filterFields = _.filter((node) => !node.isContainable);
 
 const useMasterSchemaSelectStrategies = (nodes, toggle) => {
-  const singleGroupAndMultipleFields = React.useCallback((node) => {
+  const singleGroupAndMultipleFields = React.useCallback(
+    (node) => {
       const groups = filterGroups(nodes);
 
       // Unable to select field simultaneously with groups
@@ -20,21 +21,29 @@ const useMasterSchemaSelectStrategies = (nodes, toggle) => {
 
         return toggle([node, ...groups, ...fields]);
       }
-    }, [nodes, toggle]);
+    },
+    [nodes, toggle]
+  );
 
-  const onlySingleField = React.useCallback((node) => {
-    const fields = filterFields(nodes);
+  const onlySingleField = React.useCallback(
+    (node) => {
+      const fields = filterFields(nodes);
 
-    // Unable to select field simultaneously with groups
-    if (!node.isContainable) {
-      return toggle([node, ...fields]);
-    }
-  }, [nodes, toggle]);
+      // Unable to select field simultaneously with groups
+      if (!node.isContainable) {
+        return toggle([node, ...fields]);
+      }
+    },
+    [nodes, toggle]
+  );
 
-  return React.useMemo(() => ({
-    [useMasterSchemaSelectable.Stratagy.OnlySingleField]: onlySingleField,
-    [useMasterSchemaSelectable.Stratagy.SingleGroupAndMultipleFields]: singleGroupAndMultipleFields,
-  }), [onlySingleField, singleGroupAndMultipleFields]);
+  return React.useMemo(
+    () => ({
+      [useMasterSchemaSelectable.Stratagy.OnlySingleField]: onlySingleField,
+      [useMasterSchemaSelectable.Stratagy.SingleGroupAndMultipleFields]: singleGroupAndMultipleFields,
+    }),
+    [onlySingleField, singleGroupAndMultipleFields]
+  );
 };
 
 export const useMasterSchemaSelectable = (strategyId) => {

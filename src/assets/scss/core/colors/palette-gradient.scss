@@ -31,11 +31,7 @@
         background: map-get(($color), "gradient-bg");
         color: #fff;
         @if (color-function($color_name, "base") != null) {
-          @include gradient-directional(
-            map-get(($color), "base"),
-            rgba(map-get(($color), "base"), 0.5),
-            30deg
-          );
+          @include gradient-directional(map-get(($color), "base"), rgba(map-get(($color), "base"), 0.5), 30deg);
         }
         &:hover,
         &:active {
@@ -44,11 +40,7 @@
       }
 
       .gradient-light-#{$color-name} {
-        background: linear-gradient(
-          30deg,
-          $color-value 0%,
-          map-get(($color), "gradient-light") 100%
-        );
+        background: linear-gradient(30deg, $color-value 0%, map-get(($color), "gradient-light") 100%);
         color: #fff;
         &:hover,
         &:active {

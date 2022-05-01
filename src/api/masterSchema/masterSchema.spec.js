@@ -24,7 +24,7 @@ const server = setupServer();
 const mockResponse = (url, data) => {
   const fullUrl = new URL(url, process.env.REACT_APP_API_URL).toString();
 
-  return server.use(rest.get(fullUrl, (req, res, ctx) => res(ctx.json({ data }))))
+  return server.use(rest.get(fullUrl, (req, res, ctx) => res(ctx.json({ data }))));
 };
 
 describe("masterSchemaApi", () => {

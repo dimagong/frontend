@@ -1,6 +1,5 @@
 const colorMultiSelect = "#007bff"; //#7367f0
 
-
 export const prepareNotNestedSelectOptions = (groups) => {
   let groupsMultiSelect = [];
 
@@ -15,12 +14,11 @@ export const prepareNotNestedSelectOptions = (groups) => {
       // label: `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`,
       label: `${corporation.name}`,
       color: colorMultiSelect,
-    }
+    };
   });
 
   return groupsMultiSelect;
 };
-
 
 export const prepareSelectOptions = (groups) => {
   let groupsMultiSelect = [];
@@ -79,29 +77,25 @@ export const prepareSelectGroups = (groups) => {
 };
 
 export const getGroupName = (groups, groupId, groupType) => {
-
-
   for (let corporation of groups) {
-    if (groupType === 'corporation' && groupId === corporation.id) {
-      return `${corporation.name}`
+    if (groupType === "corporation" && groupId === corporation.id) {
+      return `${corporation.name}`;
       // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})`
     }
 
     for (let network of corporation.networks) {
-      if (groupType === 'network' && groupId === network.id) {
-        return `${network.name}`
+      if (groupType === "network" && groupId === network.id) {
+        return `${network.name}`;
         // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})`
       }
 
       for (let memberFirm of network.member_firms) {
-        if (groupType === 'member_firm' && groupId === memberFirm.id) {
-          return `${memberFirm.name}`
+        if (groupType === "member_firm" && groupId === memberFirm.id) {
+          return `${memberFirm.name}`;
           // return `${admin.name}(${admin.id})->${corporation.name}(${corporation.id})->${network.name}(${network.id})->${memberFirm.name}(${memberFirm.id})`
         }
       }
-
     }
-
   }
 
   return null;
@@ -132,7 +126,6 @@ export const normalizeNotNestedGroups = (groups) => {
 
   return groupsMultiSelect;
 };
-
 
 export const normalizeGroups = (groups) => {
   let groupsMultiSelect = [];
@@ -173,6 +166,6 @@ export const normalizeGroups = (groups) => {
 export const prepareSelectReviewers = (data) => {
   return data.map((value) => ({
     value: value,
-    label: value["first_name"] + " " + value["last_name"]
+    label: value["first_name"] + " " + value["last_name"],
   }));
 };

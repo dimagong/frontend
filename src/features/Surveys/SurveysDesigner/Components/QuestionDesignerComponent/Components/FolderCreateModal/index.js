@@ -1,24 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectError } from "app/selectors";
 import * as yup from "yup";
 import { toast } from "react-toastify";
-import {usePrevious} from "hooks/common";
+import { usePrevious } from "hooks/common";
 
 import { Input } from "features/Surveys/Components/SurveyFormComponents";
 
 import appSlice from "app/slices/appSlice";
 import CustomModal from "../../../../../../../components/CustomModal";
 
-const {
-  createFolderRequest,
-} = appSlice.actions;
+const { createFolderRequest } = appSlice.actions;
 
 const createFolderValidationSchema = yup.string().trim().required("Please, provide folder name");
 
-const FolderCreateModal = ({title, isOpen, onClose }) => {
-
+const FolderCreateModal = ({ title, isOpen, onClose }) => {
   const dispatch = useDispatch();
 
   const [folderName, setFolderName] = useState("");
@@ -36,22 +33,21 @@ const FolderCreateModal = ({title, isOpen, onClose }) => {
   };
 
   const handleSubmit = async () => {
-    const isValid = await createFolderValidationSchema
-                          .validate(folderName)
-                          .catch((err) => { toast.error(err.message) });
+    const isValid = await createFolderValidationSchema.validate(folderName).catch((err) => {
+      toast.error(err.message);
+    });
 
     if (!isValid) return;
 
-    dispatch(createFolderRequest({name: folderName}))
+    dispatch(createFolderRequest({ name: folderName }));
   };
 
   useEffect(() => {
     if (!error && prevLoadingValue === true && !isLoading) {
-      handleModalClose()
+      handleModalClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
-
 
   return (
     <CustomModal
@@ -69,7 +65,7 @@ const FolderCreateModal = ({title, isOpen, onClose }) => {
         onChange={(e) => setFolderName(e.target.value)}
       />
     </CustomModal>
-  )
+  );
 };
 
 export default FolderCreateModal;

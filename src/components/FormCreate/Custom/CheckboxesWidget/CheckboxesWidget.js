@@ -1,10 +1,10 @@
-import {Check} from "react-feather";
+import { Check } from "react-feather";
 import React from "react";
 import rfdc from "rfdc";
 
-import FieldLabel from '../FieldLabel'
+import FieldLabel from "../FieldLabel";
 
-import './styles.scss'
+import "./styles.scss";
 
 const clone = rfdc();
 
@@ -17,13 +17,10 @@ export const CustomCheckbox = ({
   disabled,
   onClick,
   onChange,
-  defaultChecked
+  defaultChecked,
 }) => {
-
   return (
-    <div
-      className={`custom-checkbox-container ${className ? className : ""}`}
-    >
+    <div className={`custom-checkbox-container ${className ? className : ""}`}>
       <input
         type="checkbox"
         defaultChecked={defaultChecked}
@@ -36,17 +33,15 @@ export const CustomCheckbox = ({
       />
 
       <span className="custom-checkbox_check">
-        <span className="custom-checkbox_check-icon">
-          {icon}
-        </span>
+        <span className="custom-checkbox_check-icon">{icon}</span>
       </span>
 
       <label htmlFor={label} className="custom-checkbox_label">
         {label}
       </label>
     </div>
-  )
-}
+  );
+};
 
 export function CheckboxesWidget(props) {
   let onChange = (option) => {
@@ -54,7 +49,7 @@ export function CheckboxesWidget(props) {
 
     let indexCheckbox = values.indexOf(option.value);
     if (indexCheckbox !== -1) {
-      values.splice(indexCheckbox, 1)
+      values.splice(indexCheckbox, 1);
     } else {
       values.push(option.value);
     }
@@ -68,16 +63,16 @@ export function CheckboxesWidget(props) {
         return (
           <CustomCheckbox
             color="primary"
-            icon={<Check className="vx-icon" size={16}/>}
-            onChange={event => props.onChange(onChange(option))}
+            icon={<Check className="vx-icon" size={16} />}
+            onChange={(event) => props.onChange(onChange(option))}
             label={option.label}
             disabled={props.disabled}
             required={props.required}
             checked={props.value.indexOf(option.value) !== -1}
             className={"multiselect-checkboxes"}
           />
-        )
+        );
       })}
     </div>
   );
-};
+}

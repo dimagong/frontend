@@ -12,13 +12,15 @@ export const selectMasterSchemaUnapprovedFields = (msId) => _.get(`app.masterSch
 
 export const selectAllMasterSchemaGroups = (msId) => _.get(`app.masterSchema.groups.${msId}`);
 
-export const selectAllMasterSchemaGroupsAsOptions = (msId) => _.pipe(
-  _.getOr([], `app.masterSchema.groups.${msId}`),
-  _.map((group) => ({ label: group.name, value: group }))
-);
+export const selectAllMasterSchemaGroupsAsOptions = (msId) =>
+  _.pipe(
+    _.getOr([], `app.masterSchema.groups.${msId}`),
+    _.map((group) => ({ label: group.name, value: group }))
+  );
 
 export const selectMasterSchemaUsers = (state) => state?.app?.masterSchema.users;
 
 export const selectMasterSchemaFields = (state) => state?.app?.masterSchema.fields;
 
-export const selectRelatedApplications = fieldId => state => state?.app?.masterSchema?.related_applications[fieldId];
+export const selectRelatedApplications = (fieldId) => (state) =>
+  state?.app?.masterSchema?.related_applications[fieldId];

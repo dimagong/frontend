@@ -1,10 +1,7 @@
-import React, {useState, useEffect} from "react";
-import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd"
-import {
-  ListGroup,
-  ListGroupItem
-} from "reactstrap"
-import {PropertyNameByIdAsTextNode} from "../Parts/PropertyNameById";
+import React, { useState, useEffect } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { ListGroup, ListGroupItem } from "reactstrap";
+import { PropertyNameByIdAsTextNode } from "../Parts/PropertyNameById";
 
 const reorderKeysObjectResult = (list, startIndex, endIndex) => {
   const listKeys = Object.keys(list);
@@ -13,7 +10,7 @@ const reorderKeysObjectResult = (list, startIndex, endIndex) => {
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
   const resultObject = {};
-  result.forEach(keyValue => resultObject[keyValue] = list[keyValue]);
+  result.forEach((keyValue) => (resultObject[keyValue] = list[keyValue]));
 
   return resultObject;
 };
@@ -25,16 +22,15 @@ const reorderKeysArrayResult = (list, startIndex, endIndex) => {
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
 
-  return result.map(keyValue => list[keyValue]);
+  return result.map((keyValue) => list[keyValue]);
 };
 
 function Ordering(props) {
-  const [direction] = useState('vertical');
+  const [direction] = useState("vertical");
   const [deviceWidth, setDeviceWidth] = useState(window.width);
   const [items, setItems] = useState(props.items);
 
   const modalContainer = React.createRef();
-
 
   const updateWidth = () => {
     setDeviceWidth(modalContainer.current.scrollWidth);
@@ -42,7 +38,6 @@ function Ordering(props) {
 
   useEffect(() => {
     updateWidth();
-
   });
 
   useEffect(() => {
@@ -50,37 +45,22 @@ function Ordering(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
-
   const onDragEnd = (result) => {
     if (!result.destination) {
-      return
+      return;
     }
-
 
     if (props.isItemsArray) {
-      setItems(reorderKeysArrayResult(
-        items,
-        result.source.index,
-        result.destination.index,
-        result.draggableId
-      ));
+      setItems(reorderKeysArrayResult(items, result.source.index, result.destination.index, result.draggableId));
     } else {
-      setItems(reorderKeysObjectResult(
-        items,
-        result.source.index,
-        result.destination.index,
-        result.draggableId
-      ));
+      setItems(reorderKeysObjectResult(items, result.source.index, result.destination.index, result.draggableId));
     }
-
   };
 
   const renderOrderingObject = () => {
-    return props.filterControlled && !props.filterKey ?
-      null :
-      Object.keys(items)
-        .map((key, index) => {
-
+    return props.filterControlled && !props.filterKey
+      ? null
+      : Object.keys(items).map((key, index) => {
           // some optional filtered settings props
           if (props.filterItems) {
             if (props.filterKey && props.filterKey !== props.filterItems[key]) {
@@ -101,10 +81,10 @@ function Ordering(props) {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     onClick={() => {
-                      props.onChangeFilterKey && props.onChangeFilterKey(key)
+                      props.onChangeFilterKey && props.onChangeFilterKey(key);
                     }}
                   >
-                    <ListGroupItem style={{width: deviceWidth}} tag="div" active={props.selfKey === key}>
+                    <ListGroupItem style={{ width: deviceWidth }} tag="div" active={props.selfKey === key}>
                       {/*{ props.isMsField ? <PropertyNameByIdAsTextNode fieldId={key}/> : key}*/}
                       {key}
                     </ListGroupItem>
@@ -112,16 +92,14 @@ function Ordering(props) {
                 )}
               </Draggable>
             </ListGroup>
-          )
-        })
+          );
+        });
   };
 
   const renderOrderingArray = () => {
-    return props.filterControlled && !props.filterKey ?
-      null :
-      items
-        .map((key, index) => {
-
+    return props.filterControlled && !props.filterKey
+      ? null
+      : items.map((key, index) => {
           // some optional filter settings
           if (props.filterItems) {
             if (props.filterKey && props.filterKey !== props.filterItems[key]) {
@@ -142,18 +120,18 @@ function Ordering(props) {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     onClick={() => {
-                      props.onChangeFilterKey && props.onChangeFilterKey(key)
+                      props.onChangeFilterKey && props.onChangeFilterKey(key);
                     }}
                   >
-                    <ListGroupItem style={{width: deviceWidth}} tag="div" active={props.selfKey === key}>
-                      { props.isMsField ? <PropertyNameByIdAsTextNode fieldId={key}/> : key}
+                    <ListGroupItem style={{ width: deviceWidth }} tag="div" active={props.selfKey === key}>
+                      {props.isMsField ? <PropertyNameByIdAsTextNode fieldId={key} /> : key}
                     </ListGroupItem>
                   </div>
                 )}
               </Draggable>
             </ListGroup>
-          )
-        })
+          );
+        });
   };
 
   return (
@@ -161,14 +139,8 @@ function Ordering(props) {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable" direction={direction}>
           {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className="d-flex flex-sm-wrap draggable-cards"
-            >
-              {
-                props.isItemsArray ? renderOrderingArray() : renderOrderingObject()
-              }
+            <div ref={provided.innerRef} {...provided.droppableProps} className="d-flex flex-sm-wrap draggable-cards">
+              {props.isItemsArray ? renderOrderingArray() : renderOrderingObject()}
               {provided.placeholder}
             </div>
           )}

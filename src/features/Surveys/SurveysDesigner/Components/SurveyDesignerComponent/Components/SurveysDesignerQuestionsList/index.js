@@ -1,32 +1,41 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState, useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
 
-import Question from 'features/Surveys/Components/Question'
+import Question from "features/Surveys/Components/Question";
 
-import _ from 'lodash'
+import _ from "lodash";
 
-import {
-  Button,
-} from 'reactstrap'
+import { Button } from "reactstrap";
 
-import {
-  ChevronUp,
-  ChevronDown,
-} from 'react-feather'
+import { ChevronUp, ChevronDown } from "react-feather";
 
-import './styles.scss'
+import "./styles.scss";
 
-const SurveyDesignerQuestionListItem = ({ question, handleReorder, questionsCount, handleRemoveQuestionFromSurvey }) => {
-
+const SurveyDesignerQuestionListItem = ({
+  question,
+  handleReorder,
+  questionsCount,
+  handleRemoveQuestionFromSurvey,
+}) => {
   const questionOrder = question.latest_version.question.order;
 
   return (
     <div className="survey-designer_question-list_item">
       <div className="survey-designer_question-list_item_order-buttons">
-        <button onClick={() => {handleReorder(question, questionOrder - 1)}} disabled={questionOrder === 0}>
+        <button
+          onClick={() => {
+            handleReorder(question, questionOrder - 1);
+          }}
+          disabled={questionOrder === 0}
+        >
           <ChevronUp size={26} color="white" />
         </button>
-        <button onClick={() => {handleReorder(question, questionOrder + 1)}} disabled={(questionOrder + 1) === questionsCount}>
+        <button
+          onClick={() => {
+            handleReorder(question, questionOrder + 1);
+          }}
+          disabled={questionOrder + 1 === questionsCount}
+        >
           <ChevronDown size={26} color="white" />
         </button>
       </div>
@@ -38,38 +47,44 @@ const SurveyDesignerQuestionListItem = ({ question, handleReorder, questionsCoun
         handleRemoveQuestionFromSurvey={handleRemoveQuestionFromSurvey}
       />
     </div>
-
-  )
+  );
 };
 
-
 const SurveysDesignerQuestionListNoQuestionsComponent = ({ isQuestionSelected, onQuestionInsert }) => {
-
   return (
     <div className="survey-designer_no-questions">
       {isQuestionSelected ? (
-        <Button className="px-5" color="primary" onClick={() => {onQuestionInsert(0)}}>
+        <Button
+          className="px-5"
+          color="primary"
+          onClick={() => {
+            onQuestionInsert(0);
+          }}
+        >
           Insert here
         </Button>
       ) : (
         <div className="survey-designer_no-questions">
-          There are no questions in this survey currently.
-          Please, design a new question or click on existing question
+          There are no questions in this survey currently. Please, design a new question or click on existing question
           to select and insert question in this survey
         </div>
       )}
     </div>
-  )
+  );
 };
 
-const SurveysDesignerQuestionsList = ({ questions = [], isQuestionSelected, onQuestionInsert, onQuestionsReorder, handleRemoveQuestionFromSurvey }) => {
-
+const SurveysDesignerQuestionsList = ({
+  questions = [],
+  isQuestionSelected,
+  onQuestionInsert,
+  onQuestionsReorder,
+  handleRemoveQuestionFromSurvey,
+}) => {
   const questionListRef = useRef(null);
 
   const [breakPoints, setBreakPoints] = useState([]);
 
   const [insertButtonPosition, setInsertButtonPosition] = useState(-1);
-
 
   // Return distance between top edge of questions list and top edge of app
   const getListTopOffset = () => {
@@ -83,23 +98,21 @@ const SurveysDesignerQuestionsList = ({ questions = [], isQuestionSelected, onQu
     let listOffsetTop;
 
     if (listTop < 0) {
-      listOffsetTop = Math.abs(containerTopOffset) + parseInt(wrapperTopMargin, 10) + listTop
+      listOffsetTop = Math.abs(containerTopOffset) + parseInt(wrapperTopMargin, 10) + listTop;
     } else {
-      listOffsetTop = parseInt(wrapperTopMargin, 10) - Math.abs(containerTopOffset) + listTop
+      listOffsetTop = parseInt(wrapperTopMargin, 10) - Math.abs(containerTopOffset) + listTop;
     }
 
     return Math.round(listOffsetTop);
   };
 
   const handleInsertButtonAppearance = (e) => {
-
     const pageScrollY = document.getElementsByClassName("scrollbar-container")[0].firstChild.scrollTop;
 
     const y = e.pageY + pageScrollY;
 
-    if(breakPoints.length) {
+    if (breakPoints.length) {
       for (let i = 0; i < breakPoints.length; i++) {
-
         let bp = breakPoints[i];
 
         if (y < bp && i === 0) {
@@ -113,21 +126,20 @@ const SurveysDesignerQuestionsList = ({ questions = [], isQuestionSelected, onQu
           break;
         }
       }
-
     }
   };
 
   const debouncedMouseMoveHandler = _.debounce(handleInsertButtonAppearance, 10);
 
   const handleQuestionInsert = () => {
-    onQuestionInsert(questions && !questions.length ? 0 : insertButtonPosition)
+    onQuestionInsert(questions && !questions.length ? 0 : insertButtonPosition);
   };
 
   const sortQuestions = (questions) => {
     const orderPath = "latest_version.question.order";
 
     //sort changes the original array, so we make copy to prevent state mutation;
-    return [...questions].sort((a, b) => _.get(a, orderPath) - _.get(b, orderPath))
+    return [...questions].sort((a, b) => _.get(a, orderPath) - _.get(b, orderPath));
   };
 
   const getBreakpointsForInsertButton = (elements) => {
@@ -146,20 +158,21 @@ const SurveysDesignerQuestionsList = ({ questions = [], isQuestionSelected, onQu
       const elementOffsetFromPageTopEdge = el.offsetTop - 100; // distance between page top edge and element top edge
 
       // Get middle of the question item
-      const breakPoint = (height / 2) + elementOffsetFromPageTopEdge + listTopOffset;
-      result.push(breakPoint)
+      const breakPoint = height / 2 + elementOffsetFromPageTopEdge + listTopOffset;
+      result.push(breakPoint);
     }
 
     // Last point is the bottom edge of our list
     result.push(ReactDOM.findDOMNode(questionListRef.current).offsetHeight + listTopOffset);
 
-    setBreakPoints(result)
+    setBreakPoints(result);
   };
 
-
   useEffect(() => {
-    const elements = ReactDOM.findDOMNode(questionListRef.current).getElementsByClassName("survey-designer_question-list_item");
-    getBreakpointsForInsertButton(elements)
+    const elements = ReactDOM.findDOMNode(questionListRef.current).getElementsByClassName(
+      "survey-designer_question-list_item"
+    );
+    getBreakpointsForInsertButton(elements);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questions, isQuestionSelected]);
 
@@ -167,8 +180,14 @@ const SurveysDesignerQuestionsList = ({ questions = [], isQuestionSelected, onQu
     <div
       ref={questionListRef}
       className="survey-designer_question-list"
-      onMouseMove={isQuestionSelected ?
-        (e) => {e.persist(); debouncedMouseMoveHandler(e)} : () => {}}
+      onMouseMove={
+        isQuestionSelected
+          ? (e) => {
+              e.persist();
+              debouncedMouseMoveHandler(e);
+            }
+          : () => {}
+      }
     >
       {questions && !questions.length ? (
         <SurveysDesignerQuestionListNoQuestionsComponent
@@ -204,7 +223,7 @@ const SurveysDesignerQuestionsList = ({ questions = [], isQuestionSelected, onQu
         </>
       )}
     </div>
-  )
+  );
 };
 
 export default SurveysDesignerQuestionsList;

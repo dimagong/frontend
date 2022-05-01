@@ -1,16 +1,15 @@
 .sections {
   display: flex;
   &-nav {
-
     display: flex;
     flex-direction: column;
-    border-right: 2px solid #7367F0!important;
+    border-right: 2px solid #7367f0 !important;
     -webkit-box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
     -moz-box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
     box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
     margin-right: 3px;
     &_item {
-      padding-right: 0!important;
+      padding-right: 0 !important;
       margin-bottom: 23px;
       display: flex;
       flex-direction: row;
@@ -27,8 +26,7 @@
       &.nav-link {
         display: grid;
         grid-template-columns: 139px 33px 26px;
-        padding-left: 0!important;
-
+        padding-left: 0 !important;
       }
       &_title {
         display: flex;
@@ -46,7 +44,7 @@
 
         &.with-errors {
           span {
-            color: #dc3545!important;
+            color: #dc3545 !important;
           }
         }
         //display: none;
@@ -60,7 +58,7 @@
         align-items: center;
         justify-content: center;
         border-radius: 100%;
-        color: #707070!important;
+        color: #707070 !important;
         background-color: #dcd9f8;
         position: relative;
 
@@ -71,7 +69,7 @@
           transform: translate(-50%, -50%);
         }
       }
-      &_delimiter{
+      &_delimiter {
         width: 26px;
         height: 1px;
         //align-self: center;
@@ -84,8 +82,18 @@
       }
     }
   }
-  .tab-pane.active { animation-name: fadeIn; animation-duration: 300ms; animation-timing-function: linear; }
+  .tab-pane.active {
+    animation-name: fadeIn;
+    animation-duration: 300ms;
+    animation-timing-function: linear;
+  }
 }
 
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

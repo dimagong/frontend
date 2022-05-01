@@ -10,7 +10,7 @@ const notificationApi = {
       const result = await instance({
         url: notificationPath,
         method: "POST",
-        data
+        data,
       });
 
       return result.data.data;
@@ -23,7 +23,7 @@ const notificationApi = {
       const result = await instance({
         url: `${notificationPath}/${data.id}`,
         method: "PUT",
-        data
+        data,
       });
 
       return result.data.data;
@@ -43,7 +43,6 @@ const notificationApi = {
       throw err;
     }
   },
-
 };
 
 export default notificationApi;

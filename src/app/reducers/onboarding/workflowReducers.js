@@ -1,20 +1,20 @@
-const setWorkflows = (state , {payload}) => {
+const setWorkflows = (state, { payload }) => {
   state.workflow.workflows = payload;
 };
 
-const setWorkflow = (state, {payload}) => {
+const setWorkflow = (state, { payload }) => {
   state.workflow.workflow = payload;
 };
 
-const setWorkflowGroups = (state, {payload}) => {
+const setWorkflowGroups = (state, { payload }) => {
   state.workflow.workflow.groups = payload;
 };
 
-const setWorkflowTriggers = (state, {payload}) => {
+const setWorkflowTriggers = (state, { payload }) => {
   state.workflow.workflow.triggers = payload;
 };
 
-const setAllowedUserList = (state, {payload}) => {
+const setAllowedUserList = (state, { payload }) => {
   state.workflow.allowedUserList = payload;
 };
 
@@ -23,5 +23,5 @@ export default {
   setWorkflow,
   setWorkflowGroups,
   setWorkflowTriggers,
-  setAllowedUserList
+  setAllowedUserList,
 };

@@ -19,9 +19,9 @@ const getKey = ({ nodeId }) => nodeId;
 
 const getChildren =
   (hierarchy) =>
-    ({ isContainable, fields, groups }) => {
-      return isContainable ? [...fields, ...groups].map((nodeId) => hierarchy.children[nodeId]) : [];
-    };
+  ({ isContainable, fields, groups }) => {
+    return isContainable ? [...fields, ...groups].map((nodeId) => hierarchy.children[nodeId]) : [];
+  };
 
 const creationTitle = (type) => {
   switch (type) {
@@ -99,7 +99,9 @@ const TreeHierarchy = (props) => {
     <div className="tree-hierarchy" {...wrapperAttrs}>
       <TreeRoot
         nodes={tree.items}
-        renderNodeList={({ root, index, children }) => <components.NodeList root={root} index={index} children={children} />}
+        renderNodeList={({ root, index, children }) => (
+          <components.NodeList root={root} index={index} children={children} />
+        )}
         renderNode={({ index, node: { value: node }, children }) => (
           <components.Element
             node={node}
