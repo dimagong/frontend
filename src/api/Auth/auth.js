@@ -4,6 +4,8 @@ import { loginPath, resetPasswordPath, verifyPasswordPath } from "constants/auth
 
 const authApi = {
   async login(data) {
+    // Temporary set remember_me with false while 2FA implementation is not ready
+    data = { ...data, remember_me: false };
     try {
       // await instance({
       //   url: '/sanctum/csrf-cookie',
