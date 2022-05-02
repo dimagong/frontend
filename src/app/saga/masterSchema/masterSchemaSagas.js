@@ -153,7 +153,7 @@ function* getHierarchy({ payload }) {
   try {
     const [hierarchy] = yield all([
       call(masterSchemaApi.getHierarchy, payload),
-      call(getAllMasterSchemaGroups, { payload: { masterSchemaId: payload.masterSchemaId } })
+      call(getAllMasterSchemaGroups, { payload: { masterSchemaId: payload.masterSchemaId } }),
     ]);
     yield put(getMasterSchemaHierarchySuccess({ hierarchy, masterSchemaId: payload.masterSchemaId }));
   } catch (error) {

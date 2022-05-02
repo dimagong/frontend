@@ -14,7 +14,6 @@ const roleApi = {
       throw err;
     }
   },
-
 };
 
 export default roleApi;

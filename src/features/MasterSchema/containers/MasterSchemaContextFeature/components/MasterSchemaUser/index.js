@@ -105,13 +105,11 @@ const MasterSchemaUserList = ({ field }) => {
       );
     }
 
-    return (
-      isEmpty(users) ? (
-        <h2 className="ms-nothing-was-found pt-0">No users found</h2>
-      ) : (
-        <MSUUserList users={users} />
-      )
-    )
+    return isEmpty(users) ? (
+      <h2 className="ms-nothing-was-found pt-0">No users found</h2>
+    ) : (
+      <MSUUserList users={users} />
+    );
   };
 
   return (
@@ -132,9 +130,7 @@ const MasterSchemaUserList = ({ field }) => {
       </CardHeader>
 
       <Collapse isOpen={expanded} aria-expanded={expanded.toString()}>
-        <CardBody className="pt-0 pb-1 px-0">
-          {RenderUsers()}
-        </CardBody>
+        <CardBody className="pt-0 pb-1 px-0">{RenderUsers()}</CardBody>
       </Collapse>
     </Card>
   );

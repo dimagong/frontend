@@ -75,7 +75,7 @@ const masterSchemaApi = {
       params: { hidden_groups: [1] },
     })
       .then(flatResponseData, flatResponseError)
-      .then((data) => Interfaces.MasterSchemaFlatGroupsInterface.validate(data))
+      .then((data) => Interfaces.MasterSchemaFlatGroupsInterface.validate(data));
   },
 
   getUnapprovedFields({ masterSchemaId }) {
@@ -84,7 +84,7 @@ const masterSchemaApi = {
       url: Urls.getMasterSchemaUnapprovedUrl(masterSchemaId),
     })
       .then(flatResponseData, flatResponseError)
-      .then((data) => Interfaces.MasterSchemaUnapprovedFieldsInterface.validate(data))
+      .then((data) => Interfaces.MasterSchemaUnapprovedFieldsInterface.validate(data));
   },
 
   // refactored above

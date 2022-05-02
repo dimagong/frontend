@@ -104,11 +104,6 @@ html[dir="rtl"] {
     direction: ltr;
   }
 
-  // context menu
-  .react-contexify {
-    z-index: 1031;
-  }
-
   // Email
   .email-application {
     .content-right {
@@ -117,9 +112,10 @@ html[dir="rtl"] {
           margin-left: 0;
         }
       }
-      .email-detail-header,.app-action{
-        .dropdown{
-          .dropdown-menu{
+      .email-detail-header,
+      .app-action {
+        .dropdown {
+          .dropdown-menu {
             transform: translate3d(0px, 22px, 0px) !important;
           }
         }
@@ -159,33 +155,6 @@ html[dir="rtl"] {
     }
   }
 
-  // swiper
-  .swiper-container {
-    .swiper-button-next,
-    .swiper-button-prev {
-      &:after {
-        transform: rotate(180deg);
-      }
-    }
-  }
-  .swiper-container-cube {
-    &.swiper-container-rtl {
-      .swiper-slide {
-        transform-origin: 100% 0 !important;
-      }
-    }
-  }
-
-  //slider
-  .rc-slider-tooltip {
-    right: 50%;
-    width: 30px;
-  }
-  .rc-slider-vertical {
-    .rc-slider-dot {
-      right: -1px;
-    }
-  }
   // Horizontal
   .horizontal-layout {
     .horizontal-menu-wrapper {
@@ -205,7 +174,6 @@ html[dir="rtl"] {
             left: auto !important;
             right: 100% !important;
             top: 0 !important;
-           
           }
         }
       }
@@ -389,34 +357,34 @@ html[dir="rtl"] {
 }
 
 @media (min-width: 769px) {
- html[dir="rtl"]{
-   .header-navbar {
-     .dropdown {
-       &.dropdown-notification {
-         .dropdown-menu {
-           transform: translate3d(324px, 62px, 0px) !important;
-           &.dropdowncart {
-             transform: translate3d(335px, 62px, 0px) !important;
-           }
-         }
-       }
-       &.dropdown-user {
-         .dropdown-menu {
-           transform: translate3d(20px, 60px, 0px) !important;
-         }
-       }
-       &.dropdown-language {
-         .dropdown-menu {
-           transform: translate3d(114px, 64px, 0px) !important;
-         }
-       }
-     }
-   }
- }
+  html[dir="rtl"] {
+    .header-navbar {
+      .dropdown {
+        &.dropdown-notification {
+          .dropdown-menu {
+            transform: translate3d(324px, 62px, 0px) !important;
+            &.dropdowncart {
+              transform: translate3d(335px, 62px, 0px) !important;
+            }
+          }
+        }
+        &.dropdown-user {
+          .dropdown-menu {
+            transform: translate3d(20px, 60px, 0px) !important;
+          }
+        }
+        &.dropdown-language {
+          .dropdown-menu {
+            transform: translate3d(114px, 64px, 0px) !important;
+          }
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 768px) {
-  html[dir="rtl"]{
+  html[dir="rtl"] {
     .app-content {
       .header-navbar {
         .dropdown {

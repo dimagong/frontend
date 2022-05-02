@@ -1,19 +1,17 @@
-import React, {useEffect, useState} from 'react'
-import {
-  Col,
-} from "reactstrap"
-import Select from "react-select"
-import {DropdownIndicator} from 'components/MultiSelect/multiSelect'
-import {colourStyles, colorMultiSelect} from "utility/select/selectSettigns";
-import {useDispatch, useSelector} from "react-redux";
-import {selectGroups, selectRoles, selectModules, selectManager} from "app/selectors";
-import {groupTypes} from 'constants/group'
-import {prepareNotNestedSelectOptions, getGroupName} from "utility/select/prepareSelectData";
-import {MultiSelectOrganization} from "../../../components/MultiSelect/MultiSelectOrganizations";
-import { isEmpty } from 'lodash'
-import OrganizationPermissionsModal from '../../../components/modals/OrganizationPermissionsModal'
+import React, { useEffect, useState } from "react";
+import { Col } from "reactstrap";
+import Select from "react-select";
+import { DropdownIndicator } from "components/MultiSelect/multiSelect";
+import { colourStyles, colorMultiSelect } from "utility/select/selectSettigns";
+import { useDispatch, useSelector } from "react-redux";
+import { selectGroups, selectRoles, selectModules, selectManager } from "app/selectors";
+import { groupTypes } from "constants/group";
+import { prepareNotNestedSelectOptions, getGroupName } from "utility/select/prepareSelectData";
+import { MultiSelectOrganization } from "../../../components/MultiSelect/MultiSelectOrganizations";
+import { isEmpty } from "lodash";
+import OrganizationPermissionsModal from "../../../components/modals/OrganizationPermissionsModal";
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
 
 const {
   getModulesRequest,
@@ -33,51 +31,51 @@ const UserEditSelects = () => {
   const [selectedOrganization, setSelectedOrganization] = useState();
 
   useEffect(() => {
-
     !modules.length && dispatch(getModulesRequest());
   }, []);
 
-
   const prepareModulesSelect = (modules) => {
-    if(!modules) return []
+    if (!modules) return [];
     return modules.map((value) => {
       return {
         value: value,
         label: value["name"],
-        color: colorMultiSelect
+        color: colorMultiSelect,
       };
     });
   };
 
   const prepareRolesSelect = (roles) => {
-    if(!roles) return []
+    if (!roles) return [];
     return roles.map((role) => {
       return {
         value: role,
         label: role,
-        color: colorMultiSelect
-      }
-    })
+        color: colorMultiSelect,
+      };
+    });
   };
 
   const onSelectRolesChange = (values) => {
     values
-      ? dispatch(updateUserRolesRequest({
-        id: manager.id,
-        roles: roles.filter(role => values.some(value => value.value === role))
-      }))
-      : dispatch(updateUserRolesRequest({id: manager.id, roles: []}))
+      ? dispatch(
+          updateUserRolesRequest({
+            id: manager.id,
+            roles: roles.filter((role) => values.some((value) => value.value === role)),
+          })
+        )
+      : dispatch(updateUserRolesRequest({ id: manager.id, roles: [] }));
   };
-
 
   const onSelectModulesChange = (values) => {
     values
-      ? dispatch(updateUserModulesRequest({
-        ...manager,
-        modules: modules.filter(module => values.some(value => value.value.id === module.id))
-      }))
-      : dispatch(updateUserModulesRequest({...manager, modules: []}))
-
+      ? dispatch(
+          updateUserModulesRequest({
+            ...manager,
+            modules: modules.filter((module) => values.some((value) => value.value.id === module.id)),
+          })
+        )
+      : dispatch(updateUserModulesRequest({ ...manager, modules: [] }));
   };
 
   const getChangesInfoForMultiSelectData = (newValues, stateValues, compareKeys) => {
@@ -88,7 +86,7 @@ const UserEditSelects = () => {
     let isAdd = false;
 
     const compareKeysElements = (elementFirst, elementSecond) => {
-      return compareKeys.every(key => elementFirst[key] === elementSecond[[key]]);
+      return compareKeys.every((key) => elementFirst[key] === elementSecond[[key]]);
     };
 
     if (!newValues) {
@@ -98,8 +96,14 @@ const UserEditSelects = () => {
       group = newValues[0].value;
       isAdd = true;
     } else {
-      added = newValues.filter(nextNewValue => !stateValues.find(nextStateValue => compareKeysElements(nextNewValue.value, nextStateValue.value)));
-      deleted = stateValues.filter(nextStateValue => !newValues.find(nextNewValue => compareKeysElements(nextNewValue.value, nextStateValue.value)));
+      added = newValues.filter(
+        (nextNewValue) =>
+          !stateValues.find((nextStateValue) => compareKeysElements(nextNewValue.value, nextStateValue.value))
+      );
+      deleted = stateValues.filter(
+        (nextStateValue) =>
+          !newValues.find((nextNewValue) => compareKeysElements(nextNewValue.value, nextStateValue.value))
+      );
       if (added.length) {
         group = added[0].value;
         isAdd = true;
@@ -111,46 +115,54 @@ const UserEditSelects = () => {
 
     return {
       isAdd,
-      group
+      group,
     };
   };
 
   const onSelectGroupsChange = (values) => {
-
-    const selectChangesInfo = getChangesInfoForMultiSelectData(values, prepareSelectGroups(manager.groups), ['group_id', 'type']);
+    const selectChangesInfo = getChangesInfoForMultiSelectData(values, prepareSelectGroups(manager.groups), [
+      "group_id",
+      "type",
+    ]);
 
     if (selectChangesInfo.isAdd) {
-      dispatch(addUserGroupsRequest({
-        userId: manager.id,
-        group: selectChangesInfo.group
-      }))
+      dispatch(
+        addUserGroupsRequest({
+          userId: manager.id,
+          group: selectChangesInfo.group,
+        })
+      );
     } else {
-      dispatch(removeUserGroupsRequest({
-        userId: manager.id,
-        group: selectChangesInfo.group
-      }))
+      dispatch(
+        removeUserGroupsRequest({
+          userId: manager.id,
+          group: selectChangesInfo.group,
+        })
+      );
     }
-
   };
 
-  const prepareSelectGroups = selectedGroups => {
-    if (!selectedGroups) return []
-    return selectedGroups.map(group => {
+  const prepareSelectGroups = (selectedGroups) => {
+    if (!selectedGroups) return [];
+    return selectedGroups.map((group) => {
       return {
         value: {
           group_id: group.group_id,
-          type: groupTypes[group.group_type]
+          type: groupTypes[group.group_type],
         },
         label: getGroupName(groups, group.group_id, groupTypes[group.group_type]),
-        color: colorMultiSelect
-      }
+        color: colorMultiSelect,
+      };
     });
   };
 
   const filtredSelectOptions = () => {
-    return prepareNotNestedSelectOptions(groups)
-      .filter(groupSelect => !prepareSelectGroups(manager.groups)
-        .some(group => group.value.group_id === groupSelect.value.group_id && group.value.type === groupSelect.value.type))
+    return prepareNotNestedSelectOptions(groups).filter(
+      (groupSelect) =>
+        !prepareSelectGroups(manager.groups).some(
+          (group) => group.value.group_id === groupSelect.value.group_id && group.value.type === groupSelect.value.type
+        )
+    );
   };
 
   return roles.length && groups.length && modules.length ? (
@@ -160,7 +172,7 @@ const UserEditSelects = () => {
           <div className="font-weight-bold column-sizing">Roles</div>
           <div className="full-width">
             <Select
-              components={{DropdownIndicator}}
+              components={{ DropdownIndicator }}
               value={prepareRolesSelect(manager.roles)}
               maxMenuHeight={200}
               isMulti
@@ -169,7 +181,7 @@ const UserEditSelects = () => {
               options={prepareRolesSelect(roles)}
               className="fix-margin-select"
               onChange={(values) => {
-                onSelectRolesChange(values)
+                onSelectRolesChange(values);
               }}
               classNamePrefix="select"
               id="languages"
@@ -177,16 +189,18 @@ const UserEditSelects = () => {
           </div>
         </div>
         <div className="d-flex mb-1">
-          <div className="font-weight-bold column-sizing" style={{padding: 5}}>Organisations</div>
+          <div className="font-weight-bold column-sizing" style={{ padding: 5 }}>
+            Organisations
+          </div>
           <div className="w-100">
             <MultiSelectOrganization
               value={prepareSelectGroups(manager.groups)}
               options={filtredSelectOptions()}
               onChange={(values) => {
-                onSelectGroupsChange(values)
+                onSelectGroupsChange(values);
               }}
               onSelectElement={(organization) => {
-                setSelectedOrganization(organization)
+                setSelectedOrganization(organization);
               }}
             />
 
@@ -196,7 +210,6 @@ const UserEditSelects = () => {
               onClose={() => setSelectedOrganization({})}
               user={manager}
             />
-
           </div>
         </div>
         <div className="user-managment__edit_body_form__select">
@@ -204,7 +217,7 @@ const UserEditSelects = () => {
           <div className="full-width">
             <Select
               disabled={true}
-              components={{DropdownIndicator: null}}
+              components={{ DropdownIndicator: null }}
               value={prepareModulesSelect(manager.modules)}
               maxMenuHeight={200}
               isMulti
@@ -213,7 +226,7 @@ const UserEditSelects = () => {
               options={prepareModulesSelect(modules)}
               className="fix-margin-select"
               onChange={(values) => {
-                onSelectModulesChange(values)
+                onSelectModulesChange(values);
               }}
               classNamePrefix="select"
               id="languages"
@@ -222,7 +235,7 @@ const UserEditSelects = () => {
         </div>
       </div>
     </Col>
-  ) : null
+  ) : null;
 };
 
-export default UserEditSelects
+export default UserEditSelects;

@@ -1,39 +1,39 @@
 .user-managment {
   .plus-select {
     &:hover {
-        color: $cyan;
+      color: $cyan;
     }
     color: #007bffa8;
     stroke-width: 5;
     cursor: pointer;
-}
-.ag-row-selected {
-  background-color: rgba(0, 123, 255, 0.2)!important;
-}
-.ag-row-hover {
-  background-color: rgba(0, 123, 255, 0.1)!important;
-}
-.column-sizing {
-  min-width: 120px;
-  min-height: 25px;
-}
-.ag-overlay-loading-cell{
-  border: 0;
-  box-shadow: none !important;
-}
-.ag-overlay-loading-center{
-  border: 0;
-  box-shadow: none !important;
-}
+  }
+  .ag-row-selected {
+    background-color: rgba(0, 123, 255, 0.2) !important;
+  }
+  .ag-row-hover {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+  }
+  .column-sizing {
+    min-width: 120px;
+    min-height: 25px;
+  }
+  .ag-overlay-loading-cell {
+    border: 0;
+    box-shadow: none !important;
+  }
+  .ag-overlay-loading-center {
+    border: 0;
+    box-shadow: none !important;
+  }
   &__edit {
     &_header {
       height: 68px;
-      &_user-info{
-        .column-sizing-user-info{
+      &_user-info {
+        .column-sizing-user-info {
           margin-bottom: 8px;
           min-width: 100px;
         }
-        &-container{
+        &-container {
           position: relative;
           z-index: 1;
         }
@@ -57,7 +57,6 @@
           padding: 0;
           margin-right: 32px;
         }
-        
       }
       .edit-container {
         position: relative;
@@ -101,12 +100,12 @@
         animation: rotating 2s linear infinite;
       }
       padding-top: 0;
-      &_user-info{
-        .column-sizing-user-info{
+      &_user-info {
+        .column-sizing-user-info {
           margin-bottom: 8px;
           min-width: 100px;
         }
-        &-container{
+        &-container {
           position: relative;
           width: 70%;
           z-index: 1;
@@ -118,11 +117,11 @@
         padding: 0;
         top: -9px;
         left: -2px;
-        &__select{
+        &__select {
           display: flex;
         }
-        &__select-wrapper{
-          .column-sizing{
+        &__select-wrapper {
+          .column-sizing {
             min-width: 120px;
             min-height: 25px;
             padding: 0 !important;
@@ -137,23 +136,21 @@
           padding: 0;
           margin-right: 32px;
         }
-        &_text{
+        &_text {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          span{
-           
+          span {
           }
         }
         > .form-control {
           padding-right: calc(1.25 * 1em + 1.4rem + 1px + 32px);
         }
-       
       }
       .form-create__dform_actions {
         display: flex;
         justify-content: space-between;
-    }
+      }
     }
   }
 }

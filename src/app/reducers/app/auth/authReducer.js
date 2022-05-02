@@ -9,7 +9,7 @@ const loginRequest = (state) => {
   state.isLoading = true;
   state.isError = null;
 };
-const loginError = (state , {payload}) => {
+const loginError = (state, { payload }) => {
   state.isAuth = false;
   state.isLoading = false;
   state.isError = payload;
@@ -19,7 +19,6 @@ const logout = (state) => {
   state.isAuth = false;
   state.isLoading = false;
   state.isError = null;
-
 };
 
 const resetPasswordSuccess = (state) => {
@@ -33,7 +32,7 @@ const resetPasswordRequest = (state) => {
   state.isLoading = true;
   state.isError = null;
 };
-const resetPasswordError = (state, {payload}) => {
+const resetPasswordError = (state, { payload }) => {
   state.isAuth = false;
   state.isLoading = false;
   state.isError = payload;
@@ -49,7 +48,7 @@ const verifyPasswordRequest = (state) => {
   state.isLoading = true;
   state.isError = null;
 };
-const verifyPasswordError = (state, {payload}) => {
+const verifyPasswordError = (state, { payload }) => {
   state.isAuth = false;
   state.isLoading = false;
   state.isError = payload;

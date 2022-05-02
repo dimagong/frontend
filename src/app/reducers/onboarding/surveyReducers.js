@@ -1,4 +1,4 @@
-const setSurveyTriggers = (state, {payload}) => {
+const setSurveyTriggers = (state, { payload }) => {
   state.survey.triggers = payload;
 };
 

@@ -14,7 +14,7 @@
     &_search {
       position: relative;
       &_search-icon {
-        color: #95989A;
+        color: #95989a;
         font-size: 28px;
         position: absolute;
         top: 10px;
@@ -25,11 +25,11 @@
         width: 200px;
         background: transparent;
         border: 0;
-        color: #4B484D;
+        color: #4b484d;
         font-size: 20px;
         font-family: Montserrat;
         font-weight: 300;
-        border-bottom: 1px solid #EEE;
+        border-bottom: 1px solid #eee;
         padding: 10px 30px 5px 0;
       }
     }
@@ -45,14 +45,13 @@
   }
 }
 
-@media screen and (max-width: 1200px){
+@media screen and (max-width: 1200px) {
   .context-feature-template {
     &_header {
       align-items: flex-start;
       &_title {
         font-size: 30px;
       }
-
     }
   }
 }

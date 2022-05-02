@@ -57,7 +57,7 @@ MasterSchemaContextSearchComponent.propTypes = {
   masterSchemas: PropTypes.array,
   isLoading: PropTypes.bool.isRequired,
   selectedId: PropTypes.number,
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
 };
 
 export default MasterSchemaContextSearchComponent;

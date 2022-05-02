@@ -1,14 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import './styles.scss'
+import "./styles.scss";
 
 const Index = (props) => {
-
   return (
     <div className="custom-form-filed form-create_custom-text-widget">
-      <label htmlFor={props.id}>
-        {props.label}
-      </label>
+      <label htmlFor={props.id}>{props.label}</label>
       <input
         id={props.id}
         type="number"
@@ -19,7 +16,7 @@ const Index = (props) => {
         placeholder={props.placeholder || "Enter your answer here"}
       />
     </div>
-  )
-}
+  );
+};
 
 export default Index;

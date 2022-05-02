@@ -13,7 +13,7 @@ import { useCreateRMHierarchyField, useCreateRMHierarchyGroup } from "api/resour
 
 const stickyStyle = { top: "0px", left: "0px", backgroundColor: "#f8f8f8" };
 
-const RMContextDataView = ({ resourceManagerId, hierarchy, selectedIds, onSelect, }) => {
+const RMContextDataView = ({ resourceManagerId, hierarchy, selectedIds, onSelect }) => {
   const createField = useCreateRMHierarchyField({ resourceManagerId });
   const createGroup = useCreateRMHierarchyGroup({ resourceManagerId });
 

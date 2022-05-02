@@ -24,28 +24,27 @@ export function getFieldsBySection(state, sectionName) {
 }
 
 export function isFieldHasDefaultEffectByOperator(operator) {
-  switch(operator) {
-    case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL : {
+  switch (operator) {
+    case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL: {
       return false;
     }
-    case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL : {
+    case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL: {
       return true;
     }
-    default : {
-      return false
+    default: {
+      return false;
     }
   }
 }
 
-export function operatorResult (property, operator, fieldValue, value, field = null) {
+export function operatorResult(property, operator, fieldValue, value, field = null) {
   // todo bug resolved
   if (!fieldValue || !value) return true;
   const typeField = getSpecificType(property);
   switch (operator) {
     case Constants.DEPENDENCY_LOGIC_OPERATOR_EQUAL: {
-
       if (Array.isArray(fieldValue)) {
-        if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
+        if (fieldValue.some((nextFieldValue) => nextFieldValue === value)) {
           return true;
         }
         return false;
@@ -72,9 +71,8 @@ export function operatorResult (property, operator, fieldValue, value, field = n
       return false;
     }
     case Constants.DEPENDENCY_LOGIC_OPERATOR_NOT_EQUAL: {
-
       if (Array.isArray(fieldValue)) {
-        if (fieldValue.some(nextFieldValue => nextFieldValue === value)) {
+        if (fieldValue.some((nextFieldValue) => nextFieldValue === value)) {
           return false;
         }
         return true;
@@ -101,9 +99,8 @@ export function operatorResult (property, operator, fieldValue, value, field = n
       return false;
     }
     case Constants.DEPENDENCY_LOGIC_OPERATOR_MORE: {
-
       if (Array.isArray(fieldValue)) {
-        if (fieldValue.some(nextFieldValue => nextFieldValue > value)) {
+        if (fieldValue.some((nextFieldValue) => nextFieldValue > value)) {
           return true;
         }
 
@@ -123,9 +120,8 @@ export function operatorResult (property, operator, fieldValue, value, field = n
       return false;
     }
     case Constants.DEPENDENCY_LOGIC_OPERATOR_LESS: {
-
       if (Array.isArray(fieldValue)) {
-        if (fieldValue.some(nextFieldValue => nextFieldValue < value)) {
+        if (fieldValue.some((nextFieldValue) => nextFieldValue < value)) {
           return true;
         }
 
@@ -144,22 +140,31 @@ export function operatorResult (property, operator, fieldValue, value, field = n
       return false;
     }
     default: {
-      return false
+      return false;
     }
   }
 }
 
 export function isValidationFieldPassed(state, field) {
-
-  if (!(field in state.formData) && 'minLength' in state.schema.properties[field] && state.schema.properties[field]['minLength'] > 0) {
+  if (
+    !(field in state.formData) &&
+    "minLength" in state.schema.properties[field] &&
+    state.schema.properties[field]["minLength"] > 0
+  ) {
     return false;
   }
 
-  if ('minLength' in state.schema.properties[field] && state.formData[field].length < state.schema.properties[field]['minLength']) {
+  if (
+    "minLength" in state.schema.properties[field] &&
+    state.formData[field].length < state.schema.properties[field]["minLength"]
+  ) {
     return false;
   }
 
-  if ('maxLength' in state.schema.properties[field] && state.formData[field].length > state.schema.properties[field]['maxLength']) {
+  if (
+    "maxLength" in state.schema.properties[field] &&
+    state.formData[field].length > state.schema.properties[field]["maxLength"]
+  ) {
     return false;
   }
 
@@ -177,27 +182,32 @@ export function getFieldsByGroup(state, groupName) {
 
 export function getSpecificType(property) {
   if (
-    property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
-    (property.format === 'date' || property.format === 'date-time')
+    property.type === Constants.RJSF_FIELD_TYPE_STRING &&
+    "format" in property &&
+    (property.format === "date" || property.format === "date-time")
   ) {
     return Constants.FIELD_TYPE_DATE;
-  } else if (property.type === Constants.RJSF_FIELD_TYPE_STRING && 'enum' in property) {
+  } else if (property.type === Constants.RJSF_FIELD_TYPE_STRING && "enum" in property) {
     return Constants.FIELD_TYPE_SELECT;
   } else if (
-    property.type === Constants.RJSF_FIELD_TYPE_ARRAY && 'items' in property &&
-    'format' in property.items &&
-    (property.items.format === 'data-url' || property.items.format === 'file')
+    property.type === Constants.RJSF_FIELD_TYPE_ARRAY &&
+    "items" in property &&
+    "format" in property.items &&
+    (property.items.format === "data-url" || property.items.format === "file")
   ) {
     return Constants.FIELD_TYPE_FILE_LIST;
-  } else if (property.type === Constants.RJSF_FIELD_TYPE_ARRAY && 'items' in property) {
+  } else if (property.type === Constants.RJSF_FIELD_TYPE_ARRAY && "items" in property) {
     return Constants.FIELD_TYPE_MULTI_SELECT;
   } else if (
-    property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
-    property.format === 'textarea') {
+    property.type === Constants.RJSF_FIELD_TYPE_STRING &&
+    "format" in property &&
+    property.format === "textarea"
+  ) {
     return Constants.FIELD_TYPE_TEXT_AREA;
   } else if (
-    property.type === Constants.RJSF_FIELD_TYPE_STRING && 'format' in property &&
-    (property.format === 'data-url' || property.format === 'file')
+    property.type === Constants.RJSF_FIELD_TYPE_STRING &&
+    "format" in property &&
+    (property.format === "data-url" || property.format === "file")
   ) {
     return Constants.FIELD_TYPE_FILE;
   } else if (property.type === Constants.RJSF_FIELD_TYPE_STRING) {
@@ -212,7 +222,7 @@ export function getSpecificType(property) {
 export function getDefaultValueByType(type) {
   switch (type) {
     case Constants.RJSF_FIELD_TYPE_STRING: {
-      return '';
+      return "";
     }
     case Constants.RJSF_FIELD_TYPE_INTEGER: {
       return 0;
@@ -224,7 +234,7 @@ export function getDefaultValueByType(type) {
       return false;
     }
     default: {
-      return null
+      return null;
     }
   }
 }

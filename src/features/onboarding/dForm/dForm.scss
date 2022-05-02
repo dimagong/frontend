@@ -1,80 +1,80 @@
-.dform{
-    .plus-select {
-        &:hover {
-            color: $cyan;
-        }
-        color: #007bffa8;
-        stroke-width: 5;
-        cursor: pointer;
+.dform {
+  .plus-select {
+    &:hover {
+      color: $cyan;
     }
-    .ag-row-selected {
-        background-color: rgba(0, 123, 255, 0.2)!important;
-    }
-    .ag-row-hover {
-        background-color: rgba(0, 123, 255, 0.1)!important;
-    }
-    .dform-input-setting {
-        position: absolute;
-        top: 0;
-        right: 2px;
-    }
-    .dform-input {
-        margin-right: 10px;
-    }
-    .pull-right-icons {
-        width: calc(100% - 70px)
-    }
-    .pull-left {
-      position: absolute;
-      top: 0;
-      right: 2px;
-    }
-    .form-create__tab-min-height {
-        min-height: 300px;
-    }
-    .form-create__group-min-height {
-        min-height: 150px;
-    }
-    .form-create__add-new-group {
-        height: 150px;
-        width: calc(100% - 20px);
-        border: 2px dashed rgba(0,123,255, 0.3);
-        text-align: center;
-        vertical-align: middle;
-        line-height: 150px;
-        margin: 10px;
-        color: rgba(0,123,255, 0.3);
-        transition: ease-in 0.2s;
-    }
-    .aggrid-hide-pagination .ag-paging-panel {
-      display: none!important;
-    }
-    .form-create__add-new-group.small {
-        height: 50px;
-        line-height: 50px;
-        margin: 4px;
-    }
-    .form-create__add-new-group:hover {
-        color: rgba(0,123,255, 0.9);
-        border: 2px dashed rgba(0,123,255, 0.9);
-        cursor: pointer;
-    }
-    .form-create__dform_actions {
-        display: flex;
-        justify-content: space-between;
-    }
-    .form-create__pull-right {
-        width: calc(100% - 95px);
-        margin-right: 10px;
-    }
-    // dForm FormCreate
-    .dform-type-badget {
-      position: absolute!important;
-      right: 10px;
-      top: 24%;
-      opacity: 0.8;
-    }
-    .label-hide label{
-        display: none;
-      }
+    color: #007bffa8;
+    stroke-width: 5;
+    cursor: pointer;
+  }
+  .ag-row-selected {
+    background-color: rgba(0, 123, 255, 0.2) !important;
+  }
+  .ag-row-hover {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+  }
+  .dform-input-setting {
+    position: absolute;
+    top: 0;
+    right: 2px;
+  }
+  .dform-input {
+    margin-right: 10px;
+  }
+  .pull-right-icons {
+    width: calc(100% - 70px);
+  }
+  .pull-left {
+    position: absolute;
+    top: 0;
+    right: 2px;
+  }
+  .form-create__tab-min-height {
+    min-height: 300px;
+  }
+  .form-create__group-min-height {
+    min-height: 150px;
+  }
+  .form-create__add-new-group {
+    height: 150px;
+    width: calc(100% - 20px);
+    border: 2px dashed rgba(0, 123, 255, 0.3);
+    text-align: center;
+    vertical-align: middle;
+    line-height: 150px;
+    margin: 10px;
+    color: rgba(0, 123, 255, 0.3);
+    transition: ease-in 0.2s;
+  }
+  .aggrid-hide-pagination .ag-paging-panel {
+    display: none !important;
+  }
+  .form-create__add-new-group.small {
+    height: 50px;
+    line-height: 50px;
+    margin: 4px;
+  }
+  .form-create__add-new-group:hover {
+    color: rgba(0, 123, 255, 0.9);
+    border: 2px dashed rgba(0, 123, 255, 0.9);
+    cursor: pointer;
+  }
+  .form-create__dform_actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  .form-create__pull-right {
+    width: calc(100% - 95px);
+    margin-right: 10px;
+  }
+  // dForm FormCreate
+  .dform-type-badget {
+    position: absolute !important;
+    right: 10px;
+    top: 24%;
+    opacity: 0.8;
+  }
+  .label-hide label {
+    display: none;
+  }
 }

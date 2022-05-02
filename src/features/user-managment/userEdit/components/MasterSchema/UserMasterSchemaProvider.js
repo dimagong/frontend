@@ -16,7 +16,10 @@ const UserMasterSchemaProvider = React.memo(({ user, setContextFeature, children
   );
 
   return (
-    <React.Profiler id="user-master-schema-provider" onRender={(id, phase) => console.log(id, phase, { selectedNodes })}>
+    <React.Profiler
+      id="user-master-schema-provider"
+      onRender={(id, phase) => console.log(id, phase, { selectedNodes })}
+    >
       <UserMasterSchemaProviderContext.Provider value={provided} children={children} />
     </React.Profiler>
   );

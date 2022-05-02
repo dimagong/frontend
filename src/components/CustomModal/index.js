@@ -1,12 +1,9 @@
 import React from "react";
-import {
-  Modal,
-  ModalBody,
-} from "reactstrap";
+import { Modal, ModalBody } from "reactstrap";
 import LoadingButton from "components/LoadingButton";
-import {X} from "react-feather";
+import { X } from "react-feather";
 
-import './styles.scss'
+import "./styles.scss";
 import PropTypes from "prop-types";
 
 const CustomModal = ({
@@ -24,34 +21,23 @@ const CustomModal = ({
   CustomButton = LoadingButton,
   ...attrs
 }) => {
-
   return (
     <Modal {...attrs} isOpen={isOpen} toggle={onClose}>
       <ModalBody className={"custom-modal"}>
         <div className="custom-modal_header">
-          <div className="custom-modal_header_title">
-            {title}
-          </div>
+          <div className="custom-modal_header_title">{title}</div>
           <div className={"custom-modal_header_cross"}>
-            <X
-              size={26}
-              className={"custom-modal_header_cross-icon"}
-              onClick={onClose}
-            />
+            <X size={26} className={"custom-modal_header_cross-icon"} onClick={onClose} />
           </div>
         </div>
-        <div className={"custom-modal_body"}>
-
-          {children}
-
-        </div>
+        <div className={"custom-modal_body"}>{children}</div>
         {!footerDisabled && (
-          <div className={'custom-modal_actions'}>
+          <div className={"custom-modal_actions"}>
             <div>
               {!!deleteBtnText && !!onDelete && (
                 <CustomButton
                   onClick={onDelete}
-                  className={'custom-modal_actions_delete-btn px-4'}
+                  className={"custom-modal_actions_delete-btn px-4"}
                   isLoading={isDeleteProceed}
                   value={deleteBtnText}
                 />
@@ -59,7 +45,7 @@ const CustomModal = ({
             </div>
             <div>
               <CustomButton
-                className={'px-4'}
+                className={"px-4"}
                 onClick={onSubmit}
                 color="primary"
                 isLoading={isSubmitProceed}
@@ -70,7 +56,7 @@ const CustomModal = ({
         )}
       </ModalBody>
     </Modal>
-  )
+  );
 };
 
 CustomModal.propTypes = {
@@ -87,6 +73,5 @@ CustomModal.propTypes = {
   onDelete: PropTypes.func,
   isDeleteProceed: PropTypes.bool,
 };
-
 
 export default CustomModal;

@@ -14,7 +14,6 @@ const groupApi = {
       throw err.response.data.error.errors;
     }
   },
-
 };
 
 export default groupApi;

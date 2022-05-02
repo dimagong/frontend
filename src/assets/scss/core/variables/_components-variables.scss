@@ -32,7 +32,6 @@ $custom-border-color: #e4e7ed;
 $chip-bg-color: #f0f0f0;
 $chip-avatar-bg: #c3c3c3;
 $avatar-bg: $chip-avatar-bg;
-$swiper-bg: #f2f4f4;
 $hover-color: #eee;
 
 //  ------------------------------
@@ -128,15 +127,9 @@ $border-radius-xs: 0.12rem !default;
 $input-border-radius-xl: $border-radius-xl;
 $input-border-radius-xs: $border-radius-xs;
 
-$input-height-xl: (
-  ($font-size-xl * $line-height-xl) + ($input-padding-y-xl * 2)
-) !default;
-$input-height-xs: (
-  ($font-size-xs * $line-height-xs) + ($input-padding-y-xs * 2)
-) !default;
-$input-height-sm: (
-  ($font-size-sm * $line-height-sm) + ($input-padding-y-sm * 2)
-) !default;
+$input-height-xl: (($font-size-xl * $line-height-xl) + ($input-padding-y-xl * 2)) !default;
+$input-height-xs: (($font-size-xs * $line-height-xs) + ($input-padding-y-xs * 2)) !default;
+$input-height-sm: (($font-size-sm * $line-height-sm) + ($input-padding-y-sm * 2)) !default;
 
 //  Custom VueSax Checkbox
 $vs-checkbox-radio-border-width: 2px;

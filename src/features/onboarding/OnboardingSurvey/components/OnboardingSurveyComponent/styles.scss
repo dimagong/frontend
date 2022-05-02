@@ -36,7 +36,7 @@
     &_survey-name {
       font-weight: bold;
       font-size: 30px;
-      color: #7367F0;
+      color: #7367f0;
       text-align: center;
     }
   }
@@ -46,7 +46,8 @@
     justify-content: space-between;
     margin-top: 10px;
 
-    &_back, &_next {
+    &_back,
+    &_next {
       border-radius: 10px;
       position: relative;
 
@@ -64,7 +65,7 @@
     }
 
     &_back {
-      background: #717171!important;
+      background: #717171 !important;
       &_value {
         &_icon {
           left: 0;
@@ -75,7 +76,7 @@
     &_next {
       &_value {
         &_icon {
-          right: 0!important;
+          right: 0 !important;
         }
       }
     }

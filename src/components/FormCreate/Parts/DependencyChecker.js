@@ -9,7 +9,6 @@ import {
 } from "../helper";
 
 export function dependencyChecker(state) {
-
   // todo
   //if (this.props.inputDisabled) return true;
 
@@ -21,30 +20,30 @@ export function dependencyChecker(state) {
     if (!Array.isArray(fieldsStates[field])) {
       fieldsStates[field] = [];
     }
-    fieldsStates[field].push({value: value, effect: effect})
+    fieldsStates[field].push({ value: value, effect: effect });
   };
 
   const setGroup = (field, value, effect) => {
     if (!Array.isArray(groupsStates[field])) {
       groupsStates[field] = [];
     }
-    groupsStates[field].push({value: value, effect: effect})
+    groupsStates[field].push({ value: value, effect: effect });
   };
 
   const setSection = (field, value, effect) => {
     if (!Array.isArray(sectionsStates[field])) {
       sectionsStates[field] = [];
     }
-    sectionsStates[field].push({value: value, effect: effect})
+    sectionsStates[field].push({ value: value, effect: effect });
   };
 
   Object.keys(state.uiSchema.dependencies.fields).forEach((field) => {
-    if (!state.uiSchema.dependencies.fields[field] || !('conditions' in state.uiSchema.dependencies.fields[field])) return;
+    if (!state.uiSchema.dependencies.fields[field] || !("conditions" in state.uiSchema.dependencies.fields[field]))
+      return;
 
     const effect = getEffectByType(state.uiSchema.dependencies.fields[field].effect);
 
-    state.uiSchema.dependencies.fields[field].conditions.forEach(condition => {
-
+    state.uiSchema.dependencies.fields[field].conditions.forEach((condition) => {
       // todo add function universal
       for (let fieldOperator of condition.fieldOperators) {
         // check required
@@ -62,8 +61,8 @@ export function dependencyChecker(state) {
           continue;
         }
 
-        if(!(fieldOperator.field in this.state.schema.properties)) {
-          console.log('Property ' + fieldOperator.field + ' not existing in properties');
+        if (!(fieldOperator.field in this.state.schema.properties)) {
+          console.log("Property " + fieldOperator.field + " not existing in properties");
           return;
         }
 
@@ -76,14 +75,15 @@ export function dependencyChecker(state) {
             fieldOperator.operator,
             fieldValue,
             fieldOperator.value,
-            fieldOperator.field)
+            fieldOperator.field
+          )
         ) {
           setField(field, true, effect);
           continue;
         }
 
         // isArray for multiselect
-        if(!fieldValue || (Array.isArray(fieldValue) && !fieldValue.length)) {
+        if (!fieldValue || (Array.isArray(fieldValue) && !fieldValue.length)) {
           setField(field, defaultValue, effect);
           continue;
         }
@@ -108,9 +108,12 @@ export function dependencyChecker(state) {
           state.uiSchema[field] = {};
         }
         let isDisabled = getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
-          return !(fieldInGroup in state.formData) ||
+          return (
+            !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] ||
+            !isValidationFieldPassed(state, fieldInGroup)
+          );
         });
 
         if (isDisabled) {
@@ -123,12 +126,11 @@ export function dependencyChecker(state) {
   });
 
   Object.keys(state.uiSchema.dependencies.groups).forEach((settingGroup) => {
-    if (!('conditions' in state.uiSchema.dependencies.groups[settingGroup])) return;
+    if (!("conditions" in state.uiSchema.dependencies.groups[settingGroup])) return;
 
     const effect = getEffectByType(state.uiSchema.dependencies.groups[settingGroup].effect);
 
-    state.uiSchema.dependencies.groups[settingGroup].conditions.forEach(condition => {
-
+    state.uiSchema.dependencies.groups[settingGroup].conditions.forEach((condition) => {
       for (let fieldOperator of condition.fieldOperators) {
         // check required
 
@@ -137,19 +139,24 @@ export function dependencyChecker(state) {
         }
 
         // todo
-        if(!(fieldOperator.field in this.state.schema.properties)) {
+        if (!(fieldOperator.field in this.state.schema.properties)) {
           return;
         }
 
         const fieldValue = state.formData[fieldOperator.field];
-        if(!(fieldOperator.field in this.state.schema.properties)) {
-          console.log('Property ' + fieldOperator.field + ' not existing in properties');
+        if (!(fieldOperator.field in this.state.schema.properties)) {
+          console.log("Property " + fieldOperator.field + " not existing in properties");
           return;
         }
-        const isDisabled = operatorResult(this.state.schema.properties[fieldOperator.field], fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
+        const isDisabled = operatorResult(
+          this.state.schema.properties[fieldOperator.field],
+          fieldOperator.operator,
+          fieldValue,
+          fieldOperator.value,
+          fieldOperator.field
+        );
 
         const setStateForFieldsCurrGroup = () => {
-
           getFieldsByGroup(state, settingGroup).forEach((fieldInGroup) => {
             if (!(fieldInGroup in state.uiSchema)) {
               state.uiSchema[fieldInGroup] = {};
@@ -160,7 +167,7 @@ export function dependencyChecker(state) {
               setField(fieldInGroup, false, effect);
             }
           });
-        }
+        };
 
         if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
           state.uiSchema.groupStates[settingGroup][effect] = true;
@@ -182,9 +189,12 @@ export function dependencyChecker(state) {
           state.uiSchema.groupStates[settingGroup] = {};
         }
         let isDisabled = condition.fields.some((fieldInGroup) => {
-          return !(fieldInGroup in state.formData) ||
+          return (
+            !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] ||
+            !isValidationFieldPassed(state, fieldInGroup)
+          );
         });
 
         if (isDisabled) {
@@ -206,16 +216,18 @@ export function dependencyChecker(state) {
       }
 
       for (let conditionGroup of condition.groups) {
-
         // check required
         if (!(settingGroup in state.uiSchema.groupStates)) {
           state.uiSchema.groupStates[settingGroup] = {};
         }
 
         let isDisabled = getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
-          return !(fieldInGroup in state.formData) ||
+          return (
+            !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] ||
+            !isValidationFieldPassed(state, fieldInGroup)
+          );
         });
         if (isDisabled) {
           setGroup(settingGroup, true, effect);
@@ -233,15 +245,19 @@ export function dependencyChecker(state) {
           }
         });
       }
-    })
+    });
   });
 
   Object.keys(state.uiSchema.dependencies.sections).forEach((settingSection) => {
-    if (!state.uiSchema.dependencies.sections[settingSection] || !('conditions' in state.uiSchema.dependencies.sections[settingSection])) return;
+    if (
+      !state.uiSchema.dependencies.sections[settingSection] ||
+      !("conditions" in state.uiSchema.dependencies.sections[settingSection])
+    )
+      return;
 
     const effect = getEffectByType(state.uiSchema.dependencies.sections[settingSection].effect);
 
-    state.uiSchema.dependencies.sections[settingSection].conditions.forEach(condition => {
+    state.uiSchema.dependencies.sections[settingSection].conditions.forEach((condition) => {
       for (let fieldOperator of condition.fieldOperators) {
         // check required
 
@@ -251,15 +267,20 @@ export function dependencyChecker(state) {
 
         const fieldValue = state.formData[fieldOperator.field];
         // todo "fieldOperator.field" is field name, bug: some times not existing in properties
-        if(!(fieldOperator.field in this.state.schema.properties)) {
-          console.log('Property ' + fieldOperator.field + ' not existing in properties');
+        if (!(fieldOperator.field in this.state.schema.properties)) {
+          console.log("Property " + fieldOperator.field + " not existing in properties");
           return;
         }
 
-        const isDisabled = operatorResult(this.state.schema.properties[fieldOperator.field], fieldOperator.operator, fieldValue, fieldOperator.value, fieldOperator.field);
+        const isDisabled = operatorResult(
+          this.state.schema.properties[fieldOperator.field],
+          fieldOperator.operator,
+          fieldValue,
+          fieldOperator.value,
+          fieldOperator.field
+        );
 
         const setStateForFieldsCurrSection = () => {
-
           getFieldsBySection(state, settingSection).forEach((fieldInSection) => {
             if (!(fieldInSection in state.uiSchema)) {
               state.uiSchema[fieldInSection] = {};
@@ -270,7 +291,7 @@ export function dependencyChecker(state) {
               setField(fieldInSection, false, effect);
             }
           });
-        }
+        };
 
         if (!(fieldOperator.field in state.formData) || !state.formData[fieldOperator.field]) {
           setSection(settingSection, true, effect);
@@ -292,9 +313,12 @@ export function dependencyChecker(state) {
           state.uiSchema.sectionStates[settingSection] = {};
         }
         let isDisabled = condition.fields.some((fieldInGroup) => {
-          return !(fieldInGroup in state.formData) ||
+          return (
+            !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] ||
+            !isValidationFieldPassed(state, fieldInGroup)
+          );
         });
 
         if (isDisabled) {
@@ -316,16 +340,18 @@ export function dependencyChecker(state) {
       }
 
       for (let conditionGroup of condition.groups) {
-
         // check required
         if (!(settingSection in state.uiSchema.sectionStates)) {
           state.uiSchema.sectionStates[settingSection] = {};
         }
 
         let isDisabled = getFieldsByGroup(state, conditionGroup).some((fieldInGroup) => {
-          return !(fieldInGroup in state.formData) ||
+          return (
+            !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] ||
+            !isValidationFieldPassed(state, fieldInGroup)
+          );
         });
         if (isDisabled) {
           setSection(settingSection, true, effect);
@@ -345,16 +371,18 @@ export function dependencyChecker(state) {
       }
 
       for (let conditionSection of condition.sections) {
-
         // check required
         if (!(settingSection in state.uiSchema.sectionStates)) {
           state.uiSchema.sectionStates[settingSection] = {};
         }
 
         let isDisabled = getFieldsBySection(state, conditionSection).some((fieldInGroup) => {
-          return !(fieldInGroup in state.formData) ||
+          return (
+            !(fieldInGroup in state.formData) ||
             (Array.isArray(state.formData[fieldInGroup]) && !state.formData[fieldInGroup].length) ||
-            !state.formData[fieldInGroup] || !isValidationFieldPassed(state, fieldInGroup)
+            !state.formData[fieldInGroup] ||
+            !isValidationFieldPassed(state, fieldInGroup)
+          );
         });
         if (isDisabled) {
           setSection(settingSection, true, effect);
@@ -372,18 +400,18 @@ export function dependencyChecker(state) {
           }
         });
       }
-    })
+    });
   });
 
-  Object.keys(fieldsStates).forEach(field => {
+  Object.keys(fieldsStates).forEach((field) => {
     if (!(field in state.uiSchema)) {
       state.uiSchema[field] = {};
     }
 
-    let hidden = fieldsStates[field].find(fieldObj => {
+    let hidden = fieldsStates[field].find((fieldObj) => {
       return fieldObj.value && fieldObj.effect === Constants.UI_HIDDEN;
     });
-    let disabled = fieldsStates[field].find(fieldObj => {
+    let disabled = fieldsStates[field].find((fieldObj) => {
       return fieldObj.value && fieldObj.effect === Constants.UI_DISABLED;
     });
 
@@ -406,16 +434,15 @@ export function dependencyChecker(state) {
     state.uiSchema[field] = {};
   });
 
-
-  Object.keys(groupsStates).forEach(group => {
+  Object.keys(groupsStates).forEach((group) => {
     if (!(group in state.uiSchema.groupStates)) {
       state.uiSchema.groupStates[group] = {};
     }
 
-    let hidden = groupsStates[group].find(groupObj => {
+    let hidden = groupsStates[group].find((groupObj) => {
       return groupObj.value && groupObj.effect === Constants.UI_HIDDEN;
     });
-    let disabled = groupsStates[group].find(groupObj => {
+    let disabled = groupsStates[group].find((groupObj) => {
       return groupObj.value && groupObj.effect === Constants.UI_DISABLED;
     });
 
@@ -431,16 +458,15 @@ export function dependencyChecker(state) {
     state.uiSchema.groupStates[group] = {};
   });
 
-
-  Object.keys(sectionsStates).forEach(section => {
+  Object.keys(sectionsStates).forEach((section) => {
     if (!(section in state.uiSchema.sectionStates)) {
       state.uiSchema.sectionStates[section] = {};
     }
 
-    let hidden = sectionsStates[section].find(sectionObj => {
+    let hidden = sectionsStates[section].find((sectionObj) => {
       return sectionObj.value && sectionObj.effect === Constants.UI_HIDDEN;
     });
-    let disabled = sectionsStates[section].find(sectionObj => {
+    let disabled = sectionsStates[section].find((sectionObj) => {
       return sectionObj.value && sectionObj.effect === Constants.UI_DISABLED;
     });
 
@@ -454,8 +480,7 @@ export function dependencyChecker(state) {
     }
 
     state.uiSchema.sectionStates[section] = {};
-  })
-
+  });
 
   // todo function in DForm, if checked them disabled
   this.disableAllInputs(state.schema, state.uiSchema);

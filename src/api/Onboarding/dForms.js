@@ -1,4 +1,4 @@
-import instance, { requestLayout, } from "api";
+import instance, { requestLayout } from "api";
 import {
   dFormActionsPath,
   dFormTriggersPath,
@@ -7,9 +7,9 @@ import {
   submitdFormPath,
   surveyTriggersPath,
   updateDFormFromParent,
-  submitdFormNewVersionPath
+  submitdFormNewVersionPath,
 } from "constants/onboarding";
-import {dFormPath, dFormTemplatePath} from "../../constants/onboarding";
+import { dFormPath, dFormTemplatePath } from "../../constants/onboarding";
 
 const dFormApi = {
   async getdForms() {
@@ -24,12 +24,12 @@ const dFormApi = {
       throw err.response.data.error.errors;
     }
   },
-  async submitdFormData({dForm, data}) {
+  async submitdFormData({ dForm, data }) {
     try {
       const result = await instance({
         url: submitdFormDataPath(dForm.id),
         method: "PUT",
-        data
+        data,
       });
 
       return result.data.data;
@@ -37,12 +37,12 @@ const dFormApi = {
       throw err.response.data.error.errors;
     }
   },
-  async submitdForm({dForm, data}) {
+  async submitdForm({ dForm, data }) {
     try {
       const result = await instance({
         url: submitdFormPath(dForm.id),
         method: "PUT",
-        data
+        data,
       });
 
       return result.data.data;
@@ -50,16 +50,15 @@ const dFormApi = {
       throw err.response.data.error.errors;
     }
   },
-  async submitdFormNewVersion({dForm, data}) {
-
+  async submitdFormNewVersion({ dForm, data }) {
     return await requestLayout(submitdFormNewVersionPath(dForm.id), "PUT", data);
   },
-  async changedFormStatus({dForm, status}) {
+  async changedFormStatus({ dForm, status }) {
     try {
       const result = await instance({
         url: changedFormStatusPath(dForm.id),
         method: "PUT",
-        data: {status}
+        data: { status },
       });
 
       return result.data.data;
@@ -72,7 +71,7 @@ const dFormApi = {
       const result = await instance({
         url: dFormTemplatePath,
         method: "POST",
-        data
+        data,
       });
 
       return result.data.data;
@@ -85,7 +84,7 @@ const dFormApi = {
       const result = await instance({
         url: `${dFormPath}/${data.id}`,
         method: "PUT",
-        data
+        data,
       });
 
       return result.data.data;
@@ -98,7 +97,7 @@ const dFormApi = {
       const result = await instance({
         url: `${dFormTemplatePath}/${data.id}`,
         method: "PUT",
-        data
+        data,
       });
 
       return result.data.data;
@@ -154,7 +153,7 @@ const dFormApi = {
       throw err.response.data.error.errors;
     }
   },
-  async updateDFormFromParent({id}) {
+  async updateDFormFromParent({ id }) {
     try {
       const result = await instance({
         url: updateDFormFromParent(id),
@@ -172,8 +171,8 @@ const dFormApi = {
         url: `api/dform/${id}/viewed-sections`,
         method: "PUT",
         data: {
-          is_viewed_sections: isViewedSectionsList
-        }
+          is_viewed_sections: isViewedSectionsList,
+        },
       });
 
       return result.data.data;

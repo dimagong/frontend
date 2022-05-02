@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import * as yup from 'yup'
+import React, { useState, useEffect } from "react";
+import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
@@ -10,30 +10,33 @@ import { Input, Select, Checkbox, TextArea } from "features/Surveys/Components/S
 
 import appSlice from "app/slices/appSlice";
 
-import './styles.scss'
+import "./styles.scss";
 import CustomModal from "../../../../components/CustomModal";
 
-const {
-  createSurveyRequest,
-  updateSurveyMainDataRequest,
-} = appSlice.actions;
-
+const { createSurveyRequest, updateSurveyMainDataRequest } = appSlice.actions;
 
 const editSurveyValidation = yup.object().shape({
-  min_percent_pass: yup.number().transform(Number).min(50, "Percent to pass should not be lower then 50").max(100, "Percent to pass should not be higher then 100"),
+  min_percent_pass: yup
+    .number()
+    .transform(Number)
+    .min(50, "Percent to pass should not be lower then 50")
+    .max(100, "Percent to pass should not be higher then 100"),
   description: yup.string().trim().required("Please, provide some description"),
   title: yup.string().trim().required("Title is required"),
 });
 
 const createSurveyValidation = yup.object().shape({
-  organization: yup.object().typeError('Select organisation for survey'),
-  min_percent_pass: yup.number().transform(Number).min(50, "Percent to pass should not be lower then 50").max(100, "Percent to pass should not be higher then 100"),
+  organization: yup.object().typeError("Select organisation for survey"),
+  min_percent_pass: yup
+    .number()
+    .transform(Number)
+    .min(50, "Percent to pass should not be lower then 50")
+    .max(100, "Percent to pass should not be higher then 100"),
   description: yup.string().trim().required("Please, provide some description"),
   title: yup.string().trim().required("Title is required"),
 });
 
-const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
-
+const SurveyCreateModal = ({ isOpen, onClose, isEdit, surveyData }) => {
   const dispatch = useDispatch();
 
   const [surveyTitle, setSurveyTitle] = useState("");
@@ -52,7 +55,6 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
   const prevSurveyUpdateLoadingValue = usePrevious(isSurveyUpdating);
 
   const handleModalClose = () => {
-
     if (!isSurveyCreating) {
       setSurveyTitle("");
       setSurveyDescription("");
@@ -60,63 +62,62 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
       setIsUserAbleToGoBackDuringSurvey(false);
       setMinPercentToPass("50");
 
-      onClose()
+      onClose();
     }
   };
 
   const handleSubmit = async () => {
-
     const surveyRequestData = {
       title: surveyTitle,
       description: surveyDescription,
       is_can_return: isUserAbleToGoBackDuringSurvey,
       min_percent_pass: minPercentToPass,
-      organization: !isEdit && surveyOrganization && {
-        id: surveyOrganization.value.id,
-        type: surveyOrganization.value.type,
-      }
+      organization: !isEdit &&
+        surveyOrganization && {
+          id: surveyOrganization.value.id,
+          type: surveyOrganization.value.type,
+        },
     };
 
     const validationSchema = isEdit ? editSurveyValidation : createSurveyValidation;
 
-    const isValid = await validationSchema
-                          .validate(surveyRequestData)
-                          .catch((err) => { toast.error(err.message) });
+    const isValid = await validationSchema.validate(surveyRequestData).catch((err) => {
+      toast.error(err.message);
+    });
 
     if (!isValid) return;
 
     if (isEdit) {
       surveyRequestData.interaction_id = surveyData.latest_version.interaction_id;
 
-      dispatch(updateSurveyMainDataRequest({surveyId: surveyData.latest_version.id, data: surveyRequestData}));
+      dispatch(updateSurveyMainDataRequest({ surveyId: surveyData.latest_version.id, data: surveyRequestData }));
     } else {
       dispatch(createSurveyRequest(surveyRequestData));
     }
   };
 
   const handleOrganizationSelect = (option) => {
-    setSurveyOrganization(option)
+    setSurveyOrganization(option);
   };
 
-  const formatOrganizations = (organizations) => (
+  const formatOrganizations = (organizations) =>
     organizations.map((organization) => ({
       value: organization,
       label: organization.name,
-    }))
-  );
+    }));
 
   const handleMinPercentToPassChange = (e) => {
-    if(/[^0-9]/g.test(e.target.value)) return;
+    if (/[^0-9]/g.test(e.target.value)) return;
 
     let value = e.target.value.toString();
 
     // Value in range 0-99
     if (value[0] === "0" && value.length > 1) {
-      value = value.substring(1)
+      value = value.substring(1);
     } else if (value.length > 2) {
-      value = "100"
+      value = "100";
     } else if (value.length === 0) {
-      value = "0"
+      value = "0";
     }
 
     setMinPercentToPass(value);
@@ -125,21 +126,21 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
   // Close modal after user hit submit and request ends with no error
   useEffect(() => {
     if (!error && prevSurveyCreateLoadingValue === true && !isSurveyCreating) {
-      handleModalClose()
+      handleModalClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyCreating]);
 
   useEffect(() => {
     if (!error && prevSurveyUpdateLoadingValue === true && !isSurveyUpdating) {
-      handleModalClose()
+      handleModalClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSurveyUpdating]);
 
   useEffect(() => {
     if (isEdit && isOpen) {
-      const {title, description, is_can_return, min_percent_pass} = surveyData.latest_version;
+      const { title, description, is_can_return, min_percent_pass } = surveyData.latest_version;
       setSurveyTitle(title);
       setSurveyDescription(description);
       setIsUserAbleToGoBackDuringSurvey(is_can_return);
@@ -173,10 +174,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
         onChange={(e) => setSurveyDescription(e.target.value)}
       />
       <div className="survey-create-modal-min_percent">
-        <label
-          className="survey-input-component_label"
-          htmlFor={"Survey description"}
-        >
+        <label className="survey-input-component_label" htmlFor={"Survey description"}>
           Minimum % to pass
         </label>
         <Input
@@ -196,9 +194,7 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
       />
       {!isEdit && (
         <div className="survey-create-modal_select">
-          <label htmlFor="organization">
-            Organisation
-          </label>
+          <label htmlFor="organization">Organisation</label>
           <Select
             onChange={handleOrganizationSelect}
             value={surveyOrganization}
@@ -206,9 +202,8 @@ const SurveyCreateModal = ({isOpen, onClose, isEdit, surveyData}) => {
           />
         </div>
       )}
-
     </CustomModal>
-  )
+  );
 };
 
 export default SurveyCreateModal;

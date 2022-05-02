@@ -1,21 +1,15 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import OrderingEditModal from "./OrderingEditModal";
-import {Card, CardBody, CardHeader, CardTitle} from "reactstrap";
+import { Card, CardBody, CardHeader, CardTitle } from "reactstrap";
 import Ordering from "./Ordering";
-
 
 function FormOrdering(props) {
   const [filterSectionName, setFilterSectionName] = useState(null);
   const [filterGroupName, setFilterGroupName] = useState(null);
 
-  const onOpenSortableModal = () => {
+  const onOpenSortableModal = () => {};
 
-  };
-
-
-  const onSaveSortableModal = () => {
-
-  };
+  const onSaveSortableModal = () => {};
 
   return (
     <div>
@@ -27,7 +21,8 @@ function FormOrdering(props) {
           <CardBody>
             <Ordering
               isItemsArray={false}
-              selfKey={filterSectionName} items={props.sections}
+              selfKey={filterSectionName}
+              items={props.sections}
               onChangeFilterKey={(filterKey) => {
                 setFilterSectionName(filterKey);
                 setFilterGroupName(null);
@@ -54,7 +49,8 @@ function FormOrdering(props) {
               items={props.groups}
               onDragEnd={(items) => {
                 props.onChangeGroups(items);
-              }}/>
+              }}
+            />
           </CardBody>
         </Card>
         <Card>

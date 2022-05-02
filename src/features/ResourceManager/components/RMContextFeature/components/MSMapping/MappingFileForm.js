@@ -37,7 +37,7 @@ const getReferenceName = (reference) => {
   // So, we need to remove all dots and slashes from template name.
   const templateName = reference.field_template.replace(/\.|\//g, "-");
 
-  return `${templateName}-${reference.id}`
+  return `${templateName}-${reference.id}`;
 };
 
 const getReferenceValue = ({ id, master_schema_field_id }) => ({ id, masterSchemaFieldId: master_schema_field_id });

@@ -1,57 +1,68 @@
-import React, {useEffect} from 'react'
-import Select, {components} from "react-select"
-import {Plus} from "react-feather"
-import {colourStyles} from "utility/select/selectSettigns";
-import {prepareNotNestedSelectOptions} from "utility/select/prepareSelectData";
-import {useDispatch, useSelector} from "react-redux";
-import {selectGroups} from 'app/selectors/groupSelector'
-import {normalizeNotNestedGroups} from "../../utility/select/prepareSelectData";
+import React, { useEffect } from "react";
+import Select, { components } from "react-select";
+import { Plus } from "react-feather";
+import { colourStyles } from "utility/select/selectSettigns";
+import { prepareNotNestedSelectOptions } from "utility/select/prepareSelectData";
+import { useDispatch, useSelector } from "react-redux";
+import { selectGroups } from "app/selectors/groupSelector";
+import { normalizeNotNestedGroups } from "../../utility/select/prepareSelectData";
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
 
-const {
-  getGroupsRequest,
-} = appSlice.actions;
+const { getGroupsRequest } = appSlice.actions;
 
-export const DropdownIndicator = props => {
-  return components.DropdownIndicator && (
-    <components.DropdownIndicator {...props}>
-      {/* <FontAwesomeIcon icon={props.selectProps.menuIsOpen ? "caret-up" : "caret-down"}/> */}
-      <Plus className="plus-select" size={15}/>
-    </components.DropdownIndicator>
-  )
+export const DropdownIndicator = (props) => {
+  return (
+    components.DropdownIndicator && (
+      <components.DropdownIndicator {...props}>
+        {/* <FontAwesomeIcon icon={props.selectProps.menuIsOpen ? "caret-up" : "caret-down"}/> */}
+        <Plus className="plus-select" size={15} />
+      </components.DropdownIndicator>
+    )
+  );
 };
 
-export const MultiSelect = ({groups: selectedGroups, setGroups, single, noDropdownIndicator = false}) => {
+export const MultiSelect = ({ groups: selectedGroups, setGroups, single, noDropdownIndicator = false }) => {
   const initGroups = useSelector(selectGroups) || [];
   // const groups = prepareSelectOptions(initGroups);
-   const groups = prepareNotNestedSelectOptions(initGroups);
+  const groups = prepareNotNestedSelectOptions(initGroups);
   const dispatch = useDispatch();
 
-// TODO: remove choosen options for select options
+  // TODO: remove choosen options for select options
   const filtredSelectOptions = () => {
-    return groups
-      .filter(groupSelect => !selectedGroups
-        .some(group => group.value.group_id === groupSelect.value.group_id && group.value.type === groupSelect.value.type))
+    return groups.filter(
+      (groupSelect) =>
+        !selectedGroups.some(
+          (group) => group.value.group_id === groupSelect.value.group_id && group.value.type === groupSelect.value.type
+        )
+    );
   };
 
   useEffect(() => {
-    !groups.length && dispatch(getGroupsRequest())
+    !groups.length && dispatch(getGroupsRequest());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-// TODO: set groups in to parrent component
+  // TODO: set groups in to parrent component
   const onSelectGroupsChange = (values) => {
-    if(single) {
-      values = [values]
+    if (single) {
+      values = [values];
     }
-    values ? dispatch(setGroups(normalizeNotNestedGroups(initGroups).filter(group => values.some(value => value.label === group.name)))) : dispatch(setGroups([]))
+    values
+      ? dispatch(
+          setGroups(
+            normalizeNotNestedGroups(initGroups).filter((group) => values.some((value) => value.label === group.name))
+          )
+        )
+      : dispatch(setGroups([]));
   };
   return (
     <div className="d-flex mb-1">
-      <div className="font-weight-bold column-sizing" style={{padding: 4}}>{single ? "Organization" : "Organisations"}</div>
+      <div className="font-weight-bold column-sizing" style={{ padding: 4 }}>
+        {single ? "Organization" : "Organisations"}
+      </div>
       <div className="w-100">
         <Select
-          components={{DropdownIndicator: noDropdownIndicator ? null : DropdownIndicator,}}
+          components={{ DropdownIndicator: noDropdownIndicator ? null : DropdownIndicator }}
           value={selectedGroups}
           maxMenuHeight={200}
           isMulti={!single}
@@ -59,14 +70,14 @@ export const MultiSelect = ({groups: selectedGroups, setGroups, single, noDropdo
           styles={colourStyles}
           options={filtredSelectOptions()}
           onChange={(values) => {
-            onSelectGroupsChange(values)
+            onSelectGroupsChange(values);
           }}
           classNamePrefix="select"
           id="languages"
         />
       </div>
     </div>
-  )
+  );
 };
 
-export default MultiSelect
+export default MultiSelect;

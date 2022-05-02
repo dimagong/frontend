@@ -21,12 +21,13 @@ deploy to dev:
     - printf "[profile nmpdev]\nregion=eu-west-2\noutput=json" >> ~/.aws/config
     - cp .ebenviroments/config.dev.yml .elasticbeanstalk/config.yml
     - apt-get --yes --force-yes install curl
-    - curl -sL https://deb.nodesource.com/setup_10.x | bash
+    - curl -sL https://deb.nodesource.com/setup_14.x | bash
     - apt-get --yes --force-yes install --yes --force-yes nodejs
   script:
     - git checkout dev
     - cat .ebenviroments/https.dev.conf >> .platform/nginx/conf.d/https.conf
     - npm i
+    - npm rebuild node-sass
     - CI=false npm run build-dev
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build
@@ -50,12 +51,13 @@ deploy to staging:
     - printf "[profile nmpdev]\nregion=eu-west-2\noutput=json" >> ~/.aws/config
     - cp .ebenviroments/config.staging.yml .elasticbeanstalk/config.yml
     - apt-get --yes --force-yes install curl
-    - curl -sL https://deb.nodesource.com/setup_10.x | bash
+    - curl -sL https://deb.nodesource.com/setup_14.x | bash
     - apt-get --yes --force-yes install --yes --force-yes nodejs
   script:
     - git checkout staging
     - cat .ebenviroments/https.staging.conf >> .platform/nginx/conf.d/https.conf
     - npm i
+    - npm rebuild node-sass
     - CI=false npm run build-stage
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build
@@ -79,12 +81,13 @@ deploy to production:
     - printf "[profile nmpdev]\nregion=eu-west-2\noutput=json" >> ~/.aws/config
     - cp .ebenviroments/config.production.yml .elasticbeanstalk/config.yml
     - apt-get --yes --force-yes install curl
-    - curl -sL https://deb.nodesource.com/setup_10.x | bash
+    - curl -sL https://deb.nodesource.com/setup_14.x | bash
     - apt-get --yes --force-yes install --yes --force-yes nodejs
   script:
     - git checkout master
     - cat .ebenviroments/https.production.conf >> .platform/nginx/conf.d/https.conf
     - npm i
+    - npm rebuild node-sass
     - CI=false npm run build-prod
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build

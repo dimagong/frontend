@@ -38,7 +38,12 @@ export const getRawField = (
   user_master_schema_field_versions_count,
 });
 
-export const getRawGroup = (id, name, parent_id, { is_system, is_member_firm_group = false, fields = [], groups = [] } = {}) => ({
+export const getRawGroup = (
+  id,
+  name,
+  parent_id,
+  { is_system, is_member_firm_group = false, fields = [], groups = [] } = {}
+) => ({
   ...getRawNode({ id, name, parent_id, is_system }),
   fields,
   groups,
@@ -120,7 +125,11 @@ export const buildHierarchy = (rootName = "root", masterSchemaId = 1) =>
 let masterSchemaId = 0;
 let organizationId = 0;
 
-export const getRawMasterSchema = ({ id = masterSchemaId++, name = "ms-name", organization_id = organizationId++ } = {}) => ({
+export const getRawMasterSchema = ({
+  id = masterSchemaId++,
+  name = "ms-name",
+  organization_id = organizationId++,
+} = {}) => ({
   id,
   name,
   organization_id,

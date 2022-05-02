@@ -14,7 +14,7 @@ export const useRMFieldFiles = ({ fieldId }, options = {}) => {
       clientAPI.get(`api/resource-manager-field-file`, {
         signal,
         params: {
-          resource_manager_field_id: fieldId
+          resource_manager_field_id: fieldId,
         },
       }),
     ...options,
@@ -31,14 +31,15 @@ export const useUploadRMFile = ({ fieldId }, options = {}) => {
 
 export const useDownloadRMFile = ({ fileId, filename }, options = {}) => {
   return useGenericMutation({
-    mutationFn: () => clientAPI
-      .get(`api/resource-manager-field-file/${fileId}/download`, {
-        responseType: "blob",
-        onlyData: false,
-        flatData: false,
-        flatError: false,
-      })
-      .then((response) => downloadBlob(response.data, filename)),
+    mutationFn: () =>
+      clientAPI
+        .get(`api/resource-manager-field-file/${fileId}/download`, {
+          responseType: "blob",
+          onlyData: false,
+          flatData: false,
+          flatError: false,
+        })
+        .then((response) => downloadBlob(response.data, filename)),
     ...options,
   });
 };

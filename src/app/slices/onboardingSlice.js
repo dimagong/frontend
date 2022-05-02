@@ -30,7 +30,7 @@ export const onboardingInitialState = {
   workflow: {
     workflows: [],
     workflow: null,
-    allowedUserList: []
+    allowedUserList: [],
   },
 };
 
@@ -38,10 +38,10 @@ export const onboardingSlice = createSlice({
   name: "onboarding",
   initialState: onboardingInitialState,
   reducers: {
-    ...(generateRequestAndErrorActions(onboardingReducer)),
+    ...generateRequestAndErrorActions(onboardingReducer),
     resetOnboardingSlice: (state) => {
-      Object.assign(state, onboardingInitialState)
-    }
+      Object.assign(state, onboardingInitialState);
+    },
   },
 });
 

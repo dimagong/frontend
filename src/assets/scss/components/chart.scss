@@ -1,17 +1,17 @@
 // Apex chart Scss
 
-.apexcharts-canvas{
+.apexcharts-canvas {
   // Tooltip Color
-  .apexcharts-tooltip{
+  .apexcharts-tooltip {
     color: $body-color !important;
-    &.dark{
+    &.dark {
       color: $white !important;
     }
   }
   // Toolbar Download Option Color
-  .apexcharts-toolbar{
-    .apexcharts-menu{
-      .apexcharts-menu-item{
+  .apexcharts-toolbar {
+    .apexcharts-menu {
+      .apexcharts-menu-item {
         color: $body-color;
       }
     }
@@ -19,14 +19,14 @@
 }
 
 // apex charts tooltip
-.apexcharts-xaxistooltip{
+.apexcharts-xaxistooltip {
   color: $body-color !important;
 }
 
 // client-retention Chart - legend position for left
-#client-retention-chart{
-  .apexcharts-canvas{
-    .apexcharts-legend{
+#client-retention-chart {
+  .apexcharts-canvas {
+    .apexcharts-legend {
       left: -14px !important;
     }
   }

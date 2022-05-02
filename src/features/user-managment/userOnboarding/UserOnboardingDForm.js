@@ -1,27 +1,20 @@
-import React, {useState, useRef, useEffect} from 'react'
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Col,
-  Spinner,
-} from "reactstrap"
-import {RefreshCw} from "react-feather"
-import FormCreate from 'components/FormCreate/FormCreate'
-import {useDispatch, useSelector} from "react-redux";
-import {selectManager, selectLoading} from "app/selectors";
-import {debounce} from 'lodash';
-import moment from 'moment';
+import React, { useState, useRef, useEffect } from "react";
+import { Card, CardHeader, CardTitle, CardBody, Col, Spinner } from "reactstrap";
+import { RefreshCw } from "react-feather";
+import FormCreate from "components/FormCreate/FormCreate";
+import { useDispatch, useSelector } from "react-redux";
+import { selectManager, selectLoading } from "app/selectors";
+import { debounce } from "lodash";
+import moment from "moment";
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
 
 const {
   updateDFormRequest,
   submitdFormDataRequest,
   changedFormStatusRequest,
   getUserByIdRequest,
-  submitdFormNewVersionRequest
+  submitdFormNewVersionRequest,
 } = appSlice.actions;
 
 const initRefreshClassName = "bg-hover-icon";
@@ -31,13 +24,13 @@ const UpdatedAtText = ({ loading, date }) => {
     return (
       <div className="d-flex">
         <div>Saving progress..</div>
-        {<Spinner className="ml-1" color="success"/>}
+        {<Spinner className="ml-1" color="success" />}
       </div>
     );
   }
 
   // return `Progress saved: ${moment(manager.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`;
-  return `Progress saved: ${moment(date).format('YYYY-MM-DD HH:mm:ss')}`;
+  return `Progress saved: ${moment(date).format("YYYY-MM-DD HH:mm:ss")}`;
 };
 
 const UserOnboardingDForm = ({ isManualSave }) => {
@@ -55,15 +48,17 @@ const UserOnboardingDForm = ({ isManualSave }) => {
   const handleSave = (data, dForm, userId) => {
     updatedAtTextLoding.current = true;
 
-    dispatch(submitdFormDataRequest({dForm: dForm, data}));
+    dispatch(submitdFormDataRequest({ dForm: dForm, data }));
     // todo for refresh (refactor)
-    dispatch(getUserByIdRequest({userId: userId}))
+    dispatch(getUserByIdRequest({ userId: userId }));
   };
 
   const debounceOnSave = useRef(debounce(handleSave, 1500));
-  const refreshOnboarding = useRef(debounce((userId) => {
-    dispatch(getUserByIdRequest({userId: userId}))
-  }, 1500));
+  const refreshOnboarding = useRef(
+    debounce((userId) => {
+      dispatch(getUserByIdRequest({ userId: userId }));
+    }, 1500)
+  );
 
   const handleFormChange = (data) => {
     if (isManualSave) {
@@ -72,43 +67,43 @@ const UserOnboardingDForm = ({ isManualSave }) => {
       }
       tempData.current = data;
     } else {
-      debounceOnSave.current(data, manager.onboarding.d_form, manager.id)
+      debounceOnSave.current(data, manager.onboarding.d_form, manager.id);
     }
   };
 
   useEffect(() => {
     if (!loading) {
       refreshClassName === `${initRefreshClassName} rotating` && setRefreshClassName(initRefreshClassName);
-      updatedAtTextLoding.current && (updatedAtTextLoding.current = false)
+      updatedAtTextLoding.current && (updatedAtTextLoding.current = false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
-  const submitDForm = (dForm, {name, description, protected_properties}) => {
-    dispatch(updateDFormRequest({...dForm, name, description, protected_properties}))
+  const submitDForm = (dForm, { name, description, protected_properties }) => {
+    dispatch(updateDFormRequest({ ...dForm, name, description, protected_properties }));
   };
 
   const statusChanged = (status) => {
-    dispatch(changedFormStatusRequest({dForm: manager.onboarding.d_form, status}))
+    dispatch(changedFormStatusRequest({ dForm: manager.onboarding.d_form, status }));
   };
 
-  const submitOnboardingForm = data => {
+  const submitOnboardingForm = (data) => {
     if (isManualSave) {
-      isFormMutated.current = false
+      isFormMutated.current = false;
     }
 
-    dispatch(submitdFormNewVersionRequest({dForm: manager.onboarding.d_form, data, userId: manager.id}));
-    dispatch(getUserByIdRequest({userId: manager.id}))
+    dispatch(submitdFormNewVersionRequest({ dForm: manager.onboarding.d_form, data, userId: manager.id }));
+    dispatch(getUserByIdRequest({ userId: manager.id }));
   };
   const handleRefresh = () => {
     refreshOnboarding.current(manager.id);
-    setRefreshClassName(`${initRefreshClassName} rotating`)
-    setRefreshClassName(`${initRefreshClassName} rotating`)
+    setRefreshClassName(`${initRefreshClassName} rotating`);
+    setRefreshClassName(`${initRefreshClassName} rotating`);
   };
 
   const handlePageLeave = (e) => {
     e.preventDefault();
-    e.returnValue = ''; //required for Chrome
+    e.returnValue = ""; //required for Chrome
   };
 
   useEffect(() => {
@@ -123,19 +118,17 @@ const UserOnboardingDForm = ({ isManualSave }) => {
         const isSaveChanges = window.confirm("Save changes before leave?");
 
         if (isSaveChanges) {
-          submitOnboardingForm(tempData.current)
+          submitOnboardingForm(tempData.current);
         }
       }
-    }
+    };
   }, []);
 
   return (
     <Col md="12" className="mb-4">
       <Card className="dform border">
         <CardHeader className="m-0">
-          <CardTitle>
-            Onboarding dForm
-          </CardTitle>
+          <CardTitle>Onboarding dForm</CardTitle>
           <div>
             {/*{*/}
             {/*  isStateConfig ?*/}
@@ -145,13 +138,11 @@ const UserOnboardingDForm = ({ isManualSave }) => {
             {/*    <Eye size={15} className="cursor-pointer mr-1"*/}
             {/*         onClick={switchStateConfig}/>*/}
             {/*}*/}
-            <RefreshCw
-              className={refreshClassName}
-              size={15} onClick={handleRefresh}/>
+            <RefreshCw className={refreshClassName} size={15} onClick={handleRefresh} />
           </div>
         </CardHeader>
         <CardBody className="pt-0">
-          <hr/>
+          <hr />
           <FormCreate
             isShowErrors={false}
             fileLoader={true}
@@ -176,7 +167,7 @@ const UserOnboardingDForm = ({ isManualSave }) => {
         </CardBody>
       </Card>
     </Col>
-  )
+  );
 };
 
-export default UserOnboardingDForm
+export default UserOnboardingDForm;

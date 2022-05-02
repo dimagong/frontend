@@ -1,11 +1,11 @@
-import React from "react"
+import React from "react";
 class CheckBoxesVuexy extends React.Component {
   render() {
     return (
       <div
-        className={`vx-checkbox-con ${
-          this.props.className ? this.props.className : ""
-        } vx-checkbox-${this.props.color}`}
+        className={`vx-checkbox-con ${this.props.className ? this.props.className : ""} vx-checkbox-${
+          this.props.color
+        }`}
       >
         <input
           type="checkbox"
@@ -16,17 +16,13 @@ class CheckBoxesVuexy extends React.Component {
           onClick={this.props.onClick ? this.props.onClick : null}
           onChange={this.props.onChange ? this.props.onChange : null}
         />
-        <span
-          className={`vx-checkbox vx-checkbox-${
-            this.props.size ? this.props.size : "md"
-          }`}
-        >
+        <span className={`vx-checkbox vx-checkbox-${this.props.size ? this.props.size : "md"}`}>
           <span className="vx-checkbox--check">{this.props.icon}</span>
         </span>
         <span className="vx-checkbox--label">{this.props.label}</span>
       </div>
-    )
+    );
   }
 }
 
-export default CheckBoxesVuexy
+export default CheckBoxesVuexy;

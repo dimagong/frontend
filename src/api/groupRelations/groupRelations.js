@@ -1,5 +1,5 @@
 import instance from "api";
-import {groupRelationsPath, groupRelationsByUserIdPath} from 'constants/group'
+import { groupRelationsPath, groupRelationsByUserIdPath } from "constants/group";
 
 const groupRelations = {
   async getGroupsRelations() {
@@ -14,7 +14,7 @@ const groupRelations = {
       throw err;
     }
   },
-  async getGroupsRelationsByUserId({userId}) {
+  async getGroupsRelationsByUserId({ userId }) {
     try {
       const result = await instance({
         url: groupRelationsByUserIdPath(userId),
@@ -25,7 +25,7 @@ const groupRelations = {
     } catch (err) {
       throw err;
     }
-  }
+  },
 };
 
-export default groupRelations
+export default groupRelations;

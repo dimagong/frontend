@@ -1,4 +1,4 @@
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 
 const getNotificationsSuccess = (state) => {
   state.isLoading = false;
@@ -8,13 +8,13 @@ const getNotificationsSuccess = (state) => {
 const createNotificationSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
-  toast.success("Created")
+  toast.success("Created");
 };
 
 const updateNotificationSuccess = (state) => {
   state.isLoading = false;
   state.isError = null;
-  toast.success("Saved")
+  toast.success("Saved");
 };
 
 const deleteNotificationSuccess = (state) => {
@@ -28,4 +28,3 @@ export default {
   updateNotificationSuccess,
   deleteNotificationSuccess,
 };
-

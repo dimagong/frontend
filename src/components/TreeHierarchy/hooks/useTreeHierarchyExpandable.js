@@ -6,8 +6,8 @@ import { useToggleable } from "hooks/use-toggleable";
 const filterIncluded = (toFilter, included) => _.filter(_.negate(_.includes(_.__, included)))(toFilter);
 
 export const useTreeHierarchyExpandable = (hierarchy) => {
-  const nodes = useMemo(() => hierarchy ? hierarchy.nodes : [], [hierarchy]);
-  const initialKeys = useMemo(() => hierarchy ? [hierarchy.nodeId] : [], [hierarchy]);
+  const nodes = useMemo(() => (hierarchy ? hierarchy.nodes : []), [hierarchy]);
+  const initialKeys = useMemo(() => (hierarchy ? [hierarchy.nodeId] : []), [hierarchy]);
 
   const [keys, { setKeys, toggle }] = useToggleable([], { useRefactored: true });
 

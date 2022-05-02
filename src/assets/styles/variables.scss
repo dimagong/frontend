@@ -1,19 +1,18 @@
-$primary-content-bg: #FFFFFF;
-$secondary-content-bg: #F6F5F5;
+$primary-content-bg: #ffffff;
+$secondary-content-bg: #f6f5f5;
 
-$primary-bg-color: #FF0000;
-$secondary-bg-color: #004F57;
+$primary-bg-color: #ff0000;
+$secondary-bg-color: #004f57;
 
 $primary-fg-color: #000000;
-$highlight-fg-color: #FF0000;
+$highlight-fg-color: #ff0000;
 
-$background: #FFFFFF;
-$primary-blue: #0AAFED;
-$primary-yellow: #FFD15D;
-$primary-red: #F45055;
+$background: #ffffff;
+$primary-blue: #0aafed;
+$primary-yellow: #ffd15d;
+$primary-red: #f45055;
 
-
-$dot-color: #00D4A1;
+$dot-color: #00d4a1;
 $dot-width: 10px !default;
 $dot-height: 10px !default;
 $dot-radius: $dot-width/2 !default;
@@ -23,4 +22,3 @@ $dot-before-color: $dot-color !default;
 $dot-after-color: $dot-color !default;
 
 $dot-spacing: $dot-width + $dot-width/2 !default;
-

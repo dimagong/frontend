@@ -1,4 +1,4 @@
-import { lazy } from "react"
+import { lazy } from "react";
 
 import {
   loginPath,
@@ -9,7 +9,6 @@ import {
   workflowsPath,
   invitationPath,
   onboardingProcessPath,
-  masterSchemaPath,
   userProfilePath,
 } from "constants/paths";
 
@@ -22,7 +21,6 @@ const OnboardingUser = lazy(() => import("features/onboarding/OnboardingUser"));
 const Invitation = lazy(() => import("features/invitation/Invitation"));
 const Home = lazy(() => import("features/home/Home"));
 const Error404 = lazy(() => import("components/misc/error/404"));
-const MasterSchema = lazy(() => import("views/pages/master-schema/index"));
 const UserProfile = lazy(() => import("features/user-managment/userEdit/UserEdit"));
 
 const routes = [
@@ -38,7 +36,7 @@ const routes = [
     isPrivate: false,
     exact: true,
     redirect: homePath,
-    fullLayout: true
+    fullLayout: true,
   },
   {
     path: forgotPasswordPath,
@@ -74,18 +72,11 @@ const routes = [
     isPrivate: false,
     exact: true,
     redirect: loginPath,
-    fullLayout: true
+    fullLayout: true,
   },
   {
     path: homePath,
     Component: Home,
-    isPrivate: true,
-    redirect: loginPath,
-    exact: true,
-  },
-  {
-    path: masterSchemaPath,
-    Component: MasterSchema,
     isPrivate: true,
     redirect: loginPath,
     exact: true,
@@ -102,7 +93,7 @@ const routes = [
     Component: Error404,
     isPrivate: false,
     exact: true,
-    fullLayout: true
+    fullLayout: true,
   },
 ];
 

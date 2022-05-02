@@ -1,12 +1,10 @@
 import React from "react";
-import {Button, Media} from "reactstrap";
+import { Button, Media } from "reactstrap";
 import noneAvatar from "../../../../assets/img/portrait/none-avatar.png";
 import fileService from "../../../../services/file.service";
-import { isEqual, debounce } from 'lodash'
-
+import { isEqual, debounce } from "lodash";
 
 class UserNavAvatar extends React.Component {
-
   state = {
     userAvatar: {},
   };
@@ -17,12 +15,14 @@ class UserNavAvatar extends React.Component {
 
   async componentDidUpdate(prevProps, prevState, snapshot) {
     if (!isEqual(prevProps, this.props)) {
-      this.setState({userAvatar: {...this.state.userAvatar, [this.props.userId]: await this.getUserAvatar(this.props.userId)}});
+      this.setState({
+        userAvatar: { ...this.state.userAvatar, [this.props.userId]: await this.getUserAvatar(this.props.userId) },
+      });
     }
   }
 
   async componentDidMount() {
-    this.setState({userAvatar: {...this.state.userAvatar, [this.props.userId]: await this.getUserAvatar()}});
+    this.setState({ userAvatar: { ...this.state.userAvatar, [this.props.userId]: await this.getUserAvatar() } });
   }
 
   async getUserAvatar() {
@@ -31,16 +31,20 @@ class UserNavAvatar extends React.Component {
   }
 
   render() {
-    return <img
-      src={ this.props.userId in this.state.userAvatar && this.state.userAvatar[this.props.userId]
-        ? this.state.userAvatar[this.props.userId] : noneAvatar}
-      className="round"
-      height="40"
-      width="40"
-      alt="avatar"
-    />
+    return (
+      <img
+        src={
+          this.props.userId in this.state.userAvatar && this.state.userAvatar[this.props.userId]
+            ? this.state.userAvatar[this.props.userId]
+            : noneAvatar
+        }
+        className="round"
+        height="40"
+        width="40"
+        alt="avatar"
+      />
+    );
   }
 }
-
 
 export default UserNavAvatar;

@@ -33,10 +33,7 @@ const FileValuePreview = ({ fileId, filename }) => {
 };
 
 FileValuePreview.propTypes = {
-  fileId: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string,
-  ]).isRequired,
+  fileId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   filename: PropTypes.string.isRequired,
 };
 

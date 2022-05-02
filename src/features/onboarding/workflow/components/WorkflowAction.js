@@ -1,35 +1,24 @@
 import React, { useEffect, useState } from "react";
-import {
-  ListGroupItem,
-  DropdownToggle,
-  DropdownItem,
-  UncontrolledButtonDropdown,
-  DropdownMenu,
-} from "reactstrap";
+import { ListGroupItem, DropdownToggle, DropdownItem, UncontrolledButtonDropdown, DropdownMenu } from "reactstrap";
 import CreatableSelect from "react-select/creatable";
 import { X, ChevronDown } from "react-feather";
-import {
-  actionTypes,
-  types,
-  userTypeOptions,
-  userTargetTypes, actionTypesByTriggerType,
-} from "./constants";
+import { actionTypes, types, userTypeOptions, userTargetTypes, actionTypesByTriggerType } from "./constants";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectWorkflow,
   selectdFormActions,
-  selectAllowedUserList, selectSurveyNotifications, selectApplicationNotifications
+  selectAllowedUserList,
+  selectSurveyNotifications,
+  selectApplicationNotifications,
 } from "app/selectors/onboardingSelectors";
 import Select from "react-select";
 import { colourStyles } from "utility/select/selectSettigns";
-import {prepareSelectManagers} from "utility/select/prepareSelectData";
+import { prepareSelectManagers } from "utility/select/prepareSelectData";
 
-import onboardingSlice from 'app/slices/onboardingSlice';
-import {selectNotificationsAndWorkFlowsContext} from "../../../../app/selectors/layoutSelector";
+import onboardingSlice from "app/slices/onboardingSlice";
+import { selectNotificationsAndWorkFlowsContext } from "../../../../app/selectors/layoutSelector";
 
-const {
-  setWorkflowTriggers,
-} = onboardingSlice.actions;
+const { setWorkflowTriggers } = onboardingSlice.actions;
 
 const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
   const dispatch = useDispatch();
@@ -84,9 +73,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
             ? {
                 ...activeTrigger,
                 actions: activeTrigger.actions.map((activeAction) =>
-                  activeAction.id === action.id
-                    ? { ...activeAction, ...actionProperty }
-                    : activeAction
+                  activeAction.id === action.id ? { ...activeAction, ...actionProperty } : activeAction
                 ),
               }
             : activeTrigger
@@ -100,15 +87,13 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
       dispatch(
         setWorkflowTriggers(
           workflow.triggers.map((activeTrigger) =>
-          activeTrigger.id === trigger.id
-            ? {
-                ...activeTrigger,
-                actions: activeTrigger.actions.filter((activeAction) =>
-                  activeAction.id !== action.id
-                ),
-              }
-            : activeTrigger
-        )
+            activeTrigger.id === trigger.id
+              ? {
+                  ...activeTrigger,
+                  actions: activeTrigger.actions.filter((activeAction) => activeAction.id !== action.id),
+                }
+              : activeTrigger
+          )
         )
       );
     }
@@ -116,23 +101,12 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
 
   return (
     <ListGroupItem>
-      <X
-        size="15"
-        className="x-closer"
-        onClick={removeAction}
-      />
+      <X size="15" className="x-closer" onClick={removeAction} />
       <div className="d-flex flex-wrap justify-content-center align-items-center w-100">
-        <div className="mb-1 w-100 text-center text-primary">
-          Action #{keyAction + 1}
-        </div>
+        <div className="mb-1 w-100 text-center text-primary">Action #{keyAction + 1}</div>
         <div className="text-center w-100">
           <UncontrolledButtonDropdown>
-            <DropdownToggle
-              style={{ "border-radius": 0 }}
-              color="primary"
-              size="sm"
-              caret
-            >
+            <DropdownToggle style={{ "border-radius": 0 }} color="primary" size="sm" caret>
               Onboarding
               <ChevronDown size={15} />
             </DropdownToggle>
@@ -141,18 +115,12 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
             </DropdownMenu>
           </UncontrolledButtonDropdown>
           <UncontrolledButtonDropdown>
-            <DropdownToggle
-              style={{ "border-radius": 0 }}
-              color="primary"
-              size="sm"
-              caret
-            >
+            <DropdownToggle style={{ "border-radius": 0 }} color="primary" size="sm" caret>
               {getActionTypeName(action.action_type)}
               <ChevronDown size={15} />
             </DropdownToggle>
             <DropdownMenu>
-              {
-                actionTypesByTriggerType[trigger.trigger_type].map((action, label) => (
+              {actionTypesByTriggerType[trigger.trigger_type].map((action, label) => (
                 <DropdownItem
                   onClick={() =>
                     setActionProperty({
@@ -164,8 +132,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
                 >
                   {action.label}
                 </DropdownItem>
-              ))
-              }
+              ))}
             </DropdownMenu>
           </UncontrolledButtonDropdown>
           <UncontrolledButtonDropdown>
@@ -181,10 +148,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
             </DropdownToggle>
             <DropdownMenu>
               {actionData.map((actionObj) => (
-                <DropdownItem
-                  onClick={() => setActionProperty({ action_id: actionObj.id })}
-                  tag="button"
-                >
+                <DropdownItem onClick={() => setActionProperty({ action_id: actionObj.id })} tag="button">
                   {actionObj.action || actionObj.name}
                 </DropdownItem>
               ))}
@@ -200,10 +164,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
                 style={{ width: "200px" }}
                 isClearable={false}
                 options={userTypeOptions}
-                value={userTypeOptions.find(
-                  (userTypeOption) =>
-                    userTypeOption.value === action.user_target_type
-                )}
+                value={userTypeOptions.find((userTypeOption) => userTypeOption.value === action.user_target_type)}
                 onChange={(event) => {
                   event.value === userTargetTypes.subject
                     ? setActionProperty({ user_target_type: event.value })
@@ -228,9 +189,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
                   className="fix-margin-select"
                   onChange={(values) => {
                     setActionProperty({
-                      action_users: values
-                        ? values.map((value) => value.value)
-                        : [],
+                      action_users: values ? values.map((value) => value.value) : [],
                     });
                   }}
                   classNamePrefix="select"

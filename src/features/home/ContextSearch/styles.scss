@@ -1,8 +1,7 @@
 .context-search {
-
   .preview {
     .custom-badge.badge.badge-primary {
-      background-color: rgba(0,123,255,0.1);
+      background-color: rgba(0, 123, 255, 0.1);
       color: #007bff;
       padding: 6px;
       font-size: 85%;
@@ -15,7 +14,6 @@
 
   //transform: translateY(-100%);
   //-webkit-transform: translateY(-100%);
-
 
   &.slide-in {
     animation: slide-in 0.5s forwards;

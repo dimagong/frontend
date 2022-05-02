@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import TreeRenderer from './tree-renderer';
-import { TreeContext } from './tree-context';
+import TreeRenderer from "./tree-renderer";
+import { TreeContext } from "./tree-context";
 
 // :: <T>(node: T): string
 const defaultGetKey = (node) => node.id ?? node.key;

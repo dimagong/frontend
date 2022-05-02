@@ -21,7 +21,11 @@ const flatPromise = async (promise) => {
 
 const server = setupServer();
 
-const mockResponse = (url, data) => server.use(rest.get(url, (req, res, ctx) => res(ctx.json({ data }))));
+const mockResponse = (url, data) => {
+  const fullUrl = new URL(url, process.env.REACT_APP_API_URL).toString();
+
+  return server.use(rest.get(fullUrl, (req, res, ctx) => res(ctx.json({ data }))));
+};
 
 describe("masterSchemaApi", () => {
   beforeAll(() => server.listen());

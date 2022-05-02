@@ -1,22 +1,21 @@
 import React from "react";
-import {Button, Media, Spinner} from "reactstrap";
+import { Button, Media, Spinner } from "reactstrap";
 import noneAvatar from "../../../../assets/img/portrait/none-avatar.png";
 import fileService from "../../../../services/file.service";
-import {isEqual, debounce, isEmpty} from 'lodash'
-import {X} from 'react-feather'
+import { isEqual, debounce, isEmpty } from "lodash";
+import { X } from "react-feather";
 import UserService from "../../../../services/user.service";
-import {setEditUser} from "../../../../redux/actions/user-management/userEditActions";
-import {store} from '../../../../redux/storeConfig/store'
-import {connect} from "react-redux"
-import {bindActionCreators} from "redux";
-import {setUserList, updateUserInList, setUserProfile} from "../../../../redux/actions/user/userActions";
-import {setInvitationsList} from "../../../../redux/actions/user-management/InvitationsActions";
+import { setEditUser } from "../../../../redux/actions/user-management/userEditActions";
+import { store } from "../../../../redux/storeConfig/store";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { setUserList, updateUserInList, setUserProfile } from "../../../../redux/actions/user/userActions";
+import { setInvitationsList } from "../../../../redux/actions/user-management/InvitationsActions";
 
 class UserAvatar extends React.Component {
-
   state = {
     userAvatar: {},
-    isLoading: false
+    isLoading: false,
   };
 
   constructor(props) {
@@ -24,17 +23,17 @@ class UserAvatar extends React.Component {
   }
 
   async componentDidMount() {
-      this.showAvatar();
+    this.showAvatar();
   }
 
   async showAvatar() {
-    if(isEmpty(this.props.avatar)) {
+    if (isEmpty(this.props.avatar)) {
       return;
     }
     const userId = this.props.userId;
-    this.setState({isLoading: true});
-    this.setState({userAvatar: {...this.state.userAvatar, [this.props.userId]: await this.getUserAvatar(userId)}});
-    this.setState({isLoading: false});
+    this.setState({ isLoading: true });
+    this.setState({ userAvatar: { ...this.state.userAvatar, [this.props.userId]: await this.getUserAvatar(userId) } });
+    this.setState({ isLoading: false });
   }
 
   async componentDidUpdate(prevProps, prevState, snapshot) {
@@ -47,7 +46,7 @@ class UserAvatar extends React.Component {
 
   changeAvatar(event) {
     event.preventDefault();
-    let input = window.document.getElementById('input-user-edit-avatar');
+    let input = window.document.getElementById("input-user-edit-avatar");
     if (!input) return;
     input.click();
   }
@@ -63,26 +62,26 @@ class UserAvatar extends React.Component {
       return;
     }
     let formData = new FormData();
-    formData.set('avatar', files[0]);
-    event.target.value = '';
+    formData.set("avatar", files[0]);
+    event.target.value = "";
     const userId = this.props.userId;
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     const response = await fileService.changeUserAvatar(userId, formData);
-    this.setState({userAvatar: {...this.state.userAvatar, [userId]: await this.getUserAvatar(userId)}});
+    this.setState({ userAvatar: { ...this.state.userAvatar, [userId]: await this.getUserAvatar(userId) } });
     await this.dispatchEditUser();
-    this.setState({isLoading: false});
+    this.setState({ isLoading: false });
   }
 
   async removeAvatar() {
-    if (!window.confirm('Are you sure you want to delete avatar?')) {
+    if (!window.confirm("Are you sure you want to delete avatar?")) {
       return;
     }
     const userId = this.props.userId;
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     await fileService.deleteFile(this.props.avatar.id);
-    this.setState({userAvatar: {...this.state.userAvatar, [userId]: await this.getUserAvatar(userId)}});
+    this.setState({ userAvatar: { ...this.state.userAvatar, [userId]: await this.getUserAvatar(userId) } });
     await this.dispatchEditUser();
-    this.setState({isLoading: false});
+    this.setState({ isLoading: false });
   }
 
   isAvatarExist() {
@@ -94,68 +93,77 @@ class UserAvatar extends React.Component {
     const user = response.data.data;
     this.props.updateUserInList(user);
     this.props.setEditUser(user);
-    if(user.id === this.props.userProfile.id) {
+    if (user.id === this.props.userProfile.id) {
       this.props.setUserProfile(user);
     }
-
   };
 
   render() {
-    return <Media className="mt-md-1 mt-0 mr-1" left
-                  style={{'display': 'flex', 'flex-direction': 'column', position: 'relative'}}>
+    return (
       <Media
-        className="rounded"
-        object
-        src={
-          this.isAvatarExist()
-            ? this.state.userAvatar[this.props.userId] : noneAvatar
-        }
-        alt="Generic placeholder image"
-        height="112"
-        width="112"
-      />
+        className="mt-md-1 mt-0 mr-1"
+        left
+        style={{ display: "flex", "flex-direction": "column", position: "relative" }}
+      >
+        <Media
+          className="rounded"
+          object
+          src={this.isAvatarExist() ? this.state.userAvatar[this.props.userId] : noneAvatar}
+          alt="Generic placeholder image"
+          height="112"
+          width="112"
+        />
 
-        <div style={{'margin-top': '5px'}} className="d-flex justify-content-center">
-          <Button.Ripple disabled={this.state.isLoading} onClick={(event) => this.changeAvatar(event)} outline size="sm"
-                         color="primary">Change</Button.Ripple>
-          <input id="input-user-edit-avatar" type="file" hidden
-                 onChange={(event) => this.onChangeAvatar(event)}/>
+        <div style={{ "margin-top": "5px" }} className="d-flex justify-content-center">
+          <Button.Ripple
+            disabled={this.state.isLoading}
+            onClick={(event) => this.changeAvatar(event)}
+            outline
+            size="sm"
+            color="primary"
+          >
+            Change
+          </Button.Ripple>
+          <input id="input-user-edit-avatar" type="file" hidden onChange={(event) => this.onChangeAvatar(event)} />
         </div>
 
-
-      {
-        !this.isAvatarExist() || this.state.isLoading ? null :
-          <X className="x-closer" onClick={() => this.removeAvatar()} size={15} style={{
-            position: 'absolute',
-            right: '5px',
-            top: '5px',
-            border: '1px',
-            'border-radius': '10px',
-            color: '#000',
-            background: '#fff'
-          }}/>
-      }
-      {
-        !this.state.isLoading ? null :
-          <div style={{
-            position: 'absolute', top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)'
-          }}>
-            <Spinner color="primary"/>
+        {!this.isAvatarExist() || this.state.isLoading ? null : (
+          <X
+            className="x-closer"
+            onClick={() => this.removeAvatar()}
+            size={15}
+            style={{
+              position: "absolute",
+              right: "5px",
+              top: "5px",
+              border: "1px",
+              "border-radius": "10px",
+              color: "#000",
+              background: "#fff",
+            }}
+          />
+        )}
+        {!this.state.isLoading ? null : (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <Spinner color="primary" />
           </div>
-      }
-
-
-    </Media>
+        )}
+      </Media>
+    );
   }
 }
 
-
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    userProfile: state.user.profile
-  }
+    userProfile: state.user.profile,
+  };
 };
 
 const mapActionsToProps = (dispatch) => {
@@ -163,6 +171,6 @@ const mapActionsToProps = (dispatch) => {
     updateUserInList: bindActionCreators(updateUserInList, dispatch),
     setEditUser: bindActionCreators(setEditUser, dispatch),
     setUserProfile: bindActionCreators(setUserProfile, dispatch),
-  }
-}
-export default connect(mapStateToProps, mapActionsToProps)(UserAvatar)
+  };
+};
+export default connect(mapStateToProps, mapActionsToProps)(UserAvatar);

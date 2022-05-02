@@ -1,7 +1,7 @@
-import axios from '../overrides/axios';
+import axios from "../overrides/axios";
 
 class AbilityService {
-  allow({user_id, organization_type, organization_id, ability}) {
+  allow({ user_id, organization_type, organization_id, ability }) {
     return axios.post("/api/ability/allow", {
       ability,
       organization_type,
@@ -10,7 +10,7 @@ class AbilityService {
     });
   }
 
-  disallow({user_id, organization_type, organization_id, ability}) {
+  disallow({ user_id, organization_type, organization_id, ability }) {
     return axios.post("/api/ability/disallow", {
       ability,
       organization_type,
@@ -19,7 +19,7 @@ class AbilityService {
     });
   }
 
-  getList({user_id, organization_type, organization_id}) {
+  getList({ user_id, organization_type, organization_id }) {
     return axios.post("/api/ability/organization", {
       organization_type,
       organization_id,

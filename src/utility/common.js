@@ -5,7 +5,10 @@ export function capitalizeFirstLetter(string) {
 }
 
 export function capitalizeAll(string) {
-  return string?.split(" ").map((word) => capitalizeFirstLetter(word)).join(" ")
+  return string
+    ?.split(" ")
+    .map((word) => capitalizeFirstLetter(word))
+    .join(" ");
 }
 
 export function getIndexById(arr, id) {
@@ -20,25 +23,24 @@ export function getUserAndUserIndex(arr, id) {
   return {
     userIndex: getIndexById(arr, id),
     user: getUserById(arr, id),
-  }
+  };
 }
 
 export function mergeObjects(obj1, obj2) {
-  if (typeof obj2 !== 'object') {
-    return obj1 + obj2
+  if (typeof obj2 !== "object") {
+    return obj1 + obj2;
   }
-  Object.keys(obj2).forEach(item => {
+  Object.keys(obj2).forEach((item) => {
     if (obj1.hasOwnProperty(item)) {
-      obj1[item] = mergeObjects(obj1[item], obj2[item])
+      obj1[item] = mergeObjects(obj1[item], obj2[item]);
     } else {
-      obj1[item] = obj2[item]
+      obj1[item] = obj2[item];
     }
   });
   return obj1;
 }
 
-export const getTimeDifference = (from, to ) => {
-
+export const getTimeDifference = (from, to) => {
   const addZero = (number) => {
     let toString = number.toString();
 
@@ -56,9 +58,14 @@ export const getTimeDifference = (from, to ) => {
   let result;
 
   if (diffDuration.asMinutes() > 59) {
-    result = addZero(Math.floor(diffDuration.asHours())) + ":" + addZero(diffDuration.minutes()) + ":" + addZero(diffDuration.seconds())
+    result =
+      addZero(Math.floor(diffDuration.asHours())) +
+      ":" +
+      addZero(diffDuration.minutes()) +
+      ":" +
+      addZero(diffDuration.seconds());
   } else {
-    result = addZero(diffDuration.minutes()) + ":" + addZero(diffDuration.seconds())
+    result = addZero(diffDuration.minutes()) + ":" + addZero(diffDuration.seconds());
   }
 
   return result;

@@ -1,13 +1,13 @@
-import React from "react"
-import { Card, CardHeader, CardBody, CardTitle, Button } from "reactstrap"
-import { toast } from "react-toastify"
+import React from "react";
+import { Card, CardHeader, CardBody, CardTitle, Button } from "reactstrap";
+import { toast } from "react-toastify";
 
 class Toastr extends React.Component {
-  notifyDefault = () => toast("This is default toast!")
-  notifySuccess = () => toast.success("This is success toast!")
-  notifyError = () => toast.error("This is error toast!")
-  notifyInfo = () => toast.info("This is info toast!")
-  notifyWarning = () => toast.warning("This is warning toast!")
+  notifyDefault = () => toast("This is default toast!");
+  notifySuccess = () => toast.success("This is success toast!");
+  notifyError = () => toast.error("This is error toast!");
+  notifyInfo = () => toast.info("This is info toast!");
+  notifyWarning = () => toast.warning("This is warning toast!");
 
   render() {
     return (
@@ -44,8 +44,8 @@ class Toastr extends React.Component {
           </div>
         </CardBody>
       </Card>
-    )
+    );
   }
 }
 
-export default Toastr
+export default Toastr;

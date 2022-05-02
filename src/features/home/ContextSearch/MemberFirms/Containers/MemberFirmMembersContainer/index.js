@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 
 import MemberFirmMembersComponent from "./Components/MemberFirmMembersComponent";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getSelectedMemberFirm,
   getSelectedMemberFirmPotentialUsers,
@@ -13,10 +13,7 @@ import { createLoadingSelector } from "app/selectors/loadingSelector";
 
 import appSlice from "app/slices/appSlice";
 
-const {
-  getMemberFirmUsersRequest,
-  getMemberFirmPotentialUsersRequest,
-} = appSlice.actions;
+const { getMemberFirmUsersRequest, getMemberFirmPotentialUsersRequest } = appSlice.actions;
 
 const MemberFirmMembersContainer = ({ onNavigateToUserProfile }) => {
   const dispatch = useDispatch();
@@ -38,7 +35,7 @@ const MemberFirmMembersContainer = ({ onNavigateToUserProfile }) => {
   useEffect(() => {
     dispatch(getMemberFirmUsersRequest(selectedMemberFirm.id));
     dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id));
-    dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id))
+    dispatch(getMemberFirmPotentialUsersRequest(selectedMemberFirm.id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMemberFirm.id]);
 
@@ -53,8 +50,7 @@ const MemberFirmMembersContainer = ({ onNavigateToUserProfile }) => {
       potentialMembers={potentialMembers}
       memberFirm={selectedMemberFirm}
     />
-  )
+  );
 };
-
 
 export default MemberFirmMembersContainer;

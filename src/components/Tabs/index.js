@@ -1,32 +1,27 @@
-import React from 'react'
-import {ChevronLeft, ChevronRight} from 'react-feather'
-import {
-  Pagination,
-  PaginationLink,
-  PaginationItem,
-} from 'reactstrap';
+import React from "react";
+import { ChevronLeft, ChevronRight } from "react-feather";
+import { Pagination, PaginationLink, PaginationItem } from "reactstrap";
 
-import './styles.scss'
+import "./styles.scss";
 
-const Tabs = ({tabs, onChange, active}) => {
-
+const Tabs = ({ tabs, onChange, active }) => {
   const handlePrevSelect = () => {
-    const tabIndex = tabs.indexOf(active)
+    const tabIndex = tabs.indexOf(active);
     if (~tabIndex && tabIndex !== 0) {
-      handleTabChange(tabs[tabIndex-1])
+      handleTabChange(tabs[tabIndex - 1]);
     }
-  }
+  };
 
   const handleNextSelect = () => {
-    const tabIndex = tabs.indexOf(active)
+    const tabIndex = tabs.indexOf(active);
     if (~tabIndex && tabIndex !== tabs.length - 1) {
-      handleTabChange(tabs[tabIndex + 1])
+      handleTabChange(tabs[tabIndex + 1]);
     }
-  }
+  };
 
   const scrollIntoContainerView = (tab) => {
     const element = document.getElementById(tab);
-    const container = document.getElementById("tabs-container")
+    const container = document.getElementById("tabs-container");
 
     const viewPosition = container.offsetWidth + container.scrollLeft;
 
@@ -35,20 +30,20 @@ const Tabs = ({tabs, onChange, active}) => {
     const elementLeftOffset = element.offsetLeft - container.offsetLeft;
 
     // if item overflow right border
-    if(viewPosition - (elementLeftOffset + element.offsetWidth) < 0) {
-      container.scrollLeft += -(viewPosition - (elementLeftOffset + element.offsetWidth))
+    if (viewPosition - (elementLeftOffset + element.offsetWidth) < 0) {
+      container.scrollLeft += -(viewPosition - (elementLeftOffset + element.offsetWidth));
     }
 
     // if item overflow left border
-    if(elementLeftOffset < container.scrollLeft) {
-      container.scrollLeft = elementLeftOffset
+    if (elementLeftOffset < container.scrollLeft) {
+      container.scrollLeft = elementLeftOffset;
     }
-  }
+  };
 
   const handleTabChange = (tab) => {
     onChange(tab);
-    scrollIntoContainerView(tab)
-  }
+    scrollIntoContainerView(tab);
+  };
 
   return (
     <Pagination className=" justify-content-center mt-1 custom-tabs">
@@ -60,11 +55,12 @@ const Tabs = ({tabs, onChange, active}) => {
       <div className="custom-tabs_tabs" id={"tabs-container"}>
         {tabs.map((item) => (
           <span key={item} className="custom-tabs_tab" id={item}>
-            <PaginationItem
-              active={item === active}
-
-            >
-              <PaginationLink onClick={() => {handleTabChange(item)}}>
+            <PaginationItem active={item === active}>
+              <PaginationLink
+                onClick={() => {
+                  handleTabChange(item);
+                }}
+              >
                 {item}
               </PaginationLink>
             </PaginationItem>
@@ -77,7 +73,7 @@ const Tabs = ({tabs, onChange, active}) => {
         </PaginationLink>
       </PaginationItem>
     </Pagination>
-  )
-}
+  );
+};
 
 export default Tabs;

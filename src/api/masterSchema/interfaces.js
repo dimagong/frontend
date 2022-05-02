@@ -90,4 +90,6 @@ export const MasterSchemaHierarchyInterface = yup
 
 export const MasterSchemaFlatGroupsInterface = yup.array(MasterSchemaFlatGroupInterface).test(Array.isArray);
 
-export const MasterSchemaUnapprovedFieldsInterface = yup.array(MasterSchemaUnapprovedFieldInterface).test(Array.isArray);
+export const MasterSchemaUnapprovedFieldsInterface = yup
+  .array(MasterSchemaUnapprovedFieldInterface)
+  .test(Array.isArray);

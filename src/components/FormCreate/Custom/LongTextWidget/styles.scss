@@ -16,26 +16,26 @@
     background-color: #eee;
 
     &::-webkit-input-placeholder {
-      color: rgba(112,112,112, 0.72);
+      color: rgba(112, 112, 112, 0.72);
     }
     /* Firefox 4-18 */
     &:-moz-placeholder {
-      color: rgba(112,112,112, 0.72);
+      color: rgba(112, 112, 112, 0.72);
     }
     /* Firefox 19-50 */
     &::-moz-placeholder {
-      color: rgba(112,112,112, 0.72);
+      color: rgba(112, 112, 112, 0.72);
     }
     /* - Internet Explorer 10–11
        - Internet Explorer Mobile 10-11 */
     &:-ms-input-placeholder {
-      color: rgba(112,112,112, 0.72) !important;
+      color: rgba(112, 112, 112, 0.72) !important;
     }
     &::-ms-input-placeholder {
-      color: rgba(112,112,112, 0.72);
+      color: rgba(112, 112, 112, 0.72);
     }
     &::placeholder {
-      color: rgba(112,112,112, 0.72);
+      color: rgba(112, 112, 112, 0.72);
     }
   }
 }
@@ -47,26 +47,26 @@
   }
 }
 .custom-long-text-area-widget {
-    .textarea:focus {
-      outline: 0;
-    }
-    .textarea {
-      color: unset;
-      background: #eee;
-      border: 0;
-      border-bottom: 1px solid #707070;
-      padding: 12px 15px;
-    }
-    .modal-textarea {
-      margin-bottom: 15px;
-    }
+  .textarea:focus {
+    outline: 0;
   }
+  .textarea {
+    color: unset;
+    background: #eee;
+    border: 0;
+    border-bottom: 1px solid #707070;
+    padding: 12px 15px;
+  }
+  .modal-textarea {
+    margin-bottom: 15px;
+  }
+}
 .long-text-area-container {
   .long-text-area-open-more {
-      float: right;
-      cursor: pointer;
-      max-width: 40%;
-    }
+    float: right;
+    cursor: pointer;
+    max-width: 40%;
+  }
 }
 .modal-long-text-area-widget {
   padding-bottom: 15px;

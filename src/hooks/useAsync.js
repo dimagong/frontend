@@ -43,7 +43,7 @@ export const useAsync = ({ useObservable } = { useObservable: false }) => {
             catchError((error) => {
               setError(error);
               throw error;
-            }),
+            })
           );
         }
       : (promise) => {

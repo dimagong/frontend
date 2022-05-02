@@ -19,13 +19,13 @@
     black: 900,
     ultra: 900,
     ultra-black: 900,
-    extra-ultra: 900
+    extra-ultra: 900,
   );
-  
+
   $output: $weight;
   @if map-has-key($weights, $weight) {
     $output: map-get($weights, $weight);
   }
-  
+
   font-weight: $output;
 }

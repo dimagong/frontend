@@ -1,9 +1,6 @@
-import { Base64 } from 'js-base64';
+import { Base64 } from "js-base64";
 
 export function dataURItoBlob(dataURI) {
-
-
-
   try {
     // Split metadata from data
     var splitted = dataURI.split(","); // Split params
@@ -26,8 +23,7 @@ export function dataURItoBlob(dataURI) {
       name = properties[0].split("=")[1];
     } // Built the Uint8Array Blob parameter from the base64 string.
 
-
-    var binary = Base64.atob((splitted[1]));
+    var binary = Base64.atob(splitted[1]);
     var array = [];
 
     for (var i = 0; i < binary.length; i++) {
@@ -35,16 +31,15 @@ export function dataURItoBlob(dataURI) {
     } // Create the blob object
 
     var blob = new window.Blob([new Uint8Array(array)], {
-      type: type
+      type: type,
     });
-
   } catch (e) {
-    throw new Error(e)
+    throw new Error(e);
   }
 
   return {
     blob: blob,
-    name: name
+    name: name,
   };
 }
 
@@ -65,7 +60,7 @@ export function processFile(file) {
         dataURL: addNameToDataURL(event.target.result, name),
         name: name,
         size: size,
-        type: type
+        type: type,
       });
     };
 
@@ -78,7 +73,7 @@ export function processFiles(files) {
 }
 
 export function getFile(file, callback) {
-  var reader  = new FileReader();
+  var reader = new FileReader();
   reader.onloadend = (...args) => {
     callback && callback(reader);
   };
@@ -88,19 +83,21 @@ export function getFile(file, callback) {
 }
 
 export function extractFileInfo(dataURLs) {
-  return dataURLs.filter(function (dataURL) {
-    return typeof dataURL !== "undefined" && dataURL !== 'data:';
-  }).map(function (dataURL) {
-    var _dataURItoBlob = dataURItoBlob(dataURL),
-      blob = _dataURItoBlob.blob,
-      name = _dataURItoBlob.name;
+  return dataURLs
+    .filter(function (dataURL) {
+      return typeof dataURL !== "undefined" && dataURL !== "data:";
+    })
+    .map(function (dataURL) {
+      var _dataURItoBlob = dataURItoBlob(dataURL),
+        blob = _dataURItoBlob.blob,
+        name = _dataURItoBlob.name;
 
-    return {
-      name: name,
-      size: blob.size,
-      type: blob.type
-    };
-  });
+      return {
+        name: name,
+        size: blob.size,
+        type: blob.type,
+      };
+    });
 }
 export function deepCompare() {
   var i, l, leftChain, rightChain;
@@ -110,7 +107,7 @@ export function deepCompare() {
 
     // remember that NaN === NaN returns false
     // and isNaN(undefined) returns true
-    if (isNaN(x) && isNaN(y) && typeof x === 'number' && typeof y === 'number') {
+    if (isNaN(x) && isNaN(y) && typeof x === "number" && typeof y === "number") {
       return true;
     }
 
@@ -124,11 +121,13 @@ export function deepCompare() {
     // Works in case when functions are created in constructor.
     // Comparing dates is a common scenario. Another built-ins?
     // We can even handle functions passed across iframes
-    if ((typeof x === 'function' && typeof y === 'function') ||
+    if (
+      (typeof x === "function" && typeof y === "function") ||
       (x instanceof Date && y instanceof Date) ||
       (x instanceof RegExp && y instanceof RegExp) ||
       (x instanceof String && y instanceof String) ||
-      (x instanceof Number && y instanceof Number)) {
+      (x instanceof Number && y instanceof Number)
+    ) {
       return x.toString() === y.toString();
     }
 
@@ -171,10 +170,9 @@ export function deepCompare() {
         return false;
       }
 
-      switch (typeof (x[p])) {
-        case 'object':
-        case 'function':
-
+      switch (typeof x[p]) {
+        case "object":
+        case "function":
           leftChain.push(x);
           rightChain.push(y);
 
@@ -203,7 +201,6 @@ export function deepCompare() {
   }
 
   for (i = 1, l = arguments.length; i < l; i++) {
-
     leftChain = []; //Todo: this can be cached
     rightChain = [];
 
@@ -216,8 +213,8 @@ export function deepCompare() {
 }
 
 export function makeid(length) {
-  let result = '';
-  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = "";
+  let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));

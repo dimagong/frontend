@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { Label } from "reactstrap";
 
 const labelStyles = {
-  marginBottom: '6px',
-  fontWeight: '350',
-  fontSize: '0.9375rem',
-  lineHeight: '1.25',
-  color: '#707070',
+  marginBottom: "6px",
+  fontWeight: "350",
+  fontSize: "0.9375rem",
+  lineHeight: "1.25",
+  color: "#707070",
 };
 
 let formFieldCounter = 0;
@@ -20,7 +20,11 @@ const FormField = ({ dirty, invalid, errors, label, error, children }) => {
       case "function":
         return label(id);
       default:
-         return label ? <Label for={id} style={labelStyles}>{label}</Label> : null;
+        return label ? (
+          <Label for={id} style={labelStyles}>
+            {label}
+          </Label>
+        ) : null;
     }
   };
 

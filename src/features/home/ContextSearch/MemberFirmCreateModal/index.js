@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import * as yup from 'yup'
+import React, { useState, useEffect } from "react";
+import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
@@ -10,12 +10,10 @@ import { Input, Select } from "features/Surveys/Components/SurveyFormComponents"
 
 import appSlice from "app/slices/appSlice";
 
-import './styles.scss'
+import "./styles.scss";
 import CustomModal from "../../../../components/CustomModal";
 
-const {
-  createMemberFirmRequest,
-} = appSlice.actions;
+const { createMemberFirmRequest } = appSlice.actions;
 
 const editMemberFirmValidation = yup.object().shape({
   name: yup.string().trim().required("Title is required"),
@@ -26,8 +24,7 @@ const createMemberFirmValidation = yup.object().shape({
   network_id: yup.number().required("Select organisation for member firm"),
 });
 
-const MemberFirmCreateModal = ({isOpen, onClose, isEdit}) => {
-
+const MemberFirmCreateModal = ({ isOpen, onClose, isEdit }) => {
   const dispatch = useDispatch();
 
   const [memberFirmTitle, setMemberFirmTitle] = useState("");
@@ -45,12 +42,11 @@ const MemberFirmCreateModal = ({isOpen, onClose, isEdit}) => {
       setMemberFirmTitle("");
       setMemberFirmOrganization(null);
 
-      onClose()
+      onClose();
     }
   };
 
   const handleSubmit = async () => {
-
     const memberFirmData = {
       name: memberFirmTitle,
       network_id: memberFirmOrganization?.value?.id,
@@ -58,14 +54,13 @@ const MemberFirmCreateModal = ({isOpen, onClose, isEdit}) => {
 
     const validationSchema = isEdit ? editMemberFirmValidation : createMemberFirmValidation;
 
-    const isValid = await validationSchema
-      .validate(memberFirmData)
-      .catch((err) => { toast.error(err.message) });
+    const isValid = await validationSchema.validate(memberFirmData).catch((err) => {
+      toast.error(err.message);
+    });
 
     if (!isValid) return;
 
     if (isEdit) {
-
       console.error("Handle member firm edit");
 
       handleModalClose();
@@ -76,20 +71,19 @@ const MemberFirmCreateModal = ({isOpen, onClose, isEdit}) => {
   };
 
   const handleOrganizationSelect = (option) => {
-    setMemberFirmOrganization(option)
+    setMemberFirmOrganization(option);
   };
 
-  const formatOrganizations = (organizations) => (
+  const formatOrganizations = (organizations) =>
     organizations.map((organization) => ({
       value: organization,
       label: organization.name,
-    }))
-  );
+    }));
 
   // Close modal after user hit submit and request ends with no error
   useEffect(() => {
     if (!error && prevMemberFirmCreationLoadingState === true && !isMemberFirmCreationProceeding) {
-      handleModalClose()
+      handleModalClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMemberFirmCreationProceeding]);
@@ -118,9 +112,7 @@ const MemberFirmCreateModal = ({isOpen, onClose, isEdit}) => {
       />
       {!isEdit && (
         <div className="survey-create-modal_select">
-          <label htmlFor="organization">
-            Organisation
-          </label>
+          <label htmlFor="organization">Organisation</label>
           <Select
             onChange={handleOrganizationSelect}
             value={memberFirmOrganization}
@@ -128,9 +120,8 @@ const MemberFirmCreateModal = ({isOpen, onClose, isEdit}) => {
           />
         </div>
       )}
-
     </CustomModal>
-  )
+  );
 };
 
 export default MemberFirmCreateModal;
