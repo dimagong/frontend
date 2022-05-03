@@ -194,6 +194,7 @@ const OnboardingComponent = ({profile, userApplications}) => {
                                   {...commonFormProps}
                                   inputDisabled={false}
                                   onSaveButtonHidden={true}
+                                  onboardingUser={profile}
                                   onSubmit={(formData) => submitOnboardingForm(formData)}
                                   onChange={(data) => {
                                     setDebounced(true);
