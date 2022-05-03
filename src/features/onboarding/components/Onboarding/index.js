@@ -5,7 +5,6 @@ import { selectLoading } from "app/selectors";
 
 import { isEmpty } from "lodash";
 import FormCreate from "components/FormCreate/FormCreate";
-import { debounce } from "lodash";
 import OnboardingSurvey from "../../OnboardingSurvey";
 import "./styles.scss";
 
@@ -159,6 +158,7 @@ const OnboardingComponent = ({ profile, userApplications }) => {
                                 {...commonFormProps}
                                 inputDisabled={false}
                                 onSaveButtonHidden={true}
+                                onboardingUser={profile}
                                 onSubmit={(formData) => submitOnboardingForm(formData)}
                                 onChange={(data) => {
                                   // setDebounced(true);
@@ -181,7 +181,7 @@ const OnboardingComponent = ({ profile, userApplications }) => {
                   } else {
                     return (
                       <TabPane key={index} tabId={application.tabId}>
-                        <div className="onboarding-title"></div>
+                        <div className="onboarding-title" />
                         {application.id === profile.onboarding.id && (
                           <OnboardingSurvey
                             onSurveyFinish={() => setRecentlySubmitted(true)}
