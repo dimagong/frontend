@@ -79,9 +79,13 @@
 }
 
 .remove-org-btn {
-  float: right;
+  display: flex !important;
+  margin: 0 auto;
 }
 
 .organizations-list_list {
   cursor: pointer;
+}
+.organization-add-modal_title {
+  text-align: center;
 }
