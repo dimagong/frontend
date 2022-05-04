@@ -19,6 +19,7 @@ const AssignedSurveyComponent = ({
   isSurveyDeleteProceeding,
   onFeedbackSubmit,
   isFeedbackSubmitProceeding,
+  isFinishButtonDisabled,
 }) => {
   const commonAssignedSurveyComponentsProps = {
     isSurveyDeleteProceeding,
@@ -49,6 +50,7 @@ const AssignedSurveyComponent = ({
                 onFinishGrading={onFinishGrading}
                 onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
                 onForceSurveyReviewHide={onForceSurveyReviewHide}
+                isFinishButtonDisabled={isFinishButtonDisabled}
                 {...commonAssignedSurveyComponentsProps}
               />
             ),
