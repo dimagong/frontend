@@ -6,7 +6,7 @@ import AssignedSurveyComponent from "./components/AssignedSurveyComponent";
 import { selectAssignedSurveyById } from "app/selectors/userSelectors";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectError } from "app/selectors";
-import { usePrevious } from "hooks/common";
+import { useCallbackOnLoad, usePrevious } from "hooks/common";
 import { toast } from "react-toastify";
 
 import { appSlice } from "app/slices/appSlice";
@@ -28,6 +28,8 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
   const surveyData = useSelector(selectAssignedSurveyById(selectedSurveyId));
   const isSurveyDeleteProceeding = useSelector(createLoadingSelector([deleteAssignedSurveyRequest.type], true));
   const isFeedbackSubmitProceeding = useSelector(createLoadingSelector([addFeedbackToQuestionRequest.type], true));
+
+  useCallbackOnLoad([finishGradingRequest.type], () => setIsFinishButtonBlocked(false), true);
 
   const prevSurveyDeleteLoadingState = usePrevious(isSurveyDeleteProceeding);
 
@@ -51,6 +53,7 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
     if (answersWithoutGrade.length) {
       toast.error("Please, grade all text answers");
     } else {
+      setIsFinishButtonBlocked(true);
       dispatch(finishGradingRequest(surveyData.id));
     }
   };
