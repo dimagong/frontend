@@ -42,7 +42,7 @@ const OnboardingSurveyStatusComponent = ({
     // eslint-disable-next-line
   }, [survey.id]);
 
-  const isSurveyPassed = surveyStats && surveyStats.total > surveyStats.min_percent_pass;
+  const isSurveyPassed = surveyStats && surveyStats.total >= surveyStats.min_percent_pass;
 
   if (status === "approved") {
     return (
