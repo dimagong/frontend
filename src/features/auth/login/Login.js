@@ -19,9 +19,14 @@ import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
+import { useMutation, useQueryClient } from 'react-query'
+
 import TermsAndConditions from "assets/ValidPath-privacy-policy.pdf";
 
 import appSlice from "app/slices/appSlice";
+import instance from "../../../api";
+import {loginPath} from "../../../constants/auth";
+import authService from "../../../services/auth";
 
 const { loginRequest } = appSlice.actions;
 
@@ -29,10 +34,53 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+  const [isSecretCodeRequested, setIsSecretCodeRequested] = useState(false);
+  const [secretCode, setSecretCode] = useState("");
+
+  const queryClient = useQueryClient();
+
+  const login = useMutation('login', (loginData) => {
+    return instance({
+      url: loginPath,
+      method: "POST",
+      data: loginData,
+    });
+  }, {
+    onSuccess: response => {
+      if (response.data.data.needs_2fa) {
+        queryClient.setQueryData("tmp_token", response.data.data.tmp_token);
+        setIsSecretCodeRequested(true);
+      } else {
+        authService.setToken(response.data.data.token);
+        dispatch(loginRequest())
+      }
+    }
+  });
+
+  const loginWithSecretCode = useMutation('loginWithSecretCode', (loginData) => {
+    return instance({
+      url: "/api/login-two-factor",
+      method: "POST",
+      data: loginData,
+    });
+  }, {
+    onSuccess: response => {
+      authService.setToken(response.data.data.token);
+      dispatch(loginRequest())
+    }
+  });
+
 
   const handleLogin = (e) => {
     e.preventDefault();
-    dispatch(loginRequest({ email, password, device_name: "browser", code: "" }));
+    // dispatch(loginRequest({ email, password, device_name: "browser", code: "" }));
+    login.mutate({ email, password, device_name: "browser", code: "", remember_me: false })
+  };
+
+  const handleSecretCodeSend = (e) => {
+    e.preventDefault();
+    loginWithSecretCode.mutate({tmp_token: queryClient.getQueryData("tmp_token"), device_name: "browser", remember_me: false, code: secretCode});
+
   };
 
   const handlePassword = (e) => {
@@ -41,6 +89,10 @@ const Login = () => {
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
+  };
+
+  const handleSecretCode = (e) => {
+    setSecretCode(e.target.value);
   };
 
   return (
@@ -60,35 +112,50 @@ const Login = () => {
                 </CardHeader>
                 <p className="px-2 auth-title">Please login to proceed.</p>
                 <CardBody className="pt-1">
-                  <Form onSubmit={handleLogin}>
-                    <FormGroup className="form-label-group position-relative has-icon-left">
-                      <Input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={handleEmail}
-                        required
-                        // {...{invalid: 'email' in this.state.errors}}
-                      />
-                      <div className="form-control-position">
-                        <Mail size={15} />
-                      </div>
-                      <Label>Email</Label>
-                      <FormFeedback>Oh noes! that name is already taken</FormFeedback>
-                    </FormGroup>
-                    <FormGroup className="form-label-group position-relative has-icon-left">
-                      <Input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={handlePassword}
-                        required
-                      />
-                      <div className="form-control-position">
-                        <Lock size={15} />
-                      </div>
-                      <Label>Password</Label>
-                    </FormGroup>
+                  <Form onSubmit={isSecretCodeRequested ? handleSecretCodeSend : handleLogin}>
+                    {isSecretCodeRequested ? (
+                      <FormGroup className="form-label-group position-relative">
+                        <Input
+                          type="text"
+                          placeholder="Enter secret code"
+                          value={secretCode}
+                          onChange={handleSecretCode}
+                          required
+                        />
+                        <Label>Enter Secret Code</Label>
+                      </FormGroup>
+                    ) : (
+                      <>
+                        <FormGroup className="form-label-group position-relative has-icon-left">
+                          <Input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={handleEmail}
+                            required
+                            // {...{invalid: 'email' in this.state.errors}}
+                          />
+                          <div className="form-control-position">
+                            <Mail size={15} />
+                          </div>
+                          <Label>Email</Label>
+                          <FormFeedback>Oh noes! that name is already taken</FormFeedback>
+                        </FormGroup>
+                        <FormGroup className="form-label-group position-relative has-icon-left">
+                          <Input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={handlePassword}
+                            required
+                          />
+                          <div className="form-control-position">
+                            <Lock size={15} />
+                          </div>
+                          <Label>Password</Label>
+                        </FormGroup>
+                      </>
+                    )}
                     <FormGroup className="d-flex justify-content-between align-items-center">
                       <Checkbox
                         color="primary"
