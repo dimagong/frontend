@@ -68,7 +68,11 @@ const CompletedSurveyComponent = ({
             icon={<Check className="vx-icon" size={16} />}
             label="Show prospect results of survey"
             onChange={handleShowSurveyResults}
-            defaultChecked={surveyData.is_show_result}
+            checked={
+              showSurveyResults.data && showSurveyResults?.data?.id === surveyData.id
+                ? showSurveyResults.data?.is_show_result
+                : surveyData.is_show_result
+            }
           />
         </div>
       </div>
