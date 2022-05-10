@@ -5,6 +5,9 @@ import moment from "moment";
 import LoadingButton from "components/LoadingButton";
 
 import "./styles.scss";
+import { Check } from "react-feather";
+import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import { useSurveyShowResults } from "../../hooks/useSurveyShowResults";
 
 const stats = [
   {
@@ -29,6 +32,12 @@ const CompletedSurveyComponent = ({
 }) => {
   stats[0].color = surveyData?.interaction_version.min_percent_pass <= surveyData.stats.total ? "#00BF00" : "#d33c30";
 
+  const showSurveyResults = useSurveyShowResults(surveyData.id);
+
+  const handleShowSurveyResults = (show) => {
+    showSurveyResults.mutate(show.target.checked);
+  };
+
   return (
     <Card className="survey-results">
       <div className="survey-results_stats">
@@ -50,6 +59,17 @@ const CompletedSurveyComponent = ({
           {surveyData.stats.marked_by.map((reviewer) => (
             <div className="survey-results_marked-by_list-tile">{`${reviewer.first_name} ${reviewer.last_name}`}</div>
           ))}
+        </div>
+      </div>
+      <div className={"survey-results_show-checkbox"}>
+        <div className={"survey-results_show-checkbox_container"}>
+          <Checkbox
+            color="primary"
+            icon={<Check className="vx-icon" size={16} />}
+            label="Show prospect results of survey"
+            onChange={handleShowSurveyResults}
+            defaultChecked={surveyData.is_show_result}
+          />
         </div>
       </div>
       <div className="survey-results_footer">
