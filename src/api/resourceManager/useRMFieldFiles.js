@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 import { clientAPI } from "../clientAPI";
-import { useGenericMutation } from "../useGenericMutation";
+import { useGenericMutationDeprecated } from "../useGenericMutation";
 
 import { downloadBlob } from "../../services/files.service";
 
@@ -22,7 +22,7 @@ export const useRMFieldFiles = ({ fieldId }, options = {}) => {
 };
 
 export const useUploadRMFile = ({ fieldId }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     queryKey: [RMFieldFilesQueryKey, fieldId],
     mutationFn: (data) => clientAPI.post("api/resource-manager-field-file", data),
     ...options,
@@ -30,7 +30,7 @@ export const useUploadRMFile = ({ fieldId }, options = {}) => {
 };
 
 export const useDownloadRMFile = ({ fileId, filename }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     mutationFn: () =>
       clientAPI
         .get(`api/resource-manager-field-file/${fileId}/download`, {
@@ -45,7 +45,7 @@ export const useDownloadRMFile = ({ fileId, filename }, options = {}) => {
 };
 
 export const useEditRMFile = ({ fileId }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     mutationFn: () =>
       clientAPI
         .post(`api/resource-manager-field-file/${fileId}/start-editing`, {
@@ -64,7 +64,7 @@ export const useEditRMFile = ({ fileId }, options = {}) => {
 };
 
 export const useDeleteRMFile = ({ fileId, fieldId }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     queryKey: [RMFieldFilesQueryKey, fieldId],
     mutationFn: () => clientAPI.delete(`api/resource-manager-field-file/${fileId}`),
     ...options,
@@ -72,7 +72,7 @@ export const useDeleteRMFile = ({ fileId, fieldId }, options = {}) => {
 };
 
 export const useFinishRMFile = ({ fileId, fieldId }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     queryKey: [RMFieldFilesQueryKey, fieldId],
     mutationFn: () => clientAPI.post(`api/resource-manager-field-file/${fileId}/finish-editing`),
     ...options,
