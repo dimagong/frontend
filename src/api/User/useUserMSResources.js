@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 import { clientAPI } from "../clientAPI";
-import { useGenericMutation } from "../useGenericMutation";
+import { useGenericMutationDeprecated } from "../useGenericMutation";
 
 export const UserMSResourcesQueryKey = "user-master-schema-resources";
 
@@ -15,7 +15,7 @@ export const useUserMSResource = ({ msFieldId, userId }, options = {}) => {
 };
 
 export const useAttachResourceFileToMS = ({ msFieldId, userId }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     mutationFn: ({ rmFieldFileId }) =>
       clientAPI
         .put("api/user-resource", {

@@ -13,11 +13,27 @@ import { getFullName } from "utility/get-full-name";
 import UITable from "components/Table/UITable";
 import { TypedValuePreview } from "components/MasterSchemaValuePreviews";
 
-const VersionsHistoryTable = ({ versionsFactory }) => {
-  const [versions, setVersions] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+const VersionsHistoryTable = (props) => {
+  const { versionsFactory, versions: propVersions = null, isLoading: propIsLoading = true } = props;
+
+  const [versions, setVersions] = useState(propVersions);
+  const [isLoading, setIsLoading] = useState(propIsLoading);
 
   useEffect(() => {
+    if (versionsFactory) return;
+
+    setVersions(propVersions);
+  }, [propVersions, versionsFactory]);
+
+  useEffect(() => {
+    if (versionsFactory) return;
+
+    setIsLoading(propIsLoading);
+  }, [propIsLoading, versionsFactory]);
+
+  useEffect(() => {
+    if (!versionsFactory) return;
+
     let isMounted = true;
     setIsLoading(true);
 
@@ -77,7 +93,9 @@ const VersionsHistoryTable = ({ versionsFactory }) => {
 };
 
 VersionsHistoryTable.propTypes = {
-  versionsFactory: PropTypes.func.isRequired,
+  versions: PropTypes.array,
+  isLoading: PropTypes.bool,
+  versionsFactory: PropTypes.func,
 };
 
 export default VersionsHistoryTable;

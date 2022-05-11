@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 import { clientAPI } from "../clientAPI";
-import { useGenericMutation } from "../useGenericMutation";
+import { useGenericMutationDeprecated } from "../useGenericMutation";
 
 export const UserRMFieldFilesQueryKey = "user-resource-manager-field-files";
 
@@ -20,7 +20,7 @@ export const useUserRMFieldFiles = ({ rmFieldId, userId }, options = {}) => {
 // That mutation should have its own QueryKey to separate them from ResourceMangers files scope
 
 export const useDeleteUserRMFile = ({ fileId, fieldId, userId }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     queryKey: [UserRMFieldFilesQueryKey, fieldId, userId],
     mutationFn: () => clientAPI.delete(`api/resource-manager-field-file/${fileId}`),
     ...options,
@@ -28,7 +28,7 @@ export const useDeleteUserRMFile = ({ fileId, fieldId, userId }, options = {}) =
 };
 
 export const useFinishUserRMFile = ({ fileId, fieldId, userId }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     queryKey: [UserRMFieldFilesQueryKey, fieldId, userId],
     mutationFn: () => clientAPI.post(`api/resource-manager-field-file/${fileId}/finish-editing`),
     ...options,
