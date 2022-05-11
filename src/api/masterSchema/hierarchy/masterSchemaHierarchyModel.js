@@ -92,7 +92,7 @@ export const MasterSchemaHierarchyGroup = (spec) => {
 export const MasterSchemaHierarchyRoot = (spec) => {
   const { id, name, isSystem, updatedAt, createdAt, fields, groups, isMemberFirmGroup } = spec;
 
-  const self = {
+  return {
     ...MasterSchemaHierarchyGroup({
       id,
       name,
@@ -107,19 +107,10 @@ export const MasterSchemaHierarchyRoot = (spec) => {
       isContainable: true,
     }),
 
-    // The property `nodes` contains the root itself
-    nodes: {},
-    // The property `children` contains only decedents
     children: {},
   };
-
-  // Define root itself in nodes property
-  self.nodes[self.nodeId] = self;
-
-  return self;
 };
 
 export const addNodeToRoot = (node, root) => {
-  root.nodes[node.nodeId] = node;
   root.children[node.nodeId] = node;
 };

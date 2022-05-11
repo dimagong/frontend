@@ -12,8 +12,8 @@ export const useExpandableHierarchy = (hierarchy) => {
   const expandNode = useCallback((node) => expand(node.nodeId), [expand]);
 
   const expandAllNodes = useCallback(
-    () => setExpandedIds(Object.keys(hierarchy.nodes)),
-    [hierarchy.nodes, setExpandedIds]
+    () => setExpandedIds([...Object.keys(hierarchy.children), hierarchy.nodeId]),
+    [hierarchy.children, hierarchy.nodeId, setExpandedIds]
   );
 
   const collapseNode = useCallback((node) => collapse(node.nodeId), [collapse]);
