@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "react-query";
 
-export const useGenericMutation = ({ mutationFn, queryKey, ...options }) => {
+import { clientAPI } from "./clientAPI";
+
+export const useGenericMutationDeprecated = ({ mutationFn, queryKey, ...options }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -14,28 +16,22 @@ export const useGenericMutation = ({ mutationFn, queryKey, ...options }) => {
   });
 };
 
-export const useOptimisticMutation = ({ mutationFn, queryKey, updater, ...options }) => {
+export const useGenericMutation = (mutualConfig, options = {}) => {
+  const { url, method, queryKey, invalidateOptions, ...clientAPIConfig } = mutualConfig;
+
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn,
-
-    onMutate: async (data) => {
-      await queryClient.cancelQueries(queryKey);
-
-      const previousData = queryClient.getQueryData(queryKey);
-
-      queryClient.setQueryData(queryKey, (oldData) => {
-        return updater ? updater(oldData, data) : data;
-      });
-
-      return previousData;
-    },
-
-    onError: (error, _, context) => queryClient.setQueryData(queryKey, context),
-
-    onSettled: () => queryClient.invalidateQueries(queryKey),
-
     ...options,
+
+    mutationFn: (data) => clientAPI[method](url, data, clientAPIConfig),
+
+    onSettled: (...args) => {
+      if (options.onSettled) {
+        options.onSettled(...args);
+      }
+
+      return queryClient.invalidateQueries(queryKey, invalidateOptions);
+    },
   });
 };

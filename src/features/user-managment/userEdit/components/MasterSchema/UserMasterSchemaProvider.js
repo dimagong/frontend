@@ -1,11 +1,11 @@
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types";
 
 import { useMasterSchemaSelectable } from "features/MasterSchema/hooks/useMasterSchemaSelectable";
 
 export const UserMasterSchemaProviderContext = React.createContext();
 
-const UserMasterSchemaProvider = React.memo(({ user, setContextFeature, children }) => {
+const UserMasterSchemaProvider = memo(function UserMasterSchemaProvider({ user, setContextFeature, children }) {
   const [selectedNodes, { select: selectNode, clear: resetSelected }] = useMasterSchemaSelectable(
     useMasterSchemaSelectable.Stratagy.OnlySingleField
   );
@@ -15,11 +15,7 @@ const UserMasterSchemaProvider = React.memo(({ user, setContextFeature, children
     [resetSelected, selectNode, selectedNodes, setContextFeature, user]
   );
 
-  return (
-    <React.Profiler id="user-master-schema-provider" onRender={(id, phase) => console.log(id, phase, { selectedNodes })}>
-      <UserMasterSchemaProviderContext.Provider value={provided} children={children} />
-    </React.Profiler>
-  );
+  return <UserMasterSchemaProviderContext.Provider value={provided} children={children} />;
 });
 
 UserMasterSchemaProvider.propTypes = {

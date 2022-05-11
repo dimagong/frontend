@@ -426,34 +426,6 @@ const updateUserOnboardingWorkflowSuccess = (state, { payload }) => {
   state.user.managers[managerIndex].onboardings[onboardingIndex] = payload.response
 };
 
-// User Master Schema Hierarchy
-
-const setUserMasterSchemaHierarchySearchParams = (state, { payload }) => {
-  state.user.masterSchema.hierarchySearchParams = payload;
-};
-
-const getUserMasterSchemaHierarchySuccess = (state, { payload }) => {
-  const normalized = payload.hierarchy ? normalizeHierarchy(payload.hierarchy) : null;
-
-  state.user.masterSchema.hierarchy = normalized;
-  state.isLoading = false;
-  state.isError = null;
-};
-
-const addFieldToUserMasterSchemaSuccess = (state, { payload }) => {
-  toast.success("The field added successfully.");
-
-  state.isError = false;
-  state.isLoading = false;
-};
-
-const addGroupToUserMasterSchemaSuccess = (state, { payload }) => {
-  toast.success("The group added successfully.");
-
-  state.isError = false;
-  state.isLoading = false;
-};
-
 // SETTERS
 
 const setUser = (state, { payload }) => {
@@ -625,11 +597,6 @@ export default {
   patchSettingsSuccess,
   getDashboardDFormsSuccess,
   getDashboardSnapshotDataSuccess,
-
-  getUserMasterSchemaHierarchySuccess,
-  setUserMasterSchemaHierarchySearchParams,
-  addFieldToUserMasterSchemaSuccess,
-  addGroupToUserMasterSchemaSuccess,
 
   setUser,
   setManager,

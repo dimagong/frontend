@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 import { clientAPI } from "../clientAPI";
-import { useGenericMutation } from "../useGenericMutation";
+import { useGenericMutationDeprecated } from "../useGenericMutation";
 import { normalizeHierarchy } from "../masterSchema/normalizers";
 import * as Interfaces from "../masterSchema/interfaces";
 
@@ -21,14 +21,14 @@ export const useRMHierarchy = ({ resourceManagerId }, options = {}) => {
 };
 
 export const useCreateRMHierarchyField = ({ resourceManagerId }) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     mutationFn: (data) => clientAPI.post("api/resource-manager-field", data),
     queryKey: [RMHierarchyQueryKey, resourceManagerId],
   });
 };
 
 export const useCreateRMHierarchyGroup = ({ resourceManagerId }) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     mutationFn: (data) => clientAPI.post("api/resource-manager-directory", data),
     queryKey: [RMHierarchyQueryKey, resourceManagerId],
   });

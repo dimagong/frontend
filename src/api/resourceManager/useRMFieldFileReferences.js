@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 import { clientAPI } from "../clientAPI";
-import { useGenericMutation } from "../useGenericMutation";
+import { useGenericMutationDeprecated } from "../useGenericMutation";
 
 export const RMFieldFileReferencesQueryKey = "resource-manager-field-file-references";
 
@@ -15,7 +15,7 @@ export const useRMFieldFileReferences = ({ fileId }, options = {}) => {
 };
 
 export const useSaveRMFileReferences = ({ fileId }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     mutationFn: (data) => clientAPI.put(`api/resource-manager-field-file/${fileId}/references`, data),
     queryKey: [RMFieldFileReferencesQueryKey, fileId],
     ...options,
@@ -23,7 +23,7 @@ export const useSaveRMFileReferences = ({ fileId }, options = {}) => {
 };
 
 export const useOpenRMFileReferencesPreview = ({ fileId }, options = {}) => {
-  return useGenericMutation({
+  return useGenericMutationDeprecated({
     mutationFn: ({ userId }) =>
       clientAPI
         .get(`api/resource-manager-field-file/${fileId}/references/preview`, {

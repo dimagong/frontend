@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { ArrayOfString, IdType } from "utility/prop-types";
+import { ArrayOfStringType, IdType } from "utility/prop-types";
 
 import NmpButton from "components/nmp/NmpButton";
 import GeneralMSHTreeElement from "components/MasterSchemaHierarchy/GeneralMSHTreeElement";
@@ -66,7 +66,7 @@ const RMContextDataView = ({ resourceManagerId, hierarchy, selectedIds, onSelect
 RMContextDataView.propTypes = {
   resourceManagerId: IdType.isRequired,
   hierarchy: PropTypes.object.isRequired,
-  selectedIds: ArrayOfString.isRequired,
+  selectedIds: ArrayOfStringType.isRequired,
   onSelect: PropTypes.func.isRequired,
 };
 

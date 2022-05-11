@@ -1,36 +1,27 @@
 import React from "react";
 import { Spinner } from "reactstrap";
 import { toast } from "react-toastify";
+import { useQueryClient } from "react-query";
 
 import { IdType } from "utility/prop-types";
 
 import { useUserMSResource, useAttachResourceFileToMS } from "api/User/useUserMSResources";
+import { MasterSchemaHierarchyQueryKeys } from "api/masterSchema/hierarchy/masterSchemaHierarchyQueries";
+import { MasterSchemaFieldValueQueryKeys } from "api/masterSchema/fieldValue/masterSchemaFieldValueQueries";
 
 import UserMSFieldManagerForm from "./UserMSFieldManagerForm";
-import {useSelector} from "react-redux";
-import {
-  selectIsUserMasterSchemaHierarchySearchParamsInitial,
-  selectUserMasterSchemaHierarchySearchParams
-} from "app/selectors/userSelectors";
-import {queryClient} from "../../../../../../../api/queryClient";
-import {MSHierarchySearchKey} from "../../hooks/useMSHierarchySearch";
 
 const UserMSFieldManager = ({ userId, msFieldId }) => {
-  const searchParams = useSelector(selectUserMasterSchemaHierarchySearchParams);
-  const isSearchParamsInitial = useSelector(selectIsUserMasterSchemaHierarchySearchParamsInitial);
+  const queryClient = useQueryClient();
 
-  // ToDo: rename it to save
   const attachRMFile = useAttachResourceFileToMS(
     { msFieldId, userId },
     {
       onSuccess: () => {
-        toast.success("The resource file was successfully saved.");
-        // Fixme: Critical!!! Hack to update versions when hierarchy is updating
-        queryClient.invalidateQueries([MSHierarchySearchKey, {
-          userId, ...searchParams,
-          show_empty_folders: isSearchParamsInitial
-        }]);
+        queryClient.invalidateQueries(MasterSchemaFieldValueQueryKeys.all());
+        queryClient.invalidateQueries(MasterSchemaHierarchyQueryKeys.getByUser(userId));
 
+        toast.success("The resource file was successfully saved.");
       },
     }
   );

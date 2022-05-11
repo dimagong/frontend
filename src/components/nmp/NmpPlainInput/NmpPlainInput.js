@@ -8,7 +8,7 @@ import classNames from "classnames";
 import { useForkRef } from "hooks/useForkRef";
 import { stopAndPrevent } from "utility/event-decorators";
 
-const NmpPlainInput = React.forwardRef((props, ref) => {
+const NmpPlainInput = React.forwardRef(function NmpPlainInput(props, ref) {
   const {
     type,
     value,
@@ -59,8 +59,8 @@ const NmpPlainInput = React.forwardRef((props, ref) => {
         {
           "nmp-input--appended": Boolean(append),
           "nmp-input--prepended": Boolean(prepend),
-          "nmp-input--valid": valid === true,
-          "nmp-input--invalid": valid === false,
+          "nmp-input--valid": valid,
+          "nmp-input--invalid": invalid,
         },
         wrapperAttrs?.className
       )}

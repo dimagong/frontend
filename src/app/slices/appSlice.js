@@ -16,14 +16,6 @@ export const initUser = {
   errors: {}
 };
 
-export const initialUserMasterSchemaHierarchySearchParams = {
-  name: "",
-  application_ids: [],
-  only_files: false,
-  date_begin: null,
-  date_end: null,
-};
-
 export const initialState = {
   isAuth: !!token,
   isLoading: false,
@@ -78,10 +70,6 @@ export const initialState = {
       settings: {},
     },
     activityTypes: [],
-    masterSchema: {
-      hierarchy: null,
-      hierarchySearchParams: initialUserMasterSchemaHierarchySearchParams,
-    },
   },
   masterSchema: {
     groups: {},
