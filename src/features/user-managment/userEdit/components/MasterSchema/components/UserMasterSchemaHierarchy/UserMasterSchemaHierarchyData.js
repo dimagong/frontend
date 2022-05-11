@@ -39,7 +39,8 @@ function UserMasterSchemaHierarchyData(props) {
   useEffect(() => {
     // Depend on hierarchy search params decide to collapse to root or expand whole hierarchy tree
     isParamsEqualToInitial(hierarchyParams) ? collapseAllExceptRoot() : expandAllNodes();
-  }, [collapseAllExceptRoot, expandAllNodes, hierarchyParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hierarchyParams]);
 
   return (
     <>
