@@ -19,67 +19,62 @@ import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { useMutation, useQueryClient } from 'react-query'
+import { useQueryClient } from 'react-query'
 
 import TermsAndConditions from "assets/ValidPath-privacy-policy.pdf";
 
 import appSlice from "app/slices/appSlice";
-import instance from "../../../api";
-import {loginPath} from "../../../constants/auth";
 import authService from "../../../services/auth";
+import {useLoginQuery, useLoginWithSecretCode} from "api/Auth/authQuery";
 
 const { loginRequest } = appSlice.actions;
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
+  const [isRememberMe, setIsRememberMe] = useState(false);
   const [isSecretCodeRequested, setIsSecretCodeRequested] = useState(false);
   const [secretCode, setSecretCode] = useState("");
 
-  const queryClient = useQueryClient();
-
-  const login = useMutation('login', (loginData) => {
-    return instance({
-      url: loginPath,
-      method: "POST",
-      data: loginData,
-    });
-  }, {
+  const login = useLoginQuery({
     onSuccess: response => {
-      if (response.data.data.needs_2fa) {
-        queryClient.setQueryData("tmp_token", response.data.data.tmp_token);
+      if (response.needs_2fa) {
+        queryClient.setQueryData("tmp_token", response.tmp_token);
         setIsSecretCodeRequested(true);
       } else {
-        authService.setToken(response.data.data.token);
+        authService.setToken(response.token);
         dispatch(loginRequest())
       }
     }
   });
 
-  const loginWithSecretCode = useMutation('loginWithSecretCode', (loginData) => {
-    return instance({
-      url: "/api/login-two-factor",
-      method: "POST",
-      data: loginData,
-    });
-  }, {
+  const loginWithSecretCode = useLoginWithSecretCode({
     onSuccess: response => {
-      authService.setToken(response.data.data.token);
+      authService.setToken(response.token);
       dispatch(loginRequest())
     }
   });
 
-
   const handleLogin = (e) => {
     e.preventDefault();
-    // dispatch(loginRequest({ email, password, device_name: "browser", code: "" }));
-    login.mutate({ email, password, device_name: "browser", code: "", remember_me: false })
+    login.mutate({
+      email,
+      password,
+      device_name: "browser",
+      remember_me: isRememberMe
+    })
   };
 
   const handleSecretCodeSend = (e) => {
     e.preventDefault();
-    loginWithSecretCode.mutate({tmp_token: queryClient.getQueryData("tmp_token"), device_name: "browser", remember_me: false, code: secretCode});
+    loginWithSecretCode.mutate({
+      tmp_token: queryClient.getQueryData("tmp_token"),
+      device_name: "browser",
+      remember_me: isRememberMe,
+      code: secretCode
+    });
 
   };
 
@@ -93,6 +88,10 @@ const Login = () => {
 
   const handleSecretCode = (e) => {
     setSecretCode(e.target.value);
+  };
+
+  const handleRememberMe = (e) => {
+    setIsRememberMe(e.target.checked);
   };
 
   return (
@@ -161,8 +160,8 @@ const Login = () => {
                         color="primary"
                         icon={<Check className="vx-icon" size={16} />}
                         label="Remember me"
-                        defaultChecked={false}
-                        // onChange={handleRemember}
+                        checked={isRememberMe}
+                        onClick={handleRememberMe}
                       />
                       <div className="float-right">
                         <Link to="/forgot-password">Forgot Password?</Link>
