@@ -1,11 +1,11 @@
 import _ from "lodash/fp";
-import React from "react";
+import React, { memo } from "react";
 import { Card, CardBody } from "reactstrap";
 
-import UserMasterSchemaHierarchy from "./UserMasterSchemaHierarchy";
 import { UserMasterSchemaProviderContext } from "./UserMasterSchemaProvider";
+import UserMasterSchemaHierarchy from "./components/UserMasterSchemaHierarchy/UserMasterSchemaHierarchy";
 
-const UserMasterSchemaContext = () => {
+const UserMasterSchemaContext = memo(function UserMasterSchemaContext() {
   const { user, selectedNodes, selectNode, setContextFeature, resetSelected } = React.useContext(
     UserMasterSchemaProviderContext
   );
@@ -25,19 +25,17 @@ const UserMasterSchemaContext = () => {
   }, [selectedNodes]);
 
   return (
-    <React.Profiler id="user-master-schema-context" onRender={(id, phase) => console.log(id, phase, { selectedNodes })}>
-      <Card>
-        <CardBody className="pt-0">
-          <UserMasterSchemaHierarchy
-            userId={user.id}
-            hierarchyName={user.permissions.organization}
-            selectedNodes={selectedNodes}
-            onSelect={selectNode}
-          />
-        </CardBody>
-      </Card>
-    </React.Profiler>
+    <Card>
+      <CardBody className="pt-0">
+        <UserMasterSchemaHierarchy
+          userId={user.id}
+          organizationName={user.permissions.organization}
+          selectedNodes={selectedNodes}
+          onSelect={selectNode}
+        />
+      </CardBody>
+    </Card>
   );
-};
+});
 
 export default UserMasterSchemaContext;

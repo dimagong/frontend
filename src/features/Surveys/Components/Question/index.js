@@ -49,6 +49,7 @@ const Question = ({
     ),
     review: <ReviewQuestion {...commonProps} currAnswer={currAnswer} />,
     "review-onboarding": <ReviewOnboardingQuestion {...commonProps} currAnswer={currAnswer} />,
+    "review-prospect-onboarding": <ReviewQuestion {...commonProps} currAnswer={currAnswer} prospectView />,
     onboarding: (
       <OnboardingQuestion
         initAnswer={initAnswer}

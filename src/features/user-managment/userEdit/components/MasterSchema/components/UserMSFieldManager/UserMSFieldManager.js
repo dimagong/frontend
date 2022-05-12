@@ -1,28 +1,27 @@
 import React from "react";
 import { Spinner } from "reactstrap";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useQueryClient } from "react-query";
 
 import { IdType } from "utility/prop-types";
 
-import appSlice from "app/slices/appSlice";
 import { useUserMSResource, useAttachResourceFileToMS } from "api/User/useUserMSResources";
+import { MasterSchemaHierarchyQueryKeys } from "api/masterSchema/hierarchy/masterSchemaHierarchyQueries";
+import { MasterSchemaFieldValueQueryKeys } from "api/masterSchema/fieldValue/masterSchemaFieldValueQueries";
 
 import UserMSFieldManagerForm from "./UserMSFieldManagerForm";
 
-const { getUserMasterSchemaHierarchyRequest } = appSlice.actions;
-
 const UserMSFieldManager = ({ userId, msFieldId }) => {
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
-  // ToDo: rename it to save
   const attachRMFile = useAttachResourceFileToMS(
     { msFieldId, userId },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(MasterSchemaFieldValueQueryKeys.all());
+        queryClient.invalidateQueries(MasterSchemaHierarchyQueryKeys.getByUser(userId));
+
         toast.success("The resource file was successfully saved.");
-        // Fixme: Critical!!! Hack to update versions when hierarchy is updating
-        dispatch(getUserMasterSchemaHierarchyRequest({ userId }));
       },
     }
   );

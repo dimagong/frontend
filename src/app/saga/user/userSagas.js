@@ -1,21 +1,15 @@
-import _ from "lodash/fp";
 import { all, put, call, takeLatest, select, takeEvery } from "redux-saga/effects";
 
 import userApi from "api/User/user";
-import masterSchemaApi from "api/masterSchema/masterSchema";
-
+import { queryClient } from "api/queryClient";
 import organizationApi from "api/organizations";
+import { MasterSchemaHierarchyQueryKeys } from "api/masterSchema/hierarchy/masterSchemaHierarchyQueries";
+
+import appSlice from "app/slices/appSlice";
 import { selectGroups, selectRoles } from "app/selectors";
 import { loginWithJWT } from "app/actions/vuexy/auth/loginActions";
-import appSlice, { initialUserMasterSchemaHierarchySearchParams } from "app/slices/appSlice";
-
-import {
-  selectIsUserMasterSchemaHierarchySearchParamsInitial,
-  selectUserMasterSchemaHierarchySearchParams,
-} from "app/selectors/userSelectors";
 
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
-import { selectSelectedMasterSchemaId } from "../../selectors/masterSchemaSelectors";
 
 const {
   getProfileSuccess,
@@ -115,20 +109,6 @@ const {
   updateApllicationsOrderSuccess,
   updateApllicationsOrderError,
   updateApllicationsOrderRequest,
-
-  getUserMasterSchemaHierarchyRequest,
-  getUserMasterSchemaHierarchySuccess,
-  getUserMasterSchemaHierarchyError,
-
-  addFieldToUserMasterSchemaRequest,
-  addFieldToUserMasterSchemaSuccess,
-  addFieldToUserMasterSchemaError,
-
-  addGroupToUserMasterSchemaRequest,
-  addGroupToUserMasterSchemaSuccess,
-  addGroupToUserMasterSchemaError,
-
-  setSelectedMasterSchema,
 } = appSlice.actions;
 
 function* getProfile() {
@@ -265,7 +245,8 @@ function* updateUser({ payload }) {
     const response = yield call(userApi.updateUser, payload);
     yield put(updateUserSuccess(response));
     yield put(updateActivitiesRequest({ managerId: payload.id, page: 1 }));
-    yield call(getUserMasterSchemaHierarchy, { payload: { userId: payload.id } });
+    // Refresh active master schema hierarchy because it contains user data
+    queryClient.invalidateQueries(MasterSchemaHierarchyQueryKeys.all());
   } catch (error) {
     yield put(updateUserError(error));
   }
@@ -410,49 +391,6 @@ function* getUserPermissions({ payload }) {
   }
 }
 
-// User MasterSchema hierarchy
-
-function* getUserMasterSchemaHierarchy({ payload }) {
-  const searchParams = yield select(selectUserMasterSchemaHierarchySearchParams);
-  const isSearchParamsInitial = yield select(selectIsUserMasterSchemaHierarchySearchParamsInitial);
-
-  try {
-    const hierarchy = yield call(masterSchemaApi.getHierarchyByUserId, {
-      ...payload,
-      ...searchParams,
-      show_empty_folders: isSearchParamsInitial,
-    });
-    yield put(getUserMasterSchemaHierarchySuccess({ hierarchy }));
-    yield put(setSelectedMasterSchema({ masterSchema: { id: hierarchy.masterSchemaId } }));
-  } catch (error) {
-    yield put(getUserMasterSchemaHierarchyError(error));
-  }
-}
-
-function* addField({ payload }) {
-  const { name, parentId, userId } = payload;
-
-  try {
-    const field = yield call(masterSchemaApi.addField, { name, parentId });
-    yield call(getUserMasterSchemaHierarchy, { payload: { userId } });
-    yield put(addFieldToUserMasterSchemaSuccess({ field }));
-  } catch (error) {
-    yield put(addFieldToUserMasterSchemaError(error));
-  }
-}
-
-function* addGroup({ payload }) {
-  const { name, parentId, userId } = payload;
-
-  try {
-    const group = yield call(masterSchemaApi.addGroup, { name, parentId });
-    yield call(getUserMasterSchemaHierarchy, { payload: { userId } });
-    yield put(addGroupToUserMasterSchemaSuccess({ group }));
-  } catch (error) {
-    yield put(addGroupToUserMasterSchemaError(error));
-  }
-}
-
 export default function* () {
   yield all([
     yield takeLatest(updateApllicationsOrderRequest.type, updateApllicationsOrder),
@@ -487,9 +425,5 @@ export default function* () {
     yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
     yield takeLatest(setManager.type, handleSetManager),
     yield takeLatest(getUserPermissionsRequest.type, getUserPermissions),
-
-    yield takeLatest(getUserMasterSchemaHierarchyRequest, getUserMasterSchemaHierarchy),
-    yield takeLatest(addFieldToUserMasterSchemaRequest, addField),
-    yield takeLatest(addGroupToUserMasterSchemaRequest, addGroup),
   ]);
 }
