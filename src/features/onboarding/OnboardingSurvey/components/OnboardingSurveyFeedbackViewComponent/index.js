@@ -6,17 +6,17 @@ import SurveyAdditionalInfoComponent from "../OnboardingSurveyComponent/componen
 import "./styles.scss";
 import { ChevronLeft, ChevronRight } from "react-feather";
 
-const OnboardingSurveyFeedbackViewComponent = ({ questions, answers, onFeedbackClose }) => {
+const OnboardingSurveyFeedbackViewComponent = ({ questions, answers, onFeedbackClose, showResult }) => {
   const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
 
   const numberedQuestions = questions.map((question, index) => ({ ...question, questionNumber: index + 1 }));
 
-  const questionsWithFeedback = [];
+  const questionsToShow = [];
 
   // eslint-disable-next-line array-callback-return
   answers.map((answer, index) => {
-    if (answer.feedback) {
-      questionsWithFeedback.push({
+    if (showResult || answer.feedback) {
+      questionsToShow.push({
         question: numberedQuestions[index],
         answer: answer,
       });
@@ -24,7 +24,7 @@ const OnboardingSurveyFeedbackViewComponent = ({ questions, answers, onFeedbackC
   });
 
   const handleSwitchToNextQuestion = () => {
-    if (questionsWithFeedback.length - 1 >= currQuestionIndex + 1) {
+    if (questionsToShow.length - 1 >= currQuestionIndex + 1) {
       setCurrQuestionIndex(currQuestionIndex + 1);
     }
   };
@@ -41,16 +41,18 @@ const OnboardingSurveyFeedbackViewComponent = ({ questions, answers, onFeedbackC
         <SurveyAdditionalInfoComponent
           className="onboarding-survey-manager_feedback"
           label={"Feedback"}
-          text={questionsWithFeedback[currQuestionIndex].answer.feedback}
+          text={questionsToShow[currQuestionIndex].answer.feedback}
         />
 
         <Card className="onboarding-survey_card">
           <CardBody>
             <Question
-              currAnswer={questionsWithFeedback[currQuestionIndex].answer}
-              questionNumber={questionsWithFeedback[currQuestionIndex].question.questionNumber}
-              question={questionsWithFeedback[currQuestionIndex].question}
-              displayType={"review-onboarding"}
+              currAnswer={
+                showResult ? questionsToShow[currQuestionIndex].answer : questionsToShow[currQuestionIndex].answer
+              }
+              questionNumber={questionsToShow[currQuestionIndex].question.questionNumber}
+              question={questionsToShow[currQuestionIndex].question}
+              displayType={showResult ? "review-prospect-onboarding" : "review-onboarding"}
             />
           </CardBody>
         </Card>
@@ -64,7 +66,7 @@ const OnboardingSurveyFeedbackViewComponent = ({ questions, answers, onFeedbackC
             Close
           </Button>
           <div className={"d-flex"}>
-            {questionsWithFeedback.length !== 1 && (
+            {questionsToShow.length !== 1 && (
               <>
                 <Button
                   disabled={currQuestionIndex === 0}
@@ -75,7 +77,7 @@ const OnboardingSurveyFeedbackViewComponent = ({ questions, answers, onFeedbackC
                   Back <ChevronLeft className="onboarding-survey_actions_back_value_icon" />
                 </Button>
                 <Button
-                  disabled={currQuestionIndex === questionsWithFeedback.length - 1}
+                  disabled={currQuestionIndex === questionsToShow.length - 1}
                   onClick={handleSwitchToNextQuestion}
                   className={"onboarding-survey-feedback_action_buttons-button next "}
                   color="primary"

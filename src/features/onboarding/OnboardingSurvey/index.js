@@ -98,6 +98,7 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
         questions={survey.passedSurveyData.questions}
         answers={survey.passedSurveyData.answers}
         onFeedbackClose={() => setIsFeedbackView(false)}
+        showResult={survey.is_show_result}
       />
     ) : (
       <div style={{ marginLeft: "-100px", marginRight: "100px" }}>

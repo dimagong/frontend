@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TextArea } from "features/Surveys/Components/SurveyFormComponents";
 import { useSmallOptionsSurveyStyles } from "hooks/useSmallOptionsSurveyStyles";
 
-const MultipleChoice = ({ options, correctAnswerId, currAnswer }) => {
+const MultipleChoice = ({ options, correctAnswerId, currAnswer, prospectView }) => {
   const [IsSmallOptionsStylesUsed, setIsSmallOptionsStylesUsed] = useState(null);
 
   const optionsRef = React.useRef([]);
@@ -26,9 +26,9 @@ const MultipleChoice = ({ options, correctAnswerId, currAnswer }) => {
         {options.map((answer, index) => (
           <div
             key={index}
-            className={`option option-${type} ${answer.id === correctAnswerId ? "selected" : ""} ${
-              answer.id === currAnswer ? "curr" : ""
-            }`}
+            className={`option option-${type}
+            ${answer.id === correctAnswerId ? (prospectView ? "selected-green" : "selected") : ""}
+            ${answer.id === currAnswer ? "curr" : ""}`}
             ref={(el) => (optionsRef.current[index] = el)}
           >
             <div className={"option-circle"} />
@@ -65,7 +65,9 @@ const FreeText = ({ answer }) => {
   );
 };
 
-const ReviewQuestion = ({ displayType, questionNumber, questionData, currAnswer }) => {
+const ReviewQuestion = ({ displayType, questionNumber, questionData, currAnswer, prospectView }) => {
+  let grade = currAnswer?.grade_structure?.grade;
+  currAnswer = currAnswer?.answer || currAnswer;
   const {
     body,
     answer_structure: { type, options, points, max_points },
@@ -83,6 +85,7 @@ const ReviewQuestion = ({ displayType, questionNumber, questionData, currAnswer 
               options={options}
               correctAnswerId={currAnswer === "-1" ? currAnswer : questionData.correct_answer}
               currAnswer={currAnswer}
+              prospectView={prospectView}
             />
           ),
           text: <FreeText answer={currAnswer !== "-1" ? currAnswer : undefined} />,
@@ -90,7 +93,7 @@ const ReviewQuestion = ({ displayType, questionNumber, questionData, currAnswer 
       }
 
       <div className={"question-points"}>
-        {!currAnswer || questionData.correct_answer === currAnswer ? points || max_points : 0} Points
+        {grade || (!currAnswer || questionData.correct_answer === currAnswer ? points || max_points : 0)} Points
       </div>
     </div>
   );

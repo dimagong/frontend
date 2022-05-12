@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Navbar, UncontrolledDropdown, DropdownToggle, DropdownItem, DropdownMenu } from "reactstrap";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import classnames from "classnames";
 import { useDispatch } from "react-redux";
 import { logoutWithJWT } from "app/actions/vuexy/auth/loginActions";
@@ -19,6 +19,7 @@ import { userService } from "services/user";
 import SearchInput from "./SearchInput";
 
 import appSlice from "app/slices/appSlice";
+import { getMemberFirms } from "app/selectors/memberFirmsSelector";
 
 const { logout, showContextSearch, hideContextSearch, setContext, getUserAvatarRequest } = appSlice.actions;
 
@@ -34,6 +35,7 @@ const ThemeNavbar = (props) => {
   const { managers, userProfile } = props;
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"];
   const navbarTypes = ["floating", "static", "sticky", "hidden"];
+  const memberFirms = useSelector(getMemberFirms);
 
   const logoutJWT = async () => {
     store.dispatch(logout());
@@ -108,19 +110,17 @@ const ThemeNavbar = (props) => {
                     />
                   )}
                 </NavLink>
-                {/* <NavbarBookmarks
-                    sidebarVisibility={props.sidebarVisibility}
-                    handleAppOverlay={props.handleAppOverlay}
-                  /> */}
               </div>
 
               {!userService.isOnboarding(userProfile) && (
                 <div className="search-input_container">
                   <SearchInput
-                    suggestions={managers.map(({ first_name, last_name, ...rest }) => ({
-                      name: first_name + " " + last_name,
-                      ...rest,
-                    }))}
+                    suggestions={managers
+                      .map(({ first_name, last_name, ...rest }) => ({
+                        name: first_name + " " + last_name,
+                        ...rest,
+                      }))
+                      .concat(memberFirms.map((item) => ({ ...item, name: item.main_fields.name })))}
                   />
                   {props.isContextSearchVisible ? (
                     <ChevronUp className="autocomplete-expand-icon" onClick={handleContextSearchToggle} />
@@ -129,13 +129,6 @@ const ThemeNavbar = (props) => {
                   )}
                 </div>
               )}
-
-              {/* {props.horizontal ? (
-                <div className="logo d-flex align-items-center">
-                  <div className="brand-logo mr-50"></div>
-                  <h2 className="text-primary brand-text mb-0">Vuexy</h2>
-                </div>
-              ) : null} */}
 
               {userProfile.notify && userProfile?.permissions?.ability === "prospect" ? (
                 <ul className="nav navbar-nav navbar-nav-user float-right">

@@ -42,7 +42,7 @@ const OnboardingSurveyStatusComponent = ({
     // eslint-disable-next-line
   }, [survey.id]);
 
-  const isSurveyPassed = surveyStats && surveyStats.total > surveyStats.min_percent_pass;
+  const isSurveyPassed = surveyStats && surveyStats.total >= surveyStats.min_percent_pass;
 
   if (status === "approved") {
     return (
@@ -83,7 +83,7 @@ const OnboardingSurveyStatusComponent = ({
                   <div className="onboarding_survey_result-stats_stat_label">Total Time</div>
                 </div>
               </div>
-              {isFeedbackExist && (
+              {(isFeedbackExist || survey.is_show_result) && (
                 <div className="status_description_action d-flex justify-content-center">
                   <Button
                     className={"status_description_action_show-button"}
@@ -174,7 +174,7 @@ const OnboardingSurveyStatusComponent = ({
         )}
 
         {/*Do not render for surveys*/}
-        {isFeedbackExist && (
+        {(isFeedbackExist || survey.is_show_result) && (
           <div className={"status_description_action"}>
             <Button
               className={"status_description_action_show-button"}

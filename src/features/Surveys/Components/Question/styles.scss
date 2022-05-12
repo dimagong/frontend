@@ -35,6 +35,10 @@
     border-color: #7367f0;
   }
 
+  &.selected-green {
+    border-color: #62be7b;
+  }
+
   &.added {
     background: #f5f5f5;
     cursor: default;
@@ -130,6 +134,15 @@
           .option-circle {
             border-color: #7367f0 !important;
             background: #7367f0 !important;
+          }
+        }
+
+        &.selected-green {
+          color: #62be7b !important;
+
+          .option-circle {
+            border-color: #62be7b !important;
+            background: #62be7b !important;
           }
         }
 
