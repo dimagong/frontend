@@ -4,6 +4,7 @@ import { authDTO } from "./authDTO";
 
 const loginQueryKey = createQueryKey("login-query");
 const loginWithSecretCodeQueryKey = createQueryKey("login-with-secret-code");
+const invitationQueryKey = createQueryKey("invitation-accept");
 
 export const useLoginQuery = (options) => {
   return useGenericMutation(
@@ -25,6 +26,20 @@ export const useLoginWithSecretCode = (options) => {
       url: "/api/login-two-factor",
       method: "post",
       queryKey: loginWithSecretCodeQueryKey,
+    },
+    {
+      ...options,
+      select: authDTO.parse,
+    },
+  )
+};
+
+export const useInvitationAcceptQuery = (options) => {
+  return useGenericMutation(
+    {
+      url: "/api/invitation/accept",
+      method: "post",
+      queryKey: invitationQueryKey,
     },
     {
       ...options,

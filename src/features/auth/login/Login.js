@@ -45,6 +45,7 @@ const Login = () => {
         setIsSecretCodeRequested(true);
       } else {
         authService.setToken(response.token);
+        // login request needed because we have profile fetch in redux-saga that currently not refactored to react-query
         dispatch(loginRequest())
       }
     }
@@ -53,6 +54,7 @@ const Login = () => {
   const loginWithSecretCode = useLoginWithSecretCode({
     onSuccess: response => {
       authService.setToken(response.token);
+      // login request needed because we have profile fetch in redux-saga that currently not refactored to react-query
       dispatch(loginRequest())
     }
   });
