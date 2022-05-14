@@ -19,11 +19,11 @@ export const CustomTable = ({ handleRowClick, selectedManager, selectedAssignedS
 
   const isAssignedSurveysLoading = useSelector(createLoadingSelector([getAssignedSurveysRequest.type], true));
   const isOnbordingLoading = useSelector(createLoadingSelector([getOnboardingsByUserRequest.type], true));
-  const assignedSurveys = useSelector(selectSelectedManagerAssignedSurveys) || [];
+  const assignedSurveys = useSelector(selectSelectedManagerAssignedSurveys);
   const manager = useSelector(selectCurrentManager);
 
   useEffect(() => {
-    const sortOrder = _.sortBy([...manager.onboardings, ...assignedSurveys], function (application) {
+    const sortOrder = _.sortBy([...manager.onboardings, ...(assignedSurveys || [])], function (application) {
       return application.order;
     });
 
