@@ -1,20 +1,21 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Card, CardBody } from "reactstrap";
 
-import masterSchemaApi from "api/masterSchema/masterSchema";
+import { IdType } from "utility/prop-types";
 
 import VersionsHistoryTable from "components/MasterSchemaVersionsHistory/VersionsHistoryTable";
 
+import { useMasterSchemaFieldValueHistory } from "api/masterSchema/fieldValue/masterSchemaFieldValueQueries";
+
 const UserMasterSchemaVersionsHistoryTable = React.memo(({ userId, fieldId }) => {
-  const versionsFactory = () => masterSchemaApi.getVersionsByFieldAndUser({ userId, fieldId });
+  const { data: versions, isLoading } = useMasterSchemaFieldValueHistory({ userId, fieldId });
 
   return (
     <>
       <h1 className="font-weight-bold mb-1">History</h1>
       <Card>
         <CardBody>
-          <VersionsHistoryTable versionsFactory={versionsFactory} />
+          <VersionsHistoryTable versions={versions} isLoading={isLoading} />
         </CardBody>
       </Card>
     </>
@@ -22,8 +23,8 @@ const UserMasterSchemaVersionsHistoryTable = React.memo(({ userId, fieldId }) =>
 });
 
 UserMasterSchemaVersionsHistoryTable.propTypes = {
-  userId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  fieldId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  userId: IdType.isRequired,
+  fieldId: IdType.isRequired,
 };
 
 export default UserMasterSchemaVersionsHistoryTable;

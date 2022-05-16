@@ -6,7 +6,11 @@ export const FilterCrossIcon = ({ filter, currOption }) => {
     <svg
       style={
         !currSelectedOption.settings.addBySelect && !currSelectedOption.selected.find((item) => item === currOption)
-          ? { fill: "#dc3545", whiteSpace: "pre", borderRadius: "6px" }
+          ? {
+              fill: "#dc3545",
+              whiteSpace: "pre",
+              borderRadius: "6px",
+            }
           : { fill: "#95989a", whiteSpace: "pre", borderRadius: "6px" }
       }
       xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +34,11 @@ export const FilterCheckIcon = ({ filter, currOption }) => {
     <svg
       style={
         currSelectedOption.settings.addBySelect && currSelectedOption.selected.find((item) => item === currOption)
-          ? { fill: "#7367f0", whiteSpace: "pre", borderRadius: "6px" }
+          ? {
+              fill: "#7367f0",
+              whiteSpace: "pre",
+              borderRadius: "6px",
+            }
           : { fill: "#95989a", whiteSpace: "pre", borderRadius: "6px" }
       }
       xmlns="http://www.w3.org/2000/svg"

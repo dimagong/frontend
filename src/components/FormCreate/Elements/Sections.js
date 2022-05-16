@@ -40,7 +40,7 @@ export default function Sections(props) {
 
   return (
     <div className="sections">
-      <Nav tabs className="my-0 sections-nav">
+      <Nav tabs className="my-0 sections-nav position-fixed">
         {sections.map((section, index) => (
           <NavItem style={isSectionHidden(section)} key={`tab-display-${section}`} {...isSectionDisabled(section)}>
             <NavLink
@@ -85,7 +85,7 @@ export default function Sections(props) {
           </NavItem>
         ))}
       </Nav>
-      <TabContent activeTab={keyTab} style={{ flex: 1 }}>
+      <TabContent className={"onboarding-tab-content"} activeTab={keyTab} style={{ flex: 1 }}>
         {sections.map((section, index) => (
           <TabPane tabId={index} key={section} style={isSectionHidden(section)}>
             <Row className="mx-0" col="12">

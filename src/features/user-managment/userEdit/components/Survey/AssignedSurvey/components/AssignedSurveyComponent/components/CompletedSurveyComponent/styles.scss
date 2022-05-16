@@ -51,8 +51,16 @@
     }
   }
 
+  &_show-checkbox {
+    padding-right: 60px;
+    &_container {
+      display: inline-block;
+      float: right;
+    }
+  }
+
   &_footer {
-    padding: 40px 60px 60px 60px;
+    padding: 18px 60px 60px 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;

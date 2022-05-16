@@ -40,6 +40,15 @@ const WelcomePageComponent = ({ profile, isOnboardingExist }) => {
     }
   };
 
+  const downloadBrochure = () => {
+    if (!profile?.notify_entity?.brochure) {
+      console.error("There is no brochure!");
+      return;
+    }
+
+    saveBrochure(profile.notify_entity.brochure);
+  };
+
   const proceedUserToOnboarding = () => {
     dispatch(removeUserNotifyRequest());
   };
@@ -54,12 +63,7 @@ const WelcomePageComponent = ({ profile, isOnboardingExist }) => {
         dangerouslySetInnerHTML={{ __html: profile.notify_entity.intro_text }}
       />
       <div className={"welcome-onboarding_download-button"}>
-        <Button
-          className={"welcome-onboarding_download-button_button"}
-          onClick={() => {
-            saveBrochure(profile.notify_entity.brochure);
-          }}
-        >
+        <Button className={"welcome-onboarding_download-button_button"} onClick={downloadBrochure}>
           Download the Welcome to {profile.permissions.organization} brochure <ChevronDown />
         </Button>
       </div>
