@@ -13,12 +13,12 @@ import {
   Label,
   FormFeedback,
 } from "reactstrap";
-import {selectError, selectInvitation} from "app/selectors";
+import { selectError, selectInvitation } from "app/selectors";
 import { useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "hooks/useRouter";
 import TermsAndConditions from "assets/ValidPath-privacy-policy.pdf";
-import {useInvitationAcceptQuery, useLoginQuery, useLoginWithSecretCode} from "api/Auth/authQuery";
+import { useInvitationAcceptQuery, useLoginQuery, useLoginWithSecretCode } from "api/Auth/authQuery";
 
 import appSlice from "app/slices/appSlice";
 import authService from "../../services/auth";
@@ -38,24 +38,24 @@ const Invitation = () => {
   const queryClient = useQueryClient();
 
   const login = useLoginQuery({
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.needs_2fa) {
         queryClient.setQueryData("tmp_token", response.tmp_token);
         setIsSecretCodeRequested(true);
       } else {
         authService.setToken(response.token);
         // login request needed because we have profile fetch in redux-saga that currently not refactored to react-query
-        dispatch(loginRequest())
+        dispatch(loginRequest());
       }
-    }
+    },
   });
 
   const loginWithSecretCode = useLoginWithSecretCode({
-    onSuccess: response => {
+    onSuccess: (response) => {
       authService.setToken(response.token);
       // login request needed because we have profile fetch in redux-saga that currently not refactored to react-query
-      dispatch(loginRequest())
-    }
+      dispatch(loginRequest());
+    },
   });
   const invitationAcceptMutation = useInvitationAcceptQuery({
     onSuccess: () => {
@@ -64,8 +64,8 @@ const Invitation = () => {
         remember_me: false,
         device_name: "browser",
         email: invitation.invitedUser.email,
-      })
-    }
+      });
+    },
   });
 
   useEffect(() => {
@@ -73,13 +73,15 @@ const Invitation = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const sendSecretCode = () => {
+  const sendSecretCode = (e) => {
+    e.preventDefault();
+
     loginWithSecretCode.mutate({
       tmp_token: queryClient.getQueryData("tmp_token"),
       device_name: "browser",
       remember_me: false,
-      code: secretCode
-    })
+      code: secretCode,
+    });
   };
 
   const acceptInvitation = (e) => {
@@ -174,7 +176,11 @@ const Invitation = () => {
                           Privacy and Terms
                         </a>
                       </p>
-                      <Button color="primary" type="submit" onClick={isSecretCodeRequested ? sendSecretCode : acceptInvitation}>
+                      <Button
+                        color="primary"
+                        type="submit"
+                        onClick={isSecretCodeRequested ? sendSecretCode : acceptInvitation}
+                      >
                         Submit
                       </Button>
                     </div>
