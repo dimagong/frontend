@@ -1,8 +1,5 @@
 .sections {
   display: flex;
-  .position-fixed {
-    position: fixed;
-  }
   &-nav {
     display: flex;
     flex-direction: column;
@@ -84,9 +81,6 @@
         }
       }
     }
-  }
-  .onboarding-tab-content {
-    padding-left: 200px;
   }
   .tab-pane.active {
     animation-name: fadeIn;
