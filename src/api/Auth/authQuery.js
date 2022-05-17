@@ -2,9 +2,21 @@ import { useGenericMutation } from "../useGenericMutation";
 import { createQueryKey } from "api/createQueryKey";
 import { authDTO } from "./authDTO";
 
-const loginQueryKey = createQueryKey("login-query");
-const loginWithSecretCodeQueryKey = createQueryKey("login-with-secret-code");
-const invitationQueryKey = createQueryKey("invitation-accept");
+export const loginQueryKey = createQueryKey("login-query");
+export const loginWithSecretCodeQueryKey = createQueryKey("login-with-secret-code");
+export const invitationQueryKey = createQueryKey("invitation-accept");
+
+export const loginQueryKeys = {
+  all: () => [loginQueryKey],
+};
+
+export const loginWithSecretCodeQueryKeys = {
+  all: () => [loginWithSecretCodeQueryKey],
+};
+
+export const invitationQueryKeys = {
+  all: () => [invitationQueryKey],
+};
 
 export const useLoginQuery = (options) => {
   return useGenericMutation(
