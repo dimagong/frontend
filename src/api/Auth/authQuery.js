@@ -40,7 +40,6 @@ export const useInvitationAcceptQuery = (options) => {
       url: "/api/invitation/accept",
       method: "post",
       queryKey: [invitationQueryKey],
-      flatData: true,
     },
     {
       select: authDTO.parse,
