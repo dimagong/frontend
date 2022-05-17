@@ -23,7 +23,7 @@ export const useLoginQuery = (options) => {
     {
       url: "/api/login",
       method: "post",
-      queryKey: [loginQueryKey],
+      queryKey: loginQueryKeys.all(),
     },
     {
       select: authDTO.parse,
@@ -37,7 +37,7 @@ export const useLoginWithSecretCode = (options) => {
     {
       url: "/api/login-two-factor",
       method: "post",
-      queryKey: [loginWithSecretCodeQueryKey],
+      queryKey: loginWithSecretCodeQueryKeys.all(),
     },
     {
       select: authDTO.parse,
@@ -51,7 +51,7 @@ export const useInvitationAcceptQuery = (options) => {
     {
       url: "/api/invitation/accept",
       method: "post",
-      queryKey: [invitationQueryKey],
+      queryKey: invitationQueryKeys.all(),
     },
     {
       select: authDTO.parse,
