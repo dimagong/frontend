@@ -49,7 +49,7 @@ const SurveysDesignerComponent = ({
   const [isEditSurveyModalVisible, setIsEditSurveyModalVisible] = useState(false);
   const [surveyVersion, setSurveyVersion] = useState(null);
 
-  const isSurveyVersionsLoading = useSelector(createLoadingSelector([getSurveyVersionsRequest.type]));
+  const isSurveyVersionsLoading = useSelector(createLoadingSelector([getSurveyVersionsRequest.type], true));
   const isSurveyDeleteProceed = useSelector(createLoadingSelector([deleteSurveyRequest.type], true));
   const isSurveyDeleteLatestVersionProceed = useSelector(
     createLoadingSelector([deleteSurveyLatestVersionRequest.type], true)
@@ -121,7 +121,7 @@ const SurveysDesignerComponent = ({
       setSurveyVersion({ value: survey.latest_version.id, label: survey.latest_version.current_version });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSurveyUpdateProceed]);
+  }, [isSurveyLoading]);
 
   const isDeleteProceed = isSurveyDeleteProceed || isSurveyDeleteLatestVersionProceed || isSurveyDeleteVersionProceed;
 
