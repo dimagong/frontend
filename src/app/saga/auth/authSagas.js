@@ -25,7 +25,7 @@ const {
 
 function* login({ payload }) {
   try {
-    yield call(authApi.login, payload);
+    // yield call(authApi.login, payload);
     yield put(loginSuccess());
     yield put(getProfileRequest());
   } catch (error) {

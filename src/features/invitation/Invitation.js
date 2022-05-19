@@ -1,55 +1,58 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  FormGroup,
-  Row,
-  Col,
-  Input,
-  Form,
-  Button,
-  Label,
-  FormFeedback,
-} from "reactstrap";
-import { selectError } from "app/selectors";
+import { Card, CardHeader, CardTitle, Row, Col } from "reactstrap";
+import { selectError, selectInvitation } from "app/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "hooks/useRouter";
-import TermsAndConditions from "assets/ValidPath-privacy-policy.pdf";
-
+import { useInvitationAcceptQuery, useLoginQuery } from "api/Auth/authQuery";
+import SecretCode from "../auth/SecretCode";
+import InvitationForm from "./InvitationForm";
 import appSlice from "app/slices/appSlice";
+import authService from "../../services/auth";
 
-const { getInvitationRequest, sendInvitationAcceptRequest } = appSlice.actions;
+const { getInvitationRequest, loginRequest } = appSlice.actions;
 
 const Invitation = () => {
   const errors = useSelector(selectError) || {};
-  const [invitationAccept, setInvitationAccept] = useState({});
+  const invitation = useSelector(selectInvitation);
+  const [isSecretCodeRequested, setIsSecretCodeRequested] = useState(false);
   const dispatch = useDispatch();
   const { query } = useRouter();
   const { invitationId } = query;
+
+  const login = useLoginQuery({
+    onSuccess: (response) => {
+      if (response.needs_2fa) {
+        localStorage.setItem("tmp_token", response.tmp_token);
+        setIsSecretCodeRequested(true);
+      } else {
+        authService.setToken(response.token);
+        // login request needed because we have profile fetch in redux-saga that currently not refactored to react-query
+        dispatch(loginRequest());
+      }
+    },
+  });
+
+  const invitationAcceptMutation = useInvitationAcceptQuery({
+    onSuccess: (_, payload) => {
+      login.mutate({
+        password: payload.password,
+        remember_me: false,
+        device_name: "browser",
+        email: invitation.invitedUser.email,
+      });
+    },
+  });
 
   useEffect(() => {
     dispatch(getInvitationRequest({ invitationId }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    dispatch(sendInvitationAcceptRequest({ data: { invitation_token: invitationId, ...invitationAccept, code: "" } }));
-  };
-
-  const onPasswordChange = (event) => {
-    setInvitationAccept({
-      ...invitationAccept,
-      password: event.target.value,
-    });
-  };
-
-  const onPasswordConfirmationChange = (event) => {
-    setInvitationAccept({
-      ...invitationAccept,
-      password_confirmation: event.target.value,
+  const acceptInvitation = (formData) => {
+    invitationAcceptMutation.mutate({
+      invitation_token: invitationId,
+      ...formData,
+      code: "",
     });
   };
 
@@ -65,47 +68,7 @@ const Invitation = () => {
                     <h4 className="mb-0">Welcome to ValidPath Portal</h4>
                   </CardTitle>
                 </CardHeader>
-                <p className="px-2 auth-title">Please enter a password</p>
-                <CardBody className="pt-1">
-                  <Form action="/">
-                    <FormGroup className="form-label-group position-relative">
-                      <Input
-                        value={invitationAccept.password}
-                        onChange={onPasswordChange}
-                        type="password"
-                        placeholder="Password"
-                        required
-                        {...{ invalid: errors["password"] }}
-                      />
-                      <Label>Password</Label>
-                      <FormFeedback>{errors["password"]}</FormFeedback>
-                    </FormGroup>
-                    <FormGroup className="form-label-group position-relative">
-                      <Input
-                        value={invitationAccept.password_confirmation}
-                        onChange={onPasswordConfirmationChange}
-                        type="password"
-                        placeholder="Password confirmation"
-                        required
-                        {...{ invalid: errors["password_confirmation"] }}
-                      />
-
-                      <Label>Password confirmation</Label>
-                      <FormFeedback>{errors["password_confirmation"]}</FormFeedback>
-                    </FormGroup>
-                    <div className="d-flex justify-content-between">
-                      <p style={{ margin: "auto 0" }}>
-                        By clicking Submit, you agree to our{" "}
-                        <a href={TermsAndConditions} target="_blank" rel="noopener noreferrer">
-                          Privacy and Terms
-                        </a>
-                      </p>
-                      <Button color="primary" type="submit" onClick={onSubmit}>
-                        Submit
-                      </Button>
-                    </div>
-                  </Form>
-                </CardBody>
+                {isSecretCodeRequested ? <SecretCode /> : <InvitationForm onInvitationAccept={acceptInvitation} />}
               </Card>
             </Col>
           </Row>
