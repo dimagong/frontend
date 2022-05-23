@@ -21,17 +21,13 @@ import appSlice from "app/slices/appSlice";
 const {
   getMasterSchemaFieldsForMemberFirmRequest,
   getMemberFirmFormFieldsRequest,
-  updateMemberFirmProfileImageRequest,
   getMemberFirmActivitiesRequest,
-  removeMemberFirmLogoRequest,
   setContext,
   setManager,
 } = appSlice.actions;
 
 const MemberFirmsContainer = () => {
   const dispatch = useDispatch();
-
-  const logoFileInputRef = useRef();
 
   const memberFirmData = useSelector(getSelectedMemberFirm);
   const memberFirmFormFields = useSelector(getSelectedMemberFirmFormFields);
@@ -43,23 +39,6 @@ const MemberFirmsContainer = () => {
     createLoadingSelector([getMasterSchemaFieldsForMemberFirmRequest.type], true)
   );
   const isMemberFirmActivitiesLoading = useSelector(createLoadingSelector([getMemberFirmActivitiesRequest.type], true));
-
-  const handleFileInputDialogOpen = () => {
-    logoFileInputRef.current.click();
-  };
-
-  const handleLogoChange = (event) => {
-    if (event.target.files.length) {
-      const formData = new FormData();
-      formData.set("logo", event.target.files[0]);
-
-      dispatch(updateMemberFirmProfileImageRequest({ memberFirmId: memberFirmData.id, logo: formData }));
-    }
-  };
-
-  const handleLogoRemove = () => {
-    dispatch(removeMemberFirmLogoRequest(memberFirmData.id));
-  };
 
   const handleNavigateToUserProfile = (user) => {
     dispatch(setManager(user));
@@ -78,18 +57,14 @@ const MemberFirmsContainer = () => {
   return (
     <Row>
       <MemberFirmProfileComponent
-        memberFirmId={memberFirmData.id}
         data={memberFirmData}
+        memberFirmId={memberFirmData.id}
         isMemberFirmFormFieldsLoading={isMemberFirmFormFieldsLoading}
         isMasterSchemaFieldsForMemberFirmLoading={isMasterSchemaFieldsForMemberFirmLoading}
         isMemberFirmActivitiesLoading={isMemberFirmActivitiesLoading}
         onLoadMoreDataForActivities={handleLoadMoreDataForActivities}
         memberFirmFormFields={memberFirmFormFields}
         masterSchemaMemberFirmFields={masterSchemaMemberFirmFields}
-        onLogoChange={handleLogoChange}
-        onFileInputDialogOpen={handleFileInputDialogOpen}
-        logoFileInputRef={logoFileInputRef}
-        onLogoRemove={handleLogoRemove}
         memberFirmActivities={memberFirmActivities}
       />
       <MemberFirmMembersContainer

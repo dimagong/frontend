@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardBody, CardImg, CardText, CardTitle, Col, Row } from "reactstrap";
+import { Card, CardBody, CardText, CardTitle, Col, Row } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import appSlice from "app/slices/appSlice";
 import MemberFirmsListEmptyComponent from "./Components/MemberFirmsListEmptyComponent";
-import noneAvatar from "../../../../../assets/img/portrait/none-avatar.png";
 
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 
 import CustomPagination from "components/Pagination";
+import NmpMemberFirmLogo from "components/nmp/NmpMemberFirmLogo";
 
 import { getMemberFirms } from "app/selectors/memberFirmsSelector";
 
@@ -24,7 +24,12 @@ const UserCardTemplate = ({ className, onClick, data }) => {
         }}
       >
         <div className="user-avatar-management">
-          <CardImg src={data.logo_path || noneAvatar} className="user-card-img user-card-img-fit-contain" />
+          <NmpMemberFirmLogo
+            fileId={data.logo?.id}
+            memberFirmId={data.id}
+            className="user-card-img"
+            style={{ objectFit: "contain" }}
+          />
         </div>
 
         <CardBody className="user-card-body">
