@@ -2,8 +2,8 @@ import "./styles.scss";
 
 import { X } from "react-feather";
 import PropTypes from "prop-types";
+import { Button } from "reactstrap";
 import React, { useRef } from "react";
-import { Button, Spinner } from "reactstrap";
 
 import NmpImage from "../NmpImage";
 
@@ -48,12 +48,10 @@ NmpManageableImageControls.propTypes = {
 };
 
 const NmpManageableImage = (props) => {
-  const { alt, src, isLoading, isEditable = false, isRemovable, onDelete, onChange, className, style } = props;
+  const { alt, src, isLoading, isEditable = false, isRemovable, onDelete, onChange, ...attrs } = props;
 
   return (
-    <div className="manageable-image position-relative">
-      <NmpImage src={src} alt={alt} style={style} className={className} />
-
+    <NmpImage src={src} alt={alt} isLoading={isLoading} wrapperAttrs={{ className: "manageable-image" }} {...attrs}>
       {isEditable ? (
         <NmpManageableImageControls
           onChange={onChange}
@@ -62,19 +60,13 @@ const NmpManageableImage = (props) => {
           isRemovable={isRemovable}
         />
       ) : null}
-
-      {isLoading ? (
-        <div className="manageable-image__spinner-wrapper">
-          <Spinner color="primary" />
-        </div>
-      ) : null}
-    </div>
+    </NmpImage>
   );
 };
 
 NmpManageableImage.propTypes = {
-  alt: PropTypes.string.isRequired,
   src: PropTypes.string,
+  alt: PropTypes.string.isRequired,
 
   isLoading: PropTypes.bool.isRequired,
   isEditable: PropTypes.bool,

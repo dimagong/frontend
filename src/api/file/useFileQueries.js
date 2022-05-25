@@ -1,7 +1,7 @@
 import { clientAPI } from "api/clientAPI";
 import { clientFetch } from "api/clientFetch";
 import { useGenericQuery } from "api/useGenericQuery";
-import { promisifiedReadAsDataURL } from "utility/file";
+import { blobToFile, readBlobAsDataURL } from "utility/file";
 
 const FILE_LIFETIME = 1000 * 60;
 
@@ -14,27 +14,28 @@ const defaultFileQueryOptions = {
   refetchOnWindowFocus: false,
 };
 
-const fetchFileAsDataURL = (fileUrl, options) => {
-  if (!fileUrl) {
-    return Promise.resolve(null);
-  }
-
-  return clientFetch(fileUrl, options)
-    .then((response) => response.blob())
-    .then(promisifiedReadAsDataURL);
-};
+const nullFileData = { url: null, file: null };
 
 export const useFileQuery = ({ url, queryKey }, options = {}) => {
   return useGenericQuery(
     { queryKey },
     {
-      initialData: { url: null },
+      initialData: nullFileData,
       // The queryFn is overwritten here because fetching file is simpler than API request.
       queryFn: ({ signal }) => {
-        return clientAPI
-          .get(url, { signal })
-          .then((fileUrl) => fetchFileAsDataURL(fileUrl, { signal }))
-          .then((url) => ({ url }));
+        return clientAPI.get(url, { signal }).then((data) => {
+          if (!data) {
+            return Promise.resolve(nullFileData);
+          }
+
+          return clientFetch(data.temporary_public_url, options)
+            .then((response) => response.blob())
+            .then((blob) => {
+              const file = blobToFile(blob, data.name || "unknown");
+
+              return readBlobAsDataURL(blob).then((url) => ({ url, file }));
+            });
+        });
       },
 
       ...defaultFileQueryOptions,

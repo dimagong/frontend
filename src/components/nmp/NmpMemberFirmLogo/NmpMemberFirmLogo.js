@@ -11,7 +11,7 @@ import {
 
 import NmpManageableImage from "../NmpManageableImage";
 
-const NmpMemberFirmLogo = ({ fileId, memberFirmId, isEditable = false, className, style }) => {
+const NmpMemberFirmLogo = ({ fileId, memberFirmId, isEditable = false, ...attrs }) => {
   const updateMutation = useUpdateMemberFirmLogoMutation({ memberFirmId });
   const onChange = useCallback((file) => updateMutation.mutate({ file }), [updateMutation]);
 
@@ -30,8 +30,7 @@ const NmpMemberFirmLogo = ({ fileId, memberFirmId, isEditable = false, className
       isEditable={isEditable}
       isRemovable={Boolean(fileId)}
       isLoading={logoQuery.isLoading || updateMutation.isLoading || deleteMutation.isLoading}
-      style={style}
-      className={className}
+      {...attrs}
     />
   );
 };

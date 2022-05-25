@@ -11,7 +11,7 @@ import NoneAvatar from "assets/img/portrait/none-avatar.png";
 
 import NmpManageableImage from "../NmpManageableImage";
 
-const NmpUserAvatar = ({ fileId, userId, isEditable = false, className, style }) => {
+const NmpUserAvatar = ({ fileId, userId, isEditable = false, ...attrs }) => {
   const updateMutation = useUpdateUserAvatarMutation({ userId });
   const onChange = useCallback((file) => updateMutation.mutate({ file }), [updateMutation]);
 
@@ -30,8 +30,7 @@ const NmpUserAvatar = ({ fileId, userId, isEditable = false, className, style })
       isEditable={isEditable}
       isRemovable={Boolean(fileId)}
       isLoading={avatarQuery.isLoading || updateMutation.isLoading || deleteMutation.isLoading}
-      style={style}
-      className={className}
+      {...attrs}
     />
   );
 };

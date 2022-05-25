@@ -20,6 +20,7 @@ import SearchInput from "./SearchInput";
 
 import appSlice from "app/slices/appSlice";
 import { getMemberFirms } from "app/selectors/memberFirmsSelector";
+import NmpOrganizationLogo from "../../../components/nmp/NmpOrganizationLogo";
 
 const { logout, showContextSearch, hideContextSearch, setContext, getUserAvatarRequest } = appSlice.actions;
 
@@ -93,22 +94,14 @@ const ThemeNavbar = (props) => {
             <div className="navbar-collapse d-flex justify-content-between align-items-center" id="navbar-mobile">
               <div className="bookmark-wrapper">
                 <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
-                  {/*If logo is not loaded yet, show temp image by path that is valid about 5 mins*/}
-                  {!userProfile.permissions.logo?.base64 ? (
-                    <img
-                      onClick={handleOrgPictureClick}
-                      className="brand-logo "
-                      src={userProfile.permissions.logo_path}
-                      alt="main org logo"
-                    />
-                  ) : (
-                    <img
-                      onClick={handleOrgPictureClick}
-                      className="brand-logo "
-                      src={userProfile.permissions.logo?.base64}
-                      alt="main org logo"
-                    />
-                  )}
+                  <NmpOrganizationLogo
+                    fileId={userProfile.permissions.logo?.id}
+                    organizationId={userProfile.permissions.organization_id}
+                    organizationType={userProfile.permissions.organization_type}
+                    organizationName={userProfile.permissions.organization}
+                    onClick={handleOrgPictureClick}
+                    className="brand-logo"
+                  />
                 </NavLink>
               </div>
 
