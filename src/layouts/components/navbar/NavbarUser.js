@@ -1,6 +1,8 @@
 import React from "react";
-import { UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle } from "reactstrap";
 import * as Icon from "react-feather";
+import { UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle } from "reactstrap";
+
+import NmpUserAvatar from "components/nmp/NmpUserAvatar";
 
 const UserDropdown = (props) => {
   return (
@@ -35,7 +37,7 @@ const UserDropdown = (props) => {
   );
 };
 
-const NavbarUser = ({ userImg, userName, email, ...props }) => (
+const NavbarUser = ({ userId, userAvatarId, userName, email, ...props }) => (
   <ul className="nav navbar-nav navbar-nav-user float-right">
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle tag="a" className="nav-link dropdown-user-link">
@@ -44,7 +46,7 @@ const NavbarUser = ({ userImg, userName, email, ...props }) => (
           <span className="user-status">{email}</span>
         </div>
         <span data-tour="user">
-          <img src={userImg} className="round" height="40" width="40" alt="avatar" />
+          <NmpUserAvatar userId={userId} fileId={userAvatarId} className="round" style={{ width: 40, height: 40 }} />
         </span>
       </DropdownToggle>
       <UserDropdown {...props} />

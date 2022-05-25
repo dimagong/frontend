@@ -14,7 +14,6 @@
 
   &_header {
     &_logo {
-      position: relative;
       display: flex;
       background: #f8f8f8;
       margin-top: -70px;
@@ -26,45 +25,11 @@
       min-width: 200px;
       max-height: 200px;
       overflow: hidden;
+
       img {
         width: 100%;
         height: 100%;
         object-fit: contain;
-      }
-      &-change_button {
-        opacity: 0;
-        position: absolute;
-        background: white;
-        bottom: 5px;
-        left: 50%;
-        transform: translate(-50%, 0);
-        transition: 0.2s;
-        &:hover {
-          background: white !important;
-        }
-      }
-
-      .x-closer {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: white;
-        padding: 5px;
-        border-radius: 25px;
-        opacity: 0;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-
-      &:hover {
-        .member-firm-profile_header_logo-change_button {
-          opacity: 1;
-          transition: 0.2s;
-        }
-        .x-closer {
-          opacity: 1;
-          transition: 0.2s;
-        }
       }
     }
 

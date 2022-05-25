@@ -32,30 +32,10 @@ const updateOrganizationSuccess = (state, { payload }) => {
   toast.success(`${payload.name} organization saved`);
 };
 
-const getOrganizationLogoRequest = (state, { payload }) => {
-  state.isLoading = true;
-
-  const orgIndex = state.organizations[payload.type].findIndex((org) => org.id === payload.id);
-
-  state.organizations[payload.type][orgIndex].logo.isLoading = true;
-
-  state.isError = null;
-};
-
-const getOrganizationLogoSuccess = (state, { payload }) => {
-  state.isLoading = false;
-  const orgIndex = state.organizations[payload.orgType].findIndex((org) => org.id === payload.orgId);
-
-  state.organizations[payload.orgType][orgIndex].logo.base64 = payload.logoBase64;
-  state.organizations[payload.orgType][orgIndex].logo.isLoading = false;
-};
-
 export default {
   getGroupsSuccess,
   getOrganizationsSuccess,
   createOrganizationSuccess,
   updateOrganizationSuccess,
-  getOrganizationLogoRequest,
-  getOrganizationLogoSuccess,
   setSelectedOrganizationIdAndType,
 };
