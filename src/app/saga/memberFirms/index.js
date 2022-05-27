@@ -41,14 +41,6 @@ const {
   updateMemberFirmFormValuesRequest,
   updateMemberFirmFormValuesError,
 
-  updateMemberFirmProfileImageSuccess,
-  updateMemberFirmProfileImageRequest,
-  updateMemberFirmProfileImageError,
-
-  removeMemberFirmLogoSuccess,
-  removeMemberFirmLogoRequest,
-  removeMemberFirmLogoError,
-
   getMemberFirmSuccess,
   getMemberFirmRequest,
   getMemberFirmError,
@@ -186,26 +178,6 @@ function* updateMemberFirmFormValues({ payload }) {
   }
 }
 
-function* updateMemberFirmProfileImage({ payload }) {
-  const response = yield call(memberFirmsApi.updateMemberFirmLogo, payload);
-
-  if (response?.message) {
-    yield put(updateMemberFirmProfileImageError(response.message));
-  } else {
-    yield put(updateMemberFirmProfileImageSuccess(response));
-  }
-}
-
-function* removeMemberFirmLogo({ payload }) {
-  const response = yield call(memberFirmsApi.removeMemberFirmLogo, payload);
-
-  if (response?.message) {
-    yield put(removeMemberFirmLogoError(response.message));
-  } else {
-    yield put(removeMemberFirmLogoSuccess(response));
-  }
-}
-
 function* addFieldToMemberFirm(payload) {
   const response = yield call(memberFirmsApi.addFieldToMemberFirm, payload);
 
@@ -238,8 +210,6 @@ export default function* () {
     takeLatest(getMasterSchemaFieldsForMemberFirmRequest.type, getMasterSchemaFieldsForMemberFirm),
     takeLatest(getMemberFirmFormFieldsRequest.type, getMemberFirmFormFields),
     takeLatest(updateMemberFirmFormValuesRequest.type, updateMemberFirmFormValues),
-    takeLatest(updateMemberFirmProfileImageRequest.type, updateMemberFirmProfileImage),
-    takeLatest(removeMemberFirmLogoRequest.type, removeMemberFirmLogo),
     takeLatest(getMemberFirmRequest.type, getMemberFirm),
     takeLatest(getMemberFirmActivitiesRequest.type, getMemberFirmActivities),
     takeLatest(addFieldToMemberFirmRequest.type, addFieldToMemberFirm),

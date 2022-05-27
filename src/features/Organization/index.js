@@ -38,8 +38,14 @@ const organizationValidation = yup.object().shape({
   name: yup.string().required("Name is required"),
   intro_text: yup.string().required("Intro text is required"),
   intro_title: yup.string().required("Intro title is required"),
-  logo: yup.mixed().required("Logo is required"),
-  brochure: yup.mixed().required("Brochure is required"),
+  logo: yup.object().shape({
+    url: yup.string().nullable().required("Logo is required"),
+    file: yup.mixed().nullable().required("Logo is required"),
+  }),
+  brochure: yup.object().shape({
+    url: yup.string().nullable().required("Brochure is required"),
+    file: yup.mixed().nullable().required("Brochure is required"),
+  }),
 });
 
 const filterOrganizationByTypeAndId = (organizations, type, id) => {
@@ -74,12 +80,24 @@ const Organization = ({ create = false }) => {
     create ? ORGANIZATION_TEMPLATE : getOrganizationData(organization)
   );
 
+  const recoverRemovedFilesData = () => {
+    if (organizationData.logo.file === null) {
+      setLogoField(logoQuery.data.file);
+    }
+
+    if (organizationData.brochure.file === null) {
+      setBrochureField(brochureQuery.data.file);
+    }
+  };
+
   const handleSubmit = async () => {
     const isValid = await organizationValidation.validate(organizationData).catch((err) => {
       toast.error(err.message);
     });
 
     if (!isValid) {
+      // If some files was removed than recover them for better UX when form validation fails
+      recoverRemovedFilesData();
       return;
     }
 
