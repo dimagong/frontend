@@ -4,9 +4,6 @@ import {
   getProfilePath,
   getUsersPath,
   getUserByIdPath,
-  updateUserAvatarPath,
-  getUserAvatarPath,
-  deleteUserAvatarPath,
   getUsersDataPath,
   getAllowedUserListPath,
   createUserOnboarding,
@@ -209,48 +206,11 @@ const userApi = {
       throw err.response.data.error.errors;
     }
   },
-  async getUserAvatar({ managerId }) {
-    try {
-      const result = await instance({
-        url: `${getUserAvatarPath}/${managerId}/avatar`,
-        method: "GET",
-      });
-
-      return result ? result.data.data : result;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
-  },
   async getOnboradingsByUser({ id }) {
     try {
       const result = await instance({
         url: getOnboardingsByUserPath(id),
         method: "GET",
-      });
-
-      return result ? result.data.data : result;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
-  },
-  async deleteUserAvatar({ avatarId }) {
-    try {
-      const result = await instance({
-        url: deleteUserAvatarPath(avatarId),
-        method: "DELETE",
-      });
-
-      return result ? result.data.data : result;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
-  },
-  async updateUserAvatar({ managerId, formData }) {
-    try {
-      const result = await instance({
-        url: updateUserAvatarPath(managerId),
-        method: "POST",
-        data: formData,
       });
 
       return result ? result.data.data : result;

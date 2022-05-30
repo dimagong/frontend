@@ -571,11 +571,6 @@ const removeUserNotifySuccess = (state) => {
   state.user.profile.notify = 0;
 };
 
-const getUserOrganizationLogoSuccess = (state, { payload }) => {
-  state.user.profile.permissions.logo.isLoading = false;
-  state.user.profile.permissions.logo.base64 = payload;
-};
-
 const getUserPermissionsSuccess = (state, { payload }) => {
   state.isLoading = false;
   const userIndex = getIndexById(state.user.managers, payload.payload);
@@ -610,7 +605,6 @@ export default {
   allowUserAbilitySuccess,
   disallowUserAbilitySuccess,
   removeUserNotifySuccess,
-  getUserOrganizationLogoSuccess,
   updateUserModulesSuccess,
   updateUserOnboardingReviewersSuccess,
   updateUserOnboardingWorkflowSuccess,

@@ -1,81 +1,93 @@
-/* eslint-disable no-mixed-operators */
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import * as yup from "yup";
-
-import { Row, Col, Button } from "reactstrap";
-
-import FileInput from "components/formElements/FileInput";
-
-import { selectOrganizations, selectSelectedOrganizationIdAndType } from "app/selectors/groupSelector";
-
-import { selectLoading } from "app/selectors";
-
 import "./styles.scss";
 
-import Editor from "components/FormCreate/Custom/WysiwygEditor";
+import * as yup from "yup";
+import { toast } from "react-toastify";
+import { Row, Col, Button } from "reactstrap";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect, useMemo } from "react";
 
 import appSlice from "app/slices/appSlice";
+import { selectLoading } from "app/selectors";
+import { readBlobAsDataURL } from "utility/file";
+import FileInput from "components/formElements/FileInput";
+import Editor from "components/FormCreate/Custom/WysiwygEditor";
+import { selectOrganizations, selectSelectedOrganizationIdAndType } from "app/selectors/groupSelector";
+import { useOrganizationLogoQuery, useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 
 const { createOrganizationRequest, updateOrganizationRequest } = appSlice.actions;
 
-const organizationTemplate = {
+const getOrganizationData = (organization) => ({
+  id: organization.id,
+  type: organization.type,
+  name: organization.name,
+  intro_title: organization.intro_title,
+  intro_text: organization.intro_text,
+  logo: { file: null, url: null },
+  brochure: { file: null, url: null },
+});
+
+const ORGANIZATION_TEMPLATE = getOrganizationData({
   type: "network",
   name: "",
   intro_title: "",
   intro_text: "",
-  logo: null,
-  brochure: null,
-};
+});
 
 const organizationValidation = yup.object().shape({
   type: yup.string().required("Corporation type is required. Please contact tech support if you see this message"),
   name: yup.string().required("Name is required"),
   intro_text: yup.string().required("Intro text is required"),
   intro_title: yup.string().required("Intro title is required"),
-  logo: yup.mixed().required("Logo is required"),
-  brochure: yup.mixed().required("Brochure is required"),
+  logo: yup.object().shape({
+    url: yup.string().nullable().required("Logo is required"),
+    file: yup.mixed().nullable().required("Logo is required"),
+  }),
+  brochure: yup.object().shape({
+    url: yup.string().nullable().required("Brochure is required"),
+    file: yup.mixed().nullable().required("Brochure is required"),
+  }),
 });
+
+const filterOrganizationByTypeAndId = (organizations, type, id) => {
+  return organizations.filter((organization) => organization.id === id && organization.type === type);
+};
 
 const Organization = ({ create = false }) => {
   const dispatch = useDispatch();
 
-  const selectedOrganizationIdAndType = useSelector(selectSelectedOrganizationIdAndType);
-  const organizations = useSelector(selectOrganizations);
-
   const isLoading = useSelector(selectLoading);
+  const organizations = useSelector(selectOrganizations);
+  const { type: selectedType, id: selectedId } = useSelector(selectSelectedOrganizationIdAndType);
 
-  let selectedOrganizationData = organizations.filter(
-    (org) => org.id === selectedOrganizationIdAndType.id && org.type === selectedOrganizationIdAndType.type
-  )[0];
+  const organization = useMemo(
+    () => filterOrganizationByTypeAndId(organizations, selectedType, selectedId)[0],
+    [organizations, selectedType, selectedId]
+  );
 
-  const [organizationData, setOrganizationData] = useState(create ? organizationTemplate : selectedOrganizationData);
+  const organizationQueryArg = { organizationId: organization.id, organizationType: organization.type };
+
+  const logoQuery = useOrganizationLogoQuery(organizationQueryArg, {
+    enabled: Boolean(organization.logo?.id),
+    onSuccess: ({ file }) => setLogoField(file),
+  });
+  const brochureQuery = useOrganizationBrochureQuery(organizationQueryArg, {
+    enabled: Boolean(organization.brochure?.id),
+    onSuccess: ({ file }) => setBrochureField(file),
+  });
 
   const [isFilesLoading, setIsFilesLoading] = useState(false);
+  const [organizationData, setOrganizationData] = useState(
+    create ? ORGANIZATION_TEMPLATE : getOrganizationData(organization)
+  );
 
-  const fetchFile = async (file) => {
-    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/file/${file.id}`, {
-      headers: new Headers({
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      }),
-    });
-    let data = await response.blob();
-    let metadata = {
-      type: file.mime_type,
-    };
+  const recoverRemovedFilesData = () => {
+    if (organizationData.logo.file === null) {
+      setLogoField(logoQuery.data.file);
+    }
 
-    return new File([data], file.name, metadata);
-  };
-
-  const createFiles = async (file) => {
-    setIsFilesLoading(true);
-
-    const fetchedFile = await fetchFile(file);
-
-    setIsFilesLoading(false);
-
-    return fetchedFile;
+    if (organizationData.brochure.file === null) {
+      setBrochureField(brochureQuery.data.file);
+    }
   };
 
   const handleSubmit = async () => {
@@ -84,56 +96,53 @@ const Organization = ({ create = false }) => {
     });
 
     if (!isValid) {
+      // If some files was removed than recover them for better UX when form validation fails
+      recoverRemovedFilesData();
       return;
     }
 
-    const dataToSubmit = new FormData();
+    const formData = new FormData();
 
-    // eslint-disable-next-line array-callback-return
-    Object.keys(organizationTemplate).map((field) => {
-      dataToSubmit.append(field, organizationData[field]);
-    });
-
-    if (!(organizationData.logo instanceof File) && organizationData.logo?.name) {
-      const logo = await createFiles(selectedOrganizationData.logo);
-      // todo bug with formData repeated key
-      dataToSubmit.delete("logo");
-      dataToSubmit.append("logo", logo);
-    }
-
-    if (!(organizationData.brochure instanceof File) && organizationData.brochure?.name) {
-      const brochure = await createFiles(selectedOrganizationData.brochure);
-      // todo bug with formData repeated key
-      dataToSubmit.delete("brochure");
-      dataToSubmit.append("brochure", brochure);
-    }
+    formData.set("type", organizationData.type);
+    formData.set("name", organizationData.name);
+    formData.set("intro_title", organizationData.intro_title);
+    formData.set("intro_text", organizationData.intro_text);
+    formData.set("logo", organizationData.logo.file);
+    formData.set("brochure", organizationData.brochure.file);
 
     if (create) {
-      dispatch(createOrganizationRequest(dataToSubmit));
+      dispatch(createOrganizationRequest(formData));
     } else {
-      dataToSubmit.append("id", organizationData.id);
-      dispatch(updateOrganizationRequest(dataToSubmit));
+      formData.set("id", organizationData.id);
+      dispatch(updateOrganizationRequest(formData));
     }
   };
 
-  const handleFieldValueChange = (field, value) => {
-    setOrganizationData({
-      ...organizationData,
-      [field]: value,
-    });
+  const setOrganizationField = (name, value) => setOrganizationData((prev) => ({ ...prev, [name]: value }));
+
+  const setOrganizationFileField = (name, file) => {
+    if (!file) {
+      setOrganizationField(name, { file: null, url: null });
+      return;
+    }
+
+    readBlobAsDataURL(file).then((url) => setOrganizationField(name, { file, url }));
   };
+
+  const setLogoField = (file) => setOrganizationFileField("logo", file);
+
+  const setBrochureField = (file) => setOrganizationFileField("brochure", file);
 
   useEffect(() => {
     if (!create) {
-      setOrganizationData(selectedOrganizationData);
+      setOrganizationData(getOrganizationData(organization));
       setIsFilesLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedOrganizationIdAndType]);
+  }, [selectedType, selectedId, create, organization]);
 
   useEffect(() => {
     if (create) {
-      setOrganizationData(organizationTemplate);
+      setOrganizationData(ORGANIZATION_TEMPLATE);
       setIsFilesLoading(false);
     }
   }, [create]);
@@ -154,9 +163,7 @@ const Organization = ({ create = false }) => {
               className={"text-input"}
               value={organizationData.name || ""}
               disabled={isFilesLoading || isLoading}
-              onChange={(e) => {
-                handleFieldValueChange("name", e.target.value);
-              }}
+              onChange={(e) => setOrganizationField("name", e.target.value)}
             />
           </div>
         </div>
@@ -172,9 +179,7 @@ const Organization = ({ create = false }) => {
               className={"text-input"}
               value={organizationData.intro_title || ""}
               disabled={isFilesLoading || isLoading}
-              onChange={(e) => {
-                handleFieldValueChange("intro_title", e.target.value);
-              }}
+              onChange={(e) => setOrganizationField("intro_title", e.target.value)}
             />
           </div>
         </div>
@@ -182,16 +187,11 @@ const Organization = ({ create = false }) => {
           <div className="label">Logo</div>
           <div className="form-element">
             <FileInput
-              value={organizationData.logo}
-              preview={
-                organizationData.logo?.base64 ||
-                (organizationData.logo instanceof File && URL.createObjectURL(organizationData.logo))
-              }
-              onChange={(file) => {
-                handleFieldValueChange("logo", file);
-              }}
-              loading={isFilesLoading || isLoading}
-              disabled={isFilesLoading || isLoading}
+              value={organizationData.logo.file}
+              preview={organizationData.logo.url}
+              onChange={setLogoField}
+              loading={isFilesLoading || isLoading || logoQuery.isLoading}
+              disabled={isFilesLoading || isLoading || logoQuery.isLoading}
               accept="image/png, image/jpeg"
             />
           </div>
@@ -207,7 +207,7 @@ const Organization = ({ create = false }) => {
                 type={"text"}
                 orgId={create ? "create" : organizationData.name + organizationData.id}
                 data={organizationData.intro_text || ""}
-                onChange={({ rich, raw }) => handleFieldValueChange("intro_text", raw === "" ? "" : rich)}
+                onChange={({ rich, raw }) => setOrganizationField("intro_text", raw === "" ? "" : rich)}
               />
             </div>
           </div>
@@ -216,13 +216,11 @@ const Organization = ({ create = false }) => {
           <div className="label">Brochure</div>
           <div className="form-element">
             <FileInput
+              value={organizationData.brochure.file}
+              onChange={setBrochureField}
+              loading={isFilesLoading || isLoading || brochureQuery.isLoading}
+              disabled={isFilesLoading || isLoading || brochureQuery.isLoading}
               accept="application/pdf"
-              value={organizationData.brochure}
-              onChange={(file) => {
-                handleFieldValueChange("brochure", file);
-              }}
-              loading={isFilesLoading || isLoading}
-              disabled={isFilesLoading || isLoading}
             />
           </div>
         </div>

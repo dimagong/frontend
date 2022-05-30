@@ -62,9 +62,6 @@ const {
   removeUserNotifyRequest,
   removeUserNotifySuccess,
   removeUserNotifyError,
-  getUserOrganizationLogoRequest,
-  getUserOrganizationLogoSuccess,
-  getUserOrganizationLogoError,
 
   updateActivitiesSuccess,
   updateActivitiesRequest,
@@ -117,7 +114,6 @@ function* getProfile() {
 
     yield put(getProfileSuccess(response));
     yield put(loginWithJWT(response));
-    yield put(getUserOrganizationLogoRequest({ logo: response.permissions.logo }));
   } catch (error) {
     console.log(error);
     yield put(getProfileError(error));
@@ -359,15 +355,6 @@ function* removeUserNotify() {
   }
 }
 
-function* getUserOrganizationLogo({ payload }) {
-  try {
-    const logoBase64 = yield call(organizationApi.getOrganizationLogo, payload);
-    yield put(getUserOrganizationLogoSuccess(logoBase64));
-  } catch (error) {
-    yield put(getUserOrganizationLogoError(error));
-  }
-}
-
 function* getOnboardingsByUser({ payload }) {
   try {
     const onboardings = yield call(userApi.getOnboradingsByUser, payload);
@@ -422,7 +409,6 @@ export default function* () {
     yield takeLatest(allowUserAbilityRequest.type, allowUserAbility),
     yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility),
     yield takeLatest(removeUserNotifyRequest.type, removeUserNotify),
-    yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
     yield takeLatest(setManager.type, handleSetManager),
     yield takeLatest(getUserPermissionsRequest.type, getUserPermissions),
   ]);

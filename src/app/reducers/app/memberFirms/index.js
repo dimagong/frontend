@@ -77,7 +77,7 @@ const memberFirmsReducer = {
 
   updateMemberFirmProfileImageSuccess: (state, { payload }) => {
     state.memberFirms = state.memberFirms.map((memberFirm) =>
-      memberFirm.id === payload.id ? { ...memberFirm, logo_path: payload.logo_path } : memberFirm
+      memberFirm.id === payload.id ? { ...memberFirm, logo: payload.logo } : memberFirm
     );
 
     state.isLoading = false;
@@ -86,7 +86,7 @@ const memberFirmsReducer = {
 
   removeMemberFirmLogoSuccess: (state, { payload }) => {
     state.memberFirms = state.memberFirms.map((memberFirm) =>
-      memberFirm.id === payload.id ? { ...memberFirm, logo_path: null } : memberFirm
+      memberFirm.id === payload.id ? { ...memberFirm, logo: null } : memberFirm
     );
 
     state.isLoading = false;

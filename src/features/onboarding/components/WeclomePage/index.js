@@ -1,53 +1,20 @@
 import React from "react";
 import { Button } from "reactstrap";
+import { useDispatch } from "react-redux";
 import { ChevronDown, ChevronRight } from "react-feather";
 
-import appSlice from "../../../../app/slices/appSlice";
-
-import { useDispatch } from "react-redux";
+import appSlice from "app/slices/appSlice";
+import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 
 const { removeUserNotifyRequest } = appSlice.actions;
 
 const WelcomePageComponent = ({ profile, isOnboardingExist }) => {
   const dispatch = useDispatch();
 
-  const fetchFile = async (file) => {
-    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/file/${file.id}`, {
-      headers: new Headers({
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      }),
-    });
-    let data = await response.blob();
-    let metadata = {
-      type: file.mime_type,
-    };
-
-    return new File([data], file.name, metadata);
-  };
-
-  const saveBrochure = async (brochure) => {
-    const file = await fetchFile(brochure);
-    const blob = new Blob([file], { type: "application/pdf" });
-    if (window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveBlob(blob, brochure.name);
-    } else {
-      const elem = window.document.createElement("a");
-      elem.href = window.URL.createObjectURL(blob);
-      elem.download = brochure.name;
-      document.body.appendChild(elem);
-      elem.click();
-      document.body.removeChild(elem);
-    }
-  };
-
-  const downloadBrochure = () => {
-    if (!profile?.notify_entity?.brochure) {
-      console.error("There is no brochure!");
-      return;
-    }
-
-    saveBrochure(profile.notify_entity.brochure);
-  };
+  const brochureQuery = useOrganizationBrochureQuery({
+    organizationId: profile.permissions.organization_id,
+    organizationType: profile.permissions.organization_type,
+  });
 
   const proceedUserToOnboarding = () => {
     dispatch(removeUserNotifyRequest());
@@ -63,9 +30,13 @@ const WelcomePageComponent = ({ profile, isOnboardingExist }) => {
         dangerouslySetInnerHTML={{ __html: profile.notify_entity.intro_text }}
       />
       <div className={"welcome-onboarding_download-button"}>
-        <Button className={"welcome-onboarding_download-button_button"} onClick={downloadBrochure}>
+        <a
+          href={brochureQuery.data.url}
+          download={brochureQuery.data.file?.name}
+          className={"welcome-onboarding_download-button_button btn btn-secondary"}
+        >
           Download the Welcome to {profile.permissions.organization} brochure <ChevronDown />
-        </Button>
+        </a>
       </div>
       {isOnboardingExist && (
         <div className={"welcome-onboarding_join-button"}>
