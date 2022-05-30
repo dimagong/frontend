@@ -10,7 +10,7 @@ export const useMSFieldUsersFile = ({ msFieldId, userId, resourceManagerFieldId 
     queryFn: ({ signal }) =>
       clientAPI.get(`api/master-schema-field/${msFieldId}/users/${userId}/file`, {
         params: {
-          resource_manager_field_id: resourceManagerFieldId
+          resource_manager_field_id: resourceManagerFieldId,
         },
         responseType: "blob",
         onlyData: false,

@@ -1,14 +1,11 @@
 @import "normalize";
 @import "variables";
 @import "typography";
-@import "~prismjs/themes/prism-tomorrow";
 @import "../scss/app.scss";
 
 // components
 @import "../../templates/pageTemplate/pageTemplate.scss";
 @import "../../layouts/components/navbar/navBar.scss";
-
-
 
 // pages
 @import "../../features/auth/login/login.scss";
@@ -19,4 +16,3 @@
 @import "../../features/user-managment/userManagment.scss";
 @import "../../features/user-managment/userEdit/userEdit.scss";
 @import "../../features/home/home.scss";
-

@@ -5,7 +5,11 @@ import classNames from "classnames";
 const MSHTreeNodeList = ({ root, index, children }) => {
   const className = classNames("tree-hierarchy__list position-relative", { "tree-hierarchy__list--root": root });
 
-  return <ul className={className} style={{ zIndex: index }}>{children}</ul>;
+  return (
+    <ul className={className} style={{ zIndex: index }}>
+      {children}
+    </ul>
+  );
 };
 
 MSHTreeNodeList.propTypes = {

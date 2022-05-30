@@ -3,15 +3,14 @@
   padding-top: 45px;
   padding-bottom: 40px;
 
-
   &::-webkit-scrollbar {
     display: none;
   }
 
   /* Hide scrollbar for IE, Edge and Firefox */
 
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 
   &_item {
     display: grid;
@@ -40,8 +39,9 @@
       transform: translateX(50%);
     }
 
-
-    .left, .center, .right {
+    .left,
+    .center,
+    .right {
     }
 
     .left {
@@ -59,7 +59,7 @@
         position: relative;
         height: 1px;
         width: 100%;
-        background-color: rgba(112,112,112, 0.51);
+        background-color: rgba(112, 112, 112, 0.51);
         .status-circle {
           position: absolute;
           height: 16px;
@@ -69,7 +69,7 @@
           top: 0;
           transform: translate(-50%, -50%);
           &.status-success {
-            background-color: #28A745;
+            background-color: #28a745;
           }
         }
       }
@@ -79,7 +79,7 @@
       &-content {
         display: inline-flex;
         padding: 11px;
-        border: 1px solid rgba(112,112,112, 0.24);
+        border: 1px solid rgba(112, 112, 112, 0.24);
         border-radius: 10px;
         .icon {
           margin-right: 11px;
@@ -90,7 +90,7 @@
           height: 30px;
           width: 30px;
           border-radius: 30px;
-          border: 1px solid rgba(112,112,112, 0.45);
+          border: 1px solid rgba(112, 112, 112, 0.45);
         }
         .description {
           padding-top: 6px;
@@ -103,9 +103,6 @@
         position: relative;
         padding-bottom: 75px;
       }
-
     }
   }
-
-
 }

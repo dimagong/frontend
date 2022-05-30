@@ -1,6 +1,6 @@
-import {Button, Modal} from "react-bootstrap";
-import React, {useState} from "react";
-import {Edit} from "react-feather"
+import { Button, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+import { Edit } from "react-feather";
 
 function ElementEditModal(props) {
   const [show, setShow] = useState(false);
@@ -14,7 +14,6 @@ function ElementEditModal(props) {
     if (props.onSave()) {
       setShow(false);
     }
-
   };
   return (
     <div>
@@ -22,7 +21,7 @@ function ElementEditModal(props) {
                 <MdBuild/>
             </Button> */}
 
-      <Edit size={20} className="cursor-pointer" onClick={handleShow}/>
+      <Edit size={20} className="cursor-pointer" onClick={handleShow} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -30,7 +29,9 @@ function ElementEditModal(props) {
         </Modal.Header>
         <Modal.Body>{props.children}</Modal.Body>
         <Modal.Footer className="justify-content-between">
-          <Button onClick={handleSave} variant="primary">Save</Button>
+          <Button onClick={handleSave} variant="primary">
+            Save
+          </Button>
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>

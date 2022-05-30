@@ -25,10 +25,7 @@ const filterDFormsByName = (dForms, name) =>
 const MasterSchemaHierarchySearch = ({ hierarchy, hierarchyName, onSearch }) => {
   const { data: dForms } = useStoreQuery(() => getdFormsRequest(), selectdForms);
 
-  const filterTypes = React.useMemo(
-    () => filterDFormsByName(dForms || [], hierarchyName),
-    [dForms, hierarchyName]
-  );
+  const filterTypes = React.useMemo(() => filterDFormsByName(dForms || [], hierarchyName), [dForms, hierarchyName]);
   const filterNames = React.useMemo(() => filterTypes.map(get("name")), [filterTypes]);
 
   const onSearchSubmit = React.useCallback(

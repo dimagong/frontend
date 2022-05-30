@@ -1,6 +1,6 @@
-import React from "react"
-import logo from "../../../assets/img/logo/logo.png"
-import "../../../assets/scss/components/app-loader.scss"
+import React from "react";
+import logo from "../../../assets/img/logo/logo.png";
+import "../../../assets/scss/components/app-loader.scss";
 class SpinnerComponent extends React.Component {
   render() {
     return (
@@ -12,8 +12,8 @@ class SpinnerComponent extends React.Component {
           <div className="effect-3 effects"></div>
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default SpinnerComponent
+export default SpinnerComponent;

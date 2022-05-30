@@ -46,6 +46,11 @@
 
 @each $color_name, $color in $colors {
   @each $color_type, $color_value in $color {
+    $darken1: color-function($color_name, "darken-1");
+    $darken2: color-function($color_name, "darken-2");
+    $darken3: color-function($color_name, "darken-3");
+    $darken4: color-function($color_name, "darken-4");
+
     @if $color_type== "base" {
       .#{$color_name} {
         color: $color_value !important;
@@ -124,20 +129,22 @@
       }
 
       // Basic buttons
-      .btn-#{$color_name} {
-        border-color: color-function($color_name, "darken-2") !important;
-        background-color: $color_value !important;
-        color: #fff;
+      @if ($darken1 != null and $darken2 != null) {
+        .btn-#{$color_name} {
+          border-color: color-function($color_name, "darken-2") !important;
+          background-color: $color_value !important;
+          color: #fff;
 
-        &:hover {
-          border-color: color-function($color_name, "darken-1") !important;
-          color: #fff !important;
-          box-shadow: 0 8px 25px -8px rgba($color-value, 1);
-        }
+          &:hover {
+            border-color: color-function($color_name, "darken-1") !important;
+            color: #fff !important;
+            box-shadow: 0 8px 25px -8px rgba($color-value, 1);
+          }
 
-        &:focus,
-        &:active {
-          color: #fff !important;
+          &:focus,
+          &:active {
+            color: #fff !important;
+          }
         }
       }
 
@@ -321,7 +328,7 @@
         }
       }
 
-      // Vertical Layout Menu Themes 
+      // Vertical Layout Menu Themes
       .vertical-layout {
         .main-menu.theme-#{$color_name} {
           .navbar-header {
@@ -335,21 +342,13 @@
             .nav-item {
               &.active {
                 a {
-                  background: linear-gradient(
-                    118deg,
-                    rgba($color_value, 1),
-                    rgba($color_value, 0.7)
-                  );
+                  background: linear-gradient(118deg, rgba($color_value, 1), rgba($color_value, 0.7));
                   box-shadow: 0 0 10px 1px rgba($color_value, 0.7) !important;
                 }
               }
               .menu-content {
                 li.active {
-                  background: linear-gradient(
-                    118deg,
-                    rgba($color_value, 1),
-                    rgba($color_value, 0.7)
-                  );
+                  background: linear-gradient(118deg, rgba($color_value, 1), rgba($color_value, 0.7));
                   box-shadow: 0 0 10px 1px rgba($color_value, 0.7) !important;
                 }
               }
@@ -359,22 +358,18 @@
       }
 
       // Horizontal Layout
-      .horizontal-layout.theme-#{$color_name}{
-        .header-navbar{
-          .brand-text{
+      .horizontal-layout.theme-#{$color_name} {
+        .header-navbar {
+          .brand-text {
             color: $color_value !important;
           }
         }
-        .navbar-horizontal{
-          #main-menu-navigation{
-            .nav-item.active{
-              .nav-link{
-                background: linear-gradient(
-                  118deg,
-                  rgba($color_value, 1),
-                  rgba($color_value, 0.7)
-                );
-                box-shadow: 0 0 10px 1px rgba($color_value, 0.7) !important;;
+        .navbar-horizontal {
+          #main-menu-navigation {
+            .nav-item.active {
+              .nav-link {
+                background: linear-gradient(118deg, rgba($color_value, 1), rgba($color_value, 0.7));
+                box-shadow: 0 0 10px 1px rgba($color_value, 0.7) !important;
               }
             }
           }
@@ -422,19 +417,21 @@
         background-color: $color_value !important;
       }
 
-      .btn-#{$color_name}.btn-#{$color_type} {
-        border-color: color-function($color_name, "darken-2") !important;
-        background-color: $color_value !important;
-
-        &:hover {
+      @if ($darken1 != null and $darken2 != null and $darken3 != null and $darken4 != null) {
+        .btn-#{$color_name}.btn-#{$color_type} {
           border-color: color-function($color_name, "darken-2") !important;
-          background-color: color-function($color_name, "darken-3") !important;
-        }
+          background-color: $color_value !important;
 
-        &:focus,
-        &:active {
-          border-color: color-function($color_name, "darken-3") !important;
-          background-color: color-function($color_name, "darken-4") !important;
+          &:hover {
+            border-color: color-function($color_name, "darken-2") !important;
+            background-color: color-function($color_name, "darken-3") !important;
+          }
+
+          &:focus,
+          &:active {
+            border-color: color-function($color_name, "darken-3") !important;
+            background-color: color-function($color_name, "darken-4") !important;
+          }
         }
       }
 

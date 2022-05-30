@@ -8,7 +8,6 @@
 //   Author URL: http://www.themeforest.net/user/pixinvent
 // ================================================================================================
 
-
 @function color-function($color, $type) {
   @if map-has-key($colors, $color) {
     $curr_color: map-get($colors, $color);
@@ -26,18 +25,19 @@
 @each $color_name, $color in $colors {
   @each $color_type, $color_value in $color {
     @if $color_type == "base" {
-      .slider-#{$color_name}{
-        .noUi-connect{
+      .slider-#{$color_name} {
+        .noUi-connect {
           background: $color_value !important;
         }
-        &.noUi-connect{
+        &.noUi-connect {
           background: $color_value !important;
         }
-        .noUi-handle{
+        .noUi-handle {
           border-color: $color_value !important;
         }
-        &.circle-filled, &.square{
-          .noUi-handle{
+        &.circle-filled,
+        &.square {
+          .noUi-handle {
             background: $color_value !important;
           }
         }

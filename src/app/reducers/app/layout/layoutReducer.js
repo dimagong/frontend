@@ -4,21 +4,20 @@ const layoutReducer = {
   },
 
   hideContextSearch: (state) => {
-    state.isContextSearchVisible = false
+    state.isContextSearchVisible = false;
   },
 
-  setContext: (state, {payload}) => {
+  setContext: (state, { payload }) => {
     state.context = payload;
   },
 
-  setPreview: (state, {payload}) => {
+  setPreview: (state, { payload }) => {
     state.preview = payload;
   },
 
-  setNotificationsAndWorkFlowsContext: (state, {payload}) => {
+  setNotificationsAndWorkFlowsContext: (state, { payload }) => {
     state.notificationsAndWorkFlowContext = payload;
-  }
-
+  },
 };
 
 export default layoutReducer;

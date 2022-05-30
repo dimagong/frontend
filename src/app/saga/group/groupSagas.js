@@ -1,8 +1,10 @@
-import { all, put, call, takeLatest, takeEvery } from "redux-saga/effects";
+import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import groupApi from "api/Group/group";
-import organizationApi from 'api/organizations'
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
+import { queryClient } from "api/queryClient";
+import organizationApi from "api/organizations";
+import { OrganizationFileQueryKeys } from "api/file/useOrganizationFileQueries";
 
 const {
   getGroupsSuccess,
@@ -21,31 +23,16 @@ const {
   updateOrganizationSuccess,
   updateOrganizationError,
 
-  getOrganizationLogoRequest,
-  getOrganizationLogoSuccess,
-  getOrganizationLogoError,
-
   setContext,
-}  = appSlice.actions;
-
+} = appSlice.actions;
 
 function* getGroups() {
   try {
-    const  response = yield call(groupApi.getGroups);
+    const response = yield call(groupApi.getGroups);
     yield put(getGroupsSuccess(response));
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(getGroupsError(error));
-  }
-}
-
-function* getOrganizationLogo({payload}) {
-  try {
-    const logoBase64 = yield call(organizationApi.getOrganizationLogo, payload)
-    yield put(getOrganizationLogoSuccess({orgId: payload.id, orgType: payload.type, logoBase64}))
-
-  } catch (error) {
-    yield put(getOrganizationLogoError(error))
   }
 }
 
@@ -53,38 +40,37 @@ function* getOrganizations() {
   try {
     const response = yield call(organizationApi.getOrganizations);
     yield put(getOrganizationsSuccess(response));
-
-    const orgsWithLogo = response.filter(org => !!org.logo?.id && !org.logo?.base64)
-    yield all(orgsWithLogo.map((org) => {
-      return put(getOrganizationLogoRequest(org))
-    }))
   } catch (error) {
     yield put(getOrganizationsError(error));
   }
 }
 
-function* createOrganization({payload}) {
+function* createOrganization({ payload }) {
   try {
-    const  response = yield call(organizationApi.createOrganization, payload);
-    yield put(setContext(null))
+    const response = yield call(organizationApi.createOrganization, payload);
+    yield put(setContext(null));
     yield put(createOrganizationSuccess(response));
+    // [need refactor] Temporary invalidate query from sagas
+    queryClient.invalidateQueries(OrganizationFileQueryKeys.logo(response.type, response.id));
+    queryClient.invalidateQueries(OrganizationFileQueryKeys.brochure(response.type, response.id));
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(createOrganizationError(error));
   }
 }
 
-function* updateOrganization({payload}) {
+function* updateOrganization({ payload }) {
   try {
-    const  response = yield call(organizationApi.updateOrganization, payload);
+    const response = yield call(organizationApi.updateOrganization, payload);
     yield put(updateOrganizationSuccess(response));
-    yield put(getOrganizationLogoRequest(response));
+    // [need refactor] Temporary invalidate query from sagas
+    queryClient.invalidateQueries(OrganizationFileQueryKeys.logo(response.type, response.id));
+    queryClient.invalidateQueries(OrganizationFileQueryKeys.brochure(response.type, response.id));
   } catch (error) {
-    console.log(error)
+    console.log(error);
     yield put(updateOrganizationError(error));
   }
 }
-
 
 export default function* () {
   yield all([
@@ -92,6 +78,5 @@ export default function* () {
     yield takeLatest(getOrganizationsRequest.type, getOrganizations),
     yield takeLatest(createOrganizationRequest.type, createOrganization),
     yield takeLatest(updateOrganizationRequest.type, updateOrganization),
-    yield takeEvery(getOrganizationLogoRequest.type, getOrganizationLogo),
   ]);
 }

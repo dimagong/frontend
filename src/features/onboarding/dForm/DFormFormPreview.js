@@ -1,41 +1,32 @@
 import React from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Row,
-  Col, Badge,
-} from "reactstrap";
+import { Card, CardHeader, CardTitle, CardBody, Row, Col, Badge } from "reactstrap";
 import { X } from "react-feather";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import {selectPreview} from 'app/selectors/layoutSelector'
-import {selectdForms} from '../../../app/selectors'
+import { selectPreview } from "app/selectors/layoutSelector";
+import { selectdForms } from "../../../app/selectors";
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
 
-const {
-  setPreview,
-} = appSlice.actions;
+const { setPreview } = appSlice.actions;
 
 const DFormFormPreview = () => {
   const preview = useSelector(selectPreview);
-  const dForms = useSelector(selectdForms)
+  const dForms = useSelector(selectdForms);
   const dispatch = useDispatch();
 
-  const dForm = dForms.filter(({id}) => id === preview.id)[0]
+  const dForm = dForms.filter(({ id }) => id === preview.id)[0];
 
   const closeDForm = () => {
-    dispatch(setPreview(null))
+    dispatch(setPreview(null));
   };
 
-  if(!dForm) return null;
+  if (!dForm) return null;
 
   return (
     <Row>
-      <Col sm="8" >
+      <Col sm="8">
         <Card className="dform border">
           <CardHeader>
             <CardTitle className="font-weight-bold">DForm</CardTitle>
@@ -46,24 +37,20 @@ const DFormFormPreview = () => {
           <CardBody className="card-top-padding">
             <div className="mt-2">
               <div className="d-flex mb-1 align-items-center">
-                <div className="width-100">
-                  Organisations
-                </div>
+                <div className="width-100">Organisations</div>
                 {dForm.groups && dForm.groups.length ? (
-                  dForm.groups.map((group) =>
+                  dForm.groups.map((group) => (
                     <Badge className="custom-badge" color="primary">
                       {group.name}
                     </Badge>
-                  )
+                  ))
                 ) : (
                   <span>No roles</span>
                 )}
               </div>
             </div>
             <div className="d-flex mb-1">
-              <div className="font-weight-bold-lighter column-sizing-user-info width-100">
-                Name
-              </div>
+              <div className="font-weight-bold-lighter column-sizing-user-info width-100">Name</div>
               <div className="user-managment__edit_body_user-info-container">
                 <div className=" user-managment__edit_body_form_text">
                   <span>{dForm.name} </span>
@@ -71,9 +58,7 @@ const DFormFormPreview = () => {
               </div>
             </div>
             <div className="d-flex mb-1">
-              <div className="font-weight-bold-lighter column-sizing-user-info width-100">
-                Description
-              </div>
+              <div className="font-weight-bold-lighter column-sizing-user-info width-100">Description</div>
               <div className="user-managment__edit_body_user-info-container">
                 <div className=" user-managment__edit_body_form_text">
                   <span>{dForm.description}</span>

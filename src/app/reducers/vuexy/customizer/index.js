@@ -1,8 +1,8 @@
-import { combineReducers } from "redux"
-import customizer from "./customizer"
+import { combineReducers } from "redux";
+import customizer from "./customizer";
 
 const customizerReducer = combineReducers({
-  customizer
-})
+  customizer,
+});
 
-export default customizerReducer
+export default customizerReducer;

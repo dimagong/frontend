@@ -2,25 +2,13 @@ import React from "react";
 
 import "./styles.scss";
 
-const InputText = ({
-                     name,
-                     value,
-                     label,
-                     onChange,
-                     disabled,
-                     isRequired,
-                     placeholder,
-                     fieldId,
-                     error,
-                   }) => {
+const InputText = ({ name, value, label, onChange, disabled, isRequired, placeholder, fieldId, error }) => {
   const handleInputChange = (e) => {
     onChange(e.target.value, fieldId);
   };
 
   return (
-    <div
-      className={`member_firm-form_field ${error ? "field_with_error" : ""}`}
-    >
+    <div className={`member_firm-form_field ${error ? "field_with_error" : ""}`}>
       <label htmlFor={name || label} className="member_firm-form_field-label">
         {label} {!!isRequired && "*"}
       </label>
@@ -33,32 +21,18 @@ const InputText = ({
         value={value}
         placeholder={placeholder || `Type ${name}`}
       />
-      {error && (
-        <div className="member_firm-form_field-validation_error">{error}</div>
-      )}
+      {error && <div className="member_firm-form_field-validation_error">{error}</div>}
     </div>
   );
 };
 
-const InputEmail = ({
-                      name,
-                      value,
-                      label,
-                      onChange,
-                      disabled,
-                      isRequired,
-                      placeholder,
-                      fieldId,
-                      error,
-                    }) => {
+const InputEmail = ({ name, value, label, onChange, disabled, isRequired, placeholder, fieldId, error }) => {
   const handleInputChange = (e) => {
     onChange(e.target.value, fieldId);
   };
 
   return (
-    <div
-      className={`member_firm-form_field ${error ? "field_with_error" : ""}`}
-    >
+    <div className={`member_firm-form_field ${error ? "field_with_error" : ""}`}>
       <label htmlFor={name || label} className="member_firm-form_field-label">
         {label} {!!isRequired && "*"}
       </label>
@@ -71,9 +45,7 @@ const InputEmail = ({
         value={value}
         placeholder={placeholder || "example@email.com"}
       />
-      {error && (
-        <div className="member_firm-form_field-validation_error">{error}</div>
-      )}
+      {error && <div className="member_firm-form_field-validation_error">{error}</div>}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-  import { selectAuth, selectLoading, selectError } from "./authSelectors";
+import { selectAuth, selectLoading, selectError } from "./authSelectors";
 import {
   selectNotifications,
   selectNotification,
@@ -23,14 +23,9 @@ import {
   selectVuexyUser,
 } from "./userSelectors";
 
-import {
-  selectContextSearchVisibility,
-  selectContext,
-} from './layoutSelector'
+import { selectContextSearchVisibility, selectContext } from "./layoutSelector";
 
-import {
-  selectMasterSchemaFields
-} from './masterSchemaSelectors'
+import { selectMasterSchemaFields } from "./masterSchemaSelectors";
 
 export {
   selectAuth,
@@ -57,5 +52,5 @@ export {
   selectVuexyUser,
   selectContextSearchVisibility,
   selectContext,
-  selectMasterSchemaFields
+  selectMasterSchemaFields,
 };

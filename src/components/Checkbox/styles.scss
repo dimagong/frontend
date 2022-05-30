@@ -9,7 +9,6 @@ $container-class: "checkbox_container";
   -ms-user-select: none;
   user-select: none;
 
-
   &-hidden_input {
     position: absolute;
     opacity: 0;
@@ -19,7 +18,6 @@ $container-class: "checkbox_container";
 
     // styles of styled input after it checked
     &:checked ~ .#{$container-class}-check_mark {
-
       // styles of checkmark itself after input is checked
       &:after {
         display: block;
@@ -46,7 +44,6 @@ $container-class: "checkbox_container";
 
   // styles of styled input on hover
   &:hover input ~ .#{$container-class}-check_mark {
-
   }
 
   // default theme
@@ -59,7 +56,7 @@ $container-class: "checkbox_container";
       &-hidden_input {
         // styles of styled input after it checked
         &:checked ~ .#{$container-class}-check_mark {
-          background-color: #2196F3;
+          background-color: #2196f3;
         }
       }
 
@@ -101,7 +98,7 @@ $container-class: "checkbox_container";
     .#{$container-class} {
       // styles of styled input
       &-check_mark {
-        border: 1px solid #E2E2E2;
+        border: 1px solid #e2e2e2;
         height: 16px;
         width: 16px;
         background-color: white;
@@ -113,7 +110,7 @@ $container-class: "checkbox_container";
           top: 3px;
           width: 8px;
           height: 8px;
-          background: #63C9EF;
+          background: #63c9ef;
           border-radius: 30px;
         }
       }

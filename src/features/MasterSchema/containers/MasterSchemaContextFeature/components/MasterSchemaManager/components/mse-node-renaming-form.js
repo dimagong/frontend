@@ -37,12 +37,7 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onS
                 {error}
               </Col>
               <Col xs={4}>
-                <NmpButton
-                  className="w-100"
-                  color="primary"
-                  type="submit"
-                  disabled={form.invalid}
-                >
+                <NmpButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
                   {action}
                 </NmpButton>
               </Col>

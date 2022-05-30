@@ -1,31 +1,27 @@
-import axios from 'api';
+import axios from "api";
 
 class FileService {
   getDFormFiles(dFormId) {
-    return axios.get('/api/file/dForm/' + dFormId);
+    return axios.get("/api/file/dForm/" + dFormId);
   }
 
   sendFile(dFormId, dataUrl, group) {
-    return axios.post('/api/file/dForm/' + dFormId + '/create', {
+    return axios.post("/api/file/dForm/" + dFormId + "/create", {
       dataUrl,
-      group
+      group,
     });
   }
 
   changeUserAvatar(userId, formData) {
-    return axios.post('/api/file/user/' + userId + '/avatar', formData);
+    return axios.post("/api/file/user/" + userId + "/avatar", formData);
   }
 
   getUserAvatar(userId) {
-    return axios.get('/api/file/user/' + userId + '/avatar');
-  }
-
-  getFile(fileId) {
-    return axios.get('/api/file/' + fileId);
+    return axios.get("/api/file/user/" + userId + "/avatar");
   }
 
   deleteFile(fileId) {
-    return axios.delete('/api/file/' + fileId);
+    return axios.delete("/api/file/" + fileId);
   }
 }
 

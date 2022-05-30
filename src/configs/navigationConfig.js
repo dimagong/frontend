@@ -1,5 +1,5 @@
-import React from "react"
-import * as Icon from "react-feather"
+import React from "react";
+import * as Icon from "react-feather";
 const navigationConfig = [
   // {
   //   id: "Home",
@@ -14,7 +14,7 @@ const navigationConfig = [
     type: "item",
     icon: <Icon.Users size={20} />,
     permissions: ["admin", "corporation_manager", "network_manager", "member", "member_firm_manager"],
-    navLink: "/user-management"
+    navLink: "/user-management",
   },
   {
     id: "Onboarding",
@@ -29,7 +29,7 @@ const navigationConfig = [
         type: "item",
         icon: <Icon.Circle size={12} />,
         permissions: ["admin", "corporation_manager", "network_manager", "member", "member_firm_manager"],
-        navLink: "/onboarding/notifications"
+        navLink: "/onboarding/notifications",
       },
       {
         id: "onboarding.dforms",
@@ -37,7 +37,7 @@ const navigationConfig = [
         type: "item",
         icon: <Icon.Circle size={12} />,
         permissions: ["admin", "corporation_manager", "network_manager", "member", "member_firm_manager"],
-        navLink: "/onboarding/dforms"
+        navLink: "/onboarding/dforms",
       },
       {
         id: "onboarding.workflows",
@@ -45,9 +45,9 @@ const navigationConfig = [
         type: "item",
         icon: <Icon.Circle size={12} />,
         permissions: ["admin", "corporation_manager", "network_manager", "member", "member_firm_manager"],
-        navLink: "/onboarding/workflows"
+        navLink: "/onboarding/workflows",
       },
-    ]
+    ],
   },
   {
     id: "Onboarding",
@@ -56,10 +56,10 @@ const navigationConfig = [
     icon: <Icon.Users size={20} />,
     permissions: ["prospect"],
     userAccess: (user) => {
-      if(!user || !user.onboarding) return false;
+      if (!user || !user.onboarding) return false;
       return true;
     },
-    navLink: "/onboarding-process"
+    navLink: "/onboarding-process",
   },
   // {
   //   id: "invitation",
@@ -1169,6 +1169,6 @@ const navigationConfig = [
   //   permissions: ["admin", "editor"],
   //   navLink: "https://pixinvent.ticksy.com/"
   // }
-]
+];
 
-export default navigationConfig
+export default navigationConfig;

@@ -1,21 +1,19 @@
-import React, { useRef, useState} from "react";
-import {dataURItoBlob, processFiles} from "../utils";
-import {concat} from "lodash";
-import {X} from "react-feather";
+import React, { useRef, useState } from "react";
+import { dataURItoBlob, processFiles } from "../utils";
+import { concat } from "lodash";
+import { X } from "react-feather";
 import rfdc from "rfdc";
 import fileService from "../services/file.service";
-import {Badge, Spinner} from "reactstrap";
+import { Badge, Spinner } from "reactstrap";
 
-import FieldLabel from './FieldLabel';
+import FieldLabel from "./FieldLabel";
 
-import './fileWidget.scss'
+import "./fileWidget.scss";
 
 const clone = rfdc();
 
-
 export function FileWidget(props) {
-
-  const propertyKey = props.id.replace('root_', '');
+  const propertyKey = props.id.replace("root_", "");
   const inputFileRef = useRef(null);
   let [filesLoading, setFilesLoading] = useState([]);
   let [filesRemoving, setFilesRemoving] = useState([]);
@@ -42,7 +40,7 @@ export function FileWidget(props) {
     let eventTarget = event.target;
     processFiles(event.target.files).then((files) => {
       if (!files.length) return;
-      if (files[0].dataURL === 'data:') {
+      if (files[0].dataURL === "data:") {
         return;
       }
       //props.onChange(files[0].dataURL);
@@ -55,7 +53,9 @@ export function FileWidget(props) {
     let eventTarget = event.target;
     let oldFiles = clone(props.value);
     processFiles(event.target.files).then((files) => {
-      let filesDataUrl = files.filter(file => typeof file.dataURL !== "undefined" && file.dataURL !== 'data:').map(file => file.dataURL);
+      let filesDataUrl = files
+        .filter((file) => typeof file.dataURL !== "undefined" && file.dataURL !== "data:")
+        .map((file) => file.dataURL);
       //props.onChange(concatedFiles);
       sendMultiFiles(filesDataUrl, oldFiles);
       eventTarget.value = null;
@@ -80,84 +80,69 @@ export function FileWidget(props) {
       const { value } = props;
       deletedFiles.current.push(value[index].file.id);
 
-      let newValue = [...value].filter(({ file }) => !deletedFiles.current.includes(file.id))
+      let newValue = [...value].filter(({ file }) => !deletedFiles.current.includes(file.id));
 
       setFilesRemoving(filesRemoving.concat(value[index].file.id));
       await fileService.deleteFile(value[index].file.id);
-      setFilesRemoving(filesRemoving.filter(fileId => fileId !== value[index].file.id));
+      setFilesRemoving(filesRemoving.filter((fileId) => fileId !== value[index].file.id));
       props.onChange(newValue);
     } else {
       setFilesRemoving(filesRemoving.concat(props.value[index].file.id));
       await fileService.deleteFile(props.value[index].file.id);
-      setFilesRemoving(filesRemoving.filter(fileId => fileId === props.value[index].file.id));
+      setFilesRemoving(filesRemoving.filter((fileId) => fileId === props.value[index].file.id));
       props.onChange(null);
     }
   };
 
   const renderFile = (file, index = null) => {
-
     const isFileRemoving = deletedFiles.current.includes(props.value[index].file.id);
-    const isRemoving = (Array.isArray(props.value) && ~filesRemoving.indexOf(props.value[index].file.id)) || isFileRemoving;
+    const isRemoving =
+      (Array.isArray(props.value) && ~filesRemoving.indexOf(props.value[index].file.id)) || isFileRemoving;
 
     return (
       <div className="file">
         <div className="name">
           {/* eslint-disable-next-line react/jsx-no-target-blank */}
-          <a target="_blank" href={file.url}>{decodeURIComponent(file.name)}</a>
+          <a target="_blank" href={file.url}>
+            {decodeURIComponent(file.name)}
+          </a>
         </div>
 
         <div className="actions">
-          {
-            !isRemoving ? <Badge color="primary cursor-pointer ml-1 mr-1" onClick={() => downloadFile(file)}>
+          {!isRemoving ? (
+            <Badge color="primary cursor-pointer ml-1 mr-1" onClick={() => downloadFile(file)}>
               download
-            </Badge> : null
-          }
-          <div className="upload-progress">
-            {isRemoving ? (
-              <Badge color="danger">
-                removing
-              </Badge>
-            ) : (
-              <>100%</>
-            )}
-          </div>
+            </Badge>
+          ) : null}
+          <div className="upload-progress">{isRemoving ? <Badge color="danger">removing</Badge> : <>100%</>}</div>
           {/*<span>*/}
 
           {/*  <Spinner color="danger" className="ml-1" size="sm"/>*/}
           {/*</span>*/}
           <div>
-            {
-              isRemoving ? (
-                <Spinner color="danger" className="" size="sm"/>
-              ) : (
-                props.disabled ? null
-                  : <X size={15} className="cursor-pointer" onClick={event => removeFile(event, file, index)}/>
-              )
-            }
+            {isRemoving ? (
+              <Spinner color="danger" className="" size="sm" />
+            ) : props.disabled ? null : (
+              <X size={15} className="cursor-pointer" onClick={(event) => removeFile(event, file, index)} />
+            )}
           </div>
-
         </div>
       </div>
-    )
+    );
   };
 
-  const FileItem = ({name}) => {
-
+  const FileItem = ({ name }) => {
     return (
       <div className={"file"}>
-        <div className="name">
-          {decodeURIComponent(name)}
-        </div>
+        <div className="name">{decodeURIComponent(name)}</div>
         <div>
-          <div className="upload-progress">
-
-          </div>
+          <div className="upload-progress"></div>
           <div className="action">
-            <Spinner color="primary" className="ml-1" size="sm"/>
+            <Spinner color="primary" className="ml-1" size="sm" />
           </div>
         </div>
       </div>
-    )
+    );
   };
 
   const renderSingleFile = (fileDataUrl) => {
@@ -174,14 +159,12 @@ export function FileWidget(props) {
       return <div />;
     }
 
-    let fileUrl = window.URL.createObjectURL(
-      new Blob([file.blob], {type: file.blob.type})
-    );
-    return renderFile({name: file.name, url: fileUrl, blob: file.blob}, 0);
+    let fileUrl = window.URL.createObjectURL(new Blob([file.blob], { type: file.blob.type }));
+    return renderFile({ name: file.name, url: fileUrl, blob: file.blob }, 0);
   };
 
   const downloadFile = (file) => {
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     document.body.appendChild(a);
     a.href = file.url;
     a.download = file.name;
@@ -189,7 +172,7 @@ export function FileWidget(props) {
     setTimeout(() => {
       window.URL.revokeObjectURL(file.url);
       document.body.removeChild(a);
-    }, 0)
+    }, 0);
   };
 
   const renderMultipleFile = (filesDataUrl) => {
@@ -205,52 +188,49 @@ export function FileWidget(props) {
         return <></>;
       }
 
-      let fileUrl = window.URL.createObjectURL(
-        new Blob([file.blob], {type: file.blob.type, name: 'test'})
-      );
+      let fileUrl = window.URL.createObjectURL(new Blob([file.blob], { type: file.blob.type, name: "test" }));
 
-      return renderFile({name: file.name, url: fileUrl}, index);
-    })
-
+      return renderFile({ name: file.name, url: fileUrl }, index);
+    });
   };
 
   const renderFiles = () => {
     if (this.state.loadingFiles.length) {
-      let loadingFiles = this.state.loadingFiles.filter(loadingFile => {
-        return loadingFile.file.group === propertyKey
+      let loadingFiles = this.state.loadingFiles.filter((loadingFile) => {
+        return loadingFile.file.group === propertyKey;
       });
-      return loadingFiles.map(loadingFile => {
+      return loadingFiles.map((loadingFile) => {
         // return <div>{loadingFile.file.name}<Spinner color="primary" className="ml-1" size="sm"/></div>;
-        return <FileItem name={loadingFile.file.name} isLoading={true}/>
-      })
+        return <FileItem name={loadingFile.file.name} isLoading={true} />;
+      });
     }
     let mainFiles = props.multiple ? renderMultipleFile(props.value) : renderSingleFile(props.value);
 
-    return <>
-      {(!props.value || !props.value.length) && props.disabled && (<div>No files uploaded</div>)}
-      {mainFiles}
+    return (
+      <>
+        {(!props.value || !props.value.length) && props.disabled && <div>No files uploaded</div>}
+        {mainFiles}
 
-      {
-        filesLoading.map((fileLoading) => {
-          return <FileItem name={decodeURIComponent(dataURItoBlob(fileLoading).name)} isLoading={true}/>
-        })
-      }
-    </>
+        {filesLoading.map((fileLoading) => {
+          return <FileItem name={decodeURIComponent(dataURItoBlob(fileLoading).name)} isLoading={true} />;
+        })}
+      </>
+    );
   };
 
-  const onDragEnter = event => {
+  const onDragEnter = (event) => {
     event.preventDefault();
     event.stopPropagation();
   };
-  const onDragLeave = event => {
+  const onDragLeave = (event) => {
     event.preventDefault();
   };
 
-  const onDragOver = event => {
+  const onDragOver = (event) => {
     event.preventDefault();
   };
 
-  const onDrop = event => {
+  const onDrop = (event) => {
     event.preventDefault();
     const files = event.dataTransfer?.files || event.target.files;
 
@@ -258,48 +238,53 @@ export function FileWidget(props) {
     const formattedFiles = [];
     if (props.multiple) {
       for (let i = 0; i < files.length; i++) {
-        formattedFiles.push(files[i])
+        formattedFiles.push(files[i]);
       }
     } else {
-      formattedFiles.push(files[0])
+      formattedFiles.push(files[0]);
     }
 
+    const migration = { target: { files: formattedFiles } };
 
-    const migration = {target: {files: formattedFiles}};
-
-
-    this.props.fileLoader && onChange(migration)
+    this.props.fileLoader && onChange(migration);
   };
 
   const openFileManager = () => {
     inputFileRef.current.click();
   };
 
-
-  const isDropZoneVisible = props.multiple ? true : (props.value && props.value.length) || this.state.loadingFiles?.length ? false : true;
+  const isDropZoneVisible = props.multiple
+    ? true
+    : (props.value && props.value.length) || this.state.loadingFiles?.length
+    ? false
+    : true;
 
   return (
     <div>
-      <FieldLabel label={props.schema.title} required={props.required}/>
+      <FieldLabel label={props.schema.title} required={props.required} />
 
-      <div className="rendered-files">
-        {renderFiles()}
-      </div>
+      <div className="rendered-files">{renderFiles()}</div>
       <div className="file-input">
         {isDropZoneVisible && !props.disabled && (
-          <div className="drop-zone" onClick={openFileManager} onDrop={onDrop} onDragOver={onDragOver}
-               onDragLeave={onDragLeave} onDragEnter={onDragEnter}>
+          <div
+            className="drop-zone"
+            onClick={openFileManager}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDragEnter={onDragEnter}
+          >
             Drag 'n' Drop files here or click to open file manager
-
-            <input className={"form-element_file-input_hidden-input-file"}
-                   onChange={onDrop}
-                   type="file"
-                   multiple={!!props.multiple}
-                   ref={inputFileRef}
+            <input
+              className={"form-element_file-input_hidden-input-file"}
+              onChange={onDrop}
+              type="file"
+              multiple={!!props.multiple}
+              ref={inputFileRef}
             />
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -10,7 +10,12 @@ const MasterSchemaContext = ({ masterSchemaId, masterSchemaName, selectedNodes, 
   return (
     <ContextTemplate contextTitle="Master Schema" contextName="Organization view">
       <UnapprovedFields masterSchemaId={masterSchemaId} />
-      <MasterSchemaHierarchy masterSchemaId={masterSchemaId} masterSchemaName={masterSchemaName} selectedNodes={selectedNodes} onSelect={onSelect} />
+      <MasterSchemaHierarchy
+        masterSchemaId={masterSchemaId}
+        masterSchemaName={masterSchemaName}
+        selectedNodes={selectedNodes}
+        onSelect={onSelect}
+      />
     </ContextTemplate>
   );
 };

@@ -37,15 +37,15 @@ const FilterModal = ({
 
   const [currSort] = useState(-1);
   let roles = new Set([
-      "Admin",
-      "Corporation manager",
-      "Prospect",
-      "Suspect",
-      "Archived",
-      "Network manager",
-      "Member",
-      "Lead",
-    ]);
+    "Admin",
+    "Corporation manager",
+    "Prospect",
+    "Suspect",
+    "Archived",
+    "Network manager",
+    "Member",
+    "Lead",
+  ]);
   let organizations = new Set();
 
   organizationsObjects.forEach((item) => {

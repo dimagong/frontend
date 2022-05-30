@@ -1,33 +1,31 @@
-import React from 'react';
-import propTypes from 'prop-types';
+import "./styles.scss";
 
-import {Card, CardBody, Spinner} from "reactstrap";
+import React from "react";
+import propTypes from "prop-types";
 
-import './styles.scss';
+import { Card, CardBody } from "reactstrap";
 
-const OrganizationCard = ({org, onSelect, className}) => {
+import NmpOrganizationLogo from "../nmp/NmpOrganizationLogo";
 
+const OrganizationCard = ({ org, onSelect, className }) => {
   const handleOrgSelect = () => {
-    if(!org.logo?.isLoading){
-      onSelect(org.id, org.type)
+    if (!org.logo?.isLoading) {
+      onSelect(org.id, org.type);
     }
   };
 
   return (
     <Card className={`organization-card_wrapper ${className ? className : ""}`} key={org.name}>
       <CardBody className="organization-card" onClick={handleOrgSelect}>
-
-        {org.logo?.isLoading ? (
-          <div className="spinner-wrapper">
-            <Spinner color="primary" />
-          </div>
-        ) : (
-          <img src={org.logo?.base64} alt={org.name} />
-        )}
-
+        <NmpOrganizationLogo
+          fileId={org.logo?.id}
+          organizationId={org.id}
+          organizationType={org.type}
+          organizationName={org.name}
+        />
       </CardBody>
     </Card>
-  )
+  );
 };
 
 OrganizationCard.propTypes = {

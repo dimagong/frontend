@@ -1,7 +1,7 @@
-import { useContext } from 'react';
-import PropTypes from 'prop-types';
+import { useContext } from "react";
+import PropTypes from "prop-types";
 
-import { TreeContext } from './tree-context';
+import { TreeContext } from "./tree-context";
 
 const TreeNodeList = ({ root, index, children }) => {
   const treeContext = useContext(TreeContext);

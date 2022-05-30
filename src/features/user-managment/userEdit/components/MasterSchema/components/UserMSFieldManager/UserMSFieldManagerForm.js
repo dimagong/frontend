@@ -172,7 +172,13 @@ const UserMSFieldManagerForm = (props) => {
 
           {file ? (
             <div className="d-flex justify-content-end align-items-center py-1" key={file.id}>
-              <NmpButton className="mx-1" color="white" type="button" onClick={onPreview} loading={openPreview.isLoading}>
+              <NmpButton
+                className="mx-1"
+                color="white"
+                type="button"
+                onClick={onPreview}
+                loading={openPreview.isLoading}
+              >
                 Preview
               </NmpButton>
 

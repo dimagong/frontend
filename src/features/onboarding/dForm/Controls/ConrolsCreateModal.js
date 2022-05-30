@@ -1,9 +1,9 @@
 import { Button, Modal } from "react-bootstrap";
 import React, { useState } from "react";
 import { Settings } from "react-feather";
-import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy"
-import {Check} from "react-feather"
-import { v4 } from 'uuid'
+import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import { Check } from "react-feather";
+import { v4 } from "uuid";
 
 const DFormCreateModal = () => {
   const [show, setShow] = useState(false);
@@ -109,6 +109,6 @@ const DFormCreateModal = () => {
       </Modal>
     </div>
   );
-}
+};
 
 export default DFormCreateModal;

@@ -6,9 +6,7 @@ import { useRMFields } from "api/resourceManager/useRMFields";
 import { CustomSelect } from "./Parts/CustomSelect";
 
 const getLabel = (file) => {
-  return `ResourceManager.${file.breadcrumbs}.${file.name} v${moment(file.updated_at).format(
-    "YYYY.MM.DD HH:mm:ss"
-  )}`;
+  return `ResourceManager.${file.breadcrumbs}.${file.name}`;
 };
 
 const getOption = (file) => ({ label: getLabel(file), value: file.id });

@@ -27,16 +27,16 @@ const ValuePreview = ({ value, length }) => {
   }
 
   return isLong(length) ? (
-    <button className="btn d-flex align-items-center" style={extendedButtonStyle} onClick={stopPropagation(openExtendedModal)}>
+    <button
+      className="btn d-flex align-items-center"
+      style={extendedButtonStyle}
+      onClick={stopPropagation(openExtendedModal)}
+    >
       <div>This is a long text</div>
       <ExternalLink style={{ marginLeft: "5px" }} size="12" />
 
-      <CustomModal
-        isOpen={extendedModal}
-        title="Extended input"
-        onClose={closeExtendedModal}
-        footerDisabled>
-          <div className="py-2">{value}</div>
+      <CustomModal isOpen={extendedModal} title="Extended input" onClose={closeExtendedModal} footerDisabled>
+        <div className="py-2">{value}</div>
       </CustomModal>
     </button>
   ) : (

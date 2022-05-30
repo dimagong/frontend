@@ -1,21 +1,15 @@
-import _ from "lodash/fp";
-import {all, put, call, takeLatest, select, takeEvery} from "redux-saga/effects";
+import { all, put, call, takeLatest, select, takeEvery } from "redux-saga/effects";
 
 import userApi from "api/User/user";
-import masterSchemaApi from "api/masterSchema/masterSchema";
-
+import { queryClient } from "api/queryClient";
 import organizationApi from "api/organizations";
-import {selectGroups, selectRoles} from "app/selectors";
-import {loginWithJWT} from "app/actions/vuexy/auth/loginActions";
-import appSlice, { initialUserMasterSchemaHierarchySearchParams } from "app/slices/appSlice";
+import { MasterSchemaHierarchyQueryKeys } from "api/masterSchema/hierarchy/masterSchemaHierarchyQueries";
 
-import {
-  selectIsUserMasterSchemaHierarchySearchParamsInitial,
-  selectUserMasterSchemaHierarchySearchParams
-} from "app/selectors/userSelectors";
+import appSlice from "app/slices/appSlice";
+import { selectGroups, selectRoles } from "app/selectors";
+import { loginWithJWT } from "app/actions/vuexy/auth/loginActions";
 
-import {prepareSelectGroups} from "utility/select/prepareSelectData";
-import { selectSelectedMasterSchemaId } from "../../selectors/masterSchemaSelectors";
+import { prepareSelectGroups } from "utility/select/prepareSelectData";
 
 const {
   getProfileSuccess,
@@ -68,9 +62,6 @@ const {
   removeUserNotifyRequest,
   removeUserNotifySuccess,
   removeUserNotifyError,
-  getUserOrganizationLogoRequest,
-  getUserOrganizationLogoSuccess,
-  getUserOrganizationLogoError,
 
   updateActivitiesSuccess,
   updateActivitiesRequest,
@@ -115,20 +106,6 @@ const {
   updateApllicationsOrderSuccess,
   updateApllicationsOrderError,
   updateApllicationsOrderRequest,
-
-  getUserMasterSchemaHierarchyRequest,
-  getUserMasterSchemaHierarchySuccess,
-  getUserMasterSchemaHierarchyError,
-
-  addFieldToUserMasterSchemaRequest,
-  addFieldToUserMasterSchemaSuccess,
-  addFieldToUserMasterSchemaError,
-
-  addGroupToUserMasterSchemaRequest,
-  addGroupToUserMasterSchemaSuccess,
-  addGroupToUserMasterSchemaError,
-
-  setSelectedMasterSchema,
 } = appSlice.actions;
 
 function* getProfile() {
@@ -137,8 +114,6 @@ function* getProfile() {
 
     yield put(getProfileSuccess(response));
     yield put(loginWithJWT(response));
-    yield put(getUserOrganizationLogoRequest({logo: response.permissions.logo}));
-
   } catch (error) {
     console.log(error);
     yield put(getProfileError(error));
@@ -169,44 +144,48 @@ function* getSettings() {
   yield put(getSettingsSuccess(response));
 }
 
-function* postSettings({payload}) {
+function* postSettings({ payload }) {
   const response = yield call(userApi.postSettings, payload);
-  yield put(postSettingsSuccess({payload, response}));
+  yield put(postSettingsSuccess({ payload, response }));
 }
 
-function* patchSettings({payload}) {
+function* patchSettings({ payload }) {
   yield call(userApi.patchSettings, payload);
   yield put(patchSettingsSuccess(payload));
 }
 
-function* getActivities({payload}) {
+function* getActivities({ payload }) {
   const response = yield call(userApi.getActivities, payload);
-  yield put(getActivitiesSuccess({response, user_id: payload.managerId, shouldUpdate: payload.shouldUpdate}));
+  yield put(getActivitiesSuccess({ response, user_id: payload.managerId, shouldUpdate: payload.shouldUpdate }));
 }
 
-function* updateActivities({payload}) {
+function* updateActivities({ payload }) {
   const response = yield call(userApi.getActivities, payload);
-  yield put(updateActivitiesSuccess({response, user_id: payload.managerId}));
+  yield put(updateActivitiesSuccess({ response, user_id: payload.managerId }));
 }
 
-function* getDashboardData({payload}) {
-  const response = yield call(userApi.getDashboardData, payload, '/api/user/application-dashboard');
-  yield put(getDashboardDataSuccess({response: response, payload: payload}));
+function* getDashboardData({ payload }) {
+  const response = yield call(userApi.getDashboardData, payload, "/api/user/application-dashboard");
+  yield put(getDashboardDataSuccess({ response: response, payload: payload }));
 }
 
-function* getDashboardSnapshotData({payload}) {
-  const responseChartData = yield call(userApi.getDashboardData, payload, '/api/user/activity-current-state');
-  const responseActivityList = yield call(userApi.getDashboardData, payload, '/api/user/application-dashboard');
-  yield put(getDashboardSnapshotDataSuccess({response: {
-      userDFormActivities: responseActivityList?.userDFormActivities,
-      userDFormActivitiesSchedule: responseChartData?.userDFormCurrentStateSchedule?.data
-    }, payload: payload}));
-
+function* getDashboardSnapshotData({ payload }) {
+  const responseChartData = yield call(userApi.getDashboardData, payload, "/api/user/activity-current-state");
+  const responseActivityList = yield call(userApi.getDashboardData, payload, "/api/user/application-dashboard");
+  yield put(
+    getDashboardSnapshotDataSuccess({
+      response: {
+        userDFormActivities: responseActivityList?.userDFormActivities,
+        userDFormActivitiesSchedule: responseChartData?.userDFormCurrentStateSchedule?.data,
+      },
+      payload: payload,
+    })
+  );
 }
 
-function* getDashboardActivity({payload}) {
+function* getDashboardActivity({ payload }) {
   const response = yield call(userApi.getDashboardActivity, payload);
-  yield put(getDashboardActivitySuccess({response: response, payload: payload}));
+  yield put(getDashboardActivitySuccess({ response: response, payload: payload }));
 }
 
 function* getActivityTypes() {
@@ -219,66 +198,65 @@ function* getDashboardDForms() {
   yield put(getDashboardDFormsSuccess(response));
 }
 
-function* postFilter({payload}) {
+function* postFilter({ payload }) {
   try {
     const response = yield call(userApi.postFilter, payload);
-    yield put(postFilterSuccess({response}))
+    yield put(postFilterSuccess({ response }));
   } catch (error) {
     yield put(postFilterError(error));
   }
 }
 
-function* deleteFilter({payload}) {
+function* deleteFilter({ payload }) {
   try {
     yield call(userApi.deleteFilter, payload.id);
-    yield put(deleteFilterSuccess(payload))
+    yield put(deleteFilterSuccess(payload));
   } catch (error) {
     yield put(deleteFilterError(error));
   }
 }
 
-function* patchFilter({payload}) {
+function* patchFilter({ payload }) {
   try {
     yield call(userApi.patchFilter, payload);
-    yield put(patchFilterSuccess({payload}))
+    yield put(patchFilterSuccess({ payload }));
   } catch (error) {
     yield put(patchFilterError(error));
   }
 }
 
-function* getUserById({payload}) {
+function* getUserById({ payload }) {
   try {
     const response = yield call(userApi.getUserById, payload);
 
     yield put(getUserByIdSuccess(response));
-
   } catch (error) {
     console.log(error);
     yield put(getUserByIdError(error));
   }
 }
 
-function* updateUser({payload}) {
+function* updateUser({ payload }) {
   try {
     const response = yield call(userApi.updateUser, payload);
     yield put(updateUserSuccess(response));
-    yield put(updateActivitiesRequest({managerId: payload.id, page: 1}));
-    yield call(getUserMasterSchemaHierarchy, { payload: { userId: payload.id } });
+    yield put(updateActivitiesRequest({ managerId: payload.id, page: 1 }));
+    // Refresh active master schema hierarchy because it contains user data
+    queryClient.invalidateQueries(MasterSchemaHierarchyQueryKeys.all());
   } catch (error) {
     yield put(updateUserError(error));
   }
 }
 
-function* createUser({payload}) {
+function* createUser({ payload }) {
   try {
     const user = yield call(userApi.createUser, {
       ...payload,
-      groups: prepareSelectGroups(payload.groups).map(group => group.value)
+      groups: prepareSelectGroups(payload.groups).map((group) => group.value),
     });
     yield put(createUserSuccess(user));
     yield put(setManager(user));
-    yield put(setContext("User"))
-
+    yield put(setContext("User"));
   } catch (error) {
     console.log(error);
     yield put(createUserError(error));
@@ -293,169 +271,110 @@ function* getUserManagmentData() {
     yield put(getUsersSuccess(response));
 
     if (!groups.length) {
-      yield put(getGroupsRequest())
+      yield put(getGroupsRequest());
     }
     if (!roles.length) {
       // yield put(getRolesRequest())
     }
-
   } catch (error) {
     yield put(getUsersError(error));
   }
-
 }
 
 function* getUserOrganizations(userId) {
   const response = yield call(userApi.getUserOrganizations, userId);
 
   if (response?.message) {
-    yield put(getUserOrganizationsError(response.message))
+    yield put(getUserOrganizationsError(response.message));
   } else {
-    yield put(getUserOrganizationsSuccess({response, userId: userId.payload}))
+    yield put(getUserOrganizationsSuccess({ response, userId: userId.payload }));
   }
 }
 
-function* addUserOrganization({payload}) {
+function* addUserOrganization({ payload }) {
   const response = yield call(userApi.addUserOrganization, payload);
 
   if (response?.message) {
-    yield put(addUserOrganizationError(response.message))
+    yield put(addUserOrganizationError(response.message));
   } else {
-    yield put(addUserOrganizationSuccess({response, userId: payload.id}));
-    yield put(getUserPermissionsRequest(payload.id))
-    yield put(getUserOnboardingRequest({userId: payload.id}))
+    yield put(addUserOrganizationSuccess({ response, userId: payload.id }));
+    yield put(getUserPermissionsRequest(payload.id));
+    yield put(getUserOnboardingRequest({ userId: payload.id }));
   }
 }
 
-function* removeUserOrganization({payload}) {
+function* removeUserOrganization({ payload }) {
   const response = yield call(userApi.removeUserOrganization, payload);
 
   if (response?.message) {
-    yield put(removeUserOrganizationError(response.message))
+    yield put(removeUserOrganizationError(response.message));
   } else {
-    yield put(removeUserOrganizationSuccess({response: payload, userId: payload.userId}));
+    yield put(removeUserOrganizationSuccess({ response: payload, userId: payload.userId }));
     yield put(getUserPermissionsRequest(payload.userId));
   }
 }
 
-function* switchUserOrganization({payload}) {
+function* switchUserOrganization({ payload }) {
   const response = yield call(userApi.removeUserOrganization, payload.delOrg);
   if (response?.message) {
-    yield put(switchUserOrganizationError(response.message))
-  }
-  else {
-    yield put(removeUserOrganizationSuccess({response: payload.delOrg, userId: payload.delOrg.userId}));
+    yield put(switchUserOrganizationError(response.message));
+  } else {
+    yield put(removeUserOrganizationSuccess({ response: payload.delOrg, userId: payload.delOrg.userId }));
     yield put(addUserOrganizationRequest(payload.addOrg));
   }
 }
 
-function* allowUserAbility({payload}) {
+function* allowUserAbility({ payload }) {
   const response = yield call(userApi.userAbilityAllow, payload);
 
   if (response?.message) {
-    yield put(allowUserAbilityError(response.message))
+    yield put(allowUserAbilityError(response.message));
   } else {
-    yield put(allowUserAbilitySuccess({response, data: payload}));
-    yield put(getUserPermissionsRequest(payload.user_id))
+    yield put(allowUserAbilitySuccess({ response, data: payload }));
+    yield put(getUserPermissionsRequest(payload.user_id));
   }
 }
 
-function* disallowUserAbility({payload}) {
+function* disallowUserAbility({ payload }) {
   const response = yield call(userApi.userAbilityDisallow, payload);
 
   if (response?.message) {
-    yield put(disallowUserAbilityError(response.message))
+    yield put(disallowUserAbilityError(response.message));
   } else {
-    yield put(disallowUserAbilitySuccess({response, data: payload}))
+    yield put(disallowUserAbilitySuccess({ response, data: payload }));
   }
-
 }
 
 function* removeUserNotify() {
   const response = yield call(userApi.removeUserNotify);
 
   if (response?.message) {
-    yield put(removeUserNotifyError(response.message))
+    yield put(removeUserNotifyError(response.message));
   } else {
-    yield put(removeUserNotifySuccess())
+    yield put(removeUserNotifySuccess());
   }
 }
 
-function* getUserOrganizationLogo({payload}) {
-  try {
-    const logoBase64 = yield call(organizationApi.getOrganizationLogo, payload);
-    yield put(getUserOrganizationLogoSuccess(logoBase64))
-
-  } catch (error) {
-    yield put(getUserOrganizationLogoError(error))
-  }
-}
-
-function* getOnboardingsByUser({payload}) {
+function* getOnboardingsByUser({ payload }) {
   try {
     const onboardings = yield call(userApi.getOnboradingsByUser, payload);
-    yield put(getOnboardingsByUserSuccess({user: payload, onboardings}));
+    yield put(getOnboardingsByUserSuccess({ user: payload, onboardings }));
   } catch (error) {
     yield put(getOnboardingsByUserError(error));
   }
 }
 
-function* handleSetManager({payload}) {
-
-  yield put(getOnboardingsByUserRequest(payload))
+function* handleSetManager({ payload }) {
+  yield put(getOnboardingsByUserRequest(payload));
 }
 
-function* getUserPermissions({payload}) {
-
+function* getUserPermissions({ payload }) {
   try {
     const result = yield call(userApi.getUserPermissions, payload);
 
-    yield put(getUserPermissionsSuccess({payload, result}))
+    yield put(getUserPermissionsSuccess({ payload, result }));
   } catch (error) {
-    yield put(getUserPermissionsError(error))
-  }
-}
-
-// User MasterSchema hierarchy
-
-function* getUserMasterSchemaHierarchy({ payload }) {
-  const searchParams = yield select(selectUserMasterSchemaHierarchySearchParams);
-  const isSearchParamsInitial = yield select(selectIsUserMasterSchemaHierarchySearchParamsInitial);
-
-  try {
-    const hierarchy = yield call(masterSchemaApi.getHierarchyByUserId, {
-      ...payload,
-      ...searchParams,
-      show_empty_folders: isSearchParamsInitial,
-    })
-    yield put(getUserMasterSchemaHierarchySuccess({ hierarchy }));
-    yield put(setSelectedMasterSchema({ masterSchema: { id: hierarchy.masterSchemaId } }));
-  } catch (error) {
-    yield put(getUserMasterSchemaHierarchyError(error));
-  }
-}
-
-function* addField({ payload }) {
-  const { name, parentId, userId } = payload;
-
-  try {
-    const field = yield call(masterSchemaApi.addField, { name, parentId });
-    yield call(getUserMasterSchemaHierarchy, { payload: { userId } });
-    yield put(addFieldToUserMasterSchemaSuccess({ field }));
-  } catch (error) {
-    yield put(addFieldToUserMasterSchemaError(error));
-  }
-}
-
-function* addGroup({ payload }) {
-  const { name, parentId, userId } = payload;
-
-  try {
-    const group = yield call(masterSchemaApi.addGroup, { name, parentId });
-    yield call(getUserMasterSchemaHierarchy, { payload: { userId } });
-    yield put(addGroupToUserMasterSchemaSuccess({ group }));
-  } catch (error) {
-    yield put(addGroupToUserMasterSchemaError(error));
+    yield put(getUserPermissionsError(error));
   }
 }
 
@@ -490,12 +409,7 @@ export default function* () {
     yield takeLatest(allowUserAbilityRequest.type, allowUserAbility),
     yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility),
     yield takeLatest(removeUserNotifyRequest.type, removeUserNotify),
-    yield takeLatest(getUserOrganizationLogoRequest.type, getUserOrganizationLogo),
     yield takeLatest(setManager.type, handleSetManager),
     yield takeLatest(getUserPermissionsRequest.type, getUserPermissions),
-
-    yield takeLatest(getUserMasterSchemaHierarchyRequest, getUserMasterSchemaHierarchy),
-    yield takeLatest(addFieldToUserMasterSchemaRequest, addField),
-    yield takeLatest(addGroupToUserMasterSchemaRequest, addGroup),
   ]);
 }

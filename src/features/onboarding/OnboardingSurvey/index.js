@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -27,89 +27,81 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
   const isSurveyLoading = useSelector(createLoadingSelector([getCurrentQuestionForAssignedSurveyRequest.type]));
   const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
   const isSurveyBeginProceed = useSelector(createLoadingSelector([beginSurveyRequest.type], true));
-  const isSurveySwitchToPreviousQuestionProceed = useSelector(createLoadingSelector([switchToPreviousQuestionRequest.type], true));
+  const isSurveySwitchToPreviousQuestionProceed = useSelector(
+    createLoadingSelector([switchToPreviousQuestionRequest.type], true)
+  );
   const isSurveyGradedQuestionsLoading = useSelector(createLoadingSelector([getAllSurveyQuestionsRequest.type], true));
 
   const survey = useSelector(selectUserOnboarding);
 
-  const {
-    question,
-    count,
-    answers,
-    currentIndex,
-  } = survey;
+  const { question, count, answers, currentIndex } = survey;
 
-  const {
-    id,
-    started_at,
-    finished_at,
-    title,
-    graded_at,
-  } = applicationData;
+  const { id, started_at, finished_at, title, graded_at } = applicationData;
 
   const surveyStatus = (started_at && "started") || "notStarted";
 
-  const submittedSurveyStatus = (applicationData.graded_at && "approved")
-    || (applicationData.finished_at && isRecentlySubmitted && "recent")
-    || "submitted";
+  const submittedSurveyStatus =
+    (applicationData.graded_at && "approved") ||
+    (applicationData.finished_at && isRecentlySubmitted && "recent") ||
+    "submitted";
 
   const handleSurveyStart = () => {
-    dispatch(beginSurveyRequest(id))
+    dispatch(beginSurveyRequest(id));
   };
 
   const handleAnswerSelect = (answer) => {
-    setAnswer(answer)
+    setAnswer(answer);
   };
 
   const handleSwitchToPreviousQuestion = () => {
-    dispatch(switchToPreviousQuestionRequest(id))
+    dispatch(switchToPreviousQuestionRequest(id));
   };
 
   const handleAnswerSubmit = () => {
-
     if (!answer || answer.trim() === "") {
       toast.error("Please, answer the question");
       return;
     }
 
-    dispatch(pushAnswerRequest({
-      surveyId: id,
-      data: {
-        question_id: question.id,
-        answer,
-      }
-    }));
+    dispatch(
+      pushAnswerRequest({
+        surveyId: id,
+        data: {
+          question_id: question.id,
+          answer,
+        },
+      })
+    );
 
-    setAnswer("")
+    setAnswer("");
   };
 
   useEffect(() => {
     if (started_at && !finished_at) {
-      dispatch(getCurrentQuestionForAssignedSurveyRequest(id))
+      dispatch(getCurrentQuestionForAssignedSurveyRequest(id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (graded_at) {
-      dispatch(getAllSurveyQuestionsRequest(id))
+      dispatch(getAllSurveyQuestionsRequest(id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
 
-  const isFeedbackExist = !!survey?.passedSurveyData?.answers.find(answer => !!answer.feedback);
-
+  const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
 
   return finished_at ? (
-
     graded_at && isFeedbackView ? (
       <OnboardingSurveyFeedbackViewComponent
         questions={survey.passedSurveyData.questions}
         answers={survey.passedSurveyData.answers}
         onFeedbackClose={() => setIsFeedbackView(false)}
+        showResult={survey.is_show_result}
       />
     ) : (
-      <div style={{marginLeft: "-100px", marginRight: "100px"}}>
+      <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
         <OnboardingSurveyStatusComponent
           survey={survey}
           isFeedbackExist={isFeedbackExist}
@@ -120,12 +112,11 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
         />
       </div>
     )
-
   ) : (
     <OnboardingSurveyComponent
       onAnswerSubmit={handleAnswerSubmit}
       questionNumber={currentIndex + 1}
-      progress={currentIndex / count * 100}
+      progress={(currentIndex / count) * 100}
       question={question}
       isLoading={(started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed}
       onSurveyStart={handleSurveyStart}
@@ -138,14 +129,14 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
       onAnswerChange={handleAnswerSelect}
       selectedAnswer={answer}
       currentQuestionAnswer={answers && currentIndex !== undefined && answers[currentIndex]}
-      isLastQuestion={(count - 1) === currentIndex}
+      isLastQuestion={count - 1 === currentIndex}
       isFirstQuestion={currentIndex === 0}
       surveyDescription={survey?.interaction_version?.description || ""}
       onSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
       isSurveySwitchToPreviousQuestionProceed={isSurveySwitchToPreviousQuestionProceed}
       isAbleToSwitchToPreviousQuestion={survey?.options?.is_can_return}
     />
-  )
+  );
 };
 
 export default OnboardingSurvey;

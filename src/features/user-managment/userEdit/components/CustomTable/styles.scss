@@ -16,11 +16,11 @@
 
     & > thead {
       background: white;
-      
+
       & > tr > th {
         font-size: 12px;
         font-weight: 500;
-        color: rgba(0,0,0,0.87);
+        color: rgba(0, 0, 0, 0.87);
         height: 100%;
         line-height: 1;
         word-wrap: break-word;
@@ -41,7 +41,7 @@
   &__row {
     border-bottom-style: solid;
     border-bottom-width: 1px;
-    border-bottom-color: rgba(0,0,0,.12);
+    border-bottom-color: rgba(0, 0, 0, 0.12);
     cursor: pointer;
     min-height: 48px;
     display: flex;
@@ -50,7 +50,7 @@
     width: 100%;
     font-size: 13px;
     background-color: white;
-    color: rgba(0,0,0,0.87);
+    color: rgba(0, 0, 0, 0.87);
 
     &-active {
       background-color: #7367f0;
@@ -71,7 +71,7 @@
       &:active {
         cursor: grabbing;
       }
-  
+
       & > td {
         text-align: left;
         padding: 0 16px;

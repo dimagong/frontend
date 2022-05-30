@@ -1,20 +1,13 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Card, Button, ListGroup, ListGroupItem } from "reactstrap";
 
 import FilterOptions from "./FilterComponents/FilterOptions";
 import FilterOptionTitles from "./FilterComponents/FilterOptionTitles";
 import FilterFooter from "./FilterComponents/FilterFooter";
-import Filter from "./Filter";
 import PropTypes from "prop-types";
 
 const FilterComponent = (props) => {
-  const {
-    objectsToFilter,
-    filterOptionsDictionary,
-    filterFunction,
-    filter,
-    setFilter,
-  } = props;
+  const { objectsToFilter, filterOptionsDictionary, filterFunction, filter, setFilter } = props;
 
   return (
     <span className={"filter-box opened"}>
@@ -42,14 +35,14 @@ const FilterComponent = (props) => {
             </Row>
           </ListGroupItem>
           <ListGroupItem>
-            <FilterFooter
-              filter={filter}
-            />
+            <FilterFooter filter={filter} />
 
             <div className={"filter-footer"}>
               <Button
                 variat="success"
-                onClick={() => {filterFunction(filter, objectsToFilter)}}
+                onClick={() => {
+                  filterFunction(filter, objectsToFilter);
+                }}
               >
                 Apply filter
               </Button>

@@ -25,7 +25,9 @@ const MSENodeRelatedTable = ({ relatedApplications, ...attrs }) => {
           <div className="w-100 d-flex justify-content-end" style={{ top: "7px", right: "0px" }}>
             <ArrowButton onClick={toggleExpand} direction={expanded ? "down" : "up"} />
           </div>
-          <CardTitle className="font-weight-bold" style={cardTitleStyle}>Related applications</CardTitle>
+          <CardTitle className="font-weight-bold" style={cardTitleStyle}>
+            Related applications
+          </CardTitle>
         </CardHeader>
 
         <Collapse isOpen={expanded} aria-expanded={expanded.toString()}>
@@ -34,7 +36,11 @@ const MSENodeRelatedTable = ({ relatedApplications, ...attrs }) => {
               headers={headers}
               customHeader={(header) => {
                 if (header === "$date") {
-                  return <th className="text-right" key={header}>Date</th>;
+                  return (
+                    <th className="text-right" key={header}>
+                      Date
+                    </th>
+                  );
                 }
               }}
               rows={relatedApplications}

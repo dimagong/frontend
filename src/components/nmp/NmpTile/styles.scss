@@ -18,7 +18,9 @@
     margin-top: -0.3rem;
     margin-bottom: -0.3rem;
 
-    &:hover, &:focus, &:active  {
+    &:hover,
+    &:focus,
+    &:active {
       box-shadow: none !important;
       background-color: rgba(0, 0, 0, 0.5) !important;
     }

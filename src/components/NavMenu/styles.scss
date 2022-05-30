@@ -85,7 +85,6 @@
       padding: 25px 60px 26px 37px;
       background: #fff;
       border-radius: 0 !important;
-
     }
   }
   &_tabs {
@@ -140,17 +139,17 @@
       }
     }
     &__icon_stroke path {
-        stroke: #0070b8;
+      stroke: #0070b8;
     }
   }
   &-item.active {
     background: #0070b8;
     .nav-column-item__icon_fill path {
-      fill: #F8F8F8;
+      fill: #f8f8f8;
     }
     .nav-column-item__icon_stroke path {
-        fill: #F8F8F8;
-        stroke: #F8F8F8;
+      fill: #f8f8f8;
+      stroke: #f8f8f8;
     }
   }
 }
@@ -169,7 +168,7 @@
 }
 
 .icon-container {
-  border: 1px solid #0070B8;
+  border: 1px solid #0070b8;
   border-radius: 50%;
 }
 .icon-none {
@@ -181,6 +180,5 @@
   padding-top: 20px;
   display: block;
   padding-bottom: 20px;
-  color:#707070;
-
+  color: #707070;
 }

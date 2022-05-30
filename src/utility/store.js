@@ -2,7 +2,7 @@ const requestActionTemplate = (state) => {
   state.isLoading = true;
   state.isError = null;
 };
-const errorActionTemplate = (state , {payload}) => {
+const errorActionTemplate = (state, { payload }) => {
   state.isLoading = false;
   state.isError = payload;
 };
@@ -13,7 +13,6 @@ const errorActionTemplate = (state , {payload}) => {
 // Appropriate Error and Request actions would be generated and passed to slice automatically
 // In case you specify Error || Request action by yourself, it wouldn't be replaced
 export function generateRequestAndErrorActions(actions) {
-
   // all actions from reducer
   const actionTypes = Object.keys(actions);
 
@@ -26,7 +25,7 @@ export function generateRequestAndErrorActions(actions) {
     const verifiableAction = action.replace("Success", suffix);
 
     // Check if action is already exists, otherwise add template for that action
-    if (!~actionTypes.findIndex(a => a === verifiableAction)) {
+    if (!~actionTypes.findIndex((a) => a === verifiableAction)) {
       generatedActions[verifiableAction] = suffix === "Error" ? errorActionTemplate : requestActionTemplate;
     }
   };
@@ -36,5 +35,5 @@ export function generateRequestAndErrorActions(actions) {
     generateActionIfNotExist(action, "Request");
   });
 
-  return {...actions, ...generatedActions}
+  return { ...actions, ...generatedActions };
 }

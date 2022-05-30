@@ -1,16 +1,12 @@
 import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import authApi from "api/Auth/auth";
-import {
+import {} from "app/slices/onboardingSlice";
 
-} from 'app/slices/onboardingSlice'
+import onboardingSlice from "app/slices/onboardingSlice";
+import appSlice from "app/slices/appSlice";
 
-import onboardingSlice from 'app/slices/onboardingSlice';
-import appSlice from 'app/slices/appSlice'
-
-const {
-  resetOnboardingSlice,
-} = onboardingSlice.actions;
+const { resetOnboardingSlice } = onboardingSlice.actions;
 
 const {
   resetPasswordRequest,
@@ -31,7 +27,7 @@ function* login({ payload }) {
   try {
     yield call(authApi.login, payload);
     yield put(loginSuccess());
-    yield put(getProfileRequest())
+    yield put(getProfileRequest());
   } catch (error) {
     yield put(loginError(error));
   }
@@ -50,12 +46,14 @@ function* verifyPassword({ payload }) {
   try {
     yield call(authApi.verifyPassword, payload);
     yield put(verifyPasswordSuccess());
-    yield put(loginRequest({
-      password: payload.password,
-      code: "",
-      device_name: "browser",
-      email: payload.email
-    }))
+    yield put(
+      loginRequest({
+        password: payload.password,
+        code: "",
+        device_name: "browser",
+        email: payload.email,
+      })
+    );
   } catch (error) {
     yield put(verifyPasswordError(error));
   }
@@ -63,10 +61,9 @@ function* verifyPassword({ payload }) {
 
 function* onLogout() {
   yield call(authApi.logout);
-  yield put(resetAppSlice())
+  yield put(resetAppSlice());
   yield put(resetOnboardingSlice());
 }
-
 
 export default function* () {
   yield all([

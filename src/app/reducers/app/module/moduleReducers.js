@@ -1,4 +1,4 @@
-const getModulesSuccess = (state, {payload}) => {
+const getModulesSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.modules = payload;

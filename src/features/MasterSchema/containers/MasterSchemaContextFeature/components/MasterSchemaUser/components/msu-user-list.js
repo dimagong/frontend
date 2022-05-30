@@ -9,11 +9,11 @@ import masterSchemaApi from "api/masterSchema/masterSchema";
 
 import { UITable } from "components/Table";
 import CustomModal from "components/CustomModal";
+import NmpUserAvatar from "components/nmp/NmpUserAvatar";
 import { TypedValuePreview } from "components/MasterSchemaValuePreviews";
 import { VersionsHistoryTable } from "components/MasterSchemaVersionsHistory";
 
 import BackInTimeIcon from "assets/img/svg/back-in-time.svg";
-import NoneAvatar from "assets/img/portrait/none-avatar.png";
 
 const normalizeVersionTotal = (total) => (total > 9 ? "+9" : total);
 
@@ -65,7 +65,6 @@ const MSUUserList = ({ users }) => {
           const fullName = getFullName(user);
           const { field, permissions } = user;
           const { provided } = field;
-          const avatarPath = user.avatar_path || NoneAvatar;
           const providedFullName = provided ? getFullName(provided) : null;
           const role = capitalize(permissions?.ability || "");
           const memberFirm = user.member_firm?.name;
@@ -75,11 +74,7 @@ const MSUUserList = ({ users }) => {
           return (
             <tr className="msu-table__row--shadowed-partial" key={user.id}>
               <td className="p-0">
-                <img
-                  src={avatarPath}
-                  alt="user's avatar."
-                  style={{ width: "48px", height: "48px", objectFit: "cover" }}
-                />
+                <NmpUserAvatar userId={user.id} style={{ width: "48px", height: "48px", objectFit: "cover" }} />
               </td>
               <td className="pl-1">{fullName}</td>
               <td>{role}</td>

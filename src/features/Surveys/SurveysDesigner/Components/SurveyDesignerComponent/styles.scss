@@ -13,7 +13,7 @@
     z-index: 10;
   }
 
-  &_header{
+  &_header {
     padding-bottom: 40px;
     display: flex;
     justify-content: space-between;
@@ -24,7 +24,7 @@
       font-size: 34px;
       color: #707070;
       padding-right: 30px;
-      border-right: 1px solid rgba(112,112,112, 0.5);
+      border-right: 1px solid rgba(112, 112, 112, 0.5);
     }
     &_survey-name {
       display: flex;
@@ -49,8 +49,8 @@
   &_no-questions {
     font-size: 18px;
     line-height: 30px;
-    color: #4B484D;
-    font-family: 'Montserrat';
+    color: #4b484d;
+    font-family: "Montserrat";
     font-weight: 500;
     margin: 105px auto;
     max-width: 500px;
@@ -68,7 +68,6 @@
       margin-left: 43px;
     }
   }
-
 
   &_loading {
     display: flex;

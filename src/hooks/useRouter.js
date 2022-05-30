@@ -1,11 +1,5 @@
 import { useMemo } from "react";
-import {
-  useParams,
-  useLocation,
-  useHistory,
-  useRouteMatch,
-} from "react-router-dom";
-import queryString from "query-string";
+import { useParams, useLocation, useHistory, useRouteMatch } from "react-router-dom";
 
 export const useRouter = () => {
   const params = useParams();
@@ -25,7 +19,7 @@ export const useRouter = () => {
       // so that they can be used interchangeably.
       // Example: /:topic?sort=popular -> { topic: "react", sort: "popular" }
       query: {
-        ...queryString.parse(location.search), // Convert string to object
+        ...Object.fromEntries(new URLSearchParams(location.search).entries()), // Convert string to object
         ...params,
       },
       // Include match, location, history objects so we have

@@ -6,22 +6,21 @@
 // Google Color Palette defined: http://www.google.com/design/spec/style/color.html
 
 $white: (
-  "base": #ffffff
+  "base": #ffffff,
 );
 $black: (
-  "base": #000000
+  "base": #000000,
 );
 $dark: (
   "base": theme-color("dark"),
-  "gradient-bg": #640064
+  "gradient-bg": #640064,
 );
 $light: (
   "base": theme-color("light"),
-  "gradient-bg": #640064
+  "gradient-bg": #640064,
 );
 $primary: (
-  "gradient-light":
-    lighten(saturate(adjust-hue((theme-color("primary")), 25), 11.9), 13.33),
+  "gradient-light": lighten(saturate(adjust-hue((theme-color("primary")), 25), 11.9), 13.33),
   "light-badge": lighten(theme-color("primary"), 25%),
   "lighten-5": lighten(theme-color("primary"), 25%),
   "lighten-4": lighten(theme-color("primary"), 20%),
@@ -37,11 +36,10 @@ $primary: (
   "accent-2": #8afbff,
   "accent-3": #57faff,
   "accent-4": #3df9ff,
-  "gradient-bg": #640064
+  "gradient-bg": #640064,
 );
 $secondary: (
-  "gradient-light":
-    lighten(saturate(adjust-hue((theme-color("secondary")), 25), 11.9), 13.33),
+  "gradient-light": lighten(saturate(adjust-hue((theme-color("secondary")), 25), 11.9), 13.33),
   "light-badge": lighten(theme-color("secondary"), 35%),
   "lighten-5": lighten(theme-color("secondary"), 25%),
   "lighten-4": lighten(theme-color("secondary"), 20%),
@@ -53,11 +51,10 @@ $secondary: (
   "darken-2": darken(theme-color("secondary"), 10%),
   "darken-3": darken(theme-color("secondary"), 15%),
   "darken-4": darken(theme-color("secondary"), 20%),
-  "gradient-bg": #640064
+  "gradient-bg": #640064,
 );
 $success: (
-  "gradient-light":
-    lighten(saturate(adjust-hue((theme-color("success")), 25), 11.9), 13.33),
+  "gradient-light": lighten(saturate(adjust-hue((theme-color("success")), 25), 11.9), 13.33),
   "light-badge": lighten(theme-color("success"), 40%),
   "lighten-5": lighten(theme-color("success"), 25%),
   "lighten-4": lighten(theme-color("success"), 20%),
@@ -73,11 +70,10 @@ $success: (
   "accent-2": #aeffd9,
   "accent-3": #7bffc1,
   "accent-4": #62ffb5,
-  "gradient-bg": #0064fa
+  "gradient-bg": #0064fa,
 );
 $info: (
-  "gradient-light":
-    lighten(saturate(adjust-hue((theme-color("info")), 25), 11.9), 13.33),
+  "gradient-light": lighten(saturate(adjust-hue((theme-color("info")), 25), 11.9), 13.33),
   "light-badge": lighten(theme-color("info"), 40%),
   "lighten-5": lighten(theme-color("info"), 25%),
   "lighten-4": lighten(theme-color("info"), 20%),
@@ -93,11 +89,10 @@ $info: (
   "accent-2": #cbf5ff,
   "accent-3": #98ecff,
   "accent-4": #7fe7ff,
-  "gradient-bg": #640064
+  "gradient-bg": #640064,
 );
 $warning: (
-  "gradient-light":
-    lighten(saturate(adjust-hue((theme-color("warning")), 25), 11.9), 13.33),
+  "gradient-light": lighten(saturate(adjust-hue((theme-color("warning")), 25), 11.9), 13.33),
   "light-badge": lighten(theme-color("warning"), 25%),
   "lighten-5": lighten(theme-color("warning"), 25%),
   "lighten-4": lighten(theme-color("warning"), 20%),
@@ -113,11 +108,10 @@ $warning: (
   "accent-2": #ffe5d8,
   "accent-3": #fff6f3,
   "accent-4": #ffe3da,
-  "gradient-bg": #fafafa
+  "gradient-bg": #fafafa,
 );
 $danger: (
-  "gradient-light":
-    lighten(saturate(adjust-hue((theme-color("danger")), 25), 11.9), 13.33),
+  "gradient-light": lighten(saturate(adjust-hue((theme-color("danger")), 25), 11.9), 13.33),
   "light-badge": lighten(theme-color("danger"), 30%),
   "lighten-5": lighten(theme-color("danger"), 25%),
   "lighten-4": lighten(theme-color("danger"), 20%),
@@ -133,7 +127,7 @@ $danger: (
   "accent-2": #ffd6db,
   "accent-3": #ffecee,
   "accent-4": #ffd3d7,
-  "gradient-bg": #640064
+  "gradient-bg": #640064,
 );
 
 $colors: (
@@ -146,5 +140,5 @@ $colors: (
   "success": $success,
   "info": $info,
   "warning": $warning,
-  "danger": $danger
+  "danger": $danger,
 );

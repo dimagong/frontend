@@ -22,7 +22,9 @@ const MSHTreeNode = (props) => {
     className: propClassName,
     children,
   } = props;
-  const className = classNames("tree-hierarchy__node position-relative", propClassName, { "tree-hierarchy__node--selected": selected });
+  const className = classNames("tree-hierarchy__node position-relative", propClassName, {
+    "tree-hierarchy__node--selected": selected,
+  });
 
   return (
     <li className={className} style={{ zIndex: index }} onClick={stopPropagation(onSelect)}>
@@ -36,7 +38,9 @@ const MSHTreeNode = (props) => {
         <div className="d-flex align-items-center ml-auto">
           {applicationsCount == null ? null : (
             <div className="tree-hierarchy__icon position-relative px-1">
-              <span className="tree-hierarchy__icon-count tree-hierarchy__icon-count--application position-absolute">{applicationsCount}</span>
+              <span className="tree-hierarchy__icon-count tree-hierarchy__icon-count--application position-absolute">
+                {applicationsCount}
+              </span>
               <svg width="16" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <clipPath id="a">
@@ -57,7 +61,9 @@ const MSHTreeNode = (props) => {
 
           {versionsCount == null ? null : (
             <div className="tree-hierarchy__icon position-relative px-1">
-              <span className="tree-hierarchy__icon-count tree-hierarchy__icon-count--version position-absolute">{versionsCount}</span>
+              <span className="tree-hierarchy__icon-count tree-hierarchy__icon-count--version position-absolute">
+                {versionsCount}
+              </span>
               <svg width="24" height="21" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   fillRule="evenodd"
@@ -81,9 +87,7 @@ const MSHTreeNode = (props) => {
           </div>
         </div>
       </div>
-      <div className="tree-hierarchy__node-children">
-        {children}
-      </div>
+      <div className="tree-hierarchy__node-children">{children}</div>
     </li>
   );
 };
@@ -94,10 +98,7 @@ MSHTreeNode.defaultProps = {
 };
 
 MSHTreeNode.propTypes = {
-  name: PropTypes.oneOfType([
-    PropTypes.node,
-    PropTypes.string,
-  ]).isRequired,
+  name: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
   index: PropTypes.number.isRequired,
   date: PropTypes.string.isRequired,
 

@@ -1,13 +1,9 @@
-import React from "react"
-import classnames from "classnames"
+import React from "react";
+import classnames from "classnames";
 class RadioVuexy extends React.Component {
   render() {
     return (
-      <div
-        className={classnames(
-          `vx-radio-con ${this.props.className} vx-radio-${this.props.color}`
-        )}
-      >
+      <div className={classnames(`vx-radio-con ${this.props.className} vx-radio-${this.props.color}`)}>
         <input
           type="radio"
           defaultChecked={this.props.defaultChecked}
@@ -22,7 +18,7 @@ class RadioVuexy extends React.Component {
         <span
           className={classnames("vx-radio", {
             "vx-radio-sm": this.props.size === "sm",
-            "vx-radio-lg": this.props.size === "lg"
+            "vx-radio-lg": this.props.size === "lg",
           })}
         >
           <span className="vx-radio--border" />
@@ -30,7 +26,7 @@ class RadioVuexy extends React.Component {
         </span>
         <span>{this.props.label}</span>
       </div>
-    )
+    );
   }
 }
-export default RadioVuexy
+export default RadioVuexy;

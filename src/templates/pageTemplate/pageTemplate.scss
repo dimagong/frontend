@@ -1,12 +1,11 @@
 .pageTemplate {
   height: 100vh;
-  background: url("../../assets/img/pages/vuesax-login-bg.jpg") no-repeat center
-    center;
+  background: url("../../assets/img/pages/vuesax-login-bg.jpg") no-repeat center center;
   background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
-  .main{
+  .main {
     width: 100%;
   }
 }

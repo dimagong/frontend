@@ -1,68 +1,39 @@
 import "./styles.scss";
 
 import React from "react";
-import { AtSign, X } from "react-feather";
-import { Button, Spinner } from "reactstrap";
+import { Button } from "reactstrap";
+import { AtSign } from "react-feather";
 import { PhoneEnabled } from "@material-ui/icons";
 
 import Timeline from "components/Timeline";
 import ContextTemplate from "components/ContextTemplate";
-
-import noneAvatar from "assets/img/portrait/none-avatar.png";
+import NmpMemberFirmLogo from "components/nmp/NmpMemberFirmLogo";
 
 import MemberFirmInfoForm from "./Components/MemberFirmInfoForm";
 import MFAccessManager from "./Components/MFAccessManager";
 
 const memberFirmProfileTabs = ["Activity", "Info"];
 
-const MemberFirmProfileComponent = ({
-  data,
-  isMemberFirmFormFieldsLoading,
-  isMasterSchemaFieldsForMemberFirmLoading,
-  memberFirmFormFields,
-  masterSchemaMemberFirmFields,
-  memberFirmId,
-  logoFileInputRef,
-  onFileInputDialogOpen,
-  onLogoChange,
-  onLogoRemove,
-  onLoadMoreDataForActivities,
-  memberFirmActivities,
-}) => {
-  const [selectedTab, setSelectedTab] = React.useState(memberFirmProfileTabs[0]);
+const MemberFirmProfileComponent = (props) => {
+  const {
+    data,
+    isMemberFirmFormFieldsLoading,
+    isMasterSchemaFieldsForMemberFirmLoading,
+    memberFirmFormFields,
+    masterSchemaMemberFirmFields,
+    memberFirmId,
+    onLoadMoreDataForActivities,
+    memberFirmActivities,
+  } = props;
 
-  const isProfilePhotoChangeProceeding = false;
+  const [selectedTab, setSelectedTab] = React.useState(memberFirmProfileTabs[0]);
 
   return (
     <ContextTemplate contextTitle={"Member firm"}>
       <div className="member-firm-profile">
         <div className="member-firm-profile__header">
           <div className="member-firm-profile_header_logo">
-            <img src={data.logo_path || noneAvatar} alt="member firm logo" />
-
-            <Button
-              className="member-firm-profile_header_logo-change_button"
-              disabled={isProfilePhotoChangeProceeding}
-              onClick={(event) => onFileInputDialogOpen(event)}
-              outline
-              size="sm"
-              color="primary"
-            >
-              Change
-            </Button>
-            <input ref={logoFileInputRef} type="file" hidden onChange={(event) => onLogoChange(event)} />
-
-            {/*HANDLE HERE DELETING OF AVATAR*/}
-
-            {!!data.logo_path && !isProfilePhotoChangeProceeding && (
-              <X className="x-closer" onClick={onLogoRemove} size={25} />
-            )}
-
-            {isProfilePhotoChangeProceeding && (
-              <div className="user-edit__user-avatar_spinner-wrapper">
-                <Spinner color="primary" />
-              </div>
-            )}
+            <NmpMemberFirmLogo fileId={data.logo?.id} memberFirmId={memberFirmId} isEditable />
           </div>
 
           <MFAccessManager memberFirmId={memberFirmId} />

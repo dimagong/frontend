@@ -10,7 +10,7 @@ const workflowApi = {
       const result = await instance({
         url: workflowPath,
         method: "POST",
-        data
+        data,
       });
 
       return result.data.data;
@@ -23,7 +23,7 @@ const workflowApi = {
       const result = await instance({
         url: `${workflowPath}/${data.id}`,
         method: "PUT",
-        data
+        data,
       });
 
       return result.data.data;
@@ -43,7 +43,6 @@ const workflowApi = {
       throw err;
     }
   },
-
 };
 
 export default workflowApi;

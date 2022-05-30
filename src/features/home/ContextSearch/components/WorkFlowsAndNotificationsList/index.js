@@ -1,44 +1,44 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   Card,
-  CardBody, Col,
+  CardBody,
+  Col,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
   Navbar,
   NavItem,
-  UncontrolledDropdown
+  UncontrolledDropdown,
 } from "reactstrap";
-import {Scrollbars} from "react-custom-scrollbars";
+import { Scrollbars } from "react-custom-scrollbars";
 import ListItem from "../ListItem";
-import {useDispatch, useSelector} from "react-redux";
-import {selectSurveyWorkFlows, selectApplicationWorkFlows, selectSurveyNotifications, selectApplicationNotifications} from "app/selectors/onboardingSelectors";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectSurveyWorkFlows,
+  selectApplicationWorkFlows,
+  selectSurveyNotifications,
+  selectApplicationNotifications,
+} from "app/selectors/onboardingSelectors";
 import onboardingSlice from "app/slices/onboardingSlice";
 import appSlice from "app/slices/appSlice";
 
-import './styles.scss'
+import "./styles.scss";
 
-const {
-  setNotification,
-  setWorkflow,
-} = onboardingSlice.actions;
+const { setNotification, setWorkflow } = onboardingSlice.actions;
 
-const {
-  setContext,
-  setNotificationsAndWorkFlowsContext,
-} = appSlice.actions;
+const { setContext, setNotificationsAndWorkFlowsContext } = appSlice.actions;
 
 const dependenciesList = [
   {
-    title:"Workflows",
+    title: "Workflows",
     actionTitle: "Create Workflow",
-    context: "Create workflow"
+    context: "Create workflow",
   },
   {
     title: "Notifications",
     actionTitle: "Create Notification",
-    context: "Create notification"
-  }
+    context: "Create notification",
+  },
 ];
 
 const WorkFlowsAndNotificationsList = ({ context }) => {
@@ -58,27 +58,29 @@ const WorkFlowsAndNotificationsList = ({ context }) => {
   const changeContext = (newContext) => {
     // newContext is just context that we want to appear
     // context from props is context for notifications\workflows creation
-    const notificationAndWorkflowContext = context === 'dForm' ? 'application' : 'survey';
+    const notificationAndWorkflowContext = context === "dForm" ? "application" : "survey";
     dispatch(setNotificationsAndWorkFlowsContext(notificationAndWorkflowContext));
     dispatch(setContext(newContext));
   };
 
   const handleItemSelect = (item, itemType) => {
-    setSelectedItem({item, itemType});
+    setSelectedItem({ item, itemType });
     if (itemType === "Notification") {
-      dispatch(setNotification(item))
+      dispatch(setNotification(item));
     } else if (itemType === "WorkFlow") {
-      dispatch(setWorkflow(item))
+      dispatch(setWorkflow(item));
     }
 
-    changeContext(itemType)
+    changeContext(itemType);
   };
 
   const renderListItem = (item, type) => (
     <ListItem
       key={`${type}-${item.id}`}
       item={item}
-      onClick={() => {handleItemSelect(item, type)}}
+      onClick={() => {
+        handleItemSelect(item, type);
+      }}
       isSelected={selectedItem && selectedItem.item?.id === item.id && selectedItem.itemType === type}
     />
   );
@@ -89,66 +91,50 @@ const WorkFlowsAndNotificationsList = ({ context }) => {
         <CardBody className="workflows-and-notifications_header">
           <Navbar light expand="md" className="p-0">
             <UncontrolledDropdown>
-              <DropdownToggle
-                className={"workflows-and-notifications_header_dropdown"}
-                nav
-                caret={true}
-              >
+              <DropdownToggle className={"workflows-and-notifications_header_dropdown"} nav caret={true}>
                 {dependenciesSelectedActiveItem.title}
               </DropdownToggle>
               <DropdownMenu>
                 {dependenciesList.map((item, index) => (
                   <DropdownItem
                     key={index}
-                    onClick={() => {setDependenciesSelectedActiveItem(item)}}
+                    onClick={() => {
+                      setDependenciesSelectedActiveItem(item);
+                    }}
                   >
-                    <NavItem className={"workflows-and-notifications_header_dropdown_nav-item"}>
-                      {item.title}
-                    </NavItem>
+                    <NavItem className={"workflows-and-notifications_header_dropdown_nav-item"}>{item.title}</NavItem>
                   </DropdownItem>
                 ))}
               </DropdownMenu>
             </UncontrolledDropdown>
             <div className="ml-auto">
-                <span
-                  className="workflows-and-notifications_header_selected-item"
-                  onClick={() => {
-                    setSelectedItem(null);
-                    changeContext(dependenciesSelectedActiveItem.context)
-                  }}
-                >
-                  {dependenciesSelectedActiveItem.actionTitle}
-                </span>
+              <span
+                className="workflows-and-notifications_header_selected-item"
+                onClick={() => {
+                  setSelectedItem(null);
+                  changeContext(dependenciesSelectedActiveItem.context);
+                }}
+              >
+                {dependenciesSelectedActiveItem.actionTitle}
+              </span>
             </div>
           </Navbar>
         </CardBody>
       </Card>
       <div className="list-header">
-        <div>
-          Name
-        </div>
-        <div>
-          Description
-        </div>
-        <div>
-          Organisations
-        </div>
+        <div>Name</div>
+        <div>Description</div>
+        <div>Organisations</div>
       </div>
       <Scrollbars autoHeight autoHeightMax={430}>
         <div className="items-list">
-          {dependenciesSelectedActiveItem.title === "Workflows" ? (
-            !!workflows.length && workflows.map((item) => (
-              renderListItem(item, "WorkFlow")
-            ))
-          ) : (
-            !!notifications.length && notifications.map((item) => (
-              renderListItem(item, "Notification")
-            ))
-          )}
+          {dependenciesSelectedActiveItem.title === "Workflows"
+            ? !!workflows.length && workflows.map((item) => renderListItem(item, "WorkFlow"))
+            : !!notifications.length && notifications.map((item) => renderListItem(item, "Notification"))}
         </div>
       </Scrollbars>
     </Col>
-  )
+  );
 };
 
 export default WorkFlowsAndNotificationsList;

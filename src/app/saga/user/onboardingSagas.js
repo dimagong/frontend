@@ -1,10 +1,10 @@
-import {all, put, call, takeLatest} from "redux-saga/effects";
+import { all, put, call, takeLatest } from "redux-saga/effects";
 
 import userApi from "api/User/user";
 import dFormsApi from "api/Onboarding/dForms";
 import groupRelations from "api/groupRelations/groupRelations";
 
-import appSlice from 'app/slices/appSlice'
+import appSlice from "app/slices/appSlice";
 
 const {
   getUserOnboardingSuccess,
@@ -46,109 +46,111 @@ const {
   updateUserOnboardingWorkflowRequest,
   updateUserOnboardingWorkflowSuccess,
   updateUserOnboardingWorkflowError,
-
 } = appSlice.actions;
 
-function* getUserOnboarding({payload}) {
+function* getUserOnboarding({ payload }) {
   try {
     const onboarding = yield call(groupRelations.getGroupsRelationsByUserId, payload);
     const reviewers = yield call(userApi.getUsersData);
     // todo reviewers
-    yield put(getUserOnboardingSuccess({...onboarding, reviewers}));
-
+    yield put(getUserOnboardingSuccess({ ...onboarding, reviewers }));
   } catch (error) {
     yield put(getUserOnboardingError(error));
   }
 }
 
-function* createUserOnboarding({payload}) {
+function* createUserOnboarding({ payload }) {
   try {
     const response = yield call(userApi.createUserOnboarding, payload);
-    yield put(createUserOnboardingSuccess(response))
+    yield put(createUserOnboardingSuccess(response));
   } catch (error) {
     yield put(createUserOnboardingError(error));
   }
 }
 
-function* deleteUserOnboarding({payload}) {
+function* deleteUserOnboarding({ payload }) {
   try {
     yield call(userApi.deleteUserOnboarding, payload);
-    yield put(deleteUserOnboardingSuccess(payload))
+    yield put(deleteUserOnboardingSuccess(payload));
   } catch (error) {
     yield put(deleteUserOnboardingError(error));
   }
 }
 
-function* updateUserRoles({payload}) {
+function* updateUserRoles({ payload }) {
   try {
     yield call(userApi.updateUserRoles, payload);
-    yield put(updateUserRolesSuccess({roles: payload.roles}));
+    yield put(updateUserRolesSuccess({ roles: payload.roles }));
   } catch (error) {
     console.log("error", error);
     yield put(updateUserRolesError(error));
   }
 }
 
-function* addUserGroups({payload}) {
+function* addUserGroups({ payload }) {
   try {
-    const {groups} = yield call(userApi.addUsersGroup, payload);
-    yield put(addUserGroupsSuccess({
-      groups
-    }));
+    const { groups } = yield call(userApi.addUsersGroup, payload);
+    yield put(
+      addUserGroupsSuccess({
+        groups,
+      })
+    );
   } catch (error) {
     console.log("error", error);
     yield put(addUserGroupsError(error));
   }
 }
 
-function* removeUserGroups({payload}) {
+function* removeUserGroups({ payload }) {
   try {
-    const {groups} = yield call(userApi.removeUsersGroup, payload);
-    yield put(removeUserGroupsSuccess({
-      groups
-    }));
+    const { groups } = yield call(userApi.removeUsersGroup, payload);
+    yield put(
+      removeUserGroupsSuccess({
+        groups,
+      })
+    );
   } catch (error) {
     console.log("error", error);
     yield put(removeUserGroupsError(error));
   }
 }
 
-function* updateUserModules({payload}) {
+function* updateUserModules({ payload }) {
   try {
     const responce = yield call(userApi.updateUser, payload);
-    yield put(updateUserModulesSuccess({modules: responce.modules}))
+    yield put(updateUserModulesSuccess({ modules: responce.modules }));
   } catch (error) {
     console.log("error", error);
     yield put(updateUserModulesError(error));
   }
 }
 
-function* updateDFormFromParent({payload}) {
+function* updateDFormFromParent({ payload }) {
   try {
     const dForm = yield call(dFormsApi.updateDFormFromParent, payload);
-    yield put(updateDFormFromParentSuccess(dForm))
+    yield put(updateDFormFromParentSuccess(dForm));
   } catch (error) {
     console.log("error", error);
     yield put(updateDFormFromParentError(error));
   }
 }
 
-function* updateUserOnboardingReviewers({payload}) {
-  const {managerId, onboardingId} = payload
+function* updateUserOnboardingReviewers({ payload }) {
+  const { managerId, onboardingId } = payload;
   try {
     const response = yield call(userApi.updateUserOnboardingReviewers, payload);
-    yield put(updateUserOnboardingReviewersSuccess({response, managerId, onboardingId}))
+    yield put(updateUserOnboardingReviewersSuccess({ response, managerId, onboardingId }));
   } catch (error) {
     console.log("error", error);
     yield put(updateUserOnboardingReviewersError(error));
   }
 }
 
-function* updateUserOnboardingWorkflow({payload}) {
-  const {managerId, onboardingId} = payload
+function* updateUserOnboardingWorkflow({ payload }) {
+  const { managerId, onboardingId } = payload;
   try {
     const response = yield call(userApi.updateUserOnboardingWorkflow, payload);
-    yield put(updateUserOnboardingWorkflowSuccess({response, managerId, onboardingId}))
+    yield put(updateUserOnboardingWorkflowSuccess({ response, managerId, onboardingId }));
   } catch (error) {
     console.log("error", error);
     yield put(updateUserOnboardingWorkflowError(error));

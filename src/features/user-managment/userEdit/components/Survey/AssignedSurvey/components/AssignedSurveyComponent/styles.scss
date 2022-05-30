@@ -1,5 +1,4 @@
 .assigned-survey {
-
   &_header {
     padding-bottom: 40px;
     display: flex;
@@ -11,7 +10,7 @@
       font-size: 34px;
       color: #707070;
       padding-right: 30px;
-      border-right: 1px solid rgba(112,112,112, 0.5);
+      border-right: 1px solid rgba(112, 112, 112, 0.5);
     }
     &_survey-name {
       display: flex;
@@ -23,7 +22,7 @@
     &_survey-version {
       display: flex;
       align-self: center;
-      color: #4B484D;
+      color: #4b484d;
     }
   }
 
