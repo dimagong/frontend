@@ -50,7 +50,7 @@ const UploadRMFileModal = ({ fieldId }) => {
             onChange={setFile}
             value={file}
             loading={false}
-            accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            accept="pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           />
         </div>
       </CustomModal>
