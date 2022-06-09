@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { logoutWithJWT } from "app/actions/vuexy/auth/loginActions";
 
 import NavbarUser from "./NavbarUser";
-import noneAvatar from "assets/img/portrait/none-avatar.png";
 import { bindActionCreators } from "redux";
 import { history } from "../../../history";
 
@@ -113,7 +112,9 @@ const ThemeNavbar = (props) => {
                         name: first_name + " " + last_name,
                         ...rest,
                       }))
-                      .concat(memberFirms.map((item) => ({ ...item, name: item.main_fields.name })))}
+                      .concat(
+                        memberFirms.map((item) => ({ ...item, name: item.main_fields.name, isMemberFirm: true }))
+                      )}
                   />
                   {props.isContextSearchVisible ? (
                     <ChevronUp className="autocomplete-expand-icon" onClick={handleContextSearchToggle} />

@@ -6,6 +6,8 @@ import noneAvatar from "assets/img/portrait/none-avatar.png";
 import { useDispatch } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
+import NmpUserAvatar from "../../../../components/nmp/NmpUserAvatar";
+import NmpMemberFirmLogo from "../../../../components/nmp/NmpMemberFirmLogo";
 
 const {
   showContextSearch,
@@ -61,13 +63,27 @@ const SearchInput = ({ suggestions }) => {
         <div className="d-flex justify-content-between">
           <div className="d-flex flex-row">
             <div className="d-flex align-items-center">
-              <img
+              {suggestion.isMemberFirm ? (
+                <NmpMemberFirmLogo
+                  fileId={suggestion.logo?.id}
+                  memberFirmId={suggestion.id}
+                  height="32"
+                  width="32"
+                  className="mr-1 rounded-circle"
+                />
+              ) : (
+                <NmpUserAvatar
+                  fileId={suggestion.avatar?.id}
+                  userId={suggestion.id}
+                  height="32"
+                  width="32"
+                  className="mr-1 rounded-circle"
+                />
+              )}
+              {/*<img
                 src={suggestionIsUser ? suggestion.url || noneAvatar : suggestion.logo || noneAvatar}
                 alt={suggestion.name}
-                height="32"
-                width="32"
-                className="mr-1 rounded-circle"
-              />
+              />*/}
             </div>
             <div className="d-flex flex-column justify-content-between">
               <span className="h4">{suggestion.name}</span>
