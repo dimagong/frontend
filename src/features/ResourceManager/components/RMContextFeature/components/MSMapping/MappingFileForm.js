@@ -93,21 +93,23 @@ const MappingFileForm = ({ fileId, msFieldOptions, references }) => {
   return (
     <form onSubmit={form.handleSubmit}>
       <Scrollbars className="mb-2" autoHeight autoHeightMax={350}>
-        {references.map((reference) => {
-          const name = getReferenceName(reference);
-          const value = findReferenceFieldOptionById(msFieldOptions, form.values[name]?.masterSchemaFieldId);
+        <div className="pr-2">
+          {references.map((reference) => {
+            const name = getReferenceName(reference);
+            const value = findReferenceFieldOptionById(msFieldOptions, form.values[name]?.masterSchemaFieldId);
 
-          return (
-            <MappingFileReference
-              name={name}
-              value={value}
-              options={msFieldOptions}
-              onChange={getOnChangeForReference(reference)}
-              fieldTemplate={reference.field_template}
-              key={reference.id}
-            />
-          );
-        })}
+            return (
+              <MappingFileReference
+                name={name}
+                value={value}
+                options={msFieldOptions}
+                onChange={getOnChangeForReference(reference)}
+                fieldTemplate={reference.field_template}
+                key={reference.id}
+              />
+            );
+          })}
+        </div>
       </Scrollbars>
 
       <div className="ms-mapping__preview py-2 mb-2">
