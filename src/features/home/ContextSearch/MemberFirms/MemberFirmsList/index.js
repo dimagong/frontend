@@ -37,7 +37,7 @@ const UserCardTemplate = ({ className, onClick, data }) => {
             <div>
               <CardTitle className="m-0 user-card-body_title">{data.main_fields.name}</CardTitle>
               <CardText style={{ marginBottom: "5px" }}>
-                {`${data.numberOfMembers} member${data.numberOfMembers === 1 ? "" : "s"}`}
+                {`${data.members_count} member${data.members_count === 1 ? "" : "s"}`}
               </CardText>
             </div>
             <div>
