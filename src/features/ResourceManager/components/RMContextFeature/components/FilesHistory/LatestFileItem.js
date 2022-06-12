@@ -44,6 +44,7 @@ const LatestFileItem = ({ fieldId, file, expandable, ...attrs }) => {
       controls={
         <RMFileControls
           isEditing={isEditing}
+          mimeType={file.mime_type}
           onDownload={downloadRMFIle.mutate}
           downloadIsLoading={downloadRMFIle.isLoading}
           onEdit={editRMFile.mutate}

@@ -185,6 +185,7 @@ const UserMSFieldManagerForm = (props) => {
               {file?.is_latest_version ? (
                 <RMFileControls
                   isEditing={isEditing}
+                  mimeType={file.mime_type}
                   onDownload={downloadRMFIle.mutate}
                   downloadIsLoading={downloadRMFIle.isLoading}
                   onEdit={editRMFile.mutate}
