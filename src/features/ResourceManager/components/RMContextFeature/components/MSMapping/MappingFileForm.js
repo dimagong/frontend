@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { Col, Row } from "reactstrap";
 import { toast } from "react-toastify";
 import Scrollbars from "react-custom-scrollbars";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import NmpButton from "components/nmp/NmpButton";
 import NmpSelect from "components/nmp/NmpSelect";
@@ -17,8 +17,8 @@ import { useOpenRMFileReferencesPreview, useSaveRMFileReferences } from "api/res
 
 import MappingFileReference from "./MappingFileReference";
 
-const validationSchema = yup.lazy((obj) =>
-  yup.object(
+const validationSchema = yup.lazy((obj) => {
+  return yup.object(
     _.mapValues(
       () =>
         yup.object({
@@ -27,15 +27,15 @@ const validationSchema = yup.lazy((obj) =>
         }),
       obj
     )
-  )
-);
+  );
+});
 
 const getOptionFromUser = (user) => ({ label: user.full_name, value: user });
 
 const getReferenceName = (reference) => {
   // Fixed issue: formik setFieldValue first argument is a string like path
   // So, we need to remove all dots and slashes from template name.
-  const templateName = reference.field_template.replace(/\.|\//g, "-");
+  const templateName = reference.field_template.replace(/\W/g, "");
 
   return `${templateName}-${reference.id}`;
 };
@@ -43,12 +43,25 @@ const getReferenceName = (reference) => {
 const getReferenceValue = ({ id, master_schema_field_id }) => ({ id, masterSchemaFieldId: master_schema_field_id });
 
 const getReferenceValues = (references = []) => {
-  return Object.fromEntries(references.map((reference) => [getReferenceName(reference), getReferenceValue(reference)]));
+  return Object.fromEntries(
+    references.map((reference) => {
+      const name = getReferenceName(reference);
+      const value = getReferenceValue(reference);
+
+      return [name, value];
+    })
+  );
 };
 
-const findReferenceFieldOptionById = (options, id) => options.find(({ value }) => value.id === id) || null;
+const findReferenceFieldOptionById = (options, id) => options.find(({ value }) => value?.id === id) || null;
 
-const MappingFileForm = ({ fileId, msFieldOptions, references }) => {
+const BLANK_MS_FIELD_ID = -1;
+
+const BLANK_MS_FIELD_OPTION = { value: { id: BLANK_MS_FIELD_ID }, label: "Blank" };
+
+const MappingFileForm = ({ fileId, msFieldOptions: propMSFieldOptions, references }) => {
+  const msFieldOptions = useMemo(() => [BLANK_MS_FIELD_OPTION, ...propMSFieldOptions], [propMSFieldOptions]);
+
   const openPreview = useOpenRMFileReferencesPreview({ fileId });
   const saveReferences = useSaveRMFileReferences({ fileId }, { onSuccess: () => toast.success("Saved successfully") });
   // Users
