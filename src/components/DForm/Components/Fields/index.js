@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 // import './styles.scss';
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
-import formComponents from './Components/DFormWidgets'
-import {Plus} from "react-feather";
+import formComponents from "./Components/DFormWidgets";
+import { Plus } from "react-feather";
 
-const FormComponent = ({groupFields, data, onElementClick, onFieldCreate, group}) => {
-
+const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group }) => {
   const [formData, setFormData] = useState({});
 
   // Each field store with structure:
@@ -58,7 +57,6 @@ const FormComponent = ({groupFields, data, onElementClick, onFieldCreate, group}
   //   return isFormValid;
   // };
 
-
   // const initForm = () => {
   //   const initialData = {};
   //
@@ -80,13 +78,12 @@ const FormComponent = ({groupFields, data, onElementClick, onFieldCreate, group}
   //   setFormData(initialData);
   // };
 
-
   // Init form
   // useEffect(() => {
   //   if(groupFields.length) {
   //     initForm()
   //   }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [groupFields]);
 
   return (
@@ -96,8 +93,18 @@ const FormComponent = ({groupFields, data, onElementClick, onFieldCreate, group}
         const FormFieldElement = formComponents[field.type];
         // const fieldId = formField.master_schema_field_id;
 
+        if (!FormFieldElement) {
+          console.log(field.type, formComponents);
+          console.error("There is no element with type " + field.type);
+
+          return null;
+        }
+
         return (
-          <div className={`editable px-0 custom-form-field ${field.classes ? field.classes : "col-12"}`} onClick={() => onElementClick(field, "field")}>
+          <div
+            className={`editable px-0 custom-form-field ${field.classes ? field.classes : "col-12"}`}
+            onClick={() => onElementClick(field, "field")}
+          >
             <FormFieldElement
               fieldId={field.id}
               isRequired={field.isRequired}
@@ -112,7 +119,7 @@ const FormComponent = ({groupFields, data, onElementClick, onFieldCreate, group}
               fieldClasses={field.classes}
             />
           </div>
-        )
+        );
       })}
       {!!onFieldCreate && (
         <div className="custom-form-field col-12 px-0">
@@ -120,9 +127,7 @@ const FormComponent = ({groupFields, data, onElementClick, onFieldCreate, group}
             <div className="element-add_icon">
               <Plus color="white" size={23} />
             </div>
-            <div className="element-add_description">
-              Add new form element
-            </div>
+            <div className="element-add_description">Add new form element</div>
           </div>
         </div>
       )}

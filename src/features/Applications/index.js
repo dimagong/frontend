@@ -1,90 +1,93 @@
-import React, {useEffect, useState,} from 'react';
+import React, { useEffect, useState } from "react";
 
 import ContextTemplate from "components/ContextTemplate";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 import DForm from "components/DForm";
 import DFormElementEdit from "./Components/DFormElementEdit";
 
-import {makeid} from "../../components/FormCreate/utils";
+import { makeid } from "../../components/FormCreate/utils";
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from "lodash";
 
-import {INITIAL_FIELD_DATA, INITIAL_GROUP_DATA, INITIAL_SECTION_DATA} from "./constants";
-
+import {
+  INITIAL_FIELD_DATA,
+  INITIAL_GROUP_DATA,
+  INITIAL_SECTION_DATA,
+  ELEMENT_TYPES,
+  FIELD_COMMON_PROPERTIES,
+  FIELD_SPECIFIC_PROPERTIES,
+} from "./constants";
+import { elementValidationSchemas } from "./validationSchemas";
 
 const data = {
-  "type": "application",
-  "name": "Dform name",
-  "description": "description",
-  "isPrivate": false,
-  "sections": {
+  type: "application",
+  name: "Dform name",
+  description: "description",
+  isPrivate: false,
+  sections: {
     "First section": {
-      "id": "First section",
-      "name": "First section",
-      "isProtected": false,
-      "isDisabled": false,
-      "isHidden": false,
-      "isAlreadyViewed": false, // Need it to mark section with tick when it have 0 fields that needs to be filled
-      "relatedGroups": ["Group one", "Second group"],
-      "conditions": ""
-    }
+      id: "First section",
+      name: "First section",
+      isProtected: false,
+      isDisabled: false,
+      isHidden: false,
+      isAlreadyViewed: false, // Need it to mark section with tick when it have 0 fields that needs to be filled
+      relatedGroups: ["Group one", "Second group"],
+      conditions: "",
+    },
   },
-  "groups": {
+  groups: {
     "Group one": {
-      "name": "Group one",
-      "id": "Group one",
-      "isProtected": false,
-      "relatedFields": [1, 2, 3]
+      name: "Group one",
+      id: "Group one",
+      isProtected: false,
+      relatedFields: [1, 2, 3],
     },
     "Second group": {
-      "name": "Second group",
-      "id": "Second group",
-      "isProtected": false,
-      "relatedFields": [4]
-    }
+      name: "Second group",
+      id: "Second group",
+      isProtected: false,
+      relatedFields: [4],
+    },
   },
-  "fields": {
-    "1": {
-      "id": "1",
-      "isMasterSchemaRelated": false,
-      "type": "Text",
-      "title": "Some text",
-      "isRequired": true,
-      "classes": "col-md-12",
-      "isLabelShowing": true,
+  fields: {
+    1: {
+      id: "1",
+      isMasterSchemaRelated: false,
+      type: "text",
+      title: "Some text",
+      isRequired: true,
+      classes: "col-md-12",
+      isLabelShowing: true,
     },
-    "2": {
-      "id": "2",
-      "isMasterSchemaRelated": true,
-      "type": "TextArea",
-      "title": "Your biography",
-      "isRequired": true,
-      "classes": "col-md-12",
-      "isLabelShowing": true,
+    2: {
+      id: "2",
+      isMasterSchemaRelated: true,
+      type: "textarea",
+      title: "Your biography",
+      isRequired: true,
+      classes: "col-md-12",
+      isLabelShowing: true,
     },
-    "3": {
-      "id": "3",
-      "isMasterSchemaRelated": true,
-      "type": "Select",
-      "title": "Select your country",
-      "isLabelShowing": true,
+    3: {
+      id: "3",
+      isMasterSchemaRelated: true,
+      type: "select",
+      title: "Select your country",
+      isLabelShowing: true,
     },
-    "4": {
-      "id": "4",
-      "isMasterSchemaRelated": true,
-      "type": "Text",
-      "title": "Email of your best friend",
-      "isLabelShowing": true,
-    }
+    4: {
+      id: "4",
+      isMasterSchemaRelated: true,
+      type: "text",
+      title: "Email of your best friend",
+      isLabelShowing: true,
+    },
   },
-  errors: {
-
-  }
+  errors: {},
 };
 
-
 const Applications = ({ isConfigurable }) => {
-
   const [fakeReduxData, setFakeReduxData] = useState(data);
 
   const [isModuleEditComponentVisible, setIsModuleEditComponentVisible] = useState(false);
@@ -93,16 +96,16 @@ const Applications = ({ isConfigurable }) => {
 
   const handleSelectElementForEdit = (element, elementType) => {
     console.log(element);
-    setElementWithSuggestedChanges({...element, elementType});
+    setElementWithSuggestedChanges({ ...element, elementType });
     setIsModuleEditComponentVisible(true);
   };
 
   const getUniqNameForCollection = (collectionName, baseName) => {
     let tabIndex = 1;
 
-    while(`${baseName} ${tabIndex}` in fakeReduxData[collectionName]) tabIndex++;
+    while (`${baseName} ${tabIndex}` in fakeReduxData[collectionName]) tabIndex++;
 
-    return `${baseName} ${tabIndex}`
+    return `${baseName} ${tabIndex}`;
   };
 
   const handleSectionCreate = () => {
@@ -120,7 +123,6 @@ const Applications = ({ isConfigurable }) => {
 
     // setElementWithSuggestedChanges({...newSectionData});
     // setIsModuleEditComponentVisible(true);
-
 
     //TODO refactor this and all uses of isNew if creation wouldn't need approve by click "create"
     // Remove in case if approve will be needed
@@ -165,23 +167,29 @@ const Applications = ({ isConfigurable }) => {
   const getElementCollectionName = (element) => {
     let elementCollectionName;
 
-    switch(true) {
-      case element.hasOwnProperty("relatedGroups"): elementCollectionName = "sections"; break;
-      case element.hasOwnProperty("relatedFields"): elementCollectionName = "groups"; break;
-      default: elementCollectionName = "fields"; break;
+    switch (true) {
+      case element.hasOwnProperty("relatedGroups"):
+        elementCollectionName = "sections";
+        break;
+      case element.hasOwnProperty("relatedFields"):
+        elementCollectionName = "groups";
+        break;
+      default:
+        elementCollectionName = "fields";
+        break;
     }
 
     return elementCollectionName;
   };
 
+  // While we aim for using old API and redux that handle it, we can't save parts of data separately
+  // so we need to embed our new changes to the rest of data before save
   const embedSuggestedChanges = (element = elementWithSuggestedChanges, isNewElement) => {
-
     const collectionName = getElementCollectionName(element);
-    console.log(collectionName);
     const dataClone = cloneDeep(dataWithSuggestedChanges);
-    const {id} = element;
+    const { id } = element;
 
-    if(isNewElement) {
+    if (isNewElement) {
       // Founds collection (fields, sections, groups) and embed new element to the end
       dataClone[collectionName] = {
         ...dataClone[collectionName],
@@ -190,16 +198,66 @@ const Applications = ({ isConfigurable }) => {
     } else {
       dataClone[collectionName][id] = element;
     }
-    console.log(dataClone);
+
     return dataClone;
+  };
+
+  const validateElement = (element) => {
+    const elementValidationSchema = elementValidationSchemas[element.elementType];
+
+    if (!elementValidationSchema) {
+      console.error(`There is no validation schema for ${element.elementType} element`);
+
+      return null;
+    }
+
+    try {
+      elementValidationSchema.validateSync(element);
+    } catch (validationError) {
+      console.log("error", validationError);
+      return { isElementValid: false, errors: validationError };
+    }
+    console.log("here");
+
+    return { isElementValid: true };
+  };
+
+  // On save extracts all necessary props from field object. Prevent from saving properties that are specific
+  // to another type of field, e.g. options of select.
+  // Do not extract those before user save, because he might want to save his changes to specific property
+  // and come back to that field type
+  const extractPropsFromField = (field) => {
+    const requiredProps = [...FIELD_COMMON_PROPERTIES, ...FIELD_SPECIFIC_PROPERTIES[field.type]];
+
+    return requiredProps.reduce((acc, property) => {
+      acc[property] = field[property];
+
+      return acc;
+    }, {});
   };
 
   const handleElementChangesSave = () => {
     //TODO also add this changes to dform in redux. Local state will be in sync with redux store
     // with only difference that local changes will have applied suggested changes
-    setIsModuleEditComponentVisible(false);
-    setElementWithSuggestedChanges(null);
-    setFakeReduxData(dataWithSuggestedChanges)
+
+    const response = validateElement(elementWithSuggestedChanges);
+
+    const { isElementValid } = response;
+
+    if (isElementValid) {
+      // TODO REMOVE ELEMENT ERRORS
+
+      setIsModuleEditComponentVisible(false);
+      setElementWithSuggestedChanges(null);
+
+      if (elementWithSuggestedChanges.elementType === ELEMENT_TYPES.field) {
+        setFakeReduxData(embedSuggestedChanges(extractPropsFromField(elementWithSuggestedChanges)));
+      } else {
+        setFakeReduxData(embedSuggestedChanges(dataWithSuggestedChanges));
+      }
+    } else {
+      // Set element errors
+    }
   };
 
   const handleElementChangesCancel = () => {
@@ -211,11 +269,11 @@ const Applications = ({ isConfigurable }) => {
   };
 
   const handleElementChange = (elementData) => {
-    setElementWithSuggestedChanges(elementData)
+    setElementWithSuggestedChanges(elementData);
   };
 
   useEffect(() => {
-    if(elementWithSuggestedChanges !== null) {
+    if (elementWithSuggestedChanges !== null) {
       setDataWithSuggestedChanges(embedSuggestedChanges());
     }
   }, [elementWithSuggestedChanges]);
@@ -247,7 +305,7 @@ const Applications = ({ isConfigurable }) => {
         </ContextFeatureTemplate>
       )}
     </div>
-  )
+  );
 };
 
 export default Applications;
