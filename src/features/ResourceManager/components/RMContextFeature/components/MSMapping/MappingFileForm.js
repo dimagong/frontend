@@ -17,13 +17,17 @@ import { useOpenRMFileReferencesPreview, useSaveRMFileReferences } from "api/res
 
 import MappingFileReference from "./MappingFileReference";
 
+const BLANK_MS_FIELD_ID = -1;
+
+const BLANK_MS_FIELD_OPTION = { value: { id: BLANK_MS_FIELD_ID }, label: "Blank" };
+
 const validationSchema = yup.lazy((obj) => {
   return yup.object(
     _.mapValues(
       () =>
         yup.object({
           id: yup.number().required("Required"),
-          masterSchemaFieldId: yup.number().nullable().required("Required"),
+          masterSchemaFieldId: yup.number().nullable(),
         }),
       obj
     )
@@ -53,11 +57,8 @@ const getReferenceValues = (references = []) => {
   );
 };
 
-const findReferenceFieldOptionById = (options, id) => options.find(({ value }) => value?.id === id) || null;
-
-const BLANK_MS_FIELD_ID = -1;
-
-const BLANK_MS_FIELD_OPTION = { value: { id: BLANK_MS_FIELD_ID }, label: "Blank" };
+const findReferenceFieldOptionById = (options, id) =>
+  options.find(({ value }) => value?.id === id) || BLANK_MS_FIELD_OPTION;
 
 const MappingFileForm = ({ fileId, msFieldOptions: propMSFieldOptions, references }) => {
   const msFieldOptions = useMemo(() => [BLANK_MS_FIELD_OPTION, ...propMSFieldOptions], [propMSFieldOptions]);
