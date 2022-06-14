@@ -73,10 +73,11 @@ const MappingFileForm = ({ fileId, msFieldOptions: propMSFieldOptions, reference
   const onPreview = () => openPreview.mutate({ userId: user.value.id });
 
   const onSubmit = (values) => {
-    const data = Object.values(values).map(({ id, masterSchemaFieldId }) => ({
-      id,
-      master_schema_field_id: masterSchemaFieldId,
-    }));
+    const data = Object.values(values).map(({ id, masterSchemaFieldId }) => {
+      const master_schema_field_id = masterSchemaFieldId === BLANK_MS_FIELD_ID ? null : masterSchemaFieldId;
+
+      return { id, master_schema_field_id };
+    });
 
     saveReferences.mutate(data);
   };
