@@ -109,6 +109,9 @@ const Applications = ({ isConfigurable }) => {
 
   const handleSelectElementForEdit = (element, elementType) => {
     console.log(element);
+    //TODO update local state with data from redux
+    setDataWithSuggestedChanges(fakeReduxData);
+
     setElementWithSuggestedChanges({ ...element, elementType });
     setIsModuleEditComponentVisible(true);
   };

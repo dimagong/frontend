@@ -185,34 +185,11 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
     );
 
     const renderSpecificType = () => {
-      // TODO labelForControls is outdated this, remove after full refactor. Replace it with LabeledField
       let labelForControls = (
         <div>
           {renderLabel("title", "Title")}
           <div className="form-group">{renderInputColumn("title", "Title")}</div>
         </div>
-      );
-
-      // TODO DELETE AFTER REFACTOR
-      // const LabeledField = (props) => (
-      //   <Row>
-      //     <Col md="12">
-      //       <div>
-      //         {renderLabel("title", "Title")}
-      //         <div className="form-group">{renderInputColumn("title", "Title")}</div>
-      //       </div>
-      //       <Row>{props.children}</Row>
-      //     </Col>
-      //   </Row>
-      // );
-
-      const LabeledField = (props) => (
-        <Row>
-          <Col md="12">
-            {labelForControls}
-            <Row></Row>
-          </Col>
-        </Row>
       );
 
       switch (element.type) {
