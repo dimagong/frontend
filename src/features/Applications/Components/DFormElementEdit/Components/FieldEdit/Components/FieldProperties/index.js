@@ -193,14 +193,24 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
         </div>
       );
 
+      // TODO DELETE AFTER REFACTOR
+      // const LabeledField = (props) => (
+      //   <Row>
+      //     <Col md="12">
+      //       <div>
+      //         {renderLabel("title", "Title")}
+      //         <div className="form-group">{renderInputColumn("title", "Title")}</div>
+      //       </div>
+      //       <Row>{props.children}</Row>
+      //     </Col>
+      //   </Row>
+      // );
+
       const LabeledField = (props) => (
         <Row>
           <Col md="12">
-            <div>
-              {renderLabel("title", "Title")}
-              <div className="form-group">{renderInputColumn("title", "Title")}</div>
-            </div>
-            <Row>{props.children}</Row>
+            {labelForControls}
+            <Row></Row>
           </Col>
         </Row>
       );
@@ -214,95 +224,146 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
         // }
         case FIELD_TYPES.text: {
           return (
-            <LabeledField>
-              {renderNumberColumn("minLength", "Min Length")}
-              {renderNumberColumn("maxLength", "Max Length")}
+            <Row>
+              <Col md="12">
+                {labelForControls}
+                <Row>
+                  {renderNumberColumn("minLength", "Min Length")}
+                  {renderNumberColumn("maxLength", "Max Length")}
 
-              {renderRequiredAndLabelShowCheckboxes()}
-            </LabeledField>
+                  {renderRequiredAndLabelShowCheckboxes()}
+                </Row>
+              </Col>
+            </Row>
           );
         }
         case FIELD_TYPES.number: {
           return (
-            <LabeledField>
-              {renderNumberColumn("minimum", "Min Length")}
-              {renderNumberColumn("maximum", "Max Length")}
+            <Row>
+              <Col md="12">
+                {labelForControls}
+                <Row>
+                  {renderNumberColumn("minimum", "Min Length")}
+                  {renderNumberColumn("maximum", "Max Length")}
 
-              {renderRequiredAndLabelShowCheckboxes()}
-            </LabeledField>
+                  {renderRequiredAndLabelShowCheckboxes()}
+                </Row>
+              </Col>
+            </Row>
           );
         }
         case FIELD_TYPES.file: {
-          return <LabeledField>{renderRequiredAndLabelShowCheckboxes()}</LabeledField>;
+          return (
+            <Row>
+              <Col md="12">
+                {labelForControls}
+                <Row>{renderRequiredAndLabelShowCheckboxes()}</Row>
+              </Col>
+            </Row>
+          );
         }
         case FIELD_TYPES.fileList: {
-          return <LabeledField>{renderRequiredAndLabelShowCheckboxes()}</LabeledField>;
+          return (
+            <Row>
+              <Col md="12">
+                {labelForControls}
+                <Row>{renderRequiredAndLabelShowCheckboxes()}</Row>
+              </Col>
+            </Row>
+          );
         }
         case FIELD_TYPES.boolean: {
-          return <LabeledField>{renderRequiredAndLabelShowCheckboxes()}</LabeledField>;
+          return (
+            <Row>
+              <Col md="12">
+                {labelForControls}
+                <Row>{renderRequiredAndLabelShowCheckboxes()}</Row>
+              </Col>
+            </Row>
+          );
         }
         case FIELD_TYPES.textArea: {
           return (
-            <LabeledField>
-              {renderNumberColumn("minLength", "Min Length")}
-              {renderNumberColumn("maxLength", "Max Length")}
+            <Row>
+              <Col md="12">
+                {labelForControls}
+                <Row>
+                  {renderNumberColumn("minLength", "Min Length")}
+                  {renderNumberColumn("maxLength", "Max Length")}
 
-              {renderRequiredAndLabelShowCheckboxes()}
-            </LabeledField>
+                  {renderRequiredAndLabelShowCheckboxes()}
+                </Row>
+              </Col>
+            </Row>
           );
         }
         // TODO HANLDE TYPE LONG TEXT
         case Constants.FIELD_TYPE_LONG_TEXT_AREA: {
           return (
-            <LabeledField>
-              {renderNumberColumn("minLength", "Min Length")}
-              {renderNumberColumn("maxLength", "Max Length")}
+            <Row>
+              <Col md="12">
+                {labelForControls}
+                <Row>
+                  {renderNumberColumn("minLength", "Min Length")}
+                  {renderNumberColumn("maxLength", "Max Length")}
 
-              {renderRequiredAndLabelShowCheckboxes()}
-            </LabeledField>
+                  {renderRequiredAndLabelShowCheckboxes()}
+                </Row>
+              </Col>
+            </Row>
           );
         }
         case FIELD_TYPES.date: {
           return (
-            <LabeledField>
-              {renderLabel("format", "Format")}
-              {renderSelectColumn("format", ["date", "date-time"])}
-            </LabeledField>
+            <Row>
+              <Col md="12">
+                {labelForControls}
+                <Row>
+                  {renderLabel("format", "Format")}
+                  {renderSelectColumn("format", ["date", "date-time"])}
+                </Row>
+              </Col>
+            </Row>
           );
         }
         case FIELD_TYPES.select: {
           return (
-            <LabeledField>
-              <Col>
-                {["Test", "More test"].map((enumInput, index) => {
-                  return (
-                    <div className="row" key={index}>
-                      <div className="col-md-10 form-group">
-                        <input
-                          id={`${index}-`}
-                          value={enumInput}
-                          type="text"
-                          onChange={() => {}}
-                          className="form-control"
-                        />
-                      </div>
+            <Row>
+              <Col md="12">
+                {labelForControls}
+                <Row>
+                  <Col>
+                    {["Test", "More test"].map((enumInput, index) => {
+                      return (
+                        <div className="row" key={index}>
+                          <div className="col-md-10 form-group">
+                            <input
+                              id={`${index}-`}
+                              value={enumInput}
+                              type="text"
+                              onChange={() => {}}
+                              className="form-control"
+                            />
+                          </div>
 
-                      <div className="col-md-2 form-group">
-                        <button type="submit" onClick={() => {}} className="btn btn-danger">
-                          X
-                        </button>
-                      </div>
+                          <div className="col-md-2 form-group">
+                            <button type="submit" onClick={() => {}} className="btn btn-danger">
+                              X
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div className="text-center">
+                      <button type="submit" onClick={() => {}} className="btn btn-primary">
+                        Add
+                      </button>
                     </div>
-                  );
-                })}
-                <div className="text-center">
-                  <button type="submit" onClick={() => {}} className="btn btn-primary">
-                    Add
-                  </button>
-                </div>
+                  </Col>
+                  {renderRequiredAndLabelShowCheckboxes()}
+                </Row>
               </Col>
-              {renderRequiredAndLabelShowCheckboxes()}
-            </LabeledField>
+            </Row>
           );
         }
         // case Constants.FIELD_TYPE_MULTI_SELECT: {
