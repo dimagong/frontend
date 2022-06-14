@@ -4,7 +4,17 @@ import { ELEMENT_TYPES, FIELD_TYPES } from "./constants";
 const fieldTypesArray = Object.values(FIELD_TYPES);
 
 export const groupValidationSchema = yup.object().shape({
-  name: yup.string().required("Each group should have a name"),
+  name: yup
+    .string()
+    .required("Each group should have a name")
+    .test(
+      "unique-group-name",
+      "Name should be unique", // error message
+      function test(value) {
+        const groupNames = Object.values(this.options.context.application.groups).map((group) => group.name);
+        return groupNames.filter((name) => name.toLowerCase() === value.toLowerCase()).length === 1;
+      }
+    ),
   id: yup.string().required(),
   isProtected: yup.boolean(),
   relatedFields: yup.array(),
@@ -22,7 +32,17 @@ export const fieldValidationSchema = yup.object().shape({
 
 export const sectionValidationSchema = yup.object().shape({
   id: yup.string().required(),
-  name: yup.string().required("Each section should have a name"),
+  name: yup
+    .string()
+    .required("Each section should have a name")
+    .test(
+      "unique-section-name",
+      "Name should be unique", // error message
+      function test(value) {
+        const sectionsNames = Object.values(this.options.context.application.sections).map((section) => section.name);
+        return sectionsNames.filter((name) => name.toLowerCase() === value.toLowerCase()).length === 1;
+      }
+    ),
   isProtected: yup.boolean(),
   isDisabled: yup.boolean(),
   isHidden: yup.boolean(),

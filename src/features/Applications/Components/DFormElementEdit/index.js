@@ -44,15 +44,17 @@ const DFormElementEdit = ({
         </div>
 
         <div className="d-flex justify-content-between">
+          <Button onClick={onElementChangesCancel} className={"button button-white"}>
+            Cancel
+          </Button>
           <div>
-            <Button onClick={onElementChangesCancel}>Cancel</Button>
-            <Button color={"danger"} onClick={() => onElementDelete(element)}>
+            <Button color={"danger"} onClick={() => onElementDelete(element)} className={"mr-1 button button-danger"}>
               Delete
             </Button>
+            <Button color={"primary"} onClick={onElementChangesSave} className={"button button-success"}>
+              Save
+            </Button>
           </div>
-          <Button color={"primary"} onClick={onElementChangesSave}>
-            Save
-          </Button>
         </div>
       </Col>
       <Col className="col-4 dform-element-edit_options">

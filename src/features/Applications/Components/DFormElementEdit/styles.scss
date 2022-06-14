@@ -1,5 +1,19 @@
 .dform-element-edit {
-
+  .button {
+    border-radius: 10px;
+    margin-bottom: 13px;
+    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  }
+  .button-success {
+    background-color: rgba(115, 103, 240, 1) !important;
+  }
+  .button-white {
+    color: rgba(112, 112, 112, 1);
+    background-color: white !important;
+  }
+  .button-danger {
+    background-color: rgba(199, 0, 0, 1) !important;
+  }
 
   &_options {
     display: flex;
@@ -9,13 +23,13 @@
       padding: 12px 20px;
       text-align: left;
       margin-bottom: 20px;
-      background: white!important;
-      color: #707070!important;
+      background: white !important;
+      color: #707070 !important;
       border-radius: 0;
       box-shadow: 0 3px 6px 0 #00000029;
       &.selected {
-        background: #707070!important;
-        color: white!important;
+        background: #707070 !important;
+        color: white !important;
       }
     }
   }

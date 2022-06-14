@@ -95,7 +95,7 @@ export const FIELD_SPECIFIC_UI_STYLE_PROPERTIES = {
 export const INITIAL_FIELD_DATA = {
   type: FIELD_TYPES.text,
   title: "New field",
-  masterSchemaPropertyId: undefined,
+  masterSchemaPropertyId: "",
   isRequired: false,
   classes: "col-md-12",
   isLabelShowing: true,

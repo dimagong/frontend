@@ -196,7 +196,7 @@ export default function MasterSchemaProperty(props) {
   return (
     <Row>
       <Col md="12">
-        <label for="select-ms-property">Property</label>
+        {/*<label for="select-ms-property">Property</label>*/}
         {getFieldsSelect()}
       </Col>
     </Row>

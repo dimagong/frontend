@@ -6,7 +6,7 @@ import DForm from "components/DForm";
 import DFormElementEdit from "./Components/DFormElementEdit";
 
 import { makeid } from "../../components/FormCreate/utils";
-
+import { toast } from "react-toastify";
 import { cloneDeep } from "lodash";
 
 import {
@@ -99,6 +99,9 @@ const data = {
   },
   errors: {},
 };
+
+//TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
+// because of internal behavior of component
 
 const Applications = ({ isConfigurable }) => {
   const [fakeReduxData, setFakeReduxData] = useState(data);
@@ -230,6 +233,10 @@ const Applications = ({ isConfigurable }) => {
 
   // ELEMENT DELETION WILL BE FULLY REFACTORED AFTER REACT-QUERY INTEGRATION
   const handleElementDelete = (element) => {
+    if (!window.confirm(`Are you sure you want to delete this element?`)) {
+      return;
+    }
+
     const dataClone = cloneDeep(dataWithSuggestedChanges);
 
     switch (element.elementType) {
@@ -291,7 +298,9 @@ const Applications = ({ isConfigurable }) => {
     }
 
     try {
-      elementValidationSchema.validateSync(element);
+      elementValidationSchema.validateSync(element, {
+        context: { application: dataWithSuggestedChanges },
+      });
 
       if (element.elementType === ELEMENT_TYPES.field) {
         const masterSchemaUsedPropertiesList = Object.values(dataWithSuggestedChanges.fields).reduce((acc, curr) => {
@@ -335,7 +344,7 @@ const Applications = ({ isConfigurable }) => {
 
     const response = validateElement(elementWithSuggestedChanges);
 
-    const { isElementValid } = response;
+    const { isElementValid, errors } = response;
 
     if (isElementValid) {
       // TODO REMOVE ELEMENT ERRORS
@@ -349,7 +358,8 @@ const Applications = ({ isConfigurable }) => {
         setFakeReduxData(embedSuggestedChanges(dataWithSuggestedChanges));
       }
     } else {
-      // Set element errors
+      //Todo change it in future to displaying errors under the elements where its occur
+      toast.error(errors.message);
     }
   };
 

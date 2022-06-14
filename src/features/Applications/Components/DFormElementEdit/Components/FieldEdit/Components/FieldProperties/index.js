@@ -13,11 +13,15 @@ import {
 } from "../../../../../../constants";
 
 import _ from "lodash";
+import FieldLabel from "../../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/FieldLabel";
+import Select from "react-select";
+import { colourStyles } from "../../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
 
 const FieldProperties = ({ element, onElementChange, organization }) => {
   const handleTypeChange = (e) => {
     // Might be some problems in future with nested objects
-    const fieldType = e.target.value;
+
+    const fieldType = e.value;
 
     onElementChange(
       _.merge(FIELD_INITIAL_SPECIFIC_PROPERTIES[fieldType], FIELD_SPECIFIC_UI_STYLE_PROPERTIES[fieldType], {
@@ -37,16 +41,29 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
 
   const renderConfigFields = (objKey, index) => {
     // add collback for inputHandlerRequired and custom changes
-    const renderInputNumberColumn = (column, placeholder, defaultValue = 0) => {
+    const renderInputNumberColumn = (column, placeholder, label, defaultValue = 0) => {
+      // return (
+      //   <input
+      //     id={`${index}-${column}`}
+      //     // value={""}
+      //     type="number"
+      //     onChange={() => {}}
+      //     className="form-control"
+      //     placeholder={placeholder}
+      //   />
+      // );
       return (
-        <input
-          id={`${index}-${column}`}
-          // value={""}
-          type="number"
-          onChange={() => {}}
-          className="form-control"
-          placeholder={placeholder}
-        />
+        <div className={"custom-form-filed form-create_custom-text-widget"}>
+          <FieldLabel label={label} />
+          <input
+            id={`${index}-${column}`}
+            type={"number"}
+            disabled={false}
+            value={""}
+            onChange={() => {}}
+            placeholder={placeholder}
+          />
+        </div>
       );
     };
 
@@ -79,6 +96,7 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
       //TODO refactor MasterSchemaProperty to handle only 1 organization
       return (
         <div>
+          <FieldLabel label={"Input name (reference)"} required />
           <MasterSchemaProperty
             onChangeFieldId={(fieldId) => {
               onChangeMasterSchemaProperty(fieldId);
@@ -90,16 +108,30 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
       );
     };
 
-    const renderInputColumn = (column, placeholder, inputType = "text", defaultValue = "") => {
+    const renderInputColumn = (column, placeholder, label, inputType = "text", defaultValue = "") => {
+      // return (
+      //   <input
+      //     id={`${index}-${column}`}
+      //     value={element[column]}
+      //     type={inputType}
+      //     onChange={(e) => handleChange(column, e.target.value)}
+      //     className="form-control"
+      //     placeholder={placeholder}
+      //   />
+      // );
+
       return (
-        <input
-          id={`${index}-${column}`}
-          value={element[column]}
-          type={inputType}
-          onChange={(e) => handleChange(column, e.target.value)}
-          className="form-control"
-          placeholder={placeholder}
-        />
+        <div className={"custom-form-filed form-create_custom-text-widget"}>
+          <FieldLabel label={label} />
+          <input
+            id={`${index}-${column}`}
+            type={"text"}
+            disabled={false}
+            value={element[column]}
+            onChange={(e) => handleChange(column, e.target.value)}
+            placeholder={placeholder}
+          />
+        </div>
       );
     };
 
@@ -166,10 +198,7 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
 
     const renderNumberColumn = (column, text) => (
       <Col md="6">
-        <FormGroup>
-          {renderLabel(column, text)}
-          {renderInputNumberColumn(column, text)}
-        </FormGroup>
+        <FormGroup>{renderInputNumberColumn(column, text, text)}</FormGroup>
       </Col>
     );
 
@@ -187,8 +216,7 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
     const renderSpecificType = () => {
       let labelForControls = (
         <div>
-          {renderLabel("title", "Title")}
-          <div className="form-group">{renderInputColumn("title", "Title")}</div>
+          <div className="form-group">{renderInputColumn("title", "Title", "Title")}</div>
         </div>
       );
 
@@ -423,12 +451,28 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
           <div className=" dform-input-setting">
             <div className="vertical-center dform-input">
               <div className="form-group">
-                {renderLabel("type", "Type")}
-                <select id={`${index}-type`} className="form-control" value={element.type} onChange={handleTypeChange}>
-                  {Object.values(FIELD_TYPES).map((type, indexType) => (
-                    <option key={indexType}>{type}</option>
-                  ))}
-                </select>
+                {/*{renderLabel("type", "Type")}*/}
+                {/*<select id={`${index}-type`} className="form-control" value={element.type} onChange={handleTypeChange}>*/}
+                {/*  {Object.values(FIELD_TYPES).map((type, indexType) => (*/}
+                {/*    <option key={indexType}>{type}</option>*/}
+                {/*  ))}*/}
+                {/*</select>*/}
+                <div className={"custom-react-select"}>
+                  <FieldLabel label={"Element type"} />
+                  <Select
+                    maxMenuHeight={175}
+                    isDisabled={false}
+                    styles={colourStyles}
+                    isMulti={false}
+                    name="colors"
+                    value={{ value: element.type, label: element.type }}
+                    onChange={handleTypeChange}
+                    options={Object.values(FIELD_TYPES).map((type) => ({ value: type, label: type }))}
+                    className="React"
+                    classNamePrefix="select"
+                    placeholder={"Select an option"}
+                  />
+                </div>
               </div>
               {renderPropertyKey()}
               {renderSpecificType()}
