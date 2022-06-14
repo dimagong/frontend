@@ -14,7 +14,7 @@ import {
 
 import _ from "lodash";
 
-const FieldProperties = ({ element, onElementChange }) => {
+const FieldProperties = ({ element, onElementChange, organization }) => {
   const handleTypeChange = (e) => {
     // Might be some problems in future with nested objects
     const fieldType = e.target.value;
@@ -29,6 +29,10 @@ const FieldProperties = ({ element, onElementChange }) => {
 
   const handleChange = (property, value) => {
     onElementChange({ ...element, [property]: value });
+  };
+
+  const onChangeMasterSchemaProperty = (fieldId) => {
+    handleChange("masterSchemaPropertyId", fieldId);
   };
 
   const renderConfigFields = (objKey, index) => {
@@ -72,14 +76,15 @@ const FieldProperties = ({ element, onElementChange }) => {
         );
       }
 
+      //TODO refactor MasterSchemaProperty to handle only 1 organization
       return (
         <div>
           <MasterSchemaProperty
             onChangeFieldId={(fieldId) => {
               onChangeMasterSchemaProperty(fieldId);
             }}
-            fieldId={1}
-            organizations={[]}
+            fieldId={element.masterSchemaPropertyId}
+            organizations={[organization]}
           />
         </div>
       );
@@ -157,11 +162,6 @@ const FieldProperties = ({ element, onElementChange }) => {
 
     const renderLabel = (column, text) => {
       return <label htmlFor={`${index}-${column}`}>{text}</label>;
-    };
-
-    const onChangeMasterSchemaProperty = (fieldId) => {
-      this.changeMasterSchemaFieldId(fieldId);
-      this.setState({ fieldEdit: { ...this.state.fieldEdit, propertyKey: fieldId } });
     };
 
     const renderNumberColumn = (column, text) => (

@@ -27,6 +27,16 @@ const data = {
   name: "Dform name",
   description: "description",
   isPrivate: false,
+  organization: {
+    id: 1,
+    corporation_id: 1,
+    name: "ValidPath",
+    created_at: "2022-03-28T17:51:44.000000Z",
+    updated_at: "2022-05-27T16:29:20.000000Z",
+    intro_text: "<p>ValidPath intro text</p>",
+    intro_title: "ValidPath intro",
+    type: "network",
+  },
   sections: {
     "First section": {
       id: "First section",
@@ -306,6 +316,7 @@ const Applications = ({ isConfigurable }) => {
             onElementChange={handleElementChange}
             onElementChangesSave={handleElementChangesSave}
             onElementChangesCancel={handleElementChangesCancel}
+            organization={dataWithSuggestedChanges.organization}
           />
         </ContextFeatureTemplate>
       )}

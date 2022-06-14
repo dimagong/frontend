@@ -10,7 +10,7 @@ import "./styles.scss";
 
 import { EDIT_OPTIONS } from "../../constants";
 
-const DFormElementEdit = ({ element, onElementChange, onElementChangesSave, onElementChangesCancel }) => {
+const DFormElementEdit = ({ element, onElementChange, onElementChangesSave, onElementChangesCancel, organization }) => {
   const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS.properties);
 
   const handleEditOptionSelect = (editOption) => {
@@ -31,7 +31,7 @@ const DFormElementEdit = ({ element, onElementChange, onElementChangesSave, onEl
             {
               group: <GroupEdit {...commonProps} />,
               section: <SectionEdit {...commonProps} />,
-              field: <FieldEdit {...commonProps} />,
+              field: <FieldEdit {...commonProps} organization={organization} />,
             }[element.elementType]
           }
         </div>
