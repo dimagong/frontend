@@ -1,12 +1,22 @@
-import React from 'react';
+import React from "react";
 
-import {TabContent, TabPane} from 'reactstrap';
+import { TabContent, TabPane } from "reactstrap";
 
-import Groups from '../Groups';
+import Groups from "../Groups";
 
-import './styles.scss'
+import "./styles.scss";
 
 const SectionsComponent = ({ data, selectedSection, onElementClick, onGroupCreate, onFieldCreate }) => {
+  if (Object.values(data.sections).length === 0) {
+    // TODO HANDLE TWO CASES, when there are no sections on edit and no sections on assigned dform \ on onboarding dform
+    return (
+      <div className="px-2 py-5 text-center w-100">
+        There are no available sections <br />
+        <br />
+        create one by clicking "New Tab" button, to start editing your application
+      </div>
+    );
+  }
 
   return (
     <TabContent activeTab={selectedSection} className={"sections-content"}>
@@ -25,12 +35,10 @@ const SectionsComponent = ({ data, selectedSection, onElementClick, onGroupCreat
               onFieldCreate={onFieldCreate}
             />
           )}
-
         </TabPane>
       ))}
-
     </TabContent>
-  )
+  );
 };
 
 export default SectionsComponent;
