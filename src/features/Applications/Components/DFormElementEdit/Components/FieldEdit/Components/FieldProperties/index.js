@@ -6,11 +6,25 @@ import MasterSchemaProperty from "../../../../../../../../components/FormCreate/
 import WysiwygEditor from "../../../../../../../../components/FormCreate/Custom/WysiwygEditor";
 import Checkbox from "../../../../../../../../components/@vuexy/checkbox/CheckboxesVuexy";
 import { Check } from "react-feather";
-import { FIELD_TYPES } from "../../../../../../constants";
+import {
+  FIELD_TYPES,
+  FIELD_INITIAL_SPECIFIC_PROPERTIES,
+  FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
+} from "../../../../../../constants";
+
+import _ from "lodash";
 
 const FieldProperties = ({ element, onElementChange }) => {
   const handleTypeChange = (e) => {
-    onElementChange({ ...element, type: e.target.value });
+    // Might be some problems in future with nested objects
+    const fieldType = e.target.value;
+
+    onElementChange(
+      _.merge(FIELD_INITIAL_SPECIFIC_PROPERTIES[fieldType], FIELD_SPECIFIC_UI_STYLE_PROPERTIES[fieldType], {
+        ...element,
+        type: fieldType,
+      })
+    );
   };
 
   const handleChange = (property, value) => {

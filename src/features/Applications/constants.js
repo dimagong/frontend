@@ -47,7 +47,7 @@ export const INITIAL_FIELD_DATA = {
   isLabelShowing: true,
 };
 
-export const FIELD_COMMON_PROPERTIES = Object.keys(INITIAL_FIELD_DATA);
+export const FIELD_COMMON_PROPERTIES = [...Object.keys(INITIAL_FIELD_DATA), "id"];
 
 export const FIELD_INITIAL_SPECIFIC_PROPERTIES = {
   [FIELD_TYPES.text]: {
