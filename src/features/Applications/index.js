@@ -20,7 +20,7 @@ import {
   FIELD_TYPES,
   FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
 } from "./constants";
-import { elementValidationSchemas } from "./validationSchemas";
+import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
 
 const data = {
   type: "application",
@@ -228,6 +228,20 @@ const Applications = ({ isConfigurable }) => {
 
     try {
       elementValidationSchema.validateSync(element);
+
+      if (element.elementType === ELEMENT_TYPES.field) {
+        const masterSchemaUsedPropertiesList = Object.values(dataWithSuggestedChanges.fields).reduce((acc, curr) => {
+          if (curr.id !== element.id && curr.masterSchemaPropertyId) {
+            acc.push(curr.masterSchemaPropertyId);
+          }
+
+          return acc;
+        }, []);
+
+        MSPropertyValidationSchema.validateSync(element.masterSchemaPropertyId, {
+          context: { masterSchemaUsedPropertiesList },
+        });
+      }
     } catch (validationError) {
       console.log("error", validationError);
       return { isElementValid: false, errors: validationError };

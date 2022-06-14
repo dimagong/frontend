@@ -36,3 +36,15 @@ export const elementValidationSchemas = {
   [ELEMENT_TYPES.group]: groupValidationSchema,
   [ELEMENT_TYPES.section]: sectionValidationSchema,
 };
+
+export const MSPropertyValidationSchema = yup
+  .string()
+  .required("Master schema property should not be empty")
+  .test(
+    "ms-property-validation",
+    "Master schema property should not be duplicated", // error message
+    function test(value) {
+      // NOTE: this must not be an arrow function, because yup binds it to it's "this"
+      return !this.options.context.masterSchemaUsedPropertiesList.includes(value);
+    }
+  );
