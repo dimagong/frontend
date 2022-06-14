@@ -54,13 +54,13 @@ const data = {
       name: "Group one",
       id: "Group one",
       isProtected: false,
-      relatedFields: [1, 2, 3],
+      relatedFields: ["1", "2", "3"],
     },
     "Second group": {
       name: "Second group",
       id: "Second group",
       isProtected: false,
-      relatedFields: [4],
+      relatedFields: ["4"],
     },
   },
   fields: {
@@ -217,6 +217,67 @@ const Applications = ({ isConfigurable }) => {
     return dataClone;
   };
 
+  const removeItemFormArrayByValue = (array, item) => {
+    const index = array.indexOf(item);
+    if (index !== -1) {
+      array.splice(index, 1);
+    }
+    return array;
+  };
+
+  // ELEMENT DELETION WILL BE FULLY REFACTORED AFTER REACT-QUERY INTEGRATION
+  const handleElementDelete = (element) => {
+    const dataClone = cloneDeep(dataWithSuggestedChanges);
+
+    switch (element.elementType) {
+      case ELEMENT_TYPES.section:
+        handleSectionDelete(element, dataClone);
+        break;
+      case ELEMENT_TYPES.group:
+        handleGroupDelete(element, dataClone);
+        break;
+      case ELEMENT_TYPES.field:
+        handleFieldDelete(element, dataClone);
+        break;
+      default:
+        console.error("cannot delete element with type " + element.elementType);
+    }
+
+    setIsModuleEditComponentVisible(false);
+    setElementWithSuggestedChanges(null);
+    setFakeReduxData(dataClone);
+  };
+
+  const handleSectionDelete = (section, data) => {
+    section.relatedGroups.map((groupId) => handleGroupDelete(data.groups[groupId], data));
+
+    delete data.sections[section.id];
+  };
+
+  const handleGroupDelete = (group, data) => {
+    const groupSection = Object.values(data.sections).filter((section) => section.relatedGroups.includes(group.id))[0];
+    data.sections[groupSection.id].relatedGroups = removeItemFormArrayByValue(
+      data.sections[groupSection.id].relatedGroups,
+      group.id
+    );
+
+    group.relatedFields.map((fieldId) => delete data.fields[fieldId]);
+
+    delete data.groups[group.id];
+  };
+
+  const handleFieldDelete = (field, data) => {
+    const fieldGroup = Object.values(data.groups).filter((group) => group.relatedFields.includes(String(field.id)))[0];
+    console.log(fieldGroup?.id, field?.id);
+
+    data.groups[fieldGroup.id].relatedFields = removeItemFormArrayByValue(
+      data.groups[fieldGroup.id].relatedFields,
+      field.id
+    );
+
+    delete data.fields[field.id];
+  };
+
   const validateElement = (element) => {
     const elementValidationSchema = elementValidationSchemas[element.elementType];
 
@@ -328,6 +389,7 @@ const Applications = ({ isConfigurable }) => {
           <DFormElementEdit
             element={elementWithSuggestedChanges}
             onElementChange={handleElementChange}
+            onElementDelete={handleElementDelete}
             onElementChangesSave={handleElementChangesSave}
             onElementChangesCancel={handleElementChangesCancel}
             organization={dataWithSuggestedChanges.organization}

@@ -10,7 +10,14 @@ import "./styles.scss";
 
 import { EDIT_OPTIONS } from "../../constants";
 
-const DFormElementEdit = ({ element, onElementChange, onElementChangesSave, onElementChangesCancel, organization }) => {
+const DFormElementEdit = ({
+  element,
+  onElementChange,
+  onElementChangesSave,
+  onElementChangesCancel,
+  organization,
+  onElementDelete,
+}) => {
   const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS.properties);
 
   const handleEditOptionSelect = (editOption) => {
@@ -39,7 +46,7 @@ const DFormElementEdit = ({ element, onElementChange, onElementChangesSave, onEl
         <div className="d-flex justify-content-between">
           <div>
             <Button onClick={onElementChangesCancel}>Cancel</Button>
-            <Button color={"danger"} onClick={onElementChangesCancel}>
+            <Button color={"danger"} onClick={() => onElementDelete(element)}>
               Delete
             </Button>
           </div>
