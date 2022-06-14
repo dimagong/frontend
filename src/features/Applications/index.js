@@ -16,6 +16,9 @@ import {
   ELEMENT_TYPES,
   FIELD_COMMON_PROPERTIES,
   FIELD_SPECIFIC_PROPERTIES,
+  FIELD_INITIAL_SPECIFIC_PROPERTIES,
+  FIELD_TYPES,
+  FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
 } from "./constants";
 import { elementValidationSchemas } from "./validationSchemas";
 
@@ -152,6 +155,8 @@ const Applications = ({ isConfigurable }) => {
   const handleFieldCreate = (group) => {
     const newFieldData = {
       ...INITIAL_FIELD_DATA,
+      ...FIELD_INITIAL_SPECIFIC_PROPERTIES[FIELD_TYPES.text],
+      ...FIELD_SPECIFIC_UI_STYLE_PROPERTIES[FIELD_TYPES.text],
       id: makeid(9),
       isNew: true,
     };

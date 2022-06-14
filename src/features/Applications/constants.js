@@ -39,16 +39,6 @@ export const FIELD_TYPES = {
   multiSelect: "multiSelect",
 };
 
-export const INITIAL_FIELD_DATA = {
-  type: FIELD_TYPES.text,
-  title: "New field",
-  isRequired: false,
-  classes: "col-md-12",
-  isLabelShowing: true,
-};
-
-export const FIELD_COMMON_PROPERTIES = [...Object.keys(INITIAL_FIELD_DATA), "id"];
-
 export const FIELD_INITIAL_SPECIFIC_PROPERTIES = {
   [FIELD_TYPES.text]: {
     minLength: undefined,
@@ -101,6 +91,17 @@ export const FIELD_SPECIFIC_UI_STYLE_PROPERTIES = {
     uiStyle: "default",
   },
 };
+
+export const INITIAL_FIELD_DATA = {
+  type: FIELD_TYPES.text,
+  title: "New field",
+  masterSchemaProperty: undefined,
+  isRequired: false,
+  classes: "col-md-12",
+  isLabelShowing: true,
+};
+
+export const FIELD_COMMON_PROPERTIES = [...Object.keys(INITIAL_FIELD_DATA), "id"];
 
 // get specific properties and convert it to object where key is field type and value is an array of properties names
 export const FIELD_SPECIFIC_PROPERTIES = Object.keys(FIELD_INITIAL_SPECIFIC_PROPERTIES).reduce(
