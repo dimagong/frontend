@@ -69,11 +69,15 @@ export const FIELD_INITIAL_SPECIFIC_PROPERTIES = {
     compileConditions: "",
     resourceLink: undefined,
   },
-  [FIELD_TYPES.helpText]: {},
+  [FIELD_TYPES.helpText]: {
+    isMasterSchemaRelated: false,
+  },
   [FIELD_TYPES.multiSelect]: {
     options: [],
   },
 };
+
+export const FIELDS_NOT_RELATED_TO_MASTER_SCHEMA = [FIELD_TYPES.helpText];
 
 export const FIELD_SPECIFIC_UI_STYLE_PROPERTIES = {
   [FIELD_TYPES.text]: {},

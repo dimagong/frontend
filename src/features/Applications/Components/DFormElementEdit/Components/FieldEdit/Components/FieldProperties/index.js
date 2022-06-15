@@ -10,6 +10,7 @@ import {
   FIELD_TYPES,
   FIELD_INITIAL_SPECIFIC_PROPERTIES,
   FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
+  FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
 } from "../../../../../../constants";
 
 import _ from "lodash";
@@ -67,47 +68,6 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
       );
     };
 
-    const renderKeyObjectEditColumn = (column, placeholder) => {
-      if (Constants.NOT_MASTER_SCHEMA_FIELDS.indexOf("test") !== -1) {
-        return (
-          <div>
-            <label htmlFor={`${index}-property-${column}`}>Property name</label>
-            <Input
-              id={`${index}-property-${column}`}
-              value={this.state.fieldEdit.propertyKey}
-              type="text"
-              // ref={this.refTitles}
-              data-id={objKey}
-              onChange={(event) =>
-                this.setState({
-                  fieldEdit: {
-                    ...this.state.fieldEdit,
-                    propertyKey: event.target.value,
-                  },
-                })
-              }
-              className="form-control"
-              placeholder={placeholder}
-            />
-          </div>
-        );
-      }
-
-      //TODO refactor MasterSchemaProperty to handle only 1 organization
-      return (
-        <div>
-          <FieldLabel label={"Input name (reference)"} required />
-          <MasterSchemaProperty
-            onChangeFieldId={(fieldId) => {
-              onChangeMasterSchemaProperty(fieldId);
-            }}
-            fieldId={element.masterSchemaPropertyId}
-            organizations={[organization]}
-          />
-        </div>
-      );
-    };
-
     const renderInputColumn = (column, placeholder, label, inputType = "text", defaultValue = "") => {
       // return (
       //   <input
@@ -130,6 +90,42 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
             value={element[column]}
             onChange={(e) => handleChange(column, e.target.value)}
             placeholder={placeholder}
+          />
+        </div>
+      );
+    };
+
+    const renderKeyObjectEditColumn = (column, placeholder) => {
+      if (FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.indexOf(element.type) !== -1) {
+        // return (
+        //   <div>
+        //     <label htmlFor={`${index}-property-${column}`}>Property ddname</label>
+        //     <Input
+        //       id={`${index}-property-${column}`}
+        //       value={""}
+        //       type="text"
+        //       // ref={this.refTitles}
+        //       data-id={objKey}
+        //       onChange={(event) => {}}
+        //       className="form-control"
+        //       placeholder={placeholder}
+        //     />
+        //   </div>
+        // );
+
+        return <div>{renderInputColumn(column, placeholder, "property name")}</div>;
+      }
+
+      //TODO refactor MasterSchemaProperty to handle only 1 organization
+      return (
+        <div>
+          <FieldLabel label={"Input name (reference)"} required />
+          <MasterSchemaProperty
+            onChangeFieldId={(fieldId) => {
+              onChangeMasterSchemaProperty(fieldId);
+            }}
+            fieldId={element.masterSchemaPropertyId}
+            organizations={[organization]}
           />
         </div>
       );
