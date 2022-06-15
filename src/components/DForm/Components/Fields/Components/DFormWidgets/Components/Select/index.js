@@ -67,13 +67,13 @@ const SelectWidget = (props) => {
       <FieldLabel label={props.label} required={props.isRequired} />
       <Select
         maxMenuHeight={175}
-        isDisabled={false}
+        isDisabled={props.disabled}
         styles={colourStyles}
         isMulti={false}
         name="colors"
-        value={null}
+        value={props.value}
         onChange={handleChange}
-        options={[]}
+        options={props.options}
         className="React"
         classNamePrefix="select"
         placeholder={"Select an option"}

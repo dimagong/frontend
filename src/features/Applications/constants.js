@@ -77,6 +77,8 @@ export const FIELD_INITIAL_SPECIFIC_PROPERTIES = {
   },
 };
 
+export const FIELD_STYLES_CLASSES = ["col-md-6", "col-md-12"];
+
 export const FIELDS_NOT_RELATED_TO_MASTER_SCHEMA = [FIELD_TYPES.helpText];
 
 export const FIELD_SPECIFIC_UI_STYLE_PROPERTIES = {
@@ -101,7 +103,7 @@ export const INITIAL_FIELD_DATA = {
   title: "New field",
   masterSchemaPropertyId: "",
   isRequired: false,
-  classes: "col-md-12",
+  classes: FIELD_STYLES_CLASSES[1],
   isLabelShowing: true,
 };
 

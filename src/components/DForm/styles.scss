@@ -2,7 +2,6 @@
   display: flex;
   max-width: 1024px;
 
-
   .element {
     &-add {
       cursor: pointer;
@@ -16,12 +15,11 @@
       justify-content: center;
       align-items: center;
       &_icon {
-        background-color: #7367F0;
+        background-color: #7367f0;
         border-radius: 30px;
         margin-bottom: 10px;
       }
       &_description {
-
       }
     }
   }
@@ -31,10 +29,9 @@
       &:hover {
         &:after {
           cursor: pointer;
-          border-right: 2px solid #7367F0;
+          border-right: 2px solid #7367f0;
           transition: 0.1s;
         }
-
       }
       &:after {
         content: " ";
@@ -44,12 +41,11 @@
         height: 100%;
         top: 0;
         left: 0;
-        right: -10px;
+        right: 0px;
         background: rgba(0, 0, 0, 0);
         transition: 0.1s;
         border-right: 2px solid transparent;
       }
     }
   }
-
 }

@@ -88,6 +88,7 @@ const data = {
       type: "select",
       title: "Select your country",
       isLabelShowing: true,
+      classes: "col-md-12",
     },
     4: {
       id: "4",
@@ -95,6 +96,7 @@ const data = {
       type: "text",
       title: "Email of your best friend",
       isLabelShowing: true,
+      classes: "col-md-12",
     },
   },
   errors: {},
