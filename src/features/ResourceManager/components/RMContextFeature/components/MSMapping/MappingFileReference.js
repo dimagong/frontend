@@ -7,7 +7,7 @@ import NmpSelect from "components/nmp/NmpSelect";
 import { OptionsType, OptionType } from "utility/prop-types";
 
 const MappingFileReference = ({ name, value, options, onChange, fieldTemplate: propFieldTemplate }) => {
-  const fieldTemplate = useMemo(() => `{{ msRef: ${propFieldTemplate} }}`, [propFieldTemplate]);
+  const fieldTemplate = useMemo(() => `{{ ${propFieldTemplate} }}`, [propFieldTemplate]);
 
   return (
     <Row className="py-1" noGutters>
