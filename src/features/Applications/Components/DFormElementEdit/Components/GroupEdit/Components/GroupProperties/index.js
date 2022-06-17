@@ -20,7 +20,7 @@ const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data 
   return (
     <div>
       <TextWidget value={element.name} label={"Group name"} placeholder={"Group name"} onChange={handleNameChange} />
-      <div className={"custom-react-select"}>
+      <div className={"custom-react-select mt-2"}>
         <FieldLabel label={"Element group"} />
         <Select
           maxMenuHeight={175}
