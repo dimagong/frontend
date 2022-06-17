@@ -6,14 +6,22 @@ import FieldStyles from "./Components/FieldStyles";
 
 import { EDIT_OPTIONS } from "../../../../constants";
 
-const FieldEdit = ({ element, onElementChange, editProperty, organization }) => {
+const FieldEdit = ({ element, onElementChange, editProperty, organization, groups, data, onFieldGroupChange }) => {
   const commonProps = {
     element,
     onElementChange,
   };
 
   return {
-    [EDIT_OPTIONS.properties]: <FieldProperties {...commonProps} organization={organization} />,
+    [EDIT_OPTIONS.properties]: (
+      <FieldProperties
+        {...commonProps}
+        organization={organization}
+        groups={groups}
+        data={data}
+        onFieldGroupChange={onFieldGroupChange}
+      />
+    ),
     [EDIT_OPTIONS.styling]: <FieldStyles {...commonProps} />,
     [EDIT_OPTIONS.dynamicRendering]: <FieldDynamicRendering {...commonProps} />,
   }[editProperty];

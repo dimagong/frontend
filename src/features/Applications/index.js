@@ -22,6 +22,9 @@ import {
 } from "./constants";
 import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
 
+import "./styles.scss";
+import { Button } from "reactstrap";
+
 const data = {
   type: "application",
   name: "Dform name",
@@ -212,6 +215,8 @@ const Applications = ({ isConfigurable }) => {
     const dataClone = cloneDeep(dataWithSuggestedChanges);
     const { id } = element;
 
+    console.log("ELEMENT", element);
+
     if (isNewElement) {
       // Founds collection (fields, sections, groups) and embed new element to the end
       dataClone[collectionName] = {
@@ -326,6 +331,21 @@ const Applications = ({ isConfigurable }) => {
     return { isElementValid: true };
   };
 
+  const handleFieldGroupChange = (fieldId, oldGroupId, newGroupId) => {
+    if (oldGroupId === newGroupId) return;
+
+    const dataClone = cloneDeep(dataWithSuggestedChanges);
+
+    dataClone.groups[oldGroupId].relatedFields = removeItemFormArrayByValue(
+      dataClone.groups[oldGroupId].relatedFields,
+      fieldId
+    );
+    dataClone.groups[newGroupId].relatedFields.push(fieldId);
+
+    setElementWithSuggestedChanges({ ...elementWithSuggestedChanges, groupId: newGroupId });
+    setDataWithSuggestedChanges(dataClone);
+  };
+
   // On save extracts all necessary props from field object. Prevent from saving properties that are specific
   // to another type of field, e.g. options of select.
   // Do not extract those before user save, because he might want to save his changes to specific property
@@ -357,7 +377,7 @@ const Applications = ({ isConfigurable }) => {
       if (elementWithSuggestedChanges.elementType === ELEMENT_TYPES.field) {
         setFakeReduxData(embedSuggestedChanges(extractPropsFromField(elementWithSuggestedChanges)));
       } else {
-        setFakeReduxData(embedSuggestedChanges(dataWithSuggestedChanges));
+        setFakeReduxData(embedSuggestedChanges());
       }
     } else {
       //Todo change it in future to displaying errors under the elements where its occur
@@ -388,7 +408,7 @@ const Applications = ({ isConfigurable }) => {
   }, [fakeReduxData]);
 
   return (
-    <div className="d-flex">
+    <div className="application d-flex">
       <ContextTemplate contextTitle="Applications" contextName="dForm » introduction">
         <DForm
           data={dataWithSuggestedChanges}
@@ -398,16 +418,29 @@ const Applications = ({ isConfigurable }) => {
           onGroupCreate={handleGroupCreate}
           onFieldCreate={handleFieldCreate}
         />
+        <div style={{ paddingLeft: "35px", paddingRight: "35px" }}>
+          <div className={"application_delimiter"} />
+          <div className="d-flex justify-content-between ">
+            <Button className={"button button-cancel"}>Cancel</Button>
+
+            <Button color={"primary"} className={"button button-success"}>
+              Save
+            </Button>
+          </div>
+        </div>
       </ContextTemplate>
       {isModuleEditComponentVisible && (
         <ContextFeatureTemplate contextFeatureTitle="dForm">
           <DFormElementEdit
+            data={dataWithSuggestedChanges}
+            groups={Object.keys(dataWithSuggestedChanges.groups)}
             element={elementWithSuggestedChanges}
             onElementChange={handleElementChange}
             onElementDelete={handleElementDelete}
             onElementChangesSave={handleElementChangesSave}
             onElementChangesCancel={handleElementChangesCancel}
             organization={dataWithSuggestedChanges.organization}
+            onFieldGroupChange={handleFieldGroupChange}
           />
         </ContextFeatureTemplate>
       )}

@@ -103,7 +103,7 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
         return (
           <div
             className={`editable px-0 custom-form-field ${field.classes ? field.classes : "col-12"}`}
-            onClick={() => onElementClick(field, "field")}
+            onClick={() => onElementClick({ ...field, groupId: group }, "field")}
           >
             <FormFieldElement
               fieldId={field.id}

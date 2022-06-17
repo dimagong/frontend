@@ -18,7 +18,7 @@ import FieldLabel from "../../../../../../../../components/DForm/Components/Fiel
 import Select from "react-select";
 import { colourStyles } from "../../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
 
-const FieldProperties = ({ element, onElementChange, organization }) => {
+const FieldProperties = ({ element, onElementChange, organization, groups, data, onFieldGroupChange }) => {
   const handleTypeChange = (e) => {
     // Might be some problems in future with nested objects
 
@@ -30,6 +30,10 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
         type: fieldType,
       })
     );
+  };
+
+  const handleFieldGroupChange = (value) => {
+    onFieldGroupChange(element.id, element.groupId, value.value);
   };
 
   const handleChange = (property, value) => {
@@ -453,7 +457,7 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
                 {/*    <option key={indexType}>{type}</option>*/}
                 {/*  ))}*/}
                 {/*</select>*/}
-                <div className={"custom-react-select"}>
+                <div className={"custom-react-select mb-2"}>
                   <FieldLabel label={"Element type"} />
                   <Select
                     maxMenuHeight={175}
@@ -464,6 +468,22 @@ const FieldProperties = ({ element, onElementChange, organization }) => {
                     value={{ value: element.type, label: element.type }}
                     onChange={handleTypeChange}
                     options={Object.values(FIELD_TYPES).map((type) => ({ value: type, label: type }))}
+                    className="React"
+                    classNamePrefix="select"
+                    placeholder={"Select an option"}
+                  />
+                </div>
+                <div className={"custom-react-select"}>
+                  <FieldLabel label={"Element group"} />
+                  <Select
+                    maxMenuHeight={175}
+                    isDisabled={false}
+                    styles={colourStyles}
+                    isMulti={false}
+                    name="colors"
+                    value={{ value: element.groupId, label: data.groups[element.groupId].name }}
+                    onChange={handleFieldGroupChange}
+                    options={groups.map((group) => ({ value: group, label: data.groups[group].name }))}
                     className="React"
                     classNamePrefix="select"
                     placeholder={"Select an option"}

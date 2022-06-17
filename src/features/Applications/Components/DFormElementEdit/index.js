@@ -11,12 +11,15 @@ import "./styles.scss";
 import { EDIT_OPTIONS } from "../../constants";
 
 const DFormElementEdit = ({
+  data,
+  groups,
   element,
   onElementChange,
   onElementChangesSave,
   onElementChangesCancel,
   organization,
   onElementDelete,
+  onFieldGroupChange,
 }) => {
   const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS.properties);
 
@@ -25,6 +28,7 @@ const DFormElementEdit = ({
   };
 
   const commonProps = {
+    data: data,
     editProperty: selectedEditOption,
     element: element,
     onElementChange: onElementChange,
@@ -38,13 +42,20 @@ const DFormElementEdit = ({
             {
               group: <GroupEdit {...commonProps} />,
               section: <SectionEdit {...commonProps} />,
-              field: <FieldEdit {...commonProps} organization={organization} />,
+              field: (
+                <FieldEdit
+                  {...commonProps}
+                  organization={organization}
+                  groups={groups}
+                  onFieldGroupChange={onFieldGroupChange}
+                />
+              ),
             }[element.elementType]
           }
         </div>
-
+        <div className="application_delimiter" />
         <div className="d-flex justify-content-between">
-          <Button onClick={onElementChangesCancel} className={"button button-white"}>
+          <Button onClick={onElementChangesCancel} className={"button button-cancel"}>
             Cancel
           </Button>
           <div>

@@ -1,19 +1,5 @@
 .dform-element-edit {
-  .button {
-    border-radius: 10px;
-    margin-bottom: 13px;
-    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
-  }
-  .button-success {
-    background-color: rgba(115, 103, 240, 1) !important;
-  }
-  .button-white {
-    color: rgba(112, 112, 112, 1);
-    background-color: white !important;
-  }
-  .button-danger {
-    background-color: rgba(199, 0, 0, 1) !important;
-  }
+  padding-left: 5px;
 
   &_options {
     display: flex;
