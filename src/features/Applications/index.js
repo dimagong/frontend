@@ -433,7 +433,6 @@ const Applications = ({ isConfigurable }) => {
         <ContextFeatureTemplate contextFeatureTitle="dForm">
           <DFormElementEdit
             data={dataWithSuggestedChanges}
-            groups={Object.keys(dataWithSuggestedChanges.groups)}
             element={elementWithSuggestedChanges}
             onElementChange={handleElementChange}
             onElementDelete={handleElementDelete}

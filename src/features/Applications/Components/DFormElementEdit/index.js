@@ -12,7 +12,6 @@ import { EDIT_OPTIONS } from "../../constants";
 
 const DFormElementEdit = ({
   data,
-  groups,
   element,
   onElementChange,
   onElementChangesSave,
@@ -42,14 +41,7 @@ const DFormElementEdit = ({
             {
               group: <GroupEdit {...commonProps} />,
               section: <SectionEdit {...commonProps} />,
-              field: (
-                <FieldEdit
-                  {...commonProps}
-                  organization={organization}
-                  groups={groups}
-                  onFieldGroupChange={onFieldGroupChange}
-                />
-              ),
+              field: <FieldEdit {...commonProps} organization={organization} onFieldGroupChange={onFieldGroupChange} />,
             }[element.elementType]
           }
         </div>

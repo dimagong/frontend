@@ -18,7 +18,7 @@ import FieldLabel from "../../../../../../../../components/DForm/Components/Fiel
 import Select from "react-select";
 import { colourStyles } from "../../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
 
-const FieldProperties = ({ element, onElementChange, organization, groups, data, onFieldGroupChange }) => {
+const FieldProperties = ({ element, onElementChange, organization, data, onFieldGroupChange }) => {
   const handleTypeChange = (e) => {
     // Might be some problems in future with nested objects
 
@@ -483,7 +483,10 @@ const FieldProperties = ({ element, onElementChange, organization, groups, data,
                     name="colors"
                     value={{ value: element.groupId, label: data.groups[element.groupId].name }}
                     onChange={handleFieldGroupChange}
-                    options={groups.map((group) => ({ value: group, label: data.groups[group].name }))}
+                    options={Object.keys(data.groups).map((group) => ({
+                      value: element.groupId,
+                      label: data.groups[element.groupId].name,
+                    }))}
                     className="React"
                     classNamePrefix="select"
                     placeholder={"Select an option"}

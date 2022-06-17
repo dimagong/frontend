@@ -6,7 +6,7 @@ import FieldStyles from "./Components/FieldStyles";
 
 import { EDIT_OPTIONS } from "../../../../constants";
 
-const FieldEdit = ({ element, onElementChange, editProperty, organization, groups, data, onFieldGroupChange }) => {
+const FieldEdit = ({ element, onElementChange, editProperty, organization, data, onFieldGroupChange }) => {
   const commonProps = {
     element,
     onElementChange,
@@ -17,7 +17,6 @@ const FieldEdit = ({ element, onElementChange, editProperty, organization, group
       <FieldProperties
         {...commonProps}
         organization={organization}
-        groups={groups}
         data={data}
         onFieldGroupChange={onFieldGroupChange}
       />
