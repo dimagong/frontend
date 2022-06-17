@@ -28,6 +28,7 @@ const SectionsComponent = ({ data, selectedSection, onElementClick, onGroupCreat
             </div>
           ) : (
             <Groups
+              sectionId={section.id}
               data={data}
               sectionGroups={section.relatedGroups}
               onElementClick={onElementClick}

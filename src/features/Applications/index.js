@@ -115,12 +115,39 @@ const Applications = ({ isConfigurable }) => {
   const [elementWithSuggestedChanges, setElementWithSuggestedChanges] = useState(null);
   const [dataWithSuggestedChanges, setDataWithSuggestedChanges] = useState(cloneDeep(fakeReduxData));
 
+  const getElementCollectionName = (element) => {
+    let elementCollectionName;
+
+    switch (true) {
+      case element.hasOwnProperty("relatedGroups"):
+        elementCollectionName = "sections";
+        break;
+      case element.hasOwnProperty("relatedFields"):
+        elementCollectionName = "groups";
+        break;
+      default:
+        elementCollectionName = "fields";
+        break;
+    }
+
+    return elementCollectionName;
+  };
+
   const handleSelectElementForEdit = (element, elementType) => {
-    console.log(element);
+    if (elementWithSuggestedChanges?.edited) {
+      if (!window.confirm(`Are you sure you want to select another element for edit without saving?`)) {
+        return;
+      }
+    }
     //TODO update local state with data from redux
     setDataWithSuggestedChanges(fakeReduxData);
 
-    setElementWithSuggestedChanges({ ...element, elementType });
+    // We take element from "backend" data, but also spread element that we receive
+    // to save some system information that we pass to element in onClick handler such as groupId or sectionId, etc.
+    const collectionName = getElementCollectionName(element);
+    const selectedElement = { ...element, ...fakeReduxData[collectionName][element.id] };
+
+    setElementWithSuggestedChanges({ ...selectedElement, elementType });
     setIsModuleEditComponentVisible(true);
   };
 
@@ -155,7 +182,7 @@ const Applications = ({ isConfigurable }) => {
 
   const handleGroupCreate = (sectionId) => {
     const groupName = getUniqNameForCollection("groups", "Group");
-    console.log("group create");
+
     const newGroupData = {
       ...INITIAL_GROUP_DATA,
       id: groupName,
@@ -190,24 +217,6 @@ const Applications = ({ isConfigurable }) => {
     setFakeReduxData(dataToSave);
   };
 
-  const getElementCollectionName = (element) => {
-    let elementCollectionName;
-
-    switch (true) {
-      case element.hasOwnProperty("relatedGroups"):
-        elementCollectionName = "sections";
-        break;
-      case element.hasOwnProperty("relatedFields"):
-        elementCollectionName = "groups";
-        break;
-      default:
-        elementCollectionName = "fields";
-        break;
-    }
-
-    return elementCollectionName;
-  };
-
   // While we aim for using old API and redux that handle it, we can't save parts of data separately
   // so we need to embed our new changes to the rest of data before save
   const embedSuggestedChanges = (element = elementWithSuggestedChanges, isNewElement) => {
@@ -224,7 +233,7 @@ const Applications = ({ isConfigurable }) => {
         [id]: element,
       };
     } else {
-      dataClone[collectionName][id] = element;
+      dataClone[collectionName][id] = { ...element, edited: false };
     }
 
     return dataClone;
@@ -331,19 +340,38 @@ const Applications = ({ isConfigurable }) => {
     return { isElementValid: true };
   };
 
-  const handleFieldGroupChange = (fieldId, oldGroupId, newGroupId) => {
-    if (oldGroupId === newGroupId) return;
+  const handleElementParentChange = (
+    elementId,
+    oldParentId,
+    newParentId,
+    parentCollection,
+    elementIdList,
+    elementParentIdName
+  ) => {
+    if (oldParentId === newParentId) return;
 
     const dataClone = cloneDeep(dataWithSuggestedChanges);
 
-    dataClone.groups[oldGroupId].relatedFields = removeItemFormArrayByValue(
-      dataClone.groups[oldGroupId].relatedFields,
-      fieldId
+    dataClone[parentCollection][oldParentId][elementIdList] = removeItemFormArrayByValue(
+      dataClone[parentCollection][oldParentId][elementIdList],
+      elementId
     );
-    dataClone.groups[newGroupId].relatedFields.push(fieldId);
+    dataClone[parentCollection][newParentId][elementIdList].push(elementId);
 
-    setElementWithSuggestedChanges({ ...elementWithSuggestedChanges, groupId: newGroupId });
     setDataWithSuggestedChanges(dataClone);
+    setElementWithSuggestedChanges({
+      ...elementWithSuggestedChanges,
+      [elementParentIdName]: newParentId,
+      edited: true,
+    });
+  };
+
+  const handleFieldGroupChange = (fieldId, oldGroupId, newGroupId) => {
+    handleElementParentChange(fieldId, oldGroupId, newGroupId, "groups", "relatedFields", "groupId");
+  };
+
+  const handleGroupSectionChange = (groupId, oldSectionId, newSectionId) => {
+    handleElementParentChange(groupId, oldSectionId, newSectionId, "sections", "relatedGroups", "sectionId");
   };
 
   // On save extracts all necessary props from field object. Prevent from saving properties that are specific
@@ -394,7 +422,7 @@ const Applications = ({ isConfigurable }) => {
   };
 
   const handleElementChange = (elementData) => {
-    setElementWithSuggestedChanges(elementData);
+    setElementWithSuggestedChanges({ ...elementData, edited: true });
   };
 
   useEffect(() => {
@@ -440,6 +468,7 @@ const Applications = ({ isConfigurable }) => {
             onElementChangesCancel={handleElementChangesCancel}
             organization={dataWithSuggestedChanges.organization}
             onFieldGroupChange={handleFieldGroupChange}
+            onGroupSectionChange={handleGroupSectionChange}
           />
         </ContextFeatureTemplate>
       )}

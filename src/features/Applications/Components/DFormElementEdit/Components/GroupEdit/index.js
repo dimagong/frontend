@@ -1,22 +1,23 @@
-import React from 'react';
+import React from "react";
 
-import {EDIT_OPTIONS} from "../../../../constants";
+import { EDIT_OPTIONS } from "../../../../constants";
 
 import GroupDynamicRendering from "./Components/GroupDynamicRendering";
 import GroupStyles from "./Components/GroupStyles";
 import GroupProperties from "./Components/GroupProperties";
 
-const GroupEdit = ({ element, onElementChange, editProperty}) => {
-
+const GroupEdit = ({ element, onElementChange, editProperty, onGroupSectionChange, data }) => {
   const commonProps = {
     element,
     onElementChange,
   };
 
   return {
-    [EDIT_OPTIONS.properties]: <GroupProperties {...commonProps} />,
+    [EDIT_OPTIONS.properties]: (
+      <GroupProperties {...commonProps} onGroupSectionChange={onGroupSectionChange} data={data} />
+    ),
     [EDIT_OPTIONS.styling]: <GroupStyles {...commonProps} />,
-    [EDIT_OPTIONS.dynamicRendering]: <GroupDynamicRendering {...commonProps} />
+    [EDIT_OPTIONS.dynamicRendering]: <GroupDynamicRendering {...commonProps} />,
   }[editProperty];
 };
 

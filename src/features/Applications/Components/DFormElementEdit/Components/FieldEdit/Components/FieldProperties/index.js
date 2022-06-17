@@ -483,9 +483,9 @@ const FieldProperties = ({ element, onElementChange, organization, data, onField
                     name="colors"
                     value={{ value: element.groupId, label: data.groups[element.groupId].name }}
                     onChange={handleFieldGroupChange}
-                    options={Object.keys(data.groups).map((group) => ({
-                      value: element.groupId,
-                      label: data.groups[element.groupId].name,
+                    options={Object.values(data.groups).map((group) => ({
+                      value: group.id,
+                      label: group.name,
                     }))}
                     className="React"
                     classNamePrefix="select"

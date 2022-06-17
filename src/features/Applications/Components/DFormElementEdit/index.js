@@ -19,6 +19,7 @@ const DFormElementEdit = ({
   organization,
   onElementDelete,
   onFieldGroupChange,
+  onGroupSectionChange,
 }) => {
   const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS.properties);
 
@@ -39,7 +40,7 @@ const DFormElementEdit = ({
         <div className={"pb-2"}>
           {
             {
-              group: <GroupEdit {...commonProps} />,
+              group: <GroupEdit {...commonProps} onGroupSectionChange={onGroupSectionChange} />,
               section: <SectionEdit {...commonProps} />,
               field: <FieldEdit {...commonProps} organization={organization} onFieldGroupChange={onFieldGroupChange} />,
             }[element.elementType]

@@ -6,12 +6,16 @@ import Fields from "../Fields";
 
 import "./styles.scss";
 
-const Groups = ({ data, sectionGroups, onElementClick, onGroupCreate, onFieldCreate }) => {
+const Groups = ({ data, sectionGroups, onElementClick, onGroupCreate, onFieldCreate, sectionId }) => {
+  const handleGroupSelect = (sectionGroup) => {
+    onElementClick({ ...data.groups[sectionGroup], sectionId }, "group");
+  };
+
   return (
     <div>
       {sectionGroups.map((sectionGroup) => (
         <div className="group" key={sectionGroup}>
-          <div className="group-title editable" onClick={(e) => onElementClick(data.groups[sectionGroup], "group")}>
+          <div className="group-title editable" onClick={() => handleGroupSelect(sectionGroup)}>
             <span className="text-bold-500">{data.groups[sectionGroup].name}</span>
           </div>
           <div className="group-content row mr-0 ml-0">
