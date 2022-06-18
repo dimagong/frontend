@@ -282,7 +282,11 @@ const FieldProperties = ({ element, onElementChange, organization, data, onField
             <Row>
               <Col md="12">
                 {labelForControls}
-                <Row>{renderRequiredAndLabelShowCheckboxes()}</Row>
+                <Row>
+                  <Col md="12">
+                    <FormGroup>{renderRequiredColumn(objKey)}</FormGroup>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           );
