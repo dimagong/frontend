@@ -80,6 +80,7 @@ export const FIELD_INITIAL_SPECIFIC_PROPERTIES = {
 };
 
 export const FIELD_STYLES_CLASSES = ["col-md-6", "col-md-12"];
+export const MULTI_SELECT_UI_STYLES = ["default", "checkboxes"];
 
 export const FIELDS_NOT_RELATED_TO_MASTER_SCHEMA = [FIELD_TYPES.helpText];
 
@@ -96,7 +97,7 @@ export const FIELD_SPECIFIC_UI_STYLE_PROPERTIES = {
   [FIELD_TYPES.resource]: {},
   [FIELD_TYPES.helpText]: {},
   [FIELD_TYPES.multiSelect]: {
-    uiStyle: "default",
+    uiStyle: MULTI_SELECT_UI_STYLES[0],
   },
 };
 
@@ -114,7 +115,10 @@ export const FIELD_COMMON_PROPERTIES = [...Object.keys(INITIAL_FIELD_DATA), "id"
 // get specific properties and convert it to object where key is field type and value is an array of properties names
 export const FIELD_SPECIFIC_PROPERTIES = Object.keys(FIELD_INITIAL_SPECIFIC_PROPERTIES).reduce(
   (propertiesObject, property) => {
-    propertiesObject[property] = Object.keys(FIELD_INITIAL_SPECIFIC_PROPERTIES[property]);
+    propertiesObject[property] = [
+      ...Object.keys(FIELD_INITIAL_SPECIFIC_PROPERTIES[property]),
+      Object.keys(FIELD_SPECIFIC_UI_STYLE_PROPERTIES[property]),
+    ];
 
     return propertiesObject;
   },

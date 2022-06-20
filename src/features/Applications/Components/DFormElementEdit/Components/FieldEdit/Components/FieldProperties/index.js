@@ -149,6 +149,33 @@ const FieldProperties = ({ element, onElementChange, organization, data, onField
       );
     };
 
+    const renderOptionsEdit = () => {
+      return (
+        <Col>
+          {["Test", "More test"].map((enumInput, index) => {
+            return (
+              <div className="row" key={index}>
+                <div className="col-md-10 form-group">
+                  <input id={`${index}-`} value={enumInput} type="text" onChange={() => {}} className="form-control" />
+                </div>
+
+                <div className="col-md-2 form-group">
+                  <button type="submit" onClick={() => {}} className="btn btn-danger">
+                    X
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+          <div className="text-center">
+            <button type="submit" onClick={() => {}} className="btn btn-primary">
+              Add
+            </button>
+          </div>
+        </Col>
+      );
+    };
+
     const renderSelectColumn = (column, label, values) => {
       // return (
       //   <select id={`${index}-${column}`} className="form-control" value={null} onChange={() => {}}>
@@ -360,90 +387,24 @@ const FieldProperties = ({ element, onElementChange, organization, data, onField
               <Col md="12">
                 {labelForControls}
                 <Row>
-                  <Col>
-                    {["Test", "More test"].map((enumInput, index) => {
-                      return (
-                        <div className="row" key={index}>
-                          <div className="col-md-10 form-group">
-                            <input
-                              id={`${index}-`}
-                              value={enumInput}
-                              type="text"
-                              onChange={() => {}}
-                              className="form-control"
-                            />
-                          </div>
-
-                          <div className="col-md-2 form-group">
-                            <button type="submit" onClick={() => {}} className="btn btn-danger">
-                              X
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    <div className="text-center">
-                      <button type="submit" onClick={() => {}} className="btn btn-primary">
-                        Add
-                      </button>
-                    </div>
-                  </Col>
+                  {renderOptionsEdit()}
                   {renderRequiredAndLabelShowCheckboxes()}
                 </Row>
               </Col>
             </Row>
           );
         }
-        // case Constants.FIELD_TYPE_MULTI_SELECT: {
-        //   return (<div>
-        //     <div className="row" key={index}>
-        //       <Col md="12">
-        //         {labelForControls}
-        //       </Col>
-        //
-        //       <div className="col-md-12 form-group">
-        //         {renderLabel('uischema-multiselect-checkboxes', 'UI style')}
-        //         <select id="uischema-multiselect-checkboxes" className="form-control"
-        //                 value={this.getUiSchemaTemplateMultiselect(objKey)}
-        //                 onChange={(event) => this.changeUiSchemaTemplateMultiselect(event)}>
-        //           <option>default</option>
-        //           <option>checkboxes</option>
-        //         </select>
-        //       </div>
-        //       <div className="col-md-12">
-        //         {schemaPropertyEdit.items.anyOf.map((multiSelectObj, index) => {
-        //           return (
-        //             <div className="row" key={index}>
-        //               <div className="col-md-10 form-group">
-        //                 <input
-        //                   id={`${index}-`}
-        //                   value={multiSelectObj.title}
-        //                   type="text"
-        //                   onChange={event => this.setMultiSelectTitleAndValue(event, objKey, index)}
-        //                   className="form-control"/>
-        //               </div>
-        //               <div className="col-md-2 form-group">
-        //                 <button type="submit"
-        //                         onClick={event => this.removeMultiSelectValues(event, objKey, index)}
-        //                         className="btn btn-danger">X
-        //                 </button>
-        //               </div>
-        //
-        //             </div>
-        //           );
-        //         })}
-        //         <div className="text-center">
-        //           <button type="submit"
-        //                   onClick={event => this.addMultiSelectValues(event, objKey, index)}
-        //                   className="btn btn-primary">Add
-        //           </button>
-        //         </div>
-        //       </div>
-        //
-        //       {renderRequiredAndLabelShowCheckboxes()}
-        //     </div>
-        //   </div>)
-        // }
+        case Constants.FIELD_TYPE_MULTI_SELECT: {
+          return (
+            <div>
+              <div className="row" key={index}>
+                <Col md="12">{labelForControls}</Col>
+                {renderOptionsEdit()}
+                {renderRequiredAndLabelShowCheckboxes()}
+              </div>
+            </div>
+          );
+        }
         case FIELD_TYPES.helpText: {
           return (
             <div>
