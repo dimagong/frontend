@@ -11,6 +11,7 @@ import {
   FIELD_INITIAL_SPECIFIC_PROPERTIES,
   FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
   FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
+  DATE_WIDGET_FORMATS,
 } from "../../../../../../constants";
 
 import _ from "lodash";
@@ -148,13 +149,31 @@ const FieldProperties = ({ element, onElementChange, organization, data, onField
       );
     };
 
-    const renderSelectColumn = (column, values) => {
+    const renderSelectColumn = (column, label, values) => {
+      // return (
+      //   <select id={`${index}-${column}`} className="form-control" value={null} onChange={() => {}}>
+      //     {values.map((type, indexType) => (
+      //       <option key={indexType}>{type}</option>
+      //     ))}
+      //   </select>
+      // );
       return (
-        <select id={`${index}-${column}`} className="form-control" value={null} onChange={() => {}}>
-          {values.map((type, indexType) => (
-            <option key={indexType}>{type}</option>
-          ))}
-        </select>
+        <Col md={12} className={"custom-react-select mb-2 w-100"}>
+          <FieldLabel label={label} />
+          <Select
+            maxMenuHeight={175}
+            isDisabled={false}
+            styles={colourStyles}
+            isMulti={false}
+            name="colors"
+            value={{ value: element[column], label: element[column] }}
+            onChange={(value) => handleChange(column, value.value)}
+            options={values.map((value) => ({ value: value, label: value }))}
+            className="React"
+            classNamePrefix="select"
+            placeholder={"Select an option"}
+          />
+        </Col>
       );
     };
 
@@ -328,8 +347,8 @@ const FieldProperties = ({ element, onElementChange, organization, data, onField
               <Col md="12">
                 {labelForControls}
                 <Row>
-                  {renderLabel("format", "Format")}
-                  {renderSelectColumn("format", ["date", "date-time"])}
+                  {/*{renderLabel("format", "Format")}*/}
+                  {renderSelectColumn("format", "Format", DATE_WIDGET_FORMATS)}
                 </Row>
               </Col>
             </Row>

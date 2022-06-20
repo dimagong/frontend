@@ -106,6 +106,7 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
             onClick={() => onElementClick({ ...field, groupId: group }, "field")}
           >
             <FormFieldElement
+              {...field}
               fieldId={field.id}
               isRequired={field.isRequired}
               key={field.id}

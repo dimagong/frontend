@@ -39,13 +39,15 @@ export const FIELD_TYPES = {
   multiSelect: "multiSelect",
 };
 
+export const DATE_WIDGET_FORMATS = ["date", "date-time"];
+
 export const FIELD_INITIAL_SPECIFIC_PROPERTIES = {
   [FIELD_TYPES.text]: {
     minLength: undefined,
     maxLength: undefined,
   },
   [FIELD_TYPES.date]: {
-    format: "date",
+    format: DATE_WIDGET_FORMATS[0],
   },
   [FIELD_TYPES.file]: {},
   [FIELD_TYPES.select]: {
