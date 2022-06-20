@@ -3,10 +3,11 @@ import TextArea from "./Components/TextArea";
 import Select from "./Components/Select";
 import LongText from "./Components/LongText";
 import CheckboxWidget from "./Components/Boolean";
+import NumberWidget from "./Components/Number";
 
 import { FIELD_TYPES } from "features/Applications/constants";
 
-const { text, textArea, select, longText, boolean } = FIELD_TYPES;
+const { text, textArea, select, longText, boolean, number } = FIELD_TYPES;
 
 export default {
   [text]: Text,
@@ -14,4 +15,5 @@ export default {
   [select]: Select,
   [longText]: LongText,
   [boolean]: CheckboxWidget,
+  [number]: NumberWidget,
 };

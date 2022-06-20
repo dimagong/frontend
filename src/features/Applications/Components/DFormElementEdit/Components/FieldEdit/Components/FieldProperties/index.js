@@ -248,8 +248,8 @@ const FieldProperties = ({ element, onElementChange, organization, data, onField
               <Col md="12">
                 {labelForControls}
                 <Row>
-                  {renderNumberColumn("minimum", "Min Length")}
-                  {renderNumberColumn("maximum", "Max Length")}
+                  {renderNumberColumn("minimum", "Minimum")}
+                  {renderNumberColumn("maximum", "Maximum")}
 
                   {renderRequiredAndLabelShowCheckboxes()}
                 </Row>
