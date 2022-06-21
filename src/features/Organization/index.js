@@ -69,14 +69,14 @@ const Organization = ({ create = false }) => {
     [organizations, selectedType, selectedId]
   );
 
-  const organizationQueryArg = { organizationId: organization.id, organizationType: organization.type };
+  const organizationQueryArg = { organizationId: organization?.id, organizationType: organization?.type };
 
   const logoQuery = useOrganizationLogoQuery(organizationQueryArg, {
-    enabled: Boolean(organization.logo?.id),
+    enabled: Boolean(organization?.logo?.id),
     onSuccess: ({ file }) => setLogoField(file),
   });
   const brochureQuery = useOrganizationBrochureQuery(organizationQueryArg, {
-    enabled: Boolean(organization.brochure?.id),
+    enabled: Boolean(organization?.brochure?.id),
     onSuccess: ({ file }) => setBrochureField(file),
   });
 
