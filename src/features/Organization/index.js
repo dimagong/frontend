@@ -14,6 +14,11 @@ import Editor from "components/FormCreate/Custom/WysiwygEditor";
 import { selectOrganizations, selectSelectedOrganizationIdAndType } from "app/selectors/groupSelector";
 import { useOrganizationLogoQuery, useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 
+import ContextTemplate from "../../components/ContextTemplate";
+import ContextFeatureTemplate from "../../components/ContextFeatureTemplate";
+
+import WelcomePageComponent from "../onboarding/components/WeclomePage";
+
 const { createOrganizationRequest, updateOrganizationRequest } = appSlice.actions;
 
 const getOrganizationData = (organization) => ({
@@ -148,97 +153,111 @@ const Organization = ({ create = false }) => {
   }, [create]);
 
   return (
-    <Row>
-      <Col sm={6} className={"organization-form"}>
-        <h1>Organizations</h1>
-        <div className={"field"}>
-          <div className={"label"}>
-            <label htmlFor="title">Title</label>
-          </div>
-          <div className={"form-element"}>
-            <input
-              type="text"
-              name={"title"}
-              id={"title"}
-              className={"text-input"}
-              value={organizationData.name || ""}
-              disabled={isFilesLoading || isLoading}
-              onChange={(e) => setOrganizationField("name", e.target.value)}
-            />
-          </div>
-        </div>
-        <div className={"field"}>
-          <div className={"label"}>
-            <label htmlFor="title">Intro title</label>
-          </div>
-          <div className={"form-element"}>
-            <input
-              type="text"
-              name={"intro-title"}
-              id={"intro-title"}
-              className={"text-input"}
-              value={organizationData.intro_title || ""}
-              disabled={isFilesLoading || isLoading}
-              onChange={(e) => setOrganizationField("intro_title", e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="field">
-          <div className="label">Logo</div>
-          <div className="form-element">
-            <FileInput
-              value={organizationData.logo.file}
-              preview={organizationData.logo.url}
-              onChange={setLogoField}
-              loading={isFilesLoading || isLoading || logoQuery.isLoading}
-              disabled={isFilesLoading || isLoading || logoQuery.isLoading}
-              accept="image/png, image/jpeg"
-            />
-          </div>
-        </div>
-        <div className="field">
-          <div className="label">Intro Text</div>
-          <div className="form-element">
-            <div className="editor-wrapper">
-              <Editor
-                id={`editor`}
-                orgPage
-                disabled={isLoading}
-                type={"text"}
-                orgId={create ? "create" : organizationData.name + organizationData.id}
-                data={organizationData.intro_text || ""}
-                onChange={({ rich, raw }) => setOrganizationField("intro_text", raw === "" ? "" : rich)}
-              />
+    <div className={"d-flex"}>
+      <ContextTemplate contextTitle={"Organization"}>
+        <Row>
+          <Col md={12} className={"organization-form"}>
+            <div className={"field"}>
+              <div className={"label"}>
+                <label htmlFor="title">Title</label>
+              </div>
+              <div className={"form-element"}>
+                <input
+                  type="text"
+                  name={"title"}
+                  id={"title"}
+                  className={"text-input"}
+                  value={organizationData.name || ""}
+                  disabled={isFilesLoading || isLoading}
+                  onChange={(e) => setOrganizationField("name", e.target.value)}
+                />
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="field">
-          <div className="label">Brochure</div>
-          <div className="form-element">
-            <FileInput
-              value={organizationData.brochure.file}
-              onChange={setBrochureField}
-              loading={isFilesLoading || isLoading || brochureQuery.isLoading}
-              disabled={isFilesLoading || isLoading || brochureQuery.isLoading}
-              accept="application/pdf"
-            />
-          </div>
-        </div>
-        <div className="field">
-          <div className="label" />
-          <div className="form-element d-flex justify-content-end">
-            <Button
-              disabled={isFilesLoading || isLoading}
-              onClick={handleSubmit}
-              className={"organization-form_submit-button"}
-              color="primary"
-            >
-              {create ? "Save new organization" : "Save"}
-            </Button>
-          </div>
-        </div>
-      </Col>
-    </Row>
+            <div className={"field"}>
+              <div className={"label"}>
+                <label htmlFor="title">Intro title</label>
+              </div>
+              <div className={"form-element"}>
+                <input
+                  type="text"
+                  name={"intro-title"}
+                  id={"intro-title"}
+                  className={"text-input"}
+                  value={organizationData.intro_title || ""}
+                  disabled={isFilesLoading || isLoading}
+                  onChange={(e) => setOrganizationField("intro_title", e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="field">
+              <div className="label">Logo</div>
+              <div className="form-element">
+                <FileInput
+                  value={organizationData.logo.file}
+                  preview={organizationData.logo.url}
+                  onChange={setLogoField}
+                  loading={isFilesLoading || isLoading || logoQuery.isLoading}
+                  disabled={isFilesLoading || isLoading || logoQuery.isLoading}
+                  accept="image/png, image/jpeg"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <div className="label">Intro Text</div>
+              <div className="form-element">
+                <div className="editor-wrapper">
+                  <Editor
+                    id={`editor`}
+                    orgPage
+                    disabled={isLoading}
+                    type={"text"}
+                    orgId={create ? "create" : organizationData.name + organizationData.id}
+                    data={organizationData.intro_text || ""}
+                    onChange={({ rich, raw }) => setOrganizationField("intro_text", raw === "" ? "" : rich)}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="field">
+              <div className="label">Brochure</div>
+              <div className="form-element">
+                <FileInput
+                  value={organizationData.brochure.file}
+                  onChange={setBrochureField}
+                  loading={isFilesLoading || isLoading || brochureQuery.isLoading}
+                  disabled={isFilesLoading || isLoading || brochureQuery.isLoading}
+                  accept="application/pdf"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <div className="label" />
+              <div className="form-element d-flex justify-content-end">
+                <Button
+                  disabled={isFilesLoading || isLoading}
+                  onClick={handleSubmit}
+                  className={"organization-form_submit-button"}
+                  color="primary"
+                >
+                  {create ? "Save new organization" : "Save"}
+                </Button>
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </ContextTemplate>
+      <ContextFeatureTemplate contextFeatureTitle="Intro page preview">
+        <WelcomePageComponent
+          onSubmit={() => {}}
+          introText={organizationData.intro_text}
+          introTitle={organizationData.intro_title}
+          isOnboardingExist={true}
+          brochureUrl={organizationData.brochure.url}
+          brochureName={organizationData.brochure?.file?.name}
+          organization={organizationData}
+        />
+      </ContextFeatureTemplate>
+    </div>
   );
 };
 
