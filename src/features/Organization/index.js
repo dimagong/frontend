@@ -34,8 +34,8 @@ const getOrganizationData = (organization) => ({
 const ORGANIZATION_TEMPLATE = getOrganizationData({
   type: "network",
   name: "",
-  intro_title: "",
-  intro_text: "",
+  intro_title: "Title sample",
+  intro_text: "<p>Sample intro text</p>",
 });
 
 const organizationValidation = yup.object().shape({
@@ -212,7 +212,7 @@ const Organization = ({ create = false }) => {
                     disabled={isLoading}
                     type={"text"}
                     orgId={create ? "create" : organizationData.name + organizationData.id}
-                    data={organizationData.intro_text || ""}
+                    data={create ? ORGANIZATION_TEMPLATE.intro_text : organizationData.intro_text || ""}
                     onChange={({ rich, raw }) => setOrganizationField("intro_text", raw === "" ? "" : rich)}
                   />
                 </div>
