@@ -230,11 +230,6 @@ function* getUserById({ payload }) {
   try {
     const response = yield call(userApi.getUserById, payload);
     yield put(getUserByIdSuccess(response));
-    yield put(updateActivitiesRequest({ managerId: payload.userId, page: 1 }));
-    // Refresh active master schema hierarchy because it contains user data
-    queryClient.invalidateQueries(MasterSchemaHierarchyQueryKeys.all());
-    // ToDo: do not forget to refactor it in UserEditContextFeature.js
-    queryClient.invalidateQueries(UserNotifyEntitiesQueryKeys.all(payload.userId));
   } catch (error) {
     console.log(error);
     yield put(getUserByIdError(error));
@@ -248,8 +243,6 @@ function* updateUser({ payload }) {
     yield put(updateActivitiesRequest({ managerId: payload.id, page: 1 }));
     // Refresh active master schema hierarchy because it contains user data
     queryClient.invalidateQueries(MasterSchemaHierarchyQueryKeys.all());
-    // ToDo: do not forget to refactor it in UserEditContextFeature.js
-    queryClient.invalidateQueries(UserNotifyEntitiesQueryKeys.all(payload.id));
   } catch (error) {
     yield put(updateUserError(error));
   }

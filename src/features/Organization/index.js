@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
 
 import appSlice from "app/slices/appSlice";
-import { selectLoading } from "app/selectors";
 import { readBlobAsDataURL } from "utility/file";
 import FileInput from "components/formElements/FileInput";
 import IntroPageForm from "./Components/IntroPageForm";
@@ -18,8 +17,6 @@ import ContextTemplate from "../../components/ContextTemplate";
 import ContextFeatureTemplate from "../../components/ContextFeatureTemplate";
 
 import WelcomePageComponent from "../onboarding/components/WeclomePage";
-import { useQuery } from "react-query";
-import { clientAPI } from "../../api/clientAPI";
 import Select, { components } from "react-select";
 import { ChevronDown, Plus } from "react-feather";
 import { useGenericMutation } from "../../api/useGenericMutation";
