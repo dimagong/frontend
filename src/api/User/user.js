@@ -323,7 +323,6 @@ const userApi = {
       last_name: data.last_name,
       email: data.email,
       number: data.number,
-      notify: data.notify,
     };
 
     try {

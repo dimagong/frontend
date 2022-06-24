@@ -31,7 +31,7 @@ export const useOrganizationLogoQuery = ({ organizationType, organizationId }, o
 export const useOrganizationBrochureQuery = ({ introPageId }, options) => {
   return useFileQuery(
     {
-      url: `organization-intro/${introPageId}/brochure`,
+      url: `api/files/organization-intro/${introPageId}/brochure`,
       queryKey: OrganizationFileQueryKeys.brochure(introPageId),
     },
     options
