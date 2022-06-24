@@ -11,7 +11,12 @@ const WelcomePageComponent = ({
   organizationName,
   introText,
   introTitle,
+  preview,
 }) => {
+  if (preview && (!introText || !introTitle)) {
+    return <div>Please enter all intro page info to see preview</div>;
+  }
+
   return (
     <div className={"welcome-onboarding"}>
       <div>
