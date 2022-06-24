@@ -2,6 +2,8 @@ import React from "react";
 import { Button, Col, Row } from "reactstrap";
 import Editor from "../../../../components/FormCreate/Custom/WysiwygEditor";
 import FileInput from "../../../../components/formElements/FileInput";
+import { Check } from "react-feather";
+import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy";
 
 const IntroPageForm = ({
   data,
@@ -26,7 +28,6 @@ const IntroPageForm = ({
               id={"intro-title"}
               className={"text-input"}
               value={data.intro_title || ""}
-              // disabled={isFilesLoading || isLoading}
               onChange={(e) => onFieldChange("intro_title", e.target.value)}
             />
           </div>
@@ -38,7 +39,6 @@ const IntroPageForm = ({
               <Editor
                 id={`editor`}
                 orgPage
-                // disabled={isLoading}
                 type={"text"}
                 orgId={data.id}
                 data={data.intro_text || ""}
@@ -52,10 +52,22 @@ const IntroPageForm = ({
           <div className="form-element">
             <FileInput
               value={data.brochure.file}
-              onChange={(file) => onFieldChange("brochure", { file: file, url: null })}
+              onChange={(file) => onFieldChange("brochure", file)}
               loading={isBrochureLoading}
               disabled={isBrochureLoading}
               accept="application/pdf"
+            />
+          </div>
+        </div>
+        <div className="field">
+          <div className="label">Default</div>
+          <div className="form-element">
+            <Checkbox
+              color="primary"
+              icon={<Check className="vx-icon" size={16} />}
+              label="Default organization intro page"
+              onChange={({ target }) => onFieldChange("is_default", target.checked)}
+              checked={data.is_default}
             />
           </div>
         </div>

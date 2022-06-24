@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import { Row, Col, Button } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 
 import appSlice from "app/slices/appSlice";
 import { selectLoading } from "app/selectors";
@@ -21,11 +21,10 @@ import WelcomePageComponent from "../onboarding/components/WeclomePage";
 import { useQuery } from "react-query";
 import { clientAPI } from "../../api/clientAPI";
 import Select, { components } from "react-select";
-import { prepareSelectReviewers } from "../../utility/select/prepareSelectData";
 import { ChevronDown, Plus } from "react-feather";
 import { useGenericMutation } from "../../api/useGenericMutation";
-import { authDTO } from "../../api/Auth/authDTO";
-import { loginWithSecretCodeQueryKeys } from "../../api/Auth/authQuery";
+import { createQueryKey } from "../../api/createQueryKey";
+import { useGenericQuery } from "../../api/useGenericQuery";
 
 const { createOrganizationRequest, updateOrganizationRequest } = appSlice.actions;
 
@@ -68,10 +67,7 @@ const getOrganizationData = (organization) => ({
   id: organization.id,
   type: organization.type,
   name: organization.name,
-  intro_title: organization.intro_title,
-  intro_text: organization.intro_text,
   logo: { file: null, url: null },
-  brochure: { file: null, url: null },
 });
 
 const ORGANIZATION_TEMPLATE = getOrganizationData({
@@ -80,6 +76,7 @@ const ORGANIZATION_TEMPLATE = getOrganizationData({
 });
 
 const INTRO_PAGE_TEMPLATE = {
+  is_default: false,
   intro_title: "Title example",
   intro_text: "Intro text example",
   brochure: { file: null, url: null },
@@ -89,36 +86,48 @@ const INTRO_PAGE_TEMPLATE = {
 const organizationValidation = yup.object().shape({
   type: yup.string().required("Corporation type is required. Please contact tech support if you see this message"),
   name: yup.string().required("Name is required"),
-  // intro_text: yup.string().required("Intro text is required"),
-  // intro_title: yup.string().required("Intro title is required"),
   logo: yup.object().shape({
     url: yup.string().nullable().required("Logo is required"),
     file: yup.mixed().nullable().required("Logo is required"),
   }),
-  // brochure: yup.object().shape({
-  //   url: yup.string().nullable().required("Brochure is required"),
-  //   file: yup.mixed().nullable().required("Brochure is required"),
-  // }),
+});
+
+const introPageValidation = yup.object().shape({
+  is_default: yup.boolean().required("Default is required"),
+  intro_text: yup.string().required("Intro text is required"),
+  intro_title: yup.string().required("Intro title is required"),
+  brochure: yup.object().shape({
+    url: yup.string().nullable().required("Brochure is required"),
+    file: yup.mixed().nullable().required("Brochure is required"),
+  }),
 });
 
 const filterOrganizationByTypeAndId = (organizations, type, id) => {
   return organizations.filter((organization) => organization.id === id && organization.type === type);
 };
 
-const useIntroPages = (organizationType, organizationId, options = {}) => {
-  return useQuery({
-    queryKey: ["intro-pages", organizationId],
-    queryFn: ({ signal }) => clientAPI.get(`api/organization/${organizationType}/${organizationId}/intro`, { signal }),
-    ...options,
-  });
+const IntroPageKey = createQueryKey("Intro page");
+
+const IntroPageKeys = {
+  all: (organizationId, organizationType) => [IntroPageKey, { organizationId, organizationType }],
 };
 
-const useIntroPageCreate = (type, id, options) => {
+export const useIntroPages = ({ organizationType, organizationId }, options) => {
+  return useGenericQuery(
+    {
+      queryKey: IntroPageKeys.all(organizationId, organizationType),
+      url: `api/organization/${organizationType}/${organizationId}/intro`,
+    },
+    options
+  );
+};
+
+export const useIntroPageCreate = ({ organizationType, organizationId }, options) => {
   return useGenericMutation(
     {
-      url: `/api/organization/${type}/${id}/intro`,
+      url: `/api/organization/${organizationType}/${organizationId}/intro`,
       method: "post",
-      queryKey: ["intro-page-create"],
+      queryKey: IntroPageKeys.all(organizationId, organizationType),
     },
     {
       ...options,
@@ -126,12 +135,12 @@ const useIntroPageCreate = (type, id, options) => {
   );
 };
 
-const useIntroPageUpdate = (type, id, introId, options) => {
+export const useIntroPageUpdate = ({ organizationType, organizationId, introPageId }, options) => {
   return useGenericMutation(
     {
-      url: `/api/organization/${type}/${id}/intro/${introId}`,
+      url: `/api/organization/${organizationType}/${organizationId}/intro/${introPageId}`,
       method: "post",
-      queryKey: ["intro-page-update"],
+      queryKey: IntroPageKeys.all(organizationId, organizationType),
     },
     {
       ...options,
@@ -142,16 +151,18 @@ const useIntroPageUpdate = (type, id, introId, options) => {
 const Organization = ({ create = false }) => {
   const dispatch = useDispatch();
 
-  const isLoading = useSelector(selectLoading);
   const organizations = useSelector(selectOrganizations);
   const { type: selectedType, id: selectedId } = useSelector(selectSelectedOrganizationIdAndType);
+
+  const organization = filterOrganizationByTypeAndId(organizations, selectedType, selectedId)[0];
+  const organizationQueryArg = { organizationId: organization?.id, organizationType: organization?.type };
 
   const [introPages, setIntroPages] = useState([]);
   const [selectedIntroPage, setSelectedIntroPage] = useState(null);
 
-  useIntroPages(selectedType, selectedId, {
-    enabled: Boolean(selectedType) && Boolean(selectedId),
+  useIntroPages(organizationQueryArg, {
     staleTime: Infinity,
+    enabled: !create && Boolean(selectedType) && Boolean(selectedId),
     onSuccess: (introPages) => {
       setIntroPages(introPages);
       if (introPages.length) {
@@ -162,44 +173,35 @@ const Organization = ({ create = false }) => {
     },
   });
 
-  const organization = useMemo(
-    () => filterOrganizationByTypeAndId(organizations, selectedType, selectedId)[0],
-    [organizations, selectedType, selectedId]
+  const createIntroPage = useIntroPageCreate(organizationQueryArg, {
+    onSuccess: () => toast.success("Intro page created successfully."),
+  });
+
+  const updateIntroPage = useIntroPageUpdate(
+    {
+      ...organizationQueryArg,
+      introPageId: selectedIntroPage?.id,
+    },
+    {
+      onSuccess: () => toast.success("Intro page saved successfully."),
+    }
   );
 
-  const createIntroPage = useIntroPageCreate(organization?.type, organization?.id, {
-    onSuccess: () => {},
-  });
-
-  const updateIntroPage = useIntroPageUpdate(organization?.type, organization?.id, selectedIntroPage?.id, {
-    onSuccess: () => {},
-  });
-
-  const organizationQueryArg = { organizationId: organization?.id, organizationType: organization?.type };
-
   const logoQuery = useOrganizationLogoQuery(organizationQueryArg, {
-    enabled: Boolean(organization?.logo?.id),
+    enabled: !create && Boolean(organization?.logo?.id),
     onSuccess: ({ file }) => setLogoField(file),
   });
-  const brochureQuery = useOrganizationBrochureQuery(organizationQueryArg, {
-    enabled: Boolean(selectedIntroPage?.brochure?.id),
-    onSuccess: ({ file }) => console.log(file),
-  });
+  const brochureQuery = useOrganizationBrochureQuery(
+    { introPageId: selectedIntroPage?.id },
+    {
+      enabled: !create && Boolean(selectedIntroPage?.id),
+      onSuccess: ({ file }) => setBrochureField(file),
+    }
+  );
 
-  const [isFilesLoading, setIsFilesLoading] = useState(false);
   const [organizationData, setOrganizationData] = useState(
     create ? ORGANIZATION_TEMPLATE : getOrganizationData(organization)
   );
-
-  const recoverRemovedFilesData = () => {
-    if (organizationData.logo.file === null) {
-      setLogoField(logoQuery.data.file);
-    }
-
-    if (organizationData.brochure.file === null) {
-      setBrochureField(brochureQuery.data.file);
-    }
-  };
 
   const setIntroPageField = (name, value) => setSelectedIntroPage((prev) => ({ ...prev, [name]: value }));
 
@@ -210,7 +212,9 @@ const Organization = ({ create = false }) => {
 
     if (!isValid) {
       // If some files was removed than recover them for better UX when form validation fails
-      recoverRemovedFilesData();
+      if (organizationData.logo.file === null) {
+        setLogoField(logoQuery.data.file);
+      }
       return;
     }
 
@@ -218,10 +222,7 @@ const Organization = ({ create = false }) => {
 
     formData.set("type", organizationData.type);
     formData.set("name", organizationData.name);
-    // formData.set("intro_title", organizationData.intro_title);
-    // formData.set("intro_text", organizationData.intro_text);
     formData.set("logo", organizationData.logo.file);
-    // formData.set("brochure", organizationData.brochure.file);
 
     if (create) {
       dispatch(createOrganizationRequest(formData));
@@ -244,7 +245,24 @@ const Organization = ({ create = false }) => {
 
   const setLogoField = (file) => setOrganizationFileField("logo", file);
 
-  const setBrochureField = (file) => setOrganizationFileField("brochure", file);
+  const setBrochureField = (file) => {
+    if (!file) {
+      setIntroPageField("brochure", { file: null, url: null });
+      return;
+    }
+
+    readBlobAsDataURL(file).then((url) => setIntroPageField("brochure", { file, url }));
+  };
+
+  const setIntroPagesFields = (name, value) => {
+    switch (name) {
+      case "brochure":
+        setBrochureField(value);
+        break;
+      default:
+        setIntroPageField(name, value);
+    }
+  };
 
   const initNewIntroPage = () => {
     if (selectedIntroPage && (selectedIntroPage.new || selectedIntroPage.edited)) {
@@ -254,21 +272,62 @@ const Organization = ({ create = false }) => {
     }
   };
 
-  const handleIntroPageSave = () => {};
+  const handleIntroPageSave = async () => {
+    const isValid = await introPageValidation.validate(selectedIntroPage).catch((err) => {
+      toast.error(err.message);
+    });
 
-  const handleIntroPageCreate = () => {};
+    if (!isValid) {
+      // If some files was removed than recover them for better UX when form validation fails
+      if (selectedIntroPage.brochure.file === null) {
+        setBrochureField(brochureQuery.data.file);
+      }
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.set("is_default", Number(selectedIntroPage.is_default));
+    formData.set("intro_title", selectedIntroPage.intro_title);
+    formData.set("intro_text", selectedIntroPage.intro_text);
+    formData.set("brochure", selectedIntroPage.brochure.file);
+    formData.set("_method", "PUT");
+
+    updateIntroPage.mutate(formData);
+  };
+
+  const handleIntroPageCreate = async () => {
+    const isValid = await introPageValidation.validate(selectedIntroPage).catch((err) => {
+      toast.error(err.message);
+    });
+
+    if (!isValid) {
+      // If some files was removed than recover them for better UX when form validation fails
+      if (selectedIntroPage.brochure.file === null) {
+        setBrochureField(brochureQuery.data.file);
+      }
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.set("is_default", Number(selectedIntroPage.is_default));
+    formData.set("intro_title", selectedIntroPage.intro_title);
+    formData.set("intro_text", selectedIntroPage.intro_text);
+    formData.set("brochure", selectedIntroPage.brochure.file);
+
+    createIntroPage.mutate(formData);
+  };
 
   useEffect(() => {
     if (!create) {
       setOrganizationData(getOrganizationData(organization));
-      setIsFilesLoading(false);
     }
   }, [selectedType, selectedId, create, organization]);
 
   useEffect(() => {
     if (create) {
       setOrganizationData(ORGANIZATION_TEMPLATE);
-      setIsFilesLoading(false);
     }
   }, [create]);
 
@@ -288,7 +347,6 @@ const Organization = ({ create = false }) => {
                   id={"title"}
                   className={"text-input"}
                   value={organizationData.name || ""}
-                  disabled={isFilesLoading || isLoading}
                   onChange={(e) => setOrganizationField("name", e.target.value)}
                 />
               </div>
@@ -300,8 +358,8 @@ const Organization = ({ create = false }) => {
                   value={organizationData.logo.file}
                   preview={organizationData.logo.url}
                   onChange={setLogoField}
-                  loading={isFilesLoading || isLoading || logoQuery.isLoading}
-                  disabled={isFilesLoading || isLoading || logoQuery.isLoading}
+                  loading={logoQuery.isLoading}
+                  disabled={logoQuery.isLoading}
                   accept="image/png, image/jpeg"
                 />
               </div>
@@ -310,7 +368,7 @@ const Organization = ({ create = false }) => {
               <div className="label" />
               <div className="form-element d-flex justify-content-end">
                 <Button
-                  disabled={isFilesLoading || isLoading}
+                  disabled={logoQuery.isLoading || brochureQuery.isLoading}
                   onClick={handleSubmit}
                   className={"organization-form_submit-button"}
                   color="primary"
@@ -321,7 +379,8 @@ const Organization = ({ create = false }) => {
             </div>
           </Col>
         </Row>
-        {!create && (
+
+        {!create ? (
           <>
             <div className="mt-3 mb-2 d-flex justify-content-between align-items-center">
               <h2>Intro pages</h2>
@@ -333,34 +392,30 @@ const Organization = ({ create = false }) => {
                     styles={selectStyles}
                     options={introPages.map((introPage) => ({ value: introPage, label: introPage.intro_title })) || []}
                     noOptionsMessage={() => "There are no created intro pages"}
-                    onChange={(value) => {
-                      setSelectedIntroPage(value.value);
-                    }}
+                    onChange={(option) => setSelectedIntroPage(option.value)}
                   />
                 </div>
-                <button
-                  onClick={() => {
-                    initNewIntroPage();
-                  }}
-                >
+                <button onClick={() => initNewIntroPage()}>
                   <Plus />
                 </button>
               </div>
             </div>
-            {selectedIntroPage && (
+
+            {selectedIntroPage ? (
               <IntroPageForm
                 data={selectedIntroPage}
-                isBrochureLoading={isFilesLoading || isLoading || brochureQuery.isLoading}
+                isBrochureLoading={brochureQuery.isLoading}
                 create={create}
-                onFieldChange={setIntroPageField}
+                onFieldChange={setIntroPagesFields}
                 onIntroPageSave={handleIntroPageSave}
                 onIntroPageCreate={handleIntroPageCreate}
               />
-            )}
+            ) : null}
           </>
-        )}
+        ) : null}
       </ContextTemplate>
-      {!create && selectedIntroPage && (
+
+      {!create && selectedIntroPage ? (
         <ContextFeatureTemplate contextFeatureTitle="Intro page preview">
           <WelcomePageComponent
             onSubmit={() => {}}
@@ -373,7 +428,7 @@ const Organization = ({ create = false }) => {
             preview
           />
         </ContextFeatureTemplate>
-      )}
+      ) : null}
     </div>
   );
 };
