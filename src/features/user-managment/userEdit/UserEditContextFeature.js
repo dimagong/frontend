@@ -48,7 +48,7 @@ const findUserNotifyEntity = (manager) => {
     return null;
   }
 
-  if (manager.notify_entries && manager.notify_entries.length < 1) {
+  if (manager.notify_entries.length === 0) {
     return null;
   }
 
@@ -143,11 +143,11 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
   const [notifyEntityOption, setNotifyEntityOption] = useState(null);
   const [notifyEntitiesOptions, setNotifyEntitiesOptions] = useState([]);
 
-  const UserNotifyEntitiesQuery = useUserNotifyEntitiesQuery(
+  const userNotifyEntitiesQuery = useUserNotifyEntitiesQuery(
     { userId: manager.id },
     {
       staleTime: Infinity,
-      enabled: showIntroPage && Boolean(userNotify),
+      enabled: showIntroPage && Boolean(userQuery.data),
       onSuccess: (entities) => {
         const options = mapUserNotifyEntitiesToOptions(entities);
 
@@ -387,7 +387,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                       options={notifyEntitiesOptions}
                       onChange={setNotifyEntityOption}
                       value={notifyEntityOption}
-                      loading={UserNotifyEntitiesQuery.isLoading}
+                      loading={userNotifyEntitiesQuery.isLoading}
                     />
                   </FormGroup>
                 </Col>
