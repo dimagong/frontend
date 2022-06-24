@@ -27,13 +27,15 @@ const OnboardingUser = () => {
   );
 
   const proceedUserToOnboarding = () => {
-    dispatch(removeUserNotifyRequest());
+    dispatch(removeUserNotifyRequest({ userId: profile.id, userNotifyEntryId: profile.notify_entries[0]?.id }));
   };
 
-  const brochureQuery = useOrganizationBrochureQuery({
-    organizationId: profile.permissions.organization_id,
-    organizationType: profile.permissions.organization_type,
-  });
+  const brochureQuery = useOrganizationBrochureQuery(
+    { introPageId: profile.notify_entries[0]?.notify?.id },
+    {
+      enabled: profile.notify_entries.length === 1,
+    }
+  );
 
   let userApplications = [];
 
@@ -85,7 +87,7 @@ const OnboardingUser = () => {
     );
   }
 
-  if (profile.notify && profile.notify_entity) {
+  if (profile.notify_entries.length > 0) {
     return (
       <WelcomePageComponent
         onSubmit={proceedUserToOnboarding}
@@ -93,8 +95,8 @@ const OnboardingUser = () => {
         brochureName={brochureQuery.data.file?.name}
         brochureUrl={brochureQuery.data.url}
         organizationName={profile.permissions.organization}
-        introText={profile.notify_entity.intro_text}
-        introTitle={profile.notify_entity.intro_title}
+        introText={profile.notify_entries[0].notify.intro_text}
+        introTitle={profile.notify_entries[0].notify.intro_title}
       />
     );
   }

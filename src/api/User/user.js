@@ -536,11 +536,11 @@ const userApi = {
     }
   },
 
-  async removeUserNotify() {
+  async removeUserNotify({ userId, userNotifyEntryId }) {
     try {
       const result = await instance({
-        url: `api/user/reset-notify`,
-        method: "POST",
+        url: `/api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`,
+        method: "PATCH",
       });
 
       return result.data.data;

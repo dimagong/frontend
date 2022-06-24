@@ -352,8 +352,8 @@ function* disallowUserAbility({ payload }) {
   }
 }
 
-function* removeUserNotify() {
-  const response = yield call(userApi.removeUserNotify);
+function* removeUserNotify({ payload }) {
+  const response = yield call(userApi.removeUserNotify, payload);
 
   if (response?.message) {
     yield put(removeUserNotifyError(response.message));
