@@ -323,7 +323,6 @@ const userApi = {
       last_name: data.last_name,
       email: data.email,
       number: data.number,
-      notify: data.notify,
     };
 
     try {
@@ -537,11 +536,11 @@ const userApi = {
     }
   },
 
-  async removeUserNotify() {
+  async removeUserNotify({ userId, userNotifyEntryId }) {
     try {
       const result = await instance({
-        url: `api/user/reset-notify`,
-        method: "POST",
+        url: `/api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`,
+        method: "PATCH",
       });
 
       return result.data.data;
