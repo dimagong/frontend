@@ -35,15 +35,20 @@ import { createQueryKey } from "../../../api/createQueryKey";
 import NmpButton from "../../../components/nmp/NmpButton";
 import { useGenericMutation } from "../../../api/useGenericMutation";
 import { toast } from "react-toastify";
+import { useQueryClient } from "react-query";
 
-const { updateUserRequest, getUserByIdRequest } = appSlice.actions;
+const { updateUserRequest } = appSlice.actions;
 
 const mapUserNotifyEntitiesToOptions = (entities) => {
   return entities.map((entity) => ({ label: entity.intro_title, value: entity }));
 };
 
 const findUserNotifyEntity = (manager) => {
-  if (manager.notify_entries.length < 1) {
+  if (!manager) {
+    return null;
+  }
+
+  if (manager.notify_entries && manager.notify_entries.length < 1) {
     return null;
   }
 
@@ -52,10 +57,27 @@ const findUserNotifyEntity = (manager) => {
   return notifyEntity.notify;
 };
 
+export const UserQueryKey = createQueryKey("User key");
+
+export const UserQueryKeys = {
+  all: () => [UserQueryKey],
+  byId: (userId) => [...UserQueryKeys.all(), { userId }],
+};
+
 export const UserNotifyEntitiesQueryKey = createQueryKey("UserNotifyEntities key");
 
 export const UserNotifyEntitiesQueryKeys = {
   all: (userId) => [UserNotifyEntitiesQueryKey, { userId }],
+};
+
+export const useUserQuery = ({ userId }, options) => {
+  return useGenericQuery(
+    {
+      url: `api/user/${userId}`,
+      queryKey: UserQueryKeys.byId(userId),
+    },
+    options
+  );
 };
 
 export const useUserNotifyEntitiesQuery = ({ userId }, options) => {
@@ -104,22 +126,33 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
   const formGroup = useFormGroup({ bdms: bdmsField });
 
   // User Notify Entities
-  const [showIntroPage, setShowIntroPage] = useState(() => manager.notify_entries.length > 0);
+  const queryClient = useQueryClient();
+
+  const [showIntroPage, setShowIntroPage] = useState(false);
+
+  const userQuery = useUserQuery(
+    { userId: manager.id },
+    {
+      onSuccess: (user) => {
+        setShowIntroPage(user.notify_entries.length > 0);
+      },
+    }
+  );
+  const userNotify = findUserNotifyEntity(userQuery.data);
 
   const [notifyEntityOption, setNotifyEntityOption] = useState(null);
   const [notifyEntitiesOptions, setNotifyEntitiesOptions] = useState([]);
 
-  useUserNotifyEntitiesQuery(
+  const UserNotifyEntitiesQuery = useUserNotifyEntitiesQuery(
     { userId: manager.id },
     {
       staleTime: Infinity,
-      enabled: showIntroPage,
+      enabled: showIntroPage && Boolean(userNotify),
       onSuccess: (entities) => {
-        const notify = findUserNotifyEntity(manager);
         const options = mapUserNotifyEntitiesToOptions(entities);
 
         setNotifyEntitiesOptions(options);
-        setNotifyEntityOption(options.find(({ value }) => value.id === notify.id));
+        setNotifyEntityOption(options.find(({ value }) => value.id === userNotify.id));
       },
     }
   );
@@ -127,9 +160,10 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
   const addUserNotifyEntity = useAddUserNotifyEntityMutation(
     { userId: manager.id },
     {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(UserQueryKeys.byId(manager.id));
+        await queryClient.invalidateQueries(UserNotifyEntitiesQueryKeys.all(manager.id));
         toast.success("User intro page assigned successfully.");
-        dispatch(getUserByIdRequest({ userId: manager.id }));
       },
     }
   );
@@ -137,9 +171,10 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
   const deleteUserNotifyEntity = useDeleteUserNotifyEntityMutation(
     { userId: manager.id },
     {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(UserQueryKeys.byId(manager.id));
+        await queryClient.invalidateQueries(UserNotifyEntitiesQueryKeys.all(manager.id));
         toast.success("User intro page unassigned successfully.");
-        dispatch(getUserByIdRequest({ userId: manager.id }));
       },
     }
   );
@@ -352,6 +387,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                       options={notifyEntitiesOptions}
                       onChange={setNotifyEntityOption}
                       value={notifyEntityOption}
+                      loading={UserNotifyEntitiesQuery.isLoading}
                     />
                   </FormGroup>
                 </Col>
@@ -359,7 +395,9 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
               <Row>
                 <Col>
                   <div className="d-flex justify-content-end">
-                    <NmpButton color="primary">Save</NmpButton>
+                    <NmpButton color="primary" loading={addUserNotifyEntity.isLoading}>
+                      Save
+                    </NmpButton>
                   </div>
                 </Col>
               </Row>
