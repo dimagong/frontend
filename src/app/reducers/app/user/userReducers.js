@@ -568,7 +568,7 @@ const disallowUserAbilitySuccess = (state, { payload }) => {
 
 const removeUserNotifySuccess = (state) => {
   state.isLoading = false;
-  state.user.profile.notify = 0;
+  state.user.profile.notify_entries = [];
 };
 
 const getUserPermissionsSuccess = (state, { payload }) => {

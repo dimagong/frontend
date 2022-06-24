@@ -32,9 +32,7 @@ const OnboardingUser = () => {
 
   const brochureQuery = useOrganizationBrochureQuery(
     { introPageId: profile.notify_entries[0]?.notify?.id },
-    {
-      enabled: profile.notify_entries.length === 1,
-    }
+    { enabled: profile.notify_entries.length === 1 }
   );
 
   let userApplications = [];
