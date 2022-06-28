@@ -47,6 +47,21 @@ const IntroPageForm = ({
             </div>
           </div>
         </div>
+        <div className={"field"}>
+          <div className={"label"}>
+            <label htmlFor="title">Download text</label>
+          </div>
+          <div className={"form-element"}>
+            <input
+              type="text"
+              name={"intro-title"}
+              id={"download-text"}
+              className={"text-input"}
+              value={data.download_text || ""}
+              onChange={(e) => onFieldChange("download_text", e.target.value)}
+            />
+          </div>
+        </div>
         <div className="field">
           <div className="label">Brochure</div>
           <div className="form-element">

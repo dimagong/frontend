@@ -92,6 +92,7 @@ const OnboardingUser = () => {
         isOnboardingExist={!!userApplications.length}
         brochureName={brochureQuery.data.file?.name}
         brochureUrl={brochureQuery.data.url}
+        downloadText={profile.notify_entries[0].notify.download_text}
         organizationName={profile.permissions.organization}
         introText={profile.notify_entries[0].notify.intro_text}
         introTitle={profile.notify_entries[0].notify.intro_title}

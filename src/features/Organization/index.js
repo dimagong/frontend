@@ -76,6 +76,7 @@ const INTRO_PAGE_TEMPLATE = {
   is_default: false,
   intro_title: "Title example",
   intro_text: "Intro text example",
+  download_text: "Download text example",
   brochure: { file: null, url: null },
   new: true,
 };
@@ -158,12 +159,18 @@ const Organization = ({ create = false }) => {
   const [selectedIntroPage, setSelectedIntroPage] = useState(null);
 
   useIntroPages(organizationQueryArg, {
-    staleTime: Infinity,
     enabled: !create && Boolean(selectedType) && Boolean(selectedId),
+
+    refetchOnWindowFocus: false,
+
     onSuccess: (introPages) => {
       setIntroPages(introPages);
+
       if (introPages.length) {
-        setSelectedIntroPage(introPages[0]);
+        setSelectedIntroPage(
+          selectedIntroPage ? introPages.find(({ id }) => selectedIntroPage.id === id) : introPages[0]
+        );
+        brochureQuery.data && setBrochureField(brochureQuery.data.file);
       } else {
         setSelectedIntroPage(INTRO_PAGE_TEMPLATE);
       }
@@ -287,6 +294,7 @@ const Organization = ({ create = false }) => {
     formData.set("is_default", Number(selectedIntroPage.is_default));
     formData.set("intro_title", selectedIntroPage.intro_title);
     formData.set("intro_text", selectedIntroPage.intro_text);
+    formData.set("download_text", selectedIntroPage.download_text);
     formData.set("brochure", selectedIntroPage.brochure.file);
     formData.set("_method", "PUT");
 
@@ -311,6 +319,7 @@ const Organization = ({ create = false }) => {
     formData.set("is_default", Number(selectedIntroPage.is_default));
     formData.set("intro_title", selectedIntroPage.intro_title);
     formData.set("intro_text", selectedIntroPage.intro_text);
+    formData.set("download_text", selectedIntroPage.download_text);
     formData.set("brochure", selectedIntroPage.brochure.file);
 
     createIntroPage.mutate(formData);
@@ -418,6 +427,7 @@ const Organization = ({ create = false }) => {
             onSubmit={() => {}}
             introText={selectedIntroPage.intro_text}
             introTitle={selectedIntroPage.intro_title}
+            downloadText={selectedIntroPage.download_text}
             isOnboardingExist={true}
             brochureUrl={selectedIntroPage.brochure.url}
             brochureName={selectedIntroPage.brochure?.file?.name}

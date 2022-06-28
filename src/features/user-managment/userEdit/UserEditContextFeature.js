@@ -146,13 +146,12 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
   const userNotifyEntitiesQuery = useUserNotifyEntitiesQuery(
     { userId: manager.id },
     {
-      staleTime: Infinity,
       enabled: showIntroPage && Boolean(userQuery.data),
       onSuccess: (entities) => {
         const options = mapUserNotifyEntitiesToOptions(entities);
 
         setNotifyEntitiesOptions(options);
-        setNotifyEntityOption(options.find(({ value }) => value.id === userNotify.id));
+        setNotifyEntityOption(options.find(({ value }) => value.id === userNotify?.id));
       },
     }
   );
