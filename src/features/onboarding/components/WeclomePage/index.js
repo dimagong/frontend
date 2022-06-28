@@ -7,6 +7,7 @@ const WelcomePageComponent = ({
   isOnboardingExist,
   brochureName,
   brochureUrl,
+  downloadText,
   onSubmit,
   organizationName,
   introText,
@@ -29,7 +30,7 @@ const WelcomePageComponent = ({
           download={brochureName}
           className={"welcome-onboarding_download-button_button btn btn-secondary"}
         >
-          Download the Welcome to {organizationName} brochure <ChevronDown />
+          {downloadText} <ChevronDown />
         </a>
       </div>
       {isOnboardingExist && (
