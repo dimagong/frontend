@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardBody,
   Card,
+  Spinner,
 } from "reactstrap";
 
 import { X, Check } from "react-feather";
@@ -35,49 +36,38 @@ import { createQueryKey } from "../../../api/createQueryKey";
 import NmpButton from "../../../components/nmp/NmpButton";
 import { useGenericMutation } from "../../../api/useGenericMutation";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
 
 const { updateUserRequest } = appSlice.actions;
 
+// User Notify Entries
+
+export const UserNotifyEntriesQueryKey = createQueryKey("UserNotifyEntries key");
+
+export const UserNotifyEntriesQueryKeys = {
+  all: (userId) => [UserNotifyEntriesQueryKey, { userId }],
+};
+
+export const useUserNotifyEntriesQuery = ({ userId }, options) => {
+  return useGenericQuery(
+    {
+      queryKey: UserNotifyEntriesQueryKeys.all(userId),
+      //
+      url: `/api/user/${userId}/notify-entries`,
+    },
+    options
+  );
+};
+
+// User Notify Entities
+
 const mapUserNotifyEntitiesToOptions = (entities) => {
   return entities.map((entity) => ({ label: entity.intro_title, value: entity }));
-};
-
-const findUserNotifyEntity = (manager) => {
-  if (!manager) {
-    return null;
-  }
-
-  if (manager.notify_entries.length === 0) {
-    return null;
-  }
-
-  const notifyEntity = manager.notify_entries[0];
-
-  return notifyEntity.notify;
-};
-
-export const UserQueryKey = createQueryKey("User key");
-
-export const UserQueryKeys = {
-  all: () => [UserQueryKey],
-  byId: (userId) => [...UserQueryKeys.all(), { userId }],
 };
 
 export const UserNotifyEntitiesQueryKey = createQueryKey("UserNotifyEntities key");
 
 export const UserNotifyEntitiesQueryKeys = {
   all: (userId) => [UserNotifyEntitiesQueryKey, { userId }],
-};
-
-export const useUserQuery = ({ userId }, options) => {
-  return useGenericQuery(
-    {
-      url: `api/user/${userId}`,
-      queryKey: UserQueryKeys.byId(userId),
-    },
-    options
-  );
 };
 
 export const useUserNotifyEntitiesQuery = ({ userId }, options) => {
@@ -95,8 +85,7 @@ export const useAddUserNotifyEntityMutation = ({ userId }, options) => {
     {
       method: "post",
       url: `/api/user/${userId}/notify-entries`,
-      // ToDo: do not forget to refactor it while user can not be updated in a good way
-      // queryKey: UserNotifyEntitiesQueryKeys.all(userId),
+      queryKey: UserNotifyEntriesQueryKeys.all(userId),
     },
     options
   );
@@ -107,8 +96,7 @@ export const useDeleteUserNotifyEntityMutation = ({ userId }, options) => {
     {
       method: "delete",
       url: `/api/user/${userId}/notify-entries`,
-      // ToDo: do not forget to refactor it while user can not be updated in a good way
-      // queryKey: UserNotifyEntitiesQueryKeys.all(userId),
+      queryKey: UserNotifyEntriesQueryKeys.all(userId),
     },
     options
   );
@@ -126,65 +114,48 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
   const formGroup = useFormGroup({ bdms: bdmsField });
 
   // User Notify Entities
-  const queryClient = useQueryClient();
-
   const [showIntroPage, setShowIntroPage] = useState(false);
 
-  const userQuery = useUserQuery(
+  const notifyEntriesQuery = useUserNotifyEntriesQuery(
     { userId: manager.id },
     {
-      onSuccess: (user) => {
-        setShowIntroPage(user.notify_entries.length > 0);
+      onSuccess: (entries) => {
+        if (entries.length === 1) {
+          setShowIntroPage(true);
+        }
       },
     }
   );
-  const userNotify = findUserNotifyEntity(userQuery.data);
-
-  const [notifyEntityOption, setNotifyEntityOption] = useState(null);
-  const [notifyEntitiesOptions, setNotifyEntitiesOptions] = useState([]);
 
   const userNotifyEntitiesQuery = useUserNotifyEntitiesQuery(
     { userId: manager.id },
     {
-      enabled: showIntroPage && Boolean(userQuery.data),
+      enabled: showIntroPage,
       onSuccess: (entities) => {
         const options = mapUserNotifyEntitiesToOptions(entities);
+        const notifyId = notifyEntriesQuery.data[0]?.notify_id;
 
         setNotifyEntitiesOptions(options);
-        setNotifyEntityOption(options.find(({ value }) => value.id === userNotify?.id));
+        setNotifyEntityOption(options.find(({ value }) => value.id === notifyId));
       },
     }
   );
+
+  const [notifyEntityOption, setNotifyEntityOption] = useState(null);
+  const [notifyEntitiesOptions, setNotifyEntitiesOptions] = useState([]);
 
   const addUserNotifyEntity = useAddUserNotifyEntityMutation(
     { userId: manager.id },
-    {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries(UserQueryKeys.byId(manager.id));
-        await queryClient.invalidateQueries(UserNotifyEntitiesQueryKeys.all(manager.id));
-        toast.success("User intro page assigned successfully.");
-      },
-    }
+    { onSuccess: async () => toast.success("User intro page assigned successfully.") }
   );
-
   const deleteUserNotifyEntity = useDeleteUserNotifyEntityMutation(
     { userId: manager.id },
-    {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries(UserQueryKeys.byId(manager.id));
-        await queryClient.invalidateQueries(UserNotifyEntitiesQueryKeys.all(manager.id));
-        toast.success("User intro page unassigned successfully.");
-      },
-    }
+    { onSuccess: async () => toast.success("User intro page unassigned successfully.") }
   );
 
   const onShowIntoPageChange = (value) => {
-    if (deleteUserNotifyEntity.isLoading) {
-      return;
-    }
-
     // If show intro page is false then remove
-    if (!value) {
+    if (!value && notifyEntriesQuery.data.length > 0) {
       deleteUserNotifyEntity.mutate();
     }
 
@@ -365,43 +336,54 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
 
       <Card>
         <CardBody>
-          <Row>
-            <Col>
-              <Checkbox
-                color="primary"
-                icon={<Check className="vx-icon" size={16} />}
-                label="Show intro page"
-                checked={showIntroPage}
-                onChange={({ target }) => onShowIntoPageChange(target.checked)}
-              />
-            </Col>
-          </Row>
+          {notifyEntriesQuery.isLoading ? (
+            <div className="d-flex justify-content-center">
+              <Spinner />
+            </div>
+          ) : (
+            <>
+              <Row>
+                <Col>
+                  <Checkbox
+                    color="primary"
+                    icon={<Check className="vx-icon" size={16} />}
+                    label="Show intro page"
+                    checked={showIntroPage}
+                    disabled={
+                      addUserNotifyEntity.isLoading || deleteUserNotifyEntity.isLoading || notifyEntriesQuery.isLoading
+                    }
+                    onChange={({ target }) => onShowIntoPageChange(target.checked)}
+                  />
+                </Col>
+              </Row>
 
-          {showIntroPage ? (
-            <Form className="user-create mt-1" onSubmit={onUserNotifyEntitiesSubmit}>
-              <Row>
-                <Col>
-                  <FormGroup>
-                    <NmpSelect
-                      options={notifyEntitiesOptions}
-                      onChange={setNotifyEntityOption}
-                      value={notifyEntityOption}
-                      loading={userNotifyEntitiesQuery.isLoading}
-                    />
-                  </FormGroup>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <div className="d-flex justify-content-end">
-                    <NmpButton color="primary" loading={addUserNotifyEntity.isLoading}>
-                      Save
-                    </NmpButton>
-                  </div>
-                </Col>
-              </Row>
-            </Form>
-          ) : null}
+              {showIntroPage ? (
+                <Form className="user-create mt-1" onSubmit={onUserNotifyEntitiesSubmit}>
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                        <NmpSelect
+                          options={notifyEntitiesOptions}
+                          onChange={setNotifyEntityOption}
+                          value={notifyEntityOption}
+                          loading={userNotifyEntitiesQuery.isLoading}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <div className="d-flex justify-content-end">
+                        <NmpButton color="primary" loading={addUserNotifyEntity.isLoading}>
+                          Save
+                        </NmpButton>
+                      </div>
+                    </Col>
+                  </Row>
+                </Form>
+              ) : null}
+            </>
+          )}
         </CardBody>
       </Card>
     </>
