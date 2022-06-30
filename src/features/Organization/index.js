@@ -146,6 +146,19 @@ export const useIntroPageUpdate = ({ organizationType, organizationId, introPage
   );
 };
 
+export const useIntroPageDelete = ({ organizationType, organizationId, introPageId }, options) => {
+  return useGenericMutation(
+    {
+      url: `/api/organization/${organizationType}/${organizationId}/intro/${introPageId}`,
+      method: "delete",
+      queryKey: IntroPageKeys.all(organizationId, organizationType),
+    },
+    {
+      ...options,
+    }
+  );
+};
+
 const Organization = ({ create = false }) => {
   const dispatch = useDispatch();
 
@@ -178,16 +191,24 @@ const Organization = ({ create = false }) => {
   });
 
   const createIntroPage = useIntroPageCreate(organizationQueryArg, {
-    onSuccess: () => toast.success("Intro page created successfully."),
+    onSuccess: (introPage) => {
+      setSelectedIntroPage(introPage);
+      toast.success("Intro page created successfully.");
+    },
   });
 
   const updateIntroPage = useIntroPageUpdate(
+    { ...organizationQueryArg, introPageId: selectedIntroPage?.id },
+    { onSuccess: () => toast.success("Intro page saved successfully.") }
+  );
+
+  const deleteIntroPage = useIntroPageDelete(
+    { ...organizationQueryArg, introPageId: selectedIntroPage?.id },
     {
-      ...organizationQueryArg,
-      introPageId: selectedIntroPage?.id,
-    },
-    {
-      onSuccess: () => toast.success("Intro page saved successfully."),
+      onSuccess: () => {
+        setSelectedIntroPage(null);
+        toast.success("Intro page removed successfully.");
+      },
     }
   );
 
@@ -325,6 +346,14 @@ const Organization = ({ create = false }) => {
     createIntroPage.mutate(formData);
   };
 
+  const handlerIntroPageDelete = () => {
+    const sure = window.confirm("Are you sure you want to delete ?");
+
+    if (sure) {
+      deleteIntroPage.mutate();
+    }
+  };
+
   useEffect(() => {
     if (!create) {
       setOrganizationData(getOrganizationData(organization));
@@ -415,6 +444,8 @@ const Organization = ({ create = false }) => {
                 onFieldChange={setIntroPagesFields}
                 onIntroPageSave={handleIntroPageSave}
                 onIntroPageCreate={handleIntroPageCreate}
+                onIntroPageDelete={handlerIntroPageDelete}
+                isSomethingLoading={createIntroPage.isLoading || updateIntroPage.isLoading || deleteIntroPage.isLoading}
               />
             ) : null}
           </>

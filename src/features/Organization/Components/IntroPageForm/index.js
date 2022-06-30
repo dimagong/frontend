@@ -13,6 +13,7 @@ const IntroPageForm = ({
   onIntroPageSave,
   create,
   onIntroPageCreate,
+  onIntroPageDelete,
 }) => {
   return (
     <Row>
@@ -88,7 +89,18 @@ const IntroPageForm = ({
         </div>
         <div className="field">
           <div className="label" />
-          <div className="form-element d-flex justify-content-end">
+          <div className="form-element d-flex justify-content-between">
+            {data.new ? null : (
+              <Button
+                disabled={isSomethingLoading}
+                onClick={onIntroPageDelete}
+                className={"organization-form_submit-button"}
+                color="danger"
+              >
+                Remove
+              </Button>
+            )}
+
             <Button
               disabled={isSomethingLoading}
               onClick={data.new ? onIntroPageCreate : onIntroPageSave}
