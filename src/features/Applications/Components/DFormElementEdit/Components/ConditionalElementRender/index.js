@@ -6,44 +6,7 @@ import FieldLabel from "../../../../../../components/DForm/Components/Fields/Com
 import Select from "react-select";
 import { colourStyles } from "../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
 import TextWidget from "../../../../../../components/FormCreate/Custom/TextWidget";
-
-const EFFECTS = [
-  {
-    value: "hidden",
-    label: "hidden if",
-  },
-  {
-    value: "shown",
-    label: "shown if",
-  },
-  {
-    value: "disabled",
-    label: "disabled if",
-  },
-  {
-    value: "active",
-    label: "active if",
-  },
-];
-
-const OPERANDS = [
-  {
-    value: "equal",
-    label: "equal to",
-  },
-  {
-    value: "not equal",
-    label: "not equal to",
-  },
-  {
-    value: "bigger",
-    label: "bigger then",
-  },
-  {
-    value: "smaller",
-    label: "smaller then",
-  },
-];
+import { EFFECTS, OPERANDS } from "./constants";
 
 const ConditionalElementRender = ({ conditions }) => {
   return (

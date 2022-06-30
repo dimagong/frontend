@@ -4,7 +4,7 @@ import { Pagination, PaginationLink, PaginationItem } from "reactstrap";
 
 import "./styles.scss";
 
-const Tabs = ({ tabs, onChange, active }) => {
+const Tabs = ({ tabs, onChange, active, className }) => {
   const handlePrevSelect = () => {
     const tabIndex = tabs.indexOf(active);
     if (~tabIndex && tabIndex !== 0) {
@@ -46,7 +46,7 @@ const Tabs = ({ tabs, onChange, active }) => {
   };
 
   return (
-    <Pagination className=" justify-content-center mt-1 custom-tabs">
+    <Pagination className={`justify-content-center mt-1 custom-tabs ${(className && className) || ""}`}>
       <PaginationItem href="#" className="prev-item">
         <PaginationLink onClick={handlePrevSelect} first>
           <ChevronLeft />{" "}

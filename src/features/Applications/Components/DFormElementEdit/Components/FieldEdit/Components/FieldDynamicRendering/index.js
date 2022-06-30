@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
+import ConditionalElementRender from "../../../ConditionalElementRender";
 
 const FieldDynamicRendering = () => {
-
   return (
     <div>
-      Dynamic rendering
+      <ConditionalElementRender conditions={[]} />
     </div>
-  )
+  );
 };
 
 export default FieldDynamicRendering;

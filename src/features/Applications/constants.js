@@ -1,3 +1,10 @@
+export const APPLICATION_PAGES = {
+  DESCRIPTION: "Description",
+  DESIGN: "Design mode",
+  VERSIONING: "Versioning",
+  TEST_MODE: "Test mode",
+};
+
 export const EDIT_OPTIONS = {
   properties: "Properties",
   styling: "Styling",

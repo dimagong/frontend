@@ -30,7 +30,7 @@ const Context = ({ selectedContext }) => {
             Invitations: <UserInvitations />,
             "Create notification": <NotificationsForm isCreate={true} />,
             Notification: <NotificationsForm isCreate={false} />,
-            "Create dForm": <Applications isConfigurable={true} />,
+            "Create dForm": <Applications isCreate={true} />,
             dForm: <DFormForm isCreate={false} />,
             "Create workflow": <WorkflowForm workflowModalType="Create" />,
             WorkFlow: <WorkflowForm workflowModalType="Edit" />,

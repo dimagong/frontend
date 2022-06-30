@@ -9,6 +9,9 @@ import { makeid } from "../../components/FormCreate/utils";
 import { toast } from "react-toastify";
 import { cloneDeep } from "lodash";
 
+import { useSelector } from "react-redux";
+import { selectProfile } from "../../app/selectors";
+
 import {
   INITIAL_FIELD_DATA,
   INITIAL_GROUP_DATA,
@@ -19,11 +22,15 @@ import {
   FIELD_INITIAL_SPECIFIC_PROPERTIES,
   FIELD_TYPES,
   FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
+  APPLICATION_PAGES,
 } from "./constants";
 import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
 
 import "./styles.scss";
-import { Button } from "reactstrap";
+import { Button, TabContent, TabPane } from "reactstrap";
+import CustomTabs from "../../components/Tabs";
+import NewApplicationInitForm from "./Components/NewApplicationInitForm";
+import ApplicationDescription from "./Components/ApplicationDescription";
 
 const data = {
   type: "application",
@@ -108,12 +115,16 @@ const data = {
 //TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
 // because of internal behavior of component
 
-const Applications = ({ isConfigurable }) => {
+const Applications = ({ isCreate }) => {
   const [fakeReduxData, setFakeReduxData] = useState(data);
 
+  const [selectedPage, setSelectedPage] = useState(isCreate ? APPLICATION_PAGES.DESCRIPTION : APPLICATION_PAGES.DESIGN);
   const [isModuleEditComponentVisible, setIsModuleEditComponentVisible] = useState(false);
   const [elementWithSuggestedChanges, setElementWithSuggestedChanges] = useState(null);
   const [dataWithSuggestedChanges, setDataWithSuggestedChanges] = useState(cloneDeep(fakeReduxData));
+  const [isDFormInitialized, setIsDFormInitialized] = useState(false);
+
+  const userProfile = useSelector(selectProfile);
 
   const getElementCollectionName = (element) => {
     let elementCollectionName;
@@ -425,6 +436,14 @@ const Applications = ({ isConfigurable }) => {
     setElementWithSuggestedChanges({ ...elementData, edited: true });
   };
 
+  const handlePageChange = (page) => {
+    setSelectedPage(page);
+  };
+
+  const handleDFormInitialize = () => {
+    setIsDFormInitialized(true);
+  };
+
   useEffect(() => {
     if (elementWithSuggestedChanges !== null) {
       setDataWithSuggestedChanges(embedSuggestedChanges());
@@ -435,26 +454,46 @@ const Applications = ({ isConfigurable }) => {
     setDataWithSuggestedChanges(fakeReduxData);
   }, [fakeReduxData]);
 
+  if (isCreate && !isDFormInitialized) {
+    return <NewApplicationInitForm userId={userProfile?.id} onDFormInitialize={handleDFormInitialize} />;
+  }
+
   return (
     <div className="application d-flex">
-      <ContextTemplate contextTitle="Applications" contextName="dForm » introduction">
-        <DForm
-          data={dataWithSuggestedChanges}
-          isConfigurable={isConfigurable}
-          onElementClick={handleSelectElementForEdit}
-          onSectionCreate={handleSectionCreate}
-          onGroupCreate={handleGroupCreate}
-          onFieldCreate={handleFieldCreate}
+      <ContextTemplate contextTitle="Application" contextName="dForm » introduction">
+        <CustomTabs
+          active={selectedPage}
+          onChange={handlePageChange}
+          tabs={Object.values(APPLICATION_PAGES)}
+          className="mb-3"
         />
+        <TabContent activeTab={selectedPage}>
+          <TabPane tabId={APPLICATION_PAGES.DESIGN}>
+            <DForm
+              data={dataWithSuggestedChanges}
+              isConfigurable={true}
+              onElementClick={handleSelectElementForEdit}
+              onSectionCreate={handleSectionCreate}
+              onGroupCreate={handleGroupCreate}
+              onFieldCreate={handleFieldCreate}
+            />
+          </TabPane>
+          <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
+            <ApplicationDescription />
+          </TabPane>
+        </TabContent>
+
         <div style={{ paddingLeft: "35px", paddingRight: "35px" }}>
           <div className={"application_delimiter"} />
-          <div className="d-flex justify-content-between ">
-            <Button className={"button button-cancel"}>Cancel</Button>
+          {selectedPage !== APPLICATION_PAGES.TEST_MODE && (
+            <div className="d-flex justify-content-between ">
+              <Button className={"button button-cancel"}>Cancel</Button>
 
-            <Button color={"primary"} className={"button button-success"}>
-              Save
-            </Button>
-          </div>
+              <Button color={"primary"} className={"button button-success"}>
+                Save
+              </Button>
+            </div>
+          )}
         </div>
       </ContextTemplate>
       {isModuleEditComponentVisible && (
