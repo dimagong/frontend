@@ -2,6 +2,7 @@ export const APPLICATION_PAGES = {
   DESCRIPTION: "Description",
   DESIGN: "Design mode",
   VERSIONING: "Versioning",
+  REORDER: "Reorder",
   TEST_MODE: "Test mode",
 };
 

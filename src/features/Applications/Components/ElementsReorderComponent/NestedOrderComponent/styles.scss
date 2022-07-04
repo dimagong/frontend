@@ -1,0 +1,23 @@
+.nested-draggable-list {
+  &_item {
+    padding-top: 10px;
+
+    &-name {
+      display: flex;
+      align-items: center;
+      background: white;
+      padding: 10px 15px;
+      color: #717171;
+      border-left: 1px solid #e1e1e1;
+    }
+
+    &-drag-icon {
+      //cursor: move;
+    }
+
+    &-children {
+      border-left: 1px solid #e1e1e1;
+      padding-left: 15px;
+    }
+  }
+}

@@ -31,6 +31,7 @@ import { Button, TabContent, TabPane } from "reactstrap";
 import CustomTabs from "../../components/Tabs";
 import NewApplicationInitForm from "./Components/NewApplicationInitForm";
 import ApplicationDescription from "./Components/ApplicationDescription";
+import ElementsReorderComponent from "./Components/ElementsReorderComponent";
 
 const data = {
   type: "application",
@@ -480,6 +481,9 @@ const Applications = ({ isCreate }) => {
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
             <ApplicationDescription />
+          </TabPane>
+          <TabPane tabId={APPLICATION_PAGES.REORDER}>
+            <ElementsReorderComponent applicationData={dataWithSuggestedChanges} />
           </TabPane>
         </TabContent>
 
