@@ -30,7 +30,7 @@ const Context = ({ selectedContext }) => {
             Invitations: <UserInvitations />,
             "Create notification": <NotificationsForm isCreate={true} />,
             Notification: <NotificationsForm isCreate={false} />,
-            "Create dForm": <Applications isCreate={true} />, // TODO CHANGE TO TRUE AFTER REFACTOR
+            "Create dForm": <Applications isCreate={false} />, // TODO CHANGE TO TRUE AFTER REFACTOR
             dForm: <DFormForm isCreate={false} />,
             "Create workflow": <WorkflowForm workflowModalType="Create" />,
             WorkFlow: <WorkflowForm workflowModalType="Edit" />,

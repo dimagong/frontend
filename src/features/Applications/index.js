@@ -48,6 +48,7 @@ const data = {
     intro_title: "ValidPath intro",
     type: "network",
   },
+  sectionsOrder: ["First section"],
   sections: {
     "First section": {
       id: "First section",

@@ -7,7 +7,7 @@ import Groups from "../Groups";
 import "./styles.scss";
 
 const SectionsComponent = ({ data, selectedSection, onElementClick, onGroupCreate, onFieldCreate }) => {
-  if (Object.values(data.sections).length === 0) {
+  if (data.sectionsOrder.length === 0) {
     // TODO HANDLE TWO CASES, when there are no sections on edit and no sections on assigned dform \ on onboarding dform
     return (
       <div className="px-2 py-5 text-center w-100">
@@ -20,17 +20,17 @@ const SectionsComponent = ({ data, selectedSection, onElementClick, onGroupCreat
 
   return (
     <TabContent activeTab={selectedSection} className={"sections-content"}>
-      {Object.values(data.sections).map((section) => (
-        <TabPane tabId={section.id} key={section.id}>
-          {section.isNew ? (
+      {data.sectionsOrder.map((section) => (
+        <TabPane tabId={data.sections[section].id} key={data.sections[section].id}>
+          {data.sections[section].isNew ? (
             <div className="px-2 py-5 text-center">
               You will be able to manage this section after you submit its creation
             </div>
           ) : (
             <Groups
-              sectionId={section.id}
+              sectionId={data.sections[section].id}
               data={data}
-              sectionGroups={section.relatedGroups}
+              sectionGroups={data.sections[section].relatedGroups}
               onElementClick={onElementClick}
               onGroupCreate={onGroupCreate}
               onFieldCreate={onFieldCreate}
