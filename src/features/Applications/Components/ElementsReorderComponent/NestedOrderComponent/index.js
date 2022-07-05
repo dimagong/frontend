@@ -26,9 +26,13 @@ const NestedOrderComponent = ({
 
   const [keys, { toggle }] = useToggleable(initialKeys, { useRefactored: true });
 
+  const handleDragEnd = (props) => {
+    onDragEnd({ ...props, parentItem });
+  };
+
   return (
     <div className="nested-draggable-list">
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="droppable" type={type}>
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>

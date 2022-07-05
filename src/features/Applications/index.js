@@ -452,6 +452,51 @@ const Applications = ({ isCreate }) => {
     setIsDFormInitialized(true);
   };
 
+  const handleSectionReorder = (result) => {
+    const dataClone = cloneDeep(dataWithSuggestedChanges);
+
+    const itemToMove = dataClone.sectionsOrder.splice(result.source.index, 1)[0];
+
+    dataClone.sectionsOrder.splice(result.destination.index, 0, itemToMove);
+
+    setDataWithSuggestedChanges(dataClone);
+    setFakeReduxData(dataClone);
+  };
+
+  const handleGroupReorder = (result) => {
+    const dataClone = cloneDeep(dataWithSuggestedChanges);
+
+    const itemToMove = dataClone.sections[result.parentItem.id].relatedGroups.splice(result.source.index, 1)[0];
+
+    dataClone.sections[result.parentItem.id].relatedGroups.splice(result.destination.index, 0, itemToMove);
+
+    setDataWithSuggestedChanges(dataClone);
+  };
+
+  const handleFieldReorder = (result) => {
+    const dataClone = cloneDeep(dataWithSuggestedChanges);
+
+    const itemToMove = dataClone.groups[result.parentItem.id].relatedFields.splice(result.source.index, 1)[0];
+
+    dataClone.groups[result.parentItem.id].relatedFields.splice(result.destination.index, 0, itemToMove);
+
+    setDataWithSuggestedChanges(dataClone);
+  };
+
+  const handleReorder = (result) => {
+    switch (result.type) {
+      case ELEMENT_TYPES.section:
+        handleSectionReorder(result);
+        break;
+      case ELEMENT_TYPES.group:
+        handleGroupReorder(result);
+        break;
+      case ELEMENT_TYPES.field:
+        handleFieldReorder(result);
+        break;
+    }
+  };
+
   useEffect(() => {
     if (elementWithSuggestedChanges !== null) {
       setDataWithSuggestedChanges(embedSuggestedChanges());
@@ -490,7 +535,7 @@ const Applications = ({ isCreate }) => {
             <ApplicationDescription />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>
-            <ElementsReorderComponent applicationData={dataWithSuggestedChanges} />
+            <ElementsReorderComponent onReorder={handleReorder} applicationData={dataWithSuggestedChanges} />
           </TabPane>
         </TabContent>
 

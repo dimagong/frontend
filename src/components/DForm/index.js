@@ -69,7 +69,7 @@ const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate,
         selectedSection={selectedSection}
         sectionsProgress={sectionsProgress}
         errors={sectionsWithErrors}
-        sections={Object.values(data.sections)}
+        sections={data.sectionsOrder.map((sectionId) => data.sections[sectionId])}
         onSectionCreate={isConfigurable && onSectionCreate}
       />
       <SectionsComponent

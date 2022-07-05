@@ -2,18 +2,11 @@ import React from "react";
 import NestedOrderComponent from "./NestedOrderComponent";
 import { ELEMENT_TYPES } from "../../constants";
 
-const ElementsReorderComponent = ({ applicationData }) => {
+const ElementsReorderComponent = ({ applicationData, onReorder }) => {
   const handleDragEnd = (result) => {
-    if (!result?.destination?.index || result.destination.index === result.source.index) return;
+    if (result.destination === null || result.destination.index === result.source.index) return;
 
-    switch (result.type) {
-      case ELEMENT_TYPES.section:
-        break;
-      case ELEMENT_TYPES.group:
-        break;
-      case ELEMENT_TYPES.field:
-        break;
-    }
+    onReorder(result);
   };
 
   const sections = applicationData.sectionsOrder.map((sectionId) => applicationData.sections[sectionId]);
