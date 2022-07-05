@@ -294,6 +294,8 @@ const Applications = ({ isCreate }) => {
   const handleSectionDelete = (section, data) => {
     section.relatedGroups.map((groupId) => handleGroupDelete(data.groups[groupId], data));
 
+    data.sectionsOrder = removeItemFormArrayByValue(data.sectionsOrder, section.id);
+
     delete data.sections[section.id];
   };
 
