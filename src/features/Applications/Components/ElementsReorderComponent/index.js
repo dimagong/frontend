@@ -16,7 +16,7 @@ const ElementsReorderComponent = ({ applicationData }) => {
     }
   };
 
-  const sections = Object.values(applicationData.sections);
+  const sections = applicationData.sectionsOrder.map((sectionId) => applicationData.sections[sectionId]);
   const selectSectionGroups = (section) => {
     return section.relatedGroups.map((relatedGroupId) => applicationData.groups[relatedGroupId]);
   };
