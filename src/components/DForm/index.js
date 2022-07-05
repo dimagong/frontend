@@ -1,25 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import propTypes from 'prop-types';
+import React, { useState, useEffect } from "react";
+import propTypes from "prop-types";
 
-import SectionsSideBar from './Components/SectionsSideBar';
-import SectionsComponent from './Components/Sections';
+import SectionsSideBar from "./Components/SectionsSideBar";
+import SectionsComponent from "./Components/Sections";
 
-import './styles.scss';
+import "./styles.scss";
 
-const DForm = ({
-  isConfigurable,
-  onElementClick,
-  onSectionCreate,
-  onGroupCreate,
-  onFieldCreate,
-  data,
-}) => {
-
+const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate, onFieldCreate, data }) => {
   const [selectedSection, setSelectedSection] = useState("");
   const [sectionsProgress, setSectionsProgress] = useState(null);
 
   const handleElementClick = (element, elementType) => {
-
     onElementClick(element, elementType);
   };
 
@@ -27,7 +18,7 @@ const DForm = ({
 
   // Initialise all sections progresses with key value pairs where key is section name (uniq) and value is 0
   const initialiseSectionsProgress = () => {
-    setSectionsProgress(Object.values(data.sections).reduce((acc, curr) => ({...acc, [curr.name]: 0}), {}))
+    setSectionsProgress(Object.values(data.sections).reduce((acc, curr) => ({ ...acc, [curr.name]: 0 }), {}));
   };
 
   const handleSectionSelect = (section) => {
@@ -36,7 +27,6 @@ const DForm = ({
     if (isConfigurable) {
       handleElementClick(data.sections[section], "section");
     }
-
 
     if (!data.sections[section].isAlreadyViewed) {
       /*TODO move this to parent component that handle ONBOARDING
@@ -47,7 +37,7 @@ const DForm = ({
   };
 
   const handleGroupCreate = () => {
-    onGroupCreate(selectedSection)
+    onGroupCreate(selectedSection);
   };
 
   const calculateProgress = () => {
@@ -57,14 +47,20 @@ const DForm = ({
   const init = () => {
     initialiseSectionsProgress();
     //**TODO set first selected tab (default tab). Select first that occur and doesn't hidden
-    setSelectedSection(Object.keys(data.sections)[0])
+    setSelectedSection(Object.keys(data.sections)[0]);
   };
 
   useEffect(() => {
-    calculateProgress()
+    calculateProgress();
   }, [data]);
 
   useEffect(init, []);
+
+  useEffect(() => {
+    if (!data.sectionsOrder.includes(selectedSection) && data.sectionsOrder.length) {
+      setSelectedSection(data.sectionsOrder[0]);
+    }
+  }, [data.sectionsOrder]);
 
   return (
     <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
@@ -79,16 +75,14 @@ const DForm = ({
       <SectionsComponent
         data={data}
         selectedSection={selectedSection}
-        onElementClick={isConfigurable ? handleElementClick : ()=>{}}
+        onElementClick={isConfigurable ? handleElementClick : () => {}}
         onGroupCreate={isConfigurable && handleGroupCreate}
         onFieldCreate={isConfigurable && onFieldCreate}
       />
     </div>
-  )
+  );
 };
 
-DForm.propTypes = {
-
-};
+DForm.propTypes = {};
 
 export default DForm;
