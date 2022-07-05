@@ -183,7 +183,11 @@ const Applications = ({ isCreate }) => {
       // isNew: true,
     };
 
-    setFakeReduxData(embedSuggestedChanges(newSectionData, true));
+    const dataToSave = embedSuggestedChanges(newSectionData, true);
+
+    dataToSave.sectionsOrder = [...dataToSave.sectionsOrder, newSectionData.id];
+
+    setFakeReduxData(dataToSave);
 
     // setElementWithSuggestedChanges({...newSectionData});
     // setIsModuleEditComponentVisible(true);
@@ -224,7 +228,7 @@ const Applications = ({ isCreate }) => {
 
     const dataToSave = embedSuggestedChanges(newFieldData, true);
 
-    // Add group to section where it was created
+    // Add field to group where it was created
     dataToSave.groups[group].relatedFields = [...dataToSave.groups[group].relatedFields, newFieldData.id];
 
     setFakeReduxData(dataToSave);
