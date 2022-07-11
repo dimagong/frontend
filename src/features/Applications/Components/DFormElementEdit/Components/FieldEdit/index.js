@@ -22,7 +22,7 @@ const FieldEdit = ({ element, onElementChange, editProperty, organization, data,
       />
     ),
     [EDIT_OPTIONS.styling]: <FieldStyles {...commonProps} />,
-    [EDIT_OPTIONS.dynamicRendering]: <FieldDynamicRendering {...commonProps} />,
+    [EDIT_OPTIONS.dynamicRendering]: <FieldDynamicRendering data={data} {...commonProps} />,
   }[editProperty];
 };
 
