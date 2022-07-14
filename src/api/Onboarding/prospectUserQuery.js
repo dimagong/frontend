@@ -1,5 +1,10 @@
 import { createQueryKey } from "api/createQueryKey";
 import { useGenericQuery } from "api/useGenericQuery";
+import { useDispatch } from "react-redux";
+
+import appSlice from "app/slices/appSlice";
+
+const { getAssignedSurveysForOnboardingSuccess, getAssignedSurveysForOnboardingError } = appSlice.actions;
 
 export const ProspectUserProfileQueryKey = createQueryKey("Prospect User profile");
 export const ProspectUserSurvayPassingQueryKey = createQueryKey("Prospect User Survay Passing");
@@ -13,7 +18,6 @@ export const ProspectUserSurvayKeys = {
 };
 
 export const useProspectUserProfileQuery = (options = {}) => {
-  //const dispatch = useDispatch();
   return useGenericQuery(
     {
       url: `/member-view-api/user/profile`,
@@ -22,11 +26,9 @@ export const useProspectUserProfileQuery = (options = {}) => {
     {
       onError: (error) => {
         console.log("ERROR useProspectUserProfileQuery", error);
-        //dispatch(getMemberFirmsError(error.message))
       },
       onSuccess: (data) => {
         console.log("SUCCESS useProspectUserProfileQuery", data);
-        //dispatch(getMemberFirmsSuccess(data))
       },
       ...options,
     }
@@ -34,6 +36,7 @@ export const useProspectUserProfileQuery = (options = {}) => {
 };
 
 export const useSurvayPassingQuery = (options = {}) => {
+  const dispatch = useDispatch();
   return useGenericQuery(
     {
       url: `/member-view-api/survey-passing`,
@@ -42,11 +45,11 @@ export const useSurvayPassingQuery = (options = {}) => {
     {
       onError: (error) => {
         console.log("ERROR useSurvayPassingQuery", error);
-        //dispatch(getMemberFirmsError(error.message))
+        dispatch(getAssignedSurveysForOnboardingError(error.message));
       },
       onSuccess: (data) => {
         console.log("SUCCESS useSurvayPassingQuery", data);
-        //dispatch(getMemberFirmsSuccess(data))
+        dispatch(getAssignedSurveysForOnboardingSuccess(data));
       },
       ...options,
     }
