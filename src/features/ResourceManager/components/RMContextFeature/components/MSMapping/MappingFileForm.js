@@ -118,8 +118,8 @@ const MappingFileForm = ({ fileId, msFieldOptions: propMSFieldOptions, reference
                 name={name}
                 value={value}
                 options={msFieldOptions}
+                reference={reference}
                 onChange={getOnChangeForReference(reference)}
-                fieldTemplate={reference.field_template}
                 key={reference.id}
               />
             );

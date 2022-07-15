@@ -19,6 +19,7 @@ const CustomModal = ({
   onDelete,
   isDeleteProceed,
   CustomButton = LoadingButton,
+  hiddenSubmitButton = false,
   ...attrs
 }) => {
   return (
@@ -44,13 +45,15 @@ const CustomModal = ({
               )}
             </div>
             <div>
-              <CustomButton
-                className={"px-4"}
-                onClick={onSubmit}
-                color="primary"
-                isLoading={isSubmitProceed}
-                value={submitBtnText}
-              />
+              {hiddenSubmitButton ? null : (
+                <CustomButton
+                  className={"px-4"}
+                  onClick={onSubmit}
+                  color="primary"
+                  isLoading={isSubmitProceed}
+                  value={submitBtnText}
+                />
+              )}
             </div>
           </div>
         )}
