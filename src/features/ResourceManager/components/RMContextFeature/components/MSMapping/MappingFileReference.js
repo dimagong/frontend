@@ -118,12 +118,13 @@ const Association = ({ name, onRemove }) => {
 
 const Option = ({ option, isOpen, onToggle, dFormOptions, referenceId }) => {
   const associations = option.options ?? [];
-  const [dFormOption, setDFormOption] = useState(null);
+
+  const [value, setValue] = useState("");
 
   const optionsUpdate = useRMFileReferenceOptionsUpdate({ optionId: option.id, referenceId });
 
   const onAdd = () => {
-    const new_options = [...option.options, dFormOption.value];
+    const new_options = [...option.options, value];
     optionsUpdate.mutate({ new_options });
   };
 
@@ -150,12 +151,19 @@ const Option = ({ option, isOpen, onToggle, dFormOptions, referenceId }) => {
           <Row className="align-items-center py-1">
             <Col xs="9">
               <NmpSelect
-                value={dFormOption}
                 options={dFormOptions.map((label) => ({ label, value: label }))}
-                onChange={setDFormOption}
-                backgroundColor="transparent"
+                inputValue={value}
+                onInputChange={(value, meta) => {
+                  if (meta.action === "input-change") {
+                    // only set the input when the action that caused the
+                    // change equals to "input-change" and ignore the other
+                    // ones like: "set-value", "input-blur", and "menu-close"
+                    setValue(value);
+                  }
+                }}
                 placeholder="Add new option mapping"
                 menuPosition="fixed"
+                backgroundColor="transparent"
                 searchable
               />
             </Col>
@@ -164,7 +172,7 @@ const Option = ({ option, isOpen, onToggle, dFormOptions, referenceId }) => {
                 color="primary"
                 size="sm"
                 onClick={onAdd}
-                disabled={associations.includes(dFormOption?.value)}
+                disabled={associations.includes(value)}
                 loading={optionsUpdate.isLoading}
               >
                 Add
@@ -173,7 +181,7 @@ const Option = ({ option, isOpen, onToggle, dFormOptions, referenceId }) => {
           </Row>
 
           <Scrollbars autoHeight autoHeightMax={80}>
-            <div className="d-flex">
+            <div className="d-flex flex-wrap full-width" style={{ paddingRight: 14 }}>
               {associations.map((association, id) => (
                 <Association key={id} name={association} onRemove={() => onRemove(association)} />
               ))}
@@ -211,16 +219,18 @@ const Options = ({ referenceId, dFormOptions }) => {
 
       <div className="py-1">
         <Scrollbars autoHeight autoHeightMax={400}>
-          {templateOptions.map((templateOption) => (
-            <Option
-              option={templateOption}
-              dFormOptions={dFormOptions}
-              key={templateOption.id}
-              isOpen={accordion.open.includes(templateOption.id)}
-              onToggle={() => dispatchAccordion({ type: "toggle", value: templateOption.id })}
-              referenceId={referenceId}
-            />
-          ))}
+          <div style={{ paddingRight: 14 }}>
+            {templateOptions.map((templateOption) => (
+              <Option
+                option={templateOption}
+                dFormOptions={dFormOptions}
+                key={templateOption.id}
+                isOpen={accordion.open.includes(templateOption.id)}
+                onToggle={() => dispatchAccordion({ type: "toggle", value: templateOption.id })}
+                referenceId={referenceId}
+              />
+            ))}
+          </div>
         </Scrollbars>
       </div>
     </div>

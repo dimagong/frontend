@@ -155,6 +155,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
     value,
     options,
     onChange,
+    onInputChange,
 
     valid = false,
     invalid = false,
@@ -186,6 +187,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
       value={value}
       options={options}
       onChange={onChange}
+      onInputChange={onInputChange}
       valid={valid}
       invalid={invalid}
       placeholder={placeholder}
@@ -217,6 +219,8 @@ NmpSelect.propTypes = {
   value: PropTypes.oneOfType([optionType, PropTypes.arrayOf(optionType)]),
   options: PropTypes.arrayOf(optionType),
   onChange: PropTypes.func,
+  inputValue: PropTypes.string,
+  onInputChange: PropTypes.func,
 
   valid: PropTypes.bool,
   invalid: PropTypes.bool,
