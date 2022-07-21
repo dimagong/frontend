@@ -10,9 +10,11 @@ import {
   invitationPath,
   onboardingProcessPath,
   userProfilePath,
+  twoFactorAuthPath,
 } from "constants/paths";
 
 const Login = lazy(() => import("features/auth/login/Login"));
+const TwoFactorAuthenticator = lazy(() => import("features/auth/2FA/2FA"));
 const ForgotPassword = lazy(() => import("features/auth/forgotPassword/ForgotPassword"));
 const Notifications = lazy(() => import("features/onboarding/notifications/Notifications"));
 const DForm = lazy(() => import("features/onboarding/dForm/DForm"));
@@ -33,6 +35,14 @@ const routes = [
   {
     path: loginPath,
     Component: Login,
+    isPrivate: false,
+    exact: true,
+    redirect: homePath,
+    fullLayout: true,
+  },
+  {
+    path: twoFactorAuthPath,
+    Component: TwoFactorAuthenticator,
     isPrivate: false,
     exact: true,
     redirect: homePath,
