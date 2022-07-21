@@ -116,15 +116,17 @@ const Association = ({ name, onRemove }) => {
   );
 };
 
-const Option = ({ option, isOpen, onToggle, dFormOptions, referenceId }) => {
-  const associations = option.options ?? [];
+const Option = ({ option: templateOption, isOpen, onToggle, dFormOptions, referenceId }) => {
+  const associations = templateOption.options ?? [];
 
   const [value, setValue] = useState("");
+  const [option, setOption] = useState(null);
 
-  const optionsUpdate = useRMFileReferenceOptionsUpdate({ optionId: option.id, referenceId });
+  const optionsUpdate = useRMFileReferenceOptionsUpdate({ optionId: templateOption.id, referenceId });
 
   const onAdd = () => {
-    const new_options = [...option.options, value];
+    const new_option = value || option?.value;
+    const new_options = [...templateOption.options, new_option];
     optionsUpdate.mutate({ new_options });
   };
 
@@ -140,7 +142,7 @@ const Option = ({ option, isOpen, onToggle, dFormOptions, referenceId }) => {
       <div className="ms-mapping__reference-option-header px-2 py-1" onClick={onToggle}>
         <Row className="align-items-center">
           <Col xs="10">
-            <strong className="ms-mapping__reference-option-name">{option.option_name}</strong>
+            <strong className="ms-mapping__reference-option-name">{templateOption.option_name}</strong>
           </Col>
           <Col xs="2">{isOpen ? <ExpandLess fontSize="large" /> : <ExpandMore fontSize="large" />}</Col>
         </Row>
@@ -152,13 +154,16 @@ const Option = ({ option, isOpen, onToggle, dFormOptions, referenceId }) => {
             <Col xs="9">
               <NmpSelect
                 options={dFormOptions.map((label) => ({ label, value: label }))}
+                value={option}
                 inputValue={value}
-                onInputChange={(value, meta) => {
+                onChange={setOption}
+                onInputChange={(_value, meta) => {
                   if (meta.action === "input-change") {
                     // only set the input when the action that caused the
                     // change equals to "input-change" and ignore the other
                     // ones like: "set-value", "input-blur", and "menu-close"
-                    setValue(value);
+                    setValue(_value);
+                    setOption(null);
                   }
                 }}
                 placeholder="Add new option mapping"
@@ -172,7 +177,7 @@ const Option = ({ option, isOpen, onToggle, dFormOptions, referenceId }) => {
                 color="primary"
                 size="sm"
                 onClick={onAdd}
-                disabled={associations.includes(value)}
+                disabled={associations.includes(value) || associations.includes(option?.value)}
                 loading={optionsUpdate.isLoading}
               >
                 Add

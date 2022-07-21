@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Creatable from "react-select/creatable";
 import Select, { components } from "react-select";
 
 import { useForkRef } from "hooks/useForkRef";
@@ -170,6 +171,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
     multiple = false,
     searchable = false,
     getOptionValue,
+    isCreatable = false,
 
     menuIsOpen,
 
@@ -182,8 +184,10 @@ const NmpSelect = React.forwardRef((props, ref) => {
   const innerRef = React.useRef(null);
   const forkedRef = useForkRef(innerRef, ref);
 
+  const SelectComponent = isCreatable ? Creatable : Select;
+
   return (
-    <Select
+    <SelectComponent
       value={value}
       options={options}
       onChange={onChange}
@@ -197,6 +201,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
       isClearable={readonly ? false : clearable}
       isMulti={multiple}
       isSearchable={readonly ? false : searchable}
+      isCreatable={isCreatable}
       menuIsOpen={readonly ? false : menuIsOpen}
       components={defaultComponents}
       getOptionValue={getOptionValue}
@@ -207,7 +212,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
       {...attrs}
     >
       {children}
-    </Select>
+    </SelectComponent>
   );
 });
 
@@ -235,6 +240,8 @@ NmpSelect.propTypes = {
   multiple: PropTypes.bool,
   searchable: PropTypes.bool,
   getOptionValue: PropTypes.func,
+
+  isCreatable: PropTypes.bool,
 
   menuIsOpen: PropTypes.bool,
 
