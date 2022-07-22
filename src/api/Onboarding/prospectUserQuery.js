@@ -6,35 +6,35 @@ import { useDispatch } from "react-redux";
 
 import { useGenericMutation } from "api/useGenericMutation";
 
+import { useMutation, useQueryClient } from "react-query";
+
 import appSlice from "app/slices/appSlice";
+
+import { clientAPI } from "api/clientAPI";
 
 const {
   getAssignedSurveysForOnboardingSuccess,
   getAssignedSurveysForOnboardingError,
   removeUserNotifyError,
   removeUserNotifySuccess,
+  submitdFormDataError,
+  submitdFormDataSuccess,
 } = appSlice.actions;
 
 export const ProspectUserProfileQueryKey = createQueryKey("Prospect User profile");
-export const ProspectUserSurvayPassingQueryKey = createQueryKey("Prospect User Survay Passing");
-export const ProspectRemoveUserNotifyQueryKey = createQueryKey("Prospect User Remove Notify");
 
 export const ProspectUserProfileKeys = {
   all: () => [ProspectUserProfileQueryKey],
-};
-
-export const ProspectUserSurvayKeys = {
-  all: () => [ProspectUserSurvayPassingQueryKey],
-};
-
-export const ProspectRemoveUserNotifyQueryKeys = {
-  all: () => [ProspectRemoveUserNotifyQueryKey],
+  survayPassing: ["Prospect User survay passing"],
+  removeUserNotify: ["Prospect User remove notify"],
+  submitdFormDataRequest: ["Prospect User submit dForm data"],
 };
 
 export const useProspectUserProfileQuery = (options = {}) => {
   return useGenericQuery(
     {
-      url: `/member-view-api/user/profile`,
+      // url: `/member-view-api/user/profile`,
+      url: `/api/user/profile`,
       queryKey: [...ProspectUserProfileKeys.all()],
     },
     {
@@ -53,8 +53,9 @@ export const useSurvayPassingQuery = (options = {}) => {
   const dispatch = useDispatch();
   return useGenericQuery(
     {
-      url: `/member-view-api/survey-passing`,
-      queryKey: [...ProspectUserSurvayKeys.all()],
+      // url: `/member-view-api/survey-passing`,
+      url: `/api/survey-passing`,
+      queryKey: [...ProspectUserProfileKeys.survayPassing],
     },
     {
       onError: (error) => {
@@ -79,7 +80,7 @@ export const useProspectRemoveUserNotifyMutation = (payload, options = {}) => {
     {
       url: `/api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`,
       method: "patch",
-      queryKey: [...ProspectRemoveUserNotifyQueryKeys.all()],
+      queryKey: [...ProspectUserProfileKeys.removeUserNotify],
     },
     {
       onError: (error) => {
@@ -93,3 +94,45 @@ export const useProspectRemoveUserNotifyMutation = (payload, options = {}) => {
     }
   );
 };
+
+export const useSubmitdFormDataRequestMutation = (options = {}) => {
+  const dispatch = useDispatch();
+
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload) => clientAPI["put"](`/api/dform/${payload.dForm.id}/submit-data`, payload.data),
+
+    onSettled: () => {
+      return queryClient.invalidateQueries([...ProspectUserProfileKeys.submitdFormDataRequest]);
+    },
+    onError: (error) => {
+      console.log("useSubmitdFormDataRequestMutation ERROR", error);
+      dispatch(submitdFormDataError(error.message));
+    },
+    onSuccess: (data) => {
+      console.log("useSubmitdFormDataRequestMutation SUCCESSFUL", data);
+      dispatch(submitdFormDataSuccess(data));
+    },
+
+    ...options,
+  });
+};
+
+// return useGenericMutation(
+//   {
+//     url: `/api/dform/${id}/submit-data`,
+//     method: "put",
+//     queryKey: [...ProspectUserProfileKeys.submitdFormDataRequest],
+//   },
+//   {
+//     onError: (error) => {
+//       console.log("useSubmitdFormDataRequestMutation ERROR", error);
+//       dispatch(submitdFormDataError(error.message));
+//     },
+//     onSuccess: (data) => {
+//       console.log("useSubmitdFormDataRequestMutation SUCCESSFUL", data);
+//       dispatch(submitdFormDataSuccess(data));
+//     },
+//   }
+// );
