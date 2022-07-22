@@ -139,8 +139,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
       dispatch(
         createUserOnboardingRequest({
           ...manager.onboarding,
-          is_private: manager?.onboarding?.d_form?.is_private,
-          is_internal: manager?.onboarding?.is_internal,
+          is_internal: manager?.onboarding?.d_form?.is_private || manager?.onboarding?.is_internal,
         })
       );
     }
@@ -210,36 +209,34 @@ const UserOnboardingCreate = ({ isCreate }) => {
               </Row>
             </Col>
             <Col>
-              <Row className="mb-2">
-                <Col md={6}>
-                  <div className="survey-assign_body_select-label">Who will review the results?</div>
-                  <div className="survey-assign_body_reviewers-select_container">
-                    <div className="survey-assign_body_reviewers-select_container_select">
-                      <Select
-                        components={{ DropdownIndicator }}
-                        value={selectedReviewer}
-                        styles={selectStyles}
-                        options={
-                          isReviewersLimitNotExceed ? prepareSelectReviewers(availableReviewers).sort(sortByLabel) : []
-                        }
-                        noOptionsMessage={() =>
-                          isReviewersLimitNotExceed ? "No options" : "Maximum reviewers count is 5"
-                        }
-                        onChange={(value) => {
-                          setSelectedReviewer(value);
-                        }}
-                      />
-                    </div>
-                    <button
-                      onClick={() => {
-                        handleReviewerAdd();
+              <div className="mb-2">
+                <div className="survey-assign_body_select-label">Who will review the results?</div>
+                <div className="survey-assign_body_reviewers-select_container">
+                  <div className="survey-assign_body_reviewers-select_container_select">
+                    <Select
+                      components={{ DropdownIndicator }}
+                      value={selectedReviewer}
+                      styles={selectStyles}
+                      options={
+                        isReviewersLimitNotExceed ? prepareSelectReviewers(availableReviewers).sort(sortByLabel) : []
+                      }
+                      noOptionsMessage={() =>
+                        isReviewersLimitNotExceed ? "No options" : "Maximum reviewers count is 5"
+                      }
+                      onChange={(value) => {
+                        setSelectedReviewer(value);
                       }}
-                    >
-                      <Plus />
-                    </button>
+                    />
                   </div>
-                </Col>
-              </Row>
+                  <button
+                    onClick={() => {
+                      handleReviewerAdd();
+                    }}
+                  >
+                    <Plus />
+                  </button>
+                </div>
+              </div>
               <Row>
                 <Col>
                   <div className="survey-assign_body_reviewers">
@@ -272,7 +269,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
                   color="primary"
                   icon={<Check className="vx-icon" size={12} />}
                   label=""
-                  checked={manager.onboarding.is_internal || manager?.onboarding?.d_form?.is_private}
+                  checked={manager?.onboarding?.d_form?.is_private || manager?.onboarding?.is_internal}
                   onChange={(event) =>
                     dispatch(
                       setManagerOnboardingProperty({
