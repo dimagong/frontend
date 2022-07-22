@@ -19,6 +19,8 @@ const {
   removeUserNotifySuccess,
   submitdFormDataError,
   submitdFormDataSuccess,
+  submitdFormError,
+  submitdFormSuccess,
 } = appSlice.actions;
 
 export const ProspectUserProfileQueryKey = createQueryKey("Prospect User profile");
@@ -27,9 +29,11 @@ export const ProspectUserProfileKeys = {
   all: () => [ProspectUserProfileQueryKey],
   survayPassing: ["Prospect User survay passing"],
   removeUserNotify: ["Prospect User remove notify"],
-  submitdFormDataRequest: ["Prospect User submit dForm data"],
+  submitdFormData: ["Prospect User submit dFormData"],
+  submitdFormPath: ["Prospect User submit dFormPath"],
 };
 
+//! using outdated endpoint
 export const useProspectUserProfileQuery = (options = {}) => {
   return useGenericQuery(
     {
@@ -49,6 +53,7 @@ export const useProspectUserProfileQuery = (options = {}) => {
   );
 };
 
+//! using outdated endpoint
 export const useSurvayPassingQuery = (options = {}) => {
   const dispatch = useDispatch();
   return useGenericQuery(
@@ -71,6 +76,7 @@ export const useSurvayPassingQuery = (options = {}) => {
   );
 };
 
+//! no new endpoint as member-view-api,  using outdated endpoint
 export const useProspectRemoveUserNotifyMutation = (payload, options = {}) => {
   const dispatch = useDispatch();
 
@@ -95,16 +101,18 @@ export const useProspectRemoveUserNotifyMutation = (payload, options = {}) => {
   );
 };
 
+//! using outdated endpoint
 export const useSubmitdFormDataRequestMutation = (options = {}) => {
   const dispatch = useDispatch();
 
   const queryClient = useQueryClient();
 
   return useMutation({
+    //member-view-api/dform/${payload.dForm.id}/submit-data
     mutationFn: (payload) => clientAPI["put"](`/api/dform/${payload.dForm.id}/submit-data`, payload.data),
 
     onSettled: () => {
-      return queryClient.invalidateQueries([...ProspectUserProfileKeys.submitdFormDataRequest]);
+      return queryClient.invalidateQueries([...ProspectUserProfileKeys.submitdFormData]);
     },
     onError: (error) => {
       console.log("useSubmitdFormDataRequestMutation ERROR", error);
@@ -119,20 +127,27 @@ export const useSubmitdFormDataRequestMutation = (options = {}) => {
   });
 };
 
-// return useGenericMutation(
-//   {
-//     url: `/api/dform/${id}/submit-data`,
-//     method: "put",
-//     queryKey: [...ProspectUserProfileKeys.submitdFormDataRequest],
-//   },
-//   {
-//     onError: (error) => {
-//       console.log("useSubmitdFormDataRequestMutation ERROR", error);
-//       dispatch(submitdFormDataError(error.message));
-//     },
-//     onSuccess: (data) => {
-//       console.log("useSubmitdFormDataRequestMutation SUCCESSFUL", data);
-//       dispatch(submitdFormDataSuccess(data));
-//     },
-//   }
-// );
+//! using outdated endpoint
+export const useSubmitdFormPathRequestMutation = (options = {}) => {
+  const dispatch = useDispatch();
+
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    //member-view-api/dform/${payload.dForm.id}/submit
+    mutationFn: (payload) => clientAPI["put"](`/api/dform/${payload.dForm.id}/submit`, payload.data),
+
+    onSettled: () => {
+      return queryClient.invalidateQueries([...ProspectUserProfileKeys.submitdFormPath]);
+    },
+    onError: (error) => {
+      console.log("useSubmitdFormPathRequestMutation ERROR", error);
+      dispatch(submitdFormError(error.message));
+    },
+    onSuccess: (data) => {
+      console.log("useSubmitdFormPathRequestMutation SUCCESSFUL", data);
+      dispatch(submitdFormSuccess(data));
+    },
+    ...options,
+  });
+};
