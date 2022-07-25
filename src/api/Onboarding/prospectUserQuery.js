@@ -22,7 +22,10 @@ const {
   submitdFormError,
   submitdFormSuccess,
   getCurrentQuestionForAssignedSurveyError,
+  getCurrentQuestionForAssignedSurveySuccess,
   getProfileError,
+  beginSurveyError,
+  beginSurveySuccess,
 } = appSlice.actions;
 
 export const ProspectUserProfileQueryKey = createQueryKey("Prospect User profile");
@@ -35,6 +38,8 @@ export const ProspectUserProfileKeys = {
   submitdFormPath: ["Prospect User submit dFormPath"],
   currentQuestionForAssignedSurvey: ["Prospect User current question for assigned survey"],
   currentQuestionForAssignedSurveyId: (id) => [...ProspectUserProfileKeys.currentQuestionForAssignedSurvey, id],
+  beginSurvey: ["Prospect User begin survey"],
+  beginSurveyId: (id) => [...ProspectUserProfileKeys.beginSurvey, id],
 };
 
 //! using outdated endpoint
@@ -176,7 +181,32 @@ export const useGetCurrentQuestionForAssignedSurvey = (payload, options = {}) =>
       },
       onSuccess: (data) => {
         console.log("useGetCurrentQuestionForAssignedSurveyUrl SUCCESSFUL", data);
-        //dispatch(getMemberFirmActivitiesSuccess(data));
+        dispatch(getCurrentQuestionForAssignedSurveySuccess(data));
+      },
+      ...options,
+    }
+  );
+};
+
+//! using outdated endpoint
+export const useGetBeginSurvey = (payload, options = {}) => {
+  const { id } = payload;
+
+  const dispatch = useDispatch();
+  return useGenericQuery(
+    {
+      //member-view-api/survey-passing/${id}/begin
+      url: `api/survey-passing/${id}/begin`,
+      queryKey: [...ProspectUserProfileKeys.beginSurveyId(id)],
+    },
+    {
+      onError: (error) => {
+        console.log("useGetBeginSurvey ERROR", error);
+        dispatch(beginSurveyError(error.message));
+      },
+      onSuccess: (data) => {
+        console.log("useGetBeginSurvey SUCCESSFUL", data);
+        dispatch(beginSurveySuccess(data));
       },
       ...options,
     }
