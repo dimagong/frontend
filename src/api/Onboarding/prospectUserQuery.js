@@ -21,6 +21,8 @@ const {
   submitdFormDataSuccess,
   submitdFormError,
   submitdFormSuccess,
+  getCurrentQuestionForAssignedSurveyError,
+  getProfileError,
 } = appSlice.actions;
 
 export const ProspectUserProfileQueryKey = createQueryKey("Prospect User profile");
@@ -31,10 +33,13 @@ export const ProspectUserProfileKeys = {
   removeUserNotify: ["Prospect User remove notify"],
   submitdFormData: ["Prospect User submit dFormData"],
   submitdFormPath: ["Prospect User submit dFormPath"],
+  currentQuestionForAssignedSurvey: ["Prospect User current question for assigned survey"],
+  currentQuestionForAssignedSurveyId: (id) => [...ProspectUserProfileKeys.currentQuestionForAssignedSurvey, id],
 };
 
 //! using outdated endpoint
 export const useProspectUserProfileQuery = (options = {}) => {
+  const dispatch = useDispatch();
   return useGenericQuery(
     {
       // url: `/member-view-api/user/profile`,
@@ -44,6 +49,7 @@ export const useProspectUserProfileQuery = (options = {}) => {
     {
       onError: (error) => {
         console.log("ERROR useProspectUserProfileQuery", error);
+        dispatch(getProfileError(error.message));
       },
       onSuccess: (data) => {
         console.log("SUCCESS useProspectUserProfileQuery", data);
@@ -150,4 +156,29 @@ export const useSubmitdFormPathRequestMutation = (options = {}) => {
     },
     ...options,
   });
+};
+
+//! using outdated endpoint
+export const useGetCurrentQuestionForAssignedSurvey = (payload, options = {}) => {
+  const { id } = payload;
+
+  const dispatch = useDispatch();
+  return useGenericQuery(
+    {
+      //member-view-api/survey-passing/${id}/current-question
+      url: `api/survey-passing/${id}/current-question`,
+      queryKey: [...ProspectUserProfileKeys.currentQuestionForAssignedSurveyId(id)],
+    },
+    {
+      onError: (error) => {
+        console.log("useGetCurrentQuestionForAssignedSurveyUrl ERROR", error);
+        dispatch(getCurrentQuestionForAssignedSurveyError(error.message));
+      },
+      onSuccess: (data) => {
+        console.log("useGetCurrentQuestionForAssignedSurveyUrl SUCCESSFUL", data);
+        //dispatch(getMemberFirmActivitiesSuccess(data));
+      },
+      ...options,
+    }
+  );
 };
