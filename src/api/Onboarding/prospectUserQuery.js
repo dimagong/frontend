@@ -40,6 +40,7 @@ export const ProspectUserProfileKeys = {
   currentQuestionForAssignedSurveyId: (id) => [...ProspectUserProfileKeys.currentQuestionForAssignedSurvey, id],
   beginSurvey: ["Prospect User begin survey"],
   beginSurveyId: (id) => [...ProspectUserProfileKeys.beginSurvey, id],
+  appOnboardings: ["Prospect User app onboardings"],
 };
 
 //! using outdated endpoint
@@ -58,6 +59,24 @@ export const useProspectUserProfileQuery = (options = {}) => {
       },
       onSuccess: (data) => {
         console.log("SUCCESS useProspectUserProfileQuery", data);
+      },
+      ...options,
+    }
+  );
+};
+
+export const useAppsOnboardingsQuery = (options = {}) => {
+  return useGenericQuery(
+    {
+      url: `/member-view-api/user/onboardings`,
+      queryKey: [...ProspectUserProfileKeys.appOnboardings],
+    },
+    {
+      onError: (error) => {
+        console.log("ERROR useAppOnboardingsQuery", error);
+      },
+      onSuccess: (data) => {
+        console.log("SUCCESS useAppOnboardingsQuery", data);
       },
       ...options,
     }
