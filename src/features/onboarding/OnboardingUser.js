@@ -19,7 +19,7 @@ import OnboardingComponent from "./components/Onboarding";
 import {
   useProspectUserProfileQuery,
   useSurvayPassingQuery,
-  useAppsOnboardingsQuery,
+  useAppsOnboardingsAllQuery,
   useProspectRemoveUserNotifyMutation,
 } from "api/Onboarding/prospectUserQuery";
 
@@ -29,7 +29,7 @@ import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 const useCallCollectQuery = () => {
   const userProspectProfile = useProspectUserProfileQuery();
   const userSurvayPassing = useSurvayPassingQuery();
-  const useAppsOnboardings = useAppsOnboardingsQuery();
+  const useAppsOnboardings = useAppsOnboardingsAllQuery();
   return { userProspectProfile, userSurvayPassing, useAppsOnboardings };
 };
 
