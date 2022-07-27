@@ -207,6 +207,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
     setManagerState(manager);
   }, [manager]);
 
+  console.log("manager ", manager);
   return (
     <>
       <Card>
@@ -296,7 +297,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
 
             <Row>
               <Col sm="6">
-                <p style={{ marginBottom: 5 }}>Portal access:</p>
+                {/* <p style={{ marginBottom: 5 }}>Portal access:</p> */}
                 {manager.invited && !manager.invited.revoked_at ? (
                   <UserInvitationsCreate
                     user={manager}

@@ -86,9 +86,22 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
   const renderTime = () => {
     return (
       <div>
-        <Button color="primary" className="mr-1" size="sm" style={{ "font-size": "14px" }} id="send-invitation-btn">
+        <Button
+          color="primary"
+          className="mr-1 ml-1"
+          size="sm"
+          style={{ "font-size": "14px" }}
+          id="send-invitation-btn"
+        >
           {invitationExpiredTime ? invitationExpiredTime : <RefreshCcw size="15" className="rotating" />}
         </Button>
+      </div>
+    );
+  };
+
+  const renderTimeButton = () => {
+    return (
+      <div>
         <CopyToClipboard
           onCopy={onCopy}
           text={window.location.origin + "/invitation-accept/" + manager.invited.invitation_token}
@@ -142,22 +155,35 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
     return manager.invited && (manager.invited.accepted_at || manager.invited.is_expired || manager.invited.revoked_at);
   };
 
+  const isShowTimer = () => {
+    return (
+      manager.invited && !manager.invited.accepted_at && !manager.invited.is_expired && !manager.invited.revoked_at
+    );
+  };
+
   return (
-    <div className="d-flex">
-      {isShowStatus() ? (
-        <React.Fragment>
-          {renderStatus()}
-          {renderRemove()}
-        </React.Fragment>
-      ) : !manager.invited ? (
-        renderCreate()
-      ) : (
-        <React.Fragment>
-          {renderTime()}
-          {renderRemove()}
-        </React.Fragment>
-      )}
-    </div>
+    <>
+      <div style={{ marginBottom: 5, display: "flex", alignItems: "center" }}>
+        <p style={{ margin: 0 }}>Portal access:</p>
+        {isShowTimer() && renderTime()}
+      </div>
+
+      <div className="d-flex">
+        {isShowStatus() ? (
+          <React.Fragment>
+            {renderStatus()}
+            {renderRemove()}
+          </React.Fragment>
+        ) : !manager.invited ? (
+          renderCreate()
+        ) : (
+          <React.Fragment>
+            {renderTimeButton()}
+            {renderRemove()}
+          </React.Fragment>
+        )}
+      </div>
+    </>
   );
 };
 
