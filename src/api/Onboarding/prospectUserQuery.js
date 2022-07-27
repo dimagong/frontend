@@ -40,7 +40,8 @@ export const ProspectUserProfileKeys = {
   currentQuestionForAssignedSurveyId: (id) => [...ProspectUserProfileKeys.currentQuestionForAssignedSurvey, id],
   beginSurvey: ["Prospect User begin survey"],
   beginSurveyId: (id) => [...ProspectUserProfileKeys.beginSurvey, id],
-  appOnboardings: ["Prospect User app onboardings"],
+  appOnboardingsAll: ["Prospect User app onboardings"],
+  appOnboarding: (id) => [...ProspectUserProfileKeys.appOnboardingsAll, id],
 };
 
 //! using outdated endpoint
@@ -65,11 +66,11 @@ export const useProspectUserProfileQuery = (options = {}) => {
   );
 };
 
-export const useAppsOnboardingsQuery = (options = {}) => {
+export const useAppsOnboardingsAllQuery = (options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/user/onboardings`,
-      queryKey: [...ProspectUserProfileKeys.appOnboardings],
+      queryKey: [...ProspectUserProfileKeys.appOnboardingsAll],
     },
     {
       onError: (error) => {
@@ -77,6 +78,26 @@ export const useAppsOnboardingsQuery = (options = {}) => {
       },
       onSuccess: (data) => {
         console.log("SUCCESS useAppOnboardingsQuery", data);
+      },
+      ...options,
+    }
+  );
+};
+
+//http://localhost/member-view-api/user/onboardings/12
+export const useAppsOnboardingIdQuery = (payload, options = {}) => {
+  const { id } = payload;
+  return useGenericQuery(
+    {
+      url: `/member-view-api/user/onboardings/${id}`,
+      queryKey: [...ProspectUserProfileKeys.appOnboarding(id)],
+    },
+    {
+      onError: (error) => {
+        console.log("ERROR useAppsOnboardingIdQuery", error);
+      },
+      onSuccess: (data) => {
+        console.log("SUCCESS useAppsOnboardingIdQuery", data);
       },
       ...options,
     }
