@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../../assets/scss/plugins/extensions/toastr.scss";
 
 import appSlice from "app/slices/appSlice";
-import { useCreateInvitationsMutation } from "api/User/useUserInvitationQuery";
+import { useCreateInvitationsMutation, useSendEmailUserQuery } from "api/User/useUserInvitationQuery";
 
 const { createInvitationsRequest, deleteInvitationsRequest } = appSlice.actions;
 
@@ -37,6 +37,19 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
 
   const getInvitationDate = () => {
     return moment(manager.invited.created_at).add(1, "days").diff(moment());
+  };
+
+  const { refetch } = useSendEmailUserQuery({ invitationId: manager.invited?.id }, { enabled: false });
+  const sendEmail = (event) => {
+    event.preventDefault();
+    if (manager.invited?.id) {
+      refetch();
+    } else {
+      toast.error("Sending email is impossible", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000,
+      });
+    }
   };
 
   const startInvitationTimer = () => {
@@ -89,15 +102,7 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
   const renderTime = () => {
     return (
       <div className="ml-1" style={{ fontWeight: 600 }}>
-        {/* <Button
-          color="primary"
-          className="mr-1 ml-1"
-          size="sm"
-          style={{ "font-size": "14px" }}
-          id="send-invitation-btn"
-        > */}
         {invitationExpiredTime ? invitationExpiredTime : <RefreshCcw size="15" className="rotating" />}
-        {/* </Button> */}
       </div>
     );
   };
@@ -114,14 +119,14 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
           </Button>
         </CopyToClipboard>
         <Button
-          onClick={(event) => {}}
+          onClick={sendEmail}
           color="primary"
           className="mr-1"
           size="sm"
           style={{ "font-size": "14px" }}
           id="send-invitation-btn"
         >
-          {!invitationText ? "Send invatation email" : invitationText}
+          {!invitationText ? "Send invatation email" : `${invitationText} email`}
         </Button>
       </div>
     );
@@ -138,7 +143,7 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
           style={{ "font-size": "14px" }}
           id="send-invitation-btn"
         >
-          {!invitationText ? "Create invatation link" : invitationText}
+          {!invitationText ? "Create invatation link" : `${invitationText} link`}
         </Button>
       </div>
     );

@@ -207,7 +207,6 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
     setManagerState(manager);
   }, [manager]);
 
-  console.log("manager ", manager);
   return (
     <>
       <Card>
