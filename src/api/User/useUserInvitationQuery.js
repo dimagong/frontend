@@ -11,8 +11,6 @@ import { createInvitationsPath, sendUserEmailPath } from "constants/user";
 const { createInvitationsError, createInvitationsSuccess } = appSlice.actions;
 
 export const UserInvitationKeys = {
-  createInvitation: ["User create unvitation"],
-  createIntitationId: (id) => [...UserInvitationKeys.createInvitation, id],
   sendEmailUser: ["Send email to user"],
   sendEmailUserId: (id) => [...UserInvitationKeys.sendEmailUser, id],
 };
@@ -26,7 +24,6 @@ export const useCreateInvitationsMutation = (payload, options = {}) => {
     {
       url: createInvitationsPath({ managerId, resend }),
       method: "post",
-      queryKey: [...UserInvitationKeys.createIntitationId(managerId)],
     },
     {
       onError: (error) => dispatch(createInvitationsError(error.message)),
@@ -41,7 +38,7 @@ export const useSendEmailUserQuery = (payload, options = {}) => {
   return useGenericQuery(
     {
       url: sendUserEmailPath(invitationId),
-      queryKey: [...UserInvitationKeys.sendEmailUserId(invitationId)],
+      queryKey: UserInvitationKeys.sendEmailUserId(invitationId),
     },
     {
       ...options,
