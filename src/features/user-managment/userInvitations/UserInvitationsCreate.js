@@ -126,7 +126,8 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
           style={{ "font-size": "14px" }}
           id="send-invitation-btn"
         >
-          {!invitationText ? "Send invatation email" : `${invitationText} email`}
+          Send invatation email
+          {/* {!invitationText ? "Send invatation email" : `${invitationText} email`} */}
         </Button>
       </div>
     );
@@ -143,7 +144,8 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
           style={{ "font-size": "14px" }}
           id="send-invitation-btn"
         >
-          {!invitationText ? "Create invatation link" : `${invitationText} link`}
+          Create invatation link
+          {/* {!invitationText ? "Create invatation link" : `${invitationText} link`} */}
         </Button>
       </div>
     );
