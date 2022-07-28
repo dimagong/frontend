@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../../assets/scss/plugins/extensions/toastr.scss";
 
 import appSlice from "app/slices/appSlice";
+import { useCreateInvitationsMutation } from "api/User/useUserInvitationQuery";
 
 const { createInvitationsRequest, deleteInvitationsRequest } = appSlice.actions;
 
@@ -27,9 +28,11 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
     clearInterval(invitationInterval);
   };
 
+  const useCreateInvitations = useCreateInvitationsMutation({ managerId: manager.id, resend });
   const formSubmit = (event) => {
     event.preventDefault();
-    dispatch(createInvitationsRequest({ managerId: manager.id, resend }));
+    //dispatch(createInvitationsRequest({ managerId: manager.id, resend }));
+    useCreateInvitations.mutate();
   };
 
   const getInvitationDate = () => {
@@ -85,23 +88,23 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
 
   const renderTime = () => {
     return (
-      <div>
-        <Button
+      <div className="ml-1" style={{ fontWeight: 600 }}>
+        {/* <Button
           color="primary"
           className="mr-1 ml-1"
           size="sm"
           style={{ "font-size": "14px" }}
           id="send-invitation-btn"
-        >
-          {invitationExpiredTime ? invitationExpiredTime : <RefreshCcw size="15" className="rotating" />}
-        </Button>
+        > */}
+        {invitationExpiredTime ? invitationExpiredTime : <RefreshCcw size="15" className="rotating" />}
+        {/* </Button> */}
       </div>
     );
   };
 
   const renderTimeButton = () => {
     return (
-      <div>
+      <div style={{ display: "flex" }}>
         <CopyToClipboard
           onCopy={onCopy}
           text={window.location.origin + "/invitation-accept/" + manager.invited.invitation_token}
@@ -110,6 +113,16 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
             Copy link
           </Button>
         </CopyToClipboard>
+        <Button
+          onClick={(event) => {}}
+          color="primary"
+          className="mr-1"
+          size="sm"
+          style={{ "font-size": "14px" }}
+          id="send-invitation-btn"
+        >
+          {!invitationText ? "Send invatation email" : invitationText}
+        </Button>
       </div>
     );
   };
@@ -125,7 +138,7 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
           style={{ "font-size": "14px" }}
           id="send-invitation-btn"
         >
-          {!invitationText ? "Send invitation" : invitationText}
+          {!invitationText ? "Create invatation link" : invitationText}
         </Button>
       </div>
     );
@@ -156,9 +169,7 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
   };
 
   const isShowTimer = () => {
-    return (
-      manager.invited && !manager.invited.accepted_at && !manager.invited.is_expired && !manager.invited.revoked_at
-    );
+    return manager.invited && !isShowStatus();
   };
 
   return (
