@@ -60,7 +60,7 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
       }
       const time = getInvitationDate();
 
-      if (moment.duration(time).seconds() <= 0) {
+      if (moment.duration(time).asSeconds() <= 0) {
         return setInvitationExpiredTime("Expired");
       }
 
