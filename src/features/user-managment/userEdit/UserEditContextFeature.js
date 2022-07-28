@@ -295,7 +295,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
             </Row>
 
             <Row>
-              <Col sm="6">
+              <Col sm="6" md="9">
                 {/* <p style={{ marginBottom: 5 }}>Portal access:</p> */}
                 {manager.invited && !manager.invited.revoked_at ? (
                   <UserInvitationsCreate
@@ -324,7 +324,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                   </p>
                 )}
               </Col>
-              <Col className="d-flex justify-content-end align-items-end" sm="6">
+              <Col sm="6" md="3" className="d-flex justify-content-end align-items-end">
                 <Button.Ripple className="m-0" color="primary" type="submit">
                   Save
                 </Button.Ripple>
