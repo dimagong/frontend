@@ -144,7 +144,7 @@ const UserInvitationsCreate = ({ resend }) => {
           style={{ "font-size": "14px" }}
           loading={useCreateInvitations.isLoading}
         >
-          Create invatation link
+          Create invitation link
         </NmpButton>
       </div>
     );
