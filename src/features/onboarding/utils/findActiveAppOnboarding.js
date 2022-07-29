@@ -14,3 +14,13 @@ export const findActiveAppOnboarding = (applications) => {
   }
   return false;
 };
+
+export const initialAppOnboarding = (profile, userApplications) => {
+  let appOnboardingInitial = [];
+  if (profile && !profile.onboarding?.id) {
+    appOnboardingInitial = findActiveAppOnboarding(userApplications) ?? [];
+  } else if (profile?.onboarding?.id) {
+    appOnboardingInitial = { ...profile.onboarding };
+  }
+  return appOnboardingInitial;
+};

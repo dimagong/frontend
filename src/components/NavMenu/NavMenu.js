@@ -15,8 +15,14 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
 
   const navRef = useRef();
 
-  const apps = React.useMemo(() => tabs.filter((tab) => tab.hasOwnProperty("d_form_id")), [tabs]);
-  const surveys = React.useMemo(() => tabs.filter((tab) => !tab.hasOwnProperty("d_form_id")), [tabs]);
+  const apps = React.useMemo(
+    () => tabs.filter((tab) => tab.hasOwnProperty("d_form_id") || tab.tabId.includes("onboarding")),
+    [tabs]
+  );
+  const surveys = React.useMemo(
+    () => tabs.filter((tab) => tab.tabId.includes("survey") || !tab.hasOwnProperty("d_form_id")),
+    [tabs]
+  );
 
   const menus = React.useMemo(
     () => [

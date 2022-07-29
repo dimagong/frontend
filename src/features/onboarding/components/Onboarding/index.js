@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CardBody, Card, Row, Col, TabContent, TabPane } from "reactstrap";
-import { useSelector } from "react-redux";
-import { selectLoading } from "app/selectors";
+//import { useSelector } from "react-redux";
+//import { selectLoading } from "app/selectors";
 import { isEmpty } from "lodash";
 import OnboardingSurvey from "../../OnboardingSurvey";
 import "./styles.scss";
@@ -14,7 +14,7 @@ import OnboardingApp from "./../OnboardingApp";
 
 import { useAppsOnboardingIdQuery } from "api/Onboarding/prospectUserQuery";
 
-import { findActiveAppOnboarding } from "./../../utils/findActiveAppOnboarding";
+import { findActiveAppOnboarding, initialAppOnboarding } from "./../../utils/findActiveAppOnboarding";
 //const { submitdFormRequest, setProfileOnboarding, submitdFormDataRequest } = appSlice.actions;
 
 const useOnboarding = (recentlySubmittedData, forceAppShowData, appActiveOnboardingData) => {
@@ -24,7 +24,6 @@ const useOnboarding = (recentlySubmittedData, forceAppShowData, appActiveOnboard
   if (recentlySubmittedData) setRecentlySubmitted(recentlySubmittedData);
   if (forceAppShowData) setForceAppShow(forceAppShowData);
   if (appActiveOnboardingData) setActiveAppOnboarding(appActiveOnboardingData);
-
   return [recentlySubmitted, forceAppShow, appActiveOnboarding];
 };
 
@@ -32,19 +31,11 @@ const OnboardingComponent = ({ profile, userApplications }) => {
   const [recentlySubmitted, setRecentlySubmitted] = useState(false);
   const [forceAppShow, setForceAppShow] = useState([]);
 
+  //const [recentlySubmitted] = useOnboarding(true);
+  console.log("recentlySubmitted", recentlySubmitted);
   console.log("userApplications", userApplications);
 
-  const initialAppOnboarding = () => {
-    let appOnboardingInitial = [];
-    if (profile && !profile.onboarding?.id) {
-      appOnboardingInitial = findActiveAppOnboarding(userApplications) ?? [];
-    } else if (profile?.onboarding?.id) {
-      appOnboardingInitial = { ...profile.onboarding };
-    }
-    return appOnboardingInitial;
-  };
-
-  const [appActiveOnboarding, setActiveAppOnboarding] = useState(initialAppOnboarding());
+  const [appActiveOnboarding, setActiveAppOnboarding] = useState(initialAppOnboarding(profile, userApplications));
 
   //!Mock data
   // const {data: appOnboardingSelected}= useAppsOnboardingIdQuery({ id: appOnboarding.id }, { enabled: !!appOnboarding.id })
@@ -59,11 +50,17 @@ const OnboardingComponent = ({ profile, userApplications }) => {
 
   const formatTabs = (applications) => {
     return applications.map((application) => {
-      if (application?.d_form) {
+      if (application?.d_form || application.tabId.includes("onboarding")) {
         // Check if onBoarding finished
         return {
           ...application,
-          icon: application.d_form.status === "submitted" || application.d_form.status === "approved" ? Check : "null",
+          icon:
+            application.status === "submitted" ||
+            application.status === "approved" ||
+            application.d_form.status === "submitted" ||
+            application.d_form.status === "approved"
+              ? Check
+              : "null",
         };
       } else {
         // Check is survey finished
@@ -75,8 +72,9 @@ const OnboardingComponent = ({ profile, userApplications }) => {
     });
   };
 
-  const isShowStatus = (status) => {
-    return status === "submitted" || status === "approved";
+  const isShowStatus = (application) => {
+    const status = application.d_form?.status || application.status;
+    return (status === "submitted" || status === "approved") && !~forceAppShow.indexOf(application.id);
   };
 
   const showApplication = (onboardingId) => {
@@ -89,7 +87,7 @@ const OnboardingComponent = ({ profile, userApplications }) => {
 
     if (!availableApplication) return;
 
-    if (availableApplication?.d_form) {
+    if (availableApplication?.d_form || availableApplication.tabId.includes("onboarding")) {
       return availableApplication.id + " onboarding";
     } else {
       return availableApplication.id + " survey";
@@ -97,7 +95,7 @@ const OnboardingComponent = ({ profile, userApplications }) => {
   };
 
   const unCompletedApplications = userApplications.filter((application) => {
-    if (application.d_form) {
+    if (application.tabId.includes("onboarding")) {
       return !(application.status === "approved" || application.status === "submitted");
     } else {
       // For surveys
@@ -109,6 +107,7 @@ const OnboardingComponent = ({ profile, userApplications }) => {
     return <div>Onboarding not exist</div>;
   }
 
+  console.log("forceAppShow", forceAppShow);
   return (
     <>
       <Row>
@@ -135,22 +134,24 @@ const OnboardingComponent = ({ profile, userApplications }) => {
                     return (
                       <TabPane key={index} tabId={application.tabId}>
                         <div style={{ marginLeft: "-100px", marginRight: "100px", border: "4px solid black" }}>
-                          <h2 className="onboarding-title">{application.d_form.name}</h2>
+                          <h2 className="onboarding-title">{application.d_form?.name || application.name}</h2>
                           {!isEmpty(application) &&
-                            (isShowStatus(application.d_form.status) && !~forceAppShow.indexOf(application.id) ? (
+                            (isShowStatus(application) ? (
                               <StatusComponent
-                                status={(recentlySubmitted && "recent") || application.d_form.status}
+                                status={
+                                  (recentlySubmitted && "recent") || application.d_form?.status || application.status
+                                }
                                 application={application}
                                 isAllApplicationsCompleted={!unCompletedApplications.length}
                                 onForceApplicationShow={() => showApplication(application.id)}
                               />
-                            ) : (
+                            ) : appOnboardingSelected.d_form ? (
                               <OnboardingApp
                                 profile={profile}
                                 appOnboardingSelected={appOnboardingSelected}
                                 setRecentlySubmitted={setRecentlySubmitted}
                               />
-                            ))}
+                            ) : null)}
                         </div>
                       </TabPane>
                     );
