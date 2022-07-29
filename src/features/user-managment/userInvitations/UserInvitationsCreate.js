@@ -11,8 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../../assets/scss/plugins/extensions/toastr.scss";
 
 import appSlice from "app/slices/appSlice";
+import { useCreateInvitationsMutation, useSendEmailUserMutation } from "api/User/useUserInvitationQuery";
 
-const { createInvitationsRequest, deleteInvitationsRequest } = appSlice.actions;
+const { deleteInvitationsRequest } = appSlice.actions;
 
 const UserInvitationsCreate = ({ resend, invitationText }) => {
   const dispatch = useDispatch();
@@ -27,13 +28,27 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
     clearInterval(invitationInterval);
   };
 
+  const useCreateInvitations = useCreateInvitationsMutation({ managerId: manager.id, resend });
   const formSubmit = (event) => {
     event.preventDefault();
-    dispatch(createInvitationsRequest({ managerId: manager.id, resend }));
+    useCreateInvitations.mutate();
   };
 
   const getInvitationDate = () => {
     return moment(manager.invited.created_at).add(1, "days").diff(moment());
+  };
+
+  const useSendEmailUser = useSendEmailUserMutation({ invitationId: manager.invited?.id });
+  const sendEmail = (event) => {
+    event.preventDefault();
+    if (manager.invited?.id) {
+      useSendEmailUser.mutate();
+    } else {
+      toast.error("Sending email is impossible", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000,
+      });
+    }
   };
 
   const startInvitationTimer = () => {
@@ -44,7 +59,7 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
       }
       const time = getInvitationDate();
 
-      if (moment.duration(time).seconds() <= 0) {
+      if (moment.duration(time).asSeconds() <= 0) {
         return setInvitationExpiredTime("Expired");
       }
 
@@ -85,10 +100,15 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
 
   const renderTime = () => {
     return (
-      <div>
-        <Button color="primary" className="mr-1" size="sm" style={{ "font-size": "14px" }} id="send-invitation-btn">
-          {invitationExpiredTime ? invitationExpiredTime : <RefreshCcw size="15" className="rotating" />}
-        </Button>
+      <div className="ml-1" style={{ fontWeight: 600 }}>
+        {invitationExpiredTime ? invitationExpiredTime : <RefreshCcw size="15" className="rotating" />}
+      </div>
+    );
+  };
+
+  const renderTimeButton = () => {
+    return (
+      <div style={{ display: "flex" }}>
         <CopyToClipboard
           onCopy={onCopy}
           text={window.location.origin + "/invitation-accept/" + manager.invited.invitation_token}
@@ -97,6 +117,17 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
             Copy link
           </Button>
         </CopyToClipboard>
+        <Button
+          onClick={sendEmail}
+          color="primary"
+          className="mr-1"
+          size="sm"
+          style={{ "font-size": "14px" }}
+          id="send-invitation-btn"
+        >
+          Send invatation email
+          {/* {!invitationText ? "Send invatation email" : `${invitationText} email`} */}
+        </Button>
       </div>
     );
   };
@@ -112,7 +143,8 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
           style={{ "font-size": "14px" }}
           id="send-invitation-btn"
         >
-          {!invitationText ? "Send invitation" : invitationText}
+          Create invatation link
+          {/* {!invitationText ? "Create invatation link" : `${invitationText} link`} */}
         </Button>
       </div>
     );
@@ -142,22 +174,33 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
     return manager.invited && (manager.invited.accepted_at || manager.invited.is_expired || manager.invited.revoked_at);
   };
 
+  const isShowTimer = () => {
+    return manager.invited && !isShowStatus();
+  };
+
   return (
-    <div className="d-flex">
-      {isShowStatus() ? (
-        <React.Fragment>
-          {renderStatus()}
-          {renderRemove()}
-        </React.Fragment>
-      ) : !manager.invited ? (
-        renderCreate()
-      ) : (
-        <React.Fragment>
-          {renderTime()}
-          {renderRemove()}
-        </React.Fragment>
-      )}
-    </div>
+    <>
+      <div style={{ marginBottom: 5, display: "flex", alignItems: "center" }}>
+        <p style={{ margin: 0 }}>Portal access:</p>
+        {isShowTimer() && renderTime()}
+      </div>
+
+      <div className="d-flex">
+        {isShowStatus() ? (
+          <React.Fragment>
+            {renderStatus()}
+            {renderRemove()}
+          </React.Fragment>
+        ) : !manager.invited ? (
+          renderCreate()
+        ) : (
+          <React.Fragment>
+            {renderTimeButton()}
+            {renderRemove()}
+          </React.Fragment>
+        )}
+      </div>
+    </>
   );
 };
 
