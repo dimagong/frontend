@@ -11,9 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../../assets/scss/plugins/extensions/toastr.scss";
 
 import appSlice from "app/slices/appSlice";
-import { useCreateInvitationsMutation, useSendEmailUserQuery } from "api/User/useUserInvitationQuery";
+import { useCreateInvitationsMutation, useSendEmailUserMutation } from "api/User/useUserInvitationQuery";
 
-const { createInvitationsRequest, deleteInvitationsRequest } = appSlice.actions;
+const { deleteInvitationsRequest } = appSlice.actions;
 
 const UserInvitationsCreate = ({ resend, invitationText }) => {
   const dispatch = useDispatch();
@@ -31,7 +31,6 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
   const useCreateInvitations = useCreateInvitationsMutation({ managerId: manager.id, resend });
   const formSubmit = (event) => {
     event.preventDefault();
-    //dispatch(createInvitationsRequest({ managerId: manager.id, resend }));
     useCreateInvitations.mutate();
   };
 
@@ -39,11 +38,11 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
     return moment(manager.invited.created_at).add(1, "days").diff(moment());
   };
 
-  const { refetch } = useSendEmailUserQuery({ invitationId: manager.invited?.id }, { enabled: false });
+  const useSendEmailUser = useSendEmailUserMutation({ invitationId: manager.invited?.id });
   const sendEmail = (event) => {
     event.preventDefault();
     if (manager.invited?.id) {
-      refetch();
+      useSendEmailUser.mutate();
     } else {
       toast.error("Sending email is impossible", {
         position: toast.POSITION.TOP_RIGHT,

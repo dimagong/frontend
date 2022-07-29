@@ -10,11 +10,6 @@ import { createInvitationsPath, sendUserEmailPath } from "constants/user";
 
 const { createInvitationsError, createInvitationsSuccess } = appSlice.actions;
 
-export const UserInvitationKeys = {
-  sendEmailUser: ["Send email to user"],
-  sendEmailUserId: (id) => [...UserInvitationKeys.sendEmailUser, id],
-};
-
 export const useCreateInvitationsMutation = (payload, options = {}) => {
   const dispatch = useDispatch();
 
@@ -33,12 +28,12 @@ export const useCreateInvitationsMutation = (payload, options = {}) => {
   );
 };
 
-export const useSendEmailUserQuery = (payload, options = {}) => {
+export const useSendEmailUserMutation = (payload, options = {}) => {
   const { invitationId } = payload;
-  return useGenericQuery(
+  return useGenericMutation(
     {
       url: sendUserEmailPath(invitationId),
-      queryKey: UserInvitationKeys.sendEmailUserId(invitationId),
+      method: "post",
     },
     {
       ...options,
