@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { Spinner } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 // import { selectProfile } from "app/selectors";
 import { selectOnboardingSurveys } from "app/selectors/userSelectors";
 // import { createLoadingSelector } from "app/selectors/loadingSelector";
@@ -38,7 +38,9 @@ const OnboardingUser = () => {
 
   const profile = userProspectProfile.data;
   const onboardingSurveys = useSelector(selectOnboardingSurveys);
-  const onboardingApps = useAppsOnboardings.data;
+  //!Mock data
+  //const onboardingApps = useAppsOnboardings.data;
+  const onboardingApps = profile?.onboardings ?? [];
 
   const useRemoveUserNotify = useProspectRemoveUserNotifyMutation(
     { userId: profile?.id, userNotifyEntryId: profile?.notify_entries[0]?.id },

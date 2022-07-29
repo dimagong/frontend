@@ -1,29 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { CardBody, Card, Row, Col, TabContent, TabPane } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectLoading } from "app/selectors";
-
 import { isEmpty } from "lodash";
-import FormCreate from "components/FormCreate/FormCreate";
 import OnboardingSurvey from "../../OnboardingSurvey";
 import "./styles.scss";
-
 import NavMenu from "components/NavMenu/NavMenu";
-
 import Check from "assets/img/icons/check.png";
-
 import StatusComponent from "../Components/StatusComponent";
+import OnboardingApp from "./../OnboardingApp";
 
 //import appSlice from "app/slices/appSlice";
 
-import {
-  useSubmitdFormDataRequestMutation,
-  useSubmitdFormPathRequestMutation,
-  useAppsOnboardingIdQuery,
-} from "api/Onboarding/prospectUserQuery";
+import { useAppsOnboardingIdQuery } from "api/Onboarding/prospectUserQuery";
 
 import { findActiveAppOnboarding } from "./../../utils/findActiveAppOnboarding";
 //const { submitdFormRequest, setProfileOnboarding, submitdFormDataRequest } = appSlice.actions;
+
+const useOnboarding = (recentlySubmittedData, forceAppShowData, appActiveOnboardingData) => {
+  const [recentlySubmitted, setRecentlySubmitted] = useState(false);
+  const [forceAppShow, setForceAppShow] = useState([]);
+  const [appActiveOnboarding, setActiveAppOnboarding] = useState(null);
+  if (recentlySubmittedData) setRecentlySubmitted(recentlySubmittedData);
+  if (forceAppShowData) setForceAppShow(forceAppShowData);
+  if (appActiveOnboardingData) setActiveAppOnboarding(appActiveOnboardingData);
+
+  return [recentlySubmitted, forceAppShow, appActiveOnboarding];
+};
 
 const OnboardingComponent = ({ profile, userApplications }) => {
   const [recentlySubmitted, setRecentlySubmitted] = useState(false);
@@ -41,60 +44,17 @@ const OnboardingComponent = ({ profile, userApplications }) => {
     return appOnboardingInitial;
   };
 
-  const [appOnboarding, setActiveAppOnboarding] = useState(initialAppOnboarding());
-  // useEffect(() => {
-  //   if(profile) setActiveAppOnboarding(activeAppOnboarding)
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [activeAppOnboarding])
+  const [appActiveOnboarding, setActiveAppOnboarding] = useState(initialAppOnboarding());
 
   //!Mock data
   // const {data: appOnboardingSelected}= useAppsOnboardingIdQuery({ id: appOnboarding.id }, { enabled: !!appOnboarding.id })
-  const appOnboardingSelected = { ...appOnboarding };
+  const appOnboardingSelected = { ...appActiveOnboarding };
   console.log("appOnboardingSelected", appOnboardingSelected);
-
-  //const dispatch = useDispatch();
-  const loading = useSelector(selectLoading);
-
-  const isOnboarding = () => {
-    //return userApplications && !!userApplications.length && profile.onboarding;
-    return userApplications && !!userApplications.length && appOnboarding;
-  };
-
-  const debounceonSaveMutation = useSubmitdFormDataRequestMutation();
-  const debounceOnSave = useRef((data, dForm) => {
-    //dispatch(submitdFormDataRequest({ data, dForm }))
-    debounceonSaveMutation.mutate({ data, dForm });
-  });
-
-  const submitdForm = useSubmitdFormPathRequestMutation();
-  const submitOnboardingForm = (data) => {
-    console.log("submitOnboardingForm data", data);
-    setRecentlySubmitted(true);
-    // dispatch(submitdFormRequest({ dForm: profile.onboarding.d_form, data }));
-    submitdForm.mutate({ dForm: appOnboarding.d_form, data });
-  };
 
   const handleNavClick = (onboarding) => {
     setRecentlySubmitted(false);
     //dispatch(setProfileOnboarding({ ...onboarding }));
     setActiveAppOnboarding({ ...onboarding });
-  };
-
-  const isDisabledSubmit = () => {
-    // return ["user-lock", "hard-lock"].indexOf(profile.onboarding.d_form?.access_type) !== -1;
-    return ["user-lock", "hard-lock"].indexOf(appOnboarding.d_form?.access_type) !== -1;
-  };
-
-  const isShowProtectedElements = (roles) => {
-    return !roles.some((role) => ["corporate_manager", "member_firm_manager", "member", "admin"].indexOf(role) !== -1);
-  };
-
-  const commonFormProps = {
-    isShowProtectedElements: isShowProtectedElements(profile.roles),
-    fileLoader: true,
-    fill: true,
-    dForm: appOnboardingSelected.d_form,
-    isStateConfig: false,
   };
 
   const formatTabs = (applications) => {
@@ -125,7 +85,7 @@ const OnboardingComponent = ({ profile, userApplications }) => {
 
   const getActiveTab = () => {
     //const availableApplication = profile?.onboarding || profile.onboardings[0];
-    const availableApplication = appOnboarding || profile.onboardings[0];
+    const availableApplication = appActiveOnboarding || profile.onboardings[0];
 
     if (!availableApplication) return;
 
@@ -145,13 +105,13 @@ const OnboardingComponent = ({ profile, userApplications }) => {
     }
   });
 
-  if (!isOnboarding()) {
+  if (!appActiveOnboarding) {
     return <div>Onboarding not exist</div>;
   }
 
   return (
     <>
-      <Row style={{ border: "2px solid red" }}>
+      <Row>
         <Col sm={12}>
           <NavMenu
             withIcons
@@ -171,15 +131,7 @@ const OnboardingComponent = ({ profile, userApplications }) => {
             <CardBody className="pt-0 pl-0">
               <TabContent activeTab={getActiveTab()}>
                 {userApplications.map((application, index) => {
-                  if (application.d_form) {
-                    // const commonFormProps = {
-                    //   isShowProtectedElements: isShowProtectedElements(profile.roles),
-                    //   fileLoader: true,
-                    //   fill: true,
-                    //   dForm: application.d_form,
-                    //   isStateConfig: false,
-                    // };
-
+                  if (application.tabId.includes("onboarding")) {
                     return (
                       <TabPane key={index} tabId={application.tabId}>
                         <div style={{ marginLeft: "-100px", marginRight: "100px", border: "4px solid black" }}>
@@ -192,36 +144,11 @@ const OnboardingComponent = ({ profile, userApplications }) => {
                                 isAllApplicationsCompleted={!unCompletedApplications.length}
                                 onForceApplicationShow={() => showApplication(application.id)}
                               />
-                            ) : application.d_form.access_type === "user-lock" ? (
-                              <FormCreate
-                                isShowErrors={true}
-                                {...commonFormProps}
-                                inputDisabled={true}
-                                onSaveButtonHidden={isDisabledSubmit()}
-                                onboardingUser={profile}
-                                showSubmittedStatus
-                              />
                             ) : (
-                              <FormCreate
-                                isShowErrors={true}
-                                {...commonFormProps}
-                                inputDisabled={false}
-                                onSaveButtonHidden={true}
-                                onboardingUser={profile}
-                                onSubmit={(formData) => submitOnboardingForm(formData)}
-                                onChange={(data) => {
-                                  // setDebounced(true);
-                                  debounceOnSave.current(data, application.d_form);
-                                }}
-                                updatedAtText={
-                                  loading ? (
-                                    "Saving"
-                                  ) : (
-                                    <div>
-                                      <img style={{ marginTop: "-2px", fontSize: "15px" }} src={Check} alt="" /> Saved
-                                    </div>
-                                  )
-                                }
+                              <OnboardingApp
+                                profile={profile}
+                                appOnboardingSelected={appOnboardingSelected}
+                                setRecentlySubmitted={setRecentlySubmitted}
                               />
                             ))}
                         </div>
@@ -231,14 +158,14 @@ const OnboardingComponent = ({ profile, userApplications }) => {
                     return (
                       <TabPane key={index} tabId={application.tabId}>
                         <div className="onboarding-title" />
-                        {application.id === appOnboarding.id && (
+                        {application.id === appActiveOnboarding.id && (
                           // {application.id === profile.onboarding.id && (
                           <OnboardingSurvey
                             onSurveyFinish={() => setRecentlySubmitted(true)}
                             applicationData={application}
                             isRecentlySubmitted={recentlySubmitted}
                             isAllApplicationsCompleted={!unCompletedApplications.length}
-                            appOnboarding={appOnboarding}
+                            appOnboarding={appActiveOnboarding}
                           />
                         )}
                       </TabPane>
