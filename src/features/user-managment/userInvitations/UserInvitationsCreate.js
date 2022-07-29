@@ -9,13 +9,14 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../../assets/scss/plugins/extensions/toastr.scss";
+import NmpButton from "components/nmp/NmpButton";
 
 import appSlice from "app/slices/appSlice";
 import { useCreateInvitationsMutation, useSendEmailUserMutation } from "api/User/useUserInvitationQuery";
 
 const { deleteInvitationsRequest } = appSlice.actions;
 
-const UserInvitationsCreate = ({ resend, invitationText }) => {
+const UserInvitationsCreate = ({ resend }) => {
   const dispatch = useDispatch();
   const manager = useSelector(selectManager);
   const [invitationExpiredTime, setInvitationExpiredTime] = useState("");
@@ -38,11 +39,11 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
     return moment(manager.invited.created_at).add(1, "days").diff(moment());
   };
 
-  const useSendEmailUser = useSendEmailUserMutation({ invitationId: manager.invited?.id });
+  const sendEmailUser = useSendEmailUserMutation({ invitationId: manager.invited?.id });
   const sendEmail = (event) => {
     event.preventDefault();
     if (manager.invited?.id) {
-      useSendEmailUser.mutate();
+      sendEmailUser.mutate();
     } else {
       toast.error("Sending email is impossible", {
         position: toast.POSITION.TOP_RIGHT,
@@ -84,16 +85,15 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
   const renderRemove = () => {
     return (
       <div>
-        <Button
-          onClick={(event) => remove(event)}
+        <NmpButton
+          onClick={remove}
           color="primary"
           className="mr-1 btn-icon"
           size="sm"
           style={{ "font-size": "14px" }}
           id="trash-invitation-btn"
-        >
-          <Trash />
-        </Button>
+          icon={<Trash />}
+        />
       </div>
     );
   };
@@ -117,17 +117,17 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
             Copy link
           </Button>
         </CopyToClipboard>
-        <Button
+        <NmpButton
           onClick={sendEmail}
           color="primary"
           className="mr-1"
           size="sm"
           style={{ "font-size": "14px" }}
           id="send-invitation-btn"
+          loading={sendEmailUser.isLoading}
         >
-          Send invatation email
-          {/* {!invitationText ? "Send invatation email" : `${invitationText} email`} */}
-        </Button>
+          Send invitation email
+        </NmpButton>
       </div>
     );
   };
@@ -135,17 +135,17 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
   const renderCreate = () => {
     return (
       <div>
-        <Button
-          onClick={(event) => formSubmit(event)}
+        <NmpButton
+          size="sm"
           color="primary"
           className="mr-1"
-          size="sm"
-          style={{ "font-size": "14px" }}
+          onClick={formSubmit}
           id="send-invitation-btn"
+          style={{ "font-size": "14px" }}
+          loading={useCreateInvitations.isLoading}
         >
           Create invatation link
-          {/* {!invitationText ? "Create invatation link" : `${invitationText} link`} */}
-        </Button>
+        </NmpButton>
       </div>
     );
   };
@@ -163,9 +163,27 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
 
     return (
       <div>
-        <Button color="primary" className="mr-1" size="sm" style={{ "font-size": "14px" }}>
+        <span
+          className="mr-1"
+          style={{
+            // layout
+            display: "inline-block",
+            textAlign: "center",
+            verticalAlign: "middle",
+            // font
+            color: "var(--white)",
+            fontWeight: 400,
+            fontSize: "14px",
+            lineHeight: 1,
+            // appearance
+            padding: "0.5rem 1.5rem",
+            borderColor: "#4839eb",
+            borderRadius: "0.25rem",
+            backgroundColor: "var(--primary)",
+          }}
+        >
           {status}
-        </Button>
+        </span>
       </div>
     );
   };
