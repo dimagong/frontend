@@ -2,24 +2,19 @@ import { FIELD_TYPES, MULTI_SELECT_UI_STYLES } from "../../../../constants";
 
 export const CONDITION_CREATION_STEPS = [];
 
-export const EFFECTS = [
-  {
-    value: "hidden",
-    label: "hidden if",
-  },
-  {
-    value: "shown",
-    label: "shown if",
-  },
-  {
-    value: "disabled",
-    label: "disabled if",
-  },
-  {
-    value: "active",
-    label: "active if",
-  },
-];
+export const EFFECTS = {
+  hidden: "hidden",
+  shown: "shown",
+  disabled: "disabled",
+  active: "active",
+};
+
+export const EFFECT_LABELS = {
+  [EFFECTS.hidden]: "hidden if",
+  [EFFECTS.shown]: "shown if",
+  [EFFECTS.disabled]: "disabled if",
+  [EFFECTS.active]: "active if",
+};
 
 export const OPERANDS = [
   {
