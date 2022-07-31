@@ -23,3 +23,4 @@ export const getInvitationPath = (id) => `/api/invitation/${id}`;
 export const sendInvitationAcceptPath = "/api/invitation/accept";
 export const getOnboardingsByUserPath = (userId) => `/api/user/${userId}/onboardings`;
 export const updateUserApplicationsOrder = (userId) => `api/user/${userId}/sort-apps`;
+export const sendUserEmailPath = (invitationId) => `/api/invitation/${invitationId}/send-notification`;

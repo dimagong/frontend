@@ -15,11 +15,7 @@ export const OrganizationFileQueryKeys = {
   ],
 
   allBrochure: () => [...OrganizationFileQueryKeys.all(), "brochure"],
-  brochure: (organizationType, organizationId) => [
-    ...OrganizationFileQueryKeys.allBrochure(),
-    organizationType,
-    organizationId,
-  ],
+  brochure: (introPageId) => [...OrganizationFileQueryKeys.allBrochure(), introPageId],
 };
 
 export const useOrganizationLogoQuery = ({ organizationType, organizationId }, options) => {
@@ -32,11 +28,11 @@ export const useOrganizationLogoQuery = ({ organizationType, organizationId }, o
   );
 };
 
-export const useOrganizationBrochureQuery = ({ organizationType, organizationId }, options) => {
+export const useOrganizationBrochureQuery = ({ introPageId }, options) => {
   return useFileQuery(
     {
-      url: `api/files/organization/${organizationType}/${organizationId}/brochure`,
-      queryKey: OrganizationFileQueryKeys.brochure(organizationType, organizationId),
+      url: `api/files/organization-intro/${introPageId}/brochure`,
+      queryKey: OrganizationFileQueryKeys.brochure(introPageId),
     },
     options
   );

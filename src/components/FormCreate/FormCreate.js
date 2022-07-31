@@ -266,7 +266,7 @@ class FormCreate extends React.Component {
 
   formatDefaultFormData(schema, formData) {
     Object.keys(schema.properties).forEach((key) => {
-      if (key in formData) {
+      if (key in formData && formData[key]) {
         return;
       }
 

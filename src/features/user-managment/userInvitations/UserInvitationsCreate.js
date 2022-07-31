@@ -9,12 +9,14 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../../assets/scss/plugins/extensions/toastr.scss";
+import NmpButton from "components/nmp/NmpButton";
 
 import appSlice from "app/slices/appSlice";
+import { useCreateInvitationsMutation, useSendEmailUserMutation } from "api/User/useUserInvitationQuery";
 
-const { createInvitationsRequest, deleteInvitationsRequest } = appSlice.actions;
+const { deleteInvitationsRequest } = appSlice.actions;
 
-const UserInvitationsCreate = ({ resend, invitationText }) => {
+const UserInvitationsCreate = ({ resend }) => {
   const dispatch = useDispatch();
   const manager = useSelector(selectManager);
   const [invitationExpiredTime, setInvitationExpiredTime] = useState("");
@@ -27,13 +29,27 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
     clearInterval(invitationInterval);
   };
 
+  const useCreateInvitations = useCreateInvitationsMutation({ managerId: manager.id, resend });
   const formSubmit = (event) => {
     event.preventDefault();
-    dispatch(createInvitationsRequest({ managerId: manager.id, resend }));
+    useCreateInvitations.mutate();
   };
 
   const getInvitationDate = () => {
     return moment(manager.invited.created_at).add(1, "days").diff(moment());
+  };
+
+  const sendEmailUser = useSendEmailUserMutation({ invitationId: manager.invited?.id });
+  const sendEmail = (event) => {
+    event.preventDefault();
+    if (manager.invited?.id) {
+      sendEmailUser.mutate();
+    } else {
+      toast.error("Sending email is impossible", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000,
+      });
+    }
   };
 
   const startInvitationTimer = () => {
@@ -44,7 +60,7 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
       }
       const time = getInvitationDate();
 
-      if (moment.duration(time).seconds() <= 0) {
+      if (moment.duration(time).asSeconds() <= 0) {
         return setInvitationExpiredTime("Expired");
       }
 
@@ -69,26 +85,30 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
   const renderRemove = () => {
     return (
       <div>
-        <Button
-          onClick={(event) => remove(event)}
+        <NmpButton
+          onClick={remove}
           color="primary"
           className="mr-1 btn-icon"
           size="sm"
           style={{ "font-size": "14px" }}
           id="trash-invitation-btn"
-        >
-          <Trash />
-        </Button>
+          icon={<Trash />}
+        />
       </div>
     );
   };
 
   const renderTime = () => {
     return (
-      <div>
-        <Button color="primary" className="mr-1" size="sm" style={{ "font-size": "14px" }} id="send-invitation-btn">
-          {invitationExpiredTime ? invitationExpiredTime : <RefreshCcw size="15" className="rotating" />}
-        </Button>
+      <div className="ml-1" style={{ fontWeight: 600 }}>
+        {invitationExpiredTime ? invitationExpiredTime : <RefreshCcw size="15" className="rotating" />}
+      </div>
+    );
+  };
+
+  const renderTimeButton = () => {
+    return (
+      <div style={{ display: "flex" }}>
         <CopyToClipboard
           onCopy={onCopy}
           text={window.location.origin + "/invitation-accept/" + manager.invited.invitation_token}
@@ -97,6 +117,17 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
             Copy link
           </Button>
         </CopyToClipboard>
+        <NmpButton
+          onClick={sendEmail}
+          color="primary"
+          className="mr-1"
+          size="sm"
+          style={{ "font-size": "14px" }}
+          id="send-invitation-btn"
+          loading={sendEmailUser.isLoading}
+        >
+          Send invitation email
+        </NmpButton>
       </div>
     );
   };
@@ -104,16 +135,17 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
   const renderCreate = () => {
     return (
       <div>
-        <Button
-          onClick={(event) => formSubmit(event)}
+        <NmpButton
+          size="sm"
           color="primary"
           className="mr-1"
-          size="sm"
-          style={{ "font-size": "14px" }}
+          onClick={formSubmit}
           id="send-invitation-btn"
+          style={{ "font-size": "14px" }}
+          loading={useCreateInvitations.isLoading}
         >
-          {!invitationText ? "Send invitation" : invitationText}
-        </Button>
+          Create invitation link
+        </NmpButton>
       </div>
     );
   };
@@ -131,9 +163,27 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
 
     return (
       <div>
-        <Button color="primary" className="mr-1" size="sm" style={{ "font-size": "14px" }}>
+        <span
+          className="mr-1"
+          style={{
+            // layout
+            display: "inline-block",
+            textAlign: "center",
+            verticalAlign: "middle",
+            // font
+            color: "var(--white)",
+            fontWeight: 400,
+            fontSize: "14px",
+            lineHeight: 1,
+            // appearance
+            padding: "0.5rem 1.5rem",
+            borderColor: "#4839eb",
+            borderRadius: "0.25rem",
+            backgroundColor: "var(--primary)",
+          }}
+        >
           {status}
-        </Button>
+        </span>
       </div>
     );
   };
@@ -142,22 +192,33 @@ const UserInvitationsCreate = ({ resend, invitationText }) => {
     return manager.invited && (manager.invited.accepted_at || manager.invited.is_expired || manager.invited.revoked_at);
   };
 
+  const isShowTimer = () => {
+    return manager.invited && !isShowStatus();
+  };
+
   return (
-    <div className="d-flex">
-      {isShowStatus() ? (
-        <React.Fragment>
-          {renderStatus()}
-          {renderRemove()}
-        </React.Fragment>
-      ) : !manager.invited ? (
-        renderCreate()
-      ) : (
-        <React.Fragment>
-          {renderTime()}
-          {renderRemove()}
-        </React.Fragment>
-      )}
-    </div>
+    <>
+      <div style={{ marginBottom: 5, display: "flex", alignItems: "center" }}>
+        <p style={{ margin: 0 }}>Portal access:</p>
+        {isShowTimer() && renderTime()}
+      </div>
+
+      <div className="d-flex">
+        {isShowStatus() ? (
+          <React.Fragment>
+            {renderStatus()}
+            {renderRemove()}
+          </React.Fragment>
+        ) : !manager.invited ? (
+          renderCreate()
+        ) : (
+          <React.Fragment>
+            {renderTimeButton()}
+            {renderRemove()}
+          </React.Fragment>
+        )}
+      </div>
+    </>
   );
 };
 

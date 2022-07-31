@@ -5,6 +5,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.160784);
+
+    text-align: center;
   }
 
   &__preview {
@@ -21,5 +23,89 @@
       border: 1px solid rgba(112, 112, 112, 0.141176);
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.160784);
     }
+  }
+
+  &__reference-name {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    color: #707070;
+  }
+
+  &__reference-option {
+    & + & {
+      margin-top: 30px;
+    }
+  }
+
+  &__reference-option-header {
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.160784);
+  }
+
+  &__reference-option-name {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    color: #707070;
+    line-height: 1.2;
+    font-size: 1.3rem;
+    font-weight: 300;
+  }
+
+  &__reference-option-body {
+    border: 1px solid #d9d9d9;
+  }
+
+  &__reference-association {
+    width: 100%;
+    max-width: calc((100% / 3) - (2rem / 3));
+
+    border-radius: 5px;
+    padding: 0.4rem 0.6rem;
+
+    background-color: var(--primary);
+
+    & + & {
+      margin-left: 1rem;
+    }
+
+    &:nth-child(n + 4) {
+      margin-top: 0.5rem;
+    }
+
+    &:nth-child(3n + 1):not(:first-child) {
+      margin-left: 0;
+    }
+  }
+
+  &__reference-association-remove {
+    margin-right: 0.5rem;
+    border-radius: 50%;
+
+    color: var(--primary);
+    background-color: var(--white);
+
+    font-size: 0.5rem;
+  }
+
+  &__reference-association-name {
+    width: 100%;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-weight: 300;
+    font-size: 0.8625rem;
+    line-height: 1;
+    color: var(--white);
   }
 }

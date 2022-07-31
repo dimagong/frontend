@@ -10,6 +10,7 @@ import { selectGroups, selectRoles } from "app/selectors";
 import { loginWithJWT } from "app/actions/vuexy/auth/loginActions";
 
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
+import { UserNotifyEntitiesQueryKeys } from "../../../features/user-managment/userEdit/UserEditContextFeature";
 
 const {
   getProfileSuccess,
@@ -228,7 +229,6 @@ function* patchFilter({ payload }) {
 function* getUserById({ payload }) {
   try {
     const response = yield call(userApi.getUserById, payload);
-
     yield put(getUserByIdSuccess(response));
   } catch (error) {
     console.log(error);
@@ -345,8 +345,8 @@ function* disallowUserAbility({ payload }) {
   }
 }
 
-function* removeUserNotify() {
-  const response = yield call(userApi.removeUserNotify);
+function* removeUserNotify({ payload }) {
+  const response = yield call(userApi.removeUserNotify, payload);
 
   if (response?.message) {
     yield put(removeUserNotifyError(response.message));

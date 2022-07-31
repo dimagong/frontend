@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectProfile } from "app/selectors";
 import { selectOnboardingSurveys } from "app/selectors/userSelectors";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 import "./styles.scss";
 
 import _ from "lodash";
@@ -14,7 +15,7 @@ import OnboardingComponent from "./components/Onboarding";
 
 import appSlice from "app/slices/appSlice";
 
-const { setProfileOnboarding, getAssignedSurveysForOnboardingRequest } = appSlice.actions;
+const { setProfileOnboarding, getAssignedSurveysForOnboardingRequest, removeUserNotifyRequest } = appSlice.actions;
 
 const OnboardingUser = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,15 @@ const OnboardingUser = () => {
 
   const isOnboardingSurveysLoading = useSelector(
     createLoadingSelector([getAssignedSurveysForOnboardingRequest.type], true)
+  );
+
+  const proceedUserToOnboarding = () => {
+    dispatch(removeUserNotifyRequest({ userId: profile.id, userNotifyEntryId: profile.notify_entries[0]?.id }));
+  };
+
+  const brochureQuery = useOrganizationBrochureQuery(
+    { introPageId: profile.notify_entries[0]?.notify?.id },
+    { enabled: profile.notify_entries.length === 1 }
   );
 
   let userApplications = [];
@@ -75,8 +85,19 @@ const OnboardingUser = () => {
     );
   }
 
-  if (profile.notify && profile.notify_entity) {
-    return <WelcomePageComponent profile={profile} isOnboardingExist={!!userApplications.length} />;
+  if (profile.notify_entries.length > 0) {
+    return (
+      <WelcomePageComponent
+        onSubmit={proceedUserToOnboarding}
+        isOnboardingExist={!!userApplications.length}
+        brochureName={brochureQuery.data.file?.name}
+        brochureUrl={brochureQuery.data.url}
+        downloadText={profile.notify_entries[0].notify.download_text}
+        organizationName={profile.permissions.organization}
+        introText={profile.notify_entries[0].notify.intro_text}
+        introTitle={profile.notify_entries[0].notify.intro_title}
+      />
+    );
   }
 
   return <OnboardingComponent userApplications={userApplications} profile={profile} />;
