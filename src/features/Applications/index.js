@@ -33,6 +33,8 @@ import NewApplicationInitForm from "./Components/NewApplicationInitForm";
 import ApplicationDescription from "./Components/ApplicationDescription";
 import ElementsReorderComponent from "./Components/ElementsReorderComponent";
 
+import { useApplicationCreateMutation } from "./applicationQueries";
+
 const data = {
   type: "application",
   name: "Dform name",
@@ -78,7 +80,7 @@ const data = {
   fields: {
     1: {
       id: "1",
-      isMasterSchemaRelated: false,
+      isNotMasterSchemaRelated: true,
       type: "text",
       title: "Some text",
       isRequired: true,
@@ -87,7 +89,7 @@ const data = {
     },
     2: {
       id: "2",
-      isMasterSchemaRelated: true,
+
       type: "textarea",
       title: "Your biography",
       isRequired: true,
@@ -96,7 +98,7 @@ const data = {
     },
     3: {
       id: "3",
-      isMasterSchemaRelated: true,
+
       type: "select",
       title: "Select your country",
       isLabelShowing: true,
@@ -104,7 +106,7 @@ const data = {
     },
     4: {
       id: "4",
-      isMasterSchemaRelated: true,
+
       type: "text",
       title: "Email of your best friend",
       isLabelShowing: true,
@@ -127,6 +129,12 @@ const Applications = ({ isCreate }) => {
   const [isDFormInitialized, setIsDFormInitialized] = useState(false);
 
   const userProfile = useSelector(selectProfile);
+
+  const createApplication = useApplicationCreateMutation({
+    onError: () => {
+      console.log("test");
+    },
+  });
 
   const getElementCollectionName = (element) => {
     let elementCollectionName;
@@ -444,7 +452,17 @@ const Applications = ({ isCreate }) => {
     setElementWithSuggestedChanges({ ...elementData, edited: true });
   };
 
+  const handleApplicationDescriptionChange = (descriptionKey, value) => {
+    setDataWithSuggestedChanges({ ...dataWithSuggestedChanges, [descriptionKey]: value });
+  };
+
   const handlePageChange = (page) => {
+    if (elementWithSuggestedChanges?.edited) {
+      if (!window.confirm(`Are you sure you want to select another element for edit without saving?`)) {
+        return;
+      }
+    }
+    handleElementChangesCancel();
     setSelectedPage(page);
   };
 
@@ -497,6 +515,19 @@ const Applications = ({ isCreate }) => {
     }
   };
 
+  const handleApplicationCreate = () => {
+    // Errors object spread just to not to pass it into mutation
+    const { name, description, isPrivate, type, errors, organization, ...schema } = dataWithSuggestedChanges;
+
+    createApplication.mutate({
+      name,
+      description,
+      isPrivate,
+      organization,
+      schema,
+    });
+  };
+
   useEffect(() => {
     if (elementWithSuggestedChanges !== null) {
       setDataWithSuggestedChanges(embedSuggestedChanges());
@@ -521,6 +552,9 @@ const Applications = ({ isCreate }) => {
           className="mb-3"
         />
         <TabContent activeTab={selectedPage}>
+          <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
+            <ApplicationDescription onChange={handleApplicationDescriptionChange} />
+          </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
             <DForm
               data={dataWithSuggestedChanges}
@@ -530,9 +564,6 @@ const Applications = ({ isCreate }) => {
               onGroupCreate={handleGroupCreate}
               onFieldCreate={handleFieldCreate}
             />
-          </TabPane>
-          <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
-            <ApplicationDescription />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>
             <ElementsReorderComponent onReorder={handleReorder} applicationData={dataWithSuggestedChanges} />
@@ -545,8 +576,8 @@ const Applications = ({ isCreate }) => {
             <div className="d-flex justify-content-between ">
               <Button className={"button button-cancel"}>Cancel</Button>
 
-              <Button color={"primary"} className={"button button-success"}>
-                Save
+              <Button color={"primary"} className={"button button-success"} onClick={handleApplicationCreate}>
+                {isCreate ? "Create" : "Save"}
               </Button>
             </div>
           )}
