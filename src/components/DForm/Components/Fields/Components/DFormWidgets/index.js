@@ -6,10 +6,11 @@ import CheckboxWidget from "./Components/Boolean";
 import NumberWidget from "./Components/Number";
 import DateWidget from "./Components/Date";
 import MultiSelectWidget from "./Components/MultiSelect";
+import HelpText from "./Components/HelpText";
 
 import { FIELD_TYPES } from "features/Applications/constants";
 
-const { text, textArea, select, longText, boolean, number, date, multiSelect } = FIELD_TYPES;
+const { text, textArea, select, longText, boolean, number, date, multiSelect, helpText } = FIELD_TYPES;
 
 export default {
   [text]: Text,
@@ -20,4 +21,5 @@ export default {
   [number]: NumberWidget,
   [date]: DateWidget,
   [multiSelect]: MultiSelectWidget,
+  [helpText]: HelpText,
 };
