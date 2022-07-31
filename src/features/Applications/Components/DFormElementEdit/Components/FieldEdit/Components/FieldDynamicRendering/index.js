@@ -1,7 +1,7 @@
 import React from "react";
 import ConditionalElementRender from "../../../ConditionalElementRender";
 import { EFFECTS } from "../../../ConditionalElementRender/constants";
-import _ from "lodash";
+import { v4 } from "uuid";
 
 const FieldDynamicRendering = ({ data, element, onElementChange }) => {
   const getFieldSectionFields = (field) => {
@@ -16,28 +16,18 @@ const FieldDynamicRendering = ({ data, element, onElementChange }) => {
     }, []);
   };
 
-  // TODO Handle only one condition for one effect
   const handleConditionAdd = () => {
-    if (element.conditions && element.conditions.length) {
-      const usedEffects = element.conditions.map((condition) => condition.effect);
+    onElementChange({
+      ...element,
+      conditions: [...(element.conditions || []), { tempId: v4(), effect: EFFECTS[0] }],
+    });
+  };
 
-      const effectToUse = _.xor(
-        usedEffects,
-        EFFECTS.map((f) => f.value)
-      );
-
-      if (!effectToUse[0]) {
-        console.error("There are no more effects ot use");
-      } else {
-        onElementChange({
-          ...element,
-          conditions: [...element.conditions, { effect: effectToUse }],
-        });
-      }
-    } else {
+  const handleConditionDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this condition?")) {
       onElementChange({
         ...element,
-        conditions: [{ effect: EFFECTS[0].value }],
+        conditions: element.conditions.filter((condition) => condition.tempId !== id),
       });
     }
   };
@@ -48,6 +38,7 @@ const FieldDynamicRendering = ({ data, element, onElementChange }) => {
         onConditionAdd={handleConditionAdd}
         fieldSectionFields={getFieldSectionFields(element)}
         conditions={element.conditions}
+        onConditionDelete={handleConditionDelete}
       />
     </div>
   );
