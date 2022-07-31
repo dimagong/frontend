@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Row, Col, Button } from "reactstrap";
 
@@ -33,6 +33,10 @@ const DFormElementEdit = ({
     element: element,
     onElementChange: onElementChange,
   };
+
+  useEffect(() => {
+    handleEditOptionSelect(EDIT_OPTIONS.properties);
+  }, [element.id]);
 
   return (
     <Row className="dform-element-edit">
