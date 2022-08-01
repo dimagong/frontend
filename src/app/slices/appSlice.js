@@ -21,7 +21,7 @@ export const initialState = {
   isLoading: false,
   isError: null,
   isContextSearchVisible: false,
-  context: "Create dForm",
+  context: null,
   preview: null,
   surveys: [],
   folders: null,
