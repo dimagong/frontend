@@ -34,7 +34,7 @@ const NewApplicationInitForm = ({ userId, onDFormInitialize }) => {
   };
 
   const initializeDForm = () => {
-    onDFormInitialize();
+    onDFormInitialize(organization);
   };
 
   return (

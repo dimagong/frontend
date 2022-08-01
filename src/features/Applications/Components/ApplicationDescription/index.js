@@ -5,7 +5,7 @@ import "./styles.scss";
 import Checkbox from "../../../Surveys/Components/SurveyFormComponents/Checkbox";
 import TextWidget from "../../../../components/FormCreate/Custom/TextWidget";
 
-const ApplicationDescription = ({ onChange, name, description, isPrivate }) => {
+const ApplicationDescription = ({ onChange, name, description, isPrivate, organization = {} }) => {
   const handlePrivateFlagChange = () => {
     onChange("isPrivate", !isPrivate);
   };
@@ -24,7 +24,7 @@ const ApplicationDescription = ({ onChange, name, description, isPrivate }) => {
         <div className="application-description__organization d-flex justify-content-between">
           <div className="d-flex">
             <div className="font-weight-bold">Organization</div>
-            <div className="application-description__organization-name w-100">Test org</div>
+            <div className="application-description__organization-name w-100">{organization.name}</div>
           </div>
           <div>
             <Checkbox checked={isPrivate} label={"Is private"} onChange={handlePrivateFlagChange} name={"is_private"} />

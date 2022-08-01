@@ -11,6 +11,7 @@ import { cloneDeep } from "lodash";
 
 import { useSelector } from "react-redux";
 import { selectProfile } from "../../app/selectors";
+import { useDispatch } from "react-redux";
 
 import {
   INITIAL_FIELD_DATA,
@@ -23,6 +24,7 @@ import {
   FIELD_TYPES,
   FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
   APPLICATION_PAGES,
+  INITIAL_APPLICATION_DATA,
 } from "./constants";
 import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
 
@@ -32,8 +34,14 @@ import CustomTabs from "../../components/Tabs";
 import NewApplicationInitForm from "./Components/NewApplicationInitForm";
 import ApplicationDescription from "./Components/ApplicationDescription";
 import ElementsReorderComponent from "./Components/ElementsReorderComponent";
+import { selectdForm } from "../../app/selectors";
+import { useApplicationCreateMutation, useApplication } from "./applicationQueries";
+import appSlice from "../../app/slices/appSlice";
+import onboardingSlice from "../../app/slices/onboardingSlice";
 
-import { useApplicationCreateMutation } from "./applicationQueries";
+const { setdForm } = onboardingSlice.actions;
+
+const { setContext } = appSlice.actions;
 
 const data = {
   type: "application",
@@ -120,21 +128,51 @@ const data = {
 // because of internal behavior of component
 
 const Applications = ({ isCreate }) => {
-  const [fakeReduxData, setFakeReduxData] = useState(data);
+  const dispatch = useDispatch();
+
+  const userProfile = useSelector(selectProfile);
+  const selectedDForm = useSelector(selectdForm);
+
+  const [applicationData, setApplicationData] = useState(null);
+
+  const createApplication = useApplicationCreateMutation({
+    onSuccess: (data) => {
+      dispatch(setdForm(data));
+      dispatch(setContext("dForm"));
+    },
+    onError: () => {
+      //TODO handle error
+      console.error("application create error");
+    },
+  });
+
+  const application = useApplication(
+    { applicationId: selectedDForm?.id },
+    {
+      onSuccess: (data) => {
+        const { name, description, isPrivate, type, groups, ...schema } = data;
+
+        const applicationData = {
+          name,
+          description,
+          isPrivate,
+          type,
+          organization: groups[0],
+          ...schema,
+        };
+
+        setDataWithSuggestedChanges(applicationData);
+        setApplicationData(applicationData);
+      },
+      enabled: Boolean(selectedDForm?.id) && !isCreate && !createApplication.isLoading,
+    }
+  );
 
   const [selectedPage, setSelectedPage] = useState(isCreate ? APPLICATION_PAGES.DESCRIPTION : APPLICATION_PAGES.DESIGN);
   const [isModuleEditComponentVisible, setIsModuleEditComponentVisible] = useState(false);
   const [elementWithSuggestedChanges, setElementWithSuggestedChanges] = useState(null);
-  const [dataWithSuggestedChanges, setDataWithSuggestedChanges] = useState(cloneDeep(fakeReduxData));
+  const [dataWithSuggestedChanges, setDataWithSuggestedChanges] = useState(cloneDeep(applicationData));
   const [isDFormInitialized, setIsDFormInitialized] = useState(false);
-
-  const userProfile = useSelector(selectProfile);
-
-  const createApplication = useApplicationCreateMutation({
-    onError: () => {
-      console.log("test");
-    },
-  });
 
   const getElementCollectionName = (element) => {
     let elementCollectionName;
@@ -161,12 +199,12 @@ const Applications = ({ isCreate }) => {
       }
     }
     //TODO update local state with data from redux
-    setDataWithSuggestedChanges(fakeReduxData);
+    setDataWithSuggestedChanges(applicationData);
 
     // We take element from "backend" data, but also spread element that we receive
     // to save some system information that we pass to element in onClick handler such as groupId or sectionId, etc.
     const collectionName = getElementCollectionName(element);
-    const selectedElement = { ...element, ...fakeReduxData[collectionName][element.id] };
+    const selectedElement = { ...element, ...applicationData[collectionName][element.id] };
 
     setElementWithSuggestedChanges({ ...selectedElement, elementType });
     setIsModuleEditComponentVisible(true);
@@ -175,7 +213,7 @@ const Applications = ({ isCreate }) => {
   const getUniqNameForCollection = (collectionName, baseName) => {
     let tabIndex = 1;
 
-    while (`${baseName} ${tabIndex}` in fakeReduxData[collectionName]) tabIndex++;
+    while (`${baseName} ${tabIndex}` in applicationData[collectionName]) tabIndex++;
 
     return `${baseName} ${tabIndex}`;
   };
@@ -195,7 +233,7 @@ const Applications = ({ isCreate }) => {
 
     dataToSave.sectionsOrder = [...dataToSave.sectionsOrder, newSectionData.id];
 
-    setFakeReduxData(dataToSave);
+    setApplicationData(dataToSave);
 
     // setElementWithSuggestedChanges({...newSectionData});
     // setIsModuleEditComponentVisible(true);
@@ -220,7 +258,7 @@ const Applications = ({ isCreate }) => {
     // Add group to section where it was created
     dataToSave.sections[sectionId].relatedGroups = [...dataToSave.sections[sectionId].relatedGroups, newGroupData.id];
 
-    setFakeReduxData(dataToSave);
+    setApplicationData(dataToSave);
   };
 
   //TODO make ID generator
@@ -239,7 +277,7 @@ const Applications = ({ isCreate }) => {
     // Add field to group where it was created
     dataToSave.groups[group].relatedFields = [...dataToSave.groups[group].relatedFields, newFieldData.id];
 
-    setFakeReduxData(dataToSave);
+    setApplicationData(dataToSave);
   };
 
   // While we aim for using old API and redux that handle it, we can't save parts of data separately
@@ -248,8 +286,6 @@ const Applications = ({ isCreate }) => {
     const collectionName = getElementCollectionName(element);
     const dataClone = cloneDeep(dataWithSuggestedChanges);
     const { id } = element;
-
-    console.log("ELEMENT", element);
 
     if (isNewElement) {
       // Founds collection (fields, sections, groups) and embed new element to the end
@@ -296,7 +332,7 @@ const Applications = ({ isCreate }) => {
 
     setIsModuleEditComponentVisible(false);
     setElementWithSuggestedChanges(null);
-    setFakeReduxData(dataClone);
+    setApplicationData(dataClone);
   };
 
   const handleSectionDelete = (section, data) => {
@@ -321,7 +357,6 @@ const Applications = ({ isCreate }) => {
 
   const handleFieldDelete = (field, data) => {
     const fieldGroup = Object.values(data.groups).filter((group) => group.relatedFields.includes(String(field.id)))[0];
-    console.log(fieldGroup?.id, field?.id);
 
     data.groups[fieldGroup.id].relatedFields = removeItemFormArrayByValue(
       data.groups[fieldGroup.id].relatedFields,
@@ -362,7 +397,6 @@ const Applications = ({ isCreate }) => {
       console.log("error", validationError);
       return { isElementValid: false, errors: validationError };
     }
-    console.log("here");
 
     return { isElementValid: true };
   };
@@ -430,9 +464,9 @@ const Applications = ({ isCreate }) => {
       setElementWithSuggestedChanges(null);
 
       if (elementWithSuggestedChanges.elementType === ELEMENT_TYPES.field) {
-        setFakeReduxData(embedSuggestedChanges(extractPropsFromField(elementWithSuggestedChanges)));
+        setApplicationData(embedSuggestedChanges(extractPropsFromField(elementWithSuggestedChanges)));
       } else {
-        setFakeReduxData(embedSuggestedChanges());
+        setApplicationData(embedSuggestedChanges());
       }
     } else {
       //Todo change it in future to displaying errors under the elements where its occur
@@ -445,7 +479,7 @@ const Applications = ({ isCreate }) => {
     setIsModuleEditComponentVisible(false);
 
     //TODO update local state with data from redux
-    setDataWithSuggestedChanges(fakeReduxData);
+    setDataWithSuggestedChanges(applicationData);
   };
 
   const handleElementChange = (elementData) => {
@@ -466,7 +500,15 @@ const Applications = ({ isCreate }) => {
     setSelectedPage(page);
   };
 
-  const handleDFormInitialize = () => {
+  const handleDFormInitialize = (organization) => {
+    const data = {
+      ...INITIAL_APPLICATION_DATA,
+      organization,
+    };
+
+    setDataWithSuggestedChanges(data);
+    setApplicationData(data);
+
     setIsDFormInitialized(true);
   };
 
@@ -478,7 +520,7 @@ const Applications = ({ isCreate }) => {
     dataClone.sectionsOrder.splice(result.destination.index, 0, itemToMove);
 
     setDataWithSuggestedChanges(dataClone);
-    setFakeReduxData(dataClone);
+    setApplicationData(dataClone);
   };
 
   const handleGroupReorder = (result) => {
@@ -523,7 +565,12 @@ const Applications = ({ isCreate }) => {
       name,
       description,
       isPrivate,
-      organization,
+      groups: [
+        {
+          group_id: organization.id,
+          type: organization.type,
+        },
+      ],
       schema,
     });
   };
@@ -535,8 +582,12 @@ const Applications = ({ isCreate }) => {
   }, [elementWithSuggestedChanges]);
 
   useEffect(() => {
-    setDataWithSuggestedChanges(fakeReduxData);
-  }, [fakeReduxData]);
+    setDataWithSuggestedChanges(applicationData);
+  }, [applicationData]);
+
+  if ((!isCreate && !applicationData) || application.isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (isCreate && !isDFormInitialized) {
     return <NewApplicationInitForm userId={userProfile?.id} onDFormInitialize={handleDFormInitialize} />;
@@ -553,7 +604,13 @@ const Applications = ({ isCreate }) => {
         />
         <TabContent activeTab={selectedPage}>
           <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
-            <ApplicationDescription onChange={handleApplicationDescriptionChange} />
+            <ApplicationDescription
+              onChange={handleApplicationDescriptionChange}
+              name={dataWithSuggestedChanges.name}
+              description={dataWithSuggestedChanges.description}
+              isPrivate={dataWithSuggestedChanges.isPrivate}
+              organization={dataWithSuggestedChanges.organization}
+            />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
             <DForm

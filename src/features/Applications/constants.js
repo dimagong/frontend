@@ -1,3 +1,16 @@
+export const INITIAL_APPLICATION_DATA = {
+  type: "application",
+  name: "",
+  description: "",
+  isPrivate: false,
+  organization: null,
+  sectionsOrder: [],
+  sections: {},
+  groups: {},
+  fields: {},
+  errors: {},
+};
+
 export const APPLICATION_PAGES = {
   DESCRIPTION: "Description",
   DESIGN: "Design mode",

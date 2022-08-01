@@ -14,7 +14,7 @@ const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate,
     onElementClick(element, elementType);
   };
 
-  const sectionsWithErrors = Object.keys(data.errors);
+  // const sectionsWithErrors = Object.keys(data.errors);
 
   // Initialise all sections progresses with key value pairs where key is section name (uniq) and value is 0
   const initialiseSectionsProgress = () => {
@@ -45,6 +45,8 @@ const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate,
   };
 
   const init = () => {
+    if (!data.sections) return;
+
     initialiseSectionsProgress();
     //**TODO set first selected tab (default tab). Select first that occur and doesn't hidden
     setSelectedSection(Object.keys(data.sections)[0]);
@@ -57,8 +59,8 @@ const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate,
   useEffect(init, []);
 
   useEffect(() => {
-    if (!data.sectionsOrder.includes(selectedSection) && data.sectionsOrder.length) {
-      setSelectedSection(data.sectionsOrder[0]);
+    if (!data.sectionsOrder || (!data.sectionsOrder.includes(selectedSection) && data.sectionsOrder.length)) {
+      setSelectedSection((data.sectionsOrder && data.sectionsOrder[0]) || "");
     }
   }, [data.sectionsOrder]);
 
@@ -68,8 +70,9 @@ const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate,
         onSectionSelect={handleSectionSelect}
         selectedSection={selectedSection}
         sectionsProgress={sectionsProgress}
-        errors={sectionsWithErrors}
-        sections={data.sectionsOrder.map((sectionId) => data.sections[sectionId])}
+        // errors={sectionsWithErrors}
+        errors={[]}
+        sections={data.sectionsOrder && data.sectionsOrder.map((sectionId) => data.sections[sectionId])}
         onSectionCreate={isConfigurable && onSectionCreate}
       />
       <SectionsComponent

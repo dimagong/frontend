@@ -9,6 +9,10 @@ const ElementsReorderComponent = ({ applicationData, onReorder }) => {
     onReorder(result);
   };
 
+  if (!applicationData.sectionsOrder || applicationData.sectionsOrder.length === 0) {
+    return <div>There are no elements</div>;
+  }
+
   const sections = applicationData.sectionsOrder.map((sectionId) => applicationData.sections[sectionId]);
   const selectSectionGroups = (section) => {
     return section.relatedGroups.map((relatedGroupId) => applicationData.groups[relatedGroupId]);
