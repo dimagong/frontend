@@ -213,7 +213,9 @@ const Applications = ({ isCreate }) => {
   const getUniqNameForCollection = (collectionName, baseName) => {
     let tabIndex = 1;
 
-    while (`${baseName} ${tabIndex}` in applicationData[collectionName]) tabIndex++;
+    if (applicationData[collectionName]) {
+      while (`${baseName} ${tabIndex}` in applicationData[collectionName]) tabIndex++;
+    }
 
     return `${baseName} ${tabIndex}`;
   };
@@ -308,7 +310,6 @@ const Applications = ({ isCreate }) => {
     return array;
   };
 
-  // ELEMENT DELETION WILL BE FULLY REFACTORED AFTER REACT-QUERY INTEGRATION
   const handleElementDelete = (element) => {
     if (!window.confirm(`Are you sure you want to delete this element?`)) {
       return;
@@ -367,6 +368,8 @@ const Applications = ({ isCreate }) => {
   };
 
   const validateElement = (element) => {
+    console.log("element validation", element);
+
     const elementValidationSchema = elementValidationSchemas[element.elementType];
 
     if (!elementValidationSchema) {
