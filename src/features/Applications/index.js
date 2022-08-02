@@ -165,6 +165,7 @@ const Applications = ({ isCreate }) => {
         setApplicationData(applicationData);
       },
       enabled: Boolean(selectedDForm?.id) && !isCreate && !createApplication.isLoading,
+      refetchOnWindowFocus: false, // In case of update it replace dataWithSuggestedChanges and that cause data loss
     }
   );
 
