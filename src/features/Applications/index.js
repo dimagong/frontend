@@ -481,9 +481,6 @@ const Applications = ({ isCreate }) => {
   const handleElementChangesCancel = () => {
     setElementWithSuggestedChanges(null);
     setIsModuleEditComponentVisible(false);
-
-    //TODO update local state with data from redux
-    setDataWithSuggestedChanges(applicationData);
   };
 
   const handleElementChange = (elementData) => {
@@ -579,11 +576,11 @@ const Applications = ({ isCreate }) => {
     });
   };
 
-  useEffect(() => {
-    if (elementWithSuggestedChanges !== null) {
-      setDataWithSuggestedChanges(embedSuggestedChanges());
-    }
-  }, [elementWithSuggestedChanges]);
+  // useEffect(() => {
+  //   if (elementWithSuggestedChanges !== null) {
+  //     setDataWithSuggestedChanges(embedSuggestedChanges());
+  //   }
+  // }, [elementWithSuggestedChanges]);
 
   useEffect(() => {
     setDataWithSuggestedChanges(applicationData);
@@ -618,7 +615,7 @@ const Applications = ({ isCreate }) => {
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
             <DForm
-              data={dataWithSuggestedChanges}
+              data={elementWithSuggestedChanges === null ? dataWithSuggestedChanges : embedSuggestedChanges()}
               isConfigurable={true}
               onElementClick={handleSelectElementForEdit}
               onSectionCreate={handleSectionCreate}
