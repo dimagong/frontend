@@ -11,11 +11,11 @@ const ApplicationDescription = ({ onChange, name, description, isPrivate, organi
   };
 
   const handleNameChange = (value) => {
-    onChange("name", value.trim());
+    onChange("name", value);
   };
 
   const handleDescriptionChange = (value) => {
-    onChange("description", value.trim());
+    onChange("description", value);
   };
 
   return (
