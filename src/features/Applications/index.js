@@ -150,15 +150,12 @@ const Applications = ({ isCreate }) => {
     { applicationId: selectedDForm?.id },
     {
       onSuccess: (data) => {
-        const { name, description, isPrivate, type, groups, ...schema } = data;
+        const { groups, schema, ...rest } = data;
 
         const applicationData = {
-          name,
-          description,
-          isPrivate,
-          type,
           organization: groups[0],
           ...schema,
+          ...rest,
         };
 
         setDataWithSuggestedChanges(applicationData);
