@@ -233,7 +233,7 @@ const Applications = ({ isCreate }) => {
 
     const dataToSave = embedSuggestedChanges(newSectionData, true);
 
-    dataToSave.sectionsOrder = [...dataToSave.sectionsOrder, newSectionData.id];
+    dataToSave.sectionsOrder = [...(dataToSave.sectionsOrder || []), newSectionData.id];
 
     setApplicationData(dataToSave);
 
