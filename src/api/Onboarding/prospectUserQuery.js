@@ -32,7 +32,8 @@ export const ProspectUserProfileQueryKey = createQueryKey("Prospect User profile
 
 export const ProspectUserProfileKeys = {
   all: () => [ProspectUserProfileQueryKey],
-  survayPassing: ["Prospect User survay passing"],
+  surveyPassing: ["Prospect User survey passing"],
+  surveyPassingById: (id) => [...ProspectUserProfileKeys.surveyPassing, id],
   removeUserNotify: ["Prospect User remove notify"],
   submitdFormData: ["Prospect User submit dFormData"],
   submitdFormPath: ["Prospect User submit dFormPath"],
@@ -40,86 +41,69 @@ export const ProspectUserProfileKeys = {
   currentQuestionForAssignedSurveyId: (id) => [...ProspectUserProfileKeys.currentQuestionForAssignedSurvey, id],
   beginSurvey: ["Prospect User begin survey"],
   beginSurveyId: (id) => [...ProspectUserProfileKeys.beginSurvey, id],
-  appOnboardingsAll: ["Prospect User app onboardings"],
-  appOnboarding: (id) => [...ProspectUserProfileKeys.appOnboardingsAll, id],
+  dFormsList: ["Prospect User dforms list"],
+  dFormsListById: (id) => [...ProspectUserProfileKeys.dFormsList, id],
 };
 
-//! using outdated endpoint
 export const useProspectUserProfileQuery = (options = {}) => {
   const dispatch = useDispatch();
   return useGenericQuery(
     {
-      // url: `/member-view-api/user/profile`,
-      url: `/api/user/profile`,
-      queryKey: [...ProspectUserProfileKeys.all()],
+      url: `/member-view-api/user/profile`,
+      //url: `/api/user/profile`,
+      queryKey: ProspectUserProfileKeys.all(),
     },
     {
       onError: (error) => {
-        console.log("ERROR useProspectUserProfileQuery", error);
         dispatch(getProfileError(error.message));
       },
-      onSuccess: (data) => {
-        console.log("SUCCESS useProspectUserProfileQuery", data);
-      },
       ...options,
     }
   );
 };
 
-export const useAppsOnboardingsAllQuery = (options = {}) => {
+export const useDFormsListQuery = (options = {}) => {
   return useGenericQuery(
+    //localhost/member-view-api/dform
+    //member-view-api/user/onboardings
     {
-      url: `/member-view-api/user/onboardings`,
-      queryKey: [...ProspectUserProfileKeys.appOnboardingsAll],
+      url: `/member-view-api/dform`,
+      queryKey: ProspectUserProfileKeys.dFormsList,
     },
     {
-      onError: (error) => {
-        console.log("ERROR useAppOnboardingsQuery", error);
-      },
-      onSuccess: (data) => {
-        console.log("SUCCESS useAppOnboardingsQuery", data);
-      },
       ...options,
     }
   );
 };
 
-//http://localhost/member-view-api/user/onboardings/12
-export const useAppsOnboardingIdQuery = (payload, options = {}) => {
+//useAppsOnboardingIdQuery
+export const useDFormByIdQuery = (payload, options = {}) => {
   const { id } = payload;
   return useGenericQuery(
+    ///member-view-api/user/onboardings/${id}
     {
-      url: `/member-view-api/user/onboardings/${id}`,
-      queryKey: [...ProspectUserProfileKeys.appOnboarding(id)],
+      url: `/member-view-api/dform/${id}`,
+      queryKey: ProspectUserProfileKeys.dFormsListById(id),
     },
     {
-      onError: (error) => {
-        console.log("ERROR useAppsOnboardingIdQuery", error);
-      },
-      onSuccess: (data) => {
-        console.log("SUCCESS useAppsOnboardingIdQuery", data);
-      },
       ...options,
     }
   );
 };
 
-//! using outdated endpoint
-export const useSurvayPassingQuery = (options = {}) => {
+export const useSurveyPassingQuery = (options = {}) => {
   const dispatch = useDispatch();
   return useGenericQuery(
     {
-      // url: `/member-view-api/survey-passing`,
-      url: `/api/survey-passing`,
-      queryKey: [...ProspectUserProfileKeys.survayPassing],
+      url: `/member-view-api/survey-passing`,
+      // url: `/api/survey-passing`,
+      queryKey: ProspectUserProfileKeys.surveyPassing,
     },
     {
       onError: (error) => {
-        console.log("ERROR useSurvayPassingQuery", error);
         dispatch(getAssignedSurveysForOnboardingError(error.message));
       },
       onSuccess: (data) => {
-        console.log("SUCCESS useSurvayPassingQuery", data);
         dispatch(getAssignedSurveysForOnboardingSuccess(data));
       },
       ...options,
@@ -127,7 +111,19 @@ export const useSurvayPassingQuery = (options = {}) => {
   );
 };
 
-//! no new endpoint as member-view-api,  using outdated endpoint
+export const useSurveyByIdQuery = (payload, options = {}) => {
+  const { id } = payload;
+  return useGenericQuery(
+    {
+      url: `/member-view-api/survey-passing/${id}`,
+      queryKey: ProspectUserProfileKeys.surveyPassingById,
+    },
+    {
+      ...options,
+    }
+  );
+};
+
 export const useProspectRemoveUserNotifyMutation = (payload, options = {}) => {
   const dispatch = useDispatch();
 
@@ -135,42 +131,38 @@ export const useProspectRemoveUserNotifyMutation = (payload, options = {}) => {
 
   return useGenericMutation(
     {
-      url: `/api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`,
+      //`/api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`
+      url: `/member-view-api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`,
       method: "patch",
-      queryKey: [...ProspectUserProfileKeys.removeUserNotify],
+      queryKey: ProspectUserProfileKeys.removeUserNotify,
     },
     {
       onError: (error) => {
-        console.log("useProspectRemoveUserNotifyMutation ERROR", error);
         dispatch(removeUserNotifyError(error.message));
       },
       onSuccess: (data) => {
-        console.log("useProspectRemoveUserNotifyMutation SUCCESSFUL", data);
-        dispatch(removeUserNotifySuccess());
+        //dispatch(removeUserNotifySuccess());
       },
     }
   );
 };
 
-//! using outdated endpoint
 export const useSubmitdFormDataRequestMutation = (options = {}) => {
   const dispatch = useDispatch();
 
   const queryClient = useQueryClient();
 
   return useMutation({
-    //member-view-api/dform/${payload.dForm.id}/submit-data
-    mutationFn: (payload) => clientAPI["put"](`/api/dform/${payload.dForm.id}/submit-data`, payload.data),
+    //api/dform/${payload.dForm.id}/submit-data
+    mutationFn: (payload) => clientAPI["put"](`/member-view-api/dform/${payload.dForm.id}/submit-data`, payload.data),
 
     onSettled: () => {
-      return queryClient.invalidateQueries([...ProspectUserProfileKeys.submitdFormData]);
+      return queryClient.invalidateQueries(ProspectUserProfileKeys.submitdFormData);
     },
     onError: (error) => {
-      console.log("useSubmitdFormDataRequestMutation ERROR", error);
       dispatch(submitdFormDataError(error.message));
     },
     onSuccess: (data) => {
-      console.log("useSubmitdFormDataRequestMutation SUCCESSFUL", data);
       dispatch(submitdFormDataSuccess(data));
     },
 
@@ -178,57 +170,50 @@ export const useSubmitdFormDataRequestMutation = (options = {}) => {
   });
 };
 
-//! using outdated endpoint
 export const useSubmitdFormPathRequestMutation = (options = {}) => {
   const dispatch = useDispatch();
 
   const queryClient = useQueryClient();
 
   return useMutation({
-    //member-view-api/dform/${payload.dForm.id}/submit
-    mutationFn: (payload) => clientAPI["put"](`/api/dform/${payload.dForm.id}/submit`, payload.data),
+    //api/dform/${payload.dForm.id}/submit
+    mutationFn: (payload) => clientAPI["put"](`/member-view-api/dform/${payload.dForm.id}/submit`, payload.data),
 
     onSettled: () => {
-      return queryClient.invalidateQueries([...ProspectUserProfileKeys.submitdFormPath]);
+      return queryClient.invalidateQueries(ProspectUserProfileKeys.submitdFormPath);
     },
     onError: (error) => {
-      console.log("useSubmitdFormPathRequestMutation ERROR", error);
       dispatch(submitdFormError(error.message));
     },
     onSuccess: (data) => {
-      console.log("useSubmitdFormPathRequestMutation SUCCESSFUL", data);
       dispatch(submitdFormSuccess(data));
     },
     ...options,
   });
 };
 
-//! using outdated endpoint
 export const useGetCurrentQuestionForAssignedSurvey = (payload, options = {}) => {
   const { id } = payload;
 
   const dispatch = useDispatch();
   return useGenericQuery(
     {
-      //member-view-api/survey-passing/${id}/current-question
-      url: `api/survey-passing/${id}/current-question`,
-      queryKey: [...ProspectUserProfileKeys.currentQuestionForAssignedSurveyId(id)],
+      //api/survey-passing/${id}/current-question
+      url: `member-view-api/survey-passing/${id}/current-question`,
+      queryKey: ProspectUserProfileKeys.currentQuestionForAssignedSurveyId(id),
     },
     {
       onError: (error) => {
-        console.log("useGetCurrentQuestionForAssignedSurveyUrl ERROR", error);
-        dispatch(getCurrentQuestionForAssignedSurveyError(error.message));
+        //dispatch(getCurrentQuestionForAssignedSurveyError(error.message));
       },
       onSuccess: (data) => {
-        console.log("useGetCurrentQuestionForAssignedSurveyUrl SUCCESSFUL", data);
-        dispatch(getCurrentQuestionForAssignedSurveySuccess(data));
+        //dispatch(getCurrentQuestionForAssignedSurveySuccess(data));
       },
       ...options,
     }
   );
 };
 
-//! using outdated endpoint
 export const useGetBeginSurvey = (payload, options = {}) => {
   const { id } = payload;
 
@@ -236,16 +221,15 @@ export const useGetBeginSurvey = (payload, options = {}) => {
   return useGenericQuery(
     {
       //member-view-api/survey-passing/${id}/begin
-      url: `api/survey-passing/${id}/begin`,
-      queryKey: [...ProspectUserProfileKeys.beginSurveyId(id)],
+      //api/survey-passing/${id}/begin
+      url: `member-view-api/survey-passing/${id}/begin`,
+      queryKey: ProspectUserProfileKeys.beginSurveyId(id),
     },
     {
       onError: (error) => {
-        console.log("useGetBeginSurvey ERROR", error);
         dispatch(beginSurveyError(error.message));
       },
       onSuccess: (data) => {
-        console.log("useGetBeginSurvey SUCCESSFUL", data);
         dispatch(beginSurveySuccess(data));
       },
       ...options,
