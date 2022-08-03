@@ -6,9 +6,11 @@ import {
   useDFormByIdQuery,
 } from "api/Onboarding/prospectUserQuery";
 import Check from "assets/img/icons/check.png";
+import { Spinner } from "reactstrap";
 
 const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
-  const { data: formSelected } = useDFormByIdQuery({ id: selectedForm.id });
+  console.log("selectedForm", selectedForm);
+  const { data: formSelected, isLoading: isFormLoading } = useDFormByIdQuery({ id: selectedForm.id });
 
   const isDisabledSubmit = () => {
     // return ["user-lock", "hard-lock"].indexOf(profile.onboarding.d_form?.access_type) !== -1;
@@ -40,6 +42,14 @@ const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
     //dispatch(submitdFormDataRequest({ data, dForm }))
     debounceonSaveMutation.mutate({ data, dForm });
   });
+
+  if (!isFormLoading) {
+    return (
+      <div className="onboarding-survey_loading">
+        <Spinner color="primary" size={`40`} />
+      </div>
+    );
+  }
 
   return formSelected?.d_form?.access_type === "user-lock" ? (
     <FormCreate
