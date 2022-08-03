@@ -35,94 +35,13 @@ import NewApplicationInitForm from "./Components/NewApplicationInitForm";
 import ApplicationDescription from "./Components/ApplicationDescription";
 import ElementsReorderComponent from "./Components/ElementsReorderComponent";
 import { selectdForm } from "../../app/selectors";
-import { useApplicationCreateMutation, useApplication } from "./applicationQueries";
+import { useApplicationCreateMutation, useApplication, useApplicationUpdateMutation } from "./applicationQueries";
 import appSlice from "../../app/slices/appSlice";
 import onboardingSlice from "../../app/slices/onboardingSlice";
 
 const { setdForm } = onboardingSlice.actions;
 
 const { setContext } = appSlice.actions;
-
-const data = {
-  type: "application",
-  name: "Dform name",
-  description: "description",
-  isPrivate: false,
-  organization: {
-    id: 1,
-    corporation_id: 1,
-    name: "ValidPath",
-    created_at: "2022-03-28T17:51:44.000000Z",
-    updated_at: "2022-05-27T16:29:20.000000Z",
-    intro_text: "<p>ValidPath intro text</p>",
-    intro_title: "ValidPath intro",
-    type: "network",
-  },
-  sectionsOrder: ["First section"],
-  sections: {
-    "First section": {
-      id: "First section",
-      name: "First section",
-      isProtected: false,
-      isDisabled: false,
-      isHidden: false,
-      isAlreadyViewed: false, // Need it to mark section with tick when it have 0 fields that needs to be filled
-      relatedGroups: ["Group one", "Second group"],
-      conditions: "",
-    },
-  },
-  groups: {
-    "Group one": {
-      name: "Group one",
-      id: "Group one",
-      isProtected: false,
-      relatedFields: ["1", "2", "3"],
-    },
-    "Second group": {
-      name: "Second group",
-      id: "Second group",
-      isProtected: false,
-      relatedFields: ["4"],
-    },
-  },
-  fields: {
-    1: {
-      id: "1",
-      isNotMasterSchemaRelated: true,
-      type: "text",
-      title: "Some text",
-      isRequired: true,
-      classes: "col-md-12",
-      isLabelShowing: true,
-    },
-    2: {
-      id: "2",
-
-      type: "textarea",
-      title: "Your biography",
-      isRequired: true,
-      classes: "col-md-12",
-      isLabelShowing: true,
-    },
-    3: {
-      id: "3",
-
-      type: "select",
-      title: "Select your country",
-      isLabelShowing: true,
-      classes: "col-md-12",
-    },
-    4: {
-      id: "4",
-
-      type: "text",
-      title: "Email of your best friend",
-      isLabelShowing: true,
-      classes: "col-md-12",
-    },
-  },
-  errors: {},
-};
 
 //TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
 // because of internal behavior of component
@@ -146,14 +65,34 @@ const Applications = ({ isCreate }) => {
     },
   });
 
+  const updateApplication = useApplicationUpdateMutation(
+    { applicationId: selectedDForm?.id },
+    {
+      onSuccess: (data) => {
+        const { groups, schema, is_private, ...rest } = data;
+
+        const applicationData = {
+          organization: groups[0],
+          isPrivate: is_private,
+          ...schema,
+          ...rest,
+        };
+
+        setDataWithSuggestedChanges(applicationData);
+        setApplicationData(applicationData);
+      },
+    }
+  );
+
   const application = useApplication(
     { applicationId: selectedDForm?.id },
     {
       onSuccess: (data) => {
-        const { groups, schema, ...rest } = data;
+        const { groups, schema, is_private, ...rest } = data;
 
         const applicationData = {
           organization: groups[0],
+          isPrivate: is_private,
           ...schema,
           ...rest,
         };
@@ -556,14 +495,14 @@ const Applications = ({ isCreate }) => {
     }
   };
 
-  const handleApplicationCreate = () => {
+  const handleApplicationMutation = () => {
     // Errors object spread just to not to pass it into mutation
     const { name, description, isPrivate, type, errors, organization, ...schema } = dataWithSuggestedChanges;
 
-    createApplication.mutate({
+    const dataToSave = {
       name,
       description,
-      isPrivate,
+      is_private: isPrivate,
       groups: [
         {
           group_id: organization.id,
@@ -571,14 +510,14 @@ const Applications = ({ isCreate }) => {
         },
       ],
       schema,
-    });
-  };
+    };
 
-  // useEffect(() => {
-  //   if (elementWithSuggestedChanges !== null) {
-  //     setDataWithSuggestedChanges(embedSuggestedChanges());
-  //   }
-  // }, [elementWithSuggestedChanges]);
+    if (isCreate) {
+      createApplication.mutate(dataToSave);
+    } else {
+      updateApplication.mutate(dataToSave);
+    }
+  };
 
   useEffect(() => {
     setDataWithSuggestedChanges(applicationData);
@@ -632,7 +571,12 @@ const Applications = ({ isCreate }) => {
             <div className="d-flex justify-content-between ">
               <Button className={"button button-cancel"}>Cancel</Button>
 
-              <Button color={"primary"} className={"button button-success"} onClick={handleApplicationCreate}>
+              <Button
+                disabled={createApplication.isLoading || updateApplication.isLoading}
+                color={"primary"}
+                className={"button button-success"}
+                onClick={handleApplicationMutation}
+              >
                 {isCreate ? "Create" : "Save"}
               </Button>
             </div>
