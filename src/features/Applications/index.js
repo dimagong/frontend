@@ -212,7 +212,8 @@ const Applications = ({ isCreate }) => {
     let tabIndex = 1;
 
     if (applicationData[collectionName]) {
-      while (`${baseName} ${tabIndex}` in applicationData[collectionName]) tabIndex++;
+      const instancesNames = Object.values(applicationData[collectionName]).map((instance) => instance.name);
+      while (instancesNames.includes(`${baseName} ${tabIndex}`)) tabIndex++;
     }
 
     return `${baseName} ${tabIndex}`;
@@ -223,7 +224,7 @@ const Applications = ({ isCreate }) => {
 
     const newSectionData = {
       ...INITIAL_SECTION_DATA,
-      id: sectionName,
+      id: makeid(9),
       name: sectionName,
       elementType: "section",
       // isNew: true,
@@ -248,7 +249,7 @@ const Applications = ({ isCreate }) => {
 
     const newGroupData = {
       ...INITIAL_GROUP_DATA,
-      id: groupName,
+      id: makeid(9),
       name: groupName,
       isNew: true,
     };
