@@ -9,7 +9,6 @@ import Check from "assets/img/icons/check.png";
 import { Spinner } from "reactstrap";
 
 const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
-  console.log("selectedForm", selectedForm);
   const { data: formSelected, isLoading: isFormLoading } = useDFormByIdQuery({ id: selectedForm.id });
 
   const isDisabledSubmit = () => {
@@ -43,7 +42,7 @@ const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
     debounceonSaveMutation.mutate({ data, dForm });
   });
 
-  if (!isFormLoading) {
+  if (isFormLoading) {
     return (
       <div className="onboarding-survey_loading">
         <Spinner color="primary" size={`40`} />

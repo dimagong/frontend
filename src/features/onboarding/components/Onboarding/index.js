@@ -109,7 +109,7 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                   if (application.tabId.includes("form")) {
                     return (
                       <TabPane key={index} tabId={application.tabId}>
-                        <div style={{ marginLeft: "-100px", marginRight: "100px", border: "4px solid black" }}>
+                        <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
                           <h2 className="onboarding-title">{application?.title || application?.name}</h2>
                           {!isEmpty(application) &&
                             (isShowStatus(application) ? (
