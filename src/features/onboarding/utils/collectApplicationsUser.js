@@ -2,10 +2,10 @@ import _ from "lodash";
 
 export const collectApplicationsUser = (forms, surveys) => {
   // Onboardings and surveys may have Id collisions, we add tabId property to prevent bugs
-  const formsMark = forms.map((application) => {
+  const formsMark = forms.map((form) => {
     return {
-      ...application,
-      tabId: `${application.id} onboarding`,
+      ...form,
+      tabId: `${form.id} form`,
     };
   });
   const surveyMark = surveys.map((survey) => {
