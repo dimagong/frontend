@@ -36,12 +36,12 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
 
   // const survey = useSelector(selectUserOnboarding);
   const survey = { ...appOnboarding };
-  console.log("appOnboarding", appOnboarding);
+  console.log("SURVEY appOnboarding", appOnboarding);
 
   const { question, count, answers, currentIndex } = survey;
 
   const { id, started_at, finished_at, title, graded_at } = applicationData;
-  console.log("applicationData", applicationData);
+  console.log("SURVEY applicationData", applicationData);
 
   const surveyStatus = (started_at && "started") || "notStarted";
 

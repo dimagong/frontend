@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CardBody, Card, Row, Col, TabContent, TabPane } from "reactstrap";
 //import { useSelector } from "react-redux";
 //import { selectLoading } from "app/selectors";
@@ -12,55 +12,42 @@ import OnboardingApp from "./../OnboardingApp";
 
 //import appSlice from "app/slices/appSlice";
 
-import { useAppsOnboardingIdQuery } from "api/Onboarding/prospectUserQuery";
+import { useDFormByIdQuery, useSurveyByIdQuery } from "api/Onboarding/prospectUserQuery";
 
-import { findActiveAppOnboarding, initialAppOnboarding } from "./../../utils/findActiveAppOnboarding";
 //const { submitdFormRequest, setProfileOnboarding, submitdFormDataRequest } = appSlice.actions;
 
-const useOnboarding = (recentlySubmittedData, forceAppShowData, appActiveOnboardingData) => {
+const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) => {
   const [recentlySubmitted, setRecentlySubmitted] = useState(false);
   const [forceAppShow, setForceAppShow] = useState([]);
-  const [appActiveOnboarding, setActiveAppOnboarding] = useState(null);
-  if (recentlySubmittedData) setRecentlySubmitted(recentlySubmittedData);
-  if (forceAppShowData) setForceAppShow(forceAppShowData);
-  if (appActiveOnboardingData) setActiveAppOnboarding(appActiveOnboardingData);
-  return [recentlySubmitted, forceAppShow, appActiveOnboarding];
-};
+  const [appActiveOnboarding, setActiveAppOnboarding] = useState(initialOnboarding);
 
-const OnboardingComponent = ({ profile, userApplications }) => {
-  const [recentlySubmitted, setRecentlySubmitted] = useState(false);
-  const [forceAppShow, setForceAppShow] = useState([]);
+  useEffect(() => {
+    setActiveAppOnboarding(initialOnboarding);
+  }, [initialOnboarding]);
 
-  //const [recentlySubmitted] = useOnboarding(true);
-  console.log("recentlySubmitted", recentlySubmitted);
-  console.log("userApplications", userApplications);
+  const { data: formSelected } = useDFormByIdQuery(
+    { id: appActiveOnboarding?.id },
+    { enabled: !!appActiveOnboarding?.tabId?.includes("form") }
+  );
 
-  const [appActiveOnboarding, setActiveAppOnboarding] = useState(initialAppOnboarding(profile, userApplications));
-
-  //!Mock data
-  // const {data: appOnboardingSelected}= useAppsOnboardingIdQuery({ id: appOnboarding.id }, { enabled: !!appOnboarding.id })
-  const appOnboardingSelected = { ...appActiveOnboarding };
-  console.log("appOnboardingSelected", appOnboardingSelected);
+  const { data: surveySelected } = useSurveyByIdQuery(
+    { id: appActiveOnboarding?.id },
+    { enabled: !!appActiveOnboarding?.tabId?.includes("survey") }
+  );
 
   const handleNavClick = (onboarding) => {
+    setActiveAppOnboarding({ ...onboarding });
     setRecentlySubmitted(false);
     //dispatch(setProfileOnboarding({ ...onboarding }));
-    setActiveAppOnboarding({ ...onboarding });
   };
 
   const formatTabs = (applications) => {
     return applications.map((application) => {
-      if (application?.d_form || application.tabId.includes("onboarding")) {
+      if (application.tabId.includes("form")) {
         // Check if onBoarding finished
         return {
           ...application,
-          icon:
-            application.status === "submitted" ||
-            application.status === "approved" ||
-            application.d_form.status === "submitted" ||
-            application.d_form.status === "approved"
-              ? Check
-              : "null",
+          icon: application?.status === "submitted" || application?.status === "approved" ? Check : "null",
         };
       } else {
         // Check is survey finished
@@ -73,7 +60,7 @@ const OnboardingComponent = ({ profile, userApplications }) => {
   };
 
   const isShowStatus = (application) => {
-    const status = application.d_form?.status || application.status;
+    const status = application.d_form?.status || application?.status;
     return (status === "submitted" || status === "approved") && !~forceAppShow.indexOf(application.id);
   };
 
@@ -87,16 +74,16 @@ const OnboardingComponent = ({ profile, userApplications }) => {
 
     if (!availableApplication) return;
 
-    if (availableApplication?.d_form || availableApplication.tabId.includes("onboarding")) {
-      return availableApplication.id + " onboarding";
+    if (availableApplication?.tabId?.includes("form")) {
+      return availableApplication.id + " form";
     } else {
       return availableApplication.id + " survey";
     }
   };
 
   const unCompletedApplications = userApplications.filter((application) => {
-    if (application.tabId.includes("onboarding")) {
-      return !(application.status === "approved" || application.status === "submitted");
+    if (application.tabId.includes("form")) {
+      return !(application?.status === "approved" || application?.status === "submitted");
     } else {
       // For surveys
       return !application.finished_at;
@@ -107,7 +94,6 @@ const OnboardingComponent = ({ profile, userApplications }) => {
     return <div>Onboarding not exist</div>;
   }
 
-  console.log("forceAppShow", forceAppShow);
   return (
     <>
       <Row>
@@ -115,7 +101,7 @@ const OnboardingComponent = ({ profile, userApplications }) => {
           <NavMenu
             withIcons
             tabId="tabId"
-            tabName={(application) => application?.d_form?.name || application.title}
+            tabName={(application) => application?.title || application?.name}
             active={getActiveTab()}
             tabs={formatTabs(userApplications)}
             onChange={(application) => {
@@ -130,28 +116,28 @@ const OnboardingComponent = ({ profile, userApplications }) => {
             <CardBody className="pt-0 pl-0">
               <TabContent activeTab={getActiveTab()}>
                 {userApplications.map((application, index) => {
-                  if (application.tabId.includes("onboarding")) {
+                  if (application.tabId.includes("form")) {
                     return (
                       <TabPane key={index} tabId={application.tabId}>
                         <div style={{ marginLeft: "-100px", marginRight: "100px", border: "4px solid black" }}>
-                          <h2 className="onboarding-title">{application.d_form?.name || application.name}</h2>
+                          <h2 className="onboarding-title">{application?.title || application?.name}</h2>
                           {!isEmpty(application) &&
                             (isShowStatus(application) ? (
                               <StatusComponent
-                                status={
-                                  (recentlySubmitted && "recent") || application.d_form?.status || application.status
-                                }
+                                status={(recentlySubmitted && "recent") || application?.status}
                                 application={application}
                                 isAllApplicationsCompleted={!unCompletedApplications.length}
                                 onForceApplicationShow={() => showApplication(application.id)}
                               />
-                            ) : appOnboardingSelected.d_form ? (
-                              <OnboardingApp
-                                profile={profile}
-                                appOnboardingSelected={appOnboardingSelected}
-                                setRecentlySubmitted={setRecentlySubmitted}
-                              />
-                            ) : null)}
+                            ) : (
+                              formSelected && (
+                                <OnboardingApp
+                                  profile={profile}
+                                  appOnboardingSelected={formSelected}
+                                  setRecentlySubmitted={setRecentlySubmitted}
+                                />
+                              )
+                            ))}
                         </div>
                       </TabPane>
                     );
@@ -159,14 +145,15 @@ const OnboardingComponent = ({ profile, userApplications }) => {
                     return (
                       <TabPane key={index} tabId={application.tabId}>
                         <div className="onboarding-title" />
-                        {application.id === appActiveOnboarding.id && (
+                        {surveySelected && (
+                          //application.id === appActiveOnboarding?.id
                           // {application.id === profile.onboarding.id && (
                           <OnboardingSurvey
                             onSurveyFinish={() => setRecentlySubmitted(true)}
                             applicationData={application}
                             isRecentlySubmitted={recentlySubmitted}
                             isAllApplicationsCompleted={!unCompletedApplications.length}
-                            appOnboarding={appActiveOnboarding}
+                            appOnboarding={surveySelected}
                           />
                         )}
                       </TabPane>

@@ -13,13 +13,15 @@ import WelcomePageComponent from "./components/WeclomePage";
 
 import OnboardingComponent from "./components/Onboarding";
 
+import { initialAppOnboarding } from "./../../features/onboarding/utils/findActiveAppOnboarding";
+
 //import appSlice from "app/slices/appSlice";
 //const { setProfileOnboarding, getAssignedSurveysForOnboardingRequest, removeUserNotifyRequest } = appSlice.actions;
 
 import {
   useProspectUserProfileQuery,
-  useSurvayPassingQuery,
-  useAppsOnboardingsAllQuery,
+  useSurveyPassingQuery,
+  useDFormsListQuery,
   useProspectRemoveUserNotifyMutation,
 } from "api/Onboarding/prospectUserQuery";
 
@@ -28,19 +30,19 @@ import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 //query
 const useCallCollectQuery = () => {
   const userProspectProfile = useProspectUserProfileQuery();
-  const userSurvayPassing = useSurvayPassingQuery();
-  const useAppsOnboardings = useAppsOnboardingsAllQuery();
-  return { userProspectProfile, userSurvayPassing, useAppsOnboardings };
+  const userSurveyPassing = useSurveyPassingQuery();
+  const useDForms = useDFormsListQuery();
+  return { userProspectProfile, userSurveyPassing, useDForms };
 };
 
 const OnboardingUser = () => {
-  const { userProspectProfile, userSurvayPassing, useAppsOnboardings } = useCallCollectQuery();
+  const { userProspectProfile, userSurveyPassing, useDForms } = useCallCollectQuery();
 
   const profile = userProspectProfile.data;
   const onboardingSurveys = useSelector(selectOnboardingSurveys);
-  //!Mock data
-  //const onboardingApps = useAppsOnboardings.data;
-  const onboardingApps = profile?.onboardings ?? [];
+
+  const dFormsList = useDForms.data;
+  //const onboardingApps = profile?.onboardings ?? [];
 
   const useRemoveUserNotify = useProspectRemoveUserNotifyMutation(
     { userId: profile?.id, userNotifyEntryId: profile?.notify_entries[0]?.id },
@@ -55,11 +57,13 @@ const OnboardingUser = () => {
     { enabled: profile?.notify_entries.length === 1 }
   );
 
-  let userApplications = collectApplicationsUser(onboardingApps ?? [], onboardingSurveys ?? []);
+  let userApplications = collectApplicationsUser(dFormsList ?? [], onboardingSurveys ?? []);
 
-  return userSurvayPassing.isLoading || useAppsOnboardings.isLoading ? (
+  const initialOnboarding = initialAppOnboarding(profile, userApplications);
+
+  return userSurveyPassing.isLoading || useDForms.isLoading ? (
     <div className="d-flex justify-content-center pt-5">
-      <Spinner color="primary" size={70} />
+      <Spinner color="primary" size={"70"} />
     </div>
   ) : profile?.notify_entries.length ? (
     <WelcomePageComponent
@@ -73,7 +77,7 @@ const OnboardingUser = () => {
       introTitle={profile?.notify_entries[0].notify.intro_title}
     />
   ) : (
-    <OnboardingComponent userApplications={userApplications} profile={profile} />
+    <OnboardingComponent userApplications={userApplications} profile={profile} initialOnboarding={initialOnboarding} />
   );
 };
 

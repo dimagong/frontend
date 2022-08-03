@@ -3,7 +3,7 @@ import FormCreate from "components/FormCreate/FormCreate";
 import {
   useSubmitdFormDataRequestMutation,
   useSubmitdFormPathRequestMutation,
-  useAppsOnboardingIdQuery,
+  useDFormByIdQuery,
 } from "api/Onboarding/prospectUserQuery";
 import Check from "assets/img/icons/check.png";
 
@@ -18,16 +18,15 @@ const OnboardingApp = ({ profile, appOnboardingSelected, setRecentlySubmitted })
   };
 
   const commonFormProps = {
-    isShowProtectedElements: isShowProtectedElements(profile.roles),
+    isShowProtectedElements: isShowProtectedElements(profile?.roles || []),
     fileLoader: true,
     fill: true,
-    dForm: appOnboardingSelected.d_form,
+    dForm: appOnboardingSelected?.d_form,
     isStateConfig: false,
   };
 
   const submitdForm = useSubmitdFormPathRequestMutation();
   const submitOnboardingForm = (data) => {
-    console.log("submitOnboardingForm data", data);
     setRecentlySubmitted(true);
     // dispatch(submitdFormRequest({ dForm: profile.onboarding.d_form, data }));
     submitdForm.mutate({ dForm: appOnboardingSelected.d_form, data });
@@ -40,7 +39,7 @@ const OnboardingApp = ({ profile, appOnboardingSelected, setRecentlySubmitted })
     debounceonSaveMutation.mutate({ data, dForm });
   });
 
-  return appOnboardingSelected.d_form.access_type === "user-lock" ? (
+  return appOnboardingSelected?.d_form?.access_type === "user-lock" ? (
     <FormCreate
       isShowErrors={true}
       {...commonFormProps}
