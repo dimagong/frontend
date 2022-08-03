@@ -7,10 +7,12 @@ import {
 } from "api/Onboarding/prospectUserQuery";
 import Check from "assets/img/icons/check.png";
 
-const OnboardingApp = ({ profile, appOnboardingSelected, setRecentlySubmitted }) => {
+const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
+  const { data: formSelected } = useDFormByIdQuery({ id: selectedForm.id });
+
   const isDisabledSubmit = () => {
     // return ["user-lock", "hard-lock"].indexOf(profile.onboarding.d_form?.access_type) !== -1;
-    return ["user-lock", "hard-lock"].indexOf(appOnboardingSelected.d_form?.access_type) !== -1;
+    return ["user-lock", "hard-lock"].indexOf(formSelected.d_form?.access_type) !== -1;
   };
 
   const isShowProtectedElements = (roles) => {
@@ -21,7 +23,7 @@ const OnboardingApp = ({ profile, appOnboardingSelected, setRecentlySubmitted })
     isShowProtectedElements: isShowProtectedElements(profile?.roles || []),
     fileLoader: true,
     fill: true,
-    dForm: appOnboardingSelected?.d_form,
+    dForm: formSelected?.d_form,
     isStateConfig: false,
   };
 
@@ -29,7 +31,7 @@ const OnboardingApp = ({ profile, appOnboardingSelected, setRecentlySubmitted })
   const submitOnboardingForm = (data) => {
     setRecentlySubmitted(true);
     // dispatch(submitdFormRequest({ dForm: profile.onboarding.d_form, data }));
-    submitdForm.mutate({ dForm: appOnboardingSelected.d_form, data });
+    submitdForm.mutate({ dForm: formSelected.d_form, data });
   };
 
   const debounceonSaveMutation = useSubmitdFormDataRequestMutation();
@@ -39,7 +41,7 @@ const OnboardingApp = ({ profile, appOnboardingSelected, setRecentlySubmitted })
     debounceonSaveMutation.mutate({ data, dForm });
   });
 
-  return appOnboardingSelected?.d_form?.access_type === "user-lock" ? (
+  return formSelected?.d_form?.access_type === "user-lock" ? (
     <FormCreate
       isShowErrors={true}
       {...commonFormProps}
@@ -58,7 +60,7 @@ const OnboardingApp = ({ profile, appOnboardingSelected, setRecentlySubmitted })
       onSubmit={(formData) => submitOnboardingForm(formData)}
       onChange={(data) => {
         // setDebounced(true);
-        debounceOnSave.current(data, appOnboardingSelected.d_form);
+        debounceOnSave.current(data, formSelected.d_form);
       }}
       updatedAtText={
         loading ? (
