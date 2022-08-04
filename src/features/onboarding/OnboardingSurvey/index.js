@@ -13,6 +13,8 @@ import OnboardingSurveyFeedbackViewComponent from "./components/OnboardingSurvey
 
 import { useGetCurrentQuestionForAssignedSurvey, useGetBeginSurvey } from "api/Onboarding/prospectUserQuery";
 
+import { useSurveyByIdQuery } from "api/Onboarding/prospectUserQuery";
+
 const {
   getCurrentQuestionForAssignedSurveyRequest,
   beginSurveyRequest,
@@ -21,13 +23,20 @@ const {
   getAllSurveyQuestionsRequest,
 } = appSlice.actions;
 
-const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecentlySubmitted, appOnboarding }) => {
+const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecentlySubmitted }) => {
   const dispatch = useDispatch();
   const [answer, setAnswer] = useState("");
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
+  const { data: survey, isSuccess: isSurveySelectedSuccess } = useSurveyByIdQuery(
+    { id: selectedSurvey.id }
+    // { enabled: Boolean(appActiveOnboarding?.tabId?.includes("survey")) }
+  );
+
+  console.log("OnboardingSurvey survey", survey);
   //const isSurveyLoading = useSelector(createLoadingSelector([getCurrentQuestionForAssignedSurveyRequest.type]));
   const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
+
   const isSurveyBeginProceed = useSelector(createLoadingSelector([beginSurveyRequest.type], true));
   const isSurveySwitchToPreviousQuestionProceed = useSelector(
     createLoadingSelector([switchToPreviousQuestionRequest.type], true)
@@ -35,26 +44,24 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
   const isSurveyGradedQuestionsLoading = useSelector(createLoadingSelector([getAllSurveyQuestionsRequest.type], true));
 
   // const survey = useSelector(selectUserOnboarding);
-  const survey = { ...appOnboarding };
-  console.log("SURVEY appOnboarding", appOnboarding);
 
-  const { question, count, answers, currentIndex } = survey;
+  const { question, count, answers, currentIndex } = survey || {};
 
-  const { id, started_at, finished_at, title, graded_at } = applicationData;
-  console.log("SURVEY applicationData", applicationData);
+  const { id, started_at, finished_at, title, graded_at } = selectedSurvey;
 
   const surveyStatus = (started_at && "started") || "notStarted";
 
   const submittedSurveyStatus =
-    (applicationData.graded_at && "approved") ||
-    (applicationData.finished_at && isRecentlySubmitted && "recent") ||
+    (selectedSurvey.graded_at && "approved") ||
+    (selectedSurvey.finished_at && isRecentlySubmitted && "recent") ||
     "submitted";
 
-  const { refetch, isSuccess: isSuccessCetBeginSurvay } = useGetBeginSurvey(
+  const { refetch, isSuccess: isSuccessGetBeginSurvay } = useGetBeginSurvey(
     { id },
     { refetchOnWindowFocus: false, enabled: false }
   );
-  useGetCurrentQuestionForAssignedSurvey({ id }, { enabled: isSuccessCetBeginSurvay });
+  useGetCurrentQuestionForAssignedSurvey({ id }, { enabled: isSuccessGetBeginSurvay });
+
   const handleSurveyStart = () => {
     //dispatch(beginSurveyRequest(id));
     refetch();
@@ -91,6 +98,7 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
     { id },
     { enabled: [started_at, !finished_at].every(Boolean) }
   );
+
   // useEffect(() => {
   //   if (started_at && !finished_at) {
   //     dispatch(getCurrentQuestionForAssignedSurveyRequest(id));
