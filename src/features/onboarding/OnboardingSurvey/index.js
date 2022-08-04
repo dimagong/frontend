@@ -33,7 +33,6 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     // { enabled: Boolean(appActiveOnboarding?.tabId?.includes("survey")) }
   );
 
-  console.log("OnboardingSurvey survey", survey);
   //const isSurveyLoading = useSelector(createLoadingSelector([getCurrentQuestionForAssignedSurveyRequest.type]));
   const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
 

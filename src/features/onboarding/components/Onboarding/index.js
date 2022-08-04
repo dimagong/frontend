@@ -19,8 +19,6 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
   const [forceAppShow, setForceAppShow] = useState([]);
   const [appActiveOnboarding, setActiveAppOnboarding] = useState(null);
 
-  console.log("appActiveOnboarding", appActiveOnboarding);
-
   useEffect(() => {
     setActiveAppOnboarding(initialOnboarding);
   }, [initialOnboarding]);
