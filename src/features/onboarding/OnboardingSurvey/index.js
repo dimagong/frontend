@@ -11,9 +11,12 @@ import OnboardingSurveyStatusComponent from "./components/OnboardingSurveyStatus
 import { appSlice } from "app/slices/appSlice";
 import OnboardingSurveyFeedbackViewComponent from "./components/OnboardingSurveyFeedbackViewComponent";
 
-import { useGetCurrentQuestionForAssignedSurvey, useGetBeginSurvey } from "api/Onboarding/prospectUserQuery";
-
-import { useSurveyByIdQuery } from "api/Onboarding/prospectUserQuery";
+import {
+  useGetCurrentQuestionForAssignedSurvey,
+  useSurveyByIdQuery,
+  useGetBeginSurveyQuery,
+  usePushAnswerMutation,
+} from "api/Onboarding/prospectUserQuery";
 
 const {
   getCurrentQuestionForAssignedSurveyRequest,
@@ -50,13 +53,21 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     (selectedSurvey.finished_at && isRecentlySubmitted && "recent") ||
     "submitted";
 
-  const { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurvey(
+  let { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurvey(
     { id },
     { enabled: [started_at, !finished_at].every(Boolean) }
   );
+
+  const usePushAnswer = usePushAnswerMutation();
+  const isPushAnswerSuccess = usePushAnswer.isSuccess;
+  let { data: currentQuestionPushAnswer, isLoading: isSurveyLoadingPushAnswer } =
+    useGetCurrentQuestionForAssignedSurvey({ id }, { enabled: isPushAnswerSuccess });
+  currentQuestion = currentQuestionPushAnswer;
+  isSurveyLoading = isSurveyLoadingPushAnswer;
+
   const { question, count, answers, currentIndex } = currentQuestion || {};
 
-  const { refetch, isSuccess: isSuccessGetBeginSurvay } = useGetBeginSurvey(
+  const { refetch, isSuccess: isSuccessGetBeginSurvay } = useGetBeginSurveyQuery(
     { id },
     { refetchOnWindowFocus: false, enabled: false }
   );
@@ -81,15 +92,23 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
       return;
     }
 
-    dispatch(
-      pushAnswerRequest({
-        surveyId: id,
-        data: {
-          question_id: question.id,
-          answer,
-        },
-      })
-    );
+    usePushAnswer.mutate({
+      surveyId: id,
+      data: {
+        question_id: question.id,
+        answer,
+      },
+    });
+
+    // dispatch(
+    //   pushAnswerRequest({
+    //     surveyId: id,
+    //     data: {
+    //       question_id: question.id,
+    //       answer,
+    //     },
+    //   })
+    // );
 
     setAnswer("");
   };

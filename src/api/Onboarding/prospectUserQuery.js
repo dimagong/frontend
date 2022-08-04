@@ -26,6 +26,8 @@ const {
   getProfileError,
   beginSurveyError,
   beginSurveySuccess,
+  pushAnswerError,
+  pushAnswerSuccess,
 } = appSlice.actions;
 
 export const ProspectUserProfileQueryKey = createQueryKey("Prospect User profile");
@@ -214,7 +216,7 @@ export const useGetCurrentQuestionForAssignedSurvey = (payload, options = {}) =>
   );
 };
 
-export const useGetBeginSurvey = (payload, options = {}) => {
+export const useGetBeginSurveyQuery = (payload, options = {}) => {
   const { id } = payload;
 
   const dispatch = useDispatch();
@@ -235,4 +237,23 @@ export const useGetBeginSurvey = (payload, options = {}) => {
       ...options,
     }
   );
+};
+
+export const usePushAnswerMutation = (options = {}) => {
+  const dispatch = useDispatch();
+
+  return useMutation({
+    mutationFn: (payload) => clientAPI["put"](`/member-view-api/survey-passing/${payload.surveyId}`, payload.data),
+
+    onSettled: () => {
+      //return queryClient.invalidateQueries(ProspectUserProfileKeys.something);
+    },
+    onError: (error) => {
+      dispatch(pushAnswerError(error.message));
+    },
+    onSuccess: (data) => {
+      dispatch(pushAnswerSuccess());
+    },
+    ...options,
+  });
 };
