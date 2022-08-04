@@ -28,10 +28,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
   const [answer, setAnswer] = useState("");
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
-  const { data: survey, isSuccess: isSurveySelectedSuccess } = useSurveyByIdQuery(
-    { id: selectedSurvey.id }
-    // { enabled: Boolean(appActiveOnboarding?.tabId?.includes("survey")) }
-  );
+  const { data: survey, isSuccess: isSurveySelectedSuccess } = useSurveyByIdQuery({ id: selectedSurvey.id });
 
   //const isSurveyLoading = useSelector(createLoadingSelector([getCurrentQuestionForAssignedSurveyRequest.type]));
   const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
@@ -44,9 +41,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
 
   // const survey = useSelector(selectUserOnboarding);
 
-  const { question, count, answers, currentIndex } = survey || {};
-
-  const { id, started_at, finished_at, title, graded_at } = selectedSurvey;
+  const { id, started_at, finished_at, title, graded_at } = survey || {};
 
   const surveyStatus = (started_at && "started") || "notStarted";
 
@@ -54,6 +49,12 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     (selectedSurvey.graded_at && "approved") ||
     (selectedSurvey.finished_at && isRecentlySubmitted && "recent") ||
     "submitted";
+
+  const { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurvey(
+    { id },
+    { enabled: [started_at, !finished_at].every(Boolean) }
+  );
+  const { question, count, answers, currentIndex } = currentQuestion || {};
 
   const { refetch, isSuccess: isSuccessGetBeginSurvay } = useGetBeginSurvey(
     { id },
@@ -93,11 +94,6 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     setAnswer("");
   };
 
-  const { isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurvey(
-    { id },
-    { enabled: [started_at, !finished_at].every(Boolean) }
-  );
-
   // useEffect(() => {
   //   if (started_at && !finished_at) {
   //     dispatch(getCurrentQuestionForAssignedSurveyRequest(id));
@@ -113,6 +109,8 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
   }, []);
 
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
+
+  const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
 
   return finished_at ? (
     graded_at && isFeedbackView ? (
@@ -140,14 +138,14 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
       questionNumber={currentIndex + 1}
       progress={(currentIndex / count) * 100}
       question={question}
-      isLoading={(started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed}
+      isLoading={isLoadingData}
       onSurveyStart={handleSurveyStart}
       isSurveyBeginProceed={isSurveyBeginProceed}
       isAnswerPushProceed={isAnswerPushProceed}
       status={surveyStatus}
-      startedAt={started_at}
+      //startedAt={started_at}
       surveyName={title}
-      finishedAt={finished_at}
+      //finishedAt={finished_at}
       onAnswerChange={handleAnswerSelect}
       selectedAnswer={answer}
       currentQuestionAnswer={answers && currentIndex !== undefined && answers[currentIndex]}
