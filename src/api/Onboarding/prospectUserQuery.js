@@ -27,6 +27,7 @@ const {
   pushAnswerError,
   pushAnswerSuccess,
   switchToPreviousQuestionError,
+  getAllSurveyQuestionsError,
 } = appSlice.actions;
 
 export const ProspectUserProfileQueryKey = createQueryKey("Prospect User profile");
@@ -264,6 +265,31 @@ export const useSwitchToPreviousQuestionMutation = (payload, options = {}) => {
       },
       onSuccess: (data) => {
         console.log("useSwitchToPreviousQuestionMutation SUCCESS", data);
+      },
+      ...options,
+    }
+  );
+};
+
+export const MVAAllSurveyQuestionsQueryKey = createQueryKey("MVA all survay questions");
+
+export const MVAAllSurveyQuestionsQueryKeys = {
+  all: () => [MVAAllSurveyQuestionsQueryKey],
+  surveyQuestionsId: (id) => [MVAAllSurveyQuestionsQueryKeys.all, id],
+};
+
+export const useGetAllSurveyQuestionsQuery = (payload, options = {}) => {
+  const { id } = payload;
+
+  const dispatch = useDispatch();
+  return useGenericQuery(
+    {
+      url: `member-view-api/survey-passing/${id}/questions`,
+      queryKey: MVAAllSurveyQuestionsQueryKeys.surveyQuestionsId(id),
+    },
+    {
+      onError: (error) => {
+        dispatch(getAllSurveyQuestionsError(error.message));
       },
       ...options,
     }
