@@ -1,10 +1,9 @@
 import React from "react";
+
 import { Spinner } from "reactstrap";
-import { useSelector } from "react-redux";
-// import { selectProfile } from "app/selectors";
-import { selectOnboardingSurveys } from "app/selectors/userSelectors";
-// import { createLoadingSelector } from "app/selectors/loadingSelector";
+
 import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
+
 import "./styles.scss";
 
 import _ from "lodash";
@@ -15,9 +14,6 @@ import OnboardingComponent from "./components/Onboarding";
 
 import { initialAppOnboarding } from "./../../features/onboarding/utils/findActiveAppOnboarding";
 
-//import appSlice from "app/slices/appSlice";
-//const { setProfileOnboarding, getAssignedSurveysForOnboardingRequest, removeUserNotifyRequest } = appSlice.actions;
-
 import {
   useProspectUserProfileQuery,
   useSurveyPassingQuery,
@@ -27,7 +23,6 @@ import {
 
 import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 
-//query
 const useCallCollectQuery = () => {
   const userProspectProfile = useProspectUserProfileQuery();
   const userSurveyPassing = useSurveyPassingQuery();
@@ -37,9 +32,11 @@ const useCallCollectQuery = () => {
 
 const OnboardingUser = () => {
   const { userProspectProfile, userSurveyPassing, useDForms } = useCallCollectQuery();
+  console.log("userSurveyPassing data", userSurveyPassing.data);
 
   const profile = userProspectProfile.data;
-  const onboardingSurveys = useSelector(selectOnboardingSurveys);
+  const onboardingSurveys = userSurveyPassing.data;
+  //const onboardingSurveys = useSelector(selectOnboardingSurveys);
 
   const dFormsList = useDForms.data;
   //const onboardingApps = profile?.onboardings ?? [];
