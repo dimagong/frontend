@@ -119,13 +119,11 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                               />
                             ) : (
                               application.id === appActiveOnboarding?.id && (
-                                //!!Mock data
-                                // <OnboardingApp
-                                //   profile={profile}
-                                //   selectedForm={application}
-                                //   setRecentlySubmitted={setRecentlySubmitted}
-                                // />
-                                <></>
+                                <OnboardingApp
+                                  profile={profile}
+                                  selectedForm={application}
+                                  setRecentlySubmitted={setRecentlySubmitted}
+                                />
                               )
                             ))}
                         </div>
