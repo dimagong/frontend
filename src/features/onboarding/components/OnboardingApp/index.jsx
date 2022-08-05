@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import FormCreate from "components/FormCreate/FormCreate";
 import {
-  useSubmitdFormDataRequestMutation,
-  useSubmitdFormPathRequestMutation,
+  useSubmitDFormDataRequestMutation,
+  useSubmitDFormPathRequestMutation,
   useDFormByIdQuery,
 } from "api/Onboarding/prospectUserQuery";
 import Check from "assets/img/icons/check.png";
@@ -28,14 +28,14 @@ const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
     isStateConfig: false,
   };
 
-  const submitdForm = useSubmitdFormPathRequestMutation();
+  const submitdForm = useSubmitDFormPathRequestMutation();
   const submitOnboardingForm = (data) => {
     setRecentlySubmitted(true);
     // dispatch(submitdFormRequest({ dForm: profile.onboarding.d_form, data }));
     submitdForm.mutate({ dForm: formSelected.d_form, data });
   };
 
-  const debounceonSaveMutation = useSubmitdFormDataRequestMutation();
+  const debounceonSaveMutation = useSubmitDFormDataRequestMutation();
   const loading = debounceonSaveMutation.isLoading;
   const debounceOnSave = useRef((data, dForm) => {
     //dispatch(submitdFormDataRequest({ data, dForm }))

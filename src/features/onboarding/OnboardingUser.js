@@ -17,8 +17,8 @@ import { initialAppOnboarding } from "./../../features/onboarding/utils/findActi
 import {
   useProspectUserProfileQuery,
   useSurveyPassingQuery,
-  useDFormsListQuery,
-  useProspectRemoveUserNotifyMutation,
+  useDFormsQuery,
+  useNotifyIntroductionPageSeeingMutation,
 } from "api/Onboarding/prospectUserQuery";
 
 import { collectApplicationsUser } from "./utils/collectApplicationsUser";
@@ -26,7 +26,7 @@ import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 const useCallCollectQuery = () => {
   const userProspectProfile = useProspectUserProfileQuery();
   const userSurveyPassing = useSurveyPassingQuery();
-  const useDForms = useDFormsListQuery();
+  const useDForms = useDFormsQuery();
   return { userProspectProfile, userSurveyPassing, useDForms };
 };
 
@@ -36,12 +36,9 @@ const OnboardingUser = () => {
 
   const profile = userProspectProfile.data;
   const onboardingSurveys = userSurveyPassing.data;
-  //const onboardingSurveys = useSelector(selectOnboardingSurveys);
-
   const dFormsList = useDForms.data;
-  //const onboardingApps = profile?.onboardings ?? [];
 
-  const useRemoveUserNotify = useProspectRemoveUserNotifyMutation(
+  const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation(
     { userId: profile?.id, userNotifyEntryId: profile?.notify_entries[0]?.id },
     {}
   );

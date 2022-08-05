@@ -3,11 +3,11 @@ import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 
 import {
-  useGetCurrentQuestionForAssignedSurvey,
+  useGetCurrentQuestionForAssignedSurveyQuery,
   useSurveyByIdQuery,
   useGetBeginSurveyQuery,
   usePushAnswerMutation,
-  ProspectUserProfileKeys,
+  MVASurveyPassingQueryKeys,
   useSwitchToPreviousQuestionMutation,
   useGetAllSurveyQuestionsQuery,
 } from "api/Onboarding/prospectUserQuery";
@@ -32,7 +32,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     (selectedSurvey.finished_at && isRecentlySubmitted && "recent") ||
     "submitted";
 
-  let { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurvey(
+  let { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurveyQuery(
     { id },
     { enabled: [started_at, !finished_at].every(Boolean) }
   );
@@ -44,7 +44,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
   } = usePushAnswerMutation();
 
   let { data: currentQuestionPushAnswer, isLoading: isSurveyLoadingPushAnswer } =
-    useGetCurrentQuestionForAssignedSurvey({ id }, { enabled: isPushAnswerSuccess });
+    useGetCurrentQuestionForAssignedSurveyQuery({ id }, { enabled: isPushAnswerSuccess });
 
   if (isPushAnswerSuccess && currentQuestionPushAnswer) {
     currentQuestion = currentQuestionPushAnswer;
@@ -57,7 +57,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     isLoading: isSurveyBeginProceed,
   } = useGetBeginSurveyQuery({ id }, { refetchOnWindowFocus: false, enabled: false });
 
-  let { data: currentQuestionBegin, isLoading: isSurveyLoadingBegin } = useGetCurrentQuestionForAssignedSurvey(
+  let { data: currentQuestionBegin, isLoading: isSurveyLoadingBegin } = useGetCurrentQuestionForAssignedSurveyQuery(
     { id },
     { enabled: isSuccessGetBeginSurvay }
   );
@@ -73,7 +73,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     mutate: mutateSwitchToPreviousQuestion,
   } = useSwitchToPreviousQuestionMutation({ id });
 
-  let { data: previousQuestion, isLoading: isLoadingPreviousQuestion } = useGetCurrentQuestionForAssignedSurvey(
+  let { data: previousQuestion, isLoading: isLoadingPreviousQuestion } = useGetCurrentQuestionForAssignedSurveyQuery(
     { id },
     { enabled: isSuccessSwitchToPreviousQuestion }
   );
@@ -87,11 +87,11 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
 
   //start survey
   if (isSurveyBeginProceed && surveyStatus === "notStarted") {
-    queryClient.invalidateQueries(ProspectUserProfileKeys.surveyPassingById(id));
+    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
   }
   //finish survay
   if (currentQuestion?.status === "done" && surveyStatus === "started") {
-    queryClient.invalidateQueries(ProspectUserProfileKeys.surveyPassingById(id));
+    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
   }
 
   const handleSurveyStart = () => {
