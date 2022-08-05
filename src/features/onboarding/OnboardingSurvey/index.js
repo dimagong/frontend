@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
+import { useQueryClient } from "react-query";
+
 import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectUserOnboarding } from "app/selectors/userSelectors";
@@ -16,6 +18,7 @@ import {
   useSurveyByIdQuery,
   useGetBeginSurveyQuery,
   usePushAnswerMutation,
+  ProspectUserProfileKeys,
 } from "api/Onboarding/prospectUserQuery";
 
 const {
@@ -27,26 +30,32 @@ const {
 } = appSlice.actions;
 
 const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecentlySubmitted }) => {
+  const queryClient = useQueryClient();
+  //ProspectUserProfileKeys.surveyPassingById(id),
   const dispatch = useDispatch();
   const [answer, setAnswer] = useState("");
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
-  const { data: survey, isSuccess: isSurveySelectedSuccess } = useSurveyByIdQuery({ id: selectedSurvey.id });
-
   //const isSurveyLoading = useSelector(createLoadingSelector([getCurrentQuestionForAssignedSurveyRequest.type]));
-  const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
 
-  const isSurveyBeginProceed = useSelector(createLoadingSelector([beginSurveyRequest.type], true));
-  const isSurveySwitchToPreviousQuestionProceed = useSelector(
-    createLoadingSelector([switchToPreviousQuestionRequest.type], true)
-  );
-  const isSurveyGradedQuestionsLoading = useSelector(createLoadingSelector([getAllSurveyQuestionsRequest.type], true));
+  // const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
+
+  //const isSurveyBeginProceed = useSelector(createLoadingSelector([beginSurveyRequest.type], true));
 
   // const survey = useSelector(selectUserOnboarding);
 
+  //================
+  const isSurveySwitchToPreviousQuestionProceed = useSelector(
+    createLoadingSelector([switchToPreviousQuestionRequest.type], true)
+  );
+
+  const isSurveyGradedQuestionsLoading = useSelector(createLoadingSelector([getAllSurveyQuestionsRequest.type], true));
+  //=================
+
+  const { data: survey } = useSurveyByIdQuery({ id: selectedSurvey.id });
   const { id, started_at, finished_at, title, graded_at } = survey || {};
 
-  const surveyStatus = (started_at && "started") || "notStarted";
+  const surveyStatus = finished_at ? "notStarted" : started_at ? "started" : "notStarted";
 
   const submittedSurveyStatus =
     (selectedSurvey.graded_at && "approved") ||
@@ -58,20 +67,44 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     { enabled: [started_at, !finished_at].every(Boolean) }
   );
 
-  const usePushAnswer = usePushAnswerMutation();
-  const isPushAnswerSuccess = usePushAnswer.isSuccess;
+  const {
+    isSuccess: isPushAnswerSuccess,
+    isLoading: isAnswerPushProceed,
+    mutate: mutatePushAnswer,
+  } = usePushAnswerMutation();
+
   let { data: currentQuestionPushAnswer, isLoading: isSurveyLoadingPushAnswer } =
     useGetCurrentQuestionForAssignedSurvey({ id }, { enabled: isPushAnswerSuccess });
-  currentQuestion = currentQuestionPushAnswer;
-  isSurveyLoading = isSurveyLoadingPushAnswer;
+
+  if (isPushAnswerSuccess && currentQuestionPushAnswer) {
+    currentQuestion = currentQuestionPushAnswer;
+    isSurveyLoading = isSurveyLoadingPushAnswer;
+  }
+
+  const {
+    refetch,
+    isSuccess: isSuccessGetBeginSurvay,
+    isLoading: isSurveyBeginProceed,
+  } = useGetBeginSurveyQuery({ id }, { refetchOnWindowFocus: false, enabled: false });
+
+  let { data: currentQuestionBegin, isLoading: isSurveyLoadingBegin } = useGetCurrentQuestionForAssignedSurvey(
+    { id },
+    { enabled: isSuccessGetBeginSurvay }
+  );
+
+  if (currentQuestionBegin && isSurveyLoadingBegin) {
+    currentQuestion = currentQuestionBegin;
+    isSurveyLoading = isSurveyLoadingBegin;
+  }
 
   const { question, count, answers, currentIndex } = currentQuestion || {};
 
-  const { refetch, isSuccess: isSuccessGetBeginSurvay } = useGetBeginSurveyQuery(
-    { id },
-    { refetchOnWindowFocus: false, enabled: false }
-  );
-  useGetCurrentQuestionForAssignedSurvey({ id }, { enabled: isSuccessGetBeginSurvay });
+  if (isSurveyBeginProceed && surveyStatus === "notStarted") {
+    queryClient.invalidateQueries(ProspectUserProfileKeys.surveyPassingById(id));
+  }
+  if (currentQuestion?.status === "done" && surveyStatus === "started") {
+    queryClient.invalidateQueries(ProspectUserProfileKeys.surveyPassingById(id));
+  }
 
   const handleSurveyStart = () => {
     //dispatch(beginSurveyRequest(id));
@@ -92,7 +125,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
       return;
     }
 
-    usePushAnswer.mutate({
+    mutatePushAnswer({
       surveyId: id,
       data: {
         question_id: question.id,
