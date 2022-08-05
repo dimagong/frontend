@@ -122,6 +122,8 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
           </div>
         );
       })}
+      {!groupFields ||
+        (!groupFields.length && <div className="px-2 py-5 text-center w-100">There are no fields in this group</div>)}
       {!!onFieldCreate && (
         <div className="custom-form-field col-12 px-0">
           <div className="element-add" onClick={() => onFieldCreate(group)}>

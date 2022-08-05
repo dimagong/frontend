@@ -15,6 +15,7 @@ import UserRoles from "components/UserRoles";
 
 import { RoleBdmService } from "api/roleBdm/roleBdmService";
 
+import UserEditApplication from "./components/Applications";
 import UserCardTemplate from "features/home/ContextSearch/CardTemplates/userCard";
 
 import {
@@ -110,6 +111,7 @@ const UserEdit = () => {
 
   const [contextFeature, setContextFeature] = useState("");
   const [openOnboarding, setOpenOnboarding] = useState("");
+  const [selectedApplicationId, setSelectedApplicationId] = useState(undefined);
   const [selectedAssignedSurvey, setSelectedAssignedSurvey] = useState(null);
   const [applicationAddSelectValue, setApplicationAddSelectValue] = useState(selectOptions[0]);
 
@@ -137,11 +139,14 @@ const UserEdit = () => {
     if (application.questions) {
       setSelectedAssignedSurvey(application);
       dispatch(setManagerOnboarding(null));
+      setSelectedApplicationId(undefined);
       setContextFeature("assignedSurvey");
     } else {
       setSelectedAssignedSurvey(null);
       dispatch(setManagerOnboarding(application));
+
       isCreate.current = false;
+      setSelectedApplicationId(application.d_form.id);
       setContextFeature("onboarding");
     }
   };
@@ -346,25 +351,28 @@ const UserEdit = () => {
                 {
                   edit: <UserProfileEdit manager={manager} onEditClose={handleEditClose} />,
                   onboarding: selectedManager.onboarding && (
-                    <div className="onboarding-create-feature">
-                      <div className="onboarding-create-feature_header">
-                        {isCreate.current ? (
-                          <div className="onboarding-create-feature_header_title">Onboarding Create</div>
-                        ) : (
-                          <>
-                            <div className="onboarding-create-feature_header_title">Application</div>
-                            <div className="onboarding-create-feature_header_name">
-                              {selectedManager?.onboarding?.d_form?.name || ""}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <Card>
-                        <UserOnboardingForm isCreate={isCreate} />
-                        {!isCreate.current && <UserOnboardingDForm isManualSave={true} />}
-                      </Card>
-                    </div>
+                    <UserEditApplication isCreate={isCreate.current} selectedApplicationId={selectedApplicationId} />
                   ),
+                  // onboarding: selectedManager.onboarding && (
+                  //   <div className="onboarding-create-feature">
+                  //     <div className="onboarding-create-feature_header">
+                  //       {isCreate.current ? (
+                  //         <div className="onboarding-create-feature_header_title">Onboarding Create</div>
+                  //       ) : (
+                  //         <>
+                  //           <div className="onboarding-create-feature_header_title">Application</div>
+                  //           <div className="onboarding-create-feature_header_name">
+                  //             {selectedManager?.onboarding?.d_form?.name || ""}
+                  //           </div>
+                  //         </>
+                  //       )}
+                  //     </div>
+                  //     <Card>
+                  //       <UserOnboardingForm isCreate={isCreate} />
+                  //       {!isCreate.current && <UserOnboardingDForm isManualSave={true} />}
+                  //     </Card>
+                  //   </div>
+                  // ),
                   surveyCreate: <SurveyAssign userId={manager.id} />,
                   assignedSurvey: (
                     <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />

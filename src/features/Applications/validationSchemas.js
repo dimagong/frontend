@@ -1,6 +1,23 @@
 import * as yup from "yup";
 import { ELEMENT_TYPES, FIELD_TYPES } from "./constants";
 
+const dynamicRenderValidation = yup.object();
+
+const fieldSpecificValidationSchemas = {
+  [FIELD_TYPES.text]: yup.object(),
+  [FIELD_TYPES.date]: yup.object(),
+  [FIELD_TYPES.file]: yup.object(),
+  [FIELD_TYPES.select]: yup.object(),
+  [FIELD_TYPES.number]: yup.object(),
+  [FIELD_TYPES.boolean]: yup.object(),
+  [FIELD_TYPES.longText]: yup.object(),
+  [FIELD_TYPES.textArea]: yup.object(),
+  [FIELD_TYPES.fileList]: yup.object(),
+  [FIELD_TYPES.resource]: yup.object(),
+  [FIELD_TYPES.helpText]: yup.object(),
+  [FIELD_TYPES.multiSelect]: yup.object(),
+};
+
 const fieldTypesArray = Object.values(FIELD_TYPES);
 
 export const groupValidationSchema = yup.object().shape({

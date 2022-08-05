@@ -35,7 +35,11 @@ import NewApplicationInitForm from "./Components/NewApplicationInitForm";
 import ApplicationDescription from "./Components/ApplicationDescription";
 import ElementsReorderComponent from "./Components/ElementsReorderComponent";
 import { selectdForm } from "../../app/selectors";
-import { useApplicationCreateMutation, useApplication, useApplicationUpdateMutation } from "./applicationQueries";
+import {
+  useApplicationTemplateCreateMutation,
+  useApplicationTemplate,
+  useApplicationTemplateUpdateMutation,
+} from "./applicationQueries";
 import appSlice from "../../app/slices/appSlice";
 import onboardingSlice from "../../app/slices/onboardingSlice";
 
@@ -54,10 +58,11 @@ const Applications = ({ isCreate }) => {
 
   const [applicationData, setApplicationData] = useState(null);
 
-  const createApplication = useApplicationCreateMutation({
+  const createApplication = useApplicationTemplateCreateMutation({
     onSuccess: (data) => {
       dispatch(setdForm(data));
       dispatch(setContext("dForm"));
+      toast.success("Application created");
     },
     onError: () => {
       //TODO handle error
@@ -65,7 +70,7 @@ const Applications = ({ isCreate }) => {
     },
   });
 
-  const updateApplication = useApplicationUpdateMutation(
+  const updateApplication = useApplicationTemplateUpdateMutation(
     { applicationId: selectedDForm?.id },
     {
       onSuccess: (data) => {
@@ -80,11 +85,12 @@ const Applications = ({ isCreate }) => {
 
         setDataWithSuggestedChanges(applicationData);
         setApplicationData(applicationData);
+        toast.success("Application saved");
       },
     }
   );
 
-  const application = useApplication(
+  const application = useApplicationTemplate(
     { applicationId: selectedDForm?.id },
     {
       onSuccess: (data) => {

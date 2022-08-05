@@ -29,6 +29,10 @@ const Groups = ({ data, sectionGroups, onElementClick, onGroupCreate, onFieldCre
           </div>
         </div>
       ))}
+      {!sectionGroups ||
+        (!sectionGroups.length && (
+          <div className="px-2 py-5 text-center w-100">There are no groups in this section</div>
+        ))}
       {!!onGroupCreate && (
         <div className="group">
           <div className="element-add" onClick={onGroupCreate}>

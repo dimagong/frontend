@@ -25,7 +25,7 @@ export const useAllowedOrganizationsListQuery = ({ userId }, options) => {
   );
 };
 
-export const useApplicationCreateMutation = (options) => {
+export const useApplicationTemplateCreateMutation = (options) => {
   return useGenericMutation(
     {
       url: `api/dform-template`,
@@ -38,7 +38,7 @@ export const useApplicationCreateMutation = (options) => {
   );
 };
 
-export const useApplicationUpdateMutation = ({ applicationId }, options) => {
+export const useApplicationTemplateUpdateMutation = ({ applicationId }, options) => {
   return useGenericMutation(
     {
       url: `api/dform-template/${applicationId}`,
@@ -51,7 +51,7 @@ export const useApplicationUpdateMutation = ({ applicationId }, options) => {
   );
 };
 
-export const useApplication = ({ applicationId }, options) => {
+export const useApplicationTemplate = ({ applicationId }, options) => {
   return useGenericQuery(
     {
       url: `api/dform-template/${applicationId}`,
