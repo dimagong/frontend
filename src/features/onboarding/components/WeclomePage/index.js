@@ -9,7 +9,6 @@ const WelcomePageComponent = ({
   brochureUrl,
   downloadText,
   onSubmit,
-  organizationName,
   introText,
   introTitle,
   preview,

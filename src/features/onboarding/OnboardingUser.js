@@ -1,18 +1,7 @@
-import React from "react";
-
-import { Spinner } from "reactstrap";
-
-import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
-
 import "./styles.scss";
 
-import _ from "lodash";
-
-import WelcomePageComponent from "./components/WeclomePage";
-
-import OnboardingComponent from "./components/Onboarding";
-
-import { initialAppOnboarding } from "./../../features/onboarding/utils/findActiveAppOnboarding";
+import React from "react";
+import { Spinner } from "reactstrap";
 
 import {
   useProspectUserProfileQuery,
@@ -20,7 +9,11 @@ import {
   useDFormsQuery,
   useNotifyIntroductionPageSeeingMutation,
 } from "api/Onboarding/prospectUserQuery";
+import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
+import { initialAppOnboarding } from "./../../features/onboarding/utils/findActiveAppOnboarding";
 
+import WelcomePageComponent from "./components/WeclomePage";
+import OnboardingComponent from "./components/Onboarding";
 import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 
 const useCallCollectQuery = () => {
@@ -32,16 +25,16 @@ const useCallCollectQuery = () => {
 
 const OnboardingUser = () => {
   const { userProspectProfile, userSurveyPassing, useDForms } = useCallCollectQuery();
-  console.log("userSurveyPassing data", userSurveyPassing.data);
 
   const profile = userProspectProfile.data;
   const onboardingSurveys = userSurveyPassing.data;
-  const dFormsList = useDForms.data;
+  const dForms = useDForms.data;
 
-  const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation(
-    { userId: profile?.id, userNotifyEntryId: profile?.notify_entries[0]?.id },
-    {}
-  );
+  const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation({
+    userId: profile?.id,
+    userNotifyEntryId: profile?.notify_entries[0]?.id,
+  });
+
   const proceedUserToOnboarding = () => {
     useRemoveUserNotify.mutate();
   };
@@ -51,7 +44,7 @@ const OnboardingUser = () => {
     { enabled: profile?.notify_entries.length === 1 }
   );
 
-  let userApplications = collectApplicationsUser(dFormsList ?? [], onboardingSurveys ?? []);
+  const userApplications = collectApplicationsUser(dForms ?? [], onboardingSurveys ?? []);
 
   const initialOnboarding = initialAppOnboarding(profile, userApplications);
 

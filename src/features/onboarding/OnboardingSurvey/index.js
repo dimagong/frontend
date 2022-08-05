@@ -1,6 +1,6 @@
+import { toast } from "react-toastify";
 import React, { useState } from "react";
 import { useQueryClient } from "react-query";
-import { toast } from "react-toastify";
 
 import {
   useGetCurrentQuestionForAssignedSurveyQuery,

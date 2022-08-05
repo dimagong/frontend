@@ -1,22 +1,19 @@
+import "./styles.scss";
+
+import { isEmpty } from "lodash";
 import React, { useEffect, useState } from "react";
 import { CardBody, Card, Row, Col, TabContent, TabPane } from "reactstrap";
-//import { useSelector } from "react-redux";
-//import { selectLoading } from "app/selectors";
-import { isEmpty } from "lodash";
-import OnboardingSurvey from "../../OnboardingSurvey";
-import "./styles.scss";
+
 import NavMenu from "components/NavMenu/NavMenu";
 import Check from "assets/img/icons/check.png";
+
+import OnboardingSurvey from "../../OnboardingSurvey";
 import StatusComponent from "../Components/StatusComponent";
 import OnboardingApp from "./../OnboardingApp";
 
-//import appSlice from "app/slices/appSlice";
-
-//const { submitdFormRequest, setProfileOnboarding, submitdFormDataRequest } = appSlice.actions;
-
 const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) => {
-  const [recentlySubmitted, setRecentlySubmitted] = useState(false);
   const [forceAppShow, setForceAppShow] = useState([]);
+  const [recentlySubmitted, setRecentlySubmitted] = useState(false);
   const [appActiveOnboarding, setActiveAppOnboarding] = useState(null);
 
   useEffect(() => {
@@ -25,7 +22,6 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
 
   const handleNavClick = (onboarding) => {
     setRecentlySubmitted(false);
-    //dispatch(setProfileOnboarding({ ...onboarding }));
     setActiveAppOnboarding(onboarding);
   };
 
@@ -57,7 +53,6 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
   };
 
   const getActiveTab = () => {
-    //const availableApplication = profile?.onboarding || profile.onboardings[0];
     const availableApplication = appActiveOnboarding || profile.onboardings[0];
 
     if (!availableApplication) return;
@@ -73,7 +68,6 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
     if (application.tabId.includes("form")) {
       return !(application?.status === "approved" || application?.status === "submitted");
     } else {
-      // For surveys
       return !application.finished_at;
     }
   });
@@ -92,9 +86,7 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
             tabName={(application) => application?.title || application?.name}
             active={getActiveTab()}
             tabs={formatTabs(userApplications)}
-            onChange={(application) => {
-              handleNavClick(application);
-            }}
+            onChange={(application) => handleNavClick(application)}
           />
         </Col>
       </Row>
