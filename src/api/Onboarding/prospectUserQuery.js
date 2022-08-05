@@ -26,6 +26,7 @@ const {
   beginSurveySuccess,
   pushAnswerError,
   pushAnswerSuccess,
+  switchToPreviousQuestionError,
 } = appSlice.actions;
 
 export const ProspectUserProfileQueryKey = createQueryKey("Prospect User profile");
@@ -43,6 +44,8 @@ export const ProspectUserProfileKeys = {
   beginSurveyId: (id) => [...ProspectUserProfileKeys.beginSurvey, id],
   dFormsList: ["Prospect User dforms list"],
   dFormsListById: (id) => [...ProspectUserProfileKeys.dFormsList, id],
+  switchToPreviousQuestion: ["Prospect User switch to previouse question"],
+  switchToPreviousQuestionId: (id) => [...ProspectUserProfileKeys.switchToPreviousQuestion, id],
 };
 
 export const useProspectUserProfileQuery = (options = {}) => {
@@ -241,4 +244,28 @@ export const usePushAnswerMutation = (options = {}) => {
     },
     ...options,
   });
+};
+
+export const useSwitchToPreviousQuestionMutation = (payload, options = {}) => {
+  const dispatch = useDispatch();
+
+  const { id } = payload;
+
+  return useGenericMutation(
+    {
+      url: `/member-view-api/survey-passing/${id}/make-previous-question-current`,
+      method: "put",
+      queryKey: ProspectUserProfileKeys.switchToPreviousQuestionId(id),
+    },
+    {
+      onError: (error) => {
+        console.log("useSwitchToPreviousQuestionMutation ERROR", error.message);
+        dispatch(switchToPreviousQuestionError(error.message));
+      },
+      onSuccess: (data) => {
+        console.log("useSwitchToPreviousQuestionMutation SUCCESS", data);
+      },
+      ...options,
+    }
+  );
 };

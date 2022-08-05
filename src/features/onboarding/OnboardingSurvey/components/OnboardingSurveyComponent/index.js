@@ -55,6 +55,9 @@ const OnboardingSurveyComponent = ({
   isSurveySwitchToPreviousQuestionProceed,
   isAbleToSwitchToPreviousQuestion,
   currentQuestionAnswer,
+  //
+  //startedAt,
+  //finishedAt
 }) => {
   const getButtonValue = () => {
     if (isLastQuestion) {

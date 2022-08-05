@@ -19,6 +19,7 @@ import {
   useGetBeginSurveyQuery,
   usePushAnswerMutation,
   ProspectUserProfileKeys,
+  useSwitchToPreviousQuestionMutation,
 } from "api/Onboarding/prospectUserQuery";
 
 const {
@@ -97,6 +98,17 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     isSurveyLoading = isSurveyLoadingBegin;
   }
 
+  const {
+    data: previousQuestion,
+    isLoading: isSwitchToPreviousQuestionLoading,
+    mutate: mutateSwitchToPreviousQuestion,
+  } = useSwitchToPreviousQuestionMutation({ id });
+
+  if (previousQuestion && isSwitchToPreviousQuestionLoading) {
+    currentQuestion = previousQuestion;
+    isSurveyLoading = isSwitchToPreviousQuestionLoading;
+  }
+
   const { question, count, answers, currentIndex } = currentQuestion || {};
 
   if (isSurveyBeginProceed && surveyStatus === "notStarted") {
@@ -116,7 +128,8 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
   };
 
   const handleSwitchToPreviousQuestion = () => {
-    dispatch(switchToPreviousQuestionRequest(id));
+    mutateSwitchToPreviousQuestion();
+    //dispatch(switchToPreviousQuestionRequest(id));
   };
 
   const handleAnswerSubmit = () => {
@@ -164,6 +177,9 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
 
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
 
+  console.log("currentQuestion", currentQuestion);
+  console.log("survey", survey);
+
   return finished_at ? (
     graded_at && isFeedbackView ? (
       <OnboardingSurveyFeedbackViewComponent
@@ -206,7 +222,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
       surveyDescription={survey?.interaction_version?.description || ""}
       onSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
       isSurveySwitchToPreviousQuestionProceed={isSurveySwitchToPreviousQuestionProceed}
-      isAbleToSwitchToPreviousQuestion={survey?.options?.is_can_return}
+      isAbleToSwitchToPreviousQuestion={survey?.interaction_version?.is_can_return}
     />
   );
 };

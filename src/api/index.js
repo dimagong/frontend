@@ -77,8 +77,8 @@ const responseRejectInterceptor = (error) => {
 };
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
-  //baseURL: process.env.REACT_APP_API_TEST_PROSPECT,
+  //baseURL: process.env.REACT_APP_API_URL,
+  baseURL: process.env.REACT_APP_API_TEST_PROSPECT,
   headers: { "Content-Type": "application/json" },
 });
 
