@@ -16,13 +16,11 @@ const {
   getAssignedSurveysForOnboardingSuccess,
   getAssignedSurveysForOnboardingError,
   removeUserNotifyError,
-  removeUserNotifySuccess,
   submitdFormDataError,
   submitdFormDataSuccess,
   submitdFormError,
   submitdFormSuccess,
   getCurrentQuestionForAssignedSurveyError,
-  getCurrentQuestionForAssignedSurveySuccess,
   getProfileError,
   beginSurveyError,
   beginSurveySuccess,
@@ -52,7 +50,6 @@ export const useProspectUserProfileQuery = (options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/user/profile`,
-      //url: `/api/user/profile`,
       queryKey: ProspectUserProfileKeys.all(),
     },
     {
@@ -66,8 +63,6 @@ export const useProspectUserProfileQuery = (options = {}) => {
 
 export const useDFormsListQuery = (options = {}) => {
   return useGenericQuery(
-    //localhost/member-view-api/dform
-    //member-view-api/user/onboardings
     {
       url: `/member-view-api/dform`,
       queryKey: ProspectUserProfileKeys.dFormsList,
@@ -78,11 +73,9 @@ export const useDFormsListQuery = (options = {}) => {
   );
 };
 
-//useAppsOnboardingIdQuery
 export const useDFormByIdQuery = (payload, options = {}) => {
   const { id } = payload;
   return useGenericQuery(
-    ///member-view-api/user/onboardings/${id}
     {
       url: `/member-view-api/dform/${id}`,
       queryKey: ProspectUserProfileKeys.dFormsListById(id),
@@ -98,7 +91,6 @@ export const useSurveyPassingQuery = (options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/survey-passing`,
-      // url: `/api/survey-passing`,
       queryKey: ProspectUserProfileKeys.surveyPassing,
     },
     {
@@ -118,7 +110,7 @@ export const useSurveyByIdQuery = (payload, options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/survey-passing/${id}`,
-      queryKey: ProspectUserProfileKeys.surveyPassingById,
+      queryKey: ProspectUserProfileKeys.surveyPassingById(id),
     },
     {
       ...options,
@@ -133,7 +125,6 @@ export const useProspectRemoveUserNotifyMutation = (payload, options = {}) => {
 
   return useGenericMutation(
     {
-      //`/api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`
       url: `/member-view-api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`,
       method: "patch",
       queryKey: ProspectUserProfileKeys.removeUserNotify,
@@ -155,7 +146,6 @@ export const useSubmitdFormDataRequestMutation = (options = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    //api/dform/${payload.dForm.id}/submit-data
     mutationFn: (payload) => clientAPI["put"](`/member-view-api/dform/${payload.dForm.id}/submit-data`, payload.data),
 
     onSettled: () => {
@@ -167,7 +157,6 @@ export const useSubmitdFormDataRequestMutation = (options = {}) => {
     onSuccess: (data) => {
       dispatch(submitdFormDataSuccess(data));
     },
-
     ...options,
   });
 };
@@ -178,7 +167,6 @@ export const useSubmitdFormPathRequestMutation = (options = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    //api/dform/${payload.dForm.id}/submit
     mutationFn: (payload) => clientAPI["put"](`/member-view-api/dform/${payload.dForm.id}/submit`, payload.data),
 
     onSettled: () => {
@@ -200,13 +188,12 @@ export const useGetCurrentQuestionForAssignedSurvey = (payload, options = {}) =>
   const dispatch = useDispatch();
   return useGenericQuery(
     {
-      //api/survey-passing/${id}/current-question
       url: `member-view-api/survey-passing/${id}/current-question`,
       queryKey: ProspectUserProfileKeys.currentQuestionForAssignedSurveyId(id),
     },
     {
       onError: (error) => {
-        //dispatch(getCurrentQuestionForAssignedSurveyError(error.message));
+        dispatch(getCurrentQuestionForAssignedSurveyError(error.message));
       },
       onSuccess: (data) => {
         //dispatch(getCurrentQuestionForAssignedSurveySuccess(data));
@@ -222,8 +209,6 @@ export const useGetBeginSurveyQuery = (payload, options = {}) => {
   const dispatch = useDispatch();
   return useGenericQuery(
     {
-      //member-view-api/survey-passing/${id}/begin
-      //api/survey-passing/${id}/begin
       url: `member-view-api/survey-passing/${id}/begin`,
       queryKey: ProspectUserProfileKeys.beginSurveyId(id),
     },
