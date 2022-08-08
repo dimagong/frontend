@@ -6,7 +6,7 @@ import SectionsComponent from "./Components/Sections";
 
 import "./styles.scss";
 
-const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate, onFieldCreate, data }) => {
+const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate, onFieldCreate, data, values }) => {
   const [selectedSection, setSelectedSection] = useState("");
   const [sectionsProgress, setSectionsProgress] = useState(null);
 
@@ -77,6 +77,7 @@ const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate,
       />
       <SectionsComponent
         data={data}
+        values={values}
         selectedSection={selectedSection}
         onElementClick={isConfigurable ? handleElementClick : () => {}}
         onGroupCreate={isConfigurable && handleGroupCreate}

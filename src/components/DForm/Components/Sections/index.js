@@ -6,7 +6,7 @@ import Groups from "../Groups";
 
 import "./styles.scss";
 
-const SectionsComponent = ({ data, selectedSection, onElementClick, onGroupCreate, onFieldCreate }) => {
+const SectionsComponent = ({ data, selectedSection, onElementClick, onGroupCreate, onFieldCreate, values }) => {
   if (!data.sections || data.sections.length === 0) {
     // TODO HANDLE TWO CASES, when there are no sections on edit and no sections on assigned dform \ on onboarding dform
     return (
@@ -28,6 +28,7 @@ const SectionsComponent = ({ data, selectedSection, onElementClick, onGroupCreat
             </div>
           ) : (
             <Groups
+              values={values}
               sectionId={data.sections[section].id}
               data={data}
               sectionGroups={data.sections[section].relatedGroups}

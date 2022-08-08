@@ -6,7 +6,7 @@ import Fields from "../Fields";
 
 import "./styles.scss";
 
-const Groups = ({ data, sectionGroups, onElementClick, onGroupCreate, onFieldCreate, sectionId }) => {
+const Groups = ({ data, sectionGroups, onElementClick, onGroupCreate, onFieldCreate, sectionId, values }) => {
   const handleGroupSelect = (sectionGroup) => {
     onElementClick({ ...data.groups[sectionGroup], sectionId }, "group");
   };
@@ -20,6 +20,7 @@ const Groups = ({ data, sectionGroups, onElementClick, onGroupCreate, onFieldCre
           </div>
           <div className="group-content row mr-0 ml-0">
             <Fields
+              values={values}
               group={sectionGroup}
               data={data}
               groupFields={data.groups[sectionGroup].relatedFields}

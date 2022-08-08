@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import formComponents from "./Components/DFormWidgets";
 import { Plus } from "react-feather";
 
-const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group }) => {
+const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group, values }) => {
   const [formData, setFormData] = useState({});
 
   // Each field store with structure:
@@ -93,6 +93,8 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
         const FormFieldElement = formComponents[field.type];
         // const fieldId = formField.master_schema_field_id;
 
+        const fieldValue = !field.isNotMasterSchemaRelated && values[field.masterSchemaPropertyId].value;
+
         if (!FormFieldElement) {
           console.log(field.type, formComponents);
           console.error("There is no element with type " + field.type);
@@ -112,7 +114,7 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
               key={field.id}
               name={field.title}
               label={field.isLabelShowing ? field.title : ""}
-              value={""}
+              value={fieldValue}
               // onChange={handleInputChange}
               onChange={() => {}}
               disabled={false} // TODO handle disabled

@@ -36,7 +36,7 @@ const UpdatedAtText = ({ loading, date }) => {
 
 // TODO handle updated at text
 
-const UserOnboardingDForm = ({ onRefetch, isRefetching, isManualSave, formData }) => {
+const UserOnboardingDForm = ({ onRefetch, isRefetching, isManualSave, formData, formValues }) => {
   const [isStateConfig] = useState(false);
   const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
   const manager = useSelector(selectManager);
@@ -132,7 +132,7 @@ const UserOnboardingDForm = ({ onRefetch, isRefetching, isManualSave, formData }
         </CardHeader>
         <CardBody className="pt-0">
           <hr />
-          <DForm data={formData} />
+          <DForm data={formData} values={formValues} />
           {/*<FormCreate*/}
           {/*  isShowErrors={false}*/}
           {/*  fileLoader={true}*/}

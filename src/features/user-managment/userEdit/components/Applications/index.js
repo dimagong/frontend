@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { useUserApplication, useUserApplicationStatusMutation, useUserApplicationValues } from "../../userQueries";
+import {
+  useUserApplication,
+  useUserApplicationStatusMutation,
+  useUserApplicationValues,
+  useUserApplicationValuesMutation,
+} from "../../userQueries";
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
 import { Button, Card } from "reactstrap";
@@ -50,8 +55,18 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     }
   );
 
+  const updateUserApplicationValues = useUserApplicationValuesMutation(
+    { userApplicationId: selectedApplicationId },
+    {
+      onSuccess: (data) => {
+        console.log("I'm here", data);
+      },
+    }
+  );
+
   const handleUpdateUserApplicationStatus = (newStatus) => {
-    updateUserApplicationStatus.mutate({ status: newStatus.value });
+    // updateUserApplicationStatus.mutate({ status: newStatus.value });
+    updateUserApplicationValues.mutate({ values: { 8: "Fiddel" } });
   };
 
   console.log("test", userApplication);
@@ -88,6 +103,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
               onRefetch={handleApplicationReFetch}
               formData={applicationData.schema}
               isManualSave={true}
+              formValues={applicationValues}
             />
             <div className="col-md-12 d-flex justify-content-between align-items-center mb-2">
               <div style={{ width: "160px" }}>
