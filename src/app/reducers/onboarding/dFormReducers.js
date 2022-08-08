@@ -3,7 +3,7 @@ const createSections = ({ dForm }) => {
 };
 
 const setdForms = (state, { payload }) => {
-  state.dForm.dForms = payload.map((dForm) => ({ ...dForm, sections: createSections({ dForm }) }));
+  state.dForm.dForms = payload.map((dForm) => ({ ...dForm }));
 };
 
 const setdForm = (state, { payload }) => {

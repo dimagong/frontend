@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectManager, selectLoading } from "app/selectors";
 import { debounce } from "lodash";
 import moment from "moment";
+import DForm from "components/DForm";
 
 import appSlice from "app/slices/appSlice";
 
@@ -33,7 +34,9 @@ const UpdatedAtText = ({ loading, date }) => {
   return `Progress saved: ${moment(date).format("YYYY-MM-DD HH:mm:ss")}`;
 };
 
-const UserOnboardingDForm = ({ isManualSave }) => {
+// TODO handle updated at text
+
+const UserOnboardingDForm = ({ onRefetch, isRefetching, isManualSave, formData, formValues }) => {
   const [isStateConfig] = useState(false);
   const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
   const manager = useSelector(selectManager);
@@ -71,14 +74,6 @@ const UserOnboardingDForm = ({ isManualSave }) => {
     }
   };
 
-  useEffect(() => {
-    if (!loading) {
-      refreshClassName === `${initRefreshClassName} rotating` && setRefreshClassName(initRefreshClassName);
-      updatedAtTextLoding.current && (updatedAtTextLoding.current = false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
-
   const submitDForm = (dForm, { name, description, protected_properties }) => {
     dispatch(updateDFormRequest({ ...dForm, name, description, protected_properties }));
   };
@@ -96,9 +91,7 @@ const UserOnboardingDForm = ({ isManualSave }) => {
     dispatch(getUserByIdRequest({ userId: manager.id }));
   };
   const handleRefresh = () => {
-    refreshOnboarding.current(manager.id);
-    setRefreshClassName(`${initRefreshClassName} rotating`);
-    setRefreshClassName(`${initRefreshClassName} rotating`);
+    onRefetch();
   };
 
   const handlePageLeave = (e) => {
@@ -125,45 +118,42 @@ const UserOnboardingDForm = ({ isManualSave }) => {
   }, []);
 
   return (
-    <Col md="12" className="mb-4">
+    <Col md="12">
       <Card className="dform border">
         <CardHeader className="m-0">
           <CardTitle>Onboarding dForm</CardTitle>
           <div>
-            {/*{*/}
-            {/*  isStateConfig ?*/}
-            {/*    <EyeOff size={15} className="cursor-pointer mr-1"*/}
-            {/*            onClick={switchStateConfig}/>*/}
-            {/*    :*/}
-            {/*    <Eye size={15} className="cursor-pointer mr-1"*/}
-            {/*         onClick={switchStateConfig}/>*/}
-            {/*}*/}
-            <RefreshCw className={refreshClassName} size={15} onClick={handleRefresh} />
+            <RefreshCw
+              className={`bg-hover-icon ${isRefetching ? "rotating" : ""}`}
+              size={15}
+              onClick={handleRefresh}
+            />
           </div>
         </CardHeader>
         <CardBody className="pt-0">
           <hr />
-          <FormCreate
-            isShowErrors={false}
-            fileLoader={true}
-            submitDForm={submitDForm}
-            liveValidate={false}
-            inputDisabled={false}
-            fill={true}
-            onSaveButtonHidden={true}
-            statusChanged={statusChanged}
-            onChange={handleFormChange}
-            dForm={manager.onboarding.d_form}
-            onboardingUser={manager}
-            isStateConfig={isStateConfig}
-            updatedAtText={<UpdatedAtText loading={loading && updatedAtTextLoding.current} date={updatedAt} />}
-            onCreateNewVersion={submitDForm}
-            onSubmit={(formData) => submitOnboardingForm(formData)}
+          <DForm data={formData} values={formValues} />
+          {/*<FormCreate*/}
+          {/*  isShowErrors={false}*/}
+          {/*  fileLoader={true}*/}
+          {/*  submitDForm={submitDForm}*/}
+          {/*  liveValidate={false}*/}
+          {/*  inputDisabled={false}*/}
+          {/*  fill={true}*/}
+          {/*  onSaveButtonHidden={true}*/}
+          {/*  statusChanged={statusChanged}*/}
+          {/*  onChange={handleFormChange}*/}
+          {/*  dForm={manager.onboarding.d_form}*/}
+          {/*  onboardingUser={manager}*/}
+          {/*  isStateConfig={isStateConfig}*/}
+          {/*  updatedAtText={<UpdatedAtText loading={loading && updatedAtTextLoding.current} date={updatedAt} />}*/}
+          {/*  onCreateNewVersion={submitDForm}*/}
+          {/*  onSubmit={(formData) => submitOnboardingForm(formData)}*/}
 
-            // reInit={(reInit, context) => {
-            //   this.reInitForm = reInit.bind(context)
-            // }}
-          />
+          {/*  // reInit={(reInit, context) => {*/}
+          {/*  //   this.reInitForm = reInit.bind(context)*/}
+          {/*  // }}*/}
+          {/*/>*/}
         </CardBody>
       </Card>
     </Col>

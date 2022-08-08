@@ -15,10 +15,7 @@ export function ObjectFieldTemplate(props) {
         return HelpText(element.content.props);
       }
       case Constants.FIELD_TYPE_RESOURCE: {
-        return <ResourceElement
-          {...element.content.props}
-          userId={this.state.dFormTemplate?.onboarding?.user_id}
-        />;
+        return <ResourceElement {...element.content.props} userId={this.state.dFormTemplate?.onboarding?.user_id} />;
       }
       default: {
         return element.content;

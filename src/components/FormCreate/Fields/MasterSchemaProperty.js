@@ -164,7 +164,7 @@ export default function MasterSchemaProperty(props) {
         <CustomSelect
           id="select-ms-property"
           options={masterSchemaFields.concat(getAddNewOption())}
-          value={masterSchemaFields.find((next) => parseInt(next.value) === parseInt(props.fieldId))}
+          value={masterSchemaFields.find((next) => parseInt(next.value) === parseInt(props.fieldId)) || null}
           onChange={(event) => {
             if (isObject(event.value) && event.value.isNew) {
               if (!searchableValue) {
@@ -196,7 +196,7 @@ export default function MasterSchemaProperty(props) {
   return (
     <Row>
       <Col md="12">
-        <label for="select-ms-property">Property</label>
+        {/*<label for="select-ms-property">Property</label>*/}
         {getFieldsSelect()}
       </Col>
     </Row>
