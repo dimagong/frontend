@@ -77,7 +77,7 @@ const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate,
       />
       <SectionsComponent
         data={data}
-        values={values}
+        values={isConfigurable ? null : values}
         selectedSection={selectedSection}
         onElementClick={isConfigurable ? handleElementClick : () => {}}
         onGroupCreate={isConfigurable && handleGroupCreate}
