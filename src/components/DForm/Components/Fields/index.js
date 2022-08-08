@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import formComponents from "./Components/DFormWidgets";
 import { Plus } from "react-feather";
 
-const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group, values }) => {
+const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group, values, onFieldValueChange }) => {
   const [formData, setFormData] = useState({});
 
   // Each field store with structure:
@@ -93,7 +93,8 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
         const FormFieldElement = formComponents[field.type];
         // const fieldId = formField.master_schema_field_id;
 
-        let fieldValue = undefined;
+        //TODO handle default empty value for each widget
+        let fieldValue = "";
 
         if (!field.isNotMasterSchemaRelated && values && values[field.masterSchemaPropertyId]) {
           fieldValue = values[field.masterSchemaPropertyId].value;
@@ -119,8 +120,7 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
               name={field.title}
               label={field.isLabelShowing ? field.title : ""}
               value={fieldValue}
-              // onChange={handleInputChange}
-              onChange={() => {}}
+              onChange={(value) => onFieldValueChange(field.masterSchemaPropertyId, value)}
               disabled={false} // TODO handle disabled
               error={""}
               fieldClasses={field.classes}

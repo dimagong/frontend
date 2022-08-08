@@ -47,7 +47,6 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     { userApplicationId: selectedApplicationId },
     {
       onSuccess: (data) => {
-        console.log("test values", data);
         setApplicationValues(typeof data === "object" ? data : {}); // When there are no values it returns empty array
       },
       enabled: !isCreate,
@@ -59,17 +58,42 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     { userApplicationId: selectedApplicationId },
     {
       onSuccess: (data) => {
-        console.log("I'm here", data);
+        setApplicationValues(data);
+        toast.success("Saved");
       },
     }
   );
 
-  const handleUpdateUserApplicationStatus = (newStatus) => {
-    // updateUserApplicationStatus.mutate({ status: newStatus.value });
-    updateUserApplicationValues.mutate({ values: { 8: "Fiddel" } });
+  const handleFieldValueChange = (fieldId, value) => {
+    // Mark field as edited for further extraction and save on submit.
+    // Currently we don't care about case when field value return to initial state and much actual
+    // field value from back-end.
+    // (For example we enter hello in empty field and delete it. Field still counts as edited)
+
+    const newFieldValue = { ...(applicationValues[fieldId] || {}), value, edited: true };
+
+    setApplicationValues({ ...applicationValues, [fieldId]: newFieldValue });
   };
 
-  console.log("test", userApplication);
+  const handleUserApplicationValuesUpdate = () => {
+    const newValues = Object.values(applicationValues).filter((field) => field.edited);
+
+    if (!newValues.length) {
+      toast.success("Form values up to date");
+      return;
+    }
+
+    const formattedValues = newValues.reduce((acc, field) => {
+      acc[field.master_schema_field_id] = field.value;
+      return acc;
+    }, {});
+
+    updateUserApplicationValues.mutate({ values: formattedValues });
+  };
+
+  const handleUpdateUserApplicationStatus = (newStatus) => {
+    updateUserApplicationStatus.mutate({ status: newStatus.value });
+  };
 
   const handleApplicationReFetch = () => {
     userApplication.refetch();
@@ -99,6 +123,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
         {!isCreate && (
           <>
             <UserOnboardingDForm
+              onFieldValueChange={handleFieldValueChange}
               isRefetching={userApplication.isRefetching}
               onRefetch={handleApplicationReFetch}
               formData={applicationData.schema}
@@ -117,7 +142,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
                 />
               </div>
               <div>
-                <Button type="submit" className="ml-auto submit-onboarding-button">
+                <Button onClick={handleUserApplicationValuesUpdate} className="ml-auto submit-onboarding-button">
                   Save
                 </Button>
               </div>

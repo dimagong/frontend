@@ -10,6 +10,10 @@ import "./styles.scss";
 const Text = (props) => {
   let fieldType = "text";
 
+  const handleChange = (e) => {
+    props.onChange(e.target.value);
+  };
+
   return (
     <div className={"custom-form-filed form-create_custom-text-widget"}>
       <FieldLabel label={props.label} required={props.isRequired} />
@@ -18,7 +22,7 @@ const Text = (props) => {
         type={fieldType}
         disabled={false}
         value={props.value}
-        onChange={() => {}}
+        onChange={handleChange}
         placeholder={props.placeholder || "Enter your answer here"}
       />
     </div>

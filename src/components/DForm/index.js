@@ -6,7 +6,16 @@ import SectionsComponent from "./Components/Sections";
 
 import "./styles.scss";
 
-const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate, onFieldCreate, data, values }) => {
+const DForm = ({
+  isConfigurable,
+  onElementClick,
+  onSectionCreate,
+  onGroupCreate,
+  onFieldCreate,
+  data,
+  values,
+  onFieldValueChange,
+}) => {
   const [selectedSection, setSelectedSection] = useState("");
   const [sectionsProgress, setSectionsProgress] = useState(null);
 
@@ -34,6 +43,10 @@ const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate,
        */
       // dFormApi.updateViewedSections(...);
     }
+  };
+
+  const handleFieldValueChange = (id, value) => {
+    !isConfigurable && onFieldValueChange(id, value);
   };
 
   const handleGroupCreate = () => {
@@ -77,6 +90,7 @@ const DForm = ({ isConfigurable, onElementClick, onSectionCreate, onGroupCreate,
       />
       <SectionsComponent
         data={data}
+        onFieldValueChange={handleFieldValueChange}
         values={isConfigurable ? null : values}
         selectedSection={selectedSection}
         onElementClick={isConfigurable ? handleElementClick : () => {}}
