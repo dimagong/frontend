@@ -1,52 +1,101 @@
-import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import React, { useState } from "react";
+import { useQueryClient } from "react-query";
 
-import { useDispatch, useSelector } from "react-redux";
+import {
+  useGetCurrentQuestionForAssignedSurveyQuery,
+  useSurveyByIdQuery,
+  useGetBeginSurveyQuery,
+  usePushAnswerMutation,
+  MVASurveyPassingQueryKeys,
+  useSwitchToPreviousQuestionMutation,
+  useGetAllSurveyQuestionsQuery,
+} from "api/Onboarding/prospectUserQuery";
 
 import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
-import { createLoadingSelector } from "app/selectors/loadingSelector";
-import { selectUserOnboarding } from "app/selectors/userSelectors";
-import { toast } from "react-toastify";
 import OnboardingSurveyStatusComponent from "./components/OnboardingSurveyStatusComponent";
-
-import { appSlice } from "app/slices/appSlice";
 import OnboardingSurveyFeedbackViewComponent from "./components/OnboardingSurveyFeedbackViewComponent";
 
-const {
-  getCurrentQuestionForAssignedSurveyRequest,
-  beginSurveyRequest,
-  pushAnswerRequest,
-  switchToPreviousQuestionRequest,
-  getAllSurveyQuestionsRequest,
-} = appSlice.actions;
+const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecentlySubmitted }) => {
+  const queryClient = useQueryClient();
 
-const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecentlySubmitted }) => {
-  const dispatch = useDispatch();
   const [answer, setAnswer] = useState("");
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
-  const isSurveyLoading = useSelector(createLoadingSelector([getCurrentQuestionForAssignedSurveyRequest.type]));
-  const isAnswerPushProceed = useSelector(createLoadingSelector([pushAnswerRequest.type], true));
-  const isSurveyBeginProceed = useSelector(createLoadingSelector([beginSurveyRequest.type], true));
-  const isSurveySwitchToPreviousQuestionProceed = useSelector(
-    createLoadingSelector([switchToPreviousQuestionRequest.type], true)
-  );
-  const isSurveyGradedQuestionsLoading = useSelector(createLoadingSelector([getAllSurveyQuestionsRequest.type], true));
+  const { data: survey } = useSurveyByIdQuery({ id: selectedSurvey.id });
+  const { id, started_at, finished_at, title, graded_at } = survey || {};
 
-  const survey = useSelector(selectUserOnboarding);
-
-  const { question, count, answers, currentIndex } = survey;
-
-  const { id, started_at, finished_at, title, graded_at } = applicationData;
-
-  const surveyStatus = (started_at && "started") || "notStarted";
+  const surveyStatus = finished_at ? "notStarted" : started_at ? "started" : "notStarted";
 
   const submittedSurveyStatus =
-    (applicationData.graded_at && "approved") ||
-    (applicationData.finished_at && isRecentlySubmitted && "recent") ||
+    (selectedSurvey.graded_at && "approved") ||
+    (selectedSurvey.finished_at && isRecentlySubmitted && "recent") ||
     "submitted";
 
+  let { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurveyQuery(
+    { id },
+    { enabled: [started_at, !finished_at].every(Boolean) }
+  );
+
+  const {
+    isSuccess: isPushAnswerSuccess,
+    isLoading: isAnswerPushProceed,
+    mutate: mutatePushAnswer,
+  } = usePushAnswerMutation();
+
+  let { data: currentQuestionPushAnswer, isLoading: isSurveyLoadingPushAnswer } =
+    useGetCurrentQuestionForAssignedSurveyQuery({ id }, { enabled: isPushAnswerSuccess });
+
+  if (isPushAnswerSuccess && currentQuestionPushAnswer) {
+    currentQuestion = currentQuestionPushAnswer;
+    isSurveyLoading = isSurveyLoadingPushAnswer;
+  }
+
+  const {
+    refetch,
+    isSuccess: isSuccessGetBeginSurvay,
+    isLoading: isSurveyBeginProceed,
+  } = useGetBeginSurveyQuery({ id }, { refetchOnWindowFocus: false, enabled: false });
+
+  let { data: currentQuestionBegin, isLoading: isSurveyLoadingBegin } = useGetCurrentQuestionForAssignedSurveyQuery(
+    { id },
+    { enabled: isSuccessGetBeginSurvay }
+  );
+
+  if (currentQuestionBegin && isSuccessGetBeginSurvay) {
+    currentQuestion = currentQuestionBegin;
+    isSurveyLoading = isSurveyLoadingBegin;
+  }
+
+  let {
+    isSuccess: isSuccessSwitchToPreviousQuestion,
+    isLoading: isSurveySwitchToPreviousQuestionProceed,
+    mutate: mutateSwitchToPreviousQuestion,
+  } = useSwitchToPreviousQuestionMutation({ id });
+
+  let { data: previousQuestion, isLoading: isLoadingPreviousQuestion } = useGetCurrentQuestionForAssignedSurveyQuery(
+    { id },
+    { enabled: isSuccessSwitchToPreviousQuestion }
+  );
+
+  if (previousQuestion && isSuccessSwitchToPreviousQuestion) {
+    currentQuestion = previousQuestion;
+    isSurveyLoading = isLoadingPreviousQuestion;
+  }
+
+  const { question, count, answers, currentIndex } = currentQuestion || {};
+
+  //start survey
+  if (isSurveyBeginProceed && surveyStatus === "notStarted") {
+    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
+  }
+  //finish survay
+  if (currentQuestion?.status === "done" && surveyStatus === "started") {
+    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
+  }
+
   const handleSurveyStart = () => {
-    dispatch(beginSurveyRequest(id));
+    refetch();
   };
 
   const handleAnswerSelect = (answer) => {
@@ -54,7 +103,7 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
   };
 
   const handleSwitchToPreviousQuestion = () => {
-    dispatch(switchToPreviousQuestionRequest(id));
+    mutateSwitchToPreviousQuestion();
   };
 
   const handleAnswerSubmit = () => {
@@ -63,34 +112,21 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
       return;
     }
 
-    dispatch(
-      pushAnswerRequest({
-        surveyId: id,
-        data: {
-          question_id: question.id,
-          answer,
-        },
-      })
-    );
-
+    mutatePushAnswer({
+      surveyId: id,
+      data: {
+        question_id: question.id,
+        answer,
+      },
+    });
     setAnswer("");
   };
 
-  useEffect(() => {
-    if (started_at && !finished_at) {
-      dispatch(getCurrentQuestionForAssignedSurveyRequest(id));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (graded_at) {
-      dispatch(getAllSurveyQuestionsRequest(id));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { isLoading: isSurveyGradedQuestionsLoading } = useGetAllSurveyQuestionsQuery({ id }, { enabled: !!graded_at });
 
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
+
+  const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
 
   return finished_at ? (
     graded_at && isFeedbackView ? (
@@ -118,14 +154,12 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
       questionNumber={currentIndex + 1}
       progress={(currentIndex / count) * 100}
       question={question}
-      isLoading={(started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed}
+      isLoading={isLoadingData}
       onSurveyStart={handleSurveyStart}
       isSurveyBeginProceed={isSurveyBeginProceed}
       isAnswerPushProceed={isAnswerPushProceed}
       status={surveyStatus}
-      startedAt={started_at}
       surveyName={title}
-      finishedAt={finished_at}
       onAnswerChange={handleAnswerSelect}
       selectedAnswer={answer}
       currentQuestionAnswer={answers && currentIndex !== undefined && answers[currentIndex]}
@@ -134,7 +168,7 @@ const OnboardingSurvey = ({ applicationData, isAllApplicationsCompleted, isRecen
       surveyDescription={survey?.interaction_version?.description || ""}
       onSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
       isSurveySwitchToPreviousQuestionProceed={isSurveySwitchToPreviousQuestionProceed}
-      isAbleToSwitchToPreviousQuestion={survey?.options?.is_can_return}
+      isAbleToSwitchToPreviousQuestion={survey?.interaction_version?.is_can_return}
     />
   );
 };

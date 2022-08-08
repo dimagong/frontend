@@ -1,106 +1,71 @@
-import React, { useEffect } from "react";
-import { Spinner } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { selectProfile } from "app/selectors";
-import { selectOnboardingSurveys } from "app/selectors/userSelectors";
-import { createLoadingSelector } from "app/selectors/loadingSelector";
-import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 import "./styles.scss";
 
-import _ from "lodash";
+import React from "react";
+import { Spinner } from "reactstrap";
+
+import {
+  useProspectUserProfileQuery,
+  useSurveyPassingQuery,
+  useDFormsQuery,
+  useNotifyIntroductionPageSeeingMutation,
+} from "api/Onboarding/prospectUserQuery";
+import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
+import { initialAppOnboarding } from "./../../features/onboarding/utils/findActiveAppOnboarding";
 
 import WelcomePageComponent from "./components/WeclomePage";
-
 import OnboardingComponent from "./components/Onboarding";
+import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 
-import appSlice from "app/slices/appSlice";
-
-const { setProfileOnboarding, getAssignedSurveysForOnboardingRequest, removeUserNotifyRequest } = appSlice.actions;
+const useCallCollectQuery = () => {
+  const userProspectProfile = useProspectUserProfileQuery();
+  const userSurveyPassing = useSurveyPassingQuery();
+  const useDForms = useDFormsQuery();
+  return { userProspectProfile, userSurveyPassing, useDForms };
+};
 
 const OnboardingUser = () => {
-  const dispatch = useDispatch();
-  const profile = useSelector(selectProfile);
-  const onboardingSurveys = useSelector(selectOnboardingSurveys);
+  const { userProspectProfile, userSurveyPassing, useDForms } = useCallCollectQuery();
 
-  const isOnboardingSurveysLoading = useSelector(
-    createLoadingSelector([getAssignedSurveysForOnboardingRequest.type], true)
-  );
+  const profile = userProspectProfile.data;
+  const onboardingSurveys = userSurveyPassing.data;
+  const dForms = useDForms.data;
+
+  const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation({
+    userId: profile?.id,
+    userNotifyEntryId: profile?.notify_entries[0]?.id,
+  });
 
   const proceedUserToOnboarding = () => {
-    dispatch(removeUserNotifyRequest({ userId: profile.id, userNotifyEntryId: profile.notify_entries[0]?.id }));
+    useRemoveUserNotify.mutate();
   };
 
   const brochureQuery = useOrganizationBrochureQuery(
-    { introPageId: profile.notify_entries[0]?.notify?.id },
-    { enabled: profile.notify_entries.length === 1 }
+    { introPageId: profile?.notify_entries[0]?.notify?.id },
+    { enabled: profile?.notify_entries.length === 1 }
   );
 
-  let userApplications = [];
+  const userApplications = collectApplicationsUser(dForms ?? [], onboardingSurveys ?? []);
 
-  userApplications = [...(profile?.onboardings || []), ...(onboardingSurveys || [])];
+  const initialOnboarding = initialAppOnboarding(profile, userApplications);
 
-  if (userApplications.length) {
-    // Onboardings and surveys may have Id collisions, we add tabId property to prevent bugs
-    userApplications = userApplications.map((application) => {
-      return {
-        ...application,
-        tabId: `${application.id} ${application.d_form ? "onboarding" : "survey"}`,
-      };
-    });
-
-    userApplications = _.sortBy(userApplications, (application) => {
-      return application.order;
-    });
-  }
-
-  useEffect(() => {
-    dispatch(getAssignedSurveysForOnboardingRequest());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (profile && !profile.onboarding?.id) {
-      let activeOnboarding = userApplications.find((onboarding) => {
-        if (onboarding.d_form) {
-          return onboarding.d_form.status === "in-progress" || onboarding.d_form.status === "unsubmitted";
-        } else {
-          return !onboarding.finished_at;
-        }
-      });
-
-      if (!activeOnboarding) {
-        activeOnboarding = userApplications[0];
-      }
-
-      dispatch(setProfileOnboarding(activeOnboarding));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, isOnboardingSurveysLoading]);
-
-  if (isOnboardingSurveysLoading) {
-    return (
-      <div className="d-flex justify-content-center pt-5">
-        <Spinner color="primary" size={70} />
-      </div>
-    );
-  }
-
-  if (profile.notify_entries.length > 0) {
-    return (
-      <WelcomePageComponent
-        onSubmit={proceedUserToOnboarding}
-        isOnboardingExist={!!userApplications.length}
-        brochureName={brochureQuery.data.file?.name}
-        brochureUrl={brochureQuery.data.url}
-        downloadText={profile.notify_entries[0].notify.download_text}
-        organizationName={profile.permissions.organization}
-        introText={profile.notify_entries[0].notify.intro_text}
-        introTitle={profile.notify_entries[0].notify.intro_title}
-      />
-    );
-  }
-
-  return <OnboardingComponent userApplications={userApplications} profile={profile} />;
+  return userSurveyPassing.isLoading || useDForms.isLoading ? (
+    <div className="d-flex justify-content-center pt-5">
+      <Spinner color="primary" size={"70"} />
+    </div>
+  ) : profile?.notify_entries.length ? (
+    <WelcomePageComponent
+      onSubmit={proceedUserToOnboarding}
+      isOnboardingExist={!!userApplications.length}
+      brochureName={brochureQuery.data.file?.name}
+      brochureUrl={brochureQuery.data.url}
+      downloadText={profile?.notify_entries[0].notify.download_text}
+      organizationName={profile?.permissions.organization}
+      introText={profile?.notify_entries[0].notify.intro_text}
+      introTitle={profile?.notify_entries[0].notify.intro_title}
+    />
+  ) : (
+    <OnboardingComponent userApplications={userApplications} profile={profile} initialOnboarding={initialOnboarding} />
+  );
 };
 
 export default OnboardingUser;
