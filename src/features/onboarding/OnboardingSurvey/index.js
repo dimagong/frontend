@@ -122,7 +122,10 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     setAnswer("");
   };
 
-  const { isLoading: isSurveyGradedQuestionsLoading } = useGetAllSurveyQuestionsQuery({ id }, { enabled: !!graded_at });
+  const { data: surveyInteraction, isLoading: isSurveyGradedQuestionsLoading } = useGetAllSurveyQuestionsQuery(
+    { id },
+    { enabled: !!graded_at }
+  );
 
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
 
@@ -131,8 +134,8 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
   return finished_at ? (
     graded_at && isFeedbackView ? (
       <OnboardingSurveyFeedbackViewComponent
-        questions={survey.passedSurveyData.questions}
-        answers={survey.passedSurveyData.answers}
+        questions={surveyInteraction.questions}
+        answers={surveyInteraction.answers}
         onFeedbackClose={() => setIsFeedbackView(false)}
         showResult={survey.is_show_result}
       />
