@@ -93,8 +93,11 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
         const FormFieldElement = formComponents[field.type];
         // const fieldId = formField.master_schema_field_id;
 
-        const fieldValue =
-          (!field.isNotMasterSchemaRelated && values && values[field.masterSchemaPropertyId].value) || undefined;
+        let fieldValue = undefined;
+
+        if (!field.isNotMasterSchemaRelated && values && values[field.masterSchemaPropertyId]) {
+          fieldValue = values[field.masterSchemaPropertyId].value;
+        }
 
         if (!FormFieldElement) {
           console.log(field.type, formComponents);
