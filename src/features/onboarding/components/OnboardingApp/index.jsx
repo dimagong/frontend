@@ -29,16 +29,16 @@ const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
     isStateConfig: false,
   };
 
-  const submitdForm = useSubmitDFormPathRequestMutation();
+  const submitDForm = useSubmitDFormPathRequestMutation({ dFormId: selectedForm.id });
   const submitOnboardingForm = (data) => {
     setRecentlySubmitted(true);
-    submitdForm.mutate({ dForm: formSelected.d_form, data });
+    submitDForm.mutate(data);
   };
 
-  const debounceonSaveMutation = useSubmitDFormDataRequestMutation();
-  const loading = debounceonSaveMutation.isLoading;
-  const debounceOnSave = useRef((data, dForm) => {
-    debounceonSaveMutation.mutate({ data, dForm });
+  const debounceOnSaveMutation = useSubmitDFormDataRequestMutation({ dFormId: selectedForm.id });
+  const loading = debounceOnSaveMutation.isLoading;
+  const debounceOnSave = useRef((data) => {
+    debounceOnSaveMutation.mutate(data);
   });
 
   if (isFormLoading) {
@@ -66,9 +66,7 @@ const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
       onSaveButtonHidden={true}
       onboardingUser={profile}
       onSubmit={(formData) => submitOnboardingForm(formData)}
-      onChange={(data) => {
-        debounceOnSave.current(data, formSelected.d_form);
-      }}
+      onChange={(data) => debounceOnSave.current(data)}
       updatedAtText={
         loading ? (
           "Saving"

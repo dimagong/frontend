@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 import { useGenericMutation } from "api/useGenericMutation";
 
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 
 import appSlice from "app/slices/appSlice";
 
@@ -32,7 +32,7 @@ const {
 
 export const MVAProfileQueryKey = createQueryKey("MVA User Profile");
 export const MVAProfileQueryKeys = {
-  all: [MVAProfileQueryKey],
+  all: () => [MVAProfileQueryKey],
 };
 
 export const useProspectUserProfileQuery = (options = {}) => {
@@ -40,7 +40,7 @@ export const useProspectUserProfileQuery = (options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/user/profile`,
-      queryKey: MVAProfileQueryKeys.all,
+      queryKey: MVAProfileQueryKeys.all(),
     },
     {
       onError: (error) => dispatch(getProfileError(error.message)),
@@ -51,17 +51,15 @@ export const useProspectUserProfileQuery = (options = {}) => {
 
 const MVADFormsQueryKey = createQueryKey("MVA DForms");
 const MVADFormsQueryKeys = {
-  all: [MVADFormsQueryKey],
-  dformById: (id) => [...MVADFormsQueryKeys.all, id],
-  submitDFormData: () => [...MVADFormsQueryKeys.all, "submit data"],
-  submitDFormPath: () => [...MVADFormsQueryKeys.all, "submit path"],
+  all: () => [MVADFormsQueryKey],
+  dFormById: (id) => [...MVADFormsQueryKeys.all(), id],
 };
 
 export const useDFormsQuery = (options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/dform`,
-      queryKey: MVADFormsQueryKeys.all,
+      queryKey: MVADFormsQueryKeys.all(),
     },
     {
       ...options,
@@ -74,7 +72,7 @@ export const useDFormByIdQuery = (payload, options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/dform/${id}`,
-      queryKey: MVADFormsQueryKeys.dformById(id),
+      queryKey: MVADFormsQueryKeys.dFormById(id),
     },
     {
       ...options,
@@ -82,44 +80,42 @@ export const useDFormByIdQuery = (payload, options = {}) => {
   );
 };
 
-export const useSubmitDFormDataRequestMutation = (options = {}) => {
+export const useSubmitDFormDataRequestMutation = ({ dFormId }, options = {}) => {
   const dispatch = useDispatch();
 
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (payload) => clientAPI["put"](`/member-view-api/dform/${payload.dForm.id}/submit-data`, payload.data),
-
-    onSettled: () => {
-      return queryClient.invalidateQueries(MVADFormsQueryKeys.submitDFormData());
+  return useGenericMutation(
+    {
+      method: "put",
+      url: `/member-view-api/dform/${dFormId}/submit-data`,
     },
-    onError: (error) => dispatch(submitdFormDataError(error.message)),
-    onSuccess: (data) => dispatch(submitdFormDataSuccess(data)),
-    ...options,
-  });
+    {
+      onError: (error) => dispatch(submitdFormDataError(error.message)),
+      onSuccess: (data) => dispatch(submitdFormDataSuccess(data)),
+      ...options,
+    }
+  );
 };
 
-export const useSubmitDFormPathRequestMutation = (options = {}) => {
+export const useSubmitDFormPathRequestMutation = ({ dFormId }, options = {}) => {
   const dispatch = useDispatch();
 
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (payload) => clientAPI["put"](`/member-view-api/dform/${payload.dForm.id}/submit`, payload.data),
-
-    onSettled: () => {
-      return queryClient.invalidateQueries(MVADFormsQueryKeys.submitDFormPath());
+  return useGenericMutation(
+    {
+      method: "put",
+      url: `/member-view-api/dform/${dFormId}/submit`,
     },
-    onError: (error) => dispatch(submitdFormError(error.message)),
-    onSuccess: (data) => dispatch(submitdFormSuccess(data)),
-    ...options,
-  });
+    {
+      onError: (error) => dispatch(submitdFormError(error.message)),
+      onSuccess: (data) => dispatch(submitdFormSuccess(data)),
+      ...options,
+    }
+  );
 };
 
 export const MVASurveyPassingQueryKey = createQueryKey("MVA Survey Passing");
 export const MVASurveyPassingQueryKeys = {
-  all: [MVASurveyPassingQueryKey],
-  surveyById: (id) => [...MVASurveyPassingQueryKeys.all, id],
+  all: () => [MVASurveyPassingQueryKey],
+  surveyById: (id) => [...MVASurveyPassingQueryKeys.all(), id],
 };
 
 export const useSurveyPassingQuery = (options = {}) => {
@@ -127,7 +123,7 @@ export const useSurveyPassingQuery = (options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/survey-passing`,
-      queryKey: MVASurveyPassingQueryKeys.all,
+      queryKey: MVASurveyPassingQueryKeys.all(),
     },
     {
       onError: (error) => dispatch(getAssignedSurveysForOnboardingError(error.message)),
@@ -152,8 +148,8 @@ export const useSurveyByIdQuery = (payload, options = {}) => {
 
 export const MVABeginSurveyQueryKey = createQueryKey("MVA Begin Survey");
 export const MVABeginSurveyQueryKeys = {
-  all: [MVABeginSurveyQueryKey],
-  beginSurvey: (id) => [...MVABeginSurveyQueryKeys.all, id],
+  all: () => [MVABeginSurveyQueryKey],
+  beginSurvey: (id) => [...MVABeginSurveyQueryKeys.all(), id],
 };
 export const useGetBeginSurveyQuery = (payload, options = {}) => {
   const { id } = payload;
@@ -175,8 +171,8 @@ export const useGetBeginSurveyQuery = (payload, options = {}) => {
 export const MVANotifyIntroductionPageQueryKey = createQueryKey("MVA Notify Introduction Page");
 
 export const MVANotifyIntroductionPageQueryKeys = {
-  all: [MVANotifyIntroductionPageQueryKey],
-  notifyIntroductionPageBuId: (id) => [...MVANotifyIntroductionPageQueryKeys.all, id],
+  all: () => [MVANotifyIntroductionPageQueryKey],
+  notifyIntroductionPageBuId: (id) => [...MVANotifyIntroductionPageQueryKeys.all(), id],
 };
 
 export const useNotifyIntroductionPageSeeingMutation = (payload, options = {}) => {
@@ -198,10 +194,8 @@ export const useNotifyIntroductionPageSeeingMutation = (payload, options = {}) =
 
 export const MVACurrentQuestionQueryKey = createQueryKey("MVA Current Question");
 export const MVACurrentQuestionQueryKeys = {
-  all: [MVACurrentQuestionQueryKey],
-  currentQuestionForAssignedSurvey: (id) => [...MVACurrentQuestionQueryKeys.all, id],
-  switchToPrevious: () => [...MVACurrentQuestionQueryKey, "Switch To Previous"],
-  switchToPreviousId: (id) => [...MVACurrentQuestionQueryKeys.switchToPrevious(), id],
+  all: () => [MVACurrentQuestionQueryKey],
+  byId: (id) => [...MVACurrentQuestionQueryKeys.all(), id],
 };
 
 export const useGetCurrentQuestionForAssignedSurveyQuery = (payload, options = {}) => {
@@ -211,7 +205,7 @@ export const useGetCurrentQuestionForAssignedSurveyQuery = (payload, options = {
   return useGenericQuery(
     {
       url: `/member-view-api/survey-passing/${id}/current-question`,
-      queryKey: MVACurrentQuestionQueryKeys.currentQuestionForAssignedSurvey(id),
+      queryKey: MVACurrentQuestionQueryKeys.byId(id),
     },
     {
       onError: (error) => dispatch(getCurrentQuestionForAssignedSurveyError(error.message)),
@@ -229,7 +223,7 @@ export const useSwitchToPreviousQuestionMutation = (payload, options = {}) => {
     {
       url: `/member-view-api/survey-passing/${id}/make-previous-question-current`,
       method: "put",
-      queryKey: MVACurrentQuestionQueryKeys.switchToPreviousId(id),
+      queryKey: MVACurrentQuestionQueryKeys.byId(id),
     },
     {
       onError: (error) => dispatch(switchToPreviousQuestionError(error.message)),
@@ -252,8 +246,8 @@ export const usePushAnswerMutation = (options = {}) => {
 export const MVAAllSurveyQuestionsQueryKey = createQueryKey("MVA All Survay Questions");
 
 export const MVAAllSurveyQuestionsQueryKeys = {
-  all: [MVAAllSurveyQuestionsQueryKey],
-  surveyQuestionsId: (id) => [...MVAAllSurveyQuestionsQueryKeys.all, id],
+  all: () => [MVAAllSurveyQuestionsQueryKey],
+  surveyQuestionsId: (id) => [...MVAAllSurveyQuestionsQueryKeys.all(), id],
 };
 
 export const useGetAllSurveyQuestionsQuery = (payload, options = {}) => {
@@ -266,9 +260,7 @@ export const useGetAllSurveyQuestionsQuery = (payload, options = {}) => {
       queryKey: MVAAllSurveyQuestionsQueryKeys.surveyQuestionsId(id),
     },
     {
-      onError: (error) => {
-        dispatch(getAllSurveyQuestionsError(error.message));
-      },
+      onError: (error) => dispatch(getAllSurveyQuestionsError(error.message)),
       ...options,
     }
   );
