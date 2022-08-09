@@ -15,7 +15,7 @@ const SectionsComponent = ({
   values,
   onFieldValueChange,
 }) => {
-  if (!data.sections || data.sections.length === 0) {
+  if (!data.sections || Object.keys(data.sections).length === 0) {
     // TODO HANDLE TWO CASES, when there are no sections on edit and no sections on assigned dform \ on onboarding dform
     return (
       <div className="px-2 py-5 text-center w-100">
