@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 import { useGenericMutation } from "api/useGenericMutation";
 
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 import appSlice from "app/slices/appSlice";
 
@@ -50,9 +50,11 @@ export const useProspectUserProfileQuery = (options = {}) => {
 };
 
 const MVADFormsQueryKey = createQueryKey("MVA DForms");
-const MVADFormsQueryKeys = {
-  all: () => [MVADFormsQueryKey],
+const MVADFormValuesQueryKey = createQueryKey("MVA DForm values");
+export const MVADFormsQueryKeys = {
+  all: () => [MVADFormsQueryKey, MVADFormValuesQueryKey],
   dFormById: (id) => [...MVADFormsQueryKeys.all(), id],
+  dFormValuesById: (id) => [MVADFormValuesQueryKey, id],
 };
 
 export const useDFormsQuery = (options = {}) => {
@@ -60,6 +62,18 @@ export const useDFormsQuery = (options = {}) => {
     {
       url: `/member-view-api/dform`,
       queryKey: MVADFormsQueryKeys.all(),
+    },
+    {
+      ...options,
+    }
+  );
+};
+
+export const useDFormsValuesByIdQuery = ({ id }, options = {}) => {
+  return useGenericQuery(
+    {
+      url: `/member-view-api/dform/${id}/user-values`,
+      queryKey: MVADFormsQueryKeys.dFormValuesById(),
     },
     {
       ...options,
@@ -77,6 +91,29 @@ export const useDFormByIdQuery = (payload, options = {}) => {
     {
       ...options,
     }
+  );
+};
+
+export const useSaveDFormFieldValue = ({ dFormId }, options) => {
+  return useGenericMutation(
+    {
+      method: "put",
+      url: `/member-view-api/dform/${dFormId}/user-value`,
+    },
+    options
+  );
+};
+
+// member-view-api/dform/5/new-version
+
+export const useSubmitDFormForReviewMutation = ({ dFormId }, options) => {
+  const queryClient = useQueryClient();
+  return useGenericMutation(
+    {
+      method: "post",
+      url: `/member-view-api/dform/${dFormId}/new-version`,
+    },
+    options
   );
 };
 

@@ -64,15 +64,15 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     }
   );
 
-  const handleFieldValueChange = (fieldId, value) => {
+  const handleFieldValueChange = (msPropId, value) => {
     // Mark field as edited for further extraction and save on submit.
     // Currently we don't care about case when field value return to initial state and much actual
     // field value from back-end.
     // (For example we enter hello in empty field and delete it. Field still counts as edited)
 
-    const newFieldValue = { ...(applicationValues[fieldId] || {}), value, edited: true };
+    const newFieldValue = { ...(applicationValues[msPropId] || {}), value, edited: true };
 
-    setApplicationValues({ ...applicationValues, [fieldId]: newFieldValue });
+    setApplicationValues({ ...applicationValues, [msPropId]: newFieldValue });
   };
 
   const handleUserApplicationValuesUpdate = () => {
@@ -107,7 +107,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
   }
 
   return (
-    <div className="onboarding-create-feature">
+    <div className="onboarding-create-feature mb-4 pb-4">
       <div className="onboarding-create-feature_header">
         {isCreate ? (
           <div className="onboarding-create-feature_header_title">Onboarding Create</div>
