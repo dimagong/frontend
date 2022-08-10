@@ -14,7 +14,12 @@ import {
 import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 import OnboardingSurveyFinishComponent from "./../OnboardingSurvey/components/OnboardingSurveyFinishComponent";
 
-const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecentlySubmitted }) => {
+const OnboardingSurvey = ({
+  selectedSurvey,
+  isAllApplicationsCompleted,
+  isRecentlySubmitted,
+  setRecentlySubmitted,
+}) => {
   const queryClient = useQueryClient();
   const [answer, setAnswer] = useState("");
 
@@ -86,6 +91,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
   //finish survay
   if (currentQuestion?.status === "done" && surveyStatus === "started") {
     queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
+    setRecentlySubmitted(true);
   }
 
   const handleSurveyStart = () => {

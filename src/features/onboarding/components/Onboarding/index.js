@@ -131,6 +131,7 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                             selectedSurvey={application}
                             isRecentlySubmitted={recentlySubmitted}
                             isAllApplicationsCompleted={!unCompletedApplications.length}
+                            setRecentlySubmitted={setRecentlySubmitted}
                           />
                         )}
                       </TabPane>
