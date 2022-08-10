@@ -9,31 +9,22 @@ import {
   usePushAnswerMutation,
   MVASurveyPassingQueryKeys,
   useSwitchToPreviousQuestionMutation,
-  useGetAllSurveyQuestionsQuery,
 } from "api/Onboarding/prospectUserQuery";
 
 import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
-import OnboardingSurveyStatusComponent from "./components/OnboardingSurveyStatusComponent";
-import OnboardingSurveyFeedbackViewComponent from "./components/OnboardingSurveyFeedbackViewComponent";
-
-//single responsibility  && interface segregation
-const getSurveySubmitStatus = (survey, isSubmited) => {
-  const status = (survey.graded_at && "approved") || (survey.finished_at && isSubmited && "recent") || "submitted";
-  return status;
-};
+import OnboardingSurveyFinishComponent from "./../OnboardingSurvey/components/OnboardingSurveyFinishComponent";
 
 const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecentlySubmitted }) => {
   const queryClient = useQueryClient();
-
   const [answer, setAnswer] = useState("");
-  const [isFeedbackView, setIsFeedbackView] = useState(false);
 
   const { data: survey } = useSurveyByIdQuery({ id: selectedSurvey.id });
-  const { id, started_at, finished_at, title, graded_at } = survey || {};
+  const { id, started_at, finished_at, title } = survey || {};
+
+  console.log("selectedSurvey Props", selectedSurvey);
+  console.log("survey useSurveyByIdQuery", survey);
 
   const surveyStatus = finished_at ? "notStarted" : started_at ? "started" : "notStarted";
-
-  const submittedSurveyStatus = getSurveySubmitStatus(selectedSurvey, isRecentlySubmitted);
 
   let { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurveyQuery(
     { id },
@@ -125,35 +116,14 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
     setAnswer("");
   };
 
-  const { data: surveyInteraction, isLoading: isSurveyGradedQuestionsLoading } = useGetAllSurveyQuestionsQuery(
-    { id },
-    { enabled: !!graded_at }
-  );
-
-  const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
-
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
 
   return finished_at ? (
-    graded_at && isFeedbackView ? (
-      <OnboardingSurveyFeedbackViewComponent
-        questions={surveyInteraction.questions}
-        answers={surveyInteraction.answers}
-        onFeedbackClose={() => setIsFeedbackView(false)}
-        showResult={survey.is_show_result}
-      />
-    ) : (
-      <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
-        <OnboardingSurveyStatusComponent
-          survey={survey}
-          isFeedbackExist={isFeedbackExist}
-          isLoading={isSurveyGradedQuestionsLoading}
-          onForceApplicationShow={setIsFeedbackView}
-          status={submittedSurveyStatus}
-          isAllApplicationsCompleted={isAllApplicationsCompleted}
-        />
-      </div>
-    )
+    <OnboardingSurveyFinishComponent
+      survey={survey}
+      isRecentlySubmitted={isRecentlySubmitted}
+      isAllApplicationsCompleted={isAllApplicationsCompleted}
+    />
   ) : (
     <OnboardingSurveyComponent
       onAnswerSubmit={handleAnswerSubmit}

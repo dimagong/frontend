@@ -128,7 +128,6 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                         <div className="onboarding-title" />
                         {application.id === appActiveOnboarding?.id && (
                           <OnboardingSurvey
-                            onSurveyFinish={() => setRecentlySubmitted(true)}
                             selectedSurvey={application}
                             isRecentlySubmitted={recentlySubmitted}
                             isAllApplicationsCompleted={!unCompletedApplications.length}

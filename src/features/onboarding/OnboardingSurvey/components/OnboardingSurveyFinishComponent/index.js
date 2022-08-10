@@ -2,19 +2,18 @@ import React, { useState } from "react";
 
 import { useGetAllSurveyQuestionsQuery } from "api/Onboarding/prospectUserQuery";
 
-import OnboardingSurveyFeedbackViewComponent from "./components/OnboardingSurveyFeedbackViewComponent";
-import OnboardingSurveyStatusComponent from "./components/OnboardingSurveyStatusComponent";
+import OnboardingSurveyFeedbackViewComponent from "./../OnboardingSurveyFeedbackViewComponent";
+import OnboardingSurveyStatusComponent from "./../OnboardingSurveyStatusComponent";
 
-//single responsibility  && interface segregation
 const getSurveySubmitStatus = (survey, isSubmited) => {
   const status = (survey.graded_at && "approved") || (survey.finished_at && isSubmited && "recent") || "submitted";
   return status;
 };
 
-const OnboardingSurveyFinishComponent = ({ survey }) => {
+const OnboardingSurveyFinishComponent = ({ survey, isRecentlySubmitted, isAllApplicationsCompleted }) => {
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
-  const { id, graded_at } = survey;
+  const { id, graded_at, is_show_result } = survey;
 
   const { data: surveyInteraction, isLoading: isSurveyGradedQuestionsLoading } = useGetAllSurveyQuestionsQuery(
     { id },
@@ -23,14 +22,14 @@ const OnboardingSurveyFinishComponent = ({ survey }) => {
 
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
 
-  const submittedSurveyStatus = getSurveySubmitStatus(selectedSurvey, isRecentlySubmitted);
+  const submittedSurveyStatus = getSurveySubmitStatus(survey, isRecentlySubmitted);
 
   return graded_at && isFeedbackView ? (
     <OnboardingSurveyFeedbackViewComponent
       questions={surveyInteraction.questions}
       answers={surveyInteraction.answers}
       onFeedbackClose={() => setIsFeedbackView(false)}
-      showResult={survey.is_show_result}
+      showResult={is_show_result}
     />
   ) : (
     <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
