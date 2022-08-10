@@ -16,6 +16,12 @@ import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 import OnboardingSurveyStatusComponent from "./components/OnboardingSurveyStatusComponent";
 import OnboardingSurveyFeedbackViewComponent from "./components/OnboardingSurveyFeedbackViewComponent";
 
+//single responsibility  && interface segregation
+const getSurveySubmitStatus = (survey, isSubmited) => {
+  const status = (survey.graded_at && "approved") || (survey.finished_at && isSubmited && "recent") || "submitted";
+  return status;
+};
+
 const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecentlySubmitted }) => {
   const queryClient = useQueryClient();
 
@@ -27,10 +33,7 @@ const OnboardingSurvey = ({ selectedSurvey, isAllApplicationsCompleted, isRecent
 
   const surveyStatus = finished_at ? "notStarted" : started_at ? "started" : "notStarted";
 
-  const submittedSurveyStatus =
-    (selectedSurvey.graded_at && "approved") ||
-    (selectedSurvey.finished_at && isRecentlySubmitted && "recent") ||
-    "submitted";
+  const submittedSurveyStatus = getSurveySubmitStatus(selectedSurvey, isRecentlySubmitted);
 
   let { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurveyQuery(
     { id },
