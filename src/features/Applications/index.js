@@ -314,7 +314,13 @@ const Applications = ({ isCreate }) => {
   const validateElement = (element) => {
     console.log("element validation", element);
 
-    const elementValidationSchema = elementValidationSchemas[element.elementType];
+    let elementValidationSchema = elementValidationSchemas[element.elementType];
+
+    if (element.elementType === ELEMENT_TYPES.field) {
+      //get validation schema for field depending on type
+      elementValidationSchema = elementValidationSchema[element.type];
+      console.log("Schema", elementValidationSchema);
+    }
 
     if (!elementValidationSchema) {
       console.error(`There is no validation schema for ${element.elementType} element`);

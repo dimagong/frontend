@@ -1,26 +1,96 @@
 import * as yup from "yup";
 import { ELEMENT_TYPES, FIELD_TYPES } from "./constants";
+import { DATE_WIDGET_FORMATS } from "./constants";
 
-const dynamicRenderValidation = yup.object();
-
-const fieldSpecificValidationSchemas = {
-  [FIELD_TYPES.text]: yup.object(),
-  [FIELD_TYPES.date]: yup.object(),
-  [FIELD_TYPES.file]: yup.object(),
-  [FIELD_TYPES.select]: yup.object(),
-  [FIELD_TYPES.number]: yup.object(),
-  [FIELD_TYPES.boolean]: yup.object(),
-  [FIELD_TYPES.longText]: yup.object(),
-  [FIELD_TYPES.textArea]: yup.object(),
-  [FIELD_TYPES.fileList]: yup.object(),
-  [FIELD_TYPES.resource]: yup.object(),
-  [FIELD_TYPES.helpText]: yup.object(),
-  [FIELD_TYPES.multiSelect]: yup.object(),
-};
-
+const { object, string, min, number, ref } = yup;
 const fieldTypesArray = Object.values(FIELD_TYPES);
 
-export const groupValidationSchema = yup.object().shape({
+const dynamicRenderValidation = object({});
+
+// STRUCTURE
+// DR - dynamic render validation
+// ----------
+// GROUP
+// DR -> group validation
+// ----------
+// Section
+// DR -> section validation
+// ----------
+// Field
+// DR -> field common validation -> field validation by field type
+
+const minMaxLengthSchema = object({
+  minLength: number("Min length should be a number")
+    .integer("Min length should be an integer")
+    .positive("Min length should be bigger then 0")
+    .when("maxLength", (maxLength, schema) => {
+      return schema.test({
+        test: (minLength) => {
+          if (!maxLength) return true;
+          return minLength < maxLength;
+        },
+        message: "Min length should be smaller then max length",
+      });
+    }),
+  maxLength: number("Max length should be a number")
+    .integer("Max length should be an integer")
+    .positive("Max length should be bigger then 0"),
+});
+
+const minimumMaximumSchema = object({
+  minimum: number("Minimum should be a number")
+    .integer("Minimum should be an integer")
+    .positive("Minimum should be bigger then 0")
+    .when("maximum", (maximum, schema) => {
+      return schema.test({
+        test: (minimum) => {
+          if (!maximum) return true;
+          return minimum < maximum;
+        },
+        message: "Minimum should be smaller then maximum",
+      });
+    }),
+  maximum: number("Maximum should be a number")
+    .integer("Maximum should be an integer")
+    .positive("Maximum should be bigger then 0"),
+});
+
+export const fieldCommonSchema = yup.object().shape({
+  id: yup.string().required(),
+  isNotMasterSchemaRelated: yup.boolean(),
+  type: yup.string().oneOf(fieldTypesArray),
+  title: yup.string().required(),
+  isRequired: yup.boolean(),
+  classes: yup.string(),
+  isLabelShowing: yup.boolean(),
+});
+
+const textElementSchema = object({}).concat(minMaxLengthSchema);
+
+const numberElementSchema = object({}).concat(minimumMaximumSchema);
+
+const textareaElementSchema = object({}).concat(minMaxLengthSchema);
+
+const dateElementSchema = object({
+  format: string().oneOf(DATE_WIDGET_FORMATS),
+});
+
+const fieldSpecificValidationSchemas = {
+  [FIELD_TYPES.text]: fieldCommonSchema.concat(textElementSchema),
+  [FIELD_TYPES.date]: fieldCommonSchema.concat(dateElementSchema),
+  [FIELD_TYPES.file]: fieldCommonSchema,
+  [FIELD_TYPES.select]: fieldCommonSchema,
+  [FIELD_TYPES.number]: fieldCommonSchema.concat(numberElementSchema),
+  [FIELD_TYPES.boolean]: fieldCommonSchema,
+  [FIELD_TYPES.longText]: fieldCommonSchema,
+  [FIELD_TYPES.textArea]: fieldCommonSchema.concat(textareaElementSchema),
+  [FIELD_TYPES.fileList]: fieldCommonSchema,
+  [FIELD_TYPES.resource]: fieldCommonSchema,
+  [FIELD_TYPES.helpText]: fieldCommonSchema,
+  [FIELD_TYPES.multiSelect]: fieldCommonSchema,
+};
+
+export const groupValidationSchema = dynamicRenderValidation.shape({
   name: yup
     .string()
     .required("Each group should have a name")
@@ -37,17 +107,7 @@ export const groupValidationSchema = yup.object().shape({
   relatedFields: yup.array(),
 });
 
-export const fieldValidationSchema = yup.object().shape({
-  id: yup.string().required(),
-  isMasterSchemaRelated: yup.boolean(),
-  type: yup.string().oneOf(fieldTypesArray),
-  title: yup.string().required(),
-  isRequired: yup.boolean(),
-  classes: yup.string(),
-  isLabelShowing: yup.boolean(),
-});
-
-export const sectionValidationSchema = yup.object().shape({
+export const sectionValidationSchema = dynamicRenderValidation.shape({
   id: yup.string().required(),
   name: yup
     .string()
@@ -69,7 +129,7 @@ export const sectionValidationSchema = yup.object().shape({
 });
 
 export const elementValidationSchemas = {
-  [ELEMENT_TYPES.field]: fieldValidationSchema,
+  [ELEMENT_TYPES.field]: fieldSpecificValidationSchemas,
   [ELEMENT_TYPES.group]: groupValidationSchema,
   [ELEMENT_TYPES.section]: sectionValidationSchema,
 };
@@ -85,3 +145,7 @@ export const MSPropertyValidationSchema = yup
       return !this.options.context.masterSchemaUsedPropertiesList.includes(value);
     }
   );
+
+export const testSchema = yup.object().shape({
+  name: yup.string(),
+});

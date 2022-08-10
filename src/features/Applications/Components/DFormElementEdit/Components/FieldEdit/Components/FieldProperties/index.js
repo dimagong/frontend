@@ -58,6 +58,7 @@ const FieldProperties = ({ element, onElementChange, organization, data, onField
       //     placeholder={placeholder}
       //   />
       // );
+
       return (
         <div className={"custom-form-filed form-create_custom-text-widget"}>
           <FieldLabel label={label} />
@@ -65,8 +66,8 @@ const FieldProperties = ({ element, onElementChange, organization, data, onField
             id={`${index}-${column}`}
             type={"number"}
             disabled={false}
-            value={""}
-            onChange={() => {}}
+            value={element[column]}
+            onChange={(e) => handleChange(column, e.target.value)}
             placeholder={placeholder}
           />
         </div>

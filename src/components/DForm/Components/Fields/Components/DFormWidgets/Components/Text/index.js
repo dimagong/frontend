@@ -18,7 +18,7 @@ const Text = (props) => {
     <div className={"custom-form-filed form-create_custom-text-widget"}>
       <FieldLabel label={props.label} required={props.isRequired} />
       <input
-        id={123}
+        id={props.id}
         type={fieldType}
         disabled={false}
         value={props.value}

@@ -75,8 +75,8 @@ export const FIELD_INITIAL_SPECIFIC_PROPERTIES = {
     options: [],
   },
   [FIELD_TYPES.number]: {
-    min: undefined,
-    max: undefined,
+    minimum: undefined,
+    maximum: undefined,
   },
   [FIELD_TYPES.boolean]: {},
   [FIELD_TYPES.longText]: {
