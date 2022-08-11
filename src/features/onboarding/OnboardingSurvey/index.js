@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 
 import {
@@ -14,20 +14,36 @@ import {
 import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 import OnboardingSurveyFinishComponent from "./../OnboardingSurvey/components/OnboardingSurveyFinishComponent";
 
+const useMVASurveyPassingInvalidate = (questionStatus, surveyStatus, id) => {
+  const queryClient = useQueryClient();
+  //start survey isSurveyBeginProceed
+  if (questionStatus === "in-progress" && surveyStatus === "notStarted") {
+    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
+  }
+  //finish survay
+  if (questionStatus === "done" && surveyStatus === "started") {
+    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
+  }
+};
+
+const useMVARecentSubmited = (questionStatus, surveyStatus, setRecentlySubmitted) => {
+  useEffect(() => {
+    if (questionStatus === "done" && surveyStatus === "started") {
+      setRecentlySubmitted(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questionStatus, surveyStatus]);
+};
+
 const OnboardingSurvey = ({
   selectedSurvey,
   isAllApplicationsCompleted,
   isRecentlySubmitted,
   setRecentlySubmitted,
 }) => {
-  const queryClient = useQueryClient();
   const [answer, setAnswer] = useState("");
-
   const { data: survey } = useSurveyByIdQuery({ id: selectedSurvey.id });
   const { id, started_at, finished_at, title } = survey || {};
-
-  console.log("selectedSurvey Props", selectedSurvey);
-  console.log("survey useSurveyByIdQuery", survey);
 
   const surveyStatus = finished_at ? "notStarted" : started_at ? "started" : "notStarted";
 
@@ -84,15 +100,9 @@ const OnboardingSurvey = ({
 
   const { question, count, answers, currentIndex } = currentQuestion || {};
 
-  //start survey isSurveyBeginProceed
-  if (currentQuestion?.status === "in-progress" && surveyStatus === "notStarted") {
-    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
-  }
-  //finish survay
-  if (currentQuestion?.status === "done" && surveyStatus === "started") {
-    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
-    setRecentlySubmitted(true);
-  }
+  useMVASurveyPassingInvalidate(currentQuestion?.status, surveyStatus, id);
+
+  useMVARecentSubmited(currentQuestion?.status, surveyStatus, setRecentlySubmitted);
 
   const handleSurveyStart = () => {
     refetch();
