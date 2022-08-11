@@ -1,39 +1,18 @@
 import { toast } from "react-toastify";
-import React, { useEffect, useState } from "react";
-import { useQueryClient } from "react-query";
+import React, { useState } from "react";
+
+import { useGetCurrentQuestionForAssignedSurveyQuery, useSurveyByIdQuery } from "api/Onboarding/prospectUserQuery";
 
 import {
-  useGetCurrentQuestionForAssignedSurveyQuery,
-  useSurveyByIdQuery,
-  useGetBeginSurveyQuery,
-  usePushAnswerMutation,
-  MVASurveyPassingQueryKeys,
-  useSwitchToPreviousQuestionMutation,
-} from "api/Onboarding/prospectUserQuery";
+  useMVASurveyPassingInvalidate,
+  useMVARecentSubmited,
+  useMVApushAnswer,
+  useMVAgetBeginSurvey,
+  useMVAswitchToPrevious,
+} from "./hooks";
 
 import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 import OnboardingSurveyFinishComponent from "./../OnboardingSurvey/components/OnboardingSurveyFinishComponent";
-
-const useMVASurveyPassingInvalidate = (questionStatus, surveyStatus, id) => {
-  const queryClient = useQueryClient();
-  //start survey isSurveyBeginProceed
-  if (questionStatus === "in-progress" && surveyStatus === "notStarted") {
-    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
-  }
-  //finish survay
-  if (questionStatus === "done" && surveyStatus === "started") {
-    queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
-  }
-};
-
-const useMVARecentSubmited = (questionStatus, surveyStatus, setRecentlySubmitted) => {
-  useEffect(() => {
-    if (questionStatus === "done" && surveyStatus === "started") {
-      setRecentlySubmitted(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [questionStatus, surveyStatus]);
-};
 
 const OnboardingSurvey = ({
   selectedSurvey,
@@ -53,49 +32,33 @@ const OnboardingSurvey = ({
   );
 
   const {
-    isSuccess: isPushAnswerSuccess,
-    isLoading: isAnswerPushProceed,
-    mutate: mutatePushAnswer,
-  } = usePushAnswerMutation();
-
-  let { data: currentQuestionPushAnswer, isLoading: isSurveyLoadingPushAnswer } =
-    useGetCurrentQuestionForAssignedSurveyQuery({ id }, { enabled: isPushAnswerSuccess });
+    mutatePushAnswer,
+    currentQuestionPushAnswer,
+    isSurveyLoadingPushAnswer,
+    isAnswerPushProceed,
+    isPushAnswerSuccess,
+  } = useMVApushAnswer(id);
 
   if (isPushAnswerSuccess && currentQuestionPushAnswer) {
-    currentQuestion = currentQuestionPushAnswer;
-    isSurveyLoading = isSurveyLoadingPushAnswer;
+    [currentQuestion, isSurveyLoading] = [currentQuestionPushAnswer, isSurveyLoadingPushAnswer];
+  }
+
+  const { refetch, currentQuestionBegin, isSurveyLoadingBegin, isSurveyBeginProceed, isSuccessGetBeginSurvay } =
+    useMVAgetBeginSurvey(id);
+
+  if (currentQuestionBegin && isSuccessGetBeginSurvay) {
+    [currentQuestion, isSurveyLoading] = [currentQuestionBegin, isSurveyLoadingBegin];
   }
 
   const {
-    refetch,
-    isSuccess: isSuccessGetBeginSurvay,
-    isLoading: isSurveyBeginProceed,
-  } = useGetBeginSurveyQuery({ id }, { refetchOnWindowFocus: false, enabled: false });
-
-  let { data: currentQuestionBegin, isLoading: isSurveyLoadingBegin } = useGetCurrentQuestionForAssignedSurveyQuery(
-    { id },
-    { enabled: isSuccessGetBeginSurvay }
-  );
-
-  if (currentQuestionBegin && isSuccessGetBeginSurvay) {
-    currentQuestion = currentQuestionBegin;
-    isSurveyLoading = isSurveyLoadingBegin;
-  }
-
-  let {
-    isSuccess: isSuccessSwitchToPreviousQuestion,
-    isLoading: isSurveySwitchToPreviousQuestionProceed,
-    mutate: mutateSwitchToPreviousQuestion,
-  } = useSwitchToPreviousQuestionMutation({ id });
-
-  let { data: previousQuestion, isLoading: isLoadingPreviousQuestion } = useGetCurrentQuestionForAssignedSurveyQuery(
-    { id },
-    { enabled: isSuccessSwitchToPreviousQuestion }
-  );
-
+    mutateSwitchToPreviousQuestion,
+    previousQuestion,
+    isLoadingPreviousQuestion,
+    isSurveySwitchToPreviousQuestionProceed,
+    isSuccessSwitchToPreviousQuestion,
+  } = useMVAswitchToPrevious(id);
   if (previousQuestion && isSuccessSwitchToPreviousQuestion) {
-    currentQuestion = previousQuestion;
-    isSurveyLoading = isLoadingPreviousQuestion;
+    [currentQuestion, isSurveyLoading] = [previousQuestion, isLoadingPreviousQuestion];
   }
 
   const { question, count, answers, currentIndex } = currentQuestion || {};
@@ -133,6 +96,7 @@ const OnboardingSurvey = ({
   };
 
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
+  const currentQuestionAnswer = answers && currentIndex ? answers[currentIndex] : null;
 
   return finished_at ? (
     <OnboardingSurveyFinishComponent
@@ -154,7 +118,7 @@ const OnboardingSurvey = ({
       surveyName={title}
       onAnswerChange={handleAnswerSelect}
       selectedAnswer={answer}
-      currentQuestionAnswer={answers && currentIndex !== undefined && answers[currentIndex]}
+      currentQuestionAnswer={currentQuestionAnswer}
       isLastQuestion={count - 1 === currentIndex}
       isFirstQuestion={currentIndex === 0}
       surveyDescription={survey?.interaction_version?.description || ""}
