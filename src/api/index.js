@@ -81,7 +81,7 @@ const instance = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-instance.defaults.withCredentials = true;
+instance.defaults.withCredentials = false;
 
 instance.interceptors.request.use(requestResolveInterceptor, requestRejectInterceptor);
 instance.interceptors.response.use(responseResolveInterceptor, responseRejectInterceptor);
