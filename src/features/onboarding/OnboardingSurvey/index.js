@@ -84,8 +84,8 @@ const OnboardingSurvey = ({
 
   const { question, count, answers, currentIndex } = currentQuestion || {};
 
-  //start survey
-  if (isSurveyBeginProceed && surveyStatus === "notStarted") {
+  //start survey isSurveyBeginProceed
+  if (currentQuestion?.status === "in-progress" && surveyStatus === "notStarted") {
     queryClient.invalidateQueries(MVASurveyPassingQueryKeys.surveyById(id));
   }
   //finish survay
