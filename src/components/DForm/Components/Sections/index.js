@@ -13,17 +13,22 @@ const SectionsComponent = ({
   onGroupCreate,
   onFieldCreate,
   values,
+  isConfigurable,
   onFieldValueChange,
 }) => {
   if (!data.sections || Object.keys(data.sections).length === 0) {
     // TODO HANDLE TWO CASES, when there are no sections on edit and no sections on assigned dform \ on onboarding dform
-    return (
-      <div className="px-2 py-5 text-center w-100">
-        There are no available sections <br />
-        <br />
-        create one by clicking "New Tab" button, to start editing your application
-      </div>
-    );
+    if (isConfigurable) {
+      return (
+        <div className="px-2 py-5 text-center w-100">
+          There are no available sections <br />
+          <br />
+          create one by clicking "New Tab" button, to start editing your application
+        </div>
+      );
+    } else {
+      return <div className="px-2 py-5 text-center w-100">This application is empty</div>;
+    }
   }
 
   return (

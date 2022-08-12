@@ -92,6 +92,7 @@ const DForm = ({
         data={data}
         onFieldValueChange={handleFieldValueChange}
         values={isConfigurable ? null : values}
+        isConfigurable={isConfigurable}
         selectedSection={selectedSection}
         onElementClick={isConfigurable ? handleElementClick : () => {}}
         onGroupCreate={isConfigurable && handleGroupCreate}
