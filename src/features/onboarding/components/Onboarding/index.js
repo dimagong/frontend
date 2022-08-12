@@ -139,7 +139,6 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                         {application.id === appActiveOnboarding?.id && (
                           <OnboardingSurvey survey={survey} setRecentlySubmitted={setRecentlySubmitted}>
                             <OnboardingSurveyFinishComponent
-                              // selectedSurveyId={application.id}
                               survey={survey}
                               isRecentlySubmitted={recentlySubmitted}
                               isAllApplicationsCompleted={!unCompletedApplications.length}
