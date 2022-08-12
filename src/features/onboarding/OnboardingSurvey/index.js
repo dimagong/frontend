@@ -15,13 +15,15 @@ import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 import OnboardingSurveyFinishComponent from "./../OnboardingSurvey/components/OnboardingSurveyFinishComponent";
 
 const OnboardingSurvey = ({
-  selectedSurvey,
+  survey,
+  //selectedSurvey,
   isAllApplicationsCompleted,
   isRecentlySubmitted,
   setRecentlySubmitted,
+  children,
 }) => {
   const [answer, setAnswer] = useState("");
-  const { data: survey } = useSurveyByIdQuery({ id: selectedSurvey.id });
+  // const { data: survey } = useSurveyByIdQuery({ id: selectedSurvey.id });
   const { id, started_at, finished_at, title } = survey || {};
 
   const surveyStatus = finished_at ? "notStarted" : started_at ? "started" : "notStarted";
@@ -98,12 +100,12 @@ const OnboardingSurvey = ({
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
   const currentQuestionAnswer = answers && currentIndex ? answers[currentIndex] : null;
 
+  console.log("children", children);
+  // const [surveyFinishChild, Hello] = children;
+  const surveyFinishChild = children;
+
   return finished_at ? (
-    <OnboardingSurveyFinishComponent
-      survey={survey}
-      isRecentlySubmitted={isRecentlySubmitted}
-      isAllApplicationsCompleted={isAllApplicationsCompleted}
-    />
+    <>{surveyFinishChild}</>
   ) : (
     <OnboardingSurveyComponent
       onAnswerSubmit={handleAnswerSubmit}

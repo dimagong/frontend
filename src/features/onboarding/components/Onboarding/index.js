@@ -11,6 +11,11 @@ import OnboardingSurvey from "../../OnboardingSurvey";
 import StatusComponent from "../Components/StatusComponent";
 import OnboardingApp from "./../OnboardingApp";
 
+import { useGetAllSurveyQuestionsQuery, useSurveyByIdQuery } from "api/Onboarding/prospectUserQuery";
+
+// import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
+import OnboardingSurveyFinishComponent from "./../../OnboardingSurvey/components/OnboardingSurveyFinishComponent";
+
 const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) => {
   const [forceAppShow, setForceAppShow] = useState([]);
   const [recentlySubmitted, setRecentlySubmitted] = useState(false);
@@ -24,6 +29,11 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
     setRecentlySubmitted(false);
     setActiveAppOnboarding(onboarding);
   };
+
+  const { data: survey } = useSurveyByIdQuery(
+    { id: appActiveOnboarding?.id },
+    { enabled: appActiveOnboarding?.tabId?.includes("survey") }
+  );
 
   const formatTabs = (applications) => {
     return applications.map((application) => {
@@ -127,12 +137,14 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                       <TabPane key={index} tabId={application.tabId}>
                         <div className="onboarding-title" />
                         {application.id === appActiveOnboarding?.id && (
-                          <OnboardingSurvey
-                            selectedSurvey={application}
-                            isRecentlySubmitted={recentlySubmitted}
-                            isAllApplicationsCompleted={!unCompletedApplications.length}
-                            setRecentlySubmitted={setRecentlySubmitted}
-                          />
+                          <OnboardingSurvey survey={survey} setRecentlySubmitted={setRecentlySubmitted}>
+                            <OnboardingSurveyFinishComponent
+                              // selectedSurveyId={application.id}
+                              survey={survey}
+                              isRecentlySubmitted={recentlySubmitted}
+                              isAllApplicationsCompleted={!unCompletedApplications.length}
+                            />
+                          </OnboardingSurvey>
                         )}
                       </TabPane>
                     );
