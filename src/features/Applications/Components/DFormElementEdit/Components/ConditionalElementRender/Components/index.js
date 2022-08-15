@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FieldLabel from "../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/FieldLabel";
 import Select from "react-select";
 import { colourStyles } from "../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
@@ -7,7 +7,7 @@ import TextWidget from "../../../../../../../components/FormCreate/Custom/TextWi
 
 const preparedEffects = Object.values(EFFECTS).map((effect) => ({ value: effect, label: EFFECT_LABELS[effect] }));
 
-const ConditionForm = ({ condition, fieldSectionFields }) => {
+const ConditionForm = ({ condition, fieldSectionFields, onConditionChange }) => {
   const [conditionData, setConditionData] = useState({ ...condition });
 
   const handleEffectSelect = (effect) => {
@@ -30,6 +30,10 @@ const ConditionForm = ({ condition, fieldSectionFields }) => {
   };
 
   const conditionBySelectedField = CONDITIONS_BY_SELECTED_FIELD_TYPE[conditionData?.field?.type] || {};
+
+  useEffect(() => {
+    onConditionChange(conditionData);
+  }, [conditionData]);
 
   return (
     <div className="conditional-element-render_condition">

@@ -6,7 +6,13 @@ import ConditionForm from "./Components";
 
 import "./styles.scss";
 
-const ConditionalElementRender = ({ onConditionAdd, onConditionDelete, conditions = [], fieldSectionFields = [] }) => {
+const ConditionalElementRender = ({
+  onConditionAdd,
+  onConditionDelete,
+  conditions = [],
+  fieldSectionFields = [],
+  onConditionChange,
+}) => {
   const handleConditionAdd = () => {
     onConditionAdd();
   };
@@ -21,22 +27,28 @@ const ConditionalElementRender = ({ onConditionAdd, onConditionDelete, condition
         <div className="conditional-element-render_no-conditions">There are no conditions for this element</div>
       ) : (
         <div>
-          {conditions.map((condition, index) => (
+          {conditions.map((condition) => (
             <div key={condition.tempId}>
               <div className={"conditional-element-render_condition-title"}>
-                <div>Condition {index + 1}</div>
+                <div>Condition</div>
                 <X size={22} onClick={() => onConditionDelete(condition.tempId)} />
               </div>
-              <ConditionForm condition={condition} fieldSectionFields={fieldSectionFields} />
+              <ConditionForm
+                onConditionChange={onConditionChange}
+                condition={condition}
+                fieldSectionFields={fieldSectionFields}
+              />
             </div>
           ))}
         </div>
       )}
-      <div className="d-flex justify-content-center">
-        <Button color={"primary"} onClick={handleConditionAdd} className={"button button-success"}>
-          Add condition
-        </Button>
-      </div>
+      {conditions && conditions.length < 1 && (
+        <div className="d-flex justify-content-center">
+          <Button color={"primary"} onClick={handleConditionAdd} className={"button button-success"}>
+            Add condition
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

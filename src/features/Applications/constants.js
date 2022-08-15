@@ -129,6 +129,7 @@ export const INITIAL_FIELD_DATA = {
   isRequired: false,
   classes: FIELD_STYLES_CLASSES[1],
   isLabelShowing: true,
+  conditions: [],
 };
 
 export const FIELD_COMMON_PROPERTIES = [...Object.keys(INITIAL_FIELD_DATA), "id"];

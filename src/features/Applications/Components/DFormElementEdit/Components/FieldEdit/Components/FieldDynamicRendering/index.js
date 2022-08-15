@@ -32,9 +32,15 @@ const FieldDynamicRendering = ({ data, element, onElementChange }) => {
     }
   };
 
+  const handleConditionChange = (conditionData) => {
+    //TODO hanlde more conditions, temprorary only one can exist for each element
+    onElementChange({ ...element, conditions: [conditionData] });
+  };
+
   return (
     <div>
       <ConditionalElementRender
+        onConditionChange={handleConditionChange}
         onConditionAdd={handleConditionAdd}
         fieldSectionFields={getFieldSectionFields(element)}
         conditions={element.conditions}
