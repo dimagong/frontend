@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import ContextTemplate from "components/ContextTemplate";
-import MultiSelect from "../../../../components/MultiSelect/multiSelect";
-import { prepareSelectGroups } from "../../../../utility/select/prepareSelectData";
-import { Button, Col, Row } from "reactstrap";
-import SurveySelectComponent from "../../../Surveys/Components/SurveyFormComponents/Select";
-import CustomModal from "../../../../components/CustomModal";
-import onboardingSlice from "../../../../app/slices/onboardingSlice";
-import { useAllowedOrganizationsListQuery } from "../../applicationQueries";
-import FieldLabel from "../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/FieldLabel";
 import Select from "react-select";
-import { colourStyles } from "../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
+import React, { useState } from "react";
+import { Button, Col, Row } from "reactstrap";
 
-const { setdFormGroups } = onboardingSlice.actions;
+import CustomModal from "components/CustomModal";
+import ContextTemplate from "components/ContextTemplate";
+import FieldLabel from "components/DForm/Components/Fields/Components/DFormWidgets/Components/FieldLabel";
+import { colourStyles } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
+
+import SurveySelectComponent from "features/Surveys/Components/SurveyFormComponents/Select";
+
+import { useAllowedOrganizationsListQuery } from "../../applicationQueries";
 
 const prepareOrganization = (organization) => ({
   value: organization,
@@ -24,9 +22,7 @@ const NewApplicationInitForm = ({ userId, onDFormInitialize }) => {
 
   const { data: allowedOrganizations, isLoading } = useAllowedOrganizationsListQuery(
     { userId },
-    {
-      enabled: Boolean(userId),
-    }
+    { enabled: Boolean(userId) }
   );
 
   const handleOrganizationSelect = ({ value: organization }) => {
