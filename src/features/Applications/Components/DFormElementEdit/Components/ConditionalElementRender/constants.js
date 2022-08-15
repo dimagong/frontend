@@ -9,6 +9,25 @@ export const EFFECTS = {
   active: "active",
 };
 
+export const EFFECT_ELEMENT_PROP = {
+  [EFFECTS.hidden]: {
+    propName: "isHidden",
+    value: true,
+  },
+  [EFFECTS.shown]: {
+    propName: "isHidden",
+    value: false,
+  },
+  [EFFECTS.disabled]: {
+    propName: "isDisabled",
+    value: true,
+  },
+  [EFFECTS.active]: {
+    propName: "isDisabled",
+    value: false,
+  },
+};
+
 export const EFFECT_LABELS = {
   [EFFECTS.hidden]: "hidden if",
   [EFFECTS.shown]: "shown if",
@@ -80,6 +99,34 @@ export const SUPPORTED_FIELD_TYPES = [
   [FIELD_TYPES.fileList],
   [FIELD_TYPES.multiSelect],
 ];
+
+export const FIELD_VALUE_PREPARE = {
+  [FIELD_TYPES.text]: (value) => value,
+  [FIELD_TYPES.date]: (value) => value,
+  [FIELD_TYPES.file]: (value) => value,
+  [FIELD_TYPES.select]: (value) => value,
+  [FIELD_TYPES.number]: (value) => value,
+  [FIELD_TYPES.boolean]: (value) => value,
+  [FIELD_TYPES.longText]: (value) => value,
+  [FIELD_TYPES.textArea]: (value) => value,
+  [FIELD_TYPES.fileList]: (value) => value,
+  [FIELD_TYPES.multiSelect]: (value) => value,
+};
+
+export const CONDITIONS_COMPARE_FUNCTIONS = {
+  [CONDITION_TYPES.exact]: (expectedValue, controlValue) => {
+    return expectedValue === controlValue;
+  },
+  [CONDITION_TYPES.exist]: (expectedValue, controlValue) => {
+    return controlValue === undefined || isNaN(controlValue) || controlValue === "" || controlValue === false;
+  },
+  [CONDITION_TYPES.bigger]: (expectedValue, controlValue) => {
+    return controlValue > expectedValue;
+  },
+  [CONDITION_TYPES.smaller]: (expectedValue, controlValue) => {
+    return controlValue < expectedValue;
+  },
+};
 
 const { exact, exist, bigger, smaller } = CONDITION_TYPES;
 

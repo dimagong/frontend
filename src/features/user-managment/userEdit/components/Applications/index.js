@@ -10,6 +10,12 @@ import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
 import { Button, Card } from "reactstrap";
 import Select from "react-select";
 import { toast } from "react-toastify";
+import {
+  FIELD_VALUE_PREPARE,
+  CONDITIONS_COMPARE_FUNCTIONS,
+  EFFECT_ELEMENT_PROP,
+} from "../../../../Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
+import { cloneDeep } from "lodash";
 
 const STATUSES = [
   { value: "submitted", label: "submitted" },
@@ -21,6 +27,42 @@ const STATUSES = [
 const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
   const [applicationData, setApplicationData] = useState(isCreate ? {} : null);
   const [applicationValues, setApplicationValues] = useState({});
+
+  const applyConditionalRender = (schema) => {
+    const schemaCopy = cloneDeep(schema);
+
+    for (const fieldId in schemaCopy.fields) {
+      if (schemaCopy.fields.hasOwnProperty(fieldId)) {
+        const field = schemaCopy.fields[fieldId];
+
+        //TODO handle more conditions in future, currently has only one;
+        const condition = field.conditions && field.conditions[0];
+
+        //TODO this should be handled in render, so form shouldn't be rendered until we get applicationValues from API
+        // remove here !Object.values(applicationValues.length) after fix
+        if (!condition || !Object.values(applicationValues).length) continue;
+
+        // Get a value from values by control field MS prop ID. Then take a prepare function depending on control field type
+        // and pass control field value into prepare function;
+        const controlValue = FIELD_VALUE_PREPARE[condition.field.type](
+          applicationValues[condition.field.masterSchemaPropertyId].value
+        );
+
+        const isConditionApplicable = CONDITIONS_COMPARE_FUNCTIONS[condition.condition.conditionType](
+          condition.expectedValue,
+          controlValue
+        );
+
+        const applicableEffect = EFFECT_ELEMENT_PROP[condition.effect];
+
+        schemaCopy.fields[fieldId][applicableEffect.propName] = isConditionApplicable
+          ? applicableEffect.value
+          : !applicableEffect.value;
+      }
+    }
+
+    return schemaCopy;
+  };
 
   const userApplication = useUserApplication(
     { userApplicationId: selectedApplicationId },
@@ -126,7 +168,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
               onFieldValueChange={handleFieldValueChange}
               isRefetching={userApplication.isRefetching}
               onRefetch={handleApplicationReFetch}
-              formData={applicationData.schema}
+              formData={applyConditionalRender(applicationData.schema)}
               isManualSave={true}
               formValues={applicationValues}
             />

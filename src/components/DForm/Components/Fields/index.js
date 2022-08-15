@@ -90,6 +90,9 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
     <>
       {groupFields.map((formField) => {
         const field = data.fields[formField];
+
+        if (field.isHidden) return null;
+
         const FormFieldElement = formComponents[field.type];
         // const fieldId = formField.master_schema_field_id;
 
@@ -121,7 +124,7 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
               label={field.isLabelShowing ? field.title : ""}
               value={fieldValue}
               onChange={(value) => onFieldValueChange(field.masterSchemaPropertyId, value)}
-              disabled={false} // TODO handle disabled
+              disabled={formField.isDisabled} // TODO handle disabled
               error={""}
               fieldClasses={field.classes}
             />
