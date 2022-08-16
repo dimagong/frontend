@@ -1,54 +1,72 @@
-import { createQueryKey } from "../../../api/createQueryKey";
-import { useGenericQuery } from "../../../api/useGenericQuery";
-import { useGenericMutation } from "../../../api/useGenericMutation";
+import { useDispatch, useSelector } from "react-redux";
 
-export const GetUserApplicationQueryKey = createQueryKey("Get user application query key");
-export const GetUserApplicationValuesQueryKey = createQueryKey("Get user application values query key");
-export const UpdateUserApplicationStatusQueryKey = createQueryKey("Update user application status query key");
-export const UpdateUserApplicationValuesQueryKey = createQueryKey("Update user application values query key");
+import { createQueryKey } from "api/createQueryKey";
+import { useGenericQuery } from "api/useGenericQuery";
+import { useGenericMutation } from "api/useGenericMutation";
 
-export const UserQueryKeys = {
-  all: () => [GetUserApplicationQueryKey, UpdateUserApplicationStatusQueryKey],
-  getUserApplication: ({ userApplicationId }) => [GetUserApplicationQueryKey, { userApplicationId }],
-  getUserApplicationValues: ({ userApplicationId }) => [GetUserApplicationValuesQueryKey, { userApplicationId }],
-  updateUserApplicationStatus: ({ userApplicationId }) => [UpdateUserApplicationStatusQueryKey, { userApplicationId }],
-  updateUserApplicationValues: ({ userApplicationId }) => [UpdateUserApplicationValuesQueryKey, { userApplicationId }],
+import appSlice from "app/slices/appSlice";
+import { selectCurrentManager } from "app/selectors/userSelectors";
+
+const ApplicationQueryKey = createQueryKey("Application");
+
+const ApplicationQueryKeys = {
+  all: () => [ApplicationQueryKey],
+  byId: (applicationId) => [...ApplicationQueryKeys.all(), { applicationId }],
+  valuesById: (applicationId) => [...ApplicationQueryKeys.byId(applicationId), "values"],
 };
 
-export const useUserApplication = ({ userApplicationId }, options) =>
-  useGenericQuery(
+export const useUserApplication = ({ userApplicationId }, options) => {
+  return useGenericQuery(
     {
       url: `/api/dform/${userApplicationId}`,
-      queryKey: UserQueryKeys.getUserApplication({ userApplicationId }),
+      queryKey: ApplicationQueryKeys.byId(userApplicationId),
     },
     options
   );
+};
 
-export const useUserApplicationValues = ({ userApplicationId }, options) =>
-  useGenericQuery(
+export const useUserApplicationValues = ({ userApplicationId }, options) => {
+  return useGenericQuery(
     {
       url: `api/dform/${userApplicationId}/user-values`,
-      queryKey: UserQueryKeys.getUserApplicationValues({ userApplicationId }),
+      queryKey: ApplicationQueryKeys.valuesById(userApplicationId),
     },
     options
   );
+};
 
-export const useUserApplicationStatusMutation = ({ userApplicationId }, options) =>
-  useGenericMutation(
+const { getUserByIdRequest } = appSlice.actions;
+
+export const useUserApplicationStatusMutation = ({ userApplicationId }, options) => {
+  return useGenericMutation(
     {
       url: `/api/dform/${userApplicationId}/change-status`,
       method: "put",
-      queryKey: UserQueryKeys.updateUserApplicationStatus({ userApplicationId }),
+      queryKey: ApplicationQueryKeys.byId(userApplicationId),
     },
     options
   );
+};
 
-export const useUserApplicationValuesMutation = ({ userApplicationId }, options) =>
-  useGenericMutation(
+export const useUserApplicationValuesMutation = ({ userApplicationId }, options) => {
+  const dispatch = useDispatch();
+  const manager = useSelector(selectCurrentManager);
+
+  return useGenericMutation(
     {
       url: `/api/dform/${userApplicationId}/new-version-by-data`,
       method: "post",
-      queryKey: UserQueryKeys.updateUserApplicationValues({ userApplicationId }),
+      queryKey: ApplicationQueryKeys.byId(userApplicationId),
     },
-    options
+    {
+      ...options,
+      onSuccess: (...args) => {
+        if (typeof options.onSuccess === "function") {
+          options.onSuccess(...args);
+        }
+        // Update current app.user.manager
+        dispatch(getUserByIdRequest({ userId: manager.id }));
+      },
+    }
   );
+};

@@ -79,13 +79,12 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     { userApplicationId: selectedApplicationId },
     {
       onSuccess: (data) => {
-        setApplicationData({ ...applicationData, status: data });
         toast.success("Status successfully changed");
       },
     }
   );
 
-  const userApplicationValues = useUserApplicationValues(
+  useUserApplicationValues(
     { userApplicationId: selectedApplicationId },
     {
       onSuccess: (data) => {
@@ -100,7 +99,6 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     { userApplicationId: selectedApplicationId },
     {
       onSuccess: (data) => {
-        setApplicationValues(data);
         toast.success("Saved");
       },
     }
@@ -141,10 +139,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     userApplication.refetch();
   };
 
-  if (
-    (selectedApplicationId && userApplication.status === "loading") ||
-    (!applicationData && userApplication.isRefetching)
-  ) {
+  if ((selectedApplicationId && userApplication.isLoading) || (!applicationData && userApplication.isRefetching)) {
     return <div>Loading...</div>;
   }
 
