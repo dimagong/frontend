@@ -122,12 +122,11 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                               />
                             ) : (
                               application.id === appActiveOnboarding?.id && (
-                                // <OnboardingApp
-                                //   profile={profile}
-                                //   selectedForm={application}
-                                //   setRecentlySubmitted={setRecentlySubmitted}
-                                // />
-                                <></>
+                                <OnboardingApp
+                                  profile={profile}
+                                  selectedForm={application}
+                                  setRecentlySubmitted={setRecentlySubmitted}
+                                />
                               )
                             ))}
                         </div>
