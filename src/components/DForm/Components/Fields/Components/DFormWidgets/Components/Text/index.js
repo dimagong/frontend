@@ -1,11 +1,10 @@
+import "./styles.scss";
+
 import React from "react";
 
 import textValidationSchema from "./validationSchema";
-import "./styles.scss";
 
 import FieldLabel from "../FieldLabel";
-
-import "./styles.scss";
 
 const Text = (props) => {
   let fieldType = "text";
