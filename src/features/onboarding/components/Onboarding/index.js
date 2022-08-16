@@ -18,7 +18,8 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
 
   useEffect(() => {
     setActiveAppOnboarding(initialOnboarding);
-  }, [initialOnboarding]);
+    //eslint-disable-next-line
+  }, [initialOnboarding.id]);
 
   const handleNavClick = (onboarding) => {
     setRecentlySubmitted(false);
