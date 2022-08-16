@@ -23,17 +23,18 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
 
   useEffect(() => {
     setActiveAppOnboarding(initialOnboarding);
-  }, [initialOnboarding]);
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialOnboarding.id]);
+
+  // const { data: survey, isLoading: isLoadingSurvey } = useSurveyByIdQuery(
+  //   { id: appActiveOnboarding?.id },
+  //   { enabled: appActiveOnboarding?.tabId?.includes("survey") }
+  // );
 
   const handleNavClick = (onboarding) => {
     setRecentlySubmitted(false);
     setActiveAppOnboarding(onboarding);
   };
-
-  const { data: survey } = useSurveyByIdQuery(
-    { id: appActiveOnboarding?.id },
-    { enabled: appActiveOnboarding?.tabId?.includes("survey") }
-  );
 
   const formatTabs = (applications) => {
     return applications.map((application) => {
@@ -137,12 +138,18 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                       <TabPane key={index} tabId={application.tabId}>
                         <div className="onboarding-title" />
                         {application.id === appActiveOnboarding?.id && (
-                          <OnboardingSurvey survey={survey} setRecentlySubmitted={setRecentlySubmitted}>
-                            <OnboardingSurveyFinishComponent
+                          <OnboardingSurvey
+                            selectedSurveyId={appActiveOnboarding.id}
+                            setRecentlySubmitted={setRecentlySubmitted}
+                            isRecentlySubmitted={recentlySubmitted}
+                            isAllApplicationsCompleted={!unCompletedApplications.length}
+                          >
+                            {/* <OnboardingSurveyFinishComponent
                               survey={survey}
                               isRecentlySubmitted={recentlySubmitted}
                               isAllApplicationsCompleted={!unCompletedApplications.length}
-                            />
+                              isLoadingSurvey={isLoadingSurvey}
+                            /> */}
                           </OnboardingSurvey>
                         )}
                       </TabPane>

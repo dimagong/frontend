@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+
 import { useGetAllSurveyQuestionsQuery } from "api/Onboarding/prospectUserQuery";
 
 import OnboardingSurveyFeedbackViewComponent from "./../OnboardingSurveyFeedbackViewComponent";
@@ -10,22 +13,37 @@ import SurveyAdditionalInfoComponent from "./../OnboardingSurveyComponent/compon
 import Question from "./../../../../Surveys/Components/Question";
 import SurveyFeedbackNavigation from "./../OnboardingSurveyComponent/components/SurveyFeedbackNavigation";
 
+import SurveyStatusTopbar from "./../OnboardingSurveyStatusComponent/components/SurveyStatusTopbar";
+import SurveyStatusSection from "./../OnboardingSurveyStatusComponent/components/SurveyStatusSection";
+import MessagesSurveyStatus from "./../OnboardingSurveyStatusComponent/components/MessagesSurveyStatus";
+import ButtonSurveyStatus from "./../OnboardingSurveyStatusComponent/components/ButtonSurveyStatus";
+
+import appSlice from "app/slices/appSlice";
+const { getSurveyByIdRequest } = appSlice.actions;
+
 const getSurveySubmitStatus = (survey, isSubmited) => {
   const status = (survey.graded_at && "approved") || (survey.finished_at && isSubmited && "recent") || "submitted";
   return status;
 };
 
-const OnboardingSurveyFinishComponent = ({ survey, isRecentlySubmitted, isAllApplicationsCompleted }) => {
+const OnboardingSurveyFinishComponent = ({
+  survey,
+  isLoadingSurvey,
+  isRecentlySubmitted,
+  isAllApplicationsCompleted,
+}) => {
   const [isFeedbackView, setIsFeedbackView] = useState(false);
   const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
 
   const { id, graded_at, is_show_result } = survey;
+  console.log("survey", survey);
 
   const { data: surveyInteraction, isLoading: isSurveyGradedQuestionsLoading } = useGetAllSurveyQuestionsQuery(
     { id },
     { enabled: !!graded_at }
   );
 
+  console.log("surveyInteraction", surveyInteraction);
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
 
   const submittedSurveyStatus = getSurveySubmitStatus(survey, isRecentlySubmitted);
@@ -79,6 +97,10 @@ const OnboardingSurveyFinishComponent = ({ survey, isRecentlySubmitted, isAllApp
   const questionCurrent = questionsToShow[currQuestionIndex]?.question;
   const displayType = is_show_result ? "review-prospect-onboarding" : "review-onboarding";
 
+  const isSurveyPassed = survey && survey.total >= survey.min_percent_pass;
+
+  const isSurveyStatsLoading = useSelector(createLoadingSelector([getSurveyByIdRequest.type]));
+
   return graded_at && isFeedbackView ? (
     <OnboardingSurveyFeedbackViewComponent>
       <SurveyAdditionalInfoComponent
@@ -108,8 +130,25 @@ const OnboardingSurveyFinishComponent = ({ survey, isRecentlySubmitted, isAllApp
         isLoading={isSurveyGradedQuestionsLoading}
         onForceApplicationShow={setIsFeedbackView}
         status={submittedSurveyStatus}
-        isAllApplicationsCompleted={isAllApplicationsCompleted}
-      />
+        // isAllApplicationsCompleted={isAllApplicationsCompleted}
+      >
+        <SurveyStatusTopbar time={survey.graded_at} />
+        <SurveyStatusSection
+          // isSurveyStatsLoading={isSurveyStatsLoading}
+          isSurveyStatsLoading={isLoadingSurvey}
+          isSurveyPassed={isSurveyPassed}
+          surveyStats={survey.stats}
+        />
+        <ButtonSurveyStatus onForceApplicationShow={setIsFeedbackView}>View feedback</ButtonSurveyStatus>
+        {/* <MessagesSurveyStatus
+          status={submittedSurveyStatus}
+          isAllApplicationsCompleted={isAllApplicationsCompleted}
+          isFeedbackExist={isFeedbackExist}
+          is_show_result={survey.is_show_result}
+        >
+          <ButtonSurveyStatus onForceApplicationShow={setIsFeedbackView}>View feedback</ButtonSurveyStatus>
+        </MessagesSurveyStatus> */}
+      </OnboardingSurveyStatusComponent>
     </div>
   );
 };

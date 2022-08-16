@@ -13,17 +13,17 @@ import {
 
 import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 import OnboardingSurveyFinishComponent from "./../OnboardingSurvey/components/OnboardingSurveyFinishComponent";
+import TakingSurvey from "../../Surveys/Components/TakingSurvey";
 
 const OnboardingSurvey = ({
   survey,
-  //selectedSurvey,
   isAllApplicationsCompleted,
   isRecentlySubmitted,
   setRecentlySubmitted,
-  children,
+  isLoadingSurvey,
 }) => {
   const [answer, setAnswer] = useState("");
-  // const { data: survey } = useSurveyByIdQuery({ id: selectedSurvey.id });
+
   const { id, started_at, finished_at, title } = survey || {};
 
   const surveyStatus = finished_at ? "notStarted" : started_at ? "started" : "notStarted";
@@ -100,35 +100,39 @@ const OnboardingSurvey = ({
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
   const currentQuestionAnswer = answers && currentIndex ? answers[currentIndex] : null;
 
-  console.log("children", children);
   // const [surveyFinishChild, Hello] = children;
-  const surveyFinishChild = children;
 
-  return finished_at ? (
-    <>{surveyFinishChild}</>
-  ) : (
-    <OnboardingSurveyComponent
-      onAnswerSubmit={handleAnswerSubmit}
-      questionNumber={currentIndex + 1}
-      progress={(currentIndex / count) * 100}
-      question={question}
-      isLoading={isLoadingData}
-      onSurveyStart={handleSurveyStart}
-      isSurveyBeginProceed={isSurveyBeginProceed}
-      isAnswerPushProceed={isAnswerPushProceed}
-      status={surveyStatus}
-      surveyName={title}
-      onAnswerChange={handleAnswerSelect}
-      selectedAnswer={answer}
-      currentQuestionAnswer={currentQuestionAnswer}
-      isLastQuestion={count - 1 === currentIndex}
-      isFirstQuestion={currentIndex === 0}
-      surveyDescription={survey?.interaction_version?.description || ""}
-      onSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
-      isSurveySwitchToPreviousQuestionProceed={isSurveySwitchToPreviousQuestionProceed}
-      isAbleToSwitchToPreviousQuestion={survey?.interaction_version?.is_can_return}
-    />
-  );
+  return <TakingSurvey survey={survey} isRecentlySubmitted={isRecentlySubmitted} />;
+  // return finished_at ? (
+  //   <OnboardingSurveyFinishComponent
+  //     survey={survey}
+  //     isRecentlySubmitted={isRecentlySubmitted}
+  //     isAllApplicationsCompleted={!isAllApplicationsCompleted.length}
+  //     isLoadingSurvey={isLoadingSurvey}
+  //   />
+  // ) : (
+  //   <OnboardingSurveyComponent
+  //     onAnswerSubmit={handleAnswerSubmit}
+  //     questionNumber={currentIndex + 1}
+  //     progress={(currentIndex / count) * 100}
+  //     question={question}
+  //     isLoading={isLoadingData}
+  //     onSurveyStart={handleSurveyStart}
+  //     isSurveyBeginProceed={isSurveyBeginProceed}
+  //     isAnswerPushProceed={isAnswerPushProceed}
+  //     status={surveyStatus}
+  //     surveyName={title}
+  //     onAnswerChange={handleAnswerSelect}
+  //     selectedAnswer={answer}
+  //     currentQuestionAnswer={currentQuestionAnswer}
+  //     isLastQuestion={count - 1 === currentIndex}
+  //     isFirstQuestion={currentIndex === 0}
+  //     surveyDescription={survey?.interaction_version?.description || ""}
+  //     onSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
+  //     isSurveySwitchToPreviousQuestionProceed={isSurveySwitchToPreviousQuestionProceed}
+  //     isAbleToSwitchToPreviousQuestion={survey?.interaction_version?.is_can_return}
+  //   />
+  // );
 };
 
 export default OnboardingSurvey;
