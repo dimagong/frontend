@@ -228,8 +228,9 @@ function* patchFilter({ payload }) {
 
 function* getUserById({ payload }) {
   try {
-    const response = yield call(userApi.getUserById, payload);
-    yield put(getUserByIdSuccess(response));
+    const user = yield call(userApi.getUserById, payload);
+    const onboardings = yield call(userApi.getOnboradingsByUser, { id: payload.userId });
+    yield put(getUserByIdSuccess({ ...user, onboardings }));
   } catch (error) {
     console.log(error);
     yield put(getUserByIdError(error));

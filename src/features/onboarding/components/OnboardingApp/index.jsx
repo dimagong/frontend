@@ -1,76 +1,64 @@
+import _ from "lodash";
+import { Spinner } from "reactstrap";
+import { toast } from "react-toastify";
+import { useQueryClient } from "react-query";
 import React, { useState, useRef, useEffect } from "react";
-import { Button, Spinner } from "reactstrap";
 
 import {
-  useSubmitDFormPathRequestMutation,
   useDFormByIdQuery,
   useDFormsValuesByIdQuery,
   useSaveDFormFieldValue,
   useSubmitDFormForReviewMutation,
   MVADFormsQueryKeys,
 } from "api/Onboarding/prospectUserQuery";
-import LoadingButton from "components/LoadingButton";
-import _ from "lodash";
-
-import { toast } from "react-toastify";
 
 import DForm from "components/DForm";
-import Check from "assets/img/icons/check.png";
-import { useQueryClient } from "react-query";
+import LoadingButton from "components/LoadingButton";
 
-const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
+import Check from "assets/img/icons/check.png";
+
+const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const [applicationSchema, setApplicationSchema] = useState(null);
   const [applicationValues, setApplicationValues] = useState(null);
 
   const queryClient = useQueryClient();
 
-  const { data: formSelected, isLoading: isFormLoading } = useDFormByIdQuery(
+  const { isLoading: isFormLoading } = useDFormByIdQuery(
     { id: selectedForm.id },
     {
       onSuccess: (data) => {
         const { schema, ...rest } = data;
         setApplicationSchema({ ...schema, ...rest });
       },
+      refetchOnWindowFocus: false,
     }
   );
 
   const dFormValues = useDFormsValuesByIdQuery(
-    { id: selectedForm.id },
+    { dFormId: selectedForm.id },
     {
       onSuccess: (data) => {
         setApplicationValues(data);
       },
-      enabled: applicationValues === null,
+      refetchOnWindowFocus: false,
     }
   );
 
   const saveDFormFieldValue = useSaveDFormFieldValue(
     { dFormId: selectedForm.id },
     {
-      onSuccess: (data) => {},
       onError: () => {
         toast.error("Last changes in field doesn't saved");
       },
     }
   );
 
-  const throttleOnSave = useRef(
-    _.throttle(
-      (data) => {
-        saveDFormFieldValue.mutate(data);
-      },
-      1500,
-      { leading: false }
-    )
-  );
+  const throttleOnSave = useRef(_.throttle((data) => saveDFormFieldValue.mutate(data), 1500, { leading: false }));
 
   const submitDFormForReview = useSubmitDFormForReviewMutation(
     { dFormId: selectedForm.id },
     {
-      onSuccess: () => {
-        setRecentlySubmitted(true);
-        queryClient.invalidateQueries(MVADFormsQueryKeys.all());
-      },
+      onSuccess: () => setRecentlySubmitted(true),
     }
   );
   const handleApplicationSubmit = () => {
