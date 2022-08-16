@@ -10,7 +10,7 @@ const ConditionalElementRender = ({
   onConditionAdd,
   onConditionDelete,
   conditions = [],
-  fieldSectionFields = [],
+  fields = [],
   onConditionChange,
 }) => {
   const handleConditionAdd = () => {
@@ -33,11 +33,7 @@ const ConditionalElementRender = ({
                 <div>Condition</div>
                 <X size={22} onClick={() => onConditionDelete(condition.tempId)} />
               </div>
-              <ConditionForm
-                onConditionChange={onConditionChange}
-                condition={condition}
-                fieldSectionFields={fieldSectionFields}
-              />
+              <ConditionForm onConditionChange={onConditionChange} condition={condition} fields={fields} />
             </div>
           ))}
         </div>

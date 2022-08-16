@@ -1,21 +1,10 @@
 import React from "react";
 import ConditionalElementRender from "../../../ConditionalElementRender";
 import { EFFECTS } from "../../../ConditionalElementRender/constants";
+import { ELEMENT_TYPES } from "../../../../../../constants";
 import { v4 } from "uuid";
 
 const FieldDynamicRendering = ({ data, element, onElementChange }) => {
-  const getFieldSectionFields = (field) => {
-    const fieldSection = Object.values(data.sections).filter((section) =>
-      section.relatedGroups.includes(field.groupId)
-    )[0];
-
-    return fieldSection.relatedGroups.reduce((fieldSectionFields, groupId) => {
-      data.groups[groupId].relatedFields.map((fieldId) => fieldSectionFields.push(data.fields[fieldId]));
-
-      return fieldSectionFields;
-    }, []);
-  };
-
   const handleConditionAdd = () => {
     onElementChange({
       ...element,
@@ -37,12 +26,17 @@ const FieldDynamicRendering = ({ data, element, onElementChange }) => {
     onElementChange({ ...element, conditions: [conditionData] });
   };
 
+  const fields =
+    element.elementType !== ELEMENT_TYPES.field
+      ? Object.values(data.fields)
+      : Object.values(data.fields).filter((field) => field.id !== element.id);
+
   return (
     <div>
       <ConditionalElementRender
         onConditionChange={handleConditionChange}
         onConditionAdd={handleConditionAdd}
-        fieldSectionFields={getFieldSectionFields(element)}
+        fields={fields}
         conditions={element.conditions}
         onConditionDelete={handleConditionDelete}
       />

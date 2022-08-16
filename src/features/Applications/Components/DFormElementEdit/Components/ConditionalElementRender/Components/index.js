@@ -7,7 +7,7 @@ import TextWidget from "../../../../../../../components/FormCreate/Custom/TextWi
 
 const preparedEffects = Object.values(EFFECTS).map((effect) => ({ value: effect, label: EFFECT_LABELS[effect] }));
 
-const ConditionForm = ({ condition, fieldSectionFields, onConditionChange }) => {
+const ConditionForm = ({ condition, fields, onConditionChange }) => {
   const [conditionData, setConditionData] = useState({ ...condition });
 
   const handleEffectSelect = (effect) => {
@@ -65,7 +65,7 @@ const ConditionForm = ({ condition, fieldSectionFields, onConditionChange }) => 
           name="colors"
           value={conditionData.field ? { value: conditionData.field, label: conditionData.field.title } : null}
           onChange={handleFieldSelect}
-          options={fieldSectionFields.map((field) => ({ value: field, label: field.title }))}
+          options={fields.map((field) => ({ value: field, label: field.title }))}
           className="React"
           classNamePrefix="select"
           placeholder={"Select field"}
