@@ -31,12 +31,13 @@ export const INITIAL_SECTION_DATA = {
   isHidden: false,
   isAlreadyViewed: false,
   relatedGroups: [],
-  conditions: "",
+  conditions: [],
 };
 
 export const INITIAL_GROUP_DATA = {
   isProtected: false,
   relatedFields: [],
+  conditions: [],
 };
 
 export const ELEMENT_TYPES = {

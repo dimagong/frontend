@@ -5,25 +5,34 @@ import { X } from "react-feather";
 import ConditionForm from "./Components";
 
 import "./styles.scss";
+import { v4 } from "uuid";
+import { EFFECTS } from "./constants";
 
-const ConditionalElementRender = ({
-  onConditionAdd,
-  onConditionDelete,
-  conditions = [],
-  fields = [],
-  onConditionChange,
-}) => {
+const ConditionalElementRender = ({ onConditionAdd, onElementChange, conditions = [], fields = [], element }) => {
   const handleConditionAdd = () => {
-    onConditionAdd();
+    onElementChange({
+      ...element,
+      conditions: [...(element.conditions || []), { tempId: v4(), effect: EFFECTS[0] }],
+    });
+  };
+  console.log("test", conditions);
+  const handleConditionDelete = (conditionTempId) => {
+    if (window.confirm("Are you sure you want to delete this condition?")) {
+      onElementChange({
+        ...element,
+        conditions: element.conditions.filter((condition) => condition.tempId !== conditionTempId),
+      });
+    }
   };
 
-  const handleConditionDelete = (conditionIndex) => {
-    onConditionDelete(conditionIndex);
+  const handleConditionChange = (conditionData) => {
+    //TODO hanlde more conditions, temprorary only one can exist for each element
+    onElementChange({ ...element, conditions: [conditionData] });
   };
 
   return (
     <div className="conditional-element-render">
-      {!conditions.length ? (
+      {!conditions?.length ? (
         <div className="conditional-element-render_no-conditions">There are no conditions for this element</div>
       ) : (
         <div>
@@ -31,9 +40,9 @@ const ConditionalElementRender = ({
             <div key={condition.tempId}>
               <div className={"conditional-element-render_condition-title"}>
                 <div>Condition</div>
-                <X size={22} onClick={() => onConditionDelete(condition.tempId)} />
+                <X size={22} onClick={() => handleConditionDelete(condition.tempId)} />
               </div>
-              <ConditionForm onConditionChange={onConditionChange} condition={condition} fields={fields} />
+              <ConditionForm onConditionChange={handleConditionChange} condition={condition} fields={fields} />
             </div>
           ))}
         </div>

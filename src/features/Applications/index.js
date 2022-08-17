@@ -312,8 +312,6 @@ const Applications = ({ isCreate }) => {
   };
 
   const validateElement = (element) => {
-    console.log("element validation", element);
-
     let elementValidationSchema = elementValidationSchemas[element.elementType];
 
     if (element.elementType === ELEMENT_TYPES.field) {
@@ -330,7 +328,9 @@ const Applications = ({ isCreate }) => {
 
     try {
       elementValidationSchema.validateSync(element, {
-        context: { application: dataWithSuggestedChanges },
+        context: {
+          application: elementWithSuggestedChanges === null ? dataWithSuggestedChanges : embedSuggestedChanges(),
+        },
       });
 
       if (element.elementType === ELEMENT_TYPES.field) {

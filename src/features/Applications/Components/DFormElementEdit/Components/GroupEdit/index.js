@@ -17,7 +17,7 @@ const GroupEdit = ({ element, onElementChange, editProperty, onGroupSectionChang
       <GroupProperties {...commonProps} onGroupSectionChange={onGroupSectionChange} data={data} />
     ),
     [EDIT_OPTIONS.styling]: <GroupStyles {...commonProps} />,
-    [EDIT_OPTIONS.dynamicRendering]: <GroupDynamicRendering {...commonProps} />,
+    [EDIT_OPTIONS.dynamicRendering]: <GroupDynamicRendering data={data} {...commonProps} />,
   }[editProperty];
 };
 
