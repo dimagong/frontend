@@ -78,6 +78,8 @@ export const useUserApplicationValuesMutation = ({ userApplicationId }, options)
   );
 };
 
+// Application Files
+
 export const useCreateApplicationUserFilesMutation = ({ applicationId }, options) => {
   return useGenericMutation(
     {
