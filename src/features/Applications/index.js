@@ -27,7 +27,7 @@ import {
   INITIAL_APPLICATION_DATA,
 } from "./constants";
 import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
-import { decriptionValidationSchema, designModeValidationSchema } from "./validationDescription";
+import { applicationSubmitValidation } from "./applicationSubmitValidation";
 
 import "./styles.scss";
 import { Button, TabContent, TabPane } from "reactstrap";
@@ -451,6 +451,7 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleElementChange = (elementData) => {
+    console.log("handleElementChange elementData", elementData);
     const elem = checkMinMaxField(elementData);
     setElementWithSuggestedChanges({ ...elem, edited: true });
   };
@@ -528,8 +529,7 @@ const Applications = ({ isCreate }) => {
 
   const validateDescriptionDesignMode = (validData) => {
     try {
-      decriptionValidationSchema.validateSync(validData);
-      designModeValidationSchema.validateSync(validData);
+      applicationSubmitValidation.validateSync(validData, { abortEarly: false });
     } catch (validationError) {
       console.log("error", validationError);
       return { isValid: false, errors: validationError };

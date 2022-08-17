@@ -1,14 +1,11 @@
 import * as yup from "yup";
 
-export const decriptionValidationSchema = yup.object().shape({
+export const applicationSubmitValidation = yup.object().shape({
   description: yup.string().required("Each application should have a description"),
   name: yup.string().required("Each application should have a name"),
   organization: yup.object().shape({
     name: yup.string().required("Each organization should have a name"),
   }),
-});
-
-export const designModeValidationSchema = yup.object().shape({
   fields: yup
     .object()
     .shape({})
