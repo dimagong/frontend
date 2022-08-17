@@ -1,17 +1,18 @@
+import "./styles.scss";
+
 import React from "react";
 
 import FieldLabel from "../FieldLabel";
 
-import "./styles.scss";
+import { DFormWidgetEventsTypes } from "../../events";
 
-const TextAreaWidget = ({ value, onChange, options, label, disabled, isRequired }) => {
+const TextAreaWidget = ({ value, onEvent, label, disabled, isRequired }) => {
   const handleChange = (e) => {
-    onChange(e.target.value);
+    onEvent({ type: DFormWidgetEventsTypes.Change, value: e.target.value });
   };
 
   return (
     <div>
-      {/*{options.label !== false ? <FieldLabel label={label} required={required}/> : null}*/}
       <FieldLabel label={label} required={isRequired} />
       <textarea
         placeholder={"Enter your answer here"}
@@ -19,7 +20,7 @@ const TextAreaWidget = ({ value, onChange, options, label, disabled, isRequired 
         onChange={handleChange}
         className="custom-textarea"
         rows="5"
-        disabled={false}
+        disabled={disabled}
         required={isRequired}
       />
     </div>

@@ -28,7 +28,15 @@ const { getUserByIdRequest, submitdFormNewVersionRequest } = appSlice.actions;
 
 // TODO handle updated at text
 
-const UserOnboardingDForm = ({ onRefetch, isRefetching, isManualSave, formData, formValues, onFieldValueChange }) => {
+const UserOnboardingDForm = ({
+  onRefetch,
+  isRefetching,
+  isManualSave,
+  dFormId,
+  formData,
+  formValues,
+  onFieldEvent,
+}) => {
   // const [isStateConfig] = useState(false);
   // const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
   const manager = useSelector(selectManager);
@@ -126,7 +134,7 @@ const UserOnboardingDForm = ({ onRefetch, isRefetching, isManualSave, formData, 
         </CardHeader>
         <CardBody className="pt-0">
           <hr />
-          <DForm data={formData} values={formValues} onFieldValueChange={onFieldValueChange} />
+          <DForm dFormId={dFormId} data={formData} values={formValues} onFieldEvent={onFieldEvent} />
           {/*<FormCreate
             isShowErrors={false}
             fileLoader={true}

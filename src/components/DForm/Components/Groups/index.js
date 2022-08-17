@@ -11,10 +11,10 @@ const Groups = ({
   sectionGroups,
   onElementClick,
   onGroupCreate,
-  onFieldCreate,
+  onFieldEvent,
   sectionId,
   values,
-  onFieldValueChange,
+  isConfigurable,
 }) => {
   const handleGroupSelect = (sectionGroup) => {
     onElementClick({ ...data.groups[sectionGroup], sectionId }, "group");
@@ -34,8 +34,8 @@ const Groups = ({
               data={data}
               groupFields={data.groups[sectionGroup].relatedFields}
               onElementClick={onElementClick}
-              onFieldCreate={onFieldCreate}
-              onFieldValueChange={onFieldValueChange}
+              onFieldEvent={onFieldEvent}
+              isConfigurable={isConfigurable}
             />
           </div>
         </div>
@@ -44,7 +44,7 @@ const Groups = ({
         (!sectionGroups.length && (
           <div className="px-2 py-5 text-center w-100">There are no groups in this section</div>
         ))}
-      {!!onGroupCreate && (
+      {isConfigurable ? (
         <div className="group">
           <div className="element-add" onClick={onGroupCreate}>
             <div className="element-add_icon">
@@ -53,7 +53,7 @@ const Groups = ({
             <div className="element-add_description">Add new group</div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

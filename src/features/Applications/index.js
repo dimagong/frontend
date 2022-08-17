@@ -43,6 +43,7 @@ import {
 } from "./applicationQueries";
 import appSlice from "../../app/slices/appSlice";
 import onboardingSlice from "../../app/slices/onboardingSlice";
+import { DFormWidgetEventsTypes } from "../../components/DForm/Components/Fields/Components/DFormWidgets/events";
 
 const { setdForm } = onboardingSlice.actions;
 
@@ -230,7 +231,13 @@ const Applications = ({ isCreate }) => {
 
   //TODO make ID generator
 
-  const handleFieldCreate = (group) => {
+  const handleFieldCreate = (event) => {
+    if (event.type !== DFormWidgetEventsTypes.Create) {
+      throw new Error(`Unexpected event type: ${event.type}`);
+    }
+
+    const { group } = event;
+
     const newFieldData = {
       ...INITIAL_FIELD_DATA,
       ...FIELD_INITIAL_SPECIFIC_PROPERTIES[FIELD_TYPES.text],
@@ -597,7 +604,7 @@ const Applications = ({ isCreate }) => {
               onElementClick={handleSelectElementForEdit}
               onSectionCreate={handleSectionCreate}
               onGroupCreate={handleGroupCreate}
-              onFieldCreate={handleFieldCreate}
+              onFieldEvent={handleFieldCreate}
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>

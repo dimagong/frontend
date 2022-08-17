@@ -5,6 +5,7 @@ import FieldLabel from "../FieldLabel";
 import CheckboxWidget from "../Boolean";
 
 import multiSelectValidationSchema from "./validationSchema";
+import { DFormWidgetEventsTypes } from "../../events";
 
 const colourStyles = {
   option: (styles, { isFocused, isSelected, ...rest }) => {
@@ -59,9 +60,9 @@ const MultiSelectWidget = (props) => {
             return nextSelectValue.value;
           })
         : [];
-      props.onChange(mappedSelectValuesToArray);
+      props.onEvent({ type: DFormWidgetEventsTypes.Change, value: mappedSelectValuesToArray });
     } else {
-      props.onChange(values.value || "");
+      props.onEvent({ type: DFormWidgetEventsTypes.Change, value: values.value || "" });
     }
   };
 

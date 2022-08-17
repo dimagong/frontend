@@ -1,12 +1,13 @@
+import { Plus } from "react-feather";
 import React, { useState, useEffect } from "react";
 
 // import './styles.scss';
 import { toast } from "react-toastify";
 
 import formComponents from "./Components/DFormWidgets";
-import { Plus } from "react-feather";
+import { DFormWidgetEventsTypes } from "./Components/DFormWidgets/events";
 
-const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group, values, onFieldValueChange }) => {
+const FormComponent = ({ groupFields, data, onElementClick, group, values, onFieldEvent, isConfigurable }) => {
   const [formData, setFormData] = useState({});
 
   // Each field store with structure:
@@ -100,7 +101,11 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
         let fieldValue = "";
 
         if (!field.isNotMasterSchemaRelated && values && values[field.masterSchemaPropertyId]) {
-          fieldValue = values[field.masterSchemaPropertyId].value;
+          if (field.type === "file") {
+            fieldValue = values[field.masterSchemaPropertyId].files;
+          } else {
+            fieldValue = values[field.masterSchemaPropertyId].value;
+          }
         }
 
         if (!FormFieldElement) {
@@ -123,7 +128,7 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
               name={field.title}
               label={field.isLabelShowing ? field.title : ""}
               value={fieldValue}
-              onChange={(value) => onFieldValueChange(field.masterSchemaPropertyId, value)}
+              onEvent={(event) => onFieldEvent({ ...event, field })}
               disabled={formField.isDisabled} // TODO handle disabled
               error={""}
               fieldClasses={field.classes}
@@ -131,18 +136,20 @@ const FormComponent = ({ groupFields, data, onElementClick, onFieldCreate, group
           </div>
         );
       })}
+
       {!groupFields ||
         (!groupFields.length && <div className="px-2 py-5 text-center w-100">There are no fields in this group</div>)}
-      {!!onFieldCreate && (
+
+      {isConfigurable ? (
         <div className="custom-form-field col-12 px-0">
-          <div className="element-add" onClick={() => onFieldCreate(group)}>
+          <div className="element-add" onClick={() => onFieldEvent({ type: DFormWidgetEventsTypes.Create, group })}>
             <div className="element-add_icon">
               <Plus color="white" size={23} />
             </div>
             <div className="element-add_description">Add new form element</div>
           </div>
         </div>
-      )}
+      ) : null}
     </>
   );
 };

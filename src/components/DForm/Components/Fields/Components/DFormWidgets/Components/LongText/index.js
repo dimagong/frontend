@@ -6,13 +6,18 @@ import FieldLabel from "../FieldLabel";
 import "./styles.scss";
 import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import CustomModal from "components/CustomModal";
+import { DFormWidgetEventsTypes } from "../../events";
 
 const LongText = (props) => {
-  const { value, onChange, label, isRequired } = props;
+  const { value, onEvent, label, isRequired } = props;
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [inputHTML, setInputHTML] = useState("");
   const inputRef = React.useRef();
+
+  const handleOnChange = (value) => {
+    onEvent({ type: DFormWidgetEventsTypes.Change, value });
+  };
 
   const wysiwygChange = (event) => {
     setInputValue(event);
@@ -21,7 +26,7 @@ const LongText = (props) => {
   const handleModalClose = () => {
     setIsModalOpened(false);
     setInputHTML(inputValue);
-    onChange(inputValue);
+    handleOnChange(inputValue);
   };
 
   useEffect(() => {
@@ -44,7 +49,7 @@ const LongText = (props) => {
           placeholder={"Enter your answer here"}
           onInput={() => {
             let obj = inputRef.current;
-            onChange(obj.innerHTML);
+            handleOnChange(obj.innerHTML);
             setInputValue(obj.innerHTML);
           }}
         />

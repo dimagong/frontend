@@ -28,7 +28,7 @@ export const useFileQuery = ({ url, queryKey }, options = {}) => {
             return Promise.resolve(nullFileData);
           }
 
-          return clientFetch(data.temporary_public_url, options)
+          return clientFetch(data.temporary_public_url)
             .then((response) => response.blob())
             .then((blob) => {
               const file = blobToFile(blob, data.name || "unknown");

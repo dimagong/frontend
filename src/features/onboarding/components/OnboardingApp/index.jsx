@@ -1,7 +1,6 @@
 import _ from "lodash";
 import { Spinner } from "reactstrap";
 import { toast } from "react-toastify";
-import { useQueryClient } from "react-query";
 import React, { useState, useRef, useEffect } from "react";
 
 import {
@@ -9,7 +8,6 @@ import {
   useDFormsValuesByIdQuery,
   useSaveDFormFieldValue,
   useSubmitDFormForReviewMutation,
-  MVADFormsQueryKeys,
 } from "api/Onboarding/prospectUserQuery";
 
 import DForm from "components/DForm";
@@ -20,8 +18,6 @@ import Check from "assets/img/icons/check.png";
 const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const [applicationSchema, setApplicationSchema] = useState(null);
   const [applicationValues, setApplicationValues] = useState(null);
-
-  const queryClient = useQueryClient();
 
   const { isLoading: isFormLoading } = useDFormByIdQuery(
     { id: selectedForm.id },
