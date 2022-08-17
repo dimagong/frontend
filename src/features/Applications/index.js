@@ -27,6 +27,7 @@ import {
   INITIAL_APPLICATION_DATA,
 } from "./constants";
 import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
+import { decriptionValidationSchema } from "./validationDescription";
 
 import "./styles.scss";
 import { Button, TabContent, TabPane } from "reactstrap";
@@ -332,14 +333,11 @@ const Applications = ({ isCreate }) => {
   };
 
   const validateElement = (element) => {
-    console.log("element validation", element);
-
     let elementValidationSchema = elementValidationSchemas[element.elementType];
 
     if (element.elementType === ELEMENT_TYPES.field) {
       //get validation schema for field depending on type
       elementValidationSchema = elementValidationSchema[element.type];
-      console.log("Schema", elementValidationSchema);
     }
 
     if (!elementValidationSchema) {
@@ -453,8 +451,6 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleElementChange = (elementData) => {
-    console.log("handleElementChange elementData", elementData);
-    //elementData
     const elem = checkMinMaxField(elementData);
     setElementWithSuggestedChanges({ ...elem, edited: true });
   };
@@ -531,6 +527,15 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleApplicationMutation = () => {
+    try {
+      decriptionValidationSchema.validateSync(dataWithSuggestedChanges, {
+        context: { application: dataWithSuggestedChanges },
+      });
+    } catch (validationError) {
+      console.log("error", validationError);
+      toast.error(validationError.message);
+    }
+
     // Errors object spread just to not to pass it into mutation
     const { name, description, isPrivate, type, errors, organization, ...schema } = dataWithSuggestedChanges;
 
