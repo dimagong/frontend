@@ -19,6 +19,7 @@ import appSlice from "app/slices/appSlice";
 
 const { setManagerOnboarding, getUserOnboardingRequest } = appSlice.actions;
 
+// ToDo: Handle it before commit, it is unused and why ?
 const UserOnboarding = () => {
   const [activeTab, setActiveTab] = useState("1");
   const manager = useSelector(selectManager);

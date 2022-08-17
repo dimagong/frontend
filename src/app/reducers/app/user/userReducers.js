@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 
 import { initUser } from "app/slices/appSlice";
-import { normalizeHierarchy } from "api/masterSchema/normalizers";
 import { getUserAndUserIndex, getIndexById } from "utility/common";
 
 const getProfileSuccess = (state, { payload }) => {
@@ -77,11 +76,6 @@ const patchSettingsSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
   state.user.dashboard.settings = payload;
-};
-
-const updateApllicationsOrderRequest = (state, { payload }) => {
-  state.isLoading = true;
-  state.isError = null;
 };
 
 const updateApllicationsOrderSuccess = (state, { payload }) => {

@@ -1,25 +1,17 @@
-import { createQueryKey } from "api/createQueryKey";
-
-import { useGenericQuery } from "api/useGenericQuery";
-
+import { useMutation } from "react-query";
 import { useDispatch } from "react-redux";
 
+import { clientAPI } from "api/clientAPI";
+import { createQueryKey } from "api/createQueryKey";
+import { useGenericQuery } from "api/useGenericQuery";
 import { useGenericMutation } from "api/useGenericMutation";
 
-import { useMutation, useQueryClient } from "react-query";
-
 import appSlice from "app/slices/appSlice";
-
-import { clientAPI } from "api/clientAPI";
 
 const {
   getAssignedSurveysForOnboardingSuccess,
   getAssignedSurveysForOnboardingError,
   removeUserNotifyError,
-  submitdFormDataError,
-  submitdFormDataSuccess,
-  submitdFormError,
-  submitdFormSuccess,
   getCurrentQuestionForAssignedSurveyError,
   getProfileError,
   beginSurveyError,
@@ -50,11 +42,11 @@ export const useProspectUserProfileQuery = (options = {}) => {
 };
 
 const MVADFormsQueryKey = createQueryKey("MVA DForms");
-const MVADFormValuesQueryKey = createQueryKey("MVA DForm values");
+
 export const MVADFormsQueryKeys = {
-  all: () => [MVADFormsQueryKey, MVADFormValuesQueryKey],
-  dFormById: (id) => [...MVADFormsQueryKeys.all(), id],
-  dFormValuesById: (id) => [MVADFormValuesQueryKey, id],
+  all: () => [MVADFormsQueryKey],
+  dFormById: (dFormId) => [...MVADFormsQueryKeys.all(), { dFormId }],
+  dFormValuesById: (dFormId) => [...MVADFormsQueryKeys.dFormById(dFormId), "values"],
 };
 
 export const useDFormsQuery = (options = {}) => {
@@ -69,15 +61,13 @@ export const useDFormsQuery = (options = {}) => {
   );
 };
 
-export const useDFormsValuesByIdQuery = ({ id }, options = {}) => {
+export const useDFormsValuesByIdQuery = ({ dFormId }, options) => {
   return useGenericQuery(
     {
-      url: `/member-view-api/dform/${id}/user-values`,
-      queryKey: MVADFormsQueryKeys.dFormValuesById(),
+      url: `/member-view-api/dform/${dFormId}/user-values`,
+      queryKey: MVADFormsQueryKeys.dFormValuesById(dFormId),
     },
-    {
-      ...options,
-    }
+    options
   );
 };
 
@@ -99,6 +89,7 @@ export const useSaveDFormFieldValue = ({ dFormId }, options) => {
     {
       method: "put",
       url: `/member-view-api/dform/${dFormId}/user-value`,
+      queryKey: MVADFormsQueryKeys.dFormValuesById(dFormId),
     },
     options
   );
@@ -107,45 +98,13 @@ export const useSaveDFormFieldValue = ({ dFormId }, options) => {
 // member-view-api/dform/5/new-version
 
 export const useSubmitDFormForReviewMutation = ({ dFormId }, options) => {
-  const queryClient = useQueryClient();
   return useGenericMutation(
     {
       method: "post",
       url: `/member-view-api/dform/${dFormId}/new-version`,
+      queryKey: MVADFormsQueryKeys.dFormById(dFormId),
     },
     options
-  );
-};
-
-export const useSubmitDFormDataRequestMutation = ({ dFormId }, options = {}) => {
-  const dispatch = useDispatch();
-
-  return useGenericMutation(
-    {
-      method: "put",
-      url: `/member-view-api/dform/${dFormId}/submit-data`,
-    },
-    {
-      onError: (error) => dispatch(submitdFormDataError(error.message)),
-      onSuccess: (data) => dispatch(submitdFormDataSuccess(data)),
-      ...options,
-    }
-  );
-};
-
-export const useSubmitDFormPathRequestMutation = ({ dFormId }, options = {}) => {
-  const dispatch = useDispatch();
-
-  return useGenericMutation(
-    {
-      method: "put",
-      url: `/member-view-api/dform/${dFormId}/submit`,
-    },
-    {
-      onError: (error) => dispatch(submitdFormError(error.message)),
-      onSuccess: (data) => dispatch(submitdFormSuccess(data)),
-      ...options,
-    }
   );
 };
 
@@ -188,6 +147,7 @@ export const MVABeginSurveyQueryKeys = {
   all: () => [MVABeginSurveyQueryKey],
   beginSurvey: (id) => [...MVABeginSurveyQueryKeys.all(), id],
 };
+
 export const useGetBeginSurveyQuery = (payload, options = {}) => {
   const { id } = payload;
 
