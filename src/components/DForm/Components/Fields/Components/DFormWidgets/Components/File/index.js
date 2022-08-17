@@ -2,13 +2,14 @@ import "./style.scss";
 
 import { X } from "react-feather";
 import { Badge, Spinner } from "reactstrap";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   useApplicationFileQuery,
   useCreateApplicationUserFilesMutation,
   useDeleteApplicationUserFileMutation,
 } from "features/user-managment/userEdit/userQueries";
+import { useMVAFileQuery } from "api/Onboarding/prospectUserQuery";
 
 import { useDFormContext } from "components/DForm/dFormContext";
 
@@ -16,15 +17,48 @@ import FieldLabel from "../FieldLabel";
 
 const FilePreview = ({ msFieldId, fileId, name }) => {
   const { dFormId, isConfigurable, isMemberView } = useDFormContext();
-  // ToDo: use another query for member view api
-  const fileQuery = useApplicationFileQuery(
-    {
-      applicationId: dFormId,
-      msFieldId,
-      fileId,
-    },
-    { enabled: !isConfigurable && !!fileId }
-  );
+
+  // In next update it will be refactored with DI as Network API provider which will provide
+  // an clientHttpAPI service that is abstraction for any implementation. So, in case when FilePreview
+  // is used in member view scope it will use the service that implements an clientHttpAPI, and in case
+  // when it is used in another scope that provide Network it will use it correspondingly.
+  let fileQuery;
+  if (isMemberView) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    fileQuery = useMVAFileQuery(
+      {
+        applicationId: dFormId,
+        msFieldId,
+        fileId,
+      },
+      { enabled: !isConfigurable && !!fileId }
+    );
+  } else {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    fileQuery = useApplicationFileQuery(
+      {
+        applicationId: dFormId,
+        msFieldId,
+        fileId,
+      },
+      { enabled: !isConfigurable && !!fileId }
+    );
+  }
+
+  const [objectUrl, setObjectUrl] = useState(null);
+
+  useEffect(() => {
+    if (!fileQuery.data.file) {
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(fileQuery.data.file);
+
+    setObjectUrl(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [fileQuery.data.file]);
+
   const removeFileMutation = useDeleteApplicationUserFileMutation({ applicationId: dFormId });
 
   const onRemoveButtonClick = () => {
@@ -75,7 +109,7 @@ const FilePreview = ({ msFieldId, fileId, name }) => {
         <Badge
           color="primary"
           tag="a"
-          href={fileQuery.data.url}
+          href={objectUrl}
           target="_blank"
           rel="noreferrer"
           className="ml-1 mr-1 text-white"

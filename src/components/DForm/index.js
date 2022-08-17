@@ -16,6 +16,7 @@ const DForm = ({
   data,
   values,
   onFieldEvent,
+  isMemberView,
 }) => {
   const [selectedSection, setSelectedSection] = useState("");
   const [sectionsProgress, setSectionsProgress] = useState(null);
@@ -87,7 +88,7 @@ const DForm = ({
   }, [data.sectionsOrder]);
 
   return (
-    <DFormContextProvider dFormId={dFormId} isConfigurable={isConfigurable}>
+    <DFormContextProvider dFormId={dFormId} isConfigurable={isConfigurable} isMemberView={isMemberView}>
       <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
         <SectionsSideBar
           onSectionSelect={handleSectionSelect}

@@ -14,6 +14,7 @@ import DForm from "components/DForm";
 import LoadingButton from "components/LoadingButton";
 
 import Check from "assets/img/icons/check.png";
+import { DFormWidgetEventsTypes } from "../../../../components/DForm/Components/Fields/Components/DFormWidgets/events";
 
 const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const [applicationSchema, setApplicationSchema] = useState(null);
@@ -57,20 +58,25 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
       onSuccess: () => setRecentlySubmitted(true),
     }
   );
+
   const handleApplicationSubmit = () => {
     submitDFormForReview.mutate();
   };
 
-  const handleFieldValueChange = (msPropId, fieldValue) => {
+  const handleFieldChangeEvent = (event) => {
+    const { field, value } = event;
+
     setApplicationValues({
       ...applicationValues,
-      [msPropId]: { ...(applicationValues[msPropId] || {}), value: fieldValue },
+      [field.masterSchemaPropertyId]: { ...(applicationValues[field.masterSchemaPropertyId] || {}), value },
     });
+    throttleOnSave.current({ master_schema_field_id: field.masterSchemaPropertyId, value });
+  };
 
-    throttleOnSave.current({
-      master_schema_field_id: msPropId,
-      value: fieldValue,
-    });
+  const handleFieldEvent = (event) => {
+    if (event.type === DFormWidgetEventsTypes.Change) {
+      handleFieldChangeEvent(event);
+    }
   };
 
   const isFormLocked = () => ~["user-lock", "hard-lock"].indexOf(applicationSchema?.access_type);
@@ -100,7 +106,9 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
         disabled={isFormLocked()}
         data={applicationSchema}
         values={applicationValues}
-        onFieldValueChange={handleFieldValueChange}
+        onFieldEvent={handleFieldEvent}
+        dFormId={applicationSchema.id}
+        isMemberView
       />
       <div className="form-create__dform_actions pr-1">
         {applicationSchema.access_type !== "user-lock" && (

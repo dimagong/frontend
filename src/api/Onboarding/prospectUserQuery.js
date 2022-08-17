@@ -7,6 +7,7 @@ import { useGenericQuery } from "api/useGenericQuery";
 import { useGenericMutation } from "api/useGenericMutation";
 
 import appSlice from "app/slices/appSlice";
+import { useFileQuery } from "../file/useFileQueries";
 
 const {
   getAssignedSurveysForOnboardingSuccess,
@@ -260,5 +261,16 @@ export const useGetAllSurveyQuestionsQuery = (payload, options = {}) => {
       onError: (error) => dispatch(getAllSurveyQuestionsError(error.message)),
       ...options,
     }
+  );
+};
+
+// MVA Application Files
+
+export const useMVAFileQuery = ({ applicationId, msFieldId, fileId }, options) => {
+  return useFileQuery(
+    {
+      url: `member-view-api/dform/${applicationId}/user-file-download?master_schema_field_id=${msFieldId}&file_id=${fileId}`,
+    },
+    options
   );
 };
