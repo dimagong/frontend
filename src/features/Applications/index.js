@@ -27,7 +27,7 @@ import {
   INITIAL_APPLICATION_DATA,
 } from "./constants";
 import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
-import { decriptionValidationSchema } from "./validationDescription";
+import { decriptionValidationSchema, designModeValidationSchema } from "./validationDescription";
 
 import "./styles.scss";
 import { Button, TabContent, TabPane } from "reactstrap";
@@ -528,9 +528,8 @@ const Applications = ({ isCreate }) => {
 
   const validateDescriptionDesignMode = (validData) => {
     try {
-      decriptionValidationSchema.validateSync(validData, {
-        context: { application: validData },
-      });
+      decriptionValidationSchema.validateSync(validData);
+      designModeValidationSchema.validateSync(validData);
     } catch (validationError) {
       console.log("error", validationError);
       return { isValid: false, errors: validationError };
@@ -564,7 +563,7 @@ const Applications = ({ isCreate }) => {
       }
     } else {
       console.log("error", errValidation);
-      toast.error("Need to add at least one field to design mode");
+      toast.error(errValidation.message);
     }
   };
 
