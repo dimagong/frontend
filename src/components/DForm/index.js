@@ -50,10 +50,12 @@ const DForm = ({
   const handleFieldEvent = (event) => {
     if (event.type === DFormWidgetEventsTypes.Create && isConfigurable) {
       onFieldEvent(event);
+      return;
     }
 
     if (!isConfigurable) {
       onFieldEvent(event);
+      return;
     }
 
     throw new Error("Unexpected usage of field creation event.");
