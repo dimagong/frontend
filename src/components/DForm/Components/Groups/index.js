@@ -22,24 +22,28 @@ const Groups = ({
 
   return (
     <div>
-      {sectionGroups.map((sectionGroup) => (
-        <div className="group" key={sectionGroup}>
-          <div className="group-title editable" onClick={() => handleGroupSelect(sectionGroup)}>
-            <span className="text-bold-500">{data.groups[sectionGroup].name}</span>
-          </div>
-          <div className="group-content row mr-0 ml-0">
-            <Fields
-              values={values}
-              group={sectionGroup}
-              data={data}
-              groupFields={data.groups[sectionGroup].relatedFields}
-              onElementClick={onElementClick}
-              onFieldCreate={onFieldCreate}
-              onFieldValueChange={onFieldValueChange}
-            />
-          </div>
-        </div>
-      ))}
+      {sectionGroups.map((sectionGroup) => {
+        if (!data.groups[sectionGroup].isHidden) {
+          return (
+            <div className="group" key={sectionGroup}>
+              <div className="group-title editable" onClick={() => handleGroupSelect(sectionGroup)}>
+                <span className="text-bold-500">{data.groups[sectionGroup].name}</span>
+              </div>
+              <div className="group-content row mr-0 ml-0">
+                <Fields
+                  values={values}
+                  group={sectionGroup}
+                  data={data}
+                  groupFields={data.groups[sectionGroup].relatedFields}
+                  onElementClick={onElementClick}
+                  onFieldCreate={onFieldCreate}
+                  onFieldValueChange={onFieldValueChange}
+                />
+              </div>
+            </div>
+          );
+        }
+      })}
       {!sectionGroups ||
         (!sectionGroups.length && (
           <div className="px-2 py-5 text-center w-100">There are no groups in this section</div>
