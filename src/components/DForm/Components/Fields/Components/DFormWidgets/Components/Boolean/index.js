@@ -1,11 +1,15 @@
-import { Check } from "react-feather";
 import React from "react";
+import { Check } from "react-feather";
+
 import { CustomCheckbox } from "components/FormCreate/Custom/CheckboxesWidget/CheckboxesWidget";
+
 import booleanValidationSchema from "./validationSchema";
+
+import { DFormWidgetEventsTypes } from "../../events";
 
 const CheckboxWidget = (props) => {
   const onChange = (event) => {
-    return props.onChange(event.target.checked);
+    return props.onEvent({ type: DFormWidgetEventsTypes.Change, value: event.target.checked });
   };
 
   return (

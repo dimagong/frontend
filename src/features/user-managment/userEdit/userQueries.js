@@ -6,6 +6,7 @@ import { useGenericMutation } from "api/useGenericMutation";
 
 import appSlice from "app/slices/appSlice";
 import { selectCurrentManager } from "app/selectors/userSelectors";
+import { useFileQuery } from "../../../api/file/useFileQueries";
 
 const ApplicationQueryKey = createQueryKey("Application");
 
@@ -13,6 +14,12 @@ const ApplicationQueryKeys = {
   all: () => [ApplicationQueryKey],
   byId: (applicationId) => [...ApplicationQueryKeys.all(), { applicationId }],
   valuesById: (applicationId) => [...ApplicationQueryKeys.byId(applicationId), "values"],
+
+  file: ({ applicationId, msFieldId, fileId }) => [
+    ...ApplicationQueryKeys.byId(applicationId),
+    "file",
+    { msFieldId, fileId },
+  ],
 };
 
 export const useUserApplication = ({ userApplicationId }, options) => {
@@ -68,5 +75,37 @@ export const useUserApplicationValuesMutation = ({ userApplicationId }, options)
         dispatch(getUserByIdRequest({ userId: manager.id }));
       },
     }
+  );
+};
+
+export const useCreateApplicationUserFilesMutation = ({ applicationId }, options) => {
+  return useGenericMutation(
+    {
+      method: "post",
+      url: `api/dform/${applicationId}/user-files`,
+      queryKey: ApplicationQueryKeys.valuesById(applicationId),
+    },
+    options
+  );
+};
+
+export const useDeleteApplicationUserFileMutation = ({ applicationId }, options) => {
+  return useGenericMutation(
+    {
+      method: "delete",
+      url: `api/dform/${applicationId}/user-file`,
+      queryKey: ApplicationQueryKeys.valuesById(applicationId),
+    },
+    options
+  );
+};
+
+export const useApplicationFileQuery = ({ applicationId, msFieldId, fileId }, options) => {
+  return useFileQuery(
+    {
+      url: `api/dform/${applicationId}/user-file-download?master_schema_field_id=${msFieldId}&file_id=${fileId}`,
+      queryKey: ApplicationQueryKeys.file({ applicationId, msFieldId, fileId }),
+    },
+    options
   );
 };

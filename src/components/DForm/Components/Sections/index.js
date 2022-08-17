@@ -11,10 +11,9 @@ const SectionsComponent = ({
   selectedSection,
   onElementClick,
   onGroupCreate,
-  onFieldCreate,
+  onFieldEvent,
   values,
   isConfigurable,
-  onFieldValueChange,
 }) => {
   if (!data.sections || Object.keys(data.sections).length === 0) {
     // TODO HANDLE TWO CASES, when there are no sections on edit and no sections on assigned dform \ on onboarding dform
@@ -41,14 +40,14 @@ const SectionsComponent = ({
             </div>
           ) : (
             <Groups
-              onFieldValueChange={onFieldValueChange}
               values={values}
               sectionId={data.sections[section].id}
               data={data}
               sectionGroups={data.sections[section].relatedGroups}
               onElementClick={onElementClick}
               onGroupCreate={onGroupCreate}
-              onFieldCreate={onFieldCreate}
+              onFieldEvent={onFieldEvent}
+              isConfigurable={isConfigurable}
             />
           )}
         </TabPane>

@@ -51,7 +51,7 @@ export const FIELD_TYPES = {
   file: "file",
   select: "select",
   number: "number",
-  boolean: "boolean",
+  boolean: "boolean", // ToDo: check it
   longText: "longText",
   textArea: "textarea",
   fileList: "fileList",

@@ -5,12 +5,13 @@ import React from "react";
 import textValidationSchema from "./validationSchema";
 
 import FieldLabel from "../FieldLabel";
+import { DFormWidgetEventsTypes } from "../../events";
 
 const Text = (props) => {
   let fieldType = "text";
 
-  const handleChange = (e) => {
-    props.onChange(e.target.value);
+  const handleChange = (event) => {
+    props.onEvent({ type: DFormWidgetEventsTypes.Change, value: event.target.value });
   };
 
   return (

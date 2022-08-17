@@ -2,6 +2,7 @@ import React from "react";
 import Select from "react-select";
 import "./styles.scss";
 import FieldLabel from "../FieldLabel";
+import { DFormWidgetEventsTypes } from "../../events";
 
 export const colourStyles = {
   option: (styles, { isFocused, isSelected, ...rest }) => {
@@ -56,9 +57,9 @@ const SelectWidget = (props) => {
             return nextSelectValue.value;
           })
         : [];
-      props.onChange(mappedSelectValuesToArray);
+      props.onEvent({ type: DFormWidgetEventsTypes.Change, value: mappedSelectValuesToArray });
     } else {
-      props.onChange(values.value || "");
+      props.onChange({ type: DFormWidgetEventsTypes.Change, value: values.value || "" });
     }
   };
 
