@@ -28,15 +28,13 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
   const [applicationData, setApplicationData] = useState(isCreate ? {} : null);
   const [applicationValues, setApplicationValues] = useState({});
 
-  const applyConditionalRender = (schema) => {
-    const schemaCopy = cloneDeep(schema);
-
-    for (const fieldId in schemaCopy.fields) {
-      if (schemaCopy.fields.hasOwnProperty(fieldId)) {
-        const field = schemaCopy.fields[fieldId];
+  const checkConditions = (elementCollection) => {
+    for (const elementId in elementCollection) {
+      if (elementCollection.hasOwnProperty(elementId)) {
+        const element = elementCollection[elementId];
 
         //TODO handle more conditions in future, currently has only one;
-        const condition = field.conditions && field.conditions[0];
+        const condition = element.conditions && element.conditions[0];
 
         //TODO this should be handled in render, so form shouldn't be rendered until we get applicationValues from API
         // remove here !Object.values(applicationValues.length) after fix
@@ -55,11 +53,23 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
 
         const applicableEffect = EFFECT_ELEMENT_PROP[condition.effect];
 
-        schemaCopy.fields[fieldId][applicableEffect.propName] = isConditionApplicable
+        elementCollection[elementId][applicableEffect.propName] = isConditionApplicable
           ? applicableEffect.value
           : !applicableEffect.value;
       }
     }
+
+    return elementCollection;
+  };
+
+  const applyConditionalRender = (schema) => {
+    const schemaCopy = cloneDeep(schema);
+
+    const { fields, sections, groups } = schemaCopy;
+
+    schemaCopy.fields = checkConditions(fields);
+    schemaCopy.groups = checkConditions(groups);
+    schemaCopy.sections = checkConditions(sections);
 
     return schemaCopy;
   };
