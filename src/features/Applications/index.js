@@ -526,36 +526,45 @@ const Applications = ({ isCreate }) => {
     }
   };
 
-  const handleApplicationMutation = () => {
+  const validateDescriptionDesignMode = (validData) => {
     try {
-      decriptionValidationSchema.validateSync(dataWithSuggestedChanges, {
-        context: { application: dataWithSuggestedChanges },
+      decriptionValidationSchema.validateSync(validData, {
+        context: { application: validData },
       });
     } catch (validationError) {
       console.log("error", validationError);
-      toast.error(validationError.message);
+      return { isValid: false, errors: validationError };
     }
+    return { isValid: true };
+  };
 
-    // Errors object spread just to not to pass it into mutation
-    const { name, description, isPrivate, type, errors, organization, ...schema } = dataWithSuggestedChanges;
+  const handleApplicationMutation = () => {
+    const { isValid, errors: errValidation } = validateDescriptionDesignMode(dataWithSuggestedChanges);
+    if (isValid) {
+      // Errors object spread just to not to pass it into mutation
+      const { name, description, isPrivate, type, errors, organization, ...schema } = dataWithSuggestedChanges;
 
-    const dataToSave = {
-      name,
-      description,
-      is_private: isPrivate,
-      groups: [
-        {
-          group_id: organization.id,
-          type: organization.type,
-        },
-      ],
-      schema,
-    };
+      const dataToSave = {
+        name,
+        description,
+        is_private: isPrivate,
+        groups: [
+          {
+            group_id: organization.id,
+            type: organization.type,
+          },
+        ],
+        schema,
+      };
 
-    if (isCreate) {
-      createApplication.mutate(dataToSave);
+      if (isCreate) {
+        createApplication.mutate(dataToSave);
+      } else {
+        updateApplication.mutate(dataToSave);
+      }
     } else {
-      updateApplication.mutate(dataToSave);
+      console.log("error", errValidation);
+      toast.error("Need to add at least one field to design mode");
     }
   };
 
