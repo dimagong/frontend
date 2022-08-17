@@ -71,6 +71,8 @@ const numberElementSchema = object({}).concat(minimumMaximumSchema);
 
 const textareaElementSchema = object({}).concat(minMaxLengthSchema);
 
+const longTextElementSchema = object({}).concat(minMaxLengthSchema);
+
 const dateElementSchema = object({
   format: string().oneOf(DATE_WIDGET_FORMATS),
 });
@@ -82,7 +84,7 @@ const fieldSpecificValidationSchemas = {
   [FIELD_TYPES.select]: fieldCommonSchema,
   [FIELD_TYPES.number]: fieldCommonSchema.concat(numberElementSchema),
   [FIELD_TYPES.boolean]: fieldCommonSchema,
-  [FIELD_TYPES.longText]: fieldCommonSchema,
+  [FIELD_TYPES.longText]: fieldCommonSchema.concat(longTextElementSchema),
   [FIELD_TYPES.textArea]: fieldCommonSchema.concat(textareaElementSchema),
   [FIELD_TYPES.fileList]: fieldCommonSchema,
   [FIELD_TYPES.resource]: fieldCommonSchema,

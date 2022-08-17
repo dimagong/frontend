@@ -50,6 +50,26 @@ const { setContext } = appSlice.actions;
 //TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
 // because of internal behavior of component
 
+const checkMinMaxField = (elem) => {
+  if (elem.elementType === ELEMENT_TYPES.field && "minimum" in elem) {
+    if (elem.minimum === "") {
+      elem.minimum = undefined;
+    }
+    if (elem.maximum === "") {
+      elem.maximum = undefined;
+    }
+  }
+  if (elem.elementType === ELEMENT_TYPES.field && "minLength" in elem) {
+    if (elem.minLength === "") {
+      elem.minLength = undefined;
+    }
+    if (elem.maxLength === "") {
+      elem.maxLength = undefined;
+    }
+  }
+  return elem;
+};
+
 const Applications = ({ isCreate }) => {
   const dispatch = useDispatch();
 
@@ -433,7 +453,10 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleElementChange = (elementData) => {
-    setElementWithSuggestedChanges({ ...elementData, edited: true });
+    console.log("handleElementChange elementData", elementData);
+    //elementData
+    const elem = checkMinMaxField(elementData);
+    setElementWithSuggestedChanges({ ...elem, edited: true });
   };
 
   const handleApplicationDescriptionChange = (descriptionKey, value) => {
