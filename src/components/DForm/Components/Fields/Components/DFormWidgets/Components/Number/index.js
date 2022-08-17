@@ -1,9 +1,10 @@
 import React from "react";
 import FieldLabel from "../FieldLabel";
+import { DFormWidgetEventsTypes } from "../../events";
 
 const NumberWidget = (props) => {
   const handleChange = (e) => {
-    props.onChange(e.target.value);
+    props.onEvent({ type: DFormWidgetEventsTypes.Change, value: e.target.value });
   };
 
   return (

@@ -1,54 +1,113 @@
-import { createQueryKey } from "../../../api/createQueryKey";
-import { useGenericQuery } from "../../../api/useGenericQuery";
-import { useGenericMutation } from "../../../api/useGenericMutation";
+import { useDispatch, useSelector } from "react-redux";
 
-export const GetUserApplicationQueryKey = createQueryKey("Get user application query key");
-export const GetUserApplicationValuesQueryKey = createQueryKey("Get user application values query key");
-export const UpdateUserApplicationStatusQueryKey = createQueryKey("Update user application status query key");
-export const UpdateUserApplicationValuesQueryKey = createQueryKey("Update user application values query key");
+import { createQueryKey } from "api/createQueryKey";
+import { useGenericQuery } from "api/useGenericQuery";
+import { useGenericMutation } from "api/useGenericMutation";
 
-export const UserQueryKeys = {
-  all: () => [GetUserApplicationQueryKey, UpdateUserApplicationStatusQueryKey],
-  getUserApplication: ({ userApplicationId }) => [GetUserApplicationQueryKey, { userApplicationId }],
-  getUserApplicationValues: ({ userApplicationId }) => [GetUserApplicationValuesQueryKey, { userApplicationId }],
-  updateUserApplicationStatus: ({ userApplicationId }) => [UpdateUserApplicationStatusQueryKey, { userApplicationId }],
-  updateUserApplicationValues: ({ userApplicationId }) => [UpdateUserApplicationValuesQueryKey, { userApplicationId }],
+import appSlice from "app/slices/appSlice";
+import { selectCurrentManager } from "app/selectors/userSelectors";
+import { useFileQuery } from "../../../api/file/useFileQueries";
+
+const ApplicationQueryKey = createQueryKey("Application");
+
+const ApplicationQueryKeys = {
+  all: () => [ApplicationQueryKey],
+  byId: (applicationId) => [...ApplicationQueryKeys.all(), { applicationId }],
+  valuesById: (applicationId) => [...ApplicationQueryKeys.byId(applicationId), "values"],
+
+  file: ({ applicationId, msFieldId, fileId }) => [
+    ...ApplicationQueryKeys.byId(applicationId),
+    "file",
+    { msFieldId, fileId },
+  ],
 };
 
-export const useUserApplication = ({ userApplicationId }, options) =>
-  useGenericQuery(
+export const useUserApplication = ({ userApplicationId }, options) => {
+  return useGenericQuery(
     {
       url: `/api/dform/${userApplicationId}`,
-      queryKey: UserQueryKeys.getUserApplication({ userApplicationId }),
+      queryKey: ApplicationQueryKeys.byId(userApplicationId),
     },
     options
   );
+};
 
-export const useUserApplicationValues = ({ userApplicationId }, options) =>
-  useGenericQuery(
+export const useUserApplicationValues = ({ userApplicationId }, options) => {
+  return useGenericQuery(
     {
       url: `api/dform/${userApplicationId}/user-values`,
-      queryKey: UserQueryKeys.getUserApplicationValues({ userApplicationId }),
+      queryKey: ApplicationQueryKeys.valuesById(userApplicationId),
     },
     options
   );
+};
 
-export const useUserApplicationStatusMutation = ({ userApplicationId }, options) =>
-  useGenericMutation(
+const { getUserByIdRequest } = appSlice.actions;
+
+export const useUserApplicationStatusMutation = ({ userApplicationId }, options) => {
+  return useGenericMutation(
     {
       url: `/api/dform/${userApplicationId}/change-status`,
       method: "put",
-      queryKey: UserQueryKeys.updateUserApplicationStatus({ userApplicationId }),
+      queryKey: ApplicationQueryKeys.byId(userApplicationId),
     },
     options
   );
+};
 
-export const useUserApplicationValuesMutation = ({ userApplicationId }, options) =>
-  useGenericMutation(
+export const useUserApplicationValuesMutation = ({ userApplicationId }, options) => {
+  const dispatch = useDispatch();
+  const manager = useSelector(selectCurrentManager);
+
+  return useGenericMutation(
     {
       url: `/api/dform/${userApplicationId}/new-version-by-data`,
       method: "post",
-      queryKey: UserQueryKeys.updateUserApplicationValues({ userApplicationId }),
+      queryKey: ApplicationQueryKeys.byId(userApplicationId),
+    },
+    {
+      ...options,
+      onSuccess: (...args) => {
+        if (typeof options.onSuccess === "function") {
+          options.onSuccess(...args);
+        }
+        // Update current app.user.manager
+        dispatch(getUserByIdRequest({ userId: manager.id }));
+      },
+    }
+  );
+};
+
+// Application Files
+
+export const useCreateApplicationUserFilesMutation = ({ applicationId }, options) => {
+  return useGenericMutation(
+    {
+      method: "post",
+      url: `api/dform/${applicationId}/user-files`,
+      queryKey: ApplicationQueryKeys.valuesById(applicationId),
     },
     options
   );
+};
+
+export const useDeleteApplicationUserFileMutation = ({ applicationId }, options) => {
+  return useGenericMutation(
+    {
+      method: "delete",
+      url: `api/dform/${applicationId}/user-file`,
+      queryKey: ApplicationQueryKeys.valuesById(applicationId),
+    },
+    options
+  );
+};
+
+export const useApplicationFileQuery = ({ applicationId, msFieldId, fileId }, options) => {
+  return useFileQuery(
+    {
+      url: `api/dform/${applicationId}/user-file-download?master_schema_field_id=${msFieldId}&file_id=${fileId}`,
+      queryKey: ApplicationQueryKeys.file({ applicationId, msFieldId, fileId }),
+    },
+    options
+  );
+};

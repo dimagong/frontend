@@ -1,13 +1,12 @@
+import "./styles.scss";
+
+import { Button } from "reactstrap";
+import { RefreshCw } from "react-feather";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createLoadingSelector } from "app/selectors/loadingSelector";
-
-import { RefreshCw } from "react-feather";
-import { Button } from "reactstrap";
 
 import appSlice from "app/slices/appSlice";
-
-import "./styles.scss";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
 
 const { updateDFormFromParentRequest } = appSlice.actions;
 
@@ -25,7 +24,7 @@ export default function UpdateApplicationToLatestVersion({ application }) {
     }
 
     setIsCurrentApplicationUpdateStarted(true);
-    dispatch(updateDFormFromParentRequest({ id: application.d_form.id }));
+    dispatch(updateDFormFromParentRequest({ application }));
   };
 
   const isLoading = isDFormUpdateProcessing;

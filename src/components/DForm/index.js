@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
-import propTypes from "prop-types";
 
 import SectionsSideBar from "./Components/SectionsSideBar";
 import SectionsComponent from "./Components/Sections";
+import { DFormWidgetEventsTypes } from "./Components/Fields/Components/DFormWidgets/events";
 
 import "./styles.scss";
+import { DFormContextProvider } from "./dFormContext";
 
 const DForm = ({
+  dFormId,
   isConfigurable,
   onElementClick,
   onSectionCreate,
   onGroupCreate,
-  onFieldCreate,
   data,
   values,
-  onFieldValueChange,
+  onFieldEvent,
+  isMemberView,
 }) => {
   const [selectedSection, setSelectedSection] = useState("");
   const [sectionsProgress, setSectionsProgress] = useState(null);
@@ -45,8 +47,16 @@ const DForm = ({
     }
   };
 
-  const handleFieldValueChange = (id, value) => {
-    !isConfigurable && onFieldValueChange(id, value);
+  const handleFieldEvent = (event) => {
+    if (event.type === DFormWidgetEventsTypes.Create && isConfigurable) {
+      onFieldEvent(event);
+    }
+
+    if (!isConfigurable) {
+      onFieldEvent(event);
+    }
+
+    throw new Error("Unexpected usage of field creation event.");
   };
 
   const handleGroupCreate = () => {
@@ -78,30 +88,29 @@ const DForm = ({
   }, [data.sectionsOrder]);
 
   return (
-    <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
-      <SectionsSideBar
-        onSectionSelect={handleSectionSelect}
-        selectedSection={selectedSection}
-        sectionsProgress={sectionsProgress}
-        // errors={sectionsWithErrors}
-        errors={[]}
-        sections={data.sectionsOrder && data.sectionsOrder.map((sectionId) => data.sections[sectionId])}
-        onSectionCreate={isConfigurable && onSectionCreate}
-      />
-      <SectionsComponent
-        data={data}
-        onFieldValueChange={handleFieldValueChange}
-        values={isConfigurable ? null : values}
-        isConfigurable={isConfigurable}
-        selectedSection={selectedSection}
-        onElementClick={isConfigurable ? handleElementClick : () => {}}
-        onGroupCreate={isConfigurable && handleGroupCreate}
-        onFieldCreate={isConfigurable && onFieldCreate}
-      />
-    </div>
+    <DFormContextProvider dFormId={dFormId} isConfigurable={isConfigurable} isMemberView={isMemberView}>
+      <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
+        <SectionsSideBar
+          onSectionSelect={handleSectionSelect}
+          selectedSection={selectedSection}
+          sectionsProgress={sectionsProgress}
+          // errors={sectionsWithErrors}
+          errors={[]}
+          sections={data.sectionsOrder && data.sectionsOrder.map((sectionId) => data.sections[sectionId])}
+          onSectionCreate={isConfigurable && onSectionCreate}
+        />
+        <SectionsComponent
+          data={data}
+          values={isConfigurable ? null : values}
+          isConfigurable={isConfigurable}
+          selectedSection={selectedSection}
+          onElementClick={isConfigurable ? handleElementClick : () => {}}
+          onGroupCreate={isConfigurable ? handleGroupCreate : () => {}}
+          onFieldEvent={handleFieldEvent}
+        />
+      </div>
+    </DFormContextProvider>
   );
 };
-
-DForm.propTypes = {};
 
 export default DForm;

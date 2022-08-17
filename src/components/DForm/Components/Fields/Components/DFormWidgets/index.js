@@ -1,4 +1,5 @@
 import Text from "./Components/Text";
+import File from "./Components/File";
 import TextArea from "./Components/TextArea";
 import Select from "./Components/Select";
 import LongText from "./Components/LongText";
@@ -10,10 +11,11 @@ import HelpText from "./Components/HelpText";
 
 import { FIELD_TYPES } from "features/Applications/constants";
 
-const { text, textArea, select, longText, boolean, number, date, multiSelect, helpText } = FIELD_TYPES;
+const { text, file, textArea, select, longText, boolean, number, date, multiSelect, helpText } = FIELD_TYPES;
 
-export default {
+const dFormWidgets = {
   [text]: Text,
+  [file]: File,
   [textArea]: TextArea,
   [select]: Select,
   [longText]: LongText,
@@ -23,3 +25,5 @@ export default {
   [multiSelect]: MultiSelectWidget,
   [helpText]: HelpText,
 };
+
+export default dFormWidgets;

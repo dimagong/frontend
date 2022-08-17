@@ -1,21 +1,27 @@
+import Select from "react-select";
+import { toast } from "react-toastify";
 import React, { useState } from "react";
+import { cloneDeep, merge } from "lodash";
+import { Button, Card } from "reactstrap";
+
 import {
+  useCreateApplicationUserFilesMutation,
   useUserApplication,
   useUserApplicationStatusMutation,
   useUserApplicationValues,
   useUserApplicationValuesMutation,
 } from "../../userQueries";
+
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
-import { Button, Card } from "reactstrap";
-import Select from "react-select";
-import { toast } from "react-toastify";
+
 import {
   FIELD_VALUE_PREPARE,
   CONDITIONS_COMPARE_FUNCTIONS,
   EFFECT_ELEMENT_PROP,
 } from "../../../../Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
-import { cloneDeep } from "lodash";
+
+import { DFormWidgetEventsTypes } from "components/DForm/Components/Fields/Components/DFormWidgets/events";
 
 const STATUSES = [
   { value: "submitted", label: "submitted" },
@@ -25,8 +31,8 @@ const STATUSES = [
 ];
 
 const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
-  const [applicationData, setApplicationData] = useState(isCreate ? {} : null);
   const [applicationValues, setApplicationValues] = useState({});
+  const [applicationData, setApplicationData] = useState(isCreate ? {} : null);
 
   const checkConditions = (elementCollection) => {
     for (const elementId in elementCollection) {
@@ -88,14 +94,13 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
   const updateUserApplicationStatus = useUserApplicationStatusMutation(
     { userApplicationId: selectedApplicationId },
     {
-      onSuccess: (data) => {
-        setApplicationData({ ...applicationData, status: data });
+      onSuccess: () => {
         toast.success("Status successfully changed");
       },
     }
   );
 
-  const userApplicationValues = useUserApplicationValues(
+  useUserApplicationValues(
     { userApplicationId: selectedApplicationId },
     {
       onSuccess: (data) => {
@@ -109,22 +114,43 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
   const updateUserApplicationValues = useUserApplicationValuesMutation(
     { userApplicationId: selectedApplicationId },
     {
-      onSuccess: (data) => {
-        setApplicationValues(data);
+      onSuccess: () => {
         toast.success("Saved");
       },
     }
   );
 
-  const handleFieldValueChange = (msPropId, value) => {
+  const handleFieldUploadEvent = () => {};
+
+  const handleFieldDownloadEvent = () => {};
+
+  const handleFieldChangeEvent = (event) => {
+    const { field, value } = event;
+
+    const newFieldValue = { ...(applicationValues[field.masterSchemaPropertyId] || {}), value, edited: true };
+    setApplicationValues({ ...applicationValues, [field.masterSchemaPropertyId]: newFieldValue });
+  };
+
+  const handleFieldEvent = (event) => {
     // Mark field as edited for further extraction and save on submit.
-    // Currently we don't care about case when field value return to initial state and much actual
+    // Currently, we don't care about case when field value return to initial state and much actual
     // field value from back-end.
     // (For example we enter hello in empty field and delete it. Field still counts as edited)
 
-    const newFieldValue = { ...(applicationValues[msPropId] || {}), value, edited: true };
-
-    setApplicationValues({ ...applicationValues, [msPropId]: newFieldValue });
+    switch (event.type) {
+      case DFormWidgetEventsTypes.Change:
+        handleFieldChangeEvent(event);
+        break;
+      case DFormWidgetEventsTypes.Upload:
+        handleFieldUploadEvent(event);
+        break;
+      case DFormWidgetEventsTypes.Download:
+        handleFieldDownloadEvent(event);
+        break;
+      // ToDo, RemoveFile event
+      default:
+        throw new Error(`Unexpected: The event type: ${event.type} does not support.`);
+    }
   };
 
   const handleUserApplicationValuesUpdate = () => {
@@ -151,10 +177,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     userApplication.refetch();
   };
 
-  if (
-    (selectedApplicationId && userApplication.status === "loading") ||
-    (!applicationData && userApplication.isRefetching)
-  ) {
+  if ((selectedApplicationId && userApplication.isLoading) || (!applicationData && userApplication.isRefetching)) {
     return <div>Loading...</div>;
   }
 
@@ -175,9 +198,10 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
         {!isCreate && (
           <>
             <UserOnboardingDForm
-              onFieldValueChange={handleFieldValueChange}
+              onFieldEvent={handleFieldEvent}
               isRefetching={userApplication.isRefetching}
               onRefetch={handleApplicationReFetch}
+              dFormId={applicationData.id}
               formData={applyConditionalRender(applicationData.schema)}
               isManualSave={true}
               formValues={applicationValues}

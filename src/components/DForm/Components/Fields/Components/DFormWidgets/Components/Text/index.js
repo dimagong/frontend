@@ -1,17 +1,17 @@
+import "./styles.scss";
+
 import React from "react";
 
 import textValidationSchema from "./validationSchema";
-import "./styles.scss";
 
 import FieldLabel from "../FieldLabel";
-
-import "./styles.scss";
+import { DFormWidgetEventsTypes } from "../../events";
 
 const Text = (props) => {
   let fieldType = "text";
 
-  const handleChange = (e) => {
-    props.onChange(e.target.value);
+  const handleChange = (event) => {
+    props.onEvent({ type: DFormWidgetEventsTypes.Change, value: event.target.value });
   };
 
   return (

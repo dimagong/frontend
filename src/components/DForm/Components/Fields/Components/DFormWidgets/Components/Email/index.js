@@ -1,27 +1,18 @@
+import "./styles.scss";
+
 import React from "react";
 
 import emailValidationSchema from "./validationSchema";
-import "./styles.scss";
 
-const Email = ({
-                      name,
-                      value,
-                      label,
-                      onChange,
-                      disabled,
-                      isRequired,
-                      placeholder,
-                      fieldId,
-                      error,
-                    }) => {
-  const handleInputChange = (e) => {
-    onChange(e.target.value, fieldId);
+import { DFormWidgetEventsTypes } from "../../events";
+
+const Email = ({ name, value, label, onEvent, disabled, isRequired, placeholder, error }) => {
+  const handleInputChange = (event) => {
+    onEvent({ type: DFormWidgetEventsTypes.Change, value: event.target.value });
   };
 
   return (
-    <div
-      className={`member_firm-form_field ${error ? "field_with_error" : ""}`}
-    >
+    <div className={`member_firm-form_field ${error ? "field_with_error" : ""}`}>
       <label htmlFor={name || label} className="member_firm-form_field-label">
         {label} {!!isRequired && "*"}
       </label>
@@ -34,9 +25,7 @@ const Email = ({
         value={value}
         placeholder={placeholder || "example@email.com"}
       />
-      {error && (
-        <div className="member_firm-form_field-validation_error">{error}</div>
-      )}
+      {error && <div className="member_firm-form_field-validation_error">{error}</div>}
     </div>
   );
 };

@@ -2,7 +2,7 @@ export const readBlobAsDataURL = (blob) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
-    reader.addEventListener("loadend", (event) => resolve(reader.result));
+    reader.addEventListener("loadend", () => resolve(reader.result));
     reader.addEventListener("error", (error) => reject(error));
 
     try {

@@ -1,92 +1,82 @@
+import _ from "lodash";
+import { Spinner } from "reactstrap";
+import { toast } from "react-toastify";
 import React, { useState, useRef, useEffect } from "react";
-import { Button, Spinner } from "reactstrap";
 
 import {
-  useSubmitDFormPathRequestMutation,
   useDFormByIdQuery,
   useDFormsValuesByIdQuery,
   useSaveDFormFieldValue,
   useSubmitDFormForReviewMutation,
-  MVADFormsQueryKeys,
 } from "api/Onboarding/prospectUserQuery";
-import LoadingButton from "components/LoadingButton";
-import _ from "lodash";
-
-import { toast } from "react-toastify";
 
 import DForm from "components/DForm";
-import Check from "assets/img/icons/check.png";
-import { useQueryClient } from "react-query";
+import LoadingButton from "components/LoadingButton";
 
-const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
+import Check from "assets/img/icons/check.png";
+import { DFormWidgetEventsTypes } from "../../../../components/DForm/Components/Fields/Components/DFormWidgets/events";
+
+const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const [applicationSchema, setApplicationSchema] = useState(null);
   const [applicationValues, setApplicationValues] = useState(null);
 
-  const queryClient = useQueryClient();
-
-  const { data: formSelected, isLoading: isFormLoading } = useDFormByIdQuery(
+  const { isLoading: isFormLoading } = useDFormByIdQuery(
     { id: selectedForm.id },
     {
       onSuccess: (data) => {
         const { schema, ...rest } = data;
         setApplicationSchema({ ...schema, ...rest });
       },
+      refetchOnWindowFocus: false,
     }
   );
 
   const dFormValues = useDFormsValuesByIdQuery(
-    { id: selectedForm.id },
+    { dFormId: selectedForm.id },
     {
       onSuccess: (data) => {
         setApplicationValues(data);
       },
-      enabled: applicationValues === null,
+      refetchOnWindowFocus: false,
     }
   );
 
   const saveDFormFieldValue = useSaveDFormFieldValue(
     { dFormId: selectedForm.id },
     {
-      onSuccess: (data) => {},
       onError: () => {
         toast.error("Last changes in field doesn't saved");
       },
     }
   );
 
-  const throttleOnSave = useRef(
-    _.throttle(
-      (data) => {
-        saveDFormFieldValue.mutate(data);
-      },
-      1500,
-      { leading: false }
-    )
-  );
+  const throttleOnSave = useRef(_.throttle((data) => saveDFormFieldValue.mutate(data), 1500, { leading: false }));
 
   const submitDFormForReview = useSubmitDFormForReviewMutation(
     { dFormId: selectedForm.id },
     {
-      onSuccess: () => {
-        setRecentlySubmitted(true);
-        queryClient.invalidateQueries(MVADFormsQueryKeys.all());
-      },
+      onSuccess: () => setRecentlySubmitted(true),
     }
   );
+
   const handleApplicationSubmit = () => {
     submitDFormForReview.mutate();
   };
 
-  const handleFieldValueChange = (msPropId, fieldValue) => {
+  const handleFieldChangeEvent = (event) => {
+    const { field, value } = event;
+
     setApplicationValues({
       ...applicationValues,
-      [msPropId]: { ...(applicationValues[msPropId] || {}), value: fieldValue },
+      [field.masterSchemaPropertyId]: { ...(applicationValues[field.masterSchemaPropertyId] || {}), value },
     });
+    throttleOnSave.current({ master_schema_field_id: field.masterSchemaPropertyId, value });
+  };
 
-    throttleOnSave.current({
-      master_schema_field_id: msPropId,
-      value: fieldValue,
-    });
+  const handleFieldEvent = (event) => {
+    if (event.type === DFormWidgetEventsTypes.Change) {
+      handleFieldChangeEvent(event);
+    }
   };
 
   const isFormLocked = () => ~["user-lock", "hard-lock"].indexOf(applicationSchema?.access_type);
@@ -116,7 +106,9 @@ const OnboardingApp = ({ profile, selectedForm, setRecentlySubmitted }) => {
         disabled={isFormLocked()}
         data={applicationSchema}
         values={applicationValues}
-        onFieldValueChange={handleFieldValueChange}
+        onFieldEvent={handleFieldEvent}
+        dFormId={applicationSchema.id}
+        isMemberView
       />
       <div className="form-create__dform_actions pr-1">
         {applicationSchema.access_type !== "user-lock" && (

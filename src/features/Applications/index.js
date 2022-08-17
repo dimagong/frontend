@@ -27,6 +27,7 @@ import {
   INITIAL_APPLICATION_DATA,
 } from "./constants";
 import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
+import { decriptionValidationSchema } from "./validationDescription";
 
 import "./styles.scss";
 import { Button, TabContent, TabPane } from "reactstrap";
@@ -42,6 +43,7 @@ import {
 } from "./applicationQueries";
 import appSlice from "../../app/slices/appSlice";
 import onboardingSlice from "../../app/slices/onboardingSlice";
+import { DFormWidgetEventsTypes } from "../../components/DForm/Components/Fields/Components/DFormWidgets/events";
 
 const { setdForm } = onboardingSlice.actions;
 
@@ -49,6 +51,26 @@ const { setContext } = appSlice.actions;
 
 //TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
 // because of internal behavior of component
+
+const checkMinMaxField = (elem) => {
+  if (elem.elementType === ELEMENT_TYPES.field && "minimum" in elem) {
+    if (elem.minimum === "") {
+      elem.minimum = undefined;
+    }
+    if (elem.maximum === "") {
+      elem.maximum = undefined;
+    }
+  }
+  if (elem.elementType === ELEMENT_TYPES.field && "minLength" in elem) {
+    if (elem.minLength === "") {
+      elem.minLength = undefined;
+    }
+    if (elem.maxLength === "") {
+      elem.maxLength = undefined;
+    }
+  }
+  return elem;
+};
 
 const Applications = ({ isCreate }) => {
   const dispatch = useDispatch();
@@ -209,7 +231,13 @@ const Applications = ({ isCreate }) => {
 
   //TODO make ID generator
 
-  const handleFieldCreate = (group) => {
+  const handleFieldCreate = (event) => {
+    if (event.type !== DFormWidgetEventsTypes.Create) {
+      throw new Error(`Unexpected event type: ${event.type}`);
+    }
+
+    const { group } = event;
+
     const newFieldData = {
       ...INITIAL_FIELD_DATA,
       ...FIELD_INITIAL_SPECIFIC_PROPERTIES[FIELD_TYPES.text],
@@ -317,7 +345,6 @@ const Applications = ({ isCreate }) => {
     if (element.elementType === ELEMENT_TYPES.field) {
       //get validation schema for field depending on type
       elementValidationSchema = elementValidationSchema[element.type];
-      console.log("Schema", elementValidationSchema);
     }
 
     if (!elementValidationSchema) {
@@ -433,7 +460,8 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleElementChange = (elementData) => {
-    setElementWithSuggestedChanges({ ...elementData, edited: true });
+    const elem = checkMinMaxField(elementData);
+    setElementWithSuggestedChanges({ ...elem, edited: true });
   };
 
   const handleApplicationDescriptionChange = (descriptionKey, value) => {
@@ -508,6 +536,15 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleApplicationMutation = () => {
+    try {
+      decriptionValidationSchema.validateSync(dataWithSuggestedChanges, {
+        context: { application: dataWithSuggestedChanges },
+      });
+    } catch (validationError) {
+      console.log("error", validationError);
+      toast.error(validationError.message);
+    }
+
     // Errors object spread just to not to pass it into mutation
     const { name, description, isPrivate, type, errors, organization, ...schema } = dataWithSuggestedChanges;
 
@@ -569,7 +606,7 @@ const Applications = ({ isCreate }) => {
               onElementClick={handleSelectElementForEdit}
               onSectionCreate={handleSectionCreate}
               onGroupCreate={handleGroupCreate}
-              onFieldCreate={handleFieldCreate}
+              onFieldEvent={handleFieldCreate}
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>

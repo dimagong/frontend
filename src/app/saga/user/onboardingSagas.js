@@ -5,6 +5,8 @@ import dFormsApi from "api/Onboarding/dForms";
 import groupRelations from "api/groupRelations/groupRelations";
 
 import appSlice from "app/slices/appSlice";
+import { queryClient } from "../../../api/queryClient";
+import { ApplicationQueryKeys } from "../../../features/Applications/applicationQueries";
 
 const {
   getUserOnboardingSuccess,
@@ -127,8 +129,9 @@ function* updateUserModules({ payload }) {
 
 function* updateDFormFromParent({ payload }) {
   try {
-    const dForm = yield call(dFormsApi.updateDFormFromParent, payload);
+    const dForm = yield call(dFormsApi.updateDFormFromParent, { id: payload.application.d_form.id });
     yield put(updateDFormFromParentSuccess(dForm));
+    queryClient.invalidateQueries(ApplicationQueryKeys.byId(payload.application.id));
   } catch (error) {
     console.log("error", error);
     yield put(updateDFormFromParentError(error));

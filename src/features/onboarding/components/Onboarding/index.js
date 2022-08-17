@@ -18,7 +18,8 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
 
   useEffect(() => {
     setActiveAppOnboarding(initialOnboarding);
-  }, [initialOnboarding]);
+    //eslint-disable-next-line
+  }, [initialOnboarding.id]);
 
   const handleNavClick = (onboarding) => {
     setRecentlySubmitted(false);
@@ -111,11 +112,7 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                               />
                             ) : (
                               application.id === appActiveOnboarding?.id && (
-                                <OnboardingApp
-                                  profile={profile}
-                                  selectedForm={application}
-                                  setRecentlySubmitted={setRecentlySubmitted}
-                                />
+                                <OnboardingApp selectedForm={application} setRecentlySubmitted={setRecentlySubmitted} />
                               )
                             ))}
                         </div>

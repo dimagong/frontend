@@ -34,9 +34,6 @@ import SurveyAssign from "./components/Survey/SurveyAssign";
 import AssignedSurvey from "./components/Survey/AssignedSurvey";
 import { CustomTable } from "./components/CustomTable/CustomTable";
 
-import UserOnboardingForm from "../userOnboarding/UserOnboardingForm";
-import UserOnboardingDForm from "../userOnboarding/UserOnboardingDForm";
-
 import { UserManagementScopeContextFeature } from "./components/ManagementScope";
 import UserMasterSchemaProvider from "./components/MasterSchema/UserMasterSchemaProvider";
 import { UserMasterSchemaContext, UserMasterSchemaContextFeature } from "./components/MasterSchema";
