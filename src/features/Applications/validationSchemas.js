@@ -2,7 +2,7 @@ import * as yup from "yup";
 import { ELEMENT_TYPES, FIELD_TYPES } from "./constants";
 import { DATE_WIDGET_FORMATS } from "./constants";
 
-const { object, string, min, number, ref } = yup;
+const { object, string, min, number, ref, createError } = yup;
 const fieldTypesArray = Object.values(FIELD_TYPES);
 
 const dynamicRenderValidation = object({});
@@ -63,6 +63,35 @@ export const fieldCommonSchema = yup.object().shape({
   isRequired: yup.boolean(),
   classes: yup.string(),
   isLabelShowing: yup.boolean(),
+  conditions: yup.array().test(
+    "conditions-fields",
+    "Condition fields must be filled", // error message
+    function test(value) {
+      if (value.length === 0) {
+        return true;
+      } else {
+        if (!value[0]?.effect) {
+          return this.createError({
+            message: "The 'This element will be' field is empty",
+          });
+        }
+        if (value[0]?.field && !value[0]?.condition?.operandName) {
+          return this.createError({
+            message: "The 'Will be' field is empty",
+          });
+        }
+        if (value[0]?.field && value[0]?.condition?.operandName === "filled") {
+          return true;
+        }
+        if (value[0]?.condition?.operandName === "equal" && !value[0].expectedValue) {
+          return this.createError({
+            message: "The 'To' field is empty",
+          });
+        }
+      }
+      return true;
+    }
+  ),
 });
 
 const textElementSchema = object({}).concat(minMaxLengthSchema);
@@ -90,6 +119,7 @@ const fieldSpecificValidationSchemas = {
   [FIELD_TYPES.resource]: fieldCommonSchema,
   [FIELD_TYPES.helpText]: fieldCommonSchema,
   [FIELD_TYPES.multiSelect]: fieldCommonSchema,
+  conditions: fieldCommonSchema,
 };
 
 export const groupValidationSchema = dynamicRenderValidation.shape({
