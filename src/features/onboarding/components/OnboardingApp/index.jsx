@@ -16,6 +16,8 @@ import LoadingButton from "components/LoadingButton";
 import Check from "assets/img/icons/check.png";
 import { DFormWidgetEventsTypes } from "../../../../components/DForm/Components/Fields/Components/DFormWidgets/events";
 
+import { fieldValidationSchemas, textSchema } from "./validationOnboarding";
+
 const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const [applicationSchema, setApplicationSchema] = useState(null);
   const [applicationValues, setApplicationValues] = useState(null);
@@ -63,6 +65,16 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     submitDFormForReview.mutate();
   };
 
+  const validateFields = (checkFieldValue, typeField) => {
+    const selectedValidationSchema = fieldValidationSchemas[typeField];
+    try {
+      selectedValidationSchema.validateSync(checkFieldValue);
+    } catch (validationError) {
+      return { isValid: false, errors: validationError };
+    }
+    return { isValid: true };
+  };
+
   const handleFieldChangeEvent = (event) => {
     const { field, value } = event;
 
@@ -70,7 +82,14 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
       ...applicationValues,
       [field.masterSchemaPropertyId]: { ...(applicationValues[field.masterSchemaPropertyId] || {}), value },
     });
-    throttleOnSave.current({ master_schema_field_id: field.masterSchemaPropertyId, value });
+
+    const { errors } = validateFields({ value }, field.type);
+    if (errors) {
+      console.log("validateFields errors", errors);
+      toast.error(errors.message);
+    } else {
+      throttleOnSave.current({ master_schema_field_id: field.masterSchemaPropertyId, value });
+    }
   };
 
   const handleFieldEvent = (event) => {
