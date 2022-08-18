@@ -451,7 +451,6 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleElementChange = (elementData) => {
-    console.log("handleElementChange elementData", elementData);
     const elem = checkMinMaxField(elementData);
     setElementWithSuggestedChanges({ ...elem, edited: true });
   };

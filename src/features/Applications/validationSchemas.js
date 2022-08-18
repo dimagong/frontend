@@ -63,6 +63,26 @@ export const fieldCommonSchema = yup.object().shape({
   isRequired: yup.boolean(),
   classes: yup.string(),
   isLabelShowing: yup.boolean(),
+  conditions: yup.array().test(
+    "conditions-fields",
+    "Condition fields must be filled", // error message
+    function test(value) {
+      if (value.length === 0) {
+        return true;
+      } else {
+        if (value[0]?.effect && !("field" in value[0])) {
+          return true;
+        }
+        if (value[0]?.field && value[0]?.condition?.operandName === "filled") {
+          return true;
+        }
+        if (value[0]?.condition?.operandName === "equal" && !!value[0].expectedValue) {
+          return true;
+        }
+      }
+      return false;
+    }
+  ),
 });
 
 const textElementSchema = object({}).concat(minMaxLengthSchema);
@@ -90,6 +110,7 @@ const fieldSpecificValidationSchemas = {
   [FIELD_TYPES.resource]: fieldCommonSchema,
   [FIELD_TYPES.helpText]: fieldCommonSchema,
   [FIELD_TYPES.multiSelect]: fieldCommonSchema,
+  conditions: fieldCommonSchema,
 };
 
 export const groupValidationSchema = dynamicRenderValidation.shape({
