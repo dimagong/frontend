@@ -66,7 +66,7 @@ const DFormElementEdit = ({
         </div>
       </Col>
       <Col className="col-4 dform-element-edit_options">
-        {Object.values(EDIT_OPTIONS).map((option) => {
+        {Object.entries(EDIT_OPTIONS).map(([key, option]) => {
           //TODO remove hot fix with normal solution
           if (["group", "section"].includes(element.elementType) && option === EDIT_OPTIONS.styling) {
             return null;
@@ -76,6 +76,7 @@ const DFormElementEdit = ({
             <div
               className={`dform-element-edit_options-option ${option === selectedEditOption ? "selected" : ""}`}
               onClick={() => handleEditOptionSelect(option)}
+              key={key}
             >
               {option}
             </div>

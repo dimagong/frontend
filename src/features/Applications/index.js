@@ -639,7 +639,7 @@ const Applications = ({ isCreate }) => {
           )}
         </div>
       </ContextTemplate>
-      {isModuleEditComponentVisible && (
+      {isModuleEditComponentVisible ? (
         <ContextFeatureTemplate contextFeatureTitle="dForm">
           <DFormElementEdit
             data={dataWithSuggestedChanges}
@@ -653,7 +653,7 @@ const Applications = ({ isCreate }) => {
             onGroupSectionChange={handleGroupSectionChange}
           />
         </ContextFeatureTemplate>
-      )}
+      ) : null}
     </div>
   );
 };
