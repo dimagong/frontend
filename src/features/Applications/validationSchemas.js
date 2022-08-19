@@ -2,7 +2,7 @@ import * as yup from "yup";
 import { ELEMENT_TYPES, FIELD_TYPES } from "./constants";
 import { DATE_WIDGET_FORMATS } from "./constants";
 
-const { object, string, min, number, ref, createError } = yup;
+const { object, string, /*min,*/ number /*ref, createError*/ } = yup;
 const fieldTypesArray = Object.values(FIELD_TYPES);
 
 const dynamicRenderValidation = object({});
