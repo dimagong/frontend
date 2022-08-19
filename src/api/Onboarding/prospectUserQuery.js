@@ -99,7 +99,6 @@ export const useSaveDFormFieldValue = ({ dFormId }, options) => {
     {
       method: "put",
       url: `/member-view-api/dform/${dFormId}/user-value`,
-      queryKey: MVADFormsQueryKeys.dFormValuesById(dFormId),
     },
     options
   );
