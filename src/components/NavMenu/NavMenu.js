@@ -1,22 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Pagination, PaginationLink, PaginationItem } from "reactstrap";
-import { stopPropagation } from "utility/event-decorators";
+import "./styles.scss";
+
+import React, { useState, useRef } from "react";
 
 import icon from "assets/img/icons/new-check.png";
-import appsIcon from "assets/img/svg/apps.svg";
-import surveyIcon from "assets/img/svg/survey.svg";
-
 import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 
-import "./styles.scss";
+import { stopPropagation } from "utility/event-decorators";
 
 const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
   const [shownMenu, setShownMenu] = useState("none");
 
   const navRef = useRef();
 
-  const apps = React.useMemo(() => tabs.filter((tab) => tab.hasOwnProperty("d_form_id")), [tabs]);
-  const surveys = React.useMemo(() => tabs.filter((tab) => !tab.hasOwnProperty("d_form_id")), [tabs]);
+  const apps = React.useMemo(() => tabs.filter((tab) => tab.tabId.includes("form")), [tabs]);
+  const surveys = React.useMemo(() => tabs.filter((tab) => tab.tabId.includes("survey")), [tabs]);
 
   const menus = React.useMemo(
     () => [
@@ -55,8 +52,8 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
     [active, closeMenu, onChange, tabId]
   );
 
-  useOutsideClick(navRef, (e) => showMenu(shownMenu));
-  useOutsideFocus(navRef, (e) => showMenu(shownMenu));
+  useOutsideClick(navRef, () => showMenu(shownMenu));
+  useOutsideFocus(navRef, () => showMenu(shownMenu));
 
   const renderTabsWithIcons = (tabs) => {
     return tabs.map(
@@ -80,7 +77,6 @@ const NavMenu = ({ tabs, onChange, active, tabId = "id", tabName }) => {
     );
   };
 
-  //** TODO add mt-1 to other sections
   return (
     <div ref={navRef}>
       <div className="nav-column">

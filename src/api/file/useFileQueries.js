@@ -16,7 +16,7 @@ const defaultFileQueryOptions = {
 
 const nullFileData = { url: null, file: null };
 
-export const useFileQuery = ({ url, queryKey }, options = {}) => {
+export const useFileQuery = ({ url, queryKey, shouldReadAsDataURL = true }, options = {}) => {
   return useGenericQuery(
     { queryKey },
     {
@@ -28,12 +28,16 @@ export const useFileQuery = ({ url, queryKey }, options = {}) => {
             return Promise.resolve(nullFileData);
           }
 
-          return clientFetch(data.temporary_public_url, options)
+          return clientFetch(data.temporary_public_url)
             .then((response) => response.blob())
             .then((blob) => {
               const file = blobToFile(blob, data.name || "unknown");
 
-              return readBlobAsDataURL(blob).then((url) => ({ url, file }));
+              if (shouldReadAsDataURL) {
+                return readBlobAsDataURL(blob).then((url) => ({ url, file }));
+              }
+
+              return { url: null, file };
             });
         });
       },

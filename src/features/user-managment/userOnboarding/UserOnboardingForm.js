@@ -96,7 +96,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
   };
 
   const onSelectReviewersChange = (values) => {
-    if (values && !values.length && !isCreate.current) {
+    if (values && !values.length && !isCreate) {
       toast.error("You cannot delete last reviewer");
 
       return;
@@ -105,7 +105,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
     values ? dispatch(setUserReviewers(values)) : dispatch(setUserReviewers([]));
 
     // update reviewers for existing onboarding
-    if (!isCreate.current && values) {
+    if (!isCreate && values) {
       dispatch(
         updateUserOnboardingReviewersRequest({
           reviewersIds: values.map((reviewer) => reviewer.id),
@@ -119,7 +119,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
   const onSelectWorkflowChange = (value) => {
     value ? dispatch(setUserWorkflows(value.value)) : dispatch(setUserWorkflows(null));
 
-    if (!isCreate.current && value) {
+    if (!isCreate && value) {
       dispatch(
         updateUserOnboardingWorkflowRequest({
           workflowId: value.value.id,
@@ -164,7 +164,8 @@ const UserOnboardingCreate = ({ isCreate }) => {
     onSelectReviewersChange(newReviewers);
   };
 
-  const isReviewersLimitNotExceed = manager.onboarding.reviewers && manager.onboarding.reviewers.length < 5;
+  const isReviewersLimitNotExceed =
+    manager.onboarding && manager.onboarding.reviewers && manager.onboarding.reviewers.length < 5;
 
   const availableReviewers = reviewers.filter(
     (reviewer) =>
@@ -181,7 +182,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
                 <Col>
                   <div className="survey-assign_body_select-label">Select dForm</div>
                   <Select
-                    isDisabled={!isCreate.current}
+                    isDisabled={!isCreate}
                     styles={selectStyles}
                     components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])}
@@ -196,7 +197,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
                 <Col>
                   <div className="survey-assign_body_select-label">Select workflow</div>
                   <Select
-                    isDisabled={!isCreate.current}
+                    isDisabled={!isCreate}
                     styles={selectStyles}
                     components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
@@ -264,7 +265,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
               <div className="font-weight-bold mr-1">Private</div>
               <div className="" id="onboarding-create-config-is-internal">
                 <Checkbox
-                  disabled={!isCreate.current || manager?.onboarding?.d_form?.is_private}
+                  disabled={!isCreate || manager?.onboarding?.d_form?.is_private}
                   size="sm"
                   color="primary"
                   icon={<Check className="vx-icon" size={12} />}
@@ -285,7 +286,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
             </div>
 
             <div>
-              {isCreate.current ? (
+              {isCreate ? (
                 <div>
                   <NmpButton
                     className="px-4"

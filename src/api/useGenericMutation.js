@@ -17,16 +17,36 @@ export const useGenericMutationDeprecated = ({ mutationFn, queryKey, ...options 
 };
 
 export const useGenericMutation = (mutualConfig, options = {}) => {
-  const { url, method, queryKey, invalidateOptions, transformData, ...clientAPIConfig } = mutualConfig;
+  const {
+    url,
+    method,
+    queryKey,
+    invalidateOptions,
+    transformData,
+    shouldRemoveQuery = false,
+    ...clientAPIConfig
+  } = mutualConfig;
 
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data) => clientAPI[method](url, transformData ? transformData(data) : data, clientAPIConfig),
 
-    onSettled: () => {
-      return queryClient.invalidateQueries(queryKey, invalidateOptions);
-    },
+    onSettled: queryKey
+      ? (...args) => {
+          let exactQueryKey = queryKey;
+
+          if (typeof queryKey === "function") {
+            exactQueryKey = queryKey(...args);
+          }
+
+          if (shouldRemoveQuery) {
+            return queryClient.removeQueries(exactQueryKey);
+          }
+
+          return queryClient.invalidateQueries(exactQueryKey, invalidateOptions);
+        }
+      : undefined,
 
     ...options,
   });

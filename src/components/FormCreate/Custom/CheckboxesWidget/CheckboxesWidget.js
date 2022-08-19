@@ -18,6 +18,7 @@ export const CustomCheckbox = ({
   onClick,
   onChange,
   defaultChecked,
+  required,
 }) => {
   return (
     <div className={`custom-checkbox-container ${className ? className : ""}`}>
@@ -37,7 +38,7 @@ export const CustomCheckbox = ({
       </span>
 
       <label htmlFor={label} className="custom-checkbox_label">
-        {label}
+        {label} {!!required && <span className="field-label_asterix">*</span>}
       </label>
     </div>
   );

@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
-import UpdateApplicationToLatestVersion from "features/user-managment/userOnboarding/parts/UpdateApplicationToLatestVersion";
-import { useDispatch, useSelector } from "react-redux";
-import Spinner from "reactstrap/lib/Spinner";
-import appSlice from "app/slices/appSlice";
 import "./styles.scss";
-import _ from "lodash";
 
+import _ from "lodash";
+import Spinner from "reactstrap/lib/Spinner";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 
-import { selectCurrentManager, selectSelectedManagerAssignedSurveys } from "app/selectors/userSelectors";
+import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { selectCurrentManager, selectSelectedManagerAssignedSurveys } from "app/selectors/userSelectors";
+
+import UpdateApplicationToLatestVersion from "features/user-managment/userOnboarding/parts/UpdateApplicationToLatestVersion";
 
 const { updateApllicationsOrderRequest, getAssignedSurveysRequest, getOnboardingsByUserRequest } = appSlice.actions;
 
@@ -29,6 +30,25 @@ export const CustomTable = ({ handleRowClick, selectedManager, selectedAssignedS
 
     setData(sortOrder);
   }, [manager.onboardings, assignedSurveys]);
+
+  // While refactor it to RQ is not possible. The Application tab of the user management, which requires
+  // update on visibility change. RQ does it as window focus option.
+  if (typeof document.hidden !== "undefined") {
+    // Some browsers do not support it
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(() => {
+      const onVisibilityChange = (event) => {
+        if (!document.hidden) {
+          dispatch(getOnboardingsByUserRequest(manager));
+        }
+      };
+
+      document.addEventListener("visibilitychange", onVisibilityChange, false);
+      return () => document.removeEventListener("visibilitychange", onVisibilityChange, false);
+      // Only mounting lifecycle interests
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+  }
 
   const SortableCont = SortableContainer(({ children }) => {
     return <tbody>{children}</tbody>;

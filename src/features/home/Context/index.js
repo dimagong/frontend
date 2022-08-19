@@ -13,6 +13,7 @@ import Dashboard from "../ContextSearch/Dashboard";
 import MemberFirmsContainer from "../ContextSearch/MemberFirms";
 import MasterSchema from "../../MasterSchema";
 import ResourceManager from "../../ResourceManager";
+import Applications from "features/Applications";
 
 const Context = ({ selectedContext }) => {
   const isCSshown = useSelector((state) => state.app.isContextSearchVisible);
@@ -29,8 +30,8 @@ const Context = ({ selectedContext }) => {
             Invitations: <UserInvitations />,
             "Create notification": <NotificationsForm isCreate={true} />,
             Notification: <NotificationsForm isCreate={false} />,
-            "Create dForm": <DFormForm isCreate={true} />,
-            dForm: <DFormForm isCreate={false} />,
+            "Create dForm": <Applications isCreate={true} />,
+            dForm: <Applications isCreate={false} />,
             "Create workflow": <WorkflowForm workflowModalType="Create" />,
             WorkFlow: <WorkflowForm workflowModalType="Edit" />,
             Organization: <Organization />,

@@ -11,7 +11,7 @@ const Index = (props) => {
     fieldType = "number";
   }
 
-  if (props.schema.format === "longText") {
+  if (props.schema?.format === "longText") {
     return <LongTextWidget props={props} />;
   }
 

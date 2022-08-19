@@ -1,91 +1,86 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Card, CardHeader, CardTitle, CardBody, Col, Spinner } from "reactstrap";
 import { RefreshCw } from "react-feather";
-import FormCreate from "components/FormCreate/FormCreate";
+import React, { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectManager, selectLoading } from "app/selectors";
-import { debounce } from "lodash";
-import moment from "moment";
+import { Card, CardHeader, CardTitle, CardBody, Col } from "reactstrap";
+
+import DForm from "components/DForm";
 
 import appSlice from "app/slices/appSlice";
+import { selectManager } from "app/selectors";
 
-const {
-  updateDFormRequest,
-  submitdFormDataRequest,
-  changedFormStatusRequest,
-  getUserByIdRequest,
-  submitdFormNewVersionRequest,
-} = appSlice.actions;
+const { getUserByIdRequest, submitdFormNewVersionRequest } = appSlice.actions;
 
-const initRefreshClassName = "bg-hover-icon";
+// const initRefreshClassName = "bg-hover-icon";
 
-const UpdatedAtText = ({ loading, date }) => {
-  if (loading) {
-    return (
-      <div className="d-flex">
-        <div>Saving progress..</div>
-        {<Spinner className="ml-1" color="success" />}
-      </div>
-    );
-  }
+// const UpdatedAtText = ({ loading, date }) => {
+//   if (loading) {
+//     return (
+//       <div className="d-flex">
+//         <div>Saving progress..</div>
+//         {<Spinner className="ml-1" color="success" />}
+//       </div>
+//     );
+//   }
+//
+//   // return `Progress saved: ${moment(manager.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`;
+//   return `Progress saved: ${moment(date).format("YYYY-MM-DD HH:mm:ss")}`;
+// };
 
-  // return `Progress saved: ${moment(manager.onboarding.d_form.updated_at).format('YYYY-MM-DD HH:mm:ss')}`;
-  return `Progress saved: ${moment(date).format("YYYY-MM-DD HH:mm:ss")}`;
-};
+// TODO handle updated at text
 
-const UserOnboardingDForm = ({ isManualSave }) => {
-  const [isStateConfig] = useState(false);
-  const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
+const UserOnboardingDForm = ({
+  onRefetch,
+  isRefetching,
+  isManualSave,
+  dFormId,
+  formData,
+  formValues,
+  onFieldEvent,
+}) => {
+  // const [isStateConfig] = useState(false);
+  // const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
   const manager = useSelector(selectManager);
-  const loading = useSelector(selectLoading);
+  // const loading = useSelector(selectLoading);
   const dispatch = useDispatch();
 
-  const updatedAt = React.useMemo(() => manager.onboarding.d_form.updated_at, [manager.onboarding.d_form.updated_at]);
-  const updatedAtTextLoding = useRef(false);
+  // const updatedAt = React.useMemo(() => manager.onboarding.d_form.updated_at, [manager.onboarding.d_form.updated_at]);
+  // const updatedAtTextLoding = useRef(false);
   const isFormMutated = useRef(false);
   const tempData = useRef(null);
 
-  const handleSave = (data, dForm, userId) => {
-    updatedAtTextLoding.current = true;
+  // const handleSave = (data, dForm, userId) => {
+  //   updatedAtTextLoding.current = true;
+  //
+  //   dispatch(submitdFormDataRequest({ dForm: dForm, data }));
+  //   // todo for refresh (refactor)
+  //   dispatch(getUserByIdRequest({ userId: userId }));
+  // };
 
-    dispatch(submitdFormDataRequest({ dForm: dForm, data }));
-    // todo for refresh (refactor)
-    dispatch(getUserByIdRequest({ userId: userId }));
-  };
+  // const debounceOnSave = useRef(debounce(handleSave, 1500));
+  // const refreshOnboarding = useRef(
+  //   debounce((userId) => {
+  //     dispatch(getUserByIdRequest({ userId: userId }));
+  //   }, 1500)
+  // );
 
-  const debounceOnSave = useRef(debounce(handleSave, 1500));
-  const refreshOnboarding = useRef(
-    debounce((userId) => {
-      dispatch(getUserByIdRequest({ userId: userId }));
-    }, 1500)
-  );
+  // const handleFormChange = (data) => {
+  //   if (isManualSave) {
+  //     if (!isFormMutated.current) {
+  //       isFormMutated.current = true;
+  //     }
+  //     tempData.current = data;
+  //   } else {
+  //     debounceOnSave.current(data, manager.onboarding.d_form, manager.id);
+  //   }
+  // };
 
-  const handleFormChange = (data) => {
-    if (isManualSave) {
-      if (!isFormMutated.current) {
-        isFormMutated.current = true;
-      }
-      tempData.current = data;
-    } else {
-      debounceOnSave.current(data, manager.onboarding.d_form, manager.id);
-    }
-  };
+  // const submitDForm = (dForm, { name, description, protected_properties }) => {
+  //   dispatch(updateDFormRequest({ ...dForm, name, description, protected_properties }));
+  // };
 
-  useEffect(() => {
-    if (!loading) {
-      refreshClassName === `${initRefreshClassName} rotating` && setRefreshClassName(initRefreshClassName);
-      updatedAtTextLoding.current && (updatedAtTextLoding.current = false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
-
-  const submitDForm = (dForm, { name, description, protected_properties }) => {
-    dispatch(updateDFormRequest({ ...dForm, name, description, protected_properties }));
-  };
-
-  const statusChanged = (status) => {
-    dispatch(changedFormStatusRequest({ dForm: manager.onboarding.d_form, status }));
-  };
+  // const statusChanged = (status) => {
+  //   dispatch(changedFormStatusRequest({ dForm: manager.onboarding.d_form, status }));
+  // };
 
   const submitOnboardingForm = (data) => {
     if (isManualSave) {
@@ -95,10 +90,9 @@ const UserOnboardingDForm = ({ isManualSave }) => {
     dispatch(submitdFormNewVersionRequest({ dForm: manager.onboarding.d_form, data, userId: manager.id }));
     dispatch(getUserByIdRequest({ userId: manager.id }));
   };
+
   const handleRefresh = () => {
-    refreshOnboarding.current(manager.id);
-    setRefreshClassName(`${initRefreshClassName} rotating`);
-    setRefreshClassName(`${initRefreshClassName} rotating`);
+    onRefetch();
   };
 
   const handlePageLeave = (e) => {
@@ -122,28 +116,26 @@ const UserOnboardingDForm = ({ isManualSave }) => {
         }
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <Col md="12" className="mb-4">
+    <Col md="12">
       <Card className="dform border">
         <CardHeader className="m-0">
           <CardTitle>Onboarding dForm</CardTitle>
           <div>
-            {/*{*/}
-            {/*  isStateConfig ?*/}
-            {/*    <EyeOff size={15} className="cursor-pointer mr-1"*/}
-            {/*            onClick={switchStateConfig}/>*/}
-            {/*    :*/}
-            {/*    <Eye size={15} className="cursor-pointer mr-1"*/}
-            {/*         onClick={switchStateConfig}/>*/}
-            {/*}*/}
-            <RefreshCw className={refreshClassName} size={15} onClick={handleRefresh} />
+            <RefreshCw
+              className={`bg-hover-icon ${isRefetching ? "rotating" : ""}`}
+              size={15}
+              onClick={handleRefresh}
+            />
           </div>
         </CardHeader>
         <CardBody className="pt-0">
           <hr />
-          <FormCreate
+          <DForm dFormId={dFormId} data={formData} values={formValues} onFieldEvent={onFieldEvent} />
+          {/*<FormCreate
             isShowErrors={false}
             fileLoader={true}
             submitDForm={submitDForm}
@@ -163,7 +155,7 @@ const UserOnboardingDForm = ({ isManualSave }) => {
             // reInit={(reInit, context) => {
             //   this.reInitForm = reInit.bind(context)
             // }}
-          />
+          />*/}
         </CardBody>
       </Card>
     </Col>

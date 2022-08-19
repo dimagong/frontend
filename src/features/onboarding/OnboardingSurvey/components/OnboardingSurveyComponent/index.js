@@ -88,7 +88,7 @@ const OnboardingSurveyComponent = ({
           <CardBody>
             {isLoading ? (
               <div className="onboarding-survey_loading">
-                <Spinner color="primary" size={40} />
+                <Spinner color="primary" size="40" />
               </div>
             ) : (
               <>

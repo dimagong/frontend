@@ -1,0 +1,15 @@
+.conditional-element-render {
+  &_no-conditions {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  &_condition-title {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    border-bottom: 1px solid #cecece;
+    margin-bottom: 20px;
+    font-size: 20px;
+    padding-top: 10px;
+  }
+}
