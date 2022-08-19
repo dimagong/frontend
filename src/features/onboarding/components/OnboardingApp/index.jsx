@@ -20,7 +20,17 @@ import { fieldValidationSchemas, textSchema } from "./validationOnboarding";
 
 const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const [applicationSchema, setApplicationSchema] = useState(null);
+
   const [applicationValues, setApplicationValues] = useState(null);
+
+  const appProperties = applicationSchema
+    ? Object.values(applicationSchema.fields).map((app) => {
+        return {
+          value: applicationValues[app.masterSchemaPropertyId].value,
+          ...app,
+        };
+      })
+    : [];
 
   const { isLoading: isFormLoading } = useDFormByIdQuery(
     { id: selectedForm.id },
@@ -61,14 +71,32 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     }
   );
 
+  const validateFieldsSubmit = (fields) => {
+    const checkSubmit = fields.map((field) => {
+      const selectedValidationSchema = fieldValidationSchemas[field.type];
+      try {
+        selectedValidationSchema.validateSync(field);
+      } catch (validationError) {
+        return { isValid: false, errors: validationError };
+      }
+      return { isValid: true };
+    });
+    return checkSubmit.find((el) => !el.isValid) ?? null;
+  };
+
   const handleApplicationSubmit = () => {
+    const checkFields = validateFieldsSubmit(appProperties);
+    if (checkFields) {
+      console.log("checkFields error", checkFields);
+      toast.error(checkFields.errors.message);
+    }
     submitDFormForReview.mutate();
   };
 
-  const validateFields = (checkFieldValue, typeField) => {
-    const selectedValidationSchema = fieldValidationSchemas[typeField];
+  const validateFields = (field) => {
+    const selectedValidationSchema = fieldValidationSchemas[field.type];
     try {
-      selectedValidationSchema.validateSync(checkFieldValue);
+      selectedValidationSchema.validateSync(field);
     } catch (validationError) {
       return { isValid: false, errors: validationError };
     }
@@ -83,7 +111,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
       [field.masterSchemaPropertyId]: { ...(applicationValues[field.masterSchemaPropertyId] || {}), value },
     });
 
-    const { errors } = validateFields({ value }, field.type);
+    const { errors } = validateFields({ value, ...field });
     if (errors) {
       console.log("validateFields errors", errors);
       toast.error(errors.message);
