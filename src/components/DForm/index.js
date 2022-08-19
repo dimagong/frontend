@@ -1,11 +1,12 @@
+import "./styles.scss";
+
 import React, { useState, useEffect } from "react";
 
-import SectionsSideBar from "./Components/SectionsSideBar";
-import SectionsComponent from "./Components/Sections";
-import { DFormWidgetEventsTypes } from "./Components/Fields/Components/DFormWidgets/events";
+import { DFormContextProvider } from "./DFormContext";
 
-import "./styles.scss";
-import { DFormContextProvider } from "./dFormContext";
+import SectionsComponent from "./Components/Sections";
+import SectionsSideBar from "./Components/SectionsSideBar";
+import { DFormWidgetEventsTypes } from "./Components/Fields/Components/DFormWidgets/events";
 
 const DForm = ({
   dFormId,

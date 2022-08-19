@@ -1,172 +1,56 @@
 import "./style.scss";
 
-import { X } from "react-feather";
-import { Badge, Spinner } from "reactstrap";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
-import {
-  useApplicationFileQuery,
-  useCreateApplicationUserFilesMutation,
-  useDeleteApplicationUserFileMutation,
-} from "features/user-managment/userEdit/userQueries";
-import { useMVAFileQuery } from "api/Onboarding/prospectUserQuery";
+import { useDFormContext } from "components/DForm/DFormContext";
 
-import { useDFormContext } from "components/DForm/dFormContext";
+import { useCreateMVAUserFilesMutation } from "api/Onboarding/prospectUserQuery";
+import { useCreateApplicationUserFilesMutation } from "features/user-managment/userEdit/userQueries";
 
 import FieldLabel from "../FieldLabel";
 
-const FilePreview = ({ msFieldId, fileId, name }) => {
-  const { dFormId, isConfigurable, isMemberView } = useDFormContext();
+import { FilesPreview } from "./FilesPreview";
+import { MemberFilePreview } from "./MemberFilePreview";
+import { ManagerFilePreview } from "./ManagerFilePreview";
 
+const multiple = false;
+
+const File = (props) => {
+  const { dFormId, isMemberView } = useDFormContext();
+
+  const files = props.value;
+  const masterSchemaFieldId = props.masterSchemaPropertyId;
+
+  const [uploadingFiles, setUploadingFiles] = useState([]);
   // In next update it will be refactored with DI as Network API provider which will provide
   // an clientHttpAPI service that is abstraction for any implementation. So, in case when FilePreview
   // is used in member view scope it will use the service that implements an clientHttpAPI, and in case
   // when it is used in another scope that provide Network it will use it correspondingly.
-  let fileQuery;
-  if (isMemberView) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    fileQuery = useMVAFileQuery(
-      {
-        applicationId: dFormId,
-        msFieldId,
-        fileId,
-      },
-      { enabled: !isConfigurable && !!fileId }
-    );
-  } else {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    fileQuery = useApplicationFileQuery(
-      {
-        applicationId: dFormId,
-        msFieldId,
-        fileId,
-      },
-      { enabled: !isConfigurable && !!fileId }
-    );
-  }
+  const useCreateUserFilesMutation = isMemberView
+    ? useCreateMVAUserFilesMutation
+    : useCreateApplicationUserFilesMutation;
+  const params = { dFormId, masterSchemaFieldId };
+  const createUserFilesMutation = useCreateUserFilesMutation(params, {
+    onError: () => setUploadingFiles([]),
+    onSuccess: () => setUploadingFiles([]),
+  });
 
-  const [objectUrl, setObjectUrl] = useState(null);
-
-  useEffect(() => {
-    if (!fileQuery.data.file) {
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(fileQuery.data.file);
-
-    setObjectUrl(objectUrl);
-
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [fileQuery.data.file]);
-
-  const removeFileMutation = useDeleteApplicationUserFileMutation({ applicationId: dFormId });
-
-  const onRemoveButtonClick = () => {
-    if (!window.confirm("Are you sure you want to remove the file ?")) {
-      return;
-    }
-
-    removeFileMutation.mutate({ master_schema_field_id: msFieldId, file_id: fileId });
-  };
-
-  if (!fileId || fileQuery.isLoading) {
-    return (
-      <div className="d-flex align-items-center dform-file__item">
-        <div className="width-80-per dform-file__item-name">{name}</div>
-
-        <div className="d-flex justify-content-end dform-file__item-actions">
-          <Badge color="primary" className="ml-1 mr-1">
-            Uploading
-          </Badge>
-
-          <Spinner size="sm" />
-        </div>
-      </div>
-    );
-  }
-
-  if (removeFileMutation.isLoading) {
-    return (
-      <div className="d-flex align-items-center dform-file__item">
-        <div className="width-80-per dform-file__item-name">{name}</div>
-
-        <div className="d-flex justify-content-end dform-file__item-actions">
-          <Badge color="danger" className="ml-1 mr-1">
-            Removing
-          </Badge>
-
-          <Spinner size="sm" />
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="d-flex align-items-center dform-file__item">
-      <div className="d-block dform-file__item-name">{name}</div>
-
-      <div className="d-flex justify-content-end dform-file__item-actions">
-        <Badge
-          color="primary"
-          tag="a"
-          href={objectUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="ml-1 mr-1 text-white"
-        >
-          Download
-        </Badge>
-
-        <button className="dform-file__item-remove-btn" type="button" onClick={onRemoveButtonClick} disabled={!fileId}>
-          <X size="15" />
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const FilesPreview = ({ msFieldId, files }) => {
-  return (
-    <div className="mb-2">
-      {files.map((file, idx) => (
-        <FilePreview msFieldId={msFieldId} fileId={file.file_id} name={file.name} key={idx} />
-      ))}
-    </div>
-  );
-};
-
-const fieldType = "file";
-const multiple = false;
-
-const File = (props) => {
   const inputFileRef = useRef();
 
-  const [loadingFiles, setLoadingFiles] = useState([]);
-  const files = useMemo(() => [...loadingFiles, ...(props.value || [])], [loadingFiles, props.value]);
-
-  const { dFormId, isMemberView } = useDFormContext();
-  const createApplicationUserFilesMutation = useCreateApplicationUserFilesMutation(
-    { applicationId: dFormId },
-    {
-      onError: () => setLoadingFiles([]),
-      onSuccess: () => setLoadingFiles([]),
-    }
-  );
-
   const onInputFileChange = (event) => {
-    const formData = new FormData();
-    const newLoadingFiles = loadingFiles;
     const files = Array.from(event.target.files);
+    const formData = new FormData();
 
     formData.append("master_schema_field_id", props.masterSchemaPropertyId);
 
+    const uploadingFiles = [];
     files.forEach((file, idx) => {
-      newLoadingFiles.push({ name: file.name });
+      uploadingFiles.push({ name: file.name });
       formData.append(`files[${idx}]`, file, file.name);
     });
-    setLoadingFiles([...newLoadingFiles]);
 
-    createApplicationUserFilesMutation.mutate(formData);
+    setUploadingFiles(uploadingFiles);
+    createUserFilesMutation.mutate(formData);
   };
 
   const onDropZoneClick = () => {
@@ -423,12 +307,36 @@ const File = (props) => {
     <div className="custom-form-filed form-create_custom-text-widget">
       <FieldLabel label={props.label} required={props.isRequired} />
 
-      {files.length > 0 ? <FilesPreview msFieldId={props.masterSchemaPropertyId} files={files} /> : null}
+      <FilesPreview
+        files={files}
+        uploadingFiles={uploadingFiles}
+        masterSchemaFieldId={masterSchemaFieldId}
+        // In next update it will be refactored with DI as Network API provider which will provide
+        // an clientHttpAPI service that is abstraction for any implementation. So, in case when FilePreview
+        // is used in member view scope it will use the service that implements an clientHttpAPI, and in case
+        // when it is used in another scope that provide Network it will use it correspondingly.
+        previewFile={(file) => {
+          return isMemberView ? (
+            <MemberFilePreview
+              name={file.name}
+              fileId={file.file_id}
+              masterSchemaFieldId={masterSchemaFieldId}
+              key={file.file_id}
+            />
+          ) : (
+            <ManagerFilePreview
+              name={file.name}
+              fileId={file.file_id}
+              masterSchemaFieldId={masterSchemaFieldId}
+              key={file.file_id}
+            />
+          );
+        }}
+      />
 
-      {/* ToDo: disabled state */}
       {/* ToDo: Hide drop zone when multiple is false and there is one file */}
       <div
-        className="d-flex align-items-center text-center p-1 dform-file__drop-zone"
+        className="d-flex align-items-center justify-content-center p-1 dform-file__drop-zone"
         onClick={onDropZoneClick}
         // onDrop={onDrop}
         // onDragOver={onDragOver}
@@ -438,9 +346,9 @@ const File = (props) => {
         <span>Drag 'n' Drop files here or click to open file manager</span>
 
         <input
-          type={fieldType}
+          type="file"
           multiple={multiple}
-          disabled={props.disabled || createApplicationUserFilesMutation.isLoading}
+          disabled={props.disabled || createUserFilesMutation.isLoading}
           onChange={onInputFileChange}
           className="dform-file__input"
           ref={inputFileRef}

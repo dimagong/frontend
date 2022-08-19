@@ -104,7 +104,7 @@ const FormComponent = ({ groupFields, data, onElementClick, group, values, onFie
           if (field.type === "file") {
             fieldValue = values[field.masterSchemaPropertyId].files;
           } else {
-            fieldValue = values[field.masterSchemaPropertyId].value;
+            fieldValue = values[field.masterSchemaPropertyId].value ?? "";
           }
         }
 
@@ -119,6 +119,7 @@ const FormComponent = ({ groupFields, data, onElementClick, group, values, onFie
           <div
             className={`editable px-0 custom-form-field ${field.classes ? field.classes : "col-12"}`}
             onClick={() => onElementClick({ ...field, groupId: group }, "field")}
+            key={formField}
           >
             <FormFieldElement
               {...field}

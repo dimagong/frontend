@@ -17,9 +17,9 @@ import OnboardingComponent from "./components/Onboarding";
 import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 
 const useCallCollectQuery = () => {
-  const userProspectProfile = useProspectUserProfileQuery();
-  const userSurveyPassing = useSurveyPassingQuery();
-  const useDForms = useDFormsQuery();
+  const userProspectProfile = useProspectUserProfileQuery({ staleTime: Number.Infinity });
+  const userSurveyPassing = useSurveyPassingQuery({ staleTime: 600_000 /* 10min */ });
+  const useDForms = useDFormsQuery({ staleTime: 600_000 /* 10min */ });
   return { userProspectProfile, userSurveyPassing, useDForms };
 };
 

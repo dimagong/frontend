@@ -1,5 +1,6 @@
-import { useMutation } from "react-query";
+import { merge } from "lodash";
 import { useDispatch } from "react-redux";
+import { useMutation, useQueryClient } from "react-query";
 
 import { clientAPI } from "api/clientAPI";
 import { createQueryKey } from "api/createQueryKey";
@@ -48,17 +49,25 @@ export const MVADFormsQueryKeys = {
   all: () => [MVADFormsQueryKey],
   dFormById: (dFormId) => [...MVADFormsQueryKeys.all(), { dFormId }],
   dFormValuesById: (dFormId) => [...MVADFormsQueryKeys.dFormById(dFormId), "values"],
+
+  files: ({ dFormId, masterSchemaFieldId }) => [
+    ...MVADFormsQueryKeys.dFormValuesById(dFormId),
+    { masterSchemaFieldId },
+    "files",
+  ],
+  file: ({ dFormId, masterSchemaFieldId, fileId }) => [
+    ...MVADFormsQueryKeys.files({ dFormId, masterSchemaFieldId }),
+    { fileId },
+  ],
 };
 
-export const useDFormsQuery = (options = {}) => {
+export const useDFormsQuery = (options) => {
   return useGenericQuery(
     {
       url: `/member-view-api/dform`,
       queryKey: MVADFormsQueryKeys.all(),
     },
-    {
-      ...options,
-    }
+    options
   );
 };
 
@@ -186,6 +195,7 @@ export const useNotifyIntroductionPageSeeingMutation = (payload, options = {}) =
     },
     {
       onError: (error) => dispatch(removeUserNotifyError(error.message)),
+      ...options,
     }
   );
 };
@@ -266,10 +276,64 @@ export const useGetAllSurveyQuestionsQuery = (payload, options = {}) => {
 
 // MVA Application Files
 
-export const useMVAFileQuery = ({ applicationId, msFieldId, fileId }, options) => {
+export const useCreateMVAUserFilesMutation = ({ dFormId, masterSchemaFieldId }, options = {}) => {
+  const queryClient = useQueryClient();
+
+  return useGenericMutation(
+    {
+      method: "post",
+      url: `member-view-api/dform/${dFormId}/user-files`,
+    },
+    {
+      onSettled: (data, error, ...args) => {
+        if (!error) {
+          const files = data;
+          const currentDFormValues = queryClient.getQueryData(MVADFormsQueryKeys.dFormValuesById(dFormId));
+          currentDFormValues[masterSchemaFieldId] = { ...currentDFormValues[masterSchemaFieldId], files };
+
+          queryClient.setQueriesData(MVADFormsQueryKeys.dFormValuesById(dFormId), currentDFormValues);
+        }
+        options.onSettled && options.onSettled(data, error, ...args);
+      },
+      ...options,
+    }
+  );
+};
+
+export const useDeleteMVAUserFileMutation = ({ dFormId, masterSchemaFieldId, fileId }, options = {}) => {
+  const queryClient = useQueryClient();
+
+  return useGenericMutation(
+    {
+      method: "delete",
+      url: `member-view-api/dform/${dFormId}/user-file`,
+    },
+    {
+      onSettled: (data, error, ...args) => {
+        if (!error) {
+          const currentDFormValues = queryClient.getQueryData(MVADFormsQueryKeys.dFormValuesById(dFormId));
+
+          currentDFormValues[masterSchemaFieldId] = {
+            ...currentDFormValues[masterSchemaFieldId],
+            files: currentDFormValues[masterSchemaFieldId].files.filter(({ file_id }) => file_id !== fileId),
+          };
+
+          queryClient.removeQueries(MVADFormsQueryKeys.file({ dFormId, masterSchemaFieldId, fileId }));
+          queryClient.setQueriesData(MVADFormsQueryKeys.dFormValuesById(dFormId), currentDFormValues);
+        }
+        options.onSettled && options.onSettled(data, error, ...args);
+      },
+      ...options,
+    }
+  );
+};
+
+export const useMVAUserFileQuery = ({ dFormId, masterSchemaFieldId, fileId }, options) => {
   return useFileQuery(
     {
-      url: `member-view-api/dform/${applicationId}/user-file-download?master_schema_field_id=${msFieldId}&file_id=${fileId}`,
+      url: `member-view-api/dform/${dFormId}/user-file-download?master_schema_field_id=${masterSchemaFieldId}&file_id=${fileId}`,
+      queryKey: MVADFormsQueryKeys.file({ dFormId, masterSchemaFieldId, fileId }),
+      shouldReadAsDataURL: false,
     },
     options
   );

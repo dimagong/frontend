@@ -1,24 +1,29 @@
+import { useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 
 import { createQueryKey } from "api/createQueryKey";
 import { useGenericQuery } from "api/useGenericQuery";
+import { useFileQuery } from "api/file/useFileQueries";
 import { useGenericMutation } from "api/useGenericMutation";
 
 import appSlice from "app/slices/appSlice";
 import { selectCurrentManager } from "app/selectors/userSelectors";
-import { useFileQuery } from "../../../api/file/useFileQueries";
 
 const ApplicationQueryKey = createQueryKey("Application");
 
 const ApplicationQueryKeys = {
   all: () => [ApplicationQueryKey],
-  byId: (applicationId) => [...ApplicationQueryKeys.all(), { applicationId }],
-  valuesById: (applicationId) => [...ApplicationQueryKeys.byId(applicationId), "values"],
+  byId: (dFormId) => [...ApplicationQueryKeys.all(), { dFormId }],
+  valuesById: (dFormId) => [...ApplicationQueryKeys.byId(dFormId), "values"],
 
-  file: ({ applicationId, msFieldId, fileId }) => [
-    ...ApplicationQueryKeys.byId(applicationId),
-    "file",
-    { msFieldId, fileId },
+  files: ({ dFormId, masterSchemaFieldId }) => [
+    ...ApplicationQueryKeys.valuesById(dFormId),
+    "files",
+    { masterSchemaFieldId },
+  ],
+  file: ({ dFormId, masterSchemaFieldId, fileId }) => [
+    ...ApplicationQueryKeys.files({ dFormId, masterSchemaFieldId }),
+    { fileId },
   ],
 };
 
@@ -80,33 +85,64 @@ export const useUserApplicationValuesMutation = ({ userApplicationId }, options)
 
 // Application Files
 
-export const useCreateApplicationUserFilesMutation = ({ applicationId }, options) => {
+export const useCreateApplicationUserFilesMutation = ({ dFormId, masterSchemaFieldId }, options = {}) => {
+  const queryClient = useQueryClient();
+
   return useGenericMutation(
     {
       method: "post",
-      url: `api/dform/${applicationId}/user-files`,
-      queryKey: ApplicationQueryKeys.valuesById(applicationId),
+      url: `api/dform/${dFormId}/user-files`,
     },
-    options
+    {
+      onSettled: (data, error, ...args) => {
+        if (!error) {
+          const files = data;
+          const currentDFormValues = queryClient.getQueryData(ApplicationQueryKeys.valuesById(dFormId));
+          currentDFormValues[masterSchemaFieldId] = { ...currentDFormValues[masterSchemaFieldId], files };
+
+          queryClient.setQueriesData(ApplicationQueryKeys.valuesById(dFormId), currentDFormValues);
+        }
+        options.onSettled && options.onSettled(data, error, ...args);
+      },
+      ...options,
+    }
   );
 };
 
-export const useDeleteApplicationUserFileMutation = ({ applicationId }, options) => {
+export const useDeleteApplicationUserFileMutation = ({ dFormId, masterSchemaFieldId, fileId }, options = {}) => {
+  const queryClient = useQueryClient();
+
   return useGenericMutation(
     {
       method: "delete",
-      url: `api/dform/${applicationId}/user-file`,
-      queryKey: ApplicationQueryKeys.valuesById(applicationId),
+      url: `api/dform/${dFormId}/user-file`,
     },
-    options
+    {
+      onSettled: (data, error, ...args) => {
+        if (!error) {
+          const currentDFormValues = queryClient.getQueryData(ApplicationQueryKeys.valuesById(dFormId));
+
+          currentDFormValues[masterSchemaFieldId] = {
+            ...currentDFormValues[masterSchemaFieldId],
+            files: currentDFormValues[masterSchemaFieldId].files.filter(({ file_id }) => file_id !== fileId),
+          };
+
+          queryClient.setQueriesData(ApplicationQueryKeys.valuesById(dFormId), currentDFormValues);
+          queryClient.removeQueries(ApplicationQueryKeys.file({ dFormId, masterSchemaFieldId, fileId }));
+        }
+        options.onSettled && options.onSettled(data, error, ...args);
+      },
+      ...options,
+    }
   );
 };
 
-export const useApplicationFileQuery = ({ applicationId, msFieldId, fileId }, options) => {
+export const useApplicationUserFileQuery = ({ dFormId, masterSchemaFieldId, fileId }, options) => {
   return useFileQuery(
     {
-      url: `api/dform/${applicationId}/user-file-download?master_schema_field_id=${msFieldId}&file_id=${fileId}`,
-      queryKey: ApplicationQueryKeys.file({ applicationId, msFieldId, fileId }),
+      url: `api/dform/${dFormId}/user-file-download?master_schema_field_id=${masterSchemaFieldId}&file_id=${fileId}`,
+      queryKey: ApplicationQueryKeys.file({ dFormId, masterSchemaFieldId, fileId }),
+      shouldReadAsDataURL: false,
     },
     options
   );
