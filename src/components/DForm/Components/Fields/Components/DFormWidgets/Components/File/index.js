@@ -18,7 +18,7 @@ const multiple = false;
 const File = (props) => {
   const { dFormId, isMemberView } = useDFormContext();
 
-  const files = props.value;
+  const files = Array.from(props.value);
   const masterSchemaFieldId = props.masterSchemaPropertyId;
 
   const [uploadingFiles, setUploadingFiles] = useState([]);
