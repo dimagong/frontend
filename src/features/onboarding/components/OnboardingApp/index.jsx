@@ -23,14 +23,15 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
 
   const [applicationValues, setApplicationValues] = useState(null);
 
-  const appProperties = applicationSchema
-    ? Object.values(applicationSchema.fields).map((app) => {
-        return {
-          value: applicationValues[app.masterSchemaPropertyId].value,
-          ...app,
-        };
-      })
-    : [];
+  const appProperties =
+    applicationSchema && applicationValues
+      ? Object.values(applicationSchema.fields).map((app) => {
+          return {
+            value: applicationValues[app.masterSchemaPropertyId].value,
+            ...app,
+          };
+        })
+      : [];
 
   const { isLoading: isFormLoading } = useDFormByIdQuery(
     { id: selectedForm.id },
