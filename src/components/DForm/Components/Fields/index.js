@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 import formComponents from "./Components/DFormWidgets";
 import { DFormWidgetEventsTypes } from "./Components/DFormWidgets/events";
+import { FIELD_TYPES } from "../../../../features/Applications/constants";
 
 const FormComponent = ({ groupFields, data, onElementClick, group, values, onFieldEvent, isConfigurable }) => {
   const [formData, setFormData] = useState({});
@@ -95,13 +96,12 @@ const FormComponent = ({ groupFields, data, onElementClick, group, values, onFie
         if (field.isHidden) return null;
 
         const FormFieldElement = formComponents[field.type];
-        // const fieldId = formField.master_schema_field_id;
 
         //TODO handle default empty value for each widget
         let fieldValue = "";
 
         if (!field.isNotMasterSchemaRelated && values && values[field.masterSchemaPropertyId]) {
-          if (field.type === "file") {
+          if ([FIELD_TYPES.file, FIELD_TYPES.fileList].includes(field.type)) {
             fieldValue = values[field.masterSchemaPropertyId].files;
           } else {
             fieldValue = values[field.masterSchemaPropertyId].value ?? "";

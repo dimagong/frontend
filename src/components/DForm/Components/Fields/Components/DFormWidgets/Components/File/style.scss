@@ -10,6 +10,10 @@
     color: currentColor;
   }
 
+  &__file-list + &__drop-zone {
+    margin-top: 2rem;
+  }
+
   &__input {
     left: -9999;
     position: absolute;
@@ -27,7 +31,7 @@
   }
 
   &__item-name {
-    width: 70%;
+    width: 60%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -41,7 +45,7 @@
   }
 
   &__item-actions {
-    width: 30%;
+    width: 40%;
   }
 
   &__item-remove-btn {

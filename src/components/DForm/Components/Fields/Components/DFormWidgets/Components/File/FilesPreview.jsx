@@ -13,7 +13,7 @@ export const FilesPreview = (props) => {
   }
 
   return (
-    <div className="mb-2">
+    <div className="dform-file__file-list">
       {files.map((file, index) => previewFile(file, index))}
 
       {uploadingFiles.map((file, idx) => (
