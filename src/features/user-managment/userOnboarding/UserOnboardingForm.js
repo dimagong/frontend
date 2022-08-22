@@ -242,14 +242,9 @@ const UserOnboardingCreate = ({ isCreate }) => {
                 <Col>
                   <div className="survey-assign_body_reviewers">
                     {manager.onboarding.reviewers.map((reviewer) => (
-                      <div className="reviewer-tile">
+                      <div className="reviewer-tile" key={reviewer.id}>
                         <div className="reviewer-tile_name">{`${reviewer.first_name} ${reviewer.last_name}`}</div>
-                        <div
-                          className="reviewer-tile_cross"
-                          onClick={() => {
-                            handleReviewerRemove(reviewer);
-                          }}
-                        >
+                        <div className="reviewer-tile_cross" onClick={() => handleReviewerRemove(reviewer)}>
                           <X color="white" size={15} />
                         </div>
                       </div>
