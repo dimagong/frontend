@@ -50,9 +50,9 @@ const OnboardingSurveyStatusComponent = ({
 
   //const isSurveyPassed = surveyStats && surveyStats.total >= surveyStats.min_percent_pass;
 
-  console.log("status", status);
+  console.log("children", children);
 
-  const [SurveyStatusTopbar, SurveyStatusSection, , ButtonSurveyStatusProps] = children;
+  const [SurveyStatusTopbarProps, SurveyStatusSectionProps, ButtonSurveyStatusProps] = children;
 
   return status === "approved" ? (
     <>
@@ -60,8 +60,8 @@ const OnboardingSurveyStatusComponent = ({
         <Col className="offset-md-1" sm={12} md={10}>
           <Card>
             <CardBody>
-              {SurveyStatusTopbar}
-              {SurveyStatusSection}
+              {SurveyStatusTopbarProps}
+              {SurveyStatusSectionProps}
               {/* <SurveyStatusTopbar time={survey.graded_at} />
             <SurveyStatusSection
               isSurveyStatsLoading={isSurveyStatsLoading}
