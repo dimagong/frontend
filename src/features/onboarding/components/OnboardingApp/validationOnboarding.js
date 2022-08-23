@@ -38,11 +38,20 @@ const textSchema = object({
     })
     .matches(/^[aA-zZ\s]+$/, "Only alphabets are allowed for this field ")
     .test("text-prospect-meneger", function test(value) {
-      console.log("this.options", this.options);
+      if (this.options.parent.maxLength && value.length > this.options.parent.maxLength) {
+        return this.createError({
+          message: `The value more than ${this.options.parent.maxLength}`,
+        });
+      }
+      if (this.options.parent.minLength && value.length < this.options.parent.minLength) {
+        return this.createError({
+          message: `The value less than ${this.options.parent.minLength}`,
+        });
+      }
       return true;
     }),
-  // maximum: yup.number(),
-  // minimum: yup.number(),
+  maxLength: number(),
+  minLength: number(),
 });
 const emailSchema = object({
   value: string()
