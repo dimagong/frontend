@@ -4,12 +4,8 @@ import React from "react";
 
 import FieldLabel from "../FieldLabel";
 
-import { DFormWidgetEventsTypes } from "../../events";
-
-const TextAreaWidget = ({ value, onEvent, label, disabled, isRequired }) => {
-  const handleChange = (e) => {
-    onEvent({ type: DFormWidgetEventsTypes.Change, value: e.target.value });
-  };
+const TextAreaWidget = ({ value, onChange, label, disabled, isRequired }) => {
+  const handleChange = (event) => onChange(event.target.value);
 
   return (
     <div>

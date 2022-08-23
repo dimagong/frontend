@@ -1,23 +1,23 @@
+import "./styles.scss";
+
 import React, { useEffect, useState } from "react";
-import longTextValidationSchema from "./validationSchema";
 
 import FieldLabel from "../FieldLabel";
 
-import "./styles.scss";
-import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import CustomModal from "components/CustomModal";
-import { DFormWidgetEventsTypes } from "../../events";
+import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
+
+import longTextValidationSchema from "./validationSchema";
 
 const LongText = (props) => {
-  const { value, onEvent, label, isRequired } = props;
-  const [isModalOpened, setIsModalOpened] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [inputHTML, setInputHTML] = useState("");
-  const inputRef = React.useRef();
+  const { value, onChange, label, isRequired } = props;
 
-  const handleOnChange = (value) => {
-    onEvent({ type: DFormWidgetEventsTypes.Change, value });
-  };
+  const inputRef = React.useRef();
+  const [inputHTML, setInputHTML] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [isModalOpened, setIsModalOpened] = useState(false);
+
+  const handleOnChange = (value) => onChange(value);
 
   const wysiwygChange = (event) => {
     setInputValue(event);
@@ -59,15 +59,15 @@ const LongText = (props) => {
       </span>
 
       <CustomModal
-        className={"long-text-modal-window"}
+        className="long-text-modal-window"
         isOpen={isModalOpened}
         onClose={handleModalClose}
-        submitBtnText={"Close"}
+        submitBtnText="Close"
         onSubmit={handleModalClose}
-        title={"Extended input"}
+        title="Extended input"
       >
         <div className="custom-form-filed form-create_custom-text-widget custom-long-text-area-widget modal-long-text-area-widget">
-          <h2 className={"modal-label"}>
+          <h2 className="modal-label">
             {label} {!!isRequired && <span className="field-label_asterix">*</span>}
           </h2>
           <WysiwygEditor

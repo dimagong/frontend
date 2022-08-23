@@ -28,15 +28,9 @@ const { getUserByIdRequest, submitdFormNewVersionRequest } = appSlice.actions;
 
 // TODO handle updated at text
 
-const UserOnboardingDForm = ({
-  onRefetch,
-  isRefetching,
-  isManualSave,
-  dFormId,
-  formData,
-  formValues,
-  onFieldEvent,
-}) => {
+const UserOnboardingDForm = (props) => {
+  const { onRefetch, isRefetching, isManualSave, dFormId, formData, formValues, onFieldChange } = props;
+
   // const [isStateConfig] = useState(false);
   // const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
   const manager = useSelector(selectManager);
@@ -134,28 +128,7 @@ const UserOnboardingDForm = ({
         </CardHeader>
         <CardBody className="pt-0">
           <hr />
-          <DForm dFormId={dFormId} data={formData} values={formValues} onFieldEvent={onFieldEvent} />
-          {/*<FormCreate
-            isShowErrors={false}
-            fileLoader={true}
-            submitDForm={submitDForm}
-            liveValidate={false}
-            inputDisabled={false}
-            fill={true}
-            onSaveButtonHidden={true}
-            statusChanged={statusChanged}
-            onChange={handleFormChange}
-            dForm={manager.onboarding.d_form}
-            onboardingUser={manager}
-            isStateConfig={isStateConfig}
-            updatedAtText={<UpdatedAtText loading={loading && updatedAtTextLoding.current} date={updatedAt} />}
-            onCreateNewVersion={submitDForm}
-            onSubmit={(formData) => submitOnboardingForm(formData)}
-
-            // reInit={(reInit, context) => {
-            //   this.reInitForm = reInit.bind(context)
-            // }}
-          />*/}
+          <DForm dFormId={dFormId} data={formData} values={formValues} onFieldChange={onFieldChange} />
         </CardBody>
       </Card>
     </Col>

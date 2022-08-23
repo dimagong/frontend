@@ -1,8 +1,9 @@
+import "./styles.scss";
+
 import React from "react";
 import Select from "react-select";
-import "./styles.scss";
+
 import FieldLabel from "../FieldLabel";
-import { DFormWidgetEventsTypes } from "../../events";
 
 export const colourStyles = {
   option: (styles, { isFocused, isSelected, ...rest }) => {
@@ -49,6 +50,7 @@ export const colourStyles = {
     },
   }),
 };
+
 const SelectWidget = (props) => {
   const handleChange = (values) => {
     if (props.multiple) {
@@ -57,15 +59,16 @@ const SelectWidget = (props) => {
             return nextSelectValue.value;
           })
         : [];
-      props.onEvent({ type: DFormWidgetEventsTypes.Change, value: mappedSelectValuesToArray });
+      props.onChange(mappedSelectValuesToArray);
     } else {
-      props.onChange({ type: DFormWidgetEventsTypes.Change, value: values.value || "" });
+      props.onChange(values.value || "");
     }
   };
 
   return (
-    <div className={"custom-react-select"}>
+    <div className="custom-react-select">
       <FieldLabel label={props.label} required={props.isRequired} />
+
       <Select
         maxMenuHeight={175}
         isDisabled={props.disabled}
@@ -77,7 +80,7 @@ const SelectWidget = (props) => {
         options={props.options}
         className="React"
         classNamePrefix="select"
-        placeholder={"Select an option"}
+        placeholder="Select an option"
       />
     </div>
   );

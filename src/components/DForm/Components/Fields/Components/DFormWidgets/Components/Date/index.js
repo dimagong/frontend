@@ -1,11 +1,12 @@
+import "./styles.scss";
+
 import React from "react";
-import FieldLabel from "../FieldLabel";
+
 import dateValidationSchema from "./validationSchema";
 
-import "./styles.scss";
-import { DFormWidgetEventsTypes } from "../../events";
+import FieldLabel from "../FieldLabel";
 
-const DateWidget = ({ value, onEvent, options, label, disabled, required, format }) => {
+const DateWidget = ({ value, onChange, options, label, disabled, required, format }) => {
   const propsByFormat = {
     date: { className: "custom-date-input-widget", type: "date" },
     "date-time": { className: "custom-date-time-input-widget", type: "datetime-local" },
@@ -13,9 +14,7 @@ const DateWidget = ({ value, onEvent, options, label, disabled, required, format
 
   const { className, type } = propsByFormat[format];
 
-  const handleOnChange = (event) => {
-    onEvent({ type: DFormWidgetEventsTypes.Change, value: event.target.value });
-  };
+  const handleOnChange = (event) => onChange(event.target.value);
 
   return (
     <div className={className}>

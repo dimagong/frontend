@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
+import "./styles.scss";
 
+import { cloneDeep } from "lodash";
+import { toast } from "react-toastify";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, TabContent, TabPane } from "reactstrap";
+
+import DForm from "components/DForm";
+import CustomTabs from "components/Tabs";
+import { makeid } from "components/FormCreate/utils";
 import ContextTemplate from "components/ContextTemplate";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-import DForm from "components/DForm";
-import DFormElementEdit from "./Components/DFormElementEdit";
 
-import { makeid } from "../../components/FormCreate/utils";
-import { toast } from "react-toastify";
-import { cloneDeep } from "lodash";
-
-import { useSelector } from "react-redux";
-import { selectProfile } from "../../app/selectors";
-import { useDispatch } from "react-redux";
+import appSlice from "app/slices/appSlice";
+import onboardingSlice from "app/slices/onboardingSlice";
+import { selectProfile, selectdForm } from "app/selectors";
 
 import {
   INITIAL_FIELD_DATA,
@@ -26,28 +29,21 @@ import {
   APPLICATION_PAGES,
   INITIAL_APPLICATION_DATA,
 } from "./constants";
-import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
-import { applicationSubmitValidation } from "./applicationSubmitValidation";
 
-import "./styles.scss";
-import { Button, TabContent, TabPane } from "reactstrap";
-import CustomTabs from "../../components/Tabs";
-import NewApplicationInitForm from "./Components/NewApplicationInitForm";
-import ApplicationDescription from "./Components/ApplicationDescription";
-import ElementsReorderComponent from "./Components/ElementsReorderComponent";
-import { selectdForm } from "../../app/selectors";
 import {
   useApplicationTemplateCreateMutation,
   useApplicationTemplate,
   useApplicationTemplateUpdateMutation,
 } from "./applicationQueries";
-import appSlice from "../../app/slices/appSlice";
-import onboardingSlice from "../../app/slices/onboardingSlice";
-import { DFormWidgetEventsTypes } from "../../components/DForm/Components/Fields/Components/DFormWidgets/events";
-
-const { setdForm } = onboardingSlice.actions;
+import DFormElementEdit from "./Components/DFormElementEdit";
+import NewApplicationInitForm from "./Components/NewApplicationInitForm";
+import ApplicationDescription from "./Components/ApplicationDescription";
+import ElementsReorderComponent from "./Components/ElementsReorderComponent";
+import { applicationSubmitValidation } from "./applicationSubmitValidation";
+import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
 
 const { setContext } = appSlice.actions;
+const { setdForm } = onboardingSlice.actions;
 
 //TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
 // because of internal behavior of component
@@ -79,6 +75,7 @@ const Applications = ({ isCreate }) => {
   const selectedDForm = useSelector(selectdForm);
 
   const [applicationData, setApplicationData] = useState(null);
+  const [selectedElement, setSelectedElement] = useState(null);
 
   const createApplication = useApplicationTemplateCreateMutation({
     onSuccess: (data) => {
@@ -105,7 +102,6 @@ const Applications = ({ isCreate }) => {
           ...rest,
         };
 
-        setDataWithSuggestedChanges(applicationData);
         setApplicationData(applicationData);
         toast.success("Application saved");
       },
@@ -125,19 +121,16 @@ const Applications = ({ isCreate }) => {
           ...rest,
         };
 
-        setDataWithSuggestedChanges(applicationData);
         setApplicationData(applicationData);
       },
       enabled: Boolean(selectedDForm?.id) && !isCreate && !createApplication.isLoading,
-      refetchOnWindowFocus: false, // In case of update it replace dataWithSuggestedChanges and that cause data loss
+      refetchOnWindowFocus: false,
     }
   );
 
-  const [selectedPage, setSelectedPage] = useState(isCreate ? APPLICATION_PAGES.DESCRIPTION : APPLICATION_PAGES.DESIGN);
-  const [isModuleEditComponentVisible, setIsModuleEditComponentVisible] = useState(false);
-  const [elementWithSuggestedChanges, setElementWithSuggestedChanges] = useState(null);
-  const [dataWithSuggestedChanges, setDataWithSuggestedChanges] = useState(cloneDeep(applicationData));
   const [isDFormInitialized, setIsDFormInitialized] = useState(false);
+  const [isModuleEditComponentVisible, setIsModuleEditComponentVisible] = useState(false);
+  const [selectedPage, setSelectedPage] = useState(isCreate ? APPLICATION_PAGES.DESCRIPTION : APPLICATION_PAGES.DESIGN);
 
   const getElementCollectionName = (element) => {
     let elementCollectionName;
@@ -158,20 +151,19 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleSelectElementForEdit = (element, elementType) => {
-    if (elementWithSuggestedChanges?.edited) {
+    if (selectedElement?.edited) {
       if (!window.confirm(`Are you sure you want to select another element for edit without saving?`)) {
         return;
       }
     }
     //TODO update local state with data from redux
-    setDataWithSuggestedChanges(applicationData);
 
     // We take element from "backend" data, but also spread element that we receive
     // to save some system information that we pass to element in onClick handler such as groupId or sectionId, etc.
     const collectionName = getElementCollectionName(element);
-    const selectedElement = { ...element, ...applicationData[collectionName][element.id] };
+    const newSelectedElement = { ...element, ...applicationData[collectionName][element.id] };
 
-    setElementWithSuggestedChanges({ ...selectedElement, elementType });
+    setSelectedElement({ ...newSelectedElement, elementType });
     setIsModuleEditComponentVisible(true);
   };
 
@@ -202,13 +194,6 @@ const Applications = ({ isCreate }) => {
     dataToSave.sectionsOrder = [...(dataToSave.sectionsOrder || []), newSectionData.id];
 
     setApplicationData(dataToSave);
-
-    // setElementWithSuggestedChanges({...newSectionData});
-    // setIsModuleEditComponentVisible(true);
-
-    //TODO refactor this and all uses of isNew if creation wouldn't need approve by click "create"
-    // Remove in case if approve will be needed
-    // handleElementChangesSave();
   };
 
   const handleGroupCreate = (sectionId) => {
@@ -218,7 +203,7 @@ const Applications = ({ isCreate }) => {
       ...INITIAL_GROUP_DATA,
       id: makeid(9),
       name: groupName,
-      isNew: true,
+      // isNew: true,
     };
 
     const dataToSave = embedSuggestedChanges(newGroupData, true);
@@ -229,21 +214,13 @@ const Applications = ({ isCreate }) => {
     setApplicationData(dataToSave);
   };
 
-  //TODO make ID generator
-
-  const handleFieldCreate = (event) => {
-    if (event.type !== DFormWidgetEventsTypes.Create) {
-      throw new Error(`Unexpected event type: ${event.type}`);
-    }
-
-    const { group } = event;
-
+  const handleFieldCreate = (group) => {
     const newFieldData = {
       ...INITIAL_FIELD_DATA,
       ...FIELD_INITIAL_SPECIFIC_PROPERTIES[FIELD_TYPES.text],
       ...FIELD_SPECIFIC_UI_STYLE_PROPERTIES[FIELD_TYPES.text],
       id: makeid(9),
-      isNew: true,
+      // isNew: true,
     };
 
     const dataToSave = embedSuggestedChanges(newFieldData, true);
@@ -255,18 +232,15 @@ const Applications = ({ isCreate }) => {
   };
 
   // While we aim for using old API and redux that handle it, we can't save parts of data separately
-  // so we need to embed our new changes to the rest of data before save
-  const embedSuggestedChanges = (element = elementWithSuggestedChanges, isNewElement) => {
+  // so, we need to embed our new changes to the rest of data before save
+  const embedSuggestedChanges = (element, isNewElement = false) => {
     const collectionName = getElementCollectionName(element);
-    const dataClone = cloneDeep(dataWithSuggestedChanges);
+    const dataClone = cloneDeep(applicationData);
     const { id } = element;
 
     if (isNewElement) {
       // Founds collection (fields, sections, groups) and embed new element to the end
-      dataClone[collectionName] = {
-        ...dataClone[collectionName],
-        [id]: element,
-      };
+      dataClone[collectionName] = { ...dataClone[collectionName], [id]: element };
     } else {
       dataClone[collectionName][id] = { ...element, edited: false };
     }
@@ -287,7 +261,7 @@ const Applications = ({ isCreate }) => {
       return;
     }
 
-    const dataClone = cloneDeep(dataWithSuggestedChanges);
+    const dataClone = cloneDeep(applicationData);
 
     switch (element.elementType) {
       case ELEMENT_TYPES.section:
@@ -300,11 +274,11 @@ const Applications = ({ isCreate }) => {
         handleFieldDelete(element, dataClone);
         break;
       default:
-        console.error("cannot delete element with type " + element.elementType);
+        throw new Error(`Unexpected: do not support element type: ${element.elementType}`);
     }
 
     setIsModuleEditComponentVisible(false);
-    setElementWithSuggestedChanges(null);
+    setSelectedElement(null);
     setApplicationData(dataClone);
   };
 
@@ -348,20 +322,14 @@ const Applications = ({ isCreate }) => {
     }
 
     if (!elementValidationSchema) {
-      console.error(`There is no validation schema for ${element.elementType} element`);
-
-      return null;
+      throw new Error(`There is no validation schema for ${element.elementType} element`);
     }
 
     try {
-      elementValidationSchema.validateSync(element, {
-        context: {
-          application: elementWithSuggestedChanges === null ? dataWithSuggestedChanges : embedSuggestedChanges(),
-        },
-      });
+      elementValidationSchema.validateSync(element, { context: { application: applicationData } });
 
       if (element.elementType === ELEMENT_TYPES.field) {
-        const masterSchemaUsedPropertiesList = Object.values(dataWithSuggestedChanges.fields).reduce((acc, curr) => {
+        const masterSchemaUsedPropertiesList = Object.values(applicationData.fields).reduce((acc, curr) => {
           if (curr.id !== element.id && curr.masterSchemaPropertyId) {
             acc.push(curr.masterSchemaPropertyId);
           }
@@ -381,17 +349,11 @@ const Applications = ({ isCreate }) => {
     return { isElementValid: true };
   };
 
-  const handleElementParentChange = (
-    elementId,
-    oldParentId,
-    newParentId,
-    parentCollection,
-    elementIdList,
-    elementParentIdName
-  ) => {
+  const handleElementParentChange = (params) => {
+    const { elementId, oldParentId, newParentId, parentCollection, elementIdList, elementParentIdName } = params;
     if (oldParentId === newParentId) return;
 
-    const dataClone = cloneDeep(dataWithSuggestedChanges);
+    const dataClone = cloneDeep(applicationData);
 
     dataClone[parentCollection][oldParentId][elementIdList] = removeItemFormArrayByValue(
       dataClone[parentCollection][oldParentId][elementIdList],
@@ -399,21 +361,29 @@ const Applications = ({ isCreate }) => {
     );
     dataClone[parentCollection][newParentId][elementIdList].push(elementId);
 
-    setDataWithSuggestedChanges(dataClone);
-    setElementWithSuggestedChanges({
-      ...elementWithSuggestedChanges,
-      [elementParentIdName]: newParentId,
-      edited: true,
+    setApplicationData(dataClone);
+    setSelectedElement({ ...selectedElement, [elementParentIdName]: newParentId, edited: true });
+  };
+
+  const handleFieldGroupChange = (fieldId, oldGroupId, newGroupId) =>
+    handleElementParentChange({
+      elementId: fieldId,
+      oldParentId: oldGroupId,
+      newParentId: newGroupId,
+      parentCollection: "groups",
+      elementIdList: "relatedFields",
+      elementParentIdName: "groupId",
     });
-  };
 
-  const handleFieldGroupChange = (fieldId, oldGroupId, newGroupId) => {
-    handleElementParentChange(fieldId, oldGroupId, newGroupId, "groups", "relatedFields", "groupId");
-  };
-
-  const handleGroupSectionChange = (groupId, oldSectionId, newSectionId) => {
-    handleElementParentChange(groupId, oldSectionId, newSectionId, "sections", "relatedGroups", "sectionId");
-  };
+  const handleGroupSectionChange = (groupId, oldSectionId, newSectionId) =>
+    handleElementParentChange({
+      elementId: groupId,
+      oldParentId: oldSectionId,
+      newParentId: newSectionId,
+      parentCollection: "sections",
+      elementIdList: "relatedGroups",
+      elementParentIdName: "sectionId",
+    });
 
   // On save extracts all necessary props from field object. Prevent from saving properties that are specific
   // to another type of field, e.g. options of select.
@@ -433,7 +403,7 @@ const Applications = ({ isCreate }) => {
     //TODO also add this changes to dform in redux. Local state will be in sync with redux store
     // with only difference that local changes will have applied suggested changes
 
-    const response = validateElement(elementWithSuggestedChanges);
+    const response = validateElement(selectedElement);
 
     const { isElementValid, errors } = response;
 
@@ -441,12 +411,12 @@ const Applications = ({ isCreate }) => {
       // TODO REMOVE ELEMENT ERRORS
 
       setIsModuleEditComponentVisible(false);
-      setElementWithSuggestedChanges(null);
+      setSelectedElement(null);
 
-      if (elementWithSuggestedChanges.elementType === ELEMENT_TYPES.field) {
-        setApplicationData(embedSuggestedChanges(extractPropsFromField(elementWithSuggestedChanges)));
+      if (selectedElement.elementType === ELEMENT_TYPES.field) {
+        setApplicationData(embedSuggestedChanges(extractPropsFromField(selectedElement)));
       } else {
-        setApplicationData(embedSuggestedChanges());
+        setApplicationData(embedSuggestedChanges(selectedElement));
       }
     } else {
       //Todo change it in future to displaying errors under the elements where its occur
@@ -455,21 +425,21 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleElementChangesCancel = () => {
-    setElementWithSuggestedChanges(null);
+    setSelectedElement(null);
     setIsModuleEditComponentVisible(false);
   };
 
   const handleElementChange = (elementData) => {
     const elem = checkMinMaxField(elementData);
-    setElementWithSuggestedChanges({ ...elem, edited: true });
+    setSelectedElement({ ...elem, edited: true });
   };
 
   const handleApplicationDescriptionChange = (descriptionKey, value) => {
-    setDataWithSuggestedChanges({ ...dataWithSuggestedChanges, [descriptionKey]: value });
+    setApplicationData({ ...applicationData, [descriptionKey]: value });
   };
 
   const handlePageChange = (page) => {
-    if (elementWithSuggestedChanges?.edited) {
+    if (selectedElement?.edited) {
       if (!window.confirm(`Are you sure you want to select another element for edit without saving?`)) {
         return;
       }
@@ -479,46 +449,40 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleDFormInitialize = (organization) => {
-    const data = {
-      ...INITIAL_APPLICATION_DATA,
-      organization,
-    };
+    const data = { ...INITIAL_APPLICATION_DATA, organization };
 
-    setDataWithSuggestedChanges(data);
     setApplicationData(data);
-
     setIsDFormInitialized(true);
   };
 
   const handleSectionReorder = (result) => {
-    const dataClone = cloneDeep(dataWithSuggestedChanges);
+    const dataClone = cloneDeep(applicationData);
 
     const itemToMove = dataClone.sectionsOrder.splice(result.source.index, 1)[0];
 
     dataClone.sectionsOrder.splice(result.destination.index, 0, itemToMove);
 
-    setDataWithSuggestedChanges(dataClone);
     setApplicationData(dataClone);
   };
 
   const handleGroupReorder = (result) => {
-    const dataClone = cloneDeep(dataWithSuggestedChanges);
+    const dataClone = cloneDeep(applicationData);
 
     const itemToMove = dataClone.sections[result.parentItem.id].relatedGroups.splice(result.source.index, 1)[0];
 
     dataClone.sections[result.parentItem.id].relatedGroups.splice(result.destination.index, 0, itemToMove);
 
-    setDataWithSuggestedChanges(dataClone);
+    setApplicationData(dataClone);
   };
 
   const handleFieldReorder = (result) => {
-    const dataClone = cloneDeep(dataWithSuggestedChanges);
+    const dataClone = cloneDeep(applicationData);
 
     const itemToMove = dataClone.groups[result.parentItem.id].relatedFields.splice(result.source.index, 1)[0];
 
     dataClone.groups[result.parentItem.id].relatedFields.splice(result.destination.index, 0, itemToMove);
 
-    setDataWithSuggestedChanges(dataClone);
+    setApplicationData(dataClone);
   };
 
   const handleReorder = (result) => {
@@ -532,6 +496,8 @@ const Applications = ({ isCreate }) => {
       case ELEMENT_TYPES.field:
         handleFieldReorder(result);
         break;
+      default:
+        throw new Error(`Unexpected element type: ${result.type}`);
     }
   };
 
@@ -546,10 +512,11 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleApplicationMutation = () => {
-    const { isValid, errors: errValidation } = validateDescriptionDesignMode(dataWithSuggestedChanges);
+    const { isValid, errors: errValidation } = validateDescriptionDesignMode(applicationData);
     if (isValid) {
-      // Errors object spread just to not to pass it into mutation
-      const { name, description, isPrivate, type, errors, organization, ...schema } = dataWithSuggestedChanges;
+      // Errors object spread just to not pass it into mutation
+      // const { name, description, isPrivate, type, errors, organization, ...schema } = dataWithSuggestedChanges;
+      const { name, description, isPrivate, type, errors, organization, ...schema } = applicationData;
 
       const dataToSave = {
         name,
@@ -575,10 +542,6 @@ const Applications = ({ isCreate }) => {
     }
   };
 
-  useEffect(() => {
-    setDataWithSuggestedChanges(applicationData);
-  }, [applicationData]);
-
   if ((!isCreate && !applicationData) || application.isLoading) {
     return <div>Loading...</div>;
   }
@@ -596,59 +559,59 @@ const Applications = ({ isCreate }) => {
           tabs={Object.values(APPLICATION_PAGES)}
           className="mb-3"
         />
+
         <TabContent activeTab={selectedPage}>
           <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
             <ApplicationDescription
+              name={applicationData.name}
+              description={applicationData.description}
+              isPrivate={applicationData.isPrivate}
+              organization={applicationData.organization}
               onChange={handleApplicationDescriptionChange}
-              name={dataWithSuggestedChanges.name}
-              description={dataWithSuggestedChanges.description}
-              isPrivate={dataWithSuggestedChanges.isPrivate}
-              organization={dataWithSuggestedChanges.organization}
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
             <DForm
-              data={elementWithSuggestedChanges === null ? dataWithSuggestedChanges : embedSuggestedChanges()}
               isConfigurable={true}
+              data={applicationData}
+              selectedElement={selectedElement}
               onElementClick={handleSelectElementForEdit}
               onSectionCreate={handleSectionCreate}
               onGroupCreate={handleGroupCreate}
-              onFieldEvent={handleFieldCreate}
+              onFieldCreate={handleFieldCreate}
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>
-            <ElementsReorderComponent onReorder={handleReorder} applicationData={dataWithSuggestedChanges} />
+            <ElementsReorderComponent onReorder={handleReorder} applicationData={applicationData} />
           </TabPane>
         </TabContent>
 
         <div style={{ paddingLeft: "35px", paddingRight: "35px" }}>
-          <div className={"application_delimiter"} />
-          {selectedPage !== APPLICATION_PAGES.TEST_MODE && (
-            <div className="d-flex justify-content-between ">
-              <Button className={"button button-cancel"}>Cancel</Button>
+          <div className="application_delimiter" />
 
-              <Button
-                disabled={createApplication.isLoading || updateApplication.isLoading}
-                color={"primary"}
-                className={"button button-success"}
-                onClick={handleApplicationMutation}
-              >
-                {isCreate ? "Create" : "Save"}
-              </Button>
-            </div>
-          )}
+          <div className="d-flex justify-content-center">
+            <Button
+              color="primary"
+              className="button button-success"
+              disabled={createApplication.isLoading || updateApplication.isLoading}
+              onClick={handleApplicationMutation}
+            >
+              {isCreate ? "Create" : "Save"}
+            </Button>
+          </div>
         </div>
       </ContextTemplate>
+
       {isModuleEditComponentVisible ? (
         <ContextFeatureTemplate contextFeatureTitle="dForm">
           <DFormElementEdit
-            data={dataWithSuggestedChanges}
-            element={elementWithSuggestedChanges}
+            data={applicationData}
+            element={selectedElement}
             onElementChange={handleElementChange}
             onElementDelete={handleElementDelete}
             onElementChangesSave={handleElementChangesSave}
             onElementChangesCancel={handleElementChangesCancel}
-            organization={dataWithSuggestedChanges.organization}
+            organization={applicationData.organization}
             onFieldGroupChange={handleFieldGroupChange}
             onGroupSectionChange={handleGroupSectionChange}
           />

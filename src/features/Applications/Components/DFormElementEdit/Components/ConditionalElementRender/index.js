@@ -1,21 +1,21 @@
-import React from "react";
-import { Button } from "reactstrap";
-import { X } from "react-feather";
+import "./styles.scss";
 
+import { v4 } from "uuid";
+import React from "react";
+import { X } from "react-feather";
+import { Button } from "reactstrap";
+
+import { EFFECTS } from "./constants";
 import ConditionForm from "./Components";
 
-import "./styles.scss";
-import { v4 } from "uuid";
-import { EFFECTS } from "./constants";
-
-const ConditionalElementRender = ({ onConditionAdd, onElementChange, conditions = [], fields = [], element }) => {
+const ConditionalElementRender = ({ onElementChange, conditions = [], fields = [], element }) => {
   const handleConditionAdd = () => {
     onElementChange({
       ...element,
       conditions: [...(element.conditions || []), { tempId: v4(), effect: EFFECTS[0] }],
     });
   };
-  console.log("test", conditions);
+
   const handleConditionDelete = (conditionTempId) => {
     if (window.confirm("Are you sure you want to delete this condition?")) {
       onElementChange({
@@ -26,7 +26,6 @@ const ConditionalElementRender = ({ onConditionAdd, onElementChange, conditions 
   };
 
   const handleConditionChange = (conditionData) => {
-    //TODO hanlde more conditions, temprorary only one can exist for each element
     onElementChange({ ...element, conditions: [conditionData] });
   };
 

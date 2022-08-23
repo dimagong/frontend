@@ -1,6 +1,6 @@
-import * as yup from 'yup';
+import * as yup from "yup";
 
-import {conditionalRequiredField} from "components/DForm/commonValidationSchemas";
+import { conditionalRequiredField } from "components/DForm/commonValidationSchemas";
 
 const textValidationSchema = conditionalRequiredField(yup.string());
 

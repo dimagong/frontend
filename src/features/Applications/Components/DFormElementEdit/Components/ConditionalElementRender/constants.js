@@ -1,6 +1,4 @@
-import { FIELD_TYPES, MULTI_SELECT_UI_STYLES } from "../../../../constants";
-
-export const CONDITION_CREATION_STEPS = [];
+import { FIELD_TYPES } from "../../../../constants";
 
 export const EFFECTS = {
   hidden: "hidden",
@@ -87,30 +85,30 @@ export const CONDITION_FIELD_TEMPLATE = {
   },
 };
 
-export const SUPPORTED_FIELD_TYPES = [
-  [FIELD_TYPES.text],
-  [FIELD_TYPES.date],
-  [FIELD_TYPES.file],
-  [FIELD_TYPES.select],
-  [FIELD_TYPES.number],
-  [FIELD_TYPES.boolean],
-  [FIELD_TYPES.longText],
-  [FIELD_TYPES.textArea],
-  [FIELD_TYPES.fileList],
-  [FIELD_TYPES.multiSelect],
-];
+// export const SUPPORTED_FIELD_TYPES = [
+//   [FIELD_TYPES.text],
+//   [FIELD_TYPES.date],
+//   [FIELD_TYPES.file],
+//   [FIELD_TYPES.select],
+//   [FIELD_TYPES.number],
+//   [FIELD_TYPES.boolean],
+//   [FIELD_TYPES.longText],
+//   [FIELD_TYPES.textArea],
+//   [FIELD_TYPES.fileList],
+//   [FIELD_TYPES.multiSelect],
+// ];
 
 export const FIELD_VALUE_PREPARE = {
-  [FIELD_TYPES.text]: (value) => value,
-  [FIELD_TYPES.date]: (value) => value,
-  [FIELD_TYPES.file]: (value) => value,
-  [FIELD_TYPES.select]: (value) => value,
-  [FIELD_TYPES.number]: (value) => value,
-  [FIELD_TYPES.boolean]: (value) => value,
-  [FIELD_TYPES.longText]: (value) => value,
-  [FIELD_TYPES.textArea]: (value) => value,
-  [FIELD_TYPES.fileList]: (value) => value,
-  [FIELD_TYPES.multiSelect]: (value) => value,
+  [FIELD_TYPES.text]: ({ value }) => value,
+  [FIELD_TYPES.date]: ({ value }) => value,
+  [FIELD_TYPES.file]: ({ files }) => files,
+  [FIELD_TYPES.select]: ({ value }) => value,
+  [FIELD_TYPES.number]: ({ value }) => value,
+  [FIELD_TYPES.boolean]: ({ value }) => value,
+  [FIELD_TYPES.longText]: ({ value }) => value,
+  [FIELD_TYPES.textArea]: ({ value }) => value,
+  [FIELD_TYPES.fileList]: ({ files }) => files,
+  [FIELD_TYPES.multiSelect]: ({ value }) => value,
 };
 
 export const CONDITIONS_COMPARE_FUNCTIONS = {
@@ -118,7 +116,7 @@ export const CONDITIONS_COMPARE_FUNCTIONS = {
     return expectedValue === controlValue;
   },
   [CONDITION_TYPES.exist]: (expectedValue, controlValue) => {
-    return controlValue === undefined || isNaN(controlValue) || controlValue === "" || controlValue === false;
+    return controlValue !== "" && controlValue !== null && controlValue !== undefined;
   },
   [CONDITION_TYPES.bigger]: (expectedValue, controlValue) => {
     return controlValue > expectedValue;
@@ -142,28 +140,12 @@ const generateConditions = (conditions, options) => {
 export const CONDITIONS_BY_SELECTED_FIELD_TYPE = {
   [FIELD_TYPES.text]: generateConditions([exact, exist]),
   [FIELD_TYPES.date]: generateConditions([exist, exact, smaller, bigger]),
-  [FIELD_TYPES.file]: generateConditions([exist], {
-    [exist]: {
-      operandName: "Uploaded",
-    },
-  }),
+  [FIELD_TYPES.file]: generateConditions([exist], { [exist]: { operandName: "Uploaded" } }),
   [FIELD_TYPES.select]: generateConditions([exact, exist]),
   [FIELD_TYPES.number]: generateConditions([exist, exact, smaller, bigger]),
-  [FIELD_TYPES.boolean]: generateConditions([exist], {
-    [exist]: {
-      operandName: "Checked",
-    },
-  }),
+  [FIELD_TYPES.boolean]: generateConditions([exist], { [exist]: { operandName: "Checked" } }),
   [FIELD_TYPES.longText]: generateConditions([exact, exist]),
   [FIELD_TYPES.textArea]: generateConditions([exact, exist]),
-  [FIELD_TYPES.fileList]: generateConditions([exist], {
-    [exist]: {
-      operandName: "At least one uploaded",
-    },
-  }),
-  [FIELD_TYPES.multiSelect]: generateConditions([exist], {
-    [exist]: {
-      operandName: "At least one selected",
-    },
-  }),
+  [FIELD_TYPES.fileList]: generateConditions([exist], { [exist]: { operandName: "At least one uploaded" } }),
+  [FIELD_TYPES.multiSelect]: generateConditions([exist], { [exist]: { operandName: "At least one selected" } }),
 };

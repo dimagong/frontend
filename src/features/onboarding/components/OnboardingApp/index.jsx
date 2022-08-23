@@ -14,9 +14,8 @@ import DForm from "components/DForm";
 import LoadingButton from "components/LoadingButton";
 
 import Check from "assets/img/icons/check.png";
-import { DFormWidgetEventsTypes } from "../../../../components/DForm/Components/Fields/Components/DFormWidgets/events";
 
-import { fieldValidationSchemas, textSchema } from "./validationOnboarding";
+import { fieldValidationSchemas } from "./validationOnboarding";
 
 const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const [applicationSchema, setApplicationSchema] = useState(null);
@@ -103,9 +102,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     return { isValid: true };
   };
 
-  const handleFieldChangeEvent = (event) => {
-    const { field, value } = event;
-
+  const handleFieldChange = (field, value) => {
     setApplicationValues({
       ...applicationValues,
       [field.masterSchemaPropertyId]: { ...(applicationValues[field.masterSchemaPropertyId] || {}), value },
@@ -120,19 +117,12 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     }
   };
 
-  const handleFieldEvent = (event) => {
-    if (event.type === DFormWidgetEventsTypes.Change) {
-      handleFieldChangeEvent(event);
-    }
-  };
-
-  const isFormLocked = () => ~["user-lock", "hard-lock"].indexOf(applicationSchema?.access_type);
+  // const isFormLocked = () => ~["user-lock", "hard-lock"].indexOf(applicationSchema?.access_type);
 
   // Immediately call save on component unmount if any save currently throttled
   useEffect(() => {
-    return () => {
-      throttleOnSave.current.flush();
-    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => throttleOnSave.current.flush();
   }, []);
 
   if (isFormLoading || dFormValues.isLoading) {
@@ -150,12 +140,12 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   return (
     <div>
       <DForm
-        disabled={isFormLocked()}
+        isMemberView
+        dFormId={applicationSchema.id}
+        // disabled={isFormLocked()}
         data={applicationSchema}
         values={applicationValues}
-        onFieldEvent={handleFieldEvent}
-        dFormId={applicationSchema.id}
-        isMemberView
+        onFieldChange={handleFieldChange}
       />
       <div className="form-create__dform_actions pr-1">
         {applicationSchema.access_type !== "user-lock" && (

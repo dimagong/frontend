@@ -1,15 +1,23 @@
+import React from "react";
+import classnames from "classnames";
 import { Plus } from "react-feather";
-import React, { useState, useEffect } from "react";
 
-// import './styles.scss';
-import { toast } from "react-toastify";
+import { ELEMENT_TYPES, FIELD_TYPES } from "features/Applications/constants";
 
 import formComponents from "./Components/DFormWidgets";
-import { DFormWidgetEventsTypes } from "./Components/DFormWidgets/events";
-import { FIELD_TYPES } from "../../../../features/Applications/constants";
 
-const FormComponent = ({ groupFields, data, onElementClick, group, values, onFieldEvent, isConfigurable }) => {
-  const [formData, setFormData] = useState({});
+const FormComponent = (props) => {
+  const {
+    data,
+    values,
+    group,
+    groupFields,
+    isConfigurable,
+    selectedElement,
+    onElementClick,
+    onFieldChange,
+    onFieldCreate,
+  } = props;
 
   // Each field store with structure:
   // - id - id of master schema field id
@@ -31,69 +39,14 @@ const FormComponent = ({ groupFields, data, onElementClick, group, values, onFie
   //   })
   // };
 
-  // const handleError = (id, error) => {
-  //   setFormData({
-  //     ...formData,
-  //     [id]: {
-  //       ...formData[id],
-  //       error,
-  //     }
-  //   })
-  // };
-  //
-  // const isFormValid = async (fields) => {
-  //   let isFormValid = true;
-  //
-  //   await Promise.all(fields.map( async (field) => {
-  //     await validationSchemas[field.type]
-  //       .validate(field.value, {context: {isRequired: field.isRequired}})
-  //       .catch((err) => {
-  //         handleError(field.id, err.message)
-  //       });
-  //
-  //     const isValid = await validationSchemas[field.type].isValid(field.value, {context: {isRequired: field.isRequired}});
-  //
-  //     if (!isValid) isFormValid = false;
-  //   }));
-  //
-  //   return isFormValid;
-  // };
-
-  // const initForm = () => {
-  //   const initialData = {};
-  //
-  //   [...groupFields].map((formField) => {
-  //
-  //     // Handle different default values for different field types here
-  //     const defaultValue = "";
-  //
-  //     initialData[formField.master_schema_field_id] = {
-  //       id: formField.master_schema_field_id,
-  //       type: formField.type,
-  //       value: formField.master_schema_field?.master_schema_field_value?.value || defaultValue,
-  //       isRequired: formField.is_required,
-  //     };
-  //
-  //     return false;
-  //   });
-  //
-  //   setFormData(initialData);
-  // };
-
-  // Init form
-  // useEffect(() => {
-  //   if(groupFields.length) {
-  //     initForm()
-  //   }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [groupFields]);
-
   return (
     <>
       {groupFields.map((formField) => {
         const field = data.fields[formField];
 
         if (field.isHidden) return null;
+
+        const isSelected = selectedElement?.elementType === ELEMENT_TYPES.field && selectedElement?.id === field.id;
 
         const FormFieldElement = formComponents[field.type];
 
@@ -117,22 +70,24 @@ const FormComponent = ({ groupFields, data, onElementClick, group, values, onFie
 
         return (
           <div
-            className={`editable px-0 custom-form-field ${field.classes ? field.classes : "col-12"}`}
+            className={classnames("editable px-0 custom-form-field", field.classes || "col-12", {
+              selected: isSelected,
+            })}
             onClick={() => onElementClick({ ...field, groupId: group }, "field")}
             key={formField}
           >
             <FormFieldElement
               {...field}
-              fieldId={field.id}
-              isRequired={field.isRequired}
-              key={field.id}
-              name={field.title}
-              label={field.isLabelShowing ? field.title : ""}
-              value={fieldValue}
-              onEvent={(event) => onFieldEvent({ ...event, field })}
-              disabled={formField.isDisabled} // TODO handle disabled
               error={""}
+              name={field.title}
+              value={fieldValue}
+              fieldId={field.id}
+              disabled={field.disabled}
               fieldClasses={field.classes}
+              isRequired={field.isRequired}
+              label={field.isLabelShowing ? field.title : ""}
+              onChange={(value) => onFieldChange(field, value)}
+              key={field.id}
             />
           </div>
         );
@@ -143,7 +98,7 @@ const FormComponent = ({ groupFields, data, onElementClick, group, values, onFie
 
       {isConfigurable ? (
         <div className="custom-form-field col-12 px-0">
-          <div className="element-add" onClick={() => onFieldEvent({ type: DFormWidgetEventsTypes.Create, group })}>
+          <div className="element-add" onClick={() => onFieldCreate(group)}>
             <div className="element-add_icon">
               <Plus color="white" size={23} />
             </div>

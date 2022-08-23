@@ -1,11 +1,12 @@
+import "./styles.scss";
+
 import React from "react";
 import Select from "react-select";
-import "./styles.scss";
+
 import FieldLabel from "../FieldLabel";
 import CheckboxWidget from "../Boolean";
 
 import multiSelectValidationSchema from "./validationSchema";
-import { DFormWidgetEventsTypes } from "../../events";
 
 const colourStyles = {
   option: (styles, { isFocused, isSelected, ...rest }) => {
@@ -52,6 +53,7 @@ const colourStyles = {
     },
   }),
 };
+
 const MultiSelectWidget = (props) => {
   const handleChange = (values) => {
     if (props.multiple) {
@@ -60,9 +62,9 @@ const MultiSelectWidget = (props) => {
             return nextSelectValue.value;
           })
         : [];
-      props.onEvent({ type: DFormWidgetEventsTypes.Change, value: mappedSelectValuesToArray });
+      props.onChange(mappedSelectValuesToArray);
     } else {
-      props.onEvent({ type: DFormWidgetEventsTypes.Change, value: values.value || "" });
+      props.onChange(values.value || "");
     }
   };
 
@@ -79,7 +81,7 @@ const MultiSelectWidget = (props) => {
 
   if (props.uiStyle === "checkboxes") {
     return (
-      <div className={"custom-react-select"}>
+      <div className="custom-react-select">
         <FieldLabel label={props.title} required={props.isRequired} />
         {[
           { label: "value", value: "test" },
@@ -92,7 +94,7 @@ const MultiSelectWidget = (props) => {
   }
 
   return (
-    <div className={"custom-react-select"}>
+    <div className="custom-react-select">
       <FieldLabel label={props.title} required={props.isRequired} />
       <Select
         maxMenuHeight={175}
@@ -105,7 +107,7 @@ const MultiSelectWidget = (props) => {
         options={props.options}
         className="React"
         classNamePrefix="select"
-        placeholder={"Select an option"}
+        placeholder="Select an option"
       />
     </div>
   );

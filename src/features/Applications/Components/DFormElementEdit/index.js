@@ -1,26 +1,27 @@
-import React, { useState, useEffect } from "react";
+import "./styles.scss";
 
 import { Row, Col, Button } from "reactstrap";
+import React, { useState, useEffect } from "react";
 
 import GroupEdit from "./Components/GroupEdit";
 import SectionEdit from "./Components/SectionEdit";
 import FieldEdit from "./Components/FieldEdit";
 
-import "./styles.scss";
-
 import { EDIT_OPTIONS } from "../../constants";
 
-const DFormElementEdit = ({
-  data,
-  element,
-  onElementChange,
-  onElementChangesSave,
-  onElementChangesCancel,
-  organization,
-  onElementDelete,
-  onFieldGroupChange,
-  onGroupSectionChange,
-}) => {
+const DFormElementEdit = (props) => {
+  const {
+    data,
+    element,
+    onElementChange,
+    onElementChangesSave,
+    onElementChangesCancel,
+    organization,
+    onElementDelete,
+    onFieldGroupChange,
+    onGroupSectionChange,
+  } = props;
+
   const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS.properties);
 
   const handleEditOptionSelect = (editOption) => {
@@ -41,7 +42,7 @@ const DFormElementEdit = ({
   return (
     <Row className="dform-element-edit">
       <Col className="col-8">
-        <div className={"pb-2"}>
+        <div className="pb-2">
           {
             {
               group: <GroupEdit {...commonProps} onGroupSectionChange={onGroupSectionChange} />,
@@ -52,14 +53,14 @@ const DFormElementEdit = ({
         </div>
         <div className="application_delimiter" />
         <div className="d-flex justify-content-between">
-          <Button onClick={onElementChangesCancel} className={"button button-cancel"}>
+          <Button onClick={onElementChangesCancel} className="button button-cancel">
             Cancel
           </Button>
           <div>
-            <Button color={"danger"} onClick={() => onElementDelete(element)} className={"mr-1 button button-danger"}>
+            <Button color="danger" onClick={() => onElementDelete(element)} className="mr-1 button button-danger">
               Delete
             </Button>
-            <Button color={"primary"} onClick={onElementChangesSave} className={"button button-success"}>
+            <Button color="primary" onClick={onElementChangesSave} className="button button-success">
               Save
             </Button>
           </div>

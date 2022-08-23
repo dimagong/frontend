@@ -1,11 +1,8 @@
 import React from "react";
 import FieldLabel from "../FieldLabel";
-import { DFormWidgetEventsTypes } from "../../events";
 
 const NumberWidget = (props) => {
-  const handleChange = (e) => {
-    props.onEvent({ type: DFormWidgetEventsTypes.Change, value: e.target.value });
-  };
+  const handleChange = (event) => props.onChange(event.target.value);
 
   return (
     <div className={"custom-form-filed form-create_custom-text-widget"}>

@@ -1,49 +1,31 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import "./styles.scss";
 
-import { Nav, NavItem, NavLink } from "reactstrap";
-import classnames from "classnames";
+import React from "react";
 import { Plus } from "react-feather";
-
-import { Edit } from "react-feather";
+import classnames from "classnames";
+import { Nav, NavItem, NavLink } from "reactstrap";
 
 import ProgressBar from "./Components/ProgressBar";
 
-import "./styles.scss";
-
-// import {selectUserOnboarding} from 'app/selectors/userSelectors'
-
-const SectionsSideBar = ({
-  onSectionSelect,
-  selectedSection,
-  sections = [],
-  errors,
-  sectionsProgress,
-  completed,
-  onSectionCreate,
-}) => {
-  // const onboarding = useSelector(selectUserOnboarding);
+const SectionsSideBar = (props) => {
+  const {
+    onSectionSelect,
+    selectedSection,
+    sections = [],
+    errors,
+    sectionsProgress,
+    completed,
+    onSectionCreate,
+  } = props;
 
   return (
     <div className="sections">
       <Nav tabs className="my-0 sections-nav">
         {sections.map((section, index) => (
-          <NavItem
-            style={section.isHidden ? { display: "none" } : {}}
-            key={`tab-display-${section.id}`}
-            disabled={section.isDisabled}
-          >
+          <NavItem style={section.isHidden ? { display: "none" } : {}} key={section.id} disabled={section.isDisabled}>
             <NavLink
-              className={classnames(
-                {
-                  // eslint-disable-next-line
-                  active: selectedSection === section.id,
-                },
-                "sections-nav_item"
-              )}
-              onClick={() => {
-                onSectionSelect(section.id);
-              }}
+              className={classnames({ active: selectedSection === section.id }, "sections-nav_item")}
+              onClick={() => onSectionSelect(section.id)}
             >
               <div className={`sections-nav_item_title ${errors[section.id] ? "with-errors" : ""}`}>
                 <span className="align-middle ml-50">{section.name}</span>
@@ -60,17 +42,11 @@ const SectionsSideBar = ({
                   index={index + 1}
                 />
               </div>
-              <div
-                className={classnames(
-                  {
-                    active: selectedSection === section.id,
-                  },
-                  "sections-nav_item_delimiter"
-                )}
-              />
+              <div className={classnames({ active: selectedSection === section.id }, "sections-nav_item_delimiter")} />
             </NavLink>
           </NavItem>
         ))}
+
         {!!onSectionCreate && (
           <NavItem>
             <NavLink className={"sections-nav_item"} onClick={onSectionCreate}>

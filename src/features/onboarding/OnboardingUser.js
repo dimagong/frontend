@@ -10,7 +10,7 @@ import {
   useNotifyIntroductionPageSeeingMutation,
 } from "api/Onboarding/prospectUserQuery";
 import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
-import { initialAppOnboarding } from "./../../features/onboarding/utils/findActiveAppOnboarding";
+import { initialAppOnboarding } from "features/onboarding/utils/findActiveAppOnboarding";
 
 import WelcomePageComponent from "./components/WeclomePage";
 import OnboardingComponent from "./components/Onboarding";

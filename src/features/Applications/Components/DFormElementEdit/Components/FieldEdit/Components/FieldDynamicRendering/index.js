@@ -1,8 +1,7 @@
 import React from "react";
-import ConditionalElementRender from "../../../ConditionalElementRender";
-import { EFFECTS } from "../../../ConditionalElementRender/constants";
+
 import { ELEMENT_TYPES } from "../../../../../../constants";
-import { v4 } from "uuid";
+import ConditionalElementRender from "../../../ConditionalElementRender";
 
 const FieldDynamicRendering = ({ data, element, onElementChange }) => {
   const fields =

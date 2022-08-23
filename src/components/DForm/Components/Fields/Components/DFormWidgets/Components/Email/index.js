@@ -4,18 +4,15 @@ import React from "react";
 
 import emailValidationSchema from "./validationSchema";
 
-import { DFormWidgetEventsTypes } from "../../events";
+import FieldLabel from "../FieldLabel";
 
-const Email = ({ name, value, label, onEvent, disabled, isRequired, placeholder, error }) => {
-  const handleInputChange = (event) => {
-    onEvent({ type: DFormWidgetEventsTypes.Change, value: event.target.value });
-  };
+const Email = ({ name, value, label, onChange, disabled, isRequired, placeholder, error }) => {
+  const handleInputChange = (event) => onChange(event.target.value);
 
   return (
     <div className={`member_firm-form_field ${error ? "field_with_error" : ""}`}>
-      <label htmlFor={name || label} className="member_firm-form_field-label">
-        {label} {!!isRequired && "*"}
-      </label>
+      <FieldLabel label={label} required={isRequired} />
+
       <input
         className="member_firm-form_field-input email_input"
         name={name || label}

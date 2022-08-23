@@ -67,6 +67,11 @@ export const fieldCommonSchema = yup.object().shape({
     "conditions-fields",
     "Condition fields must be filled", // error message
     function test(value) {
+      if (value == null) {
+        // ToDo remove it and migrate all dforms to condition prop requeired as empty array
+        console.warn("Migrate all dform templates to new conditions field validation. For now this is warning.");
+        return true;
+      }
       if (value.length === 0) {
         return true;
       } else {
@@ -126,14 +131,11 @@ export const groupValidationSchema = dynamicRenderValidation.shape({
   name: yup
     .string()
     .required("Each group should have a name")
-    .test(
-      "unique-group-name",
-      "Name should be unique", // error message
-      function test(value) {
-        const groupNames = Object.values(this.options.context.application.groups).map((group) => group.name);
-        return groupNames.filter((name) => name.toLowerCase() === value.toLowerCase()).length === 1;
-      }
-    ),
+    .test("unique-group-name", "Name should be unique", function test(value) {
+      value = value.toLowerCase();
+      const groups = Object.values(this.options.context.application.groups);
+      return groups.filter((group) => group.name.toLowerCase() === value).length === 1;
+    }),
   id: yup.string().required(),
   isProtected: yup.boolean(),
   relatedFields: yup.array(),
