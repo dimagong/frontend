@@ -8,7 +8,7 @@ import { useGetAllSurveyQuestionsQuery } from "api/Onboarding/prospectUserQuery"
 import OnboardingSurveyFeedbackViewComponent from "./../OnboardingSurveyFeedbackViewComponent";
 import OnboardingSurveyStatusComponent from "./../OnboardingSurveyStatusComponent";
 
-import SurveyAdditionalInfoComponent from "./../OnboardingSurveyComponent/components/SurveyAdditionalInfoComponent";
+import SurveyAdditionalInfoComponent from "../../view/SurveyAdditionalInfoView";
 
 import Question from "./../../../../Surveys/Components/Question";
 import SurveyFeedbackNavigation from "./../OnboardingSurveyComponent/components/SurveyFeedbackNavigation";
@@ -45,6 +45,7 @@ const OnboardingSurveyFinishComponent = ({
 
   console.log("surveyInteraction", surveyInteraction);
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
+  console.log("isFeedbackExist", isFeedbackExist);
 
   const submittedSurveyStatus = getSurveySubmitStatus(survey, isRecentlySubmitted);
 

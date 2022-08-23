@@ -4,7 +4,7 @@ import ArrowButton from "components/ArrowButton";
 
 import "./styles.scss";
 
-const SurveyAdditionalInfoComponent = ({ label, text, className }) => {
+const SurveyAdditionalInfoView = ({ label, text, className }) => {
   const [isTextVisible, setIsTextVisible] = useState(true);
 
   const handleToggle = () => {
@@ -54,4 +54,4 @@ const SurveyAdditionalInfoComponent = ({ label, text, className }) => {
   );
 };
 
-export default SurveyAdditionalInfoComponent;
+export default SurveyAdditionalInfoView;

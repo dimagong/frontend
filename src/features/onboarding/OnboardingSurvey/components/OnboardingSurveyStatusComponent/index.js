@@ -52,7 +52,7 @@ const OnboardingSurveyStatusComponent = ({
 
   console.log("status", status);
 
-  const [SurveyStatusTopbar, SurveyStatusSection, MessagesSurveyStatus, ButtonSurveyStatus] = children;
+  const [SurveyStatusTopbar, SurveyStatusSection, , ButtonSurveyStatusProps] = children;
 
   return status === "approved" ? (
     <>
@@ -69,7 +69,7 @@ const OnboardingSurveyStatusComponent = ({
               surveyStats={surveyStats}
             /> */}
               {(isFeedbackExist || survey.is_show_result) && (
-                <div className="status_description_action d-flex justify-content-center">{ButtonSurveyStatus}</div>
+                <div className="status_description_action d-flex justify-content-center">{ButtonSurveyStatusProps}</div>
               )}
             </CardBody>
           </Card>

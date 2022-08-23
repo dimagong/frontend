@@ -2,9 +2,9 @@ import React from "react";
 
 import { useGetAllSurveyQuestionsQuery, useSurveyByIdQuery } from "api/Onboarding/prospectUserQuery";
 
-import StepperSurveyComponent from "./components/StepperSurveyComponent";
-import SurveyGradedComponent from "./components/SurveyGradedComponent";
-import SurveyFinishComponent from "./components/SurveyFinishComponent";
+// import StepperSurveyComponent from "../../../onboarding/OnboardingSurvey/view/StepperSurveyView";
+// import SurveyGradedComponent from "./components/SurveyGradedComponent";
+// import SurveyFinishComponent from "./components/SurveyFinishComponent";
 
 const getSurveySubmitStatus = (survey, isSubmited) => {
   const status =
@@ -56,27 +56,27 @@ const TakingSurvey = ({ selectedSurveyId, isRecentlySubmitted }) => {
   const statusSurvey = findStatusSurvey(started_at, finished_at, graded_at, isRecentlySubmitted);
   console.log("statusSurvey", statusSurvey);
 
-  if (statusSurvey === "approved") {
-    return (
-      <>
-        <SurveyGradedComponent />
-      </>
-    );
-  }
-  if (statusSurvey === "submitted" || statusSurvey === "recent") {
-    return (
-      <>
-        <SurveyFinishComponent />
-      </>
-    );
-  }
-  if (statusSurvey === "started") {
-    return (
-      <>
-        <StepperSurveyComponent />
-      </>
-    );
-  }
+  // if (statusSurvey === "approved") {
+  //   return (
+  //     <>
+  //       <SurveyGradedComponent />
+  //     </>
+  //   );
+  // }
+  // if (statusSurvey === "submitted" || statusSurvey === "recent") {
+  //   return (
+  //     <>
+  //       <SurveyFinishComponent />
+  //     </>
+  //   );
+  // }
+  // if (statusSurvey === "started") {
+  //   return (
+  //     <>
+  //       <StepperSurveyComponent />
+  //     </>
+  //   );
+  // }
 };
 
 export default TakingSurvey;
