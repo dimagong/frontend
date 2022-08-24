@@ -5,7 +5,7 @@ import OnboardingSurveyProgressBar from "./components/OnboardingSurveyProgressBa
 import LoadingButton from "components/LoadingButton";
 import Question from "../../../../Surveys/Components/Question";
 
-import SurveyAdditionalInfoComponent from "./components/SurveyAdditionalInfoComponent";
+import SurveyAdditionalInfoComponent from "../../view/SurveyAdditionalInfoView";
 
 import { ChevronRight, ChevronLeft } from "react-feather";
 
