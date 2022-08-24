@@ -2,22 +2,11 @@ import * as yup from "yup";
 import { ELEMENT_TYPES, FIELD_TYPES } from "./constants";
 import { DATE_WIDGET_FORMATS } from "./constants";
 
-const { object, string, /*min,*/ number /*ref, createError*/ } = yup;
+const { object, string, number } = yup;
+
 const fieldTypesArray = Object.values(FIELD_TYPES);
 
 const dynamicRenderValidation = object({});
-
-// STRUCTURE
-// DR - dynamic render validation
-// ----------
-// GROUP
-// DR -> group validation
-// ----------
-// Section
-// DR -> section validation
-// ----------
-// Field
-// DR -> field common validation -> field validation by field type
 
 const minMaxLengthSchema = object({
   minLength: number("Min length should be a number")
@@ -131,10 +120,10 @@ export const groupValidationSchema = dynamicRenderValidation.shape({
   name: yup
     .string()
     .required("Each group should have a name")
-    .test("unique-group-name", "Name should be unique", function test(value) {
+    .test("unique-group-name", "Group name should be unique", function test(value) {
       value = value.toLowerCase();
       const groups = Object.values(this.options.context.application.groups);
-      return groups.filter((group) => group.name.toLowerCase() === value).length === 1;
+      return groups.filter((group) => group.name.toLowerCase() === value).length !== 1;
     }),
   id: yup.string().required(),
   isProtected: yup.boolean(),
@@ -146,14 +135,11 @@ export const sectionValidationSchema = dynamicRenderValidation.shape({
   name: yup
     .string()
     .required("Each section should have a name")
-    .test(
-      "unique-section-name",
-      "Name should be unique", // error message
-      function test(value) {
-        const sectionsNames = Object.values(this.options.context.application.sections).map((section) => section.name);
-        return sectionsNames.filter((name) => name.toLowerCase() === value.toLowerCase()).length === 1;
-      }
-    ),
+    .test("unique-section-name", "Section name should be unique", function test(value) {
+      value = value.toLowerCase();
+      const sections = Object.values(this.options.context.application.sections);
+      return sections.filter((section) => section.name.toLowerCase() === value).length !== 1;
+    }),
   isProtected: yup.boolean(),
   isDisabled: yup.boolean(),
   isHidden: yup.boolean(),
