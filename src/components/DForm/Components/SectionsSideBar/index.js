@@ -9,12 +9,13 @@ import ProgressBar from "./Components/ProgressBar";
 
 const SectionsSideBar = (props) => {
   const {
-    onSectionSelect,
-    selectedSection,
-    sections = [],
     errors,
-    sectionsProgress,
+    sections = [],
     completed,
+    isConfigurable,
+    selectedSection,
+    sectionsProgress,
+    onSectionSelect,
     onSectionCreate,
   } = props;
 
@@ -47,7 +48,7 @@ const SectionsSideBar = (props) => {
           </NavItem>
         ))}
 
-        {!!onSectionCreate && (
+        {isConfigurable ? (
           <NavItem>
             <NavLink className={"sections-nav_item"} onClick={onSectionCreate}>
               <div className={`sections-nav_item_title`}>
@@ -59,7 +60,7 @@ const SectionsSideBar = (props) => {
               <div className={"sections-nav_item_delimiter"} />
             </NavLink>
           </NavItem>
-        )}
+        ) : null}
       </Nav>
     </div>
   );

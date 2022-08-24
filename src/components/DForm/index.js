@@ -58,9 +58,11 @@ const DForm = (props) => {
       <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
         <SectionsSideBar
           errors={[]}
+          sections={data.sectionsOrder && data.sectionsOrder.map((sectionId) => data.sections[sectionId])}
+          completed={undefined}
+          isConfigurable={isConfigurable}
           selectedSection={selectedSection}
           sectionsProgress={sectionsProgress}
-          sections={data.sectionsOrder && data.sectionsOrder.map((sectionId) => data.sections[sectionId])}
           onSectionSelect={handleSectionSelect}
           onSectionCreate={isConfigurable && onSectionCreate}
         />
