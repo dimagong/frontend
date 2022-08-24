@@ -128,6 +128,7 @@ export const groupValidationSchema = dynamicRenderValidation.shape({
   id: yup.string().required(),
   isProtected: yup.boolean(),
   relatedFields: yup.array(),
+  // ToDo: conditions put from commonFieldSchema
 });
 
 export const sectionValidationSchema = dynamicRenderValidation.shape({
@@ -145,7 +146,7 @@ export const sectionValidationSchema = dynamicRenderValidation.shape({
   isHidden: yup.boolean(),
   isAlreadyViewed: yup.boolean(),
   relatedGroups: yup.array(),
-  // conditions
+  // ToDo: conditions put from commonFieldSchema
 });
 
 export const elementValidationSchemas = {
@@ -157,15 +158,6 @@ export const elementValidationSchemas = {
 export const MSPropertyValidationSchema = yup
   .string()
   .required("Master schema property should not be empty")
-  .test(
-    "ms-property-validation",
-    "Master schema property should not be duplicated", // error message
-    function test(value) {
-      // NOTE: this must not be an arrow function, because yup binds it to it's "this"
-      return !this.options.context.masterSchemaUsedPropertiesList.includes(value);
-    }
-  );
-
-export const testSchema = yup.object().shape({
-  name: yup.string(),
-});
+  .test("ms-property-validation", "Master schema property should not be duplicated", function test(value) {
+    return !this.options.context.masterSchemaUsedPropertiesList.includes(value);
+  });

@@ -186,6 +186,7 @@ const Applications = ({ isCreate }) => {
       id: makeid(9),
       name: sectionName,
       elementType: "section",
+      // ToDo: Handle refactoring situation with isNew
       // isNew: true,
     };
 
@@ -203,6 +204,7 @@ const Applications = ({ isCreate }) => {
       ...INITIAL_GROUP_DATA,
       id: makeid(9),
       name: groupName,
+      // ToDo: Handle refactoring situation with isNew
       // isNew: true,
     };
 
@@ -220,6 +222,7 @@ const Applications = ({ isCreate }) => {
       ...FIELD_INITIAL_SPECIFIC_PROPERTIES[FIELD_TYPES.text],
       ...FIELD_SPECIFIC_UI_STYLE_PROPERTIES[FIELD_TYPES.text],
       id: makeid(9),
+      // ToDo: Handle refactoring situation with isNew
       // isNew: true,
     };
 
