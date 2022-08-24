@@ -7,14 +7,9 @@ import { CardBody, Card, Row, Col, TabContent, TabPane } from "reactstrap";
 import NavMenu from "components/NavMenu/NavMenu";
 import Check from "assets/img/icons/check.png";
 
+import OnboardingApp from "./../../components/OnboardingApp";
 import OnboardingSurvey from "../../OnboardingSurvey";
 import StatusComponent from "../Components/StatusComponent";
-import OnboardingApp from "./../OnboardingApp";
-
-import { useGetAllSurveyQuestionsQuery, useSurveyByIdQuery } from "api/Onboarding/prospectUserQuery";
-
-// import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
-import OnboardingSurveyFinishComponent from "./../../OnboardingSurvey/components/OnboardingSurveyFinishComponent";
 
 const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) => {
   const [forceAppShow, setForceAppShow] = useState([]);
@@ -25,11 +20,6 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
     setActiveAppOnboarding(initialOnboarding);
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialOnboarding.id]);
-
-  // const { data: survey, isLoading: isLoadingSurvey } = useSurveyByIdQuery(
-  //   { id: appActiveOnboarding?.id },
-  //   { enabled: appActiveOnboarding?.tabId?.includes("survey") }
-  // );
 
   const handleNavClick = (onboarding) => {
     setRecentlySubmitted(false);
@@ -122,12 +112,11 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                               />
                             ) : (
                               application.id === appActiveOnboarding?.id && (
-                                // <OnboardingApp
-                                //   profile={profile}
-                                //   selectedForm={application}
-                                //   setRecentlySubmitted={setRecentlySubmitted}
-                                // />
-                                <></>
+                                <OnboardingApp
+                                  profile={profile}
+                                  selectedForm={application}
+                                  setRecentlySubmitted={setRecentlySubmitted}
+                                />
                               )
                             ))}
                         </div>
@@ -143,14 +132,7 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                             setRecentlySubmitted={setRecentlySubmitted}
                             isRecentlySubmitted={recentlySubmitted}
                             isAllApplicationsCompleted={!unCompletedApplications.length}
-                          >
-                            {/* <OnboardingSurveyFinishComponent
-                              survey={survey}
-                              isRecentlySubmitted={recentlySubmitted}
-                              isAllApplicationsCompleted={!unCompletedApplications.length}
-                              isLoadingSurvey={isLoadingSurvey}
-                            /> */}
-                          </OnboardingSurvey>
+                          />
                         )}
                       </TabPane>
                     );

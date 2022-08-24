@@ -15,11 +15,7 @@ import SurveyFeedbackNavigation from "./../OnboardingSurveyComponent/components/
 
 import SurveyStatusTopbar from "./../OnboardingSurveyStatusComponent/components/SurveyStatusTopbar";
 import SurveyStatusSection from "./../OnboardingSurveyStatusComponent/components/SurveyStatusSection";
-import MessagesSurveyStatus from "./../OnboardingSurveyStatusComponent/components/MessagesSurveyStatus";
 import ButtonSurveyStatus from "./../OnboardingSurveyStatusComponent/components/ButtonSurveyStatus";
-
-import appSlice from "app/slices/appSlice";
-const { getSurveyByIdRequest } = appSlice.actions;
 
 const getSurveySubmitStatus = (survey, isSubmited) => {
   const status = (survey.graded_at && "approved") || (survey.finished_at && isSubmited && "recent") || "submitted";
@@ -67,17 +63,6 @@ const OnboardingSurveyFinishComponent = ({
       })
     : [];
 
-  // eslint-disable-next-line array-callback-return
-  // answers?.length &&
-  //   answers.map((answer, index) => {
-  //     if (is_show_result || answer.feedback) {
-  //       questionsToShow.push({
-  //         question: numberedQuestions[index],
-  //         answer: answer,
-  //       });
-  //     }
-  //   });
-
   const handleSwitchToNextQuestion = () => {
     if (questionsToShow.length - 1 >= currQuestionIndex + 1) {
       setCurrQuestionIndex(currQuestionIndex + 1);
@@ -100,29 +85,33 @@ const OnboardingSurveyFinishComponent = ({
 
   const isSurveyPassed = survey && survey.total >= survey.min_percent_pass;
 
-  const isSurveyStatsLoading = useSelector(createLoadingSelector([getSurveyByIdRequest.type]));
-
   return graded_at && isFeedbackView ? (
-    <OnboardingSurveyFeedbackViewComponent>
-      <SurveyAdditionalInfoComponent
-        className="onboarding-survey-manager_feedback"
-        label={"Feedback"}
-        text={additionalText}
-      />
-      <Question
-        currAnswer={currAnswer}
-        questionNumber={questionNumber}
-        question={questionCurrent}
-        displayType={displayType}
-      />
-      <SurveyFeedbackNavigation
-        onFeedbackClose={() => setIsFeedbackView(false)}
-        questionsToShow={questionsToShow}
-        currQuestionIndex={currQuestionIndex}
-        handleSwitchToPrevQuestion={handleSwitchToPrevQuestion}
-        handleSwitchToNextQuestion={handleSwitchToNextQuestion}
-      />
-    </OnboardingSurveyFeedbackViewComponent>
+    <OnboardingSurveyFeedbackViewComponent
+      surveyAdditionalInfoProps={
+        <SurveyAdditionalInfoComponent
+          className="onboarding-survey-manager_feedback"
+          label={"Feedback"}
+          text={additionalText}
+        />
+      }
+      surveyQuestionProps={
+        <Question
+          currAnswer={currAnswer}
+          questionNumber={questionNumber}
+          question={questionCurrent}
+          displayType={displayType}
+        />
+      }
+      surveyFeedbackNavigationProps={
+        <SurveyFeedbackNavigation
+          onFeedbackClose={() => setIsFeedbackView(false)}
+          questionsToShow={questionsToShow}
+          currQuestionIndex={currQuestionIndex}
+          handleSwitchToPrevQuestion={handleSwitchToPrevQuestion}
+          handleSwitchToNextQuestion={handleSwitchToNextQuestion}
+        />
+      }
+    />
   ) : (
     <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
       <OnboardingSurveyStatusComponent
@@ -131,25 +120,18 @@ const OnboardingSurveyFinishComponent = ({
         isLoading={isSurveyGradedQuestionsLoading}
         onForceApplicationShow={setIsFeedbackView}
         status={submittedSurveyStatus}
-        // isAllApplicationsCompleted={isAllApplicationsCompleted}
-      >
-        <SurveyStatusTopbar time={survey.graded_at} />
-        <SurveyStatusSection
-          // isSurveyStatsLoading={isSurveyStatsLoading}
-          isSurveyStatsLoading={isLoadingSurvey}
-          isSurveyPassed={isSurveyPassed}
-          surveyStats={survey.stats}
-        />
-        <ButtonSurveyStatus onForceApplicationShow={setIsFeedbackView}>View feedback</ButtonSurveyStatus>
-        {/* <MessagesSurveyStatus
-          status={submittedSurveyStatus}
-          isAllApplicationsCompleted={isAllApplicationsCompleted}
-          isFeedbackExist={isFeedbackExist}
-          is_show_result={survey.is_show_result}
-        >
+        surveyStatusTopbarProps={<SurveyStatusTopbar time={survey.graded_at} />}
+        surveyStatusSectionProps={
+          <SurveyStatusSection
+            isSurveyStatsLoading={isLoadingSurvey}
+            isSurveyPassed={isSurveyPassed}
+            surveyStats={survey.stats}
+          />
+        }
+        buttonSurveyStatusProps={
           <ButtonSurveyStatus onForceApplicationShow={setIsFeedbackView}>View feedback</ButtonSurveyStatus>
-        </MessagesSurveyStatus> */}
-      </OnboardingSurveyStatusComponent>
+        }
+      />
     </div>
   );
 };

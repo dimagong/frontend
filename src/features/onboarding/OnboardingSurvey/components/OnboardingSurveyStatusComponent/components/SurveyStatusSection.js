@@ -5,7 +5,7 @@ import { Spinner } from "reactstrap";
 const SurveyStatusSection = ({ isSurveyStatsLoading, isSurveyPassed, surveyStats }) => {
   return (
     <div className={`onboarding_survey_result-stats ${isSurveyStatsLoading ? "stats-loading" : ""}`}>
-      <div className="onboarding_survey_result-stats_stat" style={{ border: "2px solid red" }}>
+      <div className="onboarding_survey_result-stats_stat">
         <div
           className="onboarding_survey_result-stats_stat_value"
           style={

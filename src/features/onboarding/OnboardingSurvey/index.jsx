@@ -121,8 +121,6 @@ const OnboardingSurvey = ({
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
   const currentQuestionAnswer = answers && currentIndex ? answers[currentIndex] : null;
 
-  console.log("currentQuestion", currentQuestion);
-
   // return (
   //   <>
   //     {

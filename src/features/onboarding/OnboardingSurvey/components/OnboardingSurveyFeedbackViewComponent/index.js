@@ -3,17 +3,17 @@ import "./styles.scss";
 import React from "react";
 import { Card, CardBody, Col, Row } from "reactstrap";
 
-const OnboardingSurveyFeedbackViewComponent = ({ children }) => {
-  const [SurveyAdditionalInfoComponent, Question, SurveyFeedbackNavigation] = children;
+const OnboardingSurveyFeedbackViewComponent = (props) => {
+  const { surveyAdditionalInfoProps, surveyQuestionProps, surveyFeedbackNavigationProps } = props;
 
   return (
     <Row className="onboarding-survey">
       <Col className="offset-md-1" sm={12} md={10}>
-        {SurveyAdditionalInfoComponent}
+        {surveyAdditionalInfoProps}
         <Card className="onboarding-survey_card">
-          <CardBody>{Question}</CardBody>
+          <CardBody>{surveyQuestionProps}</CardBody>
         </Card>
-        {SurveyFeedbackNavigation}
+        {surveyFeedbackNavigationProps}
       </Col>
     </Row>
   );
