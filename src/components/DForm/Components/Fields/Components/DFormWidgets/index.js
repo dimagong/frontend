@@ -10,7 +10,7 @@ import DateWidget from "./Components/Date";
 import MultiSelectWidget from "./Components/MultiSelect";
 import HelpText from "./Components/HelpText";
 
-import { FIELD_TYPES } from "features/Applications/constants";
+import { FIELD_TYPES } from "components/DForm/constants";
 
 const { text, file, fileList, textArea, select, longText, boolean, number, date, multiSelect, helpText } = FIELD_TYPES;
 

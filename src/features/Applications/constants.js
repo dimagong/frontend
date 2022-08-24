@@ -1,3 +1,5 @@
+import { ELEMENT_TYPES, FIELD_TYPES } from "components/DForm/constants";
+
 export const INITIAL_APPLICATION_DATA = {
   type: "application",
   name: "",
@@ -25,6 +27,12 @@ export const EDIT_OPTIONS = {
   dynamicRendering: "Dynamic rendering",
 };
 
+export const ELEMENT_TYPE_SPECIFIC_EDIT_OPTIONS = {
+  [ELEMENT_TYPES.field]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.styling, EDIT_OPTIONS.dynamicRendering],
+  [ELEMENT_TYPES.group]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.dynamicRendering],
+  [ELEMENT_TYPES.section]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.dynamicRendering],
+};
+
 export const INITIAL_SECTION_DATA = {
   isProtected: false,
   isDisabled: false,
@@ -38,27 +46,6 @@ export const INITIAL_GROUP_DATA = {
   isProtected: false,
   relatedFields: [],
   conditions: [],
-};
-
-export const ELEMENT_TYPES = {
-  group: "group",
-  section: "section",
-  field: "field",
-};
-
-export const FIELD_TYPES = {
-  text: "text",
-  date: "date",
-  file: "file",
-  select: "select",
-  number: "number",
-  boolean: "boolean",
-  longText: "longText",
-  textArea: "textarea",
-  fileList: "fileList",
-  resource: "resource",
-  helpText: "helpText",
-  multiSelect: "multiSelect",
 };
 
 export const DATE_WIDGET_FORMATS = ["date", "date-time"];

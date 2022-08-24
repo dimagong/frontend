@@ -3,7 +3,7 @@ import "./styles.scss";
 import React from "react";
 import { Plus } from "react-feather";
 
-import { ELEMENT_TYPES } from "features/Applications/constants";
+import { ELEMENT_TYPES } from "components/DForm/constants";
 
 import Fields from "../Fields";
 

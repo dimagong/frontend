@@ -11,23 +11,22 @@ import CustomTabs from "components/Tabs";
 import { makeid } from "components/FormCreate/utils";
 import ContextTemplate from "components/ContextTemplate";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
+import { FIELD_TYPES, ELEMENT_TYPES } from "components/DForm/constants";
 
 import appSlice from "app/slices/appSlice";
 import onboardingSlice from "app/slices/onboardingSlice";
 import { selectProfile, selectdForm } from "app/selectors";
 
 import {
+  APPLICATION_PAGES,
   INITIAL_FIELD_DATA,
   INITIAL_GROUP_DATA,
   INITIAL_SECTION_DATA,
-  ELEMENT_TYPES,
   FIELD_COMMON_PROPERTIES,
+  INITIAL_APPLICATION_DATA,
   FIELD_SPECIFIC_PROPERTIES,
   FIELD_INITIAL_SPECIFIC_PROPERTIES,
-  FIELD_TYPES,
   FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
-  APPLICATION_PAGES,
-  INITIAL_APPLICATION_DATA,
 } from "./constants";
 
 import {
@@ -610,11 +609,11 @@ const Applications = ({ isCreate }) => {
           <DFormElementEdit
             data={applicationData}
             element={selectedElement}
+            organization={applicationData.organization}
             onElementChange={handleElementChange}
             onElementDelete={handleElementDelete}
             onElementChangesSave={handleElementChangesSave}
             onElementChangesCancel={handleElementChangesCancel}
-            organization={applicationData.organization}
             onFieldGroupChange={handleFieldGroupChange}
             onGroupSectionChange={handleGroupSectionChange}
           />

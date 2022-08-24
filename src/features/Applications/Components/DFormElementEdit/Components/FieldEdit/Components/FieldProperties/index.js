@@ -1,23 +1,23 @@
+import _ from "lodash";
 import React from "react";
-
-import Constants from "../../../../../../../../components/FormCreate/Parts/Constants";
-import { Col, FormGroup, Input, Row } from "reactstrap";
-import MasterSchemaProperty from "../../../../../../../../components/FormCreate/Fields/MasterSchemaProperty";
-import WysiwygEditor from "../../../../../../../../components/FormCreate/Custom/WysiwygEditor";
-import Checkbox from "../../../../../../../../components/@vuexy/checkbox/CheckboxesVuexy";
+import Select from "react-select";
 import { Check } from "react-feather";
+import { Col, FormGroup, Row } from "reactstrap";
+
+import { FIELD_TYPES } from "components/DForm/constants";
+import Constants from "components/FormCreate/Parts/Constants";
+import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
+import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
+import FieldLabel from "components/DForm/Components/Fields/Components/DFormWidgets/Components/FieldLabel";
+import { colourStyles } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
+
 import {
-  FIELD_TYPES,
+  DATE_WIDGET_FORMATS,
   FIELD_INITIAL_SPECIFIC_PROPERTIES,
   FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
   FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
-  DATE_WIDGET_FORMATS,
 } from "../../../../../../constants";
-
-import _ from "lodash";
-import FieldLabel from "../../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/FieldLabel";
-import Select from "react-select";
-import { colourStyles } from "../../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
 
 const FieldProperties = ({ element, onElementChange, organization, data, onFieldGroupChange }) => {
   const handleTypeChange = (e) => {

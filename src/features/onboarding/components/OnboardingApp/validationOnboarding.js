@@ -1,5 +1,6 @@
 import * as yup from "yup";
-import { FIELD_TYPES } from "./../../../Applications/constants";
+
+import { FIELD_TYPES } from "components/DForm/constants";
 
 const { object, number, string, boolean, date } = yup;
 
@@ -13,7 +14,7 @@ const numberSchema = object({
     })
     .integer("Value should be an integer")
     .positive("Value should be more than 0")
-    .test("number-prospect-meneger", function test(value) {
+    .test("number-prospect-manager", function test(value) {
       if (this.options.parent.maximum && value > this.options.parent.maximum) {
         return this.createError({
           message: `The value more than ${this.options.parent.maximum}`,
@@ -37,7 +38,7 @@ const textSchema = object({
       then: string().required("The value is required"),
     })
     .matches(/^[aA-zZ\s]+$/, "Only alphabets are allowed for this field ")
-    .test("text-prospect-meneger", function test(value) {
+    .test("text-prospect-manager", function test(value) {
       if (this.options.parent.maxLength && value.length > this.options.parent.maxLength) {
         return this.createError({
           message: `The value more than ${this.options.parent.maxLength}`,
@@ -52,14 +53,6 @@ const textSchema = object({
     }),
   maxLength: number(),
   minLength: number(),
-});
-const emailSchema = object({
-  value: string()
-    .email("Invalid email format")
-    .when("isRequired", {
-      is: true,
-      then: string().required("The field is required"),
-    }),
 });
 
 const booleanSchema = object({
@@ -90,7 +83,6 @@ export const fieldCommonSchema = yup.object().shape({
 
 const textElementSchema = object({}).concat(textSchema);
 const numberElementSchema = object({}).concat(numberSchema);
-const emailElementSchema = object({}).concat(emailSchema);
 const dateElementSchema = object({}).concat(dateSchema);
 const booleanElementSchema = object({}).concat(booleanSchema);
 
@@ -102,7 +94,6 @@ export const fieldValidationSchemas = {
   [FIELD_TYPES.longText]: fieldCommonSchema.concat(textElementSchema),
   [FIELD_TYPES.textArea]: fieldCommonSchema.concat(textElementSchema),
   [FIELD_TYPES.helpText]: fieldCommonSchema.concat(textElementSchema),
-  email: fieldCommonSchema.concat(emailElementSchema),
   //[FIELD_TYPES.file]: fieldCommonSchema,
   //[FIELD_TYPES.select]: fieldCommonSchema,
   //[FIELD_TYPES.fileList]: fieldCommonSchema,

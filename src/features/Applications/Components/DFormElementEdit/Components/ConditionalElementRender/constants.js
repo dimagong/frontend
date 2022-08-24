@@ -1,4 +1,4 @@
-import { FIELD_TYPES } from "../../../../constants";
+import { FIELD_TYPES } from "components/DForm/constants";
 
 export const EFFECTS = {
   hidden: "hidden",

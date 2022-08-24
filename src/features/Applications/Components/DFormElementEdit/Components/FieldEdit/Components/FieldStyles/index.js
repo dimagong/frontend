@@ -1,6 +1,9 @@
 import React from "react";
+
+import { FIELD_TYPES } from "components/DForm/constants";
 import SelectWidget from "components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
-import { FIELD_STYLES_CLASSES, MULTI_SELECT_UI_STYLES, FIELD_TYPES } from "../../../../../../constants";
+
+import { FIELD_STYLES_CLASSES, MULTI_SELECT_UI_STYLES } from "../../../../../../constants";
 
 const FieldStyles = ({ element, onElementChange }) => {
   const handleElementChange = (property, value) => {

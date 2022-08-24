@@ -7,16 +7,16 @@ import GroupEdit from "./Components/GroupEdit";
 import SectionEdit from "./Components/SectionEdit";
 import FieldEdit from "./Components/FieldEdit";
 
-import { EDIT_OPTIONS } from "../../constants";
+import { EDIT_OPTIONS, ELEMENT_TYPE_SPECIFIC_EDIT_OPTIONS } from "../../constants";
 
 const DFormElementEdit = (props) => {
   const {
     data,
     element,
+    organization,
     onElementChange,
     onElementChangesSave,
     onElementChangesCancel,
-    organization,
     onElementDelete,
     onFieldGroupChange,
     onGroupSectionChange,
@@ -28,10 +28,12 @@ const DFormElementEdit = (props) => {
     setSelectedEditOption(editOption);
   };
 
+  const onDeleteButtonClick = () => onElementDelete(element);
+
   const commonProps = {
     data: data,
-    editProperty: selectedEditOption,
     element: element,
+    editProperty: selectedEditOption,
     onElementChange: onElementChange,
   };
 
@@ -57,7 +59,7 @@ const DFormElementEdit = (props) => {
             Cancel
           </Button>
           <div>
-            <Button color="danger" onClick={() => onElementDelete(element)} className="mr-1 button button-danger">
+            <Button color="danger" onClick={onDeleteButtonClick} className="mr-1 button button-danger">
               Delete
             </Button>
             <Button color="primary" onClick={onElementChangesSave} className="button button-success">
@@ -67,22 +69,15 @@ const DFormElementEdit = (props) => {
         </div>
       </Col>
       <Col className="col-4 dform-element-edit_options">
-        {Object.entries(EDIT_OPTIONS).map(([key, option]) => {
-          //TODO remove hot fix with normal solution
-          if (["group", "section"].includes(element.elementType) && option === EDIT_OPTIONS.styling) {
-            return null;
-          }
-
-          return (
-            <div
-              className={`dform-element-edit_options-option ${option === selectedEditOption ? "selected" : ""}`}
-              onClick={() => handleEditOptionSelect(option)}
-              key={key}
-            >
-              {option}
-            </div>
-          );
-        })}
+        {ELEMENT_TYPE_SPECIFIC_EDIT_OPTIONS[element.elementType].map((option) => (
+          <div
+            className={`dform-element-edit_options-option ${option === selectedEditOption ? "selected" : ""}`}
+            onClick={() => handleEditOptionSelect(option)}
+            key={option}
+          >
+            {option}
+          </div>
+        ))}
       </Col>
     </Row>
   );

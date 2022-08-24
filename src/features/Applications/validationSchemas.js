@@ -1,5 +1,7 @@
 import * as yup from "yup";
-import { ELEMENT_TYPES, FIELD_TYPES } from "./constants";
+
+import { ELEMENT_TYPES, FIELD_TYPES } from "components/DForm/constants";
+
 import { DATE_WIDGET_FORMATS } from "./constants";
 
 const { object, string, number } = yup;

@@ -1,6 +1,8 @@
 import React from "react";
+
+import { ELEMENT_TYPES } from "components/DForm/constants";
+
 import NestedOrderComponent from "./NestedOrderComponent";
-import { ELEMENT_TYPES } from "../../constants";
 
 const ElementsReorderComponent = ({ applicationData, onReorder }) => {
   const handleDragEnd = (result) => {
