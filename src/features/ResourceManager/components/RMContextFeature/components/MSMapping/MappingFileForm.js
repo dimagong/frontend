@@ -7,8 +7,8 @@ import { toast } from "react-toastify";
 import Scrollbars from "react-custom-scrollbars";
 import React, { useEffect, useMemo, useState } from "react";
 
-import NmpButton from "components/nmp/NmpButton";
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { IdType, OptionsType } from "utility/prop-types";
 
@@ -130,7 +130,7 @@ const MappingFileForm = ({ fileId, msFieldOptions: propMSFieldOptions, reference
       <div className="ms-mapping__preview py-2 mb-2">
         <Row>
           <Col xs={{ size: 8, offset: 1 }}>
-            <NmpSelect
+            <DeprecatedNmpSelect
               value={user}
               options={userOptions}
               onChange={setUser}
@@ -141,17 +141,23 @@ const MappingFileForm = ({ fileId, msFieldOptions: propMSFieldOptions, reference
             />
           </Col>
           <Col xs={3}>
-            <NmpButton color="white" type="button" disabled={!user} onClick={onPreview} loading={openPreview.isLoading}>
+            <DeprecatedNmpButton
+              color="white"
+              type="button"
+              disabled={!user}
+              onClick={onPreview}
+              loading={openPreview.isLoading}
+            >
               Preview
-            </NmpButton>
+            </DeprecatedNmpButton>
           </Col>
         </Row>
       </div>
 
       <div className="d-flex justify-content-end py-1">
-        <NmpButton color="primary" disabled={!form.isValid || !form.dirty} loading={saveReferences.isLoading}>
+        <DeprecatedNmpButton color="primary" disabled={!form.isValid || !form.dirty} loading={saveReferences.isLoading}>
           Save
-        </NmpButton>
+        </DeprecatedNmpButton>
       </div>
     </form>
   );

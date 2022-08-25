@@ -7,7 +7,7 @@ import MemberFirmsListEmptyComponent from "./Components/MemberFirmsListEmptyComp
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 
 import CustomPagination from "components/Pagination";
-import NmpMemberFirmLogo from "components/nmp/NmpMemberFirmLogo";
+import DeprecatedNmpMemberFirmLogo from "components/nmp/DeprecatedNmpMemberFirmLogo";
 
 import { getMemberFirms } from "app/selectors/memberFirmsSelector";
 
@@ -24,7 +24,7 @@ const UserCardTemplate = ({ className, onClick, data }) => {
         }}
       >
         <div className="user-avatar-management">
-          <NmpMemberFirmLogo
+          <DeprecatedNmpMemberFirmLogo
             fileId={data.logo?.id}
             memberFirmId={data.id}
             className="user-card-img"

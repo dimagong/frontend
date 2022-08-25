@@ -9,7 +9,7 @@ import {
 import { IdType } from "utility/prop-types";
 import NoneAvatar from "assets/img/portrait/none-avatar.png";
 
-import NmpManageableImage from "../NmpManageableImage";
+import DeprecatedNmpManageableImage from "../DeprecatedNmpManageableImage";
 
 const NmpUserAvatar = ({ fileId, userId, isEditable = false, ...attrs }) => {
   const updateMutation = useUpdateUserAvatarMutation({ userId });
@@ -22,7 +22,7 @@ const NmpUserAvatar = ({ fileId, userId, isEditable = false, ...attrs }) => {
   const src = useMemo(() => (avatarQuery.data.url ? avatarQuery.data.url : NoneAvatar), [avatarQuery.data.url]);
 
   return (
-    <NmpManageableImage
+    <DeprecatedNmpManageableImage
       src={src}
       alt="user's avatar."
       onChange={onChange}

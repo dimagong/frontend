@@ -2,7 +2,7 @@ import { Input } from "reactstrap";
 import PropTypes from "prop-types";
 import React, { useMemo, useState, forwardRef } from "react";
 
-import FormField from "./FormField";
+import DeprecatedFormField from "./DeprecatedFormField";
 
 const inputStyles = {
   borderRadius: "0",
@@ -52,9 +52,9 @@ const TextField = forwardRef((props, ref) => {
   };
 
   return (
-    <FormField dirty={dirty} invalid={invalid} errors={errors} label={label}>
+    <DeprecatedFormField dirty={dirty} invalid={invalid} errors={errors} label={label}>
       {renderChildren()}
-    </FormField>
+    </DeprecatedFormField>
   );
 });
 

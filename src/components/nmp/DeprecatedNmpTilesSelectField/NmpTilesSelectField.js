@@ -5,9 +5,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Plus } from "react-feather";
 
-import NmpTile from "../NmpTile";
-import NmpButton from "../NmpButton";
-import NmpSelect from "../NmpSelect";
+import DeprecatedNmpTile from "../DeprecatedNmpTile";
+import DeprecatedNmpButton from "../DeprecatedNmpButton";
+import DeprecatedNmpSelect from "../DeprecatedNmpSelect";
 
 /*
 // ToDo: Reuse NmpSelect and code below to refactor
@@ -144,7 +144,7 @@ const NmpTilesSelectField = (props) => {
     }
 
     return (
-      <NmpTile
+      <DeprecatedNmpTile
         className="nmp-tiles-select-field__tile"
         color={tileColor}
         close
@@ -153,7 +153,7 @@ const NmpTilesSelectField = (props) => {
         key={`nmp-select-tile-${index}`}
       >
         {tile.label}
-      </NmpTile>
+      </DeprecatedNmpTile>
     );
   };
 
@@ -163,7 +163,7 @@ const NmpTilesSelectField = (props) => {
 
       <div className="d-flex">
         <div className="pr-1 full-width">
-          <NmpSelect
+          <DeprecatedNmpSelect
             name={name}
             value={selectValue}
             onChange={setSelectValue}
@@ -175,7 +175,7 @@ const NmpTilesSelectField = (props) => {
         </div>
 
         <div className="nmp-tiles-select-field__adder-wrap d-flex justify-content-end">
-          <NmpButton
+          <DeprecatedNmpButton
             className="nmp-tiles-select-field__adder d-flex align-items-center justify-content-center p-0"
             onClick={onAdderClick}
             disabled={!selectValue}

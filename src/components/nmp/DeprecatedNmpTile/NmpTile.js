@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { Badge } from "reactstrap";
 import classnames from "classnames";
 
-import NmpButton from "../NmpButton";
+import DeprecatedNmpButton from "../DeprecatedNmpButton";
 
 const closeSizes = {
   default: 15,
@@ -34,7 +34,7 @@ const NmpTile = React.forwardRef((props, ref) => {
       {children}
 
       {close ? (
-        <NmpButton
+        <DeprecatedNmpButton
           className="nmp-tile__close"
           color={color}
           onClick={onClose}

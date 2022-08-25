@@ -2,7 +2,7 @@ import Select from "react-select";
 import PropTypes from "prop-types";
 import React, { useMemo, useState } from "react";
 
-import FormField from "./FormField";
+import DeprecatedFormField from "./DeprecatedFormField";
 
 const SelectField = (props) => {
   const {
@@ -55,9 +55,9 @@ const SelectField = (props) => {
   };
 
   return (
-    <FormField label={label} dirty={dirty} invalid={invalid} errors={errors}>
+    <DeprecatedFormField label={label} dirty={dirty} invalid={invalid} errors={errors}>
       {renderChildren()}
-    </FormField>
+    </DeprecatedFormField>
   );
 };
 

@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Label } from "reactstrap";
 
-import NmpTilesSelectField from "components/nmp/NmpTilesSelectField";
+import DeprecatedNmpTilesSelectField from "components/nmp/DeprecatedNmpTilesSelectField";
 
 const bdmToOption = (bdm) => ({ label: bdm.full_name, value: bdm });
 
@@ -13,7 +13,7 @@ const UserAccessManagerSelect = ({ bdms, options, errors = [], onChange: propOnC
   const onChange = React.useCallback((newBdms) => propOnChange(newBdms.map(_.get("value"))), [propOnChange]);
 
   return (
-    <NmpTilesSelectField
+    <DeprecatedNmpTilesSelectField
       name="bdm"
       value={tiles}
       options={options}

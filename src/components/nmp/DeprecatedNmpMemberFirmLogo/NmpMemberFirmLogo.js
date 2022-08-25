@@ -9,7 +9,7 @@ import {
   useDeleteMemberFirmLogoMutation,
 } from "api/file/useMemberFirmLogoQueries";
 
-import NmpManageableImage from "../NmpManageableImage";
+import DeprecatedNmpManageableImage from "../DeprecatedNmpManageableImage";
 
 const NmpMemberFirmLogo = ({ fileId, memberFirmId, isEditable = false, ...attrs }) => {
   const updateMutation = useUpdateMemberFirmLogoMutation({ memberFirmId });
@@ -22,7 +22,7 @@ const NmpMemberFirmLogo = ({ fileId, memberFirmId, isEditable = false, ...attrs 
   const src = useMemo(() => (logoQuery.data.url ? logoQuery.data.url : NoneAvatar), [logoQuery.data.url]);
 
   return (
-    <NmpManageableImage
+    <DeprecatedNmpManageableImage
       src={src}
       alt="member firm logo"
       onChange={onChange}

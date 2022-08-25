@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { Button } from "reactstrap";
 import React, { useRef } from "react";
 
-import NmpImage from "../NmpImage";
+import DeprecatedNmpImage from "../DeprecatedNmpImage";
 
 const NmpManageableImageControls = ({ isRemovable, isLoading, onChange, onDelete }) => {
   const fileInputRef = useRef(null);
@@ -51,7 +51,13 @@ const NmpManageableImage = (props) => {
   const { alt, src, isLoading, isEditable = false, isRemovable, onDelete, onChange, ...attrs } = props;
 
   return (
-    <NmpImage src={src} alt={alt} isLoading={isLoading} wrapperAttrs={{ className: "manageable-image" }} {...attrs}>
+    <DeprecatedNmpImage
+      src={src}
+      alt={alt}
+      isLoading={isLoading}
+      wrapperAttrs={{ className: "manageable-image" }}
+      {...attrs}
+    >
       {isEditable ? (
         <NmpManageableImageControls
           onChange={onChange}
@@ -60,7 +66,7 @@ const NmpManageableImage = (props) => {
           isRemovable={isRemovable}
         />
       ) : null}
-    </NmpImage>
+    </DeprecatedNmpImage>
   );
 };
 

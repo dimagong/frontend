@@ -6,8 +6,8 @@ import noneAvatar from "assets/img/portrait/none-avatar.png";
 import { useDispatch } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
-import NmpUserAvatar from "../../../../components/nmp/NmpUserAvatar";
-import NmpMemberFirmLogo from "../../../../components/nmp/NmpMemberFirmLogo";
+import DeprecatedNmpUserAvatar from "../../../../components/nmp/DeprecatedNmpUserAvatar";
+import DeprecatedNmpMemberFirmLogo from "../../../../components/nmp/DeprecatedNmpMemberFirmLogo";
 
 const {
   showContextSearch,
@@ -64,7 +64,7 @@ const SearchInput = ({ suggestions }) => {
           <div className="d-flex flex-row">
             <div className="d-flex align-items-center">
               {suggestion.isMemberFirm ? (
-                <NmpMemberFirmLogo
+                <DeprecatedNmpMemberFirmLogo
                   fileId={suggestion.logo?.id}
                   memberFirmId={suggestion.id}
                   height="32"
@@ -72,7 +72,7 @@ const SearchInput = ({ suggestions }) => {
                   className="mr-1 rounded-circle"
                 />
               ) : (
-                <NmpUserAvatar
+                <DeprecatedNmpUserAvatar
                   fileId={suggestion.avatar?.id}
                   userId={suggestion.id}
                   height="32"
