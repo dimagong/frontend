@@ -36,7 +36,7 @@ NpmTooltip.propTypes = {
     "rightTop",
     "rightBottom",
   ]),
-  trigger: PropTypes.oneOf(["hover", "focus", "click", "contextMenu", PropTypes.array(PropTypes.string)]),
+  trigger: PropTypes.oneOf(["hover", "focus", "click", "contextMenu", PropTypes.array]),
   text: PropTypes.string,
   color: PropTypes.string,
 };
