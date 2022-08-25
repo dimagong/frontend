@@ -2,30 +2,28 @@ import React from "react";
 
 import PropTypes from "prop-types";
 
-import { ClockCircleOutlined } from "@ant-design/icons";
-import { Avatar, Badge } from "antd";
+import { FileTextOutlined } from "@ant-design/icons";
+import { Badge } from "antd";
 
 const NpmBadge = (props) => {
   return (
     <>
-      <Badge {...props}>
-        <Avatar shape="square" size="large" icon={props.icon} />
-      </Badge>
+      <Badge {...props}>{props.icon}</Badge>
     </>
   );
 };
 
 NpmBadge.defaultProps = {
-  color: "",
+  color: "#22776D",
   count: 0,
-  offset: [0, 0],
+  offset: [-5, 0],
   overflowCount: 99,
   showZero: true,
-  size: "default",
+  size: "large",
   status: "default",
   text: "",
   title: "",
-  icon: <ClockCircleOutlined />,
+  icon: <FileTextOutlined style={{ fontSize: 42, color: "#BCBCBC" }} />,
 };
 
 NpmBadge.propTypes = {
@@ -34,7 +32,7 @@ NpmBadge.propTypes = {
   offset: PropTypes.arrayOf(PropTypes.number),
   overflowCount: PropTypes.number,
   showZero: PropTypes.bool,
-  size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(["default", "small"])]),
+  size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(["default", "small", "large"])]),
   status: PropTypes.oneOf(["success", "processing ", "default", "error", "warning"]),
   text: PropTypes.node,
   title: PropTypes.string,
