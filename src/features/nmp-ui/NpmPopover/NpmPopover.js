@@ -1,3 +1,5 @@
+import "./styles.scss";
+
 import React from "react";
 
 import { Popover } from "antd";
@@ -10,9 +12,12 @@ const NpmPopover = (props) => {
     <div>
       {props.content?.length ? (
         props.content.map((item, idx) => (
-          <p onClick={(e) => props.onClick(e)} key={idx}>
-            {item}
-          </p>
+          <div className="popover_content" onClick={(e) => props.onClick(e)} key={idx}>
+            <div className="content_name" name={item.name}>
+              {item.name}
+            </div>
+            <div className={`content_type ${item.type}`}>{item.type}</div>
+          </div>
         ))
       ) : (
         <p>no content</p>
@@ -21,7 +26,7 @@ const NpmPopover = (props) => {
   );
   return (
     <>
-      <Popover placement="right" title={text} content={content} trigger="click">
+      <Popover placement="right" title={text} content={content} trigger="click" className="popover">
         {props.children}
       </Popover>
     </>
@@ -33,13 +38,13 @@ NpmPopover.defaultProps = {
   content: [],
   title: "No title",
   onClick: (e) => {
-    console.log("NpmPopover.defaultProps event", e.currentTarget);
+    // console.log("NpmPopover.defaultProps event", e.currentTarget);
   },
   trigger: "click",
 };
 
 NpmPopover.propTypes = {
-  content: PropTypes.arrayOf(PropTypes.string),
+  content: PropTypes.array,
   title: PropTypes.string,
   onClick: PropTypes.func,
   placement: PropTypes.oneOf([
