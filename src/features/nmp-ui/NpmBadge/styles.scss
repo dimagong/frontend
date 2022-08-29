@@ -1,0 +1,7 @@
+.ant-badge {
+  svg:hover path,
+  :active path,
+  :focus path {
+    fill: #434343;
+  }
+}
