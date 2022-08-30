@@ -5,25 +5,34 @@ import NpmBadge from "./../../nmp-ui/NpmBadge";
 import NpmTooltip from "./../../nmp-ui/NpmTooltip";
 import NpmPopover from "./../../nmp-ui/NpmPopover";
 import { FileProtectOutlined } from "@ant-design/icons";
+import { findStatusSurvey } from "./../data/helpers/findStatusSurvey";
 
-const MemberMenuView = () => {
-  const [menuOption, onMenuOption] = useState("null");
-
+const MemberMenuView = ({ dForms, surveys, setActiveAppOnboarding }) => {
   const selectMenuOption = (event) => {
     event.preventDefault();
-    const optionName = event.target.getAttribute("name");
-    onMenuOption(optionName);
+    const id = event.target.getAttribute("id");
+    const type = event.target.getAttribute("type");
+    if (type === "dform") {
+      const selectedOption = dForms.find((el) => el.id === +id);
+      setActiveAppOnboarding({ ...selectedOption, type });
+    } else if (type === "survey") {
+      const selectedOption = surveys.find((el) => el.id === +id);
+      setActiveAppOnboarding({ ...selectedOption, type });
+    }
   };
-  console.log("menuOption", menuOption);
-  const content = [
-    { name: "First sirvey", type: "new" },
-    { name: "Second sirvey", type: "pass" },
-  ];
+
+  const contentDForms = dForms.map((form) => {
+    return { title: form.name, status: form.status ?? "no-status", id: form.id, type: "dform" };
+  });
+  const contentSurveys = surveys.map((survey) => {
+    const status = findStatusSurvey(survey.started_at, survey.finished_at, survey.graded_at, null);
+    return { title: survey.title, status, id: survey.id, type: "survey" };
+  });
+
   return (
-    <Row>
+    <Row style={{ border: "2px solid blue" }}>
       <Col
         style={{
-          border: "2px solid blue",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -32,7 +41,7 @@ const MemberMenuView = () => {
         }}
       >
         <div style={{ width: "auto" }}>
-          <NpmPopover title={"Applications"} content={content} onClick={selectMenuOption}>
+          <NpmPopover title={"Applications"} content={contentDForms} onClick={selectMenuOption}>
             <NpmTooltip text="Applications">
               <NpmBadge name="applications" />
             </NpmTooltip>
@@ -40,7 +49,7 @@ const MemberMenuView = () => {
         </div>
 
         <div style={{ width: "auto" }}>
-          <NpmPopover title={"Surveys"} onClick={selectMenuOption}>
+          <NpmPopover title={"Surveys"} content={contentSurveys} onClick={selectMenuOption}>
             <NpmTooltip text="Surveys">
               <NpmBadge name="survey" icon={<FileProtectOutlined style={{ fontSize: 42, color: "#BCBCBC" }} />} />
             </NpmTooltip>
