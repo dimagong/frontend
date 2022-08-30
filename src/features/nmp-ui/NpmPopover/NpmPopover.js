@@ -13,10 +13,10 @@ const NpmPopover = (props) => {
       {props.content?.length ? (
         props.content.map((item, idx) => (
           <div className="popover_content" onClick={(e) => props.onClick(e)} key={idx}>
-            <div className="content_name" name={item.name}>
-              {item.name}
+            <div className="content_name" name={item.title} id={item.id} type={item.type}>
+              {item.title}
             </div>
-            <div className={`content_type ${item.type}`}>{item.type}</div>
+            <div className={`content_type ${item.status}`}>{item.status}</div>
           </div>
         ))
       ) : (

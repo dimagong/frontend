@@ -33,10 +33,27 @@
     border-radius: 2px;
     color: white;
   }
-  .new {
+  .new,
+  .notStarted {
     background: #22776d;
   }
-  .pass {
+  .pass,
+  .started {
     background: #474747;
+  }
+  .approved {
+    background: red;
+  }
+  .recent {
+    background: red;
+  }
+  .submitted {
+    background: red;
+  }
+  .unsubmitted {
+    background: red;
+  }
+  .no-status {
+    background: red;
   }
 }
