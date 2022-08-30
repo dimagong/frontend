@@ -14,6 +14,8 @@ import { initialAppOnboarding } from "./../../features/onboarding/utils/findActi
 
 import WelcomePageComponent from "./components/WeclomePage";
 import OnboardingComponent from "./components/Onboarding";
+import MemberComponentView from "./../members/ui/MemberComponentView";
+
 import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 
 const useCallCollectQuery = () => {
@@ -47,6 +49,7 @@ const OnboardingUser = () => {
   );
 
   const userApplications = collectApplicationsUser(dForms ?? [], onboardingSurveys ?? []);
+  console.log("userApplications", userApplications);
 
   const initialOnboarding = initialAppOnboarding(profile, userApplications);
 
@@ -66,7 +69,14 @@ const OnboardingUser = () => {
       introTitle={profile?.notify_entries[0].notify.intro_title}
     />
   ) : (
-    <OnboardingComponent userApplications={userApplications} profile={profile} initialOnboarding={initialOnboarding} />
+    <MemberComponentView
+      userApplications={userApplications}
+      profile={profile}
+      initialOnboarding={initialOnboarding}
+      dForms={dForms}
+      surveys={onboardingSurveys}
+    />
+    // <OnboardingComponent userApplications={userApplications} profile={profile} initialOnboarding={initialOnboarding} />
   );
 };
 
