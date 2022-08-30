@@ -89,8 +89,9 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     if (checkFields) {
       console.log("checkFields error", checkFields);
       toast.error(checkFields.errors.message);
+    } else {
+      submitDFormForReview.mutate();
     }
-    submitDFormForReview.mutate();
   };
 
   const validateFields = (field) => {
