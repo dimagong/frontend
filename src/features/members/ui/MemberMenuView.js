@@ -30,7 +30,7 @@ const MemberMenuView = ({ dForms, surveys, setActiveAppOnboarding }) => {
   });
 
   return (
-    <Row style={{ border: "2px solid blue" }}>
+    <Row>
       <Col
         style={{
           display: "flex",
@@ -43,7 +43,7 @@ const MemberMenuView = ({ dForms, surveys, setActiveAppOnboarding }) => {
         <div style={{ width: "auto" }}>
           <NpmPopover title={"Applications"} content={contentDForms} onClick={selectMenuOption}>
             <NpmTooltip text="Applications">
-              <NpmBadge name="applications" />
+              <NpmBadge count={dForms.length} name="applications" />
             </NpmTooltip>
           </NpmPopover>
         </div>
@@ -51,7 +51,11 @@ const MemberMenuView = ({ dForms, surveys, setActiveAppOnboarding }) => {
         <div style={{ width: "auto" }}>
           <NpmPopover title={"Surveys"} content={contentSurveys} onClick={selectMenuOption}>
             <NpmTooltip text="Surveys">
-              <NpmBadge name="survey" icon={<FileProtectOutlined style={{ fontSize: 42, color: "#BCBCBC" }} />} />
+              <NpmBadge
+                count={surveys.length}
+                name="survey"
+                icon={<FileProtectOutlined style={{ fontSize: 42, color: "#BCBCBC" }} />}
+              />
             </NpmTooltip>
           </NpmPopover>
         </div>
