@@ -16,9 +16,9 @@ import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
 
 import {
   FIELD_VALUE_PREPARE,
-  CONDITIONS_COMPARE_FUNCTIONS,
   EFFECT_ELEMENT_PROP,
-} from "../../../../Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
+  OPERATORS_COMPARE_FUNCTIONS,
+} from "features/Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
 
 const STATUSES = [
   { value: "submitted", label: "submitted" },
@@ -41,18 +41,18 @@ const checkConditions = (elementCollection, values) => {
       });
 
       const dependentField = elementCondition.field;
-      const dependentFieldValue = values[dependentField.masterSchemaPropertyId];
+      const dependentFieldValue = values[dependentField.masterSchemaFieldId];
       const dependentFieldValuePrepare = FIELD_VALUE_PREPARE[dependentField.type];
 
       const applicableEffect = EFFECT_ELEMENT_PROP[elementCondition.effect];
-      const conditionCompare = CONDITIONS_COMPARE_FUNCTIONS[elementCondition.condition.conditionType];
+      const operatorCompare = OPERATORS_COMPARE_FUNCTIONS[elementCondition.operator.type];
 
       if (dependentFieldValue == null) {
         throw new Error("Unexpected: a dependent field value can not be null or undefined.");
       }
 
       const preparedDependentFieldValue = dependentFieldValuePrepare(dependentFieldValue);
-      const isConditionApplicable = conditionCompare(elementCondition.expectedValue, preparedDependentFieldValue);
+      const isConditionApplicable = operatorCompare(elementCondition.expectedValue, preparedDependentFieldValue);
 
       // Apply effect as a props
       const elementEffectValue = isConditionApplicable ? applicableEffect.value : !applicableEffect.value;
@@ -125,8 +125,8 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     // field value from back-end.
     // (For example we enter hello in empty field and delete it. Field still counts as edited)
 
-    const newFieldValue = { ...(applicationValues[field.masterSchemaPropertyId] || {}), value, edited: true };
-    setApplicationValues({ ...applicationValues, [field.masterSchemaPropertyId]: newFieldValue });
+    const newFieldValue = { ...(applicationValues[field.masterSchemaFieldId] || {}), value, edited: true };
+    setApplicationValues({ ...applicationValues, [field.masterSchemaFieldId]: newFieldValue });
   };
 
   const handleUserApplicationValuesUpdate = () => {

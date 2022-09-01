@@ -4,8 +4,8 @@ import { Button, Col, Row } from "reactstrap";
 
 import CustomModal from "components/CustomModal";
 import ContextTemplate from "components/ContextTemplate";
-import FieldLabel from "components/DForm/Components/Fields/Components/DFormWidgets/Components/FieldLabel";
-import { colourStyles } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
+import { colourStyles } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
+import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormFieldLabel";
 
 import SurveySelectComponent from "features/Surveys/Components/SurveyFormComponents/Select";
 
@@ -37,7 +37,7 @@ const NewApplicationInitForm = ({ userId, onDFormInitialize }) => {
     <ContextTemplate contextTitle={"Application"}>
       <Row className="mr-0 ml-0">
         <Col md={12} className={"custom-react-select mb-2 w-100"}>
-          <FieldLabel label={"Select organization"} />
+          <DFormFieldLabel label="Select organization" />
           <Select
             maxMenuHeight={175}
             styles={colourStyles}

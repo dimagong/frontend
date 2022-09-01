@@ -26,7 +26,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     applicationSchema && applicationValues
       ? Object.values(applicationSchema.fields).map((app) => {
           return {
-            value: applicationValues[app.masterSchemaPropertyId].value,
+            value: applicationValues[app.masterSchemaFieldId].value,
             ...app,
           };
         })
@@ -107,7 +107,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const handleFieldChange = (field, value) => {
     setApplicationValues({
       ...applicationValues,
-      [field.masterSchemaPropertyId]: { ...(applicationValues[field.masterSchemaPropertyId] || {}), value },
+      [field.masterSchemaFieldId]: { ...(applicationValues[field.masterSchemaFieldId] || {}), value },
     });
 
     const { errors } = validateFields({ value, ...field });
@@ -115,7 +115,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
       console.log("validateFields errors", errors);
       toast.error(errors.message);
     } else {
-      throttleOnSave.current({ master_schema_field_id: field.masterSchemaPropertyId, value });
+      throttleOnSave.current({ master_schema_field_id: field.masterSchemaFieldId, value });
     }
   };
 

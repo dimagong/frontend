@@ -1,0 +1,1 @@
+export { DFormTextAreaWidget } from "./DFormTextAreaWidget";

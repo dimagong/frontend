@@ -4,8 +4,8 @@ import { Row, Col, Button } from "reactstrap";
 import React, { useState, useEffect } from "react";
 
 import GroupEdit from "./Components/GroupEdit";
-import SectionEdit from "./Components/SectionEdit";
 import FieldEdit from "./Components/FieldEdit";
+import SectionEdit from "./Components/SectionEdit";
 
 import { EDIT_OPTIONS, ELEMENT_TYPE_SPECIFIC_EDIT_OPTIONS } from "../../constants";
 

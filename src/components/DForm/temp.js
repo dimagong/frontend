@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import './styles.scss';
-import {toast} from "react-toastify";
+import "./styles.scss";
+import { toast } from "react-toastify";
 
-const FormComponent = ({handleSave, groupFields}) => {
-
+const FormComponent = ({ handleSave, groupFields }) => {
   const [formData, setFormData] = useState({});
 
   // Each field store with structure:
@@ -23,8 +22,8 @@ const FormComponent = ({handleSave, groupFields}) => {
         ...formData[id],
         value,
         error: "",
-      }
-    })
+      },
+    });
   };
 
   const handleError = (id, error) => {
@@ -33,30 +32,33 @@ const FormComponent = ({handleSave, groupFields}) => {
       [id]: {
         ...formData[id],
         error,
-      }
-    })
+      },
+    });
   };
 
   const isFormValid = async (fields) => {
     let isFormValid = true;
 
-    await Promise.all(fields.map( async (field) => {
-      await validationSchemas[field.type]
-        .validate(field.value, {context: {isRequired: field.isRequired}})
-        .catch((err) => {
-          handleError(field.id, err.message)
+    await Promise.all(
+      fields.map(async (field) => {
+        await validationSchemas[field.type]
+          .validate(field.value, { context: { isRequired: field.isRequired } })
+          .catch((err) => {
+            handleError(field.id, err.message);
+          });
+
+        const isValid = await validationSchemas[field.type].isValid(field.value, {
+          context: { isRequired: field.isRequired },
         });
 
-      const isValid = await validationSchemas[field.type].isValid(field.value, {context: {isRequired: field.isRequired}});
-
-      if (!isValid) isFormValid = false;
-    }));
+        if (!isValid) isFormValid = false;
+      })
+    );
 
     return isFormValid;
   };
 
   const onSave = async () => {
-
     const fields = Object.values(formData);
 
     const isValid = await isFormValid(fields);
@@ -67,16 +69,18 @@ const FormComponent = ({handleSave, groupFields}) => {
       return;
     }
 
-    const dataToSave = (Object.values(formData).map((field) => ({master_schema_field_id: field.id, value: field.value})));
+    const dataToSave = Object.values(formData).map((field) => ({
+      master_schema_field_id: field.id,
+      value: field.value,
+    }));
 
-    handleSave(dataToSave)
+    handleSave(dataToSave);
   };
 
   const initForm = () => {
     const initialData = {};
 
     [...groupFields].map((formField) => {
-
       // Handle different default values for different field types here
       const defaultValue = "";
 
@@ -93,21 +97,18 @@ const FormComponent = ({handleSave, groupFields}) => {
     setFormData(initialData);
   };
 
-
   // Init form
   useEffect(() => {
-    if(groupFields.length) {
-      initForm()
+    if (groupFields.length) {
+      initForm();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupFields]);
 
   return (
     <div>
-
       <div>
         {groupFields.map((formField) => {
-
           const FormFieldElement = formComponents[formField.type];
           const fieldId = formField.master_schema_field_id;
 
@@ -120,15 +121,14 @@ const FormComponent = ({handleSave, groupFields}) => {
               label={formField.title}
               value={formData[fieldId]?.value || ""}
               onChange={handleInputChange}
-              disabled={false} // TODO handle disabled
+              disabled={false}
               error={formData[fieldId]?.error || ""}
             />
-          )
+          );
         })}
       </div>
-
     </div>
-  )
+  );
 };
 
 export default FormComponent;

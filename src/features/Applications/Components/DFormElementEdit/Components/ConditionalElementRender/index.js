@@ -5,22 +5,22 @@ import React from "react";
 import { X } from "react-feather";
 import { Button } from "reactstrap";
 
-import { EFFECTS } from "./constants";
 import ConditionForm from "./Components";
+import { INITIAL_CONDITION_DATA } from "./constants";
 
-const ConditionalElementRender = ({ onElementChange, conditions = [], fields = [], element }) => {
+const ConditionalElementRender = ({ conditions = [], fields = [], element, onElementChange }) => {
   const handleConditionAdd = () => {
     onElementChange({
       ...element,
-      conditions: [...(element.conditions || []), { tempId: v4(), effect: EFFECTS[0] }],
+      conditions: [...(element.conditions || []), { ...INITIAL_CONDITION_DATA, id: v4() }],
     });
   };
 
-  const handleConditionDelete = (conditionTempId) => {
+  const handleConditionDelete = (conditionId) => {
     if (window.confirm("Are you sure you want to delete this condition?")) {
       onElementChange({
         ...element,
-        conditions: element.conditions.filter((condition) => condition.tempId !== conditionTempId),
+        conditions: element.conditions.filter((condition) => condition.id !== conditionId),
       });
     }
   };
@@ -36,23 +36,24 @@ const ConditionalElementRender = ({ onElementChange, conditions = [], fields = [
       ) : (
         <div>
           {conditions.map((condition) => (
-            <div key={condition.tempId}>
-              <div className={"conditional-element-render_condition-title"}>
+            <div key={condition.id}>
+              <div className="conditional-element-render_condition-title">
                 <div>Condition</div>
-                <X size={22} onClick={() => handleConditionDelete(condition.tempId)} />
+                <X size={22} onClick={() => handleConditionDelete(condition.id)} />
               </div>
               <ConditionForm onConditionChange={handleConditionChange} condition={condition} fields={fields} />
             </div>
           ))}
         </div>
       )}
-      {conditions && conditions.length < 1 && (
+
+      {conditions.length === 0 ? (
         <div className="d-flex justify-content-center">
-          <Button color={"primary"} onClick={handleConditionAdd} className={"button button-success"}>
+          <Button color="primary" onClick={handleConditionAdd}>
             Add condition
           </Button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

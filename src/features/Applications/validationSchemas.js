@@ -8,10 +8,12 @@ const { object, string, number } = yup;
 
 const fieldTypesArray = Object.values(FIELD_TYPES);
 
+// ToDo: handle it
 const dynamicRenderValidation = object({});
 
 const minMaxLengthSchema = object({
   minLength: number("Min length should be a number")
+    .nullable()
     .integer("Min length should be an integer")
     .positive("Min length should be bigger then 0")
     .when("maxLength", (maxLength, schema) => {
@@ -24,12 +26,14 @@ const minMaxLengthSchema = object({
       });
     }),
   maxLength: number("Max length should be a number")
+    .nullable()
     .integer("Max length should be an integer")
     .positive("Max length should be bigger then 0"),
 });
 
 const minimumMaximumSchema = object({
   minimum: number("Minimum should be a number")
+    .nullable()
     .integer("Minimum should be an integer")
     .positive("Minimum should be bigger then 0")
     .when("maximum", (maximum, schema) => {
@@ -42,52 +46,48 @@ const minimumMaximumSchema = object({
       });
     }),
   maximum: number("Maximum should be a number")
+    .nullable()
     .integer("Maximum should be an integer")
     .positive("Maximum should be bigger then 0"),
 });
 
 export const fieldCommonSchema = yup.object().shape({
   id: yup.string().required(),
-  isNotMasterSchemaRelated: yup.boolean(),
   type: yup.string().oneOf(fieldTypesArray),
   title: yup.string().required(),
   isRequired: yup.boolean(),
   classes: yup.string(),
   isLabelShowing: yup.boolean(),
-  conditions: yup.array().test(
-    "conditions-fields",
-    "Condition fields must be filled", // error message
-    function test(value) {
-      if (value == null) {
-        // ToDo remove it and migrate all dforms to condition prop requeired as empty array
-        console.warn("Migrate all dform templates to new conditions field validation. For now this is warning.");
-        return true;
-      }
-      if (value.length === 0) {
-        return true;
-      } else {
-        if (!value[0]?.effect) {
-          return this.createError({
-            message: "The 'This element will be' field is empty",
-          });
-        }
-        if (value[0]?.field && !value[0]?.condition?.operandName) {
-          return this.createError({
-            message: "The 'Will be' field is empty",
-          });
-        }
-        if (value[0]?.field && value[0]?.condition?.operandName === "filled") {
-          return true;
-        }
-        if (value[0]?.condition?.operandName === "equal" && !value[0].expectedValue) {
-          return this.createError({
-            message: "The 'To' field is empty",
-          });
-        }
-      }
+  conditions: yup.array().test("conditions-fields", "Condition fields must be filled", function test(value) {
+    if (value == null) {
+      // ToDo remove it and migrate all dforms to condition prop requeired as empty array
+      console.warn("Migrate all dform templates to new conditions field validation. For now this is warning.");
       return true;
     }
-  ),
+    if (value.length === 0) {
+      return true;
+    } else {
+      if (!value[0]?.effect) {
+        return this.createError({
+          message: "The 'This element will be' field is empty",
+        });
+      }
+      if (value[0]?.field && !value[0]?.condition?.operandName) {
+        return this.createError({
+          message: "The 'Will be' field is empty",
+        });
+      }
+      if (value[0]?.field && value[0]?.condition?.operandName === "filled") {
+        return true;
+      }
+      if (value[0]?.condition?.operandName === "equal" && !value[0].expectedValue) {
+        return this.createError({
+          message: "The 'To' field is empty",
+        });
+      }
+    }
+    return true;
+  }),
 });
 
 const textElementSchema = object({}).concat(minMaxLengthSchema);

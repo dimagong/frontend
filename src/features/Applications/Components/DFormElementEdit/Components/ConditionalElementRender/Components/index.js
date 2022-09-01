@@ -1,107 +1,83 @@
-import React, { useState, useEffect } from "react";
-import FieldLabel from "../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/FieldLabel";
-import Select from "react-select";
-import { colourStyles } from "../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
-import { CONDITIONS_BY_SELECTED_FIELD_TYPE, EFFECTS, EFFECT_LABELS } from "../constants";
-import TextWidget from "../../../../../../../components/FormCreate/Custom/TextWidget";
+import React from "react";
+
+import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
+import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
+
+import { EFFECTS, EFFECT_LABELS, OPERATOR_TEMPLATES_BY_SELECTED_FIELD_TYPE } from "../constants";
 
 const preparedEffects = Object.values(EFFECTS).map((effect) => ({ value: effect, label: EFFECT_LABELS[effect] }));
 
 const ConditionForm = ({ condition, fields, onConditionChange }) => {
-  const [conditionData, setConditionData] = useState({ ...condition });
+  const handleEffectSelect = ({ value: effect }) => onConditionChange({ ...condition, effect });
 
-  const handleEffectSelect = (effect) => {
-    setConditionData({ ...conditionData, effect: effect.value });
-  };
+  const handleFieldSelect = ({ value: field }) => onConditionChange({ ...condition, field });
 
-  const handleFieldSelect = (field) => {
-    setConditionData({ ...conditionData, field: field.value });
-  };
+  const handleOperatorSelect = ({ value: operator }) => onConditionChange({ ...condition, operator });
 
-  const handleOperandSelect = (condition) => {
-    setConditionData({
-      ...conditionData,
-      condition: condition.value,
-    });
-  };
+  const handleExpectedValueChange = (expectedValue) => onConditionChange({ ...condition, expectedValue });
 
-  const handleExpectedValueChange = (expectedValue) => {
-    setConditionData({ ...conditionData, expectedValue });
-  };
-
-  const conditionBySelectedField = CONDITIONS_BY_SELECTED_FIELD_TYPE[conditionData?.field?.type] || {};
-
-  useEffect(() => {
-    onConditionChange(conditionData);
-  }, [conditionData]);
+  const operatorTemplateBySelectedField = OPERATOR_TEMPLATES_BY_SELECTED_FIELD_TYPE[condition.field?.type] || {};
 
   return (
-    <div className="conditional-element-render_condition">
-      <div className={"custom-react-select mb-2"}>
-        <FieldLabel label={"This element will be"} />
-        <Select
-          maxMenuHeight={175}
+    <>
+      <DFormSelectWidget
+        id="dcr-type"
+        label="This element will be"
+        value={condition.effect ? { value: condition.effect, label: EFFECT_LABELS[condition.effect] } : null}
+        options={preparedEffects}
+        placeholder="Select an effect"
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        onChange={handleEffectSelect}
+        className="mb-2"
+      />
+
+      <DFormSelectWidget
+        id="dcr-field"
+        label="If value of field"
+        value={condition.field ? { value: condition.field, label: condition.field.title } : null}
+        options={fields.map((field) => ({ value: field, label: field.title }))}
+        placeholder="Select field"
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        onChange={handleFieldSelect}
+        className="mb-2"
+      />
+
+      {!!condition.field ? (
+        <DFormSelectWidget
+          id="dcr-effect"
+          label="Will be"
+          value={condition.operator ? { value: condition.operator, label: condition.operator.name } : null}
+          options={operatorTemplateBySelectedField.map((condition) => ({ value: condition, label: condition.name }))}
+          placeholder="Select operator"
+          isError={false}
+          isRequired={false}
           isDisabled={false}
-          styles={colourStyles}
-          isMulti={false}
-          name="colors"
-          value={
-            conditionData.effect ? { value: conditionData.effect, label: EFFECT_LABELS[conditionData.effect] } : null
-          }
-          onChange={handleEffectSelect}
-          options={preparedEffects}
-          className="React"
-          classNamePrefix="select"
-          placeholder={"Select an effect"}
+          isLabelShowing={true}
+          onChange={handleOperatorSelect}
+          className="mb-2"
         />
-      </div>
-      <div className={"custom-react-select mb-2"}>
-        <FieldLabel label={"If value of field"} />
-        <Select
-          maxMenuHeight={175}
+      ) : null}
+
+      {condition.operator && condition.operator.expectedValueTitle ? (
+        <DFormTextWidget
+          id="dcr-expected-value"
+          label={condition.operator.expectedValueTitle}
+          value={condition.expectedValue ?? ""}
+          placeholder="Enter expected value"
+          isError={false}
+          isRequired={false}
           isDisabled={false}
-          styles={colourStyles}
-          isMulti={false}
-          name="colors"
-          value={conditionData.field ? { value: conditionData.field, label: conditionData.field.title } : null}
-          onChange={handleFieldSelect}
-          options={fields.map((field) => ({ value: field, label: field.title }))}
-          className="React"
-          classNamePrefix="select"
-          placeholder={"Select field"}
-        />
-      </div>
-      {!!conditionData.field && (
-        <div className={"custom-react-select mb-2"}>
-          <FieldLabel label={"Will be"} />
-          <Select
-            maxMenuHeight={175}
-            isDisabled={false}
-            styles={colourStyles}
-            isMulti={false}
-            name="colors"
-            value={
-              conditionData.condition
-                ? { value: conditionData.condition, label: conditionData.condition.operandName }
-                : null
-            }
-            onChange={handleOperandSelect}
-            options={conditionBySelectedField.map((condition) => ({ value: condition, label: condition.operandName }))}
-            className="React"
-            classNamePrefix="select"
-            placeholder={"Select operand"}
-          />
-        </div>
-      )}
-      {!!conditionData.condition && conditionData.condition?.expectedValueTitle && (
-        <TextWidget
-          value={conditionData.expectedValue || ""}
-          label={conditionData.condition.expectedValueTitle}
-          placeholder={"Enter expected value"}
+          isLabelShowing={true}
           onChange={handleExpectedValueChange}
         />
-      )}
-    </div>
+      ) : null}
+    </>
   );
 };
 

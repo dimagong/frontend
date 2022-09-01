@@ -1,5 +1,6 @@
 import "./styles.scss";
 
+import { v4 } from "uuid";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
 import React, { useState } from "react";
@@ -8,10 +9,9 @@ import { Button, TabContent, TabPane } from "reactstrap";
 
 import DForm from "components/DForm";
 import CustomTabs from "components/Tabs";
-import { makeid } from "components/FormCreate/utils";
 import ContextTemplate from "components/ContextTemplate";
+import { ELEMENT_TYPES } from "components/DForm/constants";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-import { FIELD_TYPES, ELEMENT_TYPES } from "components/DForm/constants";
 
 import appSlice from "app/slices/appSlice";
 import onboardingSlice from "app/slices/onboardingSlice";
@@ -19,21 +19,17 @@ import { selectProfile, selectdForm } from "app/selectors";
 
 import {
   APPLICATION_PAGES,
-  INITIAL_FIELD_DATA,
+  // INITIAL_FIELD_DATA,
   INITIAL_GROUP_DATA,
   INITIAL_SECTION_DATA,
-  FIELD_COMMON_PROPERTIES,
   INITIAL_APPLICATION_DATA,
-  FIELD_SPECIFIC_PROPERTIES,
-  FIELD_INITIAL_SPECIFIC_PROPERTIES,
-  FIELD_SPECIFIC_UI_STYLE_PROPERTIES,
 } from "./constants";
-
 import {
   useApplicationTemplateCreateMutation,
   useApplicationTemplate,
   useApplicationTemplateUpdateMutation,
 } from "./applicationQueries";
+import { DFormFieldModel } from "./fieldModel";
 import DFormElementEdit from "./Components/DFormElementEdit";
 import NewApplicationInitForm from "./Components/NewApplicationInitForm";
 import ApplicationDescription from "./Components/ApplicationDescription";
@@ -47,24 +43,32 @@ const { setdForm } = onboardingSlice.actions;
 //TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
 // because of internal behavior of component
 
-const checkMinMaxField = (elem) => {
-  if (elem.elementType === ELEMENT_TYPES.field && "minimum" in elem) {
-    if (elem.minimum === "") {
-      elem.minimum = undefined;
-    }
-    if (elem.maximum === "") {
-      elem.maximum = undefined;
-    }
+const validateDescriptionDesignMode = (validData) => {
+  try {
+    applicationSubmitValidation.validateSync(validData, { abortEarly: false });
+  } catch (validationError) {
+    console.log("error", validationError);
+    return { isValid: false, errors: validationError };
   }
-  if (elem.elementType === ELEMENT_TYPES.field && "minLength" in elem) {
-    if (elem.minLength === "") {
-      elem.minLength = undefined;
-    }
-    if (elem.maxLength === "") {
-      elem.maxLength = undefined;
-    }
+  return { isValid: true };
+};
+
+const mutateApplication = (applicationData, mutation) => {
+  const { isValid, errors: errValidation } = validateDescriptionDesignMode(applicationData);
+
+  if (isValid) {
+    const { name, description, isPrivate, type, errors, organization, ...schema } = applicationData;
+
+    mutation.mutate({
+      name,
+      description,
+      is_private: isPrivate,
+      groups: [{ group_id: organization.id, type: organization.type }],
+      schema,
+    });
+  } else {
+    toast.error(errValidation.message);
   }
-  return elem;
 };
 
 const Applications = ({ isCreate }) => {
@@ -76,7 +80,7 @@ const Applications = ({ isCreate }) => {
   const [applicationData, setApplicationData] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
 
-  const createApplication = useApplicationTemplateCreateMutation({
+  const createApplicationMutation = useApplicationTemplateCreateMutation({
     onSuccess: (data) => {
       dispatch(setdForm(data));
       dispatch(setContext("dForm"));
@@ -88,7 +92,7 @@ const Applications = ({ isCreate }) => {
     },
   });
 
-  const updateApplication = useApplicationTemplateUpdateMutation(
+  const updateApplicationMutation = useApplicationTemplateUpdateMutation(
     { applicationId: selectedDForm?.id },
     {
       onSuccess: (data) => {
@@ -122,7 +126,7 @@ const Applications = ({ isCreate }) => {
 
         setApplicationData(applicationData);
       },
-      enabled: Boolean(selectedDForm?.id) && !isCreate && !createApplication.isLoading,
+      enabled: Boolean(selectedDForm?.id) && !isCreate && !createApplicationMutation.isLoading,
       refetchOnWindowFocus: false,
     }
   );
@@ -182,7 +186,7 @@ const Applications = ({ isCreate }) => {
 
     const newSectionData = {
       ...INITIAL_SECTION_DATA,
-      id: makeid(9),
+      id: v4(),
       name: sectionName,
       elementType: "section",
       // ToDo: Handle refactoring situation with isNew
@@ -201,7 +205,7 @@ const Applications = ({ isCreate }) => {
 
     const newGroupData = {
       ...INITIAL_GROUP_DATA,
-      id: makeid(9),
+      id: v4(),
       name: groupName,
       // ToDo: Handle refactoring situation with isNew
       // isNew: true,
@@ -215,20 +219,19 @@ const Applications = ({ isCreate }) => {
     setApplicationData(dataToSave);
   };
 
-  const handleFieldCreate = (group) => {
-    const newFieldData = {
-      ...INITIAL_FIELD_DATA,
-      ...FIELD_INITIAL_SPECIFIC_PROPERTIES[FIELD_TYPES.text],
-      ...FIELD_SPECIFIC_UI_STYLE_PROPERTIES[FIELD_TYPES.text],
-      id: makeid(9),
-      // ToDo: Handle refactoring situation with isNew
-      // isNew: true,
-    };
+  const handleFieldCreate = (groupId) => {
+    const newField = DFormFieldModel.create(groupId);
+    // const newFieldData = {
+    //   ...INITIAL_FIELD_DATA,
+    //   id: v4(),
+    //   // ToDo: Handle refactoring situation with isNew
+    //   // isNew: true,
+    // };
 
-    const dataToSave = embedSuggestedChanges(newFieldData, true);
+    const dataToSave = embedSuggestedChanges(newField, true);
 
     // Add field to group where it was created
-    dataToSave.groups[group].relatedFields = [...dataToSave.groups[group].relatedFields, newFieldData.id];
+    dataToSave.groups[groupId].relatedFields = [...dataToSave.groups[groupId].relatedFields, newField.id];
 
     setApplicationData(dataToSave);
   };
@@ -332,14 +335,14 @@ const Applications = ({ isCreate }) => {
 
       if (element.elementType === ELEMENT_TYPES.field) {
         const masterSchemaUsedPropertiesList = Object.values(applicationData.fields).reduce((acc, curr) => {
-          if (curr.id !== element.id && curr.masterSchemaPropertyId) {
-            acc.push(curr.masterSchemaPropertyId);
+          if (curr.id !== element.id && curr.masterSchemaFieldId) {
+            acc.push(curr.masterSchemaFieldId);
           }
 
           return acc;
         }, []);
 
-        MSPropertyValidationSchema.validateSync(element.masterSchemaPropertyId, {
+        MSPropertyValidationSchema.validateSync(element.masterSchemaFieldId, {
           context: { masterSchemaUsedPropertiesList },
         });
       }
@@ -387,27 +390,11 @@ const Applications = ({ isCreate }) => {
       elementParentIdName: "sectionId",
     });
 
-  // On save extracts all necessary props from field object. Prevent from saving properties that are specific
-  // to another type of field, e.g. options of select.
-  // Do not extract those before user save, because he might want to save his changes to specific property
-  // and come back to that field type
-  const extractPropsFromField = (field) => {
-    const requiredProps = [...FIELD_COMMON_PROPERTIES, ...FIELD_SPECIFIC_PROPERTIES[field.type]];
-
-    return requiredProps.reduce((acc, property) => {
-      acc[property] = field[property];
-
-      return acc;
-    }, {});
-  };
-
   const handleElementChangesSave = () => {
     //TODO also add this changes to dform in redux. Local state will be in sync with redux store
     // with only difference that local changes will have applied suggested changes
 
-    const response = validateElement(selectedElement);
-
-    const { isElementValid, errors } = response;
+    const { isElementValid, errors } = validateElement(selectedElement);
 
     if (isElementValid) {
       // TODO REMOVE ELEMENT ERRORS
@@ -415,11 +402,16 @@ const Applications = ({ isCreate }) => {
       setIsModuleEditComponentVisible(false);
       setSelectedElement(null);
 
+      let dataToSave;
+
       if (selectedElement.elementType === ELEMENT_TYPES.field) {
-        setApplicationData(embedSuggestedChanges(extractPropsFromField(selectedElement)));
+        dataToSave = embedSuggestedChanges(selectedElement);
       } else {
-        setApplicationData(embedSuggestedChanges(selectedElement));
+        dataToSave = embedSuggestedChanges(selectedElement);
       }
+
+      setApplicationData(dataToSave);
+      mutateApplication(dataToSave, updateApplicationMutation);
     } else {
       //Todo change it in future to displaying errors under the elements where its occur
       toast.error(errors.message);
@@ -431,9 +423,20 @@ const Applications = ({ isCreate }) => {
     setIsModuleEditComponentVisible(false);
   };
 
+  // ToDo: remove edited
   const handleElementChange = (elementData) => {
-    const elem = checkMinMaxField(elementData);
-    setSelectedElement({ ...elem, edited: true });
+    let element;
+    if (elementData.elementType === ELEMENT_TYPES.field) {
+      element = DFormFieldModel.from(elementData);
+      element.edited = true;
+    } else {
+      element = { ...elementData, edited: true };
+    }
+
+    const dataToSave = embedSuggestedChanges(element);
+
+    setSelectedElement(element);
+    setApplicationData(dataToSave);
   };
 
   const handleApplicationDescriptionChange = (descriptionKey, value) => {
@@ -503,45 +506,10 @@ const Applications = ({ isCreate }) => {
     }
   };
 
-  const validateDescriptionDesignMode = (validData) => {
-    try {
-      applicationSubmitValidation.validateSync(validData, { abortEarly: false });
-    } catch (validationError) {
-      console.log("error", validationError);
-      return { isValid: false, errors: validationError };
-    }
-    return { isValid: true };
-  };
-
   const handleApplicationMutation = () => {
-    const { isValid, errors: errValidation } = validateDescriptionDesignMode(applicationData);
-    if (isValid) {
-      // Errors object spread just to not pass it into mutation
-      // const { name, description, isPrivate, type, errors, organization, ...schema } = dataWithSuggestedChanges;
-      const { name, description, isPrivate, type, errors, organization, ...schema } = applicationData;
+    const mutation = isCreate ? createApplicationMutation : updateApplicationMutation;
 
-      const dataToSave = {
-        name,
-        description,
-        is_private: isPrivate,
-        groups: [
-          {
-            group_id: organization.id,
-            type: organization.type,
-          },
-        ],
-        schema,
-      };
-
-      if (isCreate) {
-        createApplication.mutate(dataToSave);
-      } else {
-        updateApplication.mutate(dataToSave);
-      }
-    } else {
-      console.log("error", errValidation);
-      toast.error(errValidation.message);
-    }
+    mutateApplication(applicationData, mutation);
   };
 
   if ((!isCreate && !applicationData) || application.isLoading) {
@@ -595,7 +563,7 @@ const Applications = ({ isCreate }) => {
             <Button
               color="primary"
               className="button button-success"
-              disabled={createApplication.isLoading || updateApplication.isLoading}
+              disabled={createApplicationMutation.isLoading || updateApplicationMutation.isLoading}
               onClick={handleApplicationMutation}
             >
               {isCreate ? "Create" : "Save"}

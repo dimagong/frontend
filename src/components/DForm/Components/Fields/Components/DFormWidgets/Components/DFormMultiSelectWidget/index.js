@@ -1,0 +1,1 @@
+export { DFormMultiSelectWidget } from "./DFormMultiSelectWidget";

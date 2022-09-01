@@ -107,7 +107,6 @@ export function ObjectFieldTemplate(props) {
 
       let elementContent = groupedElements[groupName];
 
-      // todo ordering
       if (this.state.uiSchema.fieldsOrdering && this.state.uiSchema.fieldsOrdering.length) {
         const elementNames = elementContent.map((element) => String(element.name));
         const filteredOrderingElementNames = this.state.uiSchema.fieldsOrdering.filter(
@@ -119,7 +118,6 @@ export function ObjectFieldTemplate(props) {
           );
         });
       }
-      // todo end ordering
 
       elementContent = elementContent.map((element) => {
         if (isElementInSection(element.name, sectionName)) {
@@ -158,7 +156,6 @@ export function ObjectFieldTemplate(props) {
       });
 
       if (groupName.indexOf("WITHOUT_GROUP") !== -1) {
-        // todo
         // return <div key={`${sectionName}-${groupName}-${index}`} className="row mt-2 mb-2">
 
         //     {elementContent}
