@@ -8,14 +8,7 @@ import { Card } from "antd";
 
 const NpmCard = (props) => (
   <div className="site-card-border-less-wrapper">
-    <Card
-      title={props.title}
-      bordered={true}
-      style={{
-        width: props.width,
-        height: props.height,
-      }}
-    >
+    <Card title={props.title} bordered={true} style={props.style}>
       {props.children}
     </Card>
   </div>
@@ -24,14 +17,11 @@ const NpmCard = (props) => (
 NpmCard.defaultProps = {
   title: "No title",
   size: "default",
-  width: "783px",
-  height: "646px",
 };
 
 NpmCard.propTypes = {
   color: PropTypes.string,
-  height: PropTypes.string,
-  width: PropTypes.string,
+  style: PropTypes.object,
   title: PropTypes.string,
   children: PropTypes.element,
   size: PropTypes.oneOf(["default", "small"]),
