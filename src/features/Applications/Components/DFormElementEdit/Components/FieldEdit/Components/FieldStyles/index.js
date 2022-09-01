@@ -1,21 +1,35 @@
 import React from "react";
-import SelectWidget from "components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
-import { FIELD_STYLES_CLASSES, MULTI_SELECT_UI_STYLES, FIELD_TYPES } from "../../../../../../constants";
+
+import { FIELD_STYLES_CLASSES, MULTI_SELECT_UI_STYLES } from "features/Applications/constants";
+
+import { FieldTypes } from "components/DForm/constants";
+import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
+
+const defaultUIStyle = { label: "default", value: null };
+
+const uIStylesOptions = [defaultUIStyle, ...MULTI_SELECT_UI_STYLES.map((value) => ({ label: value, value }))];
 
 const FieldStyles = ({ element, onElementChange }) => {
   const handleElementChange = (property, value) => {
     onElementChange({ ...element, [property]: value });
   };
 
+  const handleUIStyleChange = ({ value }) => handleElementChange("uiStyle", value);
+
   const renderSpecificStyles = () => {
     switch (element.type) {
-      case FIELD_TYPES.multiSelect: {
+      case FieldTypes.MultiSelect: {
         return (
-          <SelectWidget
-            label={"UI style"}
-            options={MULTI_SELECT_UI_STYLES.map((className) => ({ label: className, value: className }))}
-            value={{ label: element.uiStyle, value: element.uiStyle }}
-            onChange={(value) => handleElementChange("uiStyle", value)}
+          <DFormSelectWidget
+            id="ui-style"
+            label="UI style"
+            value={element.uiStyle ? { label: element.uiStyle, value: element.uiStyle } : defaultUIStyle}
+            options={uIStylesOptions}
+            isError={false}
+            isRequired={false}
+            isDisabled={false}
+            isLabelShowing={false}
+            onChange={handleUIStyleChange}
           />
         );
       }
@@ -25,17 +39,22 @@ const FieldStyles = ({ element, onElementChange }) => {
   };
 
   return (
-    <div>
-      <div className={"mb-2"}>
-        <SelectWidget
-          label={"Classes"}
-          options={FIELD_STYLES_CLASSES.map((className) => ({ label: className, value: className }))}
+    <>
+      <div className="mb-2">
+        <DFormSelectWidget
+          id="classes"
+          label="Classes"
           value={{ label: element.classes, value: element.classes }}
-          onChange={(value) => handleElementChange("classes", value)}
+          options={FIELD_STYLES_CLASSES.map((className) => ({ label: className, value: className }))}
+          isError={false}
+          isRequired={false}
+          isDisabled={false}
+          isLabelShowing={false}
+          onChange={({ value }) => handleElementChange("classes", value)}
         />
       </div>
       {renderSpecificStyles()}
-    </div>
+    </>
   );
 };
 

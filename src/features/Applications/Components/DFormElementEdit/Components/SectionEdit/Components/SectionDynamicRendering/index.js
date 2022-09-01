@@ -1,7 +1,9 @@
+import "./styles.scss";
+
 import React from "react";
 
-import "./styles.scss";
-import { ELEMENT_TYPES } from "../../../../../../constants";
+import { ELEMENT_TYPES } from "components/DForm/constants";
+
 import ConditionalElementRender from "../../../ConditionalElementRender";
 
 const SectionDynamicRendering = ({ onElementChange, data, element }) => {

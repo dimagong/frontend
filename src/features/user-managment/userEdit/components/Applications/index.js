@@ -1,11 +1,10 @@
 import Select from "react-select";
+import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
-import React, { useState } from "react";
-import { cloneDeep, merge } from "lodash";
 import { Button, Card } from "reactstrap";
+import React, { useEffect, useState } from "react";
 
 import {
-  useCreateApplicationUserFilesMutation,
   useUserApplication,
   useUserApplicationStatusMutation,
   useUserApplicationValues,
@@ -17,11 +16,9 @@ import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
 
 import {
   FIELD_VALUE_PREPARE,
-  CONDITIONS_COMPARE_FUNCTIONS,
   EFFECT_ELEMENT_PROP,
-} from "../../../../Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
-
-import { DFormWidgetEventsTypes } from "components/DForm/Components/Fields/Components/DFormWidgets/events";
+  OPERATORS_COMPARE_FUNCTIONS,
+} from "features/Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
 
 const STATUSES = [
   { value: "submitted", label: "submitted" },
@@ -30,62 +27,76 @@ const STATUSES = [
   { value: "unsubmitted", label: "unsubmitted" },
 ];
 
+const checkConditions = (elementCollection, values) => {
+  for (const elementId in elementCollection) {
+    if (elementCollection.hasOwnProperty(elementId)) {
+      const element = elementCollection[elementId];
+      const elementCondition = element.conditions && element.conditions[0];
+
+      if (!elementCondition) continue;
+      console.log("asd", "condition", {
+        elementType: element.elementType,
+        elementName: element.name || element.title,
+        condition: elementCondition,
+      });
+
+      const dependentField = elementCondition.field;
+      const dependentFieldValue = values[dependentField.masterSchemaFieldId];
+      const dependentFieldValuePrepare = FIELD_VALUE_PREPARE[dependentField.type];
+
+      const applicableEffect = EFFECT_ELEMENT_PROP[elementCondition.effect];
+      const operatorCompare = OPERATORS_COMPARE_FUNCTIONS[elementCondition.operator.type];
+
+      if (dependentFieldValue == null) {
+        throw new Error("Unexpected: a dependent field value can not be null or undefined.");
+      }
+
+      const preparedDependentFieldValue = dependentFieldValuePrepare(dependentFieldValue);
+      const isConditionApplicable = operatorCompare(elementCondition.expectedValue, preparedDependentFieldValue);
+
+      // Apply effect as a props
+      const elementEffectValue = isConditionApplicable ? applicableEffect.value : !applicableEffect.value;
+      elementCollection[elementId][applicableEffect.propName] = elementEffectValue;
+    }
+  }
+
+  return elementCollection;
+};
+
+const applyConditionalRender = (schema, values) => {
+  if (!schema) return null;
+  // Do not apply conditions on empty values
+  if (Object.keys(values).length === 0) return schema;
+
+  const schemaCopy = cloneDeep(schema);
+
+  const { fields, sections, groups } = schemaCopy;
+
+  schemaCopy.fields = checkConditions(fields, values);
+  schemaCopy.groups = checkConditions(groups, values);
+  schemaCopy.sections = checkConditions(sections, values);
+
+  return schemaCopy;
+};
+
 const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
   const [applicationValues, setApplicationValues] = useState({});
   const [applicationData, setApplicationData] = useState(isCreate ? {} : null);
 
-  const checkConditions = (elementCollection) => {
-    for (const elementId in elementCollection) {
-      if (elementCollection.hasOwnProperty(elementId)) {
-        const element = elementCollection[elementId];
-
-        //TODO handle more conditions in future, currently has only one;
-        const condition = element.conditions && element.conditions[0];
-
-        //TODO this should be handled in render, so form shouldn't be rendered until we get applicationValues from API
-        // remove here !Object.values(applicationValues.length) after fix
-        if (!condition || !Object.values(applicationValues).length) continue;
-
-        // Get a value from values by control field MS prop ID. Then take a prepare function depending on control field type
-        // and pass control field value into prepare function;
-        const controlValue = FIELD_VALUE_PREPARE[condition.field.type](
-          applicationValues[condition.field.masterSchemaPropertyId].value
-        );
-
-        const isConditionApplicable = CONDITIONS_COMPARE_FUNCTIONS[condition.condition.conditionType](
-          condition.expectedValue,
-          controlValue
-        );
-
-        const applicableEffect = EFFECT_ELEMENT_PROP[condition.effect];
-
-        elementCollection[elementId][applicableEffect.propName] = isConditionApplicable
-          ? applicableEffect.value
-          : !applicableEffect.value;
-      }
-    }
-
-    return elementCollection;
-  };
-
-  const applyConditionalRender = (schema) => {
-    const schemaCopy = cloneDeep(schema);
-
-    const { fields, sections, groups } = schemaCopy;
-
-    schemaCopy.fields = checkConditions(fields);
-    schemaCopy.groups = checkConditions(groups);
-    schemaCopy.sections = checkConditions(sections);
-
-    return schemaCopy;
-  };
-
   const userApplication = useUserApplication(
     { userApplicationId: selectedApplicationId },
     {
-      onSuccess: (data) => {
-        setApplicationData(data);
-      },
+      onSuccess: (data) => setApplicationData(data),
+      enabled: !isCreate,
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const userApplicationValues = useUserApplicationValues(
+    { userApplicationId: selectedApplicationId },
+    {
+      // When there are no values it returns empty array
+      onSuccess: (data) => setApplicationValues(typeof data === "object" ? data : {}),
       enabled: !isCreate,
       refetchOnWindowFocus: false,
     }
@@ -93,64 +104,29 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
 
   const updateUserApplicationStatus = useUserApplicationStatusMutation(
     { userApplicationId: selectedApplicationId },
-    {
-      onSuccess: () => {
-        toast.success("Status successfully changed");
-      },
-    }
-  );
-
-  useUserApplicationValues(
-    { userApplicationId: selectedApplicationId },
-    {
-      onSuccess: (data) => {
-        setApplicationValues(typeof data === "object" ? data : {}); // When there are no values it returns empty array
-      },
-      enabled: !isCreate,
-      refetchOnWindowFocus: false,
-    }
+    { onSuccess: () => toast.success("Status successfully changed") }
   );
 
   const updateUserApplicationValues = useUserApplicationValuesMutation(
     { userApplicationId: selectedApplicationId },
-    {
-      onSuccess: () => {
-        toast.success("Saved");
-      },
-    }
+    { onSuccess: () => toast.success("Saved") }
   );
 
-  const handleFieldUploadEvent = () => {};
+  const applicationSchema = applyConditionalRender(applicationData?.schema, applicationValues);
 
-  const handleFieldDownloadEvent = () => {};
+  useEffect(() => {
+    setApplicationData(isCreate ? {} : null);
+    setApplicationValues({});
+  }, [isCreate, selectedApplicationId]);
 
-  const handleFieldChangeEvent = (event) => {
-    const { field, value } = event;
-
-    const newFieldValue = { ...(applicationValues[field.masterSchemaPropertyId] || {}), value, edited: true };
-    setApplicationValues({ ...applicationValues, [field.masterSchemaPropertyId]: newFieldValue });
-  };
-
-  const handleFieldEvent = (event) => {
+  const handleFieldChange = (field, value) => {
     // Mark field as edited for further extraction and save on submit.
     // Currently, we don't care about case when field value return to initial state and much actual
     // field value from back-end.
     // (For example we enter hello in empty field and delete it. Field still counts as edited)
 
-    switch (event.type) {
-      case DFormWidgetEventsTypes.Change:
-        handleFieldChangeEvent(event);
-        break;
-      case DFormWidgetEventsTypes.Upload:
-        handleFieldUploadEvent(event);
-        break;
-      case DFormWidgetEventsTypes.Download:
-        handleFieldDownloadEvent(event);
-        break;
-      // ToDo, RemoveFile event
-      default:
-        throw new Error(`Unexpected: The event type: ${event.type} does not support.`);
-    }
+    const newFieldValue = { ...(applicationValues[field.masterSchemaFieldId] || {}), value, edited: true };
+    setApplicationValues({ ...applicationValues, [field.masterSchemaFieldId]: newFieldValue });
   };
 
   const handleUserApplicationValuesUpdate = () => {
@@ -177,7 +153,10 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     userApplication.refetch();
   };
 
-  if ((selectedApplicationId && userApplication.isLoading) || (!applicationData && userApplication.isRefetching)) {
+  if (
+    (selectedApplicationId && (userApplication.isFetching || userApplicationValues.isFetching)) ||
+    (!applicationData && userApplication.isFetching)
+  ) {
     return <div>Loading...</div>;
   }
 
@@ -198,11 +177,11 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
         {!isCreate && (
           <>
             <UserOnboardingDForm
-              onFieldEvent={handleFieldEvent}
-              isRefetching={userApplication.isRefetching}
+              onFieldChange={handleFieldChange}
+              isRefetching={userApplication.isFetching}
               onRefetch={handleApplicationReFetch}
               dFormId={applicationData.id}
-              formData={applyConditionalRender(applicationData.schema)}
+              formData={applicationSchema}
               isManualSave={true}
               formValues={applicationValues}
             />

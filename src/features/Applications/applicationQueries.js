@@ -38,36 +38,17 @@ export const ApplicationQueryKeys = {
 
 // Currently do not need to re-invalidate query due to components implementation
 export const useApplicationTemplateCreateMutation = (options) => {
-  return useGenericMutation(
-    {
-      url: `api/dform-template`,
-      method: "post",
-    },
-    {
-      ...options,
-    }
-  );
+  return useGenericMutation({ url: `api/dform-template`, method: "post" }, options);
 };
 
 // Currently do not need to re-invalidate query due to components implementation
 export const useApplicationTemplateUpdateMutation = ({ applicationId }, options) => {
-  return useGenericMutation(
-    {
-      url: `api/dform-template/${applicationId}`,
-      method: "put",
-    },
-    {
-      ...options,
-    }
-  );
+  return useGenericMutation({ method: "put", url: `api/dform-template/${applicationId}` }, options);
 };
 
 export const useApplicationTemplate = ({ applicationId }, options) => {
   return useGenericQuery(
-    {
-      url: `api/dform-template/${applicationId}`,
-      queryKey: ApplicationQueryKeys.byId(applicationId),
-    },
+    { url: `api/dform-template/${applicationId}`, queryKey: ApplicationQueryKeys.byId(applicationId) },
     options
   );
 };

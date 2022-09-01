@@ -1,0 +1,13 @@
+.dform-field-label {
+  margin-bottom: 25px;
+
+  font-size: 15px;
+  font-weight: 300;
+  color: #707070;
+
+  &--is-error {
+    .dform-field-label__asterix {
+      color: #dc3545;
+    }
+  }
+}

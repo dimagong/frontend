@@ -1,8 +1,9 @@
 import React from "react";
-import TextWidget from "../../../../../../../../components/FormCreate/Custom/TextWidget";
-import FieldLabel from "../../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/FieldLabel";
 import Select from "react-select";
-import { colourStyles } from "../../../../../../../../components/DForm/Components/Fields/Components/DFormWidgets/Components/Select";
+
+import TextWidget from "components/FormCreate/Custom/TextWidget";
+import { colourStyles } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
+import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormFieldLabel";
 
 const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data }) => {
   const handleNameChange = (value) => {
@@ -21,7 +22,7 @@ const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data 
     <div>
       <TextWidget value={element.name} label={"Group name"} placeholder={"Group name"} onChange={handleNameChange} />
       <div className={"custom-react-select mt-2"}>
-        <FieldLabel label={"Element section"} />
+        <DFormFieldLabel label="Element section" />
         <Select
           maxMenuHeight={175}
           isDisabled={false}

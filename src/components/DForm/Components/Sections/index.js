@@ -1,20 +1,23 @@
-import React from "react";
+import "./styles.scss";
 
+import React from "react";
 import { TabContent, TabPane } from "reactstrap";
 
 import Groups from "../Groups";
 
-import "./styles.scss";
+const SectionsComponent = (props) => {
+  const {
+    data,
+    values,
+    isConfigurable,
+    selectedSection,
+    selectedElement,
+    onElementClick,
+    onGroupCreate,
+    onFieldCreate,
+    onFieldChange,
+  } = props;
 
-const SectionsComponent = ({
-  data,
-  selectedSection,
-  onElementClick,
-  onGroupCreate,
-  onFieldEvent,
-  values,
-  isConfigurable,
-}) => {
   if (!data.sections || Object.keys(data.sections).length === 0) {
     // TODO HANDLE TWO CASES, when there are no sections on edit and no sections on assigned dform \ on onboarding dform
     if (isConfigurable) {
@@ -31,7 +34,7 @@ const SectionsComponent = ({
   }
 
   return (
-    <TabContent activeTab={selectedSection} className={"sections-content"}>
+    <TabContent activeTab={selectedSection} className="sections-content">
       {data.sectionsOrder.map((section) => (
         <TabPane tabId={data.sections[section].id} key={data.sections[section].id}>
           {data.sections[section].isNew ? (
@@ -40,14 +43,16 @@ const SectionsComponent = ({
             </div>
           ) : (
             <Groups
-              values={values}
-              sectionId={data.sections[section].id}
               data={data}
+              values={values}
+              isConfigurable={isConfigurable}
+              selectedElement={selectedElement}
+              sectionId={data.sections[section].id}
               sectionGroups={data.sections[section].relatedGroups}
               onElementClick={onElementClick}
               onGroupCreate={onGroupCreate}
-              onFieldEvent={onFieldEvent}
-              isConfigurable={isConfigurable}
+              onFieldCreate={onFieldCreate}
+              onFieldChange={onFieldChange}
             />
           )}
         </TabPane>

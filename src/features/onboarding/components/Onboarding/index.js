@@ -7,9 +7,9 @@ import { CardBody, Card, Row, Col, TabContent, TabPane } from "reactstrap";
 import NavMenu from "components/NavMenu/NavMenu";
 import Check from "assets/img/icons/check.png";
 
+import OnboardingApp from "./../../components/OnboardingApp";
 import OnboardingSurvey from "../../OnboardingSurvey";
 import StatusComponent from "../Components/StatusComponent";
-import OnboardingApp from "./../OnboardingApp";
 
 const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) => {
   const [forceAppShow, setForceAppShow] = useState([]);
@@ -18,7 +18,7 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
 
   useEffect(() => {
     setActiveAppOnboarding(initialOnboarding);
-    //eslint-disable-next-line
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialOnboarding.id]);
 
   const handleNavClick = (onboarding) => {
@@ -112,7 +112,11 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                               />
                             ) : (
                               application.id === appActiveOnboarding?.id && (
-                                <OnboardingApp selectedForm={application} setRecentlySubmitted={setRecentlySubmitted} />
+                                <OnboardingApp
+                                  profile={profile}
+                                  selectedForm={application}
+                                  setRecentlySubmitted={setRecentlySubmitted}
+                                />
                               )
                             ))}
                         </div>
@@ -124,8 +128,8 @@ const OnboardingComponent = ({ profile, userApplications, initialOnboarding }) =
                         <div className="onboarding-title" />
                         {application.id === appActiveOnboarding?.id && (
                           <OnboardingSurvey
-                            onSurveyFinish={() => setRecentlySubmitted(true)}
-                            selectedSurvey={application}
+                            selectedSurveyId={appActiveOnboarding.id}
+                            setRecentlySubmitted={setRecentlySubmitted}
                             isRecentlySubmitted={recentlySubmitted}
                             isAllApplicationsCompleted={!unCompletedApplications.length}
                           />

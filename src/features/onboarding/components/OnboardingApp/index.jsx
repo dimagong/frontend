@@ -14,23 +14,23 @@ import DForm from "components/DForm";
 import LoadingButton from "components/LoadingButton";
 
 import Check from "assets/img/icons/check.png";
-import { DFormWidgetEventsTypes } from "../../../../components/DForm/Components/Fields/Components/DFormWidgets/events";
 
-import { fieldValidationSchemas, textSchema } from "./validationOnboarding";
+import { fieldValidationSchemas } from "./validationOnboarding";
 
 const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const [applicationSchema, setApplicationSchema] = useState(null);
 
   const [applicationValues, setApplicationValues] = useState(null);
 
-  const appProperties = applicationSchema
-    ? Object.values(applicationSchema.fields).map((app) => {
-        return {
-          value: applicationValues[app.masterSchemaPropertyId].value,
-          ...app,
-        };
-      })
-    : [];
+  const appProperties =
+    applicationSchema && applicationValues
+      ? Object.values(applicationSchema.fields).map((app) => {
+          return {
+            value: applicationValues[app.masterSchemaFieldId].value,
+            ...app,
+          };
+        })
+      : [];
 
   const { isLoading: isFormLoading } = useDFormByIdQuery(
     { id: selectedForm.id },
@@ -89,8 +89,9 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     if (checkFields) {
       console.log("checkFields error", checkFields);
       toast.error(checkFields.errors.message);
+    } else {
+      submitDFormForReview.mutate();
     }
-    submitDFormForReview.mutate();
   };
 
   const validateFields = (field) => {
@@ -103,12 +104,10 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     return { isValid: true };
   };
 
-  const handleFieldChangeEvent = (event) => {
-    const { field, value } = event;
-
+  const handleFieldChange = (field, value) => {
     setApplicationValues({
       ...applicationValues,
-      [field.masterSchemaPropertyId]: { ...(applicationValues[field.masterSchemaPropertyId] || {}), value },
+      [field.masterSchemaFieldId]: { ...(applicationValues[field.masterSchemaFieldId] || {}), value },
     });
 
     const { errors } = validateFields({ value, ...field });
@@ -116,23 +115,17 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
       console.log("validateFields errors", errors);
       toast.error(errors.message);
     } else {
-      throttleOnSave.current({ master_schema_field_id: field.masterSchemaPropertyId, value });
+      throttleOnSave.current({ master_schema_field_id: field.masterSchemaFieldId, value });
     }
   };
 
-  const handleFieldEvent = (event) => {
-    if (event.type === DFormWidgetEventsTypes.Change) {
-      handleFieldChangeEvent(event);
-    }
-  };
-
-  const isFormLocked = () => ~["user-lock", "hard-lock"].indexOf(applicationSchema?.access_type);
+  // TODO make dform disabled on user-lock
+  // const isFormLocked = () => ~["user-lock", "hard-lock"].indexOf(applicationSchema?.access_type);
 
   // Immediately call save on component unmount if any save currently throttled
   useEffect(() => {
-    return () => {
-      throttleOnSave.current.flush();
-    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => throttleOnSave.current.flush();
   }, []);
 
   if (isFormLoading || dFormValues.isLoading) {
@@ -143,22 +136,18 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     );
   }
 
-  // TODO handle loading with skeleton
-  if (isFormLoading) return "Loading...";
-
-  // TODO make dform disabled on user-lock
   return (
     <div>
       <DForm
-        disabled={isFormLocked()}
+        isMemberView
+        dFormId={applicationSchema.id}
+        // disabled={isFormLocked()}
         data={applicationSchema}
         values={applicationValues}
-        onFieldEvent={handleFieldEvent}
-        dFormId={applicationSchema.id}
-        isMemberView
+        onFieldChange={handleFieldChange}
       />
       <div className="form-create__dform_actions pr-1">
-        {applicationSchema.access_type !== "user-lock" && (
+        {applicationSchema.access_type !== "user-lock" ? (
           <>
             <div className="saving">
               {saveDFormFieldValue.isLoading ? (
@@ -168,11 +157,6 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
                   <img style={{ marginTop: "-2px", fontSize: "15px" }} src={Check} alt="" /> Saved
                 </div>
               )}
-              {/*{!!this.state?.uiSchema?.errors?.field.length && (*/}
-              {/*  <div className={"submit-error-message"}>*/}
-              {/*    Please fill in the missing fields highlighted in red!*/}
-              {/*  </div>*/}
-              {/*)}*/}
             </div>
             <div className={"d-flex align-items-center"} style={{ float: "right", paddingRight: "20px" }}>
               <span
@@ -196,46 +180,16 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
               />
             </div>
           </>
-        )}
+        ) : null}
 
-        {applicationSchema.status === "submitted" && (
+        {applicationSchema.status === "submitted" ? (
           <div className="submitted-form-status">
             <span>{applicationSchema.name}</span> submitted for review
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
-
-  // return formSelected?.d_form?.access_type === "user-lock" ? (
-  //   <FormCreate
-  //     isShowErrors={true}
-  //     {...commonFormProps}
-  //     inputDisabled={true}
-  //     onSaveButtonHidden={isDisabledSubmit()}
-  //     onboardingUser={profile}
-  //     showSubmittedStatus
-  //   />
-  // ) : (
-  //   <FormCreate
-  //     isShowErrors={true}
-  //     {...commonFormProps}
-  //     inputDisabled={false}
-  //     onSaveButtonHidden={true}
-  //     onboardingUser={profile}
-  //     onSubmit={(formData) => submitOnboardingForm(formData)}
-  //     onChange={(data) => debounceOnSave.current(data)}
-  //     updatedAtText={
-  //       loading ? (
-  //         "Saving"
-  //       ) : (
-  //         <div>
-  //           <img style={{ marginTop: "-2px", fontSize: "15px" }} src={Check} alt="" /> Saved
-  //         </div>
-  //       )
-  //     }
-  //   />
-  // );
 };
 
 export default OnboardingApp;

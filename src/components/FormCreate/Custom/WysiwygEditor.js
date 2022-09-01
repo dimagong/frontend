@@ -1,13 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { Editor } from "react-draft-wysiwyg";
-import { ContentState, EditorState, convertToRaw } from "draft-js";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import draftToHtml from "draftjs-to-html";
-import htmlToDraft from "html-to-draftjs";
-
 import "./wysiwygEditor.scss";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-export default function WysiwygEditor({ toolbar, orgId = "default", disabled, data, onChange, orgPage = false }) {
+import classnames from "classnames";
+import htmlToDraft from "html-to-draftjs";
+import draftToHtml from "draftjs-to-html";
+import { Editor } from "react-draft-wysiwyg";
+import React, { useState, useEffect } from "react";
+import { ContentState, EditorState, convertToRaw } from "draft-js";
+
+export default function WysiwygEditor({
+  toolbar,
+  orgId = "default",
+  disabled,
+  data,
+  onChange,
+  orgPage = false,
+  wrapperClassName,
+}) {
   const [editorState, setEditorState] = useState(false);
 
   const init = () => {
@@ -48,7 +57,7 @@ export default function WysiwygEditor({ toolbar, orgId = "default", disabled, da
       readOnly={disabled}
       editorState={editorState}
       toolbarClassName="toolbarClassName"
-      wrapperClassName="wrapperClassName"
+      wrapperClassName={classnames("wrapperClassName", wrapperClassName)}
       editorClassName="editorClassName"
       onEditorStateChange={onEditorStateChange}
       toolbar={toolbar}

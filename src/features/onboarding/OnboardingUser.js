@@ -10,7 +10,7 @@ import {
   useNotifyIntroductionPageSeeingMutation,
 } from "api/Onboarding/prospectUserQuery";
 import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
-import { initialAppOnboarding } from "./../../features/onboarding/utils/findActiveAppOnboarding";
+import { initialAppOnboarding } from "features/onboarding/utils/findActiveAppOnboarding";
 
 import WelcomePageComponent from "./components/WeclomePage";
 import OnboardingComponent from "./components/Onboarding";
@@ -41,7 +41,9 @@ const OnboardingUser = () => {
 
   const brochureQuery = useOrganizationBrochureQuery(
     { introPageId: profile?.notify_entries[0]?.notify?.id },
-    { enabled: profile?.notify_entries.length === 1 }
+    {
+      enabled: profile?.notify_entries.length === 1,
+    }
   );
 
   const userApplications = collectApplicationsUser(dForms ?? [], onboardingSurveys ?? []);

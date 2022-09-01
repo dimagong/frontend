@@ -160,9 +160,9 @@ export default function MasterSchemaProperty(props) {
   const getFieldsSelect = () => {
     const masterSchemaFields = transformToSelectFields(organizations);
     return (
-      <FormGroup>
+      <>
         <CustomSelect
-          id="select-ms-property"
+          id={props.id}
           options={masterSchemaFields.concat(getAddNewOption())}
           value={masterSchemaFields.find((next) => parseInt(next.value) === parseInt(props.fieldId)) || null}
           onChange={(event) => {
@@ -189,7 +189,7 @@ export default function MasterSchemaProperty(props) {
             {props.errorMsg}
           </Alert>
         )}
-      </FormGroup>
+      </>
     );
   };
 

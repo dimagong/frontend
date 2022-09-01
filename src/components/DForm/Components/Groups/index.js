@@ -1,21 +1,26 @@
-import React from "react";
+import "./styles.scss";
 
+import React from "react";
 import { Plus } from "react-feather";
+
+import { ELEMENT_TYPES } from "components/DForm/constants";
 
 import Fields from "../Fields";
 
-import "./styles.scss";
+const Groups = (props) => {
+  const {
+    data,
+    values,
+    sectionId,
+    sectionGroups,
+    isConfigurable,
+    selectedElement,
+    onElementClick,
+    onGroupCreate,
+    onFieldCreate,
+    onFieldChange,
+  } = props;
 
-const Groups = ({
-  data,
-  sectionGroups,
-  onElementClick,
-  onGroupCreate,
-  onFieldEvent,
-  sectionId,
-  values,
-  isConfigurable,
-}) => {
   const handleGroupSelect = (sectionGroup) => {
     onElementClick({ ...data.groups[sectionGroup], sectionId }, "group");
   };
@@ -23,31 +28,44 @@ const Groups = ({
   return (
     <div>
       {sectionGroups.map((sectionGroup) => {
-        if (!data.groups[sectionGroup].isHidden) {
-          return (
-            <div className="group" key={sectionGroup}>
-              <div className="group-title editable" onClick={() => handleGroupSelect(sectionGroup)}>
-                <span className="text-bold-500">{data.groups[sectionGroup].name}</span>
-              </div>
-              <div className="group-content row mr-0 ml-0">
-                <Fields
-                  values={values}
-                  group={sectionGroup}
-                  data={data}
-                  groupFields={data.groups[sectionGroup].relatedFields}
-                  onElementClick={onElementClick}
-                  onFieldEvent={onFieldEvent}
-                  isConfigurable={isConfigurable}
-                />
-              </div>
-            </div>
-          );
+        const group = data.groups[sectionGroup];
+
+        if (group.isHidden) {
+          return null;
         }
+
+        const isSelected = selectedElement?.elementType === ELEMENT_TYPES.group && selectedElement?.id === group.id;
+
+        return (
+          <div className="group" key={sectionGroup}>
+            <div
+              className={`group-title editable ${isSelected ? "selected" : ""}`}
+              onClick={() => handleGroupSelect(sectionGroup)}
+            >
+              <span className="text-bold-500">{data.groups[sectionGroup].name}</span>
+            </div>
+            <div className="group-content row mr-0 ml-0">
+              <Fields
+                data={data}
+                values={values}
+                group={sectionGroup}
+                isConfigurable={isConfigurable}
+                selectedElement={selectedElement}
+                groupFields={group.relatedFields}
+                onFieldChange={onFieldChange}
+                onFieldCreate={onFieldCreate}
+                onElementClick={onElementClick}
+              />
+            </div>
+          </div>
+        );
       })}
+
       {!sectionGroups ||
         (!sectionGroups.length && (
           <div className="px-2 py-5 text-center w-100">There are no groups in this section</div>
         ))}
+
       {isConfigurable ? (
         <div className="group">
           <div className="element-add" onClick={onGroupCreate}>

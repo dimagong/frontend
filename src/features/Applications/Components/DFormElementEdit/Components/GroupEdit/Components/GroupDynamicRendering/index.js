@@ -1,5 +1,7 @@
 import React from "react";
-import { ELEMENT_TYPES } from "../../../../../../constants";
+
+import { ELEMENT_TYPES } from "components/DForm/constants";
+
 import ConditionalElementRender from "../../../ConditionalElementRender";
 
 const GroupDynamicRendering = ({ onElementChange, data, element }) => {

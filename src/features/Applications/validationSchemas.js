@@ -1,26 +1,19 @@
 import * as yup from "yup";
-import { ELEMENT_TYPES, FIELD_TYPES } from "./constants";
+
+import { ELEMENT_TYPES, FIELD_TYPES } from "components/DForm/constants";
+
 import { DATE_WIDGET_FORMATS } from "./constants";
 
-const { object, string, /*min,*/ number /*ref, createError*/ } = yup;
+const { object, string, number } = yup;
+
 const fieldTypesArray = Object.values(FIELD_TYPES);
 
+// ToDo: handle it
 const dynamicRenderValidation = object({});
-
-// STRUCTURE
-// DR - dynamic render validation
-// ----------
-// GROUP
-// DR -> group validation
-// ----------
-// Section
-// DR -> section validation
-// ----------
-// Field
-// DR -> field common validation -> field validation by field type
 
 const minMaxLengthSchema = object({
   minLength: number("Min length should be a number")
+    .nullable()
     .integer("Min length should be an integer")
     .positive("Min length should be bigger then 0")
     .when("maxLength", (maxLength, schema) => {
@@ -33,12 +26,14 @@ const minMaxLengthSchema = object({
       });
     }),
   maxLength: number("Max length should be a number")
+    .nullable()
     .integer("Max length should be an integer")
     .positive("Max length should be bigger then 0"),
 });
 
 const minimumMaximumSchema = object({
   minimum: number("Minimum should be a number")
+    .nullable()
     .integer("Minimum should be an integer")
     .positive("Minimum should be bigger then 0")
     .when("maximum", (maximum, schema) => {
@@ -51,47 +46,48 @@ const minimumMaximumSchema = object({
       });
     }),
   maximum: number("Maximum should be a number")
+    .nullable()
     .integer("Maximum should be an integer")
     .positive("Maximum should be bigger then 0"),
 });
 
 export const fieldCommonSchema = yup.object().shape({
   id: yup.string().required(),
-  isNotMasterSchemaRelated: yup.boolean(),
   type: yup.string().oneOf(fieldTypesArray),
   title: yup.string().required(),
   isRequired: yup.boolean(),
   classes: yup.string(),
   isLabelShowing: yup.boolean(),
-  conditions: yup.array().test(
-    "conditions-fields",
-    "Condition fields must be filled", // error message
-    function test(value) {
-      if (value.length === 0) {
-        return true;
-      } else {
-        if (!value[0]?.effect) {
-          return this.createError({
-            message: "The 'This element will be' field is empty",
-          });
-        }
-        if (value[0]?.field && !value[0]?.condition?.operandName) {
-          return this.createError({
-            message: "The 'Will be' field is empty",
-          });
-        }
-        if (value[0]?.field && value[0]?.condition?.operandName === "filled") {
-          return true;
-        }
-        if (value[0]?.condition?.operandName === "equal" && !value[0].expectedValue) {
-          return this.createError({
-            message: "The 'To' field is empty",
-          });
-        }
-      }
+  conditions: yup.array().test("conditions-fields", "Condition fields must be filled", function test(value) {
+    if (value == null) {
+      // ToDo remove it and migrate all dforms to condition prop requeired as empty array
+      console.warn("Migrate all dform templates to new conditions field validation. For now this is warning.");
       return true;
     }
-  ),
+    if (value.length === 0) {
+      return true;
+    } else {
+      if (!value[0]?.effect) {
+        return this.createError({
+          message: "The 'This element will be' field is empty",
+        });
+      }
+      if (value[0]?.field && !value[0]?.condition?.operandName) {
+        return this.createError({
+          message: "The 'Will be' field is empty",
+        });
+      }
+      if (value[0]?.field && value[0]?.condition?.operandName === "filled") {
+        return true;
+      }
+      if (value[0]?.condition?.operandName === "equal" && !value[0].expectedValue) {
+        return this.createError({
+          message: "The 'To' field is empty",
+        });
+      }
+    }
+    return true;
+  }),
 });
 
 const textElementSchema = object({}).concat(minMaxLengthSchema);
@@ -126,17 +122,15 @@ export const groupValidationSchema = dynamicRenderValidation.shape({
   name: yup
     .string()
     .required("Each group should have a name")
-    .test(
-      "unique-group-name",
-      "Name should be unique", // error message
-      function test(value) {
-        const groupNames = Object.values(this.options.context.application.groups).map((group) => group.name);
-        return groupNames.filter((name) => name.toLowerCase() === value.toLowerCase()).length === 1;
-      }
-    ),
+    .test("unique-group-name", "Group name should be unique", function test(value) {
+      value = value.toLowerCase();
+      const groups = Object.values(this.options.context.application.groups);
+      return groups.filter((group) => group.name.toLowerCase() === value).length !== 1;
+    }),
   id: yup.string().required(),
   isProtected: yup.boolean(),
   relatedFields: yup.array(),
+  // ToDo: conditions put from commonFieldSchema
 });
 
 export const sectionValidationSchema = dynamicRenderValidation.shape({
@@ -144,20 +138,17 @@ export const sectionValidationSchema = dynamicRenderValidation.shape({
   name: yup
     .string()
     .required("Each section should have a name")
-    .test(
-      "unique-section-name",
-      "Name should be unique", // error message
-      function test(value) {
-        const sectionsNames = Object.values(this.options.context.application.sections).map((section) => section.name);
-        return sectionsNames.filter((name) => name.toLowerCase() === value.toLowerCase()).length === 1;
-      }
-    ),
+    .test("unique-section-name", "Section name should be unique", function test(value) {
+      value = value.toLowerCase();
+      const sections = Object.values(this.options.context.application.sections);
+      return sections.filter((section) => section.name.toLowerCase() === value).length !== 1;
+    }),
   isProtected: yup.boolean(),
   isDisabled: yup.boolean(),
   isHidden: yup.boolean(),
   isAlreadyViewed: yup.boolean(),
   relatedGroups: yup.array(),
-  // conditions
+  // ToDo: conditions put from commonFieldSchema
 });
 
 export const elementValidationSchemas = {
@@ -169,15 +160,6 @@ export const elementValidationSchemas = {
 export const MSPropertyValidationSchema = yup
   .string()
   .required("Master schema property should not be empty")
-  .test(
-    "ms-property-validation",
-    "Master schema property should not be duplicated", // error message
-    function test(value) {
-      // NOTE: this must not be an arrow function, because yup binds it to it's "this"
-      return !this.options.context.masterSchemaUsedPropertiesList.includes(value);
-    }
-  );
-
-export const testSchema = yup.object().shape({
-  name: yup.string(),
-});
+  .test("ms-property-validation", "Master schema property should not be duplicated", function test(value) {
+    return !this.options.context.masterSchemaUsedPropertiesList.includes(value);
+  });

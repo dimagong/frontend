@@ -1,149 +1,177 @@
+import React from "react";
+import classnames from "classnames";
 import { Plus } from "react-feather";
-import React, { useState, useEffect } from "react";
 
-// import './styles.scss';
-import { toast } from "react-toastify";
+import { ELEMENT_TYPES, FIELD_TYPES } from "components/DForm/constants";
 
 import formComponents from "./Components/DFormWidgets";
-import { DFormWidgetEventsTypes } from "./Components/DFormWidgets/events";
 
-const FormComponent = ({ groupFields, data, onElementClick, group, values, onFieldEvent, isConfigurable }) => {
-  const [formData, setFormData] = useState({});
+const DFormElement = ({ classes, isSelected, onClick, children }) => {
+  return (
+    <div
+      onClick={onClick}
+      className={classnames("editable px-0 custom-form-field", classes || "col-12", { selected: isSelected })}
+    >
+      {children}
+    </div>
+  );
+};
 
-  // Each field store with structure:
-  // - id - id of master schema field id
-  // - value - value of input
-  // - type - specify type of component that will be used
-  // - validationSchema - yup validation schema for that exact field
-  // - isRequired - used for conditional validation in yup validation schema
-  // - dataPushPrepare - function that prepare input value to common format
-  //
-  // Each of this properties should be passed on field initialization
-  // const handleInputChange = (value, id) => {
-  //   setFormData({
-  //     ...formData,
-  //     [id]: {
-  //       ...formData[id],
-  //       value,
-  //       error: "",
-  //     }
-  //   })
-  // };
-
-  // const handleError = (id, error) => {
-  //   setFormData({
-  //     ...formData,
-  //     [id]: {
-  //       ...formData[id],
-  //       error,
-  //     }
-  //   })
-  // };
-  //
-  // const isFormValid = async (fields) => {
-  //   let isFormValid = true;
-  //
-  //   await Promise.all(fields.map( async (field) => {
-  //     await validationSchemas[field.type]
-  //       .validate(field.value, {context: {isRequired: field.isRequired}})
-  //       .catch((err) => {
-  //         handleError(field.id, err.message)
-  //       });
-  //
-  //     const isValid = await validationSchemas[field.type].isValid(field.value, {context: {isRequired: field.isRequired}});
-  //
-  //     if (!isValid) isFormValid = false;
-  //   }));
-  //
-  //   return isFormValid;
-  // };
-
-  // const initForm = () => {
-  //   const initialData = {};
-  //
-  //   [...groupFields].map((formField) => {
-  //
-  //     // Handle different default values for different field types here
-  //     const defaultValue = "";
-  //
-  //     initialData[formField.master_schema_field_id] = {
-  //       id: formField.master_schema_field_id,
-  //       type: formField.type,
-  //       value: formField.master_schema_field?.master_schema_field_value?.value || defaultValue,
-  //       isRequired: formField.is_required,
-  //     };
-  //
-  //     return false;
-  //   });
-  //
-  //   setFormData(initialData);
-  // };
-
-  // Init form
-  // useEffect(() => {
-  //   if(groupFields.length) {
-  //     initForm()
-  //   }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [groupFields]);
+const FormComponent = (props) => {
+  const {
+    data,
+    values,
+    group,
+    groupFields,
+    isConfigurable,
+    selectedElement,
+    onElementClick: propOnElementClick,
+    onFieldChange,
+    onFieldCreate,
+  } = props;
 
   return (
     <>
       {groupFields.map((formField) => {
         const field = data.fields[formField];
 
+        // DCR controls a field rendering
         if (field.isHidden) return null;
 
+        // Temporary checks, whether API contains field with disabled and do we need a DB migration.
+        if (Object.hasOwnProperty.call(field, "disabled")) {
+          throw new Error(`The field: ${field.type} ${field.title} has disabled property.`);
+        }
+        // Temporary checks, whether API contains field with disabled and do we need a DB migration.
+        if (Object.hasOwnProperty.call(field, "multiple")) {
+          throw new Error(`The field: ${field.type} ${field.title} has multiple property.`);
+        }
+
         const FormFieldElement = formComponents[field.type];
-        // const fieldId = formField.master_schema_field_id;
 
-        //TODO handle default empty value for each widget
-        let fieldValue = "";
+        if (!FormFieldElement) {
+          throw new Error(`There is no dform field with type: ${field.type}.`);
+        }
 
-        if (!field.isNotMasterSchemaRelated && values && values[field.masterSchemaPropertyId]) {
-          if (field.type === "file") {
-            fieldValue = values[field.masterSchemaPropertyId].files;
-          } else {
-            fieldValue = values[field.masterSchemaPropertyId].value ?? "";
+        // An DForm template can be selected, it should be refactored, cause FormField should not know
+        // anything about DForm creating process.
+        const isSelected = selectedElement?.elementType === ELEMENT_TYPES.field && selectedElement?.id === field.id;
+
+        // Getting a field value depending on its type and is it master schema element or not.
+        // It can be refactored later, for example, a DForm can have a construction block that is not always like form
+        // elements, and that construction block may have implementation as form elements or any kind of render.
+        let value;
+        if (isConfigurable) {
+          switch (field.type) {
+            // Set example fake file to show how it looks like
+            case FIELD_TYPES.file:
+              value = [{ name: "Example.file" }];
+              break;
+            case FIELD_TYPES.fileList:
+              value = [{ name: "Example.file" }, { name: "Example.file" }];
+              break;
+            case FIELD_TYPES.text:
+            case FIELD_TYPES.date:
+            case FIELD_TYPES.number:
+            case FIELD_TYPES.textArea:
+            case FIELD_TYPES.longText:
+              value = "";
+              break;
+            case FIELD_TYPES.multiSelect:
+              value = [];
+              break;
+            case FIELD_TYPES.boolean:
+              value = false;
+              break;
+            // For rest fields set null value
+            default:
+              value = null;
+          }
+        } else {
+          const fieldValue = values[field.masterSchemaFieldId];
+          switch (field.type) {
+            // Get files from response instead value in case when field type is file/fileList
+            case FIELD_TYPES.file:
+            case FIELD_TYPES.fileList:
+              value = fieldValue.files ?? [];
+              break;
+            case FIELD_TYPES.text:
+            case FIELD_TYPES.date:
+            case FIELD_TYPES.number:
+            case FIELD_TYPES.textArea:
+            case FIELD_TYPES.longText:
+              value = fieldValue.value ?? "";
+              break;
+            case FIELD_TYPES.select:
+              value = fieldValue.value ? { value: fieldValue.value, label: fieldValue.value } : null;
+              break;
+            case FIELD_TYPES.multiSelect:
+              value = fieldValue.value ? fieldValue.value.map((value) => ({ label: value, value })) : [];
+              break;
+            case FIELD_TYPES.helpText:
+              // ToDo: handle helpText
+              value = null;
+              break;
+            // In other case, use value
+            default:
+              value = fieldValue.value;
           }
         }
 
-        if (!FormFieldElement) {
-          console.log(field.type, formComponents);
-          console.error("There is no element with type " + field.type);
+        const onElementClick = () => propOnElementClick({ ...field, groupId: group }, "field");
 
-          return null;
-        }
+        const onChange = (value) => {
+          // Do not call on change while dform is configurable
+          if (isConfigurable) {
+            return;
+          }
+
+          switch (field.type) {
+            case FIELD_TYPES.multiSelect:
+              onFieldChange(field, Array.isArray(value) ? value.map(({ value }) => value) : []);
+              break;
+            // Extract value from option for field select
+            case FIELD_TYPES.select:
+              onFieldChange(field, value.value);
+              break;
+            default:
+              onFieldChange(field, value);
+          }
+        };
+
+        // Used for select and multiselect field types
+        const options = field.options ? field.options.map((option) => ({ label: option, value: option })) : null;
+
+        const label = field.title;
 
         return (
-          <div
-            className={`editable px-0 custom-form-field ${field.classes ? field.classes : "col-12"}`}
-            onClick={() => onElementClick({ ...field, groupId: group }, "field")}
-            key={formField}
-          >
+          <DFormElement classes={field.classes} isSelected={isSelected} onClick={onElementClick} key={formField}>
             <FormFieldElement
-              {...field}
-              fieldId={field.id}
-              isRequired={field.isRequired}
-              key={field.id}
-              name={field.title}
-              label={field.isLabelShowing ? field.title : ""}
-              value={fieldValue}
-              onEvent={(event) => onFieldEvent({ ...event, field })}
-              disabled={formField.isDisabled} // TODO handle disabled
+              id={field.id}
               error={""}
-              fieldClasses={field.classes}
+              label={label}
+              value={value}
+              options={options}
+              isError={false}
+              uiStyle={field.uiStyle}
+              isDisabled={field.isDisabled}
+              isRequired={field.isRequired}
+              isLabelShowing={field.isLabelShowing}
+              masterSchemaFieldId={field.masterSchemaFieldId}
+              onChange={onChange}
+              key={field.id}
             />
-          </div>
+          </DFormElement>
         );
       })}
 
-      {!groupFields ||
-        (!groupFields.length && <div className="px-2 py-5 text-center w-100">There are no fields in this group</div>)}
+      {!groupFields || !groupFields.length ? (
+        <div className="px-2 py-5 text-center w-100">There are no fields in this group</div>
+      ) : null}
 
       {isConfigurable ? (
         <div className="custom-form-field col-12 px-0">
-          <div className="element-add" onClick={() => onFieldEvent({ type: DFormWidgetEventsTypes.Create, group })}>
+          <div className="element-add" onClick={() => onFieldCreate(group)}>
             <div className="element-add_icon">
               <Plus color="white" size={23} />
             </div>
