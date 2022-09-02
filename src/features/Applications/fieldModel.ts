@@ -212,7 +212,7 @@ export class DFormFieldModel extends AbstractDFormFieldModel {
         this.uiStyle = properties.uiStyle ?? this.uiStyle ?? null;
         break;
       case FieldTypes.HelpText:
-        this.helpTextValue = properties.helpTextValue ?? this.helpTextValue;
+        this.helpTextValue = properties.helpTextValue ?? this.helpTextValue ?? "New help text";
         break;
       // ToDo: Handle that case precisely
       case FieldTypes.Resource:

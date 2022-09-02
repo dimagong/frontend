@@ -83,6 +83,9 @@ const FormComponent = (props) => {
             case FIELD_TYPES.boolean:
               value = false;
               break;
+            case FIELD_TYPES.helpText:
+              value = field.helpTextValue ?? "";
+              break;
             // For rest fields set null value
             default:
               value = null;
@@ -109,8 +112,7 @@ const FormComponent = (props) => {
               value = fieldValue.value ? fieldValue.value.map((value) => ({ label: value, value })) : [];
               break;
             case FIELD_TYPES.helpText:
-              // ToDo: handle helpText
-              value = null;
+              value = field.helpTextValue;
               break;
             // In other case, use value
             default:

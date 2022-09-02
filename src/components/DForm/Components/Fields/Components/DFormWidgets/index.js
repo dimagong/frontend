@@ -8,8 +8,7 @@ import { DFormBooleanWidget } from "./Components/DFormBooleanWidget";
 import { DFormLongTextWidget } from "./Components/DFormLongTextWidget";
 import { DFormTextAreaWidget } from "./Components/DFormTextAreaWidget";
 import { DFormMultiSelectWidget } from "./Components/DFormMultiSelectWidget";
-
-import HelpText from "./Components/HelpText";
+import { DFormHelpTextWidget } from "./Components/DFormHelpTextWidget";
 
 import { FIELD_TYPES } from "components/DForm/constants";
 
@@ -26,8 +25,7 @@ const dFormWidgets = {
   [longText]: DFormLongTextWidget,
   [textArea]: DFormTextAreaWidget,
   [multiSelect]: DFormMultiSelectWidget,
-
-  [helpText]: HelpText,
+  [helpText]: DFormHelpTextWidget,
 };
 
 export default dFormWidgets;

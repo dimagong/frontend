@@ -2,14 +2,14 @@ import "./styles.scss";
 
 import React from "react";
 import { toast } from "react-toastify";
-import { Button, Col, FormGroup, Row } from "reactstrap";
+import { Button, Col, Row } from "reactstrap";
 
 import { DATE_WIDGET_FORMATS, FIELDS_NOT_RELATED_TO_MASTER_SCHEMA } from "features/Applications/constants";
 
 import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
-import { FIELD_TYPES } from "components/DForm/constants";
+import { FieldTypes, FIELD_TYPES } from "components/DForm/constants";
 import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormFieldLabel";
 import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
@@ -270,218 +270,40 @@ export const FieldNumberEditProperties = ({ element, onFieldChange }) => {
   );
 };
 
-export const SpecificFieldProperties = ({ element, onFieldChange }) => {
-  // ToDo remove it
-  ////////////////////////////////////
-  const index = 0;
-  const objKey = "";
-  const handleChange = () => {};
-  ////////////////////////////////////
+export const FieldHelpTextEditProperties = ({ element, onFieldChange }) => {
+  const onChange = (value) => onFieldChange("helpTextValue", value ?? "");
 
-  const renderInputColumn = (column, placeholder, label, inputType = "text", defaultValue = "") => {
-    // return (
-    //   <input
-    //     id={`${index}-${column}`}
-    //     value={element[column]}
-    //     type={inputType}
-    //     onChange={(e) => handleChange(column, e.target.value)}
-    //     className="form-control"
-    //     placeholder={placeholder}
-    //   />
-    // );
-
-    return (
-      <div className={"custom-form-filed form-create_custom-text-widget"}>
-        <DFormFieldLabel label={label} id={`${index}-${column}`} />
-        <input
-          id={`${index}-${column}`}
-          type={"text"}
-          disabled={false}
-          value={element[column]}
-          onChange={(e) => handleChange(column, e.target.value)}
-          placeholder={placeholder}
-        />
-      </div>
-    );
-  };
-
-  const renderEditor = (column, placeholder, inputType = "text", defaultValue = "") => {
-    return (
+  return (
+    <>
       <WysiwygEditor
-        id={`${index}-${column}`}
-        type={inputType}
-        data={null}
-        onChange={(event) => this.wysiwygChange(event, objKey, column)}
-        className="form-control"
-        placeholder={placeholder}
+        id="field-help-text"
+        type="text"
+        data={element.helpTextValue}
+        placeholder="Description"
+        onChange={onChange}
       />
-    );
-  };
+    </>
+  );
+};
 
-  const renderSpecificType = () => {
-    let labelForControls = (
-      <div>
-        <div className="form-group">{renderInputColumn("title", "Title", "Title")}</div>
-      </div>
-    );
-
-    switch (element.type) {
-      /*case FIELD_TYPES.text: {
-        return (
-          <Row>
-            <Col md="12">
-              {labelForControls}
-              <Row>
-                {renderNumberColumn("minLength", "Min Length")}
-                {renderNumberColumn("maxLength", "Max Length")}
-
-                {renderRequiredAndLabelShowCheckboxes()}
-              </Row>
-            </Col>
-          </Row>
-        );
-      }
-      case FIELD_TYPES.number: {
-        return (
-          <Row>
-            <Col md="12">
-              {labelForControls}
-              <Row>
-                {renderNumberColumn("minimum", "Minimum")}
-                {renderNumberColumn("maximum", "Maximum")}
-
-                {renderRequiredAndLabelShowCheckboxes()}
-              </Row>
-            </Col>
-          </Row>
-        );
-      }
-      case FIELD_TYPES.file: {
-        return (
-          <Row>
-            <Col md="12">
-              {labelForControls}
-              <Row>{renderRequiredAndLabelShowCheckboxes()}</Row>
-            </Col>
-          </Row>
-        );
-      }
-      case FIELD_TYPES.fileList: {
-        return (
-          <Row>
-            <Col md="12">
-              {labelForControls}
-              <Row>{renderRequiredAndLabelShowCheckboxes()}</Row>
-            </Col>
-          </Row>
-        );
-      }
-      case FIELD_TYPES.boolean: {
-        return (
-          <Row>
-            <Col md="12">
-              {labelForControls}
-              <Row>
-                <Col md="12">
-                  <FormGroup>{renderRequiredColumn(objKey)}</FormGroup>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        );
-      }
-      case FIELD_TYPES.textArea: {
-        return (
-          <Row>
-            <Col md="12">
-              {labelForControls}
-              <Row>
-                {renderNumberColumn("minLength", "Min Length")}
-                {renderNumberColumn("maxLength", "Max Length")}
-
-                {renderRequiredAndLabelShowCheckboxes()}
-              </Row>
-            </Col>
-          </Row>
-        );
-      }
-      case Constants.FIELD_TYPE_LONG_TEXT_AREA: {
-        return (
-          <Row>
-            <Col md="12">
-              {labelForControls}
-              <Row>
-                {renderNumberColumn("minLength", "Min Length")}
-                {renderNumberColumn("maxLength", "Max Length")}
-
-                {renderRequiredAndLabelShowCheckboxes()}
-              </Row>
-            </Col>
-          </Row>
-        );
-      }
-      case FIELD_TYPES.date: {
-        return (
-          <Row>
-            <Col md="12">
-              {labelForControls}
-              <Row>
-                {renderSelectColumn("format", "Format", DATE_WIDGET_FORMATS)}
-                {renderRequiredAndLabelShowCheckboxes()}
-              </Row>
-            </Col>
-          </Row>
-        );
-      }
-      case FIELD_TYPES.select: {
-        return (
-          <Row>
-            <Col md="12">
-              {labelForControls}
-              <Row>
-                {renderOptionsEdit()}
-                {renderRequiredAndLabelShowCheckboxes()}
-              </Row>
-            </Col>
-          </Row>
-        );
-      }
-      case Constants.FIELD_TYPE_MULTI_SELECT: {
-        return (
-          <div>
-            <div className="row" key={index}>
-              <Col md="12">{labelForControls}</Col>
-              {renderOptionsEdit()}
-              {renderRequiredAndLabelShowCheckboxes()}
-            </div>
-          </div>
-        );
-      }*/
-      case FIELD_TYPES.helpText: {
-        return (
-          <div>
-            <FormGroup>{renderEditor("description", "Description")}</FormGroup>
-          </div>
-        );
-      }
-    }
-  };
-
+export const SpecificFieldProperties = ({ element, onFieldChange }) => {
   switch (element.type) {
-    case FIELD_TYPES.text:
-    case FIELD_TYPES.longText:
-    case FIELD_TYPES.textArea:
+    case FieldTypes.Text:
+    case FieldTypes.LongText:
+    case FieldTypes.TextArea:
       return <FieldStringLikeTextEditProperties element={element} onFieldChange={onFieldChange} />;
-    case FIELD_TYPES.date:
+    case FieldTypes.Date:
       return <FieldDateEditProperties element={element} onFieldChange={onFieldChange} />;
-    case FIELD_TYPES.select:
-    case FIELD_TYPES.multiSelect:
+    case FieldTypes.Select:
+    case FieldTypes.MultiSelect:
       return <FieldSelectEditProperties element={element} onFieldChange={onFieldChange} />;
-    case FIELD_TYPES.number:
+    case FieldTypes.Number:
       return <FieldNumberEditProperties element={element} onFieldChange={onFieldChange} />;
-    case FIELD_TYPES.file:
-    case FIELD_TYPES.fileList:
-    case FIELD_TYPES.boolean:
+    case FieldTypes.HelpText:
+      return <FieldHelpTextEditProperties element={element} onFieldChange={onFieldChange} />;
+    case FieldTypes.File:
+    case FieldTypes.FileList:
+    case FieldTypes.Boolean:
     default:
       return <FieldDefaultEditProperties element={element} onFieldChange={onFieldChange} />;
   }
@@ -532,11 +354,10 @@ const FieldProperties = (props) => {
         />
       </div>
 
-      <div className="mb-2">
-        {FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type) ? null : (
-          <>
+      {FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type) ? null : (
+        <>
+          <div className="mb-2">
             <DFormFieldLabel label="Input name (reference)" id="field-reference" isRequired />
-            {/* //TODO refactor MasterSchemaProperty to handle only 1 organization */}
             <MasterSchemaProperty
               id="field-reference"
               organizations={[organization]}
@@ -555,22 +376,22 @@ const FieldProperties = (props) => {
                 onChange={onFieldGroupChange}
                 placeholder="Select an Element group"
               />*/}
-          </>
-        )}
-      </div>
+          </div>
 
-      <div className="mb-2">
-        <DFormTextWidget
-          id="field-title"
-          label="Title"
-          value={element.title}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-          onChange={onFieldTitleChange}
-        />
-      </div>
+          <div className="mb-2">
+            <DFormTextWidget
+              id="field-title"
+              label="Title"
+              value={element.title}
+              isError={false}
+              isRequired={false}
+              isDisabled={false}
+              isLabelShowing={true}
+              onChange={onFieldTitleChange}
+            />
+          </div>
+        </>
+      )}
 
       <SpecificFieldProperties element={element} onFieldChange={onFieldChange} />
     </>
