@@ -15,7 +15,8 @@ import {
   useMVAswitchToPrevious,
 } from "./../../data/hooks";
 
-import NpmCardSurvey from "../../../nmp-ui/NpmCardSurvey";
+import MemberCardPassSurvey from "../MemberCardPassSurvey";
+import MemberCardSubmitted from "../MemberCardSubmitted";
 
 // import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 // import OnboardingSurveyFinishComponent from "./components/OnboardingSurveyFinishComponent";
@@ -29,7 +30,13 @@ import { findStatusSurvey } from "./../../data/helpers/findStatusSurvey";
 //import { getSurveySubmitStatus } from "./helpers/getSurveySubmitStatus";
 import { statusConstants } from "../../data/constants/statusConstants";
 
-const MemberSurvey = ({ selectedSurveyId, isAllApplicationsCompleted, isRecentlySubmitted, setRecentlySubmitted }) => {
+const MemberSurvey = ({
+  selectedSurveyId,
+  isAllApplicationsCompleted,
+  isRecentlySubmitted,
+  setRecentlySubmitted,
+  organization,
+}) => {
   const [answer, setAnswer] = useState("");
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
@@ -129,7 +136,7 @@ const MemberSurvey = ({ selectedSurveyId, isAllApplicationsCompleted, isRecently
   return (
     <>
       {(surveyStatus === statusConstants.STARTED || surveyStatus === statusConstants.NOT_STARTED) && (
-        <NpmCardSurvey
+        <MemberCardPassSurvey
           isLoadingData={isLoadingData}
           title={title}
           question={question}
@@ -144,7 +151,9 @@ const MemberSurvey = ({ selectedSurveyId, isAllApplicationsCompleted, isRecently
           handleAnswerSubmit={handleAnswerSubmit}
         />
       )}
-      <div>Finish</div>
+      {surveyStatus === statusConstants.SUBMITTED && (
+        <MemberCardSubmitted data={finished_at} organization={organization} surveyName={title} />
+      )}
     </>
   );
 

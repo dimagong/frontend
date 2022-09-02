@@ -15,7 +15,6 @@ const NpmCard = (props) => (
 );
 
 NpmCard.defaultProps = {
-  title: "No title",
   size: "default",
 };
 
