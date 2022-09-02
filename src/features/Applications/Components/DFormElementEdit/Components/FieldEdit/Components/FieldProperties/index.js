@@ -315,7 +315,7 @@ const queryConfig = {
 
 export const FieldResourceEditProperties = ({ element, organization, onFieldChange }) => {
   const queryParams = { organizationId: organization.id, organizationType: organization.type };
-  const { isLoading, data: options } = useApplicationResourceManagerFields(queryParams, queryConfig);
+  const { isLoading, data: options = [] } = useApplicationResourceManagerFields(queryParams, queryConfig);
 
   const onResourceFieldIdChange = ({ value }) => onFieldChange("resourceManagerFieldId", value);
 
