@@ -19,10 +19,10 @@ import { selectProfile, selectdForm } from "app/selectors";
 
 import {
   APPLICATION_PAGES,
-  // INITIAL_FIELD_DATA,
   INITIAL_GROUP_DATA,
   INITIAL_SECTION_DATA,
   INITIAL_APPLICATION_DATA,
+  FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
 } from "./constants";
 import {
   useApplicationTemplateCreateMutation,
@@ -333,7 +333,7 @@ const Applications = ({ isCreate }) => {
     try {
       elementValidationSchema.validateSync(element, { context: { application: applicationData } });
 
-      if (element.elementType === ELEMENT_TYPES.field) {
+      if (element.elementType === ELEMENT_TYPES.field && !FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type)) {
         const masterSchemaUsedPropertiesList = Object.values(applicationData.fields).reduce((acc, curr) => {
           if (curr.id !== element.id && curr.masterSchemaFieldId) {
             acc.push(curr.masterSchemaFieldId);

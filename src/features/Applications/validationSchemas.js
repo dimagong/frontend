@@ -90,6 +90,12 @@ export const fieldCommonSchema = yup.object().shape({
   }),
 });
 
+const htmlTextSchema = yup.object().shape({
+  id: yup.string().required(),
+  type: yup.string().oneOf(fieldTypesArray),
+  classes: yup.string(),
+});
+
 const textElementSchema = object({}).concat(minMaxLengthSchema);
 
 const numberElementSchema = object({}).concat(minimumMaximumSchema);
@@ -113,7 +119,7 @@ const fieldSpecificValidationSchemas = {
   [FIELD_TYPES.textArea]: fieldCommonSchema.concat(textareaElementSchema),
   [FIELD_TYPES.fileList]: fieldCommonSchema,
   [FIELD_TYPES.resource]: fieldCommonSchema,
-  [FIELD_TYPES.helpText]: fieldCommonSchema,
+  [FIELD_TYPES.helpText]: htmlTextSchema,
   [FIELD_TYPES.multiSelect]: fieldCommonSchema,
   conditions: fieldCommonSchema,
 };
