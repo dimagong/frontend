@@ -9,23 +9,25 @@ import { DFormLongTextWidget } from "./Components/DFormLongTextWidget";
 import { DFormTextAreaWidget } from "./Components/DFormTextAreaWidget";
 import { DFormMultiSelectWidget } from "./Components/DFormMultiSelectWidget";
 import { DFormHelpTextWidget } from "./Components/DFormHelpTextWidget";
+import { DFormResourceWidget } from "./Components/DFormResourceWidget";
 
-import { FIELD_TYPES } from "components/DForm/constants";
+import { FieldTypes } from "components/DForm/constants";
 
-const { text, file, fileList, textArea, select, longText, boolean, number, date, multiSelect, helpText } = FIELD_TYPES;
+// const { text, file, fileList, textArea, select, longText, boolean, number, date, multiSelect, helpText } = FIELD_TYPES;
 
 const dFormWidgets = {
-  [text]: DFormTextWidget,
-  [date]: DFormDateWidget,
-  [file]: DFormFileWidget,
-  [fileList]: DFormFileListWidget,
-  [select]: DFormSelectWidget,
-  [number]: DFormNumberWidget,
-  [boolean]: DFormBooleanWidget,
-  [longText]: DFormLongTextWidget,
-  [textArea]: DFormTextAreaWidget,
-  [multiSelect]: DFormMultiSelectWidget,
-  [helpText]: DFormHelpTextWidget,
+  [FieldTypes.Text]: DFormTextWidget,
+  [FieldTypes.Date]: DFormDateWidget,
+  [FieldTypes.File]: DFormFileWidget,
+  [FieldTypes.FileList]: DFormFileListWidget,
+  [FieldTypes.Select]: DFormSelectWidget,
+  [FieldTypes.Number]: DFormNumberWidget,
+  [FieldTypes.Boolean]: DFormBooleanWidget,
+  [FieldTypes.LongText]: DFormLongTextWidget,
+  [FieldTypes.TextArea]: DFormTextAreaWidget,
+  [FieldTypes.MultiSelect]: DFormMultiSelectWidget,
+  [FieldTypes.HelpText]: DFormHelpTextWidget,
+  [FieldTypes.Resource]: DFormResourceWidget,
 };
 
 export default dFormWidgets;

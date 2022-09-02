@@ -34,6 +34,11 @@ export const ApplicationQueryKey = createQueryKey("Application");
 export const ApplicationQueryKeys = {
   all: () => [ApplicationQueryKey],
   byId: (applicationId) => [...ApplicationQueryKeys.all(), { applicationId }],
+  resourceManagerFields: ({ organizationId, organizationType }) => [
+    ...ApplicationQueryKeys.all(),
+    "resource-manager-fields",
+    { organizationId, organizationType },
+  ],
 };
 
 // Currently do not need to re-invalidate query due to components implementation
@@ -49,6 +54,16 @@ export const useApplicationTemplateUpdateMutation = ({ applicationId }, options)
 export const useApplicationTemplate = ({ applicationId }, options) => {
   return useGenericQuery(
     { url: `api/dform-template/${applicationId}`, queryKey: ApplicationQueryKeys.byId(applicationId) },
+    options
+  );
+};
+
+export const useApplicationResourceManagerFields = ({ organizationId, organizationType }, options) => {
+  return useGenericQuery(
+    {
+      url: `api/dform-template/resource-manager-field?organizationId=${organizationId}&organizationType=${organizationType}`,
+      queryKey: ApplicationQueryKeys.resourceManagerFields({ organizationId, organizationType }),
+    },
     options
   );
 };

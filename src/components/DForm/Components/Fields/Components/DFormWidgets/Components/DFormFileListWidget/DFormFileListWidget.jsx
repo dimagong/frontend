@@ -9,7 +9,7 @@ import { useCreateMVAUserFilesMutation } from "api/Onboarding/prospectUserQuery"
 
 import { useCreateApplicationUserFilesMutation } from "features/user-managment/userEdit/userQueries";
 
-import File from "../DFormFileWidget/File";
+import { File } from "../DFormFileWidget/File";
 import { DFormFieldContainer } from "../DFormFieldContainer";
 import { MemberFilePreview } from "../DFormFileWidget/MemberFilePreview";
 import { ManagerFilePreview } from "../DFormFileWidget/ManagerFilePreview";
@@ -80,7 +80,6 @@ export const DFormFileListWidget = (props) => {
         onChange={onChange}
         isMultiple={true}
         isDisabled={isDisabled}
-        isRequired={isRequired}
         isLoading={createUserFilesMutation.isLoading}
         uploadingFiles={uploadingFiles}
         // In next update it will be refactored with DI as Network API provider which will provide
@@ -118,6 +117,6 @@ DFormFileListWidget.propTypes = {
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,
-  masterSchemaFieldId: IdType.isRequired,
+  masterSchemaFieldId: IdType,
   onChange: PropTypes.func,
 };

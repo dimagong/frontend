@@ -4,7 +4,12 @@ import React from "react";
 import { toast } from "react-toastify";
 import { Button, Col, Row } from "reactstrap";
 
-import { DATE_WIDGET_FORMATS, FIELDS_NOT_RELATED_TO_MASTER_SCHEMA } from "features/Applications/constants";
+import { useApplicationResourceManagerFields } from "features/Applications/applicationQueries";
+import {
+  DATE_WIDGET_FORMATS,
+  FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
+  ResourceCompileOptionLabel,
+} from "features/Applications/constants";
 
 import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
@@ -16,36 +21,48 @@ import { DFormSelectWidget } from "components/DForm/Components/Fields/Components
 import { DFormNumberWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormNumberWidget";
 import { DFormBooleanWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormBooleanWidget";
 
-export const FieldDefaultEditProperties = ({ element, onFieldChange }) => {
+export const FieldRequiredEditProperty = ({ element, onFieldChange }) => {
   const onRequiredChange = () => onFieldChange("isRequired", !element.isRequired);
 
+  return (
+    <DFormBooleanWidget
+      id="field-required"
+      label="Is required"
+      value={element.isRequired}
+      isError={false}
+      isRequired={false}
+      isDisabled={false}
+      isLabelShowing={true}
+      onChange={onRequiredChange}
+    />
+  );
+};
+
+export const FieldLabelShowingEditProperty = ({ element, onFieldChange }) => {
   const onLabelShowingChange = () => onFieldChange("isLabelShowing", !element.isLabelShowing);
 
   return (
+    <DFormBooleanWidget
+      id="field-label-showing"
+      label="Label showing"
+      value={element.isLabelShowing}
+      isError={false}
+      isRequired={false}
+      isDisabled={false}
+      isLabelShowing={true}
+      onChange={onLabelShowingChange}
+    />
+  );
+};
+
+export const FieldDefaultEditProperties = ({ element, onFieldChange }) => {
+  return (
     <Row className="mb-2">
       <Col md="6">
-        <DFormBooleanWidget
-          id="field-required"
-          label="Is required"
-          value={element.isRequired}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-          onChange={onRequiredChange}
-        />
+        <FieldRequiredEditProperty element={element} onFieldChange={onFieldChange} />
       </Col>
       <Col md="6">
-        <DFormBooleanWidget
-          id="field-label-showing"
-          label="Label showing"
-          value={element.isLabelShowing}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-          onChange={onLabelShowingChange}
-        />
+        <FieldLabelShowingEditProperty element={element} onFieldChange={onFieldChange} />
       </Col>
     </Row>
   );
@@ -286,7 +303,87 @@ export const FieldHelpTextEditProperties = ({ element, onFieldChange }) => {
   );
 };
 
-export const SpecificFieldProperties = ({ element, onFieldChange }) => {
+const queryConfig = {
+  select: (fields) =>
+    Array.isArray(fields)
+      ? fields.map((field) => ({
+          label: `${field.breadcrumbs}.${field.name}`,
+          value: field.id,
+        }))
+      : [],
+};
+
+export const FieldResourceEditProperties = ({ element, organization, onFieldChange }) => {
+  const queryParams = { organizationId: organization.id, organizationType: organization.type };
+  const { isLoading, data: options = [] } = useApplicationResourceManagerFields(queryParams, queryConfig);
+
+  const onResourceFieldIdChange = ({ value }) => onFieldChange("resourceManagerFieldId", value);
+
+  const onResourceCompileOptionChange = ({ value }) => onFieldChange("resourceCompileOption", value);
+
+  return (
+    <>
+      <Row className="mb-2">
+        <Col md="12">
+          <DFormSelectWidget
+            id="field-resource-manager-field-id"
+            label="Resource link"
+            value={
+              element.resourceManagerFieldId
+                ? options.find(({ value }) => Number(value) === Number(element.resourceManagerFieldId))
+                : null
+            }
+            options={options}
+            isError={false}
+            isLoading={isLoading}
+            isRequired={true}
+            isDisabled={false}
+            isLabelShowing={true}
+            onChange={onResourceFieldIdChange}
+            placeholder="Select a resource field"
+          />
+        </Col>
+      </Row>
+
+      <Row className="mb-2">
+        <Col md="12">
+          <DFormSelectWidget
+            id="field-resource-compile-option"
+            label="Resource compile option"
+            value={
+              element.resourceCompileOption
+                ? {
+                    value: element.resourceCompileOption,
+                    label: ResourceCompileOptionLabel[element.resourceCompileOption],
+                  }
+                : null
+            }
+            options={[
+              {
+                value: element.resourceCompileOption,
+                label: ResourceCompileOptionLabel[element.resourceCompileOption],
+              },
+            ]}
+            isError={false}
+            isRequired={true}
+            isDisabled={false}
+            isLabelShowing={true}
+            onChange={onResourceCompileOptionChange}
+            placeholder="Select a resource compile option"
+          />
+        </Col>
+      </Row>
+
+      <Row className="mb-2">
+        <Col md="12">
+          <FieldLabelShowingEditProperty element={element} onFieldChange={onFieldChange} />
+        </Col>
+      </Row>
+    </>
+  );
+};
+
+export const SpecificFieldProperties = ({ element, organization, onFieldChange }) => {
   switch (element.type) {
     case FieldTypes.Text:
     case FieldTypes.LongText:
@@ -301,6 +398,10 @@ export const SpecificFieldProperties = ({ element, onFieldChange }) => {
       return <FieldNumberEditProperties element={element} onFieldChange={onFieldChange} />;
     case FieldTypes.HelpText:
       return <FieldHelpTextEditProperties element={element} onFieldChange={onFieldChange} />;
+    case FieldTypes.Resource:
+      return (
+        <FieldResourceEditProperties element={element} organization={organization} onFieldChange={onFieldChange} />
+      );
     case FieldTypes.File:
     case FieldTypes.FileList:
     case FieldTypes.Boolean:
@@ -393,7 +494,7 @@ const FieldProperties = (props) => {
         </>
       )}
 
-      <SpecificFieldProperties element={element} onFieldChange={onFieldChange} />
+      <SpecificFieldProperties element={element} organization={organization} onFieldChange={onFieldChange} />
     </>
   );
 };

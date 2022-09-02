@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 import { Plus } from "react-feather";
 
-import { ELEMENT_TYPES, FIELD_TYPES } from "components/DForm/constants";
+import { ELEMENT_TYPES, FieldTypes } from "components/DForm/constants";
 
 import formComponents from "./Components/DFormWidgets";
 
@@ -63,27 +63,26 @@ const FormComponent = (props) => {
         let value;
         if (isConfigurable) {
           switch (field.type) {
-            // Set example fake file to show how it looks like
-            case FIELD_TYPES.file:
-              value = [{ name: "Example.file" }];
-              break;
-            case FIELD_TYPES.fileList:
-              value = [{ name: "Example.file" }, { name: "Example.file" }];
-              break;
-            case FIELD_TYPES.text:
-            case FIELD_TYPES.date:
-            case FIELD_TYPES.number:
-            case FIELD_TYPES.textArea:
-            case FIELD_TYPES.longText:
+            case FieldTypes.Text:
+            case FieldTypes.Date:
+            case FieldTypes.Number:
+            case FieldTypes.TextArea:
+            case FieldTypes.LongText:
               value = "";
               break;
-            case FIELD_TYPES.multiSelect:
-              value = [];
-              break;
-            case FIELD_TYPES.boolean:
+            case FieldTypes.Boolean:
               value = false;
               break;
-            case FIELD_TYPES.helpText:
+            case FieldTypes.MultiSelect:
+              value = [];
+              break;
+            // Set example fake file to show how it looks like
+            case FieldTypes.File:
+            case FieldTypes.FileList:
+            case FieldTypes.Resource:
+              value = Array.from({ length: FieldTypes.FileList === field.type ? 2 : 1 }).fill({ name: "Example.file" });
+              break;
+            case FieldTypes.HelpText:
               value = field.helpTextValue ?? "";
               break;
             // For rest fields set null value
@@ -93,25 +92,29 @@ const FormComponent = (props) => {
         } else {
           const fieldValue = values[field.masterSchemaFieldId];
           switch (field.type) {
-            // Get files from response instead value in case when field type is file/fileList
-            case FIELD_TYPES.file:
-            case FIELD_TYPES.fileList:
-              value = fieldValue.files ?? [];
-              break;
-            case FIELD_TYPES.text:
-            case FIELD_TYPES.date:
-            case FIELD_TYPES.number:
-            case FIELD_TYPES.textArea:
-            case FIELD_TYPES.longText:
+            case FieldTypes.Text:
+            case FieldTypes.Date:
+            case FieldTypes.Number:
+            case FieldTypes.TextArea:
+            case FieldTypes.LongText:
               value = fieldValue.value ?? "";
               break;
-            case FIELD_TYPES.select:
+            case FieldTypes.Boolean:
+              value = fieldValue.value ?? false;
+              break;
+            case FieldTypes.Select:
               value = fieldValue.value ? { value: fieldValue.value, label: fieldValue.value } : null;
               break;
-            case FIELD_TYPES.multiSelect:
+            case FieldTypes.MultiSelect:
               value = fieldValue.value ? fieldValue.value.map((value) => ({ label: value, value })) : [];
               break;
-            case FIELD_TYPES.helpText:
+            // Get files from response instead value in case when field type is file/fileList
+            case FieldTypes.File:
+            case FieldTypes.FileList:
+            case FieldTypes.Resource:
+              value = fieldValue.files ?? [];
+              break;
+            case FieldTypes.HelpText:
               value = field.helpTextValue;
               break;
             // In other case, use value
@@ -129,11 +132,11 @@ const FormComponent = (props) => {
           }
 
           switch (field.type) {
-            case FIELD_TYPES.multiSelect:
+            case FieldTypes.MultiSelect:
               onFieldChange(field, Array.isArray(value) ? value.map(({ value }) => value) : []);
               break;
             // Extract value from option for field select
-            case FIELD_TYPES.select:
+            case FieldTypes.Select:
               onFieldChange(field, value.value);
               break;
             default:

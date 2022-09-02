@@ -44,7 +44,15 @@ const getBadgeMessage = (status) => {
 };
 
 export const FilePreview = (props) => {
-  const { file, name, isRemoving = false, isUploading = false, isDownloading = false, onRemove } = props;
+  const {
+    file,
+    name,
+    isRemoving = false,
+    isRemovable = true,
+    isUploading = false,
+    isDownloading = false,
+    onRemove,
+  } = props;
 
   const status = getStatus({ isRemoving, isUploading, isDownloading });
   const badgeMessage = getBadgeMessage(status);
@@ -89,9 +97,11 @@ export const FilePreview = (props) => {
           {badgeMessage}
         </Badge>
 
-        <button className="dform-file__item-remove-btn" type="button" onClick={onRemoveButtonClick}>
-          <X size="15" />
-        </button>
+        {isRemovable ? (
+          <button className="dform-file__item-remove-btn" type="button" onClick={onRemoveButtonClick}>
+            <X size="15" />
+          </button>
+        ) : null}
       </div>
     </div>
   );
@@ -102,6 +112,7 @@ FilePreview.propTypes = {
   name: PropTypes.string.isRequired,
   isRemoving: PropTypes.bool,
   isUploading: PropTypes.bool,
+  isRemovable: PropTypes.bool,
   isDownloading: PropTypes.bool,
   onRemove: PropTypes.func,
 };

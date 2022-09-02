@@ -2,7 +2,7 @@ import { v4 } from "uuid";
 
 import { ElementTypes, FieldTypes } from "components/DForm/constants";
 
-import { DateWidgetFormatTypes, FieldClassTypes, FieldUIStyles } from "./constants";
+import { DateWidgetFormatTypes, FieldClassTypes, FieldUIStyles, ResourceCompileOptionTypes } from "./constants";
 
 export interface DFormFieldCondition {
   id: string;
@@ -60,7 +60,7 @@ type BooleanFieldProperties = CommonFieldProperties<FieldTypes.Boolean>;
 type FileListFieldProperties = CommonFieldProperties<FieldTypes.Boolean>;
 
 interface ResourceFieldProperties extends CommonFieldProperties<FieldTypes.Resource> {
-  resourceCompileOption: string;
+  resourceCompileOption: ResourceCompileOptionTypes;
   resourceManagerFieldId: string;
 }
 
@@ -157,7 +157,7 @@ export abstract class AbstractDFormFieldModel {
   /**
    * For field type FieldTypes.Resource
    */
-  resourceCompileOption: string;
+  resourceCompileOption: ResourceCompileOptionTypes;
   resourceManagerFieldId: string;
   /**
    * For field type FieldTypes.HelpText
@@ -214,10 +214,12 @@ export class DFormFieldModel extends AbstractDFormFieldModel {
       case FieldTypes.HelpText:
         this.helpTextValue = properties.helpTextValue ?? this.helpTextValue ?? "New help text";
         break;
-      // ToDo: Handle that case precisely
       case FieldTypes.Resource:
-        this.resourceCompileOption = properties.resourceCompileOption ?? this.resourceCompileOption;
-        this.resourceManagerFieldId = properties.resourceManagerFieldId ?? this.resourceManagerFieldId;
+        this.resourceCompileOption =
+          properties.resourceCompileOption ??
+          this.resourceCompileOption ??
+          ResourceCompileOptionTypes.CompileOnOnboardingAssociation;
+        this.resourceManagerFieldId = properties.resourceManagerFieldId ?? this.resourceManagerFieldId ?? null;
         break;
     }
   }

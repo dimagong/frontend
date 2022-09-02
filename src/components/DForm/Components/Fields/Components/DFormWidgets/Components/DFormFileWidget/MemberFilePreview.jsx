@@ -9,7 +9,7 @@ import { useDeleteMVAUserFileMutation, useMVAUserFileQuery } from "api/Onboardin
 
 import { FilePreview } from "./FilePreview";
 
-export const MemberFilePreview = ({ fileId, name, masterSchemaFieldId, isUploading = false }) => {
+export const MemberFilePreview = ({ fileId, name, masterSchemaFieldId, isUploading = false, isRemovable = true }) => {
   const { dFormId } = useDFormContext();
 
   const params = { dFormId, masterSchemaFieldId, fileId };
@@ -33,6 +33,7 @@ export const MemberFilePreview = ({ fileId, name, masterSchemaFieldId, isUploadi
       name={name}
       file={fileQuery.data.file}
       isRemoving={removeFileMutation.isLoading}
+      isRemovable={isRemovable}
       isUploading={isUploading}
       isDownloading={fileQuery.isLoading}
       onRemove={onRemove}
@@ -44,5 +45,6 @@ MemberFilePreview.propTypes = {
   fileId: IdType,
   name: PropTypes.string.isRequired,
   masterSchemaFieldId: IdType.isRequired,
+  isRemovable: PropTypes.bool,
   isUploading: PropTypes.bool,
 };

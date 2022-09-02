@@ -66,6 +66,7 @@ export const DFormSelectWidget = (props) => {
     error,
     options,
     isError,
+    isLoading = false,
     isRequired,
     isDisabled,
     isLabelShowing,
@@ -92,6 +93,7 @@ export const DFormSelectWidget = (props) => {
         styles={colourStyles}
         isMulti={false}
         isDisabled={isDisabled}
+        isLoading={isLoading}
         placeholder={placeholder}
         onChange={onChange}
       />
@@ -107,6 +109,7 @@ DFormSelectWidget.propTypes = {
   options: OptionsType.isRequired,
   placeholder: PropTypes.string,
   isError: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool,
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,
