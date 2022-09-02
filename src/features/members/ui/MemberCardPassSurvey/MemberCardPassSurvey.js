@@ -4,18 +4,18 @@ import React, { useEffect } from "react";
 
 import PropTypes from "prop-types";
 
-import NpmCard from "./../NpmCard";
-import NpmStepper from "./../NpmStepper";
-import NpmButton from "../NpmButton";
-import { statusConstants } from "../../members/data/constants/statusConstants";
-import Question from "../../Surveys/Components/Question";
-import NpmRadioGroup from "../NpmRadioGroup";
-import NpmInput from "../NpmInput";
-import NpmTextArea from "../NpmTextArea";
+import NpmCard from "../../../nmp-ui/NpmCard";
+import NpmStepper from "./../../../nmp-ui/NpmStepper";
+import NpmButton from "../../../nmp-ui/NpmButton";
+import { statusConstants } from "../../data/constants/statusConstants";
+import Question from "../../../Surveys/Components/Question";
+import NpmRadioGroup from "../../../nmp-ui/NpmRadioGroup";
+import NpmInput from "../../../nmp-ui/NpmInput";
+import NpmTextArea from "../../../nmp-ui/NpmTextArea";
 
 import { QuestionCircleFilled, LeftSquareFilled } from "@ant-design/icons";
 
-const NpmCardSurvey = (props) => {
+const MemberCardPassSurvey = (props) => {
   const {
     surveyStatus,
     handleSurveyStart,
@@ -134,4 +134,4 @@ const NpmCardSurvey = (props) => {
   );
 };
 
-export default NpmCardSurvey;
+export default MemberCardPassSurvey;
