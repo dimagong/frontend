@@ -1,20 +1,15 @@
+import React from "react";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
 
 import { IdType } from "utility/prop-types";
-
 import { useDFormContext } from "components/DForm/DFormContext";
 
-import { useCreateMVAUserFilesMutation } from "api/Onboarding/prospectUserQuery";
-import { useCreateApplicationUserFilesMutation } from "features/user-managment/userEdit/userQueries";
-
-import { File } from "./File";
-import { MemberFilePreview } from "./MemberFilePreview";
-import { ManagerFilePreview } from "./ManagerFilePreview";
-
+import { File } from "../DFormFileWidget/File";
 import { DFormFieldContainer } from "../DFormFieldContainer";
+import { MemberFilePreview } from "../DFormFileWidget/MemberFilePreview";
+import { ManagerFilePreview } from "../DFormFileWidget/ManagerFilePreview";
 
-export const DFormFileWidget = (props) => {
+export const DFormResourceWidget = (props) => {
   const {
     id,
     value = [],
@@ -25,43 +20,10 @@ export const DFormFileWidget = (props) => {
     isDisabled,
     isLabelShowing,
     masterSchemaFieldId,
-    // onChange: propOnChange,
     className,
   } = props;
 
-  const { dFormId, isMemberView } = useDFormContext();
-
-  const [uploadingFiles, setUploadingFiles] = useState([]);
-  // In next update it will be refactored with DI as Network API provider which will provide
-  // an clientHttpAPI service that is abstraction for any implementation. So, in case when FilePreview
-  // is used in member view scope it will use the service that implements an clientHttpAPI, and in case
-  // when it is used in another scope that provide Network it will use it correspondingly.
-  const useCreateUserFilesMutation = isMemberView
-    ? useCreateMVAUserFilesMutation
-    : useCreateApplicationUserFilesMutation;
-  const params = { dFormId, masterSchemaFieldId };
-  const createUserFilesMutation = useCreateUserFilesMutation(params, {
-    onError: () => setUploadingFiles([]),
-    onSuccess: () => setUploadingFiles([]),
-  });
-
-  const onChange = (files) => {
-    files = Array.from(files);
-    const formData = new FormData();
-
-    formData.append("master_schema_field_id", masterSchemaFieldId);
-
-    const uploadingFiles = [];
-    files.forEach((file, idx) => {
-      uploadingFiles.push({ name: file.name });
-      formData.append(`files[${idx}]`, file, file.name);
-    });
-
-    // ToDo: handle value update
-    // propOnChange(uploadingFiles);
-    setUploadingFiles(uploadingFiles);
-    createUserFilesMutation.mutate(formData);
-  };
+  const { isMemberView } = useDFormContext();
 
   return (
     <DFormFieldContainer
@@ -77,10 +39,8 @@ export const DFormFileWidget = (props) => {
         id={id}
         label={label}
         value={value}
-        onChange={onChange}
         isDisabled={isDisabled}
-        isLoading={createUserFilesMutation.isLoading}
-        uploadingFiles={uploadingFiles}
+        isUploadable={false}
         // In next update it will be refactored with DI as Network API provider which will provide
         // an clientHttpAPI service that is abstraction for any implementation. So, in case when FilePreview
         // is used in member view scope it will use the service that implements an clientHttpAPI, and in case
@@ -90,6 +50,7 @@ export const DFormFileWidget = (props) => {
             <MemberFilePreview
               name={name}
               fileId={file_id}
+              isRemovable={false}
               masterSchemaFieldId={masterSchemaFieldId}
               key={file_id ?? `file-preview-${index}`}
             />
@@ -97,6 +58,7 @@ export const DFormFileWidget = (props) => {
             <ManagerFilePreview
               name={name}
               fileId={file_id}
+              isRemovable={false}
               masterSchemaFieldId={masterSchemaFieldId}
               key={file_id ?? `file-preview-${index}`}
             />
@@ -107,7 +69,10 @@ export const DFormFileWidget = (props) => {
   );
 };
 
-DFormFileWidget.propTypes = {
+// ToDo: validation
+// DFormResourceWidget.validationSchema = resourceValidationSchema;
+
+DFormResourceWidget.propTypes = {
   id: IdType.isRequired,
   value: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string.isRequired, file_id: IdType })),
   label: PropTypes.string,
@@ -117,5 +82,4 @@ DFormFileWidget.propTypes = {
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,
   masterSchemaFieldId: IdType,
-  onChange: PropTypes.func,
 };

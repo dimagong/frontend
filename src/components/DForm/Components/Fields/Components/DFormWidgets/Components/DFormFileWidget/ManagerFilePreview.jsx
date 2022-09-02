@@ -12,7 +12,7 @@ import {
 
 import { FilePreview } from "./FilePreview";
 
-export const ManagerFilePreview = ({ fileId, name, masterSchemaFieldId, isUploading = false }) => {
+export const ManagerFilePreview = ({ fileId, name, masterSchemaFieldId, isUploading = false, isRemovable = true }) => {
   const { dFormId } = useDFormContext();
 
   const params = { dFormId, masterSchemaFieldId, fileId };
@@ -36,6 +36,7 @@ export const ManagerFilePreview = ({ fileId, name, masterSchemaFieldId, isUpload
       name={name}
       file={fileQuery.data.file}
       isRemoving={removeFileMutation.isLoading}
+      isRemovable={isRemovable}
       isUploading={isUploading}
       isDownloading={fileQuery.isLoading}
       onRemove={onRemove}
@@ -47,5 +48,6 @@ ManagerFilePreview.propTypes = {
   fileId: IdType,
   name: PropTypes.string.isRequired,
   masterSchemaFieldId: IdType.isRequired,
+  isRemovable: PropTypes.bool,
   isUploading: PropTypes.bool,
 };

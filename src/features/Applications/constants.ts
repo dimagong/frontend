@@ -73,3 +73,12 @@ export type FieldUIStyles = MultiSelectUIStyles;
 export const MULTI_SELECT_UI_STYLES = [MultiSelectUIStyles.Checkboxes];
 
 export const FIELDS_NOT_RELATED_TO_MASTER_SCHEMA = [FIELD_TYPES.helpText];
+
+export enum ResourceCompileOptionTypes {
+  None,
+  CompileOnOnboardingAssociation,
+}
+
+export const ResourceCompileOptionLabel = {
+  [ResourceCompileOptionTypes.CompileOnOnboardingAssociation]: "Compile on onboarding association",
+};

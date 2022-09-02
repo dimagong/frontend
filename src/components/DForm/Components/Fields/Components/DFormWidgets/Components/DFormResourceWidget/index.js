@@ -1,0 +1,1 @@
+export { DFormResourceWidget } from "./DFormResourceWidget";
