@@ -14,12 +14,6 @@ import {
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
 
-import {
-  FIELD_VALUE_PREPARE,
-  EFFECT_ELEMENT_PROP,
-  OPERATORS_COMPARE_FUNCTIONS,
-} from "features/Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
-
 const STATUSES = [
   { value: "submitted", label: "submitted" },
   { value: "approved", label: "approved" },
@@ -28,7 +22,7 @@ const STATUSES = [
 ];
 
 const checkConditions = (elementCollection, values) => {
-  for (const elementId in elementCollection) {
+  /*for (const elementId in elementCollection) {
     if (elementCollection.hasOwnProperty(elementId)) {
       const element = elementCollection[elementId];
       const elementCondition = element.conditions && element.conditions[0];
@@ -58,7 +52,7 @@ const checkConditions = (elementCollection, values) => {
       const elementEffectValue = isConditionApplicable ? applicableEffect.value : !applicableEffect.value;
       elementCollection[elementId][applicableEffect.propName] = elementEffectValue;
     }
-  }
+  }*/
 
   return elementCollection;
 };

@@ -131,7 +131,7 @@ export const groupValidationSchema = dynamicRenderValidation.shape({
     .test("unique-group-name", "Group name should be unique", function test(value) {
       value = value.toLowerCase();
       const groups = Object.values(this.options.context.application.groups);
-      return groups.filter((group) => group.name.toLowerCase() === value).length !== 1;
+      return groups.filter((group) => group.name.toLowerCase() === value).length === 1;
     }),
   id: yup.string().required(),
   isProtected: yup.boolean(),
@@ -147,7 +147,7 @@ export const sectionValidationSchema = dynamicRenderValidation.shape({
     .test("unique-section-name", "Section name should be unique", function test(value) {
       value = value.toLowerCase();
       const sections = Object.values(this.options.context.application.sections);
-      return sections.filter((section) => section.name.toLowerCase() === value).length !== 1;
+      return sections.filter((section) => section.name.toLowerCase() === value).length === 1;
     }),
   isProtected: yup.boolean(),
   isDisabled: yup.boolean(),

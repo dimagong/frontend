@@ -1,80 +1,100 @@
 import React from "react";
 
+import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
+
 import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
-import { EFFECTS, EFFECT_LABELS, OPERATOR_TEMPLATES_BY_SELECTED_FIELD_TYPE } from "../constants";
+import { DCREffectLabels, DCREffects, DCRFieldTypesOperatorTemplates } from "../constants";
 
-const preparedEffects = Object.values(EFFECTS).map((effect) => ({ value: effect, label: EFFECT_LABELS[effect] }));
+const getEffectTypeOption = (effectType) => ({ value: effectType, label: DCREffectLabels[effectType] });
+const effectTypesAsOptions = DCREffects.map(getEffectTypeOption);
 
-const ConditionForm = ({ condition, fields, onConditionChange }) => {
-  const handleEffectSelect = ({ value: effect }) => onConditionChange({ ...condition, effect });
+const getFieldIdAsOption = (field) => ({ value: field.id, label: field.title });
+const getFieldIdAsOptions = (fields) => fields.map(getFieldIdAsOption);
 
-  const handleFieldSelect = ({ value: field }) => onConditionChange({ ...condition, field });
+const getOperatorTypeAsOption = (operatorTemplate) => ({ value: operatorTemplate.type, label: operatorTemplate.name });
+const getOperatorTypesAsOptions = (operatorTemplates) => operatorTemplates.map(getOperatorTypeAsOption);
 
-  const handleOperatorSelect = ({ value: operator }) => onConditionChange({ ...condition, operator });
+const ConditionForm = ({ fields, condition, onConditionChange }) => {
+  const updateCondition = (data) => {
+    const updatedCondition = DFormFieldConditionModel.from({ ...condition, ...data });
+    onConditionChange(updatedCondition);
+  };
 
-  const handleExpectedValueChange = (expectedValue) => onConditionChange({ ...condition, expectedValue });
+  const onFieldIdChange = ({ value: fieldId }) => updateCondition({ fieldId });
 
-  const operatorTemplateBySelectedField = OPERATOR_TEMPLATES_BY_SELECTED_FIELD_TYPE[condition.field?.type] || {};
+  const onEffectTypeChange = ({ value: effectType }) => updateCondition({ effectType });
+
+  const onOperatorTypeChange = ({ value: operatorType }) => updateCondition({ operatorType });
+
+  const onExpectedValueChange = (expectedValue) => updateCondition({ expectedValue });
+
+  const field = fields.find(({ id }) => id === condition.fieldId);
+  const fieldsIdsAsOptions = getFieldIdAsOptions(fields);
+  const operatorTemplates = field ? DCRFieldTypesOperatorTemplates[field.type] : null;
+  const operatorTemplatesAsOptions = operatorTemplates ? getOperatorTypesAsOptions(operatorTemplates) : null;
+  const operatorTemplate = operatorTemplates
+    ? operatorTemplates.find(({ type }) => type === condition.operatorType)
+    : null;
 
   return (
     <>
       <DFormSelectWidget
-        id="dcr-type"
+        id="dcr-effect-type"
         label="This element will be"
-        value={condition.effect ? { value: condition.effect, label: EFFECT_LABELS[condition.effect] } : null}
-        options={preparedEffects}
+        value={condition.effectType ? getEffectTypeOption(condition.effectType) : null}
+        options={effectTypesAsOptions}
         placeholder="Select an effect"
         isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
-        onChange={handleEffectSelect}
+        onChange={onEffectTypeChange}
         className="mb-2"
       />
 
       <DFormSelectWidget
-        id="dcr-field"
+        id="dcr-field-id"
         label="If value of field"
-        value={condition.field ? { value: condition.field, label: condition.field.title } : null}
-        options={fields.map((field) => ({ value: field, label: field.title }))}
+        value={condition.fieldId ? getFieldIdAsOption(field) : null}
+        options={fieldsIdsAsOptions}
         placeholder="Select field"
         isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
-        onChange={handleFieldSelect}
+        onChange={onFieldIdChange}
         className="mb-2"
       />
 
-      {!!condition.field ? (
+      {condition.fieldId ? (
         <DFormSelectWidget
           id="dcr-effect"
           label="Will be"
-          value={condition.operator ? { value: condition.operator, label: condition.operator.name } : null}
-          options={operatorTemplateBySelectedField.map((condition) => ({ value: condition, label: condition.name }))}
+          value={condition.operatorType ? getOperatorTypeAsOption(operatorTemplate) : null}
+          options={operatorTemplatesAsOptions}
           placeholder="Select operator"
           isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
-          onChange={handleOperatorSelect}
+          onChange={onOperatorTypeChange}
           className="mb-2"
         />
       ) : null}
 
-      {condition.operator && condition.operator.expectedValueTitle ? (
+      {condition.operatorType && operatorTemplate.expectedValueTitle ? (
         <DFormTextWidget
           id="dcr-expected-value"
-          label={condition.operator.expectedValueTitle}
+          label={operatorTemplate.expectedValueTitle}
           value={condition.expectedValue ?? ""}
           placeholder="Enter expected value"
           isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
-          onChange={handleExpectedValueChange}
+          onChange={onExpectedValueChange}
         />
       ) : null}
     </>
