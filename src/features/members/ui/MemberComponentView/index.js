@@ -2,20 +2,26 @@ import "./styles.scss";
 
 import { isEmpty } from "lodash";
 import React, { useEffect, useState } from "react";
-import { CardBody, Card, Row, Col, TabContent, TabPane } from "reactstrap";
+import { CardBody, Card, TabContent, TabPane } from "reactstrap";
+import { Row, Col } from "antd";
 
 import NavMenu from "components/NavMenu/NavMenu";
 import MemberMenuView from "./../MemberMenuView";
 import Check from "assets/img/icons/check.png";
 
+import NpmCardSurvey from "../MemberCardPassSurvey";
+import MemberSurvey from "./../MemberSurvey";
+
 // import OnboardingApp from "./../../components/OnboardingApp";
-// import OnboardingSurvey from "../../OnboardingSurvey";
+//import OnboardingSurvey from "../../OnboardingSurvey";
 // import StatusComponent from "../Components/StatusComponent";
 
-const MemberComponentView = ({ profile, userApplications, initialOnboarding }) => {
+const MemberComponentView = ({ profile, userApplications, initialOnboarding, dForms, surveys }) => {
   const [forceAppShow, setForceAppShow] = useState([]);
   const [recentlySubmitted, setRecentlySubmitted] = useState(false);
   const [appActiveOnboarding, setActiveAppOnboarding] = useState(null);
+  console.log("appActiveOnboarding", appActiveOnboarding);
+  console.log("profile", profile);
 
   useEffect(() => {
     setActiveAppOnboarding(initialOnboarding);
@@ -67,7 +73,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding }) =
   };
 
   const unCompletedApplications = userApplications.filter((application) => {
-    if (application.tabId.includes("form")) {
+    if (application.type === "dform") {
       return !(application?.status === "approved" || application?.status === "submitted");
     } else {
       return !application.finished_at;
@@ -78,23 +84,42 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding }) =
     return <div>Onboarding not exist</div>;
   }
 
+  const organization = profile?.permissions?.organization ?? "Surveys organization";
   return (
     <>
-      <Row style={{ border: "2px solid red" }}>
-        <Col sm={12}>
-          <MemberMenuView />
-          {/* <NavMenu
+      <Row style={{ border: "2px solid red", height: "90vh" }}>
+        <Col span={1}>
+          <MemberMenuView dForms={dForms} surveys={surveys} setActiveAppOnboarding={setActiveAppOnboarding} />
+          {/*
+          <Col sm={12}>
+          <NavMenu
             withIcons
             tabId="tabId"
             tabName={(application) => application?.title || application?.name}
             active={getActiveTab()}
             tabs={formatTabs(userApplications)}
             onChange={(application) => handleNavClick(application)}
-          /> */}
+          />
+          </Col> */}
+        </Col>
+        <Col span={23} style={{ border: "2px solid yellow", height: "100%" }}>
+          {appActiveOnboarding.type === "survey" && (
+            <>
+              <MemberSurvey
+                selectedSurveyId={appActiveOnboarding.id}
+                setRecentlySubmitted={setRecentlySubmitted}
+                isRecentlySubmitted={recentlySubmitted}
+                isAllApplicationsCompleted={!unCompletedApplications.length}
+                organization={organization}
+              />
+            </>
+          )}
         </Col>
       </Row>
-      <Row style={{ maxWidth: "1024px", marginLeft: "95px" }}>
-        {/* <Col sm="12" md={{ size: 10, offset: 1 }}>
+
+      {/* 
+         <Row style={{ maxWidth: "1024px", marginLeft: "95px" }}>
+         <Col sm="12" md={{ size: 10, offset: 1 }}>
           <Card style={{ background: "transparent", boxShadow: "none" }}>
             <CardBody className="pt-0 pl-0">
               <TabContent activeTab={getActiveTab()}>
@@ -143,8 +168,9 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding }) =
               </TabContent>
             </CardBody>
           </Card>
-        </Col> */}
-      </Row>
+        </Col> 
+          </Row>
+        */}
     </>
   );
 };
