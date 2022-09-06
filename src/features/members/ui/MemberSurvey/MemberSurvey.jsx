@@ -17,6 +17,9 @@ import {
 
 import MemberCardPassSurvey from "../MemberCardPassSurvey";
 import MemberCardSubmitted from "../MemberCardSubmitted";
+import MemberCardApproved from "../MemberCardApproved";
+import MemberCardFeedback from "../MemberCardFeedback";
+import NpmSpin from "../../../nmp-ui/NpmSpin";
 
 // import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 // import OnboardingSurveyFinishComponent from "./components/OnboardingSurveyFinishComponent";
@@ -58,6 +61,12 @@ const MemberSurvey = ({
     { enabled: [started_at, !finished_at].every(Boolean) }
   );
 
+  const { data: surveyInteraction, isLoading: isSurveyGradedQuestionsLoading } = useGetAllSurveyQuestionsQuery(
+    { id },
+    { enabled: !!graded_at }
+  );
+  console.log("surveyInteraction", surveyInteraction);
+
   const {
     mutatePushAnswer,
     currentQuestionPushAnswer,
@@ -85,14 +94,17 @@ const MemberSurvey = ({
     isSuccessSwitchToPreviousQuestion,
   } = useMVAswitchToPrevious(id);
   if (previousQuestion && isSuccessSwitchToPreviousQuestion) {
+    console.log("previousQuestion", previousQuestion);
     [currentQuestion, isSurveyLoading] = [previousQuestion, isLoadingPreviousQuestion];
   }
 
   const { question, count, answers, currentIndex } = currentQuestion || {};
+  console.log("currentQuestion", currentQuestion);
 
   useMVASurveyPassingInvalidate(currentQuestion?.status, surveyStatus, id);
 
-  useMVARecentSubmited(currentQuestion?.status, surveyStatus, setRecentlySubmitted);
+  //? deactivated recentSubmited status
+  //useMVARecentSubmited(currentQuestion?.status, surveyStatus, setRecentlySubmitted);
 
   const handleSurveyStart = () => {
     refetch();
@@ -123,16 +135,18 @@ const MemberSurvey = ({
   };
 
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
-  const currentQuestionAnswer = answers && currentIndex ? answers[currentIndex] : null;
+  const currentQuestionAnswer = answers && !isNaN(currentIndex) ? answers[currentIndex] : null;
   console.log("answers", answers);
-  console.log("currentIndex", currentIndex);
-  console.log("currentQuestionAnswer", currentQuestionAnswer);
 
-  // console.log("question", question);
+  const isSurveyPassed = survey && survey.stats?.total >= survey.stats?.min_percent_pass;
+  const totalTime = survey?.stats?.totalTime ?? "00-00-00";
+  const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
+  const isShowResult = survey?.is_show_result;
 
-  // if (isLoadingData) {
-  //   return <>Loading ...</>;
-  // }
+  if (!survey && isSurveyLoading) {
+    return <NpmSpin size={60} />;
+  }
+
   return (
     <>
       {(surveyStatus === statusConstants.STARTED || surveyStatus === statusConstants.NOT_STARTED) && (
@@ -153,6 +167,22 @@ const MemberSurvey = ({
       )}
       {surveyStatus === statusConstants.SUBMITTED && (
         <MemberCardSubmitted data={finished_at} organization={organization} surveyName={title} />
+      )}
+      {surveyStatus === statusConstants.APPROVED && !isFeedbackView && (
+        <MemberCardApproved
+          data={graded_at}
+          isSurveyPassed={isSurveyPassed}
+          totalTime={totalTime}
+          isShowResult={isShowResult}
+          setIsFeedbackView={setIsFeedbackView}
+        />
+      )}
+      {surveyStatus === statusConstants.APPROVED && isFeedbackView && (
+        <MemberCardFeedback
+          surveyInteraction={surveyInteraction}
+          surveyStatus={surveyStatus}
+          setIsFeedbackView={setIsFeedbackView}
+        />
       )}
     </>
   );
