@@ -6,10 +6,16 @@ import moment from "moment";
 import NpmCard from "../../../nmp-ui/NpmCard";
 import Envelop from "./../icons/Envelop.svg";
 
+const cardStyle = {
+  maxHeight: "600px",
+  maxWidth: "1000px",
+  width: "85vw",
+};
+
 const MemberCardSubmitted = ({ data, organization, surveyName }) => {
   return (
-    <>
-      <NpmCard>
+    <div className="membercard-submitted">
+      <NpmCard style={cardStyle}>
         <div className="card-submitted">
           <div className="card-submitted_content">
             <div className="cs-header">
@@ -36,7 +42,7 @@ const MemberCardSubmitted = ({ data, organization, surveyName }) => {
           </div>
         </div>
       </NpmCard>
-    </>
+    </div>
   );
 };
 
