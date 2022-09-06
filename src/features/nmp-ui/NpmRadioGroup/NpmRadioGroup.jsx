@@ -1,19 +1,18 @@
 import "./styles.scss";
 
-import React, { useState } from "react";
+import React from "react";
 
 import { Radio, Card } from "antd";
 
-const NpmRadioGroup = ({ options, handleAnswerSelect, selectedAnswer }) => {
-  console.log("NpmRadioGroup options", options);
-  console.log("selectedAnswer", selectedAnswer);
-  const [value, setValue] = useState(null);
-
+const NpmRadioGroup = ({ options = [], handleAnswerSelect, selectedAnswer, correctAnswer = null }) => {
   const onChange = (e) => {
-    console.log("radio checked", e.target.value);
-    // setValue(e.target.value);
     handleAnswerSelect(e.target.value);
   };
+  const correctAnswerStyle = correctAnswer
+    ? correctAnswer === selectedAnswer
+      ? "correctAnswerStyle"
+      : "incorrectAnswerStyle"
+    : "";
 
   return (
     <Radio.Group onChange={onChange} value={selectedAnswer}>
@@ -21,7 +20,9 @@ const NpmRadioGroup = ({ options, handleAnswerSelect, selectedAnswer }) => {
         {options.map((question) => {
           return (
             <Card>
-              <Radio value={question.id}>{question.text}</Radio>
+              <Radio className={correctAnswerStyle} value={question.id}>
+                {question.text}
+              </Radio>
             </Card>
           );
         })}
