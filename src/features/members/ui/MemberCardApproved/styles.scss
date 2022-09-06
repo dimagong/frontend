@@ -1,0 +1,62 @@
+.membercard-approved {
+  width: 100%;
+  height: 100%;
+
+  .cardApproved {
+    display: flex;
+    flex-direction: column;
+    &_title {
+      &_name {
+        font-weight: 500;
+        font-size: 38px;
+        line-height: 46px;
+        color: #434343;
+      }
+      &_data {
+        margin-top: 12px;
+        font-family: "Segoe UI";
+        font-style: normal;
+        font-weight: 350;
+        font-size: 18px;
+        line-height: 24px;
+        color: #434343;
+      }
+    }
+    &_report {
+      margin-top: 100px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      .report-data {
+        margin-left: 30px;
+      }
+      .report-status,
+      .report-data {
+        display: flex;
+        flex-direction: column;
+        &_circle {
+          border-radius: 100%;
+          border: 10px solid greenyellow;
+          width: 190px;
+          height: 190px;
+          display: flex;
+          justify-content: center;
+          font-size: 38px;
+          align-items: center;
+        }
+        &_subtitle {
+          margin-top: 10px;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 17px;
+          text-align: center;
+          color: #434343;
+        }
+      }
+    }
+    &_feedback {
+      margin-top: 67px;
+      text-align: center;
+    }
+  }
+}
