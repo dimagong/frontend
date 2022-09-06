@@ -31,50 +31,56 @@
       white-space: nowrap;
     }
   }
-  .answer-content {
+  .content_answer {
     border: 2px solid rgb(0, 255, 55);
     grid-row: 3/4;
     padding-top: 40px;
-    max-height: 300px;
-    min-height: 200px;
-    overflow-y: auto;
-    .answer-header {
-      display: flex;
-      justify-content: space-between;
-      .answer-title {
-        font-weight: 400;
-        font-size: 18px;
-        line-height: 22px;
-      }
-    }
-    .answer-block {
-      margin-top: 12px;
-    }
   }
+  // .answer-content {
+  //   border: 2px solid rgb(0, 255, 55);
+  //   grid-row: 3/4;
+  //   padding-top: 40px;
+  //   max-height: 300px;
+  //   min-height: 200px;
+  //   overflow-y: auto;
+  //   .answer-header {
+  //     display: flex;
+  //     justify-content: space-between;
+  //     .answer-title {
+  //       font-weight: 400;
+  //       font-size: 18px;
+  //       line-height: 22px;
+  //     }
+  //   }
+  //   .answer-block {
+  //     border: 2px solid red;
+  //     margin-top: 12px;
+  //   }
+  // }
   .content_buttons {
     grid-row: 4/5;
     border: 2px solid green;
-    display: flex;
-    justify-content: end;
-    align-items: flex-end;
+    // display: flex;
+    // justify-content: end;
+    // align-items: flex-end;
     padding-bottom: 32px;
     padding-right: 48px;
-    .arrow {
-      border: solid white;
-      border-width: 0 2px 2px 0;
-      display: inline-block;
-      padding: 3px;
-    }
-    .right {
-      margin-left: 65px;
-      transform: rotate(-45deg);
-      -webkit-transform: rotate(-45deg);
-    }
-    .left {
-      border-color: black;
-      margin-right: 65px;
-      transform: rotate(135deg);
-      -webkit-transform: rotate(135deg);
-    }
+    // .arrow {
+    //   border: solid white;
+    //   border-width: 0 2px 2px 0;
+    //   display: inline-block;
+    //   padding: 3px;
+    // }
+    // .right {
+    //   margin-left: 65px;
+    //   transform: rotate(-45deg);
+    //   -webkit-transform: rotate(-45deg);
+    // }
+    // .left {
+    //   border-color: black;
+    //   margin-right: 65px;
+    //   transform: rotate(135deg);
+    //   -webkit-transform: rotate(135deg);
+    // }
   }
 }

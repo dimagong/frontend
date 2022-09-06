@@ -12,6 +12,9 @@ import Question from "../../../Surveys/Components/Question";
 import NpmRadioGroup from "../../../nmp-ui/NpmRadioGroup";
 import NpmInput from "../../../nmp-ui/NpmInput";
 import NpmTextArea from "../../../nmp-ui/NpmTextArea";
+import MemberQuestion from "./../MemberQuestion";
+import MemberCardNavigations from "./../MemberCardNavigations";
+import NpmSpin from "../../../nmp-ui/NpmSpin";
 
 import { QuestionCircleFilled, LeftSquareFilled } from "@ant-design/icons";
 
@@ -28,20 +31,24 @@ const MemberCardPassSurvey = (props) => {
     currentQuestionAnswer,
     handleSwitchToPreviousQuestion,
     handleAnswerSubmit,
+    isLoadingData,
   } = props;
 
   useEffect(() => {
+    console.log(" EEEEffect currentQuestionAnswer", currentQuestionAnswer);
     if (currentQuestionAnswer) {
       handleAnswerSelect(currentQuestionAnswer.answer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionAnswer]);
 
-  console.log("NpmCardSurvey count", count);
-  console.log("NpmCardSurvey currentIndex", currentIndex);
-  // console.log("NpmCardSurvey title", title);
-  // console.log("NpmCardSurvey surveyStatus", surveyStatus);
-  console.log("NpmCardSurvey currentIndex", currentIndex);
+  const structureType = question?.answer_structure?.type;
+  const structureOptions = question?.answer_structure?.options;
+  const hint = question?.hint || "some hint";
+
+  if (isLoadingData) {
+    return <NpmSpin size={60} />;
+  }
 
   return (
     <NpmCard title="Surveys" style={{ maxHeight: "646px", maxWidth: "783px", width: "57vw" }}>
@@ -59,75 +66,26 @@ const MemberCardPassSurvey = (props) => {
             {surveyStatus === statusConstants.NOT_STARTED && "Click the button to get started."}
           </div>
         </div>
-        <div className="answer-content">
+        <div className="content_answer">
           {surveyStatus === statusConstants.STARTED && (
-            <>
-              <div className="answer-header">
-                {question?.answer_structure.type === "multiple_choice" && (
-                  <div className="answer-title"> Mark one answer:</div>
-                )}
-                {question?.answer_structure.type === "text" && (
-                  <div className="answer-title"> Write your answer below:</div>
-                )}
-                <div className="answer-tooltip">
-                  <QuestionCircleFilled />
-                </div>
-              </div>
-              <div className="answer-block">
-                {question?.answer_structure.type === "multiple_choice" && (
-                  <NpmRadioGroup
-                    options={question?.answer_structure.options}
-                    handleAnswerSelect={handleAnswerSelect}
-                    selectedAnswer={selectedAnswer}
-                  />
-                )}
-                {question?.answer_structure.type === "text" && (
-                  // <NpmInput onChange={handleAnswerSelect} value={selectedAnswer} />
-                  <NpmTextArea onChange={handleAnswerSelect} value={selectedAnswer} />
-                )}
-
-                {/* <div>
-                  <Question
-                    initAnswer={currentQuestionAnswer}
-                    questionNumber={currentIndex + 1}
-                    question={question}
-                    displayType={"onboarding"}
-                    onAnswerChange={handleAnswerSelect}
-                    selectedAnswer={selectedAnswer}
-                  />
-                </div> */}
-              </div>
-            </>
+            <MemberQuestion
+              structureType={structureType}
+              structureOptions={structureOptions}
+              handleAnswerSelect={handleAnswerSelect}
+              selectedAnswer={selectedAnswer}
+              hint={hint}
+            />
           )}
         </div>
         <div className="content_buttons">
-          <div>
-            {surveyStatus === statusConstants.NOT_STARTED && (
-              <div>
-                <NpmButton onClick={() => handleSurveyStart()}>
-                  <span>Begin</span>
-                  <i className="arrow right"></i>
-                </NpmButton>
-              </div>
-            )}
-            {surveyStatus === statusConstants.STARTED && (
-              <div>
-                {!!currentIndex && (
-                  <NpmButton
-                    onClick={() => handleSwitchToPreviousQuestion()}
-                    style={{ backgroundColor: "white", color: "black", marginRight: "30px" }}
-                  >
-                    <i className="arrow left"></i>
-                    <span>Back</span>
-                  </NpmButton>
-                )}
-                <NpmButton onClick={() => handleAnswerSubmit()}>
-                  <span>{currentIndex === count - 1 ? "Finish" : "Next"}</span>
-                  <i className="arrow right"></i>
-                </NpmButton>
-              </div>
-            )}
-          </div>
+          <MemberCardNavigations
+            surveyStatus={surveyStatus}
+            handleSurveyStart={handleSurveyStart}
+            handleSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
+            handleAnswerSubmit={handleAnswerSubmit}
+            currentIndex={currentIndex}
+            count={count}
+          />
         </div>
       </div>
     </NpmCard>
