@@ -1,6 +1,5 @@
 import { statusConstants } from "./../constants/statusConstants";
 
-//const surveyStatus = finished_at ? "notStarted" : started_at ? "started" : "notStarted";
 const findStatusSurvey = (started_at, finished_at, graded_at, isRecentlySubmitted) => {
   let result = "";
   switch (true) {
