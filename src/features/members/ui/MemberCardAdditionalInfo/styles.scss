@@ -1,0 +1,35 @@
+.survey-additional {
+  background: #ffffff;
+  border-radius: 5px;
+  padding: 14px 30px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  &_header {
+    display: flex;
+    justify-content: space-between;
+    &_title {
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+      color: #474747;
+    }
+    .arrow-button {
+      z-index: 1;
+      width: 16px;
+      height: 23px;
+      background: #22776d;
+      border-radius: 15px;
+      transform: rotate(180deg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  &_info {
+    margin-top: 10px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #474747;
+  }
+}
