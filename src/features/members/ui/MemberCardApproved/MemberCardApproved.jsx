@@ -16,7 +16,7 @@ const membercardApprovedStyle = {
 const MemberCardApproved = ({ data, isSurveyPassed, totalTime, isShowResult, setIsFeedbackView }) => {
   return (
     <div className="membercard-approved">
-      <NpmCard>
+      <NpmCard style={{ height: "600px", maxWidth: "600px", width: "57vw" }}>
         <div className="cardApproved">
           <div className="cardApproved_title">
             <div className="cardApproved_title_name">Your survey report</div>

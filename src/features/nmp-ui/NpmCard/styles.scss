@@ -1,33 +1,31 @@
 .site-card-border-less-wrapper {
-  height: 100%;
-  width: 100%;
-  background: #f4f4f4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  // height: 100%;
+  // width: 100%;
+  // background: #f4f4f4;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+  // overflow: hidden;
   & > * {
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
   }
-}
-
-.ant-card {
-  display: flex;
-  flex-direction: column;
-}
-.ant-card-head {
-  border-bottom: none;
-}
-.ant-card-head-title {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 42px;
-  //   line-height: 51px;
-  color: #4b484d;
-}
-.ant-card-body {
-  // display: flex;
-  // flex-direction: column;
-  height: 100%;
-  width: 100%;
+  .ant-card {
+    display: flex;
+    flex-direction: column;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+  .ant-card-head {
+    border-bottom: none;
+  }
+  .ant-card-head-title {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 42px;
+    color: #4b484d;
+  }
+  .ant-card-body {
+    height: 100%;
+    width: 100%;
+  }
 }

@@ -19,6 +19,7 @@ import MemberCardPassSurvey from "../MemberCardPassSurvey";
 import MemberCardSubmitted from "../MemberCardSubmitted";
 import MemberCardApproved from "../MemberCardApproved";
 import MemberCardFeedback from "../MemberCardFeedback";
+import MemberCardStartSurvey from "../MemberCardStartSurvey";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 
 // import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
@@ -142,6 +143,9 @@ const MemberSurvey = ({
   const totalTime = survey?.stats?.totalTime ?? "00-00-00";
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
   const isShowResult = survey?.is_show_result;
+  const description = survey?.interaction_version?.description || "No description";
+
+  console.log("surveyStatus", surveyStatus);
 
   if (!survey && isSurveyLoading) {
     return <NpmSpin size={60} />;
@@ -149,7 +153,24 @@ const MemberSurvey = ({
 
   return (
     <>
-      {(surveyStatus === statusConstants.STARTED || surveyStatus === statusConstants.NOT_STARTED) && (
+      {surveyStatus === statusConstants.NOT_STARTED && (
+        <MemberCardStartSurvey
+          isLoadingData={isLoadingData}
+          title={title}
+          question={question}
+          surveyStatus={surveyStatus}
+          handleSurveyStart={handleSurveyStart}
+          handleAnswerSelect={handleAnswerSelect}
+          count={count}
+          currentIndex={currentIndex}
+          selectedAnswer={answer}
+          currentQuestionAnswer={currentQuestionAnswer}
+          handleSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
+          handleAnswerSubmit={handleAnswerSubmit}
+          description={description}
+        />
+      )}
+      {surveyStatus === statusConstants.STARTED && (
         <MemberCardPassSurvey
           isLoadingData={isLoadingData}
           title={title}

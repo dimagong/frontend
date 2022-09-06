@@ -2,21 +2,13 @@ import "./styles.scss";
 
 import React, { useEffect } from "react";
 
-import PropTypes from "prop-types";
-
-import NpmCard from "../../../nmp-ui/NpmCard";
-import NpmStepper from "./../../../nmp-ui/NpmStepper";
-import NpmButton from "../../../nmp-ui/NpmButton";
 import { statusConstants } from "../../data/constants/statusConstants";
-import Question from "../../../Surveys/Components/Question";
-import NpmRadioGroup from "../../../nmp-ui/NpmRadioGroup";
-import NpmInput from "../../../nmp-ui/NpmInput";
-import NpmTextArea from "../../../nmp-ui/NpmTextArea";
+
 import MemberQuestion from "./../MemberQuestion";
 import MemberCardNavigations from "./../MemberCardNavigations";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
-
-import { QuestionCircleFilled, LeftSquareFilled } from "@ant-design/icons";
+import NpmCard from "../../../nmp-ui/NpmCard";
+import NpmStepper from "./../../../nmp-ui/NpmStepper";
 
 const MemberCardPassSurvey = (props) => {
   const {
@@ -51,31 +43,24 @@ const MemberCardPassSurvey = (props) => {
   }
 
   return (
-    <NpmCard title="Surveys" style={{ maxHeight: "646px", maxWidth: "783px", width: "57vw" }}>
+    <NpmCard title="Surveys" style={{ maxHeight: "580px", maxWidth: "783px", width: "57vw" }}>
       <div className="surveys-content">
         <div className="content_stepper">
           <NpmStepper currentStrep={currentIndex + 1} totalSteps={count} />
         </div>
+
         <div className="content_question">
-          <div className="question-title">
-            {surveyStatus === statusConstants.STARTED && question && `Question ${currentIndex + 1}`}
-            {surveyStatus === statusConstants.NOT_STARTED && title}
-          </div>
-          <div className="question-subtitle">
-            {surveyStatus === statusConstants.STARTED && question?.body}
-            {surveyStatus === statusConstants.NOT_STARTED && "Click the button to get started."}
-          </div>
+          <div className="question-title">{question && `Question ${currentIndex + 1}`}</div>
+          <div className="question-subtitle">{question?.body}</div>
         </div>
         <div className="content_answer">
-          {surveyStatus === statusConstants.STARTED && (
-            <MemberQuestion
-              structureType={structureType}
-              structureOptions={structureOptions}
-              handleAnswerSelect={handleAnswerSelect}
-              selectedAnswer={selectedAnswer}
-              hint={hint}
-            />
-          )}
+          <MemberQuestion
+            structureType={structureType}
+            structureOptions={structureOptions}
+            handleAnswerSelect={handleAnswerSelect}
+            selectedAnswer={selectedAnswer}
+            hint={hint}
+          />
         </div>
         <div className="content_buttons">
           <MemberCardNavigations

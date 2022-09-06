@@ -3,6 +3,7 @@ import "./styles.scss";
 import React, { useState } from "react";
 
 import NpmCard from "./../../../nmp-ui/NpmCard";
+import NpmSpin from "../../../nmp-ui/NpmSpin";
 import MemberQuestion from "../MemberQuestion";
 import MemberCardNavigations from "./../MemberCardNavigations";
 
@@ -38,12 +39,22 @@ const MemberCardFeedback = ({ surveyInteraction, surveyStatus, setIsFeedbackView
   const correctAnswer = questions[currQuestionIndex]?.correct_answer ?? null;
   const structureOptions = questions[currQuestionIndex].answer_structure.options;
   const points = questions[currQuestionIndex]?.answer_structure?.points ?? 0;
-  //!!!
-  const currentFeedback = answers[currQuestionIndex].feedback;
-  //structureType, structureOptions, handleAnswerSelect, selectedAnswer
+
+  const currentFeedback = answers[currQuestionIndex]?.feedback || `Question ${currQuestionIndex}`;
+
+  if (!surveyInteraction) {
+    return <NpmSpin size={60} />;
+  }
   return (
     <div className="membercard-feedback">
-      <div className="feedback-info">{/* <NpmStepper currentStrep={currentIndex + 1} totalSteps={count} /> */}</div>
+      <div className="feedback-info">
+        <NpmCard style={{ height: "76px", maxWidth: "783px", width: "57vw" }}>
+          <div className="feedback-info_context">
+            <div className="context-title">Feedback</div>
+            <div className="context-subtitle">{currentFeedback}</div>
+          </div>
+        </NpmCard>
+      </div>
       <NpmCard style={{ maxHeight: "500px", maxWidth: "783px", width: "57vw" }}>
         <div className="feedback-content">
           <div className="feedback-question">

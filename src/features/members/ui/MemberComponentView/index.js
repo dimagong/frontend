@@ -87,7 +87,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
   const organization = profile?.permissions?.organization ?? "Surveys organization";
   return (
     <>
-      <Row style={{ border: "2px solid red", height: "90vh" }}>
+      <Row style={{ background: "#f4f4f4б", display: "flex", height: "calc(100vh - 80px)" }}>
         <Col span={1}>
           <MemberMenuView dForms={dForms} surveys={surveys} setActiveAppOnboarding={setActiveAppOnboarding} />
           {/*
@@ -102,7 +102,15 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
           />
           </Col> */}
         </Col>
-        <Col span={23} style={{ border: "2px solid yellow", height: "100%" }}>
+        <Col
+          span={23}
+          style={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           {appActiveOnboarding.type === "survey" && (
             <>
               <MemberSurvey

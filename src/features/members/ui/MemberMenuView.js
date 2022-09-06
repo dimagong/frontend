@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
 import { Row, Col } from "antd";
+
 import NpmBadge from "./../../nmp-ui/NpmBadge";
 import NpmTooltip from "./../../nmp-ui/NpmTooltip";
 import NpmPopover from "./../../nmp-ui/NpmPopover";
+
 import { FileProtectOutlined } from "@ant-design/icons";
 import { findStatusSurvey } from "./../data/helpers/findStatusSurvey";
 

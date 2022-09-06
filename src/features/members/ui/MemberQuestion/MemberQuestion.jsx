@@ -2,14 +2,10 @@ import "./styles.scss";
 
 import React from "react";
 
-import { statusConstants } from "./../../data/constants/statusConstants";
-
 import { QuestionCircleFilled } from "@ant-design/icons";
 import NpmRadioGroup from "../../../nmp-ui/NpmRadioGroup";
 import NpmTextArea from "../../../nmp-ui/NpmTextArea";
-import NpmInput from "../../../nmp-ui/NpmInput";
 
-import Question from "../../../Surveys/Components/Question";
 import NpmTooltip from "../../../nmp-ui/NpmTooltip";
 
 const MemberQuestion = ({
