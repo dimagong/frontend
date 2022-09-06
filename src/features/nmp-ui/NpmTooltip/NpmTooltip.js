@@ -16,7 +16,7 @@ const NpmTooltip = (props) => {
 
 NpmTooltip.defaultProps = {
   placement: "right",
-  text: "tooltip",
+  text: "some hint",
   color: "",
   trigger: "hover",
 };
