@@ -425,35 +425,33 @@ const FieldProperties = (props) => {
 
   return (
     <>
-      <div className="mb-2">
-        <DFormSelectWidget
-          id="field-type"
-          label="Element type"
-          value={{ value: element.type, label: element.type }}
-          options={Object.values(FIELD_TYPES).map((type) => ({ value: type, label: type }))}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-          onChange={onFieldTypeChange}
-          placeholder="Select an Element type"
-        />
-      </div>
+      <DFormSelectWidget
+        id="field-type"
+        label="Element type"
+        value={{ value: element.type, label: element.type }}
+        options={Object.values(FIELD_TYPES).map((type) => ({ value: type, label: type }))}
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        onChange={onFieldTypeChange}
+        placeholder="Select an Element type"
+        className="mb-2"
+      />
 
-      <div className="mb-2">
-        <DFormSelectWidget
-          id="field-group"
-          label="Element group"
-          value={{ value: element.groupId, label: data.groups[element.groupId].name }}
-          options={Object.values(data.groups).map((group) => ({ value: group.id, label: group.name }))}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-          onChange={onFieldGroupChange}
-          placeholder="Select an Element group"
-        />
-      </div>
+      <DFormSelectWidget
+        id="field-group"
+        label="Element group"
+        value={{ value: element.groupId, label: data.groups[element.groupId].name }}
+        options={Object.values(data.groups).map((group) => ({ value: group.id, label: group.name }))}
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        onChange={onFieldGroupChange}
+        placeholder="Select an Element group"
+        className="mb-2"
+      />
 
       {FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type) ? null : (
         <>
@@ -479,18 +477,17 @@ const FieldProperties = (props) => {
               />*/}
           </div>
 
-          <div className="mb-2">
-            <DFormTextWidget
-              id="field-title"
-              label="Title"
-              value={element.title}
-              isError={false}
-              isRequired={false}
-              isDisabled={false}
-              isLabelShowing={true}
-              onChange={onFieldTitleChange}
-            />
-          </div>
+          <DFormTextWidget
+            id="field-title"
+            label="Title"
+            value={element.title}
+            isError={false}
+            isRequired={false}
+            isDisabled={false}
+            isLabelShowing={true}
+            onChange={onFieldTitleChange}
+            className="mb-2"
+          />
         </>
       )}
 
