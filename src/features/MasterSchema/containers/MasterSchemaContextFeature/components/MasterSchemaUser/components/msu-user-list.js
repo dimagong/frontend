@@ -9,7 +9,7 @@ import masterSchemaApi from "api/masterSchema/masterSchema";
 
 import { UITable } from "components/Table";
 import CustomModal from "components/CustomModal";
-import NmpUserAvatar from "components/nmp/NmpUserAvatar";
+import DeprecatedNmpUserAvatar from "components/nmp/DeprecatedNmpUserAvatar";
 import { TypedValuePreview } from "components/MasterSchemaValuePreviews";
 import { VersionsHistoryTable } from "components/MasterSchemaVersionsHistory";
 
@@ -74,7 +74,10 @@ const MSUUserList = ({ users }) => {
           return (
             <tr className="msu-table__row--shadowed-partial" key={user.id}>
               <td className="p-0">
-                <NmpUserAvatar userId={user.id} style={{ width: "48px", height: "48px", objectFit: "cover" }} />
+                <DeprecatedNmpUserAvatar
+                  userId={user.id}
+                  style={{ width: "48px", height: "48px", objectFit: "cover" }}
+                />
               </td>
               <td className="pl-1">{fullName}</td>
               <td>{role}</td>

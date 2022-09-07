@@ -5,8 +5,8 @@ import { CardTitle, Label, Row, Col } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import NmpButton from "components/nmp/NmpButton";
-import MSESelectField from "components/nmp/SelectField";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
+import DeprecatedMSESelectField from "components/nmp/DeprecatedSelectField";
 
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 
@@ -57,7 +57,7 @@ const MSENodeRelocationForm = ({
   };
 
   return (
-    <MSESelectField
+    <DeprecatedMSESelectField
       {...location}
       name="location"
       options={options}
@@ -83,16 +83,16 @@ const MSENodeRelocationForm = ({
                 {error}
               </Col>
               <Col xs={4}>
-                <NmpButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
+                <DeprecatedNmpButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
                   {action}
-                </NmpButton>
+                </DeprecatedNmpButton>
               </Col>
             </Row>
           }
           {...attrs}
         />
       )}
-    </MSESelectField>
+    </DeprecatedMSESelectField>
   );
 };
 

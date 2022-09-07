@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { useMemo } from "react";
 
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 
 import DeleteIcon from "assets/img/icons/x.png";
 import EditIcon from "assets/img/icons/edit.png";
@@ -37,7 +37,7 @@ const RMFileControls = (props) => {
       <FileDownloadButton onDownload={onDownload} isLoading={downloadIsLoading} />
 
       {isEditable ? (
-        <NmpButton
+        <DeprecatedNmpButton
           className="mr-1"
           size="sm"
           textColor="#95989a"
@@ -48,7 +48,7 @@ const RMFileControls = (props) => {
         />
       ) : null}
 
-      <NmpButton
+      <DeprecatedNmpButton
         className="mr-1"
         size="sm"
         textColor="#95989a"
@@ -59,9 +59,9 @@ const RMFileControls = (props) => {
       />
 
       {isEditing ? (
-        <NmpButton onClick={onFinishEditing} size="sm" color="primary" loading={finishEditingIsLoading}>
+        <DeprecatedNmpButton onClick={onFinishEditing} size="sm" color="primary" loading={finishEditingIsLoading}>
           Finish editing
-        </NmpButton>
+        </DeprecatedNmpButton>
       ) : null}
     </>
   );

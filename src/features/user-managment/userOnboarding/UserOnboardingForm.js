@@ -12,7 +12,7 @@ import * as yup from "yup";
 
 import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "../../../app/selectors/loadingSelector";
-import NmpButton from "../../../components/nmp/NmpButton";
+import DeprecatedNmpButton from "../../../components/nmp/DeprecatedNmpButton";
 
 const {
   setManagerOnboardingProperty,
@@ -283,14 +283,14 @@ const UserOnboardingCreate = ({ isCreate }) => {
             <div>
               {isCreate ? (
                 <div>
-                  <NmpButton
+                  <DeprecatedNmpButton
                     className="px-4"
                     color="primary"
                     loading={isOnboardingCreateLoading}
                     onClick={createOnboarding}
                   >
                     Create
-                  </NmpButton>
+                  </DeprecatedNmpButton>
                 </div>
               ) : (
                 <div>

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { ArrayOfStringType, IdType } from "utility/prop-types";
 
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 import GeneralMSHTreeElement from "components/MasterSchemaHierarchy/GeneralMSHTreeElement";
 import { ADD_FIELD, ADD_GROUP, TreeHierarchy, useTreeHierarchyExpandable } from "components/TreeHierarchy";
 
@@ -36,7 +36,7 @@ const RMContextDataView = ({ resourceManagerId, hierarchy, selectedIds, onSelect
     <RMContextTemplate>
       <div className="position-sticky zindex-1" style={stickyStyle}>
         <div className="d-flex justify-content-end pb-1">
-          <NmpButton
+          <DeprecatedNmpButton
             className="p-0"
             textColor="currentColor"
             backgroundColor="transparent"
@@ -44,7 +44,7 @@ const RMContextDataView = ({ resourceManagerId, hierarchy, selectedIds, onSelect
             onClick={expandable.expandOnlyRoot}
           >
             Collapse
-          </NmpButton>
+          </DeprecatedNmpButton>
         </div>
       </div>
 

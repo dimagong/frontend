@@ -5,8 +5,8 @@ import React, { useMemo, useReducer, useState } from "react";
 import { Col, Row, Spinner, Collapse } from "reactstrap";
 import { Settings, ExpandLess, ExpandMore, Remove } from "@material-ui/icons";
 
-import NmpSelect from "components/nmp/NmpSelect";
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 import CustomModal from "components/CustomModal";
 
 import { createQueryKey } from "api/createQueryKey";
@@ -99,7 +99,7 @@ const accordionReducer = (s, p) => {
 const Association = ({ name, onRemove }) => {
   return (
     <div className="ms-mapping__reference-association d-flex align-items-center">
-      <NmpButton
+      <DeprecatedNmpButton
         size="sm"
         color="custom"
         className="ms-mapping__reference-association-remove"
@@ -152,7 +152,7 @@ const Option = ({ option: templateOption, isOpen, onToggle, dFormOptions, refere
         <div className="ms-mapping__reference-option-body px-1 pb-2">
           <Row className="align-items-center py-1">
             <Col xs="9">
-              <NmpSelect
+              <DeprecatedNmpSelect
                 options={dFormOptions.map((label) => ({ label, value: label }))}
                 value={option}
                 inputValue={value}
@@ -173,7 +173,7 @@ const Option = ({ option: templateOption, isOpen, onToggle, dFormOptions, refere
               />
             </Col>
             <Col className="d-flex justify-content-end" xs="3">
-              <NmpButton
+              <DeprecatedNmpButton
                 color="primary"
                 size="sm"
                 onClick={onAdd}
@@ -181,7 +181,7 @@ const Option = ({ option: templateOption, isOpen, onToggle, dFormOptions, refere
                 loading={optionsUpdate.isLoading}
               >
                 Add
-              </NmpButton>
+              </DeprecatedNmpButton>
             </Col>
           </Row>
 
@@ -279,7 +279,7 @@ const MappingFileReference = ({ name, value, options, onChange, reference }) => 
 
       <Col className="d-flex align-items-center" xs="6">
         <div className="full-width pl-2">
-          <NmpSelect
+          <DeprecatedNmpSelect
             name={name}
             value={value}
             options={options}
@@ -295,7 +295,7 @@ const MappingFileReference = ({ name, value, options, onChange, reference }) => 
       <Col className="d-flex align-items-center justify-content-center" xs="2">
         {fieldValues ? (
           <>
-            <NmpButton
+            <DeprecatedNmpButton
               size="sm"
               type="button"
               onClick={onSettingsButtonClick}

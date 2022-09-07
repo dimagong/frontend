@@ -5,13 +5,15 @@ export const collectApplicationsUser = (forms, surveys) => {
   const formsMark = forms.map((form) => {
     return {
       ...form,
-      tabId: `${form.id} form`,
+      type: "dform",
+      //tabId: `${form.id} form`,
     };
   });
   const surveyMark = surveys.map((survey) => {
     return {
       ...survey,
-      tabId: `${survey.id} survey`,
+      type: "survey",
+      // tabId: `${survey.id} survey`,
     };
   });
 

@@ -30,10 +30,10 @@ import UserInvitationsCreate from "../userInvitations/UserInvitationsCreate";
 
 import UserAccessManager from "./components/UserAccessManager";
 import { useUserAccessManager } from "./components/UserAccessManager/useUserAccessManager";
-import NmpSelect from "../../../components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "../../../components/nmp/DeprecatedNmpSelect";
 import { useGenericQuery } from "../../../api/useGenericQuery";
 import { createQueryKey } from "../../../api/createQueryKey";
-import NmpButton from "../../../components/nmp/NmpButton";
+import DeprecatedNmpButton from "../../../components/nmp/DeprecatedNmpButton";
 import { useGenericMutation } from "../../../api/useGenericMutation";
 import { toast } from "react-toastify";
 
@@ -362,7 +362,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                   <Row>
                     <Col>
                       <FormGroup>
-                        <NmpSelect
+                        <DeprecatedNmpSelect
                           options={notifyEntitiesOptions}
                           onChange={setNotifyEntityOption}
                           value={notifyEntityOption}
@@ -374,9 +374,9 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                   <Row>
                     <Col>
                       <div className="d-flex justify-content-end">
-                        <NmpButton color="primary" loading={addUserNotifyEntity.isLoading}>
+                        <DeprecatedNmpButton color="primary" loading={addUserNotifyEntity.isLoading}>
                           Save
-                        </NmpButton>
+                        </DeprecatedNmpButton>
                       </div>
                     </Col>
                   </Row>
