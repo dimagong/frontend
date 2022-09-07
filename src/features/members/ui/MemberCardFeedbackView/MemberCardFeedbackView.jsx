@@ -2,12 +2,12 @@ import "./styles.scss";
 
 import React, { useState } from "react";
 
-import NpmCard from "./../../../nmp-ui/NpmCard";
+import NpmCard from "../../../nmp-ui/NpmCard";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 import MemberQuestion from "../MemberQuestion";
-import MemberCardNavigations from "./../MemberCardNavigations";
+import MemberCardNavigations from "../MemberCardNavigations";
 
-const MemberCardFeedback = ({ surveyInteraction, surveyStatus, setIsFeedbackView }) => {
+const MemberCardFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedbackView }) => {
   const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
   const { answers, questions } = surveyInteraction;
   const count = questions.length - 1;
@@ -86,4 +86,4 @@ const MemberCardFeedback = ({ surveyInteraction, surveyStatus, setIsFeedbackView
   );
 };
 
-export default MemberCardFeedback;
+export default MemberCardFeedbackView;

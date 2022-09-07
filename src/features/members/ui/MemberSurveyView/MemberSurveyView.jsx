@@ -13,13 +13,13 @@ import {
   useMVApushAnswer,
   useMVAgetBeginSurvey,
   useMVAswitchToPrevious,
-} from "./../../data/hooks";
+} from "../../data/hooks";
 
-import MemberCardPassSurvey from "../MemberCardPassSurvey";
-import MemberCardSubmitted from "../MemberCardSubmitted";
-import MemberCardReport from "../MemberCardReport";
-import MemberCardFeedback from "../MemberCardFeedback";
-import MemberCardStartSurvey from "../MemberCardStartSurvey";
+import MemberCardPassSurveyView from "../MemberCardPassSurveyView";
+import MemberCardSubmittedView from "../MemberCardSubmittedView";
+import MemberCardReportView from "../MemberCardReportView";
+import MemberCardFeedbackView from "../MemberCardFeedbackView";
+import MemberCardStartSurveyView from "../MemberCardStartSurveyView";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 
 // import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
@@ -30,7 +30,7 @@ import NpmSpin from "../../../nmp-ui/NpmSpin";
 // import SurveyFinishView from "./view/SurveyFinishView";
 // import SurveyAdditionalInfoView from "./view/SurveyAdditionalInfoView";
 
-import { findStatusSurvey } from "./../../data/helpers/findStatusSurvey";
+import { findStatusSurvey } from "../../data/helpers/findStatusSurvey";
 //import { getSurveySubmitStatus } from "./helpers/getSurveySubmitStatus";
 import { statusConstants } from "../../data/constants/statusConstants";
 
@@ -151,7 +151,7 @@ const MemberSurvey = ({
   return (
     <>
       {surveyStatus === statusConstants.NOT_STARTED && (
-        <MemberCardStartSurvey
+        <MemberCardStartSurveyView
           isLoadingData={isLoadingData}
           title={title}
           question={question}
@@ -168,7 +168,7 @@ const MemberSurvey = ({
         />
       )}
       {surveyStatus === statusConstants.STARTED && (
-        <MemberCardPassSurvey
+        <MemberCardPassSurveyView
           isLoadingData={isLoadingData}
           title={title}
           question={question}
@@ -184,10 +184,10 @@ const MemberSurvey = ({
         />
       )}
       {surveyStatus === statusConstants.SUBMITTED && (
-        <MemberCardSubmitted data={finished_at} organization={organization} surveyName={title} />
+        <MemberCardSubmittedView data={finished_at} organization={organization} surveyName={title} />
       )}
       {surveyStatus === statusConstants.APPROVED && !isFeedbackView && (
-        <MemberCardReport
+        <MemberCardReportView
           data={graded_at}
           isSurveyPassed={isSurveyPassed}
           totalTime={totalTime}
@@ -196,7 +196,7 @@ const MemberSurvey = ({
         />
       )}
       {surveyStatus === statusConstants.APPROVED && isFeedbackView && (
-        <MemberCardFeedback
+        <MemberCardFeedbackView
           surveyInteraction={surveyInteraction}
           surveyStatus={surveyStatus}
           setIsFeedbackView={setIsFeedbackView}

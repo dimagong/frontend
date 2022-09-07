@@ -10,7 +10,7 @@ import MemberMenuView from "./../MemberMenuView";
 import Check from "assets/img/icons/check.png";
 
 import NpmCardSurvey from "../MemberCardPassSurvey";
-import MemberSurvey from "./../MemberSurvey";
+import MemberSurveyView from "../MemberSurveyView";
 
 // import OnboardingApp from "./../../components/OnboardingApp";
 //import OnboardingSurvey from "../../OnboardingSurvey";
@@ -113,7 +113,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
         >
           {appActiveOnboarding.type === "survey" && (
             <>
-              <MemberSurvey
+              <MemberSurveyView
                 selectedSurveyId={appActiveOnboarding.id}
                 setRecentlySubmitted={setRecentlySubmitted}
                 isRecentlySubmitted={recentlySubmitted}

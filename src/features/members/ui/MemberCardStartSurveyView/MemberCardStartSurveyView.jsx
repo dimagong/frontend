@@ -2,12 +2,12 @@ import "./styles.scss";
 
 import React, { useEffect } from "react";
 
-import MemberCardNavigations from "./../MemberCardNavigations";
+import MemberCardNavigations from "../MemberCardNavigations";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 import NpmCard from "../../../nmp-ui/NpmCard";
-import MemberCardAdditionalInfo from "./../MemberCardAdditionalInfo";
+import MemberCardAdditionalInfo from "../MemberCardAdditionalInfo";
 
-const MemberCardStartSurvey = (props) => {
+const MemberCardStartSurveyView = (props) => {
   const {
     surveyStatus,
     handleSurveyStart,
@@ -61,4 +61,4 @@ const MemberCardStartSurvey = (props) => {
   );
 };
 
-export default MemberCardStartSurvey;
+export default MemberCardStartSurveyView;

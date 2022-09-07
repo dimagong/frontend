@@ -4,13 +4,13 @@ import React, { useEffect } from "react";
 
 import { statusConstants } from "../../data/constants/statusConstants";
 
-import MemberQuestion from "./../MemberQuestion";
-import MemberCardNavigations from "./../MemberCardNavigations";
+import MemberQuestion from "../MemberQuestion";
+import MemberCardNavigations from "../MemberCardNavigations";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 import NpmCard from "../../../nmp-ui/NpmCard";
-import NpmStepper from "./../../../nmp-ui/NpmStepper";
+import NpmStepper from "../../../nmp-ui/NpmStepper";
 
-const MemberCardPassSurvey = (props) => {
+const MemberCardPassSurveyView = (props) => {
   const {
     surveyStatus,
     handleSurveyStart,
@@ -77,4 +77,4 @@ const MemberCardPassSurvey = (props) => {
   );
 };
 
-export default MemberCardPassSurvey;
+export default MemberCardPassSurveyView;
