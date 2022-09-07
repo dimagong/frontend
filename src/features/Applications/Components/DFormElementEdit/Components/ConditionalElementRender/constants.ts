@@ -201,43 +201,60 @@ interface ComparatorArgument {
 
 export const DCROperatorTypesComparotors = {
   [DCROperatorTypes.Exist]: ({ control }: ComparatorArgument) => {
+    if (control === null || control === undefined) return false;
+
     if (Array.isArray(control)) {
       return control.length > 0;
     }
-    return control !== "" && control !== null && control !== undefined;
+
+    switch (typeof control) {
+      case "string":
+      case "number":
+        return String(control) !== "";
+      case "boolean":
+        return control;
+      default:
+        throw new Error(`Unreachable: Do not support a control value type: ${typeof control}`);
+    }
   },
 
   [DCROperatorTypes.NotExist]: ({ control }: ComparatorArgument) => {
+    if (control === null || control === undefined) return true;
+
     if (Array.isArray(control)) {
       return control.length === 0;
     }
-    return control === "" || control == null;
+
+    switch (typeof control) {
+      case "string":
+      case "number":
+        return String(control) === "";
+      case "boolean":
+        return !control;
+      default:
+        throw new Error(`Unreachable: Do not support a control value type: ${typeof control}`);
+    }
   },
 
   [DCROperatorTypes.Equal]: ({ expected, control }: ComparatorArgument) => {
     if (control === null || control === undefined) return false;
+
+    if (Array.isArray(control)) {
+      // Currently, only string[] supports the Equal operator.
+      return (control as string[]).includes(expected);
+    }
 
     switch (typeof control) {
       case "string":
         return expected === control;
       case "number":
         return Number(expected) === control;
-      case "boolean":
-        throw new Error("The boolean do not support Equal operator.");
       default:
-        if (Array.isArray(control)) {
-          // Currently, only string[] supports the Equal operator
-          return (control as string[]).includes(expected);
-        } else {
-          // In case when
-          return false;
-        }
+        throw new Error(`Unreachable: Do not support a control value type: ${typeof control}`);
     }
   },
 
   [DCROperatorTypes.Bigger]: ({ expected, control, controlType }: ComparatorArgument) => {
-    // @ts-ignore
-    // console.log("expected", new Date(expected).valueOf(), ">", "control", control, control > new Date(expected).valueOf());
     switch (typeof control) {
       case "number":
         if (controlType === DCRSupportedFieldTypes.Date) {
