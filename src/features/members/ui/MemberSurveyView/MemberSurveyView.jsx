@@ -51,11 +51,8 @@ const MemberSurvey = ({
   );
 
   const { id, started_at, finished_at, graded_at, title } = survey || {};
-  console.log("survey", survey);
 
   const surveyStatus = findStatusSurvey(started_at, finished_at, graded_at, isRecentlySubmitted);
-
-  console.log("surveyStatus", surveyStatus);
 
   let { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurveyQuery(
     { id },
@@ -66,7 +63,6 @@ const MemberSurvey = ({
     { id },
     { enabled: !!graded_at }
   );
-  console.log("surveyInteraction", surveyInteraction);
 
   const {
     mutatePushAnswer,
@@ -95,12 +91,10 @@ const MemberSurvey = ({
     isSuccessSwitchToPreviousQuestion,
   } = useMVAswitchToPrevious(id);
   if (previousQuestion && isSuccessSwitchToPreviousQuestion) {
-    console.log("previousQuestion", previousQuestion);
     [currentQuestion, isSurveyLoading] = [previousQuestion, isLoadingPreviousQuestion];
   }
 
   const { question, count, answers, currentIndex } = currentQuestion || {};
-  console.log("currentQuestion", currentQuestion);
 
   useMVASurveyPassingInvalidate(currentQuestion?.status, surveyStatus, id);
 

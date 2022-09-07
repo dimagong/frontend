@@ -12,7 +12,7 @@ NpmButton.defaultProps = {
   disabled: false,
   size: "middle",
   type: "primary",
-  style: { backgroundColor: "#22776D" },
+  style: { backgroundColor: "#22776D", borderColor: "#22776D" },
   onClick: () => {},
 };
 
