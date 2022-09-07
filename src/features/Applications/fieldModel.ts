@@ -2,15 +2,8 @@ import { v4 } from "uuid";
 
 import { ElementTypes, FieldTypes } from "components/DForm/constants";
 
+import { AbstractDFormFieldConditionModel } from "./fieldConditionModel";
 import { DateWidgetFormatTypes, FieldClassTypes, FieldUIStyles, ResourceCompileOptionTypes } from "./constants";
-
-export interface DFormFieldCondition {
-  id: string;
-  fieldId: string;
-  effectType: string;
-  operatorType: string;
-  expectedValue: string | boolean | number | string[];
-}
 
 interface CommonFieldProperties<T extends FieldTypes> {
   id: string;
@@ -22,7 +15,7 @@ interface CommonFieldProperties<T extends FieldTypes> {
   isDisabled: boolean;
   isLabelShowing: boolean;
   masterSchemaFieldId: string | number;
-  conditions: DFormFieldCondition[];
+  conditions: AbstractDFormFieldConditionModel[];
 }
 
 interface StringFieldProperties<T extends FieldTypes> extends CommonFieldProperties<T> {
@@ -131,7 +124,7 @@ export abstract class AbstractDFormFieldModel {
   /**
    * An array of field dynamic conditional render conditions.
    */
-  conditions: DFormFieldCondition[] = [];
+  conditions: AbstractDFormFieldConditionModel[] = [];
   /**
    * For field type strings like FieldTypes.Text, FieldTypes.TextArea, and FieldTypes.LongText.
    */

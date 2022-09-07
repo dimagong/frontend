@@ -1,60 +1,76 @@
 import "./styles.scss";
 
-import { v4 } from "uuid";
 import React from "react";
 import { X } from "react-feather";
 import { Button } from "reactstrap";
 
+import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
+
 import ConditionForm from "./Components";
-import { INITIAL_CONDITION_DATA } from "./constants";
+
+const ConditionItem = ({ condition, fields, onDelete, onChange }) => {
+  return (
+    <div className="mb-1">
+      <div className="conditional-element-render_condition-title">
+        <div>Condition</div>
+        <button onClick={() => onDelete(condition.id)}>
+          <X size={22} />
+        </button>
+      </div>
+      <ConditionForm onConditionChange={onChange} condition={condition} fields={fields} />
+    </div>
+  );
+};
 
 const ConditionalElementRender = ({ conditions = [], fields = [], element, onElementChange }) => {
-  const handleConditionAdd = () => {
-    onElementChange({
-      ...element,
-      conditions: [...(element.conditions || []), { ...INITIAL_CONDITION_DATA, id: v4() }],
+  const updateElementCondition = (conditions) => onElementChange({ ...element, conditions });
+
+  const onConditionAdd = () => {
+    const condition = DFormFieldConditionModel.create();
+    const newConditions = [...element.conditions, condition];
+    updateElementCondition(newConditions);
+  };
+
+  const onConditionDelete = (conditionId) => {
+    if (!window.confirm("Are you sure you want to delete this condition?")) return;
+
+    const filteredConditions = element.conditions.filter((condition) => condition.id !== conditionId);
+
+    updateElementCondition(filteredConditions);
+  };
+
+  const onConditionChange = (changedCondition) => {
+    const changedConditions = conditions.map((condition) => {
+      return condition.id === changedCondition.id ? changedCondition : condition;
     });
-  };
 
-  const handleConditionDelete = (conditionId) => {
-    if (window.confirm("Are you sure you want to delete this condition?")) {
-      onElementChange({
-        ...element,
-        conditions: element.conditions.filter((condition) => condition.id !== conditionId),
-      });
-    }
-  };
-
-  const handleConditionChange = (conditionData) => {
-    onElementChange({ ...element, conditions: [conditionData] });
+    updateElementCondition(changedConditions);
   };
 
   return (
-    <div className="conditional-element-render">
-      {!conditions?.length ? (
+    <>
+      {conditions.length === 0 ? (
         <div className="conditional-element-render_no-conditions">There are no conditions for this element</div>
       ) : (
-        <div>
+        <>
           {conditions.map((condition) => (
-            <div key={condition.id}>
-              <div className="conditional-element-render_condition-title">
-                <div>Condition</div>
-                <X size={22} onClick={() => handleConditionDelete(condition.id)} />
-              </div>
-              <ConditionForm onConditionChange={handleConditionChange} condition={condition} fields={fields} />
-            </div>
+            <ConditionItem
+              fields={fields}
+              condition={condition}
+              onDelete={onConditionDelete}
+              onChange={onConditionChange}
+              key={condition.id}
+            />
           ))}
-        </div>
+        </>
       )}
 
-      {conditions.length === 0 ? (
-        <div className="d-flex justify-content-center">
-          <Button color="primary" onClick={handleConditionAdd}>
-            Add condition
-          </Button>
-        </div>
-      ) : null}
-    </div>
+      <div className="d-flex justify-content-center">
+        <Button color="primary" onClick={onConditionAdd}>
+          Add condition
+        </Button>
+      </div>
+    </>
   );
 };
 

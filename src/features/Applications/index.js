@@ -507,6 +507,7 @@ const Applications = ({ isCreate }) => {
   };
 
   const handleApplicationMutation = () => {
+    // ToDo: validate here too
     const mutation = isCreate ? createApplicationMutation : updateApplicationMutation;
 
     mutateApplication(applicationData, mutation);
