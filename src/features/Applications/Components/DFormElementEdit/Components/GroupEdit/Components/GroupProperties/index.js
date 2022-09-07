@@ -1,46 +1,58 @@
 import React from "react";
-import Select from "react-select";
 
-import TextWidget from "components/FormCreate/Custom/TextWidget";
-import { colourStyles } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
-import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormFieldLabel";
+import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
+import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
+import { DFormBooleanWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormBooleanWidget";
 
 const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data }) => {
-  const handleNameChange = (value) => {
-    onElementChange({
-      ...element,
-      // id: value, //TODO add id change. Currently it leads to update bug cause each new id counts like a new group instead of updating old one
-      name: value,
-    });
-  };
+  const onNameChange = (name) => onElementChange({ ...element, name });
 
-  const handleGroupSectionChange = (value) => {
-    onGroupSectionChange(element.id, element.sectionId, value.value);
-  };
+  const onProtectedChange = (isProtected) => onElementChange({ ...element, isProtected });
+
+  const onSectionChange = (value) => onGroupSectionChange(element.id, element.sectionId, value.value);
 
   return (
-    <div>
-      <TextWidget value={element.name} label={"Group name"} placeholder={"Group name"} onChange={handleNameChange} />
-      <div className={"custom-react-select mt-2"}>
-        <DFormFieldLabel label="Element section" />
-        <Select
-          maxMenuHeight={175}
-          isDisabled={false}
-          styles={colourStyles}
-          isMulti={false}
-          name="colors"
-          value={{ value: element.sectionId, label: data.sections[element.sectionId].name }}
-          onChange={handleGroupSectionChange}
-          options={Object.values(data.sections).map((section) => ({
-            value: section.id,
-            label: section.name,
-          }))}
-          className="React"
-          classNamePrefix="select"
-          placeholder={"Select an option"}
-        />
-      </div>
-    </div>
+    <>
+      <DFormTextWidget
+        id="group-name"
+        label="Group name"
+        value={element.name}
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        placeholder="Group name"
+        onChange={onNameChange}
+        className="mb-2"
+      />
+
+      <DFormSelectWidget
+        id="group-section"
+        label="Element section"
+        value={{ value: element.sectionId, label: data.sections[element.sectionId].name }}
+        options={Object.values(data.sections).map((section) => ({
+          value: section.id,
+          label: section.name,
+        }))}
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        placeholder="Select an Group section"
+        onChange={onSectionChange}
+      />
+
+      <DFormBooleanWidget
+        id="group-protected"
+        label="Is protected"
+        value={element.isProtected}
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        onChange={onProtectedChange}
+      />
+    </>
   );
 };
 

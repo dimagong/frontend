@@ -1,24 +1,40 @@
-import React from 'react';
+import React from "react";
 
-import TextWidget from 'components/FormCreate/Custom/TextWidget'
+import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
+import { DFormBooleanWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormBooleanWidget";
 
-import './styles.scss';
+const SectionProperties = ({ element, onElementChange }) => {
+  const onNameChange = (name) => onElementChange({ ...element, name });
 
-const SectionProperties = ({element, onElementChange}) => {
-
-  const handleNameChange = (value) => {
-    onElementChange({
-      ...element,
-      // id: value, //TODO add id change. Currently it leads to update bug cause each new id counts like a new section instead of updating old one
-      name: value,
-    })
-  };
+  const onProtectedChange = (isProtected) => onElementChange({ ...element, isProtected });
 
   return (
-    <div>
-      <TextWidget value={element.name} label={"Section name"} placeholder={"Section name"} onChange={handleNameChange} />
-    </div>
-  )
+    <>
+      <DFormTextWidget
+        id="section-name"
+        label="Section name"
+        value={element.name}
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        placeholder="Section name"
+        onChange={onNameChange}
+        className="mb-2"
+      />
+
+      <DFormBooleanWidget
+        id="section-protected"
+        label="Is protected"
+        value={element.isProtected}
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        onChange={onProtectedChange}
+      />
+    </>
+  );
 };
 
 export default SectionProperties;
