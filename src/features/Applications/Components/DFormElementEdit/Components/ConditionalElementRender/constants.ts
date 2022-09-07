@@ -1,129 +1,205 @@
 import { FieldTypes } from "components/DForm/constants";
 
+export enum DCRSupportedFieldTypes {
+  Text = FieldTypes.Text,
+  Date = FieldTypes.Date,
+  File = FieldTypes.File,
+  Select = FieldTypes.Select,
+  Number = FieldTypes.Number,
+  Boolean = FieldTypes.Boolean,
+  LongText = FieldTypes.LongText,
+  TextArea = FieldTypes.TextArea,
+  FileList = FieldTypes.FileList,
+  MultiSelect = FieldTypes.MultiSelect,
+}
+
 // DCR Effects
 
 export enum DCREffectTypes {
-  Shown = "shown",
-  Hidden = "hidden",
-  Enabled = "enabled",
-  Disabled = "disabled",
+  None,
+  Visibility,
+  Availability,
 }
 
-export const DCREffects = [
-  DCREffectTypes.Shown,
-  DCREffectTypes.Hidden,
-  DCREffectTypes.Enabled,
-  DCREffectTypes.Disabled,
-];
-
 export const DCREffectProps = {
-  [DCREffectTypes.Shown]: { isHidden: false },
-  [DCREffectTypes.Hidden]: { isHidden: true },
-  [DCREffectTypes.Enabled]: { isDisabled: false },
-  [DCREffectTypes.Disabled]: { isDisabled: true },
+  [DCREffectTypes.Visibility]: "isHidden",
+  [DCREffectTypes.Availability]: "isDisabled",
 };
 
 export const DCREffectLabels = {
-  [DCREffectTypes.Shown]: "shown if",
-  [DCREffectTypes.Hidden]: "hidden if",
-  [DCREffectTypes.Enabled]: "enabled if",
-  [DCREffectTypes.Disabled]: "disabled if",
+  [DCREffectTypes.Visibility]: "visibility",
+  [DCREffectTypes.Availability]: "availability",
 };
 
 // DCR Operators
 
 export enum DCROperatorTypes {
-  Exact = "exact",
-  Exist = "exist",
-  Bigger = "bigger",
-  Smaller = "smaller",
+  Exist,
+  NotExist,
+  Equal,
+  Bigger,
+  Smaller,
 }
 
-export const DCROperatorTemplates = {
-  [DCROperatorTypes.Exact]: {
-    name: "equal",
-    title: "Will be",
-    expectedValueTitle: "To",
-    type: DCROperatorTypes.Exact,
-  },
-  [DCROperatorTypes.Exist]: {
-    name: "filled",
-    title: "Will be",
-    type: DCROperatorTypes.Exist,
-  },
-  [DCROperatorTypes.Bigger]: {
-    name: "bigger",
-    title: "Will be",
-    expectedValueTitle: "Then",
-    type: DCROperatorTypes.Bigger,
-  },
-  [DCROperatorTypes.Smaller]: {
-    name: "smaller",
-    title: "Will be",
-    expectedValueTitle: "Then",
-    type: DCROperatorTypes.Smaller,
-  },
-};
+export type DCRUnaryOperatorTypes = DCROperatorTypes.Exist | DCROperatorTypes.NotExist;
 
-export const DCRFieldTypesSupportedOperators = {
-  [FieldTypes.Text]: [DCROperatorTypes.Exact, DCROperatorTypes.Exist],
-  [FieldTypes.Date]: [
-    DCROperatorTypes.Exact,
+export type DCRBinaryOperatorTypes = DCROperatorTypes.Equal | DCROperatorTypes.Bigger | DCROperatorTypes.Smaller;
+
+export abstract class DCROperator {
+  abstract type: DCROperatorTypes;
+  abstract name: string;
+  abstract title: string;
+  abstract isUnary: boolean;
+  abstract isBinary: boolean;
+}
+
+export class DCRUnaryOperator implements DCROperator {
+  readonly isUnary = true;
+  readonly isBinary = false;
+
+  constructor(readonly type: DCRUnaryOperatorTypes, readonly fieldType: DCRSupportedFieldTypes) {}
+
+  get name(): string {
+    switch (this.type) {
+      case DCROperatorTypes.Exist:
+        switch (this.fieldType) {
+          case DCRSupportedFieldTypes.Select:
+            return "Selected";
+          case DCRSupportedFieldTypes.Boolean:
+            return "Checked";
+          case DCRSupportedFieldTypes.File:
+            return "Uploaded";
+          case DCRSupportedFieldTypes.FileList:
+            return "At least one uploaded";
+          case DCRSupportedFieldTypes.MultiSelect:
+            return "At least one selected";
+          default:
+            return "filled";
+        }
+      case DCROperatorTypes.NotExist:
+        switch (this.fieldType) {
+          case DCRSupportedFieldTypes.Select:
+            return "Unselected";
+          case DCRSupportedFieldTypes.Boolean:
+            return "Unchecked";
+          case DCRSupportedFieldTypes.File:
+            return "Uploaded";
+          case DCRSupportedFieldTypes.FileList:
+            return "No one uploaded";
+          case DCRSupportedFieldTypes.MultiSelect:
+            return "No one selected";
+          default:
+            return "unfilled";
+        }
+      default:
+        throw new Error(`Unexpected DCRUnaryOperatorType: ${this.type}`);
+    }
+  }
+
+  get title(): string {
+    switch (this.fieldType) {
+      default:
+        return "Will be";
+    }
+  }
+}
+
+export class DCRBinaryOperator implements DCROperator {
+  readonly isUnary = false;
+  readonly isBinary = true;
+
+  constructor(readonly type: DCRBinaryOperatorTypes) {}
+
+  get name(): string {
+    switch (this.type) {
+      case DCROperatorTypes.Bigger:
+        return "bigger";
+      case DCROperatorTypes.Smaller:
+        return "smaller";
+      case DCROperatorTypes.Equal:
+        return "equal";
+      default:
+        throw new Error(`Unexpected DCROperatorTypes ${this.type}`);
+    }
+  }
+
+  get title(): string {
+    switch (this.type) {
+      case DCROperatorTypes.Equal:
+      case DCROperatorTypes.Bigger:
+      case DCROperatorTypes.Smaller:
+      default:
+        return "Will be";
+    }
+  }
+
+  get expectedValueTitle(): string {
+    switch (this.type) {
+      case DCROperatorTypes.Bigger:
+      case DCROperatorTypes.Smaller:
+        return "Then";
+      case DCROperatorTypes.Equal:
+      default:
+        return "To";
+    }
+  }
+}
+
+export const DCRSupportedOperatorsByFieldTypes = {
+  [DCRSupportedFieldTypes.Text]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
+  [DCRSupportedFieldTypes.Date]: [
     DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
     DCROperatorTypes.Bigger,
     DCROperatorTypes.Smaller,
   ],
-  [FieldTypes.Select]: [DCROperatorTypes.Exact, DCROperatorTypes.Exist],
-  [FieldTypes.LongText]: [DCROperatorTypes.Exact, DCROperatorTypes.Exist],
-  [FieldTypes.TextArea]: [DCROperatorTypes.Exact, DCROperatorTypes.Exist],
-  [FieldTypes.Number]: [
-    DCROperatorTypes.Exact,
+  [DCRSupportedFieldTypes.Select]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
+  [DCRSupportedFieldTypes.LongText]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
+  [DCRSupportedFieldTypes.TextArea]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
+  [DCRSupportedFieldTypes.Number]: [
     DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
     DCROperatorTypes.Bigger,
     DCROperatorTypes.Smaller,
   ],
-  [FieldTypes.Boolean]: [DCROperatorTypes.Exist],
-  [FieldTypes.File]: [DCROperatorTypes.Exist],
-  [FieldTypes.FileList]: [DCROperatorTypes.Exist],
-  [FieldTypes.MultiSelect]: [DCROperatorTypes.Exist],
+  [DCRSupportedFieldTypes.Boolean]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [DCRSupportedFieldTypes.File]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [DCRSupportedFieldTypes.FileList]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
 };
 
-const generateOperatorTemplate = (fieldType: string, overrides: object = {}) => {
-  const operatorTypes = DCRFieldTypesSupportedOperators[fieldType];
-  return operatorTypes.map((operatorType) => {
-    return {
-      ...DCROperatorTemplates[operatorType],
-      ...(overrides ? overrides[operatorType] : {}),
-    };
-  });
-};
+export class DCRSupportedFieldOperatorsFactory {
+  static build(fieldType: DCRSupportedFieldTypes): DCROperator[] | null {
+    const supportedOperatorTypes: DCROperatorTypes[] = DCRSupportedOperatorsByFieldTypes[fieldType];
 
-export const DCRFieldTypesOperatorTemplates = {
-  [FieldTypes.Text]: generateOperatorTemplate(FieldTypes.Text),
-  // ToDo: check how bigger & smaller should work
-  [FieldTypes.Date]: generateOperatorTemplate(FieldTypes.Date),
-  [FieldTypes.Select]: generateOperatorTemplate(FieldTypes.Select),
-  [FieldTypes.LongText]: generateOperatorTemplate(FieldTypes.LongText),
-  [FieldTypes.TextArea]: generateOperatorTemplate(FieldTypes.TextArea),
-  [FieldTypes.Number]: generateOperatorTemplate(FieldTypes.Number),
-  // ToDo: consider about not exist operator
-  [FieldTypes.Boolean]: generateOperatorTemplate(FieldTypes.Boolean, { [DCROperatorTypes.Exist]: { name: "Checked" } }),
-  [FieldTypes.File]: generateOperatorTemplate(FieldTypes.File, { [DCROperatorTypes.Exist]: { name: "Uploaded" } }),
-  [FieldTypes.FileList]: generateOperatorTemplate(FieldTypes.FileList, {
-    [DCROperatorTypes.Exist]: { name: `At least one uploaded` },
-  }),
-  [FieldTypes.MultiSelect]: generateOperatorTemplate(FieldTypes.MultiSelect, {
-    [DCROperatorTypes.Exist]: { name: `At least one selected` },
-  }),
-};
+    if (!supportedOperatorTypes) return null;
 
-// ToDo: control that for each type, it should support any type
+    return supportedOperatorTypes.map((operatorType) => {
+      switch (operatorType) {
+        case DCROperatorTypes.Exist:
+        case DCROperatorTypes.NotExist:
+          return new DCRUnaryOperator(operatorType, fieldType);
+        case DCROperatorTypes.Equal:
+        case DCROperatorTypes.Bigger:
+        case DCROperatorTypes.Smaller:
+          return new DCRBinaryOperator(operatorType);
+        default:
+          throw new Error(`There is no operator with type ${operatorType}`);
+      }
+    });
+  }
+}
+
 export const DCROperatorTypesComparotors = {
-  [DCROperatorTypes.Exact]: (expectedValue, controlValue) => {
-    return expectedValue === controlValue;
-  },
   [DCROperatorTypes.Exist]: (expectedValue, controlValue) => {
     return controlValue !== "" && controlValue !== null && controlValue !== undefined;
+  },
+  [DCROperatorTypes.NotExist]: (expectedValue, controlValue) => {
+    return controlValue === "" || controlValue == null;
+  },
+  [DCROperatorTypes.Equal]: (expectedValue, controlValue) => {
+    return expectedValue === controlValue;
   },
   [DCROperatorTypes.Bigger]: (expectedValue, controlValue) => {
     return controlValue > expectedValue;
@@ -133,16 +209,15 @@ export const DCROperatorTypesComparotors = {
   },
 };
 
-// ToDo: check the Resource type support
 export const DCRFieldValueConvertors = {
-  [FieldTypes.Text]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [FieldTypes.Date]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [FieldTypes.Select]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [FieldTypes.LongText]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [FieldTypes.TextArea]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [FieldTypes.Number]: ({ value }) => (typeof value === "number" ? Number(value) : null),
-  [FieldTypes.Boolean]: ({ value }) => (typeof value === "boolean" ? Boolean(value) : null),
-  [FieldTypes.File]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
-  [FieldTypes.FileList]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
-  [FieldTypes.MultiSelect]: ({ value }) => (Array.isArray(value) ? Array.from(value) : []),
+  [DCRSupportedFieldTypes.Text]: ({ value }) => (typeof value === "string" ? String(value) : null),
+  [DCRSupportedFieldTypes.Date]: ({ value }) => (typeof value === "string" ? String(value) : null),
+  [DCRSupportedFieldTypes.Select]: ({ value }) => (typeof value === "string" ? String(value) : null),
+  [DCRSupportedFieldTypes.LongText]: ({ value }) => (typeof value === "string" ? String(value) : null),
+  [DCRSupportedFieldTypes.TextArea]: ({ value }) => (typeof value === "string" ? String(value) : null),
+  [DCRSupportedFieldTypes.Number]: ({ value }) => (typeof value === "number" ? Number(value) : null),
+  [DCRSupportedFieldTypes.Boolean]: ({ value }) => (typeof value === "boolean" ? Boolean(value) : null),
+  [DCRSupportedFieldTypes.File]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
+  [DCRSupportedFieldTypes.FileList]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
+  [DCRSupportedFieldTypes.MultiSelect]: ({ value }) => (Array.isArray(value) ? Array.from(value) : []),
 };

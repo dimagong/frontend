@@ -66,13 +66,13 @@ export const fieldCommonSchema = yup.object().shape({
     }
     if (value.length === 0) {
       return true;
-    } else {
-      if (!value[0]?.effect) {
+    } /* else {
+      if (!value[0]?.effectType) {
         return this.createError({
           message: "The 'This element will be' field is empty",
         });
       }
-      if (value[0]?.field && !value[0]?.condition?.operandName) {
+      if (value[0]?.fieldId && !value[0]?.condition?.operandName) {
         return this.createError({
           message: "The 'Will be' field is empty",
         });
@@ -85,7 +85,7 @@ export const fieldCommonSchema = yup.object().shape({
           message: "The 'To' field is empty",
         });
       }
-    }
+    }*/
     return true;
   }),
 });
@@ -121,7 +121,6 @@ const fieldSpecificValidationSchemas = {
   [FIELD_TYPES.resource]: fieldCommonSchema,
   [FIELD_TYPES.helpText]: htmlTextSchema,
   [FIELD_TYPES.multiSelect]: fieldCommonSchema,
-  conditions: fieldCommonSchema,
 };
 
 export const groupValidationSchema = dynamicRenderValidation.shape({

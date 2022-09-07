@@ -5,10 +5,10 @@ import { DFormFieldConditionModel } from "features/Applications/fieldConditionMo
 import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
-import { DCREffectLabels, DCREffects, DCRFieldTypesOperatorTemplates } from "../constants";
+import { DCREffectTypes, DCREffectLabels, DCRSupportedFieldOperatorsFactory } from "../constants";
 
 const getEffectTypeOption = (effectType) => ({ value: effectType, label: DCREffectLabels[effectType] });
-const effectTypesAsOptions = DCREffects.map(getEffectTypeOption);
+const effectTypesAsOptions = [DCREffectTypes.Visibility, DCREffectTypes.Availability].map(getEffectTypeOption);
 
 const getFieldIdAsOption = (field) => ({ value: field.id, label: field.title });
 const getFieldIdAsOptions = (fields) => fields.map(getFieldIdAsOption);
@@ -32,18 +32,16 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
 
   const field = fields.find(({ id }) => id === condition.fieldId);
   const fieldsIdsAsOptions = getFieldIdAsOptions(fields);
-  const operatorTemplates = field ? DCRFieldTypesOperatorTemplates[field.type] : null;
-  const operatorTemplatesAsOptions = operatorTemplates ? getOperatorTypesAsOptions(operatorTemplates) : null;
-  const operatorTemplate = operatorTemplates
-    ? operatorTemplates.find(({ type }) => type === condition.operatorType)
-    : null;
+  const operators = field ? DCRSupportedFieldOperatorsFactory.build(field.type) : null;
+  const operatorsAsOptions = operators ? getOperatorTypesAsOptions(operators) : null;
+  const operator = operators ? operators.find(({ type }) => type === condition.operatorType) : null;
 
   return (
     <>
       <DFormSelectWidget
         id="dcr-effect-type"
-        label="This element will be"
-        value={condition.effectType ? getEffectTypeOption(condition.effectType) : null}
+        label="This element will effected by"
+        value={condition.effectType != null ? getEffectTypeOption(condition.effectType) : null}
         options={effectTypesAsOptions}
         placeholder="Select an effect"
         isError={false}
@@ -57,7 +55,7 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
       <DFormSelectWidget
         id="dcr-field-id"
         label="If value of field"
-        value={condition.fieldId ? getFieldIdAsOption(field) : null}
+        value={condition.fieldId != null ? getFieldIdAsOption(field) : null}
         options={fieldsIdsAsOptions}
         placeholder="Select field"
         isError={false}
@@ -68,12 +66,12 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
         className="mb-2"
       />
 
-      {condition.fieldId ? (
+      {condition.fieldId != null ? (
         <DFormSelectWidget
           id="dcr-effect"
           label="Will be"
-          value={condition.operatorType ? getOperatorTypeAsOption(operatorTemplate) : null}
-          options={operatorTemplatesAsOptions}
+          value={condition.operatorType != null ? getOperatorTypeAsOption(operator) : null}
+          options={operatorsAsOptions}
           placeholder="Select operator"
           isError={false}
           isRequired={false}
@@ -84,10 +82,10 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
         />
       ) : null}
 
-      {condition.operatorType && operatorTemplate.expectedValueTitle ? (
+      {operator && operator.isBinary ? (
         <DFormTextWidget
           id="dcr-expected-value"
-          label={operatorTemplate.expectedValueTitle}
+          label={operator.expectedValueTitle}
           value={condition.expectedValue ?? ""}
           placeholder="Enter expected value"
           isError={false}

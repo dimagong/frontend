@@ -14,6 +14,12 @@ import {
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
 
+import {
+  DCREffectProps,
+  DCRFieldValueConvertors,
+  DCROperatorTypesComparotors,
+} from "features/Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
+
 const STATUSES = [
   { value: "submitted", label: "submitted" },
   { value: "approved", label: "approved" },
@@ -21,40 +27,29 @@ const STATUSES = [
   { value: "unsubmitted", label: "unsubmitted" },
 ];
 
-const checkConditions = (elementCollection, values) => {
-  /*for (const elementId in elementCollection) {
-    if (elementCollection.hasOwnProperty(elementId)) {
-      const element = elementCollection[elementId];
-      const elementCondition = element.conditions && element.conditions[0];
+const checkConditions = (elements, values, fields) => {
+  for (const elementId in elements) {
+    if (!Object.hasOwnProperty.call(elements, elementId)) continue;
+    const element = elements[elementId];
+    const conditions = element.conditions;
 
-      if (!elementCondition) continue;
-      console.log("asd", "condition", {
-        elementType: element.elementType,
-        elementName: element.name || element.title,
-        condition: elementCondition,
-      });
+    for (const condition of conditions) {
+      const { operatorType, effectType, fieldId, expectedValue } = condition;
 
-      const dependentField = elementCondition.field;
-      const dependentFieldValue = values[dependentField.masterSchemaFieldId];
-      const dependentFieldValuePrepare = FIELD_VALUE_PREPARE[dependentField.type];
+      const field = fields[fieldId];
+      const value = values[field.masterSchemaFieldId];
+      const preparedValue = DCRFieldValueConvertors[field.type](value);
+      const operatorComparator = DCROperatorTypesComparotors[operatorType];
+      const isApplicable = operatorComparator(expectedValue, preparedValue);
 
-      const applicableEffect = EFFECT_ELEMENT_PROP[elementCondition.effect];
-      const operatorCompare = OPERATORS_COMPARE_FUNCTIONS[elementCondition.operator.type];
-
-      if (dependentFieldValue == null) {
-        throw new Error("Unexpected: a dependent field value can not be null or undefined.");
+      if (isApplicable) {
+        const propName = DCREffectProps[effectType];
+        elements[elementId][propName] = isApplicable;
       }
-
-      const preparedDependentFieldValue = dependentFieldValuePrepare(dependentFieldValue);
-      const isConditionApplicable = operatorCompare(elementCondition.expectedValue, preparedDependentFieldValue);
-
-      // Apply effect as a props
-      const elementEffectValue = isConditionApplicable ? applicableEffect.value : !applicableEffect.value;
-      elementCollection[elementId][applicableEffect.propName] = elementEffectValue;
     }
-  }*/
+  }
 
-  return elementCollection;
+  return elements;
 };
 
 const applyConditionalRender = (schema, values) => {
@@ -66,9 +61,9 @@ const applyConditionalRender = (schema, values) => {
 
   const { fields, sections, groups } = schemaCopy;
 
-  schemaCopy.fields = checkConditions(fields, values);
-  schemaCopy.groups = checkConditions(groups, values);
-  schemaCopy.sections = checkConditions(sections, values);
+  schemaCopy.fields = checkConditions(fields, values, fields);
+  schemaCopy.groups = checkConditions(groups, values, fields);
+  schemaCopy.sections = checkConditions(sections, values, fields);
 
   return schemaCopy;
 };

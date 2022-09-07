@@ -10,7 +10,7 @@ import ConditionForm from "./Components";
 
 const ConditionItem = ({ condition, fields, onDelete, onChange }) => {
   return (
-    <>
+    <div className="mb-1">
       <div className="conditional-element-render_condition-title">
         <div>Condition</div>
         <button onClick={() => onDelete(condition.id)}>
@@ -18,7 +18,7 @@ const ConditionItem = ({ condition, fields, onDelete, onChange }) => {
         </button>
       </div>
       <ConditionForm onConditionChange={onChange} condition={condition} fields={fields} />
-    </>
+    </div>
   );
 };
 
@@ -34,11 +34,18 @@ const ConditionalElementRender = ({ conditions = [], fields = [], element, onEle
   const onConditionDelete = (conditionId) => {
     if (!window.confirm("Are you sure you want to delete this condition?")) return;
 
-    const newConditions = element.conditions.filter((condition) => condition.id !== conditionId);
-    updateElementCondition(newConditions);
+    const filteredConditions = element.conditions.filter((condition) => condition.id !== conditionId);
+
+    updateElementCondition(filteredConditions);
   };
 
-  const onConditionChange = (condition) => updateElementCondition([condition]);
+  const onConditionChange = (changedCondition) => {
+    const changedConditions = conditions.map((condition) => {
+      return condition.id === changedCondition.id ? changedCondition : condition;
+    });
+
+    updateElementCondition(changedConditions);
+  };
 
   return (
     <>
@@ -58,13 +65,11 @@ const ConditionalElementRender = ({ conditions = [], fields = [], element, onEle
         </>
       )}
 
-      {conditions.length === 0 ? (
-        <div className="d-flex justify-content-center">
-          <Button color="primary" onClick={onConditionAdd}>
-            Add condition
-          </Button>
-        </div>
-      ) : null}
+      <div className="d-flex justify-content-center">
+        <Button color="primary" onClick={onConditionAdd}>
+          Add condition
+        </Button>
+      </div>
     </>
   );
 };
