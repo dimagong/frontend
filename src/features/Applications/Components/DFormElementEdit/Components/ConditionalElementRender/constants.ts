@@ -38,13 +38,18 @@ export enum DCROperatorTypes {
   Exist,
   NotExist,
   Equal,
+  NotEqual,
   Bigger,
   Smaller,
 }
 
 export type DCRUnaryOperatorTypes = DCROperatorTypes.Exist | DCROperatorTypes.NotExist;
 
-export type DCRBinaryOperatorTypes = DCROperatorTypes.Equal | DCROperatorTypes.Bigger | DCROperatorTypes.Smaller;
+export type DCRBinaryOperatorTypes =
+  | DCROperatorTypes.Equal
+  | DCROperatorTypes.NotEqual
+  | DCROperatorTypes.Bigger
+  | DCROperatorTypes.Smaller;
 
 export abstract class DCROperator {
   abstract type: DCROperatorTypes;
@@ -119,6 +124,8 @@ export class DCRBinaryOperator implements DCROperator {
         return "smaller";
       case DCROperatorTypes.Equal:
         return "equal";
+      case DCROperatorTypes.NotEqual:
+        return "not equal";
       default:
         throw new Error(`Unexpected DCROperatorTypes ${this.type}`);
     }
@@ -127,6 +134,7 @@ export class DCRBinaryOperator implements DCROperator {
   get title(): string {
     switch (this.type) {
       case DCROperatorTypes.Equal:
+      case DCROperatorTypes.NotEqual:
       case DCROperatorTypes.Bigger:
       case DCROperatorTypes.Smaller:
       default:
@@ -147,28 +155,50 @@ export class DCRBinaryOperator implements DCROperator {
 }
 
 export const DCRSupportedOperatorsByFieldTypes = {
-  [DCRSupportedFieldTypes.Text]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
+  [DCRSupportedFieldTypes.Text]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+  ],
   [DCRSupportedFieldTypes.Date]: [
     DCROperatorTypes.Exist,
     DCROperatorTypes.NotExist,
     DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
     DCROperatorTypes.Bigger,
     DCROperatorTypes.Smaller,
   ],
-  [DCRSupportedFieldTypes.Select]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
-  [DCRSupportedFieldTypes.LongText]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
-  [DCRSupportedFieldTypes.TextArea]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
+  [DCRSupportedFieldTypes.Select]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+  ],
+  [DCRSupportedFieldTypes.LongText]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [DCRSupportedFieldTypes.TextArea]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+  ],
   [DCRSupportedFieldTypes.Number]: [
     DCROperatorTypes.Exist,
     DCROperatorTypes.NotExist,
     DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
     DCROperatorTypes.Bigger,
     DCROperatorTypes.Smaller,
   ],
   [DCRSupportedFieldTypes.Boolean]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
   [DCRSupportedFieldTypes.File]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
   [DCRSupportedFieldTypes.FileList]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
-  [DCRSupportedFieldTypes.MultiSelect]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
+  [DCRSupportedFieldTypes.MultiSelect]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+  ],
 };
 
 export class DCRSupportedFieldOperatorsFactory {
@@ -183,6 +213,7 @@ export class DCRSupportedFieldOperatorsFactory {
         case DCROperatorTypes.NotExist:
           return new DCRUnaryOperator(operatorType, fieldType);
         case DCROperatorTypes.Equal:
+        case DCROperatorTypes.NotEqual:
         case DCROperatorTypes.Bigger:
         case DCROperatorTypes.Smaller:
           return new DCRBinaryOperator(operatorType);
@@ -198,6 +229,8 @@ interface ComparatorArgument {
   control: DCRFieldControlValue | null;
   controlType: DCRSupportedFieldTypes;
 }
+
+const getISOStringAsDateTimestamp = (ISOString: string) => new Date(ISOString).valueOf();
 
 export const DCROperatorTypesComparotors = {
   [DCROperatorTypes.Exist]: ({ control }: ComparatorArgument) => {
@@ -236,7 +269,7 @@ export const DCROperatorTypesComparotors = {
     }
   },
 
-  [DCROperatorTypes.Equal]: ({ expected, control }: ComparatorArgument) => {
+  [DCROperatorTypes.Equal]: ({ expected, control, controlType }: ComparatorArgument) => {
     if (control === null || control === undefined) return false;
 
     if (Array.isArray(control)) {
@@ -248,7 +281,31 @@ export const DCROperatorTypesComparotors = {
       case "string":
         return expected === control;
       case "number":
+        if (controlType === DCRSupportedFieldTypes.Date) {
+          return control === getISOStringAsDateTimestamp(expected);
+        }
         return Number(expected) === control;
+      default:
+        throw new Error(`Unreachable: Do not support a control value type: ${typeof control}`);
+    }
+  },
+
+  [DCROperatorTypes.NotEqual]: ({ expected, control, controlType }: ComparatorArgument) => {
+    if (control === null || control === undefined) return true;
+
+    if (Array.isArray(control)) {
+      // Currently, only string[] supports the Equal operator.
+      return !(control as string[]).includes(expected);
+    }
+
+    switch (typeof control) {
+      case "string":
+        return expected !== control;
+      case "number":
+        if (controlType === DCRSupportedFieldTypes.Date) {
+          return control !== getISOStringAsDateTimestamp(expected);
+        }
+        return Number(expected) !== control;
       default:
         throw new Error(`Unreachable: Do not support a control value type: ${typeof control}`);
     }
@@ -258,7 +315,7 @@ export const DCROperatorTypesComparotors = {
     switch (typeof control) {
       case "number":
         if (controlType === DCRSupportedFieldTypes.Date) {
-          return control > new Date(expected).valueOf();
+          return control > getISOStringAsDateTimestamp(expected);
         }
         return control > Number(expected);
       default:
@@ -270,7 +327,7 @@ export const DCROperatorTypesComparotors = {
     switch (typeof control) {
       case "number":
         if (controlType === DCRSupportedFieldTypes.Date) {
-          return control < new Date(expected).valueOf();
+          return control < getISOStringAsDateTimestamp(expected);
         }
         return control < Number(expected);
       default:

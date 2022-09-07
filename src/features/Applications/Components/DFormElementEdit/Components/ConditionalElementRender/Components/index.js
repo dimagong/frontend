@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
 
@@ -13,7 +13,7 @@ import {
   DCRSupportedFieldOperatorsFactory,
 } from "../constants";
 
-import { DateWidgetFormatTypes } from "../../../../../constants";
+import { DATE_WIDGET_FORMATS, DateWidgetFormatTypes } from "../../../../../constants";
 
 const getEffectTypeOption = (effectType) => ({ value: effectType, label: DCREffectLabels[effectType] });
 const effectTypesAsOptions = [DCREffectTypes.Visibility, DCREffectTypes.Availability].map(getEffectTypeOption);
@@ -25,6 +25,8 @@ const getOperatorTypeAsOption = (operatorTemplate) => ({ value: operatorTemplate
 const getOperatorTypesAsOptions = (operatorTemplates) => operatorTemplates.map(getOperatorTypeAsOption);
 
 const ConditionForm = ({ fields, condition, onConditionChange }) => {
+  const [format, setFormat] = useState({ value: DateWidgetFormatTypes.Date, label: DateWidgetFormatTypes.Date });
+
   const updateCondition = (data) => {
     const updatedCondition = DFormFieldConditionModel.from({ ...condition, ...data });
     onConditionChange(updatedCondition);
@@ -38,6 +40,8 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
 
   const onExpectedValueChange = (expectedValue) => updateCondition({ expectedValue });
 
+  const onFormatChange = (value) => setFormat(value);
+
   const field = fields.find(({ id }) => id === condition.fieldId);
   const fieldsIdsAsOptions = getFieldIdAsOptions(fields);
   const operators = field ? DCRSupportedFieldOperatorsFactory.build(field.type) : null;
@@ -47,18 +51,34 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
   const getExpectedValueField = () => {
     if (field.type === DCRSupportedFieldTypes.Date) {
       return (
-        <DFormDateWidget
-          id="dcr-expected-value"
-          label={operator.expectedValueTitle}
-          value={condition.expectedValue ?? ""}
-          format={DateWidgetFormatTypes.Date}
-          placeholder="Enter expected value"
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-          onChange={onExpectedValueChange}
-        />
+        <>
+          <DFormDateWidget
+            id="dcr-expected-value"
+            label={operator.expectedValueTitle}
+            value={condition.expectedValue ?? ""}
+            format={format.value}
+            placeholder="Enter expected value"
+            isError={false}
+            isRequired={false}
+            isDisabled={false}
+            isLabelShowing={true}
+            onChange={onExpectedValueChange}
+            className="mb-2"
+          />
+
+          <DFormSelectWidget
+            id="dcr-expected-value-date-format"
+            label="Expected date format"
+            value={format}
+            options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
+            isError={false}
+            isRequired={false}
+            isDisabled={false}
+            isLabelShowing={true}
+            onChange={onFormatChange}
+            placeholder="Select an date Format"
+          />
+        </>
       );
     }
 
