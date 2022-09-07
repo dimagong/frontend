@@ -58,6 +58,20 @@
   src: local("Montserrat light"), url("../fonts/Montserrat/Montserrat-Light.ttf") format("ttf");
 }
 
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: normal;
+  src: local("SF Pro Display"), url("../fonts/SFProdisplay/SFPRODISPLAYMEDIUM.OTF") format("opentype");
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: italic;
+  font-weight: normal;
+  src: local("SF Pro Display"), url("../fonts/SFProdisplay/SFPRODISPLAYLIGHTITALIC.OTF") format("opentype");
+}
+
 @import "./bootstrap-overrides/bootstrap-overrides";
 @import "./components.scss";
 @import "./bootstrap-extended.scss";

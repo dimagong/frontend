@@ -25,6 +25,7 @@
       display: flex;
       justify-content: space-between;
       .context-title {
+        font-family: "SF Pro Display";
         font-style: normal;
         font-weight: 400;
         font-size: 24px;
@@ -32,6 +33,7 @@
         color: #434343;
       }
       .context-subtitle {
+        font-family: "SF Pro Display";
         font-weight: 300;
         font-size: 18px;
         line-height: 22px;
@@ -53,12 +55,14 @@
       grid-row: 1/2;
       padding-bottom: 40px;
       .feedback-title {
+        font-family: "SF Pro Display";
         font-weight: 500;
         font-size: 2.4rem;
         line-height: 2.8rem;
         color: #434343;
       }
       .feedback-subtitle {
+        font-family: "SF Pro Display";
         margin-top: 1.12rem;
         font-weight: 300;
         font-size: 1.5rem;
@@ -71,6 +75,7 @@
     }
     .feedback-points {
       grid-row: 3/4;
+      font-family: "SF Pro Display";
       font-weight: 500;
       font-size: 24px;
       line-height: 29px;

@@ -137,15 +137,12 @@ const MemberSurvey = ({
 
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
   const currentQuestionAnswer = answers && !isNaN(currentIndex) ? answers[currentIndex] : null;
-  console.log("answers", answers);
 
   const isSurveyPassed = survey && survey.stats?.total >= survey.stats?.min_percent_pass;
   const totalTime = survey?.stats?.totalTime ?? "00-00-00";
   const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
   const isShowResult = survey?.is_show_result;
   const description = survey?.interaction_version?.description || "No description";
-
-  console.log("surveyStatus", surveyStatus);
 
   if (!survey && isSurveyLoading) {
     return <NpmSpin size={60} />;

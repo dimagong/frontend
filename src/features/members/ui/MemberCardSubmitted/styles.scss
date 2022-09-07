@@ -19,11 +19,13 @@
         display: flex;
         justify-content: space-between;
         &_title {
+          font-family: "SF Pro Display";
           font-weight: 500;
           font-size: 18px;
           line-height: 22px;
         }
         &_data {
+          font-family: "SF Pro Display";
           font-weight: 500;
           font-size: 18px;
           line-height: 22px;
@@ -32,6 +34,7 @@
       }
       .cs-title {
         margin-top: 59px;
+        font-family: "SF Pro Display";
         font-weight: 500;
         font-size: 42px;
         line-height: 51px;
@@ -40,6 +43,7 @@
       .cs-content {
         margin-top: 38px;
         & > * {
+          font-family: "SF Pro Display";
           font-weight: 500;
           font-size: 22px;
           line-height: 27px;
