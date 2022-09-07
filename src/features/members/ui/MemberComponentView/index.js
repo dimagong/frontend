@@ -9,7 +9,7 @@ import NavMenu from "components/NavMenu/NavMenu";
 import MemberMenuView from "./../MemberMenuView";
 import Check from "assets/img/icons/check.png";
 
-import NpmCardSurvey from "../MemberCardPassSurvey";
+import NpmCardSurvey from "../MemberCardPassSurveyView";
 import MemberSurveyView from "../MemberSurveyView";
 
 // import OnboardingApp from "./../../components/OnboardingApp";
