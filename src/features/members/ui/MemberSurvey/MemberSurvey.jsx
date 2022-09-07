@@ -17,7 +17,7 @@ import {
 
 import MemberCardPassSurvey from "../MemberCardPassSurvey";
 import MemberCardSubmitted from "../MemberCardSubmitted";
-import MemberCardApproved from "../MemberCardApproved";
+import MemberCardReport from "../MemberCardReport";
 import MemberCardFeedback from "../MemberCardFeedback";
 import MemberCardStartSurvey from "../MemberCardStartSurvey";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
@@ -187,7 +187,7 @@ const MemberSurvey = ({
         <MemberCardSubmitted data={finished_at} organization={organization} surveyName={title} />
       )}
       {surveyStatus === statusConstants.APPROVED && !isFeedbackView && (
-        <MemberCardApproved
+        <MemberCardReport
           data={graded_at}
           isSurveyPassed={isSurveyPassed}
           totalTime={totalTime}
