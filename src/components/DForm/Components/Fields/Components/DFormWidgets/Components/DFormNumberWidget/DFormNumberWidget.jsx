@@ -51,7 +51,7 @@ export const DFormNumberWidget = (props) => {
 
 DFormNumberWidget.propTypes = {
   id: IdType.isRequired,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   label: PropTypes.string,
   error: PropTypes.string,
   isError: PropTypes.bool.isRequired,

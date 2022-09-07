@@ -1,5 +1,4 @@
 import Select from "react-select";
-import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
 import { Button, Card } from "reactstrap";
 import React, { useEffect, useState } from "react";
@@ -14,59 +13,12 @@ import {
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
 
-import {
-  DCREffectProps,
-  DCRFieldValueConvertors,
-  DCROperatorTypesComparotors,
-} from "features/Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
-
 const STATUSES = [
   { value: "submitted", label: "submitted" },
   { value: "approved", label: "approved" },
   { value: "rejected", label: "rejected" },
   { value: "unsubmitted", label: "unsubmitted" },
 ];
-
-const checkConditions = (elements, values, fields) => {
-  for (const elementId in elements) {
-    if (!Object.hasOwnProperty.call(elements, elementId)) continue;
-    const element = elements[elementId];
-    const conditions = element.conditions;
-
-    for (const condition of conditions) {
-      const { operatorType, effectType, fieldId, expectedValue } = condition;
-
-      const field = fields[fieldId];
-      const value = values[field.masterSchemaFieldId];
-      const preparedValue = DCRFieldValueConvertors[field.type](value);
-      const operatorComparator = DCROperatorTypesComparotors[operatorType];
-      const isApplicable = operatorComparator(expectedValue, preparedValue);
-
-      if (isApplicable) {
-        const propName = DCREffectProps[effectType];
-        elements[elementId][propName] = isApplicable;
-      }
-    }
-  }
-
-  return elements;
-};
-
-const applyConditionalRender = (schema, values) => {
-  if (!schema) return null;
-  // Do not apply conditions on empty values
-  if (Object.keys(values).length === 0) return schema;
-
-  const schemaCopy = cloneDeep(schema);
-
-  const { fields, sections, groups } = schemaCopy;
-
-  schemaCopy.fields = checkConditions(fields, values, fields);
-  schemaCopy.groups = checkConditions(groups, values, fields);
-  schemaCopy.sections = checkConditions(sections, values, fields);
-
-  return schemaCopy;
-};
 
 const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
   const [applicationValues, setApplicationValues] = useState({});
@@ -100,8 +52,6 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     { userApplicationId: selectedApplicationId },
     { onSuccess: () => toast.success("Saved") }
   );
-
-  const applicationSchema = applyConditionalRender(applicationData?.schema, applicationValues);
 
   useEffect(() => {
     setApplicationData(isCreate ? {} : null);
@@ -170,7 +120,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
               isRefetching={userApplication.isFetching}
               onRefetch={handleApplicationReFetch}
               dFormId={applicationData.id}
-              formData={applicationSchema}
+              formData={applicationData.schema}
               isManualSave={true}
               formValues={applicationValues}
             />

@@ -16,8 +16,10 @@ export interface DFormFieldConditionProperties {
   fieldId: string;
   effectType: DCREffectTypes;
   operatorType: DCROperatorTypes;
-  expectedValue: string | boolean | number | string[] | DFormFieldFileMeta[];
+  expectedValue: string;
 }
+
+export type DCRFieldControlValue = string | boolean | number | string[] | DFormFieldFileMeta[];
 
 export abstract class AbstractDFormFieldConditionModel implements DFormFieldConditionProperties {
   /**
@@ -35,7 +37,7 @@ export abstract class AbstractDFormFieldConditionModel implements DFormFieldCond
   /**
    * A value is used to compare with dependent field value.
    */
-  expectedValue: string | boolean | number | string[] | DFormFieldFileMeta[];
+  expectedValue: string;
 
   constructor(readonly id: string) {}
 }

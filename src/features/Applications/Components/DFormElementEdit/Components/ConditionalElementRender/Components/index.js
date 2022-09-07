@@ -3,9 +3,17 @@ import React from "react";
 import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
 
 import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
+import { DFormDateWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormDateWidget";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
-import { DCREffectTypes, DCREffectLabels, DCRSupportedFieldOperatorsFactory } from "../constants";
+import {
+  DCREffectTypes,
+  DCREffectLabels,
+  DCRSupportedFieldTypes,
+  DCRSupportedFieldOperatorsFactory,
+} from "../constants";
+
+import { DateWidgetFormatTypes } from "../../../../../constants";
 
 const getEffectTypeOption = (effectType) => ({ value: effectType, label: DCREffectLabels[effectType] });
 const effectTypesAsOptions = [DCREffectTypes.Visibility, DCREffectTypes.Availability].map(getEffectTypeOption);
@@ -35,6 +43,39 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
   const operators = field ? DCRSupportedFieldOperatorsFactory.build(field.type) : null;
   const operatorsAsOptions = operators ? getOperatorTypesAsOptions(operators) : null;
   const operator = operators ? operators.find(({ type }) => type === condition.operatorType) : null;
+
+  const getExpectedValueField = () => {
+    if (field.type === DCRSupportedFieldTypes.Date) {
+      return (
+        <DFormDateWidget
+          id="dcr-expected-value"
+          label={operator.expectedValueTitle}
+          value={condition.expectedValue ?? ""}
+          format={DateWidgetFormatTypes.Date}
+          placeholder="Enter expected value"
+          isError={false}
+          isRequired={false}
+          isDisabled={false}
+          isLabelShowing={true}
+          onChange={onExpectedValueChange}
+        />
+      );
+    }
+
+    return (
+      <DFormTextWidget
+        id="dcr-expected-value"
+        label={operator.expectedValueTitle}
+        value={condition.expectedValue ?? ""}
+        placeholder="Enter expected value"
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        onChange={onExpectedValueChange}
+      />
+    );
+  };
 
   return (
     <>
@@ -82,19 +123,7 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
         />
       ) : null}
 
-      {operator && operator.isBinary ? (
-        <DFormTextWidget
-          id="dcr-expected-value"
-          label={operator.expectedValueTitle}
-          value={condition.expectedValue ?? ""}
-          placeholder="Enter expected value"
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-          onChange={onExpectedValueChange}
-        />
-      ) : null}
+      {operator && operator.isBinary ? getExpectedValueField() : null}
     </>
   );
 };

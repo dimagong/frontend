@@ -1,4 +1,5 @@
 import { FieldTypes } from "components/DForm/constants";
+import { DCRFieldControlValue } from "features/Applications/fieldConditionModel";
 
 export enum DCRSupportedFieldTypes {
   Text = FieldTypes.Text,
@@ -167,6 +168,7 @@ export const DCRSupportedOperatorsByFieldTypes = {
   [DCRSupportedFieldTypes.Boolean]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
   [DCRSupportedFieldTypes.File]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
   [DCRSupportedFieldTypes.FileList]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [DCRSupportedFieldTypes.MultiSelect]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist, DCROperatorTypes.Equal],
 };
 
 export class DCRSupportedFieldOperatorsFactory {
@@ -191,32 +193,83 @@ export class DCRSupportedFieldOperatorsFactory {
   }
 }
 
+interface ComparatorArgument {
+  expected: string;
+  control: DCRFieldControlValue | null;
+  controlType: DCRSupportedFieldTypes;
+}
+
 export const DCROperatorTypesComparotors = {
-  [DCROperatorTypes.Exist]: (expectedValue, controlValue) => {
-    return controlValue !== "" && controlValue !== null && controlValue !== undefined;
+  [DCROperatorTypes.Exist]: ({ control }: ComparatorArgument) => {
+    if (Array.isArray(control)) {
+      return control.length > 0;
+    }
+    return control !== "" && control !== null && control !== undefined;
   },
-  [DCROperatorTypes.NotExist]: (expectedValue, controlValue) => {
-    return controlValue === "" || controlValue == null;
+
+  [DCROperatorTypes.NotExist]: ({ control }: ComparatorArgument) => {
+    if (Array.isArray(control)) {
+      return control.length === 0;
+    }
+    return control === "" || control == null;
   },
-  [DCROperatorTypes.Equal]: (expectedValue, controlValue) => {
-    return expectedValue === controlValue;
+
+  [DCROperatorTypes.Equal]: ({ expected, control }: ComparatorArgument) => {
+    if (control === null || control === undefined) return false;
+
+    switch (typeof control) {
+      case "string":
+        return expected === control;
+      case "number":
+        return Number(expected) === control;
+      case "boolean":
+        throw new Error("The boolean do not support Equal operator.");
+      default:
+        if (Array.isArray(control)) {
+          // Currently, only string[] supports the Equal operator
+          return (control as string[]).includes(expected);
+        } else {
+          // In case when
+          return false;
+        }
+    }
   },
-  [DCROperatorTypes.Bigger]: (expectedValue, controlValue) => {
-    return controlValue > expectedValue;
+
+  [DCROperatorTypes.Bigger]: ({ expected, control, controlType }: ComparatorArgument) => {
+    // @ts-ignore
+    // console.log("expected", new Date(expected).valueOf(), ">", "control", control, control > new Date(expected).valueOf());
+    switch (typeof control) {
+      case "number":
+        if (controlType === DCRSupportedFieldTypes.Date) {
+          return control > new Date(expected).valueOf();
+        }
+        return control > Number(expected);
+      default:
+        return false;
+    }
   },
-  [DCROperatorTypes.Smaller]: (expectedValue, controlValue) => {
-    return controlValue < expectedValue;
+
+  [DCROperatorTypes.Smaller]: ({ expected, control, controlType }: ComparatorArgument) => {
+    switch (typeof control) {
+      case "number":
+        if (controlType === DCRSupportedFieldTypes.Date) {
+          return control < new Date(expected).valueOf();
+        }
+        return control < Number(expected);
+      default:
+        return false;
+    }
   },
 };
 
 export const DCRFieldValueConvertors = {
-  [DCRSupportedFieldTypes.Text]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [DCRSupportedFieldTypes.Date]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [DCRSupportedFieldTypes.Select]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [DCRSupportedFieldTypes.LongText]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [DCRSupportedFieldTypes.TextArea]: ({ value }) => (typeof value === "string" ? String(value) : null),
-  [DCRSupportedFieldTypes.Number]: ({ value }) => (typeof value === "number" ? Number(value) : null),
-  [DCRSupportedFieldTypes.Boolean]: ({ value }) => (typeof value === "boolean" ? Boolean(value) : null),
+  [DCRSupportedFieldTypes.Text]: ({ value }) => (value == null ? null : String(value)),
+  [DCRSupportedFieldTypes.Date]: ({ value }) => (value == null ? null : new Date(value).valueOf()),
+  [DCRSupportedFieldTypes.Select]: ({ value }) => (value == null ? null : String(value)),
+  [DCRSupportedFieldTypes.LongText]: ({ value }) => (value == null ? null : String(value)),
+  [DCRSupportedFieldTypes.TextArea]: ({ value }) => (value == null ? null : String(value)),
+  [DCRSupportedFieldTypes.Number]: ({ value }) => (value == null ? null : Number(value)),
+  [DCRSupportedFieldTypes.Boolean]: ({ value }) => (value == null ? null : Boolean(value)),
   [DCRSupportedFieldTypes.File]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
   [DCRSupportedFieldTypes.FileList]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
   [DCRSupportedFieldTypes.MultiSelect]: ({ value }) => (Array.isArray(value) ? Array.from(value) : []),
