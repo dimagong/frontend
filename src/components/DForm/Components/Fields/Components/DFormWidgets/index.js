@@ -13,8 +13,6 @@ import { DFormResourceWidget } from "./Components/DFormResourceWidget";
 
 import { FieldTypes } from "components/DForm/constants";
 
-// const { text, file, fileList, textArea, select, longText, boolean, number, date, multiSelect, helpText } = FIELD_TYPES;
-
 const dFormWidgets = {
   [FieldTypes.Text]: DFormTextWidget,
   [FieldTypes.Date]: DFormDateWidget,

@@ -39,7 +39,21 @@ export const DFormDateWidget = (props) => {
 
   const type = getInputTypeByFormat(format);
 
-  const onChange = (event) => propOnChange(event.target.value);
+  const onChange = (event) => propOnChange(event.target.valueAsDate.toISOString());
+
+  const getValue = () => {
+    if (typeof value === "string" && value.length > 0) {
+      switch (format) {
+        case DateWidgetFormatTypes.Date:
+          return value.substring(0, 10);
+        case DateWidgetFormatTypes.Time:
+          return value.slice(0, -1);
+        default:
+          return "";
+      }
+    }
+    return value;
+  };
 
   return (
     <DFormFieldContainer
@@ -51,7 +65,14 @@ export const DFormDateWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={classnames(className)}
     >
-      <input id={id} value={value} type={type} onChange={onChange} disabled={isDisabled} className="dform-date-field" />
+      <input
+        id={id}
+        value={getValue()}
+        type={type}
+        onChange={onChange}
+        disabled={isDisabled}
+        className="dform-date-field"
+      />
     </DFormFieldContainer>
   );
 };

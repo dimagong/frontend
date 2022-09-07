@@ -157,8 +157,9 @@ const FormComponent = (props) => {
               label={label}
               value={value}
               options={options}
-              isError={false}
+              format={field.format}
               uiStyle={field.uiStyle}
+              isError={false}
               isDisabled={field.isDisabled}
               isRequired={field.isRequired}
               isLabelShowing={field.isLabelShowing}

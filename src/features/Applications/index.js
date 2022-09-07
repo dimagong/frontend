@@ -59,7 +59,7 @@ const mutateApplication = (applicationData, mutation) => {
   if (isValid) {
     const { name, description, isPrivate, type, errors, organization, ...schema } = applicationData;
 
-    mutation.mutate({
+    return mutation.mutateAsync({
       name,
       description,
       is_private: isPrivate,
@@ -411,7 +411,9 @@ const Applications = ({ isCreate }) => {
       }
 
       setApplicationData(dataToSave);
-      mutateApplication(dataToSave, updateApplicationMutation);
+
+      const mutation = isCreate ? createApplicationMutation : updateApplicationMutation;
+      mutateApplication(dataToSave, mutation);
     } else {
       //Todo change it in future to displaying errors under the elements where its occur
       toast.error(errors.message);
