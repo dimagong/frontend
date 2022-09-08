@@ -1,4 +1,4 @@
-import { FieldTypes } from "components/DForm/constants";
+import { FieldTypes } from "components/DForm";
 import { DCRFieldControlValue } from "features/Applications/fieldConditionModel";
 
 export enum DCRSupportedFieldTypes {

@@ -4,6 +4,12 @@ const DFormContext = createContext();
 
 export const useDFormContext = () => useContext(DFormContext);
 
-export const DFormContextProvider = ({ dFormId = null, isConfigurable, isMemberView = false, children }) => {
-  return <DFormContext.Provider value={{ dFormId, isConfigurable, isMemberView }}>{children}</DFormContext.Provider>;
+export const DFormContextProvider = (props) => {
+  const { dFormId = null, accessType, isConfigurable, isMemberView = false, children } = props;
+
+  return (
+    <DFormContext.Provider value={{ dFormId, accessType, isConfigurable, isMemberView }}>
+      {children}
+    </DFormContext.Provider>
+  );
 };

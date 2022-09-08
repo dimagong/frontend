@@ -11,7 +11,7 @@ import { DFormMultiSelectWidget } from "./Components/DFormMultiSelectWidget";
 import { DFormHelpTextWidget } from "./Components/DFormHelpTextWidget";
 import { DFormResourceWidget } from "./Components/DFormResourceWidget";
 
-import { FieldTypes } from "components/DForm/constants";
+import { FieldTypes } from "components/DForm";
 
 const dFormWidgets = {
   [FieldTypes.Text]: DFormTextWidget,

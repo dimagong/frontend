@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { ElementTypes, FieldTypes } from "components/DForm/constants";
+import { ElementTypes, FieldTypes } from "components/DForm";
 
 import { DATE_WIDGET_FORMATS } from "./constants";
 
