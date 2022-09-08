@@ -129,7 +129,7 @@ export const CreateApplicationPage = () => {
                     Duplicate an existing dForm
                   </Button>
                   <Button color="primary" onClick={() => setIsCreateModalVisible(true)}>
-                    Create form scratch
+                    Create from scratch
                   </Button>
                 </div>
               </Col>
