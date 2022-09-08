@@ -10,7 +10,7 @@ import { Button, TabContent, TabPane } from "reactstrap";
 import DForm from "components/DForm";
 import CustomTabs from "components/Tabs";
 import ContextTemplate from "components/ContextTemplate";
-import { ELEMENT_TYPES } from "components/DForm/constants";
+import { ElementTypes } from "components/DForm/constants";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
 import appSlice from "app/slices/appSlice";
@@ -269,13 +269,13 @@ const Applications = ({ isCreate }) => {
     const dataClone = cloneDeep(applicationData);
 
     switch (element.elementType) {
-      case ELEMENT_TYPES.section:
+      case ElementTypes.Section:
         handleSectionDelete(element, dataClone);
         break;
-      case ELEMENT_TYPES.group:
+      case ElementTypes.Group:
         handleGroupDelete(element, dataClone);
         break;
-      case ELEMENT_TYPES.field:
+      case ElementTypes.Field:
         handleFieldDelete(element, dataClone);
         break;
       default:
@@ -321,7 +321,7 @@ const Applications = ({ isCreate }) => {
   const validateElement = (element) => {
     let elementValidationSchema = elementValidationSchemas[element.elementType];
 
-    if (element.elementType === ELEMENT_TYPES.field) {
+    if (element.elementType === ElementTypes.Field) {
       //get validation schema for field depending on type
       elementValidationSchema = elementValidationSchema[element.type];
     }
@@ -333,7 +333,7 @@ const Applications = ({ isCreate }) => {
     try {
       elementValidationSchema.validateSync(element, { context: { application: applicationData } });
 
-      if (element.elementType === ELEMENT_TYPES.field && !FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type)) {
+      if (element.elementType === ElementTypes.Field && !FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type)) {
         const masterSchemaUsedPropertiesList = Object.values(applicationData.fields).reduce((acc, curr) => {
           if (curr.id !== element.id && curr.masterSchemaFieldId) {
             acc.push(curr.masterSchemaFieldId);
@@ -404,7 +404,7 @@ const Applications = ({ isCreate }) => {
 
       let dataToSave;
 
-      if (selectedElement.elementType === ELEMENT_TYPES.field) {
+      if (selectedElement.elementType === ElementTypes.Field) {
         dataToSave = embedSuggestedChanges(selectedElement);
       } else {
         dataToSave = embedSuggestedChanges(selectedElement);
@@ -428,7 +428,7 @@ const Applications = ({ isCreate }) => {
   // ToDo: remove edited
   const handleElementChange = (elementData) => {
     let element;
-    if (elementData.elementType === ELEMENT_TYPES.field) {
+    if (elementData.elementType === ElementTypes.Field) {
       element = DFormFieldModel.from(elementData);
       element.edited = true;
     } else {
@@ -494,13 +494,13 @@ const Applications = ({ isCreate }) => {
 
   const handleReorder = (result) => {
     switch (result.type) {
-      case ELEMENT_TYPES.section:
+      case ElementTypes.Section:
         handleSectionReorder(result);
         break;
-      case ELEMENT_TYPES.group:
+      case ElementTypes.Group:
         handleGroupReorder(result);
         break;
-      case ELEMENT_TYPES.field:
+      case ElementTypes.Field:
         handleFieldReorder(result);
         break;
       default:

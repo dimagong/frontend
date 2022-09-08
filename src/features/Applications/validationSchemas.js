@@ -1,12 +1,10 @@
 import * as yup from "yup";
 
-import { ELEMENT_TYPES, FIELD_TYPES } from "components/DForm/constants";
+import { ElementTypes, FieldTypes } from "components/DForm/constants";
 
 import { DATE_WIDGET_FORMATS } from "./constants";
 
 const { object, string, number } = yup;
-
-const fieldTypesArray = Object.values(FIELD_TYPES);
 
 // ToDo: handle it
 const dynamicRenderValidation = object({});
@@ -53,7 +51,7 @@ const minimumMaximumSchema = object({
 
 export const fieldCommonSchema = yup.object().shape({
   id: yup.string().required(),
-  type: yup.string().oneOf(fieldTypesArray),
+  type: yup.string().oneOf(Object.values(FieldTypes)).required(),
   title: yup.string().required(),
   isRequired: yup.boolean(),
   classes: yup.string(),
@@ -92,7 +90,7 @@ export const fieldCommonSchema = yup.object().shape({
 
 const htmlTextSchema = yup.object().shape({
   id: yup.string().required(),
-  type: yup.string().oneOf(fieldTypesArray),
+  type: yup.string().oneOf(Object.values(FieldTypes)).required(),
   classes: yup.string(),
 });
 
@@ -109,18 +107,18 @@ const dateElementSchema = object({
 });
 
 const fieldSpecificValidationSchemas = {
-  [FIELD_TYPES.text]: fieldCommonSchema.concat(textElementSchema),
-  [FIELD_TYPES.date]: fieldCommonSchema.concat(dateElementSchema),
-  [FIELD_TYPES.file]: fieldCommonSchema,
-  [FIELD_TYPES.select]: fieldCommonSchema,
-  [FIELD_TYPES.number]: fieldCommonSchema.concat(numberElementSchema),
-  [FIELD_TYPES.boolean]: fieldCommonSchema,
-  [FIELD_TYPES.longText]: fieldCommonSchema.concat(longTextElementSchema),
-  [FIELD_TYPES.textArea]: fieldCommonSchema.concat(textareaElementSchema),
-  [FIELD_TYPES.fileList]: fieldCommonSchema,
-  [FIELD_TYPES.resource]: fieldCommonSchema,
-  [FIELD_TYPES.helpText]: htmlTextSchema,
-  [FIELD_TYPES.multiSelect]: fieldCommonSchema,
+  [FieldTypes.Text]: fieldCommonSchema.concat(textElementSchema),
+  [FieldTypes.Date]: fieldCommonSchema.concat(dateElementSchema),
+  [FieldTypes.Select]: fieldCommonSchema,
+  [FieldTypes.LongText]: fieldCommonSchema.concat(longTextElementSchema),
+  [FieldTypes.TextArea]: fieldCommonSchema.concat(textareaElementSchema),
+  [FieldTypes.Number]: fieldCommonSchema.concat(numberElementSchema),
+  [FieldTypes.Boolean]: fieldCommonSchema,
+  [FieldTypes.MultiSelect]: fieldCommonSchema,
+  [FieldTypes.File]: fieldCommonSchema,
+  [FieldTypes.FileList]: fieldCommonSchema,
+  [FieldTypes.Resource]: fieldCommonSchema,
+  [FieldTypes.HelpText]: htmlTextSchema,
 };
 
 export const groupValidationSchema = dynamicRenderValidation.shape({
@@ -157,9 +155,9 @@ export const sectionValidationSchema = dynamicRenderValidation.shape({
 });
 
 export const elementValidationSchemas = {
-  [ELEMENT_TYPES.field]: fieldSpecificValidationSchemas,
-  [ELEMENT_TYPES.group]: groupValidationSchema,
-  [ELEMENT_TYPES.section]: sectionValidationSchema,
+  [ElementTypes.Field]: fieldSpecificValidationSchemas,
+  [ElementTypes.Group]: groupValidationSchema,
+  [ElementTypes.Section]: sectionValidationSchema,
 };
 
 export const MSPropertyValidationSchema = yup

@@ -3,7 +3,7 @@ import "./styles.scss";
 import React from "react";
 import { Plus } from "react-feather";
 
-import { ELEMENT_TYPES } from "components/DForm/constants";
+import { ElementTypes } from "components/DForm/constants";
 
 import Fields from "../Fields";
 
@@ -34,7 +34,7 @@ const Groups = (props) => {
           return null;
         }
 
-        const isSelected = selectedElement?.elementType === ELEMENT_TYPES.group && selectedElement?.id === group.id;
+        const isSelected = selectedElement?.elementType === ElementTypes.Group && selectedElement?.id === group.id;
 
         return (
           <div className="group" key={sectionGroup}>
