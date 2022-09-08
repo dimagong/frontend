@@ -7,14 +7,14 @@ import { Button, Col, Row } from "reactstrap";
 import { useApplicationResourceManagerFields } from "features/Applications/applicationQueries";
 import {
   DATE_WIDGET_FORMATS,
-  FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
   ResourceCompileOptionLabel,
+  FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
 } from "features/Applications/constants";
 
 import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
-import { FieldTypes, FIELD_TYPES } from "components/DForm/constants";
+import { FieldTypes } from "components/DForm/constants";
 import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormFieldLabel";
 import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
@@ -429,7 +429,7 @@ const FieldProperties = (props) => {
         id="field-type"
         label="Element type"
         value={{ value: element.type, label: element.type }}
-        options={Object.values(FIELD_TYPES).map((type) => ({ value: type, label: type }))}
+        options={Object.values(FieldTypes).map((type) => ({ value: type, label: type }))}
         isError={false}
         isRequired={false}
         isDisabled={false}
