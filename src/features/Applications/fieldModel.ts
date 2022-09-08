@@ -13,6 +13,7 @@ interface CommonFieldProperties<T extends FieldTypes> {
   classes: FieldClassTypes;
   isRequired: boolean;
   isDisabled: boolean;
+  isProtected: boolean;
   isLabelShowing: boolean;
   masterSchemaFieldId: string | number;
   conditions: AbstractDFormFieldConditionModel[];
@@ -84,45 +85,49 @@ const deleteUndefinedKeys = <T>(instance: T): T => {
   return instance as T;
 };
 
-export abstract class AbstractDFormFieldModel {
+export abstract class AbstractDFormFieldModel implements CommonFieldProperties<any> {
   /**
-   * An element type.
+   * Indicates a field element type.
    */
   readonly elementType: ElementTypes = ElementTypes.Field;
   /**
-   * An id of a group which contains that field.
+   * Indicates a unique identifier (ID) of an owning group.
    */
   groupId: string;
   /**
-   * A type to determine field specific.
+   * Indicates a field type.
    */
   type: FieldTypes = FieldTypes.Text;
   /**
-   * A title used as a label of a field.
+   * Represents a caption for an item in a user interface.
    */
   title: string = "New Field";
   /**
-   * Determines the needs to handle that field on submission.
+   * Indicates that the user must specify a value for the field before the owning form can be submitted.
    */
   isRequired: boolean = false;
   /**
-   * A UI state of a field to lock/unlock field filling in.
+   * Makes a field not mutable, focusable or even submitted with a form.
    */
   isDisabled: boolean = false;
   /**
-   * Determines the needs in UI to show/hide a field label.
+   * Indicates that the field is not yet, or no longer, relevant for users who are filling out the owning form.
+   */
+  isProtected: boolean = false;
+  /**
+   * Indicates that a field title is shown/hidden.
    */
   isLabelShowing: boolean = true;
   /**
-   * An id of a related master schema field.
+   * Indicates a unique identifier (ID) of a related master schema field.
    */
   masterSchemaFieldId: string | number;
   /**
-   * A html class that will consume by field wrapper. Used to control a field layout.
+   * A html class value that will be consumed by field wrapper.
    */
   classes: FieldClassTypes = FieldClassTypes.ColMd12;
   /**
-   * An array of field dynamic conditional render conditions.
+   * Field conditions.
    */
   conditions: AbstractDFormFieldConditionModel[] = [];
   /**
@@ -178,6 +183,7 @@ export class DFormFieldModel extends AbstractDFormFieldModel {
     this.groupId = properties.groupId ?? this.groupId;
     this.isRequired = properties.isRequired ?? this.isRequired;
     this.isDisabled = properties.isDisabled ?? this.isDisabled;
+    this.isProtected = properties.isProtected ?? this.isProtected;
     this.isLabelShowing = properties.isLabelShowing ?? this.isLabelShowing;
     this.masterSchemaFieldId = properties.masterSchemaFieldId ?? this.masterSchemaFieldId;
     this.classes = properties.classes ?? this.classes;

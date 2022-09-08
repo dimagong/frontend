@@ -36,6 +36,23 @@ export const FieldRequiredEditProperty = ({ element, onFieldChange }) => {
   );
 };
 
+export const FieldProtectedEditProperty = ({ element, onFieldChange }) => {
+  const onProtectedChange = () => onFieldChange("isProtected", element.isProtected);
+
+  return (
+    <DFormBooleanWidget
+      id="field-protected"
+      label="Is protected"
+      value={element.isProtected}
+      isError={false}
+      isRequired={false}
+      isDisabled={false}
+      isLabelShowing={true}
+      onChange={onProtectedChange}
+    />
+  );
+};
+
 export const FieldLabelShowingEditProperty = ({ element, onFieldChange }) => {
   const onLabelShowingChange = () => onFieldChange("isLabelShowing", !element.isLabelShowing);
 
@@ -55,12 +72,15 @@ export const FieldLabelShowingEditProperty = ({ element, onFieldChange }) => {
 
 export const FieldDefaultEditProperties = ({ element, onFieldChange }) => {
   return (
-    <Row className="mb-2">
-      <Col md="6">
+    <Row>
+      <Col md="12" className="mb-2">
         <FieldRequiredEditProperty element={element} onFieldChange={onFieldChange} />
       </Col>
-      <Col md="6">
+      <Col md="12" className="mb-2">
         <FieldLabelShowingEditProperty element={element} onFieldChange={onFieldChange} />
+      </Col>
+      <Col md="12">
+        <FieldProtectedEditProperty element={element} onFieldChange={onFieldChange} />
       </Col>
     </Row>
   );
@@ -289,15 +309,21 @@ export const FieldHelpTextEditProperties = ({ element, onFieldChange }) => {
   const onChange = (value) => onFieldChange("helpTextValue", value ?? "");
 
   return (
-    <>
-      <WysiwygEditor
-        id="field-help-text"
-        type="text"
-        data={element.helpTextValue}
-        placeholder="Description"
-        onChange={onChange}
-      />
-    </>
+    <Row>
+      <Col md="12" className="mb-2">
+        <WysiwygEditor
+          id="field-help-text"
+          type="text"
+          data={element.helpTextValue}
+          placeholder="Description"
+          onChange={onChange}
+        />
+      </Col>
+
+      <Col md="12">
+        <FieldProtectedEditProperty element={element} onFieldChange={onFieldChange} />
+      </Col>
+    </Row>
   );
 };
 
@@ -373,8 +399,11 @@ export const FieldResourceEditProperties = ({ element, organization, onFieldChan
       </Row>
 
       <Row className="mb-2">
-        <Col md="12">
+        <Col md="12" className="mb-2">
           <FieldLabelShowingEditProperty element={element} onFieldChange={onFieldChange} />
+        </Col>
+        <Col md="12">
+          <FieldProtectedEditProperty element={element} onFieldChange={onFieldChange} />
         </Col>
       </Row>
     </>

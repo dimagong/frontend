@@ -90,7 +90,7 @@ export const fieldCommonSchema = yup.object().shape({
 
 const htmlTextSchema = yup.object().shape({
   id: yup.string().required(),
-  type: yup.string().isType(FieldTypes.HelpText).required(),
+  type: yup.string().oneOf(Object.values(FieldTypes)).required(),
   classes: yup.string(),
 });
 
