@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 import { Plus } from "react-feather";
 
-import { ElementTypes, FieldTypes } from "components/DForm/constants";
+import { ElementTypes, FieldTypes } from "components/DForm";
 
 import formComponents from "./Components/DFormWidgets";
 

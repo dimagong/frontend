@@ -1,9 +1,3 @@
-export enum ElementTypes {
-  Group = "group",
-  Field = "field",
-  Section = "section",
-}
-
 export enum FieldTypes {
   Text = "text",
   Date = "date",

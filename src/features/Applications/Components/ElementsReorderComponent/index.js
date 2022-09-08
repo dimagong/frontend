@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ElementTypes } from "components/DForm/constants";
+import { ElementTypes } from "components/DForm";
 
 import NestedOrderComponent from "./NestedOrderComponent";
 

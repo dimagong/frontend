@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 
-import { ElementTypes, FieldTypes } from "components/DForm/constants";
+import { ElementTypes, FieldTypes } from "components/DForm";
 
 import { AbstractDFormFieldConditionModel } from "./fieldConditionModel";
 import { DateWidgetFormatTypes, FieldClassTypes, FieldUIStyles, ResourceCompileOptionTypes } from "./constants";

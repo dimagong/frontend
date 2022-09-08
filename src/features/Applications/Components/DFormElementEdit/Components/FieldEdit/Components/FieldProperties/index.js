@@ -12,7 +12,7 @@ import {
 import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
-import { FieldTypes } from "components/DForm/constants";
+import { FieldTypes } from "components/DForm";
 import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormFieldLabel";
 import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";

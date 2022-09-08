@@ -2,7 +2,7 @@ import React from "react";
 
 import { FIELD_STYLES_CLASSES, MULTI_SELECT_UI_STYLES } from "features/Applications/constants";
 
-import { FieldTypes } from "components/DForm/constants";
+import { FieldTypes } from "components/DForm";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
 const defaultUIStyle = { label: "default", value: null };

@@ -1,4 +1,4 @@
-import { ElementTypes, FieldTypes } from "components/DForm/constants";
+import { ElementTypes, FieldTypes } from "components/DForm";
 
 export const INITIAL_APPLICATION_DATA = {
   type: "application",

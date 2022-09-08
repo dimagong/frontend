@@ -4,7 +4,7 @@ import React from "react";
 import { X } from "react-feather";
 import { Button } from "reactstrap";
 
-import { ElementTypes } from "components/DForm/constants";
+import { ElementTypes } from "components/DForm";
 
 import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
 
