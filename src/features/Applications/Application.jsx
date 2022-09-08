@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, TabContent, TabPane } from "reactstrap";
 
-import DForm from "components/DForm";
+import { DForm } from "components/DForm";
 import CustomTabs from "components/Tabs";
 import ContextTemplate from "components/ContextTemplate";
 import { ElementTypes } from "components/DForm/constants";

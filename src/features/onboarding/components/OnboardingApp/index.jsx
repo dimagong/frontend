@@ -10,7 +10,7 @@ import {
   useSubmitDFormForReviewMutation,
 } from "api/Onboarding/prospectUserQuery";
 
-import DForm from "components/DForm";
+import { DForm } from "components/DForm";
 import LoadingButton from "components/LoadingButton";
 
 import Check from "assets/img/icons/check.png";

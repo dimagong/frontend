@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardHeader, CardTitle, CardBody, Col } from "reactstrap";
 
-import DForm from "components/DForm";
+import { DForm } from "components/DForm";
 
 import appSlice from "app/slices/appSlice";
 import { selectManager } from "app/selectors";
