@@ -1,5 +1,3 @@
-import "./styles.scss";
-
 import React from "react";
 import { toast } from "react-toastify";
 import { Button, Col, Row } from "reactstrap";
