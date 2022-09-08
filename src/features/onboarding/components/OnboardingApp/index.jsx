@@ -22,7 +22,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
 
   const [applicationValues, setApplicationValues] = useState(null);
 
-  const appProperties =
+  /*const appProperties =
     applicationSchema && applicationValues
       ? Object.values(applicationSchema.fields).map((app) => {
           return {
@@ -30,7 +30,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
             ...app,
           };
         })
-      : [];
+      : [];*/
 
   const { isLoading: isFormLoading } = useDFormByIdQuery(
     { id: selectedForm.id },
@@ -85,13 +85,15 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   };
 
   const handleApplicationSubmit = () => {
-    const checkFields = validateFieldsSubmit(appProperties);
+    // ToDo: turn on validation
+    /*const checkFields = validateFieldsSubmit(appProperties);
     if (checkFields) {
       console.log("checkFields error", checkFields);
       toast.error(checkFields.errors.message);
     } else {
       submitDFormForReview.mutate();
-    }
+    }*/
+    submitDFormForReview.mutate();
   };
 
   const validateFields = (field) => {
@@ -110,13 +112,15 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
       [field.masterSchemaFieldId]: { ...(applicationValues[field.masterSchemaFieldId] || {}), value },
     });
 
-    const { errors } = validateFields({ value, ...field });
+    // ToDo: turn on validation
+    /*const { errors } = validateFields({ value, ...field });
     if (errors) {
       console.log("validateFields errors", errors);
       toast.error(errors.message);
     } else {
       throttleOnSave.current({ master_schema_field_id: field.masterSchemaFieldId, value });
-    }
+    }*/
+    throttleOnSave.current({ master_schema_field_id: field.masterSchemaFieldId, value });
   };
 
   // TODO make dform disabled on user-lock
