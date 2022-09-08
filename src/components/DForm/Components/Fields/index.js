@@ -23,15 +23,15 @@ const FormComponent = (props) => {
     data,
     values,
     group,
+    isDisabled: propIsDisabled,
     groupFields,
-    isConfigurable,
     selectedElement,
     onElementClick: propOnElementClick,
     onFieldChange,
     onFieldCreate,
   } = props;
 
-  const { accessType } = useDFormContext();
+  const { accessType, isConfigurable } = useDFormContext();
 
   return (
     <>
@@ -52,7 +52,7 @@ const FormComponent = (props) => {
         const isSelected = selectedElement?.elementType === ElementTypes.Field && selectedElement?.id === field.id;
 
         // An DForm's fields can be disabled by DForm AccessType. Currently, only user-lock is used.
-        const isDisabled = accessType === AccessTypes.UserLock || field.isDisabled;
+        const isDisabled = accessType === AccessTypes.UserLock || propIsDisabled || field.isDisabled;
 
         // Getting a field value depending on its type and is it master schema element or not.
         // It can be refactored later, for example, a DForm can have a construction block that is not always like form

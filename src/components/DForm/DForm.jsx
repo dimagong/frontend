@@ -112,9 +112,9 @@ export const DForm = (props) => {
   return (
     <DFormContextProvider
       dFormId={dFormId}
-      isConfigurable={isConfigurable}
       accessType={accessType}
       isMemberView={isMemberView}
+      isConfigurable={isConfigurable}
     >
       <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
         <SectionsSideBar
@@ -130,7 +130,6 @@ export const DForm = (props) => {
         <SectionsComponent
           data={data}
           values={isConfigurable ? null : values}
-          isConfigurable={isConfigurable}
           selectedSection={selectedSection}
           selectedElement={isConfigurable ? selectedElement : null}
           onElementClick={isConfigurable ? handleElementClick : () => {}}
