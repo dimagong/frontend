@@ -2,7 +2,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import { Button, Col, Row } from "reactstrap";
 
-import { useApplicationResourceManagerFields } from "features/Applications/applicationQueries";
+import { useApplicationResourceManagerFields } from "../../../../../../../data/applicationQueries";
 import {
   DATE_WIDGET_FORMATS,
   ResourceCompileOptionLabel,

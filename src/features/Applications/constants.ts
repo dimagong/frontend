@@ -5,12 +5,10 @@ export const INITIAL_APPLICATION_DATA = {
   name: "",
   description: "",
   isPrivate: false,
-  organization: null,
   sectionsOrder: [],
   sections: {},
   groups: {},
   fields: {},
-  errors: {},
 };
 
 export const APPLICATION_PAGES = {

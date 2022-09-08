@@ -9,10 +9,7 @@ import { useDFormContext } from "../../DFormContext";
 
 const DFormElement = ({ classes, isSelected, onClick, children }) => {
   return (
-    <div
-      onClick={onClick}
-      className={classnames("editable px-0 custom-form-field", classes || "col-12", { selected: isSelected })}
-    >
+    <div onClick={onClick} className={classnames("editable mb-4", classes || "col-12", { selected: isSelected })}>
       {children}
     </div>
   );
