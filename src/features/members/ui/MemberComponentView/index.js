@@ -11,10 +11,13 @@ import Check from "assets/img/icons/check.png";
 
 import NpmCardSurvey from "../MemberCardPassSurveyView";
 import MemberSurveyView from "../MemberSurveyView";
+import { TypeConstants } from "./../../data/constants/typeApplication";
 
-// import OnboardingApp from "./../../components/OnboardingApp";
 //import OnboardingSurvey from "../../OnboardingSurvey";
-// import StatusComponent from "../Components/StatusComponent";
+import StatusComponent from "../../../onboarding/components/Components/StatusComponent";
+//"../Components/StatusComponent";
+import OnboardingApp from "../../../onboarding/components/OnboardingApp";
+//"./../../components/OnboardingApp";
 
 const MemberComponentView = ({ profile, userApplications, initialOnboarding, dForms, surveys }) => {
   const [forceAppShow, setForceAppShow] = useState([]);
@@ -73,7 +76,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
   };
 
   const unCompletedApplications = userApplications.filter((application) => {
-    if (application.type === "dform") {
+    if (application.type === TypeConstants.DFORM) {
       return !(application?.status === "approved" || application?.status === "submitted");
     } else {
       return !application.finished_at;
@@ -87,7 +90,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
   const organization = profile?.permissions?.organization ?? "Surveys organization";
   return (
     <>
-      <Row style={{ background: "#f4f4f4б", display: "flex", height: "calc(100vh - 80px)" }}>
+      <Row style={{ background: "#f4f4f4б", display: "flex", minHeight: "calc(100vh - 80px)" }}>
         <Col span={1}>
           <MemberMenuView dForms={dForms} surveys={surveys} setActiveAppOnboarding={setActiveAppOnboarding} />
           {/*
@@ -111,7 +114,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
             justifyContent: "center",
           }}
         >
-          {appActiveOnboarding.type === "survey" && (
+          {appActiveOnboarding.type === TypeConstants.SURVEY && (
             <>
               <MemberSurveyView
                 selectedSurveyId={appActiveOnboarding.id}
@@ -120,6 +123,28 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
                 isAllApplicationsCompleted={!unCompletedApplications.length}
                 organization={organization}
               />
+            </>
+          )}
+          {appActiveOnboarding.type === TypeConstants.DFORM && (
+            <>
+              <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
+                <h2 className="onboarding-title">{appActiveOnboarding?.title || appActiveOnboarding?.name}</h2>
+                {!isEmpty(appActiveOnboarding) &&
+                  (isShowStatus(appActiveOnboarding) ? (
+                    <StatusComponent
+                      status={(recentlySubmitted && "recent") || appActiveOnboarding?.status}
+                      application={appActiveOnboarding}
+                      isAllApplicationsCompleted={!unCompletedApplications.length}
+                      onForceApplicationShow={() => showApplication(appActiveOnboarding.id)}
+                    />
+                  ) : (
+                    <OnboardingApp
+                      profile={profile}
+                      selectedForm={appActiveOnboarding}
+                      setRecentlySubmitted={setRecentlySubmitted}
+                    />
+                  ))}
+              </div>
             </>
           )}
         </Col>

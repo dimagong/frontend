@@ -26,7 +26,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     applicationSchema && applicationValues
       ? Object.values(applicationSchema.fields).map((app) => {
           return {
-            value: applicationValues[app.masterSchemaFieldId].value,
+            value: applicationValues[app.masterSchemaFieldId]?.value || "",
             ...app,
           };
         })
@@ -140,7 +140,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     <div>
       <DForm
         isMemberView
-        dFormId={applicationSchema.id}
+        dFormId={applicationSchema?.id}
         // disabled={isFormLocked()}
         data={applicationSchema}
         values={applicationValues}
