@@ -4,12 +4,6 @@ export enum ElementTypes {
   Section = "section",
 }
 
-export const ELEMENT_TYPES = {
-  [ElementTypes.Group]: ElementTypes.Group,
-  [ElementTypes.Field]: ElementTypes.Field,
-  [ElementTypes.Section]: ElementTypes.Section,
-};
-
 export enum FieldTypes {
   Text = "text",
   Date = "date",

@@ -1,4 +1,4 @@
-import { ELEMENT_TYPES, FIELD_TYPES } from "components/DForm/constants";
+import { ElementTypes, FIELD_TYPES } from "components/DForm/constants";
 
 export const INITIAL_APPLICATION_DATA = {
   type: "application",
@@ -28,9 +28,9 @@ export const EDIT_OPTIONS = {
 };
 
 export const ELEMENT_TYPE_SPECIFIC_EDIT_OPTIONS = {
-  [ELEMENT_TYPES.field]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.styling, EDIT_OPTIONS.dynamicRendering],
-  [ELEMENT_TYPES.group]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.dynamicRendering],
-  [ELEMENT_TYPES.section]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.dynamicRendering],
+  [ElementTypes.Field]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.styling, EDIT_OPTIONS.dynamicRendering],
+  [ElementTypes.Group]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.dynamicRendering],
+  [ElementTypes.Section]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.dynamicRendering],
 };
 
 export const INITIAL_SECTION_DATA = {

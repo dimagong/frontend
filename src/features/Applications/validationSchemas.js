@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { ELEMENT_TYPES, FIELD_TYPES } from "components/DForm/constants";
+import { ElementTypes, FIELD_TYPES } from "components/DForm/constants";
 
 import { DATE_WIDGET_FORMATS } from "./constants";
 
@@ -157,9 +157,9 @@ export const sectionValidationSchema = dynamicRenderValidation.shape({
 });
 
 export const elementValidationSchemas = {
-  [ELEMENT_TYPES.field]: fieldSpecificValidationSchemas,
-  [ELEMENT_TYPES.group]: groupValidationSchema,
-  [ELEMENT_TYPES.section]: sectionValidationSchema,
+  [ElementTypes.Field]: fieldSpecificValidationSchemas,
+  [ElementTypes.Group]: groupValidationSchema,
+  [ElementTypes.Section]: sectionValidationSchema,
 };
 
 export const MSPropertyValidationSchema = yup

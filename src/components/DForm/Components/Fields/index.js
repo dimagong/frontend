@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 import { Plus } from "react-feather";
 
-import { ELEMENT_TYPES, FieldTypes } from "components/DForm/constants";
+import { ElementTypes, FieldTypes } from "components/DForm/constants";
 
 import formComponents from "./Components/DFormWidgets";
 
@@ -55,7 +55,7 @@ const FormComponent = (props) => {
 
         // An DForm template can be selected, it should be refactored, cause FormField should not know
         // anything about DForm creating process.
-        const isSelected = selectedElement?.elementType === ELEMENT_TYPES.field && selectedElement?.id === field.id;
+        const isSelected = selectedElement?.elementType === ElementTypes.Field && selectedElement?.id === field.id;
 
         // Getting a field value depending on its type and is it master schema element or not.
         // It can be refactored later, for example, a DForm can have a construction block that is not always like form
