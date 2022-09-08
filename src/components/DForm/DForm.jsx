@@ -73,6 +73,7 @@ export const DForm = (props) => {
     isMemberView,
     selectedElement,
     onGroupCreate,
+    accessType,
     isConfigurable,
     onElementClick,
     onSectionCreate,
@@ -109,7 +110,12 @@ export const DForm = (props) => {
   };
 
   return (
-    <DFormContextProvider dFormId={dFormId} isConfigurable={isConfigurable} isMemberView={isMemberView}>
+    <DFormContextProvider
+      dFormId={dFormId}
+      isConfigurable={isConfigurable}
+      accessType={accessType}
+      isMemberView={isMemberView}
+    >
       <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
         <SectionsSideBar
           errors={[]}

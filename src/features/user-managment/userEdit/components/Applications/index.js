@@ -121,6 +121,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
               onRefetch={handleApplicationReFetch}
               dFormId={applicationData.id}
               formData={applicationData.schema}
+              accessType={applicationData.access_type}
               isManualSave={true}
               formValues={applicationValues}
             />

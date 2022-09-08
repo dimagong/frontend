@@ -1,5 +1,5 @@
 export enum ElementTypes {
-  Group = "group",
   Field = "field",
+  Group = "group",
   Section = "section",
 }
