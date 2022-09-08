@@ -8,9 +8,7 @@ import { Application } from "./Application";
 const Applications = ({ isCreate }) => {
   const selectedDForm = useSelector(selectdForm);
 
-  return selectedDForm ? (
-    <Application isCreate={isCreate} applicationId={selectedDForm.id} key={selectedDForm.id} />
-  ) : null;
+  return <Application isCreate={isCreate} applicationId={selectedDForm?.id} key={selectedDForm?.id ?? "create"} />;
 };
 
 export default Applications;
