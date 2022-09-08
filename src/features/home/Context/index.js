@@ -5,7 +5,6 @@ import UserEdit from "features/user-managment/userEdit/UserEdit";
 import UserCreate from "features/user-managment/userCreate/UserCreate";
 import UserInvitations from "features/user-managment/userInvitations/UserInvitations";
 import NotificationsForm from "features/onboarding/notifications/NotificationsForm";
-import DFormForm from "features/onboarding/dForm/DFormForm";
 import WorkflowForm from "features/onboarding/workflow/components/WorkflowForm";
 import Organization from "features/Organization";
 import SurveysDesigner from "features/Surveys/SurveysDesigner";
@@ -13,7 +12,7 @@ import Dashboard from "../ContextSearch/Dashboard";
 import MemberFirmsContainer from "../ContextSearch/MemberFirms";
 import MasterSchema from "../../MasterSchema";
 import ResourceManager from "../../ResourceManager";
-import Applications from "features/Applications";
+import { ApplicationsPage, CreateApplicationPage } from "features/Applications";
 
 const Context = ({ selectedContext }) => {
   const isCSshown = useSelector((state) => state.app.isContextSearchVisible);
@@ -30,8 +29,8 @@ const Context = ({ selectedContext }) => {
             Invitations: <UserInvitations />,
             "Create notification": <NotificationsForm isCreate={true} />,
             Notification: <NotificationsForm isCreate={false} />,
-            "Create dForm": <Applications isCreate={true} />,
-            dForm: <Applications isCreate={false} />,
+            "Create dForm": <CreateApplicationPage />,
+            dForm: <ApplicationsPage />,
             "Create workflow": <WorkflowForm workflowModalType="Create" />,
             WorkFlow: <WorkflowForm workflowModalType="Edit" />,
             Organization: <Organization />,

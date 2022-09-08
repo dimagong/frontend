@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import { toast } from "react-toastify";
+import React, { useReducer, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Col, Row } from "reactstrap";
 
 import appSlice from "app/slices/appSlice";
 
 import CustomModal from "components/CustomModal";
-import ContextTemplate from "components/ContextTemplate";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
 import {
   useApplicationsTemplatesQuery,
   useAllowedOrganizationsListQuery,
   useCopyApplicationTemplateMutation,
-} from "../../applicationQueries";
+  useCreateApplicationTemplateMutation,
+} from "../../data/applicationQueries";
+
+import { mutateApplication } from "../../data/mutateApplication";
+
+import { ApplicationWrapper } from "./ApplicationWrapper";
+import { ApplicationDescriptionFormFields } from "./ApplicationDescriptionFormFields";
+import { INITIAL_APPLICATION_DATA } from "../constants";
 
 const { setContext } = appSlice.actions;
 
@@ -22,41 +29,78 @@ const getOrganizationsAsOptions = (organizations) => organizations.map(getOrgani
 const getApplicationTemplateAsOption = (template) => ({ value: template, label: template.name });
 const getApplicationsTemplatesAsOptions = (templates) => templates.map(getApplicationTemplateAsOption);
 
-const NewApplicationInitForm = ({ userId, onDFormInitialize }) => {
+const initialApplicationDescriptionValues = { name: "", description: "", isPrivate: false };
+const applicationDescriptionReducer = (s, p) => ({ ...s, ...p });
+
+export const CreateApplicationPage = () => {
   const dispatch = useDispatch();
+
+  const [{ name, description, isPrivate }, setApplicationDescriptionValues] = useReducer(
+    applicationDescriptionReducer,
+    initialApplicationDescriptionValues
+  );
 
   const [organization, setOrganization] = useState(null);
   const [applicationTemplate, setApplicationTemplate] = useState(null);
-  const [isDFormTemplateSelectModalVisible, setIsDFormTemplateSelectModalVisible] = useState(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isDuplicateModalVisible, setIsDuplicateModalVisible] = useState(false);
 
-  const allowedOrganizations = useAllowedOrganizationsListQuery(
-    { userId },
-    { initialData: [], enabled: Boolean(userId) }
-  );
+  const allowedOrganizations = useAllowedOrganizationsListQuery({ initialData: [] });
   const applicationsTemplates = useApplicationsTemplatesQuery({ initialData: [], enabled: Boolean(organization) });
 
   const copyApplicationTemplate = useCopyApplicationTemplateMutation(
     { applicationId: applicationTemplate?.id },
     {
-      onSuccess: () => dispatch(setContext("dForm")),
+      onSuccess: () => {
+        dispatch(setContext("dForm"));
+        toast.success("Application duplicated");
+      },
+      onError: (error) => {
+        //TODO handle error
+        console.error(error);
+      },
     }
   );
+
+  const createApplicationMutation = useCreateApplicationTemplateMutation({
+    onSuccess: () => {
+      dispatch(setContext("dForm"));
+      toast.success("Application created");
+    },
+    onError: (error) => {
+      //TODO handle error
+      console.error(error);
+    },
+  });
 
   const onOrganizationChange = ({ value }) => setOrganization(value);
 
   const onApplicationTemplateChange = ({ value }) => setApplicationTemplate(value);
 
-  const initializeDForm = () => onDFormInitialize(organization);
+  const onCreateBtnSubmit = async () => {
+    await mutateApplication(
+      {
+        ...INITIAL_APPLICATION_DATA,
+        name,
+        description,
+        isPrivate,
+        organization,
+      },
+      createApplicationMutation
+    );
 
-  const onDuplicateBtnSubmit = () => {
+    setIsCreateModalVisible(false);
+  };
+
+  const onDuplicateBtnSubmit = async () => {
     if (!applicationTemplate) return;
 
-    copyApplicationTemplate.mutate();
-    setIsDFormTemplateSelectModalVisible(false);
+    await copyApplicationTemplate.mutateAsync();
+    setIsDuplicateModalVisible(false);
   };
 
   return (
-    <ContextTemplate contextTitle="Application">
+    <ApplicationWrapper>
       <div className="height-400">
         <Row className="mx-0">
           <Col md="12">
@@ -81,20 +125,38 @@ const NewApplicationInitForm = ({ userId, onDFormInitialize }) => {
                 <span>Please, create a dForm from scratch or use an existing dForm as a template</span>
                 <div className="application_delimiter" />
                 <div className="d-flex justify-content-between mt-2">
-                  <Button color="primary" onClick={() => setIsDFormTemplateSelectModalVisible(true)}>
+                  <Button color="primary" onClick={() => setIsDuplicateModalVisible(true)}>
                     Duplicate an existing dForm
                   </Button>
-                  <Button color="primary" onClick={initializeDForm}>
+                  <Button color="primary" onClick={() => setIsCreateModalVisible(true)}>
                     Create form scratch
                   </Button>
                 </div>
               </Col>
 
               <CustomModal
+                title="Create a dForm"
+                submitBtnText="Create"
+                isOpen={isCreateModalVisible}
+                onClose={() => setIsCreateModalVisible(false)}
+                onSubmit={onCreateBtnSubmit}
+                isSubmitProceed={createApplicationMutation.isLoading}
+              >
+                <div className="pb-2">
+                  <ApplicationDescriptionFormFields
+                    name={name}
+                    isPrivate={isPrivate}
+                    description={description}
+                    onChange={setApplicationDescriptionValues}
+                  />
+                </div>
+              </CustomModal>
+
+              <CustomModal
                 title="Select dForm"
                 submitBtnText="Duplicate"
-                isOpen={isDFormTemplateSelectModalVisible}
-                onClose={() => setIsDFormTemplateSelectModalVisible(false)}
+                isOpen={isDuplicateModalVisible}
+                onClose={() => setIsDuplicateModalVisible(false)}
                 onSubmit={onDuplicateBtnSubmit}
                 isSubmitProceed={copyApplicationTemplate.isLoading}
               >
@@ -121,8 +183,6 @@ const NewApplicationInitForm = ({ userId, onDFormInitialize }) => {
           ) : null}
         </Row>
       </div>
-    </ContextTemplate>
+    </ApplicationWrapper>
   );
 };
-
-export default NewApplicationInitForm;

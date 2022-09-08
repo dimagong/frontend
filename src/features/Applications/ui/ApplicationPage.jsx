@@ -1,115 +1,42 @@
-import "./styles.scss";
-
 import { v4 } from "uuid";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
 import { DForm, ElementTypes } from "components/DForm";
-import ContextTemplate from "components/ContextTemplate";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-
-import appSlice from "app/slices/appSlice";
-import { selectProfile } from "app/selectors";
-import onboardingSlice from "app/slices/onboardingSlice";
 
 import {
   APPLICATION_PAGES,
   INITIAL_GROUP_DATA,
   INITIAL_SECTION_DATA,
-  INITIAL_APPLICATION_DATA,
   FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
-} from "./constants";
-import {
-  useApplicationTemplateCreateMutation,
-  useApplicationTemplate,
-  useApplicationTemplateUpdateMutation,
-} from "./applicationQueries";
-import { DFormFieldModel } from "./fieldModel";
-import DFormElementEdit from "./Components/DFormElementEdit";
-import NewApplicationInitForm from "./Components/NewApplicationInitForm";
-import ApplicationDescription from "./Components/ApplicationDescription";
-import ElementsReorderComponent from "./Components/ElementsReorderComponent";
-import { applicationSubmitValidation } from "./applicationSubmitValidation";
-import { elementValidationSchemas, MSPropertyValidationSchema } from "./validationSchemas";
+} from "../constants";
+import { DFormFieldModel } from "../fieldModel";
+import DFormElementEdit from "../Components/DFormElementEdit";
+import ElementsReorderComponent from "../Components/ElementsReorderComponent";
+import { elementValidationSchemas, MSPropertyValidationSchema } from "../validationSchemas";
+import { useApplicationTemplateQuery, useUpdateApplicationTemplateMutation } from "../../data/applicationQueries";
 
-const { setContext } = appSlice.actions;
-const { setdForm } = onboardingSlice.actions;
+import { ApplicationWrapper } from "./ApplicationWrapper";
+import { mutateApplication } from "../../data/mutateApplication";
+import { ApplicationDescription } from "./ApplicationDescription";
 
 //TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
 // because of internal behavior of component
 
-const validateDescriptionDesignMode = (validData) => {
-  try {
-    applicationSubmitValidation.validateSync(validData, { abortEarly: false });
-  } catch (validationError) {
-    console.log("error", validationError);
-    return { isValid: false, errors: validationError };
-  }
-  return { isValid: true };
-};
-
-const mutateApplication = (applicationData, mutation) => {
-  const { isValid, errors: errValidation } = validateDescriptionDesignMode(applicationData);
-
-  if (isValid) {
-    const { name, description, isPrivate, type, errors, organization, ...schema } = applicationData;
-
-    return mutation.mutateAsync({
-      name,
-      description,
-      is_private: isPrivate,
-      groups: [{ group_id: organization.id, type: organization.type }],
-      schema,
-    });
-  } else {
-    toast.error(errValidation.message);
-  }
-};
-
-export const Application = ({ isCreate, applicationId }) => {
-  const dispatch = useDispatch();
-
-  const userProfile = useSelector(selectProfile);
-
+export const ApplicationPage = ({ applicationId }) => {
   const [applicationData, setApplicationData] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
 
-  const createApplicationMutation = useApplicationTemplateCreateMutation({
-    onSuccess: (data) => {
-      dispatch(setdForm(data));
-      dispatch(setContext("dForm"));
-      toast.success("Application created");
-    },
-    onError: () => {
-      //TODO handle error
-      console.error("application create error");
-    },
-  });
-
-  const updateApplicationMutation = useApplicationTemplateUpdateMutation(
+  const updateApplication = useUpdateApplicationTemplateMutation(
     { applicationId },
-    {
-      onSuccess: (data) => {
-        const { groups, schema, is_private, ...rest } = data;
-
-        const applicationData = {
-          organization: groups[0],
-          isPrivate: is_private,
-          ...schema,
-          ...rest,
-        };
-
-        setApplicationData(applicationData);
-        toast.success("Application saved");
-      },
-    }
+    { onSuccess: () => toast.success("Application saved") }
   );
 
-  const application = useApplicationTemplate(
+  const application = useApplicationTemplateQuery(
     { applicationId },
     {
       onSuccess: (data) => {
@@ -124,14 +51,13 @@ export const Application = ({ isCreate, applicationId }) => {
 
         setApplicationData(applicationData);
       },
-      enabled: Boolean(applicationId) && !isCreate && !createApplicationMutation.isLoading,
+      enabled: Boolean(applicationId),
       refetchOnWindowFocus: false,
     }
   );
 
-  const [isDFormInitialized, setIsDFormInitialized] = useState(false);
+  const [selectedPage, setSelectedPage] = useState(APPLICATION_PAGES.DESIGN);
   const [isModuleEditComponentVisible, setIsModuleEditComponentVisible] = useState(false);
-  const [selectedPage, setSelectedPage] = useState(isCreate ? APPLICATION_PAGES.DESCRIPTION : APPLICATION_PAGES.DESIGN);
 
   const getElementCollectionName = (element) => {
     let elementCollectionName;
@@ -410,8 +336,7 @@ export const Application = ({ isCreate, applicationId }) => {
 
       setApplicationData(dataToSave);
 
-      const mutation = isCreate ? createApplicationMutation : updateApplicationMutation;
-      mutateApplication(dataToSave, mutation);
+      mutateApplication(dataToSave, updateApplication);
     } else {
       //Todo change it in future to displaying errors under the elements where its occur
       toast.error(errors.message);
@@ -439,9 +364,7 @@ export const Application = ({ isCreate, applicationId }) => {
     setApplicationData(dataToSave);
   };
 
-  const handleApplicationDescriptionChange = (descriptionKey, value) => {
-    setApplicationData({ ...applicationData, [descriptionKey]: value });
-  };
+  const onApplicationDescriptionChange = (values) => setApplicationData({ ...applicationData, ...values });
 
   const handlePageChange = (page) => {
     if (selectedElement?.edited) {
@@ -451,13 +374,6 @@ export const Application = ({ isCreate, applicationId }) => {
     }
     handleElementChangesCancel();
     setSelectedPage(page);
-  };
-
-  const handleDFormInitialize = (organization) => {
-    const data = { ...INITIAL_APPLICATION_DATA, organization };
-
-    setApplicationData(data);
-    setIsDFormInitialized(true);
   };
 
   const handleSectionReorder = (result) => {
@@ -508,17 +424,11 @@ export const Application = ({ isCreate, applicationId }) => {
 
   const handleApplicationMutation = () => {
     // ToDo: validate here too
-    const mutation = isCreate ? createApplicationMutation : updateApplicationMutation;
-
-    mutateApplication(applicationData, mutation);
+    mutateApplication(applicationData, updateApplication);
   };
 
-  if ((!isCreate && !applicationData) || application.isLoading) {
+  if (application.isLoading || !applicationData) {
     return <div>Loading...</div>;
-  }
-
-  if (isCreate && !isDFormInitialized) {
-    return <NewApplicationInitForm userId={userProfile?.id} onDFormInitialize={handleDFormInitialize} />;
   }
 
   const getFeatureTitle = () => {
@@ -539,7 +449,7 @@ export const Application = ({ isCreate, applicationId }) => {
 
   return (
     <div className="application d-flex">
-      <ContextTemplate contextTitle="Application" contextName="dForm » introduction">
+      <ApplicationWrapper name={`dForm » ${applicationData.name}`}>
         <CustomTabs
           active={selectedPage}
           onChange={handlePageChange}
@@ -551,10 +461,10 @@ export const Application = ({ isCreate, applicationId }) => {
           <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
             <ApplicationDescription
               name={applicationData.name}
-              description={applicationData.description}
               isPrivate={applicationData.isPrivate}
-              organization={applicationData.organization}
-              onChange={handleApplicationDescriptionChange}
+              description={applicationData.description}
+              organizationName={applicationData.organization.name}
+              onChange={onApplicationDescriptionChange}
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
@@ -573,21 +483,21 @@ export const Application = ({ isCreate, applicationId }) => {
           </TabPane>
         </TabContent>
 
-        <div style={{ paddingLeft: "35px", paddingRight: "35px" }}>
+        <div className="px-3">
           <div className="application_delimiter" />
 
           <div className="d-flex justify-content-center">
             <Button
               color="primary"
               className="button button-success"
-              disabled={createApplicationMutation.isLoading || updateApplicationMutation.isLoading}
+              disabled={updateApplication.isLoading}
               onClick={handleApplicationMutation}
             >
-              {isCreate ? "Create" : "Save"}
+              Save
             </Button>
           </div>
         </div>
-      </ContextTemplate>
+      </ApplicationWrapper>
 
       {isModuleEditComponentVisible ? (
         <ContextFeatureTemplate contextFeatureTitle={getFeatureTitle()}>
