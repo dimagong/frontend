@@ -11,6 +11,7 @@ import Check from "assets/img/icons/check.png";
 
 import NpmCardSurvey from "../MemberCardPassSurveyView";
 import MemberSurveyView from "../MemberSurveyView";
+import MemberDFormView from "../MemberDFormView";
 import { TypeConstants } from "./../../data/constants/typeApplication";
 
 //import OnboardingSurvey from "../../OnboardingSurvey";
@@ -23,8 +24,6 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
   const [forceAppShow, setForceAppShow] = useState([]);
   const [recentlySubmitted, setRecentlySubmitted] = useState(false);
   const [appActiveOnboarding, setActiveAppOnboarding] = useState(null);
-  console.log("appActiveOnboarding", appActiveOnboarding);
-  console.log("profile", profile);
 
   useEffect(() => {
     setActiveAppOnboarding(initialOnboarding);
@@ -143,6 +142,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
                       selectedForm={appActiveOnboarding}
                       setRecentlySubmitted={setRecentlySubmitted}
                     />
+                    // <MemberDFormView />
                   ))}
               </div>
             </>
