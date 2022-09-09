@@ -1,7 +1,9 @@
+import React from "react";
+
+import CSS from "csstype";
+
 import type { DatePickerProps } from "antd";
 import { DatePicker } from "antd";
-import React from "react";
-import CSS from "csstype";
 
 interface IProps {
   onChangeDate: (date, dateString) => void;
@@ -24,6 +26,7 @@ const NpmDatePicker = ({
   size = "middle",
   placement = "bottomRight",
   placeholder = "Date",
+  popupStyle = {},
 }: IProps) => {
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     // console.log(date, dateString);
@@ -39,6 +42,7 @@ const NpmDatePicker = ({
       size={size}
       placement={placement}
       placeholder={placeholder}
+      popupStyle={popupStyle}
     />
   );
 };
