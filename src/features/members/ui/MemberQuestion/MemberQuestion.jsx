@@ -3,7 +3,7 @@ import "./styles.scss";
 import React from "react";
 
 import { QuestionCircleFilled } from "@ant-design/icons";
-import NpmRadioGroup from "../../../nmp-ui/NpmRadioGroup";
+import NpmRadioCardGroup from "../../../nmp-ui/NpmRadioCardGroup";
 import NpmTextArea from "../../../nmp-ui/NpmTextArea";
 
 import NpmTooltip from "../../../nmp-ui/NpmTooltip";
@@ -30,7 +30,7 @@ const MemberQuestion = ({
         </div>
         <div className="answer-block">
           {structureType === "multiple_choice" && (
-            <NpmRadioGroup
+            <NpmRadioCardGroup
               options={structureOptions}
               handleAnswerSelect={handleAnswerSelect}
               selectedAnswer={selectedAnswer}

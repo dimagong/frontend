@@ -4,7 +4,7 @@ import React from "react";
 
 import { Radio, Card } from "antd";
 
-const NpmRadioGroup = ({ options = [], handleAnswerSelect, selectedAnswer, correctAnswer = null }) => {
+const NpmRadioCardGroup = ({ options = [], handleAnswerSelect, selectedAnswer, correctAnswer = null }) => {
   const onChange = (e) => {
     handleAnswerSelect(e.target.value);
   };
@@ -31,4 +31,4 @@ const NpmRadioGroup = ({ options = [], handleAnswerSelect, selectedAnswer, corre
   );
 };
 
-export default NpmRadioGroup;
+export default NpmRadioCardGroup;
