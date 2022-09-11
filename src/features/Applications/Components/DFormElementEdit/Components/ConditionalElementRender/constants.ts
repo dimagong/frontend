@@ -357,6 +357,3 @@ export const DCRFieldValueConvertors = {
 
   [DCRSupportedFieldTypes.MultiSelect]: ({ value }) => (Array.isArray(value) ? Array.from(value) : []),
 };
-
-console.log("asd", process.env.NODE_ENV);
-console.log("asd", DCRFieldValueConvertors);
