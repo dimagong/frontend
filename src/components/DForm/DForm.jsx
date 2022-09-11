@@ -31,7 +31,13 @@ const checkConditions = (elements, values, fields) => {
 
       const field = fields[fieldId];
       const value = values[field.masterSchemaFieldId];
-      const preparedValue = DCRFieldValueConvertors[field.type](value);
+      const convertor = DCRFieldValueConvertors[field.type];
+      if (typeof convertor !== "function") {
+        console.warn("element", element.title, element.id);
+        console.warn("field", field.title, fieldId);
+        throw new Error("Unexpected field value convertor");
+      }
+      const preparedValue = convertor(value);
       const operatorComparator = DCROperatorTypesComparotors[operatorType];
       const isApplicable = operatorComparator({
         expected: expectedValue,
