@@ -15,6 +15,7 @@ interface IProps {
   addonAfter: React.ReactNode;
   addonBefore: React.ReactNode;
   rows: number;
+  style: object;
 }
 
 const onChangeDefault = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -30,11 +31,12 @@ const NpmTextArea = ({
   value = "",
   addonAfter = false,
   addonBefore = false,
+  style = { height: 120 },
 }: IProps) => {
   return (
     <TextArea
       showCount
-      style={{ height: 120 }}
+      style={style}
       onChange={onChange}
       rows={rows}
       size={size}
