@@ -2,15 +2,8 @@ import "./styles.scss";
 
 import React from "react";
 
-import { Button, Modal } from "antd";
+import { Modal } from "antd";
 import NpmButton from "./../NpmButton";
-
-// className={"long-text-modal-window"}
-//         isOpen={isModalOpened}
-//         onClose={handleModalClose}
-//         submitBtnText={"Close"}
-//         onSubmit={handleModalClose}
-//         title={"Extended input"}
 
 interface IProps {
   isModalOpen?: boolean;
@@ -18,15 +11,16 @@ interface IProps {
   okText?: string;
   title?: string;
   showModal?: () => void;
-  children: any;
+  children?: any;
   btnNameModal?: string;
 }
 
 const NpmModal = (props: IProps): JSX.Element => {
-  const { btnNameModal, isModalOpen, handleCancel, okText, title, showModal }: IProps = props;
+  const { btnNameModal, handleCancel, okText, title, isModalOpen, showModal }: IProps = props;
+
   return (
     <>
-      <NpmButton onClick={showModal}>Hello</NpmButton>
+      <NpmButton onClick={showModal}>{btnNameModal}</NpmButton>
       <Modal
         title={title}
         visible={isModalOpen}
