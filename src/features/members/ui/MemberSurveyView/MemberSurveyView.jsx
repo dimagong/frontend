@@ -15,11 +15,11 @@ import {
   useMVAswitchToPrevious,
 } from "../../data/hooks";
 
-import MemberCardPassSurveyView from "../MemberCardPassSurveyView";
-import MemberCardSubmittedView from "../MemberCardSubmittedView";
-import MemberCardReportView from "../MemberCardReportView";
-import MemberCardFeedbackView from "../MemberCardFeedbackView";
-import MemberCardStartSurveyView from "../MemberCardStartSurveyView";
+import MemberCardPassSurveyView from "../MemberSurveyPassView";
+import MemberSurveySubmittedView from "../MemberSurveySubmittedView";
+import MemberSurveyReportView from "../MemberSurveyReportView";
+import MemberSurveyFeedbackView from "../MemberSurveyFeedbackView";
+import MemberSurveyStartView from "../MemberSurveyStartView";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 
 // import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
@@ -145,7 +145,7 @@ const MemberSurvey = ({
   return (
     <>
       {surveyStatus === statusConstants.NOT_STARTED && (
-        <MemberCardStartSurveyView
+        <MemberSurveyStartView
           isLoadingData={isLoadingData}
           title={title}
           question={question}
@@ -178,10 +178,10 @@ const MemberSurvey = ({
         />
       )}
       {surveyStatus === statusConstants.SUBMITTED && (
-        <MemberCardSubmittedView data={finished_at} organization={organization} surveyName={title} />
+        <MemberSurveySubmittedView data={finished_at} organization={organization} surveyName={title} />
       )}
       {surveyStatus === statusConstants.APPROVED && !isFeedbackView && (
-        <MemberCardReportView
+        <MemberSurveyReportView
           data={graded_at}
           isSurveyPassed={isSurveyPassed}
           totalTime={totalTime}
@@ -190,7 +190,7 @@ const MemberSurvey = ({
         />
       )}
       {surveyStatus === statusConstants.APPROVED && isFeedbackView && (
-        <MemberCardFeedbackView
+        <MemberSurveyFeedbackView
           surveyInteraction={surveyInteraction}
           surveyStatus={surveyStatus}
           setIsFeedbackView={setIsFeedbackView}
