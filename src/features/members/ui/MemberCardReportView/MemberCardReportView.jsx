@@ -45,7 +45,7 @@ const MemberCardApproved = ({ data, isSurveyPassed, totalTime, isShowResult, set
           </div>
           <div className="cardApproved_feedback">
             {isShowResult && (
-              <NpmButton style={{ backgroundColor: "#35A046" }} onClick={() => setIsFeedbackView(true)}>
+              <NpmButton style={{ width: 170 }} onClick={() => setIsFeedbackView(true)}>
                 <span>View feedback</span>
               </NpmButton>
             )}

@@ -50,7 +50,8 @@ const IntroPageView = ({
                     {isOnboardingExist && (
                       <NpmButton
                         className="intropage-block_content_navigations_btn-right"
-                        style={{ backgroundColor: "#22776D", borderColor: "#22776D", padding: "0% 35px" }}
+                        style={{ padding: "0% 35px" }}
+                        buttonType="base"
                         onClick={() => redirectToOnboarding()}
                       >
                         Let's get started <i className="arrow right"></i>

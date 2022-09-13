@@ -29,7 +29,8 @@ const MemberCardNavigations = ({
           {!!currentIndex && (
             <NpmButton
               onClick={() => handleSwitchToPreviousQuestion()}
-              style={{ backgroundColor: "white", color: "black", marginRight: "30px" }}
+              style={{ marginRight: "30px" }}
+              buttonType="transparent"
             >
               <i className="arrow left"></i>
               <span>Back</span>
@@ -44,27 +45,22 @@ const MemberCardNavigations = ({
       {surveyStatus === statusConstants.APPROVED && (
         <div className="approved-navigation">
           <div className="close-button">
-            <NpmButton
-              onClick={() => handleClose()}
-              style={{ backgroundColor: "#F3F3F3", color: "black", borderColor: "#D2D2D2" }}
-            >
+            <NpmButton onClick={() => handleClose()} buttonType="default">
               <span>Close</span>
             </NpmButton>
           </div>
 
           {!!currentIndex && (
             <NpmButton
+              buttonType="transparent"
               onClick={() => handleSwitchToPreviousQuestion()}
-              style={{ backgroundColor: "white", color: "black", marginRight: "30px", borderColor: "#35A046" }}
+              style={{ marginRight: "30px" }}
             >
               <i className="arrow left"></i>
               <span>Back</span>
             </NpmButton>
           )}
-          <NpmButton
-            onClick={() => handleAnswerSubmit()}
-            style={{ backgroundColor: "#35A046", borderColor: "#35A046" }}
-          >
+          <NpmButton onClick={() => handleAnswerSubmit()} buttonType="base">
             <span>{currentIndex === count - 1 ? "Finish" : "Next"}</span>
             <i className="arrow right"></i>
           </NpmButton>
