@@ -33,8 +33,8 @@ const NpmRadioGroup: Function = ({
   return (
     <Radio.Group onChange={onChange} value={selectedValue}>
       <Space direction={direction} size={size} wrap={wrap}>
-        {options.map((option) => {
-          return <NpmRadio value={option} content={option} className="npmRadio radio-green" />;
+        {options.map((option, idx) => {
+          return <NpmRadio key={idx} value={option} content={option} className="npmRadio radio-green" />;
         })}
       </Space>
     </Radio.Group>

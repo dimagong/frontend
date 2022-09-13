@@ -22,8 +22,12 @@ const NpmInputSelect: Function = ({ handleChange, options, style = { width: "100
         onChange={(value) => handleChange(value)}
       >
         {options.length ? (
-          options.map((option) => {
-            return <Option value={option}>{option}</Option>;
+          options.map((option, idx) => {
+            return (
+              <Option key={idx} value={option}>
+                {option}
+              </Option>
+            );
           })
         ) : (
           <Option value="none">none</Option>
