@@ -3,9 +3,9 @@ import React from "react";
 //import { DFormFieldLabel } from "";
 //"../DFormFieldLabel";
 
-import NpmModal from "./../NpmModal";
+import NpmModal from "../NpmModal";
 
-import NpmEditor from "./../NpmEditor";
+import NpmEditor from "../NpmEditor";
 
 interface IProps {
   isModalOpen: boolean;

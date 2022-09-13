@@ -1,1 +1,1 @@
-export { default } from "./NpmLongTest";
+export { default } from "./NpmLongText";
