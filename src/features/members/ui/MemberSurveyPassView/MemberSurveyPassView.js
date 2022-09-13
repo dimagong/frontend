@@ -8,7 +8,7 @@ import MemberSurveyQuestion from "../MemberSurveyQuestion";
 import MemberSurveyNavigations from "../MemberSurveyNavigations";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 import NpmCard from "../../../nmp-ui/NpmCard";
-import NpmStepper from "../../../nmp-ui/NpmStepper";
+import NpmCustomStepperSurvey from "../../../nmp-ui/NpmCustomStepperSurvey";
 
 const MemberSurveyPassView = (props) => {
   const {
@@ -46,7 +46,7 @@ const MemberSurveyPassView = (props) => {
     <NpmCard title="Surveys" style={{ maxHeight: "580px", maxWidth: "783px", width: "57vw" }}>
       <div className="surveys-content">
         <div className="content_stepper">
-          <NpmStepper currentStrep={currentIndex + 1} totalSteps={count} />
+          <NpmCustomStepperSurvey currentStrep={currentIndex + 1} totalSteps={count} />
         </div>
 
         <div className="content_question">

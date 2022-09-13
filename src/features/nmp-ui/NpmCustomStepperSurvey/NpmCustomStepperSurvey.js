@@ -4,7 +4,7 @@ import React from "react";
 
 import PropTypes from "prop-types";
 
-const NpmStepper = (props) => {
+const NpmCustomStepperSurvey = (props) => {
   const { totalSteps, currentStrep } = props;
   const widthStep = 100 / totalSteps;
   const disableElement = (
@@ -34,14 +34,14 @@ const NpmStepper = (props) => {
   return <div className="steppers">{stepperList.map((el) => el)}</div>;
 };
 
-NpmStepper.defaultProps = {
+NpmCustomStepperSurvey.defaultProps = {
   totalSteps: 2,
   currentStrep: 0,
 };
 
-NpmStepper.propTypes = {
+NpmCustomStepperSurvey.propTypes = {
   totalSteps: PropTypes.number,
   currentStrep: PropTypes.number,
 };
 
-export default NpmStepper;
+export default NpmCustomStepperSurvey;
