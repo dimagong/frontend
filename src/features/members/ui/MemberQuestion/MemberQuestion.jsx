@@ -5,7 +5,7 @@ import React from "react";
 import { QuestionCircleFilled } from "@ant-design/icons";
 import NpmRadioCardGroup from "../../../nmp-ui/NpmRadioCardGroup";
 import NpmTextArea from "../../../nmp-ui/NpmTextArea";
-
+import NpmInput from "../../../nmp-ui/NpmInput";
 import NpmTooltip from "../../../nmp-ui/NpmTooltip";
 
 const MemberQuestion = ({
@@ -37,10 +37,8 @@ const MemberQuestion = ({
               correctAnswer={correctAnswer}
             />
           )}
-          {structureType === "text" && (
-            // <NpmInput onChange={handleAnswerSelect} value={selectedAnswer} />
-            <NpmTextArea onChange={handleAnswerSelect} value={selectedAnswer} />
-          )}
+          {structureType === "text" && <NpmInput onChange={handleAnswerSelect} value={selectedAnswer} />}
+          {structureType === "textArea" && <NpmTextArea onChange={handleAnswerSelect} value={selectedAnswer} />}
 
           {/* <div>
                   <Question
