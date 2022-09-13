@@ -4,13 +4,13 @@ import React, { useEffect } from "react";
 
 import { statusConstants } from "../../data/constants/statusConstants";
 
-import MemberQuestion from "../MemberQuestion";
-import MemberCardNavigations from "../MemberCardNavigations";
+import MemberSurveyQuestion from "../MemberSurveyQuestion";
+import MemberSurveyNavigations from "../MemberSurveyNavigations";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 import NpmCard from "../../../nmp-ui/NpmCard";
 import NpmStepper from "../../../nmp-ui/NpmStepper";
 
-const MemberCardPassSurveyView = (props) => {
+const MemberSurveyPassView = (props) => {
   const {
     surveyStatus,
     handleSurveyStart,
@@ -54,7 +54,7 @@ const MemberCardPassSurveyView = (props) => {
           <div className="question-subtitle">{question?.body}</div>
         </div>
         <div className="content_answer">
-          <MemberQuestion
+          <MemberSurveyQuestion
             structureType={structureType}
             structureOptions={structureOptions}
             handleAnswerSelect={handleAnswerSelect}
@@ -63,7 +63,7 @@ const MemberCardPassSurveyView = (props) => {
           />
         </div>
         <div className="content_buttons">
-          <MemberCardNavigations
+          <MemberSurveyNavigations
             surveyStatus={surveyStatus}
             handleSurveyStart={handleSurveyStart}
             handleSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
@@ -77,4 +77,4 @@ const MemberCardPassSurveyView = (props) => {
   );
 };
 
-export default MemberCardPassSurveyView;
+export default MemberSurveyPassView;

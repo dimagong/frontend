@@ -8,7 +8,7 @@ import NpmTextArea from "../../../nmp-ui/NpmTextArea";
 import NpmInput from "../../../nmp-ui/NpmInput";
 import NpmTooltip from "../../../nmp-ui/NpmTooltip";
 
-const MemberQuestion = ({
+const MemberSurveyQuestion = ({
   structureType,
   structureOptions,
   handleAnswerSelect,
@@ -56,4 +56,4 @@ const MemberQuestion = ({
   );
 };
 
-export default MemberQuestion;
+export default MemberSurveyQuestion;

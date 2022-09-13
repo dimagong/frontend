@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
 
-const MemberCardAdditionalInfo = ({ title, text }) => {
+const MemberSurveyAdditionalInfo = ({ title, text }) => {
   const [isTextVisible, setIsTextVisible] = useState(false);
 
   const handleToggle = () => {
@@ -28,4 +28,4 @@ const MemberCardAdditionalInfo = ({ title, text }) => {
   );
 };
 
-export default MemberCardAdditionalInfo;
+export default MemberSurveyAdditionalInfo;

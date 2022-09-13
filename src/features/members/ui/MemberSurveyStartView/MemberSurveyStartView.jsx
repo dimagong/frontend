@@ -2,12 +2,12 @@ import "./styles.scss";
 
 import React, { useEffect } from "react";
 
-import MemberCardNavigations from "../MemberCardNavigations";
+import MemberSurveyNavigations from "../MemberSurveyNavigations";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 import NpmCard from "../../../nmp-ui/NpmCard";
-import MemberCardAdditionalInfo from "../MemberCardAdditionalInfo";
+import MemberSurveyAdditionalInfo from "../MemberSurveyAdditionalInfo";
 
-const MemberCardStartSurveyView = (props) => {
+const MemberSurveyStartView = (props) => {
   const {
     surveyStatus,
     handleSurveyStart,
@@ -43,7 +43,7 @@ const MemberCardStartSurveyView = (props) => {
             <div className="question-subtitle">Click the button to get started.</div>
           </div>
           <div className="content_buttons">
-            <MemberCardNavigations
+            <MemberSurveyNavigations
               surveyStatus={surveyStatus}
               handleSurveyStart={handleSurveyStart}
               handleSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
@@ -55,10 +55,10 @@ const MemberCardStartSurveyView = (props) => {
         </div>
       </NpmCard>
       <div style={{ with: "100%", marginTop: "20px" }}>
-        <MemberCardAdditionalInfo title={"Guidance"} text={description} />
+        <MemberSurveyAdditionalInfo title={"Guidance"} text={description} />
       </div>
     </div>
   );
 };
 
-export default MemberCardStartSurveyView;
+export default MemberSurveyStartView;

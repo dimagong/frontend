@@ -5,7 +5,7 @@ import React from "react";
 import { statusConstants } from "../../data/constants/statusConstants";
 import NpmButton from "../../../nmp-ui/NpmButton";
 
-const MemberCardNavigations = ({
+const MemberSurveyNavigations = ({
   surveyStatus,
   handleSurveyStart,
   handleSwitchToPreviousQuestion,
@@ -70,4 +70,4 @@ const MemberCardNavigations = ({
   );
 };
 
-export default MemberCardNavigations;
+export default MemberSurveyNavigations;

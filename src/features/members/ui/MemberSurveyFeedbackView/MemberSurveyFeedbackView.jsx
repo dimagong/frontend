@@ -4,10 +4,10 @@ import React, { useState } from "react";
 
 import NpmCard from "../../../nmp-ui/NpmCard";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
-import MemberQuestion from "../MemberQuestion";
-import MemberCardNavigations from "../MemberCardNavigations";
+import MemberSurveyQuestion from "../MemberSurveyQuestion";
+import MemberSurveyNavigations from "../MemberSurveyNavigations";
 
-const MemberCardFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedbackView }) => {
+const MemberSurveyFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedbackView }) => {
   const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
   const { answers, questions } = surveyInteraction;
   const count = questions.length - 1;
@@ -62,7 +62,7 @@ const MemberCardFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedback
             <div className="feedback-subtitle">{currentQuestion}</div>
           </div>
           <div className="feedback-answer">
-            <MemberQuestion
+            <MemberSurveyQuestion
               structureType={structureType}
               structureOptions={structureOptions}
               selectedAnswer={selectedAnswer}
@@ -71,7 +71,7 @@ const MemberCardFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedback
           </div>
           <div className="feedback-points">{points} points</div>
           <div className="feedback_buttons">
-            <MemberCardNavigations
+            <MemberSurveyNavigations
               surveyStatus={surveyStatus}
               handleSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
               handleAnswerSubmit={handleAnswerSubmit}
@@ -86,4 +86,4 @@ const MemberCardFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedback
   );
 };
 
-export default MemberCardFeedbackView;
+export default MemberSurveyFeedbackView;

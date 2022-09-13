@@ -13,7 +13,7 @@ const membercardApprovedStyle = {
   padding: "36px 28px",
 };
 
-const MemberCardApproved = ({ data, isSurveyPassed, totalTime, isShowResult, setIsFeedbackView }) => {
+const MemberSurveyReportView = ({ data, isSurveyPassed, totalTime, isShowResult, setIsFeedbackView }) => {
   return (
     <div className="membercard-approved">
       <NpmCard style={{ height: "600px", maxWidth: "600px", width: "57vw" }}>
@@ -56,4 +56,4 @@ const MemberCardApproved = ({ data, isSurveyPassed, totalTime, isShowResult, set
   );
 };
 
-export default MemberCardApproved;
+export default MemberSurveyReportView;

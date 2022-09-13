@@ -12,7 +12,7 @@ const cardStyle = {
   width: "85vw",
 };
 
-const MemberCardSubmitted = ({ data, organization, surveyName }) => {
+const MemberSurveySubmittedView = ({ data, organization, surveyName }) => {
   return (
     <div className="membercard-submitted">
       <NpmCard style={cardStyle}>
@@ -46,4 +46,4 @@ const MemberCardSubmitted = ({ data, organization, surveyName }) => {
   );
 };
 
-export default MemberCardSubmitted;
+export default MemberSurveySubmittedView;
