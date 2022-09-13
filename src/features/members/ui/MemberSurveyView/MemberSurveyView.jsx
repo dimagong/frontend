@@ -138,7 +138,7 @@ const MemberSurvey = ({
   const isShowResult = survey?.is_show_result;
   const description = survey?.interaction_version?.description || "No description";
 
-  if (!survey && isSurveyLoading) {
+  if (!survey && isSurveyLoading && isLoadingSurvey) {
     return <NpmSpin size={60} />;
   }
 
