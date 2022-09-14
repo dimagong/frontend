@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { FIELD_TYPES } from "components/DForm/constants";
+import { FieldTypes } from "components/DForm";
 
 const { object, number, string, boolean, date } = yup;
 
@@ -87,13 +87,13 @@ const dateElementSchema = object({}).concat(dateSchema);
 const booleanElementSchema = object({}).concat(booleanSchema);
 
 export const fieldValidationSchemas = {
-  [FIELD_TYPES.text]: fieldCommonSchema.concat(textElementSchema),
-  [FIELD_TYPES.date]: fieldCommonSchema.concat(dateElementSchema),
-  [FIELD_TYPES.number]: fieldCommonSchema.concat(numberElementSchema),
-  [FIELD_TYPES.boolean]: fieldCommonSchema.concat(booleanElementSchema),
-  [FIELD_TYPES.longText]: fieldCommonSchema.concat(textElementSchema),
-  [FIELD_TYPES.textArea]: fieldCommonSchema.concat(textElementSchema),
-  [FIELD_TYPES.helpText]: fieldCommonSchema.concat(textElementSchema),
+  [FieldTypes.Text]: fieldCommonSchema.concat(textElementSchema),
+  [FieldTypes.Date]: fieldCommonSchema.concat(dateElementSchema),
+  [FieldTypes.Number]: fieldCommonSchema.concat(numberElementSchema),
+  [FieldTypes.Boolean]: fieldCommonSchema.concat(booleanElementSchema),
+  [FieldTypes.LongText]: fieldCommonSchema.concat(textElementSchema),
+  [FieldTypes.TextArea]: fieldCommonSchema.concat(textElementSchema),
+  [FieldTypes.HelpText]: fieldCommonSchema.concat(textElementSchema),
   //[FIELD_TYPES.file]: fieldCommonSchema,
   //[FIELD_TYPES.select]: fieldCommonSchema,
   //[FIELD_TYPES.fileList]: fieldCommonSchema,

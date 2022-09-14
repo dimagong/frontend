@@ -1,4 +1,4 @@
-import { FieldTypes } from "components/DForm/constants";
+import { FieldTypes } from "components/DForm";
 import { DCRFieldControlValue } from "features/Applications/fieldConditionModel";
 
 export enum DCRSupportedFieldTypes {
@@ -338,13 +338,22 @@ export const DCROperatorTypesComparotors = {
 
 export const DCRFieldValueConvertors = {
   [DCRSupportedFieldTypes.Text]: ({ value }) => (value == null ? null : String(value)),
+
   [DCRSupportedFieldTypes.Date]: ({ value }) => (value == null ? null : new Date(value).valueOf()),
+
   [DCRSupportedFieldTypes.Select]: ({ value }) => (value == null ? null : String(value)),
+
   [DCRSupportedFieldTypes.LongText]: ({ value }) => (value == null ? null : String(value)),
+
   [DCRSupportedFieldTypes.TextArea]: ({ value }) => (value == null ? null : String(value)),
+
   [DCRSupportedFieldTypes.Number]: ({ value }) => (value == null ? null : Number(value)),
+
   [DCRSupportedFieldTypes.Boolean]: ({ value }) => (value == null ? null : Boolean(value)),
+
   [DCRSupportedFieldTypes.File]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
+
   [DCRSupportedFieldTypes.FileList]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
+
   [DCRSupportedFieldTypes.MultiSelect]: ({ value }) => (Array.isArray(value) ? Array.from(value) : []),
 };

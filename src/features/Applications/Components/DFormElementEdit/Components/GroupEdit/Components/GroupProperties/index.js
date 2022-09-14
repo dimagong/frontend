@@ -40,6 +40,7 @@ const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data 
         isLabelShowing={true}
         placeholder="Select an Group section"
         onChange={onSectionChange}
+        className="mb-2"
       />
 
       <DFormBooleanWidget

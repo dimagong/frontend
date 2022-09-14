@@ -1,20 +1,18 @@
-import "./styles.scss";
-
 import React from "react";
 import { toast } from "react-toastify";
 import { Button, Col, Row } from "reactstrap";
 
-import { useApplicationResourceManagerFields } from "features/Applications/applicationQueries";
+import { useApplicationResourceManagerFields } from "../../../../../../../data/applicationQueries";
 import {
   DATE_WIDGET_FORMATS,
-  FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
   ResourceCompileOptionLabel,
+  FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
 } from "features/Applications/constants";
 
 import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
-import { FieldTypes, FIELD_TYPES } from "components/DForm/constants";
+import { FieldTypes } from "components/DForm";
 import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormFieldLabel";
 import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
@@ -38,6 +36,23 @@ export const FieldRequiredEditProperty = ({ element, onFieldChange }) => {
   );
 };
 
+export const FieldProtectedEditProperty = ({ element, onFieldChange }) => {
+  const onProtectedChange = () => onFieldChange("isProtected", !element.isProtected);
+
+  return (
+    <DFormBooleanWidget
+      id="field-protected"
+      label="Is protected"
+      value={element.isProtected}
+      isError={false}
+      isRequired={false}
+      isDisabled={false}
+      isLabelShowing={true}
+      onChange={onProtectedChange}
+    />
+  );
+};
+
 export const FieldLabelShowingEditProperty = ({ element, onFieldChange }) => {
   const onLabelShowingChange = () => onFieldChange("isLabelShowing", !element.isLabelShowing);
 
@@ -57,12 +72,15 @@ export const FieldLabelShowingEditProperty = ({ element, onFieldChange }) => {
 
 export const FieldDefaultEditProperties = ({ element, onFieldChange }) => {
   return (
-    <Row className="mb-2">
-      <Col md="6">
+    <Row>
+      <Col md="12" className="mb-2">
         <FieldRequiredEditProperty element={element} onFieldChange={onFieldChange} />
       </Col>
-      <Col md="6">
+      <Col md="12" className="mb-2">
         <FieldLabelShowingEditProperty element={element} onFieldChange={onFieldChange} />
+      </Col>
+      <Col md="12">
+        <FieldProtectedEditProperty element={element} onFieldChange={onFieldChange} />
       </Col>
     </Row>
   );
@@ -291,15 +309,21 @@ export const FieldHelpTextEditProperties = ({ element, onFieldChange }) => {
   const onChange = (value) => onFieldChange("helpTextValue", value ?? "");
 
   return (
-    <>
-      <WysiwygEditor
-        id="field-help-text"
-        type="text"
-        data={element.helpTextValue}
-        placeholder="Description"
-        onChange={onChange}
-      />
-    </>
+    <Row>
+      <Col md="12" className="mb-2">
+        <WysiwygEditor
+          id="field-help-text"
+          type="text"
+          data={element.helpTextValue}
+          placeholder="Description"
+          onChange={onChange}
+        />
+      </Col>
+
+      <Col md="12">
+        <FieldProtectedEditProperty element={element} onFieldChange={onFieldChange} />
+      </Col>
+    </Row>
   );
 };
 
@@ -375,8 +399,11 @@ export const FieldResourceEditProperties = ({ element, organization, onFieldChan
       </Row>
 
       <Row className="mb-2">
-        <Col md="12">
+        <Col md="12" className="mb-2">
           <FieldLabelShowingEditProperty element={element} onFieldChange={onFieldChange} />
+        </Col>
+        <Col md="12">
+          <FieldProtectedEditProperty element={element} onFieldChange={onFieldChange} />
         </Col>
       </Row>
     </>
@@ -429,7 +456,7 @@ const FieldProperties = (props) => {
         id="field-type"
         label="Element type"
         value={{ value: element.type, label: element.type }}
-        options={Object.values(FIELD_TYPES).map((type) => ({ value: type, label: type }))}
+        options={Object.values(FieldTypes).map((type) => ({ value: type, label: type }))}
         isError={false}
         isRequired={false}
         isDisabled={false}

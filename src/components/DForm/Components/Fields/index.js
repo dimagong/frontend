@@ -2,16 +2,14 @@ import React from "react";
 import classnames from "classnames";
 import { Plus } from "react-feather";
 
-import { ELEMENT_TYPES, FieldTypes } from "components/DForm/constants";
+import { AccessTypes, ElementTypes, FieldTypes } from "components/DForm";
 
 import formComponents from "./Components/DFormWidgets";
+import { useDFormContext } from "../../DFormContext";
 
 const DFormElement = ({ classes, isSelected, onClick, children }) => {
   return (
-    <div
-      onClick={onClick}
-      className={classnames("editable px-0 custom-form-field", classes || "col-12", { selected: isSelected })}
-    >
+    <div onClick={onClick} className={classnames("editable mb-4", classes || "col-12", { selected: isSelected })}>
       {children}
     </div>
   );
@@ -22,13 +20,15 @@ const FormComponent = (props) => {
     data,
     values,
     group,
+    isDisabled: propIsDisabled,
     groupFields,
-    isConfigurable,
     selectedElement,
     onElementClick: propOnElementClick,
     onFieldChange,
     onFieldCreate,
   } = props;
+
+  const { accessType, isConfigurable } = useDFormContext();
 
   return (
     <>
@@ -38,15 +38,6 @@ const FormComponent = (props) => {
         // DCR controls a field rendering
         if (field.isHidden) return null;
 
-        // Temporary checks, whether API contains field with disabled and do we need a DB migration.
-        if (Object.hasOwnProperty.call(field, "disabled")) {
-          throw new Error(`The field: ${field.type} ${field.title} has disabled property.`);
-        }
-        // Temporary checks, whether API contains field with disabled and do we need a DB migration.
-        if (Object.hasOwnProperty.call(field, "multiple")) {
-          throw new Error(`The field: ${field.type} ${field.title} has multiple property.`);
-        }
-
         const FormFieldElement = formComponents[field.type];
 
         if (!FormFieldElement) {
@@ -55,7 +46,10 @@ const FormComponent = (props) => {
 
         // An DForm template can be selected, it should be refactored, cause FormField should not know
         // anything about DForm creating process.
-        const isSelected = selectedElement?.elementType === ELEMENT_TYPES.field && selectedElement?.id === field.id;
+        const isSelected = selectedElement?.elementType === ElementTypes.Field && selectedElement?.id === field.id;
+
+        // An DForm's fields can be disabled by DForm AccessType. Currently, only user-lock is used.
+        const isDisabled = accessType === AccessTypes.UserLock || propIsDisabled || field.isDisabled;
 
         // Getting a field value depending on its type and is it master schema element or not.
         // It can be refactored later, for example, a DForm can have a construction block that is not always like form
@@ -160,7 +154,7 @@ const FormComponent = (props) => {
               format={field.format}
               uiStyle={field.uiStyle}
               isError={false}
-              isDisabled={field.isDisabled}
+              isDisabled={isDisabled}
               isRequired={field.isRequired}
               isLabelShowing={field.isLabelShowing}
               masterSchemaFieldId={field.masterSchemaFieldId}

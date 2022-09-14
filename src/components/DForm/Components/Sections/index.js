@@ -4,12 +4,12 @@ import React from "react";
 import { TabContent, TabPane } from "reactstrap";
 
 import Groups from "../Groups";
+import { useDFormContext } from "../../DFormContext";
 
 const SectionsComponent = (props) => {
   const {
     data,
     values,
-    isConfigurable,
     selectedSection,
     selectedElement,
     onElementClick,
@@ -17,6 +17,8 @@ const SectionsComponent = (props) => {
     onFieldCreate,
     onFieldChange,
   } = props;
+
+  const { isConfigurable } = useDFormContext();
 
   if (!data.sections || Object.keys(data.sections).length === 0) {
     // TODO HANDLE TWO CASES, when there are no sections on edit and no sections on assigned dform \ on onboarding dform
@@ -35,28 +37,35 @@ const SectionsComponent = (props) => {
 
   return (
     <TabContent activeTab={selectedSection} className="sections-content">
-      {data.sectionsOrder.map((section) => (
-        <TabPane tabId={data.sections[section].id} key={data.sections[section].id}>
-          {data.sections[section].isNew ? (
+      {data.sectionsOrder.map((sectionId) => {
+        const section = data.sections[sectionId];
+
+        // ToDo: handle the isNew, currently isNew always undefined
+        if (section.isNew) {
+          return (
             <div className="px-2 py-5 text-center">
               You will be able to manage this section after you submit its creation
             </div>
-          ) : (
+          );
+        }
+
+        return (
+          <TabPane tabId={section.id} key={section.id}>
             <Groups
               data={data}
               values={values}
-              isConfigurable={isConfigurable}
+              sectionId={section.id}
+              isDisabled={section.isDisabled}
               selectedElement={selectedElement}
-              sectionId={data.sections[section].id}
-              sectionGroups={data.sections[section].relatedGroups}
+              sectionGroups={section.relatedGroups}
               onElementClick={onElementClick}
               onGroupCreate={onGroupCreate}
               onFieldCreate={onFieldCreate}
               onFieldChange={onFieldChange}
             />
-          )}
-        </TabPane>
-      ))}
+          </TabPane>
+        );
+      })}
     </TabContent>
   );
 };

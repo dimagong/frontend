@@ -4,9 +4,12 @@ import React from "react";
 import { X } from "react-feather";
 import { Button } from "reactstrap";
 
+import { ElementTypes } from "components/DForm";
+
 import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
 
 import ConditionForm from "./Components";
+import { DCRSupportedFieldTypes } from "./constants";
 
 const ConditionItem = ({ condition, fields, onDelete, onChange }) => {
   return (
@@ -22,7 +25,17 @@ const ConditionItem = ({ condition, fields, onDelete, onChange }) => {
   );
 };
 
-const ConditionalElementRender = ({ conditions = [], fields = [], element, onElementChange }) => {
+const ConditionalElementRender = ({ conditions = [], fields: propFields = [], element, onElementChange }) => {
+  // When a field's condition effects on itself, it might lead to recursion.
+  // So, to prevent condition creation on itself, in case when element type is
+  // field filter the element from fields. Also filter only supported DCR fields.
+  const fields =
+    element.elementType === ElementTypes.Field
+      ? propFields
+          .filter((field) => field.id !== element.id)
+          .filter((field) => DCRSupportedFieldTypes[field.type] !== undefined)
+      : propFields;
+
   const updateElementCondition = (conditions) => onElementChange({ ...element, conditions });
 
   const onConditionAdd = () => {

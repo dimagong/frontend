@@ -85,56 +85,12 @@ export const useUserApplicationValuesMutation = ({ userApplicationId }, options)
 
 // Application Files
 
-export const useCreateApplicationUserFilesMutation = ({ dFormId, masterSchemaFieldId }, options = {}) => {
-  const queryClient = useQueryClient();
-
-  return useGenericMutation(
-    {
-      method: "post",
-      url: `api/dform/${dFormId}/user-files`,
-    },
-    {
-      onSettled: (data, error, ...args) => {
-        if (!error) {
-          const files = data;
-          const currentDFormValues = queryClient.getQueryData(ApplicationQueryKeys.valuesById(dFormId));
-          currentDFormValues[masterSchemaFieldId] = { ...currentDFormValues[masterSchemaFieldId], files };
-
-          queryClient.setQueriesData(ApplicationQueryKeys.valuesById(dFormId), currentDFormValues);
-        }
-        options.onSettled && options.onSettled(data, error, ...args);
-      },
-      ...options,
-    }
-  );
+export const useCreateApplicationUserFilesMutation = ({ dFormId }, options) => {
+  return useGenericMutation({ method: "post", url: `api/dform/${dFormId}/user-files` }, options);
 };
 
-export const useDeleteApplicationUserFileMutation = ({ dFormId, masterSchemaFieldId, fileId }, options = {}) => {
-  const queryClient = useQueryClient();
-
-  return useGenericMutation(
-    {
-      method: "delete",
-      url: `api/dform/${dFormId}/user-file`,
-    },
-    {
-      onSettled: (data, error, ...args) => {
-        if (!error) {
-          const currentDFormValues = queryClient.getQueryData(ApplicationQueryKeys.valuesById(dFormId));
-
-          currentDFormValues[masterSchemaFieldId] = {
-            ...currentDFormValues[masterSchemaFieldId],
-            files: currentDFormValues[masterSchemaFieldId].files.filter(({ file_id }) => file_id !== fileId),
-          };
-
-          queryClient.setQueriesData(ApplicationQueryKeys.valuesById(dFormId), currentDFormValues);
-          queryClient.removeQueries(ApplicationQueryKeys.file({ dFormId, masterSchemaFieldId, fileId }));
-        }
-        options.onSettled && options.onSettled(data, error, ...args);
-      },
-      ...options,
-    }
-  );
+export const useDeleteApplicationUserFileMutation = ({ dFormId, fileId }, options) => {
+  return useGenericMutation({ method: "delete", url: `api/dform/${dFormId}/user-file` }, options);
 };
 
 export const useApplicationUserFileQuery = ({ dFormId, masterSchemaFieldId, fileId }, options) => {

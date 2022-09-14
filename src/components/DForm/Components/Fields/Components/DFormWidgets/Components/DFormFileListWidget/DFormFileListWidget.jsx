@@ -25,7 +25,7 @@ export const DFormFileListWidget = (props) => {
     isDisabled,
     isLabelShowing,
     masterSchemaFieldId,
-    // onChange: propOnChange,
+    onChange: propOnChange,
     className,
   } = props;
 
@@ -42,7 +42,10 @@ export const DFormFileListWidget = (props) => {
   const params = { dFormId, masterSchemaFieldId };
   const createUserFilesMutation = useCreateUserFilesMutation(params, {
     onError: () => setUploadingFiles([]),
-    onSuccess: () => setUploadingFiles([]),
+    onSuccess: (data) => {
+      propOnChange(data);
+      setUploadingFiles([]);
+    },
   });
 
   const onChange = (files) => {
@@ -61,6 +64,10 @@ export const DFormFileListWidget = (props) => {
     // propOnChange(uploadingFiles);
     setUploadingFiles(uploadingFiles);
     createUserFilesMutation.mutate(formData);
+  };
+
+  const onRemove = (removedId) => {
+    propOnChange(value.filter(({ file_id }) => file_id !== removedId));
   };
 
   return (
@@ -92,6 +99,7 @@ export const DFormFileListWidget = (props) => {
               name={name}
               fileId={file_id}
               masterSchemaFieldId={masterSchemaFieldId}
+              onRemove={onRemove}
               key={file_id ?? `file-preview-${index}`}
             />
           ) : (
@@ -99,6 +107,7 @@ export const DFormFileListWidget = (props) => {
               name={name}
               fileId={file_id}
               masterSchemaFieldId={masterSchemaFieldId}
+              onRemove={onRemove}
               key={file_id ?? `file-preview-${index}`}
             />
           );

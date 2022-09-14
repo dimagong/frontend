@@ -10,34 +10,34 @@ import {
   useSubmitDFormForReviewMutation,
 } from "api/Onboarding/prospectUserQuery";
 
-import DForm from "components/DForm";
 import LoadingButton from "components/LoadingButton";
+import { DForm, AccessTypes, FieldTypes } from "components/DForm";
 
 import Check from "assets/img/icons/check.png";
 
 import { fieldValidationSchemas } from "./validationOnboarding";
 
 const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
-  const [applicationSchema, setApplicationSchema] = useState(null);
+  const [applicationData, setApplicationData] = useState(null);
 
   const [applicationValues, setApplicationValues] = useState(null);
 
-  const appProperties =
+  /*const appProperties =
     applicationSchema && applicationValues
       ? Object.values(applicationSchema.fields).map((app) => {
           return {
-            value: applicationValues[app.masterSchemaFieldId]?.value || "",
+            value: applicationValues[app.masterSchemaFieldId].value,
             ...app,
           };
         })
-      : [];
+      : [];*/
 
   const { isLoading: isFormLoading } = useDFormByIdQuery(
     { id: selectedForm.id },
     {
       onSuccess: (data) => {
         const { schema, ...rest } = data;
-        setApplicationSchema({ ...schema, ...rest });
+        setApplicationData({ ...schema, ...rest });
       },
       refetchOnWindowFocus: false,
     }
@@ -85,13 +85,15 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   };
 
   const handleApplicationSubmit = () => {
-    const checkFields = validateFieldsSubmit(appProperties);
+    // ToDo: turn on validation
+    /*const checkFields = validateFieldsSubmit(appProperties);
     if (checkFields) {
       console.log("checkFields error", checkFields);
       toast.error(checkFields.errors.message);
     } else {
       submitDFormForReview.mutate();
-    }
+    }*/
+    submitDFormForReview.mutate();
   };
 
   const validateFields = (field) => {
@@ -104,19 +106,44 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     return { isValid: true };
   };
 
-  const handleFieldChange = (field, value) => {
-    setApplicationValues({
-      ...applicationValues,
-      [field.masterSchemaFieldId]: { ...(applicationValues[field.masterSchemaFieldId] || {}), value },
-    });
+  const handleFieldChange = (field, newValue) => {
+    let newFieldValue;
+    const currentValue = applicationValues[field.masterSchemaFieldId];
 
-    const { errors } = validateFields({ value, ...field });
+    switch (field.type) {
+      case FieldTypes.File:
+      case FieldTypes.FileList:
+        newFieldValue = { ...currentValue, files: newValue };
+        break;
+      case FieldTypes.Text:
+      case FieldTypes.TextArea:
+      case FieldTypes.LongText:
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+      case FieldTypes.Boolean:
+      case FieldTypes.Select:
+      case FieldTypes.MultiSelect:
+      default:
+        newFieldValue = { ...currentValue, value: newValue };
+    }
+
+    const newApplicationValue = { ...applicationValues, [field.masterSchemaFieldId]: newFieldValue };
+
+    setApplicationValues(newApplicationValue);
+
+    // ToDo: turn on validation
+    /*const { errors } = validateFields({ value, ...field });
     if (errors) {
       console.log("validateFields errors", errors);
       toast.error(errors.message);
     } else {
       throttleOnSave.current({ master_schema_field_id: field.masterSchemaFieldId, value });
-    }
+    }*/
+
+    // Do not save Files
+    if ([FieldTypes.File, FieldTypes.FileList].includes(field.type)) return;
+
+    throttleOnSave.current({ master_schema_field_id: field.masterSchemaFieldId, value: newValue });
   };
 
   // TODO make dform disabled on user-lock
@@ -140,14 +167,15 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     <div>
       <DForm
         isMemberView
-        dFormId={applicationSchema?.id}
-        // disabled={isFormLocked()}
-        data={applicationSchema}
+        data={applicationData}
         values={applicationValues}
+        dFormId={applicationData.id}
+        accessType={applicationData.access_type}
         onFieldChange={handleFieldChange}
       />
+
       <div className="form-create__dform_actions pr-1">
-        {applicationSchema.access_type !== "user-lock" ? (
+        {applicationData.access_type !== AccessTypes.UserLock ? (
           <>
             <div className="saving">
               {saveDFormFieldValue.isLoading ? (
@@ -170,7 +198,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
                   textOverflow: "ellipsis",
                 }}
               >
-                {applicationSchema.name}
+                {applicationData.name}
               </span>
               <LoadingButton
                 onClick={handleApplicationSubmit}
@@ -182,9 +210,9 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
           </>
         ) : null}
 
-        {applicationSchema.status === "submitted" ? (
+        {applicationData.status === "submitted" ? (
           <div className="submitted-form-status">
-            <span>{applicationSchema.name}</span> submitted for review
+            <span>{applicationData.name}</span> submitted for review
           </div>
         ) : null}
       </div>

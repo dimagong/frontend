@@ -3,23 +3,26 @@ import "./styles.scss";
 import React from "react";
 import { Plus } from "react-feather";
 
-import { ELEMENT_TYPES } from "components/DForm/constants";
+import { ElementTypes } from "components/DForm";
 
 import Fields from "../Fields";
+import { useDFormContext } from "../../DFormContext";
 
 const Groups = (props) => {
   const {
     data,
     values,
     sectionId,
+    isDisabled: propIsDisabled,
     sectionGroups,
-    isConfigurable,
     selectedElement,
     onElementClick,
     onGroupCreate,
     onFieldCreate,
     onFieldChange,
   } = props;
+
+  const { isConfigurable } = useDFormContext();
 
   const handleGroupSelect = (sectionGroup) => {
     onElementClick({ ...data.groups[sectionGroup], sectionId }, "group");
@@ -34,7 +37,8 @@ const Groups = (props) => {
           return null;
         }
 
-        const isSelected = selectedElement?.elementType === ELEMENT_TYPES.group && selectedElement?.id === group.id;
+        const isDisabled = propIsDisabled || Boolean(group.isDisabled);
+        const isSelected = selectedElement?.elementType === ElementTypes.Group && selectedElement?.id === group.id;
 
         return (
           <div className="group" key={sectionGroup}>
@@ -49,7 +53,7 @@ const Groups = (props) => {
                 data={data}
                 values={values}
                 group={sectionGroup}
-                isConfigurable={isConfigurable}
+                isDisabled={isDisabled}
                 selectedElement={selectedElement}
                 groupFields={group.relatedFields}
                 onFieldChange={onFieldChange}

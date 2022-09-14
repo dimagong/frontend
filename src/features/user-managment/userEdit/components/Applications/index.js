@@ -1,7 +1,7 @@
 import Select from "react-select";
 import { toast } from "react-toastify";
 import { Button, Card } from "reactstrap";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   useUserApplication,
@@ -12,6 +12,7 @@ import {
 
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
+import { FieldTypes } from "../../../../../components/DForm";
 
 const STATUSES = [
   { value: "submitted", label: "submitted" },
@@ -21,6 +22,7 @@ const STATUSES = [
 ];
 
 const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
+  const editedApplicationValuesRef = useRef([]);
   const [applicationValues, setApplicationValues] = useState({});
   const [applicationData, setApplicationData] = useState(isCreate ? {} : null);
 
@@ -36,8 +38,13 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
   const userApplicationValues = useUserApplicationValues(
     { userApplicationId: selectedApplicationId },
     {
-      // When there are no values it returns empty array
-      onSuccess: (data) => setApplicationValues(typeof data === "object" ? data : {}),
+      onSuccess: (data) => {
+        // When there are no values it returns empty object
+        const applicationValues = typeof data === "object" ? data : {};
+        setApplicationValues(applicationValues);
+        // reset edited values
+        editedApplicationValuesRef.current = [];
+      },
       enabled: !isCreate,
       refetchOnWindowFocus: false,
     }
@@ -58,28 +65,54 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
     setApplicationValues({});
   }, [isCreate, selectedApplicationId]);
 
-  const handleFieldChange = (field, value) => {
-    // Mark field as edited for further extraction and save on submit.
-    // Currently, we don't care about case when field value return to initial state and much actual
-    // field value from back-end.
-    // (For example we enter hello in empty field and delete it. Field still counts as edited)
+  const handleFieldChange = (field, newValue) => {
+    let newFieldValue;
+    const currentValue = applicationValues[field.masterSchemaFieldId];
 
-    const newFieldValue = { ...(applicationValues[field.masterSchemaFieldId] || {}), value, edited: true };
-    setApplicationValues({ ...applicationValues, [field.masterSchemaFieldId]: newFieldValue });
+    switch (field.type) {
+      case FieldTypes.File:
+      case FieldTypes.FileList:
+        newFieldValue = { ...currentValue, files: newValue };
+        break;
+      case FieldTypes.Text:
+      case FieldTypes.TextArea:
+      case FieldTypes.LongText:
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+      case FieldTypes.Boolean:
+      case FieldTypes.Select:
+      case FieldTypes.MultiSelect:
+      default:
+        newFieldValue = { ...currentValue, value: newValue };
+    }
+
+    editedApplicationValuesRef.current.push(field.masterSchemaFieldId);
+
+    const newApplicationValue = { ...applicationValues, [field.masterSchemaFieldId]: newFieldValue };
+
+    setApplicationValues(newApplicationValue);
   };
 
   const handleUserApplicationValuesUpdate = () => {
-    const newValues = Object.values(applicationValues).filter((field) => field.edited);
+    const editedValues = editedApplicationValuesRef.current.map((id) => applicationValues[id]);
 
-    if (!newValues.length) {
+    if (editedValues.length === 0) {
       toast.success("Form values up to date");
       return;
     }
 
-    const formattedValues = newValues.reduce((acc, field) => {
-      acc[field.master_schema_field_id] = field.value;
-      return acc;
-    }, {});
+    const formattedValues = editedValues
+      // File and FileList should not be submitted
+      .filter(({ master_schema_field_id }) => {
+        const { type } = Object.values(applicationData.schema.fields).find(
+          ({ masterSchemaFieldId }) => Number(masterSchemaFieldId) === Number(master_schema_field_id)
+        );
+        return ![FieldTypes.File, FieldTypes.FileList].includes(type);
+      })
+      .reduce((acc, field) => {
+        acc[field.master_schema_field_id] = field.value;
+        return acc;
+      }, {});
 
     updateUserApplicationValues.mutate({ values: formattedValues });
   };
@@ -121,6 +154,7 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
               onRefetch={handleApplicationReFetch}
               dFormId={applicationData.id}
               formData={applicationData.schema}
+              accessType={applicationData.access_type}
               isManualSave={true}
               formValues={applicationValues}
             />
@@ -136,7 +170,11 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
                 />
               </div>
               <div>
-                <Button onClick={handleUserApplicationValuesUpdate} className="ml-auto submit-onboarding-button">
+                <Button
+                  color="primary"
+                  onClick={handleUserApplicationValuesUpdate}
+                  className="ml-auto submit-onboarding-button"
+                >
                   Save
                 </Button>
               </div>

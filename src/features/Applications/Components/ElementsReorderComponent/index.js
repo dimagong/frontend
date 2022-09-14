@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ELEMENT_TYPES } from "components/DForm/constants";
+import { ElementTypes } from "components/DForm";
 
 import NestedOrderComponent from "./NestedOrderComponent";
 
@@ -28,16 +28,16 @@ const ElementsReorderComponent = ({ applicationData, onReorder }) => {
 
   return (
     <div style={{ paddingLeft: "35px", paddingRight: "35px" }}>
-      <NestedOrderComponent onDragEnd={handleDragEnd} type={ELEMENT_TYPES.section} items={sections}>
+      <NestedOrderComponent onDragEnd={handleDragEnd} type={ElementTypes.Section} items={sections}>
         <NestedOrderComponent
           onDragEnd={handleDragEnd}
-          type={ELEMENT_TYPES.group}
+          type={ElementTypes.Group}
           isNested
           childItemsSelector={selectSectionGroups}
         >
           <NestedOrderComponent
             onDragEnd={handleDragEnd}
-            type={ELEMENT_TYPES.field}
+            type={ElementTypes.Field}
             isNested
             childItemsSelector={selectGroupFields}
             elementNameSelector={fieldNameSelector}
