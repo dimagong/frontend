@@ -44,7 +44,6 @@ const MemberSurvey = ({
   const [answer, setAnswer] = useState("");
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
-  console.log("selectedSurveyId", selectedSurveyId);
   const { data: survey, isLoading: isLoadingSurvey } = useSurveyByIdQuery(
     { id: selectedSurveyId },
     { enabled: !!selectedSurveyId }
