@@ -37,7 +37,7 @@ export const FieldRequiredEditProperty = ({ element, onFieldChange }) => {
 };
 
 export const FieldProtectedEditProperty = ({ element, onFieldChange }) => {
-  const onProtectedChange = () => onFieldChange("isProtected", element.isProtected);
+  const onProtectedChange = () => onFieldChange("isProtected", !element.isProtected);
 
   return (
     <DFormBooleanWidget
