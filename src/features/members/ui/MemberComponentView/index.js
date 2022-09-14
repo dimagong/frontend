@@ -9,7 +9,7 @@ import NavMenu from "components/NavMenu/NavMenu";
 import MemberMenuView from "./../MemberMenuView";
 import Check from "assets/img/icons/check.png";
 
-import NpmCardSurvey from "../MemberCardPassSurveyView";
+import MemberSurveyPassView from "../MemberSurveyPassView";
 import MemberSurveyView from "../MemberSurveyView";
 import MemberDFormView from "../MemberDFormView";
 import { TypeConstants } from "./../../data/constants/typeApplication";
@@ -107,7 +107,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
         <Col
           span={23}
           style={{
-            height: "100%",
+            minHeight: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -126,6 +126,11 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
           )}
           {appActiveOnboarding.type === TypeConstants.DFORM && (
             <>
+              {/* <MemberDFormView
+                profile={profile}
+                selectedForm={appActiveOnboarding}
+                setRecentlySubmitted={setRecentlySubmitted}
+              /> */}
               <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
                 <h2 className="onboarding-title">{appActiveOnboarding?.title || appActiveOnboarding?.name}</h2>
                 {!isEmpty(appActiveOnboarding) &&
@@ -142,7 +147,6 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
                       selectedForm={appActiveOnboarding}
                       setRecentlySubmitted={setRecentlySubmitted}
                     />
-                    // <MemberDFormView />
                   ))}
               </div>
             </>
