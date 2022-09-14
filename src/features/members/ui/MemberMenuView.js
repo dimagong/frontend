@@ -42,7 +42,7 @@ const MemberMenuView = ({ dForms, surveys, setActiveAppOnboarding }) => {
           marginTop: 44,
         }}
       >
-        <div style={{ width: "auto" }}>
+        <div style={{ width: "auto", zIndex: 1 }}>
           <NpmPopover title={"Applications"} content={contentDForms} onClick={selectMenuOption}>
             <NpmTooltip text="Applications">
               <NpmBadge count={dForms.length} name="applications" />
@@ -50,7 +50,7 @@ const MemberMenuView = ({ dForms, surveys, setActiveAppOnboarding }) => {
           </NpmPopover>
         </div>
 
-        <div style={{ width: "auto" }}>
+        <div style={{ width: "auto", zIndex: 1 }}>
           <NpmPopover title={"Surveys"} content={contentSurveys} onClick={selectMenuOption}>
             <NpmTooltip text="Surveys">
               <NpmBadge

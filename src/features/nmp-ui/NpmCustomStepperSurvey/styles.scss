@@ -1,0 +1,10 @@
+.steppers {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  .stepper {
+    height: 0px;
+    border: 5px solid;
+    border-radius: 5px;
+  }
+}

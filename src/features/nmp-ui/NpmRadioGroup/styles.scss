@@ -1,59 +1,35 @@
-.radio-group {
-  display: flex;
-  flex-wrap: wrap;
-
-  & > * {
-    margin-right: 22px;
-    margin-top: 10px;
-  }
-  .ant-radio-wrapper {
+.npmRadio {
+  span:last-child {
+    font-family: "SF Pro Display";
+    font-style: normal;
     font-weight: 400;
-    font-size: 18px;
-    line-height: 22px;
-  }
-
-  .ant-card {
-    width: 230px;
-    height: 42px;
-  }
-
-  .ant-card-body {
-    width: 230px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    padding: 0 0 0 16px;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 16px;
+    line-height: 19px;
+    color: #474747;
   }
 }
 
-.correctAnswerStyle {
-  .ant-radio-checked .ant-radio-inner {
+.radio-green {
+  ant-radio-checked .ant-radio-inner {
     border-color: #35a046 !important ;
   }
-
   .ant-radio-checked .ant-radio-inner:after {
     background-color: #35a046;
   }
 }
-.incorrectAnswerStyle {
-  .ant-radio-checked .ant-radio-inner {
-    border-color: #c70000 !important ;
+.radio-red {
+  ant-radio-checked .ant-radio-inner {
+    border-color: red !important ;
   }
-
   .ant-radio-checked .ant-radio-inner:after {
-    background-color: #c70000;
+    background-color: red;
   }
 }
-
-.ant-radio-checked .ant-radio-inner {
-  border-color: black !important ;
-}
-
-.ant-radio-checked .ant-radio-inner:after {
-  background-color: black;
-}
-
-.ant-radio:hover .ant-radio-inner {
-  border-color: black;
+.radio-black {
+  ant-radio-checked .ant-radio-inner {
+    border-color: black !important ;
+  }
+  .ant-radio-checked .ant-radio-inner:after {
+    background-color: black;
+  }
 }

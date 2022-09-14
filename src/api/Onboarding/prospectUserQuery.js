@@ -33,7 +33,8 @@ export const useProspectUserProfileQuery = (options = {}) => {
   const dispatch = useDispatch();
   return useGenericQuery(
     {
-      url: `/member-view-api/user/profile`,
+      url: `/api/user/profile`,
+      //url: `/member-view-api/user/profile`,
       queryKey: MVAProfileQueryKeys.all(),
     },
     {
