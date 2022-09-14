@@ -11,7 +11,7 @@ import {
 } from "api/Onboarding/prospectUserQuery";
 
 import LoadingButton from "components/LoadingButton";
-import { DForm, AccessTypes } from "components/DForm";
+import { DForm, AccessTypes, FieldTypes } from "components/DForm";
 
 import Check from "assets/img/icons/check.png";
 
@@ -106,11 +106,30 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     return { isValid: true };
   };
 
-  const handleFieldChange = (field, value) => {
-    setApplicationValues({
-      ...applicationValues,
-      [field.masterSchemaFieldId]: { ...(applicationValues[field.masterSchemaFieldId] || {}), value },
-    });
+  const handleFieldChange = (field, newValue) => {
+    let newFieldValue;
+    const currentValue = applicationValues[field.masterSchemaFieldId];
+
+    switch (field.type) {
+      case FieldTypes.File:
+      case FieldTypes.FileList:
+        newFieldValue = { ...currentValue, files: newValue };
+        break;
+      case FieldTypes.Text:
+      case FieldTypes.TextArea:
+      case FieldTypes.LongText:
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+      case FieldTypes.Boolean:
+      case FieldTypes.Select:
+      case FieldTypes.MultiSelect:
+      default:
+        newFieldValue = { ...currentValue, value: newValue };
+    }
+
+    const newApplicationValue = { ...applicationValues, [field.masterSchemaFieldId]: newFieldValue };
+
+    setApplicationValues(newApplicationValue);
 
     // ToDo: turn on validation
     /*const { errors } = validateFields({ value, ...field });
@@ -120,7 +139,11 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
     } else {
       throttleOnSave.current({ master_schema_field_id: field.masterSchemaFieldId, value });
     }*/
-    throttleOnSave.current({ master_schema_field_id: field.masterSchemaFieldId, value });
+
+    // Do not save Files
+    if ([FieldTypes.File, FieldTypes.FileList].includes(field.type)) return;
+
+    throttleOnSave.current({ master_schema_field_id: field.masterSchemaFieldId, value: newValue });
   };
 
   // TODO make dform disabled on user-lock

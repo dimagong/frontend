@@ -9,7 +9,9 @@ import { useDeleteMVAUserFileMutation, useMVAUserFileQuery } from "api/Onboardin
 
 import { FilePreview } from "./FilePreview";
 
-export const MemberFilePreview = ({ fileId, name, masterSchemaFieldId, isUploading = false, isRemovable = true }) => {
+export const MemberFilePreview = (props) => {
+  const { fileId, name, masterSchemaFieldId, isUploading = false, isRemovable = true, onRemove: propOnRemove } = props;
+
   const { dFormId } = useDFormContext();
 
   const params = { dFormId, masterSchemaFieldId, fileId };
@@ -18,7 +20,7 @@ export const MemberFilePreview = ({ fileId, name, masterSchemaFieldId, isUploadi
   // is used in member view scope it will use the service that implements an clientHttpAPI, and in case
   // when it is used in another scope that provide Network it will use it correspondingly.
   const fileQuery = useMVAUserFileQuery(params, { enabled: Boolean(fileId) && Boolean(masterSchemaFieldId) });
-  const removeFileMutation = useDeleteMVAUserFileMutation(params);
+  const removeFileMutation = useDeleteMVAUserFileMutation(params, { onSuccess: propOnRemove(fileId) });
 
   const onRemove = () => {
     if (!window.confirm("Are you sure you want to remove the file ?")) {
@@ -47,4 +49,5 @@ MemberFilePreview.propTypes = {
   masterSchemaFieldId: IdType,
   isRemovable: PropTypes.bool,
   isUploading: PropTypes.bool,
+  onRemove: PropTypes.func,
 };

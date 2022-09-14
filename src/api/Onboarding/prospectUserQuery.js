@@ -277,56 +277,12 @@ export const useGetAllSurveyQuestionsQuery = (payload, options = {}) => {
 
 // MVA Application Files
 
-export const useCreateMVAUserFilesMutation = ({ dFormId, masterSchemaFieldId }, options = {}) => {
-  const queryClient = useQueryClient();
-
-  return useGenericMutation(
-    {
-      method: "post",
-      url: `member-view-api/dform/${dFormId}/user-files`,
-    },
-    {
-      onSettled: (data, error, ...args) => {
-        if (!error) {
-          const files = data;
-          const currentDFormValues = queryClient.getQueryData(MVADFormsQueryKeys.dFormValuesById(dFormId));
-          currentDFormValues[masterSchemaFieldId] = { ...currentDFormValues[masterSchemaFieldId], files };
-
-          queryClient.setQueriesData(MVADFormsQueryKeys.dFormValuesById(dFormId), currentDFormValues);
-        }
-        options.onSettled && options.onSettled(data, error, ...args);
-      },
-      ...options,
-    }
-  );
+export const useCreateMVAUserFilesMutation = ({ dFormId }, options = {}) => {
+  return useGenericMutation({ method: "post", url: `member-view-api/dform/${dFormId}/user-files` }, options);
 };
 
-export const useDeleteMVAUserFileMutation = ({ dFormId, masterSchemaFieldId, fileId }, options = {}) => {
-  const queryClient = useQueryClient();
-
-  return useGenericMutation(
-    {
-      method: "delete",
-      url: `member-view-api/dform/${dFormId}/user-file`,
-    },
-    {
-      onSettled: (data, error, ...args) => {
-        if (!error) {
-          const currentDFormValues = queryClient.getQueryData(MVADFormsQueryKeys.dFormValuesById(dFormId));
-
-          currentDFormValues[masterSchemaFieldId] = {
-            ...currentDFormValues[masterSchemaFieldId],
-            files: currentDFormValues[masterSchemaFieldId].files.filter(({ file_id }) => file_id !== fileId),
-          };
-
-          queryClient.removeQueries(MVADFormsQueryKeys.file({ dFormId, masterSchemaFieldId, fileId }));
-          queryClient.setQueriesData(MVADFormsQueryKeys.dFormValuesById(dFormId), currentDFormValues);
-        }
-        options.onSettled && options.onSettled(data, error, ...args);
-      },
-      ...options,
-    }
-  );
+export const useDeleteMVAUserFileMutation = ({ dFormId, fileId }, options) => {
+  return useGenericMutation({ method: "delete", url: `member-view-api/dform/${dFormId}/user-file` }, options);
 };
 
 export const useMVAUserFileQuery = ({ dFormId, masterSchemaFieldId, fileId }, options) => {
