@@ -20,7 +20,7 @@ interface IProps {
 const NpmStepper = ({
   sections = [],
   direction = "vertical",
-  size = "small",
+  size = "default",
   current = 0,
   initial = 0,
   status = "process",
