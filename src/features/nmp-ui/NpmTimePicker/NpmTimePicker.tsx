@@ -54,9 +54,11 @@ const NpmTimePicker = ({
       secondStep={secondStep}
       placeholder={placeholder}
       placement={placement}
+      // @ts-ignore
       popupStyle={popupStyle}
       status={status}
       use12Hours={use12Hours}
+      // @ts-ignore
       style={style}
       className={className}
     />

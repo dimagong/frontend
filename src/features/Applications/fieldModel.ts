@@ -77,7 +77,7 @@ type FieldProperties =
   | MultiSelectFieldProperties;
 
 const deleteUndefinedKeys = <T>(instance: T): T => {
-  Object.keys(instance as object).forEach((key) => {
+  Object.keys(instance).forEach((key) => {
     if (instance[key] === undefined) {
       delete instance[key];
     }

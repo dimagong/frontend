@@ -33,6 +33,7 @@ const NpmDatePicker = ({
     onChangeDate(date, dateString);
   };
   return (
+    // @ts-ignore
     <DatePicker
       style={style}
       onChange={onChange}

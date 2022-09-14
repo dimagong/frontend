@@ -18,6 +18,7 @@ const NpmInputSelect: Function = ({ handleChange, options, style = { width: "100
     <>
       <Select
         defaultValue={options.length ? options[0] : "none"}
+        // @ts-ignore
         style={style}
         onChange={(value) => handleChange(value)}
       >
