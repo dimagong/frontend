@@ -1,11 +1,13 @@
 import "./style.scss";
 
 import PropTypes from "prop-types";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import { IdType } from "utility/prop-types";
 
 import { FilesPreview } from "./FilesPreview";
+
+const reader = new FileReader();
 
 export const File = (props) => {
   const {
@@ -20,11 +22,25 @@ export const File = (props) => {
     onChange,
   } = props;
 
+  const [propgress, calculateProgress] = useState(0);
+
   const files = Array.from(value);
 
   const inputFileRef = useRef();
 
-  const onInputFileChange = (event) => onChange(event.target.files);
+  const onInputFileChange = (event) => {
+    onChange(event.target.files);
+
+    const files = event.target.files;
+    const file = files[0];
+    reader.readAsDataURL(file);
+    reader.addEventListener("progress", (event) => {
+      if (event.loaded && event.total) {
+        const percent = (event.loaded / event.total) * 100;
+        calculateProgress(percent);
+      }
+    });
+  };
 
   const onDropZoneClick = () => {
     const inputFileElement = inputFileRef.current;
