@@ -22,10 +22,27 @@ const getInputTypeByFormat = (format) => {
   }
 };
 
+const convertToInputDate = (value, format) => {
+  if (typeof value !== "string") {
+    throw new Error(`Unexpected value type: ${typeof value}`);
+  }
+
+  if (value.length > 0) {
+    switch (format) {
+      case DateWidgetFormatTypes.Date:
+        return value.substring(0, value.indexOf("T"));
+      case DateWidgetFormatTypes.Time:
+        return value.substring(0, value.indexOf("T") + 6);
+      default:
+        return "";
+    }
+  }
+};
+
 export const DFormDateWidget = (props) => {
   const {
     id,
-    value = "",
+    value: propValue,
     label,
     format,
     error,
@@ -39,21 +56,9 @@ export const DFormDateWidget = (props) => {
 
   const type = getInputTypeByFormat(format);
 
-  const onChange = (event) => propOnChange(event.target.valueAsDate.toISOString());
+  const onChange = (event) => propOnChange(new Date(event.target.value).toISOString());
 
-  const getValue = () => {
-    if (typeof value === "string" && value.length > 0) {
-      switch (format) {
-        case DateWidgetFormatTypes.Date:
-          return value.substring(0, 10);
-        case DateWidgetFormatTypes.Time:
-          return value.slice(0, -1);
-        default:
-          return "";
-      }
-    }
-    return value;
-  };
+  const value = convertToInputDate(propValue, format);
 
   return (
     <DFormFieldContainer
@@ -65,14 +70,7 @@ export const DFormDateWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={classnames(className)}
     >
-      <input
-        id={id}
-        value={getValue()}
-        type={type}
-        onChange={onChange}
-        disabled={isDisabled}
-        className="dform-date-field"
-      />
+      <input id={id} value={value} type={type} onChange={onChange} disabled={isDisabled} className="dform-date-field" />
     </DFormFieldContainer>
   );
 };
