@@ -108,7 +108,7 @@ const UserEdit = () => {
 
   const [contextFeature, setContextFeature] = useState("");
   const [openOnboarding, setOpenOnboarding] = useState("");
-  const [selectedApplicationId, setSelectedApplicationId] = useState(undefined);
+  const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   const [selectedAssignedSurvey, setSelectedAssignedSurvey] = useState(null);
   const [applicationAddSelectValue, setApplicationAddSelectValue] = useState(selectOptions[0]);
 
@@ -136,7 +136,7 @@ const UserEdit = () => {
     if (application.questions) {
       setSelectedAssignedSurvey(application);
       dispatch(setManagerOnboarding(null));
-      setSelectedApplicationId(undefined);
+      setSelectedApplicationId(null);
       setContextFeature("assignedSurvey");
     } else {
       setSelectedAssignedSurvey(null);
@@ -347,29 +347,13 @@ const UserEdit = () => {
               {
                 {
                   edit: <UserProfileEdit manager={manager} onEditClose={handleEditClose} />,
-                  onboarding: selectedManager.onboarding && (
-                    <UserEditApplication isCreate={isCreate.current} selectedApplicationId={selectedApplicationId} />
-                  ),
-                  // onboarding: selectedManager.onboarding && (
-                  //   <div className="onboarding-create-feature">
-                  //     <div className="onboarding-create-feature_header">
-                  //       {isCreate.current ? (
-                  //         <div className="onboarding-create-feature_header_title">Onboarding Create</div>
-                  //       ) : (
-                  //         <>
-                  //           <div className="onboarding-create-feature_header_title">Application</div>
-                  //           <div className="onboarding-create-feature_header_name">
-                  //             {selectedManager?.onboarding?.d_form?.name || ""}
-                  //           </div>
-                  //         </>
-                  //       )}
-                  //     </div>
-                  //     <Card>
-                  //       <UserOnboardingForm isCreate={isCreate} />
-                  //       {!isCreate.current && <UserOnboardingDForm isManualSave={true} />}
-                  //     </Card>
-                  //   </div>
-                  // ),
+                  onboarding: selectedManager.onboarding ? (
+                    <UserEditApplication
+                      isCreate={isCreate.current}
+                      dformId={selectedApplicationId}
+                      key={selectedApplicationId == null ? "create" : selectedApplicationId}
+                    />
+                  ) : null,
                   surveyCreate: <SurveyAssign userId={manager.id} />,
                   assignedSurvey: (
                     <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />

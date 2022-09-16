@@ -40,11 +40,22 @@ export const useGenericMutation = (mutualConfig, options = {}) => {
             exactQueryKey = queryKey(...args);
           }
 
-          if (shouldRemoveQuery) {
-            return queryClient.removeQueries(exactQueryKey);
+          if (Array.isArray(queryKey)) {
+            exactQueryKey = queryKey;
+          } else {
+            exactQueryKey = [queryKey];
           }
 
-          return queryClient.invalidateQueries(exactQueryKey, invalidateOptions);
+          const promises = exactQueryKey.map((queryKey) => {
+            if (shouldRemoveQuery) {
+              queryClient.removeQueries(queryKey);
+              return Promise.resolve();
+            }
+
+            return queryClient.invalidateQueries(queryKey, invalidateOptions);
+          });
+
+          return Promise.all(promises);
         }
       : undefined,
 

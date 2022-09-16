@@ -470,7 +470,7 @@ export const ApplicationPage = ({ applicationId }) => {
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
             <DForm
               isConfigurable={true}
-              data={applicationData}
+              schema={applicationData}
               selectedElement={selectedElement}
               onElementClick={handleSelectElementForEdit}
               onSectionCreate={handleSectionCreate}

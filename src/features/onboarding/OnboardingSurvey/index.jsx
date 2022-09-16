@@ -36,18 +36,14 @@ const OnboardingSurvey = ({
   const [answer, setAnswer] = useState("");
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
-  console.log("selectedSurveyId", selectedSurveyId);
   const { data: survey, isLoading: isLoadingSurvey } = useSurveyByIdQuery(
     { id: selectedSurveyId },
     { enabled: !!selectedSurveyId }
   );
 
   const { id, started_at, finished_at, graded_at, title } = survey || {};
-  console.log("survey", survey);
 
   const surveyStatus = findStatusSurvey(started_at, finished_at, graded_at, isRecentlySubmitted);
-
-  console.log("surveyStatus", surveyStatus);
 
   let { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurveyQuery(
     { id },

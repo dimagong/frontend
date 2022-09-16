@@ -1,18 +1,13 @@
 import Select from "react-select";
 import { toast } from "react-toastify";
 import { Button, Card } from "reactstrap";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
-import {
-  useUserApplication,
-  useUserApplicationStatusMutation,
-  useUserApplicationValues,
-  useUserApplicationValuesMutation,
-} from "../../userQueries";
+import { useDFormQuery, useDFormValues, useSubmitDFormMutation, useChangeDFormStatusMutation } from "../../userQueries";
 
+import { FieldTypes } from "../../../../../components/DForm";
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
-import { FieldTypes } from "../../../../../components/DForm";
 
 const STATUSES = [
   { value: "submitted", label: "submitted" },
@@ -21,53 +16,46 @@ const STATUSES = [
   { value: "unsubmitted", label: "unsubmitted" },
 ];
 
-const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
-  const editedApplicationValuesRef = useRef([]);
-  const [applicationValues, setApplicationValues] = useState({});
-  const [applicationData, setApplicationData] = useState(isCreate ? {} : null);
+const UserEditApplication = ({ isCreate, dformId }) => {
+  const editedFieldMasterSchemaFieldIdsRef = useRef([]);
 
-  const userApplication = useUserApplication(
-    { userApplicationId: selectedApplicationId },
+  const [dform, setDForm] = useState(null);
+  const [values, setValues] = useState(null);
+
+  const dformQuery = useDFormQuery(
+    { dformId },
     {
-      onSuccess: (data) => setApplicationData(data),
+      onSuccess: (data) => setDForm(data),
       enabled: !isCreate,
       refetchOnWindowFocus: false,
     }
   );
 
-  const userApplicationValues = useUserApplicationValues(
-    { userApplicationId: selectedApplicationId },
+  const valuesQuery = useDFormValues(
+    { dformId },
     {
       onSuccess: (data) => {
         // When there are no values it returns empty object
-        const applicationValues = typeof data === "object" ? data : {};
-        setApplicationValues(applicationValues);
+        const values = typeof data === "object" ? data : {};
+        setValues(values);
         // reset edited values
-        editedApplicationValuesRef.current = [];
+        clearEditedValues();
       },
       enabled: !isCreate,
       refetchOnWindowFocus: false,
     }
   );
 
-  const updateUserApplicationStatus = useUserApplicationStatusMutation(
-    { userApplicationId: selectedApplicationId },
+  const changeDFormStatusMutation = useChangeDFormStatusMutation(
+    { dformId },
     { onSuccess: () => toast.success("Status successfully changed") }
   );
 
-  const updateUserApplicationValues = useUserApplicationValuesMutation(
-    { userApplicationId: selectedApplicationId },
-    { onSuccess: () => toast.success("Saved") }
-  );
+  const submitDFormMutation = useSubmitDFormMutation({ dformId }, { onSuccess: () => toast.success("Saved") });
 
-  useEffect(() => {
-    setApplicationData(isCreate ? {} : null);
-    setApplicationValues({});
-  }, [isCreate, selectedApplicationId]);
-
-  const handleFieldChange = (field, newValue) => {
+  const onFieldChange = (field, newValue) => {
     let newFieldValue;
-    const currentValue = applicationValues[field.masterSchemaFieldId];
+    const currentValue = values[field.masterSchemaFieldId];
 
     switch (field.type) {
       case FieldTypes.File:
@@ -84,103 +72,124 @@ const UserEditApplication = ({ isCreate, selectedApplicationId }) => {
       case FieldTypes.MultiSelect:
       default:
         newFieldValue = { ...currentValue, value: newValue };
+        addFieldToEdited(field);
     }
 
-    editedApplicationValuesRef.current.push(field.masterSchemaFieldId);
+    const newApplicationValue = { ...values, [field.masterSchemaFieldId]: newFieldValue };
 
-    const newApplicationValue = { ...applicationValues, [field.masterSchemaFieldId]: newFieldValue };
-
-    setApplicationValues(newApplicationValue);
+    setValues(newApplicationValue);
   };
 
-  const handleUserApplicationValuesUpdate = () => {
-    const editedValues = editedApplicationValuesRef.current.map((id) => applicationValues[id]);
+  const addFieldToEdited = ({ masterSchemaFieldId }) => {
+    const edited = editedFieldMasterSchemaFieldIdsRef.current;
+    if (!edited.includes(masterSchemaFieldId)) {
+      editedFieldMasterSchemaFieldIdsRef.current.push(masterSchemaFieldId);
+    }
+  };
 
-    if (editedValues.length === 0) {
+  const getFieldByMasterSchemaFieldId = (masterSchemaFieldId) => {
+    const fields = Object.values(dform.schema.fields);
+    return fields.find((field) => Number(field.masterSchemaFieldId) === Number(masterSchemaFieldId));
+  };
+
+  const getEditedFields = () => {
+    return editedFieldMasterSchemaFieldIdsRef.current.map(getFieldByMasterSchemaFieldId);
+  };
+
+  const getEditedValue = (masterSchemaFieldId, values) => values[masterSchemaFieldId];
+
+  const clearEditedValues = () => void (editedFieldMasterSchemaFieldIdsRef.current = []);
+
+  const submitDForm = (editedFields) => {
+    const editedValues = editedFields
+      // File and FileList should not be submitted
+      .filter(({ type }) => ![FieldTypes.File, FieldTypes.FileList].includes(type))
+      .reduce((editedValues, { masterSchemaFieldId }) => {
+        editedValues[masterSchemaFieldId] = getEditedValue(masterSchemaFieldId, values).value;
+        return editedValues;
+      }, {});
+
+    submitDFormMutation.mutate({ values: editedValues });
+  };
+
+  const onSubmit = () => {
+    const editedFields = getEditedFields();
+
+    if (editedFields.length === 0) {
       toast.success("Form values up to date");
       return;
     }
 
-    const formattedValues = editedValues
-      // File and FileList should not be submitted
-      .filter(({ master_schema_field_id }) => {
-        const { type } = Object.values(applicationData.schema.fields).find(
-          ({ masterSchemaFieldId }) => Number(masterSchemaFieldId) === Number(master_schema_field_id)
-        );
-        return ![FieldTypes.File, FieldTypes.FileList].includes(type);
-      })
-      .reduce((acc, field) => {
-        acc[field.master_schema_field_id] = field.value;
-        return acc;
-      }, {});
-
-    updateUserApplicationValues.mutate({ values: formattedValues });
+    submitDForm(editedFields);
   };
 
-  const handleUpdateUserApplicationStatus = (newStatus) => {
-    updateUserApplicationStatus.mutate({ status: newStatus.value });
+  const onBeforeUnmount = () => {
+    const editedFields = getEditedFields();
+
+    if (editedFields.length > 0) {
+      // Ask user if he wants to save changes before leave.
+      const needSaveChanges = window.confirm("Save changes before leave?");
+
+      if (needSaveChanges) {
+        submitDForm(editedFields);
+      }
+    }
   };
 
-  const handleApplicationReFetch = () => {
-    userApplication.refetch();
-  };
+  const onDFormStatusChange = ({ value: status }) => changeDFormStatusMutation.mutate({ status });
 
-  if (
-    (selectedApplicationId && (userApplication.isFetching || userApplicationValues.isFetching)) ||
-    (!applicationData && userApplication.isFetching)
-  ) {
-    return <div>Loading...</div>;
+  const onRefetch = () => dformQuery.refetch();
+
+  if (isCreate) {
+    return (
+      <div className="onboarding-create-feature mb-4 pb-4">
+        <div className="onboarding-create-feature_header">
+          <div className="onboarding-create-feature_header_title">Onboarding Create</div>
+        </div>
+
+        <Card>
+          <UserOnboardingForm isCreate />
+        </Card>
+      </div>
+    );
   }
 
   return (
     <div className="onboarding-create-feature mb-4 pb-4">
       <div className="onboarding-create-feature_header">
-        {isCreate ? (
-          <div className="onboarding-create-feature_header_title">Onboarding Create</div>
-        ) : (
-          <>
-            <div className="onboarding-create-feature_header_title">Application</div>
-            <div className="onboarding-create-feature_header_name">{applicationData.name || ""}</div>
-          </>
-        )}
+        <div className="onboarding-create-feature_header_title">Application</div>
+        <div className="onboarding-create-feature_header_name">{dform?.name ?? "Loading..."}</div>
       </div>
       <Card>
-        <UserOnboardingForm isCreate={isCreate} />
-        {!isCreate && (
-          <>
-            <UserOnboardingDForm
-              onFieldChange={handleFieldChange}
-              isRefetching={userApplication.isFetching}
-              onRefetch={handleApplicationReFetch}
-              dFormId={applicationData.id}
-              formData={applicationData.schema}
-              accessType={applicationData.access_type}
-              isManualSave={true}
-              formValues={applicationValues}
+        <UserOnboardingForm isCreate={false} />
+
+        <UserOnboardingDForm
+          dFormId={dform?.id}
+          schema={dform?.schema}
+          values={values}
+          accessType={dform?.access_type}
+          isLoading={dformQuery.isLoading || valuesQuery.isLoading}
+          isManualSave
+          onRefetch={onRefetch}
+          onFieldChange={onFieldChange}
+          onBeforeUnmount={onBeforeUnmount}
+        />
+
+        <div className="col-md-12 d-flex justify-content-between align-items-center mb-2">
+          <div style={{ width: "160px" }}>
+            <Select
+              value={{ value: dform?.status, label: dform?.status }}
+              options={STATUSES}
+              isLoading={changeDFormStatusMutation.isLoading}
+              onChange={onDFormStatusChange}
             />
-            <div className="col-md-12 d-flex justify-content-between align-items-center mb-2">
-              <div style={{ width: "160px" }}>
-                <Select
-                  className=""
-                  classNamePrefix="select"
-                  value={{ value: applicationData.status, label: applicationData.status }}
-                  options={STATUSES}
-                  isLoading={updateUserApplicationStatus.isLoading}
-                  onChange={handleUpdateUserApplicationStatus}
-                />
-              </div>
-              <div>
-                <Button
-                  color="primary"
-                  onClick={handleUserApplicationValuesUpdate}
-                  className="ml-auto submit-onboarding-button"
-                >
-                  Save
-                </Button>
-              </div>
-            </div>
-          </>
-        )}
+          </div>
+          <div>
+            <Button color="primary" onClick={onSubmit} className="ml-auto submit-onboarding-button">
+              Save
+            </Button>
+          </div>
+        </div>
       </Card>
     </div>
   );

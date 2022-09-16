@@ -1,14 +1,8 @@
+import React, { useEffect } from "react";
 import { RefreshCw } from "react-feather";
-import React, { useRef, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Card, CardHeader, CardTitle, CardBody, Col } from "reactstrap";
+import { Card, CardHeader, CardTitle, CardBody, Col, Spinner } from "reactstrap";
 
 import { DForm } from "components/DForm";
-
-import appSlice from "app/slices/appSlice";
-import { selectManager } from "app/selectors";
-
-const { getUserByIdRequest, submitdFormNewVersionRequest } = appSlice.actions;
 
 // const initRefreshClassName = "bg-hover-icon";
 
@@ -28,19 +22,32 @@ const { getUserByIdRequest, submitdFormNewVersionRequest } = appSlice.actions;
 
 // TODO handle updated at text
 
-const UserOnboardingDForm = (props) => {
-  const { onRefetch, isRefetching, isManualSave, dFormId, formData, formValues, onFieldChange } = props;
+const useEffectBeforeUnmount = (callback, deps = []) => {
+  const mounted = React.useRef(null);
 
-  // const [isStateConfig] = useState(false);
-  // const [refreshClassName, setRefreshClassName] = useState(initRefreshClassName);
-  const manager = useSelector(selectManager);
-  // const loading = useSelector(selectLoading);
-  const dispatch = useDispatch();
+  React.useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  React.useEffect(
+    () => () => {
+      if (mounted.current === false) {
+        callback(...deps);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [callback, ...deps]
+  );
+};
+
+const UserOnboardingDForm = (props) => {
+  const { dFormId, schema, values, accessType, isLoading, onFieldChange, onRefetch, onBeforeUnmount } = props;
 
   // const updatedAt = React.useMemo(() => manager.onboarding.d_form.updated_at, [manager.onboarding.d_form.updated_at]);
   // const updatedAtTextLoding = useRef(false);
-  const isFormMutated = useRef(false);
-  const tempData = useRef(null);
 
   // const handleSave = (data, dForm, userId) => {
   //   updatedAtTextLoding.current = true;
@@ -76,42 +83,19 @@ const UserOnboardingDForm = (props) => {
   //   dispatch(changedFormStatusRequest({ dForm: manager.onboarding.d_form, status }));
   // };
 
-  const submitOnboardingForm = (data) => {
-    if (isManualSave) {
-      isFormMutated.current = false;
-    }
-
-    dispatch(submitdFormNewVersionRequest({ dForm: manager.onboarding.d_form, data, userId: manager.id }));
-    dispatch(getUserByIdRequest({ userId: manager.id }));
-  };
-
-  const handleRefresh = () => {
-    onRefetch();
-  };
-
-  const handlePageLeave = (e) => {
-    e.preventDefault();
-    e.returnValue = ""; //required for Chrome
-  };
-
   useEffect(() => {
-    // Ask user if he want to leave page without saving changes. Work in case if user leave application
-    window.addEventListener("beforeunload", handlePageLeave);
-
-    return () => {
-      window.removeEventListener("beforeunload", handlePageLeave);
-
-      if (isFormMutated.current) {
-        // Ask user if he want to save changes before component will unmount
-        const isSaveChanges = window.confirm("Save changes before leave?");
-
-        if (isSaveChanges) {
-          submitOnboardingForm(tempData.current);
-        }
-      }
+    const onBeforeUnload = (e) => {
+      e.preventDefault();
+      // Required for Chrome
+      e.returnValue = "";
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Ask user if he wants to leave the page without saving changes.
+    // Work in case if user leave application.
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, []);
+
+  useEffectBeforeUnmount(onBeforeUnmount, []);
 
   return (
     <Col md="12">
@@ -119,16 +103,23 @@ const UserOnboardingDForm = (props) => {
         <CardHeader className="m-0">
           <CardTitle>Onboarding dForm</CardTitle>
           <div>
-            <RefreshCw
-              className={`bg-hover-icon ${isRefetching ? "rotating" : ""}`}
-              size={15}
-              onClick={handleRefresh}
-            />
+            <RefreshCw className={`bg-hover-icon ${isLoading ? "rotating" : ""}`} size={15} onClick={onRefetch} />
           </div>
         </CardHeader>
         <CardBody className="pt-0">
-          <hr />
-          <DForm dFormId={dFormId} data={formData} values={formValues} onFieldChange={onFieldChange} />
+          {isLoading || !schema || !values ? (
+            <div className="d-flex justify-content-center align-items-center height-300">
+              <Spinner color="primary" size="40" />
+            </div>
+          ) : (
+            <DForm
+              dFormId={dFormId}
+              schema={schema}
+              values={values}
+              accessType={accessType}
+              onFieldChange={onFieldChange}
+            />
+          )}
         </CardBody>
       </Card>
     </Col>
