@@ -1,11 +1,12 @@
 import chroma from "chroma-js";
 import { Plus } from "react-feather";
 import React, { useEffect } from "react";
-import Select, { components } from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
 import { selectGroups } from "app/selectors/groupSelector";
+
+import NmpSelect, { components } from "components/nmp/NmpSelect";
 
 import { normalizeNotNestedGroups } from "utility/select/prepareSelectData";
 import { prepareNotNestedSelectOptions } from "utility/select/prepareSelectData";
@@ -121,13 +122,13 @@ export const MultiSelect = ({ groups: selectedGroups, setGroups, single, noDropd
         {single ? "Organization" : "Organisations"}
       </div>
       <div className="w-100">
-        <Select
+        <NmpSelect
           components={{ DropdownIndicator: noDropdownIndicator ? null : DropdownIndicator }}
-          value={selectedGroups}
+          multiple={!single}
+          clearable={false}
           maxMenuHeight={200}
-          isMulti={!single}
-          isClearable={false}
           styles={colourStyles}
+          value={selectedGroups}
           options={filtredSelectOptions()}
           onChange={(values) => {
             onSelectGroupsChange(values);
