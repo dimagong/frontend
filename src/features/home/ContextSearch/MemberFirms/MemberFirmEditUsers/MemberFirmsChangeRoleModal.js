@@ -1,10 +1,12 @@
-import Select from "react-select";
+import { toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import appSlice from "app/slices/appSlice";
-import { toast } from "react-toastify";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
-import CustomModal from "../../../../../components/CustomModal";
+
+import CustomModal from "components/CustomModal";
+import NmpSelect from "components/nmp/NmpSelect";
 
 const { addMemberFirmUsersRequest } = appSlice.actions;
 
@@ -75,17 +77,17 @@ const MemberFirmsChangeRoleModal = ({ isOpen, setIsOpen, user, memberFirm, princ
     >
       <div style={{ paddingBottom: 50 }}>
         <h2 style={{ marginBottom: 20 }}>Role member within Member Firm</h2>
-        <Select
-          className="basic-single"
-          classNamePrefix="select"
-          isSearchable
-          name="Choose user role"
+        <NmpSelect
           options={[
             { label: "Principal", value: { name: "Principal" } },
             { label: "Member", value: { name: "Member" } },
           ]}
           onChange={handleChange}
           value={currRole ? { label: currRole[0].toUpperCase() + currRole.slice(1) } : undefined}
+          searchable
+          name="Choose user role"
+          className="basic-single"
+          classNamePrefix="select"
         />
       </div>
     </CustomModal>
