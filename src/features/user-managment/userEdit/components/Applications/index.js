@@ -1,13 +1,14 @@
 import Select from "react-select";
 import { toast } from "react-toastify";
-import { Button, Card } from "reactstrap";
 import React, { useRef, useState } from "react";
+import { Button, Card, Col, Row, Spinner } from "reactstrap";
 
-import { useDFormQuery, useDFormValues, useSubmitDFormMutation, useChangeDFormStatusMutation } from "../../userQueries";
+import { FieldTypes } from "components/DForm";
 
-import { FieldTypes } from "../../../../../components/DForm";
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
+
+import { useDFormQuery, useDFormValues, useSubmitDFormMutation, useChangeDFormStatusMutation } from "../../userQueries";
 
 const STATUSES = [
   { value: "submitted", label: "submitted" },
@@ -15,6 +16,21 @@ const STATUSES = [
   { value: "rejected", label: "rejected" },
   { value: "unsubmitted", label: "unsubmitted" },
 ];
+
+const UpdatedAt = ({ isUpdating, updatedAt }) => {
+  if (isUpdating) {
+    return (
+      <div className="d-flex align-items-center">
+        <div>Saving progress..</div>
+        <Spinner className="ml-1" color="success" />
+      </div>
+    );
+  }
+
+  const formatted = updatedAt.substring(0, updatedAt.indexOf(".")).replace("T", " ");
+
+  return <div>Progress saved: {formatted}</div>;
+};
 
 const UserEditApplication = ({ isCreate, dformId }) => {
   const editedFieldMasterSchemaFieldIdsRef = useRef([]);
@@ -160,36 +176,47 @@ const UserEditApplication = ({ isCreate, dformId }) => {
         <div className="onboarding-create-feature_header_title">Application</div>
         <div className="onboarding-create-feature_header_name">{dform?.name ?? "Loading..."}</div>
       </div>
-      <Card>
-        <UserOnboardingForm isCreate={false} />
+      <Card className="px-1">
+        <Row>
+          <UserOnboardingForm isCreate={false} />
+        </Row>
 
-        <UserOnboardingDForm
-          dFormId={dform?.id}
-          schema={dform?.schema}
-          values={values}
-          accessType={dform?.access_type}
-          isLoading={dformQuery.isLoading || valuesQuery.isLoading}
-          isManualSave
-          onRefetch={onRefetch}
-          onFieldChange={onFieldChange}
-          onBeforeUnmount={onBeforeUnmount}
-        />
+        <Row>
+          <UserOnboardingDForm
+            dFormId={dform?.id}
+            schema={dform?.schema}
+            values={values}
+            accessType={dform?.access_type}
+            isLoading={dformQuery.isLoading || valuesQuery.isLoading}
+            isManualSave
+            onRefetch={onRefetch}
+            onFieldChange={onFieldChange}
+            onBeforeUnmount={onBeforeUnmount}
+          />
+        </Row>
 
-        <div className="col-md-12 d-flex justify-content-between align-items-center mb-2">
-          <div style={{ width: "160px" }}>
-            <Select
-              value={{ value: dform?.status, label: dform?.status }}
-              options={STATUSES}
-              isLoading={changeDFormStatusMutation.isLoading}
-              onChange={onDFormStatusChange}
-            />
-          </div>
-          <div>
-            <Button color="primary" onClick={onSubmit} className="ml-auto submit-onboarding-button">
+        <Row className="align-items-center pb-2">
+          <Col md="3" className="d-flex justify-content-center">
+            <div style={{ width: "100%" }}>
+              <Select
+                value={{ value: dform?.status, label: dform?.status }}
+                options={STATUSES}
+                isLoading={changeDFormStatusMutation.isLoading}
+                onChange={onDFormStatusChange}
+              />
+            </div>
+          </Col>
+
+          <Col md="6" className="d-flex justify-content-center">
+            <UpdatedAt updatedAt={dform?.updated_at} isUpdating={!dform || submitDFormMutation.isLoading} />
+          </Col>
+
+          <Col md="3" className="d-flex justify-content-end">
+            <Button color="primary" onClick={onSubmit}>
               Save
             </Button>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </Card>
     </div>
   );
