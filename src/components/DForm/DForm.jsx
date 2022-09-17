@@ -27,7 +27,6 @@ const checkConditions = (elements, values, fields) => {
     const element = elements[elementId];
     const conditions = element.conditions;
 
-    // ToDo: reducing that with operator OR
     for (const condition of conditions) {
       const { operatorType, effectType, fieldId, expectedValue } = condition;
 
