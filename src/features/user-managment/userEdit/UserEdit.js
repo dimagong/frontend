@@ -5,7 +5,7 @@ import { Plus } from "react-feather";
 import { Scrollbars } from "react-custom-scrollbars";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useRef, useEffect } from "react";
-import { Card, CardBody, Row, Col, TabPane, TabContent } from "reactstrap";
+import { Card, CardBody, Row, Col, TabPane, TabContent, Button } from "reactstrap";
 
 import { useAsync } from "hooks/useAsync";
 
@@ -315,15 +315,13 @@ const UserEdit = () => {
                             <div className="onboarding-create">
                               <div>
                                 Create new&nbsp;
-                                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
-                                <a onClick={createViewOnboarding} href="javascript:void(0);">
+                                <Button color="link" onClick={createViewOnboarding} className="p-0">
                                   onboarding
-                                </a>
+                                </Button>
                                 &nbsp;or&nbsp;
-                                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
-                                <a onClick={handleSurveyAssign} href="javascript:void(0);">
+                                <Button color="link" onClick={handleSurveyAssign} className="p-0">
                                   survey
-                                </a>
+                                </Button>
                               </div>
                             </div>
                           )}
