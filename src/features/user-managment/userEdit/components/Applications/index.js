@@ -163,8 +163,10 @@ const UserEditApplication = ({ isCreate, dformId }) => {
           <div className="onboarding-create-feature_header_title">Onboarding Create</div>
         </div>
 
-        <Card>
-          <UserOnboardingForm isCreate />
+        <Card className="px-1">
+          <Row>
+            <UserOnboardingForm isCreate />
+          </Row>
         </Card>
       </div>
     );
