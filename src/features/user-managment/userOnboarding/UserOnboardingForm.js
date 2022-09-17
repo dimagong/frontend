@@ -1,18 +1,19 @@
+import * as yup from "yup";
+import { toast } from "react-toastify";
 import React, { useState } from "react";
-import { Card, CardBody, Col, Button, UncontrolledTooltip, Row } from "reactstrap";
-import { X, Check, Plus, ChevronDown } from "react-feather";
-import Select, { components } from "react-select";
-import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import { X, Check, Plus } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import { selectManager, selectUserDForms, selectUserWorkflows, selectUserReviewers } from "app/selectors";
+import { Card, CardBody, Col, Button, UncontrolledTooltip, Row } from "reactstrap";
+
+import NmpSelect from "components/nmp/NmpSelect";
+import NmpButton from "components/nmp/NmpButton";
+import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+
 import { prepareSelectReviewers } from "utility/select/prepareSelectData";
 
-import { toast } from "react-toastify";
-import * as yup from "yup";
-
 import appSlice from "app/slices/appSlice";
-import { createLoadingSelector } from "../../../app/selectors/loadingSelector";
-import NmpButton from "../../../components/nmp/NmpButton";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+import { selectManager, selectUserDForms, selectUserWorkflows, selectUserReviewers } from "app/selectors";
 
 const {
   setManagerOnboardingProperty,
@@ -57,14 +58,6 @@ const prepareDFormSelect = (data) => {
     value: value,
     label: value["name"],
   }));
-};
-
-const DropdownIndicator = (props) => {
-  return (
-    <components.DropdownIndicator {...props}>
-      <ChevronDown />
-    </components.DropdownIndicator>
-  );
 };
 
 const onboardingCreateValidationSchema = yup.object().shape({
@@ -181,10 +174,9 @@ const UserOnboardingCreate = ({ isCreate }) => {
               <Row className="mb-2">
                 <Col>
                   <div className="survey-assign_body_select-label">Select dForm</div>
-                  <Select
-                    isDisabled={!isCreate}
+                  <NmpSelect
+                    disabled={!isCreate}
                     styles={selectStyles}
-                    components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])}
                     options={prepareDFormSelect(dForms).sort(sortByLabel)}
                     onChange={(value) => {
@@ -196,10 +188,9 @@ const UserOnboardingCreate = ({ isCreate }) => {
               <Row>
                 <Col>
                   <div className="survey-assign_body_select-label">Select workflow</div>
-                  <Select
-                    isDisabled={!isCreate}
+                  <NmpSelect
+                    disabled={!isCreate}
                     styles={selectStyles}
-                    components={{ DropdownIndicator }}
                     value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
                     options={prepareDFormSelect(dFormWorkFlows).sort(sortByLabel)}
                     onChange={(value) => {
@@ -214,8 +205,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
                 <div className="survey-assign_body_select-label">Who will review the results?</div>
                 <div className="survey-assign_body_reviewers-select_container">
                   <div className="survey-assign_body_reviewers-select_container_select">
-                    <Select
-                      components={{ DropdownIndicator }}
+                    <NmpSelect
                       value={selectedReviewer}
                       styles={selectStyles}
                       options={
