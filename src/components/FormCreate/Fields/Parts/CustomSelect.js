@@ -1,10 +1,9 @@
 import React from "react";
-import Select from "react-select";
+
+import NmpSelect from "components/nmp/NmpSelect";
 
 export class CustomSelect extends React.Component {
   render() {
-    const { invalid } = this.props;
-
     const customStyles = {
       option: (styles, { isFocused, isSelected, ...rest }) => {
         return {
@@ -50,6 +49,7 @@ export class CustomSelect extends React.Component {
         },
       }),
     };
-    return <Select styles={customStyles} {...this.props} />;
+
+    return <NmpSelect styles={customStyles} {...this.props} />;
   }
 }
