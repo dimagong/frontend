@@ -1,15 +1,75 @@
+import chroma from "chroma-js";
+import { Plus } from "react-feather";
 import React, { useEffect } from "react";
 import Select, { components } from "react-select";
-import { Plus } from "react-feather";
-import { colourStyles } from "utility/select/selectSettigns";
-import { prepareNotNestedSelectOptions } from "utility/select/prepareSelectData";
 import { useDispatch, useSelector } from "react-redux";
-import { selectGroups } from "app/selectors/groupSelector";
-import { normalizeNotNestedGroups } from "../../utility/select/prepareSelectData";
 
 import appSlice from "app/slices/appSlice";
+import { selectGroups } from "app/selectors/groupSelector";
+
+import { normalizeNotNestedGroups } from "utility/select/prepareSelectData";
+import { prepareNotNestedSelectOptions } from "utility/select/prepareSelectData";
 
 const { getGroupsRequest } = appSlice.actions;
+
+const colorMultiSelect = "#007bff";
+
+const colourStyles = {
+  control: (styles) => ({
+    ...styles,
+    backgroundColor: "white",
+    border: 0,
+    // This line disable the blue border
+    boxShadow: "none",
+    minHeight: "auto",
+  }),
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    const color = data.color ? chroma(data.color) : colorMultiSelect;
+    return {
+      ...styles,
+      backgroundColor: isDisabled ? null : isSelected ? data.color : isFocused ? color.alpha(0.1).css() : null,
+      color: isDisabled ? "#ccc" : isSelected ? (chroma.contrast(color, "white") > 2 ? "white" : "black") : data.color,
+      cursor: isDisabled ? "not-allowed" : "default",
+
+      ":active": {
+        ...styles[":active"],
+        backgroundColor: !isDisabled && (isSelected ? data.color : "white"),
+      },
+    };
+  },
+  multiValue: (styles, { data }) => {
+    const color = data.color ? chroma(data.color) : colorMultiSelect;
+    return {
+      ...styles,
+      backgroundColor: color.alpha(0.1).css(),
+    };
+  },
+  multiValueLabel: (styles, { data, isDisabled }) => ({
+    ...styles,
+    color: data.color ? data.color : colorMultiSelect,
+    paddingRight: isDisabled ? "6px" : styles["paddingRight"],
+    ":hover": {
+      cursor: "pointer",
+      backgroundColor: data.color ? data.color : colorMultiSelect,
+      color: "white",
+    },
+  }),
+  multiValueRemove: (styles, { data, isDisabled }) => ({
+    ...styles,
+    display: isDisabled ? "none" : styles["display"],
+    color: data.color,
+    ":hover": {
+      backgroundColor: data.color ? data.color : colorMultiSelect,
+      color: "white",
+    },
+  }),
+  valueContainer: (base) => ({
+    ...base,
+    padding: 0,
+    "margin-left": "-2px",
+  }),
+  indicatorSeparator: (styles) => ({ display: "none" }),
+};
 
 export const DropdownIndicator = (props) => {
   return (
