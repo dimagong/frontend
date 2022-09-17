@@ -1,5 +1,4 @@
 import { FieldTypes } from "components/DForm";
-import { DCRFieldControlValue } from "features/Applications/fieldConditionModel";
 
 export enum DCRSupportedFieldTypes {
   Text = FieldTypes.Text,
@@ -63,36 +62,36 @@ export class DCRUnaryOperator implements DCROperator {
   readonly isUnary = true;
   readonly isBinary = false;
 
-  constructor(readonly type: DCRUnaryOperatorTypes, readonly fieldType: DCRSupportedFieldTypes) {}
+  constructor(readonly type: DCRUnaryOperatorTypes, readonly fieldType: FieldTypes) {}
 
   get name(): string {
     switch (this.type) {
       case DCROperatorTypes.Exist:
         switch (this.fieldType) {
-          case DCRSupportedFieldTypes.Select:
+          case FieldTypes.Select:
             return "Selected";
-          case DCRSupportedFieldTypes.Boolean:
+          case FieldTypes.Boolean:
             return "Checked";
-          case DCRSupportedFieldTypes.File:
+          case FieldTypes.File:
             return "Uploaded";
-          case DCRSupportedFieldTypes.FileList:
+          case FieldTypes.FileList:
             return "At least one uploaded";
-          case DCRSupportedFieldTypes.MultiSelect:
+          case FieldTypes.MultiSelect:
             return "At least one selected";
           default:
             return "filled";
         }
       case DCROperatorTypes.NotExist:
         switch (this.fieldType) {
-          case DCRSupportedFieldTypes.Select:
+          case FieldTypes.Select:
             return "Unselected";
-          case DCRSupportedFieldTypes.Boolean:
+          case FieldTypes.Boolean:
             return "Unchecked";
-          case DCRSupportedFieldTypes.File:
+          case FieldTypes.File:
             return "Uploaded";
-          case DCRSupportedFieldTypes.FileList:
+          case FieldTypes.FileList:
             return "No one uploaded";
-          case DCRSupportedFieldTypes.MultiSelect:
+          case FieldTypes.MultiSelect:
             return "No one selected";
           default:
             return "unfilled";
@@ -155,34 +154,13 @@ export class DCRBinaryOperator implements DCROperator {
 }
 
 export const DCRSupportedOperatorsByFieldTypes = {
-  [DCRSupportedFieldTypes.Text]: [
+  [FieldTypes.Text]: [
     DCROperatorTypes.Exist,
     DCROperatorTypes.NotExist,
     DCROperatorTypes.Equal,
     DCROperatorTypes.NotEqual,
   ],
-  [DCRSupportedFieldTypes.Date]: [
-    DCROperatorTypes.Exist,
-    DCROperatorTypes.NotExist,
-    DCROperatorTypes.Equal,
-    DCROperatorTypes.NotEqual,
-    DCROperatorTypes.Bigger,
-    DCROperatorTypes.Smaller,
-  ],
-  [DCRSupportedFieldTypes.Select]: [
-    DCROperatorTypes.Exist,
-    DCROperatorTypes.NotExist,
-    DCROperatorTypes.Equal,
-    DCROperatorTypes.NotEqual,
-  ],
-  [DCRSupportedFieldTypes.LongText]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
-  [DCRSupportedFieldTypes.TextArea]: [
-    DCROperatorTypes.Exist,
-    DCROperatorTypes.NotExist,
-    DCROperatorTypes.Equal,
-    DCROperatorTypes.NotEqual,
-  ],
-  [DCRSupportedFieldTypes.Number]: [
+  [FieldTypes.Date]: [
     DCROperatorTypes.Exist,
     DCROperatorTypes.NotExist,
     DCROperatorTypes.Equal,
@@ -190,10 +168,31 @@ export const DCRSupportedOperatorsByFieldTypes = {
     DCROperatorTypes.Bigger,
     DCROperatorTypes.Smaller,
   ],
-  [DCRSupportedFieldTypes.Boolean]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
-  [DCRSupportedFieldTypes.File]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
-  [DCRSupportedFieldTypes.FileList]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
-  [DCRSupportedFieldTypes.MultiSelect]: [
+  [FieldTypes.Select]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+  ],
+  [FieldTypes.LongText]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [FieldTypes.TextArea]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+  ],
+  [FieldTypes.Number]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+    DCROperatorTypes.Bigger,
+    DCROperatorTypes.Smaller,
+  ],
+  [FieldTypes.Boolean]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [FieldTypes.File]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [FieldTypes.FileList]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [FieldTypes.MultiSelect]: [
     DCROperatorTypes.Exist,
     DCROperatorTypes.NotExist,
     DCROperatorTypes.Equal,
@@ -202,7 +201,7 @@ export const DCRSupportedOperatorsByFieldTypes = {
 };
 
 export class DCRSupportedFieldOperatorsFactory {
-  static build(fieldType: DCRSupportedFieldTypes): DCROperator[] | null {
+  static build(fieldType: FieldTypes): DCROperator[] | null {
     const supportedOperatorTypes: DCROperatorTypes[] = DCRSupportedOperatorsByFieldTypes[fieldType];
 
     if (!supportedOperatorTypes) return null;
@@ -224,136 +223,204 @@ export class DCRSupportedFieldOperatorsFactory {
   }
 }
 
-interface ComparatorArgument {
-  expected: string;
-  control: DCRFieldControlValue | null;
-  controlType: DCRSupportedFieldTypes;
+interface ComparatorArgument<T extends FieldTypes> {
+  type: T;
+  control:
+    | (T extends FieldTypes.Boolean ? boolean : never)
+    | (T extends FieldTypes.MultiSelect ? Array<string> : never)
+    | (T extends FieldTypes.File | FieldTypes.FileList ? Array<object> : never)
+    | (T extends FieldTypes.Date | FieldTypes.Number ? number : never)
+    | (T extends FieldTypes.Text | FieldTypes.Select | FieldTypes.LongText | FieldTypes.TextArea ? string : never)
+    | null;
+  expected: (T extends FieldTypes.Date | FieldTypes.Number ? number : string) | null;
 }
 
-const getISOStringAsDateTimestamp = (ISOString: string) => new Date(ISOString).valueOf();
+type TextComparatorArgument = ComparatorArgument<FieldTypes.Text>;
+type SelectComparatorArgument = ComparatorArgument<FieldTypes.Select>;
+type LongTextComparatorArgument = ComparatorArgument<FieldTypes.LongText>;
+type TextAreaComparatorArgument = ComparatorArgument<FieldTypes.TextArea>;
+type DateComparatorArgument = ComparatorArgument<FieldTypes.Date>;
+type NumberComparatorArgument = ComparatorArgument<FieldTypes.Number>;
+type FileComparatorArgument = ComparatorArgument<FieldTypes.File>;
+type FileListComparatorArgument = ComparatorArgument<FieldTypes.FileList>;
+type MultiSelectComparatorArgument = ComparatorArgument<FieldTypes.MultiSelect>;
+type BooleanComparatorArgument = ComparatorArgument<FieldTypes.Boolean>;
+
+type ExistenceComparatorArgument =
+  | TextComparatorArgument
+  | DateComparatorArgument
+  | SelectComparatorArgument
+  | LongTextComparatorArgument
+  | TextAreaComparatorArgument
+  | NumberComparatorArgument
+  | FileComparatorArgument
+  | FileListComparatorArgument
+  | MultiSelectComparatorArgument
+  | BooleanComparatorArgument;
+
+type EqualityComparatorArgument =
+  | TextComparatorArgument
+  | DateComparatorArgument
+  | SelectComparatorArgument
+  | TextAreaComparatorArgument
+  | NumberComparatorArgument
+  | MultiSelectComparatorArgument;
+
+type MeasureComparatorArgument = DateComparatorArgument | NumberComparatorArgument;
+
+const getOperatorError = (type, operator) => new Error(`Unexpected field type: "${type}" for ${operator} operator.`);
 
 export const DCROperatorTypesComparotors = {
-  [DCROperatorTypes.Exist]: ({ control }: ComparatorArgument) => {
-    if (control === null || control === undefined) return false;
-
-    if (Array.isArray(control)) {
-      return control.length > 0;
+  [DCROperatorTypes.Exist]: ({ type, control }: ExistenceComparatorArgument) => {
+    if (control == null) {
+      return false;
     }
 
-    switch (typeof control) {
-      case "string":
-      case "number":
-        return String(control) !== "";
-      case "boolean":
-        return control;
+    switch (type) {
+      case FieldTypes.Boolean:
+        return control === true;
+      case FieldTypes.File:
+      case FieldTypes.FileList:
+      case FieldTypes.MultiSelect:
+        return control.length > 0;
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+        return String(control).length > 0;
+      case FieldTypes.Text:
+      case FieldTypes.Select:
+      case FieldTypes.TextArea:
+      case FieldTypes.LongText:
+        return control.length > 0;
       default:
-        throw new Error(`Unreachable: Do not support a control value type: ${typeof control}`);
+        throw getOperatorError(type, "Exist");
     }
   },
 
-  [DCROperatorTypes.NotExist]: ({ control }: ComparatorArgument) => {
-    if (control === null || control === undefined) return true;
-
-    if (Array.isArray(control)) {
-      return control.length === 0;
+  [DCROperatorTypes.NotExist]: ({ type, control }: ExistenceComparatorArgument) => {
+    if (control == null) {
+      return true;
     }
 
-    switch (typeof control) {
-      case "string":
-      case "number":
-        return String(control) === "";
-      case "boolean":
-        return !control;
+    switch (type) {
+      case FieldTypes.Boolean:
+        return control === false;
+      case FieldTypes.File:
+      case FieldTypes.FileList:
+      case FieldTypes.MultiSelect:
+        return control.length === 0;
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+        return String(control).length === 0;
+      case FieldTypes.Text:
+      case FieldTypes.Select:
+      case FieldTypes.TextArea:
+      case FieldTypes.LongText:
+        return control.length === 0;
       default:
-        throw new Error(`Unreachable: Do not support a control value type: ${typeof control}`);
+        throw getOperatorError(type, "NotExist");
     }
   },
 
-  [DCROperatorTypes.Equal]: ({ expected, control, controlType }: ComparatorArgument) => {
-    if (control === null || control === undefined) return false;
-
-    if (Array.isArray(control)) {
-      // Currently, only string[] supports the Equal operator.
-      return (control as string[]).includes(expected);
+  [DCROperatorTypes.Equal]: ({ type, control, expected }: EqualityComparatorArgument) => {
+    if (control == null || expected == null) {
+      return false;
     }
 
-    switch (typeof control) {
-      case "string":
-        return expected === control;
-      case "number":
-        if (controlType === DCRSupportedFieldTypes.Date) {
-          return control === getISOStringAsDateTimestamp(expected);
-        }
-        return Number(expected) === control;
+    switch (type) {
+      case FieldTypes.MultiSelect:
+        return control.includes(expected);
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+        return control === expected;
+      case FieldTypes.Text:
+      case FieldTypes.Select:
+      case FieldTypes.TextArea:
+        return control === expected;
       default:
-        throw new Error(`Unreachable: Do not support a control value type: ${typeof control}`);
+        throw getOperatorError(type, "Equal");
     }
   },
 
-  [DCROperatorTypes.NotEqual]: ({ expected, control, controlType }: ComparatorArgument) => {
-    if (control === null || control === undefined) return true;
-
-    if (Array.isArray(control)) {
-      // Currently, only string[] supports the Equal operator.
-      return !(control as string[]).includes(expected);
+  [DCROperatorTypes.NotEqual]: ({ type, control, expected }: EqualityComparatorArgument) => {
+    if (control == null || expected == null) {
+      return true;
     }
 
-    switch (typeof control) {
-      case "string":
-        return expected !== control;
-      case "number":
-        if (controlType === DCRSupportedFieldTypes.Date) {
-          return control !== getISOStringAsDateTimestamp(expected);
-        }
-        return Number(expected) !== control;
+    switch (type) {
+      case FieldTypes.MultiSelect:
+        return !control.includes(expected);
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+        return control !== expected;
+      case FieldTypes.Text:
+      case FieldTypes.Select:
+      case FieldTypes.TextArea:
+        return control !== expected;
       default:
-        throw new Error(`Unreachable: Do not support a control value type: ${typeof control}`);
-    }
-  },
-
-  [DCROperatorTypes.Bigger]: ({ expected, control, controlType }: ComparatorArgument) => {
-    switch (typeof control) {
-      case "number":
-        if (controlType === DCRSupportedFieldTypes.Date) {
-          return control > getISOStringAsDateTimestamp(expected);
-        }
-        return control > Number(expected);
-      default:
-        return false;
+        throw getOperatorError(type, "NotEqual");
     }
   },
 
-  [DCROperatorTypes.Smaller]: ({ expected, control, controlType }: ComparatorArgument) => {
-    switch (typeof control) {
-      case "number":
-        if (controlType === DCRSupportedFieldTypes.Date) {
-          return control < getISOStringAsDateTimestamp(expected);
-        }
-        return control < Number(expected);
+  [DCROperatorTypes.Bigger]: ({ type, control, expected }: MeasureComparatorArgument) => {
+    if (control == null || expected == null) {
+      return false;
+    }
+
+    switch (type) {
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+        return control > expected;
       default:
-        return false;
+        throw getOperatorError(type, "Bigger");
+    }
+  },
+
+  [DCROperatorTypes.Smaller]: ({ type, control, expected }: MeasureComparatorArgument) => {
+    if (control == null || expected == null) {
+      return false;
+    }
+
+    switch (type) {
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+        return control < expected;
+      default:
+        throw getOperatorError(type, "Smaller");
     }
   },
 };
 
 export const DCRFieldValueConvertors = {
-  [DCRSupportedFieldTypes.Text]: ({ value }) => (value == null ? null : String(value)),
+  [FieldTypes.Text]: ({ value }) => (value == null ? null : String(value)),
 
-  [DCRSupportedFieldTypes.Date]: ({ value }) => (value == null ? null : new Date(value).valueOf()),
+  [FieldTypes.Date]: ({ value }) => (value == null ? null : new Date(value).valueOf()),
 
-  [DCRSupportedFieldTypes.Select]: ({ value }) => (value == null ? null : String(value)),
+  [FieldTypes.Select]: ({ value }) => (value == null ? null : String(value)),
 
-  [DCRSupportedFieldTypes.LongText]: ({ value }) => (value == null ? null : String(value)),
+  [FieldTypes.LongText]: ({ value }) => (value == null ? null : String(value)),
 
-  [DCRSupportedFieldTypes.TextArea]: ({ value }) => (value == null ? null : String(value)),
+  [FieldTypes.TextArea]: ({ value }) => (value == null ? null : String(value)),
 
-  [DCRSupportedFieldTypes.Number]: ({ value }) => (value == null ? null : Number(value)),
+  [FieldTypes.Number]: ({ value }) => (value == null ? null : Number(value)),
 
-  [DCRSupportedFieldTypes.Boolean]: ({ value }) => (value == null ? null : Boolean(value)),
+  [FieldTypes.Boolean]: ({ value }) => (value == null ? null : Boolean(value)),
 
-  [DCRSupportedFieldTypes.File]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
+  [FieldTypes.File]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
 
-  [DCRSupportedFieldTypes.FileList]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
+  [FieldTypes.FileList]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
 
-  [DCRSupportedFieldTypes.MultiSelect]: ({ value }) => (Array.isArray(value) ? Array.from(value) : []),
+  [FieldTypes.MultiSelect]: ({ value }) => (Array.isArray(value) ? Array.from(value) : []),
+};
+
+export const DCRExpectedValueConvertor = (value: string | null, fieldType: FieldTypes): string | number | null => {
+  if (value == null) return null;
+
+  switch (fieldType) {
+    case FieldTypes.Date:
+      return new Date(value).valueOf();
+    case FieldTypes.Number:
+      return Number(value);
+    default:
+      return String(value);
+  }
 };

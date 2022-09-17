@@ -12,6 +12,7 @@ import SectionsSideBar from "./Components/SectionsSideBar";
 import {
   DCREffectProps,
   DCRFieldValueConvertors,
+  DCRExpectedValueConvertor,
   DCROperatorTypesComparotors,
 } from "features/Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
 
@@ -31,14 +32,14 @@ const checkConditions = (elements, values, fields) => {
       const { operatorType, effectType, fieldId, expectedValue } = condition;
 
       const field = fields[fieldId];
-      const value = values[field.masterSchemaFieldId];
       const convertor = DCRFieldValueConvertors[field.type];
-      const preparedValue = convertor(value);
+      const controlValue = values[field.masterSchemaFieldId];
       const operatorComparator = DCROperatorTypesComparotors[operatorType];
+
       const isApplicable = operatorComparator({
-        expected: expectedValue,
-        control: preparedValue,
-        controlType: field.type,
+        type: field.type,
+        control: convertor(controlValue),
+        expected: DCRExpectedValueConvertor(expectedValue, field.type),
       });
 
       if (isApplicable) {

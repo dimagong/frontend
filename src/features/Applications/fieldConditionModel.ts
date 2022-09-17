@@ -5,12 +5,6 @@ import {
   DCROperatorTypes,
 } from "./Components/DFormElementEdit/Components/ConditionalElementRender/constants";
 
-export interface DFormFieldFileMeta {
-  id: number;
-  name: string;
-  mime_type: string;
-}
-
 export interface DFormFieldConditionProperties {
   id: string;
   fieldId: string;
@@ -18,8 +12,6 @@ export interface DFormFieldConditionProperties {
   operatorType: DCROperatorTypes;
   expectedValue: string;
 }
-
-export type DCRFieldControlValue = string | boolean | number | string[] | DFormFieldFileMeta[];
 
 export abstract class AbstractDFormFieldConditionModel implements DFormFieldConditionProperties {
   /**
