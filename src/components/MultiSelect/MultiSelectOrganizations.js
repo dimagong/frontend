@@ -1,15 +1,7 @@
 import React from "react";
 import chroma from "chroma-js";
-import { Plus } from "react-feather";
-import Select, { components } from "react-select";
 
-const DropdownIndicator = (props) => {
-  return components.DropdownIndicator ? (
-    <components.DropdownIndicator {...props}>
-      <Plus className="plus-select" size={15} />
-    </components.DropdownIndicator>
-  ) : null;
-};
+import NmpSelect, { components } from "components/nmp/NmpSelect";
 
 const colorMultiSelect = "#007bff";
 
@@ -87,15 +79,15 @@ export function MultiSelectOrganization(props) {
   };
 
   return (
-    <Select
-      closeMenuOnSelect={true}
-      components={{ MultiValueLabel, DropdownIndicator }}
-      isMulti
+    <NmpSelect
+      multiple
       openMenuOnClick={false}
+      closeMenuOnSelect={true}
+      components={{ MultiValueLabel }}
       ref={selectRef}
       styles={colourStyles}
       maxMenuHeight={200}
-      isClearable={false}
+      clearable={false}
       className="fix-margin-select"
       classNamePrefix="select"
       {...props}
