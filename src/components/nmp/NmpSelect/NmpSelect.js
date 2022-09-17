@@ -177,6 +177,8 @@ const NmpSelect = React.forwardRef((props, ref) => {
 
     backgroundColor = "hsl(0,0%,100%)",
 
+    styles = {},
+
     children,
     ...attrs
   } = props;
@@ -205,7 +207,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
       menuIsOpen={readonly ? false : menuIsOpen}
       components={defaultComponents}
       getOptionValue={getOptionValue}
-      styles={selectStyles}
+      styles={{ ...selectStyles, ...styles }}
       ref={forkedRef}
       readonly={readonly}
       backgroundColor={backgroundColor}
@@ -244,6 +246,8 @@ NmpSelect.propTypes = {
   isCreatable: PropTypes.bool,
 
   menuIsOpen: PropTypes.bool,
+
+  styles: PropTypes.object,
 
   backgroundColor: PropTypes.string,
 };
