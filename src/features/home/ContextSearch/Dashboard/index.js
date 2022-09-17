@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
 import "./styles.scss";
-import CombinedDashboardComponent from "./CombinedDashboardComponent";
-import { useDispatch, useSelector } from "react-redux";
-import appSlice from "app/slices/appSlice";
-import { selectDashboardDForms, selectDashboardSettings } from "app/selectors/userSelectors";
-import Select from "react-select";
+
 import { Button } from "reactstrap";
 import { Plus } from "react-feather";
 import { toast } from "react-toastify";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import NmpSelect from "components/nmp/NmpSelect";
+
+import appSlice from "app/slices/appSlice";
+import { selectDashboardDForms, selectDashboardSettings } from "app/selectors/userSelectors";
+
+import CombinedDashboardComponent from "./CombinedDashboardComponent";
 
 const {
   getSettingsRequest,
@@ -131,11 +135,11 @@ const Dashboard = () => {
       <div className={"dashboard-header"}>
         <h1 style={{ fontWeight: "bolder", color: "#707070", marginBottom: "2vh" }}>Dashboard</h1>
         <span className={"add-dashboard-component"}>
-          <Select
+          <NmpSelect
             className="basic-single"
             classNamePrefix="select"
-            isClearable
-            isSearchable
+            clearable
+            searchable
             name="Add component"
             options={options}
             onChange={handleChange}
