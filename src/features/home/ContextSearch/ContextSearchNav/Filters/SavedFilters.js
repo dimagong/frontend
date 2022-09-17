@@ -1,10 +1,12 @@
 import React from "react";
-import CloseIcon from "@material-ui/icons/Close";
-import SaveIcon from "@material-ui/icons/Save";
 import { useDispatch } from "react-redux";
-import appSlice from "app/slices/appSlice";
-import CreatableSelect from "react-select/creatable";
+import SaveIcon from "@material-ui/icons/Save";
+import CloseIcon from "@material-ui/icons/Close";
 import { Button, Modal, ModalBody } from "reactstrap";
+
+import appSlice from "app/slices/appSlice";
+
+import NmpSelect from "components/nmp/NmpSelect";
 
 const { postFilterRequest, patchFilterRequest, deleteFilterRequest } = appSlice.actions;
 
@@ -131,8 +133,9 @@ const SavedFilters = ({
 
   return (
     <span className={"saved-filters"}>
-      <CreatableSelect
-        isClearable
+      <NmpSelect
+        clearable
+        isCreatable
         onChange={handleChange}
         options={options}
         value={activeFilter ? undefined : filterName !== "" ? { label: filterName } : null}

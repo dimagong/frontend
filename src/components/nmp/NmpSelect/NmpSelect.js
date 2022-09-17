@@ -169,7 +169,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
     loading = false,
     clearable = false,
     multiple = false,
-    searchable = false,
+    searchable,
     getOptionValue,
     isCreatable = false,
 
@@ -203,7 +203,6 @@ const NmpSelect = React.forwardRef((props, ref) => {
       isClearable={readonly ? false : clearable}
       isMulti={multiple}
       isSearchable={readonly ? false : searchable}
-      isCreatable={isCreatable}
       menuIsOpen={readonly ? false : menuIsOpen}
       components={defaultComponents}
       getOptionValue={getOptionValue}
