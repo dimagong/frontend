@@ -1,9 +1,9 @@
-import Select from "react-select";
 import { toast } from "react-toastify";
 import React, { useRef, useState } from "react";
 import { Button, Card, Col, Row, Spinner } from "reactstrap";
 
 import { FieldTypes } from "components/DForm";
+import NmpSelect from "components/nmp/NmpSelect";
 
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
@@ -200,10 +200,10 @@ const UserEditApplication = ({ isCreate, dformId }) => {
         <Row className="align-items-center pb-2">
           <Col md="3" className="d-flex justify-content-center">
             <div style={{ width: "100%" }}>
-              <Select
+              <NmpSelect
                 value={{ value: dform?.status, label: dform?.status }}
                 options={STATUSES}
-                isLoading={changeDFormStatusMutation.isLoading}
+                loading={changeDFormStatusMutation.isLoading}
                 onChange={onDFormStatusChange}
               />
             </div>
