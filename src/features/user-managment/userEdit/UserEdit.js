@@ -1,6 +1,5 @@
 import _ from "lodash";
 import { map } from "rxjs";
-import Select from "react-select";
 import { Plus } from "react-feather";
 import { Scrollbars } from "react-custom-scrollbars";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +11,7 @@ import { useAsync } from "hooks/useAsync";
 import CustomTabs from "components/Tabs";
 import Timeline from "components/Timeline";
 import UserRoles from "components/UserRoles";
+import NmpSelect from "components/nmp/NmpSelect";
 
 import { RoleBdmService } from "api/roleBdm/roleBdmService";
 
@@ -299,12 +299,12 @@ const UserEdit = () => {
                           {!!tableData.length ? (
                             <div className="application-create-container">
                               <div className="application-create-container_select">
-                                <Select
+                                <NmpSelect
                                   options={selectOptions}
                                   value={applicationAddSelectValue}
                                   onChange={setApplicationAddSelectValue}
                                   styles={selectStyles}
-                                  isSearchable={false}
+                                  searchable={false}
                                 />
                               </div>
                               <button onClick={handleApplicationAdd}>
