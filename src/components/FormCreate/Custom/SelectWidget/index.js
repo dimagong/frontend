@@ -1,6 +1,9 @@
-import React from "react";
-import Select from "react-select";
 import "./styles.scss";
+
+import React from "react";
+
+import NmpSelect from "components/nmp/NmpSelect";
+
 import FieldLabel from "../FieldLabel";
 
 const colourStyles = {
@@ -48,6 +51,7 @@ const colourStyles = {
     },
   }),
 };
+
 const SelectWidget = (props) => {
   const handleChange = (values) => {
     if (props.multiple) {
@@ -76,11 +80,11 @@ const SelectWidget = (props) => {
   return (
     <div className={"custom-react-select"}>
       <FieldLabel label={props.schema.title} required={props.required} />
-      <Select
+      <NmpSelect
         maxMenuHeight={175}
-        isDisabled={props.disabled}
+        disabled={props.disabled}
         styles={colourStyles}
-        isMulti={props.multiple}
+        multiple={props.multiple}
         name="colors"
         value={getValue()}
         onChange={handleChange}
