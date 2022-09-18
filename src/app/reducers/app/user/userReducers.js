@@ -538,6 +538,10 @@ const removeUserOrganizationSuccess = (state, { payload }) => {
   state.user.managers[userIndex] = user;
 };
 
+const switchUserAbilityInOrganizationSuccess = (state) => {
+  state.isLoading = false;
+};
+
 const allowUserAbilitySuccess = (state, { payload }) => {
   const { userIndex, user } = getUserAndUserIndex(state.user.managers, payload.data.user_id);
 
@@ -547,6 +551,7 @@ const allowUserAbilitySuccess = (state, { payload }) => {
   editedOrg.abilities = payload.response;
 
   state.user.managers[userIndex] = user;
+  state.user.manager = user;
   state.isLoading = false;
 };
 
@@ -557,6 +562,7 @@ const disallowUserAbilitySuccess = (state, { payload }) => {
     ({ id }) => id === payload.data.organization_id
   )[0].abilities = payload.response;
   state.user.managers[userIndex] = user;
+  state.user.manager = user;
   state.isLoading = false;
 };
 
@@ -596,8 +602,11 @@ export default {
   getUserOrganizationsSuccess,
   addUserOrganizationSuccess,
   removeUserOrganizationSuccess,
+
+  switchUserAbilityInOrganizationSuccess,
   allowUserAbilitySuccess,
   disallowUserAbilitySuccess,
+
   removeUserNotifySuccess,
   updateUserModulesSuccess,
   updateUserOnboardingReviewersSuccess,

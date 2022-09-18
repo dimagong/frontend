@@ -52,9 +52,15 @@ const {
   removeUserOrganizationRequest,
   removeUserOrganizationSuccess,
   removeUserOrganizationError,
+
+  switchUserAbilityInOrganizationRequest,
+  switchUserAbilityInOrganizationSuccess,
+  switchUserAbilityInOrganizationError,
+
   allowUserAbilityRequest,
   allowUserAbilitySuccess,
   allowUserAbilityError,
+
   disallowUserAbilityRequest,
   disallowUserAbilitySuccess,
   disallowUserAbilityError,
@@ -325,24 +331,33 @@ function* switchUserOrganization({ payload }) {
   }
 }
 
-function* allowUserAbility({ payload }) {
-  const response = yield call(userApi.userAbilityAllow, payload);
+function* switchUserAbilityInOrganization({ payload }) {
+  try {
+    yield call(disallowUserAbility, { payload: payload.toDisallow });
+    yield call(allowUserAbility, { payload: payload.toAllow });
+    yield put(switchUserAbilityInOrganizationSuccess());
+  } catch (error) {
+    put(switchUserAbilityInOrganizationError(error.message));
+  }
+}
 
-  if (response?.message) {
-    yield put(allowUserAbilityError(response.message));
-  } else {
+function* allowUserAbility({ payload }) {
+  try {
+    const response = yield call(userApi.userAbilityAllow, payload);
     yield put(allowUserAbilitySuccess({ response, data: payload }));
     yield put(getUserPermissionsRequest(payload.user_id));
+  } catch (error) {
+    yield put(allowUserAbilityError(error.message));
   }
 }
 
 function* disallowUserAbility({ payload }) {
-  const response = yield call(userApi.userAbilityDisallow, payload);
-
-  if (response?.message) {
-    yield put(disallowUserAbilityError(response.message));
-  } else {
+  try {
+    const response = yield call(userApi.userAbilityDisallow, payload);
     yield put(disallowUserAbilitySuccess({ response, data: payload }));
+    yield put(getUserPermissionsRequest(payload.user_id));
+  } catch (error) {
+    yield put(disallowUserAbilityError(error.message));
   }
 }
 
@@ -407,6 +422,7 @@ export default function* () {
     yield takeLatest(addUserOrganizationRequest.type, addUserOrganization),
     yield takeLatest(removeUserOrganizationRequest.type, removeUserOrganization),
     yield takeLatest(switchUserOrganizationRequest.type, switchUserOrganization),
+    yield takeLatest(switchUserAbilityInOrganizationRequest.type, switchUserAbilityInOrganization),
     yield takeLatest(allowUserAbilityRequest.type, allowUserAbility),
     yield takeLatest(disallowUserAbilityRequest.type, disallowUserAbility),
     yield takeLatest(removeUserNotifyRequest.type, removeUserNotify),
