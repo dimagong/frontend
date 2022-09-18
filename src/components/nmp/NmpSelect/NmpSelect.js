@@ -157,7 +157,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
   const {
     value,
     options,
-    onChange,
+    onChange: propOnChange,
     onInputChange,
 
     valid = false,
@@ -189,6 +189,16 @@ const NmpSelect = React.forwardRef((props, ref) => {
   const forkedRef = useForkRef(innerRef, ref);
 
   const SelectComponent = isCreatable ? Creatable : Select;
+
+  const onChange = (value, ...args) => {
+    // Due to migration from react-select v3 to v4, keep onChange with behavior in v3.
+    // In v4 the onChange handler is now always passed an array of options if isMulti is set to true.
+    if (multiple && Array.isArray(value)) {
+      propOnChange(value.length === 0 ? null : value, ...args);
+    } else {
+      propOnChange(value, ...args);
+    }
+  };
 
   return (
     <SelectComponent
