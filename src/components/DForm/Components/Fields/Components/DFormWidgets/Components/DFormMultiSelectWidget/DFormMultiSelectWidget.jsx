@@ -1,6 +1,7 @@
 import React from "react";
-import Select from "react-select";
 import PropTypes from "prop-types";
+
+import NmpSelect from "components/nmp/NmpSelect";
 
 import { IdType, OptionsType } from "utility/prop-types";
 
@@ -142,14 +143,14 @@ export const DFormMultiSelectWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={className}
     >
-      <Select
+      <NmpSelect
         inputId={id}
         value={value}
         options={options}
         maxMenuHeight="175"
         styles={colourStyles}
         placeholder={placeholder}
-        isMulti={true}
+        multiple
         isDisabled={isDisabled}
         onChange={onChange}
       />
