@@ -1,8 +1,10 @@
 import React from "react";
-import { Button } from "reactstrap";
-import { FilterCheckIcon, FilterCrossIcon } from "./FilterAssets";
 import PropTypes from "prop-types";
-import Select from "react-select";
+import { Button } from "reactstrap";
+
+import NmpSelect from "components/nmp/NmpSelect";
+
+import { FilterCheckIcon, FilterCrossIcon } from "./FilterAssets";
 
 const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
   const currSelectedFilters = JSON.parse(JSON.stringify(filter)).selectedFilters.find(
@@ -67,13 +69,13 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
   return (
     <>
       {filter.hasSearch && filter.hasSearch.includes(filter.selectedFilters[filter.selectedOptionKey].name) && (
-        <Select
+        <NmpSelect
+          clearable
+          searchable
           options={filterOptionsDictionary[filter.selectedFilters[filter.selectedOptionKey].name].map((item) => {
             return { label: item, value: item };
           })}
           onChange={onSelectFilterOption}
-          isSearchable
-          isClearable
         />
       )}
 
