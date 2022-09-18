@@ -234,21 +234,23 @@ const UserFilter = ({ handleFilter, managers }) => {
     }
   };
 
-  if (!filtered && managers.length !== 0 && userFilters) {
-    handleFilter(managers);
-    setFilter({
-      roles: [],
-      organizations: [],
-      memberFirms: [],
-      type: { roles: "initial", organizations: "initial", memberFirms: "initial" },
-    });
-    setFiltered(true);
-    setFooterText({
-      roles: arrayToString(roles),
-      organizations: arrayToString(organizations),
-      memberFirms: arrayToString(memberFirms),
-    });
-  }
+  useEffect(() => {
+    if (!filtered && managers.length !== 0 && userFilters) {
+      handleFilter(managers);
+      setFilter({
+        roles: [],
+        organizations: [],
+        memberFirms: [],
+        type: { roles: "initial", organizations: "initial", memberFirms: "initial" },
+      });
+      setFiltered(true);
+      setFooterText({
+        roles: arrayToString(roles),
+        organizations: arrayToString(organizations),
+        memberFirms: arrayToString(memberFirms),
+      });
+    }
+  }, [filtered, handleFilter, managers, memberFirms, organizations, roles, userFilters]);
 
   useEffect(() => {
     filterAndSortManagers(
@@ -295,7 +297,13 @@ const UserFilter = ({ handleFilter, managers }) => {
       setMemberFirms(
         memberFirmsObjects?.length > 0
           ? memberFirmsObjects
-              .filter((item) => Array.from(filter.organizations).findIndex((elem) => elem === item.network.name) !== -1)
+              .filter((item) => {
+                return (
+                  Array.from(filter.organizations).findIndex((elem) => {
+                    return elem === item?.network?.name;
+                  }) !== -1
+                );
+              })
               .map((item) => item?.main_fields.name)
           : []
       );
