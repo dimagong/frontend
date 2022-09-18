@@ -201,7 +201,7 @@ const UserEditApplication = ({ isCreate, dformId }) => {
           <Col md="3" className="d-flex justify-content-center">
             <div style={{ width: "100%" }}>
               <NmpSelect
-                value={{ value: dform?.status, label: dform?.status }}
+                value={dform ? { value: dform.status, label: dform.status } : null}
                 options={STATUSES}
                 loading={changeDFormStatusMutation.isLoading}
                 onChange={onDFormStatusChange}

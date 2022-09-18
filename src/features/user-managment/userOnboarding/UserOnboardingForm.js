@@ -177,7 +177,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
                   <NmpSelect
                     disabled={!isCreate}
                     styles={selectStyles}
-                    value={prepareDFormSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])}
+                    value={prepareDFormSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])[0]}
                     options={prepareDFormSelect(dForms).sort(sortByLabel)}
                     onChange={(value) => {
                       onSelectDFormChange(value);
