@@ -7,18 +7,8 @@ import PropTypes from "prop-types";
 const NpmCustomStepperSurvey = (props) => {
   const { totalSteps, currentStrep } = props;
   const widthStep = 100 / totalSteps;
-  const disableElement = (
-    <div
-      className="stepper"
-      style={{ width: `calc(${widthStep}% - 7px)`, backgroundColor: "#E7E7E7", borderColor: "#E7E7E7" }}
-    />
-  );
-  const ableElement = (
-    <div
-      className="stepper"
-      style={{ width: `calc(${widthStep}% - 7px)`, backgroundColor: "#35A046", borderColor: "#35A046" }}
-    />
-  );
+  const disableElement = <div className="stepper" style={{ backgroundColor: "#E7E7E7", borderColor: "#E7E7E7" }} />;
+  const ableElement = <div className="stepper" style={{ backgroundColor: "#35A046", borderColor: "#35A046" }} />;
 
   const stepperList = [];
   let n = 0;
@@ -31,7 +21,17 @@ const NpmCustomStepperSurvey = (props) => {
 
     n++;
   }
-  return <div className="steppers">{stepperList.map((el) => el)}</div>;
+  return (
+    <div className="steppers">
+      {stepperList.map((el, idx) => {
+        return (
+          <div key={idx} style={{ width: `calc(${widthStep}% - 7px)` }} className="stepper-box">
+            {el}
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 NpmCustomStepperSurvey.defaultProps = {

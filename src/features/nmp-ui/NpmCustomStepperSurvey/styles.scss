@@ -2,9 +2,13 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
-  .stepper {
-    height: 0px;
-    border: 5px solid;
-    border-radius: 5px;
+  .stepper-box {
+    width: 100%;
+    .stepper {
+      width: 100%;
+      height: 0px;
+      border: 5px solid;
+      border-radius: 5px;
+    }
   }
 }
