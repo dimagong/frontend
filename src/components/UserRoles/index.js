@@ -21,6 +21,7 @@ import { createLoadingSelector } from "../../app/selectors/loadingSelector";
 const {
   addUserOrganizationRequest,
   allowUserAbilityRequest,
+  disallowUserAbilityRequest,
   switchUserAbilityInOrganizationRequest,
   getOrganizationsRequest,
   getUserOrganizationsRequest,
@@ -44,7 +45,10 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
   const userChildOrganizations = useSelector(selectUserChildOrganizations(manager.id));
 
   const isLoading = useSelector(
-    createLoadingSelector([allowUserAbilityRequest.type, switchUserAbilityInOrganizationRequest.type], true)
+    createLoadingSelector(
+      [disallowUserAbilityRequest.type, allowUserAbilityRequest.type, switchUserAbilityInOrganizationRequest.type],
+      true
+    )
   );
 
   // WILL BE REFACTORED AFTER STORE REFACTOR AND API REFACTORE
@@ -162,17 +166,23 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
     if (abilityName === ability) {
       // In case if the user tries to disallow an ability.
       // Check, have user any abilities, and prevent case when user manually disallowing last ability.
-      console.log(
-        "other orgs",
-        correctUserOrganizations.filter(({ id, type }) => id !== userOrg.id && type !== userOrg.type)
-      );
       const haveAnyOtherAbilities = correctUserOrganizations
-        .filter(({ id, type }) => id !== userOrg.id && type !== userOrg.type)
+        .filter(({ id, type }) => (type === userOrg.type ? id !== userOrg.id : true))
         .some(({ abilities }) => Object.values(abilities).some(Boolean));
 
-      if (!haveAnyOtherAbilities) {
-        toast.error(`The User should have at least one ability.`);
+      if (haveAnyOtherAbilities) {
+        dispatch(
+          disallowUserAbilityRequest({
+            ability,
+            organization_type: userOrg.type,
+            organization_id: userOrg.id,
+            user_id: manager.id,
+          })
+        );
+        return;
       }
+
+      toast.error(`The User should have at least one ability.`);
       return;
     }
 
@@ -290,28 +300,11 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
     if (organizations.length === 0) {
       dispatch(getOrganizationsRequest());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, organizations.length]);
 
   useEffect(() => {
     dispatch(getUserOrganizationsRequest(manager.id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [manager.id]);
-
-  useEffect(() => {
-    if (manager?.organizations?.corporation?.length > 0 && manager?.organizations?.network?.length > 0) {
-      manager.organizations.network.forEach((item) => {
-        if (!item.abilities.network_manager) {
-          let currRole = Object.keys(item.abilities).find((role) => item.abilities[role]);
-          if (currRole) {
-            toggleAbility(item, currRole, true);
-          }
-          toggleAbility(item, "network_manager", false);
-        }
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [manager.organizations]);
+  }, [dispatch, manager.id]);
 
   return (
     <div className={`user-roles ${className ? className : ""}`}>
