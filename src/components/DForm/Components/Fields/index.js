@@ -91,16 +91,16 @@ const FormComponent = (props) => {
             case FieldTypes.Number:
             case FieldTypes.TextArea:
             case FieldTypes.LongText:
-              value = fieldValue.value ?? "";
+              value = fieldValue?.value ?? "";
               break;
             case FieldTypes.Boolean:
-              value = fieldValue.value ?? false;
+              value = fieldValue?.value ?? false;
               break;
             case FieldTypes.Select:
-              value = fieldValue.value ? { value: fieldValue.value, label: fieldValue.value } : null;
+              value = fieldValue?.value ? { value: fieldValue.value, label: fieldValue.value } : null;
               break;
             case FieldTypes.MultiSelect:
-              value = fieldValue.value ? fieldValue.value.map((value) => ({ label: value, value })) : [];
+              value = fieldValue?.value ? fieldValue.value.map((value) => ({ label: value, value })) : [];
               break;
             // Get files from response instead value in case when field type is file/fileList
             case FieldTypes.File:
