@@ -248,6 +248,7 @@ function* updateUser({ payload }) {
     const response = yield call(userApi.updateUser, payload);
     yield put(updateUserSuccess(response));
     yield put(updateActivitiesRequest({ managerId: payload.id, page: 1 }));
+    yield put(getOnboardingsByUserRequest({ id: payload.id }));
     // Refresh active master schema hierarchy because it contains user data
     queryClient.invalidateQueries(MasterSchemaHierarchyQueryKeys.all());
   } catch (error) {

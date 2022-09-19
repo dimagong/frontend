@@ -232,7 +232,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
 NmpSelect.displayName = "NmpSelect";
 
 NmpSelect.propTypes = {
-  value: OptionType,
+  value: PropTypes.oneOfType([OptionType, OptionsType]),
   options: OptionsType,
   onChange: PropTypes.func,
   inputValue: PropTypes.string,

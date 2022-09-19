@@ -93,7 +93,15 @@ export const FilePreview = (props) => {
       <div className="d-block dform-file__item-name">{name}</div>
 
       <div className="d-flex justify-content-end align-items-center dform-file__item-actions">
-        <Badge color={color} tag="a" href={fileUrl} target="_blank" rel="noreferrer" className="ml-1 mr-1 text-white">
+        <Badge
+          color={color}
+          tag="a"
+          href={fileUrl}
+          target="_blank"
+          download={name}
+          rel="noreferrer"
+          className="ml-1 mr-1 text-white"
+        >
           {badgeMessage}
         </Badge>
 

@@ -140,24 +140,24 @@ const Timeline = ({
   if ((data && data.length === 0) || !activity) {
     return <h1 className={"no-activities"}>{noActivitiesMessage}</h1>;
   }
+
   return (
     <Card className={className ? className : ""}>
       <CardBody>
         <table className={"activity-table"}>
-          <tr>
-            <th className={"activity-date"}>Date time</th>
-            <th className={"activity-action"}>Action</th>
-          </tr>
-          {/* eslint-disable-next-line array-callback-return */}
-          {data &&
-            data
+          <tbody>
+            <tr>
+              <th className={"activity-date"}>Date time</th>
+              <th className={"activity-action"}>Action</th>
+            </tr>
+            {data
               .slice()
               .sort((lhs, rhs) => (new Date(lhs.created_at) > new Date(rhs.created_at) ? -1 : 1))
-              .map((item, index) => {
+              .map((item) => {
                 let message = item?.action_type?.name === userProfileUpdated ? getEditMessage(item) : "";
                 if (item?.action_type?.name !== userProfileUpdated || message) {
                   return (
-                    <tr key={index}>
+                    <tr key={item.id}>
                       <td>{getTimePassed(item.created_at)}</td>
                       {item?.action_type?.name === userProfileUpdated ? (
                         <td>{message}</td>
@@ -166,8 +166,11 @@ const Timeline = ({
                       )}
                     </tr>
                   );
+                } else {
+                  return null;
                 }
               })}
+          </tbody>
         </table>
         {activity?.next_page_url && (
           <div className={"activity-load-more"}>

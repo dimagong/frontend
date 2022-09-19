@@ -191,7 +191,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
                   <NmpSelect
                     disabled={!isCreate}
                     styles={selectStyles}
-                    value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])}
+                    value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])[0]}
                     options={prepareDFormSelect(dFormWorkFlows).sort(sortByLabel)}
                     onChange={(value) => {
                       onSelectWorkflowChange(value);

@@ -279,59 +279,65 @@ const UserEdit = () => {
               <CustomTabs active={activeModuleTab} onChange={handleChangeTab} tabs={tabs} />
               <TabContent activeTab={activeModuleTab}>
                 <TabPane tabId="Activity">
-                  <Timeline managerId={manager.id} loadMoreData={loadMoreData} activity={activity} />
+                  {activeModuleTab === "Activity" ? (
+                    <Timeline managerId={manager.id} loadMoreData={loadMoreData} activity={activity} />
+                  ) : null}
                 </TabPane>
                 <TabPane tabId="Master Schema">
                   {activeModuleTab === "Master Schema" ? <UserMasterSchemaContext key={manager.id} /> : null}
                 </TabPane>
                 <TabPane tabId="Applications">
-                  <Card>
-                    <CardBody>
-                      <Row className="mx-0" col="12">
-                        <Col md="12" className="ml-0 pl-0">
-                          <CustomTable
-                            handleRowClick={handleRowClick}
-                            selectedManager={selectedManager}
-                            selectedAssignedSurvey={selectedAssignedSurvey}
-                          />
-                        </Col>
-                        <Col md="12" className="ml-0 pl-0">
-                          {!!tableData.length ? (
-                            <div className="application-create-container">
-                              <div className="application-create-container_select">
-                                <NmpSelect
-                                  options={selectOptions}
-                                  value={applicationAddSelectValue}
-                                  onChange={setApplicationAddSelectValue}
-                                  styles={selectStyles}
-                                  searchable={false}
-                                />
+                  {activeModuleTab === "Applications" ? (
+                    <Card>
+                      <CardBody>
+                        <Row className="mx-0" col="12">
+                          <Col md="12" className="ml-0 pl-0">
+                            <CustomTable
+                              handleRowClick={handleRowClick}
+                              selectedManager={selectedManager}
+                              selectedAssignedSurvey={selectedAssignedSurvey}
+                            />
+                          </Col>
+                          <Col md="12" className="ml-0 pl-0">
+                            {!!tableData.length ? (
+                              <div className="application-create-container">
+                                <div className="application-create-container_select">
+                                  <NmpSelect
+                                    options={selectOptions}
+                                    value={applicationAddSelectValue}
+                                    onChange={setApplicationAddSelectValue}
+                                    styles={selectStyles}
+                                    searchable={false}
+                                  />
+                                </div>
+                                <button onClick={handleApplicationAdd}>
+                                  <Plus />
+                                </button>
                               </div>
-                              <button onClick={handleApplicationAdd}>
-                                <Plus />
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="onboarding-create">
-                              <div>
-                                Create new&nbsp;
-                                <Button color="link" onClick={createViewOnboarding} className="p-0">
-                                  onboarding
-                                </Button>
-                                &nbsp;or&nbsp;
-                                <Button color="link" onClick={handleSurveyAssign} className="p-0">
-                                  survey
-                                </Button>
+                            ) : (
+                              <div className="onboarding-create">
+                                <div>
+                                  Create new&nbsp;
+                                  <Button color="link" onClick={createViewOnboarding} className="p-0">
+                                    onboarding
+                                  </Button>
+                                  &nbsp;or&nbsp;
+                                  <Button color="link" onClick={handleSurveyAssign} className="p-0">
+                                    survey
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
-                          )}
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </Card>
+                            )}
+                          </Col>
+                        </Row>
+                      </CardBody>
+                    </Card>
+                  ) : null}
                 </TabPane>
                 <TabPane tabId="Permissions">
-                  <UserRoles manager={manager} userOrganizations={userOrganizations} />
+                  {activeModuleTab === "Permissions" ? (
+                    <UserRoles manager={manager} userOrganizations={userOrganizations} />
+                  ) : null}
                 </TabPane>
                 <TabPane tabId="managementScope" />
               </TabContent>
