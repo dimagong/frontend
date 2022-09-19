@@ -42,7 +42,7 @@ const UserEditApplication = ({ isCreate, dformId }) => {
     { dformId },
     {
       onSuccess: (data) => setDForm(data),
-      enabled: !isCreate,
+      enabled: !isCreate && dformId != null,
       refetchOnWindowFocus: false,
     }
   );
@@ -57,7 +57,7 @@ const UserEditApplication = ({ isCreate, dformId }) => {
         // reset edited values
         clearEditedValues();
       },
-      enabled: !isCreate,
+      enabled: !isCreate && dformId != null,
       refetchOnWindowFocus: false,
     }
   );
