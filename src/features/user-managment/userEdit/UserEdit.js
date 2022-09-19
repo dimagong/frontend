@@ -1,17 +1,17 @@
 import _ from "lodash";
 import { map } from "rxjs";
-import Select from "react-select";
 import { Plus } from "react-feather";
 import { Scrollbars } from "react-custom-scrollbars";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useRef, useEffect } from "react";
-import { Card, CardBody, Row, Col, TabPane, TabContent } from "reactstrap";
+import { Card, CardBody, Row, Col, TabPane, TabContent, Button } from "reactstrap";
 
 import { useAsync } from "hooks/useAsync";
 
 import CustomTabs from "components/Tabs";
 import Timeline from "components/Timeline";
 import UserRoles from "components/UserRoles";
+import NmpSelect from "components/nmp/NmpSelect";
 
 import { RoleBdmService } from "api/roleBdm/roleBdmService";
 
@@ -108,7 +108,7 @@ const UserEdit = () => {
 
   const [contextFeature, setContextFeature] = useState("");
   const [openOnboarding, setOpenOnboarding] = useState("");
-  const [selectedApplicationId, setSelectedApplicationId] = useState(undefined);
+  const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   const [selectedAssignedSurvey, setSelectedAssignedSurvey] = useState(null);
   const [applicationAddSelectValue, setApplicationAddSelectValue] = useState(selectOptions[0]);
 
@@ -136,7 +136,7 @@ const UserEdit = () => {
     if (application.questions) {
       setSelectedAssignedSurvey(application);
       dispatch(setManagerOnboarding(null));
-      setSelectedApplicationId(undefined);
+      setSelectedApplicationId(null);
       setContextFeature("assignedSurvey");
     } else {
       setSelectedAssignedSurvey(null);
@@ -299,12 +299,12 @@ const UserEdit = () => {
                           {!!tableData.length ? (
                             <div className="application-create-container">
                               <div className="application-create-container_select">
-                                <Select
+                                <NmpSelect
                                   options={selectOptions}
                                   value={applicationAddSelectValue}
                                   onChange={setApplicationAddSelectValue}
                                   styles={selectStyles}
-                                  isSearchable={false}
+                                  searchable={false}
                                 />
                               </div>
                               <button onClick={handleApplicationAdd}>
@@ -315,15 +315,13 @@ const UserEdit = () => {
                             <div className="onboarding-create">
                               <div>
                                 Create new&nbsp;
-                                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
-                                <a onClick={createViewOnboarding} href="javascript:void(0);">
+                                <Button color="link" onClick={createViewOnboarding} className="p-0">
                                   onboarding
-                                </a>
+                                </Button>
                                 &nbsp;or&nbsp;
-                                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,no-script-url */}
-                                <a onClick={handleSurveyAssign} href="javascript:void(0);">
+                                <Button color="link" onClick={handleSurveyAssign} className="p-0">
                                   survey
-                                </a>
+                                </Button>
                               </div>
                             </div>
                           )}
@@ -347,29 +345,13 @@ const UserEdit = () => {
               {
                 {
                   edit: <UserProfileEdit manager={manager} onEditClose={handleEditClose} />,
-                  onboarding: selectedManager.onboarding && (
-                    <UserEditApplication isCreate={isCreate.current} selectedApplicationId={selectedApplicationId} />
-                  ),
-                  // onboarding: selectedManager.onboarding && (
-                  //   <div className="onboarding-create-feature">
-                  //     <div className="onboarding-create-feature_header">
-                  //       {isCreate.current ? (
-                  //         <div className="onboarding-create-feature_header_title">Onboarding Create</div>
-                  //       ) : (
-                  //         <>
-                  //           <div className="onboarding-create-feature_header_title">Application</div>
-                  //           <div className="onboarding-create-feature_header_name">
-                  //             {selectedManager?.onboarding?.d_form?.name || ""}
-                  //           </div>
-                  //         </>
-                  //       )}
-                  //     </div>
-                  //     <Card>
-                  //       <UserOnboardingForm isCreate={isCreate} />
-                  //       {!isCreate.current && <UserOnboardingDForm isManualSave={true} />}
-                  //     </Card>
-                  //   </div>
-                  // ),
+                  onboarding: selectedManager.onboarding ? (
+                    <UserEditApplication
+                      isCreate={isCreate.current}
+                      dformId={selectedApplicationId}
+                      key={selectedApplicationId == null ? "create" : selectedApplicationId}
+                    />
+                  ) : null,
                   surveyCreate: <SurveyAssign userId={manager.id} />,
                   assignedSurvey: (
                     <AssignedSurvey onSurveyClose={handleSurveyClose} selectedSurveyId={selectedAssignedSurvey?.id} />

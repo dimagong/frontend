@@ -19,7 +19,7 @@ const FormComponent = (props) => {
   const {
     data,
     values,
-    group,
+    groupId,
     isDisabled: propIsDisabled,
     groupFields,
     selectedElement,
@@ -117,7 +117,11 @@ const FormComponent = (props) => {
           }
         }
 
-        const onElementClick = () => propOnElementClick({ ...field, groupId: group }, "field");
+        const onElementClick = () => {
+          if (!propOnElementClick) return;
+
+          propOnElementClick({ ...field, groupId }, "field");
+        };
 
         const onChange = (value) => {
           // Do not call on change while dform is configurable
@@ -171,7 +175,7 @@ const FormComponent = (props) => {
 
       {isConfigurable ? (
         <div className="custom-form-field col-12 px-0">
-          <div className="element-add" onClick={() => onFieldCreate(group)}>
+          <div className="element-add" onClick={() => onFieldCreate(groupId)}>
             <div className="element-add_icon">
               <Plus color="white" size={23} />
             </div>

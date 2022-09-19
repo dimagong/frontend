@@ -1,26 +1,19 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import Form from "@rjsf/material-ui";
-import DependencyEditModal from "./DependencyEditModal";
+import "./FormCreate.scss";
+
 import rfdc from "rfdc";
-import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormFeedback, Input, Row } from "reactstrap";
-import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import Form from "@rjsf/material-ui";
+import { toast } from "react-toastify";
+import React, { useEffect } from "react";
 import { Check, X } from "react-feather";
-import Select from "react-select";
-import { deepCompare, IsJsonString, makeid } from "./utils";
-
-import { ObjectFieldTemplate } from "./Custom/ObjectFieldTemplate";
-import { FileWidget } from "./Custom/FileWidget";
-import Reference from "./Custom/Reference";
-import TextWidget from "./Custom/TextWidget";
-import LongTextWidget from "./Custom/LongTextWidget";
-import SelectWidget from "./Custom/SelectWidget";
-import TextAreaWidget from "./Custom/TextAreaWidget";
-import DateInput from "./Custom/DateInput";
-import DateTimeInput from "./Custom/DateTimeInput";
-
+import { useDispatch } from "react-redux";
 import { debounce, isEmpty, isEqual } from "lodash";
-import fileService from "./services/file.service";
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormFeedback, Input, Row } from "reactstrap";
+
+import appSlice from "app/slices/appSlice";
+
+import NmpSelect from "components/nmp/NmpSelect";
+import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+
 import Constants, {
   FIELD_TYPE_BOOLEAN,
   FIELD_TYPE_DATE,
@@ -37,20 +30,25 @@ import Constants, {
   RJSF_FIELD_TYPE_HELP_TEXT,
   RJSF_FIELD_TYPE_RESOURCE,
 } from "./Parts/Constants";
-
+import DateInput from "./Custom/DateInput";
+import Reference from "./Custom/Reference";
+import TextWidget from "./Custom/TextWidget";
+import { FileWidget } from "./Custom/FileWidget";
+import SelectWidget from "./Custom/SelectWidget";
+import fileService from "./services/file.service";
+import DateTimeInput from "./Custom/DateTimeInput";
+import LongTextWidget from "./Custom/LongTextWidget";
+import TextAreaWidget from "./Custom/TextAreaWidget";
+import DependencyEditModal from "./DependencyEditModal";
+import { deepCompare, IsJsonString, makeid } from "./utils";
 import Controls, { referenceObject } from "./Parts/Controls";
+import { ObjectFieldTemplate } from "./Custom/ObjectFieldTemplate";
 
-import "./FormCreate.scss";
-
-import { dependencyChecker } from "./Parts/DependencyChecker";
-import { listControls } from "./Parts/ListControls";
-import { getSpecificType, isElementProtected } from "./helper";
 import FormOrdering from "./Ordering/index";
+import { listControls } from "./Parts/ListControls";
 import PropertyNameById from "./Parts/PropertyNameById";
-
-import { toast } from "react-toastify";
-
-import appSlice from "app/slices/appSlice";
+import { dependencyChecker } from "./Parts/DependencyChecker";
+import { getSpecificType, isElementProtected } from "./helper";
 
 const { getMasterSchemaFieldsRequest } = appSlice.actions;
 
@@ -2162,7 +2160,7 @@ class FormCreate extends React.Component {
 
                 {this.props.statusChanged ? (
                   <div style={{ width: "160px" }}>
-                    <Select
+                    <NmpSelect
                       className=""
                       classNamePrefix="select"
                       value={this.state.dFormSelectedAction}

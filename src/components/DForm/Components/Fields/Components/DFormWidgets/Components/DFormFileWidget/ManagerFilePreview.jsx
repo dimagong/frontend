@@ -12,7 +12,9 @@ import {
 
 import { FilePreview } from "./FilePreview";
 
-export const ManagerFilePreview = ({ fileId, name, masterSchemaFieldId, isUploading = false, isRemovable = true }) => {
+export const ManagerFilePreview = (props) => {
+  const { fileId, name, masterSchemaFieldId, isUploading = false, isRemovable = true, onRemove: propOnRemove } = props;
+
   const { dFormId } = useDFormContext();
 
   const params = { dFormId, masterSchemaFieldId, fileId };
@@ -21,7 +23,7 @@ export const ManagerFilePreview = ({ fileId, name, masterSchemaFieldId, isUpload
   // is used in member view scope it will use the service that implements an clientHttpAPI, and in case
   // when it is used in another scope that provide Network it will use it correspondingly.
   const fileQuery = useApplicationUserFileQuery(params, { enabled: Boolean(fileId) && Boolean(masterSchemaFieldId) });
-  const removeFileMutation = useDeleteApplicationUserFileMutation(params);
+  const removeFileMutation = useDeleteApplicationUserFileMutation(params, { onSuccess: () => propOnRemove(fileId) });
 
   const onRemove = () => {
     if (!window.confirm("Are you sure you want to remove the file ?")) {
@@ -50,4 +52,5 @@ ManagerFilePreview.propTypes = {
   masterSchemaFieldId: IdType,
   isRemovable: PropTypes.bool,
   isUploading: PropTypes.bool,
+  onRemove: PropTypes.func,
 };

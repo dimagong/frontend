@@ -16,11 +16,13 @@ import "./styles.scss";
 
 import appSlice from "app/slices/appSlice";
 import { toast } from "react-toastify";
+import { createLoadingSelector } from "../../app/selectors/loadingSelector";
 
 const {
   addUserOrganizationRequest,
   allowUserAbilityRequest,
   disallowUserAbilityRequest,
+  switchUserAbilityInOrganizationRequest,
   getOrganizationsRequest,
   getUserOrganizationsRequest,
   removeUserOrganizationRequest,
@@ -41,6 +43,13 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
   const childOrganizations = useSelector(selectChildOrganizations);
   const userParentOrganizations = useSelector(selectUserParentOrganizations(manager.id));
   const userChildOrganizations = useSelector(selectUserChildOrganizations(manager.id));
+
+  const isLoading = useSelector(
+    createLoadingSelector(
+      [disallowUserAbilityRequest.type, allowUserAbilityRequest.type, switchUserAbilityInOrganizationRequest.type],
+      true
+    )
+  );
 
   // WILL BE REFACTORED AFTER STORE REFACTOR AND API REFACTORE
   // correct user organizations are orgs that links to state.app.organizations object,
@@ -129,25 +138,71 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
     setIsDeletingOrganization(true);
   };
 
-  const toggleAbility = (userOrg, ability, isChecked) => {
-    if (manager?.organizations?.corporation?.length > 0 && manager?.organizations?.network?.length > 0) {
-      if (userOrg.type !== "corporation" && userOrg.abilities.network_manager) {
-        toast.error("This user can only be a network manager in " + userOrg.name);
-        return;
-      }
+  const toggleAbility = (userOrg, ability) => {
+    // Keep in mind that a user is able to have multiple abilities in different organization at one time.
+    if (isLoading) return;
+
+    // If there is possibility to change user ability in that organization.
+
+    const abilityInOrg = Object.entries(userOrg.abilities).find(([, value]) => value === true);
+    const noAbilityInOrg = abilityInOrg == null;
+
+    // In case if the user have no ability yet - try to allow one.
+    if (noAbilityInOrg) {
+      dispatch(
+        allowUserAbilityRequest({
+          ability,
+          organization_type: userOrg.type,
+          organization_id: userOrg.id,
+          user_id: manager.id,
+        })
+      );
+
+      return;
     }
 
-    const data = {
-      ability,
-      organization_type: userOrg.type,
-      organization_id: userOrg.id,
-      user_id: manager.id,
-    };
+    const [abilityName] = abilityInOrg;
 
-    if (isChecked) {
-      dispatch(disallowUserAbilityRequest(data));
-    } else {
-      dispatch(allowUserAbilityRequest(data));
+    if (abilityName === ability) {
+      // In case if the user tries to disallow an ability.
+      // Check, have user any abilities, and prevent case when user manually disallowing last ability.
+      const haveAnyOtherAbilities = correctUserOrganizations
+        .filter(({ id, type }) => (type === userOrg.type ? id !== userOrg.id : true))
+        .some(({ abilities }) => Object.values(abilities).some(Boolean));
+
+      if (haveAnyOtherAbilities) {
+        dispatch(
+          disallowUserAbilityRequest({
+            ability,
+            organization_type: userOrg.type,
+            organization_id: userOrg.id,
+            user_id: manager.id,
+          })
+        );
+        return;
+      }
+
+      toast.error(`The User should have at least one ability.`);
+      return;
+    }
+
+    if (abilityName !== ability) {
+      // In case if the user tries to change his ability in one organization.
+      // First disallow the current ability, and then allow the desired ability.
+      const toDisallow = {
+        ability: abilityName,
+        organization_type: userOrg.type,
+        organization_id: userOrg.id,
+        user_id: manager.id,
+      };
+      const toAllow = {
+        ability,
+        organization_type: userOrg.type,
+        organization_id: userOrg.id,
+        user_id: manager.id,
+      };
+
+      dispatch(switchUserAbilityInOrganizationRequest({ toDisallow, toAllow }));
     }
   };
 
@@ -181,7 +236,7 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
                   <h6 className="organizations-list_title">Parent organisations</h6>
                   <div className="organizations-list_list">
                     {addableParentOrganizations.map((org) => (
-                      <Card className="organizations-list_organization">
+                      <Card className="organizations-list_organization" key={org.id + org.type}>
                         <CardBody
                           className="organizations-list_organization-body"
                           onClick={() => {
@@ -204,7 +259,7 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
                   <h6 className="organizations-list_title">Child organisations</h6>
                   <div className="organizations-list_list">
                     {currChildOrganizations.map((org) => (
-                      <Card className="organizations-list_organization">
+                      <Card className="organizations-list_organization" key={org.id + org.type}>
                         <CardBody
                           className="organizations-list_organization-body"
                           onClick={() => {
@@ -245,28 +300,11 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
     if (organizations.length === 0) {
       dispatch(getOrganizationsRequest());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, organizations.length]);
 
   useEffect(() => {
     dispatch(getUserOrganizationsRequest(manager.id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [manager.id]);
-
-  useEffect(() => {
-    if (manager?.organizations?.corporation?.length > 0 && manager?.organizations?.network?.length > 0) {
-      manager.organizations.network.forEach((item) => {
-        if (!item.abilities.network_manager) {
-          let currRole = Object.keys(item.abilities).find((role) => item.abilities[role]);
-          if (currRole) {
-            toggleAbility(item, currRole, true);
-          }
-          toggleAbility(item, "network_manager", false);
-        }
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [manager.organizations]);
+  }, [dispatch, manager.id]);
 
   return (
     <div className={`user-roles ${className ? className : ""}`}>
@@ -278,7 +316,7 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
         {!!correctUserOrganizations.length &&
           correctUserOrganizations.map((userOrganization) => {
             return (
-              <>
+              <React.Fragment key={userOrganization.id + userOrganization.type}>
                 <Card style={{ minHeight: "100px" }}>
                   <CardBody
                     className="organization-name"
@@ -297,23 +335,21 @@ const UserRoles = ({ manager, userOrganizations, className }) => {
                   <CardBody className={`abilities ${userOrganization.name === "Rimbal" ? "hot-fix" : ""}`}>
                     {Object.keys(userOrganization.abilities).map((ability) => {
                       return (
-                        <>
-                          <Checkbox
-                            onClick={() => {
-                              toggleAbility(userOrganization, ability, userOrganization.abilities[ability]);
-                            }}
-                            checked={userOrganization.abilities[ability]}
-                            color="white"
-                            className={userOrganization.abilities[ability] ? "checked" : ""}
-                            icon={<X color={"#007BFF"} size={16} />}
-                            label={capitalizeAll(ability.replace("_", " "))}
-                          />
-                        </>
+                        <Checkbox
+                          onChange={(event) => toggleAbility(userOrganization, ability, event.target.checked)}
+                          checked={userOrganization.abilities[ability]}
+                          color="white"
+                          className={userOrganization.abilities[ability] ? "checked" : ""}
+                          icon={<X color={"#007BFF"} size={16} />}
+                          label={capitalizeAll(ability.replace("_", " "))}
+                          disabled={isLoading}
+                          key={ability}
+                        />
                       );
                     })}
                   </CardBody>
                 </Card>
-              </>
+              </React.Fragment>
             );
           })}
         {!!(addableChildOrganizations.length || addableParentOrganizations.length) &&

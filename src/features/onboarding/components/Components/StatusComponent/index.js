@@ -84,18 +84,15 @@ const StatusComponent = ({ application, status, onForceApplicationShow, isAllApp
           </div>
         )}
 
-        {/*Do not render for surveys*/}
-        {application.d_form && (
-          <div className={"status_description_action"}>
-            <Button
-              className={"status_description_action_show-button"}
-              onClick={() => onForceApplicationShow(application.id)}
-              color="primary"
-            >
-              View application
-            </Button>
-          </div>
-        )}
+        <div className={"status_description_action"}>
+          <Button
+            className={"status_description_action_show-button"}
+            onClick={() => onForceApplicationShow(application.id)}
+            color="primary"
+          >
+            View application
+          </Button>
+        </div>
       </div>
     </div>
   );

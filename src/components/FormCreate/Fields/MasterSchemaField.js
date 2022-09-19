@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Col, FormGroup, Row } from "reactstrap";
-import Select from "react-select";
-import masterSchemaService from "../../../services/masterSchema.service";
 import { isEmpty } from "lodash";
+import { Col, FormGroup, Row } from "reactstrap";
+import React, { useEffect, useState } from "react";
+
+import NmpSelect from "components/nmp/NmpSelect";
+
+import masterSchemaService from "services/masterSchema.service";
 
 export default function MasterSchemaField(props) {
   const [organizations, setOrganizations] = useState([]);
@@ -87,7 +89,7 @@ export default function MasterSchemaField(props) {
       <Col md="12">
         <FormGroup>
           <label>Organization</label>
-          <Select
+          <NmpSelect
             options={organizations.map((formattedOrganization) => {
               return {
                 label: formattedOrganization.organization.name,
@@ -98,12 +100,12 @@ export default function MasterSchemaField(props) {
             onChange={(event) => {
               setCurrentOrganization(event);
             }}
-          ></Select>
+          ></NmpSelect>
         </FormGroup>
         {!isEmpty(currentOrganization.value) ? (
           <FormGroup>
             <label>Field</label>
-            <Select
+            <NmpSelect
               options={Object.keys(currentOrganization.value.masterSchemaFields).map((masterSchemaFieldId) => {
                 return {
                   label: currentOrganization.value.masterSchemaFields[masterSchemaFieldId],
@@ -114,7 +116,7 @@ export default function MasterSchemaField(props) {
               onChange={(event) => {
                 setCurrentField(event);
               }}
-            ></Select>
+            ></NmpSelect>
           </FormGroup>
         ) : null}
       </Col>

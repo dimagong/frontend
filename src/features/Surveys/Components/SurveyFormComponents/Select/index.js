@@ -1,16 +1,6 @@
 import React from "react";
-import Select, { components } from "react-select";
-import { ChevronUp, ChevronDown } from "react-feather";
 
-export const DropdownIndicator = (props) => {
-  return (
-    components.DropdownIndicator && (
-      <components.DropdownIndicator {...props}>
-        {props.selectProps.menuIsOpen ? <ChevronUp /> : <ChevronDown />}
-      </components.DropdownIndicator>
-    )
-  );
-};
+import NmpSelect from "components/nmp/NmpSelect";
 
 const defaultStyles = {
   control: (styles) => ({
@@ -84,12 +74,11 @@ const SurveySelectComponent = ({
           {label}
         </label>
       )}
-      <Select
-        components={{ DropdownIndicator: DropdownIndicator }}
+      <NmpSelect
         value={value}
         maxMenuHeight={200}
-        isMulti={false}
-        isClearable={false}
+        multiple={false}
+        clearable={false}
         styles={displayType === "versionSelect" ? versionSelectStyles : defaultStyles}
         options={options}
         onChange={onChange}

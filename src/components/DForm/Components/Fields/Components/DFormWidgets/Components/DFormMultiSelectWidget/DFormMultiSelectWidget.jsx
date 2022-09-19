@@ -1,6 +1,7 @@
 import React from "react";
-import Select from "react-select";
 import PropTypes from "prop-types";
+
+import NmpSelect from "components/nmp/NmpSelect";
 
 import { IdType, OptionsType } from "utility/prop-types";
 
@@ -9,7 +10,7 @@ import multiSelectValidationSchema from "./validationSchema";
 import { DFormFieldContainer } from "../DFormFieldContainer";
 import { DFormBooleanWidget } from "../DFormBooleanWidget";
 
-const MultiSelectCheckbox = ({ option, value, onChange: propOnChange }) => {
+const MultiSelectCheckbox = ({ option, value, isDisabled, onChange: propOnChange }) => {
   const onChange = (value) => propOnChange({ option, value });
 
   return (
@@ -19,7 +20,7 @@ const MultiSelectCheckbox = ({ option, value, onChange: propOnChange }) => {
       label={option.value}
       isError={false}
       isRequired={false}
-      isDisabled={false}
+      isDisabled={isDisabled}
       isLabelShowing={true}
       onChange={onChange}
       className="py-1"
@@ -27,7 +28,7 @@ const MultiSelectCheckbox = ({ option, value, onChange: propOnChange }) => {
   );
 };
 
-const MultiSelectCheckboxes = ({ options, value, onChange: propOnChange }) => {
+const MultiSelectCheckboxes = ({ options, value, isDisabled, onChange: propOnChange }) => {
   const onChange = (checkboxValue) => {
     propOnChange(
       checkboxValue.value
@@ -42,6 +43,7 @@ const MultiSelectCheckboxes = ({ options, value, onChange: propOnChange }) => {
         <MultiSelectCheckbox
           option={option}
           value={value.some(({ value }) => option.value === value)}
+          isDisabled={isDisabled}
           onChange={onChange}
           key={`${option.value}-${index}`}
         />
@@ -126,7 +128,7 @@ export const DFormMultiSelectWidget = (props) => {
         isLabelShowing={isLabelShowing}
         className={className}
       >
-        <MultiSelectCheckboxes options={options} value={value} onChange={onChange} />
+        <MultiSelectCheckboxes options={options} value={value} isDisabled={isDisabled} onChange={onChange} />
       </DFormFieldContainer>
     );
   }
@@ -141,14 +143,14 @@ export const DFormMultiSelectWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={className}
     >
-      <Select
+      <NmpSelect
         inputId={id}
         value={value}
         options={options}
         maxMenuHeight="175"
         styles={colourStyles}
         placeholder={placeholder}
-        isMulti={true}
+        multiple
         isDisabled={isDisabled}
         onChange={onChange}
       />

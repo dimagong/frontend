@@ -64,14 +64,16 @@ const submitdFormNewVersionSuccess = (state, { payload }) => {
   state.isLoading = false;
   state.isError = null;
 
-  state.user.manager.onboarding.d_form = payload;
+  const { managerId, ...dform } = payload;
 
-  const managerIndex = state.user.managers.findIndex((item) => item.id === payload.managerId);
+  state.user.manager.onboarding.d_form = dform;
+
+  const managerIndex = state.user.managers.findIndex((item) => item.id === managerId);
 
   const managerOnboardingIndex = state.user.managers[managerIndex].onboardings.findIndex(
-    (onboarding) => onboarding.d_form.id === payload.id
+    (onboarding) => onboarding.d_form.id === dform.id
   );
-  state.user.managers[managerIndex].onboardings[managerOnboardingIndex].d_form = payload;
+  state.user.managers[managerIndex].onboardings[managerOnboardingIndex].d_form = dform;
 };
 
 const submitdFormDataSuccess = (state, { payload }) => {

@@ -13,8 +13,8 @@ class CheckBoxesVuexy extends React.Component {
           checked={this.props.checked}
           value={this.props.value}
           disabled={this.props.disabled}
-          onClick={this.props.onClick ? this.props.onClick : null}
-          onChange={this.props.onChange ? this.props.onChange : null}
+          onClick={this.props.onClick}
+          onChange={this.props.onChange}
         />
         <span className={`vx-checkbox vx-checkbox-${this.props.size ? this.props.size : "md"}`}>
           <span className="vx-checkbox--check">{this.props.icon}</span>

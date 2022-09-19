@@ -24,14 +24,18 @@ const Groups = (props) => {
 
   const { isConfigurable } = useDFormContext();
 
-  const handleGroupSelect = (sectionGroup) => {
-    onElementClick({ ...data.groups[sectionGroup], sectionId }, "group");
+  const onGroupSelect = (groupId) => {
+    if (!onElementClick) return;
+
+    const group = data.groups[groupId];
+
+    onElementClick({ ...group, sectionId }, "group");
   };
 
   return (
     <div>
-      {sectionGroups.map((sectionGroup) => {
-        const group = data.groups[sectionGroup];
+      {sectionGroups.map((groupId) => {
+        const group = data.groups[groupId];
 
         if (group.isHidden) {
           return null;
@@ -41,18 +45,18 @@ const Groups = (props) => {
         const isSelected = selectedElement?.elementType === ElementTypes.Group && selectedElement?.id === group.id;
 
         return (
-          <div className="group" key={sectionGroup}>
+          <div className="group" key={groupId}>
             <div
               className={`group-title editable ${isSelected ? "selected" : ""}`}
-              onClick={() => handleGroupSelect(sectionGroup)}
+              onClick={() => onGroupSelect(groupId)}
             >
-              <span className="text-bold-500">{data.groups[sectionGroup].name}</span>
+              <span className="text-bold-500">{data.groups[groupId].name}</span>
             </div>
             <div className="group-content row mr-0 ml-0">
               <Fields
                 data={data}
                 values={values}
-                group={sectionGroup}
+                groupId={groupId}
                 isDisabled={isDisabled}
                 selectedElement={selectedElement}
                 groupFields={group.relatedFields}

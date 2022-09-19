@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { ListGroupItem, DropdownToggle, DropdownItem, UncontrolledButtonDropdown, DropdownMenu } from "reactstrap";
-import CreatableSelect from "react-select/creatable";
+import chroma from "chroma-js";
 import { X, ChevronDown } from "react-feather";
-import { actionTypes, types, userTypeOptions, userTargetTypes, actionTypesByTriggerType } from "./constants";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ListGroupItem, DropdownToggle, DropdownItem, UncontrolledButtonDropdown, DropdownMenu } from "reactstrap";
+
 import {
   selectWorkflow,
   selectdFormActions,
@@ -11,14 +11,76 @@ import {
   selectSurveyNotifications,
   selectApplicationNotifications,
 } from "app/selectors/onboardingSelectors";
-import Select from "react-select";
-import { colourStyles } from "utility/select/selectSettigns";
+
+import NmpSelect from "components/nmp/NmpSelect";
+
 import { prepareSelectManagers } from "utility/select/prepareSelectData";
 
 import onboardingSlice from "app/slices/onboardingSlice";
-import { selectNotificationsAndWorkFlowsContext } from "../../../../app/selectors/layoutSelector";
+import { selectNotificationsAndWorkFlowsContext } from "app/selectors/layoutSelector";
+
+import { actionTypes, types, userTypeOptions, userTargetTypes, actionTypesByTriggerType } from "./constants";
 
 const { setWorkflowTriggers } = onboardingSlice.actions;
+
+const colorMultiSelect = "#007bff";
+
+const colourStyles = {
+  control: (styles) => ({
+    ...styles,
+    backgroundColor: "white",
+    border: 0,
+    // This line disable the blue border
+    boxShadow: "none",
+    minHeight: "auto",
+  }),
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    const color = data.color ? chroma(data.color) : colorMultiSelect;
+    return {
+      ...styles,
+      backgroundColor: isDisabled ? null : isSelected ? data.color : isFocused ? color.alpha(0.1).css() : null,
+      color: isDisabled ? "#ccc" : isSelected ? (chroma.contrast(color, "white") > 2 ? "white" : "black") : data.color,
+      cursor: isDisabled ? "not-allowed" : "default",
+
+      ":active": {
+        ...styles[":active"],
+        backgroundColor: !isDisabled && (isSelected ? data.color : "white"),
+      },
+    };
+  },
+  multiValue: (styles, { data }) => {
+    const color = data.color ? chroma(data.color) : colorMultiSelect;
+    return {
+      ...styles,
+      backgroundColor: color.alpha(0.1).css(),
+    };
+  },
+  multiValueLabel: (styles, { data, isDisabled }) => ({
+    ...styles,
+    color: data.color ? data.color : colorMultiSelect,
+    paddingRight: isDisabled ? "6px" : styles["paddingRight"],
+    ":hover": {
+      cursor: "pointer",
+      backgroundColor: data.color ? data.color : colorMultiSelect,
+      color: "white",
+    },
+  }),
+  multiValueRemove: (styles, { data, isDisabled }) => ({
+    ...styles,
+    display: isDisabled ? "none" : styles["display"],
+    color: data.color,
+    ":hover": {
+      backgroundColor: data.color ? data.color : colorMultiSelect,
+      color: "white",
+    },
+  }),
+  valueContainer: (base) => ({
+    ...base,
+    padding: 0,
+    "margin-left": "-2px",
+  }),
+  indicatorSeparator: (styles) => ({ display: "none" }),
+};
 
 const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
   const dispatch = useDispatch();
@@ -160,9 +222,10 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
           <div className="text-center w-100">
             <div className="text-center w-100">
               <div className="text-center w-100 mt-1 mb-1">to</div>
-              <CreatableSelect
+              <NmpSelect
+                isCreatable
                 style={{ width: "200px" }}
-                isClearable={false}
+                clearable={false}
                 options={userTypeOptions}
                 value={userTypeOptions.find((userTypeOption) => userTypeOption.value === action.user_target_type)}
                 onChange={(event) => {
@@ -175,24 +238,24 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
                 }}
               />
             </div>
-            {}
+
             {action.user_target_type === userTargetTypes.managers ? (
               <div className="text-center w-100 mt-2">
-                <Select
-                  value={prepareSelectManagers(action.action_users)}
+                <NmpSelect
+                  multiple
+                  searchable
+                  clearable={false}
                   maxMenuHeight={200}
-                  isMulti
-                  isSearchable={true}
-                  isClearable={false}
-                  styles={colourStyles}
+                  value={prepareSelectManagers(action.action_users)}
                   options={prepareSelectManagers(managers)}
-                  className="fix-margin-select"
+                  styles={colourStyles}
                   onChange={(values) => {
                     setActionProperty({
                       action_users: values ? values.map((value) => value.value) : [],
                     });
                   }}
                   classNamePrefix="select"
+                  className="fix-margin-select"
                 />
               </div>
             ) : null}

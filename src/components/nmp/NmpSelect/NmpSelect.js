@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Creatable from "react-select/creatable";
-import Select, { components } from "react-select";
+import Select, { components as RCComponents } from "react-select";
 
 import { useForkRef } from "hooks/useForkRef";
+
+import { OptionsType, OptionType } from "utility/prop-types";
 
 const baseControlStyles = {
   fontSize: "1rem",
@@ -123,20 +125,20 @@ const MultiValue = ({ index, data, getValue, selectProps, ...restProps }) => {
   const label = index > 0 ? `${valueSeparator}${getValueLabel(data)}` : `${getValueLabel(data)}`;
 
   return (
-    <components.MultiValue
+    <RCComponents.MultiValue
       getValue={getValue}
       {...restProps}
       index={index}
       data={data}
       selectProps={selectProps}
       components={{
-        Container: selectProps.components.MultiValueContainer || components.MultiValueContainer,
-        Label: selectProps.components.MultiValueLabel || components.MultiValueLabel,
-        Remove: selectProps.components.MultiValueRemove || components.MultiValueRemove,
+        Container: selectProps.components.MultiValueContainer || RCComponents.MultiValueContainer,
+        Label: selectProps.components.MultiValueLabel || RCComponents.MultiValueLabel,
+        Remove: selectProps.components.MultiValueRemove || RCComponents.MultiValueRemove,
       }}
     >
       {label}
-    </components.MultiValue>
+    </RCComponents.MultiValue>
   );
 };
 
@@ -155,7 +157,7 @@ const NmpSelect = React.forwardRef((props, ref) => {
   const {
     value,
     options,
-    onChange,
+    onChange: propOnChange,
     onInputChange,
 
     valid = false,
@@ -169,13 +171,15 @@ const NmpSelect = React.forwardRef((props, ref) => {
     loading = false,
     clearable = false,
     multiple = false,
-    searchable = false,
+    searchable,
     getOptionValue,
     isCreatable = false,
 
     menuIsOpen,
 
     backgroundColor = "hsl(0,0%,100%)",
+
+    styles = {},
 
     children,
     ...attrs
@@ -185,6 +189,16 @@ const NmpSelect = React.forwardRef((props, ref) => {
   const forkedRef = useForkRef(innerRef, ref);
 
   const SelectComponent = isCreatable ? Creatable : Select;
+
+  const onChange = (value, ...args) => {
+    // Due to migration from react-select v3 to v4, keep onChange with behavior in v3.
+    // In v4 the onChange handler is now always passed an array of options if isMulti is set to true.
+    if (multiple && Array.isArray(value)) {
+      propOnChange(value.length === 0 ? null : value, ...args);
+    } else {
+      propOnChange(value, ...args);
+    }
+  };
 
   return (
     <SelectComponent
@@ -201,11 +215,10 @@ const NmpSelect = React.forwardRef((props, ref) => {
       isClearable={readonly ? false : clearable}
       isMulti={multiple}
       isSearchable={readonly ? false : searchable}
-      isCreatable={isCreatable}
       menuIsOpen={readonly ? false : menuIsOpen}
       components={defaultComponents}
       getOptionValue={getOptionValue}
-      styles={selectStyles}
+      styles={{ ...selectStyles, ...styles }}
       ref={forkedRef}
       readonly={readonly}
       backgroundColor={backgroundColor}
@@ -218,11 +231,9 @@ const NmpSelect = React.forwardRef((props, ref) => {
 
 NmpSelect.displayName = "NmpSelect";
 
-const optionType = PropTypes.shape({ label: PropTypes.string.isRequired, value: PropTypes.any.isRequired });
-
 NmpSelect.propTypes = {
-  value: PropTypes.oneOfType([optionType, PropTypes.arrayOf(optionType)]),
-  options: PropTypes.arrayOf(optionType),
+  value: OptionType,
+  options: OptionsType,
   onChange: PropTypes.func,
   inputValue: PropTypes.string,
   onInputChange: PropTypes.func,
@@ -245,7 +256,11 @@ NmpSelect.propTypes = {
 
   menuIsOpen: PropTypes.bool,
 
+  styles: PropTypes.object,
+
   backgroundColor: PropTypes.string,
 };
+
+export const components = RCComponents;
 
 export default NmpSelect;

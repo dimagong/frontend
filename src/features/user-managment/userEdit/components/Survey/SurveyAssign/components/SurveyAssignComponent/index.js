@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
-
-import { Row, Card, CardBody, Col } from "reactstrap";
-import { X, ChevronDown, Plus } from "react-feather";
-import Select, { components } from "react-select";
-
-import LoadingButton from "components/LoadingButton";
-
 import "./styles.scss";
-import { useSelector } from "react-redux";
-import { createLoadingSelector } from "app/selectors/loadingSelector";
-import { usePrevious } from "hooks/common";
-import appSlice from "app/slices/appSlice";
-import { selectError } from "app/selectors";
+
 import * as yup from "yup";
 import { toast } from "react-toastify";
+import { X, Plus } from "react-feather";
+import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { Row, Card, CardBody, Col } from "reactstrap";
+
+import { usePrevious } from "hooks/common";
+
+import appSlice from "app/slices/appSlice";
+import { selectError } from "app/selectors";
+import { createLoadingSelector } from "app/selectors/loadingSelector";
+
+import NmpSelect from "components/nmp/NmpSelect";
+import LoadingButton from "components/LoadingButton";
+
 import { prepareSelectReviewers } from "utility/select/prepareSelectData";
 
 const { assignSurveyRequest } = appSlice.actions;
@@ -43,14 +45,6 @@ const selectStyles = {
   }),
 
   indicatorSeparator: () => ({ display: "none" }),
-};
-
-const DropdownIndicator = (props) => {
-  return (
-    <components.DropdownIndicator {...props}>
-      <ChevronDown />
-    </components.DropdownIndicator>
-  );
 };
 
 const createSurveyValidation = yup.object().shape({
@@ -133,26 +127,24 @@ const SurveyAssignComponent = ({ workFlows, reviewers, surveys, isLoading, onSur
                 <Row className="mb-2">
                   <Col>
                     <div className="survey-assign_body_select-label">Select survey</div>
-                    <Select
+                    <NmpSelect
                       styles={selectStyles}
-                      components={{ DropdownIndicator }}
                       options={surveyOptions}
                       value={selectedSurvey}
                       onChange={(value) => setSelectedSurvey(value)}
-                      isLoading={isLoading}
+                      loading={isLoading}
                     />
                   </Col>
                 </Row>
                 <Row>
                   <Col>
                     <div className="survey-assign_body_select-label">Select workflow</div>
-                    <Select
+                    <NmpSelect
                       styles={selectStyles}
-                      components={{ DropdownIndicator }}
                       options={workFlowsOptions}
                       value={selectedWorkFlow}
                       onChange={(value) => setSelectedWorkFlow(value)}
-                      isLoading={isLoading}
+                      loading={isLoading}
                     />
                   </Col>
                 </Row>
@@ -163,13 +155,12 @@ const SurveyAssignComponent = ({ workFlows, reviewers, surveys, isLoading, onSur
                     <div className="survey-assign_body_select-label">Who will review the results?</div>
                     <div className="survey-assign_body_reviewers-select_container">
                       <div className="survey-assign_body_reviewers-select_container_select">
-                        <Select
+                        <NmpSelect
                           styles={selectStyles}
-                          components={{ DropdownIndicator }}
                           options={reviewersOptions}
-                          isLoading={isLoading}
                           value={reviewerSelectValue}
                           onChange={handleReviewerSelect}
+                          loading={isLoading}
                         />
                       </div>
                       <button onClick={handleReviewerAdd}>

@@ -1,13 +1,17 @@
+import "../ContextSearchNav/styles.scss";
+
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Button, Card } from "react-bootstrap";
-import Select from "react-select";
 import { Col, ListGroup, ListGroupItem, Row } from "reactstrap";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
-import FilterOptionsDashboard from "./FilterOptionsDashboard";
-import "../ContextSearchNav/styles.scss";
-import { useSelector } from "react-redux";
+
+import NmpSelect from "components/nmp/NmpSelect";
+
 import { selectOrganizations } from "app/selectors/groupSelector";
 import { selectActivityTypes, selectManagers } from "app/selectors/userSelectors";
+
+import FilterOptionsDashboard from "./FilterOptionsDashboard";
 
 const FilterBox = ({
   isMap,
@@ -200,10 +204,10 @@ const FilterBox = ({
               <Col className={"right"} id={"filter-options-right"} style={{ paddingLeft: 0 }}>
                 <span>
                   {currTab === "Application" && (
-                    <Select
+                    <NmpSelect
                       className="basic-single"
                       classNamePrefix="select"
-                      isSearchable
+                      searchable
                       name="Choose application"
                       options={dForms ? options : []}
                       onChange={handleChange}
@@ -219,10 +223,10 @@ const FilterBox = ({
                     />
                   )}
                   {currTab === "Activity types" && (
-                    <Select
+                    <NmpSelect
                       className="basic-single"
                       classNamePrefix="select"
-                      isSearchable
+                      searchable
                       name="Choose activity type"
                       options={
                         activityTypes

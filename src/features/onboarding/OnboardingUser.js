@@ -4,9 +4,9 @@ import React from "react";
 import { Spinner } from "reactstrap";
 
 import {
-  useProspectUserProfileQuery,
+  useMVADFormsQuery,
   useSurveyPassingQuery,
-  useDFormsQuery,
+  useProspectUserProfileQuery,
   useNotifyIntroductionPageSeeingMutation,
 } from "api/Onboarding/prospectUserQuery";
 import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
@@ -17,9 +17,9 @@ import OnboardingComponent from "./components/Onboarding";
 import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 
 const useCallCollectQuery = () => {
-  const userProspectProfile = useProspectUserProfileQuery({ staleTime: Number.Infinity });
-  const userSurveyPassing = useSurveyPassingQuery({ staleTime: 600_000 /* 10min */ });
-  const useDForms = useDFormsQuery({ staleTime: 600_000 /* 10min */ });
+  const userProspectProfile = useProspectUserProfileQuery({ staleTime: Infinity });
+  const userSurveyPassing = useSurveyPassingQuery();
+  const useDForms = useMVADFormsQuery();
   return { userProspectProfile, userSurveyPassing, useDForms };
 };
 

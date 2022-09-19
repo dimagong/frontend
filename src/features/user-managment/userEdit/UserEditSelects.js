@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Col } from "reactstrap";
-import Select from "react-select";
-import { DropdownIndicator } from "components/MultiSelect/multiSelect";
-import { colourStyles, colorMultiSelect } from "utility/select/selectSettigns";
-import { useDispatch, useSelector } from "react-redux";
-import { selectGroups, selectRoles, selectModules, selectManager } from "app/selectors";
-import { groupTypes } from "constants/group";
-import { prepareNotNestedSelectOptions, getGroupName } from "utility/select/prepareSelectData";
-import { MultiSelectOrganization } from "../../../components/MultiSelect/MultiSelectOrganizations";
 import { isEmpty } from "lodash";
-import OrganizationPermissionsModal from "../../../components/modals/OrganizationPermissionsModal";
+import { Col } from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { groupTypes } from "constants/group";
 
 import appSlice from "app/slices/appSlice";
+import { selectGroups, selectRoles, selectModules, selectManager } from "app/selectors";
+
+import NmpSelect from "components/nmp/NmpSelect";
+import { MultiSelectOrganization } from "components/MultiSelect/MultiSelectOrganizations";
+import OrganizationPermissionsModal from "components/modals/OrganizationPermissionsModal";
+
+import { colourStyles, colorMultiSelect } from "utility/select/selectSettigns";
+import { prepareNotNestedSelectOptions, getGroupName } from "utility/select/prepareSelectData";
 
 const {
   getModulesRequest,
@@ -171,20 +173,19 @@ const UserEditSelects = () => {
         <div className="user-managment__edit_body_form__select mb-1">
           <div className="font-weight-bold column-sizing">Roles</div>
           <div className="full-width">
-            <Select
-              components={{ DropdownIndicator }}
-              value={prepareRolesSelect(manager.roles)}
+            <NmpSelect
+              multiple
+              clearable={false}
               maxMenuHeight={200}
-              isMulti
-              isClearable={false}
               styles={colourStyles}
+              value={prepareRolesSelect(manager.roles)}
               options={prepareRolesSelect(roles)}
-              className="fix-margin-select"
               onChange={(values) => {
                 onSelectRolesChange(values);
               }}
-              classNamePrefix="select"
               id="languages"
+              classNamePrefix="select"
+              className="fix-margin-select"
             />
           </div>
         </div>
@@ -215,19 +216,18 @@ const UserEditSelects = () => {
         <div className="user-managment__edit_body_form__select">
           <div className="font-weight-bold column-sizing">Modules</div>
           <div className="full-width">
-            <Select
+            <NmpSelect
+              multiple
               disabled={true}
-              components={{ DropdownIndicator: null }}
-              value={prepareModulesSelect(manager.modules)}
+              clearable={false}
               maxMenuHeight={200}
-              isMulti
-              isClearable={false}
               styles={colourStyles}
+              value={prepareModulesSelect(manager.modules)}
               options={prepareModulesSelect(modules)}
-              className="fix-margin-select"
               onChange={(values) => {
                 onSelectModulesChange(values);
               }}
+              className="fix-margin-select"
               classNamePrefix="select"
               id="languages"
             />

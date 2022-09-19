@@ -1,6 +1,7 @@
 import "./styles.scss";
 
 import { cloneDeep } from "lodash";
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 
 import { DFormContextProvider } from "./DFormContext";
@@ -11,13 +12,14 @@ import SectionsSideBar from "./Components/SectionsSideBar";
 import {
   DCREffectProps,
   DCRFieldValueConvertors,
+  DCRExpectedValueConvertor,
   DCROperatorTypesComparotors,
 } from "features/Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
 
-const getInitialSelectedSection = (data) => (data.sectionsOrder ? data.sectionsOrder[0] : "");
+const getInitialSelectedSection = ({ sectionsOrder }) => (sectionsOrder ? sectionsOrder[0] : null);
 
-const getInitialSectionsProgress = (data) =>
-  Object.values(data.sections).reduce((acc, curr) => ({ ...acc, [curr.name]: 0 }), {});
+const getInitialSectionsProgress = ({ sections }) =>
+  Object.values(sections).reduce((acc, curr) => ({ ...acc, [curr.name]: 0 }), {});
 
 const checkConditions = (elements, values, fields) => {
   for (const elementId in elements) {
@@ -25,24 +27,18 @@ const checkConditions = (elements, values, fields) => {
     const element = elements[elementId];
     const conditions = element.conditions;
 
-    // ToDo: reducing that with operator OR
     for (const condition of conditions) {
       const { operatorType, effectType, fieldId, expectedValue } = condition;
 
       const field = fields[fieldId];
-      const value = values[field.masterSchemaFieldId];
       const convertor = DCRFieldValueConvertors[field.type];
-      if (typeof convertor !== "function") {
-        console.warn("element", element.title, element.id);
-        console.warn("field", field.title, fieldId);
-        throw new Error("Unexpected field value convertor");
-      }
-      const preparedValue = convertor(value);
+      const controlValue = values[field.masterSchemaFieldId];
       const operatorComparator = DCROperatorTypesComparotors[operatorType];
+
       const isApplicable = operatorComparator({
-        expected: expectedValue,
-        control: preparedValue,
-        controlType: field.type,
+        type: field.type,
+        control: convertor(controlValue),
+        expected: DCRExpectedValueConvertor(expectedValue, field.type),
       });
 
       if (isApplicable) {
@@ -73,46 +69,40 @@ const applyConditionalRender = (schema, values) => {
 
 export const DForm = (props) => {
   const {
-    data: propData,
+    schema: propSchema,
     values,
     dFormId,
-    isMemberView,
     selectedElement,
-    onGroupCreate,
-    accessType,
+    isMemberView,
     isConfigurable,
+    accessType,
+    onGroupCreate,
     onElementClick,
     onSectionCreate,
     onFieldCreate,
     onFieldChange,
   } = props;
 
-  const data = isConfigurable ? propData : applyConditionalRender(propData, values);
+  const schema = isConfigurable ? propSchema : applyConditionalRender(propSchema, values);
 
-  const sectionsProgress = getInitialSectionsProgress(data);
-  const [selectedSection, setSelectedSection] = useState(() => getInitialSelectedSection(data));
+  const sectionsProgress = getInitialSectionsProgress(schema);
+  const [selectedSection, setSelectedSection] = useState(() => getInitialSelectedSection(schema));
 
-  const handleElementClick = (element, elementType) => {
-    onElementClick(element, elementType);
-  };
+  const onSectionSelect = (sectionId) => {
+    setSelectedSection(sectionId);
 
-  const handleSectionSelect = (section) => {
-    setSelectedSection(section);
+    const section = schema.sections[sectionId];
 
     if (isConfigurable) {
-      handleElementClick(data.sections[section], "section");
+      onElementClick(section, "section");
     }
 
-    if (!data.sections[section].isAlreadyViewed) {
+    if (!section.isAlreadyViewed) {
       /*TODO move this to parent component that handle ONBOARDING
        * make an api call in parent component to mark section as "already viewed"
        */
       // dFormApi.updateViewedSections(...);
     }
-  };
-
-  const handleGroupCreate = () => {
-    onGroupCreate(selectedSection);
   };
 
   return (
@@ -125,25 +115,49 @@ export const DForm = (props) => {
       <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
         <SectionsSideBar
           errors={[]}
-          sections={data.sectionsOrder && data.sectionsOrder.map((sectionId) => data.sections[sectionId])}
+          sections={schema.sectionsOrder.map((sectionId) => schema.sections[sectionId])}
           completed={undefined}
           isConfigurable={isConfigurable}
           selectedSection={selectedSection}
           sectionsProgress={sectionsProgress}
-          onSectionSelect={handleSectionSelect}
-          onSectionCreate={isConfigurable && onSectionCreate}
+          onSectionCreate={onSectionCreate}
+          onSectionSelect={onSectionSelect}
         />
         <SectionsComponent
-          data={data}
-          values={isConfigurable ? null : values}
+          data={schema}
+          values={values}
           selectedSection={selectedSection}
-          selectedElement={isConfigurable ? selectedElement : null}
-          onElementClick={isConfigurable ? handleElementClick : () => {}}
-          onGroupCreate={isConfigurable ? handleGroupCreate : () => {}}
+          selectedElement={selectedElement}
+          onElementClick={onElementClick}
+          onGroupCreate={onGroupCreate}
           onFieldCreate={onFieldCreate}
           onFieldChange={onFieldChange}
         />
       </div>
     </DFormContextProvider>
   );
+};
+
+DForm.propTypes = {
+  schema: PropTypes.shape({
+    fields: PropTypes.object.isRequired,
+    groups: PropTypes.object.isRequired,
+    sections: PropTypes.object.isRequired,
+    sectionsOrder: PropTypes.arrayOf(PropTypes.string).isRequired,
+  }),
+  // ToDo: Normalize value
+  // values: PropTypes.objectOf(
+  //   PropTypes.oneOfType([
+  //     PropTypes.string,
+  //     PropTypes.number,
+  //     PropTypes.bool,
+  //     PropTypes.arrayOf(PropTypes.string),
+  //     PropTypes.arrayOf(
+  //       PropTypes.shape({
+  //         name: PropTypes.string.isRequired,
+  //         file_id: PropTypes.number,
+  //       })
+  //     ),
+  //   ])
+  // ),
 };

@@ -1,8 +1,8 @@
-import Select from "react-select";
 import PropTypes from "prop-types";
 import React, { useMemo, useState } from "react";
 
 import FormField from "./FormField";
+import NmpSelect from "./NmpSelect";
 
 const SelectField = (props) => {
   const {
@@ -33,9 +33,9 @@ const SelectField = (props) => {
 
   const renderSelect = (id) => {
     return (
-      <Select inputId={id} value={value} options={options} onChange={onChange} placeholder={placeholder} {...attrs}>
+      <NmpSelect inputId={id} value={value} options={options} onChange={onChange} placeholder={placeholder} {...attrs}>
         {innerChildren}
-      </Select>
+      </NmpSelect>
     );
   };
 

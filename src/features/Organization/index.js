@@ -1,27 +1,29 @@
 import "./styles.scss";
 
 import * as yup from "yup";
+import { Plus } from "react-feather";
 import { toast } from "react-toastify";
 import { Row, Col, Button } from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { readBlobAsDataURL } from "utility/file";
+
+import NmpSelect from "components/nmp/NmpSelect";
+import ContextTemplate from "components/ContextTemplate";
+import FileInput from "components/formElements/FileInput";
+import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
 import appSlice from "app/slices/appSlice";
-import { readBlobAsDataURL } from "utility/file";
-import FileInput from "components/formElements/FileInput";
-import IntroPageForm from "./Components/IntroPageForm";
 import { selectOrganizations, selectSelectedOrganizationIdAndType } from "app/selectors/groupSelector";
+
+import { createQueryKey } from "api/createQueryKey";
+import { useGenericQuery } from "api/useGenericQuery";
+import { useGenericMutation } from "api/useGenericMutation";
 import { useOrganizationLogoQuery, useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 
-import ContextTemplate from "../../components/ContextTemplate";
-import ContextFeatureTemplate from "../../components/ContextFeatureTemplate";
-
+import IntroPageForm from "./Components/IntroPageForm";
 import WelcomePageComponent from "../onboarding/components/WeclomePage";
-import Select, { components } from "react-select";
-import { ChevronDown, Plus } from "react-feather";
-import { useGenericMutation } from "../../api/useGenericMutation";
-import { createQueryKey } from "../../api/createQueryKey";
-import { useGenericQuery } from "../../api/useGenericQuery";
 
 const { createOrganizationRequest, updateOrganizationRequest } = appSlice.actions;
 
@@ -50,14 +52,6 @@ const selectStyles = {
   }),
 
   indicatorSeparator: () => ({ display: "none" }),
-};
-
-const DropdownIndicator = (props) => {
-  return (
-    <components.DropdownIndicator {...props}>
-      <ChevronDown />
-    </components.DropdownIndicator>
-  );
 };
 
 const getOrganizationData = (organization) => ({
@@ -421,8 +415,7 @@ const Organization = ({ create = false }) => {
               <h2>Intro pages</h2>
               <div className="survey-assign_body_reviewers-select_container">
                 <div className="survey-assign_body_reviewers-select_container_select">
-                  <Select
-                    components={{ DropdownIndicator }}
+                  <NmpSelect
                     value={{ value: selectedIntroPage, label: selectedIntroPage?.intro_title }}
                     styles={selectStyles}
                     options={introPages.map((introPage) => ({ value: introPage, label: introPage.intro_title })) || []}
