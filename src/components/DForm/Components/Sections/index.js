@@ -59,7 +59,7 @@ const SectionsComponent = (props) => {
               selectedElement={selectedElement}
               sectionGroups={section.relatedGroups}
               onElementClick={onElementClick}
-              onGroupCreate={onGroupCreate}
+              onGroupCreate={() => onGroupCreate(section.id)}
               onFieldCreate={onFieldCreate}
               onFieldChange={onFieldChange}
             />
