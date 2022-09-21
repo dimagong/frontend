@@ -12,9 +12,6 @@ import {
 } from "api/Onboarding/prospectUserQuery";
 import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 import { initialAppOnboarding } from "features/onboarding/utils/findActiveAppOnboarding";
-
-// import WelcomePageComponent from "./components/WeclomePage";
-// import OnboardingComponent from "./components/Onboarding";
 import MemberComponentView from "./../members/ui/MemberComponentView";
 import IntroPageView from "./../members/ui/IntroPageView";
 
@@ -74,16 +71,6 @@ const OnboardingUser = () => {
       introTitle={profile?.notify_entries[0].notify.intro_title}
     />
   ) : (
-    // <WelcomePageComponent
-    //   onSubmit={proceedUserToOnboarding}
-    //   isOnboardingExist={!!userApplications.length}
-    //   brochureName={brochureQuery.data.file?.name}
-    //   brochureUrl={brochureQuery.data.url}
-    //   downloadText={profile?.notify_entries[0].notify.download_text}
-    //   organizationName={profile?.permissions.organization}
-    //   introText={profile?.notify_entries[0].notify.intro_text}
-    //   introTitle={profile?.notify_entries[0].notify.intro_title}
-    // />
     <MemberComponentView
       userApplications={userApplications}
       profile={profile}
@@ -91,7 +78,6 @@ const OnboardingUser = () => {
       dForms={dForms}
       surveys={onboardingSurveys}
     />
-    // <OnboardingComponent userApplications={userApplications} profile={profile} initialOnboarding={initialOnboarding} />
   );
 };
 
