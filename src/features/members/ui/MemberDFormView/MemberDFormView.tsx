@@ -46,26 +46,17 @@ interface IProps {
 }
 
 const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitted }: IProps) => {
-  // const optionsTest = ["option-1", "option-2", "option-3", "option-4", "option-5", "option-6", "option-7"];
-  console.log("profile", profile);
-  console.log("selectedForm", selectedForm);
-
   const [applicationData, setApplicationData] = useState<any>(null);
 
   const [applicationValues, setApplicationValues] = useState<any>(null);
 
   const [currentSection, setCurrentSection] = useState<null | string>(null);
 
-  console.log("applicationData", applicationData);
-  console.log("applicationValues", applicationValues);
-  console.log("currentSection", currentSection);
-
   const { isLoading: isFormLoading } = useDFormByIdQuery(
     { id: selectedForm.id },
     {
       onSuccess: (data) => {
         const { schema, ...rest } = data;
-        console.log("useDFormByIdQuery", data);
         setApplicationData({ ...schema, ...rest });
         setCurrentSection(data.schema.sectionsOrder[0]);
       },
@@ -185,31 +176,11 @@ const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitt
     return () => throttleOnSave.current.flush();
   }, []);
 
-  //? for testing
-  // const handleChange = (option) => {
-  //   console.log("option", option);
-  // };
-
-  // const onchangeDate = (time, timeString) => {
-  //   console.log("Date", time, timeString);
-  // };
-
-  // const onChangeTime = (time, timeString) => {
-  //   console.log("Time", time, timeString);
-  // };
-
   const isDisabled = applicationData?.sections[0]?.isDisabled;
 
-  //!Mock section
-  // const sectionMockName = applicationData?.sectionsOrder[0];
-  // console.log("sectionMockName", sectionMockName);
-  // const currentSection = applicationData ? applicationData.sections[`${sectionMockName}`] : null;
-
   const handleNextSection = () => {
-    //todo check all fields
     const { sectionsOrder }: { sectionsOrder: [] } = applicationData;
     const currentSectionIndex = sectionsOrder.findIndex((el) => el === currentSection);
-    console.log("currentSectionIndex", currentSectionIndex);
     if (currentSectionIndex < sectionsOrder.length - 1) {
       setCurrentSection(sectionsOrder[currentSectionIndex + 1]);
     } else if (currentSectionIndex === sectionsOrder.length - 1) {
@@ -217,7 +188,6 @@ const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitt
     }
   };
 
-  console.log("currentSection", currentSection);
   if (isFormLoading || dFormValues.isLoading || !currentSection) {
     return (
       <div className="onboarding-survey_loading">
@@ -270,52 +240,6 @@ const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitt
                   handleNextSection={handleNextSection}
                 />
               </div>
-
-              {/* {currentSection.relatedGroups.map((sectionGroup) => {
-                  const group = applicationData.groups[sectionGroup];
-                  console.log("group", group);
-
-                  if (group.isHidden) {
-                    return null;
-                  }
-
-                  //const isDisabled = propIsDisabled || Boolean(group.isDisabled);
-                  const isDisabled = false;
-
-                  return (
-                    <div className="group" key={sectionGroup}>
-                      <div className="group-content row mr-0 ml-0">
-                        <Fields
-                          data={applicationData}
-                          values={applicationValues}
-                          group={sectionGroup}
-                          isDisabled={isDisabled}
-                          groupFields={group.relatedFields}
-                          onFieldChange={handleFieldChange}
-                          // accessType={applicationData.access_type}
-                          //dFormId={applicationData.id}
-                        />
-                      </div>
-                    </div>
-                  );
-                })} */}
-              {/* <Groups
-                        data={applicationData}
-                        values={applicationValues}
-                        sectionId={section.id}
-                        isDisabled={section.isDisabled}
-                        sectionGroups={section.relatedGroups}
-                        onFieldChange={handleFieldChange}
-                      /> */}
-              {/* <NpmLongText isModalOpen={true} /> */}
-              {/* <NpmFileLoading />
-                <NpmProgress
-                  strokeColor="#35A046"
-                  strokeWidth={15}
-                  width={25}
-                  format={(percent) => <ArrowUpOutlined style={{ color: "#35A046" }} />}
-                />
-                <NpmDragAndDrop /> */}
             </div>
           </NpmCard>
         </div>
