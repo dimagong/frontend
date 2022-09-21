@@ -19,9 +19,10 @@ import { fieldValidationSchemas } from "./validationOnboarding";
 
 const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const [applicationData, setApplicationData] = useState(null);
+  console.log("applicationData", applicationData);
 
   const [applicationValues, setApplicationValues] = useState(null);
-
+  console.log("applicationValues", applicationValues);
   /*const appProperties =
     applicationSchema && applicationValues
       ? Object.values(applicationSchema.fields).map((app) => {

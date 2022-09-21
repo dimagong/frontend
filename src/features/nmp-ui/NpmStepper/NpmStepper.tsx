@@ -38,7 +38,7 @@ const NpmStepper = ({
       onChange={onChange}
     >
       {sections.map((section, idx) => {
-        return <Step key={idx} title={section?.title || ""} description={section?.description || ""} />;
+        return <Step key={idx} title={section?.name || ""} description={section?.description || ""} />;
       })}
     </Steps>
   );
