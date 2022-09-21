@@ -66,22 +66,6 @@ export const File = (props) => {
 
       {isDropZoneShown ? (
         <>
-          {/* <div
-            className="d-flex align-items-center justify-content-center p-1 dform-file__drop-zone"
-            onClick={onDropZoneClick}
-          >
-            <span>Drag 'n' Drop files here or click to open file manager</span>
-
-            <input
-              id={id}
-              type="file"
-              multiple={isMultiple}
-              disabled={isDisabled || isLoading}
-              onChange={onInputFileChange}
-              className="dform-file__input"
-              ref={inputFileRef}
-            />
-          </div> */}
           <div>
             <NpmDragAndDrop
               onChange={onInputFileChange}
