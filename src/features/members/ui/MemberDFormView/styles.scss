@@ -6,7 +6,6 @@
     justify-content: end;
   }
   .memberDForm-content {
-    border: 2px solid green;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -21,7 +20,6 @@
       &_card {
         width: 100%;
         height: 100;
-        border: 2px solid red;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -34,11 +32,9 @@
         }
         &_section-fields {
           padding-top: 5%;
-          border: 2px solid red;
         }
         &_section-navigation {
           padding-top: 5%;
-          border: 2px solid green;
           display: flex;
           justify-content: space-between;
         }

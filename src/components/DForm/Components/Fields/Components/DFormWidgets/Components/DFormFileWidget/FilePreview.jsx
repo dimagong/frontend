@@ -1,10 +1,7 @@
-import { X } from "react-feather";
 import PropTypes from "prop-types";
-import { Badge, Spinner } from "reactstrap";
 import React, { useEffect, useState } from "react";
 
-import NpmProgress from "./../../../../../../../../features/nmp-ui/NpmProgress";
-import NpmFileLoading from "./../../../../../../../../features/nmp-ui/NpmFileLoading";
+import { NpmFileLoading } from "./../../../../../../../../features/nmp-ui";
 
 const FilePreviewStatusTypes = {
   Removing: "removing",
@@ -58,8 +55,6 @@ export const FilePreview = (props) => {
     progress,
   } = props;
 
-  console.log("FilePreview props", props);
-
   const status = getStatus({ isRemoving, isUploading, isDownloading });
   const badgeMessage = getBadgeMessage(status);
   const color = isRemoving ? "danger" : "primary";
@@ -77,7 +72,6 @@ export const FilePreview = (props) => {
   }, [file]);
 
   const onRemoveButtonClick = () => {
-    console.log("onRemoveButtonClick");
     onRemove();
   };
 

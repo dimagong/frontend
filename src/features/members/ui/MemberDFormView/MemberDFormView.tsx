@@ -21,23 +21,11 @@ import { DForm, AccessTypes, FieldTypes } from "components/DForm";
 import MemberDFormNavigation from "./../MemberDFormNavigation";
 import MemberDFormCheckSave from "./../MemberDFormCheckSave";
 
-import { NpmCard, NpmButton } from "../../../nmp-ui";
-import NpmInputSelect from "./../../../nmp-ui/NpmInputSelect";
-import NpmDatePicker from "./../../../nmp-ui/NpmDatePicker";
-import NpmTimePicker from "./../../../nmp-ui/NpmTimePicker";
-import NpmRadioGroup from "./../../../nmp-ui/NpmRadioGroup";
-import NpmTextArea from "./../../../nmp-ui/NpmTextArea";
-import NpmModal from "./../../../nmp-ui/NpmModal";
-import NpmLongText from "./../../../nmp-ui/NpmLongText";
+import { NpmCard } from "../../../nmp-ui";
+
 import NpmStepper from "./../../../nmp-ui/NpmStepper";
-import NpmProgress from "./../../../nmp-ui/NpmProgress";
-import { ArrowUpOutlined } from "@ant-design/icons";
-import NpmFileLoading from "./../../../nmp-ui/NpmFileLoading";
-import NpmDragAndDrop from "./../../../nmp-ui/NpmDragAndDrop";
 
 import { IProfile, IForm } from "./../../data/models/models";
-import Groups from "../../../../components/DForm/Components/Groups";
-import Fields from "../../../../components/DForm/Components/Fields";
 
 interface IProps {
   profile: IProfile;
@@ -189,12 +177,7 @@ const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitt
   };
 
   if (isFormLoading || dFormValues.isLoading || !currentSection) {
-    return (
-      <div className="onboarding-survey_loading">
-        {/* <Spinner color="primary" size="40" /> */}
-        Something was wrong ....
-      </div>
-    );
+    return <div className="onboarding-survey_loading">Something was wrong ....</div>;
   }
 
   let sectionsSterrer: { sectionId: string; name: string }[] = [];

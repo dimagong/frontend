@@ -1,24 +1,14 @@
 import "./styles.scss";
 
-import { isEmpty } from "lodash";
 import React, { useEffect, useState } from "react";
-import { CardBody, Card, TabContent, TabPane } from "reactstrap";
 import { Row, Col } from "antd";
 
-import NavMenu from "components/NavMenu/NavMenu";
 import MemberMenuView from "./../MemberMenuView";
 import Check from "assets/img/icons/check.png";
 
-import MemberSurveyPassView from "../MemberSurveyPassView";
 import MemberSurveyView from "../MemberSurveyView";
 import MemberDFormView from "../MemberDFormView";
 import { TypeConstants } from "./../../data/constants/typeApplication";
-
-//import OnboardingSurvey from "../../OnboardingSurvey";
-import StatusComponent from "../../../onboarding/components/Components/StatusComponent";
-//"../Components/StatusComponent";
-import OnboardingApp from "../../../onboarding/components/OnboardingApp";
-//"./../../components/OnboardingApp";
 
 const MemberComponentView = ({ profile, userApplications, initialOnboarding, dForms, surveys }) => {
   const [forceAppShow, setForceAppShow] = useState([]);
@@ -120,83 +110,10 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
                 selectedForm={appActiveOnboarding}
                 setRecentlySubmitted={setRecentlySubmitted}
               />
-              {/* <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
-                <h2 className="onboarding-title">{appActiveOnboarding?.title || appActiveOnboarding?.name}</h2>
-                {!isEmpty(appActiveOnboarding) &&
-                  (isShowStatus(appActiveOnboarding) ? (
-                    <StatusComponent
-                      status={(recentlySubmitted && "recent") || appActiveOnboarding?.status}
-                      application={appActiveOnboarding}
-                      isAllApplicationsCompleted={!unCompletedApplications.length}
-                      onForceApplicationShow={() => showApplication(appActiveOnboarding.id)}
-                    />
-                  ) : (
-                    <OnboardingApp
-                      profile={profile}
-                      selectedForm={appActiveOnboarding}
-                      setRecentlySubmitted={setRecentlySubmitted}
-                    />
-                  ))}
-              </div> */}
             </>
           )}
         </Col>
       </Row>
-
-      {/* 
-         <Row style={{ maxWidth: "1024px", marginLeft: "95px" }}>
-         <Col sm="12" md={{ size: 10, offset: 1 }}>
-          <Card style={{ background: "transparent", boxShadow: "none" }}>
-            <CardBody className="pt-0 pl-0">
-              <TabContent activeTab={getActiveTab()}>
-                {userApplications.map((application, index) => {
-                  if (application.tabId.includes("form")) {
-                    return (
-                      <TabPane key={index} tabId={application.tabId}>
-                        <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
-                          <h2 className="onboarding-title">{application?.title || application?.name}</h2>
-                          {!isEmpty(application) &&
-                            (isShowStatus(application) ? (
-                              <StatusComponent
-                                status={(recentlySubmitted && "recent") || application?.status}
-                                application={application}
-                                isAllApplicationsCompleted={!unCompletedApplications.length}
-                                onForceApplicationShow={() => showApplication(application.id)}
-                              />
-                            ) : (
-                              application.id === appActiveOnboarding?.id && (
-                                <OnboardingApp
-                                  profile={profile}
-                                  selectedForm={application}
-                                  setRecentlySubmitted={setRecentlySubmitted}
-                                />
-                              )
-                            ))}
-                        </div>
-                      </TabPane>
-                    );
-                  } else {
-                    return (
-                      <TabPane key={index} tabId={application.tabId}>
-                        <div className="onboarding-title" />
-                        {application.id === appActiveOnboarding?.id && (
-                          <OnboardingSurvey
-                            selectedSurveyId={appActiveOnboarding.id}
-                            setRecentlySubmitted={setRecentlySubmitted}
-                            isRecentlySubmitted={recentlySubmitted}
-                            isAllApplicationsCompleted={!unCompletedApplications.length}
-                          />
-                        )}
-                      </TabPane>
-                    );
-                  }
-                })}
-              </TabContent>
-            </CardBody>
-          </Card>
-        </Col> 
-          </Row>
-        */}
     </>
   );
 };

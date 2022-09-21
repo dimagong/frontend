@@ -25,7 +25,6 @@ export const File = (props) => {
   } = props;
 
   const [progress, calculateProgress] = useState(0);
-  console.log("progress", progress);
 
   const files = Array.from(value);
 
