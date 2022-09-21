@@ -20,7 +20,7 @@ export const MemberFilePreview = (props) => {
   // is used in member view scope it will use the service that implements an clientHttpAPI, and in case
   // when it is used in another scope that provide Network it will use it correspondingly.
   const fileQuery = useMVAUserFileQuery(params, { enabled: Boolean(fileId) && Boolean(masterSchemaFieldId) });
-  const removeFileMutation = useDeleteMVAUserFileMutation(params, { onSuccess: propOnRemove(fileId) });
+  const removeFileMutation = useDeleteMVAUserFileMutation(params, { onSuccess: () => propOnRemove(fileId) });
 
   const onRemove = () => {
     if (!window.confirm("Are you sure you want to remove the file ?")) {
