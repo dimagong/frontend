@@ -234,6 +234,8 @@ const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitt
   });
 
   const currentStep = applicationData.sectionsOrder.indexOf(currentSection) || 0;
+
+  const currentNameSection = sectionsSterrer[currentStep].name || `${currentStep + 1}`;
   return (
     <Row className="memberDForm">
       <Col span={4} className="memberDForm-stepper">
@@ -246,7 +248,7 @@ const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitt
           <div className="memberDForm-content_box_title">{selectedForm?.name}</div>
           <NpmCard style={{ minHeight: "50vh", maxWidth: "783px", width: "57vw", marginTop: "3%" }}>
             <div className="memberDForm-content_box_card">
-              <div className="memberDForm-content_box_card_section-name">Section 1</div>
+              <div className="memberDForm-content_box_card_section-name">Section {currentNameSection}</div>
               <div className="memberDForm-content_box_card_section-fields">
                 <DForm
                   isMemberView
@@ -260,7 +262,11 @@ const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitt
               </div>
               <div className="memberDForm-content_box_card_section-navigation">
                 <MemberDFormCheckSave isSavedDFormFieldLoading={saveDFormFieldValue.isLoading} />
-                <MemberDFormNavigation sectionNumber={0} sectionLimit={10} handleNextSection={handleNextSection} />
+                <MemberDFormNavigation
+                  sectionNumber={currentStep}
+                  sectionLimit={applicationData.sectionsOrder.length - 1}
+                  handleNextSection={handleNextSection}
+                />
               </div>
 
               {/* {currentSection.relatedGroups.map((sectionGroup) => {
