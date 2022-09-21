@@ -227,16 +227,18 @@ const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitt
     );
   }
 
-  //todo
-  let sectionsSterrer = applicationData.sections;
+  let sectionsSterrer: { sectionId: string; name: string }[] = [];
+  applicationData.sectionsOrder.map((el) => {
+    const name = applicationData.sections[el].name;
+    return sectionsSterrer.push({ sectionId: el, name });
+  });
 
+  const currentStep = applicationData.sectionsOrder.indexOf(currentSection) || 0;
   return (
     <Row className="memberDForm">
       <Col span={4} className="memberDForm-stepper">
         <div>
-          <NpmStepper
-            sections={[{ name: "one" }, { name: "two" }, { name: "three" }, { name: "four" }, { name: "five" }]}
-          />
+          <NpmStepper sections={sectionsSterrer} current={currentStep} />
         </div>
       </Col>
       <Col span={20} className="memberDForm-content">
