@@ -8,14 +8,10 @@ import NpmProgress from "./../NpmProgress";
 interface IProps {
   fileName?: string;
   percent?: number;
-  onClick?: () => void;
+  onClick?: () => any;
 }
 
-const NpmFileLoading = ({
-  fileName = "No file name",
-  percent = 100,
-  onClick = () => console.log("Can't delete file"),
-}: IProps) => {
+const NpmFileLoading = ({ fileName = "No file name", percent = 100, onClick }: IProps) => {
   return (
     <>
       <div className="npm-fileLoading">
