@@ -236,11 +236,13 @@ const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitt
   const currentStep = applicationData.sectionsOrder.indexOf(currentSection) || 0;
 
   const currentNameSection = sectionsSterrer[currentStep].name || `${currentStep + 1}`;
+
+  const stepperStatus = currentStep < applicationData.sectionsOrder.length ? "process" : "finish";
   return (
     <Row className="memberDForm">
       <Col span={4} className="memberDForm-stepper">
         <div>
-          <NpmStepper sections={sectionsSterrer} current={currentStep} />
+          <NpmStepper status={stepperStatus} sections={sectionsSterrer} current={currentStep} />
         </div>
       </Col>
       <Col span={20} className="memberDForm-content">
