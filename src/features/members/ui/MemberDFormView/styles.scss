@@ -22,6 +22,9 @@
         width: 100%;
         height: 100;
         border: 2px solid red;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         &_section-name {
           font-family: "SF Pro Display";
           font-style: normal;
@@ -30,7 +33,14 @@
           color: #474747;
         }
         &_section-fields {
-          margin-top: 5%;
+          padding-top: 5%;
+          border: 2px solid red;
+        }
+        &_section-navigation {
+          padding-top: 5%;
+          border: 2px solid green;
+          display: flex;
+          justify-content: space-between;
         }
       }
     }
