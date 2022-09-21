@@ -23,3 +23,14 @@
   background-color: #35a046;
   color: white;
 }
+
+.ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
+  background-color: #35a046;
+}
+.ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-tail::after {
+  background-color: #a8a8a8;
+}
+
+.ant-steps-vertical > .ant-steps-item > .ant-steps-item-container > .ant-steps-item-tail::after {
+  width: 2px;
+}
