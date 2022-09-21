@@ -178,7 +178,7 @@ const UserEditApplication = ({ isCreate, dformId }) => {
         <div className="onboarding-create-feature_header_title">Application</div>
         <div className="onboarding-create-feature_header_name">{dform?.name ?? "Loading..."}</div>
       </div>
-      <Card className="px-1">
+      <Card className="px-1" style={{ position: "relative" }}>
         <Row>
           <UserOnboardingForm isCreate={false} />
         </Row>
@@ -197,7 +197,10 @@ const UserEditApplication = ({ isCreate, dformId }) => {
           />
         </Row>
 
-        <Row className="align-items-center pb-2">
+        <Row
+          className="align-items-center py-2 bg-white"
+          style={{ position: "sticky", bottom: 0, left: 0, right: 0, boxShadow: "0px 0px 5px 0px rgb(0 0 0 / 20%)" }}
+        >
           <Col md="3" className="d-flex justify-content-center">
             <div style={{ width: "100%" }}>
               <NmpSelect
