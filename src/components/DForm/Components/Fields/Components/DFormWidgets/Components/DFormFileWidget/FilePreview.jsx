@@ -78,56 +78,20 @@ export const FilePreview = (props) => {
 
   const onRemoveButtonClick = () => {
     console.log("onRemoveButtonClick");
-    return onRemove();
+    onRemove();
   };
 
   const desableClick = isUploading || isDownloading || isRemoving;
 
   return (
     <div style={{ padding: "5px 0" }}>
-      <NpmFileLoading percent={progress} fileName={name} onClick={desableClick ? onRemoveButtonClick : () => {}} />
+      <NpmFileLoading
+        percent={progress}
+        fileName={name}
+        onClick={desableClick ? () => {} : () => onRemoveButtonClick()}
+      />
     </div>
   );
-  //
-  // if (isUploading || isDownloading || isRemoving) {
-  //   return (
-  //     <div className="d-flex align-items-center dform-file__item">
-  //       <div className="width-80-per dform-file__item-name">{name}</div>
-
-  //       <div
-  //         style={{ border: "2px solid red" }}
-  //         className="d-flex justify-content-end align-items-center dform-file__item-actions"
-  //       >
-  //         <Badge color={color} className="ml-1 mr-1">
-  //           {badgeMessage}
-  //         </Badge>
-
-  //         <Spinner size="sm" color={color} />
-  //         <NpmProgress />
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // return (
-  //   <div className="d-flex align-items-center dform-file__item">
-  //     <div className="d-block dform-file__item-name">{name}</div>
-  //     <div
-  //       style={{ border: "2px solid green" }}
-  //       className="d-flex justify-content-end align-items-center dform-file__item-actions"
-  //     >
-  //       <Badge color={color} tag="a" href={fileUrl} target="_blank" rel="noreferrer" className="ml-1 mr-1 text-white">
-  //         {badgeMessage}
-  //       </Badge>
-
-  //       {isRemovable ? (
-  //         <button className="dform-file__item-remove-btn" type="button" onClick={onRemoveButtonClick}>
-  //           <X size="15" />
-  //         </button>
-  //       ) : null}
-  //     </div>
-  //   </div>
-  // );
 };
 
 FilePreview.propTypes = {
