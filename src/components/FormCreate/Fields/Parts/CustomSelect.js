@@ -1,6 +1,6 @@
 import React from "react";
 
-import NmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 export class CustomSelect extends React.Component {
   render() {
@@ -50,6 +50,6 @@ export class CustomSelect extends React.Component {
       }),
     };
 
-    return <NmpSelect styles={customStyles} {...this.props} />;
+    return <DeprecatedNmpSelect styles={customStyles} {...this.props} />;
   }
 }

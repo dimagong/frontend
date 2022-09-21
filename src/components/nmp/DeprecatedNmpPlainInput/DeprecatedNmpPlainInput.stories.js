@@ -6,11 +6,11 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import { useToggle } from "hooks/use-toggle";
 
-import NmpPlainInput from "./NmpPlainInput";
+import DeprecatedNmpPlainInput from "./DeprecatedNmpPlainInput";
 
 export default {
   title: "NmpPlainInput",
-  component: NmpPlainInput,
+  component: DeprecatedNmpPlainInput,
 };
 
 const Template = (props) => {
@@ -26,7 +26,7 @@ const Template = (props) => {
     [props]
   );
 
-  return <NmpPlainInput {...props} value={value} onChange={onChange} />;
+  return <DeprecatedNmpPlainInput {...props} value={value} onChange={onChange} />;
 };
 
 const defaultArgs = {

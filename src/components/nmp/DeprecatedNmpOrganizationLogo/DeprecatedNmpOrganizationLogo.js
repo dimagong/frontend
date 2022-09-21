@@ -6,7 +6,7 @@ import { useOrganizationLogoQuery } from "api/file/useOrganizationFileQueries";
 
 import DeprecatedNmpImage from "../DeprecatedNmpImage";
 
-const NmpOrganizationLogo = ({ fileId, organizationId, organizationType, organizationName, ...attrs }) => {
+const DeprecatedNmpOrganizationLogo = ({ fileId, organizationId, organizationType, organizationName, ...attrs }) => {
   const logoQuery = useOrganizationLogoQuery({ organizationId, organizationType }, { enabled: Boolean(fileId) });
 
   return (
@@ -14,11 +14,11 @@ const NmpOrganizationLogo = ({ fileId, organizationId, organizationType, organiz
   );
 };
 
-NmpOrganizationLogo.propTypes = {
+DeprecatedNmpOrganizationLogo.propTypes = {
   fileId: IdType,
   organizationId: IdType.isRequired,
   organizationType: PropTypes.string.isRequired,
   organizationName: PropTypes.string.isRequired,
 };
 
-export default NmpOrganizationLogo;
+export default DeprecatedNmpOrganizationLogo;

@@ -1,1 +1,1 @@
-export { default } from "./NmpButton";
+export { default } from "./DeprecatedNmpButton";

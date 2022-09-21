@@ -1,1 +1,1 @@
-export { default } from "./NmpTile";
+export { default } from "./DeprecatedNmpTile";

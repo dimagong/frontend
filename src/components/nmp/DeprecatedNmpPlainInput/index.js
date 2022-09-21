@@ -1,1 +1,1 @@
-export { default } from "./NmpPlainInput";
+export { default } from "./DeprecatedNmpPlainInput";

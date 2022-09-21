@@ -47,7 +47,7 @@ NmpManageableImageControls.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-const NmpManageableImage = (props) => {
+const DeprecatedNmpManageableImage = (props) => {
   const { alt, src, isLoading, isEditable = false, isRemovable, onDelete, onChange, ...attrs } = props;
 
   return (
@@ -70,7 +70,7 @@ const NmpManageableImage = (props) => {
   );
 };
 
-NmpManageableImage.propTypes = {
+DeprecatedNmpManageableImage.propTypes = {
   src: PropTypes.string,
   alt: PropTypes.string.isRequired,
 
@@ -82,4 +82,4 @@ NmpManageableImage.propTypes = {
   onDelete: PropTypes.func,
 };
 
-export default NmpManageableImage;
+export default DeprecatedNmpManageableImage;

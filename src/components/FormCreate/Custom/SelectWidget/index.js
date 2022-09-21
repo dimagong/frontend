@@ -2,7 +2,7 @@ import "./styles.scss";
 
 import React from "react";
 
-import NmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import FieldLabel from "../FieldLabel";
 
@@ -80,7 +80,7 @@ const SelectWidget = (props) => {
   return (
     <div className={"custom-react-select"}>
       <FieldLabel label={props.schema.title} required={props.required} />
-      <NmpSelect
+      <DeprecatedNmpSelect
         maxMenuHeight={175}
         disabled={props.disabled}
         styles={colourStyles}

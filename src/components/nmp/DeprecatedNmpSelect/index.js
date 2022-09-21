@@ -1,2 +1,1 @@
-export { default } from "./NmpSelect";
-export { components } from "./NmpSelect";
+export { default, components } from "./DeprecatedNmpSelect";

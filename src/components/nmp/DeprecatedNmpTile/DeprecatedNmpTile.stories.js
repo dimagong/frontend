@@ -1,10 +1,10 @@
 import React from "react";
 
-import NmpTile from "./NmpTile";
+import DeprecatedNmpTile from "./DeprecatedNmpTile";
 
 export default {
   title: "NMPTile",
-  component: NmpTile,
+  component: DeprecatedNmpTile,
   argTypes: {
     size: {
       options: ["", "sm", "lg"],
@@ -14,7 +14,7 @@ export default {
 };
 
 export const Base = (props) => {
-  return <NmpTile {...props}>Richard Philips</NmpTile>;
+  return <DeprecatedNmpTile {...props}>Richard Philips</DeprecatedNmpTile>;
 };
 
 Base.args = {

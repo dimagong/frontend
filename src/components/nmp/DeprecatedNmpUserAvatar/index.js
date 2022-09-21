@@ -1,1 +1,1 @@
-export { default } from "./NmpUserAvatar";
+export { default } from "./DeprecatedNmpUserAvatar";

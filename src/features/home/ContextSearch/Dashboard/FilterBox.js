@@ -6,7 +6,7 @@ import { Button, Card } from "react-bootstrap";
 import { Col, ListGroup, ListGroupItem, Row } from "reactstrap";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
-import NmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { selectOrganizations } from "app/selectors/groupSelector";
 import { selectActivityTypes, selectManagers } from "app/selectors/userSelectors";
@@ -204,7 +204,7 @@ const FilterBox = ({
               <Col className={"right"} id={"filter-options-right"} style={{ paddingLeft: 0 }}>
                 <span>
                   {currTab === "Application" && (
-                    <NmpSelect
+                    <DeprecatedNmpSelect
                       className="basic-single"
                       classNamePrefix="select"
                       searchable
@@ -223,7 +223,7 @@ const FilterBox = ({
                     />
                   )}
                   {currTab === "Activity types" && (
-                    <NmpSelect
+                    <DeprecatedNmpSelect
                       className="basic-single"
                       classNamePrefix="select"
                       searchable

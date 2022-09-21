@@ -13,7 +13,7 @@ import appSlice from "app/slices/appSlice";
 import { selectError } from "app/selectors";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 
-import NmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 import LoadingButton from "components/LoadingButton";
 
 import { prepareSelectReviewers } from "utility/select/prepareSelectData";
@@ -127,7 +127,7 @@ const SurveyAssignComponent = ({ workFlows, reviewers, surveys, isLoading, onSur
                 <Row className="mb-2">
                   <Col>
                     <div className="survey-assign_body_select-label">Select survey</div>
-                    <NmpSelect
+                    <DeprecatedNmpSelect
                       styles={selectStyles}
                       options={surveyOptions}
                       value={selectedSurvey}
@@ -139,7 +139,7 @@ const SurveyAssignComponent = ({ workFlows, reviewers, surveys, isLoading, onSur
                 <Row>
                   <Col>
                     <div className="survey-assign_body_select-label">Select workflow</div>
-                    <NmpSelect
+                    <DeprecatedNmpSelect
                       styles={selectStyles}
                       options={workFlowsOptions}
                       value={selectedWorkFlow}
@@ -155,7 +155,7 @@ const SurveyAssignComponent = ({ workFlows, reviewers, surveys, isLoading, onSur
                     <div className="survey-assign_body_select-label">Who will review the results?</div>
                     <div className="survey-assign_body_reviewers-select_container">
                       <div className="survey-assign_body_reviewers-select_container_select">
-                        <NmpSelect
+                        <DeprecatedNmpSelect
                           styles={selectStyles}
                           options={reviewersOptions}
                           value={reviewerSelectValue}

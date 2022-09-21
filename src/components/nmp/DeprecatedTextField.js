@@ -11,7 +11,7 @@ const inputStyles = {
   borderRight: "none",
 };
 
-const TextField = forwardRef((props, ref) => {
+const DeprecatedTextField = forwardRef((props, ref) => {
   const { label, type, name, value, errors, valid, invalid, placeholder, onChange, children, style, ...attrs } = props;
 
   const [dirty, setDirty] = useState(false);
@@ -58,13 +58,13 @@ const TextField = forwardRef((props, ref) => {
   );
 });
 
-TextField.defaultProps = {
+DeprecatedTextField.defaultProps = {
   type: "text",
   errors: [],
   style: inputStyles,
 };
 
-TextField.propTypes = {
+DeprecatedTextField.propTypes = {
   type: PropTypes.string,
   name: PropTypes.string.isRequired,
   value: PropTypes.any,
@@ -81,4 +81,4 @@ TextField.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
-export default TextField;
+export default DeprecatedTextField;

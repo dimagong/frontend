@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { Button, Card, Col, Row, Spinner } from "reactstrap";
 
 import { FieldTypes } from "components/DForm";
-import NmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
@@ -203,7 +203,7 @@ const UserEditApplication = ({ isCreate, dformId }) => {
         >
           <Col md="3" className="d-flex justify-content-center">
             <div style={{ width: "100%" }}>
-              <NmpSelect
+              <DeprecatedNmpSelect
                 value={dform ? { value: dform.status, label: dform.status } : null}
                 options={STATUSES}
                 loading={changeDFormStatusMutation.isLoading}

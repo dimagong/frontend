@@ -6,7 +6,7 @@ import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 
 import CustomModal from "components/CustomModal";
-import NmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 const { addMemberFirmUsersRequest } = appSlice.actions;
 
@@ -77,7 +77,7 @@ const MemberFirmsChangeRoleModal = ({ isOpen, setIsOpen, user, memberFirm, princ
     >
       <div style={{ paddingBottom: 50 }}>
         <h2 style={{ marginBottom: 20 }}>Role member within Member Firm</h2>
-        <NmpSelect
+        <DeprecatedNmpSelect
           options={[
             { label: "Principal", value: { name: "Principal" } },
             { label: "Member", value: { name: "Member" } },

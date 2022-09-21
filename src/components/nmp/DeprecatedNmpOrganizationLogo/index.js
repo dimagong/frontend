@@ -1,1 +1,1 @@
-export { default } from "./NmpOrganizationLogo";
+export { default } from "./DeprecatedNmpOrganizationLogo";

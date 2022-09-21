@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classnames from "classnames";
 import { Spinner } from "reactstrap";
 
-const NmpImage = ({ src, alt, isLoading, children, wrapperAttrs = {}, ...attrs }) => {
+const DeprecatedNmpImage = ({ src, alt, isLoading, children, wrapperAttrs = {}, ...attrs }) => {
   return (
     <div {...wrapperAttrs} className={classnames("position-relative", wrapperAttrs.className)}>
       <img src={src} alt={alt} {...attrs} />
@@ -19,11 +19,11 @@ const NmpImage = ({ src, alt, isLoading, children, wrapperAttrs = {}, ...attrs }
   );
 };
 
-NmpImage.propTypes = {
+DeprecatedNmpImage.propTypes = {
   src: PropTypes.string,
   alt: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
   wrapperAttrs: PropTypes.object,
 };
 
-export default NmpImage;
+export default DeprecatedNmpImage;

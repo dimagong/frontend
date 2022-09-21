@@ -15,7 +15,7 @@ const closeSizes = {
   lg: "20",
 };
 
-const NmpTile = React.forwardRef((props, ref) => {
+const DeprecatedNmpTile = React.forwardRef((props, ref) => {
   const { href, size, close, onClose = _.noop, color, pill, tag, children, className, cssModule, ...attrs } = props;
 
   return (
@@ -45,9 +45,9 @@ const NmpTile = React.forwardRef((props, ref) => {
   );
 });
 
-NmpTile.displayName = "NmpTile";
+DeprecatedNmpTile.displayName = "NmpTile";
 
-NmpTile.propTypes = {
+DeprecatedNmpTile.propTypes = {
   ..._.omit(["innerRef"], Badge.propTypes),
   href: PropTypes.string,
   size: PropTypes.oneOf(["sm", "lg"]),
@@ -55,4 +55,4 @@ NmpTile.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default NmpTile;
+export default DeprecatedNmpTile;

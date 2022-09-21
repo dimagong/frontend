@@ -10,7 +10,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "re
 
 import { stringIsColor } from "utility/string-is-color";
 
-const NmpButton = React.forwardRef((props, ref) => {
+const DeprecatedNmpButton = React.forwardRef((props, ref) => {
   const {
     // RSButton props
     active,
@@ -104,14 +104,14 @@ const hashColorStringPropValidator = (props, propName, componentName) => {
   }
 };
 
-NmpButton.displayName = "NMPButton";
+DeprecatedNmpButton.displayName = "NMPButton";
 
-NmpButton.defaultProps = {
+DeprecatedNmpButton.defaultProps = {
   icon: false,
   loading: false,
 };
 
-NmpButton.propTypes = {
+DeprecatedNmpButton.propTypes = {
   ..._.omit(["innerRef", "close"], RSButton.propTypes),
 
   icon: PropTypes.node,
@@ -125,4 +125,4 @@ NmpButton.propTypes = {
   spinnerColor: hashColorStringPropValidator,
 };
 
-export default NmpButton;
+export default DeprecatedNmpButton;

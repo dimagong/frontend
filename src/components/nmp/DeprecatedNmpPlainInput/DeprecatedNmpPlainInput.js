@@ -8,7 +8,7 @@ import classNames from "classnames";
 import { useForkRef } from "hooks/useForkRef";
 import { stopAndPrevent } from "utility/event-decorators";
 
-const NmpPlainInput = React.forwardRef(function NmpPlainInput(props, ref) {
+const DeprecatedNmpPlainInput = React.forwardRef(function NmpPlainInput(props, ref) {
   const {
     type,
     value,
@@ -97,7 +97,7 @@ const NmpPlainInput = React.forwardRef(function NmpPlainInput(props, ref) {
 
 const TYPES = ["email", "number", "password", "search", "tel", "text", "url"];
 
-NmpPlainInput.propTypes = {
+DeprecatedNmpPlainInput.propTypes = {
   type: PropTypes.oneOf(TYPES),
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
@@ -115,4 +115,4 @@ NmpPlainInput.propTypes = {
   wrapperAttrs: PropTypes.object,
 };
 
-export default NmpPlainInput;
+export default DeprecatedNmpPlainInput;

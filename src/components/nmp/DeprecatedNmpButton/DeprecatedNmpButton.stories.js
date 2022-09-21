@@ -1,11 +1,11 @@
 import React from "react";
 import { User } from "react-feather";
 
-import NmpButton from "./NmpButton";
+import DeprecatedNmpButton from "./NmpButton";
 
 export default {
   title: "NmpButton",
-  component: NmpButton,
+  component: DeprecatedNmpButton,
   argTypes: {
     size: {
       options: ["", "sm", "lg"],
@@ -27,7 +27,7 @@ const ARGS = {
   active: false,
 };
 
-const Template = (props) => <NmpButton {...props} />;
+const Template = (props) => <DeprecatedNmpButton {...props} />;
 
 export const Base = Template.bind();
 
@@ -42,7 +42,7 @@ CustomColor.args = {
 };
 
 export const Icon = (props) => {
-  return <NmpButton {...props} icon={<User />} />;
+  return <DeprecatedNmpButton {...props} icon={<User />} />;
 };
 
 Icon.args = {

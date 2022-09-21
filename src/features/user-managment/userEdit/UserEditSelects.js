@@ -8,7 +8,7 @@ import { groupTypes } from "constants/group";
 import appSlice from "app/slices/appSlice";
 import { selectGroups, selectRoles, selectModules, selectManager } from "app/selectors";
 
-import NmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 import { MultiSelectOrganization } from "components/MultiSelect/MultiSelectOrganizations";
 import OrganizationPermissionsModal from "components/modals/OrganizationPermissionsModal";
 
@@ -173,7 +173,7 @@ const UserEditSelects = () => {
         <div className="user-managment__edit_body_form__select mb-1">
           <div className="font-weight-bold column-sizing">Roles</div>
           <div className="full-width">
-            <NmpSelect
+            <DeprecatedNmpSelect
               multiple
               clearable={false}
               maxMenuHeight={200}
@@ -216,7 +216,7 @@ const UserEditSelects = () => {
         <div className="user-managment__edit_body_form__select">
           <div className="font-weight-bold column-sizing">Modules</div>
           <div className="full-width">
-            <NmpSelect
+            <DeprecatedNmpSelect
               multiple
               disabled={true}
               clearable={false}

@@ -12,7 +12,7 @@ const labelStyles = {
 
 let formFieldCounter = 0;
 
-const FormField = ({ dirty, invalid, errors, label, error, children }) => {
+const DeprecatedFormField = ({ dirty, invalid, errors, label, error, children }) => {
   const id = `form-field-${formFieldCounter++}`;
 
   const renderLabel = () => {
@@ -42,12 +42,12 @@ const FormField = ({ dirty, invalid, errors, label, error, children }) => {
   return children({ id, label: renderLabel(), error: renderError() });
 };
 
-FormField.defaultProps = {
+DeprecatedFormField.defaultProps = {
   errors: [],
   invalid: false,
 };
 
-FormField.propTypes = {
+DeprecatedFormField.propTypes = {
   dirty: PropTypes.bool.isRequired,
   invalid: PropTypes.bool,
   errors: PropTypes.arrayOf(PropTypes.string),
@@ -57,4 +57,4 @@ FormField.propTypes = {
   children: PropTypes.func.isRequired,
 };
 
-export default FormField;
+export default DeprecatedFormField;

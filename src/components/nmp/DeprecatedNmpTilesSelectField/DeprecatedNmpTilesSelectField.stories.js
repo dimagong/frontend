@@ -1,10 +1,10 @@
 import React from "react";
 
-import NmpTilesSelectField from "./NmpTilesSelectField";
+import DeprecatedNmpTilesSelectField from "./DeprecatedNmpTilesSelectField";
 
 export default {
   title: "NmpTilesSelectField",
-  component: NmpTilesSelectField,
+  component: DeprecatedNmpTilesSelectField,
 };
 
 const options = ["Brad Powar", "Brad Powar", "Richard Philips"].map((value, index) => ({
@@ -15,7 +15,7 @@ const options = ["Brad Powar", "Brad Powar", "Richard Philips"].map((value, inde
 export const Base = (props) => {
   const [tiles, setTiles] = React.useState([]);
 
-  return <NmpTilesSelectField {...props} value={tiles} onChange={setTiles} options={options} />;
+  return <DeprecatedNmpTilesSelectField {...props} value={tiles} onChange={setTiles} options={options} />;
 };
 
 Base.args = {

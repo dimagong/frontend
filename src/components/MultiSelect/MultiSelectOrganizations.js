@@ -1,7 +1,7 @@
 import React from "react";
 import chroma from "chroma-js";
 
-import NmpSelect, { components } from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect, { components } from "components/nmp/DeprecatedNmpSelect";
 
 const colorMultiSelect = "#007bff";
 
@@ -79,7 +79,7 @@ export function MultiSelectOrganization(props) {
   };
 
   return (
-    <NmpSelect
+    <DeprecatedNmpSelect
       multiple
       openMenuOnClick={false}
       closeMenuOnSelect={true}

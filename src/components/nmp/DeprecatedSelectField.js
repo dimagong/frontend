@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 import React, { useMemo, useState } from "react";
 
-import NmpSelect from "./DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "./DeprecatedNmpSelect";
 import DeprecatedFormField from "./DeprecatedFormField";
 
-const SelectField = (props) => {
+const DeprecatedSelectField = (props) => {
   const {
     label,
     value,
@@ -33,9 +33,16 @@ const SelectField = (props) => {
 
   const renderSelect = (id) => {
     return (
-      <NmpSelect inputId={id} value={value} options={options} onChange={onChange} placeholder={placeholder} {...attrs}>
+      <DeprecatedNmpSelect
+        inputId={id}
+        value={value}
+        options={options}
+        onChange={onChange}
+        placeholder={placeholder}
+        {...attrs}
+      >
         {innerChildren}
-      </NmpSelect>
+      </DeprecatedNmpSelect>
     );
   };
 
@@ -61,7 +68,7 @@ const SelectField = (props) => {
   );
 };
 
-SelectField.propTypes = {
+DeprecatedSelectField.propTypes = {
   value: PropTypes.shape({ label: PropTypes.string, value: PropTypes.any }),
   options: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.any })).isRequired,
 
@@ -78,4 +85,4 @@ SelectField.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
-export default SelectField;
+export default DeprecatedSelectField;

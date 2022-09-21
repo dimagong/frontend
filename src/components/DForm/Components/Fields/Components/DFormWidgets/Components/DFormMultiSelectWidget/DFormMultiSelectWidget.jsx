@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import NmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { IdType, OptionsType } from "utility/prop-types";
 
@@ -143,7 +143,7 @@ export const DFormMultiSelectWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={className}
     >
-      <NmpSelect
+      <DeprecatedNmpSelect
         inputId={id}
         value={value}
         options={options}

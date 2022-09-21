@@ -1,1 +1,1 @@
-export { default } from "./NmpImage";
+export { default } from "./DeprecatedNmpImage";

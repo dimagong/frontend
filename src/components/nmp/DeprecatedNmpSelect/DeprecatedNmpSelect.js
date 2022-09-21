@@ -153,7 +153,7 @@ const defaultComponents = {
   MultiValueRemove: () => null,
 };
 
-const NmpSelect = React.forwardRef((props, ref) => {
+const DeprecatedNmpSelect = React.forwardRef((props, ref) => {
   const {
     value,
     options,
@@ -229,9 +229,9 @@ const NmpSelect = React.forwardRef((props, ref) => {
   );
 });
 
-NmpSelect.displayName = "DeprecatedNmpSelect";
+DeprecatedNmpSelect.displayName = "DeprecatedNmpSelect";
 
-NmpSelect.propTypes = {
+DeprecatedNmpSelect.propTypes = {
   value: PropTypes.oneOfType([OptionType, OptionsType]),
   options: OptionsType,
   onChange: PropTypes.func,
@@ -263,4 +263,4 @@ NmpSelect.propTypes = {
 
 export const components = RCComponents;
 
-export default NmpSelect;
+export default DeprecatedNmpSelect;

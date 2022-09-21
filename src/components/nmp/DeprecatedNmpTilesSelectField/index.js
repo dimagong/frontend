@@ -1,1 +1,1 @@
-export { default } from "./NmpTilesSelectField";
+export { default } from "./DeprecatedNmpTilesSelectField";

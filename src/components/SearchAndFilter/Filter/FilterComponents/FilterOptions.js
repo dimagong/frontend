@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button } from "reactstrap";
 
-import NmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { FilterCheckIcon, FilterCrossIcon } from "./FilterAssets";
 
@@ -69,7 +69,7 @@ const FilterOptions = ({ filter, setFilter, filterOptionsDictionary }) => {
   return (
     <>
       {filter.hasSearch && filter.hasSearch.includes(filter.selectedFilters[filter.selectedOptionKey].name) && (
-        <NmpSelect
+        <DeprecatedNmpSelect
           clearable
           searchable
           options={filterOptionsDictionary[filter.selectedFilters[filter.selectedOptionKey].name].map((item) => {

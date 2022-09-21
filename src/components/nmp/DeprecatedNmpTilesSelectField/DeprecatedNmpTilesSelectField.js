@@ -9,7 +9,7 @@ import DeprecatedNmpTile from "../DeprecatedNmpTile";
 import DeprecatedNmpButton from "../DeprecatedNmpButton";
 import DeprecatedNmpSelect from "../DeprecatedNmpSelect";
 
-const NmpTilesSelectField = (props) => {
+const DeprecatedNmpTilesSelectField = (props) => {
   const {
     label,
     name,
@@ -109,7 +109,7 @@ const NmpTilesSelectField = (props) => {
   );
 };
 
-NmpTilesSelectField.propTypes = {
+DeprecatedNmpTilesSelectField.propTypes = {
   value: PropTypes.arrayOf(
     PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), label: PropTypes.string })
   ).isRequired,
@@ -130,4 +130,4 @@ NmpTilesSelectField.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
-export default NmpTilesSelectField;
+export default DeprecatedNmpTilesSelectField;
