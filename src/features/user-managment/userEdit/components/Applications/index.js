@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { Button, Card, Col, Row, Spinner } from "reactstrap";
 
 import { FieldTypes } from "components/DForm";
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";

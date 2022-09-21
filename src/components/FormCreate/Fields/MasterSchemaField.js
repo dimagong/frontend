@@ -2,7 +2,7 @@ import { isEmpty } from "lodash";
 import { Col, FormGroup, Row } from "reactstrap";
 import React, { useEffect, useState } from "react";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import masterSchemaService from "services/masterSchema.service";
 

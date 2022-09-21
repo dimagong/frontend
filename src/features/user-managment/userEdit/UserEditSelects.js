@@ -8,7 +8,7 @@ import { groupTypes } from "constants/group";
 import appSlice from "app/slices/appSlice";
 import { selectGroups, selectRoles, selectModules, selectManager } from "app/selectors";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 import { MultiSelectOrganization } from "components/MultiSelect/MultiSelectOrganizations";
 import OrganizationPermissionsModal from "components/modals/OrganizationPermissionsModal";
 

@@ -2,7 +2,7 @@ import React from "react";
 import * as Icon from "react-feather";
 import { UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle } from "reactstrap";
 
-import NmpUserAvatar from "components/nmp/NmpUserAvatar";
+import DeprecatedNmpUserAvatar from "components/nmp/DeprecatedNmpUserAvatar";
 
 const UserDropdown = (props) => {
   return (
@@ -46,7 +46,12 @@ const NavbarUser = ({ userId, userAvatarId, userName, email, ...props }) => (
           <span className="user-status">{email}</span>
         </div>
         <span data-tour="user">
-          <NmpUserAvatar userId={userId} fileId={userAvatarId} className="round" style={{ width: 40, height: 40 }} />
+          <DeprecatedNmpUserAvatar
+            userId={userId}
+            fileId={userAvatarId}
+            className="round"
+            style={{ width: 40, height: 40 }}
+          />
         </span>
       </DropdownToggle>
       <UserDropdown {...props} />

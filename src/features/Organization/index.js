@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { readBlobAsDataURL } from "utility/file";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 import ContextTemplate from "components/ContextTemplate";
 import FileInput from "components/formElements/FileInput";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";

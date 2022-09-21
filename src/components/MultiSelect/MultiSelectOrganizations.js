@@ -1,7 +1,7 @@
 import React from "react";
 import chroma from "chroma-js";
 
-import NmpSelect, { components } from "components/nmp/NmpSelect";
+import NmpSelect, { components } from "components/nmp/DeprecatedNmpSelect";
 
 const colorMultiSelect = "#007bff";
 

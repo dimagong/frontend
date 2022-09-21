@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import appSlice from "app/slices/appSlice";
 import { selectDashboardDForms, selectDashboardSettings } from "app/selectors/userSelectors";

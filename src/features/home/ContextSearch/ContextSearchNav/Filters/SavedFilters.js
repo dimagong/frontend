@@ -6,7 +6,7 @@ import { Button, Modal, ModalBody } from "reactstrap";
 
 import appSlice from "app/slices/appSlice";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 const { postFilterRequest, patchFilterRequest, deleteFilterRequest } = appSlice.actions;
 

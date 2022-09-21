@@ -3,7 +3,7 @@ import "./index.scss";
 import React from "react";
 import { Spinner } from "reactstrap";
 
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 import DownloadIcon from "assets/img/icons/cloud-download.png";
 import { useMSFieldUsersFile } from "api/masterSchema/useMSFieldUsersFile";
 
@@ -64,7 +64,7 @@ const ResourceElement = (props) => {
     <div>
       <FieldLabel label={title} required={false} />
       <div className="rendered-files">
-        <NmpButton
+        <DeprecatedNmpButton
           className="file"
           style={{ float: "right" }}
           size="sm"
@@ -81,7 +81,7 @@ const ResourceElement = (props) => {
           <div className="action">
             <img src={DownloadIcon} alt="Download" />
           </div>
-        </NmpButton>
+        </DeprecatedNmpButton>
       </div>
     </div>
   );

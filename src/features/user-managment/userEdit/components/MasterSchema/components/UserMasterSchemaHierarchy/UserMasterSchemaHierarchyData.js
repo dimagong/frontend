@@ -3,7 +3,7 @@ import React, { memo, useEffect } from "react";
 
 import { ArrayOfStringType } from "utility/prop-types";
 
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 import { ADD_FIELD, ADD_GROUP, TreeHierarchy } from "components/TreeHierarchy";
 
 import {
@@ -46,7 +46,7 @@ function UserMasterSchemaHierarchyData(props) {
     <>
       <div className="position-sticky zindex-1" style={{ top: "68px", left: "0px", paddingTop: "20px" }}>
         <div className="d-flex justify-content-end pb-1">
-          <NmpButton
+          <DeprecatedNmpButton
             className="p-0"
             textColor="currentColor"
             backgroundColor="transparent"
@@ -54,7 +54,7 @@ function UserMasterSchemaHierarchyData(props) {
             onClick={collapseAllExceptRoot}
           >
             Collapse
-          </NmpButton>
+          </DeprecatedNmpButton>
         </div>
       </div>
 

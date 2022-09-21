@@ -6,7 +6,7 @@ import { Button, Card } from "react-bootstrap";
 import { Col, ListGroup, ListGroupItem, Row } from "reactstrap";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { selectOrganizations } from "app/selectors/groupSelector";
 import { selectActivityTypes, selectManagers } from "app/selectors/userSelectors";

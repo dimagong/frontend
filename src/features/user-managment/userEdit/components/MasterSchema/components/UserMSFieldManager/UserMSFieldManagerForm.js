@@ -8,8 +8,8 @@ import { preventDefault } from "utility/event-decorators";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import NmpSelect from "components/nmp/NmpSelect";
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 
 import { useUserMSResourceFields } from "api/User/useUserMSResourceFields";
 import { useDownloadRMFile, useEditRMFile } from "api/resourceManager/useRMFieldFiles";
@@ -131,7 +131,7 @@ const UserMSFieldManagerForm = (props) => {
         <label className="label mb-1" htmlFor="element-type">
           Element type
         </label>
-        <NmpSelect
+        <DeprecatedNmpSelect
           options={ElementTypes.Options}
           value={ElementTypes.Options[0]}
           readonly
@@ -144,7 +144,7 @@ const UserMSFieldManagerForm = (props) => {
         <label className="label mb-1" htmlFor="resource-link">
           Resource link
         </label>
-        <NmpSelect
+        <DeprecatedNmpSelect
           value={field}
           options={fieldOptions}
           onChange={setField}
@@ -160,7 +160,7 @@ const UserMSFieldManagerForm = (props) => {
           <label className="label mb-1" htmlFor="resource-version">
             Version
           </label>
-          <NmpSelect
+          <DeprecatedNmpSelect
             value={fileFormField.value}
             options={fileOptions}
             onChange={fileFormField.onChange}
@@ -172,7 +172,7 @@ const UserMSFieldManagerForm = (props) => {
 
           {file ? (
             <div className="d-flex justify-content-end align-items-center py-1" key={file.id}>
-              <NmpButton
+              <DeprecatedNmpButton
                 className="mx-1"
                 color="white"
                 type="button"
@@ -180,7 +180,7 @@ const UserMSFieldManagerForm = (props) => {
                 loading={openPreview.isLoading}
               >
                 Preview
-              </NmpButton>
+              </DeprecatedNmpButton>
 
               {file?.is_latest_version ? (
                 <RMFileControls
@@ -203,9 +203,9 @@ const UserMSFieldManagerForm = (props) => {
         </div>
       ) : null}
 
-      <NmpButton className="ml-auto" color="primary" disabled={form.invalid} loading={submitting}>
+      <DeprecatedNmpButton className="ml-auto" color="primary" disabled={form.invalid} loading={submitting}>
         Save
-      </NmpButton>
+      </DeprecatedNmpButton>
     </form>
   );
 };

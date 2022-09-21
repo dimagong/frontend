@@ -1,6 +1,6 @@
 import React from "react";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 const defaultStyles = {
   control: (styles) => ({

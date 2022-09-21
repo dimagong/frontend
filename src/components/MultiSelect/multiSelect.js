@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import appSlice from "app/slices/appSlice";
 import { selectGroups } from "app/selectors/groupSelector";
 
-import NmpSelect, { components } from "components/nmp/NmpSelect";
+import NmpSelect, { components } from "components/nmp/DeprecatedNmpSelect";
 
 import { normalizeNotNestedGroups } from "utility/select/prepareSelectData";
 import { prepareNotNestedSelectOptions } from "utility/select/prepareSelectData";

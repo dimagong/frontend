@@ -3,7 +3,7 @@ import "./styles.scss";
 import React from "react";
 import PropTypes from "prop-types";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { IdType, OptionsType, OptionType } from "utility/prop-types";
 

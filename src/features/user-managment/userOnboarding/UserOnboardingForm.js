@@ -5,9 +5,9 @@ import { X, Check, Plus } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardBody, Col, Button, UncontrolledTooltip, Row } from "reactstrap";
 
-import NmpSelect from "components/nmp/NmpSelect";
-import NmpButton from "components/nmp/NmpButton";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 
 import { prepareSelectReviewers } from "utility/select/prepareSelectData";
 
@@ -273,14 +273,14 @@ const UserOnboardingCreate = ({ isCreate }) => {
             <div>
               {isCreate ? (
                 <div>
-                  <NmpButton
+                  <DeprecatedNmpButton
                     className="px-4"
                     color="primary"
                     loading={isOnboardingCreateLoading}
                     onClick={createOnboarding}
                   >
                     Create
-                  </NmpButton>
+                  </DeprecatedNmpButton>
                 </div>
               ) : (
                 <div>

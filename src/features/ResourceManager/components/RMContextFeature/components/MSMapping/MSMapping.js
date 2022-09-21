@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 
 import { IdType } from "utility/prop-types";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { useMSFields } from "api/masterSchema/useMSFields";
 import { useRMFieldFiles } from "api/resourceManager/useRMFieldFiles";
@@ -60,7 +60,7 @@ const MSMapping = ({ fieldId, organizationId, organizationType }) => {
     return (
       <FileInfoFolderContentTemplate title="Document Mapping">
         <div className="mb-2">
-          <NmpSelect
+          <DeprecatedNmpSelect
             value={file}
             options={fileOptions}
             onChange={setFile}
@@ -80,7 +80,7 @@ const MSMapping = ({ fieldId, organizationId, organizationType }) => {
   return (
     <FileInfoFolderContentTemplate title="Document Mapping">
       <div className="mb-2">
-        <NmpSelect
+        <DeprecatedNmpSelect
           value={file}
           options={fileOptions}
           onChange={setFile}

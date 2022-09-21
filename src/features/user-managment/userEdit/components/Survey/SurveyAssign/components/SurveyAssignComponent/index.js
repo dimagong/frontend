@@ -13,7 +13,7 @@ import appSlice from "app/slices/appSlice";
 import { selectError } from "app/selectors";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 import LoadingButton from "components/LoadingButton";
 
 import { prepareSelectReviewers } from "utility/select/prepareSelectData";

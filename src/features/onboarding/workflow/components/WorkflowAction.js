@@ -12,7 +12,7 @@ import {
   selectApplicationNotifications,
 } from "app/selectors/onboardingSelectors";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { prepareSelectManagers } from "utility/select/prepareSelectData";
 

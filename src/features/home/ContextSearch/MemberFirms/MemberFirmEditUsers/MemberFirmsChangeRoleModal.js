@@ -6,7 +6,7 @@ import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 
 import CustomModal from "components/CustomModal";
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 const { addMemberFirmUsersRequest } = appSlice.actions;
 

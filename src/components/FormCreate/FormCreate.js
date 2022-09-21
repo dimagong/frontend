@@ -11,7 +11,7 @@ import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormFeedback, Input
 
 import appSlice from "app/slices/appSlice";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 
 import Constants, {

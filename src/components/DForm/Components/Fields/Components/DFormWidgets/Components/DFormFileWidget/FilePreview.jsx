@@ -1,7 +1,7 @@
-import { X } from "react-feather";
 import PropTypes from "prop-types";
-import { Badge, Spinner } from "reactstrap";
 import React, { useEffect, useState } from "react";
+
+import { NpmFileLoading } from "./../../../../../../../../features/nmp-ui";
 
 const FilePreviewStatusTypes = {
   Removing: "removing",
@@ -52,6 +52,7 @@ export const FilePreview = (props) => {
     isUploading = false,
     isDownloading = false,
     onRemove,
+    progress,
   } = props;
 
   const status = getStatus({ isRemoving, isUploading, isDownloading });
@@ -70,47 +71,22 @@ export const FilePreview = (props) => {
     return () => URL.revokeObjectURL(fileUrl);
   }, [file]);
 
-  const onRemoveButtonClick = () => onRemove();
+  const onRemoveButtonClick = () => {
+    onRemove();
+  };
 
-  if (isUploading || isDownloading || isRemoving) {
-    return (
-      <div className="d-flex align-items-center dform-file__item">
-        <div className="width-80-per dform-file__item-name">{name}</div>
+  const desableClick = isUploading || isDownloading || isRemoving;
 
-        <div className="d-flex justify-content-end align-items-center dform-file__item-actions">
-          <Badge color={color} className="ml-1 mr-1">
-            {badgeMessage}
-          </Badge>
-
-          <Spinner size="sm" color={color} />
-        </div>
-      </div>
-    );
-  }
-
+  // ToDo: download={name}
+  // ToDo: isRemovable (Resource)
+  // ToDo: fileUrl to download (Also do it on click) make query enabled on click
   return (
-    <div className="d-flex align-items-center dform-file__item">
-      <div className="d-block dform-file__item-name">{name}</div>
-
-      <div className="d-flex justify-content-end align-items-center dform-file__item-actions">
-        <Badge
-          color={color}
-          tag="a"
-          href={fileUrl}
-          target="_blank"
-          download={name}
-          rel="noreferrer"
-          className="ml-1 mr-1 text-white"
-        >
-          {badgeMessage}
-        </Badge>
-
-        {isRemovable ? (
-          <button className="dform-file__item-remove-btn" type="button" onClick={onRemoveButtonClick}>
-            <X size="15" />
-          </button>
-        ) : null}
-      </div>
+    <div style={{ padding: "5px 0" }}>
+      <NpmFileLoading
+        percent={progress}
+        fileName={name}
+        onClick={desableClick ? () => {} : () => onRemoveButtonClick()}
+      />
     </div>
   );
 };

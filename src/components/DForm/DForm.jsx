@@ -1,13 +1,12 @@
 import "./styles.scss";
 
+import React from "react";
 import { cloneDeep } from "lodash";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
 
 import { DFormContextProvider } from "./DFormContext";
 
 import SectionsComponent from "./Components/Sections";
-import SectionsSideBar from "./Components/SectionsSideBar";
 
 import {
   DCREffectProps,
@@ -15,11 +14,6 @@ import {
   DCRExpectedValueConvertor,
   DCROperatorTypesComparotors,
 } from "features/Applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
-
-const getInitialSelectedSection = ({ sectionsOrder }) => (sectionsOrder ? sectionsOrder[0] : null);
-
-const getInitialSectionsProgress = ({ sections }) =>
-  Object.values(sections).reduce((acc, curr) => ({ ...acc, [curr.name]: 0 }), {});
 
 const checkConditions = (elements, values, fields) => {
   for (const elementId in elements) {
@@ -78,32 +72,12 @@ export const DForm = (props) => {
     accessType,
     onGroupCreate,
     onElementClick,
-    onSectionCreate,
     onFieldCreate,
     onFieldChange,
+    currentSection,
   } = props;
 
   const schema = isConfigurable ? propSchema : applyConditionalRender(propSchema, values);
-
-  const sectionsProgress = getInitialSectionsProgress(schema);
-  const [selectedSection, setSelectedSection] = useState(() => getInitialSelectedSection(schema));
-
-  const onSectionSelect = (sectionId) => {
-    setSelectedSection(sectionId);
-
-    const section = schema.sections[sectionId];
-
-    if (isConfigurable) {
-      onElementClick(section, "section");
-    }
-
-    if (!section.isAlreadyViewed) {
-      /*TODO move this to parent component that handle ONBOARDING
-       * make an api call in parent component to mark section as "already viewed"
-       */
-      // dFormApi.updateViewedSections(...);
-    }
-  };
 
   return (
     <DFormContextProvider
@@ -113,7 +87,7 @@ export const DForm = (props) => {
       isConfigurable={isConfigurable}
     >
       <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
-        <SectionsSideBar
+        {/*<SectionsSideBar
           errors={[]}
           sections={schema.sectionsOrder.map((sectionId) => schema.sections[sectionId])}
           completed={undefined}
@@ -122,11 +96,11 @@ export const DForm = (props) => {
           sectionsProgress={sectionsProgress}
           onSectionCreate={onSectionCreate}
           onSectionSelect={onSectionSelect}
-        />
+        />*/}
         <SectionsComponent
           data={schema}
           values={values}
-          selectedSection={selectedSection}
+          selectedSection={currentSection}
           selectedElement={selectedElement}
           onElementClick={onElementClick}
           onGroupCreate={onGroupCreate}

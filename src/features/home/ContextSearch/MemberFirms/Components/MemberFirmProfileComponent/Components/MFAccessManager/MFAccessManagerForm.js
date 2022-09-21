@@ -6,8 +6,8 @@ import { Label, Row } from "reactstrap";
 import { preventDefault } from "utility/event-decorators";
 import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 
-import NmpButton from "components/nmp/NmpButton";
-import NmpTilesSelectField from "components/nmp/NmpTilesSelectField";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
+import DeprecatedNmpTilesSelectField from "components/nmp/DeprecatedNmpTilesSelectField";
 
 const bdmToOption = (bdm) => ({ label: bdm.full_name, value: bdm });
 
@@ -24,7 +24,7 @@ const MFAccessManagerForm = ({ bdms, options, submitting, onSubmit: propOnSubmit
 
   return (
     <form className="pb-2" onSubmit={preventDefault(onSubmit)}>
-      <NmpTilesSelectField
+      <DeprecatedNmpTilesSelectField
         name="bdm"
         value={tiles}
         options={options}
@@ -39,9 +39,9 @@ const MFAccessManagerForm = ({ bdms, options, submitting, onSubmit: propOnSubmit
       />
 
       <Row className="mt-4" noGutters>
-        <NmpButton className="ml-auto" color="primary" disabled={formGroup.invalid} loading={submitting}>
+        <DeprecatedNmpButton className="ml-auto" color="primary" disabled={formGroup.invalid} loading={submitting}>
           Save
-        </NmpButton>
+        </DeprecatedNmpButton>
       </Row>
     </form>
   );

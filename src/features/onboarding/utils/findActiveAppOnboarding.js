@@ -1,7 +1,7 @@
 export const findActiveAppOnboarding = (applications) => {
   if (applications.length) {
     let activeOnboarding = applications.find((onboarding) => {
-      if (onboarding.tabId?.includes("form")) {
+      if (onboarding.type === "dform") {
         return onboarding.status === "in-progress" || onboarding.status === "unsubmitted";
       } else {
         return !onboarding.finished_at;

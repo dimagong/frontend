@@ -1,0 +1,9 @@
+.ant-input {
+  border: 1px solid #aeaeae;
+  border-radius: 2px;
+}
+.ant-input:focus,
+.ant-input:hover {
+  border: 1px solid black;
+  box-shadow: none;
+}

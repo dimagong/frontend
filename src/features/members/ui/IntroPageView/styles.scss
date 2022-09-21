@@ -1,0 +1,100 @@
+.intropage {
+  //   min-height: calc(100vh - 110px);
+  .intropage-component {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .ant-card {
+      max-width: 1320px;
+      width: 80vw;
+      height: 100%;
+    }
+    .ant-card-body {
+      padding: 0%;
+    }
+    .intropage-block {
+      display: flex;
+      &_content {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        padding: 60px 60px 30px;
+        &_title {
+          font-family: "SF Pro Display";
+          font-style: normal;
+          font-weight: 400;
+          font-size: 38px;
+          line-height: 45px;
+          color: #474747;
+        }
+        &_greetings {
+          padding-top: 5%;
+          font-family: "SF Pro Display";
+          font-style: normal;
+          font-weight: 400;
+          font-size: 24px;
+          line-height: 29px;
+          color: #474747;
+        }
+        &_text {
+          & > * {
+            padding: 2% 0;
+            font-size: 16px;
+            line-height: 19px;
+          }
+          div:last-child {
+            font-style: italic;
+          }
+        }
+        &_navigations {
+          padding-top: 10%;
+          display: flex;
+          justify-content: space-between;
+          &_btn-left {
+            background-color: white;
+            padding: 0% 35px;
+            border: 2px solid #22776d;
+            &:hover {
+              border-color: #139b8b;
+              & > * {
+                color: #22776d;
+              }
+            }
+            &_download {
+              color: black;
+              text-decoration: none;
+            }
+
+            i {
+              margin-left: 10px;
+            }
+          }
+
+          .arrow {
+            margin-left: 15%;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+          }
+          .right {
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+          }
+        }
+      }
+      &_img {
+        width: 30%;
+        & > * {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-top-left-radius: 6px;
+          border-bottom-left-radius: 6px;
+        }
+      }
+    }
+  }
+}

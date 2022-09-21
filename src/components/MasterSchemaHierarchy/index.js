@@ -12,7 +12,7 @@ import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectMasterSchemaHierarchy } from "app/selectors/masterSchemaSelectors";
 
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 import { TreeHierarchy, useTreeHierarchyExpandable, ADD_FIELD, ADD_GROUP } from "components/TreeHierarchy";
 
 import GeneralMSHTreeElement from "./GeneralMSHTreeElement";
@@ -105,7 +105,7 @@ const MasterSchemaHierarchy = ({ masterSchemaId, masterSchemaName, selectedNodes
               />
 
               <div className="d-flex justify-content-end pb-1">
-                <NmpButton
+                <DeprecatedNmpButton
                   className="p-0"
                   textColor="currentColor"
                   backgroundColor="transparent"
@@ -113,7 +113,7 @@ const MasterSchemaHierarchy = ({ masterSchemaId, masterSchemaName, selectedNodes
                   onClick={expandable.expandOnlyRoot}
                 >
                   Collapse
-                </NmpButton>
+                </DeprecatedNmpButton>
               </div>
             </div>
 

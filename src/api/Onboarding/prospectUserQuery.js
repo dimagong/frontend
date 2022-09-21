@@ -1,6 +1,5 @@
-import { merge } from "lodash";
 import { useDispatch } from "react-redux";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 
 import { clientAPI } from "api/clientAPI";
 import { createQueryKey } from "api/createQueryKey";

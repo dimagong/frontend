@@ -2,7 +2,7 @@ import "./styles.scss";
 
 import React from "react";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import FieldLabel from "../FieldLabel";
 

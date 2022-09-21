@@ -17,6 +17,7 @@ import "assets/scss/pages/coming-soon.scss";
 import "./components/@vuexy/rippleButton/RippleButton";
 import "react-perfect-scrollbar/dist/css/styles.css";
 // import * as serviceWorker from './serviceWorker';
+import "antd/dist/antd.css";
 
 const LazyApp = lazy(() => import("./App"));
 

@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 
 import DownloadIcon from "assets/img/icons/cloud-download.png";
 
 const FileDownloadButton = ({ onDownload, isLoading }) => {
   return (
-    <NmpButton
+    <DeprecatedNmpButton
       className="mr-1"
       size="sm"
       textColor="#95989a"

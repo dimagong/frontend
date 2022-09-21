@@ -11,7 +11,7 @@ import { useAsync } from "hooks/useAsync";
 import CustomTabs from "components/Tabs";
 import Timeline from "components/Timeline";
 import UserRoles from "components/UserRoles";
-import NmpSelect from "components/nmp/NmpSelect";
+import NmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { RoleBdmService } from "api/roleBdm/roleBdmService";
 
