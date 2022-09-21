@@ -80,19 +80,21 @@ export const DForm = (props) => {
     onSectionCreate,
     onFieldCreate,
     onFieldChange,
+    currentSection,
   } = props;
 
   const data = isConfigurable ? propData : applyConditionalRender(propData, values);
 
   const sectionsProgress = getInitialSectionsProgress(data);
-  const [selectedSection, setSelectedSection] = useState(() => getInitialSelectedSection(data));
+
+  //const [selectedSection, setSelectedSection] = useState(() => getInitialSelectedSection(data));
 
   const handleElementClick = (element, elementType) => {
     onElementClick(element, elementType);
   };
 
   const handleSectionSelect = (section) => {
-    setSelectedSection(section);
+    //setSelectedSection(section);
 
     if (isConfigurable) {
       handleElementClick(data.sections[section], "section");
@@ -107,7 +109,7 @@ export const DForm = (props) => {
   };
 
   const handleGroupCreate = () => {
-    onGroupCreate(selectedSection);
+    //onGroupCreate(selectedSection);
   };
 
   return (
@@ -118,7 +120,7 @@ export const DForm = (props) => {
       isConfigurable={isConfigurable}
     >
       <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
-        <SectionsSideBar
+        {/* <SectionsSideBar
           errors={[]}
           sections={data.sectionsOrder && data.sectionsOrder.map((sectionId) => data.sections[sectionId])}
           completed={undefined}
@@ -127,11 +129,12 @@ export const DForm = (props) => {
           sectionsProgress={sectionsProgress}
           onSectionSelect={handleSectionSelect}
           onSectionCreate={isConfigurable && onSectionCreate}
-        />
+        /> */}
         <SectionsComponent
           data={data}
           values={isConfigurable ? null : values}
-          selectedSection={selectedSection}
+          // selectedSection={selectedSection}
+          selectedSection={currentSection}
           selectedElement={isConfigurable ? selectedElement : null}
           onElementClick={isConfigurable ? handleElementClick : () => {}}
           onGroupCreate={isConfigurable ? handleGroupCreate : () => {}}
