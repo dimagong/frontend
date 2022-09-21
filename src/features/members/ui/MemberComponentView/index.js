@@ -92,17 +92,6 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
       <Row style={{ background: "#f4f4f4б", display: "flex", minHeight: "calc(100vh - 80px)" }}>
         <Col span={1}>
           <MemberMenuView dForms={dForms} surveys={surveys} setActiveAppOnboarding={setActiveAppOnboarding} />
-          {/*
-          <Col sm={12}>
-          <NavMenu
-            withIcons
-            tabId="tabId"
-            tabName={(application) => application?.title || application?.name}
-            active={getActiveTab()}
-            tabs={formatTabs(userApplications)}
-            onChange={(application) => handleNavClick(application)}
-          />
-          </Col> */}
         </Col>
         <Col
           span={23}
@@ -126,12 +115,12 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
           )}
           {appActiveOnboarding.type === TypeConstants.DFORM && (
             <>
-              {/* <MemberDFormView
+              <MemberDFormView
                 profile={profile}
                 selectedForm={appActiveOnboarding}
                 setRecentlySubmitted={setRecentlySubmitted}
-              /> */}
-              <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
+              />
+              {/* <div style={{ marginLeft: "-100px", marginRight: "100px" }}>
                 <h2 className="onboarding-title">{appActiveOnboarding?.title || appActiveOnboarding?.name}</h2>
                 {!isEmpty(appActiveOnboarding) &&
                   (isShowStatus(appActiveOnboarding) ? (
@@ -148,7 +137,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
                       setRecentlySubmitted={setRecentlySubmitted}
                     />
                   ))}
-              </div>
+              </div> */}
             </>
           )}
         </Col>
