@@ -1,6 +1,6 @@
 import React from "react";
 import EditIcon from "../../assets/img/icons/edit.png";
-import NmpButton from "../nmp/NmpButton";
+import DeprecatedNmpButton from "../nmp/DeprecatedNmpButton";
 
 export const GoogleDriveAuthRequestToast = ({ link }) => {
   const openLink = () => {
@@ -9,9 +9,15 @@ export const GoogleDriveAuthRequestToast = ({ link }) => {
 
   return (
     <div>
-      <NmpButton className="mr-1" size="sm" textColor="#95989a" backgroundColor="transparent" onClick={openLink}>
+      <DeprecatedNmpButton
+        className="mr-1"
+        size="sm"
+        textColor="#95989a"
+        backgroundColor="transparent"
+        onClick={openLink}
+      >
         Please click to allow access to Google Drive (only access to documents created by NMP)
-      </NmpButton>
+      </DeprecatedNmpButton>
     </div>
   );
 };

@@ -40,18 +40,11 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
   const saveFieldValueMutation = useSaveDFormFieldValueMutation(
     { dformId },
     {
-      onError: () => {
-        toast.error("Last changes in field doesn't saved");
-      },
+      onError: () => void toast.error("Last changes in field doesn't saved"),
     }
   );
 
-  const submitDFormMutation = useSubmitDFormMutation(
-    { dformId },
-    {
-      onSuccess: () => setRecentlySubmitted(true),
-    }
-  );
+  const submitDFormMutation = useSubmitDFormMutation({ dformId }, { onSuccess: () => void setRecentlySubmitted(true) });
 
   const saveFieldValueRef = useRef(_.throttle((v) => saveFieldValueMutation.mutate(v), 1500, { leading: false }));
 

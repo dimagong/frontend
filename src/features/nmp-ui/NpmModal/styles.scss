@@ -1,0 +1,31 @@
+.ant-modal-mask {
+  z-index: 10;
+}
+.ant-modal-wrap {
+  z-index: 10;
+}
+
+.ant-modal-footer {
+  .ant-btn-primary {
+    background-color: #22776d;
+    border-color: #22776d;
+    color: white;
+    &:hover,
+    &:focus {
+      background-color: #139b8b;
+      border-color: #139b8b;
+      color: white;
+    }
+  }
+  .ant-btn-default {
+    background-color: #f3f3f3;
+    color: black;
+    border-color: #f3f3f3;
+    &:hover,
+    &:focus {
+      background-color: #dfdfdf;
+      border-color: #dfdfdf;
+      color: black;
+    }
+  }
+}

@@ -1,0 +1,32 @@
+.base-btn {
+  background-color: #22776d;
+  border-color: #22776d;
+  color: white;
+  &:hover,
+  &:focus {
+    background-color: #139b8b;
+    border-color: #139b8b;
+    color: white;
+  }
+}
+.transparent-btn {
+  background-color: "white";
+  color: "black";
+  border-color: #22776d;
+  &:hover,
+  &:focus {
+    border-color: #139b8b;
+    color: #139b8b;
+  }
+}
+.default-btn {
+  background-color: #f3f3f3;
+  color: black;
+  border-color: #f3f3f3;
+  &:hover,
+  &:focus {
+    background-color: #dfdfdf;
+    border-color: #dfdfdf;
+    color: black;
+  }
+}

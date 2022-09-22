@@ -5,7 +5,7 @@ import propTypes from "prop-types";
 
 import { Card, CardBody } from "reactstrap";
 
-import NmpOrganizationLogo from "../nmp/NmpOrganizationLogo";
+import DeprecatedNmpOrganizationLogo from "../nmp/DeprecatedNmpOrganizationLogo";
 
 const OrganizationCard = ({ org, onSelect, className }) => {
   const handleOrgSelect = () => {
@@ -17,7 +17,7 @@ const OrganizationCard = ({ org, onSelect, className }) => {
   return (
     <Card className={`organization-card_wrapper ${className ? className : ""}`} key={org.name}>
       <CardBody className="organization-card" onClick={handleOrgSelect}>
-        <NmpOrganizationLogo
+        <DeprecatedNmpOrganizationLogo
           fileId={org.logo?.id}
           organizationId={org.id}
           organizationType={org.type}

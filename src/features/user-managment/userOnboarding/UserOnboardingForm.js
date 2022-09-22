@@ -5,9 +5,9 @@ import { X, Check, Plus } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardBody, Col, Button, UncontrolledTooltip, Row } from "reactstrap";
 
-import NmpSelect from "components/nmp/NmpSelect";
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 
 import { prepareSelectReviewers } from "utility/select/prepareSelectData";
 
@@ -174,7 +174,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
               <Row className="mb-2">
                 <Col>
                   <div className="survey-assign_body_select-label">Select dForm</div>
-                  <NmpSelect
+                  <DeprecatedNmpSelect
                     disabled={!isCreate}
                     styles={selectStyles}
                     value={prepareDFormSelect(manager.onboarding.d_form ? [manager.onboarding.d_form] : [])[0]}
@@ -188,7 +188,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
               <Row>
                 <Col>
                   <div className="survey-assign_body_select-label">Select workflow</div>
-                  <NmpSelect
+                  <DeprecatedNmpSelect
                     disabled={!isCreate}
                     styles={selectStyles}
                     value={prepareDFormSelect(manager.onboarding.workflow ? [manager.onboarding.workflow] : [])[0]}
@@ -205,7 +205,7 @@ const UserOnboardingCreate = ({ isCreate }) => {
                 <div className="survey-assign_body_select-label">Who will review the results?</div>
                 <div className="survey-assign_body_reviewers-select_container">
                   <div className="survey-assign_body_reviewers-select_container_select">
-                    <NmpSelect
+                    <DeprecatedNmpSelect
                       value={selectedReviewer}
                       styles={selectStyles}
                       options={
@@ -273,14 +273,14 @@ const UserOnboardingCreate = ({ isCreate }) => {
             <div>
               {isCreate ? (
                 <div>
-                  <NmpButton
+                  <DeprecatedNmpButton
                     className="px-4"
                     color="primary"
                     loading={isOnboardingCreateLoading}
                     onClick={createOnboarding}
                   >
                     Create
-                  </NmpButton>
+                  </DeprecatedNmpButton>
                 </div>
               ) : (
                 <div>

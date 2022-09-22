@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { readBlobAsDataURL } from "utility/file";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 import ContextTemplate from "components/ContextTemplate";
 import FileInput from "components/formElements/FileInput";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
@@ -415,7 +415,7 @@ const Organization = ({ create = false }) => {
               <h2>Intro pages</h2>
               <div className="survey-assign_body_reviewers-select_container">
                 <div className="survey-assign_body_reviewers-select_container_select">
-                  <NmpSelect
+                  <DeprecatedNmpSelect
                     value={{ value: selectedIntroPage, label: selectedIntroPage?.intro_title }}
                     styles={selectStyles}
                     options={introPages.map((introPage) => ({ value: introPage, label: introPage.intro_title })) || []}

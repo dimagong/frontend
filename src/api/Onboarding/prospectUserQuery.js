@@ -1,6 +1,5 @@
-import { merge } from "lodash";
 import { useDispatch } from "react-redux";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 
 import { clientAPI } from "api/clientAPI";
 import { createQueryKey } from "api/createQueryKey";
@@ -9,6 +8,7 @@ import { useGenericMutation } from "api/useGenericMutation";
 
 import appSlice from "app/slices/appSlice";
 import { useFileQuery } from "../file/useFileQueries";
+import { toast } from "react-toastify";
 
 const {
   getAssignedSurveysForOnboardingSuccess,
@@ -95,13 +95,16 @@ export const useDFormValuesQuery = ({ dformId }, options) => {
   );
 };
 
-export const useSaveDFormFieldValueMutation = ({ dformId }, options) => {
+export const useSaveDFormFieldValueMutation = ({ dformId }, options = {}) => {
   return useGenericMutation(
     {
       method: "put",
       url: `/member-view-api/dform/${dformId}/user-value`,
     },
-    options
+    {
+      onError: () => void toast.error("Last changes in field doesn't saved"),
+      ...options,
+    }
   );
 };
 

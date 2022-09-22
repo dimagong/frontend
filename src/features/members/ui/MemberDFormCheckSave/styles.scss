@@ -1,0 +1,18 @@
+.check-save {
+  display: flex;
+  align-items: center;
+  &_box {
+    display: flex;
+    align-items: center;
+  }
+
+  &_lable {
+    margin-left: 15px;
+    font-family: "SF Pro Display";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.18rem;
+    color: #35a046;
+  }
+}

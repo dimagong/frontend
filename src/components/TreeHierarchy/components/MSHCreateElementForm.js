@@ -7,8 +7,8 @@ import { preventDefault } from "utility/event-decorators";
 import { useDidMount } from "hooks/use-did-mount";
 import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 
-import NmpButton from "components/nmp/NmpButton";
-import TextField from "components/nmp/TextField";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
+import DeprecatedTextField from "components/nmp/DeprecatedTextField";
 
 const MSHCreateElementForm = ({ placeholder, submitting, onSubmit: propOnSubmit }) => {
   const nameFieldRef = useRef();
@@ -23,7 +23,7 @@ const MSHCreateElementForm = ({ placeholder, submitting, onSubmit: propOnSubmit 
     <form onSubmit={onSubmit}>
       <Row className="my-3">
         <Col>
-          <TextField
+          <DeprecatedTextField
             label="Element location and name"
             name="name"
             placeholder={placeholder}
@@ -37,9 +37,9 @@ const MSHCreateElementForm = ({ placeholder, submitting, onSubmit: propOnSubmit 
       <Row className="my-3">
         <Col>
           <div className="d-flex justify-content-end">
-            <NmpButton color="primary" disabled={formGroup.invalid} loading={submitting} type="submit">
+            <DeprecatedNmpButton color="primary" disabled={formGroup.invalid} loading={submitting} type="submit">
               Create
-            </NmpButton>
+            </DeprecatedNmpButton>
           </div>
         </Col>
       </Row>

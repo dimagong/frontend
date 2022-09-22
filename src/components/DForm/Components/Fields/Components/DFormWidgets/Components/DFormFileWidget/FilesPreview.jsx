@@ -6,7 +6,7 @@ import { IdType } from "utility/prop-types";
 import { FilePreview } from "./FilePreview";
 
 export const FilesPreview = (props) => {
-  const { files, uploadingFiles, previewFile } = props;
+  const { files, uploadingFiles, previewFile, progress } = props;
 
   if (files.length + uploadingFiles.length === 0) {
     return null;
@@ -17,7 +17,7 @@ export const FilesPreview = (props) => {
       {files.map((file, index) => previewFile(file, index))}
 
       {uploadingFiles.map((file, idx) => (
-        <FilePreview name={file.name} isUploading key={`loading-${idx}`} />
+        <FilePreview name={file.name} isUploading key={`loading-${idx}`} progress={progress} />
       ))}
     </div>
   );

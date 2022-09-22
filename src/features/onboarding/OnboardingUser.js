@@ -1,6 +1,7 @@
 import "./styles.scss";
 
 import React from "react";
+import { useQueryClient } from "react-query";
 import { Spinner } from "reactstrap";
 
 import {
@@ -11,10 +12,11 @@ import {
 } from "api/Onboarding/prospectUserQuery";
 import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 import { initialAppOnboarding } from "features/onboarding/utils/findActiveAppOnboarding";
+import MemberComponentView from "./../members/ui/MemberComponentView";
+import IntroPageView from "./../members/ui/IntroPageView";
 
-import WelcomePageComponent from "./components/WeclomePage";
-import OnboardingComponent from "./components/Onboarding";
 import { collectApplicationsUser } from "./utils/collectApplicationsUser";
+import { MVAProfileQueryKeys } from "../../api/Onboarding/prospectUserQuery";
 
 const useCallCollectQuery = () => {
   const userProspectProfile = useProspectUserProfileQuery({ staleTime: Infinity });
@@ -25,6 +27,7 @@ const useCallCollectQuery = () => {
 
 const OnboardingUser = () => {
   const { userProspectProfile, userSurveyPassing, useDForms } = useCallCollectQuery();
+  const queryClient = useQueryClient();
 
   const profile = userProspectProfile.data;
   const onboardingSurveys = userSurveyPassing.data;
@@ -37,6 +40,7 @@ const OnboardingUser = () => {
 
   const proceedUserToOnboarding = () => {
     useRemoveUserNotify.mutate();
+    queryClient.invalidateQueries(MVAProfileQueryKeys.all());
   };
 
   const brochureQuery = useOrganizationBrochureQuery(
@@ -55,18 +59,25 @@ const OnboardingUser = () => {
       <Spinner color="primary" size={"70"} />
     </div>
   ) : profile?.notify_entries.length ? (
-    <WelcomePageComponent
-      onSubmit={proceedUserToOnboarding}
-      isOnboardingExist={!!userApplications.length}
-      brochureName={brochureQuery.data.file?.name}
-      brochureUrl={brochureQuery.data.url}
-      downloadText={profile?.notify_entries[0].notify.download_text}
+    <IntroPageView
+      userName={profile?.first_name}
       organizationName={profile?.permissions.organization}
+      redirectToOnboarding={proceedUserToOnboarding}
+      brochureUrl={brochureQuery.data.url}
+      brochureName={brochureQuery.data.file?.name}
+      isOnboardingExist={!!userApplications.length}
+      downloadText={profile?.notify_entries[0].notify.download_text}
       introText={profile?.notify_entries[0].notify.intro_text}
       introTitle={profile?.notify_entries[0].notify.intro_title}
     />
   ) : (
-    <OnboardingComponent userApplications={userApplications} profile={profile} initialOnboarding={initialOnboarding} />
+    <MemberComponentView
+      userApplications={userApplications}
+      profile={profile}
+      initialOnboarding={initialOnboarding}
+      dForms={dForms}
+      surveys={onboardingSurveys}
+    />
   );
 };
 

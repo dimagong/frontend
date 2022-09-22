@@ -1,6 +1,6 @@
 import React from "react";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 const defaultStyles = {
   control: (styles) => ({
@@ -74,7 +74,7 @@ const SurveySelectComponent = ({
           {label}
         </label>
       )}
-      <NmpSelect
+      <DeprecatedNmpSelect
         value={value}
         maxMenuHeight={200}
         multiple={false}

@@ -6,7 +6,7 @@ import { Button, Modal, ModalBody } from "reactstrap";
 
 import appSlice from "app/slices/appSlice";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 const { postFilterRequest, patchFilterRequest, deleteFilterRequest } = appSlice.actions;
 
@@ -133,7 +133,7 @@ const SavedFilters = ({
 
   return (
     <span className={"saved-filters"}>
-      <NmpSelect
+      <DeprecatedNmpSelect
         clearable
         isCreatable
         onChange={handleChange}
