@@ -20,6 +20,7 @@ import NpmStepper from "./NpmStepper";
 import NpmTextArea from "./NpmTextArea";
 import NpmTimePicker from "./NpmTimePicker";
 import NpmTooltip from "./NpmTooltip";
+import NpmMenu from "./NpmMenu";
 
 export {
   NpmBadge,
@@ -44,4 +45,5 @@ export {
   NpmTextArea,
   NpmTimePicker,
   NpmTooltip,
+  NpmMenu,
 };
