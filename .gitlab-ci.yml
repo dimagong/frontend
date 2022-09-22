@@ -24,6 +24,7 @@ deploy to dev:
     - curl -sL https://deb.nodesource.com/setup_14.x | bash
     - apt-get --yes --force-yes install --yes --force-yes nodejs
   script:
+    - export NODE_OPTIONS=--max-old-space-size=8192
     - git checkout dev
     - cat .ebenviroments/https.dev.conf >> .platform/nginx/conf.d/https.conf
     - npm i
@@ -43,6 +44,7 @@ deploy to staging:
   environment: staging
   image: agoncaruks/aws-elastic-beanstalk-cli
   before_script:
+    - export NODE_OPTIONS=--max-old-space-size=8192
     - apt-get update --allow-releaseinfo-change
     - mkdir ~/.aws/
     - touch ~/.aws/credentials
