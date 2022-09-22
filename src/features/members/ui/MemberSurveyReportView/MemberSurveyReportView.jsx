@@ -45,7 +45,7 @@ const MemberSurveyReportView = ({ data, isSurveyPassed, totalTime, isShowResult,
           </div>
           <div className="cardApproved_feedback">
             {isShowResult && (
-              <NpmButton style={{ width: 170 }} onClick={() => setIsFeedbackView(true)}>
+              <NpmButton onClick={() => setIsFeedbackView(true)} style={{ width: 170 }}>
                 <span>View feedback</span>
               </NpmButton>
             )}

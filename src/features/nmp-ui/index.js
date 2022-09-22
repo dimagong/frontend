@@ -19,7 +19,7 @@ import NpmSpin from "./NpmSpin";
 import NpmStepper from "./NpmStepper";
 import NpmTextArea from "./NpmTextArea";
 import NpmTimePicker from "./NpmTimePicker";
-import NpmTooltip from "./NpmTooltip";
+import { NpmTooltip } from "./NpmTooltip";
 import NpmMenu from "./NpmMenu";
 
 export {

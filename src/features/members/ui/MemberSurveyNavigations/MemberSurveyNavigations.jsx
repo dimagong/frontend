@@ -28,9 +28,9 @@ const MemberSurveyNavigations = ({
         <div>
           {!!currentIndex && (
             <NpmButton
+              type="transparent"
               onClick={() => handleSwitchToPreviousQuestion()}
               style={{ marginRight: "30px" }}
-              buttonType="transparent"
             >
               <i className="arrow left"></i>
               <span>Back</span>
@@ -45,14 +45,14 @@ const MemberSurveyNavigations = ({
       {surveyStatus === statusConstants.APPROVED && (
         <div className="approved-navigation">
           <div className="close-button">
-            <NpmButton onClick={() => handleClose()} buttonType="default">
+            <NpmButton type="default" onClick={() => handleClose()}>
               <span>Close</span>
             </NpmButton>
           </div>
 
           {!!currentIndex && (
             <NpmButton
-              buttonType="transparent"
+              type="transparent"
               onClick={() => handleSwitchToPreviousQuestion()}
               style={{ marginRight: "30px" }}
             >
@@ -60,7 +60,7 @@ const MemberSurveyNavigations = ({
               <span>Back</span>
             </NpmButton>
           )}
-          <NpmButton onClick={() => handleAnswerSubmit()} buttonType="base">
+          <NpmButton type="base" onClick={() => handleAnswerSubmit()}>
             <span>{currentIndex === count - 1 ? "Finish" : "Next"}</span>
             <i className="arrow right"></i>
           </NpmButton>

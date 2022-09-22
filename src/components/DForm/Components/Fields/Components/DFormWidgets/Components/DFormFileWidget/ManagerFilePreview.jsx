@@ -33,6 +33,8 @@ export const ManagerFilePreview = (props) => {
     removeFileMutation.mutate({ master_schema_field_id: masterSchemaFieldId, file_id: fileId });
   };
 
+  const onDownload = () => {};
+
   return (
     <FilePreview
       name={name}
@@ -42,6 +44,7 @@ export const ManagerFilePreview = (props) => {
       isUploading={isUploading}
       isDownloading={fileQuery.isLoading}
       onRemove={onRemove}
+      onDownload={onDownload}
     />
   );
 };
