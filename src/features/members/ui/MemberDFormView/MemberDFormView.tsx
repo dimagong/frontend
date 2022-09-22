@@ -32,7 +32,8 @@ interface IProps {
 }
 
 const MemberDFormView: FC<IProps> = ({ profile, selectedForm, setRecentlySubmitted }: IProps) => {
-  const dformId = selectedForm;
+  console.log("selectedForm", selectedForm);
+  const { id: dformId } = selectedForm;
 
   const [applicationData, setApplicationData] = useState<any>(null);
 
