@@ -14,6 +14,8 @@ import longTextValidationSchema from "./validationSchema";
 import { DFormFieldLabel } from "../DFormFieldLabel";
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
+import NpmLongText from "./../../../../../../../../features/nmp-ui/NpmLongText";
+
 export const DFormLongTextWidget = (props) => {
   const { id, value = "", label, error, isError, isRequired, isDisabled, isLabelShowing, onChange, className } = props;
 
@@ -69,11 +71,28 @@ export const DFormLongTextWidget = (props) => {
 
       {isDisabled ? null : (
         <>
-          <div className="d-flex justify-content-end">
+          {/* <div className="d-flex justify-content-end">
             <button onClick={() => setIsModalOpened(true)}>Expand text area</button>
+          </div> */}
+          <div style={{ marginTop: 5, textAlign: "right" }}>
+            <NpmLongText
+              isModalOpen={isModalOpened}
+              handleModalClose={handleModalClose}
+              okText="Close"
+              title="Extended input"
+              btnNameModal="Expand text area"
+              inputValue={inputValue}
+              showModal={() => setIsModalOpened(true)}
+              onEditChange={(e) => wysiwygChange(e)}
+              isLabelShowing={isLabelShowing}
+              label={label}
+              isError={isError}
+              isRequired={isRequired}
+              wrapperClassName="dform-long-text-widget__editor"
+            />
           </div>
 
-          <CustomModal
+          {/* <CustomModal
             size="lg"
             submitBtnText="Close"
             title="Extended input"
@@ -104,7 +123,7 @@ export const DFormLongTextWidget = (props) => {
                 wrapperClassName="dform-long-text-widget__editor"
               />
             </div>
-          </CustomModal>
+          </CustomModal> */}
         </>
       )}
     </DFormFieldContainer>

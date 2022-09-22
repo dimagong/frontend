@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { Col, Label, Row } from "reactstrap";
 import React, { useCallback, useState } from "react";
 
-import NmpButton from "components/nmp/NmpButton";
-import NmpPlainInput from "components/nmp/NmpPlainInput";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
+import DeprecatedNmpPlainInput from "components/nmp/DeprecatedNmpPlainInput";
 
 import { useSetRMHierarchyFieldCustomFilename } from "api/resourceManager/useRMHierarchies";
 import { toast } from "react-toastify";
@@ -29,12 +29,12 @@ const RMFieldRenameForm = ({ resourceManagerId, field }) => {
         <Label for="prospect-filename">Prospect only filename</Label>
       </Col>
       <Col xs={6}>
-        <NmpPlainInput value={value} onChange={setValue} id="prospect-filename" />
+        <DeprecatedNmpPlainInput value={value} onChange={setValue} id="prospect-filename" />
       </Col>
       <Col xs={6}>
-        <NmpButton color="primary" onClick={renameField} disabled={_.isEmpty(value)}>
+        <DeprecatedNmpButton color="primary" onClick={renameField} disabled={_.isEmpty(value)}>
           Rename filename
-        </NmpButton>
+        </DeprecatedNmpButton>
       </Col>
     </Row>
   );

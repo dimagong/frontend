@@ -12,7 +12,7 @@ import {
   selectApplicationNotifications,
 } from "app/selectors/onboardingSelectors";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { prepareSelectManagers } from "utility/select/prepareSelectData";
 
@@ -222,7 +222,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
           <div className="text-center w-100">
             <div className="text-center w-100">
               <div className="text-center w-100 mt-1 mb-1">to</div>
-              <NmpSelect
+              <DeprecatedNmpSelect
                 isCreatable
                 style={{ width: "200px" }}
                 clearable={false}
@@ -241,7 +241,7 @@ const WorkflowAction = ({ keyAction, action, keyTrigger, trigger }) => {
 
             {action.user_target_type === userTargetTypes.managers ? (
               <div className="text-center w-100 mt-2">
-                <NmpSelect
+                <DeprecatedNmpSelect
                   multiple
                   searchable
                   clearable={false}

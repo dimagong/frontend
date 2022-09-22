@@ -1,0 +1,90 @@
+.membercard-feedback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .feedback-info {
+    margin-bottom: 20px;
+    .ant-card {
+      position: relative;
+    }
+    .ant-card::before {
+      content: "";
+      border: solid transparent;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      border-top-color: white;
+      border-width: 9px;
+      margin-left: -9px;
+      filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.2));
+    }
+    &_context {
+      display: flex;
+      justify-content: space-between;
+      .context-title {
+        font-family: "SF Pro Display";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 29px;
+        color: #434343;
+      }
+      .context-subtitle {
+        font-family: "SF Pro Display";
+        font-weight: 300;
+        font-size: 18px;
+        line-height: 22px;
+        color: #606060;
+        max-width: 80%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+  .feedback-content {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template: auto 1fr auto 70px/1fr;
+    overflow: hidden;
+    .feedback-question {
+      grid-row: 1/2;
+      padding-bottom: 40px;
+      .feedback-title {
+        font-family: "SF Pro Display";
+        font-weight: 500;
+        font-size: 2.4rem;
+        line-height: 2.8rem;
+        color: #434343;
+      }
+      .feedback-subtitle {
+        font-family: "SF Pro Display";
+        margin-top: 1.12rem;
+        font-weight: 300;
+        font-size: 1.5rem;
+        line-height: 1.8rem;
+        color: #434343;
+      }
+    }
+    .feedback-answer {
+      grid-row: 2/3;
+    }
+    .feedback-points {
+      grid-row: 3/4;
+      font-family: "SF Pro Display";
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 29px;
+      text-align: right;
+      color: #434343;
+      padding: 20px 0;
+    }
+    .feedback_buttons {
+      grid-row: 4/5;
+    }
+  }
+}

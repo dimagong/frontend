@@ -11,7 +11,7 @@ import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormFeedback, Input
 
 import appSlice from "app/slices/appSlice";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
 
 import Constants, {
@@ -2160,7 +2160,7 @@ class FormCreate extends React.Component {
 
                 {this.props.statusChanged ? (
                   <div style={{ width: "160px" }}>
-                    <NmpSelect
+                    <DeprecatedNmpSelect
                       className=""
                       classNamePrefix="select"
                       value={this.state.dFormSelectedAction}

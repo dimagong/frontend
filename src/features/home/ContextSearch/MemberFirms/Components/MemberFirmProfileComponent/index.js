@@ -7,7 +7,7 @@ import { PhoneEnabled } from "@material-ui/icons";
 
 import Timeline from "components/Timeline";
 import ContextTemplate from "components/ContextTemplate";
-import NmpMemberFirmLogo from "components/nmp/NmpMemberFirmLogo";
+import DeprecatedNmpMemberFirmLogo from "components/nmp/DeprecatedNmpMemberFirmLogo";
 
 import MemberFirmInfoForm from "./Components/MemberFirmInfoForm";
 import MFAccessManager from "./Components/MFAccessManager";
@@ -33,7 +33,7 @@ const MemberFirmProfileComponent = (props) => {
       <div className="member-firm-profile">
         <div className="member-firm-profile__header">
           <div className="member-firm-profile_header_logo">
-            <NmpMemberFirmLogo fileId={data.logo?.id} memberFirmId={memberFirmId} isEditable />
+            <DeprecatedNmpMemberFirmLogo fileId={data.logo?.id} memberFirmId={memberFirmId} isEditable />
           </div>
 
           <MFAccessManager memberFirmId={memberFirmId} />

@@ -57,7 +57,7 @@ export const DFormFileWidget = (props) => {
     const uploadingFiles = [];
     files.forEach((file, idx) => {
       uploadingFiles.push({ name: file.name });
-      formData.append(`files[${idx}]`, file, file.name);
+      formData.append(`files[${idx}]`, file.originFileObj, file.name);
     });
 
     setUploadingFiles(uploadingFiles);

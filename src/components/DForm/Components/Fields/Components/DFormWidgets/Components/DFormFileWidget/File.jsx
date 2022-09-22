@@ -1,11 +1,15 @@
 import "./style.scss";
 
 import PropTypes from "prop-types";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import { IdType } from "utility/prop-types";
 
 import { FilesPreview } from "./FilesPreview";
+
+import NpmDragAndDrop from "./../../../../../../../../features/nmp-ui/NpmDragAndDrop";
+
+const reader = new FileReader();
 
 export const File = (props) => {
   const {
@@ -20,11 +24,28 @@ export const File = (props) => {
     onChange,
   } = props;
 
+  const [progress, calculateProgress] = useState(0);
+
   const files = Array.from(value);
 
   const inputFileRef = useRef();
+  // const onInputFileChangeDrop = (files) => {
+  //   console.log("onInputFileChangeDrop files", files, typeof files[0]);
+  // };
 
-  const onInputFileChange = (event) => onChange(event.target.files);
+  const onInputFileChange = (fileData) => {
+    //const files = event.target.files;
+    const { file, fileList } = fileData;
+    // onChange(event.target.files);
+    onChange(fileList);
+    reader.readAsDataURL(file);
+    reader.addEventListener("progress", (event) => {
+      if (event.loaded && event.total) {
+        const percent = (event.loaded / event.total) * 100;
+        calculateProgress(percent);
+      }
+    });
+  };
 
   const onDropZoneClick = () => {
     const inputFileElement = inputFileRef.current;
@@ -40,25 +61,22 @@ export const File = (props) => {
 
   return (
     <>
-      <FilesPreview files={files} previewFile={previewFile} uploadingFiles={uploadingFiles} />
+      <FilesPreview files={files} previewFile={previewFile} uploadingFiles={uploadingFiles} progress={progress} />
 
       {isDropZoneShown ? (
-        <div
-          className="d-flex align-items-center justify-content-center p-1 dform-file__drop-zone"
-          onClick={onDropZoneClick}
-        >
-          <span>Drag 'n' Drop files here or click to open file manager</span>
-
-          <input
-            id={id}
-            type="file"
-            multiple={isMultiple}
-            disabled={isDisabled || isLoading}
-            onChange={onInputFileChange}
-            className="dform-file__input"
-            ref={inputFileRef}
-          />
-        </div>
+        <>
+          <div>
+            <NpmDragAndDrop
+              onChange={onInputFileChange}
+              onDrop={onInputFileChange}
+              disabled={isDisabled || isLoading}
+              multiple={isMultiple}
+              name="file"
+              beforeUpload={() => false}
+              showUploadList={false}
+            />
+          </div>
+        </>
       ) : null}
     </>
   );

@@ -9,7 +9,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../../assets/scss/plugins/extensions/toastr.scss";
-import NmpButton from "components/nmp/NmpButton";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 
 import appSlice from "app/slices/appSlice";
 import { useCreateInvitationsMutation, useSendEmailUserMutation } from "api/User/useUserInvitationQuery";
@@ -85,7 +85,7 @@ const UserInvitationsCreate = ({ resend }) => {
   const renderRemove = () => {
     return (
       <div>
-        <NmpButton
+        <DeprecatedNmpButton
           onClick={remove}
           color="primary"
           className="mr-1 btn-icon"
@@ -117,7 +117,7 @@ const UserInvitationsCreate = ({ resend }) => {
             Copy link
           </Button>
         </CopyToClipboard>
-        <NmpButton
+        <DeprecatedNmpButton
           onClick={sendEmail}
           color="primary"
           className="mr-1"
@@ -127,7 +127,7 @@ const UserInvitationsCreate = ({ resend }) => {
           loading={sendEmailUser.isLoading}
         >
           Send invitation email
-        </NmpButton>
+        </DeprecatedNmpButton>
       </div>
     );
   };
@@ -135,7 +135,7 @@ const UserInvitationsCreate = ({ resend }) => {
   const renderCreate = () => {
     return (
       <div>
-        <NmpButton
+        <DeprecatedNmpButton
           size="sm"
           color="primary"
           className="mr-1"
@@ -145,7 +145,7 @@ const UserInvitationsCreate = ({ resend }) => {
           loading={useCreateInvitations.isLoading}
         >
           Create invitation link
-        </NmpButton>
+        </DeprecatedNmpButton>
       </div>
     );
   };

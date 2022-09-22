@@ -2,7 +2,7 @@ import { isEmpty } from "lodash";
 import { Col, FormGroup, Row } from "reactstrap";
 import React, { useEffect, useState } from "react";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import masterSchemaService from "services/masterSchema.service";
 
@@ -89,7 +89,7 @@ export default function MasterSchemaField(props) {
       <Col md="12">
         <FormGroup>
           <label>Organization</label>
-          <NmpSelect
+          <DeprecatedNmpSelect
             options={organizations.map((formattedOrganization) => {
               return {
                 label: formattedOrganization.organization.name,
@@ -100,12 +100,12 @@ export default function MasterSchemaField(props) {
             onChange={(event) => {
               setCurrentOrganization(event);
             }}
-          ></NmpSelect>
+          ></DeprecatedNmpSelect>
         </FormGroup>
         {!isEmpty(currentOrganization.value) ? (
           <FormGroup>
             <label>Field</label>
-            <NmpSelect
+            <DeprecatedNmpSelect
               options={Object.keys(currentOrganization.value.masterSchemaFields).map((masterSchemaFieldId) => {
                 return {
                   label: currentOrganization.value.masterSchemaFields[masterSchemaFieldId],
@@ -116,7 +116,7 @@ export default function MasterSchemaField(props) {
               onChange={(event) => {
                 setCurrentField(event);
               }}
-            ></NmpSelect>
+            ></DeprecatedNmpSelect>
           </FormGroup>
         ) : null}
       </Col>

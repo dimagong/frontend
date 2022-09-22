@@ -4,8 +4,8 @@ import { CardTitle, Col, Label, Row } from "reactstrap";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import NmpButton from "components/nmp/NmpButton";
-import TextField from "components/nmp/TextField";
+import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
+import DeprecatedTextField from "components/nmp/DeprecatedTextField";
 
 import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
 
@@ -16,7 +16,7 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onS
   const onSubmit = () => propOnSubmit(form);
 
   return (
-    <TextField
+    <DeprecatedTextField
       name="elementName"
       onChange={({ target }) => setName(target.value)}
       {...name}
@@ -37,16 +37,16 @@ const MSENodeRenamingForm = ({ name: initialName, submitting, label, action, onS
                 {error}
               </Col>
               <Col xs={4}>
-                <NmpButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
+                <DeprecatedNmpButton className="w-100" color="primary" type="submit" disabled={form.invalid}>
                   {action}
-                </NmpButton>
+                </DeprecatedNmpButton>
               </Col>
             </Row>
           }
           {...attrs}
         />
       )}
-    </TextField>
+    </DeprecatedTextField>
   );
 };
 

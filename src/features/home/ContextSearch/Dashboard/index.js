@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import appSlice from "app/slices/appSlice";
 import { selectDashboardDForms, selectDashboardSettings } from "app/selectors/userSelectors";
@@ -135,7 +135,7 @@ const Dashboard = () => {
       <div className={"dashboard-header"}>
         <h1 style={{ fontWeight: "bolder", color: "#707070", marginBottom: "2vh" }}>Dashboard</h1>
         <span className={"add-dashboard-component"}>
-          <NmpSelect
+          <DeprecatedNmpSelect
             className="basic-single"
             classNamePrefix="select"
             clearable

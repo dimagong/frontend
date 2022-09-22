@@ -19,7 +19,7 @@ import SearchInput from "./SearchInput";
 
 import appSlice from "app/slices/appSlice";
 import { getMemberFirms } from "app/selectors/memberFirmsSelector";
-import NmpOrganizationLogo from "../../../components/nmp/NmpOrganizationLogo";
+import DeprecatedNmpOrganizationLogo from "../../../components/nmp/DeprecatedNmpOrganizationLogo";
 
 const { logout, showContextSearch, hideContextSearch, setContext, getUserAvatarRequest } = appSlice.actions;
 
@@ -93,7 +93,7 @@ const ThemeNavbar = (props) => {
             <div className="navbar-collapse d-flex justify-content-between align-items-center" id="navbar-mobile">
               <div className="bookmark-wrapper">
                 <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
-                  <NmpOrganizationLogo
+                  <DeprecatedNmpOrganizationLogo
                     fileId={userProfile.permissions.logo?.id}
                     organizationId={userProfile.permissions.organization_id}
                     organizationType={userProfile.permissions.organization_type}

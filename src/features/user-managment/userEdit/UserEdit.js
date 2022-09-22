@@ -11,7 +11,7 @@ import { useAsync } from "hooks/useAsync";
 import CustomTabs from "components/Tabs";
 import Timeline from "components/Timeline";
 import UserRoles from "components/UserRoles";
-import NmpSelect from "components/nmp/NmpSelect";
+import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import { RoleBdmService } from "api/roleBdm/roleBdmService";
 
@@ -302,7 +302,7 @@ const UserEdit = () => {
                             {!!tableData.length ? (
                               <div className="application-create-container">
                                 <div className="application-create-container_select">
-                                  <NmpSelect
+                                  <DeprecatedNmpSelect
                                     options={selectOptions}
                                     value={applicationAddSelectValue}
                                     onChange={setApplicationAddSelectValue}

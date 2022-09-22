@@ -1,0 +1,17 @@
+.onboarding-title {
+  font-family: "SF Pro Display";
+  font-weight: 300;
+  font-size: 39px;
+  line-height: 46px;
+  color: #606060;
+  margin-left: 200px;
+  margin-bottom: 20px;
+  margin-top: 24px;
+}
+
+.membercomponent-nemu {
+  z-index: 1001;
+  position: fixed;
+  margin-left: 50%;
+  transform: translate(-50%, -70px);
+}

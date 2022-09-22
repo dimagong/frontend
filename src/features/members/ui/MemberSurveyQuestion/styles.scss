@@ -1,0 +1,18 @@
+.answer-content {
+  max-height: 300px;
+  min-height: 200px;
+  overflow-y: auto;
+  .answer-header {
+    display: flex;
+    justify-content: space-between;
+    .answer-title {
+      font-family: "SF Pro Display";
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 22px;
+    }
+  }
+  .answer-block {
+    margin-top: 12px;
+  }
+}

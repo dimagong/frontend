@@ -7,7 +7,7 @@ import { Card, CardBody, CardText, CardTitle } from "reactstrap";
 
 import appSlice from "app/slices/appSlice";
 import { capitalizeAll } from "utility/common";
-import NmpUserAvatar from "components/nmp/NmpUserAvatar";
+import DeprecatedNmpUserAvatar from "components/nmp/DeprecatedNmpUserAvatar";
 
 const { setContext, setSelectedMemberFirmId } = appSlice.actions;
 
@@ -30,7 +30,7 @@ const UserCardTemplate = ({ className, oneColumn, onClick, editable = false, onE
         }}
       >
         <div className="mr-1">
-          <NmpUserAvatar
+          <DeprecatedNmpUserAvatar
             userId={manager.id}
             fileId={manager.avatar?.id}
             isEditable={editable}
