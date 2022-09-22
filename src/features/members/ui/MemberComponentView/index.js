@@ -5,6 +5,7 @@ import { Row, Col } from "antd";
 
 import MemberMenuView from "./../MemberMenuView";
 import Check from "assets/img/icons/check.png";
+import { NpmSpin } from "./../../../nmp-ui";
 
 import MemberSurveyView from "../MemberSurveyView";
 import MemberDFormView from "../MemberDFormView";
@@ -73,18 +74,18 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
   });
 
   if (!appActiveOnboarding) {
-    return <div>Onboarding not exist</div>;
+    return <NpmSpin size={60} />;
   }
 
   const organization = profile?.permissions?.organization ?? "Surveys organization";
   return (
     <>
+      <div className="membercomponent-nemu">
+        <MemberMenuView dForms={dForms} surveys={surveys} setActiveAppOnboarding={setActiveAppOnboarding} />
+      </div>
       <Row style={{ background: "#f4f4f4б", display: "flex", minHeight: "calc(100vh - 80px)" }}>
-        <Col span={1}>
-          <MemberMenuView dForms={dForms} surveys={surveys} setActiveAppOnboarding={setActiveAppOnboarding} />
-        </Col>
         <Col
-          span={23}
+          span={24}
           style={{
             minHeight: "100%",
             display: "flex",
