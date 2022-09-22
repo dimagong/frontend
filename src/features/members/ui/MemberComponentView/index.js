@@ -93,25 +93,15 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
           }}
         >
           {appActiveOnboarding.type === TypeConstants.SURVEY && (
-            <>
-              <MemberSurveyView
-                selectedSurveyId={appActiveOnboarding.id}
-                setRecentlySubmitted={setRecentlySubmitted}
-                isRecentlySubmitted={recentlySubmitted}
-                isAllApplicationsCompleted={!unCompletedApplications.length}
-                organization={organization}
-              />
-            </>
+            <MemberSurveyView
+              selectedSurveyId={appActiveOnboarding.id}
+              setRecentlySubmitted={setRecentlySubmitted}
+              isRecentlySubmitted={recentlySubmitted}
+              isAllApplicationsCompleted={!unCompletedApplications.length}
+              organization={organization}
+            />
           )}
-          {appActiveOnboarding.type === TypeConstants.DFORM && (
-            <>
-              <MemberDFormView
-                profile={profile}
-                selectedForm={appActiveOnboarding}
-                setRecentlySubmitted={setRecentlySubmitted}
-              />
-            </>
-          )}
+          {appActiveOnboarding.type === TypeConstants.DFORM && <MemberDFormView dformId={appActiveOnboarding.id} />}
         </Col>
       </Row>
     </>

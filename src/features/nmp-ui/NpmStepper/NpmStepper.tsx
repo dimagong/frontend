@@ -1,13 +1,13 @@
 import "./styles.scss";
 
-import React from "react";
+import React, { FC } from "react";
 
 import { Steps } from "antd";
 
 const { Step } = Steps;
 
 interface IProps {
-  sections: any[];
+  sections: Array<{ name?: string; description?: string }>;
   direction?: "vertical" | "horizontal";
   size?: "small" | "default";
   current?: number;
@@ -15,18 +15,24 @@ interface IProps {
   status?: "wait" | "process" | "finish" | "error";
   type?: "default" | "navigation";
   onChange?: (current: number) => void;
+  getKey?: (object) => string;
 }
 
-const NpmStepper = ({
-  sections = [],
-  direction = "vertical",
-  size = "default",
-  current = 0,
-  initial = 0,
-  status = "process",
-  type = "default",
-  onChange,
-}: IProps) => {
+const defaultGetKey = (section) => section.id;
+
+const NpmStepper: FC<IProps> = (props) => {
+  const {
+    sections = [],
+    direction = "vertical",
+    size = "default",
+    current = 0,
+    initial = 0,
+    status = "process",
+    type = "default",
+    onChange,
+    getKey = defaultGetKey,
+  } = props;
+
   return (
     <Steps
       direction={direction}
@@ -37,8 +43,10 @@ const NpmStepper = ({
       type={type}
       onChange={onChange}
     >
-      {sections.map((section, idx) => {
-        return <Step key={idx} title={section?.name || ""} description={section?.description || ""} />;
+      {sections.map((section, index) => {
+        return (
+          <Step key={getKey(section) ?? index} title={section?.name || ""} description={section?.description || ""} />
+        );
       })}
     </Steps>
   );

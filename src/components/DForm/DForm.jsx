@@ -1,12 +1,13 @@
 import "./styles.scss";
 
-import React from "react";
+import React, { useState } from "react";
 import { cloneDeep } from "lodash";
 import PropTypes from "prop-types";
 
 import { DFormContextProvider } from "./DFormContext";
 
 import SectionsComponent from "./Components/Sections";
+import SectionsSideBar from "./Components/SectionsSideBar";
 
 import {
   DCREffectProps,
@@ -70,14 +71,17 @@ export const DForm = (props) => {
     isMemberView,
     isConfigurable,
     accessType,
-    onGroupCreate,
     onElementClick,
+    onGroupCreate,
     onFieldCreate,
-    onFieldChange,
+    onSectionCreate,
+    renderSections = true,
     currentSection,
+    onFieldChange,
   } = props;
-
   const schema = isConfigurable ? propSchema : applyConditionalRender(propSchema, values);
+
+  const [selectedSectionId, selectSection] = useState(() => schema.sectionsOrder[0]);
 
   return (
     <DFormContextProvider
@@ -87,20 +91,22 @@ export const DForm = (props) => {
       isConfigurable={isConfigurable}
     >
       <div className={`new-dform ${isConfigurable ? "edit-mode" : ""}`}>
-        {/*<SectionsSideBar
-          errors={[]}
-          sections={schema.sectionsOrder.map((sectionId) => schema.sections[sectionId])}
-          completed={undefined}
-          isConfigurable={isConfigurable}
-          selectedSection={selectedSection}
-          sectionsProgress={sectionsProgress}
-          onSectionCreate={onSectionCreate}
-          onSectionSelect={onSectionSelect}
-        />*/}
+        {renderSections ? (
+          <SectionsSideBar
+            errors={[]}
+            sections={schema.sectionsOrder.map((sectionId) => schema.sections[sectionId])}
+            completed={undefined}
+            isConfigurable={isConfigurable}
+            selectedSection={selectedSectionId}
+            sectionsProgress={{}}
+            onSectionCreate={onSectionCreate}
+            onSectionSelect={selectSection}
+          />
+        ) : null}
         <SectionsComponent
           data={schema}
           values={values}
-          selectedSection={currentSection}
+          selectedSection={renderSections ? selectedSectionId : currentSection}
           selectedElement={selectedElement}
           onElementClick={onElementClick}
           onGroupCreate={onGroupCreate}

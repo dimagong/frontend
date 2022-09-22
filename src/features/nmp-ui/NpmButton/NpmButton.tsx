@@ -1,12 +1,13 @@
 import "./styles.scss";
 
-import React from "react";
+import React, { FC } from "react";
 
 import { Button } from "antd";
 
 interface IProps {
   style?: object;
   disabled?: boolean;
+  loading?: boolean | { delay?: number };
   size?: "middle" | "large" | "small";
   type?: "primary" | "ghost" | "dashed" | "link" | "text" | "default";
   onClick?: () => any;
@@ -32,9 +33,11 @@ const classFn = (btnType: string): string => {
   return currentType;
 };
 
-const NpmButton = ({ disabled = false, size = "middle", buttonType = "base", ...props }: IProps) => {
+const NpmButton: FC<IProps> = (props: IProps) => {
+  const { disabled, loading, size = "middle", buttonType = "base", ...rest } = props;
+
   return (
-    <Button disabled={disabled} size={size} {...props} className={classFn(buttonType)}>
+    <Button disabled={disabled} loading={loading} size={size} {...rest} className={classFn(buttonType)}>
       {props.children}
     </Button>
   );
