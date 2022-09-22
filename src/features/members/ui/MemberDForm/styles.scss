@@ -6,6 +6,9 @@
     display: flex;
     justify-content: end;
   }
+  .memberDForm-stepper-hidden {
+    display: none;
+  }
   .memberDForm-content {
     display: flex;
     flex-direction: column;
