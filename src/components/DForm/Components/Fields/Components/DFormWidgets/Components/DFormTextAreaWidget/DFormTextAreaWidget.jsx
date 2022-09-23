@@ -9,6 +9,8 @@ import textareaValidationSchema from "./validationSchema";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
+import { NpmTextArea } from "../../../../../../../../features/nmp-ui";
+
 const defaultPlaceholder = "Enter your answer here";
 
 export const DFormTextAreaWidget = (props) => {
@@ -39,9 +41,10 @@ export const DFormTextAreaWidget = (props) => {
         isLabelShowing={isLabelShowing}
         className={className}
       >
-        <textarea rows="5" value={value} disabled={isDisabled} onChange={onChange} className="dform-textarea-widget">
+        <NpmTextArea rows={5} placeholder={placeholder} value={value} disabled={isDisabled} onChange={onChange} />
+        {/* <textarea rows="5" value={value} disabled={isDisabled} onChange={onChange} className="dform-textarea-widget">
           {placeholder}
-        </textarea>
+        </textarea> */}
       </DFormFieldContainer>
     </div>
   );

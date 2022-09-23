@@ -4,6 +4,7 @@ import { Check } from "react-feather";
 
 import { IdType } from "utility/prop-types";
 import { CustomCheckbox } from "components/FormCreate/Custom/CheckboxesWidget/CheckboxesWidget";
+import { NpmCheckbox } from "../../../../../../../../features/nmp-ui";
 
 import booleanValidationSchema from "./validationSchema";
 
@@ -35,7 +36,14 @@ export const DFormBooleanWidget = (props) => {
       isLabelShowing={false}
       className={className}
     >
-      <CustomCheckbox
+      <NpmCheckbox
+        id={id}
+        onChange={onChange}
+        checked={value}
+        label={isLabelShowing ? label : ""}
+        disabled={isDisabled}
+      />
+      {/* <CustomCheckbox
         id={id}
         color="primary"
         checked={value}
@@ -44,7 +52,7 @@ export const DFormBooleanWidget = (props) => {
         required={isRequired}
         icon={<Check className="vx-icon" size="16" />}
         onChange={onChange}
-      />
+      /> */}
     </DFormFieldContainer>
   );
 };

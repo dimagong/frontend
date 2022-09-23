@@ -12,9 +12,11 @@ const NpmInput = (props) => {
 
 NpmInput.defaultProps = {
   size: "middle",
+  disabled: false,
 };
 
 NpmInput.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   placeholder: PropTypes.string,
   defaultValue: PropTypes.string,
   value: PropTypes.string,
@@ -22,6 +24,9 @@ NpmInput.propTypes = {
   size: PropTypes.oneOf(["middle", "small", "large"]),
   addonAfter: PropTypes.node,
   addonBefore: PropTypes.node,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
+  type: PropTypes.string,
 };
 
 export default NpmInput;

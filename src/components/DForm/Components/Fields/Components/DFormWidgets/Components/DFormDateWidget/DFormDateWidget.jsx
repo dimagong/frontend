@@ -12,6 +12,8 @@ import dateValidationSchema from "./validationSchema";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
+import { NpmDatePicker, NpmTimePicker } from "../../../../../../../../features/nmp-ui";
+
 const getInputTypeByFormat = (format) => {
   switch (format) {
     case DateWidgetFormatTypes.Time:
@@ -56,7 +58,10 @@ export const DFormDateWidget = (props) => {
 
   const type = getInputTypeByFormat(format);
 
-  const onChange = (event) => propOnChange(new Date(event.target.value).toISOString());
+  // const onChange = (event) => propOnChange(new Date(event.target.value).toISOString());
+  const onChange = (data, datastring) => {
+    propOnChange(new Date(datastring).toISOString());
+  };
 
   const value = convertToInputDate(propValue, format);
 
@@ -70,7 +75,10 @@ export const DFormDateWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={classnames(className)}
     >
-      <input id={id} value={value} type={type} onChange={onChange} disabled={isDisabled} className="dform-date-field" />
+      {format === DateWidgetFormatTypes.Time && <NpmTimePicker onChangeTime={onChange} />}
+      {format === DateWidgetFormatTypes.Date && <NpmDatePicker onChangeDate={onChange} />}
+
+      {/* <input id={id} value={value} type={type} onChange={onChange} disabled={isDisabled} className="dform-date-field" /> */}
     </DFormFieldContainer>
   );
 };

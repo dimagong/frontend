@@ -1,0 +1,14 @@
+.ant-select .ant-select-selector {
+  height: 42px;
+}
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: #a8a8a8;
+}
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-color: #a8a8a8;
+}
+
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-color: black !important;
+  box-shadow: none;
+}

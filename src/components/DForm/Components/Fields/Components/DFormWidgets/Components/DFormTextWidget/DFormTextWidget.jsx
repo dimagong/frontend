@@ -9,6 +9,8 @@ import textValidationSchema from "./validationSchema";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
+import { NpmInput } from "../../../../../../../../features/nmp-ui";
+
 const defaultPlaceholder = "Enter your answer here";
 
 export const DFormTextWidget = (props) => {
@@ -26,7 +28,7 @@ export const DFormTextWidget = (props) => {
     className,
   } = props;
 
-  const onChange = (event) => propOnChange(event.target.value);
+  //const onChange = (event) => propOnChange(event.target.value);
 
   return (
     <DFormFieldContainer
@@ -38,7 +40,16 @@ export const DFormTextWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={className}
     >
-      <input
+      <NpmInput
+        id={id}
+        type="text"
+        value={value}
+        disabled={isDisabled}
+        placeholder={placeholder}
+        onChange={propOnChange}
+        className="dform-text-field"
+      />
+      {/* <input
         id={id}
         type="text"
         value={value}
@@ -46,7 +57,7 @@ export const DFormTextWidget = (props) => {
         placeholder={placeholder}
         onChange={onChange}
         className="dform-text-field"
-      />
+      /> */}
     </DFormFieldContainer>
   );
 };

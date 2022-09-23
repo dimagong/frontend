@@ -1,17 +1,23 @@
+import "./styles.scss";
+
 import React from "react";
 
 import { Checkbox } from "antd";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 
-// const onChange = (e: CheckboxChangeEvent) => {
-//   console.log(`checked = ${e.target.checked}`);
-// };
 interface IProps {
-  onChange?: (e: CheckboxChangeEvent) => void;
+  onChange?: (e: CheckboxChangeEvent) => any;
+  checked?: boolean;
+  disabled?: boolean;
+  label?: string;
 }
 
-const NpmCheckbox = ({ onChange }: IProps) => {
-  <Checkbox onChange={onChange}>Checkbox</Checkbox>;
+const NpmCheckbox = ({ onChange, checked, disabled, label }: IProps) => {
+  return (
+    <Checkbox checked={checked} disabled={disabled} onChange={onChange}>
+      {label}
+    </Checkbox>
+  );
 };
 
 export default NpmCheckbox;
