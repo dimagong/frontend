@@ -27,7 +27,6 @@ const MemberSurveyPassView = (props) => {
   } = props;
 
   useEffect(() => {
-    console.log(" EEEEffect currentQuestionAnswer", currentQuestionAnswer);
     if (currentQuestionAnswer) {
       handleAnswerSelect(currentQuestionAnswer.answer);
     }

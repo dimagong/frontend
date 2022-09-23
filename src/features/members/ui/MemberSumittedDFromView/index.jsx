@@ -1,0 +1,1 @@
+export { MemberSubmittedDFormView } from "./MemberSubmittedDFormView";

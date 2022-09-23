@@ -33,7 +33,7 @@ export const MemberDForm: FC<Props> = (props) => {
   const [successSubmit, onSuccessSubmit] = useState<boolean>(() => false);
 
   const step = sections.findIndex(({ id }) => id === sectionId) || 0;
-  const sectionName = sections[step].name || `${step + 1}`;
+  const sectionName = sections[step]?.name || `${step + 1}`;
   const stepperStatus = step < sections.length ? "process" : "finish";
 
   // Mutations
