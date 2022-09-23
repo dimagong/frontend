@@ -3,7 +3,7 @@ import React, { FC, useState } from "react";
 import { useDFormQuery, useDFormValuesQuery } from "api/Onboarding/prospectUserQuery";
 
 import { MemberDForm } from "../MemberDForm";
-import { MemberSubmittedDFormView } from "../MemberSumittedDFromView";
+import { MemberSubmittedStatusView } from "../MemberSumittedStatusView";
 
 interface IProps {
   dformId: number;
@@ -33,7 +33,7 @@ const MemberDFormView: FC<IProps> = ({ dformId, status, organization }: IProps) 
   if (status === "submitted" && showDForm === false) {
     return (
       <div>
-        <MemberSubmittedDFormView organization={organization} onShowDForm={onShowDForm} />
+        <MemberSubmittedStatusView organization={organization} onShowDForm={onShowDForm} />
       </div>
     );
   }

@@ -14,7 +14,7 @@ import {
 
 import MemberDFormCheckSave from "../MemberDFormCheckSave";
 import MemberDFormNavigation from "../MemberDFormNavigation";
-import MemberSubmittedView from "./../MemberSubmittedView";
+import MemberThanksStatusView from "../MemberThanksStatusView";
 
 interface Props {
   id: number;
@@ -115,7 +115,7 @@ export const MemberDForm: FC<Props> = (props) => {
       <Col span={successSubmit ? 24 : 20} className="memberDForm-content">
         {successSubmit ? (
           <div>
-            <MemberSubmittedView data={submitData} organization={organization} surveyName={userName} />
+            <MemberThanksStatusView data={submitData} organization={organization} surveyName={userName} />
           </div>
         ) : (
           <div className={"memberDForm-content_box"}>

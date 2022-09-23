@@ -11,7 +11,7 @@ const cardStyle = {
   width: "85vw",
 };
 
-export const MemberSubmittedDFormView = ({ organization, onShowDForm }) => {
+export const MemberSubmittedStatusView = ({ organization, onShowDForm }) => {
   const handleShowDForm = () => {
     onShowDForm(true);
   };
