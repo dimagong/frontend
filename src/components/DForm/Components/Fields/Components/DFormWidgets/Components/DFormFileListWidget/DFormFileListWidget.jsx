@@ -60,8 +60,6 @@ export const DFormFileListWidget = (props) => {
       formData.append(`files[${idx}]`, file, file.name);
     });
 
-    // ToDo: handle value update
-    // propOnChange(uploadingFiles);
     setUploadingFiles(uploadingFiles);
     createUserFilesMutation.mutate(formData);
   };

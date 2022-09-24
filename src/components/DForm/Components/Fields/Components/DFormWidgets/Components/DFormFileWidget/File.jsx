@@ -23,7 +23,7 @@ export const File = (props) => {
 
   const files = Array.from(value);
 
-  const onFileChange = (fileData) => onChange(fileData.fileList);
+  const onFileChange = (fileData) => onChange(fileData.fileList.map(({ originFileObj }) => originFileObj));
 
   const isDropZoneShown = isUploadable && (isMultiple || files.length < 1);
 
