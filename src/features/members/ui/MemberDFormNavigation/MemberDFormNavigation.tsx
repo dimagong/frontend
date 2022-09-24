@@ -18,7 +18,7 @@ const MemberDFormNavigation = (props: IProps) => {
   const isLastSection: boolean = sectionNumber >= sectionLimit;
 
   return (
-    <NpmButton disabled={disabled} loading={loading} style={{ padding: "0 7%" }} onClick={handleNextSection}>
+    <NpmButton type="nmp-primary" disabled={disabled} loading={loading} onClick={handleNextSection}>
       <span>{isLastSection ? "Submit for review" : "Next Section"}</span>
     </NpmButton>
   );

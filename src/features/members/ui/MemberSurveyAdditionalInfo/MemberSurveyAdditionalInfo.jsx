@@ -1,8 +1,9 @@
 import "./styles.scss";
 
 import React, { useState } from "react";
-
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
+
+import { NpmTooltip, NpmButton } from "features/nmp-ui";
 
 const MemberSurveyAdditionalInfo = ({ title, text }) => {
   const [isTextVisible, setIsTextVisible] = useState(false);
@@ -15,13 +16,21 @@ const MemberSurveyAdditionalInfo = ({ title, text }) => {
     <div className="survey-additional">
       <div className="survey-additional_header">
         <div className="survey-additional_header_title">{title}</div>
-        <div className="arrow-button" onClick={handleToggle}>
-          {isTextVisible ? (
-            <DownOutlined style={{ color: "white", fontSize: "10px" }} />
-          ) : (
-            <UpOutlined style={{ color: "white", fontSize: "10px" }} />
-          )}
-        </div>
+        <NpmTooltip title="Guidance">
+          <NpmButton
+            size="small"
+            type="nmp-primary"
+            shape="nmp-ellipse"
+            icon={
+              isTextVisible ? (
+                <DownOutlined style={{ fontSize: "10px" }} />
+              ) : (
+                <UpOutlined style={{ fontSize: "10px" }} />
+              )
+            }
+            onClick={handleToggle}
+          />
+        </NpmTooltip>
       </div>
       {isTextVisible && <div className="survey-additional_info">{text}</div>}
     </div>

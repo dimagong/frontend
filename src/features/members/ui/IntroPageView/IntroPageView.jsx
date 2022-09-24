@@ -2,10 +2,11 @@ import "./styles.scss";
 
 import React from "react";
 
-import { Row, Col, Layout } from "antd";
-import NpmCard from "../../../nmp-ui/NpmCard";
-import NpmButton from "./../../../nmp-ui/NpmButton";
+import { Layout } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
+
+import { NpmCard, NpmButton } from "features/nmp-ui";
+
 import memberviewIntro from "../../../../assets/img/pages/memberview-intro.png";
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -51,7 +52,6 @@ const IntroPageView = ({
                       <NpmButton
                         className="intropage-block_content_navigations_btn-right"
                         style={{ padding: "0% 35px" }}
-                        buttonType="base"
                         onClick={() => redirectToOnboarding()}
                       >
                         Let's get started <i className="arrow right"></i>

@@ -1,1 +1,1 @@
-export { default } from "./NpmButton";
+export { NpmButton } from "./NpmButton";

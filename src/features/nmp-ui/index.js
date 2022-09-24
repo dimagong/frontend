@@ -1,5 +1,5 @@
 import NpmBadge from "./NpmBadge";
-import NpmButton from "./NpmButton";
+import { NpmButton } from "./NpmButton";
 import NpmCard from "./NpmCard";
 import NpmCheckbox from "./NpmCheckbox";
 import NpmCustomStepperSurvey from "./NpmCustomStepperSurvey";
