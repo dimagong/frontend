@@ -13,6 +13,7 @@ deploy to dev:
   environment: dev
   image: agoncaruks/aws-elastic-beanstalk-cli
   before_script:
+    - export NODE_OPTIONS=--max-old-space-size=8192
     - apt-get update --allow-releaseinfo-change
     - mkdir ~/.aws/
     - touch ~/.aws/credentials
@@ -43,6 +44,7 @@ deploy to staging:
   environment: staging
   image: agoncaruks/aws-elastic-beanstalk-cli
   before_script:
+    - export NODE_OPTIONS=--max-old-space-size=8192
     - apt-get update --allow-releaseinfo-change
     - mkdir ~/.aws/
     - touch ~/.aws/credentials
@@ -73,6 +75,7 @@ deploy to production:
   environment: production
   image: agoncaruks/aws-elastic-beanstalk-cli
   before_script:
+    - export NODE_OPTIONS=--max-old-space-size=8192
     - apt-get update --allow-releaseinfo-change
     - mkdir ~/.aws/
     - touch ~/.aws/credentials
