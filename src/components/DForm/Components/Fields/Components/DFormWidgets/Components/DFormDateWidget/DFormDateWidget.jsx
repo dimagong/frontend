@@ -6,64 +6,16 @@ import classnames from "classnames";
 
 import { IdType } from "utility/prop-types";
 
+import { NpmDatePicker, NpmTimePicker } from "features/nmp-ui";
 import { DateWidgetFormatTypes } from "features/Applications/constants";
 
 import dateValidationSchema from "./validationSchema";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
-import { NpmDatePicker, NpmTimePicker } from "../../../../../../../../features/nmp-ui";
-
-const getInputTypeByFormat = (format) => {
-  switch (format) {
-    case DateWidgetFormatTypes.Time:
-      return "datetime-local";
-    case DateWidgetFormatTypes.Date:
-    default:
-      return "date";
-  }
-};
-
-const convertToInputDate = (value, format) => {
-  if (typeof value !== "string") {
-    throw new Error(`Unexpected value type: ${typeof value}`);
-  }
-
-  if (value.length > 0) {
-    switch (format) {
-      case DateWidgetFormatTypes.Date:
-        return value.substring(0, value.indexOf("T"));
-      case DateWidgetFormatTypes.Time:
-        return value.substring(0, value.indexOf("T") + 6);
-      default:
-        return "";
-    }
-  }
-};
-
 export const DFormDateWidget = (props) => {
-  const {
-    id,
-    value: propValue,
-    label,
-    format,
-    error,
-    isError,
-    isRequired,
-    isDisabled,
-    isLabelShowing,
-    onChange: propOnChange,
-    className,
-  } = props;
-
-  const type = getInputTypeByFormat(format);
-
-  // const onChange = (event) => propOnChange(new Date(event.target.value).toISOString());
-  const onChange = (data, datastring) => {
-    propOnChange(new Date(datastring).toISOString());
-  };
-
-  const value = convertToInputDate(propValue, format);
+  const { id, value, label, format, error, isError, isRequired, isDisabled, isLabelShowing, onChange, className } =
+    props;
 
   return (
     <DFormFieldContainer
@@ -75,10 +27,13 @@ export const DFormDateWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={classnames(className)}
     >
-      {format === DateWidgetFormatTypes.Time && <NpmTimePicker onChangeTime={onChange} />}
-      {format === DateWidgetFormatTypes.Date && <NpmDatePicker onChangeDate={onChange} />}
+      {format === DateWidgetFormatTypes.Time ? (
+        <NpmTimePicker value={value} disabled={isDisabled} onChange={onChange} />
+      ) : null}
 
-      {/* <input id={id} value={value} type={type} onChange={onChange} disabled={isDisabled} className="dform-date-field" /> */}
+      {format === DateWidgetFormatTypes.Date ? (
+        <NpmDatePicker value={value} disabled={isDisabled} onChange={onChange} />
+      ) : null}
     </DFormFieldContainer>
   );
 };
