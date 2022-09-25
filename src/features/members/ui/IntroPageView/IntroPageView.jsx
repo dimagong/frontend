@@ -35,28 +35,22 @@ const IntroPageView = ({
                   <div className="intropage-block_content_text" dangerouslySetInnerHTML={{ __html: introText }} />
 
                   <div className="intropage-block_content_navigations">
-                    <div className="intropage-block_content_navigations_btn-left">
-                      <a
-                        href={brochureUrl}
-                        download={brochureName}
-                        className={"intropage-block_content_navigations_btn-left_download"}
-                      >
-                        {downloadText}
-                        <i>
-                          <DownloadOutlined style={{ color: "#22776D", fontSize: "20px" }} />
-                        </i>
-                      </a>
-                    </div>
+                    <NpmButton
+                      type="nmp-ghost"
+                      href={brochureUrl}
+                      download={brochureName}
+                      icon={<DownloadOutlined style={{ color: "#22776D", fontSize: "20px" }} />}
+                      iconRight
+                      style={{ minWidth: 170 }}
+                    >
+                      {downloadText}
+                    </NpmButton>
 
-                    {isOnboardingExist && (
-                      <NpmButton
-                        className="intropage-block_content_navigations_btn-right"
-                        style={{ padding: "0% 35px" }}
-                        onClick={() => redirectToOnboarding()}
-                      >
+                    {isOnboardingExist ? (
+                      <NpmButton type="nmp-primary" style={{ minWidth: 170 }} onClick={redirectToOnboarding}>
                         Let's get started <i className="arrow right"></i>
                       </NpmButton>
-                    )}
+                    ) : null}
                   </div>
                 </div>
                 <div className="intropage-block_img">

@@ -49,40 +49,9 @@
           }
         }
         &_navigations {
-          padding-top: 10%;
           display: flex;
           justify-content: space-between;
-          &_btn-left {
-            background-color: white;
-            padding: 0% 35px;
-            border: 2px solid #22776d;
-            &:hover {
-              border-color: #139b8b;
-              & > * {
-                color: #22776d;
-              }
-            }
-            &_download {
-              color: black;
-              text-decoration: none;
-            }
-
-            i {
-              margin-left: 10px;
-            }
-          }
-
-          .arrow {
-            margin-left: 15%;
-            border: solid white;
-            border-width: 0 3px 3px 0;
-            display: inline-block;
-            padding: 3px;
-          }
-          .right {
-            transform: rotate(-45deg);
-            -webkit-transform: rotate(-45deg);
-          }
+          padding-top: 70px;
         }
       }
       &_img {
