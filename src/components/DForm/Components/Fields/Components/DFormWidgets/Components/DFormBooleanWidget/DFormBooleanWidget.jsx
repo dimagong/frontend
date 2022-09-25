@@ -1,14 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Check } from "react-feather";
 
 import { IdType } from "utility/prop-types";
-import { CustomCheckbox } from "components/FormCreate/Custom/CheckboxesWidget/CheckboxesWidget";
-import { NpmCheckbox } from "../../../../../../../../features/nmp-ui";
+import { NpmCheckbox } from "features/nmp-ui";
 
 import booleanValidationSchema from "./validationSchema";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
+import { DFormFieldLabel } from "../DFormFieldLabel";
 
 export const DFormBooleanWidget = (props) => {
   const {
@@ -38,21 +37,11 @@ export const DFormBooleanWidget = (props) => {
     >
       <NpmCheckbox
         id={id}
-        onChange={onChange}
         checked={value}
-        label={isLabelShowing ? label : ""}
         disabled={isDisabled}
+        label={isLabelShowing ? <DFormFieldLabel label={label} isRequired={isRequired} small /> : null}
+        onChange={onChange}
       />
-      {/* <CustomCheckbox
-        id={id}
-        color="primary"
-        checked={value}
-        label={isLabelShowing ? label : ""}
-        disabled={isDisabled}
-        required={isRequired}
-        icon={<Check className="vx-icon" size="16" />}
-        onChange={onChange}
-      /> */}
     </DFormFieldContainer>
   );
 };

@@ -2,22 +2,14 @@ import "./styles.scss";
 
 import React from "react";
 
-import { Checkbox } from "antd";
-import type { CheckboxChangeEvent } from "antd/es/checkbox";
+import { Checkbox, CheckboxProps } from "antd";
 
-interface IProps {
-  onChange?: (e: CheckboxChangeEvent) => any;
-  checked?: boolean;
-  disabled?: boolean;
-  label?: string;
-}
+type Props = {
+  label?: React.ReactNode;
+} & CheckboxProps;
 
-const NpmCheckbox = ({ onChange, checked, disabled, label }: IProps) => {
-  return (
-    <Checkbox checked={checked} disabled={disabled} onChange={onChange}>
-      {label}
-    </Checkbox>
-  );
+const NpmCheckbox: React.FC<Props> = ({ label, ...props }) => {
+  return <Checkbox {...props}>{label}</Checkbox>;
 };
 
 export default NpmCheckbox;
