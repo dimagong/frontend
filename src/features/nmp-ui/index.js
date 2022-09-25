@@ -1,3 +1,4 @@
+import { NmpTag } from "./NmpTag";
 import NpmBadge from "./NpmBadge";
 import { NpmButton } from "./NpmButton";
 import NpmCard from "./NpmCard";
@@ -23,6 +24,7 @@ import { NpmTooltip } from "./NpmTooltip";
 import NpmMenu from "./NpmMenu";
 
 export {
+  NmpTag,
   NpmBadge,
   NpmButton,
   NpmCard,

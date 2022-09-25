@@ -19,7 +19,7 @@ import { collectApplicationsUser } from "./utils/collectApplicationsUser";
 import { MVAProfileQueryKeys } from "../../api/Onboarding/prospectUserQuery";
 
 const useCallCollectQuery = () => {
-  const userProspectProfile = useProspectUserProfileQuery({ staleTime: Infinity });
+  const userProspectProfile = useProspectUserProfileQuery();
   const userSurveyPassing = useSurveyPassingQuery();
   const useDForms = useMVADFormsQuery();
   return { userProspectProfile, userSurveyPassing, useDForms };
@@ -29,9 +29,9 @@ const OnboardingUser = () => {
   const { userProspectProfile, userSurveyPassing, useDForms } = useCallCollectQuery();
   const queryClient = useQueryClient();
 
+  const dForms = useDForms.data;
   const profile = userProspectProfile.data;
   const onboardingSurveys = userSurveyPassing.data;
-  const dForms = useDForms.data;
 
   const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation({
     userId: profile?.id,
@@ -72,11 +72,11 @@ const OnboardingUser = () => {
     />
   ) : (
     <MemberComponentView
-      userApplications={userApplications}
-      profile={profile}
-      initialOnboarding={initialOnboarding}
       dForms={dForms}
+      profile={profile}
       surveys={onboardingSurveys}
+      userApplications={userApplications}
+      initialOnboarding={initialOnboarding}
     />
   );
 };

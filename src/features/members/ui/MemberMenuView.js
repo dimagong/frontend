@@ -1,35 +1,64 @@
 import React from "react";
 
-import { NpmMenu } from "./../../nmp-ui";
+import { NpmMenu, NmpTag } from "features/nmp-ui";
 
-import { findStatusSurvey } from "./../data/helpers/findStatusSurvey";
+import { OnboardingsTypes } from "../../onboarding/utils/collectApplicationsUser";
 
-const MemberMenuView = ({ dForms, surveys, setActiveAppOnboarding }) => {
-  const selectMenuOption = (selectedOption) => {
-    if (selectedOption.includes("applications")) {
-      const selectedDForm = dForms.find((el) => el.id === +selectedOption[0]);
-      setActiveAppOnboarding({ ...selectedDForm, type: "dform" });
-    } else if (selectedOption.includes("surveys")) {
-      const selectedSurvey = surveys.find((el) => el.id === +selectedOption[0]);
-      setActiveAppOnboarding({ ...selectedSurvey, type: "survey" });
-    }
-  };
+import { findStatusSurvey } from "../data/helpers/findStatusSurvey";
 
-  const contentDForms = dForms.map((form) => {
-    return { title: form.name, status: form.status ?? "no-status", id: form.id, type: "dform" };
-  });
+const getKey = (type, id) => `${type}-${id}`;
 
-  const contentSurveys = surveys.map((survey) => {
-    const status = findStatusSurvey(survey.started_at, survey.finished_at, survey.graded_at, null);
-    return { title: survey.title, status, id: survey.id, type: "survey" };
-  });
-
-  return (
-    <NpmMenu
-      groupItems={[{ applications: contentDForms }, { surveys: contentSurveys }]}
-      selectOption={selectMenuOption}
-    />
-  );
+const parseKey = (key) => {
+  const [type, id] = key.split("-");
+  return { type, id };
 };
 
-export default MemberMenuView;
+export const MemberMenuView = ({ dforms, surveys, onboardings, activeOnboarding, onMenuChange }) => {
+  const items = [
+    {
+      key: "applications",
+      label: "Applications",
+      children: dforms.map(({ id, name, status }) => ({
+        className: "membercomponent-menu__submenu-item",
+        label: (
+          <span className="membercomponent-menu__submenu-item">
+            <span className="membercomponent-menu__item-name">{name}</span>
+            <NmpTag color="#22776D" className="membercomponent-menu__item-status">
+              {status}
+            </NmpTag>
+          </span>
+        ),
+        key: getKey(OnboardingsTypes.DForm, id),
+      })),
+      className: "membercomponent-menu__item",
+    },
+    {
+      key: "surveys",
+      label: "Surveys",
+      children: surveys.map(({ id, title, started_at, finished_at, graded_at }) => ({
+        className: "membercomponent-menu__submenu-item",
+        label: (
+          <span className="membercomponent-menu__submenu-item">
+            <span className="membercomponent-menu__item-name">{title}</span>
+            <NmpTag color="#22776D" className="membercomponent-menu__item-status">
+              {findStatusSurvey(started_at, finished_at, graded_at, false)}
+            </NmpTag>
+          </span>
+        ),
+        key: getKey(OnboardingsTypes.Survey, id),
+      })),
+      className: "membercomponent-menu__item",
+    },
+  ];
+
+  const selectedKeys = [getKey(activeOnboarding.type, activeOnboarding.id)];
+
+  const onSelect = ({ key }) => {
+    const { type, id } = parseKey(key);
+    const onboarding = onboardings.find((onboarding) => onboarding.id === Number(id) && onboarding.type === type);
+
+    onMenuChange(onboarding);
+  };
+
+  return <NpmMenu mode="horizontal" items={items} selectedKeys={selectedKeys} onSelect={onSelect}></NpmMenu>;
+};
