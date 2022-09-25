@@ -1,51 +1,25 @@
 import "./styles.scss";
 
-import type { UploadProps } from "antd";
-import { message, Upload } from "antd";
 import React from "react";
+import { Upload } from "antd";
 import { PlusCircleFilled } from "@ant-design/icons";
-import { BuiltInParserName } from "prettier";
 
 const { Dragger } = Upload;
 
 interface IProps {
   name?: string;
-  multiple?: boolean;
   action?: string;
-  beforeUpload?: () => boolean;
-  customRequest?: () => any;
-  showUploadList?: boolean;
-  onDownload?: (file) => any;
-  onChange?: (e: any) => any;
-  onDrop?: (e: any) => any;
+  multiple?: boolean;
   disabled?: boolean;
-}
+  showUploadList?: boolean;
 
-// const props: UploadProps = {
-//   name: "file",
-//   multiple: true,
-//   action: "",
-//   beforeUpload: () => false,
-//   customRequest: () => {},
-//   showUploadList: false,
-//   onDownload(file) {
-//     console.log("UploadProps file", file);
-//   },
-//   onChange(info) {
-//     const { status } = info.file;
-//     if (status !== "uploading") {
-//       console.log(info.file, info.fileList);
-//     }
-//     if (status === "done") {
-//       message.success(`${info.file.name} file uploaded successfully.`);
-//     } else if (status === "error") {
-//       message.error(`${info.file.name} file upload failed.`);
-//     }
-//   },
-//   onDrop(e) {
-//     console.log("Dropped files", e.dataTransfer.files);
-//   },
-// };
+  customRequest?: () => any;
+  beforeUpload?: () => boolean;
+
+  onDrop?: (e: any) => any;
+  onChange?: (e: any) => any;
+  onDownload?: (file) => any;
+}
 
 const NpmDragAndDrop: React.FC<IProps> = (props: IProps) => (
   <Dragger {...props}>

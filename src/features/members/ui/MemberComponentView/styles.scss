@@ -9,9 +9,80 @@
   margin-top: 24px;
 }
 
-.membercomponent-nemu {
+.membercomponent-menu {
+  display: flex;
+  align-items: flex-end;
+
+  height: 4.5rem;
+
+  top: 0;
+  left: 300px;
+  right: 300px;
   z-index: 1001;
   position: fixed;
-  margin-left: 50%;
-  transform: translate(-50%, -70px);
+
+  @at-root .ant-menu-horizontal:not(.ant-menu-dark) &__item {
+    color: #35a046;
+
+    &:hover:after,
+    &.ant-menu-submenu-open:after,
+    &.ant-menu-submenu-selected:after {
+      border-color: #35a046;
+    }
+
+    > .ant-menu-submenu-title:hover,
+    > .ant-menu-submenu-title:focus,
+    > .ant-menu-submenu-title:active {
+      color: #35a046;
+    }
+
+    &.ant-menu-submenu-selected {
+      color: #35a046;
+    }
+
+    &:hover,
+    &:focus {
+      color: #35a046;
+    }
+
+    &:active {
+      color: #35a046;
+    }
+  }
+
+  &__submenu-item {
+    @at-root &,
+      &.ant-menu-item-selected {
+      color: #474747;
+
+      &:hover,
+      &:focus {
+        color: #474747;
+      }
+
+      &:active {
+        color: #474747;
+      }
+    }
+  }
+
+  &__item-name {
+    font-size: 18px;
+    line-height: 21px;
+    padding-right: 1rem;
+  }
+
+  &__item-status {
+    color: #fff;
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  &-wrapper {
+    width: 100%;
+
+    > .npm-menu {
+      justify-content: center;
+    }
+  }
 }

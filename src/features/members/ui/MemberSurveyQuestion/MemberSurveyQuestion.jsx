@@ -1,12 +1,9 @@
 import "./styles.scss";
 
 import React from "react";
-
 import { QuestionCircleFilled } from "@ant-design/icons";
-import NpmRadioCardGroup from "../../../nmp-ui/NpmRadioCardGroup";
-import NpmTextArea from "../../../nmp-ui/NpmTextArea";
-import NpmInput from "../../../nmp-ui/NpmInput";
-import NpmTooltip from "../../../nmp-ui/NpmTooltip";
+
+import { NpmTooltip, NpmInput, NpmTextArea, NpmRadioCardGroup } from "features/nmp-ui";
 
 const MemberSurveyQuestion = ({
   structureType,
@@ -23,7 +20,7 @@ const MemberSurveyQuestion = ({
           {structureType === "multiple_choice" && <div className="answer-title"> Mark one answer:</div>}
           {structureType === "text" && <div className="answer-title"> Write your answer below:</div>}
           <div className="answer-tooltip">
-            <NpmTooltip text={hint}>
+            <NpmTooltip title={hint}>
               <QuestionCircleFilled />
             </NpmTooltip>
           </div>

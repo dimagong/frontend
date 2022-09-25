@@ -1,62 +1,23 @@
 import "./styles.scss";
 
 import React, { FC } from "react";
+import classnames from "classnames";
+import { Button, ButtonProps } from "antd";
 
-import { Button } from "antd";
-
-interface IProps {
-  style?: object;
-  disabled?: boolean;
-  loading?: boolean | { delay?: number };
-  size?: "middle" | "large" | "small";
-  type?: "primary" | "ghost" | "dashed" | "link" | "text" | "default";
-  onClick?: () => any;
-  children?: any;
-  buttonType?: "base" | "transparent" | "default";
-}
-
-const classFn = (btnType: string): string => {
-  let currentType = "";
-  switch (btnType) {
-    case "base":
-      currentType = "base-btn";
-      break;
-    case "transparent":
-      currentType = "transparent-btn";
-      break;
-    case "default":
-      currentType = "default-btn";
-      break;
-    default:
-      break;
-  }
-  return currentType;
+type Props = Omit<ButtonProps, "type" | "shape"> & {
+  iconRight?: boolean;
+  type?: ButtonProps["type"] | "nmp-default" | "nmp-ghost" | "nmp-primary";
+  shape?: ButtonProps["shape"] | "nmp-ellipse";
 };
 
-const NpmButton: FC<IProps> = (props: IProps) => {
-  const { disabled, loading, size = "middle", buttonType = "base", ...rest } = props;
+export const NpmButton: FC<Props> = (props) => {
+  const { type = "nmp-default", shape, iconRight = false, className, ...rest } = props;
+
+  const classes = classnames(className, "ant-btn-nmp", {
+    "ant-btn-icon-nmp-right": iconRight,
+  });
 
   return (
-    <Button disabled={disabled} loading={loading} size={size} {...rest} className={classFn(buttonType)}>
-      {props.children}
-    </Button>
+    <Button type={type as ButtonProps["type"]} shape={shape as ButtonProps["shape"]} className={classes} {...rest} />
   );
 };
-
-// NpmButton.defaultProps = {
-//   disabled: false,
-//   size: "middle",
-//   type: "primary",
-//   style: { backgroundColor: "#22776D", borderColor: "#22776D" },
-//   onClick: () => {},
-// };
-
-// NpmButton.propTypes = {
-//   style: PropTypes.object,
-//   disabled: PropTypes.bool,
-//   size: PropTypes.oneOf(["middle", "large", "small"]),
-//   type: PropTypes.oneOf(["primary", "ghost", "dashed", "link", "text", "default"]),
-//   onClick: PropTypes.func,
-// };
-
-export default NpmButton;

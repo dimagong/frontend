@@ -3,7 +3,7 @@ import "./styles.scss";
 import React from "react";
 
 import { Modal } from "antd";
-import NpmButton from "./../NpmButton";
+import { NpmButton } from "features/nmp-ui/NpmButton";
 
 interface IProps {
   isModalOpen?: boolean;

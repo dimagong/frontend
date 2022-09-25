@@ -3,8 +3,7 @@ import "./styles.scss";
 import React from "react";
 import moment from "moment";
 
-import NpmCard from "../../../nmp-ui/NpmCard";
-import NpmButton from "../../../nmp-ui/NpmButton";
+import { NpmButton, NpmCard } from "features/nmp-ui";
 
 const membercardApprovedStyle = {
   maxHeight: "630px",
@@ -45,8 +44,8 @@ const MemberSurveyReportView = ({ data, isSurveyPassed, totalTime, isShowResult,
           </div>
           <div className="cardApproved_feedback">
             {isShowResult && (
-              <NpmButton style={{ width: 170 }} onClick={() => setIsFeedbackView(true)}>
-                <span>View feedback</span>
+              <NpmButton type="nmp-primary" onClick={() => setIsFeedbackView(true)} style={{ width: 170 }}>
+                View feedback
               </NpmButton>
             )}
           </div>

@@ -1,5 +1,6 @@
+import { NmpTag } from "./NmpTag";
 import NpmBadge from "./NpmBadge";
-import NpmButton from "./NpmButton";
+import { NpmButton } from "./NpmButton";
 import NpmCard from "./NpmCard";
 import NpmCheckbox from "./NpmCheckbox";
 import NpmCustomStepperSurvey from "./NpmCustomStepperSurvey";
@@ -19,10 +20,11 @@ import NpmSpin from "./NpmSpin";
 import NpmStepper from "./NpmStepper";
 import NpmTextArea from "./NpmTextArea";
 import NpmTimePicker from "./NpmTimePicker";
-import NpmTooltip from "./NpmTooltip";
+import { NpmTooltip } from "./NpmTooltip";
 import NpmMenu from "./NpmMenu";
 
 export {
+  NmpTag,
   NpmBadge,
   NpmButton,
   NpmCard,

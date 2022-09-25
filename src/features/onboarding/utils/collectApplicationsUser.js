@@ -1,19 +1,22 @@
 import _ from "lodash";
 
+export const OnboardingsTypes = {
+  DForm: "dform",
+  Survey: "survey",
+};
+
 export const collectApplicationsUser = (forms, surveys) => {
   // Onboardings and surveys may have ID collisions, we add tabId property to prevent bugs
   const formsMark = forms.map((form) => {
     return {
       ...form,
-      type: "dform",
-      //tabId: `${form.id} form`,
+      type: OnboardingsTypes.DForm,
     };
   });
   const surveyMark = surveys.map((survey) => {
     return {
       ...survey,
-      type: "survey",
-      // tabId: `${survey.id} survey`,
+      type: OnboardingsTypes.Survey,
     };
   });
 
