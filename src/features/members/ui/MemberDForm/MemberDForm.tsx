@@ -6,10 +6,15 @@ import React, { FC, useEffect, useRef, useState } from "react";
 
 import { NpmCard, NpmStepper } from "features/nmp-ui";
 import { DForm, AccessTypes, FieldTypes } from "components/DForm";
-import { useSaveDFormFieldValueMutation, useSubmitDFormMutation } from "api/Onboarding/prospectUserQuery";
+import {
+  useSaveDFormFieldValueMutation,
+  useSubmitDFormMutation,
+  useProspectUserProfileQuery,
+} from "api/Onboarding/prospectUserQuery";
 
 import MemberDFormCheckSave from "../MemberDFormCheckSave";
 import MemberDFormNavigation from "../MemberDFormNavigation";
+import MemberThanksStatusView from "../MemberThanksStatusView";
 
 interface Props {
   id: number;
@@ -25,14 +30,24 @@ export const MemberDForm: FC<Props> = (props) => {
 
   const [values, setValues] = useState<any>(() => propValues);
   const [sectionId, setSectionId] = useState<string>(() => sections[0].id);
+  const [successSubmit, onSuccessSubmit] = useState<boolean>(() => false);
 
   const step = sections.findIndex(({ id }) => id === sectionId) || 0;
-  const sectionName = sections[step].name || `${step + 1}`;
+  const sectionName = sections[step]?.name || `${step + 1}`;
   const stepperStatus = step < sections.length ? "process" : "finish";
 
   // Mutations
   const saveFieldValueMutation = useSaveDFormFieldValueMutation({ dformId: id });
-  const submitDFormMutation = useSubmitDFormMutation({ dformId: id });
+  const submitDFormMutation = useSubmitDFormMutation(
+    { dformId: id },
+    {
+      onSuccess: () => {
+        onSuccessSubmit(true);
+      },
+    }
+  );
+
+  const userDFormProfile = useProspectUserProfileQuery({ staleTime: Infinity });
 
   const saveFieldValueRef = useRef(_.throttle((v) => saveFieldValueMutation.mutate(v), 1500, { leading: false }));
   const saveFieldValue = (v) => saveFieldValueRef.current(v);
@@ -84,50 +99,61 @@ export const MemberDForm: FC<Props> = (props) => {
   // Immediately call save on component unmount if any save currently throttled
   useEffect(() => () => flushFieldValue(), []);
 
+  const submitData =
+    (submitDFormMutation as any).data?.updated_at || (submitDFormMutation as any).data?.finished_at || new Date();
+  const userName: string = userDFormProfile.data.first_name || "Smiths";
+  const organization: string = userDFormProfile.data.permissions.organization || "The Queen Is Dead";
+
   return (
     <Row className="memberDForm">
-      <Col span={4} className="memberDForm-stepper">
+      <Col span={4} className={successSubmit ? "memberDForm-stepper-hidden" : "memberDForm-stepper"}>
         <div>
           <NpmStepper status={stepperStatus} sections={sections} current={step} />
         </div>
       </Col>
 
-      <Col span={20} className="memberDForm-content">
-        <div className="memberDForm-content_box">
-          <div className="memberDForm-content_box_title">{name}</div>
+      <Col span={successSubmit ? 24 : 20} className="memberDForm-content">
+        {successSubmit ? (
+          <div>
+            <MemberThanksStatusView data={submitData} organization={organization} surveyName={userName} />
+          </div>
+        ) : (
+          <div className={"memberDForm-content_box"}>
+            <div className="memberDForm-content_box_title">{name}</div>
 
-          <NpmCard style={{ minHeight: "50vh", maxWidth: "783px", width: "57vw", marginTop: "3%" }}>
-            <div className="memberDForm-content_box_card">
-              <div className="memberDForm-content_box_card_section-name">Section {sectionName}</div>
+            <NpmCard style={{ minHeight: "50vh", maxWidth: "783px", width: "57vw", marginTop: "3%" }}>
+              <div className="memberDForm-content_box_card">
+                <div className="memberDForm-content_box_card_section-name">Section {sectionName}</div>
 
-              <div className="memberDForm-content_box_card_section-fields">
-                <DForm
-                  // @ts-ignore
-                  isMemberView
-                  schema={schema}
-                  values={values}
-                  dFormId={id}
-                  accessType={accessType}
-                  renderSections={false}
-                  currentSection={sectionId}
-                  onFieldChange={onFieldChange}
-                />
+                <div className="memberDForm-content_box_card_section-fields">
+                  <DForm
+                    // @ts-ignore
+                    isMemberView
+                    schema={schema}
+                    values={values}
+                    dFormId={id}
+                    accessType={accessType}
+                    renderSections={false}
+                    currentSection={sectionId}
+                    onFieldChange={onFieldChange}
+                  />
+                </div>
+
+                <div className="memberDForm-content_box_card_section-navigation">
+                  <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
+
+                  <MemberDFormNavigation
+                    sectionNumber={step}
+                    sectionLimit={sections.length - 1}
+                    disabled={!isAccessible}
+                    loading={submitDFormMutation.isLoading}
+                    handleNextSection={onNextSection}
+                  />
+                </div>
               </div>
-
-              <div className="memberDForm-content_box_card_section-navigation">
-                <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
-
-                <MemberDFormNavigation
-                  sectionNumber={step}
-                  sectionLimit={sections.length - 1}
-                  disabled={!isAccessible}
-                  loading={submitDFormMutation.isLoading}
-                  handleNextSection={onNextSection}
-                />
-              </div>
-            </div>
-          </NpmCard>
-        </div>
+            </NpmCard>
+          </div>
+        )}
       </Col>
     </Row>
   );

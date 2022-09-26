@@ -1,78 +1,40 @@
 import React from "react";
 
-//import { DFormFieldLabel } from "";
-//"../DFormFieldLabel";
+import { NpmModal, NpmEditor } from "features/nmp-ui";
 
-import NpmModal from "../NpmModal";
+type Props = {
+  value?: string;
+  isModalOpen?: boolean;
+  editorClassName?: string;
+  onCancel?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onEditChange?: (v: any) => void;
+};
 
-import NpmEditor from "../NpmEditor";
+const NpmLongText: React.FC<Props> = (props) => {
+  const { value, isModalOpen = false, editorClassName = "", onCancel, onEditChange } = props;
 
-interface IProps {
-  isModalOpen: boolean;
-  handleModalClose?: Function;
-  showModal?: Function;
-  okText?: string;
-  title?: string;
-  btnNameModal?: string;
-  inputValue?: string;
-  onEditChange?: Function;
-  isLabelShowing?: boolean;
-  label?: string;
-  isError?: boolean;
-  isRequired?: boolean;
-  wrapperClassName?: string;
-}
-
-const NpmLongText = ({
-  isModalOpen,
-  handleModalClose = () => {},
-  showModal = () => {},
-  okText = "Close",
-  title = "Extended input",
-  btnNameModal = "Expand text area",
-  inputValue,
-  onEditChange = () => {},
-  isLabelShowing,
-  label,
-  isError,
-  isRequired,
-  wrapperClassName = "",
-}: IProps) => {
+  // ToDo: make ok cancel button by design
   return (
-    <>
-      <NpmModal
-        showModal={() => showModal()}
-        isModalOpen={isModalOpen}
-        handleCancel={() => handleModalClose()}
-        okText={okText}
-        title={title}
-        btnNameModal={btnNameModal}
-      >
-        <div className="pb-2">
-          {/* {isLabelShowing ? (
-            <DFormFieldLabel label={label} isError={isError} isRequired={isRequired} className="modal-label" />
-          ) : null} */}
-
-          <NpmEditor
-            data={inputValue}
-            toolbar={{
-              options: ["inline", "list", "textAlign", "link"],
-              inline: {
-                inDropdown: false,
-                options: ["bold", "italic", "underline"],
-              },
-              textAlign: {
-                inDropdown: false,
-                options: ["indent", "outdent"],
-              },
-            }}
-            onChange={onEditChange}
-            // wrapperClassName="dform-long-text-widget__editor"
-            wrapperClassName={wrapperClassName}
-          />
-        </div>
-      </NpmModal>
-    </>
+    <NpmModal visible={isModalOpen} title="Extended input" okText="Close" onCancel={onCancel} onOk={onCancel}>
+      <div className="pb-2">
+        <NpmEditor
+          data={value}
+          toolbar={{
+            options: ["inline", "list", "textAlign", "link"],
+            inline: {
+              inDropdown: false,
+              options: ["bold", "italic", "underline"],
+            },
+            textAlign: {
+              inDropdown: false,
+              options: ["indent", "outdent"],
+            },
+          }}
+          onChange={onEditChange}
+          wrapperClassName={editorClassName}
+        />
+      </div>
+    </NpmModal>
   );
 };
 

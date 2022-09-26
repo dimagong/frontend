@@ -50,27 +50,34 @@ const OnboardingUser = () => {
     }
   );
 
-  const userApplications = collectApplicationsUser(dForms ?? [], onboardingSurveys ?? []);
+  if (userSurveyPassing.isLoading || useDForms.isLoading || userProspectProfile.isLoading) {
+    return (
+      <div className="d-flex justify-content-center pt-5">
+        <Spinner color="primary" size={"70"} />
+      </div>
+    );
+  }
 
+  const userApplications = collectApplicationsUser(dForms ?? [], onboardingSurveys ?? []);
   const initialOnboarding = initialAppOnboarding(profile, userApplications);
 
-  return userSurveyPassing.isLoading || useDForms.isLoading ? (
-    <div className="d-flex justify-content-center pt-5">
-      <Spinner color="primary" size={"70"} />
-    </div>
-  ) : profile?.notify_entries.length ? (
-    <IntroPageView
-      userName={profile?.first_name}
-      organizationName={profile?.permissions.organization}
-      redirectToOnboarding={proceedUserToOnboarding}
-      brochureUrl={brochureQuery.data.url}
-      brochureName={brochureQuery.data.file?.name}
-      isOnboardingExist={!!userApplications.length}
-      downloadText={profile?.notify_entries[0].notify.download_text}
-      introText={profile?.notify_entries[0].notify.intro_text}
-      introTitle={profile?.notify_entries[0].notify.intro_title}
-    />
-  ) : (
+  if (profile?.notify_entries.length > 0) {
+    return (
+      <IntroPageView
+        userName={profile?.first_name}
+        organizationName={profile?.permissions.organization}
+        redirectToOnboarding={proceedUserToOnboarding}
+        brochureUrl={brochureQuery.data.url}
+        brochureName={brochureQuery.data.file?.name}
+        isOnboardingExist={!!userApplications.length}
+        downloadText={profile?.notify_entries[0].notify.download_text}
+        introText={profile?.notify_entries[0].notify.intro_text}
+        introTitle={profile?.notify_entries[0].notify.intro_title}
+      />
+    );
+  }
+
+  return (
     <MemberComponentView
       dForms={dForms}
       profile={profile}

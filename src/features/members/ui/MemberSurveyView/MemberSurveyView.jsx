@@ -16,7 +16,7 @@ import {
 } from "../../data/hooks";
 
 import MemberCardPassSurveyView from "../MemberSurveyPassView";
-import MemberSurveySubmittedView from "../MemberSurveySubmittedView";
+import MemberThanksStatusView from "../MemberThanksStatusView";
 import MemberSurveyReportView from "../MemberSurveyReportView";
 import MemberSurveyFeedbackView from "../MemberSurveyFeedbackView";
 import MemberSurveyStartView from "../MemberSurveyStartView";
@@ -177,7 +177,7 @@ const MemberSurvey = ({
         />
       )}
       {surveyStatus === statusConstants.SUBMITTED && (
-        <MemberSurveySubmittedView data={finished_at} organization={organization} surveyName={title} />
+        <MemberThanksStatusView data={finished_at} organization={organization} surveyName={title} />
       )}
       {surveyStatus === statusConstants.APPROVED && !isFeedbackView && (
         <MemberSurveyReportView

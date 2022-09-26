@@ -8,25 +8,33 @@ import { Select } from "antd";
 const { Option } = Select;
 
 export interface IProps {
-  handleChange: (value: string) => {};
-  options: string[];
+  onChange: Function;
+  options: string[] | { label: string; value: string }[];
   style?: CSS.Properties;
+  value?: string | string[] | number | number[];
+  disabled?: boolean;
+  placeholder?: string | string[] | number | number[];
+  className?: string;
+  status?: "error" | "warning" | "";
 }
 
-const NpmInputSelect: Function = ({ handleChange, options, style = { width: "100%" } }: IProps): JSX.Element => {
+const NpmInputSelect: Function = ({ onChange, options, style = { width: "100%" }, ...props }: IProps): JSX.Element => {
   return (
     <>
       <Select
-        defaultValue={options.length ? options[0] : "none"}
         // @ts-ignore
         style={style}
-        onChange={(value) => handleChange(value)}
+        onChange={(value) => {
+          console.log("onChange value", value);
+          onChange(options[`${value}`]);
+        }}
+        {...props}
       >
         {options.length ? (
           options.map((option, idx) => {
             return (
-              <Option key={idx} value={option}>
-                {option}
+              <Option key={idx} value={option.lable}>
+                {option.value}
               </Option>
             );
           })

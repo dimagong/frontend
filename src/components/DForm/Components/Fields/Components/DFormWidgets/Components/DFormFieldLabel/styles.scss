@@ -1,13 +1,22 @@
 .dform-field-label {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+
+  color: #474747;
+
   margin-bottom: 25px;
 
-  font-size: 15px;
-  font-weight: 300;
-  color: #707070;
+  &--small {
+    font-size: 16px;
+    line-height: 19px;
+  }
 
   &--is-error {
     .dform-field-label__asterix {
-      color: #dc3545;
+      color: #c70000;
     }
   }
 }
