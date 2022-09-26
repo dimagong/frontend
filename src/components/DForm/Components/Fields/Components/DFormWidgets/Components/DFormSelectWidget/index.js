@@ -1,1 +1,1 @@
-export { DFormSelectWidget, colourStyles } from "./DFormSelectWidget";
+export { DFormSelectWidget } from "./DFormSelectWidget";
