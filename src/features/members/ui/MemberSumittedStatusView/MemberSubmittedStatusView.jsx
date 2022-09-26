@@ -31,7 +31,7 @@ export const MemberSubmittedStatusView = ({ organization, onShowDForm }) => {
               </div>
             </div>
             <div className="cs-button">
-              <NpmButton onClick={() => handleShowDForm()}>
+              <NpmButton onClick={handleShowDForm} type={"nmp-primary"}>
                 <span>View application</span>
                 <i className="arrow right"></i>
               </NpmButton>

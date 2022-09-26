@@ -9,7 +9,7 @@ import NpmDragAndDrop from "./NpmDragAndDrop";
 import NpmEditor from "./NpmEditor";
 import NpmFileLoading from "./NpmFileLoading";
 import { NmpInput } from "./NmpInput";
-import NpmInputSelect from "./NpmInputSelect";
+import { NmpSelect } from "./NmpSelect";
 import { NmpLongTextModal } from "./NmpLongTextModal";
 import NpmModal from "./NpmModal";
 import NpmPopover from "./NpmPopover";
@@ -35,7 +35,7 @@ export {
   NpmEditor,
   NpmFileLoading,
   NmpInput,
-  NpmInputSelect,
+  NmpSelect,
   NmpLongTextModal,
   NpmModal,
   NpmPopover,

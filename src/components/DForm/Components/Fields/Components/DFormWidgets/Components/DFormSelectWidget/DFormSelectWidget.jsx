@@ -3,15 +3,12 @@ import "./styles.scss";
 import React from "react";
 import PropTypes from "prop-types";
 
-import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
-
+import { NmpSelect } from "features/nmp-ui";
 import { IdType, OptionsType, OptionType } from "utility/prop-types";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
 import selectValidationSchema from "./validationSchema";
-
-import { NpmInputSelect } from "../../../../../../../../features/nmp-ui";
 
 export const colourStyles = {
   option: (styles, { isFocused, isSelected, ...rest }) => {
@@ -64,7 +61,7 @@ const defaultPlaceholder = "Select an option";
 export const DFormSelectWidget = (props) => {
   const {
     id,
-    value = "",
+    value,
     label,
     error,
     options,
@@ -88,27 +85,15 @@ export const DFormSelectWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={className}
     >
-      <NpmInputSelect
-        options={options}
+      <NmpSelect
         id={id}
-        value={value}
-        disabled={isDisabled}
-        styles={colourStyles}
-        placeholder={placeholder}
-        onChange={onChange}
-      />
-      {/* <DeprecatedNmpSelect
-        inputId={id}
-        value={value}
-        options={options}
-        maxMenuHeight={175}
-        styles={colourStyles}
-        multiple={false}
+        value={value?.value}
         loading={isLoading}
+        options={options}
         disabled={isDisabled}
         placeholder={placeholder}
-        onChange={onChange}
-      /> */}
+        onChange={(_, option) => onChange(option)}
+      />
     </DFormFieldContainer>
   );
 };
