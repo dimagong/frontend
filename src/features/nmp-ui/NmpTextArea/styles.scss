@@ -1,0 +1,10 @@
+.nmp-textarea {
+  border: 1px solid #aeaeae;
+  border-radius: 2px;
+
+  &:focus,
+  &:hover {
+    border: 1px solid black;
+    box-shadow: none;
+  }
+}

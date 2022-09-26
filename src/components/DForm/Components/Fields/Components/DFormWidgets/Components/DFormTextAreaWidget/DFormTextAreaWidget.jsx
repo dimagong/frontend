@@ -1,15 +1,12 @@
-import "./styles.scss";
-
 import React from "react";
 import PropTypes from "prop-types";
 
 import { IdType } from "utility/prop-types";
-
-import textareaValidationSchema from "./validationSchema";
+import { NmpTextArea } from "features/nmp-ui";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
-import { NpmTextArea } from "../../../../../../../../features/nmp-ui";
+import textareaValidationSchema from "./validationSchema";
 
 const defaultPlaceholder = "Enter your answer here";
 
@@ -41,10 +38,7 @@ export const DFormTextAreaWidget = (props) => {
         isLabelShowing={isLabelShowing}
         className={className}
       >
-        <NpmTextArea rows={5} placeholder={placeholder} value={value} disabled={isDisabled} onChange={onChange} />
-        {/* <textarea rows="5" value={value} disabled={isDisabled} onChange={onChange} className="dform-textarea-widget">
-          {placeholder}
-        </textarea> */}
+        <NmpTextArea rows="5" placeholder={placeholder} value={value} disabled={isDisabled} onChange={onChange} />
       </DFormFieldContainer>
     </div>
   );

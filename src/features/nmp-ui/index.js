@@ -8,7 +8,7 @@ import NpmDatePicker from "./NpmDatePicker";
 import NpmDragAndDrop from "./NpmDragAndDrop";
 import NpmEditor from "./NpmEditor";
 import NpmFileLoading from "./NpmFileLoading";
-import NpmInput from "./NpmInput";
+import { NmpInput } from "./NmpInput";
 import NpmInputSelect from "./NpmInputSelect";
 import { NmpLongTextModal } from "./NmpLongTextModal";
 import NpmModal from "./NpmModal";
@@ -18,7 +18,7 @@ import NpmRadio from "./NpmRadio";
 import NpmRadioCardGroup from "./NpmRadioCardGroup";
 import NpmSpin from "./NpmSpin";
 import NpmStepper from "./NpmStepper";
-import NpmTextArea from "./NpmTextArea";
+import { NmpTextArea } from "./NmpTextArea";
 import NpmTimePicker from "./NpmTimePicker";
 import { NpmTooltip } from "./NpmTooltip";
 import NpmMenu from "./NpmMenu";
@@ -34,7 +34,7 @@ export {
   NpmDragAndDrop,
   NpmEditor,
   NpmFileLoading,
-  NpmInput,
+  NmpInput,
   NpmInputSelect,
   NmpLongTextModal,
   NpmModal,
@@ -44,7 +44,7 @@ export {
   NpmRadioCardGroup,
   NpmSpin,
   NpmStepper,
-  NpmTextArea,
+  NmpTextArea,
   NpmTimePicker,
   NpmTooltip,
   NpmMenu,
