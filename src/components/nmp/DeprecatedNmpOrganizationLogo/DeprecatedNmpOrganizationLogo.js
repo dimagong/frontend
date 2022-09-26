@@ -6,8 +6,13 @@ import { useOrganizationLogoQuery } from "api/file/useOrganizationFileQueries";
 
 import DeprecatedNmpImage from "../DeprecatedNmpImage";
 
-const DeprecatedNmpOrganizationLogo = ({ fileId, organizationId, organizationType, organizationName, ...attrs }) => {
-  const logoQuery = useOrganizationLogoQuery({ organizationId, organizationType }, { enabled: Boolean(fileId) });
+const DeprecatedNmpOrganizationLogo = (props) => {
+  const { fileId, isOnboarding, organizationId, organizationType, organizationName, ...attrs } = props;
+
+  const logoQuery = useOrganizationLogoQuery(
+    { organizationId, organizationType, isOnboarding },
+    { enabled: Boolean(fileId) }
+  );
 
   return (
     <DeprecatedNmpImage src={logoQuery.data.url} alt={organizationName} isLoading={logoQuery.isLoading} {...attrs} />

@@ -37,7 +37,7 @@ const UserDropdown = (props) => {
   );
 };
 
-const NavbarUser = ({ userId, userAvatarId, userName, email, ...props }) => (
+const NavbarUser = ({ userId, isOnboarding, userAvatarId, userName, email, ...props }) => (
   <ul className="nav navbar-nav navbar-nav-user float-right">
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle tag="a" className="nav-link dropdown-user-link">
@@ -49,6 +49,7 @@ const NavbarUser = ({ userId, userAvatarId, userName, email, ...props }) => (
           <DeprecatedNmpUserAvatar
             userId={userId}
             fileId={userAvatarId}
+            isOnboarding={isOnboarding}
             className="round"
             style={{ width: 40, height: 40 }}
           />

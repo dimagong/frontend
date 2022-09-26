@@ -16,4 +16,10 @@
   &__editor {
     height: 430px;
   }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+  }
 }

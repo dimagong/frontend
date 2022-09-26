@@ -30,7 +30,6 @@ const MemberSurveyFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedba
     setIsFeedbackView(false);
   };
 
-  console.log("surveyInteraction", surveyInteraction);
   const currentQuestion = questions[currQuestionIndex]?.body ?? "";
   const currentAnswer = answers[currQuestionIndex]?.feedback ?? "";
 

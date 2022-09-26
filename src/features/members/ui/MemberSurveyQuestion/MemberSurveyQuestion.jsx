@@ -3,7 +3,7 @@ import "./styles.scss";
 import React from "react";
 import { QuestionCircleFilled } from "@ant-design/icons";
 
-import { NpmTooltip, NpmInput, NpmTextArea, NpmRadioCardGroup } from "features/nmp-ui";
+import { NpmTooltip, NmpInput, NmpTextArea, NpmRadioCardGroup } from "features/nmp-ui";
 
 const MemberSurveyQuestion = ({
   structureType,
@@ -13,6 +13,11 @@ const MemberSurveyQuestion = ({
   correctAnswer,
   hint,
 }) => {
+  const onAnswerInputChange = (event) => {
+    if (!handleAnswerSelect) return;
+    handleAnswerSelect(event.target.value);
+  };
+
   return (
     <>
       <div className="answer-content">
@@ -34,19 +39,10 @@ const MemberSurveyQuestion = ({
               correctAnswer={correctAnswer}
             />
           )}
-          {structureType === "text" && <NpmInput onChange={handleAnswerSelect} value={selectedAnswer} />}
-          {structureType === "textArea" && <NpmTextArea onChange={handleAnswerSelect} value={selectedAnswer} />}
 
-          {/* <div>
-                  <Question
-                    initAnswer={currentQuestionAnswer}
-                    questionNumber={currentIndex + 1}
-                    question={question}
-                    displayType={"onboarding"}
-                    onAnswerChange={handleAnswerSelect}
-                    selectedAnswer={selectedAnswer}
-                  />
-                </div> */}
+          {structureType === "text" && <NmpInput onChange={onAnswerInputChange} value={selectedAnswer} />}
+
+          {structureType === "textArea" && <NmpTextArea onChange={onAnswerInputChange} value={selectedAnswer} />}
         </div>
       </div>
     </>

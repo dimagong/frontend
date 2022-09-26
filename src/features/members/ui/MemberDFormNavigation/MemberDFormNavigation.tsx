@@ -19,7 +19,7 @@ const MemberDFormNavigation = (props: IProps) => {
 
   return (
     <NpmButton type="nmp-primary" disabled={disabled} loading={loading} onClick={handleNextSection}>
-      <span>{isLastSection ? "Submit for review" : "Next Section"}</span>
+      {isLastSection ? "Submit for review" : "Next Section"}
     </NpmButton>
   );
 };

@@ -18,10 +18,12 @@ export const OrganizationFileQueryKeys = {
   brochure: (introPageId) => [...OrganizationFileQueryKeys.allBrochure(), introPageId],
 };
 
-export const useOrganizationLogoQuery = ({ organizationType, organizationId }, options) => {
+export const useOrganizationLogoQuery = ({ organizationType, organizationId, isOnboarding }, options) => {
+  const apiPrefix = isOnboarding ? "member-view-api" : "api";
+
   return useFileQuery(
     {
-      url: `api/files/organization/${organizationType}/${organizationId}/logo`,
+      url: `${apiPrefix}/files/organization/${organizationType}/${organizationId}/logo`,
       queryKey: OrganizationFileQueryKeys.logo(organizationType, organizationId),
     },
     options

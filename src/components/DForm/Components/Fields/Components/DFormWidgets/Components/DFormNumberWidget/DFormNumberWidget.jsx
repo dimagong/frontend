@@ -1,13 +1,10 @@
-import "./styles.scss";
-
 import React from "react";
 import PropTypes from "prop-types";
 
+import { NmpInput } from "features/nmp-ui";
 import { IdType } from "utility/prop-types";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
-
-import { NpmInput } from "../../../../../../../../features/nmp-ui";
 
 const defaultPlaceholder = "Enter your answer here";
 
@@ -38,7 +35,7 @@ export const DFormNumberWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={className}
     >
-      <NpmInput
+      <NmpInput
         id={id}
         type="number"
         value={value}
@@ -47,15 +44,6 @@ export const DFormNumberWidget = (props) => {
         onChange={onChange}
         className="dform-number-field"
       />
-      {/* <input
-        id={id}
-        type="number"
-        value={value}
-        disabled={isDisabled}
-        placeholder={placeholder}
-        onChange={onChange}
-        className="dform-number-field"
-      /> */}
     </DFormFieldContainer>
   );
 };

@@ -28,11 +28,11 @@ export const DFormDateWidget = (props) => {
       className={classnames(className)}
     >
       {format === DateWidgetFormatTypes.Time ? (
-        <NpmTimePicker value={value} disabled={isDisabled} onChange={onChange} />
+        <NpmTimePicker id={id} value={value} disabled={isDisabled} onChange={onChange} />
       ) : null}
 
       {format === DateWidgetFormatTypes.Date ? (
-        <NpmDatePicker value={value} disabled={isDisabled} onChange={onChange} />
+        <NpmDatePicker id={id} value={value} disabled={isDisabled} onChange={onChange} />
       ) : null}
     </DFormFieldContainer>
   );
