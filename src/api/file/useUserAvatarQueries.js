@@ -16,8 +16,12 @@ export const UserAvatarQueryKeys = {
   avatar: (userId) => [...UserAvatarQueryKeys.all(), userId],
 };
 
-export const useUserAvatarQuery = ({ userId }, options) => {
-  return useFileQuery({ url: `api/file/user/${userId}/avatar`, queryKey: UserAvatarQueryKeys.avatar(userId) }, options);
+export const useUserAvatarQuery = ({ userId, isOnboarding }, options) => {
+  const apiPrefix = isOnboarding ? "member-view-api" : "api";
+  return useFileQuery(
+    { url: `${apiPrefix}/file/user/${userId}/avatar`, queryKey: UserAvatarQueryKeys.avatar(userId) },
+    options
+  );
 };
 
 export const useUpdateUserAvatarMutation = ({ userId }, options = {}) => {

@@ -11,14 +11,14 @@ import NoneAvatar from "assets/img/portrait/none-avatar.png";
 
 import DeprecatedNmpManageableImage from "../DeprecatedNmpManageableImage";
 
-const DeprecatedNmpUserAvatar = ({ fileId, userId, isEditable = false, ...attrs }) => {
+const DeprecatedNmpUserAvatar = ({ fileId, userId, isOnboarding, isEditable = false, ...attrs }) => {
   const updateMutation = useUpdateUserAvatarMutation({ userId });
   const onChange = useCallback((file) => updateMutation.mutate({ file }), [updateMutation]);
 
   const deleteMutation = useDeleteUserAvatarMutation({ userId, fileId });
   const onDelete = useCallback(() => deleteMutation.mutate(), [deleteMutation]);
 
-  const avatarQuery = useUserAvatarQuery({ userId, fileId }, { enabled: Boolean(fileId) });
+  const avatarQuery = useUserAvatarQuery({ userId, fileId, isOnboarding }, { enabled: Boolean(fileId) });
   const src = useMemo(() => (avatarQuery.data.url ? avatarQuery.data.url : NoneAvatar), [avatarQuery.data.url]);
 
   return (

@@ -33,6 +33,7 @@ const UserName = ({ userProfile }) => {
 const ThemeNavbar = (props) => {
   const dispatch = useDispatch();
   const { managers, userProfile } = props;
+  const isOnboarding = userService.isOnboarding(userProfile);
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"];
   const navbarTypes = ["floating", "static", "sticky", "hidden"];
   const memberFirms = useSelector(getMemberFirms);
@@ -95,6 +96,7 @@ const ThemeNavbar = (props) => {
                 <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
                   <DeprecatedNmpOrganizationLogo
                     fileId={userProfile.permissions.logo?.id}
+                    isOnboarding={isOnboarding}
                     organizationId={userProfile.permissions.organization_id}
                     organizationType={userProfile.permissions.organization_type}
                     organizationName={userProfile.permissions.organization}
@@ -140,6 +142,7 @@ const ThemeNavbar = (props) => {
                 </ul>
               ) : (
                 <NavbarUser
+                  isOnboarding={isOnboarding}
                   handleAppOverlay={props.handleAppOverlay}
                   changeCurrentLang={props.changeCurrentLang}
                   userName={<UserName {...props} />}
