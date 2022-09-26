@@ -6,7 +6,7 @@ import React, { useEffect, useReducer, useState } from "react";
 
 import { IdType } from "utility/prop-types";
 
-import { NpmButton, NpmLongText } from "features/nmp-ui";
+import { NpmButton, NmpLongTextModal } from "features/nmp-ui";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
@@ -59,25 +59,26 @@ export const DFormLongTextWidget = (props) => {
       <div
         ref={inputRef}
         contentEditable={!isDisabled}
-        className={classnames("dform-long-text-widget__area", { "dform-long-text-widget__area--disabled": isDisabled })}
         placeholder="Enter your answer here"
+        className={classnames("dform-long-text-widget__area", { "dform-long-text-widget__area--disabled": isDisabled })}
         dangerouslySetInnerHTML={{ __html: inputHTML }}
         onInput={onInput}
       />
 
       {isDisabled ? null : (
-        <>
-          {/* ToDo: make by design */}
-          <NpmButton onClick={toggleIsModalOpened}>Expand text area</NpmButton>
+        <div className="dform-long-text-widget__actions">
+          <NpmButton type="nmp-primary" onClick={toggleIsModalOpened}>
+            Expand text area
+          </NpmButton>
 
-          <NpmLongText
+          <NmpLongTextModal
             value={inputValue}
             isModalOpen={isModalOpened}
             onCancel={handleModalClose}
             onEditChange={wysiwygChange}
             editorClassName="dform-long-text-widget__editor"
           />
-        </>
+        </div>
       )}
     </DFormFieldContainer>
   );

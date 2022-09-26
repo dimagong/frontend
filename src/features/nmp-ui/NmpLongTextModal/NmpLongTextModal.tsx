@@ -1,6 +1,6 @@
 import React from "react";
 
-import { NpmModal, NpmEditor } from "features/nmp-ui";
+import { NpmModal, NpmEditor, NpmButton } from "features/nmp-ui";
 
 type Props = {
   value?: string;
@@ -10,12 +10,20 @@ type Props = {
   onEditChange?: (v: any) => void;
 };
 
-const NpmLongText: React.FC<Props> = (props) => {
-  const { value, isModalOpen = false, editorClassName = "", onCancel, onEditChange } = props;
+export const NmpLongTextModal: React.FC<Props> = (props) => {
+  const { value, isModalOpen = false, editorClassName, onCancel, onEditChange } = props;
 
-  // ToDo: make ok cancel button by design
   return (
-    <NpmModal visible={isModalOpen} title="Extended input" okText="Close" onCancel={onCancel} onOk={onCancel}>
+    <NpmModal
+      visible={isModalOpen}
+      title="Extended input"
+      onCancel={onCancel}
+      footer={
+        <NpmButton type="nmp-primary" onClick={onCancel}>
+          Close
+        </NpmButton>
+      }
+    >
       <div className="pb-2">
         <NpmEditor
           data={value}
@@ -37,5 +45,3 @@ const NpmLongText: React.FC<Props> = (props) => {
     </NpmModal>
   );
 };
-
-export default NpmLongText;

@@ -10,7 +10,7 @@ import NpmEditor from "./NpmEditor";
 import NpmFileLoading from "./NpmFileLoading";
 import NpmInput from "./NpmInput";
 import NpmInputSelect from "./NpmInputSelect";
-import NpmLongText from "./NpmLongText";
+import { NmpLongTextModal } from "./NmpLongTextModal";
 import NpmModal from "./NpmModal";
 import NpmPopover from "./NpmPopover";
 import NpmProgress from "./NpmProgress";
@@ -36,7 +36,7 @@ export {
   NpmFileLoading,
   NpmInput,
   NpmInputSelect,
-  NpmLongText,
+  NmpLongTextModal,
   NpmModal,
   NpmPopover,
   NpmProgress,
