@@ -63,7 +63,13 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
               organization={organization}
             />
           )}
-          {activeOnboarding.type === TypeConstants.DFORM && <MemberDFormView dformId={activeOnboarding.id} />}
+          {activeOnboarding.type === TypeConstants.DFORM && (
+            <MemberDFormView
+              dformId={activeOnboarding.id}
+              status={activeOnboarding.status}
+              organization={profile.permissions.organization}
+            />
+          )}
         </Col>
       </Row>
     </>

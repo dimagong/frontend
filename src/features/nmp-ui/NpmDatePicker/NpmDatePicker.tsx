@@ -1,49 +1,46 @@
+import "./styles.scss";
+
 import React from "react";
+import moment from "moment";
+import { DatePicker, DatePickerProps } from "antd";
 
-import CSS from "csstype";
+type Props = {
+  value?: string;
+  onChange?: (isoString: string | null) => void;
+} & DatePickerProps;
 
-import type { DatePickerProps } from "antd";
-import { DatePicker } from "antd";
+const NpmDatePicker: React.FC<Props> = (props) => {
+  const {
+    value,
+    style = { width: "100%" },
+    mode = "date",
+    picker = "date",
+    size = "middle",
+    placement = "bottomRight",
+    placeholder = "Date",
+    onChange: propOnChange,
+    ...rest
+  } = props;
 
-interface IProps {
-  onChangeDate: (date, dateString) => void;
-  style?: CSS.Properties;
-  popupStyle?: CSS.Properties;
-  status?: "error" | "warning" | "";
-  mode?: "time" | "date" | "month" | "year" | "decade";
-  picker?: "date" | "week" | "month" | "quarter" | "year";
-  size?: "large" | "middle" | "small";
-  placement?: "bottomLeft" | "bottomRight" | "topLeft" | "topRight";
-  placeholder?: string;
-}
+  const onChange: DatePickerProps["onChange"] = (moment) => {
+    if (!propOnChange) return;
 
-const NpmDatePicker = ({
-  onChangeDate,
-  style = { width: "100%" },
-  mode = "date",
-  picker = "date",
-  status = "",
-  size = "middle",
-  placement = "bottomRight",
-  placeholder = "Date",
-  popupStyle = {},
-}: IProps) => {
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-    // console.log(date, dateString);
-    onChangeDate(date, dateString);
+    if (moment == null) return propOnChange(null);
+
+    propOnChange(moment.toISOString());
   };
+
   return (
-    // @ts-ignore
     <DatePicker
-      style={style}
-      onChange={onChange}
-      mode={mode}
-      picker={picker}
-      status={status}
+      value={moment(value) as any}
       size={size}
+      mode={mode}
+      style={style}
+      picker={picker}
       placement={placement}
       placeholder={placeholder}
-      popupStyle={popupStyle}
+      onChange={onChange}
+      {...rest}
     />
   );
 };

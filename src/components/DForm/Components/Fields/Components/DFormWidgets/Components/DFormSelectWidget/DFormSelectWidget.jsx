@@ -11,6 +11,8 @@ import { DFormFieldContainer } from "../DFormFieldContainer";
 
 import selectValidationSchema from "./validationSchema";
 
+import { NpmInputSelect } from "../../../../../../../../features/nmp-ui";
+
 export const colourStyles = {
   option: (styles, { isFocused, isSelected, ...rest }) => {
     return {
@@ -86,7 +88,16 @@ export const DFormSelectWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={className}
     >
-      <DeprecatedNmpSelect
+      <NpmInputSelect
+        options={options}
+        id={id}
+        value={value}
+        disabled={isDisabled}
+        styles={colourStyles}
+        placeholder={placeholder}
+        onChange={onChange}
+      />
+      {/* <DeprecatedNmpSelect
         inputId={id}
         value={value}
         options={options}
@@ -97,7 +108,7 @@ export const DFormSelectWidget = (props) => {
         disabled={isDisabled}
         placeholder={placeholder}
         onChange={onChange}
-      />
+      /> */}
     </DFormFieldContainer>
   );
 };
