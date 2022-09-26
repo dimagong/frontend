@@ -23,10 +23,17 @@ import { INITIAL_APPLICATION_DATA } from "../constants";
 
 const { setContext } = appSlice.actions;
 
-const getOrganizationAsOption = (organization) => ({ value: organization, label: organization.name });
+const getOrganizationUniqueId = ({ id, type }) => `${type}/${id}`;
+
+const getOrganizationAsOption = (organization) => ({
+  value: getOrganizationUniqueId(organization),
+  label: organization.name,
+});
+
 const getOrganizationsAsOptions = (organizations) => organizations.map(getOrganizationAsOption);
 
-const getApplicationTemplateAsOption = (template) => ({ value: template, label: template.name });
+const getApplicationTemplateAsOption = (template) => ({ value: template.id, label: template.name });
+
 const getApplicationsTemplatesAsOptions = (templates) => templates.map(getApplicationTemplateAsOption);
 
 const initialApplicationDescriptionValues = { name: "", description: "", isPrivate: false };
@@ -47,6 +54,9 @@ export const CreateApplicationPage = () => {
 
   const allowedOrganizations = useAllowedOrganizationsListQuery({ initialData: [] });
   const applicationsTemplates = useApplicationsTemplatesQuery({ initialData: [], enabled: Boolean(organization) });
+
+  const templates = applicationsTemplates.data;
+  const organizations = allowedOrganizations.data;
 
   const copyApplicationTemplate = useCopyApplicationTemplateMutation(
     { applicationId: applicationTemplate?.id },
@@ -73,9 +83,22 @@ export const CreateApplicationPage = () => {
     },
   });
 
-  const onOrganizationChange = ({ value }) => setOrganization(value);
+  const onOrganizationChange = (option) => {
+    const uniqueId = option.value;
+    const organization = organizations.find((organization) => {
+      const organizationUniqueId = getOrganizationUniqueId(organization);
+      return organizationUniqueId === uniqueId;
+    });
 
-  const onApplicationTemplateChange = ({ value }) => setApplicationTemplate(value);
+    setOrganization(organization);
+  };
+
+  const onApplicationTemplateChange = (option) => {
+    const templateId = option.value;
+    const template = templates.find((template) => template.id === templateId);
+
+    setApplicationTemplate(template);
+  };
 
   const onCreateBtnSubmit = async () => {
     await mutateApplication(
