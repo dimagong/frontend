@@ -28,6 +28,7 @@ interface Props {
 export const MemberDForm: FC<Props> = (props) => {
   const { id, name, schema, values: propValues, accessType, sections } = props;
 
+  const [errors, setErrors] = useState<[]>([]);
   const [values, setValues] = useState<any>(() => propValues);
   const [sectionId, setSectionId] = useState<string>(() => sections[0].id);
   const [successSubmit, onSuccessSubmit] = useState<boolean>(() => false);
@@ -36,8 +37,13 @@ export const MemberDForm: FC<Props> = (props) => {
   const sectionName = sections[step]?.name || `${step + 1}`;
   const stepperStatus = step < sections.length ? "process" : "finish";
 
+  const onFieldValueError = (error: any): void => {
+    console.log({ error });
+  };
+
   // Mutations
-  const saveFieldValueMutation = useSaveDFormFieldValueMutation({ dformId: id });
+  const saveFieldValueMutation = useSaveDFormFieldValueMutation({ dformId: id }, { onError: onFieldValueError });
+
   const submitDFormMutation = useSubmitDFormMutation(
     { dformId: id },
     {
@@ -145,7 +151,7 @@ export const MemberDForm: FC<Props> = (props) => {
                   <MemberDFormNavigation
                     sectionNumber={step}
                     sectionLimit={sections.length - 1}
-                    disabled={!isAccessible}
+                    disabled={isFinalSection && !isAccessible}
                     loading={submitDFormMutation.isLoading}
                     handleNextSection={onNextSection}
                   />

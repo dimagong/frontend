@@ -5,18 +5,19 @@ import { useDFormQuery, useDFormValuesQuery } from "api/Onboarding/prospectUserQ
 import { MemberDForm } from "../MemberDForm";
 import { MemberSubmittedStatusView } from "../MemberSumittedStatusView";
 
-interface IProps {
+type Props = {
   dformId: number;
   status: string;
   organization: string;
-}
+};
 
-const MemberDFormView: FC<IProps> = ({ dformId, status, organization }: IProps) => {
-  const [showDForm, onShowDForm] = useState<boolean>(() => false);
+const MemberDFormView: FC<Props> = ({ dformId, status, organization }) => {
+  const [showDForm, onShowDForm] = useState<boolean>(false);
 
   // Queries
   const dformQuery = useDFormQuery({ dformId }, { refetchOnWindowFocus: false, keepPreviousData: true });
   const valuesQuery = useDFormValuesQuery({ dformId }, { refetchOnWindowFocus: false });
+
   if (dformQuery.isError) {
     return <div className="onboarding-survey_loading">Something was wrong ....</div>;
   }
@@ -31,12 +32,9 @@ const MemberDFormView: FC<IProps> = ({ dformId, status, organization }: IProps) 
   const sections = schema.sectionsOrder.map((id) => schema.sections[id]);
 
   if (status === "submitted" && showDForm === false) {
-    return (
-      <div>
-        <MemberSubmittedStatusView organization={organization} onShowDForm={onShowDForm} />
-      </div>
-    );
+    return <MemberSubmittedStatusView organization={organization} onShowDForm={onShowDForm} />;
   }
+
   return (
     <MemberDForm
       id={dformId}

@@ -102,7 +102,7 @@ export const useSaveDFormFieldValueMutation = ({ dformId }, options = {}) => {
       url: `/member-view-api/dform/${dformId}/user-value`,
     },
     {
-      onError: () => void toast.error("Last changes in field doesn't saved"),
+      // onError: () => void toast.error("Last changes in field doesn't saved"),
       ...options,
     }
   );
