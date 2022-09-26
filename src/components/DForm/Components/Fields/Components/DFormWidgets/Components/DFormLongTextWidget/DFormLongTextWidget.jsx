@@ -2,19 +2,15 @@ import "./styles.scss";
 
 import PropTypes from "prop-types";
 import classnames from "classnames";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 
 import { IdType } from "utility/prop-types";
 
-import CustomModal from "components/CustomModal";
-import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
+import { NpmButton, NpmLongText } from "features/nmp-ui";
 
-import longTextValidationSchema from "./validationSchema";
-
-import { DFormFieldLabel } from "../DFormFieldLabel";
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
-import NpmLongText from "./../../../../../../../../features/nmp-ui/NpmLongText";
+import longTextValidationSchema from "./validationSchema";
 
 export const DFormLongTextWidget = (props) => {
   const { id, value = "", label, error, isError, isRequired, isDisabled, isLabelShowing, onChange, className } = props;
@@ -22,7 +18,7 @@ export const DFormLongTextWidget = (props) => {
   const inputRef = React.useRef();
   const [inputHTML, setInputHTML] = useState("");
   const [inputValue, setInputValue] = useState("");
-  const [isModalOpened, setIsModalOpened] = useState(false);
+  const [isModalOpened, toggleIsModalOpened] = useReducer((v) => !v, false);
 
   const handleOnChange = (value) => onChange(value);
 
@@ -31,7 +27,7 @@ export const DFormLongTextWidget = (props) => {
   };
 
   const handleModalClose = () => {
-    setIsModalOpened(false);
+    toggleIsModalOpened();
     setInputHTML(inputValue);
     handleOnChange(inputValue);
   };
@@ -71,59 +67,16 @@ export const DFormLongTextWidget = (props) => {
 
       {isDisabled ? null : (
         <>
-          {/* <div className="d-flex justify-content-end">
-            <button onClick={() => setIsModalOpened(true)}>Expand text area</button>
-          </div> */}
-          <div style={{ marginTop: 5, textAlign: "right" }}>
-            <NpmLongText
-              isModalOpen={isModalOpened}
-              handleModalClose={handleModalClose}
-              okText="Close"
-              title="Extended input"
-              btnNameModal="Expand text area"
-              inputValue={inputValue}
-              showModal={() => setIsModalOpened(true)}
-              onEditChange={(e) => wysiwygChange(e)}
-              isLabelShowing={isLabelShowing}
-              label={label}
-              isError={isError}
-              isRequired={isRequired}
-              wrapperClassName="dform-long-text-widget__editor"
-            />
-          </div>
+          {/* ToDo: make by design */}
+          <NpmButton onClick={toggleIsModalOpened}>Expand text area</NpmButton>
 
-          {/* <CustomModal
-            size="lg"
-            submitBtnText="Close"
-            title="Extended input"
-            isOpen={isModalOpened}
-            onClose={handleModalClose}
-            onSubmit={handleModalClose}
-          >
-            <div className="pb-2">
-              {isLabelShowing ? (
-                <DFormFieldLabel label={label} isError={isError} isRequired={isRequired} className="modal-label" />
-              ) : null}
-
-              <WysiwygEditor
-                type="text"
-                data={inputValue}
-                toolbar={{
-                  options: ["inline", "list", "textAlign", "link"],
-                  inline: {
-                    inDropdown: false,
-                    options: ["bold", "italic", "underline"],
-                  },
-                  textAlign: {
-                    inDropdown: false,
-                    options: ["indent", "outdent"],
-                  },
-                }}
-                onChange={wysiwygChange}
-                wrapperClassName="dform-long-text-widget__editor"
-              />
-            </div>
-          </CustomModal> */}
+          <NpmLongText
+            value={inputValue}
+            isModalOpen={isModalOpened}
+            onCancel={handleModalClose}
+            onEditChange={wysiwygChange}
+            editorClassName="dform-long-text-widget__editor"
+          />
         </>
       )}
     </DFormFieldContainer>

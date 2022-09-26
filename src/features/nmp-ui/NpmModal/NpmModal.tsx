@@ -1,38 +1,11 @@
-import "./styles.scss";
-
 import React from "react";
+import classnames from "classnames";
+import { Modal, ModalProps } from "antd";
 
-import { Modal } from "antd";
-import NpmButton from "./../NpmButton";
+type Props = ModalProps;
 
-interface IProps {
-  isModalOpen?: boolean;
-  handleCancel?: () => void;
-  okText?: string;
-  title?: string;
-  showModal?: () => void;
-  children?: any;
-  btnNameModal?: string;
-}
-
-const NpmModal = (props: IProps): JSX.Element => {
-  const { btnNameModal, handleCancel, okText, title, isModalOpen, showModal }: IProps = props;
-
-  return (
-    <>
-      <NpmButton onClick={showModal}>{btnNameModal}</NpmButton>
-      <Modal
-        title={title}
-        visible={isModalOpen}
-        okText={okText}
-        onOk={handleCancel}
-        onCancel={handleCancel}
-        zIndex={1000}
-      >
-        {props.children}
-      </Modal>
-    </>
-  );
+const NpmModal: React.FC<Props> = ({ className, ...props }) => {
+  return <Modal zIndex={1000} {...props} className={classnames("nmp-modal", className)} />;
 };
 
 export default NpmModal;
