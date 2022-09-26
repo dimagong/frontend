@@ -6,6 +6,8 @@ import { Radio, Card } from "antd";
 
 const NpmRadioCardGroup = ({ options = [], handleAnswerSelect, selectedAnswer, correctAnswer = null }) => {
   const onChange = (e) => {
+    if (!handleAnswerSelect) return;
+
     handleAnswerSelect(e.target.value);
   };
   const correctAnswerStyle = correctAnswer
@@ -19,7 +21,7 @@ const NpmRadioCardGroup = ({ options = [], handleAnswerSelect, selectedAnswer, c
       <div className="radio-group">
         {options.map((question) => {
           return (
-            <Card>
+            <Card key={question.id}>
               <Radio className={correctAnswerStyle} value={question.id}>
                 {question.text}
               </Radio>

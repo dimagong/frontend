@@ -13,7 +13,10 @@ const MemberSurveyQuestion = ({
   correctAnswer,
   hint,
 }) => {
-  const onAnswerInputChange = (event) => handleAnswerSelect(event.target.value);
+  const onAnswerInputChange = (event) => {
+    if (!handleAnswerSelect) return;
+    handleAnswerSelect(event.target.value);
+  };
 
   return (
     <>
