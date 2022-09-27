@@ -5,7 +5,7 @@ import { Col, Row } from "antd";
 import React, { FC, useEffect, useRef, useState } from "react";
 
 import { NpmCard, NpmStepper } from "features/nmp-ui";
-import { DForm, AccessTypes, FieldTypes } from "components/DForm";
+import { DForm, AccessTypes, FieldTypes, isMemberViewDFormAccessible } from "components/DForm";
 import {
   useSaveDFormFieldValueMutation,
   useSubmitDFormMutation,
@@ -90,7 +90,7 @@ export const MemberDForm: FC<Props> = (props) => {
   };
 
   const isFinalSection = step === sections.length - 1;
-  const isAccessible = [AccessTypes.UserUnlock, AccessTypes.Allow].includes(accessType);
+  const isAccessible = isMemberViewDFormAccessible(accessType);
 
   const onNextSection = () => {
     if (isFinalSection) {

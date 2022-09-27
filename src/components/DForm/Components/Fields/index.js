@@ -2,10 +2,10 @@ import React from "react";
 import classnames from "classnames";
 import { Plus } from "react-feather";
 
-import { AccessTypes, ElementTypes, FieldTypes } from "components/DForm";
+import { ElementTypes, FieldTypes } from "components/DForm";
+import { useDFormContext } from "components/DForm/DFormContext";
 
 import formComponents from "./Components/DFormWidgets";
-import { useDFormContext } from "../../DFormContext";
 
 const DFormElement = ({ classes, isSelected, onClick, children }) => {
   return (
@@ -28,7 +28,7 @@ const FormComponent = (props) => {
     onFieldCreate,
   } = props;
 
-  const { accessType, isConfigurable } = useDFormContext();
+  const { isAccessible, isConfigurable } = useDFormContext();
 
   return (
     <>
@@ -49,7 +49,7 @@ const FormComponent = (props) => {
         const isSelected = selectedElement?.elementType === ElementTypes.Field && selectedElement?.id === field.id;
 
         // An DForm's fields can be disabled by DForm AccessType. Currently, only user-lock is used.
-        const isDisabled = accessType === AccessTypes.UserLock || propIsDisabled || field.isDisabled;
+        const isDisabled = !isAccessible || propIsDisabled || field.isDisabled;
 
         // Getting a field value depending on its type and is it master schema element or not.
         // It can be refactored later, for example, a DForm can have a construction block that is not always like form
