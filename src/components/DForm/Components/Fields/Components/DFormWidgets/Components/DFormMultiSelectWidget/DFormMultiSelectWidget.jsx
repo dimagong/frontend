@@ -1,14 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
-
+import { NmpSelect } from "features/nmp-ui";
 import { IdType, OptionsType } from "utility/prop-types";
-
-import multiSelectValidationSchema from "./validationSchema";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 import { DFormBooleanWidget } from "../DFormBooleanWidget";
+
+import multiSelectValidationSchema from "./validationSchema";
 
 const MultiSelectCheckbox = ({ option, value, isDisabled, onChange: propOnChange }) => {
   const onChange = (value) => propOnChange({ option, value });
@@ -50,52 +49,6 @@ const MultiSelectCheckboxes = ({ options, value, isDisabled, onChange: propOnCha
       ))}
     </>
   );
-};
-
-const colourStyles = {
-  option: (styles, { isFocused, isSelected, ...rest }) => {
-    return {
-      ...styles,
-      backgroundColor: isSelected ? "#7367f0" : isFocused ? "rgba(0, 0, 0, 0.05)" : null,
-      cursor: "pointer",
-
-      ":active": {
-        ...styles[":active"],
-        backgroundColor: "#7367f0",
-        color: "white",
-      },
-    };
-  },
-  control: (styles, { selectProps }) => ({
-    ...styles,
-    backgroundColor: "#eee",
-    border: "0 !important",
-    borderBottom: "1px solid #707070!important",
-    // This line disable the blue border
-    boxShadow: "0 !important",
-    borderRadius: 0,
-    "&:hover": {
-      border: "0 !important",
-      borderBottom: "1px solid #707070!important",
-    },
-    cursor: "pointer",
-    padding: selectProps.isMulti ? "0 0 8px 4px" : "0 0 0 1px",
-  }),
-  singleValue: (styles) => ({
-    ...styles,
-    color: "#707070",
-  }),
-  multiValueLabel: (styles) => ({
-    ...styles,
-    color: "#707070",
-  }),
-  multiValueRemove: (styles) => ({
-    ...styles,
-    "&:hover": {
-      background: "transparent",
-      color: "inherit",
-    },
-  }),
 };
 
 const defaultPlaceholder = "Select an option";
@@ -143,16 +96,15 @@ export const DFormMultiSelectWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={className}
     >
-      <DeprecatedNmpSelect
-        inputId={id}
-        value={value}
+      <NmpSelect
+        id={id}
+        mode="multiple"
+        value={value.map(({ value }) => value)}
         options={options}
-        maxMenuHeight="175"
-        styles={colourStyles}
+        disabled={isDisabled}
+        allowClear
         placeholder={placeholder}
-        multiple
-        isDisabled={isDisabled}
-        onChange={onChange}
+        onChange={(_, options) => onChange(options)}
       />
     </DFormFieldContainer>
   );
