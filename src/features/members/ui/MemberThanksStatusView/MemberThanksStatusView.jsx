@@ -26,8 +26,8 @@ const MemberSubmittedView = ({ data, organization, surveyName }) => {
             <div className="cs-content">
               <div>You have successfully submitted this questionnaire, and it is currently under review.</div>
               <div>
-                What happens next? <br /> You will receive a notification once it has been graded with any relevant
-                feedback if necessary.
+                <span>What happens next?</span> <br /> You will receive a notification once it has been graded with any
+                relevant feedback if necessary.
               </div>
               <div>In the interim, please continue with any remaining forms.</div>
               <div>

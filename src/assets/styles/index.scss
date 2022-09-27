@@ -16,3 +16,8 @@
 @import "../../features/user-managment/userManagment.scss";
 @import "../../features/user-managment/userEdit/userEdit.scss";
 @import "../../features/home/home.scss";
+
+// REDESIGN REFACTOR STARTS HERE
+html body {
+  font-family: "Inter", Helvetica, Arial, sans-serif;
+}

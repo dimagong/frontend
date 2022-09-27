@@ -1,8 +1,3 @@
-@mixin font-inter-500 {
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-}
-
 .membercard-submitted {
   width: 100%;
   height: 100%;
@@ -24,12 +19,12 @@
         display: flex;
         justify-content: space-between;
         &_title {
-          @include font-inter-500;
+          font-weight: 500;
           font-size: 18px;
           line-height: 22px;
         }
         &_data {
-          @include font-inter-500;
+          font-weight: 500;
           font-size: 18px;
           line-height: 22px;
           color: #bcbcbc;
@@ -37,7 +32,7 @@
       }
       .cs-title {
         margin-top: 59px;
-        @include font-inter-500;
+        font-weight: 500;
         font-size: 42px;
         line-height: 51px;
         color: #35a046;
@@ -45,7 +40,7 @@
       .cs-content {
         margin-top: 38px;
         & > * {
-          @include font-inter-500;
+          font-weight: 500;
           font-size: 22px;
           line-height: 27px;
         }
@@ -53,8 +48,12 @@
           padding: 30px 0;
         }
         & div:last-child {
+          font-weight: 400;
           padding-top: 30px;
           font-style: italic;
+        }
+        & > div > span {
+          font-weight: 600;
         }
       }
     }

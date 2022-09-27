@@ -14,13 +14,17 @@
     display: flex;
     justify-content: space-between;
     &_title {
-      @include font-inter-400;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
       line-height: 19px;
       color: #474747;
     }
   }
   &_info {
-    @include font-inter-400;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
     margin-top: 10px;
     color: #474747;
   }
