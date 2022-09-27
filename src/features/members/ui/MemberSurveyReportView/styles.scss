@@ -1,7 +1,3 @@
-@mixin font-inter {
-  font-family: "Inter", sans-serif;
-}
-
 .membercard-approved {
   width: 100%;
   height: 100%;
@@ -14,7 +10,6 @@
     flex-direction: column;
     &_title {
       &_name {
-        @include font-inter;
         font-weight: 500;
         font-size: 38px;
         line-height: 46px;
@@ -22,7 +17,6 @@
       }
       &_data {
         margin-top: 12px;
-        @include font-inter;
         font-weight: 350;
         font-size: 18px;
         line-height: 24px;
