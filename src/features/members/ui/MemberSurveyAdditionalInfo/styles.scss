@@ -1,3 +1,10 @@
+@mixin font-inter-400 {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+}
+
 .survey-additional {
   background: #ffffff;
   border-radius: 5px;
@@ -7,20 +14,14 @@
     display: flex;
     justify-content: space-between;
     &_title {
-      font-family: "SF Pro Display";
-      font-style: normal;
-      font-weight: 400;
-      font-size: 16px;
+      @include font-inter-400;
       line-height: 19px;
       color: #474747;
     }
   }
   &_info {
-    font-family: "SF Pro Display";
+    @include font-inter-400;
     margin-top: 10px;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
     color: #474747;
   }
 }

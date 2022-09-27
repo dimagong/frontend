@@ -1,3 +1,8 @@
+@mixin font-inter-500 {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+}
+
 .membercard-submitted {
   width: 100%;
   height: 100%;
@@ -19,14 +24,12 @@
         display: flex;
         justify-content: space-between;
         &_title {
-          font-family: "SF Pro Display";
-          font-weight: 500;
+          @include font-inter-500;
           font-size: 18px;
           line-height: 22px;
         }
         &_data {
-          font-family: "SF Pro Display";
-          font-weight: 500;
+          @include font-inter-500;
           font-size: 18px;
           line-height: 22px;
           color: #bcbcbc;
@@ -34,8 +37,7 @@
       }
       .cs-title {
         margin-top: 59px;
-        font-family: "SF Pro Display";
-        font-weight: 500;
+        @include font-inter-500;
         font-size: 42px;
         line-height: 51px;
         color: #35a046;
@@ -43,8 +45,7 @@
       .cs-content {
         margin-top: 38px;
         & > * {
-          font-family: "SF Pro Display";
-          font-weight: 500;
+          @include font-inter-500;
           font-size: 22px;
           line-height: 27px;
         }

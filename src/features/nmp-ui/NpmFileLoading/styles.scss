@@ -1,5 +1,5 @@
-@mixin font-style {
-  font-family: "SF Pro Display";
+@mixin font-inter-300 {
+  font-family: "Inter", sans-serif;
   font-style: italic;
   font-weight: 300;
   font-size: 0.87rem;
@@ -15,14 +15,14 @@
   justify-content: start;
   align-items: center;
   &_file-name {
-    @include font-style;
+    @include font-inter-300;
     color: #474747;
     text-align: left;
   }
   &_loader {
     margin-left: auto;
     margin-right: 18px;
-    @include font-style;
+    @include font-inter-300;
   }
   .loader-run {
     color: #474747;

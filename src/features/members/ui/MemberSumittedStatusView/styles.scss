@@ -1,3 +1,8 @@
+@mixin font-inter-500 {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+}
+
 .submitted-dform {
   width: 100%;
   height: 100%;
@@ -17,18 +22,14 @@
       flex-direction: column;
       justify-content: space-around;
       .cs-title {
-        //   margin-top: 59px;
-        font-family: "SF Pro Display";
-        font-weight: 500;
+        @include font-inter-500;
         font-size: 42px;
         line-height: 51px;
         color: #35a046;
       }
       .cs-content {
-        //   margin-top: 38px;
         & > * {
-          font-family: "SF Pro Display";
-          font-weight: 500;
+          @include font-inter-500;
           font-size: 22px;
           line-height: 27px;
         }
