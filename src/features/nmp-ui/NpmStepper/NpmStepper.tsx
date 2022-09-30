@@ -29,9 +29,7 @@ const NpmStepper: FC<IProps> = (props) => {
     initial = 0,
     status = "process",
     type = "default",
-    onChange = (current: number) => {
-      console.log("Stepper number", current);
-    },
+    onChange,
     getKey = defaultGetKey,
   } = props;
 
