@@ -5,6 +5,9 @@ const statusConstants = {
   STARTED: "started",
   NOT_STARTED: "notStarted",
   NO_STATUS: "no-status",
+  REJECTED: "rejected",
+  IN_PROGRESS: `in-progress`,
+  UNSUBMITTED: "unsubmitted",
 };
 
 export { statusConstants };
