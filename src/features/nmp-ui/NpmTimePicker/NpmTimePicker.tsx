@@ -33,7 +33,7 @@ const NpmTimePicker: React.FC<Props> = (props) => {
 
   return (
     <TimePicker
-      value={moment(value) as any}
+      value={value ? (moment(value) as any) : null}
       format={format}
       hourStep={hourStep}
       minuteStep={minuteStep}

@@ -17,17 +17,13 @@
       flex-direction: column;
       justify-content: space-around;
       .cs-title {
-        //   margin-top: 59px;
-        font-family: "SF Pro Display";
         font-weight: 500;
         font-size: 42px;
         line-height: 51px;
         color: #35a046;
       }
       .cs-content {
-        //   margin-top: 38px;
         & > * {
-          font-family: "SF Pro Display";
           font-weight: 500;
           font-size: 22px;
           line-height: 27px;

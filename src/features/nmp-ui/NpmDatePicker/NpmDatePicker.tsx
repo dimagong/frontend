@@ -32,7 +32,7 @@ const NpmDatePicker: React.FC<Props> = (props) => {
 
   return (
     <DatePicker
-      value={moment(value) as any}
+      value={value ? (moment(value) as any) : null}
       size={size}
       mode={mode}
       style={style}
