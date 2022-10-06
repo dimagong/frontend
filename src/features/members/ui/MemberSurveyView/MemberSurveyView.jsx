@@ -32,7 +32,7 @@ import NpmSpin from "../../../nmp-ui/NpmSpin";
 
 import { findStatusSurvey } from "../../data/helpers/findStatusSurvey";
 //import { getSurveySubmitStatus } from "./helpers/getSurveySubmitStatus";
-import { statusConstants } from "../../data/constants/statusConstants";
+import { StatusConstants } from "../../data/constants/statusConstants";
 
 const MemberSurvey = ({
   selectedSurveyId,
@@ -143,7 +143,7 @@ const MemberSurvey = ({
 
   return (
     <>
-      {surveyStatus === statusConstants.NOT_STARTED && (
+      {surveyStatus === StatusConstants.NOT_STARTED && (
         <MemberSurveyStartView
           isLoadingData={isLoadingData}
           title={title}
@@ -160,7 +160,7 @@ const MemberSurvey = ({
           description={description}
         />
       )}
-      {surveyStatus === statusConstants.STARTED && (
+      {surveyStatus === StatusConstants.STARTED && (
         <MemberCardPassSurveyView
           isLoadingData={isLoadingData}
           title={title}
@@ -176,10 +176,10 @@ const MemberSurvey = ({
           handleAnswerSubmit={handleAnswerSubmit}
         />
       )}
-      {surveyStatus === statusConstants.SUBMITTED && (
+      {surveyStatus === StatusConstants.SUBMITTED && (
         <MemberThanksStatusView data={finished_at} organization={organization} surveyName={title} />
       )}
-      {surveyStatus === statusConstants.APPROVED && !isFeedbackView && (
+      {surveyStatus === StatusConstants.APPROVED && !isFeedbackView && (
         <MemberSurveyReportView
           data={graded_at}
           isSurveyPassed={isSurveyPassed}
@@ -188,7 +188,7 @@ const MemberSurvey = ({
           setIsFeedbackView={setIsFeedbackView}
         />
       )}
-      {surveyStatus === statusConstants.APPROVED && isFeedbackView && (
+      {surveyStatus === StatusConstants.APPROVED && isFeedbackView && (
         <MemberSurveyFeedbackView
           surveyInteraction={surveyInteraction}
           surveyStatus={surveyStatus}

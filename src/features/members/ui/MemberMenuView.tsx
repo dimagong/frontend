@@ -6,32 +6,34 @@ import { OnboardingsTypes } from "../../onboarding/utils/collectApplicationsUser
 
 import { findStatusSurvey } from "../data/helpers/findStatusSurvey";
 
-import { statusConstants } from "features/members/data/constants/statusConstants";
+import { StatusConstants } from "features/members/data/constants/statusConstants";
 
-const getKey = (type, id) => `${type}-${id}`;
+import { Survey, DForm, DFormCategory } from "../data/models/models";
 
-const parseKey = (key) => {
+const getKey = (type: string, id: number) => `${type}-${id}`;
+
+const parseKey = (key: string) => {
   const [type, id] = key.split("-");
   return { type, id };
 };
 
-const selectStatusColor = (status) => {
-  let selectedColor = null;
+const selectStatusColor = (status: string) => {
+  let selectedColor: null | string = null;
   switch (status) {
-    case statusConstants.IN_PROGRESS:
-    case statusConstants.STARTED:
+    case StatusConstants.IN_PROGRESS:
+    case StatusConstants.STARTED:
       selectedColor = "#5186C3";
       break;
-    case statusConstants.REJECTED:
+    case StatusConstants.REJECTED:
       selectedColor = "#1E6E2B";
       break;
-    case statusConstants.SUBMITTED:
+    case StatusConstants.SUBMITTED:
       selectedColor = "#E9A800";
       break;
-    case statusConstants.APPROVED:
+    case StatusConstants.APPROVED:
       selectedColor = "#20B036";
       break;
-    case statusConstants.UNSUBMITTED:
+    case StatusConstants.UNSUBMITTED:
       selectedColor = "#3059C4";
       break;
     default:
@@ -40,7 +42,7 @@ const selectStatusColor = (status) => {
   return selectedColor;
 };
 
-const menuBaseItem = (name, status) => (
+const menuBaseItem = (name: string, status: string): JSX.Element => (
   <div className="membercomponent-menu__submenu-item">
     <span className="membercomponent-menu__item-name">{name}</span>
     <NmpTag
@@ -57,20 +59,20 @@ const menuBaseItem = (name, status) => (
   </div>
 );
 
-const menuCategoryItem = (categoryName) => (
+const menuCategoryItem = (categoryName: string = ""): JSX.Element => (
   <div className="membercomponent-menu__category-item">
     <span className="membercomponent-menu__category-item__name">{categoryName}</span>
   </div>
 );
 
-const menuCategoryTitle = (name, count) => (
+const menuCategoryTitle = (name: string, count: number): JSX.Element => (
   <span className="membercomponent-menu__category-title">
     <span>{name}</span>
     <span>{count ? `(${count})` : ""}</span>
   </span>
 );
 
-const menuDFormItems = (dforms) => {
+const menuDFormItems = (dforms: Partial<DFormCategory>[] | Partial<DForm>[]) => {
   return dforms.map((dform) => {
     const id = dform.dform_id ?? dform.id;
     const name = dform.dform_name ?? dform.name;
@@ -92,22 +94,22 @@ const menuSurveysItems = (surveys) => {
   });
 };
 
-const menuDFormsGroup = (dforms) => {
+const menuDFormsGroup = (dforms: Partial<DFormCategory>[] | Partial<DForm>[]) => {
   return [
     {
       className: "membercomponent-menu__group-items",
-      label: menuCategoryTitle(`Applications (${dforms.length})`),
+      label: menuCategoryTitle(`Applications`, dforms.length),
       type: "group",
       children: menuDFormItems(dforms),
     },
   ];
 };
 
-const menuSurveysGroup = (surveys) => {
+const menuSurveysGroup = (surveys: Survey[]) => {
   return [
     {
       className: "membercomponent-menu__group-items",
-      label: menuCategoryTitle(`Surveys (${surveys.length})`),
+      label: menuCategoryTitle(`Surveys`, surveys.length),
       type: "group",
       children: menuSurveysItems(surveys),
     },
@@ -116,8 +118,10 @@ const menuSurveysGroup = (surveys) => {
 
 export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
   console.log("dforms", dforms);
-  const selectDFormsCategory = (data) => {
-    const dformsList = [];
+  console.log("surveys", surveys);
+
+  const selectDFormsCategory = (data: DFormCategory[]): Partial<DFormCategory>[] => {
+    const dformsList: Partial<DFormCategory>[] = [];
     data.forEach(({ dform_id, dform_name, dform_status }) => {
       if (!dformsList.find((el) => el.dform_id === dform_id)) {
         dformsList.push({ dform_id, dform_name, dform_status });
@@ -126,7 +130,7 @@ export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings,
     return dformsList;
   };
 
-  const categoriesList = [];
+  const categoriesList: Partial<DFormCategory>[] = [];
   dFormsCategories.forEach(({ category_id, category_name }) => {
     if (!categoriesList.find((el) => el.category_id === category_id)) {
       categoriesList.push({ category_id, category_name });

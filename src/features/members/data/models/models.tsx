@@ -1,3 +1,6 @@
+import { StatusConstants } from "./../constants/statusConstants";
+import { AccessTypes } from "./../constants/accessTypes";
+
 export interface IProfile {
   avatar: null;
   email: string;
@@ -71,9 +74,47 @@ export interface ILogo {
 }
 
 export interface IForm {
-  access_type: string;
+  access_type: Record<AccessTypes, string>;
   id: number;
   name: string;
   status: string;
   type: string;
 }
+
+export type DForm = {
+  access_type: Record<AccessTypes, string>;
+  id: number;
+  name: string;
+  status: Record<StatusConstants, string>;
+};
+
+export type Survey = {
+  created_at: string | null;
+  finished_at: string | null;
+  graded_at: string | null;
+  id: number;
+  interaction_version: { description: string; is_can_return: boolean; min_percent_pass: number };
+  is_show_result: boolean;
+  order: number;
+  started_at: string | null;
+  stats: null | {
+    total: string | number;
+    min_percent_pass: string | number;
+    max_percent_pass: string | number;
+    totalTime: string | number;
+  };
+  title: string;
+};
+
+export type DFormCategory = {
+  dform_id: number;
+  dform_name: string;
+  dform_status: Record<StatusConstants, string>;
+  dform_access_type: Record<AccessTypes, string>;
+  category_id: number;
+  category_parent: number;
+  category_name: string;
+  dform_created_at: string | null;
+  dform_updated_at: string | null;
+  dform_description: string;
+};
