@@ -4,7 +4,7 @@ import _ from "lodash";
 import { Col, Row } from "antd";
 import React, { FC, useEffect, useRef, useState } from "react";
 
-import { NpmCard, NpmStepper } from "features/nmp-ui";
+import { NpmCard, NmpStepper } from "features/nmp-ui";
 import { DForm, AccessTypes, FieldTypes, isMemberViewDFormAccessible } from "components/DForm";
 import {
   useSaveDFormFieldValueMutation,
@@ -120,7 +120,7 @@ export const MemberDForm: FC<Props> = (props) => {
         ) : (
           <div className="member-dform__content__box">
             <div className="member-dform__content__box__stepper">
-              <NpmStepper status={stepperStatus} sections={sections} current={step} />
+              <NmpStepper status={stepperStatus} sections={sections} current={step} />
             </div>
             <div className="member-dform__content__box__title">{name}</div>
 

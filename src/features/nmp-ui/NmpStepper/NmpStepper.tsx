@@ -14,7 +14,7 @@ type Stepper = StepsProps & {
 
 const defaultGetKey = (section) => section.id;
 
-const NpmStepper: FC<Stepper> = (props: Stepper) => {
+export const NmpStepper: FC<Stepper> = (props: Stepper) => {
   const { sections = [], direction = "vertical", strideLength = 70, getKey = defaultGetKey, ...rest } = props;
 
   return (
@@ -34,5 +34,3 @@ const NpmStepper: FC<Stepper> = (props: Stepper) => {
     </div>
   );
 };
-
-export default NpmStepper;
