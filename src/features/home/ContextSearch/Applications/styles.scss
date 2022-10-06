@@ -46,3 +46,47 @@
     }
   }
 }
+
+.search-wrapper {
+  width: 200px;
+}
+
+.application-search {
+  height: 32px;
+}
+
+.application-search-wrapper {
+  max-width: 300px;
+}
+
+.tree-hierarchies-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 42px;
+
+  width: 100%;
+  max-width: 98%; // TODO: fix bug with horizontal scroll
+  min-height: 400px;
+}
+
+.tree-hierarchy-wrapper > .tree-hierarchy {
+  min-height: auto;
+}
+
+.group-actions {
+  position: absolute;
+  right: -4rem;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  transition: opacity 0.25s ease-in;
+  opacity: 0;
+}
+
+.tree-hierarchy__node-content:hover .group-actions {
+  opacity: 1;
+}

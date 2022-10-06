@@ -11,7 +11,7 @@ import ContextSearchNav from "./ContextSearchNav";
 
 import { selectAuth } from "app/selectors/authSelectors";
 import { selectVuexyUser } from "app/selectors";
-import Applications from "./Applications";
+import { Applications } from "./Applications/Applications";
 // import MasterSchema from 'views/pages/master-schema'
 import MasterSchema from "features/home/ContextSearch/MasterSchema";
 import Organizations from "./Organizations";
@@ -216,7 +216,7 @@ const ContextSearch = ({ isShown, onContextSearchHide }) => {
                           </Col>
                         </Row>
                         <div className="search-content-footer">
-                          {!["MasterSchema", "resourceManager"].includes(selectedNavItem.id) ? (
+                          {!["MasterSchema", "resourceManager", "applications"].includes(selectedNavItem.id) ? (
                             <Button
                               onClick={() => {
                                 handleAdd();

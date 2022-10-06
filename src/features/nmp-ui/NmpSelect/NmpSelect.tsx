@@ -10,7 +10,7 @@ export const NmpSelect: React.FC<Props> = ({ options = [], children, className, 
   return (
     <Select className={classnames("nmp-select", className)} {...props}>
       {children ??
-        options.map(({ label, value }) => (
+        options?.map(({ label, value }) => (
           <Select.Option value={value} key={value}>
             {label}
           </Select.Option>

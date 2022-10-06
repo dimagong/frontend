@@ -5,13 +5,14 @@ export const mutateApplication = (applicationData, mutation) => {
   const { isValid, errors: errValidation } = validateDescriptionDesignMode(applicationData);
 
   if (isValid) {
-    const { name, description, isPrivate, type, errors, organization, ...schema } = applicationData;
+    const { name, description, isPrivate, type, errors, organization, categoryId, ...schema } = applicationData;
 
     return mutation.mutateAsync({
       name,
       description,
       is_private: isPrivate,
       groups: [{ group_id: organization.id, type: organization.type }],
+      category_id: categoryId,
       schema,
     });
   } else {
