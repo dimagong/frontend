@@ -2,53 +2,36 @@ import "./styles.scss";
 
 import React, { FC } from "react";
 
-import { Steps } from "antd";
+import { Steps, StepsProps } from "antd";
 
 const { Step } = Steps;
 
-interface IProps {
+type Stepper = StepsProps & {
   sections: Array<{ name?: string; description?: string }>;
-  direction?: "vertical" | "horizontal";
-  size?: "small" | "default";
-  current?: number;
-  initial?: number;
-  status?: "wait" | "process" | "finish" | "error";
-  type?: "default" | "navigation";
-  onChange?: (current: number) => void;
   getKey?: (object) => string;
-}
+  strideLength?: number;
+};
 
 const defaultGetKey = (section) => section.id;
 
-const NpmStepper: FC<IProps> = (props) => {
-  const {
-    sections = [],
-    direction = "vertical",
-    size = "default",
-    current = 0,
-    initial = 0,
-    status = "process",
-    type = "default",
-    onChange,
-    getKey = defaultGetKey,
-  } = props;
+const NpmStepper: FC<Stepper> = (props: Stepper) => {
+  const { sections = [], direction = "vertical", strideLength = 70, getKey = defaultGetKey, ...rest } = props;
 
   return (
-    <Steps
-      direction={direction}
-      size={size}
-      current={current}
-      status={status}
-      initial={initial}
-      type={type}
-      onChange={onChange}
-    >
-      {sections.map((section, index) => {
-        return (
-          <Step key={getKey(section) ?? index} title={section?.name || ""} description={section?.description || ""} />
-        );
-      })}
-    </Steps>
+    <div className="nmp-stepper">
+      <Steps direction={direction} {...rest}>
+        {sections.map((section, index) => {
+          return (
+            <Step
+              style={{ height: strideLength }}
+              key={getKey(section) ?? index}
+              title={section?.name || ""}
+              description={section?.description || ""}
+            />
+          );
+        })}
+      </Steps>
+    </div>
   );
 };
 

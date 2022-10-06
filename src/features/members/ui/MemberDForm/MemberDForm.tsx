@@ -111,27 +111,24 @@ export const MemberDForm: FC<Props> = (props) => {
   const organization: string = userDFormProfile.data.permissions.organization || "The Queen Is Dead";
 
   return (
-    <Row className="memberDForm">
-      <Col span={4} className={successSubmit ? "memberDForm-stepper-hidden" : "memberDForm-stepper"}>
-        <div>
-          <NpmStepper status={stepperStatus} sections={sections} current={step} />
-        </div>
-      </Col>
-
-      <Col span={successSubmit ? 24 : 20} className="memberDForm-content">
+    <Row className="member-dform">
+      <Col span={24} className="member-dform__content">
         {successSubmit ? (
           <div>
             <MemberThanksStatusView data={submitData} organization={organization} surveyName={userName} />
           </div>
         ) : (
-          <div className={"memberDForm-content_box"}>
-            <div className="memberDForm-content_box_title">{name}</div>
+          <div className="member-dform__content__box">
+            <div className="member-dform__content__box__stepper">
+              <NpmStepper status={stepperStatus} sections={sections} current={step} />
+            </div>
+            <div className="member-dform__content__box__title">{name}</div>
 
             <NpmCard style={{ minHeight: "50vh", maxWidth: "783px", width: "57vw", marginTop: "3%" }}>
-              <div className="memberDForm-content_box_card">
-                <div className="memberDForm-content_box_card_section-name">Section {sectionName}</div>
+              <div className="member-dform__content__box__card">
+                <div className="member-dform__content__box__card__name">Section {sectionName}</div>
 
-                <div className="memberDForm-content_box_card_section-fields">
+                <div className="member-dform__content__box__card__fields">
                   <DForm
                     // @ts-ignore
                     isMemberView
@@ -145,7 +142,7 @@ export const MemberDForm: FC<Props> = (props) => {
                   />
                 </div>
 
-                <div className="memberDForm-content_box_card_section-navigation">
+                <div className="member-dform__content__box__card__navigation">
                   <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
 
                   <MemberDFormNavigation
