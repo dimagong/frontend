@@ -1,4 +1,4 @@
-import { StatusConstants } from "./../constants/statusConstants";
+import { Status } from "./../constants/statusConstants";
 import { AccessTypes } from "./../constants/accessTypes";
 
 export interface IProfile {
@@ -85,7 +85,7 @@ export type DForm = {
   access_type: Record<AccessTypes, string>;
   id: number;
   name: string;
-  status: Record<StatusConstants, string>;
+  status: Record<Status, string>;
 };
 
 export type Survey = {
@@ -109,7 +109,7 @@ export type Survey = {
 export type DFormCategory = {
   dform_id: number;
   dform_name: string;
-  dform_status: Record<StatusConstants, string>;
+  dform_status: Record<Status, string>;
   dform_access_type: Record<AccessTypes, string>;
   category_id: number;
   category_parent: number;

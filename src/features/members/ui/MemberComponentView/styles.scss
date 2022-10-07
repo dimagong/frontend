@@ -45,15 +45,6 @@
     &.ant-menu-submenu-active {
       color: #35a046;
     }
-
-    &:hover,
-    &:focus {
-      color: #35a046;
-    }
-
-    // &:active {
-    //   color: #35a046;
-    // }
   }
 
   @at-root .ant-menu-submenu-horizontal .ant-menu-submenu-arrow {
@@ -84,7 +75,8 @@
     }
   }
 
-  @at-root .ant-menu-submenu:hover > .ant-menu-submenu-title .ant-menu-submenu-arrow {
+  @at-root .ant-menu-submenu:hover > .ant-menu-submenu-title .ant-menu-submenu-arrow,
+    .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-submenu-arrow {
     color: #35a046;
   }
 

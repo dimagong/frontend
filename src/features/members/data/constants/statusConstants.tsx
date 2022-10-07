@@ -1,4 +1,4 @@
-export enum StatusConstants {
+export enum Status {
   APPROVED = "approved",
   RECENT = "recent",
   SUBMITTED = "submitted",

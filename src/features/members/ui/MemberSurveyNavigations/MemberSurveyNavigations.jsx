@@ -5,7 +5,7 @@ import { RightOutlined, LeftOutlined } from "@ant-design/icons";
 
 import { NpmButton } from "features/nmp-ui";
 
-import { StatusConstants } from "../../data/constants/statusConstants";
+import { Status } from "../../data/constants/statusConstants";
 
 const MemberSurveyNavigations = ({
   surveyStatus,
@@ -18,7 +18,7 @@ const MemberSurveyNavigations = ({
 }) => {
   return (
     <div className="membercard-navigations">
-      {surveyStatus === StatusConstants.NOT_STARTED && (
+      {surveyStatus === Status.NOT_STARTED && (
         <NpmButton
           type="nmp-primary"
           icon={<RightOutlined />}
@@ -29,7 +29,7 @@ const MemberSurveyNavigations = ({
           Begin
         </NpmButton>
       )}
-      {surveyStatus === StatusConstants.STARTED && (
+      {surveyStatus === Status.STARTED && (
         <>
           {!!currentIndex && (
             <NpmButton
@@ -54,7 +54,7 @@ const MemberSurveyNavigations = ({
         </>
       )}
 
-      {surveyStatus === StatusConstants.APPROVED && (
+      {surveyStatus === Status.APPROVED && (
         <div className="approved-navigation">
           <div className="close-button">
             <NpmButton onClick={() => handleClose()} className="membercard-navigations__btn">

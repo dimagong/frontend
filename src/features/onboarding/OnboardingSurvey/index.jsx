@@ -1,11 +1,7 @@
 import { toast } from "react-toastify";
 import React, { useState } from "react";
 
-import {
-  useGetCurrentQuestionForAssignedSurveyQuery,
-  useSurveyByIdQuery,
-  //useGetAllSurveyQuestionsQuery,
-} from "api/Onboarding/prospectUserQuery";
+import { useGetCurrentQuestionForAssignedSurveyQuery, useSurveyByIdQuery } from "api/Onboarding/prospectUserQuery";
 
 import {
   useMVASurveyPassingInvalidate,

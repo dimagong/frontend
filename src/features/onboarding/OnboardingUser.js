@@ -34,7 +34,7 @@ const OnboardingUser = () => {
   const dForms = useDForms.data;
   const profile = userProspectProfile.data;
   const onboardingSurveys = userSurveyPassing.data;
-  const dFormsCategories = useDFormsCategories.data ?? [];
+  const dformsCategories = useDFormsCategories.data ?? [];
 
   const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation({
     userId: profile?.id,
@@ -87,7 +87,7 @@ const OnboardingUser = () => {
       surveys={onboardingSurveys}
       userApplications={userApplications}
       initialOnboarding={initialOnboarding}
-      dFormsCategories={dFormsCategories}
+      dFormsCategories={dformsCategories}
     />
   );
 };

@@ -6,7 +6,7 @@ import { OnboardingsTypes } from "../../onboarding/utils/collectApplicationsUser
 
 import { findStatusSurvey } from "../data/helpers/findStatusSurvey";
 
-import { StatusConstants } from "features/members/data/constants/statusConstants";
+import { Status } from "features/members/data/constants/statusConstants";
 
 import { Survey, DForm, DFormCategory } from "../data/models/models";
 
@@ -20,20 +20,20 @@ const parseKey = (key: string) => {
 const selectStatusColor = (status: string) => {
   let selectedColor: null | string = null;
   switch (status) {
-    case StatusConstants.IN_PROGRESS:
-    case StatusConstants.STARTED:
+    case Status.IN_PROGRESS:
+    case Status.STARTED:
       selectedColor = "#5186C3";
       break;
-    case StatusConstants.REJECTED:
+    case Status.REJECTED:
       selectedColor = "#1E6E2B";
       break;
-    case StatusConstants.SUBMITTED:
+    case Status.SUBMITTED:
       selectedColor = "#E9A800";
       break;
-    case StatusConstants.APPROVED:
+    case Status.APPROVED:
       selectedColor = "#20B036";
       break;
-    case StatusConstants.UNSUBMITTED:
+    case Status.UNSUBMITTED:
       selectedColor = "#3059C4";
       break;
     default:
@@ -42,19 +42,12 @@ const selectStatusColor = (status: string) => {
   return selectedColor;
 };
 
-const menuBaseItem = (name: string, status: string): JSX.Element => (
+const menuBaseItem = (name: string, status: string, statusColor: string): JSX.Element => (
   <div className="membercomponent-menu__submenu-item">
     <span className="membercomponent-menu__item-name">{name}</span>
-    <NmpTag
-      color="white"
-      style={{ borderColor: `${selectStatusColor(status)}` }}
-      className="membercomponent-menu__item-status-dform"
-    >
-      <span
-        style={{ backgroundColor: `${selectStatusColor(status)}` }}
-        className="membercomponent-menu__item-status-dform__dot"
-      ></span>
-      <span style={{ color: `${selectStatusColor(status)}` }}>{status}</span>
+    <NmpTag color="white" style={{ borderColor: statusColor }} className="membercomponent-menu__item-status-dform">
+      <span style={{ backgroundColor: statusColor }} className="membercomponent-menu__item-status-dform__dot"></span>
+      <span style={{ color: statusColor }}>{status}</span>
     </NmpTag>
   </div>
 );
@@ -77,8 +70,9 @@ const menuDFormItems = (dforms: Partial<DFormCategory>[] | Partial<DForm>[]) => 
     const id = dform.dform_id ?? dform.id;
     const name = dform.dform_name ?? dform.name;
     const status = dform.dform_status ?? dform.status;
+    const statusColor = selectStatusColor(status);
     return {
-      label: menuBaseItem(name, status),
+      label: menuBaseItem(name, status, statusColor),
       key: getKey(OnboardingsTypes.DForm, id),
     };
   });
@@ -87,8 +81,9 @@ const menuDFormItems = (dforms: Partial<DFormCategory>[] | Partial<DForm>[]) => 
 const menuSurveysItems = (surveys) => {
   return surveys.map(({ id, title, started_at, finished_at, graded_at }) => {
     const status = findStatusSurvey(started_at, finished_at, graded_at, false);
+    const statusColor = selectStatusColor(status);
     return {
-      label: menuBaseItem(title, status),
+      label: menuBaseItem(title, status, statusColor),
       key: getKey(OnboardingsTypes.Survey, id),
     };
   });
@@ -116,13 +111,10 @@ const menuSurveysGroup = (surveys: Survey[]) => {
   ];
 };
 
-export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
-  console.log("dforms", dforms);
-  console.log("surveys", surveys);
-
-  const selectDFormsCategory = (data: DFormCategory[]): Partial<DFormCategory>[] => {
+export const MemberMenuView = ({ dforms, dformsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
+  const selectDFormsCategory = (categories: DFormCategory[]): Partial<DFormCategory>[] => {
     const dformsList: Partial<DFormCategory>[] = [];
-    data.forEach(({ dform_id, dform_name, dform_status }) => {
+    categories.forEach(({ dform_id, dform_name, dform_status }) => {
       if (!dformsList.find((el) => el.dform_id === dform_id)) {
         dformsList.push({ dform_id, dform_name, dform_status });
       }
@@ -131,25 +123,29 @@ export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings,
   };
 
   const categoriesList: Partial<DFormCategory>[] = [];
-  dFormsCategories.forEach(({ category_id, category_name }) => {
-    if (!categoriesList.find((el) => el.category_id === category_id)) {
-      categoriesList.push({ category_id, category_name });
-    }
-  });
+  if (dformsCategories) {
+    dformsCategories.forEach(({ category_id, category_name }) => {
+      if (!categoriesList.find((el) => el.category_id === category_id)) {
+        categoriesList.push({ category_id, category_name });
+      }
+    });
+  }
 
   const items = [
     {
       key: "applications",
       label: "Applications",
-      children: !dFormsCategories.length
+      children: !dformsCategories?.length
         ? menuDFormsGroup(dforms)
         : [
             {
-              label: menuCategoryTitle("Categories", dFormsCategories.length),
+              label: menuCategoryTitle("Categories", dformsCategories.length),
               type: "group",
               className: "membercomponent-menu__category",
               children: categoriesList.map(({ category_id, category_name }) => {
-                const findCategories = dFormsCategories.filter((category) => category.category_id === category_id);
+                const findCategories = dformsCategories.filter(
+                  (category: DFormCategory) => category.category_id === category_id
+                );
                 return {
                   label: menuCategoryItem(category_name),
                   key: `${category_id}-${category_name}`,

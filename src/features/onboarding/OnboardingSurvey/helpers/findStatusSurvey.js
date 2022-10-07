@@ -1,26 +1,26 @@
-import { StatusConstant } from "../constants/statusConstants";
+import { Status } from "../constants/statusConstants";
 
 //const surveyStatus = finished_at ? "notStarted" : started_at ? "started" : "notStarted";
 const findStatusSurvey = (started_at, finished_at, graded_at, isRecentlySubmitted) => {
   let result = "";
   switch (true) {
     case Boolean(graded_at) === true:
-      result = StatusConstant.APPROVED;
+      result = Status.APPROVED;
       break;
     case Boolean(finished_at && isRecentlySubmitted) === true:
-      result = StatusConstant.RECENT;
+      result = Status.RECENT;
       break;
     case Boolean(finished_at && !isRecentlySubmitted) === true:
-      result = StatusConstant.SUBMITTED;
+      result = Status.SUBMITTED;
       break;
     case Boolean(!finished_at && started_at) === true:
-      result = StatusConstant.STARTED;
+      result = Status.STARTED;
       break;
     case Boolean(!finished_at && !started_at) === true:
-      result = StatusConstant.NOT_STARTED;
+      result = Status.NOT_STARTED;
       break;
     default:
-      result = StatusConstant.NO_STATUS;
+      result = Status.NO_STATUS;
   }
   return result;
 };
