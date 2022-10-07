@@ -6,15 +6,8 @@ import classnames from "classnames";
 
 import { IdType } from "utility/prop-types";
 
-export const DFormFieldLabel = ({ id, label, isError = false, isRequired = false, small = false, className }) => {
-  const classes = classnames(
-    "dform-field-label",
-    {
-      "dform-field-label--small": small,
-      "dform-field-label--is-error": isError,
-    },
-    className
-  );
+export const DFormFieldLabel = ({ id, label, isRequired = false, small = false, className }) => {
+  const classes = classnames("dform-field-label", { "dform-field-label--small": small }, className);
 
   if (id === undefined) {
     return (
@@ -36,6 +29,5 @@ export const DFormFieldLabel = ({ id, label, isError = false, isRequired = false
 DFormFieldLabel.propTypes = {
   id: IdType,
   label: PropTypes.string.isRequired,
-  isError: PropTypes.bool,
   isRequired: PropTypes.bool,
 };
