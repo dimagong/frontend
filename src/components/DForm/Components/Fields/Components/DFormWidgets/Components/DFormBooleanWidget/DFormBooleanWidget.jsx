@@ -2,12 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { IdType } from "utility/prop-types";
-import { NpmCheckbox } from "features/nmp-ui";
+import { NmpCheckbox } from "features/nmp-ui";
 
 import booleanValidationSchema from "./validationSchema";
 
-import { DFormFieldContainer } from "../DFormFieldContainer";
 import { DFormFieldLabel } from "../DFormFieldLabel";
+import { DFormFieldContainer } from "../DFormFieldContainer";
 
 export const DFormBooleanWidget = (props) => {
   const {
@@ -35,13 +35,9 @@ export const DFormBooleanWidget = (props) => {
       isLabelShowing={false}
       className={className}
     >
-      <NpmCheckbox
-        id={id}
-        checked={value}
-        disabled={isDisabled}
-        label={isLabelShowing ? <DFormFieldLabel label={label} isRequired={isRequired} small /> : null}
-        onChange={onChange}
-      />
+      <NmpCheckbox id={id} checked={value} disabled={isDisabled} onChange={onChange}>
+        {isLabelShowing ? <DFormFieldLabel label={label} small /> : null}
+      </NmpCheckbox>
     </DFormFieldContainer>
   );
 };

@@ -483,7 +483,7 @@ const FieldProperties = (props) => {
       {FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type) ? null : (
         <>
           <div className="mb-2">
-            <DFormFieldLabel label="Input name (reference)" id="field-reference" isRequired />
+            <DFormFieldLabel label="Input name (reference)" id="field-reference" />
             <MasterSchemaProperty
               id="field-reference"
               organizations={[organization]}

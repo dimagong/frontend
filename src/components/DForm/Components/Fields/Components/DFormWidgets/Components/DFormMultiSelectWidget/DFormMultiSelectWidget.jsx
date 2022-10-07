@@ -1,55 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { NmpSelect } from "features/nmp-ui";
 import { IdType, OptionsType } from "utility/prop-types";
+import { NmpSelect, NmpCheckbox, NmpRow, NmpCol } from "features/nmp-ui";
 
+import { DFormFieldLabel } from "../DFormFieldLabel";
 import { DFormFieldContainer } from "../DFormFieldContainer";
-import { DFormBooleanWidget } from "../DFormBooleanWidget";
 
 import multiSelectValidationSchema from "./validationSchema";
-
-const MultiSelectCheckbox = ({ option, value, isDisabled, onChange: propOnChange }) => {
-  const onChange = (value) => propOnChange({ option, value });
-
-  return (
-    <DFormBooleanWidget
-      id={option.value}
-      value={value}
-      label={option.value}
-      isError={false}
-      isRequired={false}
-      isDisabled={isDisabled}
-      isLabelShowing={true}
-      onChange={onChange}
-      className="py-1"
-    />
-  );
-};
-
-const MultiSelectCheckboxes = ({ options, value, isDisabled, onChange: propOnChange }) => {
-  const onChange = (checkboxValue) => {
-    propOnChange(
-      checkboxValue.value
-        ? [...value, checkboxValue.option]
-        : value.filter(({ value }) => value !== checkboxValue.option.value)
-    );
-  };
-
-  return (
-    <>
-      {options.map((option, index) => (
-        <MultiSelectCheckbox
-          option={option}
-          value={value.some(({ value }) => option.value === value)}
-          isDisabled={isDisabled}
-          onChange={onChange}
-          key={`${option.value}-${index}`}
-        />
-      ))}
-    </>
-  );
-};
 
 const defaultPlaceholder = "Select an option";
 
@@ -58,10 +16,8 @@ export const DFormMultiSelectWidget = (props) => {
     id,
     value = [],
     label,
-    error,
     options,
     uiStyle,
-    isError,
     isRequired,
     isDisabled,
     isLabelShowing,
@@ -74,14 +30,27 @@ export const DFormMultiSelectWidget = (props) => {
     return (
       <DFormFieldContainer
         id={id}
-        error={error}
         label={label}
-        isError={isError}
         isRequired={isRequired}
         isLabelShowing={isLabelShowing}
         className={className}
       >
-        <MultiSelectCheckboxes options={options} value={value} isDisabled={isDisabled} onChange={onChange} />
+        <NmpCheckbox.Group
+          name={id}
+          value={value.map(({ value }) => value)}
+          disabled={isDisabled}
+          onChange={(values) => onChange(values.map((value) => ({ value, label: value })))}
+        >
+          {options.map((option, index) => (
+            <NmpRow>
+              <NmpCol>
+                <NmpCheckbox value={option.value} key={`${option.value}${index}`}>
+                  <DFormFieldLabel label={option.value} small />
+                </NmpCheckbox>
+              </NmpCol>
+            </NmpRow>
+          ))}
+        </NmpCheckbox.Group>
       </DFormFieldContainer>
     );
   }
@@ -89,9 +58,7 @@ export const DFormMultiSelectWidget = (props) => {
   return (
     <DFormFieldContainer
       id={id}
-      error={error}
       label={label}
-      isError={isError}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
       className={className}
@@ -116,11 +83,9 @@ DFormMultiSelectWidget.propTypes = {
   id: IdType.isRequired,
   value: OptionsType,
   label: PropTypes.string,
-  error: PropTypes.string,
   options: OptionsType.isRequired,
   uiStyle: PropTypes.string,
   placeholder: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,
