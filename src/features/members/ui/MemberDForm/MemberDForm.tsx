@@ -101,9 +101,18 @@ export const MemberDForm: FC<Props> = (props) => {
       setSectionId(sections[step + 1].id);
     }
   };
+  const onPreviousSection = (): void => {
+    setSectionId(sections[step - 1].id);
+  };
 
   // Immediately call save on component unmount if any save currently throttled
   useEffect(() => () => flushFieldValue(), []);
+
+  const onChangeStep = (step: number): void => {
+    if (step < sections.length) {
+      setSectionId(sections[step].id);
+    }
+  };
 
   const submitData =
     (submitDFormMutation as any).data?.updated_at || (submitDFormMutation as any).data?.finished_at || new Date();
@@ -151,6 +160,7 @@ export const MemberDForm: FC<Props> = (props) => {
                     disabled={isFinalSection && !isAccessible}
                     loading={submitDFormMutation.isLoading}
                     handleNextSection={onNextSection}
+                    handlePreviousSection={onPreviousSection}
                   />
                 </div>
               </div>

@@ -10,7 +10,6 @@
     flex-direction: column;
     &_title {
       &_name {
-        font-family: "SF Pro Display";
         font-weight: 500;
         font-size: 38px;
         line-height: 46px;
@@ -18,8 +17,6 @@
       }
       &_data {
         margin-top: 12px;
-        font-family: "SF Pro Display";
-        font-style: normal;
         font-weight: 350;
         font-size: 18px;
         line-height: 24px;
