@@ -9,10 +9,13 @@ import { DFormSelectWidget } from "components/DForm/Components/Fields/Components
 import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
 import CustomModal from "components/CustomModal";
 
-import { getCategoriesAsOptions, getCategoryAsOption } from "features/Applications/ui/CreateApplicationPage";
-import { parseOrganizationType } from "features/home/ContextSearch/Applications/utils/organizationTypeParser";
+import {
+  getCategoriesAsOptions,
+  getCategoryAsOption,
+} from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
+import { parseOrganizationType } from "features/home/ContextSearch/Applications/utils/organizationTypeConverter";
 import { useCategoriesByOrganization } from "features/home/ContextSearch/Applications/categoryQueries";
-import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryParser";
+import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
 import { NpmButton } from "features/nmp-ui";
 
 export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit, submitting }) => {

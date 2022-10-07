@@ -1,5 +1,5 @@
-import { CategoryHierarchy, CategoryId, Field, Group, Hierarchy } from "../models";
-import { parseHierarchyCategory } from "./categoryParser";
+import { CategoryHierarchy, CategoryId, Field, Group, Hierarchy, Node } from "../models";
+import { parseHierarchyCategory } from "./categoryConverter";
 
 export const getNodeId = (nodeName: string, id: number) => `${nodeName}${id}`;
 
@@ -96,11 +96,11 @@ export const transformCategoriesToHierarchy = (data: any[]): Hierarchy[] => {
   return getHierarchies(groups, fields);
 };
 
-const getContainedById = (array: (Field | Group)[], id: CategoryId): (Field | Group)[] => {
+const getContainedById = (array: Node[], id: CategoryId): Node[] => {
   return array.filter((arrayItem) => Number(arrayItem.rootCategoryId) === id);
 };
 
-const makeObjectWithNodeIdFields = (array: (Field | Group)[]) => {
+const makeObjectWithNodeIdFields = (array: Node[]) => {
   const ObjectWithNodeIdFields = {};
 
   for (let i = 0; i < array.length; i++) {

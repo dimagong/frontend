@@ -7,6 +7,7 @@ import { AHCreateCategoryForm } from "./ApplicationsHierarchy/AHCreateCategoryFo
 import { GeneralAHTreeElement } from "./ApplicationsHierarchy/GeneralAHTreeElement";
 import appSlice from "app/slices/appSlice";
 import onboardingSlice from "app/slices/onboardingSlice";
+import { Node } from "./models";
 
 import { CreateCategorySubmitProps, Hierarchy, Search } from "./models";
 
@@ -25,7 +26,7 @@ export const CategoryHierarchy: React.FC<Props> = ({ hierarchy, search, onElemen
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hierarchy]);
 
-  const onSelect = (node) => {
+  const onSelect = (node: Node) => {
     if (node.isContainable) {
       expandable.expandedIds.includes(node.nodeId) ? expandable.collapse(node) : expandable.expand(node);
     } else {

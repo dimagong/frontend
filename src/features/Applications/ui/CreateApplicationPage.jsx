@@ -22,7 +22,11 @@ import { ApplicationDescriptionFormFields } from "./ApplicationDescriptionFormFi
 import { INITIAL_APPLICATION_DATA } from "../constants";
 
 import { useCategoriesByOrganization } from "features/home/ContextSearch/Applications/categoryQueries";
-import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryParser";
+import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
+import {
+  getCategoriesAsOptions,
+  getCategoryAsOption,
+} from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
 const { setContext } = appSlice.actions;
 
@@ -33,14 +37,7 @@ const getOrganizationAsOption = (organization) => ({
   label: organization.name,
 });
 
-export const getCategoryAsOption = (category) => ({
-  value: category.id,
-  label: category.name,
-});
-
 const getOrganizationsAsOptions = (organizations) => organizations.map(getOrganizationAsOption);
-
-export const getCategoriesAsOptions = (categories) => categories?.map(getCategoryAsOption);
 
 const getApplicationTemplateAsOption = (template) => ({ value: template.id, label: template.name });
 

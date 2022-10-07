@@ -14,7 +14,7 @@ export const CategoryQueryKeys = {
   ByOrganization: (id: OrganizationId, type: OrganizationType) => [...CategoryQueryKeys.all(), { id, type }],
 };
 
-export const useCategoryHierarchy = ({ name }: CategoryHierarchyProps, options: any) => {
+export const useCategory = ({ name }: CategoryProps, options: any) => {
   return useGenericQuery(
     {
       url: `api/dform-template/categories`,
@@ -92,7 +92,7 @@ export const useUpdateCategory = ({ categoryId }: UpdateCategoryProps, options =
   );
 };
 
-type CategoryHierarchyProps = {
+type CategoryProps = {
   name: CategoryName;
 };
 

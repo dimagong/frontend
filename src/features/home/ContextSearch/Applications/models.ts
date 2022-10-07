@@ -35,10 +35,10 @@ export type Group = {
 export type Hierarchy = {
   breadcrumbs: string;
   children: {
-    [key: string]: Field | Group;
+    [key: string]: Node;
   };
   nodes: {
-    [key: string]: Field | Group;
+    [key: string]: Node;
   };
   fields: (string | null)[];
   groups: (string | null)[];
@@ -105,3 +105,5 @@ export type CreateCategorySubmitProps = {
   name: string;
   parentId: number;
 };
+
+export type Node = Group | Field;

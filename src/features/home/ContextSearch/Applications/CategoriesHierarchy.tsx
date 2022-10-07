@@ -1,22 +1,21 @@
 import React from "react";
 import _ from "lodash/fp";
 
-import { useCategoryHierarchy, useCreateApplicationCategory } from "./categoryQueries";
+import { useCategory, useCreateApplicationCategory } from "./categoryQueries";
 import { CategoryHierarchy } from "./CategoryHierarchy";
 
-import { transformCategoriesToHierarchy } from "./utils/categoryHierarchyParser";
+import { transformCategoriesToHierarchy } from "./utils/categoryHierarchyConverter";
 
 import { CreateCategorySubmitProps, Hierarchy, Search } from "./models";
 
 import "./styles.scss";
 
 export const CategoriesHierarchy: React.FC<Props> = ({ search }) => {
-  const hierarchy = useCategoryHierarchy({ name: search }, [search]);
-  let transformedHierarchy: Hierarchy[] = [];
+  const categories = useCategory({ name: search }, [search]);
+  let hierarchies: Hierarchy[] = [];
 
-  if (!_.isEmpty(hierarchy.data)) {
-    console.log("hierarchy.data", hierarchy.data);
-    transformedHierarchy = transformCategoriesToHierarchy(hierarchy.data);
+  if (!_.isEmpty(categories.data)) {
+    hierarchies = transformCategoriesToHierarchy(categories.data);
   }
 
   //@ts-ignore
@@ -27,17 +26,17 @@ export const CategoriesHierarchy: React.FC<Props> = ({ search }) => {
     createCategory.mutate({ name: name, parent_id: parentId });
   };
 
-  if (hierarchy.isLoading) {
+  if (categories.isLoading) {
     return <div>loading...</div>;
   }
 
-  if (_.isEmpty(hierarchy.data) && !_.isEmpty(search)) {
+  if (_.isEmpty(categories.data) && !_.isEmpty(search)) {
     return <div>No search results found...</div>;
   }
 
   return (
     <div className="tree-hierarchies-wrapper">
-      {transformedHierarchy.map((hierarchy, index) => (
+      {hierarchies.map((hierarchy, index) => (
         <CategoryHierarchy
           key={index}
           hierarchy={hierarchy}
