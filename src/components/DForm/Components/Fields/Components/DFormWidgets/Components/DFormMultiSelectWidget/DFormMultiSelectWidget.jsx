@@ -42,9 +42,9 @@ export const DFormMultiSelectWidget = (props) => {
           onChange={(values) => onChange(values.map((value) => ({ value, label: value })))}
         >
           {options.map((option, index) => (
-            <NmpRow>
+            <NmpRow key={`${option.value}${index}`}>
               <NmpCol>
-                <NmpCheckbox value={option.value} key={`${option.value}${index}`}>
+                <NmpCheckbox value={option.value}>
                   <DFormFieldLabel label={option.value} small />
                 </NmpCheckbox>
               </NmpCol>
