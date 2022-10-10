@@ -17,7 +17,6 @@ const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data 
         id="group-name"
         label="Group name"
         value={element.name}
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -34,7 +33,6 @@ const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data 
           value: section.id,
           label: section.name,
         }))}
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -47,7 +45,6 @@ const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data 
         id="group-protected"
         label="Is protected"
         value={element.isProtected}
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}

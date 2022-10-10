@@ -15,8 +15,6 @@ export const DFormTextAreaWidget = (props) => {
     id,
     value = "",
     label,
-    error,
-    isError,
     isRequired,
     isDisabled,
     isLabelShowing,
@@ -28,19 +26,15 @@ export const DFormTextAreaWidget = (props) => {
   const onChange = (event) => propOnChange(event.target.value);
 
   return (
-    <div>
-      <DFormFieldContainer
-        id={id}
-        error={error}
-        label={label}
-        isError={isError}
-        isRequired={isRequired}
-        isLabelShowing={isLabelShowing}
-        className={className}
-      >
-        <NmpTextArea rows="5" placeholder={placeholder} value={value} disabled={isDisabled} onChange={onChange} />
-      </DFormFieldContainer>
-    </div>
+    <DFormFieldContainer
+      name={label}
+      label={label}
+      isRequired={isRequired}
+      isLabelShowing={isLabelShowing}
+      className={className}
+    >
+      <NmpTextArea id={id} rows="5" placeholder={placeholder} value={value} disabled={isDisabled} onChange={onChange} />
+    </DFormFieldContainer>
   );
 };
 
@@ -48,8 +42,6 @@ DFormTextAreaWidget.propTypes = {
   id: IdType.isRequired,
   value: PropTypes.string,
   label: PropTypes.string,
-  error: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,

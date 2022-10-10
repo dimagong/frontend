@@ -11,27 +11,31 @@ import dateValidationSchema from "./validationSchema";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
+const getPicker = (dateType) => {
+  switch (dateType) {
+    case DateWidgetFormatTypes.Time:
+      return NpmTimePicker;
+    case DateWidgetFormatTypes.Date:
+      return NpmDatePicker;
+    default:
+      throw new Error(`Unsupported date type: '${dateType}'`);
+  }
+};
+
 export const DFormDateWidget = (props) => {
-  const { id, value, label, format, error, isError, isRequired, isDisabled, isLabelShowing, onChange, className } =
-    props;
+  const { id, value, label, format, isRequired, isDisabled, isLabelShowing, onChange, className } = props;
+
+  const Picker = getPicker(format);
 
   return (
     <DFormFieldContainer
-      id={id}
+      name={label}
       label={label}
-      error={error}
-      isError={isError}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
       className={classnames(className)}
     >
-      {format === DateWidgetFormatTypes.Time ? (
-        <NpmTimePicker id={id} value={value} disabled={isDisabled} onChange={onChange} />
-      ) : null}
-
-      {format === DateWidgetFormatTypes.Date ? (
-        <NpmDatePicker id={id} value={value} disabled={isDisabled} onChange={onChange} />
-      ) : null}
+      <Picker id={id} value={value} disabled={isDisabled} onChange={onChange} />
     </DFormFieldContainer>
   );
 };
@@ -41,8 +45,6 @@ DFormDateWidget.propTypes = {
   value: PropTypes.string,
   format: PropTypes.oneOf(["date", "date-time"]),
   label: PropTypes.string,
-  error: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,

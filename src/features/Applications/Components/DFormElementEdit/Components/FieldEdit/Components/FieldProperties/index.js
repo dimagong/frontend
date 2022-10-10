@@ -27,7 +27,6 @@ export const FieldRequiredEditProperty = ({ element, onFieldChange }) => {
       id="field-required"
       label="Is required"
       value={element.isRequired}
-      isError={false}
       isRequired={false}
       isDisabled={false}
       isLabelShowing={true}
@@ -44,7 +43,6 @@ export const FieldProtectedEditProperty = ({ element, onFieldChange }) => {
       id="field-protected"
       label="Is protected"
       value={element.isProtected}
-      isError={false}
       isRequired={false}
       isDisabled={false}
       isLabelShowing={true}
@@ -61,7 +59,6 @@ export const FieldLabelShowingEditProperty = ({ element, onFieldChange }) => {
       id="field-label-showing"
       label="Label showing"
       value={element.isLabelShowing}
-      isError={false}
       isRequired={false}
       isDisabled={false}
       isLabelShowing={true}
@@ -99,7 +96,6 @@ export const FieldMinMaxEditProperty = ({ element, onFieldChange }) => {
           id="field-minimum"
           value={element["minimum"] ?? ""}
           onChange={onMinimumChange}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
@@ -111,7 +107,6 @@ export const FieldMinMaxEditProperty = ({ element, onFieldChange }) => {
           id="field-maximum"
           value={element["maximum"] ?? ""}
           onChange={onMaximumChange}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
@@ -134,7 +129,6 @@ export const FieldMinMaxLengthEditProperty = ({ element, onFieldChange }) => {
           id="field-min-length"
           value={element["minLength"] ?? ""}
           onChange={onMinLengthChange}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
@@ -146,7 +140,6 @@ export const FieldMinMaxLengthEditProperty = ({ element, onFieldChange }) => {
           id="field-max-length"
           value={element["maxLength"] ?? ""}
           onChange={onMaxLengthChange}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
@@ -177,7 +170,6 @@ export const FieldDateEditProperties = ({ element, onFieldChange }) => {
             label="Date format"
             value={element.format ? { value: element.format, label: element.format } : null}
             options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
-            isError={false}
             isRequired={false}
             isDisabled={false}
             isLabelShowing={true}
@@ -203,7 +195,6 @@ export const FieldSelectOptionItem = ({ index, value, onOptionRemove, onOptionCh
         <DFormTextWidget
           id={value}
           value={value}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={false}
@@ -358,7 +349,6 @@ export const FieldResourceEditProperties = ({ element, organization, onFieldChan
                 : null
             }
             options={options}
-            isError={false}
             isLoading={isLoading}
             isRequired={true}
             isDisabled={false}
@@ -388,7 +378,6 @@ export const FieldResourceEditProperties = ({ element, organization, onFieldChan
                 label: ResourceCompileOptionLabel[element.resourceCompileOption],
               },
             ]}
-            isError={false}
             isRequired={true}
             isDisabled={false}
             isLabelShowing={true}
@@ -457,7 +446,6 @@ const FieldProperties = (props) => {
         label="Element type"
         value={{ value: element.type, label: element.type }}
         options={Object.values(FieldTypes).map((type) => ({ value: type, label: type }))}
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -471,7 +459,6 @@ const FieldProperties = (props) => {
         label="Element group"
         value={{ value: element.groupId, label: data.groups[element.groupId].name }}
         options={Object.values(data.groups).map((group) => ({ value: group.id, label: group.name }))}
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -508,7 +495,6 @@ const FieldProperties = (props) => {
             id="field-title"
             label="Title"
             value={element.title}
-            isError={false}
             isRequired={false}
             isDisabled={false}
             isLabelShowing={true}

@@ -58,7 +58,6 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
             value={condition.expectedValue ?? ""}
             format={format.value}
             placeholder="Enter expected value"
-            isError={false}
             isRequired={false}
             isDisabled={false}
             isLabelShowing={true}
@@ -71,7 +70,6 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
             label="Expected date format"
             value={format}
             options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
-            isError={false}
             isRequired={false}
             isDisabled={false}
             isLabelShowing={true}
@@ -88,7 +86,6 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
         label={operator.expectedValueTitle}
         value={condition.expectedValue ?? ""}
         placeholder="Enter expected value"
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -105,7 +102,6 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
         value={condition.effectType != null ? getEffectTypeOption(condition.effectType) : null}
         options={effectTypesAsOptions}
         placeholder="Select an effect"
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -119,7 +115,6 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
         value={condition.fieldId != null ? getFieldIdAsOption(field) : null}
         options={fieldsIdsAsOptions}
         placeholder="Select field"
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -134,7 +129,6 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
           value={condition.operatorType != null ? getOperatorTypeAsOption(operator) : null}
           options={operatorsAsOptions}
           placeholder="Select operator"
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}

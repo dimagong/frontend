@@ -28,15 +28,9 @@ export const DFormMultiSelectWidget = (props) => {
 
   if (uiStyle === "checkboxes") {
     return (
-      <DFormFieldContainer
-        id={id}
-        label={label}
-        isRequired={isRequired}
-        isLabelShowing={isLabelShowing}
-        className={className}
-      >
+      <DFormFieldContainer label={label} isRequired={isRequired} isLabelShowing={isLabelShowing} className={className}>
         <NmpCheckbox.Group
-          name={id}
+          name={label}
           value={value.map(({ value }) => value)}
           disabled={isDisabled}
           onChange={(values) => onChange(values.map((value) => ({ value, label: value })))}
@@ -57,7 +51,7 @@ export const DFormMultiSelectWidget = (props) => {
 
   return (
     <DFormFieldContainer
-      id={id}
+      name={label}
       label={label}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}

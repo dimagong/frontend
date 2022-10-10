@@ -10,27 +10,14 @@ import { DFormFieldLabel } from "../DFormFieldLabel";
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
 export const DFormBooleanWidget = (props) => {
-  const {
-    id,
-    value = false,
-    label,
-    error,
-    isError,
-    isRequired,
-    isDisabled,
-    isLabelShowing,
-    onChange: propOnChange,
-    className,
-  } = props;
+  const { id, value = false, label, isRequired, isDisabled, isLabelShowing, onChange: propOnChange, className } = props;
 
   const onChange = (event) => propOnChange(event.target.checked);
 
   return (
     <DFormFieldContainer
-      id={id}
-      error={error}
+      name={label}
       label={label}
-      isError={isError}
       isRequired={isRequired}
       isLabelShowing={false}
       className={className}
@@ -46,8 +33,6 @@ DFormBooleanWidget.propTypes = {
   id: IdType.isRequired,
   value: PropTypes.bool,
   label: PropTypes.string,
-  error: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,

@@ -13,8 +13,6 @@ export const DFormNumberWidget = (props) => {
     id,
     value = "",
     label,
-    error,
-    isError,
     isRequired,
     isDisabled,
     isLabelShowing,
@@ -27,10 +25,8 @@ export const DFormNumberWidget = (props) => {
 
   return (
     <DFormFieldContainer
-      id={id}
-      error={error}
+      name={label}
       label={label}
-      isError={isError}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
       className={className}
@@ -52,8 +48,6 @@ DFormNumberWidget.propTypes = {
   id: IdType.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   label: PropTypes.string,
-  error: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,

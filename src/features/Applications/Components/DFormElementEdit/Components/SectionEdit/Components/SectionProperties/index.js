@@ -14,7 +14,6 @@ const SectionProperties = ({ element, onElementChange }) => {
         id="section-name"
         label="Section name"
         value={element.name}
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -27,7 +26,6 @@ const SectionProperties = ({ element, onElementChange }) => {
         id="section-protected"
         label="Is protected"
         value={element.isProtected}
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}

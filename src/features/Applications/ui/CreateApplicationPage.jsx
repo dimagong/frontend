@@ -132,7 +132,6 @@ export const CreateApplicationPage = () => {
               label="Select organization"
               value={organization ? getOrganizationAsOption(organization) : null}
               options={getOrganizationsAsOptions(allowedOrganizations.data)}
-              isError={false}
               isLoading={allowedOrganizations.isLoading}
               isRequired={false}
               isDisabled={false}
@@ -188,7 +187,6 @@ export const CreateApplicationPage = () => {
                   label="Application template to duplicate from"
                   value={applicationTemplate ? getApplicationTemplateAsOption(applicationTemplate) : null}
                   options={getApplicationsTemplatesAsOptions(applicationsTemplates.data)}
-                  isError={false}
                   isLoading={applicationsTemplates.isLoading}
                   isRequired={false}
                   isDisabled={false}

@@ -13,7 +13,7 @@ import { DFormFieldContainer } from "../DFormFieldContainer";
 import longTextValidationSchema from "./validationSchema";
 
 export const DFormLongTextWidget = (props) => {
-  const { id, value = "", label, error, isError, isRequired, isDisabled, isLabelShowing, onChange, className } = props;
+  const { id, value = "", label, isRequired, isDisabled, isLabelShowing, onChange, className } = props;
 
   const inputRef = React.useRef();
   const [inputHTML, setInputHTML] = useState("");
@@ -47,23 +47,26 @@ export const DFormLongTextWidget = (props) => {
   }, [value]);
 
   return (
-    <DFormFieldContainer
-      id={id}
-      error={error}
-      label={label}
-      isError={isError}
-      isRequired={isRequired}
-      isLabelShowing={isLabelShowing}
-      className={className}
-    >
-      <div
-        ref={inputRef}
-        contentEditable={!isDisabled}
-        placeholder="Enter your answer here"
-        className={classnames("dform-long-text-widget__area", { "dform-long-text-widget__area--disabled": isDisabled })}
-        dangerouslySetInnerHTML={{ __html: inputHTML }}
-        onInput={onInput}
-      />
+    <>
+      <DFormFieldContainer
+        name={label}
+        label={label}
+        isRequired={isRequired}
+        isLabelShowing={isLabelShowing}
+        className={classnames(className, "mb-0")}
+      >
+        <div
+          id={id}
+          ref={inputRef}
+          contentEditable={!isDisabled}
+          placeholder="Enter your answer here"
+          className={classnames("dform-long-text-widget__area", {
+            "dform-long-text-widget__area--disabled": isDisabled,
+          })}
+          dangerouslySetInnerHTML={{ __html: inputHTML }}
+          onInput={onInput}
+        />
+      </DFormFieldContainer>
 
       {isDisabled ? null : (
         <div className="dform-long-text-widget__actions">
@@ -80,7 +83,7 @@ export const DFormLongTextWidget = (props) => {
           />
         </div>
       )}
-    </DFormFieldContainer>
+    </>
   );
 };
 
@@ -88,8 +91,6 @@ DFormLongTextWidget.propTypes = {
   id: IdType.isRequired,
   value: PropTypes.string,
   label: PropTypes.string,
-  error: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,

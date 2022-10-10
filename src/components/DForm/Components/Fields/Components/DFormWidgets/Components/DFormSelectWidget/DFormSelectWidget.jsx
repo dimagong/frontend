@@ -15,9 +15,7 @@ export const DFormSelectWidget = (props) => {
     id,
     value,
     label,
-    error,
     options,
-    isError,
     isLoading = false,
     isRequired,
     isDisabled,
@@ -29,10 +27,8 @@ export const DFormSelectWidget = (props) => {
 
   return (
     <DFormFieldContainer
-      id={id}
-      error={error}
+      name={label}
       label={label}
-      isError={isError}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
       className={className}
@@ -54,10 +50,8 @@ DFormSelectWidget.propTypes = {
   id: IdType.isRequired,
   value: OptionType,
   label: PropTypes.string,
-  error: PropTypes.string,
   options: OptionsType.isRequired,
   placeholder: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool,
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
