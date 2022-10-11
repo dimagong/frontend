@@ -4,7 +4,15 @@ import { Row, Col } from "reactstrap";
 
 import { ApplicationDescriptionFormFields } from "./ApplicationDescriptionFormFields";
 
-export const ApplicationDescription = ({ name, description, isPrivate, organizationName, onChange }) => {
+export const ApplicationDescription = ({
+  name,
+  description,
+  isPrivate,
+  organizationName,
+  onChange,
+  category,
+  categories,
+}) => {
   return (
     <Row className="px-3">
       <Col md="12">
@@ -18,6 +26,8 @@ export const ApplicationDescription = ({ name, description, isPrivate, organizat
           description={description}
           isPrivate={isPrivate}
           onChange={onChange}
+          category={category}
+          categories={categories}
         />
       </Col>
     </Row>

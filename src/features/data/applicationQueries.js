@@ -64,7 +64,7 @@ export const useCopyApplicationTemplateMutation = ({ applicationId }, options = 
   const dispatch = useDispatch();
 
   return useGenericMutation(
-    { url: `api/dform-template/${applicationId}/copy`, method: "post" },
+    { url: `api/dform-template/${applicationId}/copy`, method: "post", queryKey: ApplicationQueryKeys.all() },
     {
       ...options,
       onSuccess: (data, ...rest) => {
@@ -80,7 +80,7 @@ export const useCreateApplicationTemplateMutation = (options = {}) => {
   const dispatch = useDispatch();
 
   return useGenericMutation(
-    { url: `api/dform-template`, method: "post" },
+    { url: `api/dform-template`, method: "post", queryKey: ApplicationQueryKeys.all() },
     {
       ...options,
       onSuccess: (data, ...rest) => {

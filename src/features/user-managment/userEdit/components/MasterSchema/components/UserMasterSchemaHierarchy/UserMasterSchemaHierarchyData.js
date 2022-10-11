@@ -42,6 +42,8 @@ function UserMasterSchemaHierarchyData(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hierarchyParams]);
 
+  console.log("MSH hierarchy", hierarchy);
+
   return (
     <>
       <div className="position-sticky zindex-1" style={{ top: "68px", left: "0px", paddingTop: "20px" }}>

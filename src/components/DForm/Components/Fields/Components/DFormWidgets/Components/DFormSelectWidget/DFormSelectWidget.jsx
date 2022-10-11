@@ -63,6 +63,7 @@ DFormSelectWidget.propTypes = {
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,
   onChange: PropTypes.func,
+  className: PropTypes.string,
 };
 
 DFormSelectWidget.validationSchema = selectValidationSchema;

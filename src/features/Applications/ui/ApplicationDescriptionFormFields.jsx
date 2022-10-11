@@ -3,13 +3,20 @@ import PropTypes from "prop-types";
 
 import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
 import { DFormBooleanWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormBooleanWidget";
+import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
+import {
+  getCategoriesAsOptions,
+  getCategoryAsOption,
+} from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
-export const ApplicationDescriptionFormFields = ({ name, description, isPrivate, onChange }) => {
-  const onNameChange = (name) => onChange({ name, description, isPrivate });
+export const ApplicationDescriptionFormFields = ({ name, description, isPrivate, onChange, category, categories }) => {
+  const onNameChange = (name) => onChange({ name, description, isPrivate, category });
 
-  const onPrivateChange = (isPrivate) => onChange({ name, description, isPrivate });
+  const onPrivateChange = (isPrivate) => onChange({ name, description, isPrivate, category });
 
-  const onDescriptionChange = (description) => onChange({ name, description, isPrivate });
+  const onDescriptionChange = (description) => onChange({ name, description, isPrivate, category });
+
+  const onCategoryChange = (category) => onChange({ name, description, isPrivate, categoryId: category.value });
 
   return (
     <>
@@ -36,6 +43,19 @@ export const ApplicationDescriptionFormFields = ({ name, description, isPrivate,
         isLabelShowing={true}
         placeholder="Enter application description"
         onChange={onDescriptionChange}
+        className="mb-2"
+      />
+
+      <DFormSelectWidget
+        id="dform-organization-category"
+        label="Select organization category"
+        value={category ? getCategoryAsOption(category) : null}
+        options={categories ? getCategoriesAsOptions(categories) : null}
+        isError={false}
+        isRequired={false}
+        isDisabled={false}
+        isLabelShowing={true}
+        onChange={onCategoryChange}
         className="mb-2"
       />
 
