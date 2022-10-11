@@ -24,6 +24,9 @@ import { ApplicationWrapper } from "./ApplicationWrapper";
 import { mutateApplication } from "../../data/mutateApplication";
 import { ApplicationDescription } from "./ApplicationDescription";
 
+import { useCategoriesByOrganization } from "features/home/ContextSearch/Applications/categoryQueries";
+import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
+
 //TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
 // because of internal behavior of component
 
@@ -40,10 +43,11 @@ export const ApplicationPage = ({ applicationId }) => {
     { applicationId },
     {
       onSuccess: (data) => {
-        const { groups, schema, is_private, ...rest } = data;
+        const { groups, schema, is_private, category_id, ...rest } = data;
 
         const applicationData = {
           organization: groups[0],
+          categoryId: category_id,
           isPrivate: is_private,
           ...schema,
           ...rest,
@@ -427,6 +431,18 @@ export const ApplicationPage = ({ applicationId }) => {
     mutateApplication(applicationData, updateApplication);
   };
 
+  let { data: categories } = useCategoriesByOrganization({
+    organizationId: applicationData?.organization.id,
+    organizationType: applicationData?.organization.type,
+  });
+
+  let category;
+
+  if (categories) {
+    categories = categories.map((category) => parseSelectCategory(category));
+    category = categories.find((category) => applicationData.categoryId === category.id);
+  }
+
   if (application.isLoading || !applicationData) {
     return <div>Loading...</div>;
   }
@@ -465,6 +481,8 @@ export const ApplicationPage = ({ applicationId }) => {
               description={applicationData.description}
               organizationName={applicationData.organization.name}
               onChange={onApplicationDescriptionChange}
+              category={category}
+              categories={categories}
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>

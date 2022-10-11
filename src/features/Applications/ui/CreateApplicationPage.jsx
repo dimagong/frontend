@@ -21,6 +21,13 @@ import { ApplicationWrapper } from "./ApplicationWrapper";
 import { ApplicationDescriptionFormFields } from "./ApplicationDescriptionFormFields";
 import { INITIAL_APPLICATION_DATA } from "../constants";
 
+import { useCategoriesByOrganization } from "features/home/ContextSearch/Applications/categoryQueries";
+import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
+import {
+  getCategoriesAsOptions,
+  getCategoryAsOption,
+} from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
+
 const { setContext } = appSlice.actions;
 
 const getOrganizationUniqueId = ({ id, type }) => `${type}/${id}`;
@@ -36,7 +43,7 @@ const getApplicationTemplateAsOption = (template) => ({ value: template.id, labe
 
 const getApplicationsTemplatesAsOptions = (templates) => templates.map(getApplicationTemplateAsOption);
 
-const initialApplicationDescriptionValues = { name: "", description: "", isPrivate: false };
+const initialApplicationDescriptionValues = { name: "", description: "", isPrivate: false, categoryId: "" };
 const applicationDescriptionReducer = (s, p) => ({ ...s, ...p });
 
 export const CreateApplicationPage = () => {
@@ -48,6 +55,8 @@ export const CreateApplicationPage = () => {
   );
 
   const [organization, setOrganization] = useState(null);
+  const [category, setCategory] = useState(null);
+
   const [applicationTemplate, setApplicationTemplate] = useState(null);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isDuplicateModalVisible, setIsDuplicateModalVisible] = useState(false);
@@ -83,6 +92,15 @@ export const CreateApplicationPage = () => {
     },
   });
 
+  let { data: categories } = useCategoriesByOrganization({
+    organizationId: organization?.id,
+    organizationType: organization?.type,
+  });
+
+  if (categories) {
+    categories = categories.map((category) => parseSelectCategory(category));
+  }
+
   const onOrganizationChange = (option) => {
     const uniqueId = option.value;
     const organization = organizations.find((organization) => {
@@ -91,6 +109,13 @@ export const CreateApplicationPage = () => {
     });
 
     setOrganization(organization);
+    setCategory(null);
+  };
+
+  const onCategoryChange = (categoryOption) => {
+    const newCategory = categories.find((category) => category.id === categoryOption.value);
+
+    setCategory(newCategory);
   };
 
   const onApplicationTemplateChange = (option) => {
@@ -107,6 +132,7 @@ export const CreateApplicationPage = () => {
         name,
         description,
         isPrivate,
+        categoryId: category.id,
         organization,
       },
       createApplicationMutation
@@ -140,6 +166,19 @@ export const CreateApplicationPage = () => {
               onChange={onOrganizationChange}
               className="mb-2"
             />
+
+            <DFormSelectWidget
+              id="dform-organization-category"
+              label="Select organization category"
+              value={category ? getCategoryAsOption(category) : null}
+              options={categories ? getCategoriesAsOptions(categories) : null}
+              isError={false}
+              isRequired={false}
+              isDisabled={false}
+              isLabelShowing={true}
+              onChange={onCategoryChange}
+              className="mb-2"
+            />
           </Col>
 
           {organization ? (
@@ -148,10 +187,10 @@ export const CreateApplicationPage = () => {
                 <span>Please, create a dForm from scratch or use an existing dForm as a template</span>
                 <div className="application_delimiter" />
                 <div className="d-flex justify-content-between mt-2">
-                  <Button color="primary" onClick={() => setIsDuplicateModalVisible(true)}>
+                  <Button color="primary" onClick={() => setIsDuplicateModalVisible(true)} disabled={!category}>
                     Duplicate an existing dForm
                   </Button>
-                  <Button color="primary" onClick={() => setIsCreateModalVisible(true)}>
+                  <Button color="primary" onClick={() => setIsCreateModalVisible(true)} disabled={!category}>
                     Create from scratch
                   </Button>
                 </div>

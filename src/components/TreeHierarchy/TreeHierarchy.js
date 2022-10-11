@@ -51,6 +51,7 @@ const TreeHierarchy = (props) => {
     elementCreationLoading,
     onElementCreationSubmit,
     components: propComponents,
+    onFieldCreatorClickProp,
     ...wrapperAttrs
   } = props;
   const components = _.merge(defaultComponents, propComponents);
@@ -111,7 +112,9 @@ const TreeHierarchy = (props) => {
             expanded={expandedIds.includes(node.nodeId)}
             onExpand={() => onExpand(node)}
             onCollapse={() => onCollapse(node)}
-            onFieldCreatorClick={() => onFieldCreatorClick(node.nodeId)}
+            onFieldCreatorClick={() =>
+              onFieldCreatorClickProp ? onFieldCreatorClickProp(node.nodeId) : onFieldCreatorClick(node.nodeId)
+            }
             onGroupCreatorClick={() => onGroupCreatorClick(node.nodeId)}
             children={children}
           />
@@ -155,6 +158,7 @@ TreeHierarchy.propTypes = {
   elementCreationLoading: PropTypes.bool.isRequired,
 
   components: PropTypes.object,
+  onFieldCreatorClickProp: PropTypes.func,
 };
 
 export default TreeHierarchy;
