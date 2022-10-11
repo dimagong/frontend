@@ -13,15 +13,8 @@ import {
 
 import OnboardingSurveyComponent from "./components/OnboardingSurveyComponent";
 import OnboardingSurveyFinishComponent from "./components/OnboardingSurveyFinishComponent";
-// import TakingSurvey from "../../Surveys/Components/TakingSurvey";
-// import StepperSurveyView from "./view/StepperSurveyView";
-// import SurveyGradedView from "./view/SurveyGradedView";
-// import SurveyFinishView from "./view/SurveyFinishView";
-// import SurveyAdditionalInfoView from "./view/SurveyAdditionalInfoView";
 
 import { findStatusSurvey } from "./helpers/findStatusSurvey";
-// import { getSurveySubmitStatus } from "./helpers/getSurveySubmitStatus";
-// import { StatusConstant } from "./constants/statusConstants";
 
 const OnboardingSurvey = ({
   selectedSurveyId,
@@ -113,30 +106,6 @@ const OnboardingSurvey = ({
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
   const currentQuestionAnswer = answers && currentIndex ? answers[currentIndex] : null;
 
-  // return (
-  //   <>
-  //     {
-  //       {
-  //         [statusConstant.APPROVED]: (
-  //           <SurveyGradedView
-  //             survey={survey}
-  //             surveyStatus={surveyStatus}
-  //             setIsFeedbackView={setIsFeedbackView}
-  //             isLoadingSurvey={isLoadingSurvey}
-  //             isFeedbackView={isFeedbackView}
-  //           />
-  //         ),
-  //         [statusConstant.SUBMITTED]: <SurveyFinishView />,
-  //         [statusConstant.RECENT]: <SurveyFinishView />,
-  //         [statusConstant.STARTED]: <StepperSurveyView />,
-  //       }[surveyStatus]
-  //     }
-  //   </>
-  // );
-
-  // const [surveyFinishChild, Hello] = children;
-
-  //return <TakingSurvey survey={survey} isRecentlySubmitted={isRecentlySubmitted} />;
   return finished_at ? (
     <OnboardingSurveyFinishComponent
       survey={survey}

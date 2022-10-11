@@ -1,7 +1,7 @@
 import { Status } from "./../constants/statusConstants";
-import { AccessTypes } from "./../constants/accessTypes";
+import { AccessTypes } from "../../../../components/DForm/types/accessTypes";
 
-export interface IProfile {
+export interface Profile {
   avatar: null;
   email: string;
   first_name: string;
