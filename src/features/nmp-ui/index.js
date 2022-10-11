@@ -17,7 +17,7 @@ import NpmProgress from "./NpmProgress";
 import NpmRadio from "./NpmRadio";
 import NpmRadioCardGroup from "./NpmRadioCardGroup";
 import NpmSpin from "./NpmSpin";
-import NpmStepper from "./NpmStepper";
+import { NmpStepper } from "./NmpStepper";
 import { NmpTextArea } from "./NmpTextArea";
 import NpmTimePicker from "./NpmTimePicker";
 import { NpmTooltip } from "./NpmTooltip";
@@ -43,7 +43,7 @@ export {
   NpmRadio,
   NpmRadioCardGroup,
   NpmSpin,
-  NpmStepper,
+  NmpStepper,
   NmpTextArea,
   NpmTimePicker,
   NpmTooltip,
