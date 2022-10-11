@@ -119,6 +119,24 @@ export const useSubmitDFormMutation = ({ dformId }, options) => {
   );
 };
 
+// MVA DForm Categories' Queries/Mutations
+
+const MVADFormCategoryQueryKey = createQueryKey("MVA DForm category");
+
+export const MVADFormCategoryQueryKeys = {
+  all: () => [MVADFormCategoryQueryKey],
+};
+
+export const useMVADFormsCategoriesQuery = (options) => {
+  return useGenericQuery(
+    {
+      url: `/member-view-api/dform/category`,
+      queryKey: MVADFormCategoryQueryKeys.all(),
+    },
+    options
+  );
+};
+
 // MVA Survey's Queries/Mutations
 
 export const MVASurveyPassingQueryKey = createQueryKey("MVA Survey Passing");

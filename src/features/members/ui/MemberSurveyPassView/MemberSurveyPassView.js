@@ -2,8 +2,6 @@ import "./styles.scss";
 
 import React, { useEffect } from "react";
 
-import { statusConstants } from "../../data/constants/statusConstants";
-
 import MemberSurveyQuestion from "../MemberSurveyQuestion";
 import MemberSurveyNavigations from "../MemberSurveyNavigations";
 import NpmSpin from "../../../nmp-ui/NpmSpin";

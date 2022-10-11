@@ -9,6 +9,7 @@ import {
   useSurveyPassingQuery,
   useProspectUserProfileQuery,
   useNotifyIntroductionPageSeeingMutation,
+  useMVADFormsCategoriesQuery,
 } from "api/Onboarding/prospectUserQuery";
 import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 import { initialAppOnboarding } from "features/onboarding/utils/findActiveAppOnboarding";
@@ -22,16 +23,18 @@ const useCallCollectQuery = () => {
   const userProspectProfile = useProspectUserProfileQuery();
   const userSurveyPassing = useSurveyPassingQuery();
   const useDForms = useMVADFormsQuery();
-  return { userProspectProfile, userSurveyPassing, useDForms };
+  const useDFormsCategories = useMVADFormsCategoriesQuery();
+  return { userProspectProfile, userSurveyPassing, useDForms, useDFormsCategories };
 };
 
 const OnboardingUser = () => {
-  const { userProspectProfile, userSurveyPassing, useDForms } = useCallCollectQuery();
+  const { userProspectProfile, userSurveyPassing, useDForms, useDFormsCategories } = useCallCollectQuery();
   const queryClient = useQueryClient();
 
   const dForms = useDForms.data;
   const profile = userProspectProfile.data;
   const onboardingSurveys = userSurveyPassing.data;
+  const dformsCategories = useDFormsCategories.data ?? [];
 
   const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation({
     userId: profile?.id,
@@ -84,6 +87,7 @@ const OnboardingUser = () => {
       surveys={onboardingSurveys}
       userApplications={userApplications}
       initialOnboarding={initialOnboarding}
+      dFormsCategories={dformsCategories}
     />
   );
 };
