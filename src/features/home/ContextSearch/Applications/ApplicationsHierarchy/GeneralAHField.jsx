@@ -33,7 +33,7 @@ export const GeneralAHField = (props) => {
 GeneralAHField.propTypes = {
   name: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
-  date: PropTypes.string.isRequired,
+  date: PropTypes.string,
 
   isLocked: PropTypes.bool.isRequired,
 

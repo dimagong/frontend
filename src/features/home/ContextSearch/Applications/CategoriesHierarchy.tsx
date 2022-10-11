@@ -11,7 +11,7 @@ import { CreateCategorySubmitProps, Hierarchy, Search } from "./models";
 import "./styles.scss";
 
 export const CategoriesHierarchy: React.FC<Props> = ({ search }) => {
-  const categories = useCategory({ name: search }, [search]);
+  const categories = useCategory({ name: search });
   let hierarchies: Hierarchy[] = [];
 
   if (!_.isEmpty(categories.data)) {

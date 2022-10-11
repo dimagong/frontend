@@ -103,9 +103,9 @@ const getContainedById = (array: Node[], id: CategoryId): Node[] => {
 const makeObjectWithNodeIdFields = (array: Node[]) => {
   const ObjectWithNodeIdFields = {};
 
-  for (let i = 0; i < array.length; i++) {
-    ObjectWithNodeIdFields[array[i].nodeId!] = array[i];
-  }
+  array.forEach((arrayItem) => {
+    ObjectWithNodeIdFields[arrayItem.nodeId!] = arrayItem;
+  });
 
   return ObjectWithNodeIdFields;
 };

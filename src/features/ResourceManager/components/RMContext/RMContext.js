@@ -16,8 +16,6 @@ const RMContext = ({ resourceManagerId, selectedIds, onSelect }) => {
     return <RMContextLoading />;
   }
 
-  console.log("RMContextLoading hierarchy", hierarchy);
-
   if (hierarchy == null) {
     return <RMContextNoData />;
   }

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import onboardingSlice from "../../app/slices/onboardingSlice";
 import appSlice from "../../app/slices/appSlice";
 import { selectProfile } from "../../app/selectors";
+import { CategoryQueryKeys } from "features/home/ContextSearch/Applications/categoryQueries";
 
 // ToDo: Move it to organization queries scope.
 // Organization Queries/Mutations
@@ -80,7 +81,11 @@ export const useCreateApplicationTemplateMutation = (options = {}) => {
   const dispatch = useDispatch();
 
   return useGenericMutation(
-    { url: `api/dform-template`, method: "post", queryKey: ApplicationQueryKeys.all() },
+    {
+      url: `api/dform-template`,
+      method: "post",
+      queryKey: [...ApplicationQueryKeys.all(), ...CategoryQueryKeys.all()],
+    },
     {
       ...options,
       onSuccess: (data, ...rest) => {

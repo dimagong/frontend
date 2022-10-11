@@ -67,6 +67,8 @@ export const CreateApplicationPage = () => {
   const templates = applicationsTemplates.data;
   const organizations = allowedOrganizations.data;
 
+  const categoryValue = category ? getCategoryAsOption(category) : null;
+
   const copyApplicationTemplate = useCopyApplicationTemplateMutation(
     { applicationId: applicationTemplate?.id },
     {
@@ -97,8 +99,11 @@ export const CreateApplicationPage = () => {
     organizationType: organization?.type,
   });
 
+  let categoriesOptions = null;
+
   if (categories) {
     categories = categories.map((category) => parseSelectCategory(category));
+    categoriesOptions = getCategoriesAsOptions(categories);
   }
 
   const onOrganizationChange = (option) => {
@@ -170,8 +175,8 @@ export const CreateApplicationPage = () => {
             <DFormSelectWidget
               id="dform-organization-category"
               label="Select organization category"
-              value={category ? getCategoryAsOption(category) : null}
-              options={categories ? getCategoriesAsOptions(categories) : null}
+              value={categoryValue}
+              options={categoriesOptions}
               isError={false}
               isRequired={false}
               isDisabled={false}
@@ -210,6 +215,7 @@ export const CreateApplicationPage = () => {
                     isPrivate={isPrivate}
                     description={description}
                     onChange={setApplicationDescriptionValues}
+                    category={category}
                   />
                 </div>
               </CustomModal>

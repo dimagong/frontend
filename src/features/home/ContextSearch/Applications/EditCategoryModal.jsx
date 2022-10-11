@@ -23,24 +23,34 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
   const [parentCategory, setParentCategory] = useState(null);
   const formGroup = useFormGroup({ name });
 
+  const parentCategoryValue = parentCategory ? getCategoryAsOption(parentCategory) : null;
+
   let { data: categories, isSuccess } = useCategoriesByOrganization({
     organizationId: group.organizationId,
     organizationType: parseOrganizationType(group.organizationType),
   });
 
+  let categoriesOptions = null;
+
   if (categories) {
-    categories = categories.map((category) => parseSelectCategory(category));
+    categories = categories
+      .map((category) => parseSelectCategory(category))
+      .filter((category) => category.categoryId !== group.id);
+    categoriesOptions = categories ? getCategoriesAsOptions(categories) : null;
   }
 
   useEffect(() => {
     if (isSuccess) {
-      const newParentCategory = categories.find((category) => group.parentId === category.id);
+      const newParentCategory = categories.find((category) => group.parentId === category.categoryId);
       setParentCategory(newParentCategory);
     }
   }, [isSuccess]);
 
   const onSubmit = preventDefault(() =>
-    propOnSubmit({ ...formGroup, values: { ...formGroup.values, parentId: parentCategory.id } }, { enabled: isOpen })
+    propOnSubmit(
+      { ...formGroup, values: { ...formGroup.values, parentId: parentCategory.categoryId } },
+      { enabled: isOpen }
+    )
   );
 
   const OnNameChange = (newName) => {
@@ -54,7 +64,7 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
   };
 
   const onCategoryChange = (categoryOption) => {
-    const newCategory = categories.find((category) => category.id === categoryOption.value);
+    const newCategory = categories.find((category) => category.categoryId === categoryOption.value);
 
     setParentCategory(newCategory);
   };
@@ -79,8 +89,8 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
             <DFormSelectWidget
               id="dform-organization-category"
               label="Select parent category"
-              value={parentCategory ? getCategoryAsOption(parentCategory) : null}
-              options={categories ? getCategoriesAsOptions(categories) : null}
+              value={parentCategoryValue}
+              options={categoriesOptions}
               isError={false}
               isRequired={false}
               isDisabled={false}

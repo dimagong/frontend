@@ -440,7 +440,7 @@ export const ApplicationPage = ({ applicationId }) => {
 
   if (categories) {
     categories = categories.map((category) => parseSelectCategory(category));
-    category = categories.find((category) => applicationData.categoryId === category.id);
+    category = categories.find((category) => applicationData.categoryId === category.categoryId);
   }
 
   if (application.isLoading || !applicationData) {

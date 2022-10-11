@@ -78,11 +78,11 @@ export type CategoryHierarchy = {
 
 export type CategoryForSelect = {
   breadcrumbs: string;
-  createdAt: string | null;
-  updatedAt: string | null;
-  name: CategoryName | null;
-  id: CategoryId;
-  parent: CategoryId | null;
+  categoryCreatedAt: string | null;
+  categoryUpdatedAt: string | null;
+  categoryName: CategoryName | null;
+  categoryId: CategoryId;
+  categoryParent: CategoryId | null;
   rootCategoryId: RootCategoryId;
 };
 
