@@ -119,6 +119,24 @@ export const useSubmitDFormMutation = ({ dformId }, options) => {
   );
 };
 
+// MVA DForm Categories' Queries/Mutations
+
+const MVADFormCategoryQueryKey = createQueryKey("MVA DForm category");
+
+export const MVADFormCategoryQueryKeys = {
+  all: () => [MVADFormCategoryQueryKey],
+};
+
+export const useMVADFormsCategoriesQuery = (options) => {
+  return useGenericQuery(
+    {
+      url: `/member-view-api/dform/category`,
+      queryKey: MVADFormCategoryQueryKeys.all(),
+    },
+    options
+  );
+};
+
 // MVA Survey's Queries/Mutations
 
 export const MVASurveyPassingQueryKey = createQueryKey("MVA Survey Passing");
@@ -293,23 +311,6 @@ export const useMVAUserFileQuery = ({ dFormId, masterSchemaFieldId, fileId }, op
       url: `member-view-api/dform/${dFormId}/user-file-download?master_schema_field_id=${masterSchemaFieldId}&file_id=${fileId}`,
       queryKey: MVADFormQueryKeys.file({ dFormId, masterSchemaFieldId, fileId }),
       shouldReadAsDataURL: false,
-    },
-    options
-  );
-};
-
-// MVA DForm Category
-const MVADFormsCaregoriesQueryKey = createQueryKey("MVA DForm Category");
-
-export const MVADFormsCaregoriesQueryKeys = {
-  all: () => [MVADFormsCaregoriesQueryKey],
-};
-
-export const useMVADFormsCategoriesQuery = (options) => {
-  return useGenericQuery(
-    {
-      url: `/member-view-api/dform/category`,
-      queryKey: MVADFormsCaregoriesQueryKeys.all(),
     },
     options
   );
