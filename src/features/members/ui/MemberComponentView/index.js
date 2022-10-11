@@ -45,16 +45,8 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
           />
         </div>
       </div>
-      <Row style={{ background: "#f4f4f4б", display: "flex", minHeight: "calc(100vh - 80px)" }}>
-        <Col
-          span={24}
-          style={{
-            minHeight: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+      <Row justify="center" align="center" style={{ background: "#f4f4f4б" }}>
+        <Col span={23}>
           {activeOnboarding.type === TypeConstants.SURVEY && (
             <MemberSurveyView
               selectedSurveyId={activeOnboarding.id}
