@@ -117,8 +117,12 @@ export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings,
   const selectDFormsCategory = (categories: DFormCategory[]): Partial<DFormCategory>[] => {
     const dformsList: Partial<DFormCategory>[] = [];
     categories.forEach(({ dform_id, dform_name, dform_status }) => {
-      if (!dformsList.find((el) => el.dform_id === dform_id)) {
-        dformsList.push({ dform_id, dform_name, dform_status });
+      if (!dformsList.find((el) => el.dform_id === dform_id) && dform_id) {
+        dformsList.push({
+          dform_id,
+          dform_name: dform_name || "no application name",
+          dform_status: dform_status || Status.NO_STATUS,
+        });
       }
     });
     return dformsList;
@@ -127,8 +131,8 @@ export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings,
   const categoriesList: Partial<DFormCategory>[] = [];
   if (dFormsCategories) {
     dFormsCategories.forEach(({ category_id, category_name }) => {
-      if (!categoriesList.find((el) => el.category_id === category_id)) {
-        categoriesList.push({ category_id, category_name });
+      if (!categoriesList.find((el) => el.category_id === category_id) && category_id) {
+        categoriesList.push({ category_id, category_name: category_name || "no category name" });
       }
     });
   }
