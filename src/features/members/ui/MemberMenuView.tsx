@@ -61,7 +61,7 @@ const menuCategoryItem = (categoryName: string = ""): JSX.Element => (
 const menuCategoryTitle = (name: string, count: number): JSX.Element => (
   <span className="membercomponent-menu__category-title">
     <span>{name}</span>
-    <span>{count ? `(${count})` : ""}</span>
+    <span>{count >= 0 ? `(${count})` : ""}</span>
   </span>
 );
 
@@ -112,6 +112,8 @@ const menuSurveysGroup = (surveys: Survey[]) => {
 };
 
 export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
+  console.log("surveys", surveys);
+
   const selectDFormsCategory = (categories: DFormCategory[]): Partial<DFormCategory>[] => {
     const dformsList: Partial<DFormCategory>[] = [];
     categories.forEach(({ dform_id, dform_name, dform_status }) => {
