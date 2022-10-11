@@ -120,24 +120,21 @@ export const MemberDForm: FC<Props> = (props) => {
   const organization: string = userDFormProfile.data.permissions.organization || "The Queen Is Dead";
 
   return (
-    <Row className="member-dform">
-      <Col span={24} className="member-dform__content">
+    <Row justify="center" className="member-dform member-dform__container">
+      <Col span={23}>
         {successSubmit ? (
-          <div>
-            <MemberThanksStatusView data={submitData} organization={organization} surveyName={userName} />
-          </div>
+          <MemberThanksStatusView data={submitData} organization={organization} surveyName={userName} />
         ) : (
-          <div className="member-dform__content__box">
-            <div className="member-dform__content__box__stepper">
-              <NmpStepper status={stepperStatus} sections={sections} current={step} />
-            </div>
-            <div className="member-dform__content__box__title">{name}</div>
+          <Row>
+            <Col span={4} className="member-dform__stepper-sticky">
+              <NmpStepper status={stepperStatus} current={step} sections={sections} />
+            </Col>
 
-            <NpmCard style={{ minHeight: "50vh", maxWidth: "783px", width: "57vw", marginTop: "3%" }}>
-              <div className="member-dform__content__box__card">
-                <div className="member-dform__content__box__card__name">Section {sectionName}</div>
+            <Col span={16} push={4}>
+              <h2 className="member-dform__title">{name}</h2>
 
-                <div className="member-dform__content__box__card__fields">
+              <NpmCard title={<strong className="member-dform__section-name">Section {sectionName}</strong>}>
+                <>
                   <DForm
                     // @ts-ignore
                     isMemberView
@@ -149,23 +146,26 @@ export const MemberDForm: FC<Props> = (props) => {
                     currentSection={sectionId}
                     onFieldChange={onFieldChange}
                   />
-                </div>
 
-                <div className="member-dform__content__box__card__navigation">
-                  <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
-
-                  <MemberDFormNavigation
-                    sectionNumber={step}
-                    sectionLimit={sections.length - 1}
-                    disabled={isFinalSection && !isAccessible}
-                    loading={submitDFormMutation.isLoading}
-                    handleNextSection={onNextSection}
-                    handlePreviousSection={onPreviousSection}
-                  />
-                </div>
-              </div>
-            </NpmCard>
-          </div>
+                  <Row justify="space-between">
+                    <Col>
+                      <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />,
+                    </Col>
+                    <Col>
+                      <MemberDFormNavigation
+                        sectionNumber={step}
+                        sectionLimit={sections.length - 1}
+                        disabled={isFinalSection && !isAccessible}
+                        loading={submitDFormMutation.isLoading}
+                        handleNextSection={onNextSection}
+                        handlePreviousSection={onPreviousSection}
+                      />
+                    </Col>
+                  </Row>
+                </>
+              </NpmCard>
+            </Col>
+          </Row>
         )}
       </Col>
     </Row>

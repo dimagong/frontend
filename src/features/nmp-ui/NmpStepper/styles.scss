@@ -36,7 +36,7 @@
     background-color: #a8a8a8;
   }
 
-  .ant-steps-vertical > .ant-steps-item > .ant-steps-item-container > .ant-steps-item-tail::after {
+  &.ant-steps-vertical > .ant-steps-item > .ant-steps-item-container > .ant-steps-item-tail::after {
     width: 2px;
   }
 }
