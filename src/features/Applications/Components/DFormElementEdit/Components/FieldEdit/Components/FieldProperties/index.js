@@ -1,8 +1,10 @@
 import React from "react";
+import { Form } from "antd";
 import { toast } from "react-toastify";
 import { Button, Col, Row } from "reactstrap";
 
 import { useApplicationResourceManagerFields } from "../../../../../../../data/applicationQueries";
+import { NmpButton, NmpInput, NmpSelect, NpmCheckbox } from "features/nmp-ui";
 import {
   DATE_WIDGET_FORMATS,
   ResourceCompileOptionLabel,
@@ -14,25 +16,19 @@ import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaPrope
 
 import { FieldTypes } from "components/DForm";
 import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormFieldLabel";
-import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
-import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
-import { DFormNumberWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormNumberWidget";
-import { DFormBooleanWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormBooleanWidget";
 
 export const FieldRequiredEditProperty = ({ element, onFieldChange }) => {
   const onRequiredChange = () => onFieldChange("isRequired", !element.isRequired);
 
   return (
-    <DFormBooleanWidget
-      id="field-required"
-      label="Is required"
-      value={element.isRequired}
-      isError={false}
-      isRequired={false}
-      isDisabled={false}
-      isLabelShowing={true}
-      onChange={onRequiredChange}
-    />
+    <Form.Item name={"field-required"} className="dform-field mb-2">
+      <NpmCheckbox
+        id={"field-required"}
+        checked={element.isRequired}
+        onChange={(event) => onRequiredChange(event.target.value)}
+        label={<DFormFieldLabel label={"Is required"} small />}
+      />
+    </Form.Item>
   );
 };
 
@@ -40,16 +36,14 @@ export const FieldProtectedEditProperty = ({ element, onFieldChange }) => {
   const onProtectedChange = () => onFieldChange("isProtected", !element.isProtected);
 
   return (
-    <DFormBooleanWidget
-      id="field-protected"
-      label="Is protected"
-      value={element.isProtected}
-      isError={false}
-      isRequired={false}
-      isDisabled={false}
-      isLabelShowing={true}
-      onChange={onProtectedChange}
-    />
+    <Form.Item name={"field-protected"} className="dform-field mb-2">
+      <NpmCheckbox
+        id={"field-protected"}
+        checked={element.isProtected}
+        onChange={(event) => onProtectedChange(event.target.value)}
+        label={<DFormFieldLabel label={"Is protected"} small />}
+      />
+    </Form.Item>
   );
 };
 
@@ -57,16 +51,14 @@ export const FieldLabelShowingEditProperty = ({ element, onFieldChange }) => {
   const onLabelShowingChange = () => onFieldChange("isLabelShowing", !element.isLabelShowing);
 
   return (
-    <DFormBooleanWidget
-      id="field-label-showing"
-      label="Label showing"
-      value={element.isLabelShowing}
-      isError={false}
-      isRequired={false}
-      isDisabled={false}
-      isLabelShowing={true}
-      onChange={onLabelShowingChange}
-    />
+    <Form.Item name={"field-label-showing"} className="dform-field mb-2">
+      <NpmCheckbox
+        id={"field-label-showing"}
+        checked={element.isLabelShowing}
+        onChange={(event) => onLabelShowingChange(event.target.value)}
+        label={<DFormFieldLabel label={"Label showing"} small />}
+      />
+    </Form.Item>
   );
 };
 
@@ -94,28 +86,28 @@ export const FieldMinMaxEditProperty = ({ element, onFieldChange }) => {
   return (
     <Row className="mb-2">
       <Col md="6">
-        <DFormNumberWidget
-          label="Minimum"
-          id="field-minimum"
-          value={element["minimum"] ?? ""}
-          onChange={onMinimumChange}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-        />
+        <Form.Item label={"Minimum"} name={"field-minimum"} className="dform-field mb-2">
+          <NmpInput
+            id={"field-minimum"}
+            type="number"
+            value={element["minimum"] ?? ""}
+            placeholder="Enter your answer here"
+            onChange={(event) => onMinimumChange(event.target.value)}
+            className="dform-number-field"
+          />
+        </Form.Item>
       </Col>
       <Col md="6">
-        <DFormNumberWidget
-          label="Maximum"
-          id="field-maximum"
-          value={element["maximum"] ?? ""}
-          onChange={onMaximumChange}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-        />
+        <Form.Item label={"Maximum"} name={"field-maximum"} className="dform-field mb-2">
+          <NmpInput
+            id={"field-maximum"}
+            type="number"
+            value={element["maximum"] ?? ""}
+            placeholder="Enter your answer here"
+            onChange={(event) => onMaximumChange(event.target.value)}
+            className="dform-number-field"
+          />
+        </Form.Item>
       </Col>
     </Row>
   );
@@ -129,28 +121,29 @@ export const FieldMinMaxLengthEditProperty = ({ element, onFieldChange }) => {
   return (
     <Row className="mb-2">
       <Col md="6">
-        <DFormNumberWidget
-          label="Min length"
-          id="field-min-length"
-          value={element["minLength"] ?? ""}
-          onChange={onMinLengthChange}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-        />
+        <Form.Item label={"Min length"} name={"field-min-length"} className="dform-field mb-2">
+          <NmpInput
+            id={"field-min-length"}
+            type="number"
+            value={element["minLength"] ?? ""}
+            placeholder="Enter your answer here"
+            onChange={(event) => onMinLengthChange(event.target.value)}
+            className="dform-number-field"
+          />
+        </Form.Item>
       </Col>
+
       <Col md="6">
-        <DFormNumberWidget
-          label="Max length"
-          id="field-max-length"
-          value={element["maxLength"] ?? ""}
-          onChange={onMaxLengthChange}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-        />
+        <Form.Item label={"Max length"} name={"field-max-length"} className="dform-field mb-2">
+          <NmpInput
+            id={"field-max-length"}
+            type="number"
+            value={element["maxLength"] ?? ""}
+            placeholder="Enter your answer here"
+            onChange={(event) => onMaxLengthChange(event.target.value)}
+            className="dform-number-field"
+          />
+        </Form.Item>
       </Col>
     </Row>
   );
@@ -172,18 +165,15 @@ export const FieldDateEditProperties = ({ element, onFieldChange }) => {
     <>
       <Row className="mb-2">
         <Col md="12">
-          <DFormSelectWidget
-            id="field-date-format"
-            label="Date format"
-            value={element.format ? { value: element.format, label: element.format } : null}
-            options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
-            isError={false}
-            isRequired={false}
-            isDisabled={false}
-            isLabelShowing={true}
-            onChange={onChange}
-            placeholder="Select an date Format"
-          />
+          <Form.Item label="Date format" name="field-date-format" className="dform-field mb-2">
+            <NmpSelect
+              id={"field-date-format"}
+              value={element.format ? { value: element.format, label: element.format } : null}
+              options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
+              placeholder="Select an date Format"
+              onChange={onChange}
+            />
+          </Form.Item>
         </Col>
       </Row>
 
@@ -200,16 +190,15 @@ export const FieldSelectOptionItem = ({ index, value, onOptionRemove, onOptionCh
   return (
     <div className="d-flex py-1">
       <div className="width-80-per">
-        <DFormTextWidget
-          id={value}
-          value={value}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={false}
-          placeholder="Enter your option here"
-          onChange={onChange}
-        />
+        <Form.Item name={value} className="dform-field mb-2">
+          <NmpInput
+            id={value}
+            type="text"
+            value={value}
+            placeholder="Enter your option here"
+            onChange={(event) => onChange(event.target.value)}
+          />
+        </Form.Item>
       </div>
 
       <div className="d-flex justify-content-end width-20-per">
@@ -349,52 +338,57 @@ export const FieldResourceEditProperties = ({ element, organization, onFieldChan
     <>
       <Row className="mb-2">
         <Col md="12">
-          <DFormSelectWidget
-            id="field-resource-manager-field-id"
+          <Form.Item
             label="Resource link"
-            value={
-              element.resourceManagerFieldId
-                ? options.find(({ value }) => Number(value) === Number(element.resourceManagerFieldId))
-                : null
-            }
-            options={options}
-            isError={false}
-            isLoading={isLoading}
-            isRequired={true}
-            isDisabled={false}
-            isLabelShowing={true}
-            onChange={onResourceFieldIdChange}
-            placeholder="Select a resource field"
-          />
+            name="field-resource-manager-field-id"
+            className="dform-field mb-2"
+            rules={[{ required: true }]}
+          >
+            <NmpSelect
+              id={"field-resource-manager-field-id"}
+              value={
+                element.resourceManagerFieldId
+                  ? options.find(({ value }) => Number(value) === Number(element.resourceManagerFieldId))
+                  : null
+              }
+              loading={isLoading}
+              options={options}
+              placeholder="Select a resource field"
+              onChange={onResourceFieldIdChange}
+            />
+          </Form.Item>
         </Col>
       </Row>
 
       <Row className="mb-2">
         <Col md="12">
-          <DFormSelectWidget
-            id="field-resource-compile-option"
+          <Form.Item
             label="Resource compile option"
-            value={
-              element.resourceCompileOption
-                ? {
-                    value: element.resourceCompileOption,
-                    label: ResourceCompileOptionLabel[element.resourceCompileOption],
-                  }
-                : null
-            }
-            options={[
-              {
-                value: element.resourceCompileOption,
-                label: ResourceCompileOptionLabel[element.resourceCompileOption],
-              },
-            ]}
-            isError={false}
-            isRequired={true}
-            isDisabled={false}
-            isLabelShowing={true}
-            onChange={onResourceCompileOptionChange}
-            placeholder="Select a resource compile option"
-          />
+            name="field-resource-compile-option"
+            className="dform-field mb-2"
+            rules={[{ required: true }]}
+          >
+            <NmpSelect
+              id={"field-resource-compile-option"}
+              value={
+                element.resourceCompileOption
+                  ? {
+                      value: element.resourceCompileOption,
+                      label: ResourceCompileOptionLabel[element.resourceCompileOption],
+                    }
+                  : null
+              }
+              options={[
+                {
+                  value: element.resourceCompileOption,
+                  label: ResourceCompileOptionLabel[element.resourceCompileOption],
+                },
+              ]}
+              loading={isLoading}
+              placeholder="Select a resource compile option"
+              onChange={onResourceCompileOptionChange}
+            />
+          </Form.Item>
         </Col>
       </Row>
 
@@ -438,7 +432,16 @@ export const SpecificFieldProperties = ({ element, organization, onFieldChange }
 };
 
 const FieldProperties = (props) => {
-  const { element, organization, data, onFieldGroupChange: propOnFieldGroupChange, onElementChange } = props;
+  const {
+    element,
+    organization,
+    data,
+    onFieldGroupChange: propOnFieldGroupChange,
+    onElementChange,
+    onDeleteButtonClick,
+    onElementChangesSave,
+    onElementChangesCancel,
+  } = props;
 
   const onFieldChange = (property, value) => onElementChange({ ...element, [property]: value });
 
@@ -451,46 +454,48 @@ const FieldProperties = (props) => {
   const onChangeMasterSchemaProperty = (fieldId) => onFieldChange("masterSchemaFieldId", fieldId);
 
   return (
-    <>
-      <DFormSelectWidget
-        id="field-type"
-        label="Element type"
-        value={{ value: element.type, label: element.type }}
-        options={Object.values(FieldTypes).map((type) => ({ value: type, label: type }))}
-        isError={false}
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        onChange={onFieldTypeChange}
-        placeholder="Select an Element type"
-        className="mb-2"
-      />
+    <Form layout={"vertical"}>
+      <Form.Item label="Element type" name="field-type" className="dform-field mb-2">
+        <NmpSelect
+          id={"field-type"}
+          value={{ value: element.type, label: element.type }}
+          options={Object.values(FieldTypes).map((type) => ({ value: type, label: type }))}
+          disabled={false}
+          placeholder={"Select an Element type"}
+          onChange={(_, option) => onFieldTypeChange(option)}
+        />
+      </Form.Item>
 
-      <DFormSelectWidget
-        id="field-group"
-        label="Element group"
-        value={{ value: element.groupId, label: data.groups[element.groupId].name }}
-        options={Object.values(data.groups).map((group) => ({ value: group.id, label: group.name }))}
-        isError={false}
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        onChange={onFieldGroupChange}
-        placeholder="Select an Element group"
-        className="mb-2"
-      />
+      <Form.Item label="Element group" name="field-group" className="dform-field mb-2">
+        <NmpSelect
+          id={"field-group"}
+          value={{ value: element.groupId, label: data.groups[element.groupId].name }}
+          disabled={false}
+          placeholder={"Select an Element group"}
+          options={Object.values(data.groups).map((group) => ({ value: group.id, label: group.name }))}
+          onChange={(_, option) => onFieldGroupChange(option)}
+        />
+      </Form.Item>
 
       {FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type) ? null : (
         <>
           <div className="mb-2">
-            <DFormFieldLabel label="Input name (reference)" id="field-reference" isRequired />
-            <MasterSchemaProperty
-              id="field-reference"
-              organizations={[organization]}
-              fieldId={element.masterSchemaFieldId}
-              onChangeFieldId={onChangeMasterSchemaProperty}
-            />
-            {/*<DFormSelectWidget
+            <Form.Item
+              label="Input name (reference)"
+              name="field-reference"
+              rules={[{ required: true }]}
+              className="dform-field mb-2"
+            >
+              <MasterSchemaProperty
+                id="field-reference"
+                organizations={[organization]}
+                fieldId={element.masterSchemaFieldId}
+                onChangeFieldId={onChangeMasterSchemaProperty}
+              />
+            </Form.Item>
+
+            {/* TODO: check if it can be removed
+              <DFormSelectWidget
                 id="field-reference"
                 label="Input name (reference)"
                 value={{ value: element.groupId, label: data.groups[element.groupId].name }}
@@ -503,23 +508,50 @@ const FieldProperties = (props) => {
                 placeholder="Select an Element group"
               />*/}
           </div>
-
-          <DFormTextWidget
-            id="field-title"
-            label="Title"
-            value={element.title}
-            isError={false}
-            isRequired={false}
-            isDisabled={false}
-            isLabelShowing={true}
-            onChange={onFieldTitleChange}
-            className="mb-2"
-          />
+          <Form.Item label="Title" name="field-title" className="dform-field mb-2">
+            <NmpInput
+              id={"field-title"}
+              type="text"
+              value={element.title}
+              disabled={false}
+              onChange={(event) => onFieldTitleChange(event.target.value)}
+              placeholder="Enter your answer here"
+            />
+          </Form.Item>
         </>
       )}
 
       <SpecificFieldProperties element={element} organization={organization} onFieldChange={onFieldChange} />
-    </>
+
+      <div className="application_delimiter" />
+
+      <div className="d-flex justify-content-between">
+        <Form.Item>
+          <NmpButton type="default" shape="round" size="large" onClick={onElementChangesCancel}>
+            Cancel
+          </NmpButton>
+        </Form.Item>
+
+        <div className="d-flex">
+          <Form.Item>
+            <NmpButton className="mr-1" type="primary" danger shape="round" size="large" onClick={onDeleteButtonClick}>
+              Delete
+            </NmpButton>
+          </Form.Item>
+          <Form.Item>
+            <NmpButton
+              type="primary"
+              size="large"
+              shape="round"
+              onClick={onElementChangesSave}
+              className="button-success"
+            >
+              Save
+            </NmpButton>
+          </Form.Item>
+        </div>
+      </div>
+    </Form>
   );
 };
 

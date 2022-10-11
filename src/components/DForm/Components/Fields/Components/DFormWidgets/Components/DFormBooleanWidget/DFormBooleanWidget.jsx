@@ -39,7 +39,7 @@ export const DFormBooleanWidget = (props) => {
         id={id}
         checked={value}
         disabled={isDisabled}
-        label={isLabelShowing ? <DFormFieldLabel label={label} isRequired={isRequired} small /> : null}
+        label={isLabelShowing ? <DFormFieldLabel label={label} small /> : null}
         onChange={onChange}
       />
     </DFormFieldContainer>

@@ -10,7 +10,7 @@ export const DFormFieldContainer = ({ id, label, isRequired, isLabelShowing, cla
   return (
     <Form.Item
       name={id}
-      label={isLabelShowing ? <DFormFieldLabel label={label} isRequired={isRequired} /> : undefined}
+      label={isLabelShowing ? <DFormFieldLabel label={label} /> : undefined}
       rules={[{ required: isRequired }]}
       className={className}
     >

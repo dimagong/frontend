@@ -2,7 +2,7 @@ import "./styles.scss";
 
 import * as React from "react";
 
-import { NpmButton } from "features/nmp-ui";
+import { NmpButton } from "features/nmp-ui";
 
 interface IProps {
   sectionNumber: number;
@@ -21,11 +21,11 @@ const MemberDFormNavigation = (props: IProps) => {
   return (
     <div className="member-dform-navigation">
       {sectionNumber > 0 ? (
-        <NpmButton type="nmp-ghost" disabled={disabled} loading={loading} onClick={handlePreviousSection}>
+        <NmpButton type="nmp-ghost" disabled={disabled} loading={loading} onClick={handlePreviousSection}>
           Back
-        </NpmButton>
+        </NmpButton>
       ) : null}
-      <NpmButton
+      <NmpButton
         type="nmp-primary"
         disabled={disabled}
         loading={loading}
@@ -34,7 +34,7 @@ const MemberDFormNavigation = (props: IProps) => {
         htmlType={isLastSection ? "submit" : "button"}
       >
         {isLastSection ? "Submit for review" : "Next Section"}
-      </NpmButton>
+      </NmpButton>
     </div>
   );
 };

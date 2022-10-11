@@ -6,7 +6,7 @@ import React, { useEffect, useReducer, useState } from "react";
 
 import { IdType } from "utility/prop-types";
 
-import { NpmButton, NmpLongTextModal } from "features/nmp-ui";
+import { NmpButton, NmpLongTextModal } from "features/nmp-ui";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
@@ -67,9 +67,9 @@ export const DFormLongTextWidget = (props) => {
 
       {isDisabled ? null : (
         <div className="dform-long-text-widget__actions">
-          <NpmButton type="nmp-primary" onClick={toggleIsModalOpened}>
+          <NmpButton type="nmp-primary" onClick={toggleIsModalOpened}>
             Expand text area
-          </NpmButton>
+          </NmpButton>
 
           <NmpLongTextModal
             value={inputValue}

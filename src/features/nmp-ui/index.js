@@ -1,6 +1,6 @@
 import { NmpTag } from "./NmpTag";
 import NpmBadge from "./NpmBadge";
-import { NpmButton } from "./NpmButton";
+import { NmpButton } from "./NmpButton";
 import NpmCard from "./NpmCard";
 import NpmCheckbox from "./NpmCheckbox";
 import NpmCustomStepperSurvey from "./NpmCustomStepperSurvey";
@@ -26,7 +26,7 @@ import NpmMenu from "./NpmMenu";
 export {
   NmpTag,
   NpmBadge,
-  NpmButton,
+  NmpButton,
   NpmCard,
   NpmCheckbox,
   NpmCustomStepperSurvey,

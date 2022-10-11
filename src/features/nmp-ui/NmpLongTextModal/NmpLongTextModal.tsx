@@ -1,6 +1,6 @@
 import React from "react";
 
-import { NpmModal, NpmEditor, NpmButton } from "features/nmp-ui";
+import { NpmModal, NpmEditor, NmpButton } from "features/nmp-ui";
 
 type Props = {
   value?: string;
@@ -19,9 +19,9 @@ export const NmpLongTextModal: React.FC<Props> = (props) => {
       title="Extended input"
       onCancel={onCancel}
       footer={
-        <NpmButton type="nmp-primary" onClick={onCancel}>
+        <NmpButton type="nmp-primary" onClick={onCancel}>
           Close
-        </NpmButton>
+        </NmpButton>
       }
     >
       <div className="pb-2">
