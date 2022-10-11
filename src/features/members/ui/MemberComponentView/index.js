@@ -11,7 +11,9 @@ import { MemberMenuView } from "../MemberMenuView";
 
 import { TypeConstants } from "../../data/constants/typeApplication";
 
-const MemberComponentView = ({ profile, userApplications, initialOnboarding, dForms, surveys, dformsCategories }) => {
+const MemberComponentView = (props) => {
+  const { profile, userApplications, initialOnboarding, dForms, surveys, dFormsCategories } = props;
+
   const [recentlySubmitted, setRecentlySubmitted] = useState(false);
   const [activeOnboarding, setActiveOnboarding] = useState(() => initialOnboarding);
 
@@ -37,7 +39,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
         <div className="membercomponent-menu-wrapper">
           <MemberMenuView
             dforms={dForms}
-            dformsCategories={dformsCategories}
+            dFormsCategories={dFormsCategories}
             surveys={surveys}
             onboardings={userApplications}
             activeOnboarding={activeOnboarding}
