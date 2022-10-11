@@ -34,7 +34,7 @@ const OnboardingUser = () => {
   const dForms = useDForms.data;
   const profile = userProspectProfile.data;
   const onboardingSurveys = userSurveyPassing.data;
-  const dformsCategories = useDFormsCategories.data ?? [];
+  const dFormsCategories = useDFormsCategories.data;
 
   const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation({
     userId: profile?.id,
@@ -53,7 +53,12 @@ const OnboardingUser = () => {
     }
   );
 
-  if (userSurveyPassing.isLoading || useDForms.isLoading || userProspectProfile.isLoading) {
+  if (
+    userSurveyPassing.isLoading ||
+    useDForms.isLoading ||
+    userProspectProfile.isLoading ||
+    useDFormsCategories.isLoading
+  ) {
     return (
       <div className="d-flex justify-content-center pt-5">
         <Spinner color="primary" size={"70"} />
@@ -87,7 +92,7 @@ const OnboardingUser = () => {
       surveys={onboardingSurveys}
       userApplications={userApplications}
       initialOnboarding={initialOnboarding}
-      dFormsCategories={dformsCategories}
+      dFormsCategories={dFormsCategories}
     />
   );
 };
