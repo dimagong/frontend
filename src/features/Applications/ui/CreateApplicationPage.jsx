@@ -118,7 +118,7 @@ export const CreateApplicationPage = () => {
   };
 
   const onCategoryChange = (categoryOption) => {
-    const newCategory = categories.find((category) => category.id === categoryOption.value);
+    const newCategory = categories.find((category) => category.categoryId === categoryOption.value);
 
     setCategory(newCategory);
   };
@@ -137,7 +137,7 @@ export const CreateApplicationPage = () => {
         name,
         description,
         isPrivate,
-        categoryId: category.id,
+        categoryId: category.categoryId,
         organization,
       },
       createApplicationMutation
