@@ -21,7 +21,7 @@ import { ApplicationWrapper } from "./ApplicationWrapper";
 import { ApplicationDescriptionFormFields } from "./ApplicationDescriptionFormFields";
 import { INITIAL_APPLICATION_DATA } from "../constants";
 
-import { useCategoriesByOrganization } from "features/home/ContextSearch/Applications/categoryQueries";
+import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
 import {
   getCategoriesAsOptions,
@@ -94,7 +94,7 @@ export const CreateApplicationPage = () => {
     },
   });
 
-  let { data: categories } = useCategoriesByOrganization({
+  let { data: categories } = useDFormTemplateCategoriesQuery({
     organizationId: organization?.id,
     organizationType: organization?.type,
   });

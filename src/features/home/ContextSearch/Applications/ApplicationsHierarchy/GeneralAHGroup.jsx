@@ -9,7 +9,7 @@ import _ from "lodash/fp";
 
 import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 import { useToggle } from "hooks/use-toggle";
-import { useDeleteCategory, useUpdateCategory } from "../categoryQueries";
+import { useDeleteDFormTemplateCategoryMutation, useUpdateDFormTemplateCategoryMutation } from "../categoryQueries";
 
 import { stopPropagation } from "utility/event-decorators";
 
@@ -40,8 +40,8 @@ export const GeneralAHGroup = (props) => {
   const [popup, togglePopup, setPopup] = useToggle(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const deleteCategory = useDeleteCategory({ categoryId: node.id });
-  const updateCategory = useUpdateCategory({ categoryId: node.id });
+  const deleteCategory = useDeleteDFormTemplateCategoryMutation({ categoryId: node.id });
+  const updateCategory = useUpdateDFormTemplateCategoryMutation({ categoryId: node.id });
 
   const onUpdateCategorySubmit = (submitted) => {
     if (submitted.invalid) return;
@@ -52,16 +52,6 @@ export const GeneralAHGroup = (props) => {
   };
 
   const onDelete = () => {
-    if (node.parentId === null) {
-      toast.error("You cannot delete root category.");
-      return;
-    }
-
-    if (!_.isEmpty(node.groups) || !_.isEmpty(node.fields)) {
-      toast.error("You cannot delete not empty category.");
-      return;
-    }
-
     if (window.confirm("Are you sure to delete this category?")) {
       // @ts-ignore
       deleteCategory.mutate();

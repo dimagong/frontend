@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import onboardingSlice from "../../app/slices/onboardingSlice";
 import appSlice from "../../app/slices/appSlice";
 import { selectProfile } from "../../app/selectors";
-import { CategoryQueryKeys } from "features/home/ContextSearch/Applications/categoryQueries";
+import { DFormTemplateCategoryQueryKeys } from "features/home/ContextSearch/Applications/categoryQueries";
 
 // ToDo: Move it to organization queries scope.
 // Organization Queries/Mutations
@@ -84,7 +84,7 @@ export const useCreateApplicationTemplateMutation = (options = {}) => {
     {
       url: `api/dform-template`,
       method: "post",
-      queryKey: [...ApplicationQueryKeys.all(), ...CategoryQueryKeys.all()],
+      queryKey: [...ApplicationQueryKeys.all(), ...DFormTemplateCategoryQueryKeys.all()],
     },
     {
       ...options,

@@ -51,7 +51,7 @@ export const ApplicationDescriptionFormFields = ({ name, description, isPrivate,
         className="mb-2"
       />
 
-      {categories && (
+      {categories ? (
         <DFormSelectWidget
           id="dform-organization-category"
           label="Select organization category"
@@ -64,7 +64,7 @@ export const ApplicationDescriptionFormFields = ({ name, description, isPrivate,
           onChange={onCategoryChange}
           className="mb-2"
         />
-      )}
+      ) : null}
 
       <DFormBooleanWidget
         id="application-private"

@@ -24,7 +24,7 @@ import { ApplicationWrapper } from "./ApplicationWrapper";
 import { mutateApplication } from "../../data/mutateApplication";
 import { ApplicationDescription } from "./ApplicationDescription";
 
-import { useCategoriesByOrganization } from "features/home/ContextSearch/Applications/categoryQueries";
+import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
 
 //TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
@@ -431,7 +431,7 @@ export const ApplicationPage = ({ applicationId }) => {
     mutateApplication(applicationData, updateApplication);
   };
 
-  let { data: categories } = useCategoriesByOrganization({
+  let { data: categories } = useDFormTemplateCategoriesQuery({
     organizationId: applicationData?.organization.id,
     organizationType: applicationData?.organization.type,
   });

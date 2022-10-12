@@ -1,5 +1,5 @@
 import { CategoryHierarchy, CategoryForSelect } from "../models";
-import camelize from "camelize";
+import { camelize } from "utility/camelize";
 
 export const parseHierarchyCategory = (category: any): CategoryHierarchy => {
   return camelize(category) as CategoryHierarchy;
