@@ -1,7 +1,7 @@
 import React from "react";
 import _ from "lodash/fp";
 
-import { useCategory, useCreateApplicationCategory } from "./categoryQueries";
+import { useDFormTemplateCategoryQuery, useCreateDFormTemplateCategoryMutation } from "./categoryQueries";
 import { CategoryHierarchy } from "./CategoryHierarchy";
 
 import { transformCategoriesToHierarchy } from "./utils/categoryHierarchyConverter";
@@ -11,7 +11,7 @@ import { CreateCategorySubmitProps, Hierarchy, Search } from "./models";
 import "./styles.scss";
 
 export const CategoriesHierarchy: React.FC<Props> = ({ search }) => {
-  const categories = useCategory({ name: search }, [search]);
+  const categories = useDFormTemplateCategoryQuery({ name: search });
   let hierarchies: Hierarchy[] = [];
 
   if (!_.isEmpty(categories.data)) {
@@ -19,7 +19,7 @@ export const CategoriesHierarchy: React.FC<Props> = ({ search }) => {
   }
 
   //@ts-ignore
-  const createCategory = useCreateApplicationCategory();
+  const createCategory = useCreateDFormTemplateCategoryMutation();
 
   const onElementCreationSubmit = ({ type, name, parentId }: CreateCategorySubmitProps) => {
     //@ts-ignore

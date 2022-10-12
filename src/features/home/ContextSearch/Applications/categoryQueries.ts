@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { QueryOptions } from "react-query";
 
 import { createQueryKey } from "api/createQueryKey";
 import { useGenericMutation } from "api/useGenericMutation";
@@ -6,19 +7,22 @@ import { useGenericQuery } from "api/useGenericQuery";
 
 import { CategoryId, CategoryName, OrganizationId, OrganizationType } from "./models";
 
-export const CategoryQueryKey = createQueryKey("Category");
+export const DFormTemplateCategoryQueryKey = createQueryKey("DFormTemplateCategory");
 
-export const CategoryQueryKeys = {
-  all: () => [CategoryQueryKey],
-  byName: (name: CategoryName) => [...CategoryQueryKeys.all(), { name }],
-  ByOrganization: (id: OrganizationId, type: OrganizationType) => [...CategoryQueryKeys.all(), { id, type }],
+export const DFormTemplateCategoryQueryKeys = {
+  all: () => [DFormTemplateCategoryQueryKey],
+  byName: (name: CategoryName) => [...DFormTemplateCategoryQueryKeys.all(), { name }],
+  byOrganization: (id: OrganizationId, type: OrganizationType) => [
+    ...DFormTemplateCategoryQueryKeys.all(),
+    { id, type },
+  ],
 };
 
-export const useCategory = ({ name }: CategoryProps, options: any) => {
+export const useDFormTemplateCategoryQuery = ({ name, ...options }: DFormTemplateCategoryQueryProps) => {
   return useGenericQuery(
     {
       url: `api/dform-template/categories`,
-      queryKey: CategoryQueryKeys.byName(name),
+      queryKey: DFormTemplateCategoryQueryKeys.byName(name),
       params: {
         ...(name ? { search_by_name: name } : {}),
       },
@@ -27,14 +31,15 @@ export const useCategory = ({ name }: CategoryProps, options: any) => {
   );
 };
 
-export const useCategoriesByOrganization = (
-  { organizationId, organizationType }: CategoriesByOrganizationProps,
-  options: any
-) => {
+export const useDFormTemplateCategoriesQuery = ({
+  organizationId,
+  organizationType,
+  ...options
+}: DFormTemplateCategoriesQueryProps) => {
   return useGenericQuery(
     {
       url: `api/dform-template/categories/by-organization`,
-      queryKey: CategoryQueryKeys.ByOrganization(organizationId, organizationType),
+      queryKey: DFormTemplateCategoryQueryKeys.byOrganization(organizationId, organizationType),
       params: {
         organization_type: organizationType,
         organization_id: organizationId,
@@ -44,12 +49,12 @@ export const useCategoriesByOrganization = (
   );
 };
 
-export const useCreateApplicationCategory = (options = {}) => {
+export const useCreateDFormTemplateCategoryMutation = (options: QueryOptions) => {
   return useGenericMutation(
     {
       url: "/api/dform-template/categories",
       method: "post",
-      queryKey: CategoryQueryKeys.all(),
+      queryKey: DFormTemplateCategoryQueryKeys.all(),
     },
     {
       ...options,
@@ -60,12 +65,15 @@ export const useCreateApplicationCategory = (options = {}) => {
   );
 };
 
-export const useDeleteCategory = ({ categoryId }: DeleteCategoryProps, options = {}) => {
+export const useDeleteDFormTemplateCategoryMutation = ({
+  categoryId,
+  ...options
+}: DeleteDFormTemplateCategoryMutationProps) => {
   return useGenericMutation(
     {
       url: `/api/dform-template/categories/${categoryId}`,
       method: "delete",
-      queryKey: CategoryQueryKeys.all(),
+      queryKey: DFormTemplateCategoryQueryKeys.all(),
     },
     {
       ...options,
@@ -76,12 +84,15 @@ export const useDeleteCategory = ({ categoryId }: DeleteCategoryProps, options =
   );
 };
 
-export const useUpdateCategory = ({ categoryId }: UpdateCategoryProps, options = {}) => {
+export const useUpdateDFormTemplateCategoryMutation = ({
+  categoryId,
+  ...options
+}: UpdateDFormTemplateCategoryMutationProps) => {
   return useGenericMutation(
     {
       url: `/api/dform-template/categories/${categoryId}`,
       method: "put",
-      queryKey: CategoryQueryKeys.all(),
+      queryKey: DFormTemplateCategoryQueryKeys.all(),
     },
     {
       ...options,
@@ -92,19 +103,19 @@ export const useUpdateCategory = ({ categoryId }: UpdateCategoryProps, options =
   );
 };
 
-type CategoryProps = {
+type DFormTemplateCategoryQueryProps = QueryOptions & {
   name: CategoryName;
 };
 
-type CategoriesByOrganizationProps = {
+type DFormTemplateCategoriesQueryProps = QueryOptions & {
   organizationId: OrganizationId;
   organizationType: OrganizationType;
 };
 
-type UpdateCategoryProps = {
+type UpdateDFormTemplateCategoryMutationProps = QueryOptions & {
   categoryId: CategoryId;
 };
 
-type DeleteCategoryProps = {
+type DeleteDFormTemplateCategoryMutationProps = QueryOptions & {
   categoryId: CategoryId;
 };

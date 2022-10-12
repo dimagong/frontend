@@ -9,7 +9,7 @@ import _ from "lodash/fp";
 
 import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 import { useToggle } from "hooks/use-toggle";
-import { useDeleteCategory, useUpdateCategory } from "../categoryQueries";
+import { useDeleteDFormTemplateCategoryMutation, useUpdateDFormTemplateCategoryMutation } from "../categoryQueries";
 
 import { stopPropagation } from "utility/event-decorators";
 
@@ -40,8 +40,8 @@ export const GeneralAHGroup = (props) => {
   const [popup, togglePopup, setPopup] = useToggle(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const deleteCategory = useDeleteCategory({ categoryId: node.id });
-  const updateCategory = useUpdateCategory({ categoryId: node.id });
+  const deleteCategory = useDeleteDFormTemplateCategoryMutation({ categoryId: node.id });
+  const updateCategory = useUpdateDFormTemplateCategoryMutation({ categoryId: node.id });
 
   const onUpdateCategorySubmit = (submitted) => {
     if (submitted.invalid) return;
@@ -52,19 +52,7 @@ export const GeneralAHGroup = (props) => {
   };
 
   const onDelete = () => {
-    if (node.parentId === null) {
-      toast.error("You cannot delete root category.");
-      return;
-    }
-
-    if (!_.isEmpty(node.groups) || !_.isEmpty(node.fields)) {
-      toast.error("You cannot delete not empty category.");
-      return;
-    }
-
     if (window.confirm("Are you sure to delete this category?")) {
-      console.log("onGroupEdit node", node);
-
       // @ts-ignore
       deleteCategory.mutate();
     }
@@ -114,11 +102,7 @@ export const GeneralAHGroup = (props) => {
         <div className="d-flex w-75">
           <div className="tree-hierarchy__name pr-3 position-relative" title={name}>
             <div className="tree-hierarchy__name-text">{name}</div>
-            <div
-              className="position-absolute d-flex"
-              style={{ right: "1rem", top: "50%", transform: "translateY(-50%)", zIndex: "10" }}
-              ref={popupRef}
-            >
+            <div className="position-absolute d-flex tree-hierarchy__popup-wrapper" ref={popupRef}>
               <button
                 type="button"
                 className="tree-hierarchy__popup-accessor d-flex justify-content-center align-items-center"

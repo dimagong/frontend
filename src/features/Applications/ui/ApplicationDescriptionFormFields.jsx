@@ -10,13 +10,18 @@ import {
 } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
 export const ApplicationDescriptionFormFields = ({ name, description, isPrivate, onChange, category, categories }) => {
-  const onNameChange = (name) => onChange({ name, description, isPrivate, category });
+  const onNameChange = (name) => onChange({ name, description, isPrivate, categoryId: category.categoryId });
 
-  const onPrivateChange = (isPrivate) => onChange({ name, description, isPrivate, category });
+  const onPrivateChange = (isPrivate) => onChange({ name, description, isPrivate, categoryId: category.categoryId });
 
-  const onDescriptionChange = (description) => onChange({ name, description, isPrivate, category });
+  const onDescriptionChange = (description) =>
+    onChange({ name, description, isPrivate, categoryId: category.categoryId });
 
-  const onCategoryChange = (category) => onChange({ name, description, isPrivate, categoryId: category.value });
+  const onCategoryChange = (_category) => onChange({ name, description, isPrivate, categoryId: _category.value });
+
+  const categoryValue = category ? getCategoryAsOption(category) : null;
+
+  const categoriesOptions = categories ? getCategoriesAsOptions(categories) : null;
 
   return (
     <>
@@ -46,18 +51,20 @@ export const ApplicationDescriptionFormFields = ({ name, description, isPrivate,
         className="mb-2"
       />
 
-      <DFormSelectWidget
-        id="dform-organization-category"
-        label="Select organization category"
-        value={category ? getCategoryAsOption(category) : null}
-        options={categories ? getCategoriesAsOptions(categories) : null}
-        isError={false}
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        onChange={onCategoryChange}
-        className="mb-2"
-      />
+      {categories ? (
+        <DFormSelectWidget
+          id="dform-organization-category"
+          label="Select organization category"
+          value={categoryValue}
+          options={categoriesOptions}
+          isError={false}
+          isRequired={false}
+          isDisabled={false}
+          isLabelShowing={true}
+          onChange={onCategoryChange}
+          className="mb-2"
+        />
+      ) : null}
 
       <DFormBooleanWidget
         id="application-private"

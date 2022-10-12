@@ -1,6 +1,8 @@
-export const getCategoriesAsOptions = (categories) => categories?.map(getCategoryAsOption);
+import { CategoryForSelect } from "../models";
 
-export const getCategoryAsOption = (category) => ({
-  value: category.id,
-  label: category.name,
+export const getCategoriesAsOptions = (categories: CategoryForSelect[]) => categories?.map(getCategoryAsOption);
+
+export const getCategoryAsOption = (category: CategoryForSelect) => ({
+  value: category.categoryId,
+  label: category.categoryName,
 });
