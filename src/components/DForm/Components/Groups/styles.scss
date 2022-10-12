@@ -16,3 +16,15 @@
     padding: 30px 0;
   }
 }
+
+.btn-box {
+  width: 100%;
+}
+.btn-group {
+  display: flex;
+  justify-content: space-evenly;
+  .element-add {
+    width: 40%;
+    text-align: center;
+  }
+}

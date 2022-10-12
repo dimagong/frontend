@@ -172,17 +172,6 @@ const FormComponent = (props) => {
       {!groupFields || !groupFields.length ? (
         <div className="px-2 py-5 text-center w-100">There are no fields in this group</div>
       ) : null}
-
-      {isConfigurable ? (
-        <div className="custom-form-field col-12 px-0">
-          <div className="element-add" onClick={() => onFieldCreate(groupId)}>
-            <div className="element-add_icon">
-              <Plus color="white" size={23} />
-            </div>
-            <div className="element-add_description">Add new form element</div>
-          </div>
-        </div>
-      ) : null}
     </>
   );
 };
