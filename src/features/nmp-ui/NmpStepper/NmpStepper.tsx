@@ -21,11 +21,12 @@ export const NmpStepper: FC<StepperProps> = (props) => {
     strideLength = 70,
     getKey = defaultGetKey,
     className,
+    percent = 0,
     ...rest
   } = props;
 
   return (
-    <Steps direction={direction} className={classnames("nmp-stepper", className)} {...rest}>
+    <Steps direction={direction} percent={percent} className={classnames("nmp-stepper", className)} {...rest}>
       {sections.map((section, index) => {
         return (
           <Step
