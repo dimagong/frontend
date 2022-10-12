@@ -8,6 +8,8 @@ import { ElementTypes } from "components/DForm";
 import Fields from "../Fields";
 import { useDFormContext } from "../../DFormContext";
 
+import classnames from "classnames";
+
 const Groups = (props) => {
   const {
     data,
@@ -34,7 +36,7 @@ const Groups = (props) => {
 
   return (
     <div>
-      {sectionGroups.map((groupId) => {
+      {sectionGroups.map((groupId, idx) => {
         const group = data.groups[groupId];
 
         if (group.isHidden) {
@@ -43,7 +45,7 @@ const Groups = (props) => {
 
         const isDisabled = propIsDisabled || Boolean(group.isDisabled);
         const isSelected = selectedElement?.elementType === ElementTypes.Group && selectedElement?.id === group.id;
-
+        const isLastGroup = sectionGroups.length - 1 === idx;
         return (
           <div className="group" key={groupId}>
             <div
@@ -65,6 +67,24 @@ const Groups = (props) => {
                 onElementClick={onElementClick}
               />
             </div>
+            {isConfigurable ? (
+              <div className={classnames("btn-box", { "btn-group": isLastGroup })}>
+                <div className="element-add" onClick={() => onFieldCreate(groupId)}>
+                  <div className="element-add_icon">
+                    <Plus color="white" size={23} />
+                  </div>
+                  <div className="element-add_description">Add new form element</div>
+                </div>
+                {isLastGroup ? (
+                  <div className="element-add" onClick={onGroupCreate}>
+                    <div className="element-add_icon">
+                      <Plus color="white" size={23} />
+                    </div>
+                    <div className="element-add_description">Add new group</div>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         );
       })}
@@ -73,17 +93,6 @@ const Groups = (props) => {
         (!sectionGroups.length && (
           <div className="px-2 py-5 text-center w-100">There are no groups in this section</div>
         ))}
-
-      {isConfigurable ? (
-        <div className="group">
-          <div className="element-add" onClick={onGroupCreate}>
-            <div className="element-add_icon">
-              <Plus color="white" size={23} />
-            </div>
-            <div className="element-add_description">Add new group</div>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 };

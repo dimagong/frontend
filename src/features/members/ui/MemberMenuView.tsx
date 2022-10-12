@@ -112,8 +112,6 @@ const menuSurveysGroup = (surveys: Survey[]) => {
 };
 
 export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
-  console.log("surveys", surveys);
-
   const selectDFormsCategory = (categories: DFormCategory[]): Partial<DFormCategory>[] => {
     const dformsList: Partial<DFormCategory>[] = [];
     categories.forEach(({ dform_id, dform_name, dform_status }) => {
