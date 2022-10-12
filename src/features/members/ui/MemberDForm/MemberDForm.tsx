@@ -41,6 +41,10 @@ export const MemberDForm: FC<Props> = (props) => {
     console.log({ error });
   };
 
+  const onChangeStep = (step: number): void => {
+    setSectionId(sections[step].id);
+  };
+
   // Mutations
   const saveFieldValueMutation = useSaveDFormFieldValueMutation({ dformId: id }, { onError: onFieldValueError });
 
@@ -120,7 +124,7 @@ export const MemberDForm: FC<Props> = (props) => {
   return (
     <Row className="member-dform member-dform__container">
       <Col span={4} className="member-dform__stepper-sticky">
-        <NmpStepper status={stepperStatus} current={step} sections={sections} />
+        <NmpStepper status={stepperStatus} current={step} sections={sections} onChange={onChangeStep} />
       </Col>
 
       <Col span={16} push={4}>
