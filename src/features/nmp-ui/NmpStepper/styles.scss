@@ -80,22 +80,22 @@
   }
 
   //hover
-  @at-root .ant-steps
-      .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)
-      > .ant-steps-item-container[role="button"]:hover
-      .ant-steps-item-icon {
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-icon {
     border-color: #35a046 !important;
   }
-  @at-root .ant-steps
-      .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)
-      > .ant-steps-item-container[role="button"]:hover
-      .ant-steps-item-title {
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-title {
     color: #35a046 !important;
   }
-  @at-root .ant-steps
-      .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)
-      > .ant-steps-item-container[role="button"]:hover
-      .ant-steps-icon {
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-icon {
     color: #35a046 !important;
   }
 }
