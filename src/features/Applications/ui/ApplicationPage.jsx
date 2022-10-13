@@ -40,10 +40,11 @@ export const ApplicationPage = ({ applicationId }) => {
     { applicationId },
     {
       onSuccess: (data) => {
-        const { groups, schema, is_private, ...rest } = data;
+        const { groups, schema, is_private, category_id, ...rest } = data;
 
         const applicationData = {
           organization: groups[0],
+          categoryId: category_id,
           isPrivate: is_private,
           ...schema,
           ...rest,
@@ -343,6 +344,19 @@ export const ApplicationPage = ({ applicationId }) => {
     }
   };
 
+  const onFieldSubmit = (submittedElement) => {
+    let obj = {
+      ...selectedElement,
+      ...submittedElement,
+    };
+
+    let dataToSave = embedSuggestedChanges(obj);
+
+    setApplicationData(dataToSave);
+
+    mutateApplication(dataToSave, updateApplication);
+  };
+
   const handleElementChangesCancel = () => {
     setSelectedElement(null);
     setIsModuleEditComponentVisible(false);
@@ -357,7 +371,6 @@ export const ApplicationPage = ({ applicationId }) => {
     } else {
       element = { ...elementData, edited: true };
     }
-
     const dataToSave = embedSuggestedChanges(element);
 
     setSelectedElement(element);
@@ -511,6 +524,7 @@ export const ApplicationPage = ({ applicationId }) => {
             onElementChangesCancel={handleElementChangesCancel}
             onFieldGroupChange={handleFieldGroupChange}
             onGroupSectionChange={handleGroupSectionChange}
+            onFieldSubmit={onFieldSubmit}
           />
         </ContextFeatureTemplate>
       ) : null}

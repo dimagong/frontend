@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Form } from "antd";
+import _ from "lodash";
 
 import { NmpButton } from "features/nmp-ui";
 
@@ -7,19 +8,32 @@ import ConditionalElementRender from "../../../ConditionalElementRender";
 
 const FieldDynamicRendering = ({
   data,
-  element,
-  onElementChange,
+  element: elementProps,
   onDeleteButtonClick,
-  onElementChangesSave,
   onElementChangesCancel,
+  onFieldSubmit,
 }) => {
+  const [element, setElement] = useState(elementProps);
+
+  useEffect(() => {
+    setElement(elementProps);
+  }, [elementProps]);
+
+  const onChange = (newElement) => {
+    setElement(newElement);
+  };
+
+  const onFinish = (submittedObj) => {
+    onFieldSubmit(element);
+  };
+
   return (
-    <Form layout={"vertical"}>
+    <Form layout={"vertical"} onFinish={onFinish} name="dynamic-rendering">
       <ConditionalElementRender
         fields={Object.values(data.fields)}
         element={element}
         conditions={element.conditions}
-        onElementChange={onElementChange}
+        onElementChange={onChange}
       />
 
       <div className="application_delimiter" />
@@ -38,13 +52,7 @@ const FieldDynamicRendering = ({
             </NmpButton>
           </Form.Item>
           <Form.Item>
-            <NmpButton
-              type="primary"
-              size="large"
-              shape="round"
-              onClick={onElementChangesSave}
-              className="button-success"
-            >
+            <NmpButton className="button-success" type="primary" shape="round" size="large" htmlType="submit">
               Save
             </NmpButton>
           </Form.Item>

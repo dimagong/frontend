@@ -1,44 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Form } from "antd";
+import _ from "lodash";
 
 import { FIELD_STYLES_CLASSES, MULTI_SELECT_UI_STYLES } from "features/Applications/constants";
 import { NmpButton, NmpSelect } from "features/nmp-ui";
 
 import { FieldTypes } from "components/DForm";
-import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
 const defaultUIStyle = { label: "default", value: null };
 
 const uIStylesOptions = [defaultUIStyle, ...MULTI_SELECT_UI_STYLES.map((value) => ({ label: value, value }))];
 
-const FieldStyles = ({
-  element,
-  onElementChange,
-  onDeleteButtonClick,
-  onElementChangesSave,
-  onElementChangesCancel,
-}) => {
-  const handleElementChange = (property, value) => {
-    onElementChange({ ...element, [property]: value });
-  };
-
-  const handleUIStyleChange = ({ value }) => handleElementChange("uiStyle", value);
+const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementChangesCancel }) => {
+  const [form] = Form.useForm();
+  const [disabled, setDisabled] = useState(true);
 
   const renderSpecificStyles = () => {
     switch (element.type) {
       case FieldTypes.MultiSelect: {
         return (
-          <DFormSelectWidget
-            id="ui-style"
-            label="UI style"
-            value={element.uiStyle ? { label: element.uiStyle, value: element.uiStyle } : defaultUIStyle}
-            options={uIStylesOptions}
-            isError={false}
-            isRequired={false}
-            isDisabled={false}
-            isLabelShowing={false}
-            onChange={handleUIStyleChange}
-          />
+          <Form.Item label={"UI style"} name="uiStyle" className="dform-field mb-2">
+            <NmpSelect id={"uiStyle"} options={uIStylesOptions} placeholder={"Select an option"} />
+          </Form.Item>
         );
       }
       default:
@@ -46,15 +29,48 @@ const FieldStyles = ({
     }
   };
 
+  const initialValues = {
+    ...element,
+    masterSchemaFieldId: element.masterSchemaFieldId || null,
+    uiStyle: element.uiStyle ? { label: element.uiStyle, value: element.uiStyle } : defaultUIStyle,
+  };
+
+  useEffect(() => {
+    form.setFieldsValue(initialValues);
+  }, [element]);
+
+  const onFinish = (submittedObj) => {
+    _.forOwn(submittedObj, (value, key) => {
+      if (value?.value) {
+        submittedObj[key] = value.value;
+      }
+    });
+
+    onFieldSubmit(submittedObj);
+  };
+
+  const handleFormChange = () => {
+    const fieldsValue = form.getFieldsValue();
+
+    const fieldsKeys = Object.keys(fieldsValue);
+
+    setDisabled(true);
+
+    fieldsKeys.forEach((key) => {
+      if (!_.isEqual(fieldsValue[key], initialValues[key])) {
+        setDisabled(false);
+        return;
+      }
+    });
+  };
+
   return (
-    <Form layout={"vertical"}>
+    <Form form={form} layout="vertical" onFinish={onFinish} name="styles" onFieldsChange={handleFormChange}>
       <div className="mb-2">
-        <Form.Item name="classes" className="dform-field mb-2">
+        <Form.Item name="classes" label="Classes" className="dform-field mb-2">
           <NmpSelect
             id={"classes"}
-            value={{ label: element.classes, value: element.classes }}
             options={FIELD_STYLES_CLASSES.map((className) => ({ label: className, value: className }))}
-            onChange={({ value }) => handleElementChange("classes", value)}
             placeholder={"Select an option"}
           />
         </Form.Item>
@@ -80,9 +96,10 @@ const FieldStyles = ({
             <NmpButton
               className="button-success"
               type="primary"
-              size="large"
               shape="round"
-              onClick={onElementChangesSave}
+              size="large"
+              htmlType="submit"
+              disabled={disabled}
             >
               Save
             </NmpButton>

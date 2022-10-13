@@ -20,6 +20,7 @@ const DFormElementEdit = (props) => {
     onElementDelete,
     onFieldGroupChange,
     onGroupSectionChange,
+    onFieldSubmit,
   } = props;
 
   const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS.properties);
@@ -38,6 +39,7 @@ const DFormElementEdit = (props) => {
     onDeleteButtonClick: onDeleteButtonClick,
     onElementChangesSave: onElementChangesSave,
     onElementChangesCancel: onElementChangesCancel,
+    onFieldSubmit: onFieldSubmit,
   };
 
   useEffect(() => {

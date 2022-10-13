@@ -12,22 +12,22 @@ const FieldEdit = ({
   editProperty,
   organization,
   onElementChange,
-  onFieldGroupChange,
   onDeleteButtonClick,
   onElementChangesSave,
   onElementChangesCancel,
+  onFieldSubmit,
 }) => {
-  const commonProps = { element, onElementChange, onDeleteButtonClick, onElementChangesSave, onElementChangesCancel };
+  const commonProps = {
+    element,
+    onElementChange,
+    onDeleteButtonClick,
+    onElementChangesSave,
+    onElementChangesCancel,
+    onFieldSubmit,
+  };
 
   return {
-    [EDIT_OPTIONS.properties]: (
-      <FieldProperties
-        {...commonProps}
-        data={data}
-        organization={organization}
-        onFieldGroupChange={onFieldGroupChange}
-      />
-    ),
+    [EDIT_OPTIONS.properties]: <FieldProperties {...commonProps} data={data} organization={organization} />,
     [EDIT_OPTIONS.styling]: <FieldStyles {...commonProps} />,
     [EDIT_OPTIONS.dynamicRendering]: <FieldDynamicRendering data={data} {...commonProps} />,
   }[editProperty];

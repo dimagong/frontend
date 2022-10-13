@@ -39,7 +39,7 @@ export const DFormSelectWidget = (props) => {
     >
       <NmpSelect
         id={id}
-        value={value?.value}
+        defaultValue={value?.value || value} // Check if it will broke others components
         loading={isLoading}
         options={options}
         disabled={isDisabled}
