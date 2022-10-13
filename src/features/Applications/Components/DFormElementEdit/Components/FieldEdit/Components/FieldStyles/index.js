@@ -19,8 +19,8 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
     switch (element.type) {
       case FieldTypes.MultiSelect: {
         return (
-          <Form.Item label={"UI style"} name="uiStyle" className="dform-field mb-2">
-            <NmpSelect id={"uiStyle"} options={uIStylesOptions} placeholder={"Select an option"} />
+          <Form.Item label="UI style" name="uiStyle" className="dform-field mb-2">
+            <NmpSelect id="uiStyle" options={uIStylesOptions} placeholder="Select an option" />
           </Form.Item>
         );
       }
@@ -69,9 +69,9 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
       <div className="mb-2">
         <Form.Item name="classes" label="Classes" className="dform-field mb-2">
           <NmpSelect
-            id={"classes"}
+            id="classes"
             options={FIELD_STYLES_CLASSES.map((className) => ({ label: className, value: className }))}
-            placeholder={"Select an option"}
+            placeholder="Select an option"
           />
         </Form.Item>
       </div>

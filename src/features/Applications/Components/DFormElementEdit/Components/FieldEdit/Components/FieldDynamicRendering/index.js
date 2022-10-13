@@ -28,7 +28,7 @@ const FieldDynamicRendering = ({
   };
 
   return (
-    <Form layout={"vertical"} onFinish={onFinish} name="dynamic-rendering">
+    <Form layout="vertical" onFinish={onFinish} name="dynamic-rendering">
       <ConditionalElementRender
         fields={Object.values(data.fields)}
         element={element}

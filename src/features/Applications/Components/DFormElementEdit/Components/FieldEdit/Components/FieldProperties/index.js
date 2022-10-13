@@ -24,24 +24,24 @@ import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/D
 
 export const FieldRequiredEditProperty = () => {
   return (
-    <Form.Item name={"isRequired"} className="dform-field mb-2" valuePropName="checked">
-      <NpmCheckbox id={"isRequired"} label={<DFormFieldLabel label={"Is required"} small />} />
+    <Form.Item name="isRequired" className="dform-field mb-2" valuePropName="checked">
+      <NpmCheckbox id="isRequired" label={<DFormFieldLabel label="Is required" small />} />
     </Form.Item>
   );
 };
 
 export const FieldProtectedEditProperty = () => {
   return (
-    <Form.Item name={"isProtected"} className="dform-field mb-2" valuePropName="checked">
-      <NpmCheckbox id={"isProtected"} label={<DFormFieldLabel label={"Is protected"} small />} />
+    <Form.Item name="isProtected" className="dform-field mb-2" valuePropName="checked">
+      <NpmCheckbox id="isProtected" label={<DFormFieldLabel label="Is protected" small />} />
     </Form.Item>
   );
 };
 
 export const FieldLabelShowingEditProperty = () => {
   return (
-    <Form.Item name={"isLabelShowing"} className="dform-field mb-2" valuePropName="checked">
-      <NpmCheckbox id={"isLabelShowing"} label={<DFormFieldLabel label={"Label showing"} small />} />
+    <Form.Item name="isLabelShowing" className="dform-field mb-2" valuePropName="checked">
+      <NpmCheckbox id="isLabelShowing" label={<DFormFieldLabel label="Label showing" small />} />
     </Form.Item>
   );
 };
@@ -66,13 +66,13 @@ export const FieldMinMaxEditProperty = () => {
   return (
     <Row className="mb-2">
       <Col md="6">
-        <Form.Item label={"Minimum"} name={"minimum"} className="dform-field mb-2">
-          <NmpInput id={"minimum"} type="number" placeholder="Enter your answer here" className="dform-number-field" />
+        <Form.Item label="Minimum" name="minimum" className="dform-field mb-2">
+          <NmpInput id="minimum" type="number" placeholder="Enter your answer here" className="dform-number-field" />
         </Form.Item>
       </Col>
       <Col md="6">
-        <Form.Item label={"Maximum"} name={"maximum"} className="dform-field mb-2">
-          <NmpInput id={"maximum"} type="number" placeholder="Enter your answer here" className="dform-number-field" />
+        <Form.Item label="Maximum" name="maximum" className="dform-field mb-2">
+          <NmpInput id="maximum" type="number" placeholder="Enter your answer here" className="dform-number-field" />
         </Form.Item>
       </Col>
     </Row>
@@ -83,24 +83,14 @@ export const FieldMinMaxLengthEditProperty = () => {
   return (
     <Row className="mb-2">
       <Col md="6">
-        <Form.Item label={"Min length"} name={"minLength"} className="dform-field mb-2">
-          <NmpInput
-            id={"minLength"}
-            type="number"
-            placeholder="Enter your answer here"
-            className="dform-number-field"
-          />
+        <Form.Item label="Min length" name="minLength" className="dform-field mb-2">
+          <NmpInput id="minLength" type="number" placeholder="Enter your answer here" className="dform-number-field" />
         </Form.Item>
       </Col>
 
       <Col md="6">
-        <Form.Item label={"Max length"} name={"maxLength"} className="dform-field mb-2">
-          <NmpInput
-            id={"maxLength"}
-            type="number"
-            placeholder="Enter your answer here"
-            className="dform-number-field"
-          />
+        <Form.Item label="Max length" name="maxLength" className="dform-field mb-2">
+          <NmpInput id="maxLength" type="number" placeholder="Enter your answer here" className="dform-number-field" />
         </Form.Item>
       </Col>
     </Row>
@@ -123,7 +113,7 @@ export const FieldDateEditProperties = () => {
         <Col md="12">
           <Form.Item label="Date format" name="format" className="dform-field mb-2">
             <NmpSelect
-              id={"format"}
+              id="format"
               options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
               placeholder="Select an date Format"
             />
@@ -280,7 +270,7 @@ export const FieldResourceEditProperties = ({ element, organization }) => {
             rules={[{ required: true }]}
           >
             <NmpSelect
-              id={"resourceManagerFieldId"}
+              id="resourceManagerFieldId"
               loading={isLoading}
               options={options}
               placeholder="Select a resource field"
@@ -298,7 +288,7 @@ export const FieldResourceEditProperties = ({ element, organization }) => {
             rules={[{ required: true }]}
           >
             <NmpSelect
-              id={"resourceCompileOption"}
+              id="resourceCompileOption"
               options={[
                 {
                   value: element.resourceCompileOption,
@@ -406,10 +396,10 @@ const FieldProperties = (props) => {
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
       <Form.Item label="Element type" name="type" className="dform-field mb-2">
         <NmpSelect
-          id={"type"}
+          id="type"
           options={Object.values(FieldTypes).map((type) => ({ value: type, label: type }))}
           disabled={false}
-          placeholder={"Select an Element type"}
+          placeholder="Select an Element type"
           onChange={onTypeChange}
         />
       </Form.Item>
@@ -417,9 +407,9 @@ const FieldProperties = (props) => {
       {/* TODO: check if it can be removed
        <Form.Item label="Element group" name="groupId" className="dform-field mb-2">
         <NmpSelect
-          id={"groupId"}
+          id="groupId"
           disabled={false}
-          placeholder={"Select an Element group"}
+          placeholder="Select an Element group"
           options={Object.values(data.groups).map((group) => ({ value: group.id, label: group.name }))}
           onChange={(_, option) => onFieldGroupChange(option)}
         />
@@ -452,7 +442,7 @@ const FieldProperties = (props) => {
               />*/}
           </div>
           <Form.Item label="Title" name="title" className="dform-field mb-2">
-            <NmpInput id={"title"} type="text" placeholder="Enter your answer here" />
+            <NmpInput id="title" type="text" placeholder="Enter your answer here" />
           </Form.Item>
         </>
       )}
