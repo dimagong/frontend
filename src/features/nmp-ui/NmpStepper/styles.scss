@@ -78,4 +78,24 @@
   .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
     color: #474747;
   }
+
+  //hover
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-icon {
+    border-color: #35a046 !important;
+  }
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-title {
+    color: #35a046 !important;
+  }
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-icon {
+    color: #35a046 !important;
+  }
 }
