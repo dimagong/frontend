@@ -19,12 +19,12 @@
   right: 300px;
   z-index: 1001;
   position: fixed;
+
   &__item {
     margin-top: 120px;
   }
 
   @at-root .ant-menu-horizontal:not(.ant-menu-dark) &__item {
-    //color: #35a046;
     color: #474747;
 
     &:hover:after,
@@ -51,7 +51,6 @@
     display: block;
     left: 100%;
     transform: translate(10px, -50%);
-    //color: #35a046;
     color: #474747;
 
     &::before {
@@ -81,9 +80,9 @@
   }
 
   &__category {
-    padding: 40px 0;
     min-width: 300px;
   }
+
   &__category-title {
     display: flex;
     justify-content: space-between;
@@ -95,9 +94,11 @@
       color: #474747;
     }
   }
+
   &__group-items {
-    padding: 40px 0;
+    //padding: 40px 0;
   }
+
   &__category-item {
     @at-root &,
       &.ant-menu-item-selected {
@@ -112,6 +113,7 @@
         color: #474747;
       }
     }
+
     &__name {
       font-weight: 400;
       font-size: 16px;
@@ -147,7 +149,7 @@
   &__item-name {
     font-size: 18px;
     line-height: 21px;
-    padding-right: 1rem;
+    margin-left: auto;
   }
 
   &__item-status-dform {
