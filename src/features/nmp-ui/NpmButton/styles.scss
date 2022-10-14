@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
 
-  &-nmp-default {
+  &.ant-btn-nmp-default {
     color: #434343;
     border-color: #f3f3f3;
     background-color: #f3f3f3;
@@ -21,7 +21,7 @@
       background-color: #f3f3f3;
     }
   }
-  &-nmp-ghost {
+  &.ant-btn-nmp-ghost {
     color: #474747;
     border-color: #22776d;
     background-color: transparent;
@@ -39,7 +39,7 @@
       background-color: transparent;
     }
   }
-  &-nmp-primary {
+  &.ant-btn-nmp-primary {
     color: white;
     border-color: #22776d;
     background-color: #22776d;
@@ -58,7 +58,7 @@
     }
   }
 
-  &-nmp-ellipse {
+  &.ant-btn-nmp-ellipse {
     &,
     &.ant-btn-icon-only {
       width: 20px;
@@ -75,7 +75,7 @@
     }
   }
 
-  &-icon-nmp-right {
+  &.ant-btn-icon-nmp-right {
     flex-direction: row-reverse;
 
     > .ant-btn-loading-icon .anticon {

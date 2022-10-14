@@ -11,7 +11,9 @@ import { MemberMenuView } from "../MemberMenuView";
 
 import { TypeConstants } from "../../data/constants/typeApplication";
 
-const MemberComponentView = ({ profile, userApplications, initialOnboarding, dForms, surveys }) => {
+const MemberComponentView = (props) => {
+  const { profile, userApplications, initialOnboarding, dForms, surveys, dFormsCategories } = props;
+
   const [recentlySubmitted, setRecentlySubmitted] = useState(false);
   const [activeOnboarding, setActiveOnboarding] = useState(() => initialOnboarding);
 
@@ -37,6 +39,7 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
         <div className="membercomponent-menu-wrapper">
           <MemberMenuView
             dforms={dForms}
+            dFormsCategories={dFormsCategories}
             surveys={surveys}
             onboardings={userApplications}
             activeOnboarding={activeOnboarding}
@@ -44,16 +47,8 @@ const MemberComponentView = ({ profile, userApplications, initialOnboarding, dFo
           />
         </div>
       </div>
-      <Row style={{ background: "#f4f4f4б", display: "flex", minHeight: "calc(100vh - 80px)" }}>
-        <Col
-          span={24}
-          style={{
-            minHeight: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+      <Row justify="center" align="center" style={{ background: "#f4f4f4б" }}>
+        <Col span={23}>
           {activeOnboarding.type === TypeConstants.SURVEY && (
             <MemberSurveyView
               selectedSurveyId={activeOnboarding.id}

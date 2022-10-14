@@ -5,7 +5,7 @@ export enum AccessTypes {
   UserUnlock = "user-unlock",
 }
 
-export const isMemberViewDFormAccessible = (accessType) => {
+export const isMemberViewDFormAccessible = (accessType = AccessTypes.HardLock) => {
   switch (accessType) {
     case AccessTypes.UserLock:
     case AccessTypes.HardLock:
@@ -18,7 +18,7 @@ export const isMemberViewDFormAccessible = (accessType) => {
   }
 };
 
-export const isManagerViewDFormAccessible = (accessType) => {
+export const isManagerViewDFormAccessible = (accessType = AccessTypes.HardLock) => {
   switch (accessType) {
     case AccessTypes.HardLock:
       return false;

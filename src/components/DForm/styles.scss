@@ -1,6 +1,5 @@
 .new-dform {
   display: flex;
-  max-width: 1024px;
 
   .element {
     &-add {
@@ -26,6 +25,7 @@
     .editable {
       cursor: pointer;
       position: relative;
+      display: flex;
 
       &.selected::after,
       &:hover::after {
