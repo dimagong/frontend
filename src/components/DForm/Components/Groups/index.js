@@ -34,7 +34,6 @@ const Groups = (props) => {
     onElementClick({ ...group, sectionId }, "group");
   };
 
-  console.log("sectionGroups", sectionGroups);
   return (
     <div>
       {sectionGroups.map((groupId, idx) => {
