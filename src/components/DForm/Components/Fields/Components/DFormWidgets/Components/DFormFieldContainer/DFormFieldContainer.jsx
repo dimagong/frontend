@@ -8,7 +8,7 @@ import { DFormFieldLabel } from "../DFormFieldLabel";
 
 export const DFormFieldContainer = ({ id, label, error, isError, isRequired, isLabelShowing, className, children }) => {
   return (
-    <div className={classnames("d-flex flex-column justify-content-between w-100 h-100", className)}>
+    <div className={classnames("d-flex flex-column w-100", className)}>
       {isLabelShowing ? <DFormFieldLabel id={id} label={label} isError={isError} isRequired={isRequired} /> : null}
 
       {children}
