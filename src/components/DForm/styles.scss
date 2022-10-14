@@ -25,7 +25,6 @@
     .editable {
       cursor: pointer;
       position: relative;
-      display: flex;
 
       &.selected::after,
       &:hover::after {
