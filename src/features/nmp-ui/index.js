@@ -22,6 +22,7 @@ import { NmpTextArea } from "./NmpTextArea";
 import NpmTimePicker from "./NpmTimePicker";
 import { NpmTooltip } from "./NpmTooltip";
 import NpmMenu from "./NpmMenu";
+import { NmpText } from "./NmpText";
 
 export {
   NmpTag,
@@ -48,4 +49,5 @@ export {
   NpmTimePicker,
   NpmTooltip,
   NpmMenu,
+  NmpText,
 };
