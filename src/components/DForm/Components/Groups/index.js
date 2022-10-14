@@ -34,6 +34,7 @@ const Groups = (props) => {
     onElementClick({ ...group, sectionId }, "group");
   };
 
+  console.log("sectionGroups", sectionGroups);
   return (
     <div>
       {sectionGroups.map((groupId, idx) => {
@@ -90,22 +91,20 @@ const Groups = (props) => {
         );
       })}
 
-      {!sectionGroups ||
-        (!sectionGroups.length && (
-          <>
-            <div className="px-2 py-5 text-center w-100">There are no groups in this section</div>
-            {isConfigurable ? (
-              <div className={classnames("btn-box btn-group")}>
-                <div className="element-add" onClick={onGroupCreate}>
-                  <div className="element-add_icon">
-                    <Plus color="white" size={23} />
-                  </div>
-                  <div className="element-add_description">Add new group</div>
-                </div>
-              </div>
-            ) : null}
-          </>
-        ))}
+      {!sectionGroups || sectionGroups.length === 0 ? (
+        <div className="px-2 py-5 text-center w-100">There are no groups in this section</div>
+      ) : null}
+
+      {(!sectionGroups || sectionGroups.length === 0) && isConfigurable ? (
+        <div className={classnames("btn-box btn-group")}>
+          <div className="element-add" onClick={onGroupCreate}>
+            <div className="element-add_icon">
+              <Plus color="white" size={23} />
+            </div>
+            <div className="element-add_description">Add new group</div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
