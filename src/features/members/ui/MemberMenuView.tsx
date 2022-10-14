@@ -44,11 +44,11 @@ const selectStatusColor = (status: string) => {
 
 const menuBaseItem = (name: string, status: string, statusColor: string): JSX.Element => (
   <div className="membercomponent-menu__submenu-item">
-    <span className="membercomponent-menu__item-name">{name}</span>
     <NmpTag color="white" style={{ borderColor: statusColor }} className="membercomponent-menu__item-status-dform">
       <span style={{ backgroundColor: statusColor }} className="membercomponent-menu__item-status-dform__dot"></span>
       <span style={{ color: statusColor }}>{status}</span>
     </NmpTag>
+    <span className="membercomponent-menu__item-name">{name}</span>
   </div>
 );
 
