@@ -122,46 +122,51 @@ export const MemberDForm: FC<Props> = (props) => {
   }
 
   return (
-    <Row className="member-dform member-dform__container">
-      <Col span={4} className="member-dform__stepper-sticky">
-        <NmpStepper status={stepperStatus} current={step} sections={sections} onChange={onChangeStep} />
-      </Col>
+    <div className="member-dform member-dform__container">
+      <Row>
+        <Col span={16} push={4}>
+          <h2 className="member-dform__title">{name}</h2>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={4} className="member-dform__stepper-sticky">
+          <NmpStepper status={stepperStatus} current={step} sections={sections} onChange={onChangeStep} />
+        </Col>
 
-      <Col span={16} push={4}>
-        <h2 className="member-dform__title">{name}</h2>
+        <Col span={16} push={4}>
+          <NpmCard title={<strong className="member-dform__section-name">Section {sectionName}</strong>}>
+            <>
+              <DForm
+                // @ts-ignore
+                isMemberView
+                schema={schema}
+                values={values}
+                dFormId={id}
+                accessType={accessType}
+                renderSections={false}
+                currentSection={sectionId}
+                onFieldChange={onFieldChange}
+              />
 
-        <NpmCard title={<strong className="member-dform__section-name">Section {sectionName}</strong>}>
-          <>
-            <DForm
-              // @ts-ignore
-              isMemberView
-              schema={schema}
-              values={values}
-              dFormId={id}
-              accessType={accessType}
-              renderSections={false}
-              currentSection={sectionId}
-              onFieldChange={onFieldChange}
-            />
-
-            <Row justify="space-between">
-              <Col>
-                <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />,
-              </Col>
-              <Col>
-                <MemberDFormNavigation
-                  sectionNumber={step}
-                  sectionLimit={sections.length - 1}
-                  disabled={isFinalSection && !isAccessible}
-                  loading={submitDFormMutation.isLoading}
-                  handleNextSection={onNextSection}
-                  handlePreviousSection={onPreviousSection}
-                />
-              </Col>
-            </Row>
-          </>
-        </NpmCard>
-      </Col>
-    </Row>
+              <Row justify="space-between">
+                <Col>
+                  <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />,
+                </Col>
+                <Col>
+                  <MemberDFormNavigation
+                    sectionNumber={step}
+                    sectionLimit={sections.length - 1}
+                    disabled={isFinalSection && !isAccessible}
+                    loading={submitDFormMutation.isLoading}
+                    handleNextSection={onNextSection}
+                    handlePreviousSection={onPreviousSection}
+                  />
+                </Col>
+              </Row>
+            </>
+          </NpmCard>
+        </Col>
+      </Row>
+    </div>
   );
 };
