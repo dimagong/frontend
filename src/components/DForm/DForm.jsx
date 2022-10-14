@@ -81,7 +81,15 @@ export const DForm = (props) => {
   } = props;
   const schema = isConfigurable ? propSchema : applyConditionalRender(propSchema, values);
 
-  const [selectedSectionId, selectSection] = useState(() => schema.sectionsOrder[0]);
+  const [selectedSectionId, selectSelectedSectionId] = useState(() => schema.sectionsOrder[0]);
+
+  const onSectionSelectId = (sectionId) => {
+    selectSelectedSectionId(sectionId);
+
+    if (onElementClick) {
+      onElementClick(schema.sections[sectionId], "section");
+    }
+  };
 
   return (
     <DFormContextProvider
@@ -100,7 +108,7 @@ export const DForm = (props) => {
             selectedSection={selectedSectionId}
             sectionsProgress={{}}
             onSectionCreate={onSectionCreate}
-            onSectionSelect={selectSection}
+            onSectionSelect={onSectionSelectId}
           />
         ) : null}
         <SectionsComponent

@@ -11,6 +11,11 @@ const defaultUIStyle = { label: "default", value: null };
 
 const uIStylesOptions = [defaultUIStyle, ...MULTI_SELECT_UI_STYLES.map((value) => ({ label: value, value }))];
 
+const STYLES_CLASSES = {
+  "col-md-6": "half-width",
+  "col-md-12": "full width",
+};
+
 const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementChangesCancel }) => {
   const [form] = Form.useForm();
   const [disabled, setDisabled] = useState(true);
@@ -34,6 +39,11 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
     masterSchemaFieldId: element.masterSchemaFieldId || null,
     uiStyle: element.uiStyle ? { label: element.uiStyle, value: element.uiStyle } : defaultUIStyle,
   };
+
+  const classesOptions = FIELD_STYLES_CLASSES.map((className) => ({
+    label: STYLES_CLASSES[className],
+    value: className,
+  }));
 
   useEffect(() => {
     form.setFieldsValue(initialValues);
@@ -68,11 +78,7 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
     <Form form={form} layout="vertical" onFinish={onFinish} name="styles" onFieldsChange={handleFormChange}>
       <div className="mb-2">
         <Form.Item name="classes" label="Classes" className="dform-field mb-2">
-          <NmpSelect
-            id="classes"
-            options={FIELD_STYLES_CLASSES.map((className) => ({ label: className, value: className }))}
-            placeholder="Select an option"
-          />
+          <NmpSelect id="classes" options={classesOptions} placeholder="Select an option" />
         </Form.Item>
       </div>
       {renderSpecificStyles()}
