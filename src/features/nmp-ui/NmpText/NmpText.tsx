@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import React, { createRef } from "react";
+import React, { createRef, CSSProperties } from "react";
 
 import classnames from "classnames";
 
@@ -11,6 +11,7 @@ import { NpmTooltip } from "./../NpmTooltip";
 type NmpTextType = {
   text?: string;
   className?: string;
+  style: CSSProperties;
 };
 
 export const NmpText: React.FC<NmpTextType> = ({ className, text = "", ...props }) => {
