@@ -95,10 +95,6 @@
     }
   }
 
-  &__group-items {
-    //padding: 40px 0;
-  }
-
   &__category-item {
     @at-root &,
       &.ant-menu-item-selected {
@@ -127,6 +123,7 @@
     height: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     &--survey {
       display: flex;
       justify-content: space-between;
@@ -147,17 +144,18 @@
   }
 
   &__item-name {
-    font-size: 18px;
+    font-size: 14px;
     line-height: 21px;
-    margin-left: auto;
+    min-width: 150px;
   }
 
   &__item-status-dform {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 17px;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 0;
     &__dot {
       margin-right: 7px;
       height: 5px;
@@ -186,22 +184,25 @@
   }
 }
 
-@at-root .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after,
-  .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after,
-  .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after,
-  .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active::after,
-  .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open::after,
-  .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open::after,
-  .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected::after,
-  .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected::after {
+.ant-menu-item-group-list .ant-menu-item,
+.ant-menu-item-group-list .ant-menu-submenu-title {
+  padding: 0 1rem;
+}
+
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected::after,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected::after {
   border-bottom: 2px solid #35a046;
 }
 
-@at-root .ant-menu-horizontal:not(.ant-menu-dark)
-    > .survey-item:not(.ant-menu-submenu-open).ant-menu-submenu-active::after {
+.ant-menu-horizontal:not(.ant-menu-dark) > .survey-item:not(.ant-menu-submenu-open).ant-menu-submenu-active::after {
   border-color: transparent;
 }
-@at-root .ant-menu-horizontal:not(.ant-menu-dark)
-    > .survey-item:not(.ant-menu-submenu-open).ant-menu-submenu:hover::after {
+.ant-menu-horizontal:not(.ant-menu-dark) > .survey-item:not(.ant-menu-submenu-open).ant-menu-submenu:hover::after {
   border-bottom: 2px solid #35a046;
 }
