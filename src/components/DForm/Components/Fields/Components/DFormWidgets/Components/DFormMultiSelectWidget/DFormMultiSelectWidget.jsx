@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { IdType, OptionsType } from "utility/prop-types";
 import { NmpSelect, NmpCheckbox, NmpRow, NmpCol } from "features/nmp-ui";
 
-import { DFormFieldLabel } from "../DFormFieldLabel";
-import { DFormFieldContainer } from "../DFormFieldContainer";
+import { DFormItem } from "../DFormItem";
+import { DFormLabel } from "../DFormLabel";
 
 import multiSelectValidationSchema from "./validationSchema";
 
@@ -21,14 +21,20 @@ export const DFormMultiSelectWidget = (props) => {
     isRequired,
     isDisabled,
     isLabelShowing,
-    placeholder = defaultPlaceholder,
+    masterSchemaFieldId,
     onChange,
     className,
   } = props;
 
   if (uiStyle === "checkboxes") {
     return (
-      <DFormFieldContainer label={label} isRequired={isRequired} isLabelShowing={isLabelShowing} className={className}>
+      <DFormItem
+        name={masterSchemaFieldId}
+        label={label}
+        isRequired={isRequired}
+        isLabelShowing={isLabelShowing}
+        className={className}
+      >
         <NmpCheckbox.Group
           name={label}
           value={value.map(({ value }) => value)}
@@ -39,19 +45,19 @@ export const DFormMultiSelectWidget = (props) => {
             <NmpRow key={`${option.value}${index}`}>
               <NmpCol>
                 <NmpCheckbox value={option.value}>
-                  <DFormFieldLabel label={option.value} small />
+                  <DFormLabel label={option.value} isSmall />
                 </NmpCheckbox>
               </NmpCol>
             </NmpRow>
           ))}
         </NmpCheckbox.Group>
-      </DFormFieldContainer>
+      </DFormItem>
     );
   }
 
   return (
-    <DFormFieldContainer
-      name={label}
+    <DFormItem
+      name={masterSchemaFieldId}
       label={label}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
@@ -64,10 +70,10 @@ export const DFormMultiSelectWidget = (props) => {
         options={options}
         disabled={isDisabled}
         allowClear
-        placeholder={placeholder}
+        placeholder={defaultPlaceholder}
         onChange={(_, options) => onChange(options)}
       />
-    </DFormFieldContainer>
+    </DFormItem>
   );
 };
 

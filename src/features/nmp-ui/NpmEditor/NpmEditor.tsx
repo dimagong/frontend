@@ -15,7 +15,7 @@ type Props = {
   toolbar?: object;
   disabled?: boolean;
   wrapperClassName?: string;
-  onChange?: (v: any) => void;
+  onChange?: (v: string) => void;
 };
 
 const NpmEditor: React.FC<Props> = (props) => {
@@ -37,18 +37,7 @@ const NpmEditor: React.FC<Props> = (props) => {
     if (!onChange) return;
 
     setEditorState(editorState);
-
-    if (!orgPage) {
-      onChange(draftToHtml(convertToRaw(editorState.getCurrentContent())));
-    } else {
-      // If editor have only whitespaces etc. (empty)
-      if (!!editorState.getCurrentContent().getPlainText().trim()) {
-        onChange({
-          rich: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-          raw: editorState.getCurrentContent().getPlainText().trim(),
-        });
-      }
-    }
+    onChange(draftToHtml(convertToRaw(editorState.getCurrentContent())));
   };
 
   if (!orgId || !editorState) return null;

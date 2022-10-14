@@ -1,1 +1,0 @@
-export { NmpLongTextModal } from "./NmpLongTextModal";

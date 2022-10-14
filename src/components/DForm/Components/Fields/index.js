@@ -18,15 +18,16 @@ const DFormElement = ({ classes, isSelected, onClick, children }) => {
 const FormComponent = (props) => {
   const {
     data,
-    values,
     groupId,
     isDisabled: propIsDisabled,
     groupFields,
     selectedElement,
     onElementClick: propOnElementClick,
-    onFieldChange,
     onFieldCreate,
   } = props;
+  // ToDo: Remove values later
+  const values = {};
+  const onFieldChange = () => {};
 
   const { isAccessible, isConfigurable } = useDFormContext();
 
@@ -106,14 +107,14 @@ const FormComponent = (props) => {
             case FieldTypes.File:
             case FieldTypes.FileList:
             case FieldTypes.Resource:
-              value = fieldValue.files ?? [];
+              value = fieldValue?.files ?? [];
               break;
             case FieldTypes.HelpText:
               value = field.helpTextValue;
               break;
             // In other case, use value
             default:
-              value = fieldValue.value;
+              value = fieldValue?.value;
           }
         }
 
@@ -161,7 +162,7 @@ const FormComponent = (props) => {
               isDisabled={isDisabled}
               isRequired={field.isRequired}
               isLabelShowing={field.isLabelShowing}
-              masterSchemaFieldId={field.masterSchemaFieldId}
+              masterSchemaFieldId={Number(field.masterSchemaFieldId)}
               onChange={onChange}
               key={field.id}
             />

@@ -1,29 +1,23 @@
 import React from "react";
 
-import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
+import { NmpCheckbox, NmpInput } from "features/nmp-ui";
+
+import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
-import { DFormBooleanWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormBooleanWidget";
 
 const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data }) => {
-  const onNameChange = (name) => onElementChange({ ...element, name });
+  const onNameChange = ({ target }) => onElementChange({ ...element, name: target.value });
 
-  const onProtectedChange = (isProtected) => onElementChange({ ...element, isProtected });
+  const onProtectedChange = ({ target }) => onElementChange({ ...element, isProtected: target.checked });
 
   const onSectionChange = (value) => onGroupSectionChange(element.id, element.sectionId, value.value);
 
   return (
     <>
-      <DFormTextWidget
-        id="group-name"
-        label="Group name"
-        value={element.name}
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        placeholder="Group name"
-        onChange={onNameChange}
-        className="mb-2"
-      />
+      <div className="mb-2">
+        <DFormLabel label="Group name" id="group-name" />
+        <NmpInput id="group-name" type="text" value={element.name} placeholder="Group name" onChange={onNameChange} />
+      </div>
 
       <DFormSelectWidget
         id="group-section"
@@ -41,15 +35,9 @@ const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data 
         className="mb-2"
       />
 
-      <DFormBooleanWidget
-        id="group-protected"
-        label="Is protected"
-        value={element.isProtected}
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        onChange={onProtectedChange}
-      />
+      <NmpCheckbox id="group-protected" checked={element.isProtected} onChange={onProtectedChange}>
+        <DFormLabel label="Is protected" />
+      </NmpCheckbox>
     </>
   );
 };

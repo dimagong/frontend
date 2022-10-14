@@ -1,36 +1,30 @@
 import React from "react";
 
-import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
-import { DFormBooleanWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormBooleanWidget";
+import { NmpCheckbox, NmpInput } from "features/nmp-ui";
+
+import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
 const SectionProperties = ({ element, onElementChange }) => {
-  const onNameChange = (name) => onElementChange({ ...element, name });
+  const onNameChange = ({ target }) => onElementChange({ ...element, name: target.value });
 
-  const onProtectedChange = (isProtected) => onElementChange({ ...element, isProtected });
+  const onProtectedChange = ({ target }) => onElementChange({ ...element, isProtected: target.checked });
 
   return (
     <>
-      <DFormTextWidget
-        id="section-name"
-        label="Section name"
-        value={element.name}
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        placeholder="Section name"
-        onChange={onNameChange}
-        className="mb-2"
-      />
+      <div className="mb-2">
+        <DFormLabel label="Section name" id="section-name" />
+        <NmpInput
+          id="section-name"
+          type="text"
+          value={element.name}
+          placeholder="Section name"
+          onChange={onNameChange}
+        />
+      </div>
 
-      <DFormBooleanWidget
-        id="section-protected"
-        label="Is protected"
-        value={element.isProtected}
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        onChange={onProtectedChange}
-      />
+      <NmpCheckbox id="section-protected" checked={element.isProtected} onChange={onProtectedChange}>
+        <DFormLabel label="Is protected" />
+      </NmpCheckbox>
     </>
   );
 };

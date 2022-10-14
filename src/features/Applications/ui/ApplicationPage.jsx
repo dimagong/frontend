@@ -5,8 +5,8 @@ import React, { useState } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
-import { DForm, ElementTypes } from "components/DForm";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
+import { DFormContextProvider, BaseDForm, ElementTypes } from "components/DForm";
 
 import {
   APPLICATION_PAGES,
@@ -468,15 +468,16 @@ export const ApplicationPage = ({ applicationId }) => {
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
-            <DForm
-              isConfigurable={true}
-              schema={applicationData}
-              selectedElement={selectedElement}
-              onElementClick={handleSelectElementForEdit}
-              onSectionCreate={handleSectionCreate}
-              onGroupCreate={handleGroupCreate}
-              onFieldCreate={handleFieldCreate}
-            />
+            <DFormContextProvider isConfigurable>
+              <BaseDForm
+                schema={applicationData}
+                selectedElement={selectedElement}
+                onElementClick={handleSelectElementForEdit}
+                onSectionCreate={handleSectionCreate}
+                onGroupCreate={handleGroupCreate}
+                onFieldCreate={handleFieldCreate}
+              />
+            </DFormContextProvider>
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>
             <ElementsReorderComponent onReorder={handleReorder} applicationData={applicationData} />

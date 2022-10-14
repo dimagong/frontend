@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { NmpSelect } from "features/nmp-ui";
 import { IdType, OptionsType, OptionType } from "utility/prop-types";
 
-import { DFormFieldContainer } from "../DFormFieldContainer";
+import { DFormItem } from "../DFormItem";
 
 import selectValidationSchema from "./validationSchema";
 
@@ -20,14 +20,14 @@ export const DFormSelectWidget = (props) => {
     isRequired,
     isDisabled,
     isLabelShowing,
-    placeholder = defaultPlaceholder,
+    masterSchemaFieldId,
     onChange,
     className,
   } = props;
 
   return (
-    <DFormFieldContainer
-      name={label}
+    <DFormItem
+      name={masterSchemaFieldId}
       label={label}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
@@ -39,10 +39,10 @@ export const DFormSelectWidget = (props) => {
         loading={isLoading}
         options={options}
         disabled={isDisabled}
-        placeholder={placeholder}
+        placeholder={defaultPlaceholder}
         onChange={(_, option) => onChange(option)}
       />
-    </DFormFieldContainer>
+    </DFormItem>
   );
 };
 

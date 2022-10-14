@@ -1,53 +1,57 @@
 import "./styles.scss";
 
 import _ from "lodash";
+import type { FC } from "react";
 import { Col, Row, Form } from "antd";
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import type { FormProviderProps } from "antd/lib/form/context";
 
 import { NpmCard, NpmStepper } from "features/nmp-ui";
-import { DForm, AccessTypes, FieldTypes, isMemberViewDFormAccessible } from "components/DForm";
+
+import { DFormSection } from "components/DForm/ui/DFormSection";
+import type { DFormSchema } from "components/DForm/types/dformSchema";
+import { getValuesBySectionId } from "components/DForm/data/getValuesBySectionId";
+import { NormalizedDFormValues } from "components/DForm/types/normalizedDFormValues";
+import { applyDynamicConditionalRender } from "components/DForm/data/applyConditionalRender";
+import { AccessTypes, DFormContextProvider, isMemberViewDFormAccessible } from "components/DForm";
+
 import {
-  useSaveDFormFieldValueMutation,
   useSubmitDFormMutation,
   useProspectUserProfileQuery,
+  useSaveDFormFieldValueMutation,
 } from "api/Onboarding/prospectUserQuery";
 
 import MemberDFormCheckSave from "../MemberDFormCheckSave";
 import MemberDFormNavigation from "../MemberDFormNavigation";
 import MemberThanksStatusView from "../MemberThanksStatusView";
 
-// type ValidationError = {
-//   errors: Record<string, string[]>;
-//   message: string;
-//   status: number;
-// };
+type Section = { id: string; name: string };
+type Sections = Array<Section>;
 
-interface Props {
+type Props = {
   id: number;
   name: string;
-  schema: any;
-  values: any;
+  sections: Sections;
   accessType: AccessTypes;
-  sections: Array<{ id: string; name: string }>;
-}
+  initialSchema: DFormSchema;
+  initialValues: NormalizedDFormValues;
+};
 
 export const MemberDForm: FC<Props> = (props) => {
-  const { id, name, schema, values: propValues, accessType, sections } = props;
+  const { id, name, accessType, sections, initialSchema, initialValues } = props;
 
-  const [form] = Form.useForm();
-
-  const [values, setValues] = useState<any>(() => propValues);
   const [sectionId, setSectionId] = useState<string>(() => sections[0].id);
   const [successSubmit, onSuccessSubmit] = useState<boolean>(() => false);
+
+  const [values, setValues] = useState(() => getValuesBySectionId(sectionId, initialSchema, initialValues));
+  const schema = applyDynamicConditionalRender(initialSchema, values);
 
   const step = sections.findIndex(({ id }) => id === sectionId) || 0;
   const sectionName = sections[step]?.name || `${step + 1}`;
   const stepperStatus = step < sections.length ? "process" : "finish";
 
-  const onSubmitConfig = { onSuccess: () => onSuccessSubmit(true) };
-
   // Mutations
-  const submitDFormMutation = useSubmitDFormMutation({ dformId: id }, onSubmitConfig);
+  const submitDFormMutation = useSubmitDFormMutation({ dformId: id }, { onSuccess: () => onSuccessSubmit(true) });
   const saveFieldValueMutation = useSaveDFormFieldValueMutation({ dformId: id });
 
   // Queries
@@ -57,73 +61,94 @@ export const MemberDForm: FC<Props> = (props) => {
   const saveFieldValue = (v) => saveFieldValueRef.current(v);
   const flushFieldValue = () => saveFieldValueRef.current.flush();
 
-  const onFieldChange = (field, newValue) => {
-    let newFieldValue;
-    const currentValue = values[field.masterSchemaFieldId];
-
-    switch (field.type) {
-      case FieldTypes.File:
-      case FieldTypes.FileList:
-        newFieldValue = { ...currentValue, files: newValue };
-        break;
-      case FieldTypes.Text:
-      case FieldTypes.TextArea:
-      case FieldTypes.LongText:
-      case FieldTypes.Date:
-      case FieldTypes.Number:
-      case FieldTypes.Boolean:
-      case FieldTypes.Select:
-      case FieldTypes.MultiSelect:
-      default:
-        newFieldValue = { ...currentValue, value: newValue };
-    }
-
-    const newApplicationValue = { ...values, [field.masterSchemaFieldId]: newFieldValue };
-
-    setValues(newApplicationValue);
-
-    // Do not save Files. Files save in a different way.
-    if ([FieldTypes.File, FieldTypes.FileList].includes(field.type)) return;
-    saveFieldValue({ master_schema_field_id: field.masterSchemaFieldId, value: newValue });
-  };
-
   const isFinalSection = step === sections.length - 1;
   const isAccessible = isMemberViewDFormAccessible(accessType);
-
-  const onNextSection = () => {
-    if (step < sections.length - 1) {
-      setSectionId(sections[step + 1].id);
-    }
-  };
-
-  const onPreviousSection = () => {
-    setSectionId(sections[step - 1].id);
-  };
-
-  const onFinish = (...args) => {
-    // submitDFormMutation.mutate();
-    console.log("Finish", { args });
-  };
-
-  const onFinishFailed = (values, ...args) => {
-    console.log("FinishFailed", { values, args });
-  };
-
-  // Immediately call save on component unmount if any save currently throttled
-  useEffect(() => () => flushFieldValue(), []);
-
-  const onChangeStep = (step: number): void => {
-    if (step < sections.length) {
-      setSectionId(sections[step].id);
-    }
-  };
-
   const submitData =
     (submitDFormMutation as any).data?.updated_at ||
     (submitDFormMutation as any).data?.finished_at ||
     new Date().toISOString();
   const userName = userDFormProfile.data.first_name;
   const organization = userDFormProfile.data.permissions.organization;
+
+  const changeSection = (sectionId) => {
+    setSectionId(sectionId);
+    setValues(getValuesBySectionId(sectionId, initialSchema, initialValues));
+
+    // Scroll to Top
+    const scrollable = document.querySelector(".scrollbar-container > :first-child");
+    if (scrollable) scrollable.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const onChangeStep = (step) => {
+    if (step < sections.length) {
+      changeSection(sections[step].id);
+    }
+  };
+
+  const onPreviousSection = () => changeSection(sections[step - 1].id);
+
+  // Form
+
+  // const onFieldChange = (field, newValue) => {
+  //   let newFieldValue;
+  //   const currentValue = values[field.masterSchemaFieldId];
+  //
+  //   switch (field.type) {
+  //     case FieldTypes.File:
+  //     case FieldTypes.FileList:
+  //       newFieldValue = { ...currentValue, files: newValue };
+  //       break;
+  //     case FieldTypes.Text:
+  //     case FieldTypes.TextArea:
+  //     case FieldTypes.LongText:
+  //     case FieldTypes.Date:
+  //     case FieldTypes.Number:
+  //     case FieldTypes.Boolean:
+  //     case FieldTypes.Select:
+  //     case FieldTypes.MultiSelect:
+  //     default:
+  //       newFieldValue = { ...currentValue, value: newValue };
+  //   }
+  //
+  //   const newApplicationValue = { ...values, [field.masterSchemaFieldId]: newFieldValue };
+  //
+  //   setValues(newApplicationValue);
+  //
+  //   // Do not save Files. Files save in a different way.
+  //   if ([FieldTypes.File, FieldTypes.FileList].includes(field.type)) return;
+  //   saveFieldValue({ master_schema_field_id: field.masterSchemaFieldId, value: newValue });
+  // };
+
+  const onFormFinish: FormProviderProps["onFormFinish"] = async (sectionId, { forms }) => {
+    const form = forms[sectionId];
+
+    form.validateFields().then(() => {
+      const isLastSection = step === sections.length - 1;
+
+      if (!isLastSection) {
+        const nextSectionId = sections[step + 1].id;
+        changeSection(nextSectionId);
+      }
+    });
+  };
+
+  // ToDo: Refactor all fields to Form.Item
+  // ToDo: Make validation rules for Fields with Form.Item (like min max ...)
+  // ToDo: Next section if all required fields are valid
+  // ToDo: Figure out how to - Watch required fields in section and
+  // ToDo: Implement - Watch required fields in section and
+  // ToDo: Set section if viewed when submitted
+  // ToDo: Apply DCR to NpmStepper (isHidden & isDisabled)
+  const onFormChange = (sectionId, { changedFields, forms }) => {
+    const form = forms[sectionId];
+    const values = form.getFieldsValue();
+    console.log("Change", { sectionId, changedFields, forms, values });
+
+    setValues(getValuesBySectionId(sectionId, initialSchema, values));
+  };
+
+  // Immediately call save on component unmount if any save currently throttled
+  useEffect(() => () => flushFieldValue(), []);
 
   return (
     <Row className="memberDForm">
@@ -143,40 +168,38 @@ export const MemberDForm: FC<Props> = (props) => {
             <div className="memberDForm-content_box_title">{name}</div>
 
             <NpmCard style={{ minHeight: "50vh", maxWidth: "783px", width: "57vw", marginTop: "3%" }}>
-              <Form form={form} onFinish={onFinish} onFinishFailed={onFinishFailed} layout="vertical">
+              <Form.Provider onFormFinish={onFormFinish} onFormChange={onFormChange}>
                 <div className="memberDForm-content_box_card">
                   <div className="memberDForm-content_box_card_section-name">Section {sectionName}</div>
 
                   <div className="memberDForm-content_box_card_section-fields">
-                    <DForm
-                      // @ts-ignore
-                      isMemberView
-                      schema={schema}
-                      values={values}
-                      dFormId={id}
-                      accessType={accessType}
-                      renderSections={false}
-                      currentSection={sectionId}
-                      onFieldChange={onFieldChange}
-                    />
-                  </div>
+                    <DFormContextProvider id={id} accessType={accessType} isMemberView>
+                      <DFormSection
+                        id={sectionId}
+                        schema={schema}
+                        actions={
+                          <div className="memberDForm-content_box_card_section-navigation">
+                            <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
 
-                  <div className="memberDForm-content_box_card_section-navigation">
-                    <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
-
-                    <Form.Item noStyle>
-                      <MemberDFormNavigation
-                        loading={submitDFormMutation.isLoading}
-                        disabled={isFinalSection && !isAccessible}
-                        sectionLimit={sections.length - 1}
-                        sectionNumber={step}
-                        handleNextSection={onNextSection}
-                        handlePreviousSection={onPreviousSection}
+                            <MemberDFormNavigation
+                              loading={submitDFormMutation.isLoading}
+                              disabled={isFinalSection && !isAccessible}
+                              sectionLimit={sections.length - 1}
+                              sectionNumber={step}
+                              handlePreviousSection={onPreviousSection}
+                            />
+                          </div>
+                        }
+                        isHidden={schema.sections[sectionId].isHidden}
+                        isDisabled={schema.sections[sectionId].isDisabled}
+                        relatedGroups={schema.sections[sectionId].relatedGroups}
+                        initialValues={values}
+                        key={sectionId}
                       />
-                    </Form.Item>
+                    </DFormContextProvider>
                   </div>
                 </div>
-              </Form>
+              </Form.Provider>
             </NpmCard>
           </div>
         )}

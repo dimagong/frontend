@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { IdType } from "utility/prop-types";
 import { NmpTextArea } from "features/nmp-ui";
 
-import { DFormFieldContainer } from "../DFormFieldContainer";
+import { DFormItem } from "../DFormItem";
 
 import textareaValidationSchema from "./validationSchema";
 
@@ -18,7 +18,7 @@ export const DFormTextAreaWidget = (props) => {
     isRequired,
     isDisabled,
     isLabelShowing,
-    placeholder = defaultPlaceholder,
+    masterSchemaFieldId,
     onChange: propOnChange,
     className,
   } = props;
@@ -26,15 +26,22 @@ export const DFormTextAreaWidget = (props) => {
   const onChange = (event) => propOnChange(event.target.value);
 
   return (
-    <DFormFieldContainer
-      name={label}
+    <DFormItem
+      name={masterSchemaFieldId}
       label={label}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
       className={className}
     >
-      <NmpTextArea id={id} rows="5" placeholder={placeholder} value={value} disabled={isDisabled} onChange={onChange} />
-    </DFormFieldContainer>
+      <NmpTextArea
+        id={id}
+        rows="5"
+        placeholder={defaultPlaceholder}
+        value={value}
+        disabled={isDisabled}
+        onChange={onChange}
+      />
+    </DFormItem>
   );
 };
 

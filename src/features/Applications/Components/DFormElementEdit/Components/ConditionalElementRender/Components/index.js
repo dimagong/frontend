@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
-import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
+import { NmpInput, NpmDatePicker, NpmTimePicker } from "features/nmp-ui";
 
-import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
-import { DFormDateWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormDateWidget";
+import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
+import { DATE_WIDGET_FORMATS, DateWidgetFormatTypes } from "features/Applications/constants";
+
+import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
 import {
@@ -13,7 +15,16 @@ import {
   DCRSupportedFieldOperatorsFactory,
 } from "../constants";
 
-import { DATE_WIDGET_FORMATS, DateWidgetFormatTypes } from "../../../../../constants";
+const getPicker = (dateType) => {
+  switch (dateType) {
+    case DateWidgetFormatTypes.Time:
+      return NpmTimePicker;
+    case DateWidgetFormatTypes.Date:
+      return NpmDatePicker;
+    default:
+      throw new Error(`Unsupported date type: '${dateType}'`);
+  }
+};
 
 const getEffectTypeOption = (effectType) => ({ value: effectType, label: DCREffectLabels[effectType] });
 const effectTypesAsOptions = [DCREffectTypes.Visibility, DCREffectTypes.Availability].map(getEffectTypeOption);
@@ -38,7 +49,7 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
 
   const onOperatorTypeChange = ({ value: operatorType }) => updateCondition({ operatorType });
 
-  const onExpectedValueChange = (expectedValue) => updateCondition({ expectedValue });
+  const onExpectedValueChange = ({ target }) => updateCondition({ expectedValue: target.value });
 
   const onFormatChange = (value) => setFormat(value);
 
@@ -48,22 +59,21 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
   const operatorsAsOptions = operators ? getOperatorTypesAsOptions(operators) : null;
   const operator = operators ? operators.find(({ type }) => type === condition.operatorType) : null;
 
+  const Picker = getPicker(format.value);
+
   const getExpectedValueField = () => {
     if (field.type === DCRSupportedFieldTypes.Date) {
       return (
         <>
-          <DFormDateWidget
-            id="dcr-expected-value"
-            label={operator.expectedValueTitle}
-            value={condition.expectedValue ?? ""}
-            format={format.value}
-            placeholder="Enter expected value"
-            isRequired={false}
-            isDisabled={false}
-            isLabelShowing={true}
-            onChange={onExpectedValueChange}
-            className="mb-2"
-          />
+          <div className="mb-2">
+            <DFormLabel id="dcr-expected-value" label={operator.expectedValueTitle} />
+            <Picker
+              id="dcr-expected-value"
+              value={condition.expectedValue ?? ""}
+              placeholder="Enter expected value"
+              onChange={onExpectedValueChange}
+            />
+          </div>
 
           <DFormSelectWidget
             id="dcr-expected-value-date-format"
@@ -81,16 +91,16 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
     }
 
     return (
-      <DFormTextWidget
-        id="dcr-expected-value"
-        label={operator.expectedValueTitle}
-        value={condition.expectedValue ?? ""}
-        placeholder="Enter expected value"
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        onChange={onExpectedValueChange}
-      />
+      <>
+        <DFormLabel label={operator.expectedValueTitle} id="dcr-expected-value" />
+        <NmpInput
+          id="dcr-expected-value"
+          type="text"
+          value={condition.expectedValue ?? ""}
+          placeholder="Enter expected value"
+          onChange={onExpectedValueChange}
+        />
+      </>
     );
   };
 

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { NmpInput } from "features/nmp-ui";
 import { IdType } from "utility/prop-types";
 
-import { DFormFieldContainer } from "../DFormFieldContainer";
+import { DFormItem } from "../DFormItem";
 
 const defaultPlaceholder = "Enter your answer here";
 
@@ -16,7 +16,7 @@ export const DFormNumberWidget = (props) => {
     isRequired,
     isDisabled,
     isLabelShowing,
-    placeholder = defaultPlaceholder,
+    masterSchemaFieldId,
     onChange: propOnChange,
     className,
   } = props;
@@ -24,8 +24,8 @@ export const DFormNumberWidget = (props) => {
   const onChange = (event) => propOnChange(event.target.value);
 
   return (
-    <DFormFieldContainer
-      name={label}
+    <DFormItem
+      name={masterSchemaFieldId}
       label={label}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
@@ -36,11 +36,11 @@ export const DFormNumberWidget = (props) => {
         type="number"
         value={value}
         disabled={isDisabled}
-        placeholder={placeholder}
+        placeholder={defaultPlaceholder}
         onChange={onChange}
         className="dform-number-field"
       />
-    </DFormFieldContainer>
+    </DFormItem>
   );
 };
 

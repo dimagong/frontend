@@ -1,0 +1,1 @@
+export { NmpLongText } from "./NmpLongText";

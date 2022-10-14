@@ -16,16 +16,6 @@ export const DFormQueryKeys = {
   all: () => [DFormQueryKey],
   byId: (dFormId) => [...DFormQueryKeys.all(), { dFormId }],
   valuesById: (dFormId) => [...DFormQueryKeys.byId(dFormId), "values"],
-
-  files: ({ dFormId, masterSchemaFieldId }) => [
-    ...DFormQueryKeys.valuesById(dFormId),
-    "files",
-    { masterSchemaFieldId },
-  ],
-  file: ({ dFormId, masterSchemaFieldId, fileId }) => [
-    ...DFormQueryKeys.files({ dFormId, masterSchemaFieldId }),
-    { fileId },
-  ],
 };
 
 export const useDFormQuery = ({ dformId }, options = {}) => {
@@ -77,27 +67,6 @@ export const useSubmitDFormMutation = ({ dformId }, options) => {
       url: `/api/dform/${dformId}/new-version-by-data`,
       method: "post",
       queryKey: DFormQueryKeys.byId(dformId),
-    },
-    options
-  );
-};
-
-// Application Files
-
-export const useCreateApplicationUserFilesMutation = ({ dFormId }, options) => {
-  return useGenericMutation({ method: "post", url: `api/dform/${dFormId}/user-files` }, options);
-};
-
-export const useDeleteApplicationUserFileMutation = ({ dFormId, fileId }, options) => {
-  return useGenericMutation({ method: "delete", url: `api/dform/${dFormId}/user-file` }, options);
-};
-
-export const useApplicationUserFileQuery = ({ dFormId, masterSchemaFieldId, fileId }, options) => {
-  return useFileQuery(
-    {
-      url: `api/dform/${dFormId}/user-file-download?master_schema_field_id=${masterSchemaFieldId}&file_id=${fileId}`,
-      queryKey: DFormQueryKeys.file({ dFormId, masterSchemaFieldId, fileId }),
-      shouldReadAsDataURL: false,
     },
     options
   );
