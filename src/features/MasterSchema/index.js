@@ -1,4 +1,5 @@
 import React from "react";
+import { Row } from "reactstrap";
 import { useSelector } from "react-redux";
 
 import { selectSelectedMasterSchema } from "app/selectors/masterSchemaSelectors";
@@ -27,7 +28,7 @@ const MasterSchema = () => {
       id="general-master-schema"
       onRender={(id, phase) => console.log(id, phase, { masterSchema, selectedNodes })}
     >
-      <div className="d-flex" key={masterSchema.id}>
+      <Row key={masterSchema.id}>
         <MasterSchemaContext
           masterSchemaId={masterSchema.id}
           masterSchemaName={masterSchema.name}
@@ -35,7 +36,7 @@ const MasterSchema = () => {
           onSelect={select}
         />
         <MasterSchemaContextFeature masterSchemaId={masterSchema.id} selectedNodes={selectedNodes} />
-      </div>
+      </Row>
     </React.Profiler>
   );
 };
