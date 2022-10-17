@@ -9,7 +9,6 @@ import { triggerFileDownloading, warning } from "features/common";
 import { useDFormContext } from "components/DForm/DFormContext";
 import type { DFormFile } from "components/DForm/types/dformFile";
 import type { DFormFiles } from "components/DForm/types/dformFiles";
-import { DformFileService } from "components/DForm/data/dformFileService";
 import type {
   GetDFormFileParams,
   PostDFormFileParams,
@@ -33,20 +32,18 @@ type Props = {
 export const DFormUploadFile: FC<Props> = (props) => {
   const { value = [], maxCount, isDisabled, isRemovable, masterSchemaFieldId, onChange } = props;
 
-  const { dformId, isMemberView } = useDFormContext();
-
-  const getDFormFileService = () => (isMemberView ? DformFileService.member : DformFileService.manager);
+  const { dformId, dformFileService } = useDFormContext();
 
   const downloadMutation = useMutation({
-    mutationFn: (d: GetDFormFileParams) => getDFormFileService().get(d),
+    mutationFn: (d: GetDFormFileParams) => dformFileService!.get(d),
     onSuccess: (fetchedFile) => triggerFileDownloading(fetchedFile),
   });
   const uploadMutation = useMutation({
-    mutationFn: (d: PostDFormFileParams) => getDFormFileService().post(d),
+    mutationFn: (d: PostDFormFileParams) => dformFileService!.post(d),
     onSuccess: (uploadedData: DFormFiles) => triggerSuccessUploadingChange(uploadedData),
   });
   const deleteMutation = useMutation({
-    mutationFn: (d: DeleteDFormFileParams) => getDFormFileService().delete(d),
+    mutationFn: (d: DeleteDFormFileParams) => dformFileService!.delete(d),
     onSuccess: (_, { fileId }) => triggerSuccessDeletingChange(fileId),
   });
 
