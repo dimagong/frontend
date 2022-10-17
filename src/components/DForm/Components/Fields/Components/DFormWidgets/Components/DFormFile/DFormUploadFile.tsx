@@ -22,15 +22,15 @@ const getUploadFileFromDFormFile = (dformFile: DFormFile): UploadFile => ({
 
 type Props = {
   value?: DFormFiles;
-  maxCount?: number;
   isDisabled?: boolean;
+  isMultiple?: boolean;
   isRemovable?: boolean;
   masterSchemaFieldId: number;
   onChange?: (value: DFormFiles) => void;
 };
 
 export const DFormUploadFile: FC<Props> = (props) => {
-  const { value = [], maxCount, isDisabled, isRemovable, masterSchemaFieldId, onChange } = props;
+  const { value = [], isMultiple = false, isDisabled, isRemovable, masterSchemaFieldId, onChange } = props;
 
   const { dformId, dformFileService } = useDFormContext();
 
@@ -91,12 +91,14 @@ export const DFormUploadFile: FC<Props> = (props) => {
   };
 
   const onUploadChange = (info: UploadChangeParam) => {
-    const files = info.fileList.map(({ originFileObj }) => {
-      if (!originFileObj) {
-        warning(`Unexpected: The 'uploadFile#originFileObj' is undefined in the <MemberDFormUpload />.`);
-      }
-      return originFileObj as File;
-    });
+    const files = info.fileList
+      .map(({ originFileObj }) => {
+        if (!originFileObj) {
+          warning(`Unexpected: The 'uploadFile#originFileObj' is undefined in the <MemberDFormUpload />.`);
+        }
+        return originFileObj;
+      })
+      .filter(Boolean) as File[];
 
     uploadFiles(files);
   };
@@ -105,9 +107,9 @@ export const DFormUploadFile: FC<Props> = (props) => {
 
   return (
     <NmpUpload
-      maxCount={maxCount}
       fileList={fileList}
-      isDisabled={isDisabled || uploadMutation.isLoading}
+      isDisabled={isDisabled || (!isMultiple && fileList.length === 1) || uploadMutation.isLoading}
+      isMultiple={isMultiple}
       itemRender={(_, file) => (
         <NmpUpload.Item
           filename={file.name}
