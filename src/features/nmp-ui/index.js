@@ -2,15 +2,15 @@ import { NmpTag } from "./NmpTag";
 import NpmBadge from "./NpmBadge";
 import { NpmButton } from "./NpmButton";
 import NpmCard from "./NpmCard";
-import NpmCheckbox from "./NpmCheckbox";
+import { NmpCheckbox } from "./NmpCheckbox";
 import NpmCustomStepperSurvey from "./NpmCustomStepperSurvey";
 import NpmDatePicker from "./NpmDatePicker";
-import NpmDragAndDrop from "./NpmDragAndDrop";
+import { NmpUpload } from "./NmpUpload";
 import NpmEditor from "./NpmEditor";
-import NpmFileLoading from "./NpmFileLoading";
+import { NmpUploadItem } from "./NmpUploadItem";
 import { NmpInput } from "./NmpInput";
 import { NmpSelect } from "./NmpSelect";
-import { NmpLongTextModal } from "./NmpLongTextModal";
+import { NmpLongText } from "./NmpLongText";
 import NpmModal from "./NpmModal";
 import NpmPopover from "./NpmPopover";
 import NpmProgress from "./NpmProgress";
@@ -22,21 +22,25 @@ import { NmpTextArea } from "./NmpTextArea";
 import NpmTimePicker from "./NpmTimePicker";
 import { NpmTooltip } from "./NpmTooltip";
 import NpmMenu from "./NpmMenu";
+import { NmpRow } from "./NmpRow";
+import { NmpCol } from "./NmpCol";
 
 export {
+  NmpRow,
+  NmpCol,
   NmpTag,
   NpmBadge,
   NpmButton,
   NpmCard,
-  NpmCheckbox,
+  NmpCheckbox,
   NpmCustomStepperSurvey,
   NpmDatePicker,
-  NpmDragAndDrop,
+  NmpUpload,
   NpmEditor,
-  NpmFileLoading,
+  NmpUploadItem,
   NmpInput,
   NmpSelect,
-  NmpLongTextModal,
+  NmpLongText,
   NpmModal,
   NpmPopover,
   NpmProgress,

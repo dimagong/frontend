@@ -5,9 +5,8 @@ import { preventDefault } from "utility/event-decorators";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget/DFormSelectWidget";
-import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
 import CustomModal from "components/CustomModal";
+import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget/DFormSelectWidget";
 
 import {
   getCategoriesAsOptions,
@@ -16,7 +15,8 @@ import {
 import { parseOrganizationType } from "features/home/ContextSearch/Applications/utils/organizationTypeConverter";
 import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
-import { NpmButton } from "features/nmp-ui";
+import { NmpInput, NpmButton } from "features/nmp-ui";
+import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
 export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit, submitting }) => {
   const [name, setName] = useFormField(group.name, [Validators.required]);
@@ -53,8 +53,8 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
     )
   );
 
-  const OnNameChange = (newName) => {
-    setName(newName);
+  const OnNameChange = ({ target }) => {
+    setName(target.value);
   };
 
   const handleClose = () => {
@@ -74,18 +74,17 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
       <form onSubmit={onSubmit}>
         <Row className="my-2">
           <Col>
-            <DFormTextWidget
-              id="field-name"
-              label={"Name"}
-              value={name.value}
-              placeholder="Enter category name"
-              isError={false}
-              isRequired={true}
-              isDisabled={false}
-              isLabelShowing={true}
-              onChange={OnNameChange}
-              className="mb-2"
-            />
+            <div className="mb-2">
+              <DFormLabel label="Name" id="field-name" />
+              <NmpInput
+                id="field-name"
+                type="text"
+                value={name.value}
+                placeholder="Enter category name"
+                onChange={OnNameChange}
+              />
+            </div>
+
             <DFormSelectWidget
               id="dform-organization-category"
               label="Select parent category"

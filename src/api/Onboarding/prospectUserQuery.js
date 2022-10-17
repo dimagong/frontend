@@ -53,16 +53,6 @@ export const MVADFormQueryKeys = {
   all: () => [MVADFormQueryKey],
   byId: (dFormId) => [...MVADFormQueryKeys.all(), { dFormId }],
   valuesById: (dFormId) => [...MVADFormQueryKeys.byId(dFormId), "values"],
-
-  files: ({ dFormId, masterSchemaFieldId }) => [
-    ...MVADFormQueryKeys.valuesById(dFormId),
-    { masterSchemaFieldId },
-    "files",
-  ],
-  file: ({ dFormId, masterSchemaFieldId, fileId }) => [
-    ...MVADFormQueryKeys.files({ dFormId, masterSchemaFieldId }),
-    { fileId },
-  ],
 };
 
 export const useMVADFormsQuery = (options) => {
@@ -75,23 +65,29 @@ export const useMVADFormsQuery = (options) => {
   );
 };
 
-export const useDFormQuery = ({ dformId }, options) => {
+export const useDFormQuery = ({ dformId }, options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/dform/${dformId}`,
       queryKey: MVADFormQueryKeys.byId(dformId),
     },
-    options
+    {
+      refetchOnWindowFocus: false,
+      ...options,
+    }
   );
 };
 
-export const useDFormValuesQuery = ({ dformId }, options) => {
+export const useDFormValuesQuery = ({ dformId }, options = {}) => {
   return useGenericQuery(
     {
       url: `/member-view-api/dform/${dformId}/user-values`,
       queryKey: MVADFormQueryKeys.valuesById(dformId),
     },
-    options
+    {
+      refetchOnWindowFocus: false,
+      ...options,
+    }
   );
 };
 
@@ -292,26 +288,5 @@ export const useGetAllSurveyQuestionsQuery = (payload, options = {}) => {
       onError: (error) => dispatch(getAllSurveyQuestionsError(error.message)),
       ...options,
     }
-  );
-};
-
-// MVA Application Files
-
-export const useCreateMVAUserFilesMutation = ({ dFormId }, options = {}) => {
-  return useGenericMutation({ method: "post", url: `member-view-api/dform/${dFormId}/user-files` }, options);
-};
-
-export const useDeleteMVAUserFileMutation = ({ dFormId, fileId }, options) => {
-  return useGenericMutation({ method: "delete", url: `member-view-api/dform/${dFormId}/user-file` }, options);
-};
-
-export const useMVAUserFileQuery = ({ dFormId, masterSchemaFieldId, fileId }, options) => {
-  return useFileQuery(
-    {
-      url: `member-view-api/dform/${dFormId}/user-file-download?master_schema_field_id=${masterSchemaFieldId}&file_id=${fileId}`,
-      queryKey: MVADFormQueryKeys.file({ dFormId, masterSchemaFieldId, fileId }),
-      shouldReadAsDataURL: false,
-    },
-    options
   );
 };

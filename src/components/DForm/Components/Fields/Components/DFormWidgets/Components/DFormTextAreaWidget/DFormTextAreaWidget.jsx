@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { IdType } from "utility/prop-types";
 import { NmpTextArea } from "features/nmp-ui";
 
-import { DFormFieldContainer } from "../DFormFieldContainer";
+import { DFormItem } from "../DFormItem";
 
 import textareaValidationSchema from "./validationSchema";
 
@@ -15,12 +15,10 @@ export const DFormTextAreaWidget = (props) => {
     id,
     value = "",
     label,
-    error,
-    isError,
     isRequired,
     isDisabled,
     isLabelShowing,
-    placeholder = defaultPlaceholder,
+    masterSchemaFieldId,
     onChange: propOnChange,
     className,
   } = props;
@@ -28,19 +26,22 @@ export const DFormTextAreaWidget = (props) => {
   const onChange = (event) => propOnChange(event.target.value);
 
   return (
-    <div>
-      <DFormFieldContainer
+    <DFormItem
+      name={masterSchemaFieldId}
+      label={label}
+      isRequired={isRequired}
+      isLabelShowing={isLabelShowing}
+      className={className}
+    >
+      <NmpTextArea
         id={id}
-        error={error}
-        label={label}
-        isError={isError}
-        isRequired={isRequired}
-        isLabelShowing={isLabelShowing}
-        className={className}
-      >
-        <NmpTextArea rows="5" placeholder={placeholder} value={value} disabled={isDisabled} onChange={onChange} />
-      </DFormFieldContainer>
-    </div>
+        rows="5"
+        placeholder={defaultPlaceholder}
+        value={value}
+        disabled={isDisabled}
+        onChange={onChange}
+      />
+    </DFormItem>
   );
 };
 
@@ -48,8 +49,6 @@ DFormTextAreaWidget.propTypes = {
   id: IdType.isRequired,
   value: PropTypes.string,
   label: PropTypes.string,
-  error: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
   isRequired: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool.isRequired,
   isLabelShowing: PropTypes.bool.isRequired,

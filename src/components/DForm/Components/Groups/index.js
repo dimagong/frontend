@@ -13,7 +13,6 @@ import classnames from "classnames";
 const Groups = (props) => {
   const {
     data,
-    values,
     sectionId,
     isDisabled: propIsDisabled,
     sectionGroups,
@@ -21,7 +20,6 @@ const Groups = (props) => {
     onElementClick,
     onGroupCreate,
     onFieldCreate,
-    onFieldChange,
   } = props;
 
   const { isConfigurable } = useDFormContext();
@@ -57,12 +55,10 @@ const Groups = (props) => {
             <div className="group-content row mr-0 ml-0">
               <Fields
                 data={data}
-                values={values}
                 groupId={groupId}
                 isDisabled={isDisabled}
                 selectedElement={selectedElement}
                 groupFields={group.relatedFields}
-                onFieldChange={onFieldChange}
                 onFieldCreate={onFieldCreate}
                 onElementClick={onElementClick}
               />

@@ -2,71 +2,50 @@ import React from "react";
 import { toast } from "react-toastify";
 import { Button, Col, Row } from "reactstrap";
 
-import { useApplicationResourceManagerFields } from "../../../../../../../data/applicationQueries";
+import { NmpCheckbox, NmpInput } from "features/nmp-ui";
+
 import {
   DATE_WIDGET_FORMATS,
   ResourceCompileOptionLabel,
   FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
 } from "features/Applications/constants";
+import { useApplicationResourceManagerFields } from "features/data/applicationQueries";
 
 import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
 import { FieldTypes } from "components/DForm";
-import { DFormFieldLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormFieldLabel";
-import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
+import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 import { DFormNumberWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormNumberWidget";
-import { DFormBooleanWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormBooleanWidget";
 
 export const FieldRequiredEditProperty = ({ element, onFieldChange }) => {
-  const onRequiredChange = () => onFieldChange("isRequired", !element.isRequired);
+  const onRequiredChange = ({ target }) => onFieldChange("isRequired", target.checked);
 
   return (
-    <DFormBooleanWidget
-      id="field-required"
-      label="Is required"
-      value={element.isRequired}
-      isError={false}
-      isRequired={false}
-      isDisabled={false}
-      isLabelShowing={true}
-      onChange={onRequiredChange}
-    />
+    <NmpCheckbox id="field-required" checked={element.isRequired} onChange={onRequiredChange}>
+      <DFormLabel label="Is required" />
+    </NmpCheckbox>
   );
 };
 
 export const FieldProtectedEditProperty = ({ element, onFieldChange }) => {
-  const onProtectedChange = () => onFieldChange("isProtected", !element.isProtected);
+  const onProtectedChange = ({ target }) => onFieldChange("isProtected", target.checked);
 
   return (
-    <DFormBooleanWidget
-      id="field-protected"
-      label="Is protected"
-      value={element.isProtected}
-      isError={false}
-      isRequired={false}
-      isDisabled={false}
-      isLabelShowing={true}
-      onChange={onProtectedChange}
-    />
+    <NmpCheckbox id="field-protected" checked={element.isProtected} onChange={onProtectedChange}>
+      <DFormLabel label="Is protected" />
+    </NmpCheckbox>
   );
 };
 
 export const FieldLabelShowingEditProperty = ({ element, onFieldChange }) => {
-  const onLabelShowingChange = () => onFieldChange("isLabelShowing", !element.isLabelShowing);
+  const onLabelShowingChange = ({ target }) => onFieldChange("isLabelShowing", target.checked);
 
   return (
-    <DFormBooleanWidget
-      id="field-label-showing"
-      label="Label showing"
-      value={element.isLabelShowing}
-      isError={false}
-      isRequired={false}
-      isDisabled={false}
-      isLabelShowing={true}
-      onChange={onLabelShowingChange}
-    />
+    <NmpCheckbox id="field-label-showing" checked={element.isLabelShowing} onChange={onLabelShowingChange}>
+      <DFormLabel label="Label showing" />
+    </NmpCheckbox>
   );
 };
 
@@ -99,7 +78,6 @@ export const FieldMinMaxEditProperty = ({ element, onFieldChange }) => {
           id="field-minimum"
           value={element["minimum"] ?? ""}
           onChange={onMinimumChange}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
@@ -111,7 +89,6 @@ export const FieldMinMaxEditProperty = ({ element, onFieldChange }) => {
           id="field-maximum"
           value={element["maximum"] ?? ""}
           onChange={onMaximumChange}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
@@ -134,7 +111,6 @@ export const FieldMinMaxLengthEditProperty = ({ element, onFieldChange }) => {
           id="field-min-length"
           value={element["minLength"] ?? ""}
           onChange={onMinLengthChange}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
@@ -146,7 +122,6 @@ export const FieldMinMaxLengthEditProperty = ({ element, onFieldChange }) => {
           id="field-max-length"
           value={element["maxLength"] ?? ""}
           onChange={onMaxLengthChange}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={true}
@@ -177,7 +152,6 @@ export const FieldDateEditProperties = ({ element, onFieldChange }) => {
             label="Date format"
             value={element.format ? { value: element.format, label: element.format } : null}
             options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
-            isError={false}
             isRequired={false}
             isDisabled={false}
             isLabelShowing={true}
@@ -195,21 +169,12 @@ export const FieldDateEditProperties = ({ element, onFieldChange }) => {
 export const FieldSelectOptionItem = ({ index, value, onOptionRemove, onOptionChange }) => {
   const onClick = () => onOptionRemove(value);
 
-  const onChange = (value) => onOptionChange({ value, index });
+  const onChange = ({ target }) => onOptionChange({ value: target.value, index });
 
   return (
     <div className="d-flex py-1">
       <div className="width-80-per">
-        <DFormTextWidget
-          id={value}
-          value={value}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={false}
-          placeholder="Enter your option here"
-          onChange={onChange}
-        />
+        <NmpInput type="text" value={value} placeholder="Enter your option here" onChange={onChange} />
       </div>
 
       <div className="d-flex justify-content-end width-20-per">
@@ -358,7 +323,6 @@ export const FieldResourceEditProperties = ({ element, organization, onFieldChan
                 : null
             }
             options={options}
-            isError={false}
             isLoading={isLoading}
             isRequired={true}
             isDisabled={false}
@@ -388,7 +352,6 @@ export const FieldResourceEditProperties = ({ element, organization, onFieldChan
                 label: ResourceCompileOptionLabel[element.resourceCompileOption],
               },
             ]}
-            isError={false}
             isRequired={true}
             isDisabled={false}
             isLabelShowing={true}
@@ -446,7 +409,7 @@ const FieldProperties = (props) => {
 
   const onFieldGroupChange = ({ value }) => propOnFieldGroupChange(element.id, element.groupId, value);
 
-  const onFieldTitleChange = (value) => onFieldChange("title", value);
+  const onFieldTitleChange = ({ target }) => onFieldChange("title", target.value);
 
   const onChangeMasterSchemaProperty = (fieldId) => onFieldChange("masterSchemaFieldId", fieldId);
 
@@ -457,7 +420,6 @@ const FieldProperties = (props) => {
         label="Element type"
         value={{ value: element.type, label: element.type }}
         options={Object.values(FieldTypes).map((type) => ({ value: type, label: type }))}
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -471,7 +433,6 @@ const FieldProperties = (props) => {
         label="Element group"
         value={{ value: element.groupId, label: data.groups[element.groupId].name }}
         options={Object.values(data.groups).map((group) => ({ value: group.id, label: group.name }))}
-        isError={false}
         isRequired={false}
         isDisabled={false}
         isLabelShowing={true}
@@ -483,7 +444,7 @@ const FieldProperties = (props) => {
       {FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type) ? null : (
         <>
           <div className="mb-2">
-            <DFormFieldLabel label="Input name (reference)" id="field-reference" isRequired />
+            <DFormLabel label="Input name (reference)" id="field-reference" />
             <MasterSchemaProperty
               id="field-reference"
               organizations={[organization]}
@@ -504,17 +465,16 @@ const FieldProperties = (props) => {
               />*/}
           </div>
 
-          <DFormTextWidget
-            id="field-title"
-            label="Title"
-            value={element.title}
-            isError={false}
-            isRequired={false}
-            isDisabled={false}
-            isLabelShowing={true}
-            onChange={onFieldTitleChange}
-            className="mb-2"
-          />
+          <div className="mb-2">
+            <DFormLabel label="Title" id="field-title" />
+            <NmpInput
+              id="field-title"
+              type="text"
+              value={element.title}
+              placeholder="Title"
+              onChange={onFieldTitleChange}
+            />
+          </div>
         </>
       )}
 

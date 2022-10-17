@@ -25,7 +25,6 @@ const FieldStyles = ({ element, onElementChange }) => {
             label="UI style"
             value={element.uiStyle ? { label: element.uiStyle, value: element.uiStyle } : defaultUIStyle}
             options={uIStylesOptions}
-            isError={false}
             isRequired={false}
             isDisabled={false}
             isLabelShowing={false}
@@ -46,7 +45,6 @@ const FieldStyles = ({ element, onElementChange }) => {
           label="Classes"
           value={{ label: element.classes, value: element.classes }}
           options={FIELD_STYLES_CLASSES.map((className) => ({ label: className, value: className }))}
-          isError={false}
           isRequired={false}
           isDisabled={false}
           isLabelShowing={false}

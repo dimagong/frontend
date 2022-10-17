@@ -1,0 +1,12 @@
+.dform-item {
+  display: flex;
+  margin-bottom: 0;
+
+  > .ant-form-item-row {
+    justify-content: space-between;
+  }
+
+  .ant-form-item-control {
+    flex-grow: 0;
+  }
+}

@@ -1,4 +1,5 @@
 import _ from "lodash/fp";
+import { Row } from "reactstrap";
 import { useSelector } from "react-redux";
 import React, { useEffect, useMemo } from "react";
 
@@ -22,7 +23,7 @@ const ResourceManager = () => {
   useEffect(() => selectable.clear(), [resourceManager.id]);
 
   return (
-    <div className="d-flex">
+    <Row>
       <RMContext selectedIds={selectedIds} onSelect={selectable.select} resourceManagerId={resourceManager.id} />
       {selected.field ? (
         <RMContextFeature
@@ -32,7 +33,7 @@ const ResourceManager = () => {
           organizationType={resourceManager.organization_type}
         />
       ) : null}
-    </div>
+    </Row>
   );
 };
 
