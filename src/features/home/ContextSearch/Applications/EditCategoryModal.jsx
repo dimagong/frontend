@@ -15,7 +15,7 @@ import {
 import { parseOrganizationType } from "features/home/ContextSearch/Applications/utils/organizationTypeConverter";
 import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
-import { NmpInput, NpmButton } from "features/nmp-ui";
+import { NmpInput, NmpButton } from "features/nmp-ui";
 import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
 export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit, submitting }) => {
@@ -102,7 +102,7 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
         <Row className="my-3">
           <Col>
             <div className="d-flex justify-content-end">
-              <NpmButton
+              <NmpButton
                 key="submit"
                 type="primary"
                 onClick={onSubmit}
@@ -110,7 +110,7 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
                 loading={submitting}
               >
                 Save
-              </NpmButton>
+              </NmpButton>
             </div>
           </Col>
         </Row>

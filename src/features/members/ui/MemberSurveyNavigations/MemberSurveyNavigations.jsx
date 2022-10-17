@@ -3,7 +3,7 @@ import "./styles.scss";
 import React from "react";
 import { RightOutlined, LeftOutlined } from "@ant-design/icons";
 
-import { NpmButton } from "features/nmp-ui";
+import { NmpButton } from "features/nmp-ui";
 
 import { Status } from "../../data/constants/statusConstants";
 
@@ -19,7 +19,7 @@ const MemberSurveyNavigations = ({
   return (
     <div className="membercard-navigations">
       {surveyStatus === Status.NOT_STARTED && (
-        <NpmButton
+        <NmpButton
           type="nmp-primary"
           icon={<RightOutlined />}
           iconRight
@@ -27,22 +27,22 @@ const MemberSurveyNavigations = ({
           className="membercard-navigations__btn"
         >
           Begin
-        </NpmButton>
+        </NmpButton>
       )}
       {surveyStatus === Status.STARTED && (
         <>
           {!!currentIndex && (
-            <NpmButton
+            <NmpButton
               type="nmp-ghost"
               icon={<LeftOutlined />}
               onClick={handleSwitchToPreviousQuestion}
               className="membercard-navigations__btn"
             >
               Back
-            </NpmButton>
+            </NmpButton>
           )}
 
-          <NpmButton
+          <NmpButton
             type="nmp-primary"
             icon={currentIndex === count - 1 ? null : <RightOutlined />}
             iconRight
@@ -50,30 +50,30 @@ const MemberSurveyNavigations = ({
             className="membercard-navigations__btn"
           >
             {currentIndex === count - 1 ? "Finish" : "Next"}
-          </NpmButton>
+          </NmpButton>
         </>
       )}
 
       {surveyStatus === Status.APPROVED && (
         <div className="approved-navigation">
           <div className="close-button">
-            <NpmButton onClick={() => handleClose()} className="membercard-navigations__btn">
+            <NmpButton onClick={() => handleClose()} className="membercard-navigations__btn">
               Close
-            </NpmButton>
+            </NmpButton>
           </div>
 
           {!!currentIndex && (
-            <NpmButton
+            <NmpButton
               type="nmp-ghost"
               icon={<LeftOutlined />}
               onClick={handleSwitchToPreviousQuestion}
               className="membercard-navigations__btn"
             >
               Back
-            </NpmButton>
+            </NmpButton>
           )}
 
-          <NpmButton
+          <NmpButton
             type="nmp-primary"
             icon={currentIndex === count ? null : <RightOutlined />}
             iconRight
@@ -81,7 +81,7 @@ const MemberSurveyNavigations = ({
             className="membercard-navigations__btn"
           >
             {currentIndex === count ? "Finish" : "Next"}
-          </NpmButton>
+          </NmpButton>
         </div>
       )}
     </div>

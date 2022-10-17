@@ -23,7 +23,7 @@ export default function MasterSchemaProperty(props) {
 
   useEffect(() => {
     if (!isEmpty(currentField)) {
-      props.onChangeFieldId(currentField.value);
+      props.onChange(currentField.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentField]);
@@ -52,17 +52,17 @@ export default function MasterSchemaProperty(props) {
   };
 
   const initCurrentStateField = (formattedOrganizations) => {
-    if (!isEmpty(props.fieldId)) {
+    if (!isEmpty(props.value)) {
       const formattedOrganization = formattedOrganizations.find((formattedOrganization) => {
-        return parseInt(props.fieldId) in formattedOrganization.masterSchemaFields;
+        return parseInt(props.value) in formattedOrganization.masterSchemaFields;
       });
 
       let label = "MasterSchema";
-      label += "." + formattedOrganization.masterSchemaFields[props.fieldId];
+      label += "." + formattedOrganization.masterSchemaFields[props.value];
 
       setCurrentField({
         label: label,
-        value: props.fieldId,
+        value: props.value,
       });
     }
   };
@@ -164,7 +164,7 @@ export default function MasterSchemaProperty(props) {
         <CustomSelect
           id={props.id}
           options={masterSchemaFields.concat(getAddNewOption())}
-          value={masterSchemaFields.find((next) => parseInt(next.value) === parseInt(props.fieldId)) || null}
+          value={masterSchemaFields.find((next) => parseInt(next.value) === parseInt(props.value)) || null}
           onChange={(event) => {
             if (isObject(event.value) && event.value.isNew) {
               if (!searchableValue) {

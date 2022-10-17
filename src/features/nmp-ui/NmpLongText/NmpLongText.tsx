@@ -4,7 +4,7 @@ import classnames from "classnames";
 import type { FC, CSSProperties, FormEvent } from "react";
 import React, { useReducer, useRef, useState } from "react";
 
-import { NpmModal, NpmEditor, NpmButton } from "features/nmp-ui";
+import { NpmModal, NpmEditor, NmpButton } from "features/nmp-ui";
 
 type Props = {
   value?: string;
@@ -61,9 +61,9 @@ export const NmpLongText: FC<Props> = (props) => {
           visible={isModalOpen}
           onCancel={closeModal}
           footer={
-            <NpmButton type="nmp-primary" onClick={closeModal}>
+            <NmpButton type="nmp-primary" onClick={closeModal}>
               Close
-            </NpmButton>
+            </NmpButton>
           }
         >
           <div className="pb-2">

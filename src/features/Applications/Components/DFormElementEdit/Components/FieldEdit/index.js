@@ -6,18 +6,28 @@ import FieldStyles from "./Components/FieldStyles";
 import FieldProperties from "./Components/FieldProperties";
 import FieldDynamicRendering from "./Components/FieldDynamicRendering";
 
-const FieldEdit = ({ data, element, editProperty, organization, onElementChange, onFieldGroupChange }) => {
-  const commonProps = { element, onElementChange };
+const FieldEdit = ({
+  data,
+  element,
+  editProperty,
+  organization,
+  onElementChange,
+  onDeleteButtonClick,
+  onElementChangesSave,
+  onElementChangesCancel,
+  onFieldSubmit,
+}) => {
+  const commonProps = {
+    element,
+    onElementChange,
+    onDeleteButtonClick,
+    onElementChangesSave,
+    onElementChangesCancel,
+    onFieldSubmit,
+  };
 
   return {
-    [EDIT_OPTIONS.properties]: (
-      <FieldProperties
-        {...commonProps}
-        data={data}
-        organization={organization}
-        onFieldGroupChange={onFieldGroupChange}
-      />
-    ),
+    [EDIT_OPTIONS.properties]: <FieldProperties {...commonProps} data={data} organization={organization} />,
     [EDIT_OPTIONS.styling]: <FieldStyles {...commonProps} />,
     [EDIT_OPTIONS.dynamicRendering]: <FieldDynamicRendering data={data} {...commonProps} />,
   }[editProperty];

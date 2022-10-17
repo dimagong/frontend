@@ -27,7 +27,14 @@ export const BaseDForm: FC<Props> = (props) => {
     onSectionCreate,
   } = props;
 
-  const [selectedSectionId, selectSection] = useState(() => schema.sectionsOrder[0]);
+  const [selectedSectionId, setSelectedSectionId] = useState(() => schema.sectionsOrder[0]);
+
+  const onSectionClick = (sectionId) => {
+    if (onElementClick) {
+      onElementClick(schema.sections[sectionId], "section");
+    }
+    setSelectedSectionId(sectionId);
+  };
 
   return (
     <div className="dform edit-mode">
@@ -39,7 +46,7 @@ export const BaseDForm: FC<Props> = (props) => {
         selectedSection={selectedSectionId}
         sectionsProgress={{}}
         onSectionCreate={onSectionCreate}
-        onSectionSelect={selectSection}
+        onSectionSelect={onSectionClick}
       />
 
       <DFormSections

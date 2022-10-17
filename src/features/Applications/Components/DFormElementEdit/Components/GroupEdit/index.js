@@ -6,10 +6,22 @@ import GroupDynamicRendering from "./Components/GroupDynamicRendering";
 import GroupStyles from "./Components/GroupStyles";
 import GroupProperties from "./Components/GroupProperties";
 
-const GroupEdit = ({ element, onElementChange, editProperty, onGroupSectionChange, data }) => {
+const GroupEdit = ({
+  element,
+  onElementChange,
+  editProperty,
+  onGroupSectionChange,
+  data,
+  onFieldSubmit,
+  onDeleteButtonClick,
+  onElementChangesCancel,
+}) => {
   const commonProps = {
     element,
     onElementChange,
+    onFieldSubmit,
+    onDeleteButtonClick,
+    onElementChangesCancel,
   };
 
   return {

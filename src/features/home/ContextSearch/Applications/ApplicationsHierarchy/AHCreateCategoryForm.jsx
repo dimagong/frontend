@@ -6,7 +6,7 @@ import { preventDefault } from "utility/event-decorators";
 
 import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 
-import { NmpInput, NpmButton } from "features/nmp-ui";
+import { NmpInput, NmpButton } from "features/nmp-ui";
 import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
 export const AHCreateCategoryForm = ({ placeholder, submitting, onSubmit: propOnSubmit }) => {
@@ -35,9 +35,9 @@ export const AHCreateCategoryForm = ({ placeholder, submitting, onSubmit: propOn
       <Row className="my-3">
         <Col>
           <div className="d-flex justify-content-end">
-            <NpmButton key="submit" type="primary" onClick={onSubmit} disabled={formGroup.invalid} loading={submitting}>
+            <NmpButton key="submit" type="primary" onClick={onSubmit} disabled={formGroup.invalid} loading={submitting}>
               Save
-            </NpmButton>
+            </NmpButton>
           </div>
         </Col>
       </Row>

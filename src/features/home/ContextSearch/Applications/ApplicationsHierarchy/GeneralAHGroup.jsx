@@ -5,7 +5,6 @@ import { Collapse, Fade } from "reactstrap";
 import { AddBox, AddSharp, RemoveSharp } from "@material-ui/icons";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import _ from "lodash/fp";
 
 import { useOutsideClick, useOutsideFocus } from "hooks/use-outside-event";
 import { useToggle } from "hooks/use-toggle";
@@ -14,7 +13,7 @@ import { useDeleteDFormTemplateCategoryMutation, useUpdateDFormTemplateCategoryM
 import { stopPropagation } from "utility/event-decorators";
 
 import { EditCategoryModal } from "../EditCategoryModal.jsx";
-import { NpmButton } from "features/nmp-ui";
+import { NmpButton } from "features/nmp-ui";
 import { AHTreeNode } from "./AHTreeNode";
 
 const getMarkIconAriaLabel = (expanded) => `${expanded ? "Collapse" : "Expand"} category.`;
@@ -137,9 +136,9 @@ export const GeneralAHGroup = (props) => {
               </Fade>
             </div>
             <div className="group-actions">
-              <NpmButton type="text" onClick={stopPropagation(onEdit)} icon={<EditFilled />}></NpmButton>
+              <NmpButton type="text" onClick={stopPropagation(onEdit)} icon={<EditFilled />}></NmpButton>
 
-              <NpmButton type="text" onClick={stopPropagation(onDelete)} danger icon={<DeleteFilled />}></NpmButton>
+              <NmpButton type="text" onClick={stopPropagation(onDelete)} danger icon={<DeleteFilled />}></NmpButton>
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import React from "react";
 import type { FC, MouseEventHandler } from "react";
 import { CloseCircleFilled } from "@ant-design/icons";
 
-import { NpmButton } from "../NpmButton";
+import { NmpButton } from "../NmpButton";
 import { NpmTooltip } from "../NpmTooltip";
 
 type Props = {
@@ -20,13 +20,13 @@ export const NmpUploadItem: FC<Props> = (props) => {
 
   return (
     <div className="nmp-upload-item">
-      <NpmButton type="text" block className="nmp-upload-item__filename" disabled={isDisabled} onClick={onDownload}>
+      <NmpButton type="text" block className="nmp-upload-item__filename" disabled={isDisabled} onClick={onDownload}>
         {filename}
-      </NpmButton>
+      </NmpButton>
 
       {isRemovable ? (
         <NpmTooltip title="Remove">
-          <NpmButton
+          <NmpButton
             danger
             type="text"
             shape="circle"

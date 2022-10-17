@@ -10,7 +10,7 @@ type Props = Omit<ButtonProps, "type" | "shape"> & {
   shape?: ButtonProps["shape"] | "nmp-ellipse";
 };
 
-export const NpmButton: FC<Props> = (props) => {
+export const NmpButton: FC<Props> = (props) => {
   const { type = "nmp-default", shape, iconRight = false, className, ...rest } = props;
 
   const classes = classnames(className, "ant-btn-nmp", {

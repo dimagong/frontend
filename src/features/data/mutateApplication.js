@@ -11,6 +11,7 @@ export const mutateApplication = (applicationData, mutation) => {
       name,
       description,
       is_private: isPrivate,
+      category_id: categoryId,
       groups: [{ group_id: organization.id, type: organization.type }],
       category_id: categoryId,
       schema,

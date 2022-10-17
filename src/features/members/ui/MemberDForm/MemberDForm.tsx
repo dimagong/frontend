@@ -174,17 +174,21 @@ export const MemberDForm: FC<Props> = (props) => {
                   id={sectionId}
                   schema={schema}
                   actions={
-                    <div className="memberDForm-content_box_card_section-navigation">
-                      <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
+                    <Row justify="space-between" align="middle">
+                      <Col>
+                        <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
+                      </Col>
 
-                      <MemberDFormNavigation
-                        loading={submitDFormMutation.isLoading}
-                        disabled={isFinalSection && !isAccessible}
-                        sectionLimit={sections.length - 1}
-                        sectionNumber={step}
-                        handlePreviousSection={onPreviousSection}
-                      />
-                    </div>
+                      <Col>
+                        <MemberDFormNavigation
+                          loading={submitDFormMutation.isLoading}
+                          disabled={isFinalSection && !isAccessible}
+                          sectionLimit={sections.length - 1}
+                          sectionNumber={step}
+                          handlePreviousSection={onPreviousSection}
+                        />
+                      </Col>
+                    </Row>
                   }
                   isHidden={schema.sections[sectionId]?.isHidden ?? false}
                   isDisabled={schema.sections[sectionId]?.isDisabled ?? false}

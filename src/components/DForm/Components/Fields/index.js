@@ -10,7 +10,7 @@ const DFormElement = ({ classes, isSelected, onClick, children }) => {
   return (
     <div
       onClick={onClick}
-      className={classnames("d-flex editable mb-3", classes || "col-12", { selected: isSelected })}
+      className={classnames("d-flex editable mb-3 w-100", classes || "col-12", { selected: isSelected })}
     >
       {children}
     </div>

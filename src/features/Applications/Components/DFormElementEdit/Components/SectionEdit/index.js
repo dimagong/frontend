@@ -6,10 +6,21 @@ import SectionProperties from "./Components/SectionProperties";
 import SectionStyles from "./Components/SectionStyles";
 import SectionDynamicRendering from "./Components/SectionDynamicRendering";
 
-const SectionEdit = ({ editProperty, element, onElementChange, data }) => {
+const SectionEdit = ({
+  editProperty,
+  element,
+  onElementChange,
+  data,
+  onFieldSubmit,
+  onDeleteButtonClick,
+  onElementChangesCancel,
+}) => {
   const commonProps = {
     element,
     onElementChange,
+    onFieldSubmit,
+    onDeleteButtonClick,
+    onElementChangesCancel,
   };
 
   return {

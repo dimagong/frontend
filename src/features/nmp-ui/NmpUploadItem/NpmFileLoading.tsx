@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { ArrowUpOutlined, CloseCircleFilled } from "@ant-design/icons";
 
-import { NpmTooltip, NpmButton, NpmProgress } from "features/nmp-ui";
+import { NpmTooltip, NmpButton, NpmProgress } from "features/nmp-ui";
 
 enum FileStatusTypes {
   Idle = "idle",
@@ -59,13 +59,13 @@ const NpmFileLoading: FC<Props> = (props) => {
 
   return (
     <div className="npm-fileLoading">
-      <NpmButton type="text" block className="npm-fileLoading_file-name" onClick={onDownload}>
+      <NmpButton type="text" block className="npm-fileLoading_file-name" onClick={onDownload}>
         {name}
-      </NpmButton>
+      </NmpButton>
 
       {status === FileStatusTypes.Idle && removable ? (
         <NpmTooltip title="Remove">
-          <NpmButton danger type="text" shape="circle" icon={<CloseCircleFilled />} onClick={onRemove} />
+          <NmpButton danger type="text" shape="circle" icon={<CloseCircleFilled />} onClick={onRemove} />
         </NpmTooltip>
       ) : null}
 

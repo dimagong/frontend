@@ -2,7 +2,7 @@ import "./styles.scss";
 
 import React from "react";
 
-import { NpmButton, NpmCard } from "features/nmp-ui";
+import { NmpButton, NpmCard } from "features/nmp-ui";
 import Submit from "../icons/Submit.svg";
 
 const cardStyle = {
@@ -31,10 +31,10 @@ export const MemberSubmittedStatusView = ({ organization, onShowDForm }) => {
               </div>
             </div>
             <div className="cs-button">
-              <NpmButton onClick={handleShowDForm} type={"nmp-primary"}>
+              <NmpButton onClick={handleShowDForm} type={"nmp-primary"}>
                 <span>View application</span>
                 <i className="arrow right"></i>
-              </NpmButton>
+              </NmpButton>
             </div>
           </div>
           <div className="card-submitted_img">

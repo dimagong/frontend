@@ -1,7 +1,7 @@
 import React from "react";
 import { RightOutlined, LeftOutlined, DownOutlined } from "@ant-design/icons";
 
-import { NpmButton } from "./NpmButton";
+import { NmpButton } from "./NmpButton";
 
 const icons = {
   left: <LeftOutlined />,
@@ -10,7 +10,7 @@ const icons = {
 
 const storySettings = {
   title: "NpmButton",
-  component: NpmButton,
+  component: NmpButton,
   argTypes: {
     type: {
       name: "type",
@@ -65,7 +65,7 @@ const storySettings = {
 
 export default storySettings;
 
-const Template = (props: any) => <NpmButton {...props} />;
+const Template = (props: any) => <NmpButton {...props} />;
 
 export const Types = Template.bind({});
 

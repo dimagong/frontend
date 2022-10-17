@@ -20,6 +20,7 @@ const DFormElementEdit = (props) => {
     onElementDelete,
     onFieldGroupChange,
     onGroupSectionChange,
+    onFieldSubmit,
   } = props;
 
   const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS.properties);
@@ -35,6 +36,10 @@ const DFormElementEdit = (props) => {
     element: element,
     editProperty: selectedEditOption,
     onElementChange: onElementChange,
+    onDeleteButtonClick: onDeleteButtonClick,
+    onElementChangesSave: onElementChangesSave,
+    onElementChangesCancel: onElementChangesCancel,
+    onFieldSubmit: onFieldSubmit,
   };
 
   useEffect(() => {
@@ -52,20 +57,6 @@ const DFormElementEdit = (props) => {
               field: <FieldEdit {...commonProps} organization={organization} onFieldGroupChange={onFieldGroupChange} />,
             }[element.elementType]
           }
-        </div>
-        <div className="application_delimiter" />
-        <div className="d-flex justify-content-between">
-          <Button onClick={onElementChangesCancel} className="button button-cancel">
-            Cancel
-          </Button>
-          <div>
-            <Button color="danger" onClick={onDeleteButtonClick} className="mr-1 button button-danger">
-              Delete
-            </Button>
-            <Button color="primary" onClick={onElementChangesSave} className="button button-success">
-              Save
-            </Button>
-          </div>
         </div>
       </Col>
       <Col className="col-4 dform-element-edit_options">

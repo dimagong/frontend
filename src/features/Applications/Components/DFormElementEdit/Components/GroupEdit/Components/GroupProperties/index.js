@@ -1,44 +1,89 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Form } from "antd";
+import _ from "lodash";
 
-import { NmpCheckbox, NmpInput } from "features/nmp-ui";
-
+import { NmpButton, NmpInput, NmpCheckbox } from "features/nmp-ui";
 import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
-import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
-const GroupProperties = ({ element, onElementChange, onGroupSectionChange, data }) => {
-  const onNameChange = ({ target }) => onElementChange({ ...element, name: target.value });
+const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel }) => {
+  const [form] = Form.useForm();
+  const [disabled, setDisabled] = useState(true);
 
-  const onProtectedChange = ({ target }) => onElementChange({ ...element, isProtected: target.checked });
+  const initialValues = {
+    ...element,
+  };
 
-  const onSectionChange = (value) => onGroupSectionChange(element.id, element.sectionId, value.value);
+  useEffect(() => {
+    form.setFieldsValue(initialValues);
+  }, [element]);
+
+  const onFinish = (submittedObj) => {
+    _.forOwn(submittedObj, (value, key) => {
+      if (value?.value) {
+        submittedObj[key] = value.value;
+      }
+    });
+
+    onFieldSubmit(submittedObj);
+  };
+
+  const handleFormChange = () => {
+    const fieldsValue = form.getFieldsValue();
+
+    const fieldsKeys = Object.keys(fieldsValue);
+
+    setDisabled(true);
+
+    fieldsKeys.forEach((key) => {
+      if (!_.isEqual(fieldsValue[key], initialValues[key])) {
+        setDisabled(false);
+        return;
+      }
+    });
+  };
 
   return (
-    <>
-      <div className="mb-2">
-        <DFormLabel label="Group name" id="group-name" />
-        <NmpInput id="group-name" type="text" value={element.name} placeholder="Group name" onChange={onNameChange} />
+    <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
+      <Form.Item label="Group name" name="name" className="dform-field mb-2">
+        <NmpInput id="name" type="text" placeholder="Enter your answer here" />
+      </Form.Item>
+
+      <Form.Item name="isProtected" className="dform-field mb-2" valuePropName="checked">
+        <NmpCheckbox id="isProtected">
+          <DFormLabel label="Is protected" isSmall />
+        </NmpCheckbox>
+      </Form.Item>
+
+      <div className="application_delimiter" />
+
+      <div className="d-flex justify-content-between">
+        <Form.Item>
+          <NmpButton type="default" shape="round" size="large" onClick={onElementChangesCancel}>
+            Cancel
+          </NmpButton>
+        </Form.Item>
+
+        <div className="d-flex">
+          <Form.Item>
+            <NmpButton className="mr-1" type="primary" danger shape="round" size="large" onClick={onDeleteButtonClick}>
+              Delete
+            </NmpButton>
+          </Form.Item>
+          <Form.Item>
+            <NmpButton
+              className="button-success"
+              type="primary"
+              shape="round"
+              size="large"
+              htmlType="submit"
+              disabled={disabled}
+            >
+              Save
+            </NmpButton>
+          </Form.Item>
+        </div>
       </div>
-
-      <DFormSelectWidget
-        id="group-section"
-        label="Element section"
-        value={{ value: element.sectionId, label: data.sections[element.sectionId].name }}
-        options={Object.values(data.sections).map((section) => ({
-          value: section.id,
-          label: section.name,
-        }))}
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        placeholder="Select an Group section"
-        onChange={onSectionChange}
-        className="mb-2"
-      />
-
-      <NmpCheckbox id="group-protected" checked={element.isProtected} onChange={onProtectedChange}>
-        <DFormLabel label="Is protected" />
-      </NmpCheckbox>
-    </>
+    </Form>
   );
 };
 
