@@ -1,5 +1,5 @@
 import React from "react";
-import type { FC } from "react";
+import type { FC, DragEvent } from "react";
 import { useMutation } from "react-query";
 import type { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
 
@@ -7,14 +7,14 @@ import { NmpUpload } from "features/nmp-ui";
 import { triggerFileDownloading, warning } from "features/common";
 
 import { useDFormContext } from "components/DForm/DFormContext";
+import type { DFormFile } from "components/DForm/types/dformFile";
+import type { DFormFiles } from "components/DForm/types/dformFiles";
 import { DformFileService } from "components/DForm/data/dformFileService";
 import type {
   GetDFormFileParams,
   PostDFormFileParams,
   DeleteDFormFileParams,
 } from "components/DForm/data/dformFileService";
-
-import type { DFormFile, DFormFiles } from "./types";
 
 const getUploadFileFromDFormFile = (dformFile: DFormFile): UploadFile => ({
   uid: String(dformFile.file_id),
@@ -104,6 +104,8 @@ export const DFormUploadFile: FC<Props> = (props) => {
     uploadFiles(files);
   };
 
+  const onUploadDrop = (event: DragEvent<HTMLElement>) => uploadFiles(Array.from(event.dataTransfer.files));
+
   return (
     <NmpUpload
       maxCount={maxCount}
@@ -117,7 +119,9 @@ export const DFormUploadFile: FC<Props> = (props) => {
           onDownload={() => downloadFile(Number(file.uid))}
         />
       )}
+      beforeUpload={() => false}
       onChange={onUploadChange}
+      onDrop={onUploadDrop}
     />
   );
 };

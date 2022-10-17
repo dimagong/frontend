@@ -6,10 +6,9 @@ import { NmpUpload } from "features/nmp-ui";
 import { triggerFileDownloading, warning } from "features/common";
 
 import { useDFormContext } from "components/DForm/DFormContext";
+import type { DFormFile } from "components/DForm/types/dformFile";
 import { DformFileService } from "components/DForm/data/dformFileService";
 import type { GetDFormFileParams } from "components/DForm/data/dformFileService";
-
-import { DFormFile } from "../DFormFile/types";
 
 type Props = {
   value?: DFormFile;
@@ -27,7 +26,7 @@ export const DFormResourceItem: FC<Props> = (props) => {
     onSuccess: (fetchedFile) => triggerFileDownloading(fetchedFile),
   });
 
-  const filename = value ? value.name : "unknown resource";
+  const filename = value ? value.custom_filename : "unknown resource";
 
   const downloadFile = () => {
     const fileId = value?.file_id;
