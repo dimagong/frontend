@@ -1,4 +1,4 @@
-export enum Status {
+enum Status {
   APPROVED = "approved",
   RECENT = "recent",
   SUBMITTED = "submitted",
@@ -9,3 +9,5 @@ export enum Status {
   IN_PROGRESS = `in-progress`,
   UNSUBMITTED = "unsubmitted",
 }
+
+export { Status };
