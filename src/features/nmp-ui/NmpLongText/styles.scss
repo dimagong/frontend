@@ -18,4 +18,12 @@
     justify-content: flex-end;
     padding-top: 1rem;
   }
+
+  &__editor-wrapper {
+    height: 250px;
+  }
+
+  &__editor {
+    padding-bottom: 2rem;
+  }
 }

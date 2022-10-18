@@ -56,35 +56,41 @@ export const NmpLongText: FC<Props> = (props) => {
       />
 
       {isDisabled ? null : (
-        <NpmModal
-          title="Extended input"
-          visible={isModalOpen}
-          onCancel={closeModal}
-          footer={
-            <NmpButton type="nmp-primary" onClick={closeModal}>
-              Close
-            </NmpButton>
-          }
-        >
-          <div className="pb-2">
-            <NpmEditor
-              data={value}
-              toolbar={{
-                options: ["inline", "list", "textAlign", "link"],
-                inline: {
-                  inDropdown: false,
-                  options: ["bold", "italic", "underline"],
-                },
-                textAlign: {
-                  inDropdown: false,
-                  options: ["indent", "outdent"],
-                },
-              }}
-              onChange={onEditorChange}
-              wrapperClassName="nmp-long-text__editor"
-            />
-          </div>
-        </NpmModal>
+        <div className="nmp-long-text__actions">
+          <NmpButton type="nmp-primary" onClick={toggleIsModalOpen}>
+            Expand text area
+          </NmpButton>
+
+          <NpmModal
+            title="Extended input"
+            visible={isModalOpen}
+            onCancel={closeModal}
+            footer={
+              <NmpButton type="nmp-primary" onClick={closeModal}>
+                Close
+              </NmpButton>
+            }
+          >
+            <div className="nmp-long-text__editor">
+              <NpmEditor
+                data={value}
+                toolbar={{
+                  options: ["inline", "list", "textAlign", "link"],
+                  inline: {
+                    inDropdown: false,
+                    options: ["bold", "italic", "underline"],
+                  },
+                  textAlign: {
+                    inDropdown: false,
+                    options: ["indent", "outdent"],
+                  },
+                }}
+                onChange={onEditorChange}
+                wrapperClassName="nmp-long-text__editor-wrapper"
+              />
+            </div>
+          </NpmModal>
+        </div>
       )}
     </>
   );
