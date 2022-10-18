@@ -1,3 +1,11 @@
+@mixin menuHeight {
+  height: 4.5rem;
+}
+
+@mixin menuBlock {
+  min-height: calc(100vh - 4.5rem);
+}
+
 .onboarding-title {
   font-weight: 300;
   font-size: 39px;
@@ -12,7 +20,7 @@
   display: flex;
   align-items: flex-end;
 
-  height: 4.5rem;
+  @include menuHeight;
 
   top: 0;
   left: 300px;
@@ -205,4 +213,9 @@
 }
 .ant-menu-horizontal:not(.ant-menu-dark) > .survey-item:not(.ant-menu-submenu-open).ant-menu-submenu:hover::after {
   border-bottom: 2px solid #35a046;
+}
+
+.membercomponent-block {
+  background-color: #f4f4f4;
+  @include menuBlock;
 }

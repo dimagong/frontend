@@ -1,5 +1,3 @@
-import "./styles.scss";
-
 import { toast } from "react-toastify";
 
 import React, { useState } from "react";
@@ -126,7 +124,7 @@ const MemberSurvey = ({ selectedSurveyId, isRecentlySubmitted, organization }) =
   }
 
   return (
-    <Row justify="center" align="middle" className="member-survey">
+    <Row justify="center" align="middle">
       <Col span={14}>
         {surveyStatus === Status.NOT_STARTED && (
           <MemberSurveyStartView
@@ -182,6 +180,7 @@ const MemberSurvey = ({ selectedSurveyId, isRecentlySubmitted, organization }) =
         )}
       </Col>
     </Row>
+    // </div>
   );
 };
 
