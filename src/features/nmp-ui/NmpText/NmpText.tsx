@@ -2,32 +2,35 @@ import "./styles.scss";
 
 import React, { createRef, CSSProperties } from "react";
 
+import type { FC } from "react";
+
 import classnames from "classnames";
 
-import { useTooltip } from "hooks/useTooltip";
+import { useTooltip } from "./../hooks/useTooltip";
 
 import { NpmTooltip } from "./../NpmTooltip";
 
-type NmpTextType = {
+export type NmpTextType = {
   text?: string;
   className?: string;
-  style: CSSProperties;
+  style?: CSSProperties;
 };
 
-export const NmpText: React.FC<NmpTextType> = ({ className, text = "", ...props }) => {
+export const NmpText: FC<NmpTextType> = ({ className, text = "", style, ...props }) => {
   const lableRef = createRef<HTMLDivElement>();
 
   const [isOpenTooltip, hendleMouseOver, handleMouseOut] = useTooltip(lableRef);
 
   return (
-    <NpmTooltip visible={isOpenTooltip as boolean} title={text}>
+    <NpmTooltip visible={isOpenTooltip} title={text}>
       <div
         className={classnames("nmp-text", className)}
         ref={lableRef}
-        onMouseOver={hendleMouseOver as () => void}
-        onMouseOut={handleMouseOut as () => void}
+        onMouseOver={hendleMouseOver}
+        onMouseOut={handleMouseOut}
+        style={style}
       >
-        <span>{text}</span>
+        {text}
       </div>
     </NpmTooltip>
   );
