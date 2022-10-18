@@ -1,5 +1,6 @@
 import React from "react";
 import classnames from "classnames";
+import { Draggable } from "react-beautiful-dnd";
 
 import { ElementTypes, FieldTypes } from "components/DForm";
 import { useDFormContext } from "components/DForm/DFormContext";
@@ -35,7 +36,7 @@ const FormComponent = (props) => {
 
   return (
     <>
-      {groupFields.map((formField) => {
+      {groupFields.map((formField, index) => {
         const field = data.fields[formField];
 
         // DCR controls a field rendering
@@ -151,24 +152,35 @@ const FormComponent = (props) => {
         const label = field.title;
 
         return (
-          <DFormElement classes={field.classes} isSelected={isSelected} onClick={onElementClick} key={formField}>
-            <FormFieldElement
-              id={field.id}
-              error={""}
-              label={label}
-              value={value}
-              options={options}
-              format={field.format}
-              uiStyle={field.uiStyle}
-              isError={false}
-              isDisabled={isDisabled}
-              isRequired={field.isRequired}
-              isLabelShowing={field.isLabelShowing}
-              masterSchemaFieldId={Number(field.masterSchemaFieldId)}
-              onChange={onChange}
-              key={field.id}
-            />
-          </DFormElement>
+          <Draggable key={formField} draggableId={formField} index={index}>
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                className={field.classes}
+              >
+                <DFormElement isSelected={isSelected} onClick={onElementClick} key={formField}>
+                  <FormFieldElement
+                    id={field.id}
+                    error={""}
+                    label={label}
+                    value={value}
+                    options={options}
+                    format={field.format}
+                    uiStyle={field.uiStyle}
+                    isError={false}
+                    isDisabled={isDisabled}
+                    isRequired={field.isRequired}
+                    isLabelShowing={field.isLabelShowing}
+                    masterSchemaFieldId={Number(field.masterSchemaFieldId)}
+                    onChange={onChange}
+                    key={field.id}
+                  />
+                </DFormElement>
+              </div>
+            )}
+          </Draggable>
         );
       })}
 

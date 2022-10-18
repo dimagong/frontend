@@ -27,6 +27,7 @@
     "@reduxjs/toolkit": "^1.4.0",
     "@rjsf/core": "^2.4.0",
     "@rjsf/material-ui": "^2.4.0",
+    "@types/react-beautiful-dnd": "^13.1.2",
     "ag-grid-community": "^22.1.1",
     "ag-grid-react": "^22.1.1",
     "antd": "^4.22.7",

@@ -403,11 +403,17 @@ export const ApplicationPage = ({ applicationId }) => {
   };
 
   const handleGroupReorder = (result) => {
+    const { draggableId: groupId, source, destination } = result;
+
     const dataClone = cloneDeep(applicationData);
 
-    const itemToMove = dataClone.sections[result.parentItem.id].relatedGroups.splice(result.source.index, 1)[0];
+    const { sections } = dataClone;
 
-    dataClone.sections[result.parentItem.id].relatedGroups.splice(result.destination.index, 0, itemToMove);
+    const sectionId = Object.keys(sections).find((key) => sections[key].relatedGroups.includes(groupId));
+
+    const itemToMove = dataClone.sections[sectionId].relatedGroups.splice(source.index, 1)[0];
+
+    dataClone.sections[sectionId].relatedGroups.splice(destination.index, 0, itemToMove);
 
     setApplicationData(dataClone);
   };
@@ -415,14 +421,18 @@ export const ApplicationPage = ({ applicationId }) => {
   const handleFieldReorder = (result) => {
     const dataClone = cloneDeep(applicationData);
 
-    const itemToMove = dataClone.groups[result.parentItem.id].relatedFields.splice(result.source.index, 1)[0];
+    const field = dataClone.fields[result.draggableId];
 
-    dataClone.groups[result.parentItem.id].relatedFields.splice(result.destination.index, 0, itemToMove);
+    const itemToMove = dataClone.groups[field.groupId].relatedFields.splice(result.source.index, 1)[0];
+
+    dataClone.groups[field.groupId].relatedFields.splice(result.destination.index, 0, itemToMove);
 
     setApplicationData(dataClone);
   };
 
   const handleReorder = (result) => {
+    console.log("result", result);
+
     switch (result.type) {
       case ElementTypes.Section:
         handleSectionReorder(result);
@@ -506,6 +516,7 @@ export const ApplicationPage = ({ applicationId }) => {
                 onSectionCreate={handleSectionCreate}
                 onGroupCreate={handleGroupCreate}
                 onFieldCreate={handleFieldCreate}
+                onReorder={handleReorder}
               />
             </DFormContextProvider>
           </TabPane>

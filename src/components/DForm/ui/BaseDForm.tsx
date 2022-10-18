@@ -1,6 +1,7 @@
 import "./styles.scss";
 
 import React, { FC, useState } from "react";
+import { DropResult } from "react-beautiful-dnd";
 
 import { DFormSections } from "./DFormSections";
 import { DFormSchema } from "../types/dformSchema";
@@ -13,6 +14,7 @@ type Props = {
   onFieldCreate?: (groupId: string) => void;
   onGroupCreate?: (sectionId: string) => void;
   onElementClick?: (el: any, type: "field" | "group" | "section") => void;
+  onReorder?: (result: DropResult) => void;
 };
 
 const defaultSchema: DFormSchema = { fields: {}, groups: {}, sections: {}, sectionsOrder: [] };
@@ -25,6 +27,7 @@ export const BaseDForm: FC<Props> = (props) => {
     onGroupCreate,
     onFieldCreate,
     onSectionCreate,
+    onReorder,
   } = props;
 
   const [selectedSectionId, setSelectedSectionId] = useState(() => schema.sectionsOrder[0]);
@@ -47,6 +50,7 @@ export const BaseDForm: FC<Props> = (props) => {
         sectionsProgress={{}}
         onSectionCreate={onSectionCreate}
         onSectionSelect={onSectionClick}
+        onReorder={onReorder}
       />
 
       <DFormSections
@@ -56,6 +60,7 @@ export const BaseDForm: FC<Props> = (props) => {
         onGroupCreate={onGroupCreate}
         onFieldCreate={onFieldCreate}
         onElementClick={onElementClick}
+        onReorder={onReorder}
       />
     </div>
   );

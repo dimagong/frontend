@@ -1,6 +1,7 @@
 import React from "react";
 import type { FC } from "react";
 import { TabContent, TabPane } from "reactstrap";
+import { DropResult } from "react-beautiful-dnd";
 
 import { DFormSection } from "./DFormSection";
 import { useDFormContext } from "../DFormContext";
@@ -13,10 +14,11 @@ type Props = {
   onGroupCreate?: (sectionId: string) => void;
   onFieldCreate?: (groupId: string) => void;
   onElementClick?: (el: any, type: "field" | "group" | "section") => void;
+  onReorder?: (result: DropResult) => void;
 };
 
 export const DFormSections: FC<Props> = (props) => {
-  const { schema, selectedSectionId, selectedElement, onElementClick, onGroupCreate, onFieldCreate } = props;
+  const { schema, selectedSectionId, selectedElement, onElementClick, onGroupCreate, onFieldCreate, onReorder } = props;
 
   const { isConfigurable } = useDFormContext();
 
@@ -55,6 +57,7 @@ export const DFormSections: FC<Props> = (props) => {
               onFieldCreate={onFieldCreate}
               onGroupCreate={onGroupCreate}
               onElementClick={onElementClick}
+              onReorder={onReorder}
             />
           </TabPane>
         );
