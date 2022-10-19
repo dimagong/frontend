@@ -1,6 +1,9 @@
+import "./styles.scss";
+
 import React from "react";
 import classnames from "classnames";
 import { Draggable } from "react-beautiful-dnd";
+import { DragIndicator } from "@material-ui/icons";
 
 import { ElementTypes, FieldTypes } from "components/DForm";
 import { useDFormContext } from "components/DForm/DFormContext";
@@ -157,9 +160,11 @@ const FormComponent = (props) => {
               <div
                 ref={provided.innerRef}
                 {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                className={field.classes}
+                className={field.classes + " draggable-wrapper"}
               >
+                <span className="nested-draggable-list_item-drag-icon field-drag-icon" {...provided.dragHandleProps}>
+                  <DragIndicator />
+                </span>
                 <DFormElement isSelected={isSelected} onClick={onElementClick} key={formField}>
                   <FormFieldElement
                     id={field.id}

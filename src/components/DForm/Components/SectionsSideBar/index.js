@@ -5,6 +5,7 @@ import { Plus } from "react-feather";
 import classnames from "classnames";
 import { Nav, NavItem, NavLink } from "reactstrap";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragIndicator } from "@material-ui/icons";
 
 import ProgressBar from "./Components/ProgressBar";
 import { ElementTypes } from "components/DForm";
@@ -20,12 +21,19 @@ const SectionsSideBar = (props) => {
     onSectionSelect,
     onSectionCreate,
     onReorder,
+    isDraggable,
   } = props;
 
   const handleDragEnd = (result) => {
     if (result.destination === null || result.destination.index === result.source.index) return;
 
     onReorder(result);
+  };
+
+  const onMouseEnter = (sectionId) => {
+    if (isDraggable) {
+      onSectionSelect(sectionId);
+    }
   };
 
   return (
@@ -38,7 +46,11 @@ const SectionsSideBar = (props) => {
                 {sections.map((section, index) => (
                   <Draggable key={section.id} draggableId={section.id} index={index}>
                     {(provided) => (
-                      <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        onMouseEnter={(e) => onMouseEnter(section.id)}
+                      >
                         <NavItem
                           style={section.isHidden ? { display: "none" } : {}}
                           key={section.id}
@@ -48,9 +60,18 @@ const SectionsSideBar = (props) => {
                             className={classnames({ active: selectedSection === section.id }, "sections-nav_item")}
                             onClick={() => onSectionSelect(section.id)}
                           >
-                            <div className={`sections-nav_item_title ${errors[section.id] ? "with-errors" : ""}`}>
-                              <span className="align-middle ml-50">{section.name}</span>
+                            <div className="draggable-wrapper draggable-wrapper--sections">
+                              <span
+                                className="nested-draggable-list_item-drag-icon sections__drag-icon"
+                                {...provided.dragHandleProps}
+                              >
+                                <DragIndicator />
+                              </span>
+                              <div className={`sections-nav_item_title ${errors[section.id] ? "with-errors" : ""}`}>
+                                <span className="align-middle ml-50">{section.name}</span>
+                              </div>
                             </div>
+
                             <div className="sections-nav_item_index">
                               <ProgressBar
                                 // completed={completed || onboarding.d_form?.status === "submitted" || onboarding.d_form?.status === "approved" } //todo handle it later

@@ -9,6 +9,10 @@
     padding-bottom: 7px;
     border-bottom: 1px solid #707070;
     color: #707070;
+
+    &--draggable {
+      border: none;
+    }
   }
 
   &-content {

@@ -1,0 +1,18 @@
+.draggable-wrapper {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+
+  &--sections {
+    justify-content: flex-end;
+  }
+}
+
+.group-drag-icon {
+  padding-top: 6px;
+}
+
+.field-drag-icon {
+  margin-right: -16px;
+  z-index: 100;
+}

@@ -6,6 +6,8 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { ElementTypes } from "components/DForm";
 
+import { DragIndicator } from "@material-ui/icons";
+
 import Fields from "../Fields";
 import { useDFormContext } from "../../DFormContext";
 
@@ -49,19 +51,19 @@ const Groups = (props) => {
         return (
           <Draggable key={groupId} draggableId={groupId} index={index}>
             {(provided) => (
-              <div
-                className="group"
-                key={groupId}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                ref={provided.innerRef}
-              >
-                <div
-                  className={`group-title editable ${isSelected ? "selected" : ""}`}
-                  onClick={() => onGroupSelect(groupId)}
-                >
-                  <span className="text-bold-500">{data.groups[groupId].name}</span>
+              <div className="group" key={groupId} {...provided.draggableProps} ref={provided.innerRef}>
+                <div className="draggable-wrapper">
+                  <span className="nested-draggable-list_item-drag-icon group-drag-icon" {...provided.dragHandleProps}>
+                    <DragIndicator />
+                  </span>
+                  <div
+                    className={`group-title editable ${isSelected ? "selected" : ""}`}
+                    onClick={() => onGroupSelect(groupId)}
+                  >
+                    <span className="text-bold-500">{data.groups[groupId].name}</span>
+                  </div>
                 </div>
+
                 <Droppable droppableId={groupId} type={ElementTypes.Field}>
                   {(provided) => (
                     <div className="group-content row mr-0 ml-0" {...provided.droppableProps} ref={provided.innerRef}>

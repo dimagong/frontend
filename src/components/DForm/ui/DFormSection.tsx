@@ -7,6 +7,7 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Groups from "../Components/Groups";
 import { DFormSchema } from "../types/dformSchema";
 import { ElementTypes } from "../types/elementTypes";
+import { DragIndicator } from "@material-ui/icons";
 
 const validateMessages = {
   required: "Is required!",
@@ -25,6 +26,8 @@ type Props = {
   onGroupCreate?: (sectionId: string) => void;
   onElementClick?: (el: any, type: "field" | "group" | "section") => void;
   onReorder?: (result: DropResult) => void;
+  isDraggable?: boolean;
+  setIsDraggable?: any;
 };
 
 export const DFormSection: FC<Props> = (props) => {
@@ -41,6 +44,7 @@ export const DFormSection: FC<Props> = (props) => {
     onFieldCreate,
     onElementClick,
     onReorder,
+    setIsDraggable,
   } = props;
 
   const [form] = Form.useForm();
@@ -56,6 +60,8 @@ export const DFormSection: FC<Props> = (props) => {
   }
 
   const handleDragEnd = (result: DropResult) => {
+    setIsDraggable(false);
+
     if (result.destination === null || result.destination!.index === result.source.index) return;
 
     onReorder?.(result);
@@ -63,8 +69,25 @@ export const DFormSection: FC<Props> = (props) => {
 
   return (
     <Form form={form} name={id} layout="vertical" initialValues={initialValues} validateMessages={validateMessages}>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId={"Group"} type={ElementTypes.Group}>
+      <DragDropContext onDragEnd={handleDragEnd} onDragStart={() => setIsDraggable(true)}>
+        <Droppable
+          droppableId={"Group"}
+          type={ElementTypes.Group}
+          renderClone={(provided, snapshot, rubric) => (
+            <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+              <>
+                <div className="draggable-wrapper">
+                  <span className="nested-draggable-list_item-drag-icon group-drag-icon" {...provided.dragHandleProps}>
+                    <DragIndicator />
+                  </span>
+                  <div className={"group-title group-title--draggable"}>
+                    <span className="text-bold-500">{schema.groups[rubric.draggableId].name}</span>
+                  </div>
+                </div>
+              </>
+            </div>
+          )}
+        >
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
               <Groups

@@ -31,6 +31,7 @@ export const BaseDForm: FC<Props> = (props) => {
   } = props;
 
   const [selectedSectionId, setSelectedSectionId] = useState(() => schema.sectionsOrder[0]);
+  const [isDraggable, setIsDraggable] = useState(false);
 
   const onSectionClick = (sectionId) => {
     if (onElementClick) {
@@ -38,6 +39,8 @@ export const BaseDForm: FC<Props> = (props) => {
     }
     setSelectedSectionId(sectionId);
   };
+
+  console.log("isDraggable", isDraggable);
 
   return (
     <div className="dform edit-mode">
@@ -51,6 +54,7 @@ export const BaseDForm: FC<Props> = (props) => {
         onSectionCreate={onSectionCreate}
         onSectionSelect={onSectionClick}
         onReorder={onReorder}
+        isDraggable={isDraggable}
       />
 
       <DFormSections
@@ -61,6 +65,7 @@ export const BaseDForm: FC<Props> = (props) => {
         onFieldCreate={onFieldCreate}
         onElementClick={onElementClick}
         onReorder={onReorder}
+        setIsDraggable={setIsDraggable}
       />
     </div>
   );

@@ -15,10 +15,20 @@ type Props = {
   onFieldCreate?: (groupId: string) => void;
   onElementClick?: (el: any, type: "field" | "group" | "section") => void;
   onReorder?: (result: DropResult) => void;
+  setIsDraggable: any;
 };
 
 export const DFormSections: FC<Props> = (props) => {
-  const { schema, selectedSectionId, selectedElement, onElementClick, onGroupCreate, onFieldCreate, onReorder } = props;
+  const {
+    schema,
+    selectedSectionId,
+    selectedElement,
+    onElementClick,
+    onGroupCreate,
+    onFieldCreate,
+    onReorder,
+    setIsDraggable,
+  } = props;
 
   const { isConfigurable } = useDFormContext();
 
@@ -58,6 +68,7 @@ export const DFormSections: FC<Props> = (props) => {
               onGroupCreate={onGroupCreate}
               onElementClick={onElementClick}
               onReorder={onReorder}
+              setIsDraggable={setIsDraggable}
             />
           </TabPane>
         );
