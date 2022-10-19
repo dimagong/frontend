@@ -43,23 +43,23 @@ const selectStatusColor = (status: string) => {
 };
 
 const menuBaseItem = (name: string, status: string, statusColor: string): JSX.Element => (
-  <div className="membercomponent-menu__submenu-item">
-    <span className="membercomponent-menu__item-name">{name}</span>
-    <NmpTag color="white" style={{ borderColor: statusColor }} className="membercomponent-menu__item-status-dform">
-      <span style={{ backgroundColor: statusColor }} className="membercomponent-menu__item-status-dform__dot"></span>
+  <div className="member-menu__submenu-item">
+    <span className="member-menu__item-name">{name}</span>
+    <NmpTag color="white" style={{ borderColor: statusColor }} className="member-menu__item-status-dform">
+      <span style={{ backgroundColor: statusColor }} className="member-menu__item-status-dform__dot"></span>
       <span style={{ color: statusColor }}>{status}</span>
     </NmpTag>
   </div>
 );
 
 const menuCategoryItem = (categoryName: string = ""): JSX.Element => (
-  <div className="membercomponent-menu__category-item">
-    <span className="membercomponent-menu__category-item__name">{categoryName}</span>
+  <div className="member-menu__category-item">
+    <span className="member-menu__category-item__name">{categoryName}</span>
   </div>
 );
 
 const menuCategoryTitle = (name: string, count: number): JSX.Element => (
-  <span className="membercomponent-menu__category-title">
+  <span className="member-menu__category-title">
     <span>{name}</span>
     <span>{count >= 0 ? `(${count})` : ""}</span>
   </span>
@@ -92,7 +92,7 @@ const menuSurveysItems = (surveys) => {
 const menuDFormsGroup = (dforms: Partial<DFormCategory>[] | Partial<DForm>[]) => {
   return [
     {
-      className: "membercomponent-menu__group-items",
+      className: "member-menu__group-items",
       label: menuCategoryTitle(`Applications`, dforms.length),
       type: "group",
       children: menuDFormItems(dforms),
@@ -103,7 +103,7 @@ const menuDFormsGroup = (dforms: Partial<DFormCategory>[] | Partial<DForm>[]) =>
 const menuSurveysGroup = (surveys: Survey[]) => {
   return [
     {
-      className: "membercomponent-menu__group-items",
+      className: "member-menu__group-items",
       label: menuCategoryTitle(`Surveys`, surveys.length),
       type: "group",
       children: menuSurveysItems(surveys),
@@ -145,7 +145,7 @@ export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings,
             {
               label: menuCategoryTitle("Categories", dFormsCategories.length),
               type: "group",
-              className: "membercomponent-menu__category",
+              className: "member-menu__category",
               children: categoriesList.map(({ category_id, category_name }) => {
                 const findCategories = dFormsCategories.filter(
                   (category: DFormCategory) => category.category_id === category_id
@@ -159,13 +159,13 @@ export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings,
             },
           ],
 
-      className: "membercomponent-menu__item",
+      className: "member-menu__item",
     },
     {
       key: "surveys",
       label: "Surveys",
       children: menuSurveysGroup(surveys),
-      className: "membercomponent-menu__item survey-item",
+      className: "member-menu__item survey-item",
     },
   ];
 
