@@ -1,6 +1,10 @@
 .dform {
   display: flex;
 
+  .form-secions {
+    width: 100%;
+  }
+
   .element {
     &-add {
       cursor: pointer;

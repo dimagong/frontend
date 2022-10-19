@@ -91,7 +91,7 @@ const Groups = (props) => {
       ) : null}
 
       {(!sectionGroups || sectionGroups.length === 0) && isConfigurable ? (
-        <div className={classnames("btn-box btn-group")}>
+        <div className="btn-box btn-box-single">
           <div className="element-add" onClick={onGroupCreate}>
             <div className="element-add_icon">
               <Plus color="white" size={23} />
