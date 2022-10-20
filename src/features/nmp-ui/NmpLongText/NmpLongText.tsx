@@ -1,7 +1,7 @@
 import "./styles.scss";
 
 import classnames from "classnames";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import type { FC, CSSProperties, FormEvent } from "react";
 
 import { NmpModal, NpmEditor, NmpButton } from "features/nmp-ui";
@@ -19,6 +19,7 @@ export const NmpLongText: FC<Props> = (props) => {
   const { id, value, isDisabled, style, className, onChange } = props;
 
   const divRef = useRef<HTMLDivElement>(null);
+  const [innerValue, setInnerValue] = useState(() => value);
 
   const classes = classnames("nmp-long-text__area", { "nmp-long-text__area--disabled": isDisabled }, className);
 
@@ -26,6 +27,7 @@ export const NmpLongText: FC<Props> = (props) => {
     if (onChange) {
       onChange(value);
     }
+    setInnerValue(value);
   };
 
   const openModal = () => {
@@ -54,7 +56,9 @@ export const NmpLongText: FC<Props> = (props) => {
   };
 
   const onInput = ({ currentTarget }: FormEvent<HTMLDivElement>) => {
-    triggerOnChange(currentTarget.innerHTML);
+    if (onChange) {
+      onChange(currentTarget.innerHTML);
+    }
   };
 
   const onInputBlur = () => divRef.current?.blur();
@@ -67,6 +71,7 @@ export const NmpLongText: FC<Props> = (props) => {
         id={id}
         type="text"
         value={value}
+        readOnly
         onBlur={onInputBlur}
         onFocus={onInputFocus}
         className="nmp-long-text__input"
@@ -75,7 +80,7 @@ export const NmpLongText: FC<Props> = (props) => {
       <div
         contentEditable={!isDisabled}
         placeholder="Enter your answer here"
-        dangerouslySetInnerHTML={{ __html: value ?? "" }}
+        dangerouslySetInnerHTML={{ __html: innerValue ?? "" }}
         style={style}
         className={classes}
         onInput={onInput}
