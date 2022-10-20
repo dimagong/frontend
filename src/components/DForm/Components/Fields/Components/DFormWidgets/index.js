@@ -9,8 +9,7 @@ import { DFormNumber } from "./Components/DFormNumber";
 import { DFormResource } from "./Components/DFormResource";
 import { DFormSelect } from "./Components/DFormSelect";
 import { DFormText } from "./Components/DFormText";
-
-import { DFormTextAreaWidget } from "./Components/DFormTextAreaWidget";
+import { DFormTextArea } from "./Components/DFormTextArea";
 
 import { FieldTypes } from "components/DForm";
 
@@ -26,8 +25,7 @@ const dFormWidgets = {
   [FieldTypes.Resource]: DFormResource,
   [FieldTypes.Select]: DFormSelect,
   [FieldTypes.Text]: DFormText,
-
-  [FieldTypes.TextArea]: DFormTextAreaWidget,
+  [FieldTypes.TextArea]: DFormTextArea,
 };
 
 export default dFormWidgets;
