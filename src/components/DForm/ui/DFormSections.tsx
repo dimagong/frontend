@@ -35,7 +35,7 @@ export const DFormSections: FC<Props> = (props) => {
   }
 
   return (
-    <div className="form-secions">
+    <div className="dform__sections">
       <TabContent activeTab={selectedSectionId}>
         {schema.sectionsOrder.map((sectionId) => {
           if (selectedSectionId !== sectionId) {
