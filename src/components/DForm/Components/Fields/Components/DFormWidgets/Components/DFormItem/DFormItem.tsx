@@ -14,14 +14,14 @@ type Props = Omit<FormItemProps, "required"> & {
 };
 
 export const DFormItem: FC<Props> = (props) => {
-  const { name, label, isRequired = false, isLabelShowing = true, className, children, ...rest } = props;
+  const { name, label, isRequired = false, isLabelShowing = true, className, children, rules, ...rest } = props;
 
   return (
     <Form.Item
       name={name}
       label={isLabelShowing ? <DFormLabel label={label} /> : undefined}
       required={isRequired}
-      rules={[{ required: isRequired }]}
+      rules={[{ required: isRequired }, ...(rules ? rules : [])]}
       className={classnames(className, "dform-item")}
       {...rest}
     >

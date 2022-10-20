@@ -67,6 +67,8 @@ const FormComponent = (props) => {
               options={field.options ? field.options : undefined}
               uiStyle={field.uiStyle ? field.uiStyle : undefined}
               helpText={field.helpTextValue ? field.helpTextValue : undefined}
+              minLength={field.minLength ? Number(field.minLength) : undefined}
+              maxLength={field.maxLength ? Number(field.maxLength) : undefined}
               isDisabled={isDisabled}
               isRequired={field.isRequired}
               isLabelShowing={field.isLabelShowing}

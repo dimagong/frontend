@@ -13,3 +13,8 @@ export interface AbstractDFormFieldProps {
 export interface AbstractDFormSelectFieldProps extends AbstractDFormFieldProps {
   options?: Array<string>;
 }
+
+export interface AbstractDFormStringLikeFieldProps extends AbstractDFormFieldProps {
+  minLength?: number;
+  maxLength?: number;
+}

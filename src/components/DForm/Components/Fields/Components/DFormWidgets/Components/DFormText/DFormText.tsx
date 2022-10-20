@@ -4,15 +4,17 @@ import type { FC } from "react";
 import { NmpInput } from "features/nmp-ui";
 
 import { DFormItem } from "../DFormItem";
-import type { AbstractDFormFieldProps } from "../../types";
+import type { AbstractDFormStringLikeFieldProps } from "../../types";
 
 const placeholder = "Enter your answer here";
 
-type Props = AbstractDFormFieldProps;
+type Props = AbstractDFormStringLikeFieldProps;
 
 export const DFormText: FC<Props> = (props) => {
   const {
     label,
+    minLength,
+    maxLength,
     isRequired = false,
     isDisabled = false,
     isLabelShowing = true,
@@ -25,6 +27,7 @@ export const DFormText: FC<Props> = (props) => {
     <DFormItem
       name={masterSchemaFieldId}
       label={label}
+      rules={[{ min: minLength, max: maxLength }]}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
       style={style}

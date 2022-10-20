@@ -23,7 +23,7 @@ export const NmpLongText: FC<Props> = (props) => {
 
   const classes = classnames("nmp-long-text__area", { "nmp-long-text__area--disabled": isDisabled }, className);
 
-  const triggerOnChange = (value) => {
+  const OnEditorChange = (value) => {
     if (onChange) {
       onChange(value);
     }
@@ -47,7 +47,7 @@ export const NmpLongText: FC<Props> = (props) => {
               options: ["indent", "outdent"],
             },
           }}
-          onChange={triggerOnChange}
+          onChange={OnEditorChange}
           wrapperClassName="nmp-long-text__editor-wrapper"
         />
       ),
