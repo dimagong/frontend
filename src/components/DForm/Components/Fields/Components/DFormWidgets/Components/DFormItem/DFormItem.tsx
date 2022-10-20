@@ -1,8 +1,10 @@
 import "./styles.scss";
 
-import React, { FC } from "react";
+import React from "react";
+import { Form } from "antd";
+import type { FC } from "react";
 import classnames from "classnames";
-import { Form, FormItemProps } from "antd";
+import type { FormItemProps } from "antd";
 
 import { DFormLabel } from "../DFormLabel";
 

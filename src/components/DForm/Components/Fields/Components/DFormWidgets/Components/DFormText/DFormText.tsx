@@ -4,7 +4,7 @@ import type { FC } from "react";
 import { NmpInput } from "features/nmp-ui";
 
 import { DFormItem } from "../DFormItem";
-import { AbstractDFormFieldProps } from "../../types";
+import type { AbstractDFormFieldProps } from "../../types";
 
 const placeholder = "Enter your answer here";
 
