@@ -18,3 +18,8 @@ export interface AbstractDFormStringLikeFieldProps extends AbstractDFormFieldPro
   minLength?: number;
   maxLength?: number;
 }
+
+export interface AbstractDFormNumberLikeFieldProps extends AbstractDFormFieldProps {
+  minimum?: number;
+  maximum?: number;
+}
