@@ -56,9 +56,6 @@ const FormComponent = (props) => {
           propOnElementClick({ ...field, groupId }, "field");
         };
 
-        // Used for select and multiselect field types
-        const options = field.options ? field.options.map((option) => ({ label: option, value: option })) : null;
-
         const label = field.title;
 
         return (
@@ -67,7 +64,7 @@ const FormComponent = (props) => {
               id={field.id}
               label={label}
               format={field.format ? field.format : undefined}
-              options={options ? options : undefined}
+              options={field.options ? field.options : undefined}
               uiStyle={field.uiStyle ? field.uiStyle : undefined}
               helpText={field.helpTextValue ? field.helpTextValue : undefined}
               isDisabled={isDisabled}

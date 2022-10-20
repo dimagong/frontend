@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
-import { NmpInput, NpmDatePicker, NpmTimePicker } from "features/nmp-ui";
+import { NmpInput, NmpSelect, NpmDatePicker, NpmTimePicker } from "features/nmp-ui";
 
 import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
 import { DATE_WIDGET_FORMATS, DateWidgetFormatTypes } from "features/Applications/constants";
 
 import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
-import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
 import {
   DCREffectTypes,
@@ -43,15 +42,15 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
     onConditionChange(updatedCondition);
   };
 
-  const onFieldIdChange = ({ value: fieldId }) => updateCondition({ fieldId });
+  const onFieldIdChange = (fieldId) => updateCondition({ fieldId });
 
-  const onEffectTypeChange = ({ value: effectType }) => updateCondition({ effectType });
+  const onEffectTypeChange = (effectType) => updateCondition({ effectType });
 
-  const onOperatorTypeChange = ({ value: operatorType }) => updateCondition({ operatorType });
+  const onOperatorTypeChange = (operatorType) => updateCondition({ operatorType });
 
   const onExpectedValueChange = ({ target }) => updateCondition({ expectedValue: target.value });
 
-  const onFormatChange = (value) => setFormat(value);
+  const onFormatChange = (_, value) => setFormat(value);
 
   const field = fields.find(({ id }) => id === condition.fieldId);
   const fieldsIdsAsOptions = getFieldIdAsOptions(fields);
@@ -75,17 +74,16 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
             />
           </div>
 
-          <DFormSelectWidget
-            id="dcr-expected-value-date-format"
-            label="Expected date format"
-            value={format}
-            options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
-            isRequired={false}
-            isDisabled={false}
-            isLabelShowing={true}
-            onChange={onFormatChange}
-            placeholder="Select an date Format"
-          />
+          <div>
+            <DFormLabel label="Expected date format" id="dcr-expected-value-date-format" />
+            <NmpSelect
+              id="dcr-expected-value-date-format"
+              value={format}
+              options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
+              placeholder="Select an date Format"
+              onChange={onFormatChange}
+            />
+          </div>
         </>
       );
     }
@@ -106,45 +104,39 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
 
   return (
     <>
-      <DFormSelectWidget
-        id="dcr-effect-type"
-        label="This element will effected by"
-        value={condition.effectType != null ? getEffectTypeOption(condition.effectType) : null}
-        options={effectTypesAsOptions}
-        placeholder="Select an effect"
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        onChange={onEffectTypeChange}
-        className="mb-2"
-      />
+      <div className="mb-2">
+        <DFormLabel label="This element will effected by" id="dcr-effect-type" />
+        <NmpSelect
+          id="dcr-effect-type"
+          value={condition.effectType != null ? getEffectTypeOption(condition.effectType) : null}
+          options={effectTypesAsOptions}
+          placeholder="Select an effect"
+          onChange={onEffectTypeChange}
+        />
+      </div>
 
-      <DFormSelectWidget
-        id="dcr-field-id"
-        label="If value of field"
-        value={condition.fieldId != null ? getFieldIdAsOption(field) : null}
-        options={fieldsIdsAsOptions}
-        placeholder="Select field"
-        isRequired={false}
-        isDisabled={false}
-        isLabelShowing={true}
-        onChange={onFieldIdChange}
-        className="mb-2"
-      />
+      <div className="mb-2">
+        <DFormLabel label="If value of field" id="dcr-field-id" />
+        <NmpSelect
+          id="dcr-field-id"
+          value={condition.fieldId != null ? getFieldIdAsOption(field) : null}
+          options={fieldsIdsAsOptions}
+          placeholder="Select field"
+          onChange={onFieldIdChange}
+        />
+      </div>
 
       {condition.fieldId != null ? (
-        <DFormSelectWidget
-          id="dcr-effect"
-          label="Will be"
-          value={condition.operatorType != null ? getOperatorTypeAsOption(operator) : null}
-          options={operatorsAsOptions}
-          placeholder="Select operator"
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-          onChange={onOperatorTypeChange}
-          className="mb-2"
-        />
+        <div className="mb-2">
+          <DFormLabel label="Will be" id="dcr-effect" />
+          <NmpSelect
+            id="dcr-effect"
+            value={condition.operatorType != null ? getOperatorTypeAsOption(operator) : null}
+            options={operatorsAsOptions}
+            placeholder="Select operator"
+            onChange={onOperatorTypeChange}
+          />
+        </div>
       ) : null}
 
       {operator && operator.isBinary ? getExpectedValueField() : null}
