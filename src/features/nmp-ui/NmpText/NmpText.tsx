@@ -1,6 +1,8 @@
 import "./styles.scss";
 
-import React, { createRef, CSSProperties } from "react";
+import React, { createRef } from "react";
+
+import type { CSSProperties } from "react";
 
 import type { FC } from "react";
 
@@ -22,16 +24,12 @@ export const NmpText: FC<NmpTextType> = ({ className, text = "", style, ...props
   const [isOpenTooltip, hendleMouseOver, handleMouseOut] = useTooltip(lableRef);
 
   return (
-    <NpmTooltip visible={isOpenTooltip} title={text}>
-      <div
-        className={classnames("nmp-text", className)}
-        ref={lableRef}
-        onMouseOver={hendleMouseOver}
-        onMouseOut={handleMouseOut}
-        style={style}
-      >
-        {text}
-      </div>
-    </NpmTooltip>
+    <div className={classnames("nmp-text", className)} style={style}>
+      <NpmTooltip title={text} visible={isOpenTooltip}>
+        <span className="nmp-text__line" ref={lableRef} onMouseOver={hendleMouseOver} onMouseOut={handleMouseOut}>
+          {text}
+        </span>
+      </NpmTooltip>
+    </div>
   );
 };

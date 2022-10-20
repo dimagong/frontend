@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React from "react";
 
 import { NmpText, NmpTextType } from "./NmpText";
 
@@ -18,7 +18,7 @@ const storySettings = {
     },
     style: {
       name: "style",
-      type: { name: "CSSProperties", required: false },
+      type: { name: "object", required: false },
       defaultValue: {},
     },
   },
@@ -29,3 +29,14 @@ export default storySettings;
 const Template = (props: NmpTextType) => <NmpText {...props} />;
 
 export const Types = Template.bind({});
+
+Types.args = {
+  text: "show truncated text",
+};
+
+export const TruncateTest = Template.bind({});
+
+TruncateTest.args = {
+  text: "show truncated text",
+  style: { width: 100 },
+};
