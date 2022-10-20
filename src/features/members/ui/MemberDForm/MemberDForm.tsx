@@ -3,7 +3,7 @@ import "./styles.scss";
 import _ from "lodash";
 import type { FC } from "react";
 import { Col, Row, Form } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import type { FormProviderProps } from "antd/lib/form/context";
 
 import { NmpStepper, NpmCard } from "features/nmp-ui";
@@ -44,7 +44,7 @@ export const MemberDForm: FC<Props> = (props) => {
   const [successSubmit, onSuccessSubmit] = useState<boolean>(() => false);
 
   const [values, setValues] = useState(() => getValuesBySectionId(sectionId, initialSchema, initialValues));
-  const schema = applyDynamicConditionalRender(initialSchema, values);
+  const schema = useMemo(() => applyDynamicConditionalRender(initialSchema, values), [initialSchema, values]);
 
   const step = sections.findIndex(({ id }) => id === sectionId) || 0;
   const sectionName = sections[step]?.name || `${step + 1}`;
@@ -132,7 +132,6 @@ export const MemberDForm: FC<Props> = (props) => {
     });
   };
 
-  // ToDo: Refactor all fields to Form.Item
   // ToDo: Make validation rules for Fields with Form.Item (like min max ...)
   // ToDo: Next section if all required fields are valid
   // ToDo: Figure out how to - Watch required fields in section and
@@ -144,7 +143,8 @@ export const MemberDForm: FC<Props> = (props) => {
     const values = form.getFieldsValue();
     console.log("Change", { sectionId, changedFields, forms, values });
 
-    setValues(getValuesBySectionId(sectionId, initialSchema, values));
+    // Optimizing DCR rendering, cause it leads to whole schema re-render.
+    _.debounce(setValues, 300)(values);
   };
 
   // Immediately call save on component unmount if any save currently throttled

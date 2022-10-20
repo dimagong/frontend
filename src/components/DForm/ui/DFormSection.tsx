@@ -38,8 +38,6 @@ export const DFormSection: FC<Props> = (props) => {
     onElementClick,
   } = props;
 
-  const [form] = Form.useForm();
-
   const onGroupCreate = () => {
     if (propOnGroupCreate) {
       propOnGroupCreate(id);
@@ -51,7 +49,13 @@ export const DFormSection: FC<Props> = (props) => {
   }
 
   return (
-    <Form form={form} name={id} layout="vertical" initialValues={initialValues} validateMessages={validateMessages}>
+    <Form
+      name={id}
+      layout="vertical"
+      initialValues={initialValues}
+      validateMessages={validateMessages}
+      scrollToFirstError
+    >
       <Groups
         data={schema}
         sectionId={id}
