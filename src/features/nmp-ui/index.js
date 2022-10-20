@@ -11,7 +11,7 @@ import { NmpUploadItem } from "./NmpUploadItem";
 import { NmpInput } from "./NmpInput";
 import { NmpSelect } from "./NmpSelect";
 import { NmpLongText } from "./NmpLongText";
-import NpmModal from "./NpmModal";
+import { NmpModal } from "./NmpModal";
 import NpmPopover from "./NpmPopover";
 import NpmProgress from "./NpmProgress";
 import NpmRadio from "./NpmRadio";
@@ -41,7 +41,7 @@ export {
   NmpInput,
   NmpSelect,
   NmpLongText,
-  NpmModal,
+  NmpModal,
   NpmPopover,
   NpmProgress,
   NpmRadio,
