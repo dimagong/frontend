@@ -4,13 +4,11 @@ import type { FC } from "react";
 import { NmpSelect } from "features/nmp-ui";
 
 import { DFormItem } from "../DFormItem";
-import type { AbstractDFormFieldProps } from "../../types";
+import type { AbstractDFormSelectFieldProps } from "../../types";
 
 const defaultPlaceholder = "Select an option";
 
-type Props = AbstractDFormFieldProps & {
-  options?: Array<string>;
-};
+type Props = AbstractDFormSelectFieldProps;
 
 export const DFormSelect: FC<Props> = (props) => {
   const { label, options = [], isRequired, isDisabled, isLabelShowing, masterSchemaFieldId, style, className } = props;

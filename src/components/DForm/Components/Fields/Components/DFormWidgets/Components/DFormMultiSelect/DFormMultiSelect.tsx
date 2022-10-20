@@ -6,15 +6,24 @@ import { NmpSelect, NmpCheckbox, NmpRow, NmpCol } from "features/nmp-ui";
 
 import { DFormItem } from "../DFormItem";
 import { DFormLabel } from "../DFormLabel";
-import type { AbstractDFormFieldProps } from "../../types";
+import type { AbstractDFormSelectFieldProps } from "../../types";
 
 const defaultPlaceholder = "Select an option";
 
-type Props = AbstractDFormFieldProps & { options: Array<string>; uiStyle: MultiSelectUIStyles };
+type Props = AbstractDFormSelectFieldProps & { uiStyle: MultiSelectUIStyles };
 
 export const DFormMultiSelect: FC<Props> = (props) => {
-  const { label, options, uiStyle, isRequired, isDisabled, isLabelShowing, masterSchemaFieldId, style, className } =
-    props;
+  const {
+    label,
+    options = [],
+    uiStyle,
+    isRequired,
+    isDisabled,
+    isLabelShowing,
+    masterSchemaFieldId,
+    style,
+    className,
+  } = props;
 
   if (uiStyle === MultiSelectUIStyles.Checkboxes) {
     return (
