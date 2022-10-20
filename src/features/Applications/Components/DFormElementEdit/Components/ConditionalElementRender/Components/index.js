@@ -28,7 +28,12 @@ const getPicker = (dateType) => {
 const getEffectTypeOption = (effectType) => ({ value: effectType, label: DCREffectLabels[effectType] });
 const effectTypesAsOptions = [DCREffectTypes.Visibility, DCREffectTypes.Availability].map(getEffectTypeOption);
 
-const getFieldIdAsOption = (field) => ({ value: field.id, label: field.title });
+const getFieldIdAsOption = (field) => {
+  if (!field.id) {
+    debugger;
+  }
+  return { value: field.id, label: field.title };
+};
 const getFieldIdAsOptions = (fields) => fields.map(getFieldIdAsOption);
 
 const getOperatorTypeAsOption = (operatorTemplate) => ({ value: operatorTemplate.type, label: operatorTemplate.name });
@@ -119,7 +124,7 @@ const ConditionForm = ({ fields, condition, onConditionChange }) => {
         <DFormLabel label="If value of field" id="dcr-field-id" />
         <NmpSelect
           id="dcr-field-id"
-          value={condition.fieldId != null ? getFieldIdAsOption(field) : null}
+          value={condition.fieldId != null && field != null ? getFieldIdAsOption(field) : null}
           options={fieldsIdsAsOptions}
           placeholder="Select field"
           onChange={onFieldIdChange}
