@@ -162,8 +162,14 @@ export const MemberDForm: FC<Props> = (props) => {
         </Col>
       </Row>
       <Row>
-        <Col span={4} className="member-dform__stepper-sticky">
-          <NmpStepper status={stepperStatus} current={step} sections={sections} onChange={onChangeStep} />
+        <Col span={4} className="member-dform__stepper-sticky scrollbar">
+          <NmpStepper
+            className="scrollbar-component member-dform__stepper-sticky__scrollbar"
+            status={stepperStatus}
+            current={step}
+            sections={sections}
+            onChange={onChangeStep}
+          />
         </Col>
 
         <Col span={16} push={4}>
