@@ -20,7 +20,7 @@ export const DFormFileList: FC<Props> = (props) => {
       style={style}
       className={className}
     >
-      <DFormUploadFile isRemovable isDisabled={isDisabled} masterSchemaFieldId={masterSchemaFieldId} />
+      <DFormUploadFile isMultiple isRemovable isDisabled={isDisabled} masterSchemaFieldId={masterSchemaFieldId} />
     </DFormItem>
   );
 };

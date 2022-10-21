@@ -28,7 +28,7 @@ export const DFormFile: FC<Props> = (props) => {
       style={style}
       className={className}
     >
-      <DFormUploadFile maxCount={1} isRemovable isDisabled={isDisabled} masterSchemaFieldId={masterSchemaFieldId} />
+      <DFormUploadFile isRemovable isDisabled={isDisabled} masterSchemaFieldId={masterSchemaFieldId} />
     </DFormItem>
   );
 };

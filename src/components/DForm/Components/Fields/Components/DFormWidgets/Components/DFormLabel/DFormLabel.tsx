@@ -1,7 +1,8 @@
 import "./styles.scss";
 
+import React from "react";
 import classnames from "classnames";
-import React, { FC, ReactNode, CSSProperties } from "react";
+import type { FC, ReactNode, CSSProperties } from "react";
 
 type Props = {
   id?: string;

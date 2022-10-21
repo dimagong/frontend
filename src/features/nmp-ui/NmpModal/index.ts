@@ -1,0 +1,1 @@
+export { NmpModal } from "./NmpModal";

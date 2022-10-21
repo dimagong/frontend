@@ -1,10 +1,11 @@
-import React, { FC } from "react";
+import React from "react";
+import type { FC } from "react";
 
 import { NpmDatePicker, NpmTimePicker } from "features/nmp-ui";
 import { DateWidgetFormatTypes } from "features/Applications/constants";
 
 import { DFormItem } from "../DFormItem";
-import { AbstractDFormFieldProps } from "../../types";
+import type { AbstractDFormFieldProps } from "../../types";
 
 const getPicker = (dateType) => {
   switch (dateType) {

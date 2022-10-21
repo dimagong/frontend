@@ -1,8 +1,10 @@
 import "./styles.scss";
 
-import React, { FC } from "react";
+import React from "react";
+import { Form } from "antd";
+import type { FC } from "react";
 import classnames from "classnames";
-import { Form, FormItemProps } from "antd";
+import type { FormItemProps } from "antd";
 
 import { DFormLabel } from "../DFormLabel";
 
@@ -12,14 +14,14 @@ type Props = Omit<FormItemProps, "required"> & {
 };
 
 export const DFormItem: FC<Props> = (props) => {
-  const { name, label, isRequired = false, isLabelShowing = true, className, children, ...rest } = props;
+  const { name, label, isRequired = false, isLabelShowing = true, className, children, rules, ...rest } = props;
 
   return (
     <Form.Item
       name={name}
       label={isLabelShowing ? <DFormLabel label={label} /> : undefined}
       required={isRequired}
-      rules={[{ required: isRequired }]}
+      rules={[{ required: isRequired }, ...(rules ? rules : [])]}
       className={classnames(className, "dform-item")}
       {...rest}
     >

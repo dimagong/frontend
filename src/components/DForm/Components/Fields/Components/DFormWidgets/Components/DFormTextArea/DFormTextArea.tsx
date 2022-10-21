@@ -1,15 +1,14 @@
 import React from "react";
 import type { FC } from "react";
-import classnames from "classnames";
 
-import { NmpLongText } from "features/nmp-ui";
+import { NmpTextArea } from "features/nmp-ui";
 
 import { DFormItem } from "../DFormItem";
 import type { AbstractDFormStringLikeFieldProps } from "../../types";
 
 type Props = AbstractDFormStringLikeFieldProps;
 
-export const DFormLongText: FC<Props> = (props) => {
+export const DFormTextArea: FC<Props> = (props) => {
   const {
     label,
     minLength,
@@ -26,25 +25,13 @@ export const DFormLongText: FC<Props> = (props) => {
     <DFormItem
       name={masterSchemaFieldId}
       label={label}
-      rules={[
-        {
-          min: minLength,
-          max: maxLength,
-          transform: (value) => {
-            if (typeof value === "string") {
-              const plain = value.replace(/<[^>]*>/g, "");
-              return plain.endsWith("\n") ? plain.slice(0, plain.length - 1) : plain;
-            }
-            return value;
-          },
-        },
-      ]}
+      rules={[{ min: minLength, max: maxLength }]}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}
       style={style}
-      className={classnames(className, "mb-0")}
+      className={className}
     >
-      <NmpLongText isDisabled={isDisabled} />
+      <NmpTextArea rows={5} disabled={isDisabled} placeholder="Enter your answer here" />
     </DFormItem>
   );
 };

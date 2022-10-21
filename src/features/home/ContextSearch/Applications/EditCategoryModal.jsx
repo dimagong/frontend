@@ -5,8 +5,8 @@ import { preventDefault } from "utility/event-decorators";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
+import { NmpSelect } from "features/nmp-ui";
 import CustomModal from "components/CustomModal";
-import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget/DFormSelectWidget";
 
 import {
   getCategoriesAsOptions,
@@ -63,7 +63,7 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
     close();
   };
 
-  const onCategoryChange = (categoryOption) => {
+  const onCategoryChange = (_, categoryOption) => {
     const newCategory = categories.find((category) => category.categoryId === categoryOption.value);
 
     setParentCategory(newCategory);
@@ -85,17 +85,15 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
               />
             </div>
 
-            <DFormSelectWidget
-              id="dform-organization-category"
-              label="Select parent category"
-              value={parentCategoryValue}
-              options={categoriesOptions}
-              isError={false}
-              isRequired={false}
-              isDisabled={false}
-              isLabelShowing={true}
-              onChange={onCategoryChange}
-            />
+            <div>
+              <DFormLabel label="Select parent category" id="dform-organization-category" />
+              <NmpSelect
+                id="dform-organization-category"
+                value={parentCategoryValue}
+                options={categoriesOptions}
+                onChange={onCategoryChange}
+              />
+            </div>
           </Col>
         </Row>
 

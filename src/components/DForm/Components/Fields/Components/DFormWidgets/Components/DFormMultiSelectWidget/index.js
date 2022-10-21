@@ -1,1 +1,0 @@
-export { DFormMultiSelectWidget } from "./DFormMultiSelectWidget";
