@@ -50,7 +50,6 @@ export const DFormSections: FC<Props> = (props) => {
               type={ElementTypes.Group}
               renderClone={(provided, snapshot, rubric) => (
                 <div {...provided.draggableProps} ref={provided.innerRef}>
-                  {console.log("snapshot", snapshot)}
                   <div className="draggable-wrapper">
                     <span
                       className="nested-draggable-list_item-drag-icon group-drag-icon"

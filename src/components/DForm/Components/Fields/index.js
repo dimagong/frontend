@@ -3,6 +3,7 @@ import "./styles.scss";
 import React from "react";
 import classnames from "classnames";
 import { Draggable } from "react-beautiful-dnd";
+
 import { DragIndicator } from "@material-ui/icons";
 
 import { ElementTypes, FieldTypes } from "components/DForm";
@@ -29,7 +30,6 @@ const FormComponent = (props) => {
     groupFields,
     selectedElement,
     onElementClick: propOnElementClick,
-    onFieldCreate,
   } = props;
   // ToDo: Remove values later
   const values = {};
@@ -160,7 +160,7 @@ const FormComponent = (props) => {
               <div
                 ref={provided.innerRef}
                 {...provided.draggableProps}
-                className={field.classes + " draggable-wrapper"}
+                className={classnames("draggable-wrapper", field.classes)}
               >
                 <span className="nested-draggable-list_item-drag-icon field-drag-icon" {...provided.dragHandleProps}>
                   <DragIndicator />
