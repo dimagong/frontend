@@ -1,0 +1,35 @@
+::-webkit-scrollbar {
+  background-color: transparent;
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar {
+  height: 6px;
+}
+
+// .scrollbar {
+// * {
+
+// width: 100%;
+
+// &-component {
+//   overflow-y: auto;
+//   overflow-x: auto;
+//   height: 100%;
+//   position: relative;
+//   width: 100%;
+// }
+// }
+
+//.scrollbar-is-horizontal {
+//   * {
+
+// .scrollbar-component {
+//   padding-bottom: 10px;
+// }
+//   }
