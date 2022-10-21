@@ -2,11 +2,11 @@ import { v4 } from "uuid";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
 import React, { useState } from "react";
-import { Button, TabContent, TabPane } from "reactstrap";
+import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
-import { DForm, ElementTypes } from "components/DForm";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
+import { DFormContextProvider, BaseDForm, ElementTypes } from "components/DForm";
 
 import {
   APPLICATION_PAGES,
@@ -347,6 +347,19 @@ export const ApplicationPage = ({ applicationId }) => {
     }
   };
 
+  const onFieldSubmit = (submittedElement) => {
+    let obj = {
+      ...selectedElement,
+      ...submittedElement,
+    };
+
+    let dataToSave = embedSuggestedChanges(obj);
+
+    setApplicationData(dataToSave);
+
+    mutateApplication(dataToSave, updateApplication);
+  };
+
   const handleElementChangesCancel = () => {
     setSelectedElement(null);
     setIsModuleEditComponentVisible(false);
@@ -361,7 +374,6 @@ export const ApplicationPage = ({ applicationId }) => {
     } else {
       element = { ...elementData, edited: true };
     }
-
     const dataToSave = embedSuggestedChanges(element);
 
     setSelectedElement(element);
@@ -464,7 +476,7 @@ export const ApplicationPage = ({ applicationId }) => {
   };
 
   return (
-    <div className="application d-flex">
+    <Row>
       <ApplicationWrapper name={`dForm » ${applicationData.name}`}>
         <CustomTabs
           active={selectedPage}
@@ -486,15 +498,16 @@ export const ApplicationPage = ({ applicationId }) => {
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
-            <DForm
-              isConfigurable={true}
-              schema={applicationData}
-              selectedElement={selectedElement}
-              onElementClick={handleSelectElementForEdit}
-              onSectionCreate={handleSectionCreate}
-              onGroupCreate={handleGroupCreate}
-              onFieldCreate={handleFieldCreate}
-            />
+            <DFormContextProvider isConfigurable>
+              <BaseDForm
+                schema={applicationData}
+                selectedElement={selectedElement}
+                onElementClick={handleSelectElementForEdit}
+                onSectionCreate={handleSectionCreate}
+                onGroupCreate={handleGroupCreate}
+                onFieldCreate={handleFieldCreate}
+              />
+            </DFormContextProvider>
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>
             <ElementsReorderComponent onReorder={handleReorder} applicationData={applicationData} />
@@ -529,9 +542,10 @@ export const ApplicationPage = ({ applicationId }) => {
             onElementChangesCancel={handleElementChangesCancel}
             onFieldGroupChange={handleFieldGroupChange}
             onGroupSectionChange={handleGroupSectionChange}
+            onFieldSubmit={onFieldSubmit}
           />
         </ContextFeatureTemplate>
       ) : null}
-    </div>
+    </Row>
   );
 };

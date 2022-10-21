@@ -35,7 +35,7 @@ const MemberSurveyStartView = (props) => {
 
   return (
     <div>
-      <NpmCard title="Surveys" style={{ maxHeight: "580px", maxWidth: "783px", width: "57vw" }}>
+      <NpmCard title="Surveys">
         <div className="survey-start">
           <div className="content_question">
             <div className="question-title">{title}</div>

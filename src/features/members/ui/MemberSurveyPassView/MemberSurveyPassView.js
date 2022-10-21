@@ -40,7 +40,7 @@ const MemberSurveyPassView = (props) => {
   }
 
   return (
-    <NpmCard title="Surveys" style={{ maxHeight: "580px", maxWidth: "783px", width: "57vw" }}>
+    <NpmCard title="Surveys">
       <div className="surveys-content">
         <div className="content_stepper">
           <NpmCustomStepperSurvey currentStrep={currentIndex + 1} totalSteps={count} />

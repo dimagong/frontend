@@ -3,7 +3,7 @@ import "./styles.scss";
 import React, { useState } from "react";
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
 
-import { NpmTooltip, NpmButton } from "features/nmp-ui";
+import { NpmTooltip, NmpButton } from "features/nmp-ui";
 
 const MemberSurveyAdditionalInfo = ({ title, text }) => {
   const [isTextVisible, setIsTextVisible] = useState(false);
@@ -17,7 +17,7 @@ const MemberSurveyAdditionalInfo = ({ title, text }) => {
       <div className="survey-additional_header">
         <div className="survey-additional_header_title">{title}</div>
         <NpmTooltip title="Guidance">
-          <NpmButton
+          <NmpButton
             size="small"
             type="nmp-primary"
             shape="nmp-ellipse"

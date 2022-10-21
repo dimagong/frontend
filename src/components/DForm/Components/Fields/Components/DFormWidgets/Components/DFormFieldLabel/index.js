@@ -1,1 +1,0 @@
-export { DFormFieldLabel } from "./DFormFieldLabel";

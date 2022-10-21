@@ -5,8 +5,7 @@ import { preventDefault } from "utility/event-decorators";
 
 import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 
-import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget/DFormSelectWidget";
-import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
+import { NmpSelect } from "features/nmp-ui";
 import CustomModal from "components/CustomModal";
 
 import {
@@ -16,7 +15,8 @@ import {
 import { parseOrganizationType } from "features/home/ContextSearch/Applications/utils/organizationTypeConverter";
 import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
-import { NpmButton } from "features/nmp-ui";
+import { NmpInput, NmpButton } from "features/nmp-ui";
+import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
 export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit, submitting }) => {
   const [name, setName] = useFormField(group.name, [Validators.required]);
@@ -53,8 +53,8 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
     )
   );
 
-  const OnNameChange = (newName) => {
-    setName(newName);
+  const OnNameChange = ({ target }) => {
+    setName(target.value);
   };
 
   const handleClose = () => {
@@ -63,7 +63,7 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
     close();
   };
 
-  const onCategoryChange = (categoryOption) => {
+  const onCategoryChange = (_, categoryOption) => {
     const newCategory = categories.find((category) => category.categoryId === categoryOption.value);
 
     setParentCategory(newCategory);
@@ -74,36 +74,33 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
       <form onSubmit={onSubmit}>
         <Row className="my-2">
           <Col>
-            <DFormTextWidget
-              id="field-name"
-              label={"Name"}
-              value={name.value}
-              placeholder="Enter category name"
-              isError={false}
-              isRequired={true}
-              isDisabled={false}
-              isLabelShowing={true}
-              onChange={OnNameChange}
-              className="mb-2"
-            />
-            <DFormSelectWidget
-              id="dform-organization-category"
-              label="Select parent category"
-              value={parentCategoryValue}
-              options={categoriesOptions}
-              isError={false}
-              isRequired={false}
-              isDisabled={false}
-              isLabelShowing={true}
-              onChange={onCategoryChange}
-            />
+            <div className="mb-2">
+              <DFormLabel label="Name" id="field-name" />
+              <NmpInput
+                id="field-name"
+                type="text"
+                value={name.value}
+                placeholder="Enter category name"
+                onChange={OnNameChange}
+              />
+            </div>
+
+            <div>
+              <DFormLabel label="Select parent category" id="dform-organization-category" />
+              <NmpSelect
+                id="dform-organization-category"
+                value={parentCategoryValue}
+                options={categoriesOptions}
+                onChange={onCategoryChange}
+              />
+            </div>
           </Col>
         </Row>
 
         <Row className="my-3">
           <Col>
             <div className="d-flex justify-content-end">
-              <NpmButton
+              <NmpButton
                 key="submit"
                 type="primary"
                 onClick={onSubmit}
@@ -111,7 +108,7 @@ export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit
                 loading={submitting}
               >
                 Save
-              </NpmButton>
+              </NmpButton>
             </div>
           </Col>
         </Row>

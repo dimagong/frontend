@@ -13,7 +13,6 @@ import classnames from "classnames";
 const Groups = (props) => {
   const {
     data,
-    values,
     sectionId,
     isDisabled: propIsDisabled,
     sectionGroups,
@@ -21,7 +20,6 @@ const Groups = (props) => {
     onElementClick,
     onGroupCreate,
     onFieldCreate,
-    onFieldChange,
   } = props;
 
   const { isConfigurable } = useDFormContext();
@@ -46,6 +44,7 @@ const Groups = (props) => {
         const isDisabled = propIsDisabled || Boolean(group.isDisabled);
         const isSelected = selectedElement?.elementType === ElementTypes.Group && selectedElement?.id === group.id;
         const isLastGroup = sectionGroups.length - 1 === idx;
+
         return (
           <div className="group" key={groupId}>
             <div
@@ -57,12 +56,10 @@ const Groups = (props) => {
             <div className="group-content row mr-0 ml-0">
               <Fields
                 data={data}
-                values={values}
                 groupId={groupId}
                 isDisabled={isDisabled}
                 selectedElement={selectedElement}
                 groupFields={group.relatedFields}
-                onFieldChange={onFieldChange}
                 onFieldCreate={onFieldCreate}
                 onElementClick={onElementClick}
               />
@@ -89,10 +86,20 @@ const Groups = (props) => {
         );
       })}
 
-      {!sectionGroups ||
-        (!sectionGroups.length && (
-          <div className="px-2 py-5 text-center w-100">There are no groups in this section</div>
-        ))}
+      {!sectionGroups || sectionGroups.length === 0 ? (
+        <div className="px-2 py-5 text-center w-100">There are no groups in this section</div>
+      ) : null}
+
+      {(!sectionGroups || sectionGroups.length === 0) && isConfigurable ? (
+        <div className="btn-box btn-box-single">
+          <div className="element-add" onClick={onGroupCreate}>
+            <div className="element-add_icon">
+              <Plus color="white" size={23} />
+            </div>
+            <div className="element-add_description">Add new group</div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { RefreshCw } from "react-feather";
 import { Card, CardHeader, CardTitle, CardBody, Col, Spinner } from "reactstrap";
 
-import { DForm } from "components/DForm";
+import { BaseDForm } from "components/DForm";
 
 const useEffectBeforeUnmount = (callback, deps = []) => {
   const mounted = React.useRef(null);
@@ -57,7 +57,7 @@ const UserOnboardingDForm = (props) => {
               <Spinner color="primary" size="40" />
             </div>
           ) : (
-            <DForm
+            <BaseDForm
               dFormId={dFormId}
               schema={schema}
               values={values}

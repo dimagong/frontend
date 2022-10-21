@@ -6,8 +6,8 @@ import { preventDefault } from "utility/event-decorators";
 
 import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 
-import { DFormTextWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormTextWidget";
-import { NpmButton } from "features/nmp-ui";
+import { NmpInput, NmpButton } from "features/nmp-ui";
+import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
 export const AHCreateCategoryForm = ({ placeholder, submitting, onSubmit: propOnSubmit }) => {
   const [name, setName] = useFormField("", [Validators.required]);
@@ -19,26 +19,25 @@ export const AHCreateCategoryForm = ({ placeholder, submitting, onSubmit: propOn
     <form onSubmit={onSubmit}>
       <Row className="my-3">
         <Col>
-          <DFormTextWidget
-            id="field-name"
-            label={"Name"}
-            placeholder={placeholder}
-            isError={false}
-            isRequired={true}
-            isDisabled={false}
-            isLabelShowing={true}
-            onChange={(value) => setName(value)}
-            value={name.value}
-          />
+          <div>
+            <DFormLabel label="Name" id="field-name" />
+            <NmpInput
+              id="field-name"
+              type="text"
+              value={name.value}
+              placeholder={placeholder}
+              onChange={({ target }) => setName(target.value)}
+            />
+          </div>
         </Col>
       </Row>
 
       <Row className="my-3">
         <Col>
           <div className="d-flex justify-content-end">
-            <NpmButton key="submit" type="primary" onClick={onSubmit} disabled={formGroup.invalid} loading={submitting}>
+            <NmpButton key="submit" type="primary" onClick={onSubmit} disabled={formGroup.invalid} loading={submitting}>
               Save
-            </NpmButton>
+            </NmpButton>
           </div>
         </Col>
       </Row>

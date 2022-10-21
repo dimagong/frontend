@@ -6,7 +6,6 @@ import { Button, Col, Row } from "reactstrap";
 import appSlice from "app/slices/appSlice";
 
 import CustomModal from "components/CustomModal";
-import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
 import {
   useApplicationsTemplatesQuery,
@@ -27,6 +26,8 @@ import {
   getCategoriesAsOptions,
   getCategoryAsOption,
 } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
+import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import { NmpSelect } from "features/nmp-ui";
 
 const { setContext } = appSlice.actions;
 
@@ -106,7 +107,7 @@ export const CreateApplicationPage = () => {
     categoriesOptions = getCategoriesAsOptions(categories);
   }
 
-  const onOrganizationChange = (option) => {
+  const onOrganizationChange = (_, option) => {
     const uniqueId = option.value;
     const organization = organizations.find((organization) => {
       const organizationUniqueId = getOrganizationUniqueId(organization);
@@ -117,13 +118,13 @@ export const CreateApplicationPage = () => {
     setCategory(null);
   };
 
-  const onCategoryChange = (categoryOption) => {
+  const onCategoryChange = (_, categoryOption) => {
     const newCategory = categories.find((category) => category.categoryId === categoryOption.value);
 
     setCategory(newCategory);
   };
 
-  const onApplicationTemplateChange = (option) => {
+  const onApplicationTemplateChange = (_, option) => {
     const templateId = option.value;
     const template = templates.find((template) => template.id === templateId);
 
@@ -158,32 +159,26 @@ export const CreateApplicationPage = () => {
       <div className="height-400">
         <Row className="mx-0">
           <Col md="12">
-            <DFormSelectWidget
-              id="dform-organization"
-              label="Select organization"
-              value={organization ? getOrganizationAsOption(organization) : null}
-              options={getOrganizationsAsOptions(allowedOrganizations.data)}
-              isError={false}
-              isLoading={allowedOrganizations.isLoading}
-              isRequired={false}
-              isDisabled={false}
-              isLabelShowing={true}
-              onChange={onOrganizationChange}
-              className="mb-2"
-            />
+            <div className="mb-2">
+              <DFormLabel label="Select organization" id="dform-organization" />
+              <NmpSelect
+                id="dform-organization"
+                value={organization ? getOrganizationAsOption(organization) : null}
+                options={getOrganizationsAsOptions(allowedOrganizations.data)}
+                onChange={onOrganizationChange}
+                isLoading={allowedOrganizations.isLoading}
+              />
+            </div>
 
-            <DFormSelectWidget
-              id="dform-organization-category"
-              label="Select organization category"
-              value={categoryValue}
-              options={categoriesOptions}
-              isError={false}
-              isRequired={false}
-              isDisabled={false}
-              isLabelShowing={true}
-              onChange={onCategoryChange}
-              className="mb-2"
-            />
+            <div className="mb-2">
+              <DFormLabel label="Select organization category" id="dform-organization-category" />
+              <NmpSelect
+                id="dform-organization-category"
+                value={categoryValue}
+                options={categoriesOptions}
+                onChange={onCategoryChange}
+              />
+            </div>
           </Col>
 
           {organization ? (
@@ -228,24 +223,21 @@ export const CreateApplicationPage = () => {
                 onSubmit={onDuplicateBtnSubmit}
                 isSubmitProceed={copyApplicationTemplate.isLoading}
               >
-                <DFormSelectWidget
-                  id="dform-template-source"
-                  label="Application template to duplicate from"
-                  value={applicationTemplate ? getApplicationTemplateAsOption(applicationTemplate) : null}
-                  options={getApplicationsTemplatesAsOptions(applicationsTemplates.data)}
-                  isError={false}
-                  isLoading={applicationsTemplates.isLoading}
-                  isRequired={false}
-                  isDisabled={false}
-                  isLabelShowing={true}
-                  placeholder={
-                    applicationsTemplates.data.length === 0
-                      ? `There are no dForm that can be used as a template`
-                      : `Select an Application template to duplicate from`
-                  }
-                  onChange={onApplicationTemplateChange}
-                  className="pb-2"
-                />
+                <div className="pb-2">
+                  <DFormLabel label="Application template to duplicate from" id="dform-template-source" />
+                  <NmpSelect
+                    id="dform-template-source"
+                    value={applicationTemplate ? getApplicationTemplateAsOption(applicationTemplate) : null}
+                    options={getApplicationsTemplatesAsOptions(applicationsTemplates.data)}
+                    isLoading={applicationsTemplates.isLoading}
+                    placeholder={
+                      applicationsTemplates.data.length === 0
+                        ? `There are no dForm that can be used as a template`
+                        : `Select an Application template to duplicate from`
+                    }
+                    onChange={onApplicationTemplateChange}
+                  />
+                </div>
               </CustomModal>
             </>
           ) : null}

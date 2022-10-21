@@ -391,25 +391,25 @@ export const DCROperatorTypesComparotors = {
 };
 
 export const DCRFieldValueConvertors = {
-  [FieldTypes.Text]: ({ value }) => (value == null ? null : String(value)),
+  [FieldTypes.Text]: (value) => (value == null ? null : String(value)),
 
-  [FieldTypes.Date]: ({ value }) => (value == null ? null : new Date(value).valueOf()),
+  [FieldTypes.Date]: (value) => (value == null ? null : new Date(value).valueOf()),
 
-  [FieldTypes.Select]: ({ value }) => (value == null ? null : String(value)),
+  [FieldTypes.Select]: (value) => (value == null ? null : String(value)),
 
-  [FieldTypes.LongText]: ({ value }) => (value == null ? null : String(value)),
+  [FieldTypes.LongText]: (value) => (value == null ? null : String(value)),
 
-  [FieldTypes.TextArea]: ({ value }) => (value == null ? null : String(value)),
+  [FieldTypes.TextArea]: (value) => (value == null ? null : String(value)),
 
-  [FieldTypes.Number]: ({ value }) => (value == null ? null : Number(value)),
+  [FieldTypes.Number]: (value) => (value == null ? null : Number(value)),
 
-  [FieldTypes.Boolean]: ({ value }) => (value == null ? null : Boolean(value)),
+  [FieldTypes.Boolean]: (value) => (value == null ? null : Boolean(value)),
 
-  [FieldTypes.File]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
+  [FieldTypes.File]: (files) => (Array.isArray(files) ? Array.from(files) : []),
 
-  [FieldTypes.FileList]: ({ files }) => (Array.isArray(files) ? Array.from(files) : []),
+  [FieldTypes.FileList]: (files) => (Array.isArray(files) ? Array.from(files) : []),
 
-  [FieldTypes.MultiSelect]: ({ value }) => (Array.isArray(value) ? Array.from(value) : []),
+  [FieldTypes.MultiSelect]: (value) => (Array.isArray(value) ? Array.from(value) : []),
 };
 
 export const DCRExpectedValueConvertor = (value: string | null, fieldType: FieldTypes): string | number | null => {

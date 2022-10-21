@@ -20,8 +20,7 @@ const SectionsComponent = (props) => {
 
   const { isConfigurable } = useDFormContext();
 
-  if (!data?.sections || Object.keys(data.sections).length === 0) {
-    // TODO HANDLE TWO CASES, when there are no sections on edit and no sections on assigned dform \ on onboarding dform
+  if (!data.sections || Object.keys(data.sections).length === 0) {
     if (isConfigurable) {
       return (
         <div className="px-2 py-5 text-center w-100">

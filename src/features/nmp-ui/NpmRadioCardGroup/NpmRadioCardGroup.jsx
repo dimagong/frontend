@@ -17,19 +17,23 @@ const NpmRadioCardGroup = ({ options = [], handleAnswerSelect, selectedAnswer, c
     : "";
 
   return (
-    <Radio.Group onChange={onChange} value={selectedAnswer}>
-      <div className="radio-group">
-        {options.map((question) => {
-          return (
-            <Card key={question.id}>
-              <Radio className={correctAnswerStyle} value={question.id}>
-                {question.text}
-              </Radio>
-            </Card>
-          );
-        })}
-      </div>
-    </Radio.Group>
+    <div className="radio-groups-component">
+      <Radio.Group onChange={onChange} value={selectedAnswer}>
+        <div className="radio-group">
+          {options.map((question) => {
+            return (
+              <div>
+                <Card key={question.id}>
+                  <Radio className={correctAnswerStyle} value={question.id}>
+                    {question.text}
+                  </Radio>
+                </Card>
+              </div>
+            );
+          })}
+        </div>
+      </Radio.Group>
+    </div>
   );
 };
 

@@ -361,7 +361,7 @@ const Organization = ({ create = false }) => {
   }, [create]);
 
   return (
-    <div className={"d-flex"}>
+    <Row>
       <ContextTemplate contextTitle={"Organization"}>
         <Row>
           <Col md={12} className={"organization-form"}>
@@ -460,7 +460,7 @@ const Organization = ({ create = false }) => {
           />
         </ContextFeatureTemplate>
       ) : null}
-    </div>
+    </Row>
   );
 };
 

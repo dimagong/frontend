@@ -4,6 +4,7 @@ import { useDFormQuery, useDFormValuesQuery } from "api/Onboarding/prospectUserQ
 
 import { MemberDForm } from "../MemberDForm";
 import { MemberSubmittedStatusView } from "../MemberSumittedStatusView";
+import { normalizeValues } from "../../../../components/DForm/data/normalizeValues";
 
 type Props = {
   dformId: number;
@@ -15,14 +16,14 @@ const MemberDFormView: FC<Props> = ({ dformId, status, organization }) => {
   const [showDForm, onShowDForm] = useState<boolean>(false);
 
   // Queries
-  const dformQuery = useDFormQuery({ dformId }, { refetchOnWindowFocus: false, keepPreviousData: true });
-  const valuesQuery = useDFormValuesQuery({ dformId }, { refetchOnWindowFocus: false });
+  const dformQuery = useDFormQuery({ dformId });
+  const valuesQuery = useDFormValuesQuery({ dformId });
 
   if (dformQuery.isError) {
     return <div className="onboarding-survey_loading">Something was wrong ....</div>;
   }
 
-  if (dformQuery.isLoading || valuesQuery.isLoading) {
+  if ((dformQuery.isLoading && !dformQuery.data) || (valuesQuery.isLoading && !valuesQuery.data)) {
     return <div className="onboarding-survey_loading">Loading</div>;
   }
 
@@ -30,6 +31,7 @@ const MemberDFormView: FC<Props> = ({ dformId, status, organization }) => {
   const { data: values } = valuesQuery;
   const { name, schema, access_type } = dform;
   const sections = schema.sectionsOrder.map((id) => schema.sections[id]);
+  const initialValues = normalizeValues(values, schema);
 
   if (status === "submitted" && showDForm === false) {
     return <MemberSubmittedStatusView organization={organization} onShowDForm={onShowDForm} />;
@@ -39,10 +41,10 @@ const MemberDFormView: FC<Props> = ({ dformId, status, organization }) => {
     <MemberDForm
       id={dformId}
       name={name}
-      values={values}
-      schema={schema}
       sections={sections}
       accessType={access_type}
+      initialSchema={schema}
+      initialValues={initialValues}
     />
   );
 };

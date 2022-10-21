@@ -5,7 +5,7 @@ import React from "react";
 import { Layout } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 
-import { NpmCard, NpmButton } from "features/nmp-ui";
+import { NpmCard, NmpButton } from "features/nmp-ui";
 
 import memberviewIntro from "../../../../assets/img/pages/memberview-intro.png";
 
@@ -35,7 +35,7 @@ const IntroPageView = ({
                   <div className="intropage-block_content_text" dangerouslySetInnerHTML={{ __html: introText }} />
 
                   <div className="intropage-block_content_navigations">
-                    <NpmButton
+                    <NmpButton
                       type="nmp-ghost"
                       href={brochureUrl}
                       download={brochureName}
@@ -44,12 +44,12 @@ const IntroPageView = ({
                       style={{ minWidth: 170 }}
                     >
                       {downloadText}
-                    </NpmButton>
+                    </NmpButton>
 
                     {isOnboardingExist ? (
-                      <NpmButton type="nmp-primary" style={{ minWidth: 170 }} onClick={redirectToOnboarding}>
+                      <NmpButton type="nmp-primary" style={{ minWidth: 170 }} onClick={redirectToOnboarding}>
                         Let's get started <i className="arrow right"></i>
-                      </NpmButton>
+                      </NmpButton>
                     ) : null}
                   </div>
                 </div>

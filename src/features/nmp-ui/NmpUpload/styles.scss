@@ -1,0 +1,13 @@
+.nmp-upload {
+  &__text {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #474747;
+  }
+
+  > span {
+    display: flex;
+    flex-flow: column-reverse;
+  }
+}

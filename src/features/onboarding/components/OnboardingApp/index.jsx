@@ -11,7 +11,7 @@ import {
 } from "api/Onboarding/prospectUserQuery";
 
 import LoadingButton from "components/LoadingButton";
-import { DForm, AccessTypes, FieldTypes } from "components/DForm";
+import { BaseDForm, AccessTypes, FieldTypes } from "components/DForm";
 
 import Check from "assets/img/icons/check.png";
 
@@ -152,7 +152,7 @@ const OnboardingApp = ({ selectedForm, setRecentlySubmitted }) => {
 
   return (
     <>
-      <DForm
+      <BaseDForm
         schema={dform.schema}
         values={values}
         dFormId={dform.id}

@@ -1,0 +1,19 @@
+.nmp-modal {
+  .ant-modal-confirm-info .ant-modal-confirm-body > .anticon {
+    display: none;
+  }
+
+  .ant-modal-confirm-body > .anticon + .ant-modal-confirm-title + .ant-modal-confirm-content {
+    margin-left: 0;
+  }
+
+  .ant-modal-confirm .ant-modal-confirm-btns {
+    display: none;
+    margin-top: 0;
+  }
+
+  &__footer {
+    margin-top: 24px;
+    text-align: right;
+  }
+}

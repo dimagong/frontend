@@ -1,0 +1,21 @@
+.nmp-upload-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 32px;
+
+  border-radius: 2px;
+  border: 1px solid #a8a8a8;
+
+  background-color: #ffffff;
+
+  &__filename {
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.87rem;
+    color: #474747;
+    text-align: left;
+  }
+}

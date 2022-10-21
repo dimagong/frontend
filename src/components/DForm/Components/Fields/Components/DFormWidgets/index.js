@@ -1,31 +1,31 @@
-import { DFormTextWidget } from "./Components/DFormTextWidget";
-import { DFormDateWidget } from "./Components/DFormDateWidget";
-import { DFormFileWidget } from "./Components/DFormFileWidget";
-import { DFormFileListWidget } from "./Components/DFormFileListWidget";
-import { DFormSelectWidget } from "./Components/DFormSelectWidget";
-import { DFormNumberWidget } from "./Components/DFormNumberWidget";
-import { DFormBooleanWidget } from "./Components/DFormBooleanWidget";
-import { DFormLongTextWidget } from "./Components/DFormLongTextWidget";
-import { DFormTextAreaWidget } from "./Components/DFormTextAreaWidget";
-import { DFormMultiSelectWidget } from "./Components/DFormMultiSelectWidget";
-import { DFormHelpTextWidget } from "./Components/DFormHelpTextWidget";
-import { DFormResourceWidget } from "./Components/DFormResourceWidget";
+import { DFormBoolean } from "./Components/DFormBoolean";
+import { DFormDatePicker } from "./Components/DFormDatePicker";
+import { DFormFile } from "./Components/DFormFile";
+import { DFormFileList } from "./Components/DFormFileList";
+import { DFormHelpText } from "./Components/DFormHelpText";
+import { DFormLongText } from "./Components/DFormLongText";
+import { DFormMultiSelect } from "./Components/DFormMultiSelect";
+import { DFormNumber } from "./Components/DFormNumber";
+import { DFormResource } from "./Components/DFormResource";
+import { DFormSelect } from "./Components/DFormSelect";
+import { DFormText } from "./Components/DFormText";
+import { DFormTextArea } from "./Components/DFormTextArea";
 
 import { FieldTypes } from "components/DForm";
 
 const dFormWidgets = {
-  [FieldTypes.Text]: DFormTextWidget,
-  [FieldTypes.Date]: DFormDateWidget,
-  [FieldTypes.File]: DFormFileWidget,
-  [FieldTypes.FileList]: DFormFileListWidget,
-  [FieldTypes.Select]: DFormSelectWidget,
-  [FieldTypes.Number]: DFormNumberWidget,
-  [FieldTypes.Boolean]: DFormBooleanWidget,
-  [FieldTypes.LongText]: DFormLongTextWidget,
-  [FieldTypes.TextArea]: DFormTextAreaWidget,
-  [FieldTypes.MultiSelect]: DFormMultiSelectWidget,
-  [FieldTypes.HelpText]: DFormHelpTextWidget,
-  [FieldTypes.Resource]: DFormResourceWidget,
+  [FieldTypes.Boolean]: DFormBoolean,
+  [FieldTypes.Date]: DFormDatePicker,
+  [FieldTypes.File]: DFormFile,
+  [FieldTypes.FileList]: DFormFileList,
+  [FieldTypes.HelpText]: DFormHelpText,
+  [FieldTypes.LongText]: DFormLongText,
+  [FieldTypes.MultiSelect]: DFormMultiSelect,
+  [FieldTypes.Number]: DFormNumber,
+  [FieldTypes.Resource]: DFormResource,
+  [FieldTypes.Select]: DFormSelect,
+  [FieldTypes.Text]: DFormText,
+  [FieldTypes.TextArea]: DFormTextArea,
 };
 
 export default dFormWidgets;
