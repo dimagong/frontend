@@ -1,11 +1,14 @@
 import React from "react";
 import type { FC } from "react";
 import { TabContent, TabPane } from "reactstrap";
-import { DropResult } from "react-beautiful-dnd";
+import { Droppable } from "react-beautiful-dnd";
+
+import { DragIndicator } from "@material-ui/icons";
 
 import { DFormSection } from "./DFormSection";
 import { useDFormContext } from "../DFormContext";
 import { DFormSchema } from "../types/dformSchema";
+import { ElementTypes } from "../types/elementTypes";
 
 type Props = {
   schema: DFormSchema;
@@ -14,21 +17,10 @@ type Props = {
   onGroupCreate?: (sectionId: string) => void;
   onFieldCreate?: (groupId: string) => void;
   onElementClick?: (el: any, type: "field" | "group" | "section") => void;
-  onReorder?: (result: DropResult) => void;
-  setIsDraggable: any;
 };
 
 export const DFormSections: FC<Props> = (props) => {
-  const {
-    schema,
-    selectedSectionId,
-    selectedElement,
-    onElementClick,
-    onGroupCreate,
-    onFieldCreate,
-    onReorder,
-    setIsDraggable,
-  } = props;
+  const { schema, selectedSectionId, selectedElement, onElementClick, onGroupCreate, onFieldCreate } = props;
 
   const { isConfigurable } = useDFormContext();
 
@@ -47,29 +39,52 @@ export const DFormSections: FC<Props> = (props) => {
   }
 
   return (
-    <TabContent activeTab={selectedSectionId}>
+    <TabContent activeTab={selectedSectionId} className="w-100">
       {schema.sectionsOrder.map((sectionId) => {
-        if (selectedSectionId !== sectionId) {
-          return null;
-        }
-
         const { id, isHidden, isDisabled, relatedGroups } = schema.sections[sectionId];
 
         return (
           <TabPane tabId={id} key={id}>
-            <DFormSection
-              id={id}
-              schema={schema}
-              isHidden={isHidden}
-              isDisabled={isDisabled}
-              relatedGroups={relatedGroups}
-              selectedElement={selectedElement}
-              onFieldCreate={onFieldCreate}
-              onGroupCreate={onGroupCreate}
-              onElementClick={onElementClick}
-              onReorder={onReorder}
-              setIsDraggable={setIsDraggable}
-            />
+            <Droppable
+              droppableId={id}
+              type={ElementTypes.Group}
+              renderClone={(provided, snapshot, rubric) => (
+                <div {...provided.draggableProps} ref={provided.innerRef}>
+                  {console.log("snapshot", snapshot)}
+                  <div className="draggable-wrapper">
+                    <span
+                      className="nested-draggable-list_item-drag-icon group-drag-icon"
+                      {...provided.dragHandleProps}
+                    >
+                      <DragIndicator />
+                    </span>
+                    <div className={"group-title group-title--draggable"}>
+                      <span className="text-bold-500">{schema.groups[rubric.draggableId].name}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              key={id}
+            >
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {isHidden ? null : (
+                    <DFormSection
+                      id={id}
+                      schema={schema}
+                      isHidden={isHidden}
+                      isDisabled={isDisabled}
+                      relatedGroups={relatedGroups}
+                      selectedElement={selectedElement}
+                      onFieldCreate={onFieldCreate}
+                      onGroupCreate={onGroupCreate}
+                      onElementClick={onElementClick}
+                    />
+                  )}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
           </TabPane>
         );
       })}

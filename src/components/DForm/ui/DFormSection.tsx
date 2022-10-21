@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, FormProps } from "antd";
 import type { FC, ReactNode } from "react";
-import { DropResult } from "react-beautiful-dnd";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+
+import { NmpCheckbox } from "features/nmp-ui";
 
 import Groups from "../Components/Groups";
 import { DFormSchema } from "../types/dformSchema";
-import { ElementTypes } from "../types/elementTypes";
-import { DragIndicator } from "@material-ui/icons";
+import { DFormLabel } from "../Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
 const validateMessages = {
   required: "Is required!",
@@ -25,9 +24,6 @@ type Props = {
   onFieldCreate?: (groupId: string) => void;
   onGroupCreate?: (sectionId: string) => void;
   onElementClick?: (el: any, type: "field" | "group" | "section") => void;
-  onReorder?: (result: DropResult) => void;
-  isDraggable?: boolean;
-  setIsDraggable?: any;
 };
 
 export const DFormSection: FC<Props> = (props) => {
@@ -43,11 +39,10 @@ export const DFormSection: FC<Props> = (props) => {
     onGroupCreate: propOnGroupCreate,
     onFieldCreate,
     onElementClick,
-    onReorder,
-    setIsDraggable,
   } = props;
 
   const [form] = Form.useForm();
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const onGroupCreate = () => {
     if (propOnGroupCreate) {
@@ -59,53 +54,37 @@ export const DFormSection: FC<Props> = (props) => {
     return null;
   }
 
-  const handleDragEnd = (result: DropResult) => {
-    setIsDraggable(false);
-
-    if (result.destination === null || result.destination!.index === result.source.index) return;
-
-    onReorder?.(result);
+  const onIsCollapsedChange = (event) => {
+    setIsCollapsed(event.target.checked);
   };
 
   return (
-    <Form form={form} name={id} layout="vertical" initialValues={initialValues} validateMessages={validateMessages}>
-      <DragDropContext onDragEnd={handleDragEnd} onDragStart={() => setIsDraggable(true)}>
-        <Droppable
-          droppableId={"Group"}
-          type={ElementTypes.Group}
-          renderClone={(provided, snapshot, rubric) => (
-            <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-              <>
-                <div className="draggable-wrapper">
-                  <span className="nested-draggable-list_item-drag-icon group-drag-icon" {...provided.dragHandleProps}>
-                    <DragIndicator />
-                  </span>
-                  <div className={"group-title group-title--draggable"}>
-                    <span className="text-bold-500">{schema.groups[rubric.draggableId].name}</span>
-                  </div>
-                </div>
-              </>
-            </div>
-          )}
-        >
-          {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              <Groups
-                data={schema}
-                sectionId={id}
-                isDisabled={isDisabled}
-                selectedElement={selectedElement}
-                sectionGroups={relatedGroups}
-                onGroupCreate={onGroupCreate}
-                onFieldCreate={onFieldCreate}
-                onElementClick={onElementClick}
-              />
-              {actions}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+    <Form
+      form={form}
+      name={id}
+      layout="vertical"
+      initialValues={initialValues}
+      validateMessages={validateMessages}
+      className="d-flex"
+    >
+      <Groups
+        data={schema}
+        sectionId={id}
+        isDisabled={isDisabled}
+        selectedElement={selectedElement}
+        sectionGroups={relatedGroups}
+        onGroupCreate={onGroupCreate}
+        onFieldCreate={onFieldCreate}
+        onElementClick={onElementClick}
+        isCollapsed={isCollapsed}
+      />
+      <Form.Item name="isCollapsed" className="dform-field mb-2" valuePropName="checked">
+        <NmpCheckbox id="isCollapsed" onChange={onIsCollapsedChange}>
+          <DFormLabel label="Collapse" isSmall />
+        </NmpCheckbox>
+      </Form.Item>
+
+      {actions}
     </Form>
   );
 };

@@ -8,6 +8,8 @@ import CustomTabs from "components/Tabs";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 import { DFormContextProvider, BaseDForm, ElementTypes } from "components/DForm";
 
+import { reorderArray } from "utility/reorderArray";
+
 import {
   APPLICATION_PAGES,
   INITIAL_GROUP_DATA,
@@ -392,6 +394,7 @@ export const ApplicationPage = ({ applicationId }) => {
     setSelectedPage(page);
   };
 
+  // Reorder
   const handleSectionReorder = (result) => {
     const dataClone = cloneDeep(applicationData);
 
@@ -421,18 +424,24 @@ export const ApplicationPage = ({ applicationId }) => {
   const handleFieldReorder = (result) => {
     const dataClone = cloneDeep(applicationData);
 
-    const field = dataClone.fields[result.draggableId];
+    const { droppableId: idGroupFrom, index: indexFieldFrom } = result.source;
+    const { droppableId: idGroupTo, index: indexFieldTo } = result.destination;
 
-    const itemToMove = dataClone.groups[field.groupId].relatedFields.splice(result.source.index, 1)[0];
-
-    dataClone.groups[field.groupId].relatedFields.splice(result.destination.index, 0, itemToMove);
+    if (idGroupFrom === idGroupTo) {
+      dataClone.groups[idGroupFrom].relatedFields = reorderArray(
+        dataClone.groups[idGroupFrom].relatedFields,
+        indexFieldFrom,
+        indexFieldTo
+      );
+    } else {
+      const item = dataClone.groups[idGroupFrom].relatedFields.splice(indexFieldFrom, 1)[0];
+      dataClone.groups[idGroupTo].relatedFields.splice(indexFieldTo, 0, item);
+    }
 
     setApplicationData(dataClone);
   };
 
   const handleReorder = (result) => {
-    console.log("result", result);
-
     switch (result.type) {
       case ElementTypes.Section:
         handleSectionReorder(result);
@@ -516,7 +525,7 @@ export const ApplicationPage = ({ applicationId }) => {
                 onSectionCreate={handleSectionCreate}
                 onGroupCreate={handleGroupCreate}
                 onFieldCreate={handleFieldCreate}
-                onReorder={handleReorder}
+                onDragEnd={handleReorder}
               />
             </DFormContextProvider>
           </TabPane>

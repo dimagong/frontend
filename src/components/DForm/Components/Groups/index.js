@@ -2,11 +2,12 @@ import "./styles.scss";
 
 import React from "react";
 import { Plus } from "react-feather";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-
-import { ElementTypes } from "components/DForm";
+import { Droppable, Draggable } from "react-beautiful-dnd";
+import { Collapse } from "reactstrap";
 
 import { DragIndicator } from "@material-ui/icons";
+
+import { ElementTypes } from "components/DForm";
 
 import Fields from "../Fields";
 import { useDFormContext } from "../../DFormContext";
@@ -23,6 +24,7 @@ const Groups = (props) => {
     onElementClick,
     onGroupCreate,
     onFieldCreate,
+    isCollapsed,
   } = props;
 
   const { isConfigurable } = useDFormContext();
@@ -36,7 +38,7 @@ const Groups = (props) => {
   };
 
   return (
-    <div>
+    <div className="w-100">
       {sectionGroups.map((groupId, index) => {
         const group = data.groups[groupId];
 
@@ -64,40 +66,61 @@ const Groups = (props) => {
                   </div>
                 </div>
 
-                <Droppable droppableId={groupId} type={ElementTypes.Field}>
-                  {(provided) => (
-                    <div className="group-content row mr-0 ml-0" {...provided.droppableProps} ref={provided.innerRef}>
-                      <Fields
-                        data={data}
-                        groupId={groupId}
-                        isDisabled={isDisabled}
-                        selectedElement={selectedElement}
-                        groupFields={group.relatedFields}
-                        onFieldCreate={onFieldCreate}
-                        onElementClick={onElementClick}
-                      />
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-                {isConfigurable ? (
-                  <div className={classnames("btn-box", { "btn-group": isLastGroup })}>
-                    <div className="element-add" onClick={() => onFieldCreate(groupId)}>
-                      <div className="element-add_icon">
-                        <Plus color="white" size={23} />
+                <Collapse isOpen={!isCollapsed} key={groupId}>
+                  <Droppable
+                    droppableId={groupId}
+                    type={ElementTypes.Field}
+                    renderClone={(provided, snapshot, rubric) => (
+                      <div {...provided.draggableProps} ref={provided.innerRef}>
+                        <div className="draggable-wrapper">
+                          <span
+                            className="nested-draggable-list_item-drag-icon group-drag-icon"
+                            {...provided.dragHandleProps}
+                          >
+                            <DragIndicator />
+                          </span>
+                          <div className={"group-title group-title--draggable"}>
+                            <span className="text-bold-500">{data.fields[rubric.draggableId].title}</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="element-add_description">Add new form element</div>
-                    </div>
-                    {isLastGroup ? (
-                      <div className="element-add" onClick={onGroupCreate}>
+                    )}
+                  >
+                    {(provided) => (
+                      <div className="group-content row mr-0 ml-0" {...provided.droppableProps} ref={provided.innerRef}>
+                        <Fields
+                          data={data}
+                          groupId={groupId}
+                          isDisabled={isDisabled}
+                          selectedElement={selectedElement}
+                          groupFields={group.relatedFields}
+                          onFieldCreate={onFieldCreate}
+                          onElementClick={onElementClick}
+                        />
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+
+                  {isConfigurable ? (
+                    <div className={classnames("btn-box", { "btn-group": isLastGroup })}>
+                      <div className="element-add" onClick={() => onFieldCreate(groupId)}>
                         <div className="element-add_icon">
                           <Plus color="white" size={23} />
                         </div>
-                        <div className="element-add_description">Add new group</div>
+                        <div className="element-add_description">Add new form element</div>
                       </div>
-                    ) : null}
-                  </div>
-                ) : null}
+                      {isLastGroup ? (
+                        <div className="element-add" onClick={onGroupCreate}>
+                          <div className="element-add_icon">
+                            <Plus color="white" size={23} />
+                          </div>
+                          <div className="element-add_description">Add new group</div>
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </Collapse>
               </div>
             )}
           </Draggable>
