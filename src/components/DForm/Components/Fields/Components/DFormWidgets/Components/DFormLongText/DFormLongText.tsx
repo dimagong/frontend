@@ -30,13 +30,13 @@ export const DFormLongText: FC<Props> = (props) => {
         {
           min: minLength,
           max: maxLength,
-          transform: (value) => {
-            if (typeof value === "string") {
-              const plain = value.replace(/<[^>]*>/g, "");
-              return plain.endsWith("\n") ? plain.slice(0, plain.length - 1) : plain;
-            }
-            return value;
-          },
+          // transform: (value) => {
+          //   if (typeof value === "string") {
+          //     const plain = value.replace(/<[^>]*>/g, "");
+          //     return plain.endsWith("\n") ? plain.slice(0, plain.length - 1) : plain;
+          //   }
+          //   return value;
+          // },
         },
       ]}
       isRequired={isRequired}
