@@ -230,7 +230,7 @@ export const ApplicationPage = ({ applicationId }) => {
       group.id
     );
 
-    group.relatedFields.map((fieldId) => delete data.fields[fieldId]);
+    group.relatedFields.map((fieldId) => handleFieldDelete({ id: fieldId }, data));
 
     delete data.groups[group.id];
   };
@@ -238,10 +238,20 @@ export const ApplicationPage = ({ applicationId }) => {
   const handleFieldDelete = (field, data) => {
     const fieldGroup = Object.values(data.groups).filter((group) => group.relatedFields.includes(String(field.id)))[0];
 
-    data.groups[fieldGroup.id].relatedFields = removeItemFormArrayByValue(
-      data.groups[fieldGroup.id].relatedFields,
-      field.id
-    );
+    if (fieldGroup) {
+      data.groups[fieldGroup?.id].relatedFields = removeItemFormArrayByValue(
+        data.groups[fieldGroup.id].relatedFields,
+        field.id
+      );
+    }
+
+    const fieldId = field.id;
+
+    Object.keys(data.fields).forEach((fieldKey) => {
+      data.fields[fieldKey].conditions = data.fields[fieldKey].conditions.filter(
+        (condition) => condition.fieldId !== fieldId
+      );
+    });
 
     delete data.fields[field.id];
   };

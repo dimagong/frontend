@@ -24,6 +24,7 @@ const FieldDynamicRendering = ({
   };
 
   const onFinish = (submittedObj) => {
+    // console.log("submittedObj", submittedObj);
     onFieldSubmit(element);
   };
 
