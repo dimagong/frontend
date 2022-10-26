@@ -258,7 +258,6 @@ export const ApplicationPage = ({ applicationId }) => {
     }
 
     Object.values(DformSchemaElementTypes).forEach((type) => {
-      console.log(type);
       data[type] = removeConditionsFromElementById(data, type, field.id);
     });
 
