@@ -46,6 +46,8 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
   }));
 
   useEffect(() => {
+    setDisabled(true);
+
     form.setFieldsValue(initialValues);
   }, [element]);
 

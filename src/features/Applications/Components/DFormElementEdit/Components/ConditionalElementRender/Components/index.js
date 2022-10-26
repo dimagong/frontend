@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Form } from "antd";
 
 import { NmpInput, NmpSelect, NpmDatePicker, NpmTimePicker } from "features/nmp-ui";
-
-import { DFormFieldConditionModel } from "features/Applications/fieldConditionModel";
 import { DATE_WIDGET_FORMATS, DateWidgetFormatTypes } from "features/Applications/constants";
-
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
 import {
   DCREffectTypes,
@@ -13,7 +10,6 @@ import {
   DCRSupportedFieldTypes,
   DCRSupportedFieldOperatorsFactory,
 } from "../constants";
-import { Form } from "antd";
 
 const getPicker = (dateType) => {
   switch (dateType) {
@@ -40,95 +36,94 @@ const getFieldIdAsOptions = (fields) => fields.map(getFieldIdAsOption);
 const getOperatorTypeAsOption = (operatorTemplate) => ({ value: operatorTemplate.type, label: operatorTemplate.name });
 const getOperatorTypesAsOptions = (operatorTemplates) => operatorTemplates.map(getOperatorTypeAsOption);
 
-const ConditionForm = ({ fields, condition, onConditionChange, name, ...restField }) => {
-  const [format, setFormat] = useState({ value: DateWidgetFormatTypes.Date, label: DateWidgetFormatTypes.Date });
+const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
+  const [format, setFormat] = useState(condition?.format || DateWidgetFormatTypes.Date);
+  const [fieldId, setFieldId] = useState(condition?.fieldId);
+  const [operatorType, setOperatorType] = useState(condition?.operatorType);
 
-  const updateCondition = (data) => {
-    const updatedCondition = DFormFieldConditionModel.from({ ...condition, ...data });
-    onConditionChange(updatedCondition);
-  };
+  useEffect(() => {
+    if (condition) {
+      setFieldId(condition.fieldId);
+      setOperatorType(condition.operatorType);
 
-  const onFieldIdChange = (fieldId) => updateCondition({ fieldId });
+      if (condition.format) {
+        setFormat(condition.format);
+      }
+    }
+  }, [condition]);
 
-  const onEffectTypeChange = (effectType) => updateCondition({ effectType });
+  const onFieldIdChange = (newFieldId) => setFieldId(newFieldId);
+  const onOperatorTypeChange = (newOperatorType) => setOperatorType(newOperatorType);
+  const onFormatChange = (newFormat) => setFormat(newFormat);
 
-  const onOperatorTypeChange = (operatorType) => updateCondition({ operatorType });
-
-  const onExpectedValueChange = ({ target }) => updateCondition({ expectedValue: target.value });
-
-  const onFormatChange = (_, value) => setFormat(value);
-
-  const field = fields.find(({ id }) => id === condition.fieldId);
+  const field = fields.find(({ id }) => id === fieldId);
   const fieldsIdsAsOptions = getFieldIdAsOptions(fields);
   const operators = field ? DCRSupportedFieldOperatorsFactory.build(field.type) : null;
   const operatorsAsOptions = operators ? getOperatorTypesAsOptions(operators) : null;
-  const operator = operators ? operators.find(({ type }) => type === condition.operatorType) : null;
+  const operator = operators ? operators.find(({ type }) => type === operatorType) : null;
 
-  const Picker = getPicker(format.value);
-
-  console.log("restField", restField);
-  console.log("condition", condition);
-  console.log("condition.fieldId", condition.fieldId);
+  const Picker = getPicker(format);
 
   const getExpectedValueField = () => {
     if (field.type === DCRSupportedFieldTypes.Date) {
       return (
         <>
-          <div className="mb-2">
-            <DFormLabel id="dcr-expected-value" label={operator.expectedValueTitle} />
-            <Picker
-              id="dcr-expected-value"
-              value={condition.expectedValue ?? ""}
-              placeholder="Enter expected value"
-              onChange={onExpectedValueChange}
-            />
-          </div>
+          <Form.Item
+            className="mb-2"
+            label={operator.expectedValueTitle}
+            name={[name, "expectedValue"]}
+            rules={[{ required: true }]}
+            {...restField}
+          >
+            <Picker id="expectedValue" placeholder="Enter expected value" />
+          </Form.Item>
 
-          <div>
-            <DFormLabel label="Expected date format" id="dcr-expected-value-date-format" />
+          <Form.Item
+            className="mb-2"
+            label="Expected date format"
+            name={[name, "format"]}
+            rules={[{ required: true }]}
+            {...restField}
+          >
             <NmpSelect
-              id="dcr-expected-value-date-format"
-              value={format}
+              id="format"
               options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
               placeholder="Select an date Format"
               onChange={onFormatChange}
             />
-          </div>
+          </Form.Item>
         </>
       );
     }
 
     return (
-      <>
-        <DFormLabel label={operator.expectedValueTitle} id="dcr-expected-value" />
-        <NmpInput
-          id="dcr-expected-value"
-          type="text"
-          value={condition.expectedValue ?? ""}
-          placeholder="Enter expected value"
-          onChange={onExpectedValueChange}
-        />
-      </>
+      <Form.Item
+        className="mb-2"
+        label={operator.expectedValueTitle}
+        name={[name, "expectedValue"]}
+        rules={[{ required: true }]}
+        {...restField}
+      >
+        <NmpInput id="expectedValue" type="text" placeholder="Enter expected value" />
+      </Form.Item>
     );
   };
 
   return (
     <>
+      {/* This is hidden id field*/}
+      <Form.Item name={[name, "id"]} {...restField} style={{ display: "none" }}>
+        <NmpInput id="id" />
+      </Form.Item>
+
       <Form.Item
         className="mb-2"
         label="This element will effected by"
-        // name="effectType"
         name={[name, "effectType"]}
         rules={[{ required: true }]}
         {...restField}
       >
-        <NmpSelect
-          id="effectType"
-          value={condition.effectType != null ? getEffectTypeOption(condition.effectType) : null}
-          options={effectTypesAsOptions}
-          placeholder="Select an effect"
-          onChange={onEffectTypeChange}
-        />
+        <NmpSelect id="effectType" options={effectTypesAsOptions} placeholder="Select an effect" />
       </Form.Item>
 
       <Form.Item
@@ -138,16 +133,10 @@ const ConditionForm = ({ fields, condition, onConditionChange, name, ...restFiel
         rules={[{ required: true }]}
         {...restField}
       >
-        <NmpSelect
-          id="fieldId"
-          // value={condition.fieldId != null && field != null ? getFieldIdAsOption(field) : null}
-          options={fieldsIdsAsOptions}
-          placeholder="Select field"
-          // onChange={onFieldIdChange}
-        />
+        <NmpSelect id="fieldId" options={fieldsIdsAsOptions} onChange={onFieldIdChange} placeholder="Select field" />
       </Form.Item>
 
-      {condition.fieldId != null ? (
+      {fieldId !== undefined ? (
         <Form.Item
           className="mb-2"
           label="Will be"
@@ -157,14 +146,12 @@ const ConditionForm = ({ fields, condition, onConditionChange, name, ...restFiel
         >
           <NmpSelect
             id="operatorType"
-            // value={condition.operatorType != null ? getOperatorTypeAsOption(operator) : null}
             options={operatorsAsOptions}
             placeholder="Select operator"
-            // onChange={onOperatorTypeChange}
+            onChange={onOperatorTypeChange}
           />
         </Form.Item>
       ) : null}
-
       {operator && operator.isBinary ? getExpectedValueField() : null}
     </>
   );
