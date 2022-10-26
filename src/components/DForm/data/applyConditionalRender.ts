@@ -13,9 +13,9 @@ export const applyDynamicConditionalRender = (schema: DFormSchema, values: Norma
 
   const { fields, sections, groups } = schemaCopy;
 
-  // schemaCopy.fields = checkConditions(fields, values, fields);
-  // schemaCopy.groups = checkConditions(groups, values, fields);
-  // schemaCopy.sections = checkConditions(sections, values, fields);
+  schemaCopy.fields = checkConditions(fields, values, fields);
+  schemaCopy.groups = checkConditions(groups, values, fields);
+  schemaCopy.sections = checkConditions(sections, values, fields);
 
   return schemaCopy;
 };

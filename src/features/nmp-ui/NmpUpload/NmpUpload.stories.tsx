@@ -1,20 +1,7 @@
 import React from "react";
-import { RightOutlined, LeftOutlined, DownOutlined } from "@ant-design/icons";
 
 import { NmpUpload } from "./NmpUpload";
 import { NmpUploadItem, FileStatusTypes } from "./../NmpUploadItem";
-
-import fileloading from "features/members/ui/icons/FileLoading.svg";
-import { CloseCircleFilled } from "@ant-design/icons";
-
-const image = {
-  src: fileloading,
-  alt: "file-onloading",
-};
-const icons = {
-  [FileStatusTypes.Idle]: <CloseCircleFilled style={{ fontSize: 21 }} />,
-  [FileStatusTypes.Uploading]: <img src={image.src} alt={image.alt} />,
-};
 
 const storySettings = {
   title: "NmpUpload",
@@ -42,11 +29,11 @@ const storySettings = {
         return (
           <NmpUploadItem
             filename={file.name}
-            isRemovable={false}
+            isRemovable={true}
             onRemove={remove}
             onDownload={download}
-            status={FileStatusTypes.Idle}
-            icons={icons}
+            percent={100}
+            status={FileStatusTypes.Done}
           />
         );
       },
@@ -64,22 +51,30 @@ export const NmpUploadProcess = TemplateNmpUpload.bind({});
 
 NmpUploadProcess.args = {
   isRemovable: false,
-  itemRender: () => (
+  itemRender: (_, file, fileList, { download, remove }, isRemovable) => (
     <NmpUploadItem
-      filename={"file"}
-      isRemovable={false}
+      filename={"the file is still uploading"}
+      isRemovable={isRemovable}
       onRemove={() => {}}
       onDownload={() => {}}
-      progressloading={10}
+      status={FileStatusTypes.Uploading}
+      percent={99}
     />
   ),
 };
 
-// export const Ellipse = Template.bind({});
+export const NmpUploadFinished = TemplateNmpUpload.bind({});
 
-// Ellipse.args = {
-//   type: "nmp-primary",
-//   shape: "nmp-ellipse",
-//   icon: <DownOutlined />,
-//   children: undefined,
-// };
+NmpUploadFinished.args = {
+  isRemovable: true,
+  itemRender: (_, file, fileList, { download, remove }) => (
+    <NmpUploadItem
+      filename={"the file uploaded successfully"}
+      isRemovable={true}
+      onRemove={() => {}}
+      onDownload={() => {}}
+      percent={100}
+      status={FileStatusTypes.Done}
+    />
+  ),
+};
