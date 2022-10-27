@@ -24,6 +24,7 @@ import { NpmTooltip } from "./NpmTooltip";
 import NpmMenu from "./NpmMenu";
 import { NmpRow } from "./NmpRow";
 import { NmpCol } from "./NmpCol";
+import { NmpText } from "./NmpText";
 
 export {
   NmpRow,
@@ -52,4 +53,5 @@ export {
   NpmTimePicker,
   NpmTooltip,
   NpmMenu,
+  NmpText,
 };
