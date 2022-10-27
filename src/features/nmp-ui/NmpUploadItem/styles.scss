@@ -17,43 +17,29 @@
     font-weight: 300;
     font-size: 0.87rem;
     color: #474747;
-    text-align: left;
+    justify-content: flex-start;
+
+    > span {
+      font-style: inherit;
+    }
   }
+
   &__status {
-    padding: 0 0.87rem;
     display: flex;
     align-items: center;
-    .progress-color--idle {
-      color: #35a046;
-    }
-    .progress-color--stage {
-      color: #474747;
-    }
   }
+
+  &__status-icon {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+  }
+
   &__progress {
     margin-right: 0.87rem;
     font-style: italic;
     font-weight: 300;
     font-size: 14px;
     line-height: 17px;
-  }
-
-  &__img {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .ant-btn > span {
-    font-style: italic;
-  }
-
-  .btn-icon--loaded {
-    color: #35a046;
-  }
-  .btn-icon {
-    color: #474747;
   }
 }

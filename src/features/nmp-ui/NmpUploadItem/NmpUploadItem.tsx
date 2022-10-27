@@ -7,32 +7,24 @@ import { CloseCircleFilled } from "@ant-design/icons";
 import { NmpButton } from "../NmpButton";
 import { NpmTooltip } from "../NpmTooltip";
 
-import fileloading from "features/members/ui/icons/FileLoading.svg";
+import { FileLoadingIcon } from "../icons/FileLoadingIcon";
 
 export enum FileStatusTypes {
-  Uploading = "uploading",
-  Error = "error",
-  Success = "success",
   Done = "done",
-  Removed = "removed",
+  Uploading = "uploading",
 }
 
-type Props = {
+export type NmpUploadItemProps = {
   filename: string;
   isDisabled?: boolean;
   isRemovable?: boolean;
   onRemove?: MouseEventHandler<HTMLElement>;
   onDownload?: MouseEventHandler<HTMLElement>;
   percent?: number;
-  status?:
-    | FileStatusTypes.Uploading
-    | FileStatusTypes.Error
-    | FileStatusTypes.Success
-    | FileStatusTypes.Done
-    | FileStatusTypes.Removed;
+  status?: FileStatusTypes.Done | FileStatusTypes.Uploading;
 };
 
-export const NmpUploadItem: FC<Props> = (props) => {
+export const NmpUploadItem: FC<NmpUploadItemProps> = (props) => {
   const {
     filename,
     isDisabled = false,
@@ -40,22 +32,27 @@ export const NmpUploadItem: FC<Props> = (props) => {
     onRemove,
     onDownload,
     status = FileStatusTypes.Done,
-    percent = 100,
+    percent,
   } = props;
-  console.log("filename", filename);
-  console.log("isRemovable", isRemovable);
-  console.log("status", status);
-  console.log("percent", percent);
 
   return (
     <div className="nmp-upload-item">
-      <NmpButton type="text" className="nmp-upload-item__filename" disabled={isDisabled} onClick={onDownload}>
+      <NmpButton type="text" block className="nmp-upload-item__filename" disabled={isDisabled} onClick={onDownload}>
         {filename}
       </NmpButton>
 
-      {isRemovable && status === FileStatusTypes.Done ? (
-        <div className="nmp-upload-item__status">
-          <div className="nmp-upload-item__progress progress-color--idle">{`100%`}</div>
+      <div className="nmp-upload-item__status">
+        {percent ? <div className="nmp-upload-item__progress progress-color--stage"> {`${percent}%`}</div> : null}
+
+        {status === FileStatusTypes.Uploading ? (
+          <NpmTooltip title="Uploading">
+            <span className="nmp-upload-item__status-icon">
+              <FileLoadingIcon style={{ fontSize: 21 }} />
+            </span>
+          </NpmTooltip>
+        ) : null}
+
+        {isRemovable && status === FileStatusTypes.Done ? (
           <NpmTooltip title="Remove">
             <NmpButton
               danger
@@ -66,19 +63,8 @@ export const NmpUploadItem: FC<Props> = (props) => {
               onClick={onRemove}
             />
           </NpmTooltip>
-        </div>
-      ) : null}
-
-      {status === FileStatusTypes.Uploading ? (
-        <div className="nmp-upload-item__status">
-          <div className="nmp-upload-item__progress progress-color--stage"> {`${percent}%`}</div>
-          <NpmTooltip title="Uploading">
-            <div className="nmp-upload-item__img">
-              <img src={fileloading} alt="file-onloading" />
-            </div>
-          </NpmTooltip>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </div>
   );
 };
