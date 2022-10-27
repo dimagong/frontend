@@ -105,6 +105,7 @@
     "lint-staged": "^12.4.1",
     "msw": "^0.36.8",
     "prettier": "^2.5.1",
+    "tsconfig-paths-webpack-plugin": "^4.0.0",
     "webpack": "^5.72.1"
   },
   "lint-staged": {

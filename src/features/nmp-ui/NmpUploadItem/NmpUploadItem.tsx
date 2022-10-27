@@ -7,16 +7,33 @@ import { CloseCircleFilled } from "@ant-design/icons";
 import { NmpButton } from "../NmpButton";
 import { NpmTooltip } from "../NpmTooltip";
 
-type Props = {
+import { FileLoadingIcon } from "../icons/FileLoadingIcon";
+
+export enum FileStatusTypes {
+  Done = "done",
+  Uploading = "uploading",
+}
+
+export type NmpUploadItemProps = {
   filename: string;
   isDisabled?: boolean;
   isRemovable?: boolean;
   onRemove?: MouseEventHandler<HTMLElement>;
   onDownload?: MouseEventHandler<HTMLElement>;
+  percent?: number;
+  status?: FileStatusTypes.Done | FileStatusTypes.Uploading;
 };
 
-export const NmpUploadItem: FC<Props> = (props) => {
-  const { filename, isDisabled = false, isRemovable = false, onRemove, onDownload } = props;
+export const NmpUploadItem: FC<NmpUploadItemProps> = (props) => {
+  const {
+    filename,
+    isDisabled = false,
+    isRemovable = false,
+    onRemove,
+    onDownload,
+    status = FileStatusTypes.Done,
+    percent,
+  } = props;
 
   return (
     <div className="nmp-upload-item">
@@ -24,18 +41,30 @@ export const NmpUploadItem: FC<Props> = (props) => {
         {filename}
       </NmpButton>
 
-      {isRemovable ? (
-        <NpmTooltip title="Remove">
-          <NmpButton
-            danger
-            type="text"
-            shape="circle"
-            icon={<CloseCircleFilled />}
-            disabled={isDisabled}
-            onClick={onRemove}
-          />
-        </NpmTooltip>
-      ) : null}
+      <div className="nmp-upload-item__status">
+        {percent ? <div className="nmp-upload-item__progress progress-color--stage"> {`${percent}%`}</div> : null}
+
+        {status === FileStatusTypes.Uploading ? (
+          <NpmTooltip title="Uploading">
+            <span className="nmp-upload-item__status-icon">
+              <FileLoadingIcon style={{ fontSize: 21 }} />
+            </span>
+          </NpmTooltip>
+        ) : null}
+
+        {isRemovable && status === FileStatusTypes.Done ? (
+          <NpmTooltip title="Remove">
+            <NmpButton
+              danger
+              type="text"
+              shape="circle"
+              icon={<CloseCircleFilled style={{ fontSize: 21 }} />}
+              disabled={isDisabled}
+              onClick={onRemove}
+            />
+          </NpmTooltip>
+        ) : null}
+      </div>
     </div>
   );
 };
