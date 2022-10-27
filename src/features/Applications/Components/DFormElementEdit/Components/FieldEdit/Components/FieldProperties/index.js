@@ -24,7 +24,7 @@ import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormW
 
 export const FieldRequiredEditProperty = () => {
   return (
-    <Form.Item name="isRequired" className="dform-field mb-2" valuePropName="checked">
+    <Form.Item name="isRequired" className="dform-field" valuePropName="checked">
       <NmpCheckbox id="isRequired">
         <DFormLabel label="Is required" isSmall />
       </NmpCheckbox>
@@ -34,7 +34,7 @@ export const FieldRequiredEditProperty = () => {
 
 export const FieldProtectedEditProperty = () => {
   return (
-    <Form.Item name="isProtected" className="dform-field mb-2" valuePropName="checked">
+    <Form.Item name="isProtected" className="dform-field" valuePropName="checked">
       <NmpCheckbox id="isProtected">
         <DFormLabel label="Is protected" isSmall />
       </NmpCheckbox>
@@ -44,7 +44,7 @@ export const FieldProtectedEditProperty = () => {
 
 export const FieldLabelShowingEditProperty = () => {
   return (
-    <Form.Item name="isLabelShowing" className="dform-field mb-2" valuePropName="checked">
+    <Form.Item name="isLabelShowing" className="dform-field" valuePropName="checked">
       <NmpCheckbox id="isLabelShowing">
         <DFormLabel label="Label showing" isSmall />
       </NmpCheckbox>
@@ -54,14 +54,14 @@ export const FieldLabelShowingEditProperty = () => {
 
 export const FieldDefaultEditProperties = () => {
   return (
-    <Row>
-      <Col md="12" className="mb-2">
+    <Row className="mb-2">
+      <Col md="12" className="field-default-edit">
         <FieldRequiredEditProperty />
       </Col>
-      <Col md="12" className="mb-2">
+      <Col md="12" className="field-default-edit">
         <FieldLabelShowingEditProperty />
       </Col>
-      <Col md="12">
+      <Col md="12" className="field-default-edit">
         <FieldProtectedEditProperty />
       </Col>
     </Row>
