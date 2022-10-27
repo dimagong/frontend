@@ -1,6 +1,6 @@
 import React from "react";
 
-import { NmpText, NmpTextType } from "./NmpText";
+import { NmpText, NmpTextProps } from "./NmpText";
 
 const storySettings = {
   title: "NmpText",
@@ -26,7 +26,7 @@ const storySettings = {
 
 export default storySettings;
 
-const Template = (props: NmpTextType) => <NmpText {...props} />;
+const Template = (props: NmpTextProps) => <NmpText {...props} />;
 
 export const Types = Template.bind({});
 
