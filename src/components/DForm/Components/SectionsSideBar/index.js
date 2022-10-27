@@ -5,7 +5,7 @@ import { Plus } from "react-feather";
 import classnames from "classnames";
 import { Nav, NavItem, NavLink } from "reactstrap";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { DragIndicator } from "@material-ui/icons";
+import { HolderOutlined } from "@ant-design/icons";
 
 import ProgressBar from "./Components/ProgressBar";
 import { ElementTypes } from "components/DForm";
@@ -20,36 +20,18 @@ const SectionsSideBar = (props) => {
     sectionsProgress,
     onSectionSelect,
     onSectionCreate,
-    onReorder,
-    isDraggable,
   } = props;
-
-  const handleDragEnd = (result) => {
-    if (result.destination === null || result.destination.index === result.source.index) return;
-
-    onReorder(result);
-  };
-
-  const onMouseEnter = (sectionId) => {
-    if (isDraggable) {
-      onSectionSelect(sectionId);
-    }
-  };
 
   return (
     <div className="sections">
-      <Droppable droppableId={"Section"} type={ElementTypes.Section}>
+      <Droppable droppableId="Section" type={ElementTypes.Section}>
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             <Nav tabs className="my-0 sections-nav">
               {sections.map((section, index) => (
                 <Draggable key={section.id} draggableId={section.id} index={index}>
                   {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      onMouseEnter={(e) => onMouseEnter(section.id)}
-                    >
+                    <div ref={provided.innerRef} {...provided.draggableProps}>
                       <NavItem
                         style={section.isHidden ? { display: "none" } : {}}
                         key={section.id}
@@ -59,15 +41,15 @@ const SectionsSideBar = (props) => {
                           className={classnames({ active: selectedSection === section.id }, "sections-nav_item")}
                           onClick={() => onSectionSelect(section.id)}
                         >
-                          <div className="draggable-wrapper draggable-wrapper--sections">
+                          <div className="dform-dnd__wrapper dform-dnd__wrapper--sections">
                             <span
-                              className="nested-draggable-list_item-drag-icon sections__drag-icon"
+                              className="dform-dnd__drag-handle-icon dform-dnd__drag-handle-icon--section"
                               {...provided.dragHandleProps}
                             >
-                              <DragIndicator />
+                              <HolderOutlined />
                             </span>
                             <div className={`sections-nav_item_title ${errors[section.id] ? "with-errors" : ""}`}>
-                              <span className="align-middle ml-50">{section.name}</span>
+                              <span className="align-middle">{section.name}</span>
                             </div>
                           </div>
 
@@ -101,14 +83,14 @@ const SectionsSideBar = (props) => {
         )}
       </Droppable>
       {isConfigurable ? (
-        <div className={"sections__add"} onClick={onSectionCreate}>
-          <div className={`sections-nav_item_title`}>
+        <div className="sections__add" onClick={onSectionCreate}>
+          <div className="sections-nav_item_title">
             <span className="align-middle ml-50">New tab</span>
           </div>
           <div className="sections-nav_item-add">
-            <Plus size={18} color={"white"} />
+            <Plus size={18} color="white" />
           </div>
-          <div className={"sections-nav_item_delimiter"} />
+          <div className="sections-nav_item_delimiter" />
         </div>
       ) : null}
     </div>

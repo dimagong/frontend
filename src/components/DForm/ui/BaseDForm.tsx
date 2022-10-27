@@ -5,9 +5,12 @@ import { DragDropContext } from "react-beautiful-dnd";
 import type { FC } from "react";
 import type { DragDropContextProps, DropResult, ResponderProvided } from "react-beautiful-dnd";
 
-import { DFormSections } from "./DFormSections";
+import { NmpCheckbox } from "features/nmp-ui";
+import { DFormLabel } from "../Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+
 import { DFormSchema } from "../types/dformSchema";
 import SectionsSideBar from "../Components/SectionsSideBar";
+import { DroppableDFormSections } from "../Components/Dnd/Sections/DroppableDFormSections";
 
 type Props = {
   schema?: DFormSchema;
@@ -52,29 +55,55 @@ export const BaseDForm: FC<Props> = (props) => {
     propOnDragEnd(result);
   };
 
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const onIsCollapsedChange = (event) => {
+    setIsCollapsed(event.target.checked);
+  };
+
   return (
     <div className="dform edit-mode">
-      <DragDropContext onDragEnd={onDragEnd}>
-        <SectionsSideBar
-          errors={[]}
-          sections={schema.sectionsOrder.map((sectionId) => schema.sections[sectionId])}
-          completed={undefined}
-          isConfigurable
-          selectedSection={selectedSectionId}
-          sectionsProgress={{}}
-          onSectionCreate={onSectionCreate}
-          onSectionSelect={onSectionClick}
-        />
+      <div className="dform__collapse">
+        <NmpCheckbox id="isCollapsed" onChange={onIsCollapsedChange}>
+          <DFormLabel label="Collapse" isSmall />
+        </NmpCheckbox>
+      </div>
 
-        <DFormSections
-          schema={schema}
-          selectedElement={selectedElement}
-          selectedSectionId={selectedSectionId}
-          onGroupCreate={onGroupCreate}
-          onFieldCreate={onFieldCreate}
-          onElementClick={onElementClick}
-        />
-      </DragDropContext>
+      <div className="d-flex">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <SectionsSideBar
+            errors={[]}
+            sections={schema.sectionsOrder.map((sectionId) => schema.sections[sectionId])}
+            completed={undefined}
+            isConfigurable
+            selectedSection={selectedSectionId}
+            sectionsProgress={{}}
+            onSectionCreate={onSectionCreate}
+            onSectionSelect={onSectionClick}
+          />
+
+          <DroppableDFormSections
+            schema={schema}
+            selectedElement={selectedElement}
+            selectedSectionId={selectedSectionId}
+            onGroupCreate={onGroupCreate}
+            onFieldCreate={onFieldCreate}
+            onElementClick={onElementClick}
+            isCollapsed={isCollapsed}
+          />
+
+          {/* Prev sections */}
+          {/* <DFormSections
+            schema={schema}
+            selectedElement={selectedElement}
+            selectedSectionId={selectedSectionId}
+            onGroupCreate={onGroupCreate}
+            onFieldCreate={onFieldCreate}
+            onElementClick={onElementClick}
+            isCollapsed={isCollapsed}
+          /> */}
+        </DragDropContext>
+      </div>
     </div>
   );
 };

@@ -1,14 +1,10 @@
 import React from "react";
 import type { FC } from "react";
 import { TabContent, TabPane } from "reactstrap";
-import { Droppable } from "react-beautiful-dnd";
-
-import { DragIndicator } from "@material-ui/icons";
 
 import { DFormSection } from "./DFormSection";
 import { useDFormContext } from "../DFormContext";
 import { DFormSchema } from "../types/dformSchema";
-import { ElementTypes } from "../types/elementTypes";
 
 type Props = {
   schema: DFormSchema;
@@ -39,51 +35,27 @@ export const DFormSections: FC<Props> = (props) => {
   }
 
   return (
-    <TabContent activeTab={selectedSectionId} className="w-100">
+    <TabContent activeTab={selectedSectionId}>
       {schema.sectionsOrder.map((sectionId) => {
+        if (selectedSectionId !== sectionId) {
+          return null;
+        }
+
         const { id, isHidden, isDisabled, relatedGroups } = schema.sections[sectionId];
 
         return (
           <TabPane tabId={id} key={id}>
-            <Droppable
-              droppableId={id}
-              type={ElementTypes.Group}
-              renderClone={(provided, snapshot, rubric) => (
-                <div {...provided.draggableProps} ref={provided.innerRef}>
-                  <div className="draggable-wrapper">
-                    <span
-                      className="nested-draggable-list_item-drag-icon group-drag-icon"
-                      {...provided.dragHandleProps}
-                    >
-                      <DragIndicator />
-                    </span>
-                    <div className={"group-title group-title--draggable"}>
-                      <span className="text-bold-500">{schema.groups[rubric.draggableId].name}</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-              key={id}
-            >
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {isHidden ? null : (
-                    <DFormSection
-                      id={id}
-                      schema={schema}
-                      isHidden={isHidden}
-                      isDisabled={isDisabled}
-                      relatedGroups={relatedGroups}
-                      selectedElement={selectedElement}
-                      onFieldCreate={onFieldCreate}
-                      onGroupCreate={onGroupCreate}
-                      onElementClick={onElementClick}
-                    />
-                  )}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
+            <DFormSection
+              id={id}
+              schema={schema}
+              isHidden={isHidden}
+              isDisabled={isDisabled}
+              relatedGroups={relatedGroups}
+              selectedElement={selectedElement}
+              onFieldCreate={onFieldCreate}
+              onGroupCreate={onGroupCreate}
+              onElementClick={onElementClick}
+            />
           </TabPane>
         );
       })}

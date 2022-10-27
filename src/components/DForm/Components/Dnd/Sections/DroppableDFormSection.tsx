@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Form, FormProps } from "antd";
 import type { FC, ReactNode } from "react";
 
-import Groups from "../Components/Groups";
-import { DFormSchema } from "../types/dformSchema";
+import { DFormSchema } from "components/DForm/types/dformSchema";
+
+import { DraggableDFormGroups } from "../Groups/DraggableDFormGroups";
 
 const validateMessages = {
   required: "Is required!",
@@ -21,9 +22,10 @@ type Props = {
   onFieldCreate?: (groupId: string) => void;
   onGroupCreate?: (sectionId: string) => void;
   onElementClick?: (el: any, type: "field" | "group" | "section") => void;
+  isCollapsed?: boolean;
 };
 
-export const DFormSection: FC<Props> = (props) => {
+export const DroppableDFormSection: FC<Props> = (props) => {
   const {
     id,
     schema,
@@ -36,6 +38,7 @@ export const DFormSection: FC<Props> = (props) => {
     onGroupCreate: propOnGroupCreate,
     onFieldCreate,
     onElementClick,
+    isCollapsed,
   } = props;
 
   const [form] = Form.useForm();
@@ -51,8 +54,15 @@ export const DFormSection: FC<Props> = (props) => {
   }
 
   return (
-    <Form form={form} name={id} layout="vertical" initialValues={initialValues} validateMessages={validateMessages}>
-      <Groups
+    <Form
+      form={form}
+      name={id}
+      layout="vertical"
+      initialValues={initialValues}
+      validateMessages={validateMessages}
+      className="d-flex"
+    >
+      <DraggableDFormGroups
         data={schema}
         sectionId={id}
         isDisabled={isDisabled}
@@ -61,7 +71,9 @@ export const DFormSection: FC<Props> = (props) => {
         onGroupCreate={onGroupCreate}
         onFieldCreate={onFieldCreate}
         onElementClick={onElementClick}
+        isCollapsed={isCollapsed}
       />
+
       {actions}
     </Form>
   );

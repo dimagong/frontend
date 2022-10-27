@@ -3,10 +3,11 @@ import React from "react";
 import { ElementTypes, FieldTypes } from "components/DForm";
 import { useDFormContext } from "components/DForm/DFormContext";
 
-import formComponents from "./Components/DFormWidgets";
-import { DFormField } from "./DFormField";
+import formComponents from "../../Fields/Components/DFormWidgets";
+import { DFormDraggableElement } from "../DFormDraggableElement";
+import { DFormField } from "../../Fields/DFormField";
 
-const FormComponent = (props) => {
+export const DraggableDFormFields = (props) => {
   const {
     data,
     groupId,
@@ -23,7 +24,7 @@ const FormComponent = (props) => {
 
   return (
     <>
-      {groupFields.map((formField) => {
+      {groupFields.map((formField, index) => {
         const field = data.fields[formField];
 
         // DCR controls a field rendering
@@ -139,17 +140,25 @@ const FormComponent = (props) => {
         const label = field.title;
 
         return (
-          <DFormField
-            formField={formField}
-            isSelected={isSelected}
-            field={field}
-            onElementClick={onElementClick}
-            label={label}
-            value={value}
-            options={options}
-            isDisabled={isDisabled}
-            onChange={onChange}
-          />
+          <DFormDraggableElement
+            key={formField}
+            draggableId={formField}
+            index={index}
+            classname={field.classes}
+            dragIconClasses={"dform-dnd__drag-handle-icon dform-dnd__drag-handle-icon--field"}
+          >
+            <DFormField
+              formField={formField}
+              isSelected={isSelected}
+              field={field}
+              onElementClick={onElementClick}
+              label={label}
+              value={value}
+              options={options}
+              isDisabled={isDisabled}
+              onChange={onChange}
+            />
+          </DFormDraggableElement>
         );
       })}
 
@@ -159,5 +168,3 @@ const FormComponent = (props) => {
     </>
   );
 };
-
-export default FormComponent;
