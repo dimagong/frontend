@@ -521,7 +521,7 @@ export const ApplicationPage = ({ applicationId }) => {
             <Button
               color="primary"
               className="button button-success"
-              disabled={updateApplication.isLoading}
+              disabled={updateApplication.isLoading || selectedElement}
               onClick={handleApplicationMutation}
             >
               Save
