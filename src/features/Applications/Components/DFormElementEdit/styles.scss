@@ -26,13 +26,11 @@
     font-weight: 400;
     font-size: 20px;
     line-height: 24px;
-
     color: #474747;
   }
-}
-
-.field-default-edit {
-  .ant-form-item {
-    margin-bottom: 0px;
+  &__checkbox-default {
+    .ant-form-item {
+      margin-bottom: 0px;
+    }
   }
 }

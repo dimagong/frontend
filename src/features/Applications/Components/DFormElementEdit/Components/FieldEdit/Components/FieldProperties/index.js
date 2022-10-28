@@ -55,13 +55,13 @@ export const FieldLabelShowingEditProperty = () => {
 export const FieldDefaultEditProperties = () => {
   return (
     <Row className="mb-2">
-      <Col md="12" className="field-default-edit">
+      <Col md="12" className="dform-field__checkbox-default">
         <FieldRequiredEditProperty />
       </Col>
-      <Col md="12" className="field-default-edit">
+      <Col md="12" className="dform-field__checkbox-default">
         <FieldLabelShowingEditProperty />
       </Col>
-      <Col md="12" className="field-default-edit">
+      <Col md="12" className="dform-field__checkbox-default">
         <FieldProtectedEditProperty />
       </Col>
     </Row>
