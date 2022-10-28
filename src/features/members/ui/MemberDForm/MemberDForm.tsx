@@ -157,7 +157,7 @@ export const MemberDForm: FC<Props> = (props) => {
   return (
     <div className="member-dform member-dform__container">
       <Row>
-        <Col xl={{ span: 16, push: 4 }} sm={{ span: 12, push: 6 }}>
+        <Col xl={{ span: 16, push: 4 }} span={12} push={6}>
           <h2 className="member-dform__title">{name}</h2>
         </Col>
       </Row>
@@ -172,7 +172,7 @@ export const MemberDForm: FC<Props> = (props) => {
           />
         </Col>
 
-        <Col xl={{ span: 16, push: 4 }} sm={{ span: 12, push: 6 }}>
+        <Col xl={{ span: 16, push: 4 }} span={12} push={6}>
           <NpmCard title={<strong className="member-dform__section-name">Section {sectionName}</strong>}>
             <Form.Provider onFormFinish={onFormFinish} onFormChange={onFormChange}>
               <DFormContextProvider id={id} accessType={accessType} isMemberView>
