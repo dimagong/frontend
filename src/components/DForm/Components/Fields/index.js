@@ -1,18 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import classnames from "classnames";
 
-import { ElementTypes, FieldTypes } from "components/DForm";
+import { ElementTypes } from "components/DForm";
 import { useDFormContext } from "components/DForm/DFormContext";
+import { ButtonAddItem } from "../../ui/ButtonAddItem";
 
 import formComponents from "./Components/DFormWidgets";
 
-const DFormElement = ({ classes, isSelected, onClick, children }) => {
+const DFormElement = ({ classes, isSelected, onClick, children, onFieldCreate, groupId, fieldId }) => {
+  const [selected, onSelected] = useState(false);
+  const onMouseEnter = (e) => {
+    onSelected(true);
+  };
+  const onMouseLeave = () => {
+    onSelected(false);
+  };
+
+  const createField = () => {
+    onFieldCreate(groupId, fieldId);
+    onSelected(false);
+  };
   return (
-    <div
-      onClick={onClick}
-      className={classnames("d-flex editable mb-3 w-100", classes || "col-12", { selected: isSelected })}
-    >
-      {children}
+    <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="w-100 mb-3">
+      <div
+        onClick={onClick}
+        className={classnames("d-flex editable w-100", classes || "col-12", { selected: isSelected })}
+      >
+        {children}
+      </div>
+      {selected && <ButtonAddItem className="element-add mt-1" onClick={createField} label={"Add new form element"} />}
     </div>
   );
 };
@@ -25,6 +41,7 @@ const FormComponent = (props) => {
     groupFields,
     selectedElement,
     onElementClick: propOnElementClick,
+    onFieldCreate,
   } = props;
 
   const { isAccessible, isConfigurable } = useDFormContext();
@@ -59,7 +76,15 @@ const FormComponent = (props) => {
         const label = field.title;
 
         return (
-          <DFormElement classes={field.classes} isSelected={isSelected} onClick={onElementClick} key={fieldId}>
+          <DFormElement
+            classes={field.classes}
+            isSelected={isSelected}
+            onClick={onElementClick}
+            key={fieldId}
+            fieldId={fieldId}
+            onFieldCreate={onFieldCreate}
+            groupId={groupId}
+          >
             <FormFieldElement
               id={field.id}
               label={label}
