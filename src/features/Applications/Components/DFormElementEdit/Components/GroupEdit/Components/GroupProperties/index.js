@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Form } from "antd";
 import _ from "lodash";
 
-import { NmpButton, NmpInput, NmpCheckbox } from "features/nmp-ui";
+import { NmpButton, NmpInput, NmpCheckbox, NmpSelect } from "features/nmp-ui";
 import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
-const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel }) => {
+const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel, data }) => {
   const [form] = Form.useForm();
   const [disabled, setDisabled] = useState(true);
 
@@ -44,8 +44,25 @@ const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElemen
     });
   };
 
+  const findGroupsMooving = (data, element) => {
+    if (!data || !element) return null;
+    const { relatedGroups, name: sectionName } = data.sections[element.sectionId];
+    return relatedGroups.map((group) => `${sectionName}.${data.groups[group].name}`);
+  };
+
+  const groupOptions = findGroupsMooving(data, element) ?? [];
+
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
+      <Form.Item label="Groups moving" name="groups-moving" className="dform-field">
+        <NmpSelect
+          id="groups-moving"
+          isSearchable={true}
+          options={groupOptions.map((option) => ({ label: option, value: option }))}
+          placeholder="Select an option"
+        />
+      </Form.Item>
+
       <Form.Item label="Group name" name="name" className="dform-field mb-2">
         <NmpInput id="name" type="text" placeholder="Enter your answer here" />
       </Form.Item>

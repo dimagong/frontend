@@ -399,8 +399,45 @@ const FieldProperties = (props) => {
     });
   };
 
+  console.log("FieldProperties element", element);
+  console.log("FieldProperties data", data);
+  const findElementsMoovingOptions = (data, element) => {
+    const options = [];
+    if (!data || !element) return options;
+    const { sectionId } = data.groups[element.groupId];
+    console.log("sectionId", sectionId);
+    if (!sectionId) {
+      const { relatedFields, name: groupName } = data.groups[element.groupId];
+      relatedFields.forEach((field) => {
+        const fileName = data.fields[field].title;
+        options.push(`${groupName}.${fileName}`);
+      });
+    } else {
+      const { relatedGroups, name: sectionName } = data.sections[sectionId];
+      relatedGroups.forEach((group) => {
+        const { relatedFields, name: groupName } = data.groups[group];
+        relatedFields.forEach((field) => {
+          const fileName = data.fields[field].title;
+          options.push(`${sectionName}.${groupName}.${fileName}`);
+        });
+      });
+    }
+
+    return options;
+  };
+  const elementOptions = findElementsMoovingOptions(data, element);
+
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
+      <Form.Item label="Elements moving" name="elements-moving" className="dform-field">
+        <NmpSelect
+          id="elements-moving"
+          isSearchable={true}
+          options={elementOptions.map((option) => ({ label: option, value: option }))}
+          placeholder="Select an option"
+        />
+      </Form.Item>
+
       <Form.Item label="Element type" name="type" className="dform-field mb-2">
         <NmpSelect
           id="type"
