@@ -13,7 +13,7 @@ import MSHTreeElement from "./components/MSHTreeElement";
 import MSHTreeNodeList from "./components/MSHTreeNodeList";
 import MSHCreateElementForm from "./components/MSHCreateElementForm";
 import { ADD_FIELD, ADD_GROUP, addFieldAction, addGroupAction } from "./NodeAdditionActions";
-import CustomModal from "../CustomModal";
+import { NmpModal } from "features/nmp-ui";
 
 const getKey = ({ nodeId }) => nodeId;
 
@@ -76,9 +76,7 @@ const TreeHierarchy = (props) => {
   };
 
   const onCreateElementSubmit = (submitted) => {
-    if (submitted.invalid) return;
-
-    const { name } = submitted.values;
+    const { name } = submitted;
     const { parent, type } = nodeDataToCreate;
 
     onElementCreationSubmit({ type, name, parentId: parent.id });
@@ -122,13 +120,9 @@ const TreeHierarchy = (props) => {
       />
 
       {nodeDataToCreate && (
-        <CustomModal isOpen={modal} title={creationTitle(nodeDataToCreate.type)} onClose={closeModal} footerDisabled>
-          <components.CreateElementForm
-            submitting={elementCreationLoading}
-            placeholder={nodeDataToCreate.parent.path.join(".")}
-            onSubmit={onCreateElementSubmit}
-          />
-        </CustomModal>
+        <NmpModal visible={modal} title={creationTitle(nodeDataToCreate.type)} onCancel={closeModal} footer={null}>
+          <components.CreateElementForm onSubmit={onCreateElementSubmit} />
+        </NmpModal>
       )}
     </div>
   );
