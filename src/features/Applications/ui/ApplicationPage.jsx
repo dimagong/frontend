@@ -1,12 +1,13 @@
 import { v4 } from "uuid";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
+import _ from "lodash";
 
 import CustomTabs from "components/Tabs";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-import { DFormContextProvider, BaseDForm, ElementTypes } from "components/DForm";
+import { DFormContextProvider, BaseDForm, ElementTypes, DformSchemaElementTypes } from "components/DForm";
 
 import {
   APPLICATION_PAGES,
@@ -33,6 +34,17 @@ import { parseSelectCategory } from "features/home/ContextSearch/Applications/ut
 export const ApplicationPage = ({ applicationId }) => {
   const [applicationData, setApplicationData] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
+
+  useEffect(() => {
+    if (selectedElement) {
+      const type = `${selectedElement.elementType}s`;
+      const updatedSelectedElement = applicationData[type][selectedElement.id];
+
+      if (!_.isEqual(updatedSelectedElement, selectedElement)) {
+        setSelectedElement(updatedSelectedElement);
+      }
+    }
+  }, [applicationData]);
 
   const updateApplication = useUpdateApplicationTemplateMutation(
     { applicationId },
@@ -230,7 +242,7 @@ export const ApplicationPage = ({ applicationId }) => {
       group.id
     );
 
-    group.relatedFields.map((fieldId) => delete data.fields[fieldId]);
+    group.relatedFields.map((fieldId) => handleFieldDelete({ id: fieldId }, data));
 
     delete data.groups[group.id];
   };
@@ -238,12 +250,26 @@ export const ApplicationPage = ({ applicationId }) => {
   const handleFieldDelete = (field, data) => {
     const fieldGroup = Object.values(data.groups).filter((group) => group.relatedFields.includes(String(field.id)))[0];
 
-    data.groups[fieldGroup.id].relatedFields = removeItemFormArrayByValue(
-      data.groups[fieldGroup.id].relatedFields,
-      field.id
-    );
+    if (fieldGroup) {
+      data.groups[fieldGroup?.id].relatedFields = removeItemFormArrayByValue(
+        data.groups[fieldGroup.id].relatedFields,
+        field.id
+      );
+    }
+
+    Object.values(DformSchemaElementTypes).forEach((type) => {
+      data[type] = removeConditionsFromElementById(data, type, field.id);
+    });
 
     delete data.fields[field.id];
+  };
+
+  const removeConditionsFromElementById = (data, type, id) => {
+    Object.keys(data[type]).forEach((fieldKey) => {
+      data[type][fieldKey].conditions = data[type][fieldKey].conditions.filter((condition) => condition.fieldId !== id);
+    });
+
+    return data[type];
   };
 
   const validateElement = (element) => {

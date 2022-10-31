@@ -14,6 +14,8 @@ const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElemen
   };
 
   useEffect(() => {
+    setDisabled(true);
+
     form.setFieldsValue(initialValues);
   }, [element]);
 

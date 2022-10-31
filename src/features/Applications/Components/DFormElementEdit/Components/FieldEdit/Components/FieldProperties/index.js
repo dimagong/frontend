@@ -117,7 +117,7 @@ export const FieldDateEditProperties = () => {
     <>
       <Row className="mb-2">
         <Col md="12">
-          <Form.Item label="Date format" name="format" className="dform-field mb-2">
+          <Form.Item label="Date format" name="format" className="dform-field mb-2" rules={[{ required: true }]}>
             <NmpSelect
               id="format"
               options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
@@ -364,6 +364,7 @@ const FieldProperties = (props) => {
   };
 
   useEffect(() => {
+    setDisabled(true);
     setType(element.type);
 
     form.setFieldsValue(initialValues);
