@@ -6,17 +6,14 @@ import { CategoryHierarchy } from "./CategoryHierarchy";
 
 import { transformCategoriesToHierarchy } from "./utils/categoryHierarchyConverter";
 
-import { CreateCategorySubmitProps, Hierarchy, Search } from "./models";
+import { CategoryId, CreateCategorySubmitProps, Search } from "./models";
 
 import "./styles.scss";
 
-export const CategoriesHierarchy: React.FC<Props> = ({ search }) => {
-  const categories = useDFormTemplateCategoryQuery({ name: search });
-  let hierarchies: Hierarchy[] = [];
+export const CategoriesHierarchy: React.FC<Props> = ({ search, rootCategoryId }) => {
+  const { data: category, isLoading } = useDFormTemplateCategoryQuery({ name: search, rootCategoryId });
 
-  if (!_.isEmpty(categories.data)) {
-    hierarchies = transformCategoriesToHierarchy(categories.data);
-  }
+  const hierarchy = category ? transformCategoriesToHierarchy(category)[0] : null;
 
   //@ts-ignore
   const createCategory = useCreateDFormTemplateCategoryMutation();
@@ -26,29 +23,29 @@ export const CategoriesHierarchy: React.FC<Props> = ({ search }) => {
     createCategory.mutate({ name: name, parent_id: parentId });
   };
 
-  if (categories.isLoading) {
+  if (isLoading) {
     return <div>loading...</div>;
   }
 
-  if (_.isEmpty(categories.data) && !_.isEmpty(search)) {
+  if (_.isEmpty(category) && !_.isEmpty(search)) {
     return <div>No search results found...</div>;
   }
 
   return (
     <div className="tree-hierarchies-wrapper">
-      {hierarchies.map((hierarchy, index) => (
+      {hierarchy ? (
         <CategoryHierarchy
-          key={index}
           hierarchy={hierarchy}
           search={search}
           onElementCreationSubmit={onElementCreationSubmit}
           isLoading={createCategory.isLoading}
         />
-      ))}
+      ) : null}
     </div>
   );
 };
 
 type Props = {
   search: Search;
+  rootCategoryId: CategoryId;
 };

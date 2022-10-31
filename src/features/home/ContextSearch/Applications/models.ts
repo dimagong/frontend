@@ -86,6 +86,16 @@ export type CategoryForSelect = {
   rootCategoryId: RootCategoryId;
 };
 
+export type RootCategoryForSelect = {
+  id: CategoryId;
+  name: string;
+  parentId: CategoryId | null;
+  categorizableId: CategoryId;
+  categorizableType: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
 export type CategoryName = string;
 export type ApplicationName = string;
 
