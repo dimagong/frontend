@@ -4,11 +4,13 @@ import React from "react";
 import classnames from "classnames";
 import { Select, SelectProps } from "antd";
 
-type Props = Omit<SelectProps, "loading"> & { isLoading?: boolean };
+type Props = Omit<SelectProps, "loading" | "showSearch"> & { isLoading?: boolean; isSearchable?: boolean };
 
-export const NmpSelect: React.FC<Props> = ({ options = [], isLoading, children, className, showSearch, ...props }) => {
+export const NmpSelect: React.FC<Props> = (props) => {
+  const { options = [], isLoading, children, className, isSearchable = true, ...rest } = props;
+
   return (
-    <Select showSearch loading={isLoading} className={classnames("nmp-select", className)} {...props}>
+    <Select loading={isLoading} showSearch={isSearchable} className={classnames("nmp-select", className)} {...rest}>
       {children ??
         options?.map(({ label, value }) => (
           <Select.Option value={value} key={value}>
