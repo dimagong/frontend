@@ -1,0 +1,12 @@
+.dform-draggable {
+  &__container {
+    position: relative;
+  }
+
+  &__drag-handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+  }
+}

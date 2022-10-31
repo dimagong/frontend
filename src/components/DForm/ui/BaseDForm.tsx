@@ -91,17 +91,6 @@ export const BaseDForm: FC<Props> = (props) => {
             onElementClick={onElementClick}
             isCollapsed={isCollapsed}
           />
-
-          {/* Prev sections */}
-          {/* <DFormSections
-            schema={schema}
-            selectedElement={selectedElement}
-            selectedSectionId={selectedSectionId}
-            onGroupCreate={onGroupCreate}
-            onFieldCreate={onFieldCreate}
-            onElementClick={onElementClick}
-            isCollapsed={isCollapsed}
-          /> */}
         </DragDropContext>
       </div>
     </div>

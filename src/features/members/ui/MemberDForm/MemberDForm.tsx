@@ -171,7 +171,6 @@ export const MemberDForm: FC<Props> = (props) => {
             <Form.Provider onFormFinish={onFormFinish} onFormChange={onFormChange}>
               <DFormContextProvider id={id} accessType={accessType} isMemberView>
                 <DFormSection
-                  id={sectionId}
                   schema={schema}
                   actions={
                     <Row justify="space-between" align="middle">
@@ -191,6 +190,7 @@ export const MemberDForm: FC<Props> = (props) => {
                     </Row>
                   }
                   isHidden={schema.sections[sectionId]?.isHidden ?? false}
+                  sectionId={sectionId}
                   isDisabled={schema.sections[sectionId]?.isDisabled ?? false}
                   relatedGroups={schema.sections[sectionId]?.relatedGroups ?? []}
                   initialValues={values}
