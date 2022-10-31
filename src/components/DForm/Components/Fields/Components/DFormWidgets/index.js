@@ -1,16 +1,15 @@
-import { DFormText } from "./Components/DFormText";
-import { DFormFile } from "./Components/DFormFile";
 import { DFormBoolean } from "./Components/DFormBoolean";
-import { DFormFileList } from "./Components/DFormFileList";
 import { DFormDatePicker } from "./Components/DFormDatePicker";
+import { DFormFile } from "./Components/DFormFile";
+import { DFormFileList } from "./Components/DFormFileList";
+import { DFormHelpText } from "./Components/DFormHelpText";
 import { DFormLongText } from "./Components/DFormLongText";
+import { DFormMultiSelect } from "./Components/DFormMultiSelect";
+import { DFormNumber } from "./Components/DFormNumber";
 import { DFormResource } from "./Components/DFormResource";
-
-import { DFormSelectWidget } from "./Components/DFormSelectWidget";
-import { DFormNumberWidget } from "./Components/DFormNumberWidget";
-import { DFormTextAreaWidget } from "./Components/DFormTextAreaWidget";
-import { DFormMultiSelectWidget } from "./Components/DFormMultiSelectWidget";
-import { DFormHelpTextWidget } from "./Components/DFormHelpTextWidget";
+import { DFormSelect } from "./Components/DFormSelect";
+import { DFormText } from "./Components/DFormText";
+import { DFormTextArea } from "./Components/DFormTextArea";
 
 import { FieldTypes } from "components/DForm";
 
@@ -19,15 +18,14 @@ const dFormWidgets = {
   [FieldTypes.Date]: DFormDatePicker,
   [FieldTypes.File]: DFormFile,
   [FieldTypes.FileList]: DFormFileList,
+  [FieldTypes.HelpText]: DFormHelpText,
   [FieldTypes.LongText]: DFormLongText,
+  [FieldTypes.MultiSelect]: DFormMultiSelect,
+  [FieldTypes.Number]: DFormNumber,
   [FieldTypes.Resource]: DFormResource,
+  [FieldTypes.Select]: DFormSelect,
   [FieldTypes.Text]: DFormText,
-
-  [FieldTypes.Select]: DFormSelectWidget,
-  [FieldTypes.Number]: DFormNumberWidget,
-  [FieldTypes.TextArea]: DFormTextAreaWidget,
-  [FieldTypes.MultiSelect]: DFormMultiSelectWidget,
-  [FieldTypes.HelpText]: DFormHelpTextWidget,
+  [FieldTypes.TextArea]: DFormTextArea,
 };
 
 export default dFormWidgets;

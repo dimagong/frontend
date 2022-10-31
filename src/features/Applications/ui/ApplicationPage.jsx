@@ -149,7 +149,7 @@ export const ApplicationPage = ({ applicationId }) => {
     setApplicationData(dataToSave);
   };
 
-  const handleFieldCreate = (groupId) => {
+  const handleFieldCreate = (groupId, fieldId = undefined) => {
     const newField = DFormFieldModel.create(groupId);
     // const newFieldData = {
     //   ...INITIAL_FIELD_DATA,
@@ -161,7 +161,12 @@ export const ApplicationPage = ({ applicationId }) => {
     const dataToSave = embedSuggestedChanges(newField, true);
 
     // Add field to group where it was created
-    dataToSave.groups[groupId].relatedFields = [...dataToSave.groups[groupId].relatedFields, newField.id];
+    if (fieldId) {
+      const fieldIndex = dataToSave.groups[groupId].relatedFields.indexOf(fieldId);
+      dataToSave.groups[groupId].relatedFields.splice(fieldIndex + 1, 0, newField.id);
+    } else {
+      dataToSave.groups[groupId].relatedFields = [...dataToSave.groups[groupId].relatedFields, newField.id];
+    }
 
     setApplicationData(dataToSave);
   };

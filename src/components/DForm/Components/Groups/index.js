@@ -1,12 +1,13 @@
 import "./styles.scss";
 
 import React from "react";
-import { Plus } from "react-feather";
 
 import { ElementTypes } from "components/DForm";
 
 import Fields from "../Fields";
 import { useDFormContext } from "../../DFormContext";
+
+import { ButtonAddItem } from "../../ui/ButtonAddItem";
 
 import classnames from "classnames";
 
@@ -44,6 +45,7 @@ const Groups = (props) => {
         const isDisabled = propIsDisabled || Boolean(group.isDisabled);
         const isSelected = selectedElement?.elementType === ElementTypes.Group && selectedElement?.id === group.id;
         const isLastGroup = sectionGroups.length - 1 === idx;
+        const creteFieldByGroupId = () => onFieldCreate(groupId);
 
         return (
           <div className="group" key={groupId}>
@@ -64,22 +66,19 @@ const Groups = (props) => {
                 onElementClick={onElementClick}
               />
             </div>
-            {isConfigurable ? (
-              <div className={classnames("btn-box", { "btn-group": isLastGroup })}>
-                <div className="element-add" onClick={() => onFieldCreate(groupId)}>
-                  <div className="element-add_icon">
-                    <Plus color="white" size={23} />
-                  </div>
-                  <div className="element-add_description">Add new form element</div>
-                </div>
-                {isLastGroup ? (
-                  <div className="element-add" onClick={onGroupCreate}>
-                    <div className="element-add_icon">
-                      <Plus color="white" size={23} />
-                    </div>
-                    <div className="element-add_description">Add new group</div>
-                  </div>
-                ) : null}
+            {isConfigurable && isSelected ? (
+              <div
+                className={classnames("btn-box", {
+                  "btn-box-selected": isSelected,
+                })}
+              >
+                <ButtonAddItem className="element-add" onClick={creteFieldByGroupId} label={"Add new form element"} />
+              </div>
+            ) : null}
+            {isConfigurable && !isSelected && isLastGroup ? (
+              <div className={classnames("btn-box", { "btn-group": isLastGroup && !isSelected })}>
+                <ButtonAddItem className="element-add" onClick={creteFieldByGroupId} label={"Add new form element"} />
+                <ButtonAddItem className="element-add" onClick={onGroupCreate} label={"Add new group"} />
               </div>
             ) : null}
           </div>
@@ -91,13 +90,8 @@ const Groups = (props) => {
       ) : null}
 
       {(!sectionGroups || sectionGroups.length === 0) && isConfigurable ? (
-        <div className={classnames("btn-box btn-group")}>
-          <div className="element-add" onClick={onGroupCreate}>
-            <div className="element-add_icon">
-              <Plus color="white" size={23} />
-            </div>
-            <div className="element-add_description">Add new group</div>
-          </div>
+        <div className="btn-box btn-box-single">
+          <ButtonAddItem className="element-add" onClick={onGroupCreate} label={"Add new group"} />
         </div>
       ) : null}
     </div>

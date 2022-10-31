@@ -277,7 +277,7 @@ export const FieldResourceEditProperties = ({ element, organization }) => {
           >
             <NmpSelect
               id="resourceManagerFieldId"
-              loading={isLoading}
+              isLoading={isLoading}
               options={options}
               placeholder="Select a resource field"
             />
@@ -301,7 +301,7 @@ export const FieldResourceEditProperties = ({ element, organization }) => {
                   label: ResourceCompileOptionLabel[element.resourceCompileOption],
                 },
               ]}
-              loading={isLoading}
+              isLoading={isLoading}
               placeholder="Select a resource compile option"
             />
           </Form.Item>

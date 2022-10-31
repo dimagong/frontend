@@ -1,10 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { NmpCheckbox, NmpInput } from "features/nmp-ui";
+import { NmpCheckbox, NmpInput, NmpSelect } from "features/nmp-ui";
 
 import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
-import { DFormSelectWidget } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormSelectWidget";
 
 import {
   getCategoriesAsOptions,
@@ -18,7 +17,7 @@ export const ApplicationDescriptionFormFields = ({ name, description, isPrivate,
 
   const onDescriptionChange = ({ target }) => onChange({ name, description: target.value, isPrivate });
 
-  const onCategoryChange = (_category) => onChange({ name, description, isPrivate, categoryId: _category.value });
+  const onCategoryChange = (_, _category) => onChange({ name, description, isPrivate, categoryId: _category.value });
 
   const categoryValue = category ? getCategoryAsOption(category) : null;
 
@@ -49,18 +48,15 @@ export const ApplicationDescriptionFormFields = ({ name, description, isPrivate,
       </div>
 
       {categories ? (
-        <DFormSelectWidget
-          id="dform-organization-category"
-          label="Select organization category"
-          value={categoryValue}
-          options={categoriesOptions}
-          isError={false}
-          isRequired={false}
-          isDisabled={false}
-          isLabelShowing={true}
-          onChange={onCategoryChange}
-          className="mb-2"
-        />
+        <div className="mb-2">
+          <DFormLabel label="Select organization category" id="dform-organization-category" />
+          <NmpSelect
+            id="dform-organization-category"
+            value={categoryValue}
+            options={categoriesOptions}
+            onChange={onCategoryChange}
+          />
+        </div>
       ) : null}
 
       <NmpCheckbox id="application-private" checked={isPrivate} onChange={onPrivateChange}>

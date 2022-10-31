@@ -21,11 +21,11 @@ export const normalizedDFormValueByField = (field: Field, dformValue: DFormValue
       return dformValue.value ?? null;
     case FieldTypes.MultiSelect:
       return Array.isArray(dformValue.value) ? dformValue.value : [];
-    // Get files from response instead value in case when field type is file/fileList
     case FieldTypes.File:
     case FieldTypes.FileList:
-    case FieldTypes.Resource:
       return Array.isArray(dformValue.files) ? dformValue.files : [];
+    case FieldTypes.Resource:
+      return Array.isArray(dformValue.files) ? dformValue.files[0] : null;
     default:
       throw new Error(`Unexpected field type: ${field.type}`);
   }

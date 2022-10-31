@@ -1,18 +1,19 @@
-import React, { FC, ReactNode, createContext, useContext } from "react";
+import type { FC, ReactNode } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 
+import { DformFileService } from "./data/dformFileService";
 import { isManagerViewDFormAccessible, isMemberViewDFormAccessible, AccessTypes } from "./types/accessTypes";
 
-type Context = {
+type ContextValue = {
   dformId?: number;
+  dformFileService?: DformFileService;
   accessType: AccessTypes;
   isAccessible: boolean;
-  isMemberView: boolean;
   isConfigurable: boolean;
 };
 
-const defaultValue: Context = {
+const defaultValue: ContextValue = {
   accessType: AccessTypes.HardLock,
-  isMemberView: false,
   isConfigurable: false,
   isAccessible: false,
 };
@@ -31,9 +32,9 @@ type Props = {
 
 export const DFormContextProvider: FC<Props> = (props) => {
   const {
-    id,
+    id: dformId,
     accessType = defaultValue.accessType,
-    isMemberView = defaultValue.isMemberView,
+    isMemberView,
     isConfigurable = defaultValue.isConfigurable,
     children,
   } = props;
@@ -42,7 +43,11 @@ export const DFormContextProvider: FC<Props> = (props) => {
     ? false
     : (isMemberView ? isMemberViewDFormAccessible : isManagerViewDFormAccessible)(accessType);
 
-  const value: Context = { dformId: id, accessType, isConfigurable, isMemberView, isAccessible };
+  const dformFileService = useMemo(() => {
+    return isMemberView ? DformFileService.member : DformFileService.manager;
+  }, [isMemberView]);
+
+  const value: ContextValue = { dformId, dformFileService, accessType, isConfigurable, isAccessible };
 
   return <DFormContext.Provider value={value} children={children} />;
 };

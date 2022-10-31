@@ -72,7 +72,7 @@ export class DformFileService {
   delete(params: DeleteDFormFileParams) {
     const { masterSchemaFieldId, dformId, fileId } = params;
 
-    const url = this.buildUrl(`/dform/${dformId}/user-files`);
+    const url = this.buildUrl(`/dform/${dformId}/user-file`);
     const data = { master_schema_field_id: masterSchemaFieldId, file_id: fileId };
 
     return this.apiClient.delete(url.toString(), data);

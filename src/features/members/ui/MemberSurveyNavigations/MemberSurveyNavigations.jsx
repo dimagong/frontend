@@ -5,7 +5,7 @@ import { RightOutlined, LeftOutlined } from "@ant-design/icons";
 
 import { NmpButton } from "features/nmp-ui";
 
-import { Status } from "../../data/constants/statusConstants";
+import { Status } from "features/members/data/constants/statusConstants";
 
 const MemberSurveyNavigations = ({
   surveyStatus,

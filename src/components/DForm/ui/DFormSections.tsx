@@ -35,30 +35,32 @@ export const DFormSections: FC<Props> = (props) => {
   }
 
   return (
-    <TabContent activeTab={selectedSectionId}>
-      {schema.sectionsOrder.map((sectionId) => {
-        if (selectedSectionId !== sectionId) {
-          return null;
-        }
+    <div className="dform__sections">
+      <TabContent activeTab={selectedSectionId}>
+        {schema.sectionsOrder.map((sectionId) => {
+          if (selectedSectionId !== sectionId) {
+            return null;
+          }
 
-        const { id, isHidden, isDisabled, relatedGroups } = schema.sections[sectionId];
+          const { id, isHidden, isDisabled, relatedGroups } = schema.sections[sectionId];
 
-        return (
-          <TabPane tabId={id} key={id}>
-            <DFormSection
-              id={id}
-              schema={schema}
-              isHidden={isHidden}
-              isDisabled={isDisabled}
-              relatedGroups={relatedGroups}
-              selectedElement={selectedElement}
-              onFieldCreate={onFieldCreate}
-              onGroupCreate={onGroupCreate}
-              onElementClick={onElementClick}
-            />
-          </TabPane>
-        );
-      })}
-    </TabContent>
+          return (
+            <TabPane tabId={id} key={id}>
+              <DFormSection
+                id={id}
+                schema={schema}
+                isHidden={isHidden}
+                isDisabled={isDisabled}
+                relatedGroups={relatedGroups}
+                selectedElement={selectedElement}
+                onFieldCreate={onFieldCreate}
+                onGroupCreate={onGroupCreate}
+                onElementClick={onElementClick}
+              />
+            </TabPane>
+          );
+        })}
+      </TabContent>
+    </div>
   );
 };

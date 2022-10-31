@@ -1,10 +1,11 @@
-import React, { FC } from "react";
+import React from "react";
+import type { FC } from "react";
 
 import { NmpCheckbox } from "features/nmp-ui";
 
 import { DFormItem } from "../DFormItem";
 import { DFormLabel } from "../DFormLabel";
-import { AbstractDFormFieldProps } from "../../types";
+import type { AbstractDFormFieldProps } from "../../types";
 
 type Props = AbstractDFormFieldProps;
 

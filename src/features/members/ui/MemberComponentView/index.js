@@ -35,8 +35,8 @@ const MemberComponentView = (props) => {
 
   return (
     <>
-      <div className="membercomponent-menu">
-        <div className="membercomponent-menu-wrapper">
+      <div className="member-menu">
+        <div className="member-menu-wrapper">
           <MemberMenuView
             dforms={dForms}
             dFormsCategories={dFormsCategories}
@@ -47,7 +47,7 @@ const MemberComponentView = (props) => {
           />
         </div>
       </div>
-      <Row justify="center" align="center" style={{ background: "#f4f4f4б" }}>
+      <Row justify="center" align="middle" className="member-block">
         <Col span={23}>
           {activeOnboarding.type === TypeConstants.SURVEY && (
             <MemberSurveyView

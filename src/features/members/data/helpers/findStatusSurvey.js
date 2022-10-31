@@ -1,4 +1,4 @@
-import { Status } from "../constants/statusConstants";
+import { Status } from "features/members/data/constants/statusConstants";
 
 const findStatusSurvey = (startedAt, finishedAt, gradedAt, isRecentlySubmitted) => {
   let result = "";

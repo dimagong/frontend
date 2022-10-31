@@ -19,13 +19,7 @@ export type DFromBaseProps = {
 
 export const DFormBaseSection: FC<DFromBaseProps> = (props) => {
   const { schema, isHidden, sectionId, isDisabled, relatedGroups } = props;
-  const { selectedElement, onFieldCreate, onGroupCreate: propOnGroupCreate, onElementClick } = props;
-
-  const onGroupCreate = () => {
-    if (propOnGroupCreate) {
-      propOnGroupCreate(sectionId);
-    }
-  };
+  const { selectedElement, onFieldCreate, onGroupCreate, onElementClick } = props;
 
   if (isHidden) {
     return null;

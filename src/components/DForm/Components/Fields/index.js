@@ -1,10 +1,38 @@
-import React from "react";
+import classnames from "classnames";
+import React, { useState } from "react";
 
-import { ElementTypes, FieldTypes } from "components/DForm";
+import { ElementTypes } from "components/DForm";
 import { useDFormContext } from "components/DForm/DFormContext";
+import { ButtonAddItem } from "components/DForm/ui/ButtonAddItem";
+// import { DFormField } from "./DFormField";
 
 import formComponents from "./Components/DFormWidgets";
-import { DFormField } from "./DFormField";
+
+const DFormElement = ({ classes, isSelected, onClick, children, onFieldCreate, groupId, fieldId }) => {
+  const [selected, onSelected] = useState(false);
+  const onMouseEnter = (e) => {
+    onSelected(true);
+  };
+  const onMouseLeave = () => {
+    onSelected(false);
+  };
+
+  const createField = () => {
+    onFieldCreate(groupId, fieldId);
+    onSelected(false);
+  };
+  return (
+    <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="w-100 mb-3">
+      <div
+        onClick={onClick}
+        className={classnames("d-flex editable w-100", classes || "col-12", { selected: isSelected })}
+      >
+        {children}
+      </div>
+      {selected && <ButtonAddItem className="element-add mt-1" onClick={createField} label={"Add new form element"} />}
+    </div>
+  );
+};
 
 const FormComponent = (props) => {
   const {
@@ -14,17 +42,15 @@ const FormComponent = (props) => {
     groupFields,
     selectedElement,
     onElementClick: propOnElementClick,
+    onFieldCreate,
   } = props;
-  // ToDo: Remove values later
-  const values = {};
-  const onFieldChange = () => {};
 
   const { isAccessible, isConfigurable } = useDFormContext();
 
   return (
     <>
-      {groupFields.map((formField) => {
-        const field = data.fields[formField];
+      {groupFields.map((fieldId) => {
+        const field = data.fields[fieldId];
 
         // DCR controls a field rendering
         if (field.isHidden) return null;
@@ -42,114 +68,41 @@ const FormComponent = (props) => {
         // An DForm's fields can be disabled by DForm AccessType. Currently, only user-lock is used.
         const isDisabled = !isAccessible || propIsDisabled || field.isDisabled;
 
-        // Getting a field value depending on its type and is it master schema element or not.
-        // It can be refactored later, for example, a DForm can have a construction block that is not always like form
-        // elements, and that construction block may have implementation as form elements or any kind of render.
-        let value;
-        if (isConfigurable) {
-          switch (field.type) {
-            case FieldTypes.Text:
-            case FieldTypes.Date:
-            case FieldTypes.Number:
-            case FieldTypes.TextArea:
-            case FieldTypes.LongText:
-              value = "";
-              break;
-            case FieldTypes.Boolean:
-              value = false;
-              break;
-            case FieldTypes.MultiSelect:
-              value = [];
-              break;
-            // Set example fake file to show how it looks like
-            case FieldTypes.File:
-            case FieldTypes.FileList:
-            case FieldTypes.Resource:
-              value = Array.from({ length: FieldTypes.FileList === field.type ? 2 : 1 }).fill({ name: "Example.file" });
-              break;
-            case FieldTypes.HelpText:
-              value = field.helpTextValue ?? "";
-              break;
-            // For rest fields set null value
-            default:
-              value = null;
-          }
-        } else {
-          const fieldValue = values[field.masterSchemaFieldId];
-          switch (field.type) {
-            case FieldTypes.Text:
-            case FieldTypes.Date:
-            case FieldTypes.Number:
-            case FieldTypes.TextArea:
-            case FieldTypes.LongText:
-              value = fieldValue?.value ?? "";
-              break;
-            case FieldTypes.Boolean:
-              value = fieldValue?.value ?? false;
-              break;
-            case FieldTypes.Select:
-              value = fieldValue?.value ? { value: fieldValue.value, label: fieldValue.value } : null;
-              break;
-            case FieldTypes.MultiSelect:
-              value = fieldValue?.value ? fieldValue.value.map((value) => ({ label: value, value })) : [];
-              break;
-            // Get files from response instead value in case when field type is file/fileList
-            case FieldTypes.File:
-            case FieldTypes.FileList:
-            case FieldTypes.Resource:
-              value = fieldValue?.files ?? [];
-              break;
-            case FieldTypes.HelpText:
-              value = field.helpTextValue;
-              break;
-            // In other case, use value
-            default:
-              value = fieldValue?.value;
-          }
-        }
-
         const onElementClick = () => {
-          if (!propOnElementClick) return;
+          if (!propOnElementClick || !isConfigurable) return;
 
           propOnElementClick({ ...field, groupId }, "field");
         };
 
-        const onChange = (value) => {
-          // Do not call on change while dform is configurable
-          if (isConfigurable) {
-            return;
-          }
-
-          switch (field.type) {
-            case FieldTypes.MultiSelect:
-              onFieldChange(field, Array.isArray(value) ? value.map(({ value }) => value) : []);
-              break;
-            // Extract value from option for field select
-            case FieldTypes.Select:
-              onFieldChange(field, value.value);
-              break;
-            default:
-              onFieldChange(field, value);
-          }
-        };
-
-        // Used for select and multiselect field types
-        const options = field.options ? field.options.map((option) => ({ label: option, value: option })) : null;
-
         const label = field.title;
 
         return (
-          <DFormField
-            formField={formField}
+          <DFormElement
+            classes={field.classes}
             isSelected={isSelected}
-            field={field}
-            onElementClick={onElementClick}
-            label={label}
-            value={value}
-            options={options}
-            isDisabled={isDisabled}
-            onChange={onChange}
-          />
+            onClick={onElementClick}
+            key={fieldId}
+            fieldId={fieldId}
+            onFieldCreate={onFieldCreate}
+            groupId={groupId}
+          >
+            <FormFieldElement
+              id={field.id}
+              label={label}
+              format={field.format ? field.format : undefined}
+              options={field.options ? field.options : undefined}
+              uiStyle={field.uiStyle ? field.uiStyle : undefined}
+              helpText={field.helpTextValue ? field.helpTextValue : undefined}
+              minimum={field.minimum ? Number(field.minimum) : undefined}
+              maximum={field.maximum ? Number(field.maximum) : undefined}
+              minLength={field.minLength ? Number(field.minLength) : undefined}
+              maxLength={field.maxLength ? Number(field.maxLength) : undefined}
+              isDisabled={isDisabled}
+              isRequired={field.isRequired}
+              isLabelShowing={field.isLabelShowing}
+              masterSchemaFieldId={Number(field.masterSchemaFieldId)}
+            />
+          </DFormElement>
         );
       })}
 

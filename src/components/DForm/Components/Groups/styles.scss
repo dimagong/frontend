@@ -24,6 +24,9 @@
 .btn-box {
   width: 100%;
 }
+.btn-box-selected {
+  padding: 0%;
+}
 .btn-group {
   display: flex;
   justify-content: space-evenly;
@@ -31,4 +34,8 @@
     width: 40%;
     text-align: center;
   }
+}
+
+.btn-box-single {
+  padding: 0 20px;
 }

@@ -1,12 +1,13 @@
 import "./styles.scss";
 
 import classnames from "classnames";
+import React, { useRef, useState } from "react";
 import type { FC, CSSProperties, FormEvent } from "react";
-import React, { useReducer, useRef, useState } from "react";
 
-import { NpmModal, NpmEditor, NmpButton } from "features/nmp-ui";
+import { NmpModal, NpmEditor, NmpButton } from "features/nmp-ui";
 
 type Props = {
+  id?: string;
   value?: string;
   isDisabled?: boolean;
   onChange?: (v: string) => void;
@@ -15,76 +16,83 @@ type Props = {
 };
 
 export const NmpLongText: FC<Props> = (props) => {
-  const { value, isDisabled, style, className, onChange } = props;
+  const { id, value, isDisabled, style, className, onChange } = props;
 
-  const inputRef = useRef<HTMLDivElement>(null);
-  const [inputHTML, setInputHTML] = useState("");
-  const [inputValue, setInputValue] = useState(() => value ?? "");
-  const [isModalOpen, toggleIsModalOpen] = useReducer((v) => !v, false);
+  const divRef = useRef<HTMLDivElement>(null);
+  const [innerValue, setInnerValue] = useState(() => value);
 
   const classes = classnames("nmp-long-text__area", { "nmp-long-text__area--disabled": isDisabled }, className);
 
-  const triggerOnChange = (value) => {
+  const OnEditorChange = (value) => {
     if (onChange) {
       onChange(value);
     }
+    setInnerValue(value);
   };
 
-  const onEditorChange = (v: string) => setInputValue(v);
-
-  const closeModal = () => {
-    toggleIsModalOpen();
-    setInputHTML(inputValue);
-    triggerOnChange(inputValue);
+  const openModal = () => {
+    NmpModal.open({
+      title: "Extended input",
+      content: (
+        <NpmEditor
+          data={value}
+          toolbar={{
+            options: ["inline", "list", "textAlign", "link"],
+            inline: {
+              inDropdown: false,
+              options: ["bold", "italic", "underline"],
+            },
+            textAlign: {
+              inDropdown: false,
+              options: ["indent", "outdent"],
+            },
+          }}
+          onChange={OnEditorChange}
+          wrapperClassName="nmp-long-text__editor-wrapper"
+        />
+      ),
+      centered: true,
+    });
   };
 
   const onInput = ({ currentTarget }: FormEvent<HTMLDivElement>) => {
-    triggerOnChange(currentTarget.innerHTML);
-    setInputValue(currentTarget.innerHTML);
+    if (onChange) {
+      onChange(currentTarget.innerHTML);
+    }
   };
+
+  const onInputBlur = () => divRef.current?.blur();
+
+  const onInputFocus = () => divRef.current?.focus();
 
   return (
     <>
+      <input
+        id={id}
+        type="text"
+        value={value}
+        readOnly
+        onBlur={onInputBlur}
+        onFocus={onInputFocus}
+        className="nmp-long-text__input"
+      />
+
       <div
         contentEditable={!isDisabled}
         placeholder="Enter your answer here"
-        dangerouslySetInnerHTML={{ __html: inputHTML }}
+        dangerouslySetInnerHTML={{ __html: innerValue ?? "" }}
         style={style}
         className={classes}
         onInput={onInput}
-        ref={inputRef}
+        ref={divRef}
       />
 
       {isDisabled ? null : (
-        <NpmModal
-          title="Extended input"
-          visible={isModalOpen}
-          onCancel={closeModal}
-          footer={
-            <NmpButton type="nmp-primary" onClick={closeModal}>
-              Close
-            </NmpButton>
-          }
-        >
-          <div className="pb-2">
-            <NpmEditor
-              data={value}
-              toolbar={{
-                options: ["inline", "list", "textAlign", "link"],
-                inline: {
-                  inDropdown: false,
-                  options: ["bold", "italic", "underline"],
-                },
-                textAlign: {
-                  inDropdown: false,
-                  options: ["indent", "outdent"],
-                },
-              }}
-              onChange={onEditorChange}
-              wrapperClassName="nmp-long-text__editor"
-            />
-          </div>
-        </NpmModal>
+        <div className="nmp-long-text__actions">
+          <NmpButton type="nmp-primary" onClick={openModal}>
+            Expand text area
+          </NmpButton>
+        </div>
       )}
     </>
   );

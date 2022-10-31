@@ -8,7 +8,13 @@ type Props = DFromBaseProps;
 
 export const DFormEditableSection: FC<Props> = (props) => {
   const { schema, isHidden, sectionId, isDisabled, relatedGroups } = props;
-  const { selectedElement, onFieldCreate, onGroupCreate, onElementClick } = props;
+  const { selectedElement, onFieldCreate, onGroupCreate: propOnGroupCreate, onElementClick } = props;
+
+  const onGroupCreate = () => {
+    if (propOnGroupCreate) {
+      propOnGroupCreate(sectionId);
+    }
+  };
 
   return (
     <DFormDroppableSection droppableId={sectionId}>
