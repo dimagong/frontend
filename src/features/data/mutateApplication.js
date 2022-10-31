@@ -13,7 +13,6 @@ export const mutateApplication = (applicationData, mutation) => {
       is_private: isPrivate,
       category_id: categoryId,
       groups: [{ group_id: organization.id, type: organization.type }],
-      category_id: categoryId,
       schema,
     });
   } else {

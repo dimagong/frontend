@@ -1,13 +1,15 @@
+import _ from "lodash";
 import { v4 } from "uuid";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
 import React, { useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
-import _ from "lodash";
 
 import CustomTabs from "components/Tabs";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 import { DFormContextProvider, BaseDForm, ElementTypes, DformSchemaElementTypes } from "components/DForm";
+
+import { getCategoryAsOption } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
 import {
   APPLICATION_PAGES,
@@ -406,8 +408,6 @@ export const ApplicationPage = ({ applicationId }) => {
     setApplicationData(dataToSave);
   };
 
-  const onApplicationDescriptionChange = (values) => setApplicationData({ ...applicationData, ...values });
-
   const handlePageChange = (page) => {
     if (selectedElement?.edited) {
       if (!window.confirm(`Are you sure you want to select another element for edit without saving?`)) {
@@ -464,9 +464,10 @@ export const ApplicationPage = ({ applicationId }) => {
     }
   };
 
-  const handleApplicationMutation = () => {
-    // ToDo: validate here too
-    mutateApplication(applicationData, updateApplication);
+  const handleApplicationMutation = (submittedObj) => {
+    mutateApplication({ ...applicationData, ...submittedObj }, updateApplication);
+    // ToDo: It should be removed
+    setApplicationData({ ...applicationData, ...submittedObj });
   };
 
   let { data: categories } = useDFormTemplateCategoriesQuery({
@@ -480,6 +481,14 @@ export const ApplicationPage = ({ applicationId }) => {
     categories = categories.map((category) => parseSelectCategory(category));
     category = categories.find((category) => applicationData.categoryId === category.categoryId);
   }
+
+  const applicationDescriptionData = {
+    name: applicationData?.name,
+    isPrivate: applicationData?.isPrivate,
+    description: applicationData?.description,
+    organizationName: applicationData?.organization.name,
+    categoryId: category ? getCategoryAsOption(category) : null,
+  };
 
   if (application.isLoading || !applicationData) {
     return <div>Loading...</div>;
@@ -514,13 +523,9 @@ export const ApplicationPage = ({ applicationId }) => {
         <TabContent activeTab={selectedPage}>
           <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
             <ApplicationDescription
-              name={applicationData.name}
-              isPrivate={applicationData.isPrivate}
-              description={applicationData.description}
-              organizationName={applicationData.organization.name}
-              onChange={onApplicationDescriptionChange}
-              category={category}
+              applicationDescriptionData={applicationDescriptionData}
               categories={categories}
+              onSubmit={handleApplicationMutation}
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
@@ -540,20 +545,22 @@ export const ApplicationPage = ({ applicationId }) => {
           </TabPane>
         </TabContent>
 
-        <div className="px-3">
-          <div className="application_delimiter" />
+        {selectedPage !== "Description" ? (
+          <div className="px-3">
+            <div className="application_delimiter" />
 
-          <div className="d-flex justify-content-center">
-            <Button
-              color="primary"
-              className="button button-success"
-              disabled={updateApplication.isLoading || selectedElement}
-              onClick={handleApplicationMutation}
-            >
-              Save
-            </Button>
+            <div className="d-flex justify-content-center">
+              <Button
+                color="primary"
+                className="button button-success"
+                disabled={updateApplication.isLoading || selectedElement}
+                onClick={handleApplicationMutation}
+              >
+                Save
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : null}
       </ApplicationWrapper>
 
       {isModuleEditComponentVisible ? (
