@@ -1,118 +1,108 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row } from "reactstrap";
+import { Form } from "antd";
+import _ from "lodash";
 
-import { preventDefault } from "utility/event-decorators";
-
-import { useFormField, useFormGroup, Validators } from "hooks/use-form";
-
-import { NmpSelect } from "features/nmp-ui";
-import CustomModal from "components/CustomModal";
-
-import {
-  getCategoriesAsOptions,
-  getCategoryAsOption,
-} from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
+import { NmpModal, NmpSelect } from "features/nmp-ui";
 import { parseOrganizationType } from "features/home/ContextSearch/Applications/utils/organizationTypeConverter";
 import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
 import { NmpInput, NmpButton } from "features/nmp-ui";
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import {
+  getCategoriesAsOptions,
+  getCategoryAsOption,
+} from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
-export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit, submitting }) => {
-  const [name, setName] = useFormField(group.name, [Validators.required]);
-  const [parentCategory, setParentCategory] = useState(null);
-  const formGroup = useFormGroup({ name });
+export const EditCategoryModal = ({ isOpen, onCancel, group, onSubmit, submitting }) => {
+  const [form] = Form.useForm();
+  const [disabled, setDisabled] = useState(true);
+  const [categoriesOptions, setCategoriesOptions] = useState();
 
-  const parentCategoryValue = parentCategory ? getCategoryAsOption(parentCategory) : null;
+  useEffect(() => {
+    setDisabled(true);
 
-  let { data: categories, isSuccess } = useDFormTemplateCategoriesQuery({
+    form.setFieldValue("name", group.name);
+  }, [group]);
+
+  let { data: categories } = useDFormTemplateCategoriesQuery({
     organizationId: group.organizationId,
     organizationType: parseOrganizationType(group.organizationType),
   });
 
-  let categoriesOptions = null;
-
-  if (categories) {
-    categories = categories
-      .map((category) => parseSelectCategory(category))
-      .filter((category) => category.categoryId !== group.id);
-    categoriesOptions = categories ? getCategoriesAsOptions(categories) : null;
-  }
-
   useEffect(() => {
-    if (isSuccess) {
+    if (categories) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      categories = categories
+        .map((category) => parseSelectCategory(category))
+        .filter((category) => category.categoryId !== group.id);
+
+      setCategoriesOptions(getCategoriesAsOptions(categories));
+
       const newParentCategory = categories.find((category) => group.parentId === category.categoryId);
-      setParentCategory(newParentCategory);
+
+      form.setFieldValue("parentId", getCategoryAsOption(newParentCategory));
     }
-  }, [isSuccess]);
+  }, [categories]);
 
-  const onSubmit = preventDefault(() =>
-    propOnSubmit(
-      { ...formGroup, values: { ...formGroup.values, parentId: parentCategory.categoryId } },
-      { enabled: isOpen }
-    )
-  );
-
-  const OnNameChange = ({ target }) => {
-    setName(target.value);
+  const stopPropagation = (event) => {
+    event.stopPropagation();
   };
 
-  const handleClose = () => {
-    setName(group.name);
+  const handleFormChange = () => {
+    const fields = form.getFieldsValue();
 
-    close();
+    const fieldsKeys = Object.keys(fields);
+
+    const normalizedFieldsValue = normalize(fields);
+
+    setDisabled(true);
+
+    fieldsKeys.forEach((key) => {
+      if (!_.isEqual(normalizedFieldsValue[key], group[key])) {
+        setDisabled(false);
+        return;
+      }
+    });
   };
 
-  const onCategoryChange = (_, categoryOption) => {
-    const newCategory = categories.find((category) => category.categoryId === categoryOption.value);
+  const normalize = (object) => {
+    _.forOwn(object, (value, key) => {
+      if (value?.value) {
+        object[key] = value.value;
+      }
+    });
 
-    setParentCategory(newCategory);
+    return object;
   };
 
   return (
-    <CustomModal isOpen={isOpen} title={"Edit category"} onClose={handleClose} footerDisabled>
-      <form onSubmit={onSubmit}>
-        <Row className="my-2">
-          <Col>
-            <div className="mb-2">
-              <DFormLabel label="Name" id="field-name" />
-              <NmpInput
-                id="field-name"
-                type="text"
-                value={name.value}
-                placeholder="Enter category name"
-                onChange={OnNameChange}
-              />
-            </div>
+    <NmpModal visible={isOpen} title={"Edit category"} onCancel={onCancel} footer={null} onClick={stopPropagation}>
+      <Form
+        form={form}
+        onFinish={onSubmit}
+        layout="vertical"
+        name="duplicateForm"
+        onFieldsChange={handleFormChange}
+        onClick={stopPropagation}
+      >
+        <Form.Item label="Name" name="name" className="dform-field mb-2" rules={[{ required: true }]}>
+          <NmpInput id="name" type="text" placeholder="Enter application name" />
+        </Form.Item>
 
-            <div>
-              <DFormLabel label="Select parent category" id="dform-organization-category" />
-              <NmpSelect
-                id="dform-organization-category"
-                value={parentCategoryValue}
-                options={categoriesOptions}
-                onChange={onCategoryChange}
-              />
-            </div>
-          </Col>
-        </Row>
+        <Form.Item
+          label="Select organization category"
+          name="parentId"
+          className="dform-field mb-2"
+          rules={[{ required: true }]}
+        >
+          <NmpSelect id="parentId" options={categoriesOptions} />
+        </Form.Item>
 
-        <Row className="my-3">
-          <Col>
-            <div className="d-flex justify-content-end">
-              <NmpButton
-                key="submit"
-                type="primary"
-                onClick={onSubmit}
-                disabled={formGroup.invalid}
-                loading={submitting}
-              >
-                Save
-              </NmpButton>
-            </div>
-          </Col>
-        </Row>
-      </form>
-    </CustomModal>
+        <Form.Item className="d-flex justify-content-end mb-0">
+          <NmpButton className="button-success" type="primary" size="large" htmlType="submit" disabled={disabled}>
+            Save
+          </NmpButton>
+        </Form.Item>
+      </Form>
+    </NmpModal>
   );
 };

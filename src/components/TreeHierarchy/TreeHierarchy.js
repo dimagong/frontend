@@ -13,7 +13,7 @@ import MSHTreeElement from "./components/MSHTreeElement";
 import MSHTreeNodeList from "./components/MSHTreeNodeList";
 import MSHCreateElementForm from "./components/MSHCreateElementForm";
 import { ADD_FIELD, ADD_GROUP, addFieldAction, addGroupAction } from "./NodeAdditionActions";
-import CustomModal from "../CustomModal";
+import { NmpModal } from "features/nmp-ui";
 
 const getKey = ({ nodeId }) => nodeId;
 
@@ -52,6 +52,8 @@ const TreeHierarchy = (props) => {
     onElementCreationSubmit,
     components: propComponents,
     onFieldCreatorClickProp,
+    CreateApplicationForm,
+    onFieldCreatingSubmit,
     ...wrapperAttrs
   } = props;
   const components = _.merge(defaultComponents, propComponents);
@@ -76,9 +78,7 @@ const TreeHierarchy = (props) => {
   };
 
   const onCreateElementSubmit = (submitted) => {
-    if (submitted.invalid) return;
-
-    const { name } = submitted.values;
+    const { name } = submitted;
     const { parent, type } = nodeDataToCreate;
 
     onElementCreationSubmit({ type, name, parentId: parent.id });
@@ -112,9 +112,7 @@ const TreeHierarchy = (props) => {
             expanded={expandedIds.includes(node.nodeId)}
             onExpand={() => onExpand(node)}
             onCollapse={() => onCollapse(node)}
-            onFieldCreatorClick={() =>
-              onFieldCreatorClickProp ? onFieldCreatorClickProp(node.nodeId) : onFieldCreatorClick(node.nodeId)
-            }
+            onFieldCreatorClick={() => onFieldCreatorClick(node.nodeId)}
             onGroupCreatorClick={() => onGroupCreatorClick(node.nodeId)}
             children={children}
           />
@@ -122,13 +120,13 @@ const TreeHierarchy = (props) => {
       />
 
       {nodeDataToCreate && (
-        <CustomModal isOpen={modal} title={creationTitle(nodeDataToCreate.type)} onClose={closeModal} footerDisabled>
-          <components.CreateElementForm
-            submitting={elementCreationLoading}
-            placeholder={nodeDataToCreate.parent.path.join(".")}
-            onSubmit={onCreateElementSubmit}
-          />
-        </CustomModal>
+        <NmpModal visible={modal} title={creationTitle(nodeDataToCreate.type)} onCancel={closeModal} footer={null}>
+          {nodeDataToCreate.type === ADD_GROUP ? (
+            <components.CreateElementForm onSubmit={onCreateElementSubmit} />
+          ) : (
+            <CreateApplicationForm parent={nodeDataToCreate.parent} onSubmit={onFieldCreatingSubmit} visible={modal} />
+          )}
+        </NmpModal>
       )}
     </div>
   );
@@ -155,9 +153,11 @@ TreeHierarchy.propTypes = {
   selectedIds: PropTypes.arrayOf(PropTypes.string),
 
   onElementCreationSubmit: PropTypes.func,
+  onFieldCreatingSubmit: PropTypes.func,
   elementCreationLoading: PropTypes.bool.isRequired,
 
   components: PropTypes.object,
+  CreateApplicationForm: PropTypes.node,
   onFieldCreatorClickProp: PropTypes.func,
 };
 

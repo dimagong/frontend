@@ -1,17 +1,28 @@
+import "./styles.scss";
+
 import React from "react";
 import _ from "lodash/fp";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 
 import { useDFormTemplateCategoryQuery, useCreateDFormTemplateCategoryMutation } from "./categoryQueries";
 import { CategoryHierarchy } from "./CategoryHierarchy";
 
 import { transformCategoriesToHierarchy } from "./utils/categoryHierarchyConverter";
 
-import { CategoryId, CreateCategorySubmitProps, Search } from "./models";
+import { ApplicationData, CategoryId, CreateCategorySubmitProps, Search } from "./models";
 
-import "./styles.scss";
+import { INITIAL_APPLICATION_DATA } from "features/Applications/constants";
+import { mutateApplication } from "features/data/mutateApplication";
+import { useCreateApplicationTemplateMutation } from "features/data/applicationQueries";
+
+import appSlice from "app/slices/appSlice";
+
+const { setContext } = appSlice.actions;
 
 export const CategoriesHierarchy: React.FC<Props> = ({ search, rootCategoryId }) => {
   const { data: category, isLoading } = useDFormTemplateCategoryQuery({ name: search, rootCategoryId });
+  const dispatch = useDispatch();
 
   const hierarchy = category ? transformCategoriesToHierarchy(category)[0] : null;
 
@@ -22,6 +33,36 @@ export const CategoriesHierarchy: React.FC<Props> = ({ search, rootCategoryId })
     //@ts-ignore
     createCategory.mutate({ name: name, parent_id: parentId });
   };
+
+  const onFieldCreatingSubmit = async (submitted: ApplicationData) => {
+    const { name, description, isPrivate, category: categoryId, organization } = submitted;
+
+    await mutateApplication(
+      {
+        ...INITIAL_APPLICATION_DATA,
+        name,
+        description,
+        isPrivate,
+        categoryId,
+        organization,
+      },
+      createApplicationMutation
+    );
+  };
+
+  const createApplicationMutation = useCreateApplicationTemplateMutation({
+    onSuccess: () => {
+      // @ts-ignore
+      dispatch(setContext("dForm"));
+      toast.success("Application created");
+    },
+    onError: (error) => {
+      //TODO handle error
+      console.error(error);
+    },
+  });
+
+  const isLoading = createApplicationMutation.isLoading || createCategory.isLoading;
 
   if (isLoading) {
     return <div>loading...</div>;
@@ -38,7 +79,8 @@ export const CategoriesHierarchy: React.FC<Props> = ({ search, rootCategoryId })
           hierarchy={hierarchy}
           search={search}
           onElementCreationSubmit={onElementCreationSubmit}
-          isLoading={createCategory.isLoading}
+          onFieldCreatingSubmit={onFieldCreatingSubmit}
+          isLoading={isLoading}
         />
       ) : null}
     </div>

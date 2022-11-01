@@ -96,6 +96,14 @@ export type RootCategoryForSelect = {
   updatedAt: string | null;
 };
 
+export type ApplicationData = {
+  name: string;
+  description: string;
+  isPrivate: boolean | undefined;
+  category: number;
+  organization: any; // Todo: make model
+};
+
 export type CategoryName = string;
 export type ApplicationName = string;
 

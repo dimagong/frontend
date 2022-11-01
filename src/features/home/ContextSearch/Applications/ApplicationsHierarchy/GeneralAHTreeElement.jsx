@@ -40,6 +40,7 @@ export const GeneralAHTreeElement = (props) => {
     />
   ) : (
     <GeneralAHField
+      node={node}
       name={node.name}
       index={index}
       date={node.createdAt}
