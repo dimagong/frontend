@@ -21,6 +21,7 @@ import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaPrope
 
 import { FieldTypes } from "components/DForm";
 import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import GroupChanger from "./GroupChanger";
 
 export const FieldRequiredEditProperty = () => {
   return (
@@ -350,6 +351,7 @@ const FieldProperties = (props) => {
 
   const [form] = Form.useForm();
   const [type, setType] = useState(element.type);
+  const [title, setTitle] = useState(element.title);
   const [disabled, setDisabled] = useState(true);
 
   const elementFieldModel = DFormFieldModel.from(element);
@@ -358,7 +360,7 @@ const FieldProperties = (props) => {
     ...element,
     ...elementFieldModel,
     format: element.format ? { value: element.format, label: element.format } : null,
-    groupId: { value: element.groupId, label: data.groups[element.groupId].name },
+    // groupId: {value: element.groupId, label: data.groups[element.groupId].name},
     type: element.type,
     masterSchemaFieldId: element.masterSchemaFieldId || null,
   };
@@ -366,6 +368,7 @@ const FieldProperties = (props) => {
   useEffect(() => {
     setDisabled(true);
     setType(element.type);
+    setTitle(element.title);
 
     form.setFieldsValue(initialValues);
   }, [element]);
@@ -376,7 +379,7 @@ const FieldProperties = (props) => {
         submittedObj[key] = value.value;
       }
     });
-
+    console.log("submittedObj", submittedObj);
     onFieldSubmit(submittedObj);
   };
 
@@ -399,43 +402,10 @@ const FieldProperties = (props) => {
     });
   };
 
-  console.log("FieldProperties element", element);
-  console.log("FieldProperties data", data);
-  const findElementsMoovingOptions = (data, element) => {
-    const options = [];
-    if (!data || !element) return options;
-    const { sectionId } = data.groups[element.groupId];
-    console.log("sectionId", sectionId);
-    if (!sectionId) {
-      const { relatedFields, name: groupName } = data.groups[element.groupId];
-      relatedFields.forEach((field) => {
-        const fileName = data.fields[field].title;
-        options.push(`${groupName}.${fileName}`);
-      });
-    } else {
-      const { relatedGroups, name: sectionName } = data.sections[sectionId];
-      relatedGroups.forEach((group) => {
-        const { relatedFields, name: groupName } = data.groups[group];
-        relatedFields.forEach((field) => {
-          const fileName = data.fields[field].title;
-          options.push(`${sectionName}.${groupName}.${fileName}`);
-        });
-      });
-    }
-
-    return options;
-  };
-  const elementOptions = findElementsMoovingOptions(data, element);
-
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
-      <Form.Item label="Elements moving" name="elements-moving" className="dform-field">
-        <NmpSelect
-          id="elements-moving"
-          isSearchable={true}
-          options={elementOptions.map((option) => ({ label: option, value: option }))}
-          placeholder="Select an option"
-        />
+      <Form.Item label="Group" name="groupId" className="dform-field">
+        <GroupChanger id="groupId" data={data} element={element} title={title} />
       </Form.Item>
 
       <Form.Item label="Element type" name="type" className="dform-field mb-2">
@@ -486,7 +456,13 @@ const FieldProperties = (props) => {
               />*/}
           </div>
           <Form.Item label="Title" name="title" className="dform-field mb-2">
-            <NmpInput id="title" type="text" placeholder="Enter your answer here" />
+            <NmpInput
+              onChange={(event) => setTitle(event.target.value)}
+              value={title}
+              id="title"
+              type="text"
+              placeholder="Enter your answer here"
+            />
           </Form.Item>
         </>
       )}
