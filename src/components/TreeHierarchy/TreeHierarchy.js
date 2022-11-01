@@ -78,7 +78,8 @@ const TreeHierarchy = (props) => {
   };
 
   const onCreateElementSubmit = (submitted) => {
-    const { name } = submitted;
+    const name = submitted.values?.name || submitted.name;
+
     const { parent, type } = nodeDataToCreate;
 
     onElementCreationSubmit({ type, name, parentId: parent.id });
