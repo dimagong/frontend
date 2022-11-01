@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import _ from "lodash/fp";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -10,7 +10,7 @@ import { CategoryHierarchy } from "./CategoryHierarchy";
 
 import { transformCategoriesToHierarchy } from "./utils/categoryHierarchyConverter";
 
-import { ApplicationData, CategoryId, CreateCategorySubmitProps, Search } from "./models";
+import { ApplicationData, CategoryId, CreateCategorySubmitProps, Hierarchy, Search } from "./models";
 
 import { INITIAL_APPLICATION_DATA } from "features/Applications/constants";
 import { mutateApplication } from "features/data/mutateApplication";
@@ -26,9 +26,15 @@ export const CategoriesHierarchy: React.FC<Props> = ({ search, rootCategoryId })
     rootCategoryId,
   });
 
+  const [hierarchy, setHierarchy] = useState<Hierarchy>();
+
   const dispatch = useDispatch();
 
-  const hierarchy = category ? transformCategoriesToHierarchy(category)[0] : null;
+  useEffect(() => {
+    if (category) {
+      setHierarchy(transformCategoriesToHierarchy(category)[0]);
+    }
+  }, [category]);
 
   //@ts-ignore
   const createCategory = useCreateDFormTemplateCategoryMutation();
