@@ -30,6 +30,7 @@ const getOrganizationsAsOptions = (organizations) => organizations.map(getOrgani
 
 export const CreateApplicationForm = ({ onSubmit, parent }) => {
   const [form] = Form.useForm();
+
   const [categoriesOptions, setCategoriesOptions] = useState(null);
   const [organization, setOrganization] = useState({
     id: parent.organizationId,
@@ -71,7 +72,7 @@ export const CreateApplicationForm = ({ onSubmit, parent }) => {
 
       form.setFieldValue("organization", getOrganizationAsOption(parentOrganization));
     }
-  }, [organizations]);
+  }, [organizations, organization]);
 
   useEffect(() => {
     if (categories) {
