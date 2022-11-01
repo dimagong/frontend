@@ -1,6 +1,7 @@
-import { NmpSelect } from "features/nmp-ui";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { each as _each } from "lodash";
+
+import { NmpSelect } from "features/nmp-ui";
 
 const getSections = (schema) => {
   let sections = [];
@@ -19,19 +20,13 @@ const optionHandler = (section) => {
   return { label: section.breadcrumbs, value: section.id };
 };
 
-const SectionChanger = (props) => {
+export const SectionChanger = (props) => {
   const { id, data, group, ...otherProps } = props;
+
   const sections = useMemo(() => getSections(data), [data]);
+  const sectionsAsOptions = sections.map((section) => optionHandler(section));
 
   return (
-    <NmpSelect
-      id={id}
-      isSearchable={true}
-      options={sections.map((section) => optionHandler(section))}
-      placeholder="Select an option"
-      {...otherProps}
-    />
+    <NmpSelect id={id} isSearchable={true} options={sectionsAsOptions} placeholder="Select an option" {...otherProps} />
   );
 };
-
-export default SectionChanger;

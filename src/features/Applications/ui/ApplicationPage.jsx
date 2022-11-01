@@ -390,14 +390,11 @@ export const ApplicationPage = ({ applicationId }) => {
   };
 
   const changeSectionForGroup = (selectedElement, submittedElement, application) => {
-    // todo for now this is only one way to get old section
-    const oldSection = _.find(application.sections, (section) => {
-      return section.relatedGroups.indexOf(selectedElement.id) !== -1;
-    });
-
-    if (oldSection.id === submittedElement.sectionId) {
+    if (selectedElement.sectionId === submittedElement.sectionId) {
       return application;
     }
+
+    const oldSection = application.sections[selectedElement.sectionId];
 
     application.sections[oldSection.id].relatedGroups = oldSection.relatedGroups.filter(
       (groupId) => selectedElement.id !== groupId
@@ -600,7 +597,7 @@ export const ApplicationPage = ({ applicationId }) => {
               <Button
                 color="primary"
                 className="button button-success"
-                disabled={updateApplication.isLoading || selectedElement}
+                disabled={updateApplication.isLoading || !!selectedElement}
                 onClick={handleApplicationMutation}
               >
                 Save

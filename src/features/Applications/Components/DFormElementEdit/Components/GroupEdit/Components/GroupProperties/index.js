@@ -1,24 +1,19 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Form } from "antd";
 import _ from "lodash";
 
-import { NmpButton, NmpInput, NmpCheckbox, NmpSelect } from "features/nmp-ui";
+import { NmpButton, NmpInput, NmpCheckbox } from "features/nmp-ui";
+
 import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
-import SectionChanger from "./SectionChanger";
+
+import { SectionChanger } from "./SectionChanger";
 
 const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel, data }) => {
   const [form] = Form.useForm();
   const [disabled, setDisabled] = useState(true);
 
-  const section = useMemo(() => {
-    return _.find(data.sections, (section) => {
-      return section.relatedGroups.indexOf(element.id) !== -1;
-    });
-  }, [data, element]);
-
   const initialValues = {
     ...element,
-    sectionId: section.id,
   };
 
   useEffect(() => {
@@ -55,7 +50,7 @@ const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElemen
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
       <Form.Item label="Section" name="sectionId" className="dform-field">
-        <SectionChanger id="sectionId" data={data} group={element} />
+        <SectionChanger id="sectionId" data={data} />
       </Form.Item>
 
       <Form.Item label="Group name" name="name" className="dform-field mb-2">

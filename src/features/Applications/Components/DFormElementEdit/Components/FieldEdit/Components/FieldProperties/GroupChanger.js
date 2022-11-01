@@ -1,6 +1,7 @@
-import { NmpSelect } from "features/nmp-ui";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { each as _each } from "lodash";
+
+import { NmpSelect } from "features/nmp-ui";
 
 const getGroupIds = (schema) => {
   let groups = [];
@@ -21,19 +22,13 @@ const optionHandler = (group) => {
   return { label: group.breadcrumbs, value: group.id };
 };
 
-const GroupChanger = (props) => {
+export const GroupChanger = (props) => {
   const { id, data, element, ...otherProps } = props;
+
   const groups = useMemo(() => getGroupIds(data), [data]);
+  const groupsAsOptions = groups.map((group) => optionHandler(group));
 
   return (
-    <NmpSelect
-      id={id}
-      isSearchable={true}
-      options={groups.map((group) => optionHandler(group))}
-      placeholder="Select an option"
-      {...otherProps}
-    />
+    <NmpSelect id={id} isSearchable={true} options={groupsAsOptions} placeholder="Select an option" {...otherProps} />
   );
 };
-
-export default GroupChanger;
