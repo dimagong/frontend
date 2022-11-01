@@ -15,8 +15,8 @@ const getSections = (schema) => {
   return sections;
 };
 
-const optionHandler = (group) => {
-  return { label: group.breadcrumbs, value: group.id };
+const optionHandler = (section) => {
+  return { label: section.breadcrumbs, value: section.id };
 };
 
 const SectionChanger = (props) => {
@@ -27,7 +27,7 @@ const SectionChanger = (props) => {
     <NmpSelect
       id={id}
       isSearchable={true}
-      options={sections.map((group) => optionHandler(group))}
+      options={sections.map((section) => optionHandler(section))}
       placeholder="Select an option"
       {...otherProps}
     />
