@@ -57,7 +57,7 @@ export const GeneralAHField = (props) => {
           <FiberManualRecord fontSize={"inherit"} />
         </div>
       }
-      append={
+      duplicate={
         <div className="tree-hierarchy__duplicate mr-50">
           <NmpButton type="text" icon={<CopyOutlined />} onClick={stopPropagation(onDuplicate)} />
         </div>

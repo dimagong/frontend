@@ -21,7 +21,11 @@ import appSlice from "app/slices/appSlice";
 const { setContext } = appSlice.actions;
 
 export const CategoriesHierarchy: React.FC<Props> = ({ search, rootCategoryId }) => {
-  const { data: category, isLoading } = useDFormTemplateCategoryQuery({ name: search, rootCategoryId });
+  const { data: category, isLoading: isLoadingCategory } = useDFormTemplateCategoryQuery({
+    name: search,
+    rootCategoryId,
+  });
+
   const dispatch = useDispatch();
 
   const hierarchy = category ? transformCategoriesToHierarchy(category)[0] : null;
@@ -64,7 +68,7 @@ export const CategoriesHierarchy: React.FC<Props> = ({ search, rootCategoryId })
 
   const isLoading = createApplicationMutation.isLoading || createCategory.isLoading;
 
-  if (isLoading) {
+  if (isLoadingCategory) {
     return <div>loading...</div>;
   }
 
