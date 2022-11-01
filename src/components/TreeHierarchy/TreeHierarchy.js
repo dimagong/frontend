@@ -96,6 +96,18 @@ const TreeHierarchy = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementCreationLoading]);
 
+  const getForm = () => {
+    if (!CreateApplicationForm) return <components.CreateElementForm onSubmit={onCreateElementSubmit} />;
+
+    if (nodeDataToCreate?.type === ADD_GROUP) {
+      return <components.CreateElementForm onSubmit={onCreateElementSubmit} />;
+    }
+
+    return <CreateApplicationForm parent={nodeDataToCreate?.parent} onSubmit={onFieldCreatingSubmit} visible={modal} />;
+  };
+
+  const form = getForm();
+
   return (
     <div className="tree-hierarchy" {...wrapperAttrs}>
       <TreeRoot
@@ -121,11 +133,7 @@ const TreeHierarchy = (props) => {
 
       {nodeDataToCreate && (
         <NmpModal visible={modal} title={creationTitle(nodeDataToCreate.type)} onCancel={closeModal} footer={null}>
-          {nodeDataToCreate.type === ADD_GROUP ? (
-            <components.CreateElementForm onSubmit={onCreateElementSubmit} />
-          ) : (
-            <CreateApplicationForm parent={nodeDataToCreate.parent} onSubmit={onFieldCreatingSubmit} visible={modal} />
-          )}
+          {form}
         </NmpModal>
       )}
     </div>
