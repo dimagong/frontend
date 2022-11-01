@@ -59,6 +59,10 @@
 
     &:hover {
       background-color: #f1f1f1;
+
+      .tree-hierarchy__duplicate {
+        opacity: 1;
+      }
     }
 
     @at-root .tree-hierarchy__node--selectable > & {
@@ -81,6 +85,12 @@
 
     color: $accent-color;
     font-size: 1rem;
+  }
+
+  &__duplicate {
+    opacity: 0;
+
+    transition: opacity 0.25s ease-in-out;
   }
 
   &__retractable {

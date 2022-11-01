@@ -52,6 +52,8 @@ const TreeHierarchy = (props) => {
     onElementCreationSubmit,
     components: propComponents,
     onFieldCreatorClickProp,
+    CreateApplicationForm,
+    onFieldCreatingSubmit,
     ...wrapperAttrs
   } = props;
   const components = _.merge(defaultComponents, propComponents);
@@ -110,9 +112,7 @@ const TreeHierarchy = (props) => {
             expanded={expandedIds.includes(node.nodeId)}
             onExpand={() => onExpand(node)}
             onCollapse={() => onCollapse(node)}
-            onFieldCreatorClick={() =>
-              onFieldCreatorClickProp ? onFieldCreatorClickProp(node.nodeId) : onFieldCreatorClick(node.nodeId)
-            }
+            onFieldCreatorClick={() => onFieldCreatorClick(node.nodeId)}
             onGroupCreatorClick={() => onGroupCreatorClick(node.nodeId)}
             children={children}
           />
@@ -121,7 +121,11 @@ const TreeHierarchy = (props) => {
 
       {nodeDataToCreate && (
         <NmpModal visible={modal} title={creationTitle(nodeDataToCreate.type)} onCancel={closeModal} footer={null}>
-          <components.CreateElementForm onSubmit={onCreateElementSubmit} />
+          {nodeDataToCreate.type === ADD_GROUP ? (
+            <components.CreateElementForm onSubmit={onCreateElementSubmit} />
+          ) : (
+            <CreateApplicationForm parent={nodeDataToCreate.parent} onSubmit={onFieldCreatingSubmit} visible={modal} />
+          )}
         </NmpModal>
       )}
     </div>
@@ -149,9 +153,11 @@ TreeHierarchy.propTypes = {
   selectedIds: PropTypes.arrayOf(PropTypes.string),
 
   onElementCreationSubmit: PropTypes.func,
+  onFieldCreatingSubmit: PropTypes.func,
   elementCreationLoading: PropTypes.bool.isRequired,
 
   components: PropTypes.object,
+  CreateApplicationForm: PropTypes.node,
   onFieldCreatorClickProp: PropTypes.func,
 };
 
