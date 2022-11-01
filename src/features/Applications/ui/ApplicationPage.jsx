@@ -375,6 +375,51 @@ export const ApplicationPage = ({ applicationId }) => {
     }
   };
 
+  const changeGroupForField = (selectedElement, submittedElement, application) => {
+    if (selectedElement.groupId === submittedElement.groupId) {
+      return application;
+    }
+    const relatedFields = application.groups[selectedElement.groupId].relatedFields;
+
+    application.groups[selectedElement.groupId].relatedFields = relatedFields.filter(
+      (fieldId) => selectedElement.id !== fieldId
+    );
+    application.groups[submittedElement.groupId].relatedFields.push(selectedElement.id);
+
+    return application;
+  };
+
+  const changeSectionForGroup = (selectedElement, submittedElement, application) => {
+    // todo for now this is only one way to get old section
+    const oldSection = _.find(application.sections, (section) => {
+      return section.relatedGroups.indexOf(selectedElement.id) !== -1;
+    });
+
+    if (oldSection.id === submittedElement.sectionId) {
+      return application;
+    }
+
+    application.sections[oldSection.id].relatedGroups = oldSection.relatedGroups.filter(
+      (groupId) => selectedElement.id !== groupId
+    );
+    application.sections[submittedElement.sectionId].relatedGroups.push(selectedElement.id);
+
+    return application;
+  };
+
+  const updateStructureDependencies = (selectedElement, submittedElement, application) => {
+    switch (selectedElement.elementType) {
+      case ElementTypes.Section:
+        return application;
+      case ElementTypes.Group:
+        return changeSectionForGroup(selectedElement, submittedElement, application);
+      case ElementTypes.Field:
+        return changeGroupForField(selectedElement, submittedElement, application);
+      default:
+        return application;
+    }
+  };
+
   const onFieldSubmit = (submittedElement) => {
     let obj = {
       ...selectedElement,
@@ -382,6 +427,8 @@ export const ApplicationPage = ({ applicationId }) => {
     };
 
     let dataToSave = embedSuggestedChanges(obj);
+
+    dataToSave = updateStructureDependencies(selectedElement, submittedElement, dataToSave);
 
     setApplicationData(dataToSave);
 

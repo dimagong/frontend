@@ -2,17 +2,14 @@ import { NmpSelect } from "features/nmp-ui";
 import React, { useEffect, useMemo } from "react";
 import { each as _each } from "lodash";
 
-const getGroupIds = (schema, element, title) => {
+const getGroupIds = (schema) => {
   let groups = [];
 
   _each(schema.sections, (section) => {
     _each(section.relatedGroups, (groupId) => {
-      // todo temporary
-      const elementName = title || "<current field>";
-
       groups.push({
         id: groupId,
-        breadcrumbs: `${section.name}.${schema.groups[groupId].name}.${elementName}`,
+        breadcrumbs: `${section.name}.${schema.groups[groupId].name}`,
       });
     });
   });
@@ -25,12 +22,13 @@ const optionHandler = (group) => {
 };
 
 const GroupChanger = (props) => {
-  const { id, data, element, title, ...otherProps } = props;
-  const groups = useMemo(() => getGroupIds(data, element, title), [data, title]);
+  const { id, data, element, ...otherProps } = props;
+  const groups = useMemo(() => getGroupIds(data), [data]);
 
   return (
     <NmpSelect
       id={id}
+      isSearchable={true}
       options={groups.map((group) => optionHandler(group))}
       placeholder="Select an option"
       {...otherProps}

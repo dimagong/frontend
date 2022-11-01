@@ -351,7 +351,6 @@ const FieldProperties = (props) => {
 
   const [form] = Form.useForm();
   const [type, setType] = useState(element.type);
-  const [title, setTitle] = useState(element.title);
   const [disabled, setDisabled] = useState(true);
 
   const elementFieldModel = DFormFieldModel.from(element);
@@ -368,7 +367,6 @@ const FieldProperties = (props) => {
   useEffect(() => {
     setDisabled(true);
     setType(element.type);
-    setTitle(element.title);
 
     form.setFieldsValue(initialValues);
   }, [element]);
@@ -405,7 +403,7 @@ const FieldProperties = (props) => {
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
       <Form.Item label="Group" name="groupId" className="dform-field">
-        <GroupChanger id="groupId" data={data} element={element} title={title} />
+        <GroupChanger id="groupId" data={data} element={element} />
       </Form.Item>
 
       <Form.Item label="Element type" name="type" className="dform-field mb-2">
@@ -456,13 +454,7 @@ const FieldProperties = (props) => {
               />*/}
           </div>
           <Form.Item label="Title" name="title" className="dform-field mb-2">
-            <NmpInput
-              onChange={(event) => setTitle(event.target.value)}
-              value={title}
-              id="title"
-              type="text"
-              placeholder="Enter your answer here"
-            />
+            <NmpInput id="title" type="text" placeholder="Enter your answer here" />
           </Form.Item>
         </>
       )}
