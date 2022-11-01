@@ -399,33 +399,44 @@ const FieldProperties = (props) => {
     });
   };
 
-  console.log("FieldProperties element", element);
-  console.log("FieldProperties data", data);
-  const findElementsMoovingOptions = (data, element) => {
+  // console.log("FieldProperties element", element);
+  // console.log("FieldProperties data", data);
+  const findElementsMovingOptions = (data, element) => {
     const options = [];
     if (!data || !element) return options;
-    const { sectionId } = data.groups[element.groupId];
-    console.log("sectionId", sectionId);
-    if (!sectionId) {
-      const { relatedFields, name: groupName } = data.groups[element.groupId];
-      relatedFields.forEach((field) => {
-        const fileName = data.fields[field].title;
-        options.push(`${groupName}.${fileName}`);
-      });
-    } else {
-      const { relatedGroups, name: sectionName } = data.sections[sectionId];
+
+    const { sectionsOrder } = data;
+    // console.log("sectionsOrder", sectionsOrder);
+    sectionsOrder.forEach((section) => {
+      const { name: sectionName, relatedGroups } = data.sections[section];
       relatedGroups.forEach((group) => {
         const { relatedFields, name: groupName } = data.groups[group];
-        relatedFields.forEach((field) => {
-          const fileName = data.fields[field].title;
-          options.push(`${sectionName}.${groupName}.${fileName}`);
-        });
+        options.push(`${sectionName}.${groupName}`);
       });
-    }
+    });
+
+    // const { sectionId } = data.groups[element.groupId];
+    // console.log("sectionId", sectionId);
+    // if (!sectionId) {
+    //   const { relatedFields, name: groupName } = data.groups[element.groupId];
+    //   relatedFields.forEach((field) => {
+    //     const fileName = data.fields[field].title;
+    //     options.push(`${groupName}.${fileName}`);
+    //   });
+    // } else {
+    //   const { relatedGroups, name: sectionName } = data.sections[sectionId];
+    //   relatedGroups.forEach((group) => {
+    //     const { relatedFields, name: groupName } = data.groups[group];
+    //     relatedFields.forEach((field) => {
+    //       const fileName = data.fields[field].title;
+    //       options.push(`${sectionName}.${groupName}.${fileName}`);
+    //     });
+    //   });
+    // }
 
     return options;
   };
-  const elementOptions = findElementsMoovingOptions(data, element);
+  const elementOptions = findElementsMovingOptions(data, element);
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
