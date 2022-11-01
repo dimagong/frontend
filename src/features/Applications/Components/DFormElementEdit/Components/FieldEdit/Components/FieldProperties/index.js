@@ -379,7 +379,7 @@ const FieldProperties = (props) => {
         submittedObj[key] = value.value;
       }
     });
-    console.log("submittedObj", submittedObj);
+
     onFieldSubmit(submittedObj);
   };
 
