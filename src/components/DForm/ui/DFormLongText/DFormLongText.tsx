@@ -6,7 +6,7 @@ import { NmpLongText } from "features/nmp-ui";
 export type DFormLongTextProps = {
   id?: string;
   value?: string;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   onChange?: (value: string) => void;
 };
 

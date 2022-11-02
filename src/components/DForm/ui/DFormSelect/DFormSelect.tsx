@@ -7,7 +7,7 @@ export type DFormSelectProps = {
   id?: string;
   value?: string;
   options?: Array<string>;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   onChange?: (value: string) => void;
 };
 

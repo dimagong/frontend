@@ -11,7 +11,7 @@ export type DFormMultiSelectProps = {
   value?: Array<string>;
   options?: Array<string>;
   uiStyle?: MultiSelectUIStyles;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   onChange?: (value: Array<string>) => void;
 };
 

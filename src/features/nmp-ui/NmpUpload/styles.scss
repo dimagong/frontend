@@ -3,6 +3,12 @@
     padding: 35px 0;
   }
 
+  .ant-upload-list-text-container {
+    & + .ant-upload-list-text-container {
+      margin-top: 0.87rem;
+    }
+  }
+
   .ant-upload.ant-upload-drag {
     background: #ffffff;
     border: 1px dashed #a8a8a8;

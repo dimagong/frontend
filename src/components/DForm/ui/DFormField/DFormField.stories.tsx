@@ -13,7 +13,7 @@ export default {
 
 const Template = (props) => {
   return (
-    <Form initialValues={{ [props.masterSchemaFieldId]: props.initialValue }}>
+    <Form initialValues={{ [props.masterSchemaFieldId]: props.value }}>
       <QueryClientProvider client={new QueryClient()}>
         <DFormFieldItem
           minimum={props.minimum}
@@ -54,28 +54,28 @@ export const BooleanField = Template.bind({});
 BooleanField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.Boolean,
-  initialValue: true,
+  value: true,
 };
 
 export const DateField = Template.bind({});
 DateField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.Date,
-  initialValue: new Date().toISOString(),
+  value: new Date().toISOString(),
 };
 
 export const FileField = Template.bind({});
 FileField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.File,
-  initialValue: [{ name: "Filename.test", file_id: 0 }],
+  value: [{ name: "Filename.test", file_id: 0 }],
 };
 
 export const FileListField = Template.bind({});
 FileListField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.FileList,
-  initialValue: [
+  value: [
     { name: "Filename.test", file_id: 0 },
     { name: "test.file", file_id: 1 },
   ],
@@ -85,7 +85,7 @@ export const LongTextField = Template.bind({});
 LongTextField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.LongText,
-  initialValue: "<b>Bold</b>",
+  value: "<b>Bold</b>",
   minLength: 10,
   maxLength: 20,
 };
@@ -94,7 +94,7 @@ export const MultiSelectField = Template.bind({});
 MultiSelectField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.MultiSelect,
-  initialValue: ["option 1", "option 2"],
+  value: ["option 1", "option 2"],
   options: ["option 1", "option 2", "option 3", "option 4"],
 };
 
@@ -102,7 +102,7 @@ export const NumberField = Template.bind({});
 NumberField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.Number,
-  initialValue: 877,
+  value: 877,
   minimum: 877,
   maximum: 879,
 };
@@ -111,7 +111,7 @@ export const SelectField = Template.bind({});
 SelectField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.Select,
-  initialValue: "option 1",
+  value: "option 1",
   options: ["option 1", "option 2", "option 3", "option 4"],
 };
 
@@ -119,7 +119,7 @@ export const TextField = Template.bind({});
 TextField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.Text,
-  initialValue: "text...",
+  value: "text...",
   minLength: 10,
   maxLength: 15,
 };
@@ -128,7 +128,7 @@ export const TextAreaField = Template.bind({});
 TextAreaField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.TextArea,
-  initialValue: "more text...",
+  value: "more text...",
   minLength: 30,
   maxLength: 35,
 };

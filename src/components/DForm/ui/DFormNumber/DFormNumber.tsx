@@ -6,7 +6,7 @@ import { NmpInput } from "features/nmp-ui";
 export type DFormNumberProps = {
   id?: string;
   value?: string | number;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   onChange?: ChangeEventHandler;
 };
 

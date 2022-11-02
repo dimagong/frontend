@@ -5,19 +5,28 @@ import type { FormItemProps } from "antd";
 
 import { DFormFieldTypes } from "../../types";
 
-type Props = {
+export type DFormFieldItemProps = {
   minimum?: number;
   maximum?: number;
   minLength?: number;
   maxLength?: number;
-  fieldType: DFormFieldTypes;
-  isRequired: boolean;
-  masterSchemaFieldId: number;
+  fieldType?: DFormFieldTypes;
+  isRequired?: boolean;
+  masterSchemaFieldId?: number;
   children?: FormItemProps["children"];
 };
 
-export const DFormFieldItem: FC<Props> = (props) => {
-  const { minimum, maximum, minLength, maxLength, fieldType, isRequired, masterSchemaFieldId, children } = props;
+export const DFormFieldItem: FC<DFormFieldItemProps> = (props) => {
+  const {
+    minimum,
+    maximum,
+    minLength,
+    maxLength,
+    fieldType,
+    isRequired = false,
+    masterSchemaFieldId,
+    children,
+  } = props;
 
   const defaultRules = [{ required: isRequired }];
   const defaultProps = { name: masterSchemaFieldId, required: isRequired, rules: defaultRules, children };

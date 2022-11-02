@@ -7,7 +7,7 @@ import type { DFormFiles } from "../../types/dformFiles";
 export type DFormFileProps = {
   id?: string;
   value?: DFormFiles;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   masterSchemaFieldId?: number;
   onChange?: (files: DFormFiles) => void;
 };

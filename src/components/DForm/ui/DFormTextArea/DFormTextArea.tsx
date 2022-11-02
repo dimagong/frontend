@@ -6,7 +6,7 @@ import { NmpTextArea } from "features/nmp-ui";
 export type DFormTextAreaProps = {
   id?: string;
   value?: string;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   onChange?: ChangeEventHandler;
 };
 

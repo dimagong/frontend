@@ -9,7 +9,7 @@ export type DFormBooleanProps = {
   id?: string;
   label?: string;
   checked?: NmpCheckboxProps["checked"];
-  isDisabled: boolean;
+  isDisabled?: boolean;
   onChange?: NmpCheckboxProps["onChange"];
 };
 

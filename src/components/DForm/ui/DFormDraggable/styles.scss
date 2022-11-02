@@ -1,12 +1,18 @@
 .dform-draggable {
   &__container {
     position: relative;
+    padding-left: 1.4rem;
   }
 
   &__drag-handle {
+    font-size: 1.1rem;
+
+    &.anticon[tabindex] {
+      cursor: grab;
+    }
+
     position: absolute;
-    top: 0;
+    top: 0.1rem;
     left: 0;
-    transform: translateX(-100%);
   }
 }

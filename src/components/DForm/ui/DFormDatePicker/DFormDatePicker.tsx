@@ -19,7 +19,7 @@ export type DFormDatePickerProps = {
   id?: string;
   value?: string;
   dateFormat?: DateWidgetFormatTypes;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   onChange?: (iso: string) => void;
 };
 

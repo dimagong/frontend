@@ -1,5 +1,5 @@
 import React from "react";
-import type { CSSProperties, FC } from "react";
+import type { FC } from "react";
 
 import { DFormLabeledItem } from "../DFormLabeledItem";
 import { DFormFieldRenderer } from "./DFormFieldRenderer";
@@ -16,53 +16,31 @@ import type { DFormTextProps } from "../DFormText";
 import type { DFormTextAreaProps } from "../DFormTextArea";
 import type { DFormFieldTypes } from "../../types";
 
-type DFormBaseFieldsProps = Omit<DFormBooleanProps, "id" | "label" | "isDisabled"> &
-  Omit<DFormDatePickerProps, "id" | "isDisabled"> &
-  Omit<DFormFileProps, "id" | "isDisabled" | "masterSchemaFieldId"> &
-  Omit<DFormFileListProps, "id" | "isDisabled" | "masterSchemaFieldId"> &
-  Omit<DFormLongTextProps, "id" | "isDisabled"> &
-  Omit<DFormMultiSelectProps, "id" | "isDisabled"> &
-  Omit<DFormNumberProps, "id" | "isDisabled"> &
-  Omit<DFormSelectProps, "id" | "isDisabled"> &
-  Omit<DFormTextProps, "id" | "isDisabled"> &
-  Omit<DFormTextAreaProps, "id" | "isDisabled">;
+type DFormBaseFieldsProps = DFormBooleanProps &
+  DFormDatePickerProps &
+  DFormFileProps &
+  DFormFileListProps &
+  DFormLongTextProps &
+  DFormMultiSelectProps &
+  DFormNumberProps &
+  DFormSelectProps &
+  DFormTextProps &
+  DFormTextAreaProps;
 
-export type DFormBaseFieldProps = DFormBaseFieldsProps & {
+export type DFormFieldProps = DFormBaseFieldsProps & {
   id?: string;
   label?: string;
   fieldType: DFormFieldTypes;
-  isRequired: boolean;
-  isDisabled: boolean;
-  isLabelShowing: boolean;
-  masterSchemaFieldId?: number;
-  style?: CSSProperties;
-  className?: string;
+  isRequired?: boolean;
+  isLabelShowing?: boolean;
 };
 
-export const DFormField: FC<DFormBaseFieldProps> = (props) => {
-  const {
-    id,
-    label,
-    fieldType,
-    isRequired,
-    isDisabled,
-    isLabelShowing,
-    masterSchemaFieldId,
-    style,
-    className,
-    ...fieldProps
-  } = props;
+export const DFormField: FC<DFormFieldProps> = (props) => {
+  const { id, label, fieldType, isRequired, isDisabled, isLabelShowing, masterSchemaFieldId, ...fieldProps } = props;
   const { value, checked, options, uiStyle, dateFormat, onChange } = fieldProps;
 
   return (
-    <DFormLabeledItem
-      id={id}
-      label={label}
-      isRequired={isRequired}
-      isLabelShowing={isLabelShowing}
-      style={style}
-      className={className}
-    >
+    <DFormLabeledItem id={id} label={label} isRequired={isRequired} isLabelShowing={isLabelShowing}>
       <DFormFieldRenderer
         id={id}
         label={label}
