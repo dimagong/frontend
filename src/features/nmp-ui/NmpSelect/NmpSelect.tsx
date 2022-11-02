@@ -10,7 +10,15 @@ export const NmpSelect: React.FC<Props> = (props) => {
   const { options = [], isLoading, children, className, isSearchable = true, ...rest } = props;
 
   return (
-    <Select loading={isLoading} showSearch={isSearchable} className={classnames("nmp-select", className)} {...rest}>
+    <Select
+      loading={isLoading}
+      showSearch={isSearchable}
+      filterOption={(input, option) => {
+        return (option?.label ?? option?.children ?? "").toString().toLowerCase().includes(input.toLowerCase());
+      }}
+      className={classnames("nmp-select", className)}
+      {...rest}
+    >
       {children ??
         options?.map(({ label, value }) => (
           <Select.Option value={value} key={value}>
