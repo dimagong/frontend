@@ -1,7 +1,6 @@
 .dform-block {
-  & + & {
-    margin-top: 2.5rem;
-  }
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 
   > .ant-form-item {
     margin-bottom: 0;

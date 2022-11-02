@@ -6,6 +6,7 @@ import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../typ
 import { DFormResource } from "../DFormResource";
 import { DFormHelpText } from "../DFormHelpText";
 import { DFormBaseBlock } from "./DFormBaseBlock";
+import { DFormBlockSizer } from "./DFormBlockSizer";
 import type { DFormFieldProps } from "../DFormField";
 import type { DFormResourceProps } from "../DFormResource";
 import type { DFormHelpTextProps } from "../DFormHelpText";
@@ -71,5 +72,9 @@ export const DFormBlock: FC<Props> = (props) => {
       break;
   }
 
-  return <DFormBaseBlock blockSize={blockSize}>{Block}</DFormBaseBlock>;
+  return (
+    <DFormBlockSizer blockSize={blockSize}>
+      <DFormBaseBlock>{Block}</DFormBaseBlock>
+    </DFormBlockSizer>
+  );
 };

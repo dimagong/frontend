@@ -6,16 +6,16 @@ import { Draggable } from "react-beautiful-dnd";
 import { HolderOutlined } from "@ant-design/icons";
 
 type Props = {
-  index: number;
   draggableId: string;
+  draggableIndex: number;
   children?: ReactNode;
 };
 
 export const DFormDraggable: FC<Props> = (props) => {
-  const { index, draggableId, children } = props;
+  const { draggableId, draggableIndex, children } = props;
 
   return (
-    <Draggable index={index} draggableId={draggableId}>
+    <Draggable index={draggableIndex} draggableId={draggableId}>
       {(provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps}>
           <div className="dform-draggable">

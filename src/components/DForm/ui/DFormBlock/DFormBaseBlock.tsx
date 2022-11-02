@@ -3,31 +3,12 @@ import "./dform-base-block.scss";
 import React from "react";
 import type { FC, ReactNode } from "react";
 
-import { NmpCol } from "features/nmp-ui";
-
-import { DFormBlockSizeTypes } from "../../types";
-
-const getColSpanByBlockSizeType = (sizeType: DFormBlockSizeTypes) => {
-  switch (sizeType) {
-    case DFormBlockSizeTypes.Full:
-      return 24;
-    case DFormBlockSizeTypes.Half:
-      return 12;
-  }
-};
-
 type Props = {
-  blockSize?: DFormBlockSizeTypes;
   children?: ReactNode;
 };
 
 export const DFormBaseBlock: FC<Props> = (props) => {
-  const { blockSize = DFormBlockSizeTypes.Full, children } = props;
-  const span = getColSpanByBlockSizeType(blockSize);
+  const { children } = props;
 
-  return (
-    <NmpCol span={span} className="dform-block">
-      {children}
-    </NmpCol>
-  );
+  return <div className="dform-block">{children}</div>;
 };

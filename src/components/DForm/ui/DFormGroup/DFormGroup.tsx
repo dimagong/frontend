@@ -1,13 +1,11 @@
-import React, { ReactNode } from "react";
-import type { FC } from "react";
+import React from "react";
+import type { FC, ReactNode } from "react";
 
 import { DFormBaseGroup } from "./DFormBaseGroup";
 
 type Props = {
   groupId: string;
   groupName?: string;
-  // relatedBlocks: Array<string>;
-  // isDFormAccessible: boolean;
   children?: ReactNode;
 };
 

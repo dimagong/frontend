@@ -13,7 +13,7 @@ export default {
 const Template = (props) => {
   return (
     <QueryClientProvider client={new QueryClient()}>
-      <DragDropContext onDragEnd={props.onDragEnd}>
+      <DragDropContext onDragEnd={() => {}}>
         <Droppable droppableId="droppable">
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -44,6 +44,7 @@ const defaultArgs = {
   blockId: "draggableId",
   blockIndex: 0,
   isSelected: true,
+  isDraggable: true,
   blockSize: DFormBlockSizeTypes.Full,
 };
 

@@ -1,14 +1,12 @@
-import "./dform-editable-block.scss";
-
-import React from "react";
-import classnames from "classnames";
 import type { FC, MouseEventHandler } from "react";
+import React from "react";
 
 import { DFormField } from "../DFormField";
-import { DFormResource } from "../DFormResource";
 import { DFormHelpText } from "../DFormHelpText";
+import { DFormEditable } from "../DFormEditable";
+import { DFormResource } from "../DFormResource";
 import { DFormBaseBlock } from "./DFormBaseBlock";
-import { DFormDraggable } from "../DFormDraggable";
+import { DFormBlockSizer } from "./DFormBlockSizer";
 import type { DFormFieldProps } from "../DFormField";
 import type { DFormResourceProps } from "../DFormResource";
 import type { DFormHelpTextProps } from "../DFormHelpText";
@@ -27,11 +25,13 @@ type Props = DFormBlocksProps & {
   blockSize?: DFormBlockSizeTypes;
   blockIndex: number;
   isSelected?: boolean;
-  onBlockClick?: MouseEventHandler<HTMLDivElement>;
+  isDraggable?: boolean;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 export const DFormEditableBlock: FC<Props> = (props) => {
-  const { blockId, blockType, fieldType, blockSize, blockIndex, isSelected, onBlockClick, ...blockProps } = props;
+  const { blockId, blockType, fieldType, blockSize, blockIndex, isSelected, isDraggable, onClick, ...blockProps } =
+    props;
   const { label, uiStyle, options, helpText, dateFormat, isRequired, isLabelShowing } = blockProps;
 
   let Block;
@@ -68,14 +68,17 @@ export const DFormEditableBlock: FC<Props> = (props) => {
   }
 
   return (
-    <DFormBaseBlock blockSize={blockSize}>
-      <div className={classnames("dform-editable", { "dform-editable--selected": isSelected })}>
-        <DFormDraggable index={blockIndex} draggableId={blockId}>
-          <div className="dform-editable__content" onClick={onBlockClick}>
-            {Block}
-          </div>
-        </DFormDraggable>
-      </div>
-    </DFormBaseBlock>
+    <DFormBlockSizer blockSize={isDraggable ? DFormBlockSizeTypes.Full : blockSize}>
+      <DFormEditable
+        editableId={blockId}
+        editableIndex={blockIndex}
+        isSelected={isSelected}
+        isDraggable={isDraggable}
+        isMishandled
+        onClick={onClick}
+      >
+        <DFormBaseBlock>{Block}</DFormBaseBlock>
+      </DFormEditable>
+    </DFormBlockSizer>
   );
 };
