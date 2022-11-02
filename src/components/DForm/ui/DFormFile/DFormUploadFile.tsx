@@ -21,6 +21,7 @@ const getUploadFileFromDFormFile = (dformFile: DFormFile): UploadFile => ({
 });
 
 type Props = {
+  id?: string;
   value?: DFormFiles;
   isDisabled?: boolean;
   isMultiple?: boolean;
@@ -30,7 +31,7 @@ type Props = {
 };
 
 export const DFormUploadFile: FC<Props> = (props) => {
-  const { value = [], isMultiple = false, isDisabled, isRemovable, masterSchemaFieldId, onChange } = props;
+  const { id, value = [], isMultiple = false, isDisabled, isRemovable, masterSchemaFieldId, onChange } = props;
 
   const { dformId, dformFileService } = useDFormContext();
 
@@ -119,6 +120,7 @@ export const DFormUploadFile: FC<Props> = (props) => {
 
   return (
     <NmpUpload
+      id={id}
       fileList={fileList}
       isDisabled={isDisabled || (!isMultiple && fileList.length === 1) || uploadMutation.isLoading}
       isMultiple={isMultiple}

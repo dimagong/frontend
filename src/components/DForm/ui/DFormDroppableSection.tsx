@@ -2,7 +2,7 @@ import React from "react";
 import type { FC, ReactNode } from "react";
 import { Droppable } from "react-beautiful-dnd";
 
-import { DFormElementTypes } from "../types/elementTypes";
+import { DFormElementTypes } from "../types";
 
 type Props = {
   droppableId: string;

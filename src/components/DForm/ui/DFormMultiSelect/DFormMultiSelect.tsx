@@ -7,6 +7,7 @@ import { NmpSelect, NmpCheckbox, NmpRow, NmpCol } from "features/nmp-ui";
 import { DFormLabel } from "../DFormLabel";
 
 export type DFormMultiSelectProps = {
+  id?: string;
   value?: Array<string>;
   options?: Array<string>;
   uiStyle?: MultiSelectUIStyles;
@@ -15,7 +16,7 @@ export type DFormMultiSelectProps = {
 };
 
 export const DFormMultiSelect: FC<DFormMultiSelectProps> = (props) => {
-  const { value, options = [], uiStyle, isDisabled, onChange } = props;
+  const { id, value, options = [], uiStyle, isDisabled, onChange } = props;
 
   if (uiStyle === MultiSelectUIStyles.Checkboxes) {
     return (
@@ -35,6 +36,7 @@ export const DFormMultiSelect: FC<DFormMultiSelectProps> = (props) => {
 
   return (
     <NmpSelect
+      id={id}
       value={value}
       mode="multiple"
       options={options.map((option) => ({ label: option, value: option }))}

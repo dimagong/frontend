@@ -3,6 +3,7 @@ import "./styles.scss";
 import React from "react";
 import { Upload } from "antd";
 import type { FC } from "react";
+import classnames from "classnames";
 import type { DraggerProps } from "antd/lib/upload";
 import { PlusCircleFilled } from "@ant-design/icons";
 
@@ -19,15 +20,21 @@ type Props = Omit<DraggerProps, "disabled" | "multiple"> & {
 type _FC = FC<Props> & { Item: typeof NmpUploadItem };
 
 export const NmpUpload: _FC = (props) => {
-  const { isRemovable = false, isDisabled, isMultiple, itemRender, ...rest } = props;
+  const { isRemovable = false, isDisabled, isMultiple, itemRender, fileList, ...rest } = props;
 
   const defaultItemRender: DraggerProps["itemRender"] = (_, file, fileList, { download, remove }) => {
     return <NmpUploadItem filename={file.name} isRemovable={isRemovable} onRemove={remove} onDownload={download} />;
   };
 
   return (
-    <div className="nmp-upload">
-      <Dragger disabled={isDisabled} multiple={isMultiple} itemRender={itemRender ?? defaultItemRender} {...rest}>
+    <div className={classnames("nmp-upload", { "nmp-upload--empty": !fileList?.length })}>
+      <Dragger
+        fileList={fileList}
+        disabled={isDisabled}
+        multiple={isMultiple}
+        itemRender={itemRender ?? defaultItemRender}
+        {...rest}
+      >
         <p className="ant-upload-drag-icon">
           <PlusCircleFilled style={{ color: "#F4F4F4", backgroundColor: "#A8A8A8", borderRadius: 50 }} />
         </p>

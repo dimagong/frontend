@@ -1,4 +1,6 @@
 .dform-labeled-item {
+  max-width: 100%;
+
   &__label {
     position: relative;
     display: inline-flex;
@@ -14,9 +16,18 @@
   }
 
   &__control {
-    position: relative;
     display: flex;
     align-items: center;
     min-height: 32px;
+    margin-top: 1rem;
+  }
+
+  &__control-content {
+    flex: auto;
+    max-width: 100%;
+
+    > .nmp-select {
+      width: 100%;
+    }
   }
 }

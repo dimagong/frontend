@@ -3,13 +3,13 @@ import type { FC } from "react";
 
 import { DFormBlock } from "../DFormBlock";
 import { DFormBaseGroup } from "./DFormBaseGroup";
-import type { DFormBlockType } from "../../types";
+// import type { DFormBlockType } from "../../types";
 
 type Props = {
   groupId: string;
   groupName: string;
   relatedBlocks: Array<string>;
-  blocks: Array<DFormBlockType>;
+  // blocks: Array<DFormBlockType>;
 };
 
 export const DFormGroup: FC<Props> = (props) => {

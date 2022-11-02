@@ -5,11 +5,33 @@ import { DFormItem } from "../DFormItem";
 import { DFormBaseField } from "./DFormBaseField";
 
 import { DFormFieldTypes } from "../../types";
-import type { DFormFieldRendererProps } from "./DFormFieldRenderer";
+import type { DFormBooleanProps } from "../DFormBoolean";
+import type { DFormDatePickerProps } from "../DFormDatePicker";
+import type { DFormFileProps } from "../DFormFile";
+import type { DFormFileListProps } from "../DFormFileList";
+import type { DFormLongTextProps } from "../DFormLongText";
+import type { DFormMultiSelectProps } from "../DFormMultiSelect";
+import type { DFormNumberProps } from "../DFormNumber";
+import type { DFormSelectProps } from "../DFormSelect";
+import type { DFormTextProps } from "../DFormText";
+import type { DFormTextAreaProps } from "../DFormTextArea";
 
-type Props = DFormFieldRendererProps & {
+export type DFormBaseField = Omit<DFormBooleanProps, "id" | "label" | "isDisabled"> &
+  Omit<DFormDatePickerProps, "id" | "isDisabled"> &
+  Omit<DFormFileProps, "id" | "isDisabled" | "masterSchemaFieldId"> &
+  Omit<DFormFileListProps, "id" | "isDisabled" | "masterSchemaFieldId"> &
+  Omit<DFormLongTextProps, "id" | "isDisabled"> &
+  Omit<DFormMultiSelectProps, "id" | "isDisabled"> &
+  Omit<DFormNumberProps, "id" | "isDisabled"> &
+  Omit<DFormSelectProps, "id" | "isDisabled"> &
+  Omit<DFormTextProps, "id" | "isDisabled"> &
+  Omit<DFormTextAreaProps, "id" | "isDisabled">;
+
+type Props = DFormBaseField & {
   label?: string;
+  fieldType: DFormFieldTypes;
   isRequired: boolean;
+  isDisabled: boolean;
   isLabelShowing: boolean;
   masterSchemaFieldId: number;
   // validation
@@ -22,7 +44,9 @@ type Props = DFormFieldRendererProps & {
 export const DFormField: FC<Props> = (props) => {
   const {
     label,
+    fieldType,
     isRequired,
+    isDisabled,
     isLabelShowing,
     masterSchemaFieldId,
     minimum,
@@ -31,6 +55,7 @@ export const DFormField: FC<Props> = (props) => {
     maxLength,
     ...fieldProps
   } = props;
+  const { onChange, checked, value, options, uiStyle, dateFormat } = fieldProps;
 
   const numberValidator = async (_, value: unknown) => {
     const valueAsNumber = Number(value);
@@ -52,17 +77,35 @@ export const DFormField: FC<Props> = (props) => {
     }
   };
 
-  switch (fieldProps.fieldType) {
+  const Field = (
+    <DFormBaseField
+      id={String(masterSchemaFieldId)}
+      label={label}
+      value={value}
+      checked={checked}
+      options={options}
+      uiStyle={uiStyle}
+      fieldType={fieldType}
+      dateFormat={dateFormat}
+      isDisabled={isDisabled}
+      isRequired={isRequired}
+      isLabelShowing={isLabelShowing}
+      masterSchemaFieldId={masterSchemaFieldId}
+      onChange={onChange}
+      {...fieldProps}
+    />
+  );
+
+  switch (fieldType) {
     case DFormFieldTypes.Boolean:
       return (
         <DFormItem
-          label={label}
           isRequired={isRequired}
           isLabelShowing={isLabelShowing}
           valuePropName="checked"
           masterSchemaFieldId={masterSchemaFieldId}
         >
-          <DFormBaseField label={label} isRequired={isRequired} isLabelShowing={isLabelShowing} {...fieldProps} />
+          {Field}
         </DFormItem>
       );
     case DFormFieldTypes.Text:
@@ -70,53 +113,29 @@ export const DFormField: FC<Props> = (props) => {
     case DFormFieldTypes.LongText:
       return (
         <DFormItem
-          label={label}
           isRequired={isRequired}
           isLabelShowing={isLabelShowing}
           masterSchemaFieldId={masterSchemaFieldId}
           rules={[{ min: minLength, max: maxLength }]}
         >
-          <DFormBaseField isRequired={isRequired} isLabelShowing={isLabelShowing} {...fieldProps} />
+          {Field}
         </DFormItem>
       );
     case DFormFieldTypes.Number:
       return (
         <DFormItem
-          label={label}
           isRequired={isRequired}
           isLabelShowing={isLabelShowing}
           masterSchemaFieldId={masterSchemaFieldId}
           rules={[{ validator: numberValidator }]}
         >
-          <DFormBaseField isRequired={isRequired} isLabelShowing={isLabelShowing} {...fieldProps} />
-        </DFormItem>
-      );
-    case DFormFieldTypes.File:
-    case DFormFieldTypes.FileList:
-      return (
-        <DFormItem
-          label={label}
-          isRequired={isRequired}
-          isLabelShowing={isLabelShowing}
-          masterSchemaFieldId={masterSchemaFieldId}
-        >
-          <DFormBaseField
-            isRequired={isRequired}
-            isLabelShowing={isLabelShowing}
-            masterSchemaFieldId={masterSchemaFieldId}
-            {...fieldProps}
-          />
+          {Field}
         </DFormItem>
       );
     default:
       return (
-        <DFormItem
-          label={label}
-          isRequired={isRequired}
-          isLabelShowing={isLabelShowing}
-          masterSchemaFieldId={masterSchemaFieldId}
-        >
-          <DFormBaseField isRequired={isRequired} isLabelShowing={isLabelShowing} {...fieldProps} />
+        <DFormItem isRequired={isRequired} isLabelShowing={isLabelShowing} masterSchemaFieldId={masterSchemaFieldId}>
+          {Field}
         </DFormItem>
       );
   }

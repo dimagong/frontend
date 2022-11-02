@@ -16,16 +16,17 @@ const getPicker = (dateFormat: DateWidgetFormatTypes) => {
 };
 
 export type DFormDatePickerProps = {
+  id?: string;
   value?: string;
-  dateFormat: DateWidgetFormatTypes;
+  dateFormat?: DateWidgetFormatTypes;
   isDisabled: boolean;
   onChange?: (iso: string) => void;
 };
 
 export const DFormDatePicker: FC<DFormDatePickerProps> = (props) => {
-  const { value, dateFormat, isDisabled, onChange } = props;
+  const { id, value, dateFormat = DateWidgetFormatTypes.Date, isDisabled, onChange } = props;
 
   const Picker = getPicker(dateFormat);
 
-  return <Picker value={value} disabled={isDisabled} onChange={onChange} />;
+  return <Picker id={id} value={value} disabled={isDisabled} onChange={onChange} />;
 };

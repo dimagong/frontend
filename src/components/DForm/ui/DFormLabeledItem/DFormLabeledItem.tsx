@@ -7,6 +7,7 @@ import type { FC, ReactNode, CSSProperties } from "react";
 import { DFormLabel } from "../DFormLabel";
 
 type Props = {
+  id?: string;
   label?: string;
   isRequired: boolean;
   isLabelShowing: boolean;
@@ -16,15 +17,19 @@ type Props = {
 };
 
 export const DFormLabeledItem: FC<Props> = (props) => {
-  const { label = "", isRequired, isLabelShowing, style, className, children } = props;
+  const { id, label = "", isRequired, isLabelShowing, style, className, children } = props;
 
   return (
-    <div className={className} style={style}>
-      <div className={classnames("dform-labeled-item__label", { "dform-labeled-item__label--required": isRequired })}>
-        {isLabelShowing ? <DFormLabel label={label} /> : null}
-      </div>
+    <div className={classnames("dform-labeled-item", className)} style={style}>
+      {label === "" || !isLabelShowing ? null : (
+        <div className={classnames("dform-labeled-item__label", { "dform-labeled-item__label--required": isRequired })}>
+          <DFormLabel id={id} label={label} />
+        </div>
+      )}
 
-      <div className="dform-labeled-item__control">{children}</div>
+      <div className="dform-labeled-item__control">
+        <div className="dform-labeled-item__control-content">{children}</div>
+      </div>
     </div>
   );
 };

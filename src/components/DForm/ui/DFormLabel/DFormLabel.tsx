@@ -12,20 +12,12 @@ type Props = {
   style?: CSSProperties;
 };
 
-export const DFormLabel: FC<Props> = ({ id, label, isSmall = false, className }) => {
+export const DFormLabel: FC<Props> = ({ id, label, isSmall = false, style, className }) => {
   const classes = classnames("dform-label", { "dform-label--small": isSmall }, className);
 
-  if (id === undefined) {
-    return (
-      <span className={classes}>
-        <span>{label}</span>
-      </span>
-    );
-  }
-
   return (
-    <label className={classes} htmlFor={id}>
-      <span>{label}</span>
-    </label>
+    <span style={style} className={classes}>
+      {id === undefined ? <span>{label}</span> : <label htmlFor={id}>{label}</label>}
+    </span>
   );
 };

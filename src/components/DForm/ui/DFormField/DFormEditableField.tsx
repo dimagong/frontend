@@ -6,14 +6,21 @@ import { DFormFieldRendererProps } from "./DFormFieldRenderer";
 
 type Props = DFormFieldRendererProps & {
   label?: string;
+  fieldId?: string;
   isRequired: boolean;
   isLabelShowing: boolean;
 };
 
 export const DFormEditableField: FC<Props> = (props) => {
-  const { isRequired, isLabelShowing, ...fieldProps } = props;
+  const { fieldId, isRequired, isLabelShowing, ...fieldProps } = props;
 
   return (
-    <DFormBaseField label={fieldProps.label} isRequired={isRequired} isLabelShowing={isLabelShowing} {...fieldProps} />
+    <DFormBaseField
+      id={fieldId}
+      label={fieldProps.label}
+      isRequired={isRequired}
+      isLabelShowing={isLabelShowing}
+      {...fieldProps}
+    />
   );
 };

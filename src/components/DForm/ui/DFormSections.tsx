@@ -47,6 +47,7 @@ export const DFormSections: FC<Props> = (props) => {
           return (
             <TabPane tabId={id} key={id}>
               <DFormSection
+                // @ts-ignore
                 id={id}
                 schema={schema}
                 isHidden={isHidden}

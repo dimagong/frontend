@@ -5,6 +5,7 @@ import { DFormUploadFile } from "./DFormUploadFile";
 import type { DFormFiles } from "../../types/dformFiles";
 
 export type DFormFileProps = {
+  id?: string;
   value?: DFormFiles;
   isDisabled: boolean;
   masterSchemaFieldId?: number;
@@ -12,10 +13,11 @@ export type DFormFileProps = {
 };
 
 export const DFormFile: FC<DFormFileProps> = (props) => {
-  const { value, isDisabled, masterSchemaFieldId, onChange } = props;
+  const { id, value, isDisabled, masterSchemaFieldId, onChange } = props;
 
   return (
     <DFormUploadFile
+      id={id}
       value={value}
       isDisabled={isDisabled}
       isRemovable

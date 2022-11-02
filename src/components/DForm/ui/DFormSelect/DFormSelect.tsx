@@ -4,6 +4,7 @@ import type { FC } from "react";
 import { NmpSelect } from "features/nmp-ui";
 
 export type DFormSelectProps = {
+  id?: string;
   value?: string;
   options?: Array<string>;
   isDisabled: boolean;
@@ -11,10 +12,11 @@ export type DFormSelectProps = {
 };
 
 export const DFormSelect: FC<DFormSelectProps> = (props) => {
-  const { value, options = [], isDisabled, onChange } = props;
+  const { id, value, options = [], isDisabled, onChange } = props;
 
   return (
     <NmpSelect
+      id={id}
       value={value}
       options={options.map((option) => ({ label: option, value: option }))}
       disabled={isDisabled}
