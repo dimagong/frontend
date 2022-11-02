@@ -1,13 +1,13 @@
 import "./styles.scss";
 
+import type { FC } from "react";
 import React, { useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
-import type { FC } from "react";
 import type { DragDropContextProps, DropResult, ResponderProvided } from "react-beautiful-dnd";
 
 import { NmpCheckbox } from "features/nmp-ui";
-import { DFormLabel } from "../Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
+import { DFormLabel } from "./DFormLabel";
 import { DFormSchema } from "../types/dformSchema";
 import SectionsSideBar from "../Components/SectionsSideBar";
 import { DroppableDFormSections } from "../Components/Dnd/Sections/DroppableDFormSections";

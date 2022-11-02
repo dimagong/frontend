@@ -1,8 +1,9 @@
 .group {
-  padding-left: 35px;
   display: flex;
   flex-wrap: wrap;
+  padding-left: 35px;
   padding-right: 35px;
+
   &-title {
     width: 100%;
     font-size: 25px;

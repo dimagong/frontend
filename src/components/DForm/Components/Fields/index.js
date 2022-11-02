@@ -1,10 +1,9 @@
 import classnames from "classnames";
 import React, { useState } from "react";
 
-import { ElementTypes } from "components/DForm";
+import { DFormElementTypes } from "components/DForm";
 import { useDFormContext } from "components/DForm/DFormContext";
 import { ButtonAddItem } from "components/DForm/ui/ButtonAddItem";
-// import { DFormField } from "./DFormField";
 
 import formComponents from "./Components/DFormWidgets";
 
@@ -63,7 +62,7 @@ const FormComponent = (props) => {
 
         // An DForm template can be selected, it should be refactored, cause FormField should not know
         // anything about DForm creating process.
-        const isSelected = selectedElement?.elementType === ElementTypes.Field && selectedElement?.id === field.id;
+        const isSelected = selectedElement?.elementType === DFormElementTypes.Field && selectedElement?.id === field.id;
 
         // An DForm's fields can be disabled by DForm AccessType. Currently, only user-lock is used.
         const isDisabled = !isAccessible || propIsDisabled || field.isDisabled;

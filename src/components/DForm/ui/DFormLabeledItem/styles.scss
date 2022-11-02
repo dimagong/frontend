@@ -1,0 +1,22 @@
+.dform-labeled-item {
+  &__label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+  }
+
+  &__label--required:before {
+    display: inline-block;
+    margin-right: 4px;
+    color: #ff4d4f;
+    content: "*";
+  }
+
+  &__control {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+  }
+}

@@ -8,7 +8,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import { HolderOutlined } from "@ant-design/icons";
 
 import ProgressBar from "./Components/ProgressBar";
-import { ElementTypes } from "components/DForm";
+import { DFormElementTypes } from "components/DForm";
 
 const SectionsSideBar = (props) => {
   const {
@@ -24,7 +24,7 @@ const SectionsSideBar = (props) => {
 
   return (
     <div className="sections">
-      <Droppable droppableId="Section" type={ElementTypes.Section}>
+      <Droppable droppableId="Section" type={DFormElementTypes.Section}>
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             <Nav tabs className="my-0 sections-nav">

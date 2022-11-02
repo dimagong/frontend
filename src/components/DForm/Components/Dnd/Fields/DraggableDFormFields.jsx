@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ElementTypes, FieldTypes } from "components/DForm";
+import { DFormElementTypes, DFormFieldTypes } from "components/DForm";
 import { useDFormContext } from "components/DForm/DFormContext";
 
 import formComponents from "../../Fields/Components/DFormWidgets";
@@ -38,7 +38,7 @@ export const DraggableDFormFields = (props) => {
 
         // An DForm template can be selected, it should be refactored, cause FormField should not know
         // anything about DForm creating process.
-        const isSelected = selectedElement?.elementType === ElementTypes.Field && selectedElement?.id === field.id;
+        const isSelected = selectedElement?.elementType === DFormElementTypes.Field && selectedElement?.id === field.id;
 
         // An DForm's fields can be disabled by DForm AccessType. Currently, only user-lock is used.
         const isDisabled = !isAccessible || propIsDisabled || field.isDisabled;
@@ -49,26 +49,28 @@ export const DraggableDFormFields = (props) => {
         let value;
         if (isConfigurable) {
           switch (field.type) {
-            case FieldTypes.Text:
-            case FieldTypes.Date:
-            case FieldTypes.Number:
-            case FieldTypes.TextArea:
-            case FieldTypes.LongText:
+            case DFormFieldTypes.Text:
+            case DFormFieldTypes.Date:
+            case DFormFieldTypes.Number:
+            case DFormFieldTypes.TextArea:
+            case DFormFieldTypes.LongText:
               value = "";
               break;
-            case FieldTypes.Boolean:
+            case DFormFieldTypes.Boolean:
               value = false;
               break;
-            case FieldTypes.MultiSelect:
+            case DFormFieldTypes.MultiSelect:
               value = [];
               break;
             // Set example fake file to show how it looks like
-            case FieldTypes.File:
-            case FieldTypes.FileList:
-            case FieldTypes.Resource:
-              value = Array.from({ length: FieldTypes.FileList === field.type ? 2 : 1 }).fill({ name: "Example.file" });
+            case DFormFieldTypes.File:
+            case DFormFieldTypes.FileList:
+            case DformFieldTypes.Resource:
+              value = Array.from({ length: DformFieldTypes.FileList === field.type ? 2 : 1 }).fill({
+                name: "Example.file",
+              });
               break;
-            case FieldTypes.HelpText:
+            case DformFieldTypes.HelpText:
               value = field.helpTextValue ?? "";
               break;
             // For rest fields set null value
@@ -78,29 +80,29 @@ export const DraggableDFormFields = (props) => {
         } else {
           const fieldValue = values[field.masterSchemaFieldId];
           switch (field.type) {
-            case FieldTypes.Text:
-            case FieldTypes.Date:
-            case FieldTypes.Number:
-            case FieldTypes.TextArea:
-            case FieldTypes.LongText:
+            case DformFieldTypes.Text:
+            case DformFieldTypes.Date:
+            case DformFieldTypes.Number:
+            case DformFieldTypes.TextArea:
+            case DformFieldTypes.LongText:
               value = fieldValue?.value ?? "";
               break;
-            case FieldTypes.Boolean:
+            case DformFieldTypes.Boolean:
               value = fieldValue?.value ?? false;
               break;
-            case FieldTypes.Select:
+            case DformFieldTypes.Select:
               value = fieldValue?.value ? { value: fieldValue.value, label: fieldValue.value } : null;
               break;
-            case FieldTypes.MultiSelect:
+            case DformFieldTypes.MultiSelect:
               value = fieldValue?.value ? fieldValue.value.map((value) => ({ label: value, value })) : [];
               break;
             // Get files from response instead value in case when field type is file/fileList
-            case FieldTypes.File:
-            case FieldTypes.FileList:
-            case FieldTypes.Resource:
+            case DformFieldTypes.File:
+            case DformFieldTypes.FileList:
+            case DformFieldTypes.Resource:
               value = fieldValue?.files ?? [];
               break;
-            case FieldTypes.HelpText:
+            case DformFieldTypes.HelpText:
               value = field.helpTextValue;
               break;
             // In other case, use value
@@ -122,11 +124,11 @@ export const DraggableDFormFields = (props) => {
           }
 
           switch (field.type) {
-            case FieldTypes.MultiSelect:
+            case DformFieldTypes.MultiSelect:
               onFieldChange(field, Array.isArray(value) ? value.map(({ value }) => value) : []);
               break;
             // Extract value from option for field select
-            case FieldTypes.Select:
+            case DformFieldTypes.Select:
               onFieldChange(field, value.value);
               break;
             default:

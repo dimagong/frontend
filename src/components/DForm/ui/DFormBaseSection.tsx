@@ -6,8 +6,8 @@ import { DFormSchema } from "../types/dformSchema";
 
 export type DFromBaseProps = {
   schema: DFormSchema;
-  isHidden: boolean;
   sectionId: string;
+  isHidden: boolean;
   isDisabled: boolean;
   relatedGroups: Array<string>;
   // have to be refactored the <Groups /> component

@@ -6,7 +6,7 @@ import { Droppable } from "react-beautiful-dnd";
 
 import { Collapse } from "antd";
 
-import { ElementTypes } from "components/DForm";
+import { DFormElementTypes } from "components/DForm";
 
 import { useDFormContext } from "../../../DFormContext";
 
@@ -47,7 +47,7 @@ export const DraggableDFormGroups = (props) => {
         }
 
         const isDisabled = propIsDisabled || Boolean(group.isDisabled);
-        const isSelected = selectedElement?.elementType === ElementTypes.Group && selectedElement?.id === group.id;
+        const isSelected = selectedElement?.elementType === DFormElementTypes.Group && selectedElement?.id === group.id;
         const isLastGroup = sectionGroups.length - 1 === index;
 
         const Title = (
@@ -70,7 +70,7 @@ export const DraggableDFormGroups = (props) => {
           >
             <Collapse ghost activeKey={!isCollapsed ? "1" : null} bordered={false} key={groupId}>
               <Collapse.Panel showArrow={false} key="1">
-                <Droppable droppableId={groupId} type={ElementTypes.Field}>
+                <Droppable droppableId={groupId} type={DFormElementTypes.Field}>
                   {(provided) => (
                     <div className="group-content row mr-0 ml-0" {...provided.droppableProps} ref={provided.innerRef}>
                       <DraggableDFormFields

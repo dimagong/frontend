@@ -2,7 +2,7 @@ import "./styles.scss";
 
 import React from "react";
 
-import { ElementTypes } from "components/DForm";
+import { DFormElementTypes } from "components/DForm";
 
 import Fields from "../Fields";
 import { useDFormContext } from "../../DFormContext";
@@ -43,7 +43,7 @@ const Groups = (props) => {
         }
 
         const isDisabled = propIsDisabled || Boolean(group.isDisabled);
-        const isSelected = selectedElement?.elementType === ElementTypes.Group && selectedElement?.id === group.id;
+        const isSelected = selectedElement?.elementType === DFormElementTypes.Group && selectedElement?.id === group.id;
         const isLastGroup = sectionGroups.length - 1 === idx;
         const creteFieldByGroupId = () => onFieldCreate(groupId);
 

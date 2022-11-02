@@ -1,1 +1,1 @@
-export { NmpCheckbox } from "./NmpCheckbox";
+export * from "./NmpCheckbox";
