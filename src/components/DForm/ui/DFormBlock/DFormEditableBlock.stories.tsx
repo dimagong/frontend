@@ -28,6 +28,7 @@ const Template = (props) => {
                 blockSize={props.blockSize}
                 blockIndex={props.blockIndex}
                 isSelected={props.isSelected}
+                isDraggable={props.isDraggable}
                 isRequired={props.isRequired}
                 isLabelShowing={props.isLabelShowing}
               />
