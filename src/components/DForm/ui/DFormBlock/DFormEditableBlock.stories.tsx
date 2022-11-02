@@ -19,11 +19,16 @@ const Template = (props) => {
             <div ref={provided.innerRef} {...provided.droppableProps}>
               <DFormEditableBlock
                 label={props.label}
+                uiStyle={props.uiStyle}
+                options={props.options}
                 blockId={props.blockId}
                 helpText={props.helpText}
                 blockType={props.blockType}
                 fieldType={props.fieldType}
                 blockIndex={props.blockIndex}
+                isSelected={props.isSelected}
+                isRequired={props.isRequired}
+                isLabelShowing={props.isLabelShowing}
               />
               {provided.placeholder}
             </div>
@@ -36,6 +41,7 @@ const Template = (props) => {
 
 const defaultArgs = {
   blockId: "draggableId",
+  isSelected: true,
   blockIndex: 0,
 };
 
@@ -56,6 +62,7 @@ export const FieldBlock = Template.bind({});
 FieldBlock.args = {
   ...defaultArgs,
   label: "Label",
+  options: ["option 1", "option 2", "option 3", "option 4"],
   fieldType: DFormFieldTypes.Text,
   blockType: DFormBlockTypes.Field,
 };

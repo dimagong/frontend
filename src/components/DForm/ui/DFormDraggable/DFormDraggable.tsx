@@ -18,7 +18,7 @@ export const DFormDraggable: FC<Props> = (props) => {
     <Draggable index={index} draggableId={draggableId}>
       {(provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps}>
-          <div className="dform-draggable__container">
+          <div className="dform-draggable">
             <HolderOutlined {...provided.dragHandleProps} className="dform-draggable__drag-handle" />
 
             {children}

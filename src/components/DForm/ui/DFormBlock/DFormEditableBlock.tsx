@@ -1,24 +1,19 @@
+import "./editable.scss";
+
 import React from "react";
-import type { FC } from "react";
+import classnames from "classnames";
+import type { FC, MouseEventHandler } from "react";
 
 import { DFormField } from "../DFormField";
-import { DFormBlockTypes, DFormFieldTypes } from "../../types";
 import { DFormResource } from "../DFormResource";
 import { DFormHelpText } from "../DFormHelpText";
 import { DFormDraggable } from "../DFormDraggable";
 import type { DFormFieldProps } from "../DFormField";
 import type { DFormResourceProps } from "../DFormResource";
 import type { DFormHelpTextProps } from "../DFormHelpText";
+import { DFormBlockTypes, DFormFieldTypes } from "../../types";
 
-type ToFieldOmit =
-  | "id"
-  | "value"
-  | "checked"
-  | "fieldType"
-  | "options"
-  | "isDisabled"
-  | "masterSchemaFieldId"
-  | "onChange";
+type ToFieldOmit = "id" | "value" | "checked" | "fieldType" | "isDisabled" | "masterSchemaFieldId" | "onChange";
 
 type DFormBlocksProps = Omit<DFormFieldProps, ToFieldOmit> &
   Omit<DFormResourceProps, "isDisabled" | "masterSchemaFieldId"> &
@@ -29,11 +24,13 @@ type Props = DFormBlocksProps & {
   blockType: DFormBlockTypes;
   fieldType?: DFormFieldTypes;
   blockIndex: number;
+  isSelected?: boolean;
+  onBlockClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 export const DFormEditableBlock: FC<Props> = (props) => {
-  const { blockId, blockType, fieldType, blockIndex, ...blockProps } = props;
-  const { label, uiStyle, helpText, dateFormat, isRequired, isLabelShowing } = blockProps;
+  const { blockId, blockType, fieldType, blockIndex, isSelected, onBlockClick, ...blockProps } = props;
+  const { label, uiStyle, options, helpText, dateFormat, isRequired, isLabelShowing } = blockProps;
 
   let Block;
   switch (blockType) {
@@ -46,6 +43,7 @@ export const DFormEditableBlock: FC<Props> = (props) => {
         <DFormField
           label={label}
           uiStyle={uiStyle}
+          options={options}
           fieldType={fieldType}
           dateFormat={dateFormat}
           isRequired={isRequired}
@@ -68,8 +66,12 @@ export const DFormEditableBlock: FC<Props> = (props) => {
   }
 
   return (
-    <DFormDraggable index={blockIndex} draggableId={blockId}>
-      {Block}
-    </DFormDraggable>
+    <div className={classnames("dform-editable", { "dform-editable--selected": isSelected })}>
+      <DFormDraggable index={blockIndex} draggableId={blockId}>
+        <div className="dform-editable__content" onClick={onBlockClick}>
+          {Block}
+        </div>
+      </DFormDraggable>
+    </div>
   );
 };

@@ -28,7 +28,6 @@ type DFormBaseFieldsProps = DFormBooleanProps &
   DFormTextAreaProps;
 
 export type DFormFieldProps = DFormBaseFieldsProps & {
-  id?: string;
   label?: string;
   fieldType: DFormFieldTypes;
   isRequired?: boolean;

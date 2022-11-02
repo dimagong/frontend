@@ -3,6 +3,7 @@ import type { FC } from "react";
 
 import { DFormBlock } from "../DFormBlock";
 import { DFormBaseGroup } from "./DFormBaseGroup";
+// import type { DFormBlockType } from "../../types";
 
 type Props = {
   groupId: string;
@@ -11,7 +12,6 @@ type Props = {
   // blocks: Array<DFormBlockType>;
 };
 
-// ToDo: isAccessible which is dform access_type should be provided through Group to Field as isDisabled
 export const DFormGroup: FC<Props> = (props) => {
   const { groupId, groupName, relatedBlocks } = props;
 
