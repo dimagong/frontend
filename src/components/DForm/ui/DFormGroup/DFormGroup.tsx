@@ -10,8 +10,7 @@ type Props = {
 };
 
 export const DFormGroup: FC<Props> = (props) => {
-  // ToDo: use isDFormAccessible to Field as isDisabled
-  const { groupId, groupName, /*relatedBlocks, isDFormAccessible,*/ children } = props;
+  const { groupName, children } = props;
 
   return <DFormBaseGroup groupName={groupName}>{children}</DFormBaseGroup>;
 };

@@ -1,10 +1,10 @@
-import React, { MouseEventHandler } from "react";
-import type { FC, ReactNode } from "react";
+import React from "react";
 import { Droppable } from "react-beautiful-dnd";
+import type { FC, ReactNode, MouseEventHandler } from "react";
 
-import { DFormBaseGroup } from "./DFormBaseGroup";
 import { DFormElementTypes } from "../../types";
 import { DFormEditable } from "../DFormEditable";
+import { DFormBaseGroup } from "./DFormBaseGroup";
 
 type Props = {
   groupId: string;
@@ -17,7 +17,6 @@ type Props = {
 };
 
 export const DFormEditableGroup: FC<Props> = (props) => {
-  // ToDo: use isDFormAccessible to Field as isDisabled
   const { groupId, groupName, groupIndex, isSelected, isDraggable, children, onClick } = props;
 
   const BaseGroup = <DFormBaseGroup groupName={groupName}>{children}</DFormBaseGroup>;
