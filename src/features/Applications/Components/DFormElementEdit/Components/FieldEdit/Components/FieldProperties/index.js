@@ -21,6 +21,7 @@ import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaPrope
 
 import { FieldTypes } from "components/DForm";
 import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import { GroupChanger } from "./GroupChanger";
 
 export const FieldRequiredEditProperty = () => {
   return (
@@ -358,7 +359,7 @@ const FieldProperties = (props) => {
     ...element,
     ...elementFieldModel,
     format: element.format ? { value: element.format, label: element.format } : null,
-    groupId: { value: element.groupId, label: data.groups[element.groupId].name },
+    // groupId: {value: element.groupId, label: data.groups[element.groupId].name},
     type: element.type,
     masterSchemaFieldId: element.masterSchemaFieldId || null,
   };
@@ -401,6 +402,10 @@ const FieldProperties = (props) => {
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
+      <Form.Item label="Group" name="groupId" className="dform-field">
+        <GroupChanger id="groupId" data={data} />
+      </Form.Item>
+
       <Form.Item label="Element type" name="type" className="dform-field mb-2">
         <NmpSelect
           id="type"

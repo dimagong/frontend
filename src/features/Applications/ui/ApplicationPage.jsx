@@ -375,6 +375,48 @@ export const ApplicationPage = ({ applicationId }) => {
     }
   };
 
+  const changeGroupForField = (selectedElement, submittedElement, application) => {
+    if (selectedElement.groupId === submittedElement.groupId) {
+      return application;
+    }
+    const relatedFields = application.groups[selectedElement.groupId].relatedFields;
+
+    application.groups[selectedElement.groupId].relatedFields = relatedFields.filter(
+      (fieldId) => selectedElement.id !== fieldId
+    );
+    application.groups[submittedElement.groupId].relatedFields.push(selectedElement.id);
+
+    return application;
+  };
+
+  const changeSectionForGroup = (selectedElement, submittedElement, application) => {
+    if (selectedElement.sectionId === submittedElement.sectionId) {
+      return application;
+    }
+
+    const oldSection = application.sections[selectedElement.sectionId];
+
+    application.sections[oldSection.id].relatedGroups = oldSection.relatedGroups.filter(
+      (groupId) => selectedElement.id !== groupId
+    );
+    application.sections[submittedElement.sectionId].relatedGroups.push(selectedElement.id);
+
+    return application;
+  };
+
+  const updateStructureDependencies = (selectedElement, submittedElement, application) => {
+    switch (selectedElement.elementType) {
+      case ElementTypes.Section:
+        return application;
+      case ElementTypes.Group:
+        return changeSectionForGroup(selectedElement, submittedElement, application);
+      case ElementTypes.Field:
+        return changeGroupForField(selectedElement, submittedElement, application);
+      default:
+        return application;
+    }
+  };
+
   const onFieldSubmit = (submittedElement) => {
     let obj = {
       ...selectedElement,
@@ -382,6 +424,8 @@ export const ApplicationPage = ({ applicationId }) => {
     };
 
     let dataToSave = embedSuggestedChanges(obj);
+
+    dataToSave = updateStructureDependencies(selectedElement, submittedElement, dataToSave);
 
     setApplicationData(dataToSave);
 
@@ -553,7 +597,7 @@ export const ApplicationPage = ({ applicationId }) => {
               <Button
                 color="primary"
                 className="button button-success"
-                disabled={updateApplication.isLoading || selectedElement}
+                disabled={updateApplication.isLoading || !!selectedElement}
                 onClick={handleApplicationMutation}
               >
                 Save
