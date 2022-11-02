@@ -1,0 +1,1 @@
+export { NmpText } from "./NmpText";

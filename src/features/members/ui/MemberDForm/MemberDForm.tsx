@@ -142,16 +142,22 @@ export const MemberDForm: FC<Props> = (props) => {
   return (
     <div className="member-dform member-dform__container">
       <Row>
-        <Col span={16} push={4}>
+        <Col xl={{ span: 16, push: 4 }} span={12} push={6}>
           <h2 className="member-dform__title">{name}</h2>
         </Col>
       </Row>
       <Row>
-        <Col span={4} className="member-dform__stepper-sticky">
-          <NmpStepper status={stepperStatus} current={step} sections={sections} onChange={onChangeStep} />
+        <Col sm={4} className="member-dform__stepper-sticky">
+          <NmpStepper
+            className="member-dform__scrollbar"
+            status={stepperStatus}
+            current={step}
+            sections={sections}
+            onChange={onChangeStep}
+          />
         </Col>
 
-        <Col span={16} push={4}>
+        <Col xl={{ span: 16, push: 4 }} span={12} push={6}>
           <NpmCard title={<strong className="member-dform__section-name">Section {sectionName}</strong>}>
             <Form.Provider onFormFinish={onFormFinish} onFormChange={onFormChange}>
               <DFormContextProvider id={id} accessType={accessType} isMemberView>

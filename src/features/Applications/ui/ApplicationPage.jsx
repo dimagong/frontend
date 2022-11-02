@@ -1,12 +1,15 @@
+import _ from "lodash";
 import { v4 } from "uuid";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-import { DFormContextProvider, BaseDForm, ElementTypes } from "components/DForm";
+import { DFormContextProvider, BaseDForm, ElementTypes, DformSchemaElementTypes } from "components/DForm";
+
+import { getCategoryAsOption } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
 import { reorderArray } from "utility/reorderArray";
 
@@ -35,6 +38,17 @@ import { parseSelectCategory } from "features/home/ContextSearch/Applications/ut
 export const ApplicationPage = ({ applicationId }) => {
   const [applicationData, setApplicationData] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
+
+  useEffect(() => {
+    if (selectedElement) {
+      const type = `${selectedElement.elementType}s`;
+      const updatedSelectedElement = applicationData[type][selectedElement.id];
+
+      if (!_.isEqual(updatedSelectedElement, selectedElement)) {
+        setSelectedElement(updatedSelectedElement);
+      }
+    }
+  }, [applicationData]);
 
   const updateApplication = useUpdateApplicationTemplateMutation(
     { applicationId },
@@ -237,7 +251,7 @@ export const ApplicationPage = ({ applicationId }) => {
       group.id
     );
 
-    group.relatedFields.map((fieldId) => delete data.fields[fieldId]);
+    group.relatedFields.map((fieldId) => handleFieldDelete({ id: fieldId }, data));
 
     delete data.groups[group.id];
   };
@@ -245,12 +259,26 @@ export const ApplicationPage = ({ applicationId }) => {
   const handleFieldDelete = (field, data) => {
     const fieldGroup = Object.values(data.groups).filter((group) => group.relatedFields.includes(String(field.id)))[0];
 
-    data.groups[fieldGroup.id].relatedFields = removeItemFormArrayByValue(
-      data.groups[fieldGroup.id].relatedFields,
-      field.id
-    );
+    if (fieldGroup) {
+      data.groups[fieldGroup?.id].relatedFields = removeItemFormArrayByValue(
+        data.groups[fieldGroup.id].relatedFields,
+        field.id
+      );
+    }
+
+    Object.values(DformSchemaElementTypes).forEach((type) => {
+      data[type] = removeConditionsFromElementById(data, type, field.id);
+    });
 
     delete data.fields[field.id];
+  };
+
+  const removeConditionsFromElementById = (data, type, id) => {
+    Object.keys(data[type]).forEach((fieldKey) => {
+      data[type][fieldKey].conditions = data[type][fieldKey].conditions.filter((condition) => condition.fieldId !== id);
+    });
+
+    return data[type];
   };
 
   const validateElement = (element) => {
@@ -387,8 +415,6 @@ export const ApplicationPage = ({ applicationId }) => {
     setApplicationData(dataToSave);
   };
 
-  const onApplicationDescriptionChange = (values) => setApplicationData({ ...applicationData, ...values });
-
   const handlePageChange = (page) => {
     if (selectedElement?.edited) {
       if (!window.confirm(`Are you sure you want to select another element for edit without saving?`)) {
@@ -462,9 +488,10 @@ export const ApplicationPage = ({ applicationId }) => {
     }
   };
 
-  const handleApplicationMutation = () => {
-    // ToDo: validate here too
-    mutateApplication(applicationData, updateApplication);
+  const handleApplicationMutation = (submittedObj) => {
+    mutateApplication({ ...applicationData, ...submittedObj }, updateApplication);
+    // ToDo: It should be removed
+    setApplicationData({ ...applicationData, ...submittedObj });
   };
 
   let { data: categories } = useDFormTemplateCategoriesQuery({
@@ -478,6 +505,14 @@ export const ApplicationPage = ({ applicationId }) => {
     categories = categories.map((category) => parseSelectCategory(category));
     category = categories.find((category) => applicationData.categoryId === category.categoryId);
   }
+
+  const applicationDescriptionData = {
+    name: applicationData?.name,
+    isPrivate: applicationData?.isPrivate,
+    description: applicationData?.description,
+    organizationName: applicationData?.organization.name,
+    categoryId: category ? getCategoryAsOption(category) : null,
+  };
 
   if (application.isLoading || !applicationData) {
     return <div>Loading...</div>;
@@ -512,13 +547,9 @@ export const ApplicationPage = ({ applicationId }) => {
         <TabContent activeTab={selectedPage}>
           <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
             <ApplicationDescription
-              name={applicationData.name}
-              isPrivate={applicationData.isPrivate}
-              description={applicationData.description}
-              organizationName={applicationData.organization.name}
-              onChange={onApplicationDescriptionChange}
-              category={category}
+              applicationDescriptionData={applicationDescriptionData}
               categories={categories}
+              onSubmit={handleApplicationMutation}
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
@@ -539,20 +570,22 @@ export const ApplicationPage = ({ applicationId }) => {
           </TabPane>
         </TabContent>
 
-        <div className="px-3">
-          <div className="application_delimiter" />
+        {selectedPage !== "Description" ? (
+          <div className="px-3">
+            <div className="application_delimiter" />
 
-          <div className="d-flex justify-content-center">
-            <Button
-              color="primary"
-              className="button button-success"
-              disabled={updateApplication.isLoading}
-              onClick={handleApplicationMutation}
-            >
-              Save
-            </Button>
+            <div className="d-flex justify-content-center">
+              <Button
+                color="primary"
+                className="button button-success"
+                disabled={updateApplication.isLoading || selectedElement}
+                onClick={handleApplicationMutation}
+              >
+                Save
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : null}
       </ApplicationWrapper>
 
       {isModuleEditComponentVisible ? (

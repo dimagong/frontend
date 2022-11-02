@@ -1,0 +1,12 @@
+.nmp-text {
+  display: block;
+  max-width: 100%;
+
+  &__line {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}

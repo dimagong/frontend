@@ -14,6 +14,8 @@ const SectionProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElem
   };
 
   useEffect(() => {
+    setDisabled(true);
+
     form.setFieldsValue(initialValues);
   }, [element]);
 
