@@ -17,9 +17,9 @@ export const DFormGroup: FC<Props> = (props) => {
 
   return (
     <DFormBaseGroup groupId={groupId} groupName={groupName}>
-      {relatedBlocks.map((blockId) => (
-        <DFormBlock blockId={blockId} key={blockId} />
-      ))}
+      {/*{relatedBlocks.map((blockId) => (*/}
+      {/*  <DFormBlock blockId={blockId} key={blockId} />*/}
+      {/*))}*/}
 
       {/*<Fields
           data={data}

@@ -4,6 +4,7 @@ import { QueryClientProvider, QueryClient } from "react-query";
 
 import { DFormField } from "./DFormField";
 import { DFormFieldTypes } from "../../types";
+import { DFormFieldItem } from "./DFormFieldItem";
 
 export default {
   title: "DFormField",
@@ -14,21 +15,28 @@ const Template = (props) => {
   return (
     <Form initialValues={{ [props.masterSchemaFieldId]: props.initialValue }}>
       <QueryClientProvider client={new QueryClient()}>
-        <DFormField
-          label={props.label}
-          options={props.options}
-          uiStyle={props.uiStyle}
+        <DFormFieldItem
           minimum={props.minimum}
           maximum={props.maximum}
           minLength={props.minLength}
           maxLength={props.maxLength}
           fieldType={props.fieldType}
-          isDisabled={props.isDisabled}
           isRequired={props.isRequired}
-          isLabelShowing={props.isLabelShowing}
           masterSchemaFieldId={props.masterSchemaFieldId}
-          onChange={props.onChange}
-        />
+        >
+          <DFormField
+            id={String(props.masterSchemaFieldId)}
+            label={props.label}
+            options={props.options}
+            uiStyle={props.uiStyle}
+            fieldType={props.fieldType}
+            isDisabled={props.isDisabled}
+            isRequired={props.isRequired}
+            isLabelShowing={props.isLabelShowing}
+            masterSchemaFieldId={props.masterSchemaFieldId}
+            onChange={props.onChange}
+          />
+        </DFormFieldItem>
       </QueryClientProvider>
     </Form>
   );

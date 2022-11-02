@@ -42,39 +42,6 @@ export const DFormFieldItem: FC<Props> = (props) => {
     }
   };
 
-  // const {
-  //   value,
-  //   label,
-  //   checked,
-  //   options,
-  //   uiStyle,
-  //   fieldType,
-  //   dateFormat,
-  //   isRequired,
-  //   isDisabled,
-  //   isLabelShowing,
-  //   masterSchemaFieldId,
-  //   onChange,
-  // } = fieldProps;
-
-  // const Field = (
-  //   <DFormBaseField
-  //     id={String(masterSchemaFieldId)}
-  //     label={label}
-  //     value={value}
-  //     checked={checked}
-  //     options={options}
-  //     uiStyle={uiStyle}
-  //     fieldType={fieldType}
-  //     dateFormat={dateFormat}
-  //     isDisabled={isDisabled}
-  //     isRequired={isRequired}
-  //     isLabelShowing={isLabelShowing}
-  //     masterSchemaFieldId={masterSchemaFieldId}
-  //     onChange={onChange}
-  //   />
-  // );
-
   switch (fieldType) {
     case DFormFieldTypes.Boolean:
       return <Form.Item {...defaultProps} valuePropName="checked" />;
