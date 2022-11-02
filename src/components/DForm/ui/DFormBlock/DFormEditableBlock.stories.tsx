@@ -3,7 +3,7 @@ import { QueryClientProvider, QueryClient } from "react-query";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import { DFormEditableBlock } from "./DFormEditableBlock";
-import { DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
 
 export default {
   title: "DFormEditableBlock",
@@ -25,6 +25,7 @@ const Template = (props) => {
                 helpText={props.helpText}
                 blockType={props.blockType}
                 fieldType={props.fieldType}
+                blockSize={props.blockSize}
                 blockIndex={props.blockIndex}
                 isSelected={props.isSelected}
                 isRequired={props.isRequired}
@@ -41,8 +42,9 @@ const Template = (props) => {
 
 const defaultArgs = {
   blockId: "draggableId",
-  isSelected: true,
   blockIndex: 0,
+  isSelected: true,
+  blockSize: DFormBlockSizeTypes.Full,
 };
 
 export const HelpTextBlock = Template.bind({});

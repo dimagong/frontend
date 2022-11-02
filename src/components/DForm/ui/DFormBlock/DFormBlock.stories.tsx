@@ -3,7 +3,7 @@ import { Form } from "antd";
 import { QueryClientProvider, QueryClient } from "react-query";
 
 import { DFormBlock } from "./DFormBlock";
-import { DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
 
 export default {
   title: "DFormBlock",
@@ -18,12 +18,15 @@ const Template = (props) => {
       <QueryClientProvider client={new QueryClient()}>
         <DFormBlock
           label={props.label}
+          uiStyle={props.uiStyle}
+          options={props.options}
           helpText={props.helpText}
           blockType={props.blockType}
           fieldType={props.fieldType}
-          // isRequired={props.isRequired}
-          // isDisabled={props.isDisabled}
-          // isLabelShowing={props.isLabelShowing}
+          blockSize={props.blockSize}
+          isRequired={props.isRequired}
+          isDisabled={props.isDisabled}
+          isLabelShowing={props.isLabelShowing}
           masterSchemaFieldId={props.masterSchemaFieldId}
         />
       </QueryClientProvider>
@@ -31,14 +34,21 @@ const Template = (props) => {
   );
 };
 
+const defaultArgs = {
+  blockSize: DFormBlockSizeTypes.Full,
+};
+
 export const HelpTextBlock = Template.bind({});
 HelpTextBlock.args = {
+  ...defaultArgs,
   blockType: DFormBlockTypes.HelpText,
   helpText: "<b>Bold+<i>cursive</i></b>",
 };
 
 export const ResourceBlock = Template.bind({});
 ResourceBlock.args = {
+  ...defaultArgs,
+  label: "Label",
   value: { custom_filename: "Custom.filename", name: "filename.test" },
   blockType: DFormBlockTypes.Resource,
   masterSchemaFieldId: 0,
@@ -46,6 +56,7 @@ ResourceBlock.args = {
 
 export const FieldBlock = Template.bind({});
 FieldBlock.args = {
+  ...defaultArgs,
   label: "Label",
   fieldType: DFormFieldTypes.Text,
   blockType: DFormBlockTypes.Field,

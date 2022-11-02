@@ -1,0 +1,9 @@
+.dform-block {
+  & + & {
+    margin-top: 2.5rem;
+  }
+
+  > .ant-form-item {
+    margin-bottom: 0;
+  }
+}

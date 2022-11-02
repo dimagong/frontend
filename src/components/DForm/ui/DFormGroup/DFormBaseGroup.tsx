@@ -1,25 +1,27 @@
-import "./styles.scss";
+import "./dform-base-group.scss";
 
 import React from "react";
 import type { FC, ReactNode } from "react";
 
-import Fields from "../../Components/Fields";
-import { ButtonAddItem } from "../ButtonAddItem";
+import { NmpRow } from "features/nmp-ui";
 
 type Props = {
-  groupId: string;
-  groupName: string;
-  children: ReactNode;
+  groupName?: string;
+  children?: ReactNode;
 };
 
 export const DFormBaseGroup: FC<Props> = (props) => {
-  const { groupId, groupName, children } = props;
+  const { groupName = "", children } = props;
 
   return (
-    <>
-      <h2 className="dform-group__title">{groupName}</h2>
+    <div className="dform-group">
+      {groupName === "" ? null : <h3 className="dform-group__title">{groupName}</h3>}
 
-      <div className="group-content row mr-0 ml-0">{children}</div>
-    </>
+      {children ? (
+        <NmpRow gutter={40} className="dform-group__content">
+          {children}
+        </NmpRow>
+      ) : null}
+    </div>
   );
 };

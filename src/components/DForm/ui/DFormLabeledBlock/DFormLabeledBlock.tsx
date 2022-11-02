@@ -14,7 +14,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const DFormLabeledItem: FC<Props> = (props) => {
+export const DFormLabeledBlock: FC<Props> = (props) => {
   const { id, label = "", isRequired = false, isLabelShowing = true, children } = props;
 
   return (

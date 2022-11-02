@@ -22,3 +22,8 @@ export enum DFormFieldTypes {
   Text = "text",
   TextArea = "textArea",
 }
+
+export enum DFormBlockSizeTypes {
+  Half = "col-md-6",
+  Full = "col-md-12",
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import type { FC } from "react";
 
-import { DFormLabeledItem } from "../DFormLabeledItem";
+import { DFormLabeledBlock } from "../DFormLabeledBlock";
 import { DFormFieldRenderer } from "./DFormFieldRenderer";
 
 import type { DFormBooleanProps } from "../DFormBoolean";
@@ -39,7 +39,7 @@ export const DFormField: FC<DFormFieldProps> = (props) => {
   const { value, checked, options, uiStyle, dateFormat, onChange } = fieldProps;
 
   return (
-    <DFormLabeledItem id={id} label={label} isRequired={isRequired} isLabelShowing={isLabelShowing}>
+    <DFormLabeledBlock id={id} label={label} isRequired={isRequired} isLabelShowing={isLabelShowing}>
       <DFormFieldRenderer
         id={id}
         label={label}
@@ -53,6 +53,6 @@ export const DFormField: FC<DFormFieldProps> = (props) => {
         masterSchemaFieldId={masterSchemaFieldId}
         onChange={onChange}
       />
-    </DFormLabeledItem>
+    </DFormLabeledBlock>
   );
 };

@@ -16,12 +16,13 @@ export const DFormGroup: FC<Props> = (props) => {
   const { groupId, groupName, relatedBlocks } = props;
 
   return (
-    <DFormBaseGroup groupId={groupId} groupName={groupName}>
-      {/*{relatedBlocks.map((blockId) => (*/}
-      {/*  <DFormBlock blockId={blockId} key={blockId} />*/}
-      {/*))}*/}
+    <p>asd</p>
+    /*<DFormBaseGroup groupName={groupName}>
+      {/!*{relatedBlocks.map((blockId) => (*!/}
+      {/!*  <DFormBlock blockId={blockId} key={blockId} />*!/}
+      {/!*))}*!/}
 
-      {/*<Fields
+      {/!*<Fields
           data={data}
           groupId={groupId}
           isDisabled={isDisabled}
@@ -29,7 +30,7 @@ export const DFormGroup: FC<Props> = (props) => {
           groupFields={group.relatedFields}
           onFieldCreate={onFieldCreate}
           onElementClick={onElementClick}
-        />*/}
-    </DFormBaseGroup>
+        />*!/}
+    </DFormBaseGroup>*/
   );
 };

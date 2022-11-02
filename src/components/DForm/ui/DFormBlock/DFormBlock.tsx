@@ -1,10 +1,11 @@
 import React from "react";
 import type { FC } from "react";
 
-import { DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
 
 import { DFormResource } from "../DFormResource";
 import { DFormHelpText } from "../DFormHelpText";
+import { DFormBaseBlock } from "./DFormBaseBlock";
 import type { DFormFieldProps } from "../DFormField";
 import type { DFormResourceProps } from "../DFormResource";
 import type { DFormHelpTextProps } from "../DFormHelpText";
@@ -20,12 +21,15 @@ type DFormBlocksProps = DFormFieldBlockProps & DFormResourceProps & DFormHelpTex
 type Props = DFormBlocksProps & {
   blockType: DFormBlockTypes;
   fieldType?: DFormFieldTypes;
+  blockSize?: DFormBlockSizeTypes;
 };
 
 export const DFormBlock: FC<Props> = (props) => {
-  const { blockType, fieldType, ...blockProps } = props;
+  const { blockType, fieldType, blockSize, ...blockProps } = props;
   const { label, uiStyle, options, helpText, dateFormat, isDisabled, isRequired, isLabelShowing, masterSchemaFieldId } =
     blockProps;
+
+  let Block;
 
   switch (blockType) {
     case DFormBlockTypes.Field:
@@ -33,7 +37,7 @@ export const DFormBlock: FC<Props> = (props) => {
         throw new Error("Unexpected: To render block field, provide a fieldType.");
       }
 
-      return (
+      Block = (
         <DFormFieldItem fieldType={fieldType} isRequired={isRequired} masterSchemaFieldId={masterSchemaFieldId}>
           <DFormField
             id={String(masterSchemaFieldId)}
@@ -49,8 +53,9 @@ export const DFormBlock: FC<Props> = (props) => {
           />
         </DFormFieldItem>
       );
+      break;
     case DFormBlockTypes.Resource:
-      return (
+      Block = (
         <DFormFieldItem isRequired={isRequired} masterSchemaFieldId={masterSchemaFieldId}>
           <DFormResource
             label={label}
@@ -60,7 +65,11 @@ export const DFormBlock: FC<Props> = (props) => {
           />
         </DFormFieldItem>
       );
+      break;
     case DFormBlockTypes.HelpText:
-      return <DFormHelpText helpText={helpText} />;
+      Block = <DFormHelpText helpText={helpText} />;
+      break;
   }
+
+  return <DFormBaseBlock blockSize={blockSize}>{Block}</DFormBaseBlock>;
 };

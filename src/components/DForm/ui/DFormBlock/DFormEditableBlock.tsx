@@ -1,4 +1,4 @@
-import "./editable.scss";
+import "./dform-editable-block.scss";
 
 import React from "react";
 import classnames from "classnames";
@@ -7,11 +7,12 @@ import type { FC, MouseEventHandler } from "react";
 import { DFormField } from "../DFormField";
 import { DFormResource } from "../DFormResource";
 import { DFormHelpText } from "../DFormHelpText";
+import { DFormBaseBlock } from "./DFormBaseBlock";
 import { DFormDraggable } from "../DFormDraggable";
 import type { DFormFieldProps } from "../DFormField";
 import type { DFormResourceProps } from "../DFormResource";
 import type { DFormHelpTextProps } from "../DFormHelpText";
-import { DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
 
 type ToFieldOmit = "id" | "value" | "checked" | "fieldType" | "isDisabled" | "masterSchemaFieldId" | "onChange";
 
@@ -23,13 +24,14 @@ type Props = DFormBlocksProps & {
   blockId: string;
   blockType: DFormBlockTypes;
   fieldType?: DFormFieldTypes;
+  blockSize?: DFormBlockSizeTypes;
   blockIndex: number;
   isSelected?: boolean;
   onBlockClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 export const DFormEditableBlock: FC<Props> = (props) => {
-  const { blockId, blockType, fieldType, blockIndex, isSelected, onBlockClick, ...blockProps } = props;
+  const { blockId, blockType, fieldType, blockSize, blockIndex, isSelected, onBlockClick, ...blockProps } = props;
   const { label, uiStyle, options, helpText, dateFormat, isRequired, isLabelShowing } = blockProps;
 
   let Block;
@@ -66,12 +68,14 @@ export const DFormEditableBlock: FC<Props> = (props) => {
   }
 
   return (
-    <div className={classnames("dform-editable", { "dform-editable--selected": isSelected })}>
-      <DFormDraggable index={blockIndex} draggableId={blockId}>
-        <div className="dform-editable__content" onClick={onBlockClick}>
-          {Block}
-        </div>
-      </DFormDraggable>
-    </div>
+    <DFormBaseBlock blockSize={blockSize}>
+      <div className={classnames("dform-editable", { "dform-editable--selected": isSelected })}>
+        <DFormDraggable index={blockIndex} draggableId={blockId}>
+          <div className="dform-editable__content" onClick={onBlockClick}>
+            {Block}
+          </div>
+        </DFormDraggable>
+      </div>
+    </DFormBaseBlock>
   );
 };

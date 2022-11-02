@@ -1,0 +1,15 @@
+.dform-group {
+  min-height: 32px;
+
+  &__title {
+    font-size: 1.4rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 32px;
+    margin-bottom: 0;
+  }
+
+  &__title + &__content {
+    margin-top: 1.2rem;
+  }
+}
