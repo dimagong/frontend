@@ -11,21 +11,39 @@ export const DFormTemplateCategoryQueryKey = createQueryKey("DFormTemplateCatego
 
 export const DFormTemplateCategoryQueryKeys = {
   all: () => [DFormTemplateCategoryQueryKey],
-  byName: (name: CategoryName) => [...DFormTemplateCategoryQueryKeys.all(), { name }],
+  byNameAndRootCategory: (name: CategoryName, rootCategoryId: CategoryId) => [
+    ...DFormTemplateCategoryQueryKeys.all(),
+    { name, rootCategoryId },
+  ],
   byOrganization: (id: OrganizationId, type: OrganizationType) => [
     ...DFormTemplateCategoryQueryKeys.all(),
     { id, type },
   ],
 };
 
-export const useDFormTemplateCategoryQuery = ({ name, ...options }: DFormTemplateCategoryQueryProps) => {
+export const useDFormTemplateCategoryQuery = ({
+  name,
+  rootCategoryId,
+  ...options
+}: DFormTemplateCategoryQueryProps) => {
   return useGenericQuery(
     {
       url: `api/dform-template/categories`,
-      queryKey: DFormTemplateCategoryQueryKeys.byName(name),
+      queryKey: DFormTemplateCategoryQueryKeys.byNameAndRootCategory(name, rootCategoryId),
       params: {
         ...(name ? { search_by_name: name } : {}),
+        root_category_id: rootCategoryId,
       },
+    },
+    options
+  );
+};
+
+export const useDFormTemplateRootCategoriesQuery = (options?: QueryOptions) => {
+  return useGenericQuery(
+    {
+      url: `api/dform-template/categories/root`,
+      queryKey: DFormTemplateCategoryQueryKeys.all,
     },
     options
   );
@@ -105,6 +123,7 @@ export const useUpdateDFormTemplateCategoryMutation = ({
 
 type DFormTemplateCategoryQueryProps = QueryOptions & {
   name: CategoryName;
+  rootCategoryId: CategoryId;
 };
 
 type DFormTemplateCategoriesQueryProps = QueryOptions & {

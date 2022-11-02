@@ -43,9 +43,7 @@ export const GeneralAHGroup = (props) => {
   const updateCategory = useUpdateDFormTemplateCategoryMutation({ categoryId: node.id });
 
   const onUpdateCategorySubmit = (submitted) => {
-    if (submitted.invalid) return;
-
-    const { name, parentId } = submitted.values;
+    const { name, parentId } = submitted;
 
     updateCategory.mutate({ name: name, parent_id: parentId });
   };
@@ -83,13 +81,13 @@ export const GeneralAHGroup = (props) => {
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
+  const onEditModalClose = () => {
     setIsModalOpen(false);
   };
 
   React.useEffect(() => {
     if (!updateCategory.isLoading) {
-      closeModal();
+      onEditModalClose();
     }
   }, [updateCategory.isLoading]);
 
@@ -167,7 +165,7 @@ export const GeneralAHGroup = (props) => {
         <EditCategoryModal
           isOpen={isModalOpen}
           group={node}
-          close={closeModal}
+          onCancel={onEditModalClose}
           onSubmit={onUpdateCategorySubmit}
           submitting={updateCategory.isLoading}
         />

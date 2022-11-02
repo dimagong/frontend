@@ -1,10 +1,13 @@
-import { CategoryHierarchy, CategoryId, Field, Group, Hierarchy, Node } from "../models";
+import { compareByName } from "utility/compareByName";
+
 import { parseHierarchyCategory } from "./categoryConverter";
+
+import { CategoryHierarchy, CategoryId, Field, Group, Hierarchy, Node } from "../models";
 
 export const getNodeId = (nodeName: string, id: number) => `${nodeName}${id}`;
 
 export const makeGroup = (category: CategoryHierarchy, fields: Field[]): Group => {
-  const containedFields = fields.filter((field) => field.categoryId === category.categoryId);
+  const containedFields = fields.filter((field) => field.categoryId === category.categoryId).sort(compareByName);
 
   const groupsNodeIds = containedFields.map((containedField) => containedField.nodeId);
 
@@ -91,6 +94,9 @@ export const transformCategoriesToHierarchy = (data: any[]): Hierarchy[] => {
     groups.push(makeGroup(category, fields));
   });
 
+  groups.sort(compareByName);
+  fields.sort(compareByName);
+
   groups = updateGroupsField(groups);
 
   return getHierarchies(groups, fields);
@@ -102,6 +108,8 @@ const getContainedById = (array: Node[], id: CategoryId): Node[] => {
 
 const makeObjectWithNodeIdFields = (array: Node[]) => {
   const ObjectWithNodeIdFields = {};
+
+  // console.log("array", array);
 
   array.forEach((arrayItem) => {
     ObjectWithNodeIdFields[arrayItem.nodeId!] = arrayItem;
