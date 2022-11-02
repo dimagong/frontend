@@ -1,26 +1,14 @@
 import React from "react";
 import type { FC } from "react";
 
-import { DFormBaseField } from "./DFormBaseField";
-import { DFormFieldRendererProps } from "./DFormFieldRenderer";
+import { DFormBaseField, DFormBaseFieldProps } from "./DFormBaseField";
 
-type Props = DFormFieldRendererProps & {
-  label?: string;
-  fieldId?: string;
-  isRequired: boolean;
-  isLabelShowing: boolean;
+type Props = Omit<DFormBaseFieldProps, "id" | "onChange"> & {
+  fieldId: string;
 };
 
 export const DFormEditableField: FC<Props> = (props) => {
-  const { fieldId, isRequired, isLabelShowing, ...fieldProps } = props;
+  const { fieldId, ...fieldProps } = props;
 
-  return (
-    <DFormBaseField
-      id={fieldId}
-      label={fieldProps.label}
-      isRequired={isRequired}
-      isLabelShowing={isLabelShowing}
-      {...fieldProps}
-    />
-  );
+  return <DFormBaseField id={fieldId} {...fieldProps} />;
 };

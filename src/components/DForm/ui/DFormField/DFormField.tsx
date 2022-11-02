@@ -2,60 +2,34 @@ import React from "react";
 import type { FC } from "react";
 
 import { DFormItem } from "../DFormItem";
-import { DFormBaseField } from "./DFormBaseField";
+import { DFormBaseField, DFormBaseFieldProps } from "./DFormBaseField";
 
 import { DFormFieldTypes } from "../../types";
-import type { DFormBooleanProps } from "../DFormBoolean";
-import type { DFormDatePickerProps } from "../DFormDatePicker";
-import type { DFormFileProps } from "../DFormFile";
-import type { DFormFileListProps } from "../DFormFileList";
-import type { DFormLongTextProps } from "../DFormLongText";
-import type { DFormMultiSelectProps } from "../DFormMultiSelect";
-import type { DFormNumberProps } from "../DFormNumber";
-import type { DFormSelectProps } from "../DFormSelect";
-import type { DFormTextProps } from "../DFormText";
-import type { DFormTextAreaProps } from "../DFormTextArea";
 
-export type DFormBaseField = Omit<DFormBooleanProps, "id" | "label" | "isDisabled"> &
-  Omit<DFormDatePickerProps, "id" | "isDisabled"> &
-  Omit<DFormFileProps, "id" | "isDisabled" | "masterSchemaFieldId"> &
-  Omit<DFormFileListProps, "id" | "isDisabled" | "masterSchemaFieldId"> &
-  Omit<DFormLongTextProps, "id" | "isDisabled"> &
-  Omit<DFormMultiSelectProps, "id" | "isDisabled"> &
-  Omit<DFormNumberProps, "id" | "isDisabled"> &
-  Omit<DFormSelectProps, "id" | "isDisabled"> &
-  Omit<DFormTextProps, "id" | "isDisabled"> &
-  Omit<DFormTextAreaProps, "id" | "isDisabled">;
-
-type Props = DFormBaseField & {
-  label?: string;
-  fieldType: DFormFieldTypes;
-  isRequired: boolean;
-  isDisabled: boolean;
-  isLabelShowing: boolean;
-  masterSchemaFieldId: number;
-  // validation
+type Props = Omit<DFormBaseFieldProps, "masterSchemaFieldId"> & {
   minimum?: number;
   maximum?: number;
   minLength?: number;
   maxLength?: number;
+  masterSchemaFieldId: number;
 };
 
 export const DFormField: FC<Props> = (props) => {
+  const { minimum, maximum, minLength, maxLength, ...fieldProps } = props;
   const {
+    value,
     label,
+    checked,
+    options,
+    uiStyle,
     fieldType,
+    dateFormat,
     isRequired,
     isDisabled,
     isLabelShowing,
     masterSchemaFieldId,
-    minimum,
-    maximum,
-    minLength,
-    maxLength,
-    ...fieldProps
-  } = props;
-  const { onChange, checked, value, options, uiStyle, dateFormat } = fieldProps;
+    onChange,
+  } = fieldProps;
 
   const numberValidator = async (_, value: unknown) => {
     const valueAsNumber = Number(value);
@@ -92,7 +66,6 @@ export const DFormField: FC<Props> = (props) => {
       isLabelShowing={isLabelShowing}
       masterSchemaFieldId={masterSchemaFieldId}
       onChange={onChange}
-      {...fieldProps}
     />
   );
 
