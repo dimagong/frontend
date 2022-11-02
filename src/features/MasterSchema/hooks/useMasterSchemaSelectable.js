@@ -52,12 +52,22 @@ export const useMasterSchemaSelectable = (strategyId) => {
   const strategies = useMasterSchemaSelectStrategies(nodes, toggle);
   const selectStrategy = React.useMemo(() => strategies[strategyId], [strategies, strategyId]);
 
+  const selectStrategyWrapper = (valueProp) => {
+    const containedNode = nodes.find((node) => node.id === valueProp.id);
+
+    if (containedNode) {
+      toggle(containedNode);
+    } else {
+      selectStrategy(valueProp);
+    }
+  };
+
   return [
     nodes,
     {
       isEmpty,
       clear,
-      select: selectStrategy,
+      select: selectStrategyWrapper,
       setKeys,
       includes,
     },
