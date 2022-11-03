@@ -32,6 +32,7 @@ export const DFormEditableGroup: FC<Props> = (props) => {
                 </DFormSelectable>
               </DFormDragHandleBlock>
             )}
+            isEmptyTitleRendered
           >
             {children}
           </DFormBaseGroup>
