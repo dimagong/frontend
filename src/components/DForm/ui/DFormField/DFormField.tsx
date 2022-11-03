@@ -29,7 +29,7 @@ type DFormBaseFieldsProps = DFormBooleanProps &
 
 export type DFormFieldProps = DFormBaseFieldsProps & {
   label?: string;
-  fieldType: DFormFieldTypes;
+  fieldType?: DFormFieldTypes;
   isRequired?: boolean;
   isLabelShowing?: boolean;
 };
@@ -37,6 +37,10 @@ export type DFormFieldProps = DFormBaseFieldsProps & {
 export const DFormField: FC<DFormFieldProps> = (props) => {
   const { id, label, fieldType, isRequired, isDisabled, isLabelShowing, masterSchemaFieldId, ...fieldProps } = props;
   const { value, checked, options, uiStyle, dateFormat, onChange } = fieldProps;
+
+  if (fieldType == null) {
+    throw new Error("Invariant Violation: Provide a fieldType to render the <DFormField />");
+  }
 
   return (
     <DFormLabeledBlock id={id} label={label} isRequired={isRequired} isLabelShowing={isLabelShowing}>

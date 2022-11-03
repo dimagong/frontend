@@ -1,6 +1,8 @@
 .dform-draggable {
-  position: relative;
-  padding-left: 1.4rem;
+  &__area {
+    position: relative;
+    padding-left: 1.4rem;
+  }
 
   &__drag-handle {
     font-size: 1.1rem;
@@ -10,7 +12,7 @@
     }
 
     position: absolute;
-    top: 1.4rem;
+    top: 0.5rem;
     left: 0;
   }
 }

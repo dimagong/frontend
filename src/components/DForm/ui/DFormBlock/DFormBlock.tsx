@@ -34,10 +34,6 @@ export const DFormBlock: FC<Props> = (props) => {
 
   switch (blockType) {
     case DFormBlockTypes.Field:
-      if (fieldType === undefined) {
-        throw new Error("Unexpected: To render block field, provide a fieldType.");
-      }
-
       Block = (
         <DFormFieldItem fieldType={fieldType} isRequired={isRequired} masterSchemaFieldId={masterSchemaFieldId}>
           <DFormField

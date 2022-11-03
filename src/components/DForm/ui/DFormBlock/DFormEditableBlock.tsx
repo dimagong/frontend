@@ -1,12 +1,13 @@
-import type { FC, MouseEventHandler } from "react";
 import React from "react";
+import type { FC, MouseEventHandler } from "react";
 
 import { DFormField } from "../DFormField";
 import { DFormHelpText } from "../DFormHelpText";
-import { DFormEditable } from "../DFormEditable";
 import { DFormResource } from "../DFormResource";
 import { DFormBaseBlock } from "./DFormBaseBlock";
+import { DFormDraggable } from "../DFormDraggable";
 import { DFormBlockSizer } from "./DFormBlockSizer";
+import { DFormSelectable } from "../DFormSelectable";
 import type { DFormFieldProps } from "../DFormField";
 import type { DFormResourceProps } from "../DFormResource";
 import type { DFormHelpTextProps } from "../DFormHelpText";
@@ -37,10 +38,6 @@ export const DFormEditableBlock: FC<Props> = (props) => {
   let Block;
   switch (blockType) {
     case DFormBlockTypes.Field:
-      if (fieldType === undefined) {
-        throw new Error("Unexpected: To render block field, provide a fieldType.");
-      }
-
       Block = (
         <DFormField
           label={label}
@@ -69,16 +66,16 @@ export const DFormEditableBlock: FC<Props> = (props) => {
 
   return (
     <DFormBlockSizer blockSize={isDraggable ? DFormBlockSizeTypes.Full : blockSize}>
-      <DFormEditable
-        editableId={blockId}
-        editableIndex={blockIndex}
-        isSelected={isSelected}
+      <DFormDraggable
+        draggableId={blockId}
         isDraggable={isDraggable}
-        isMishandled
-        onClick={onClick}
+        draggableIndex={blockIndex}
+        wrapper={(node) => <DFormBaseBlock>{node}</DFormBaseBlock>}
       >
-        <DFormBaseBlock>{Block}</DFormBaseBlock>
-      </DFormEditable>
+        <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
+          {Block}
+        </DFormSelectable>
+      </DFormDraggable>
     </DFormBlockSizer>
   );
 };

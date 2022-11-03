@@ -1,10 +1,11 @@
 import React from "react";
-import { Droppable } from "react-beautiful-dnd";
 import type { FC, ReactNode, MouseEventHandler } from "react";
 
-import { DFormElementTypes } from "../../types";
-import { DFormEditable } from "../DFormEditable";
 import { DFormBaseGroup } from "./DFormBaseGroup";
+import { DFormDraggable } from "../DFormDraggable";
+import { DFormSelectable } from "../DFormSelectable";
+import { DFormGroupWrapper } from "./DFormGroupWrapper";
+import { DFormDroppableGroup } from "./DFormGroupDroppable";
 
 type Props = {
   groupId: string;
@@ -19,29 +20,25 @@ type Props = {
 export const DFormEditableGroup: FC<Props> = (props) => {
   const { groupId, groupName, groupIndex, isSelected, isDraggable, children, onClick } = props;
 
-  const BaseGroup = <DFormBaseGroup groupName={groupName}>{children}</DFormBaseGroup>;
-
   return (
-    <DFormEditable
-      editableId={groupId}
-      editableIndex={groupIndex}
-      isSelected={isSelected}
+    <DFormDraggable
+      draggableId={groupId}
       isDraggable={isDraggable}
-      onClick={onClick}
+      draggableIndex={groupIndex}
+      wrapper={(node) => <DFormGroupWrapper>{node}</DFormGroupWrapper>}
     >
-      {isDraggable ? (
-        <Droppable droppableId={groupId} type={DFormElementTypes.Block}>
-          {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {BaseGroup}
-
-              {provided.placeholder}
-            </div>
+      <DFormDroppableGroup droppableId={groupId} isDraggable={isDraggable}>
+        <DFormBaseGroup
+          groupName={groupName}
+          renderTitle={(node) => (
+            <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
+              {node}
+            </DFormSelectable>
           )}
-        </Droppable>
-      ) : (
-        BaseGroup
-      )}
-    </DFormEditable>
+        >
+          {children}
+        </DFormBaseGroup>
+      </DFormDroppableGroup>
+    </DFormDraggable>
   );
 };
