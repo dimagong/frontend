@@ -5,7 +5,7 @@ import { DFormField } from "../DFormField";
 import { DFormHelpText } from "../DFormHelpText";
 import { DFormResource } from "../DFormResource";
 import { DFormBaseBlock } from "./DFormBaseBlock";
-import { DFormDraggable } from "../DFormDraggable";
+import { DFormDraggable, DFormDragHandleBlock } from "../DFormDraggable";
 import { DFormBlockSizer } from "./DFormBlockSizer";
 import { DFormSelectable } from "../DFormSelectable";
 import type { DFormFieldProps } from "../DFormField";
@@ -66,15 +66,16 @@ export const DFormEditableBlock: FC<Props> = (props) => {
 
   return (
     <DFormBlockSizer blockSize={isDraggable ? DFormBlockSizeTypes.Full : blockSize}>
-      <DFormDraggable
-        draggableId={blockId}
-        isDraggable={isDraggable}
-        draggableIndex={blockIndex}
-        wrapper={(node) => <DFormBaseBlock>{node}</DFormBaseBlock>}
-      >
-        <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
-          {Block}
-        </DFormSelectable>
+      <DFormDraggable draggableId={blockId} isDraggable={isDraggable} draggableIndex={blockIndex}>
+        {(dragHandle) => (
+          <DFormBaseBlock>
+            <DFormDragHandleBlock dragHandle={dragHandle}>
+              <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
+                {Block}
+              </DFormSelectable>
+            </DFormDragHandleBlock>
+          </DFormBaseBlock>
+        )}
       </DFormDraggable>
     </DFormBlockSizer>
   );

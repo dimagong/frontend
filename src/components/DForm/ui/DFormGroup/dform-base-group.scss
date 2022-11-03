@@ -1,4 +1,7 @@
 .dform-group {
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+
   &__title {
     font-size: 1.4rem;
     font-style: normal;
@@ -7,7 +10,7 @@
     margin-bottom: 0;
   }
 
-  &__title + &__content {
+  &__head + &__content {
     margin-top: 1.2rem;
   }
 }

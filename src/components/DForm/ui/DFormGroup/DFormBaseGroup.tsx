@@ -14,12 +14,12 @@ type Props = {
 export const DFormBaseGroup: FC<Props> = (props) => {
   const { groupName = "", renderTitle, children } = props;
 
-  const ownTitle = groupName === "" ? null : <h3 className="dform-group__title">{groupName}</h3>;
+  const ownTitle = <h3 className="dform-group__title">{groupName}</h3>;
   const Title = renderTitle ? renderTitle(ownTitle) : ownTitle;
 
   return (
     <div className="dform-group">
-      {Title}
+      <div className="dform-group__head">{Title}</div>
 
       {children ? (
         <NmpRow gutter={40} className="dform-group__content">
