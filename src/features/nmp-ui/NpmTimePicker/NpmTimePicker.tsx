@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 import { TimePicker, TimePickerProps } from "antd";
 
-type Props = TimePickerProps & {
+type Props = Omit<TimePickerProps, "value" | "onChange"> & {
   value?: string;
   onChange?: (isoString: string | null) => void;
 };

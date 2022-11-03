@@ -1,18 +1,38 @@
 import "./styles.scss";
 
-import React, { FC, useState } from "react";
+import type { FC } from "react";
+import React, { useMemo, useState } from "react";
+import { DragDropContext } from "react-beautiful-dnd";
+import type { DragDropContextProps, DropResult, ResponderProvided } from "react-beautiful-dnd";
 
-import { DFormSections } from "./DFormSections";
+import { DFormBlockTypes, DFormElementTypes, DFormFieldTypes } from "../types";
+import { DFormEditableGroup } from "./DFormGroup";
+import { DFormEditableBlock } from "./DFormBlock";
 import { DFormSchema } from "../types/dformSchema";
 import SectionsSideBar from "../Components/SectionsSideBar";
+import { DFormEditableSection } from "./DFormSection/DFormEditableSection";
+import { DFormAddElement } from "./DFormAddElement";
+import { NmpCol, NmpRow } from "../../../features/nmp-ui";
+
+const recognizeBlockType = (fieldType: string) => {
+  switch (fieldType) {
+    case "helpText":
+      return DFormBlockTypes.HelpText;
+    case "resource":
+      return DFormBlockTypes.Resource;
+    default:
+      return DFormBlockTypes.Field;
+  }
+};
 
 type Props = {
   schema?: DFormSchema;
-  selectedElement?: object;
+  selectedElement?: { id: string };
   onSectionCreate?: () => void;
   onFieldCreate?: (groupId: string) => void;
   onGroupCreate?: (sectionId: string) => void;
   onElementClick?: (el: any, type: "field" | "group" | "section") => void;
+  onDragEnd?: DragDropContextProps["onDragEnd"];
 };
 
 const defaultSchema: DFormSchema = { fields: {}, groups: {}, sections: {}, sectionsOrder: [] };
@@ -25,38 +45,146 @@ export const BaseDForm: FC<Props> = (props) => {
     onGroupCreate,
     onFieldCreate,
     onSectionCreate,
+    onDragEnd: propOnDragEnd,
   } = props;
 
-  const [selectedSectionId, setSelectedSectionId] = useState(() => schema.sectionsOrder[0]);
+  const sections = useMemo(
+    () => schema.sectionsOrder.map((sectionId) => schema.sections[sectionId]),
+    [schema.sections, schema.sectionsOrder]
+  );
 
-  const onSectionClick = (sectionId) => {
+  const [selectedSectionId, setSelectedSectionId] = useState(() => schema.sectionsOrder[0]);
+  const selectedSection = useMemo(() => schema.sections[selectedSectionId], [schema.sections, selectedSectionId]);
+
+  console.log({
+    schema,
+    selectedSection,
+    groups: selectedSection.relatedGroups.map((groupId) => schema.groups[groupId]),
+  });
+
+  const onSectionClick = (sectionId: string) => {
     if (onElementClick) {
       onElementClick(schema.sections[sectionId], "section");
     }
     setSelectedSectionId(sectionId);
   };
 
-  return (
-    <div className="dform edit-mode">
-      <SectionsSideBar
-        errors={[]}
-        sections={schema.sectionsOrder.map((sectionId) => schema.sections[sectionId])}
-        completed={undefined}
-        isConfigurable
-        selectedSection={selectedSectionId}
-        sectionsProgress={{}}
-        onSectionCreate={onSectionCreate}
-        onSectionSelect={onSectionClick}
-      />
+  const onDragEnd = (result: DropResult) => {
+    if (
+      result.destination === null ||
+      (result.destination!.index === result.source.index &&
+        result.source.droppableId === result.destination!.droppableId)
+    )
+      return;
+    // @ts-ignore
+    propOnDragEnd(result);
+  };
 
-      <DFormSections
-        schema={schema}
-        selectedElement={selectedElement}
-        selectedSectionId={selectedSectionId}
-        onGroupCreate={onGroupCreate}
-        onFieldCreate={onFieldCreate}
-        onElementClick={onElementClick}
-      />
-    </div>
+  // const [isCollapsed, setIsCollapsed] = useState(false);
+
+  /*const onIsCollapsedChange = (event) => {
+    setIsCollapsed(event.target.checked);
+  };*/
+
+  if (!selectedSectionId) {
+    return "loading..." as any;
+  }
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <NmpRow>
+        {/*<div className="dform__collapse">
+        <NmpCheckbox id="isCollapsed" onChange={onIsCollapsedChange}>
+          <DFormLabel label="Collapse" isSmall />
+        </NmpCheckbox>
+      </div>*/}
+
+        <NmpCol span="8">
+          <SectionsSideBar
+            errors={[]}
+            sections={sections}
+            completed={undefined}
+            isConfigurable
+            selectedSection={selectedSectionId}
+            sectionsProgress={{}}
+            onSectionCreate={onSectionCreate}
+            onSectionSelect={onSectionClick}
+          />
+        </NmpCol>
+
+        <NmpCol span="15" push="1">
+          <DFormEditableSection
+            sectionId={selectedSectionId}
+            sectionName={selectedSection.name}
+            isDraggable
+            key={selectedSectionId}
+          >
+            {selectedSection.relatedGroups
+              .map((groupId) => schema.groups[groupId])
+              .map((group, groupIndex) => (
+                <DFormEditableGroup
+                  groupId={group.id}
+                  groupName={group.name}
+                  groupIndex={groupIndex}
+                  isSelected={selectedElement?.id === group.id}
+                  isDraggable
+                  // @ts-ignore
+                  onClick={() => onElementClick(group, "group")}
+                  key={group.id}
+                >
+                  {group.relatedFields
+                    .map((fieldId) => schema.fields[fieldId])
+                    .map((block, blockIndex) => (
+                      <DFormEditableBlock
+                        label={block.title}
+                        blockId={block.id}
+                        blockIndex={blockIndex}
+                        helpText={block.helpTextValue}
+                        blockType={recognizeBlockType(block.type)}
+                        fieldType={block.type}
+                        blockSize={block.classes}
+                        isRequired={block.isRequired}
+                        isSelected={selectedElement?.id === block.id}
+                        isDraggable
+                        isLabelShowing={block.isLabelShowing}
+                        // @ts-ignore
+                        onClick={() => onElementClick(block, "field")}
+                        // @ts-ignore
+                        onBlockAdd={() => onFieldCreate(group.id, block.id)}
+                        key={block.blockId}
+                      />
+                    ))}
+
+                  {group.relatedFields.length === 0 ? (
+                    <NmpCol span="24">
+                      <DFormAddElement
+                        elementType={DFormElementTypes.Block}
+                        // @ts-ignore
+                        onBlockAdd={() => onFieldCreate(group.id)}
+                      />
+                    </NmpCol>
+                  ) : null}
+                </DFormEditableGroup>
+              ))}
+
+            <DFormAddElement
+              elementType={DFormElementTypes.Group}
+              // @ts-ignore
+              onGroupAdd={() => onGroupCreate(selectedSectionId)}
+            />
+          </DFormEditableSection>
+        </NmpCol>
+
+        {/*<DroppableDFormSections
+            schema={schema}
+            selectedElement={selectedElement}
+            selectedSectionId={selectedSectionId}
+            onGroupCreate={onGroupCreate}
+            onFieldCreate={onFieldCreate}
+            onElementClick={onElementClick}
+            isCollapsed={isCollapsed}
+          />*/}
+      </NmpRow>
+    </DragDropContext>
   );
 };

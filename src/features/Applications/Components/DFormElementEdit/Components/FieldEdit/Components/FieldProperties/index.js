@@ -20,7 +20,7 @@ import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
 import { FieldTypes } from "components/DForm";
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import { DFormLabel } from "components/DForm/ui/DFormLabel";
 import { GroupChanger } from "./GroupChanger";
 
 export const FieldRequiredEditProperty = () => {

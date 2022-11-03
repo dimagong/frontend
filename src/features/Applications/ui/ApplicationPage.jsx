@@ -6,10 +6,13 @@ import React, { useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
+import { DFormElementTypes } from "components/DForm/types";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 import { DFormContextProvider, BaseDForm, ElementTypes, DformSchemaElementTypes } from "components/DForm";
 
 import { getCategoryAsOption } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
+
+import { reorderArray } from "utility/reorderArray";
 
 import {
   APPLICATION_PAGES,
@@ -161,7 +164,7 @@ export const ApplicationPage = ({ applicationId }) => {
     setApplicationData(dataToSave);
   };
 
-  const handleFieldCreate = (groupId) => {
+  const handleFieldCreate = (groupId, fieldId = undefined) => {
     const newField = DFormFieldModel.create(groupId);
     // const newFieldData = {
     //   ...INITIAL_FIELD_DATA,
@@ -173,7 +176,12 @@ export const ApplicationPage = ({ applicationId }) => {
     const dataToSave = embedSuggestedChanges(newField, true);
 
     // Add field to group where it was created
-    dataToSave.groups[groupId].relatedFields = [...dataToSave.groups[groupId].relatedFields, newField.id];
+    if (fieldId) {
+      const fieldIndex = dataToSave.groups[groupId].relatedFields.indexOf(fieldId);
+      dataToSave.groups[groupId].relatedFields.splice(fieldIndex + 1, 0, newField.id);
+    } else {
+      dataToSave.groups[groupId].relatedFields = [...dataToSave.groups[groupId].relatedFields, newField.id];
+    }
 
     setApplicationData(dataToSave);
   };
@@ -462,6 +470,7 @@ export const ApplicationPage = ({ applicationId }) => {
     setSelectedPage(page);
   };
 
+  // Reorder
   const handleSectionReorder = (result) => {
     const dataClone = cloneDeep(applicationData);
 
@@ -473,11 +482,17 @@ export const ApplicationPage = ({ applicationId }) => {
   };
 
   const handleGroupReorder = (result) => {
+    const { draggableId: groupId, source, destination } = result;
+
     const dataClone = cloneDeep(applicationData);
 
-    const itemToMove = dataClone.sections[result.parentItem.id].relatedGroups.splice(result.source.index, 1)[0];
+    const { sections } = dataClone;
 
-    dataClone.sections[result.parentItem.id].relatedGroups.splice(result.destination.index, 0, itemToMove);
+    const sectionId = Object.keys(sections).find((key) => sections[key].relatedGroups.includes(groupId));
+
+    const itemToMove = dataClone.sections[sectionId].relatedGroups.splice(source.index, 1)[0];
+
+    dataClone.sections[sectionId].relatedGroups.splice(destination.index, 0, itemToMove);
 
     setApplicationData(dataClone);
   };
@@ -485,22 +500,32 @@ export const ApplicationPage = ({ applicationId }) => {
   const handleFieldReorder = (result) => {
     const dataClone = cloneDeep(applicationData);
 
-    const itemToMove = dataClone.groups[result.parentItem.id].relatedFields.splice(result.source.index, 1)[0];
+    const { droppableId: idGroupFrom, index: indexFieldFrom } = result.source;
+    const { droppableId: idGroupTo, index: indexFieldTo } = result.destination;
 
-    dataClone.groups[result.parentItem.id].relatedFields.splice(result.destination.index, 0, itemToMove);
+    if (idGroupFrom === idGroupTo) {
+      dataClone.groups[idGroupFrom].relatedFields = reorderArray(
+        dataClone.groups[idGroupFrom].relatedFields,
+        indexFieldFrom,
+        indexFieldTo
+      );
+    } else {
+      const item = dataClone.groups[idGroupFrom].relatedFields.splice(indexFieldFrom, 1)[0];
+      dataClone.groups[idGroupTo].relatedFields.splice(indexFieldTo, 0, item);
+    }
 
     setApplicationData(dataClone);
   };
 
   const handleReorder = (result) => {
     switch (result.type) {
-      case ElementTypes.Section:
+      case DFormElementTypes.Section:
         handleSectionReorder(result);
         break;
-      case ElementTypes.Group:
+      case DFormElementTypes.Group:
         handleGroupReorder(result);
         break;
-      case ElementTypes.Field:
+      case DFormElementTypes.Block:
         handleFieldReorder(result);
         break;
       default:
@@ -581,6 +606,7 @@ export const ApplicationPage = ({ applicationId }) => {
                 onSectionCreate={handleSectionCreate}
                 onGroupCreate={handleGroupCreate}
                 onFieldCreate={handleFieldCreate}
+                onDragEnd={handleReorder}
               />
             </DFormContextProvider>
           </TabPane>

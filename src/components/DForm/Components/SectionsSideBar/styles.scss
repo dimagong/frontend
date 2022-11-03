@@ -1,13 +1,19 @@
 .sections {
   display: flex;
+  flex-direction: column;
+
+  border-right: 2px solid #7367f0 !important;
+  -webkit-box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
+  -moz-box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
+  box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
+
+  align-self: flex-start;
+
   &-nav {
     display: flex;
     flex-direction: column;
-    border-right: 2px solid #7367f0 !important;
-    -webkit-box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
-    -moz-box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
-    box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
-    margin-right: 3px;
+    box-shadow: none !important;
+
     &_item {
       padding-right: 0 !important;
       margin-bottom: 23px;
@@ -97,6 +103,14 @@
       }
     }
   }
+
+  &__add {
+    display: grid;
+    grid-template-columns: 139px 33px 26px;
+    padding-left: 0 !important;
+    margin: 0 0 23px auto;
+  }
+
   .tab-pane.active {
     animation-name: fadeIn;
     animation-duration: 300ms;

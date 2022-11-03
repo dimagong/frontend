@@ -8,7 +8,7 @@ import type { FormProviderProps } from "antd/lib/form/context";
 
 import { NmpStepper, NpmCard } from "features/nmp-ui";
 
-import { DFormSection } from "components/DForm/ui/DFormSection";
+// import { DFormSection } from "components/DForm/ui/DFormSection";
 import type { DFormSchema } from "components/DForm/types/dformSchema";
 import { getValuesBySectionId } from "components/DForm/data/getValuesBySectionId";
 import { NormalizedDFormValues } from "components/DForm/types/normalizedDFormValues";
@@ -161,8 +161,7 @@ export const MemberDForm: FC<Props> = (props) => {
           <NpmCard title={<strong className="member-dform__section-name">Section {sectionName}</strong>}>
             <Form.Provider onFormFinish={onFormFinish} onFormChange={onFormChange}>
               <DFormContextProvider id={id} accessType={accessType} isMemberView>
-                <DFormSection
-                  id={sectionId}
+                {/*<DFormSection
                   schema={schema}
                   actions={
                     <Row justify="space-between" align="middle">
@@ -182,11 +181,12 @@ export const MemberDForm: FC<Props> = (props) => {
                     </Row>
                   }
                   isHidden={schema.sections[sectionId]?.isHidden ?? false}
+                  sectionId={sectionId}
                   isDisabled={schema.sections[sectionId]?.isDisabled ?? false}
                   relatedGroups={schema.sections[sectionId]?.relatedGroups ?? []}
                   initialValues={values}
                   key={sectionId}
-                />
+                />*/}
               </DFormContextProvider>
             </Form.Provider>
           </NpmCard>

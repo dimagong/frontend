@@ -1,18 +1,35 @@
-import React from "react";
 import classnames from "classnames";
+import React, { useState } from "react";
 
-import { ElementTypes, FieldTypes } from "components/DForm";
+import { DFormElementTypes } from "components/DForm";
 import { useDFormContext } from "components/DForm/DFormContext";
+import { ButtonAddItem } from "components/DForm/ui/ButtonAddItem";
 
 import formComponents from "./Components/DFormWidgets";
 
-const DFormElement = ({ classes, isSelected, onClick, children }) => {
+const DFormElement = ({ classes, isSelected, onClick, children, onFieldCreate, groupId, fieldId }) => {
+  const [selected, onSelected] = useState(false);
+
+  const onMouseEnter = (e) => {
+    onSelected(true);
+  };
+  const onMouseLeave = () => {
+    onSelected(false);
+  };
+
+  const createField = () => {
+    onFieldCreate(groupId, fieldId);
+    onSelected(false);
+  };
   return (
-    <div
-      onClick={onClick}
-      className={classnames("d-flex editable mb-3 w-100", classes || "col-12", { selected: isSelected })}
-    >
-      {children}
+    <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="w-100 mb-3">
+      <div
+        onClick={onClick}
+        className={classnames("d-flex editable w-100", classes || "col-12", { selected: isSelected })}
+      >
+        {children}
+      </div>
+      {selected && <ButtonAddItem className="element-add mt-1" onClick={createField} label={"Add new form element"} />}
     </div>
   );
 };
@@ -25,6 +42,7 @@ const FormComponent = (props) => {
     groupFields,
     selectedElement,
     onElementClick: propOnElementClick,
+    onFieldCreate,
   } = props;
 
   const { isAccessible, isConfigurable } = useDFormContext();
@@ -45,7 +63,7 @@ const FormComponent = (props) => {
 
         // An DForm template can be selected, it should be refactored, cause FormField should not know
         // anything about DForm creating process.
-        const isSelected = selectedElement?.elementType === ElementTypes.Field && selectedElement?.id === field.id;
+        const isSelected = selectedElement?.elementType === DFormElementTypes.Field && selectedElement?.id === field.id;
 
         // An DForm's fields can be disabled by DForm AccessType. Currently, only user-lock is used.
         const isDisabled = !isAccessible || propIsDisabled || field.isDisabled;
@@ -59,7 +77,15 @@ const FormComponent = (props) => {
         const label = field.title;
 
         return (
-          <DFormElement classes={field.classes} isSelected={isSelected} onClick={onElementClick} key={fieldId}>
+          <DFormElement
+            classes={field.classes}
+            isSelected={isSelected}
+            onClick={onElementClick}
+            key={fieldId}
+            fieldId={fieldId}
+            onFieldCreate={onFieldCreate}
+            groupId={groupId}
+          >
             <FormFieldElement
               id={field.id}
               label={label}

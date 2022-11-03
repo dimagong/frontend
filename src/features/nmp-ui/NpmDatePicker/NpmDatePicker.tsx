@@ -4,10 +4,10 @@ import React from "react";
 import moment from "moment";
 import { DatePicker, DatePickerProps } from "antd";
 
-type Props = {
+type Props = Omit<DatePickerProps, "value" | "onChange"> & {
   value?: string;
   onChange?: (isoString: string | null) => void;
-} & DatePickerProps;
+};
 
 const NpmDatePicker: React.FC<Props> = (props) => {
   const {

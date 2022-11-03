@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Form } from "antd";
 import _ from "lodash";
 
+import { DFormLabel } from "components/DForm/ui/DFormLabel";
 import { NmpButton, NmpInput, NmpCheckbox } from "features/nmp-ui";
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
 const SectionProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel }) => {
   const [form] = Form.useForm();
