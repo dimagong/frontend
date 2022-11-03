@@ -55,7 +55,7 @@ export const Applications = () => {
           <CardBody className="p-1">
             <Row>
               <Col>
-                <div className="application-search-wrapper">
+                <div className="application-search-wrapper h-100">
                   <NmpInput
                     id={"search-categories"}
                     type="text"
@@ -64,7 +64,7 @@ export const Applications = () => {
                     placeholder={"Search"}
                     onChange={handleSearchOnChange}
                     size="small"
-                    className="application-search"
+                    className="application-search h-100"
                   />
                 </div>
               </Col>

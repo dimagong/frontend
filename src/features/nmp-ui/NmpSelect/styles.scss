@@ -4,3 +4,15 @@
     padding: 5px 11px;
   }
 }
+
+.nmp-select.ant-select-single {
+  .ant-select-selector {
+    .ant-select-selection-item {
+      line-height: 40px;
+    }
+
+    .ant-select-selection-search {
+      line-height: 40px;
+    }
+  }
+}
