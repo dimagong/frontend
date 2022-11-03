@@ -1,12 +1,18 @@
+import _ from "lodash";
 import { v4 } from "uuid";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
+import { DFormElementTypes } from "components/DForm/types";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-import { DFormContextProvider, BaseDForm, ElementTypes } from "components/DForm";
+import { DFormContextProvider, BaseDForm, ElementTypes, DformSchemaElementTypes } from "components/DForm";
+
+import { getCategoryAsOption } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
+
+import { reorderArray } from "utility/reorderArray";
 
 import {
   APPLICATION_PAGES,
@@ -33,6 +39,17 @@ import { parseSelectCategory } from "features/home/ContextSearch/Applications/ut
 export const ApplicationPage = ({ applicationId }) => {
   const [applicationData, setApplicationData] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
+
+  useEffect(() => {
+    if (selectedElement) {
+      const type = `${selectedElement.elementType}s`;
+      const updatedSelectedElement = applicationData[type][selectedElement.id];
+
+      if (!_.isEqual(updatedSelectedElement, selectedElement)) {
+        setSelectedElement(updatedSelectedElement);
+      }
+    }
+  }, [applicationData]);
 
   const updateApplication = useUpdateApplicationTemplateMutation(
     { applicationId },
@@ -147,7 +164,7 @@ export const ApplicationPage = ({ applicationId }) => {
     setApplicationData(dataToSave);
   };
 
-  const handleFieldCreate = (groupId) => {
+  const handleFieldCreate = (groupId, fieldId = undefined) => {
     const newField = DFormFieldModel.create(groupId);
     // const newFieldData = {
     //   ...INITIAL_FIELD_DATA,
@@ -159,7 +176,12 @@ export const ApplicationPage = ({ applicationId }) => {
     const dataToSave = embedSuggestedChanges(newField, true);
 
     // Add field to group where it was created
-    dataToSave.groups[groupId].relatedFields = [...dataToSave.groups[groupId].relatedFields, newField.id];
+    if (fieldId) {
+      const fieldIndex = dataToSave.groups[groupId].relatedFields.indexOf(fieldId);
+      dataToSave.groups[groupId].relatedFields.splice(fieldIndex + 1, 0, newField.id);
+    } else {
+      dataToSave.groups[groupId].relatedFields = [...dataToSave.groups[groupId].relatedFields, newField.id];
+    }
 
     setApplicationData(dataToSave);
   };
@@ -230,7 +252,7 @@ export const ApplicationPage = ({ applicationId }) => {
       group.id
     );
 
-    group.relatedFields.map((fieldId) => delete data.fields[fieldId]);
+    group.relatedFields.map((fieldId) => handleFieldDelete({ id: fieldId }, data));
 
     delete data.groups[group.id];
   };
@@ -238,12 +260,26 @@ export const ApplicationPage = ({ applicationId }) => {
   const handleFieldDelete = (field, data) => {
     const fieldGroup = Object.values(data.groups).filter((group) => group.relatedFields.includes(String(field.id)))[0];
 
-    data.groups[fieldGroup.id].relatedFields = removeItemFormArrayByValue(
-      data.groups[fieldGroup.id].relatedFields,
-      field.id
-    );
+    if (fieldGroup) {
+      data.groups[fieldGroup?.id].relatedFields = removeItemFormArrayByValue(
+        data.groups[fieldGroup.id].relatedFields,
+        field.id
+      );
+    }
+
+    Object.values(DformSchemaElementTypes).forEach((type) => {
+      data[type] = removeConditionsFromElementById(data, type, field.id);
+    });
 
     delete data.fields[field.id];
+  };
+
+  const removeConditionsFromElementById = (data, type, id) => {
+    Object.keys(data[type]).forEach((fieldKey) => {
+      data[type][fieldKey].conditions = data[type][fieldKey].conditions.filter((condition) => condition.fieldId !== id);
+    });
+
+    return data[type];
   };
 
   const validateElement = (element) => {
@@ -347,6 +383,48 @@ export const ApplicationPage = ({ applicationId }) => {
     }
   };
 
+  const changeGroupForField = (selectedElement, submittedElement, application) => {
+    if (selectedElement.groupId === submittedElement.groupId) {
+      return application;
+    }
+    const relatedFields = application.groups[selectedElement.groupId].relatedFields;
+
+    application.groups[selectedElement.groupId].relatedFields = relatedFields.filter(
+      (fieldId) => selectedElement.id !== fieldId
+    );
+    application.groups[submittedElement.groupId].relatedFields.push(selectedElement.id);
+
+    return application;
+  };
+
+  const changeSectionForGroup = (selectedElement, submittedElement, application) => {
+    if (selectedElement.sectionId === submittedElement.sectionId) {
+      return application;
+    }
+
+    const oldSection = application.sections[selectedElement.sectionId];
+
+    application.sections[oldSection.id].relatedGroups = oldSection.relatedGroups.filter(
+      (groupId) => selectedElement.id !== groupId
+    );
+    application.sections[submittedElement.sectionId].relatedGroups.push(selectedElement.id);
+
+    return application;
+  };
+
+  const updateStructureDependencies = (selectedElement, submittedElement, application) => {
+    switch (selectedElement.elementType) {
+      case ElementTypes.Section:
+        return application;
+      case ElementTypes.Group:
+        return changeSectionForGroup(selectedElement, submittedElement, application);
+      case ElementTypes.Field:
+        return changeGroupForField(selectedElement, submittedElement, application);
+      default:
+        return application;
+    }
+  };
+
   const onFieldSubmit = (submittedElement) => {
     let obj = {
       ...selectedElement,
@@ -354,6 +432,8 @@ export const ApplicationPage = ({ applicationId }) => {
     };
 
     let dataToSave = embedSuggestedChanges(obj);
+
+    dataToSave = updateStructureDependencies(selectedElement, submittedElement, dataToSave);
 
     setApplicationData(dataToSave);
 
@@ -380,8 +460,6 @@ export const ApplicationPage = ({ applicationId }) => {
     setApplicationData(dataToSave);
   };
 
-  const onApplicationDescriptionChange = (values) => setApplicationData({ ...applicationData, ...values });
-
   const handlePageChange = (page) => {
     if (selectedElement?.edited) {
       if (!window.confirm(`Are you sure you want to select another element for edit without saving?`)) {
@@ -392,6 +470,7 @@ export const ApplicationPage = ({ applicationId }) => {
     setSelectedPage(page);
   };
 
+  // Reorder
   const handleSectionReorder = (result) => {
     const dataClone = cloneDeep(applicationData);
 
@@ -403,11 +482,17 @@ export const ApplicationPage = ({ applicationId }) => {
   };
 
   const handleGroupReorder = (result) => {
+    const { draggableId: groupId, source, destination } = result;
+
     const dataClone = cloneDeep(applicationData);
 
-    const itemToMove = dataClone.sections[result.parentItem.id].relatedGroups.splice(result.source.index, 1)[0];
+    const { sections } = dataClone;
 
-    dataClone.sections[result.parentItem.id].relatedGroups.splice(result.destination.index, 0, itemToMove);
+    const sectionId = Object.keys(sections).find((key) => sections[key].relatedGroups.includes(groupId));
+
+    const itemToMove = dataClone.sections[sectionId].relatedGroups.splice(source.index, 1)[0];
+
+    dataClone.sections[sectionId].relatedGroups.splice(destination.index, 0, itemToMove);
 
     setApplicationData(dataClone);
   };
@@ -415,22 +500,32 @@ export const ApplicationPage = ({ applicationId }) => {
   const handleFieldReorder = (result) => {
     const dataClone = cloneDeep(applicationData);
 
-    const itemToMove = dataClone.groups[result.parentItem.id].relatedFields.splice(result.source.index, 1)[0];
+    const { droppableId: idGroupFrom, index: indexFieldFrom } = result.source;
+    const { droppableId: idGroupTo, index: indexFieldTo } = result.destination;
 
-    dataClone.groups[result.parentItem.id].relatedFields.splice(result.destination.index, 0, itemToMove);
+    if (idGroupFrom === idGroupTo) {
+      dataClone.groups[idGroupFrom].relatedFields = reorderArray(
+        dataClone.groups[idGroupFrom].relatedFields,
+        indexFieldFrom,
+        indexFieldTo
+      );
+    } else {
+      const item = dataClone.groups[idGroupFrom].relatedFields.splice(indexFieldFrom, 1)[0];
+      dataClone.groups[idGroupTo].relatedFields.splice(indexFieldTo, 0, item);
+    }
 
     setApplicationData(dataClone);
   };
 
   const handleReorder = (result) => {
     switch (result.type) {
-      case ElementTypes.Section:
+      case DFormElementTypes.Section:
         handleSectionReorder(result);
         break;
-      case ElementTypes.Group:
+      case DFormElementTypes.Group:
         handleGroupReorder(result);
         break;
-      case ElementTypes.Field:
+      case DFormElementTypes.Block:
         handleFieldReorder(result);
         break;
       default:
@@ -438,9 +533,10 @@ export const ApplicationPage = ({ applicationId }) => {
     }
   };
 
-  const handleApplicationMutation = () => {
-    // ToDo: validate here too
-    mutateApplication(applicationData, updateApplication);
+  const handleApplicationMutation = (submittedObj) => {
+    mutateApplication({ ...applicationData, ...submittedObj }, updateApplication);
+    // ToDo: It should be removed
+    setApplicationData({ ...applicationData, ...submittedObj });
   };
 
   let { data: categories } = useDFormTemplateCategoriesQuery({
@@ -454,6 +550,14 @@ export const ApplicationPage = ({ applicationId }) => {
     categories = categories.map((category) => parseSelectCategory(category));
     category = categories.find((category) => applicationData.categoryId === category.categoryId);
   }
+
+  const applicationDescriptionData = {
+    name: applicationData?.name,
+    isPrivate: applicationData?.isPrivate,
+    description: applicationData?.description,
+    organizationName: applicationData?.organization.name,
+    categoryId: category ? getCategoryAsOption(category) : null,
+  };
 
   if (application.isLoading || !applicationData) {
     return <div>Loading...</div>;
@@ -488,13 +592,9 @@ export const ApplicationPage = ({ applicationId }) => {
         <TabContent activeTab={selectedPage}>
           <TabPane tabId={APPLICATION_PAGES.DESCRIPTION}>
             <ApplicationDescription
-              name={applicationData.name}
-              isPrivate={applicationData.isPrivate}
-              description={applicationData.description}
-              organizationName={applicationData.organization.name}
-              onChange={onApplicationDescriptionChange}
-              category={category}
+              applicationDescriptionData={applicationDescriptionData}
               categories={categories}
+              onSubmit={handleApplicationMutation}
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
@@ -506,6 +606,7 @@ export const ApplicationPage = ({ applicationId }) => {
                 onSectionCreate={handleSectionCreate}
                 onGroupCreate={handleGroupCreate}
                 onFieldCreate={handleFieldCreate}
+                onDragEnd={handleReorder}
               />
             </DFormContextProvider>
           </TabPane>
@@ -514,20 +615,22 @@ export const ApplicationPage = ({ applicationId }) => {
           </TabPane>
         </TabContent>
 
-        <div className="px-3">
-          <div className="application_delimiter" />
+        {selectedPage !== "Description" ? (
+          <div className="px-3">
+            <div className="application_delimiter" />
 
-          <div className="d-flex justify-content-center">
-            <Button
-              color="primary"
-              className="button button-success"
-              disabled={updateApplication.isLoading}
-              onClick={handleApplicationMutation}
-            >
-              Save
-            </Button>
+            <div className="d-flex justify-content-center">
+              <Button
+                color="primary"
+                className="button button-success"
+                disabled={updateApplication.isLoading || !!selectedElement}
+                onClick={handleApplicationMutation}
+              >
+                Save
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : null}
       </ApplicationWrapper>
 
       {isModuleEditComponentVisible ? (

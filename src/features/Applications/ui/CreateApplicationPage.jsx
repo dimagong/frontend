@@ -1,11 +1,10 @@
 import { toast } from "react-toastify";
-import React, { useReducer, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Col, Row } from "reactstrap";
+import { Form } from "antd";
 
 import appSlice from "app/slices/appSlice";
-
-import CustomModal from "components/CustomModal";
 
 import {
   useApplicationsTemplatesQuery,
@@ -17,17 +16,15 @@ import {
 import { mutateApplication } from "../../data/mutateApplication";
 
 import { ApplicationWrapper } from "./ApplicationWrapper";
-import { ApplicationDescriptionFormFields } from "./ApplicationDescriptionFormFields";
 import { INITIAL_APPLICATION_DATA } from "../constants";
 
 import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
-import {
-  getCategoriesAsOptions,
-  getCategoryAsOption,
-} from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import { getCategoriesAsOptions } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 import { NmpSelect } from "features/nmp-ui";
+
+import { CreateApplicationModal } from "./CreateApplicationModal";
+import { DuplicateApplicationModal } from "./DuplicateApplicationModal";
 
 const { setContext } = appSlice.actions;
 
@@ -44,19 +41,13 @@ const getApplicationTemplateAsOption = (template) => ({ value: template.id, labe
 
 const getApplicationsTemplatesAsOptions = (templates) => templates.map(getApplicationTemplateAsOption);
 
-const initialApplicationDescriptionValues = { name: "", description: "", isPrivate: false, categoryId: "" };
-const applicationDescriptionReducer = (s, p) => ({ ...s, ...p });
-
 export const CreateApplicationPage = () => {
   const dispatch = useDispatch();
 
-  const [{ name, description, isPrivate }, setApplicationDescriptionValues] = useReducer(
-    applicationDescriptionReducer,
-    initialApplicationDescriptionValues
-  );
-
   const [organization, setOrganization] = useState(null);
   const [category, setCategory] = useState(null);
+
+  const [form] = Form.useForm();
 
   const [applicationTemplate, setApplicationTemplate] = useState(null);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
@@ -67,8 +58,6 @@ export const CreateApplicationPage = () => {
 
   const templates = applicationsTemplates.data;
   const organizations = allowedOrganizations.data;
-
-  const categoryValue = category ? getCategoryAsOption(category) : null;
 
   const copyApplicationTemplate = useCopyApplicationTemplateMutation(
     { applicationId: applicationTemplate?.id },
@@ -104,6 +93,7 @@ export const CreateApplicationPage = () => {
 
   if (categories) {
     categories = categories.map((category) => parseSelectCategory(category));
+
     categoriesOptions = getCategoriesAsOptions(categories);
   }
 
@@ -115,6 +105,7 @@ export const CreateApplicationPage = () => {
     });
 
     setOrganization(organization);
+    form.setFieldValue("category", null);
     setCategory(null);
   };
 
@@ -124,21 +115,20 @@ export const CreateApplicationPage = () => {
     setCategory(newCategory);
   };
 
-  const onApplicationTemplateChange = (_, option) => {
-    const templateId = option.value;
+  const onApplicationTemplateChange = (templateId) => {
     const template = templates.find((template) => template.id === templateId);
 
     setApplicationTemplate(template);
   };
 
-  const onCreateBtnSubmit = async () => {
+  const onCreateBtnSubmit = async ({ name, description, isPrivate, category: categoryId, organization }) => {
     await mutateApplication(
       {
         ...INITIAL_APPLICATION_DATA,
         name,
         description,
         isPrivate,
-        categoryId: category.categoryId,
+        categoryId,
         organization,
       },
       createApplicationMutation
@@ -155,94 +145,91 @@ export const CreateApplicationPage = () => {
   };
 
   return (
-    <ApplicationWrapper>
-      <div className="height-400">
-        <Row className="mx-0">
-          <Col md="12">
-            <div className="mb-2">
-              <DFormLabel label="Select organization" id="dform-organization" />
-              <NmpSelect
-                id="dform-organization"
-                value={organization ? getOrganizationAsOption(organization) : null}
-                options={getOrganizationsAsOptions(allowedOrganizations.data)}
-                onChange={onOrganizationChange}
-                isLoading={allowedOrganizations.isLoading}
-              />
-            </div>
+    <Form.Provider
+      onFormFinish={(name, { values, forms }) => {
+        if (name === "createForm") {
+          const { basicForm } = forms;
+          const basicFormValues = basicForm.getFieldsValue();
 
-            <div className="mb-2">
-              <DFormLabel label="Select organization category" id="dform-organization-category" />
-              <NmpSelect
-                id="dform-organization-category"
-                value={categoryValue}
-                options={categoriesOptions}
-                onChange={onCategoryChange}
-              />
-            </div>
-          </Col>
+          const organization = organizations.find((organization) => {
+            const organizationUniqueId = getOrganizationUniqueId(organization);
+            return organizationUniqueId === basicFormValues.organization;
+          });
 
-          {organization ? (
-            <>
+          const mergedForms = { ...basicFormValues, ...values, organization };
+
+          onCreateBtnSubmit(mergedForms);
+        }
+      }}
+    >
+      <ApplicationWrapper>
+        <div className="height-400">
+          <Row className="mx-0">
+            <Form
+              form={form}
+              layout="vertical"
+              name={"basicForm"}
+              onFinish={onCreateBtnSubmit}
+              className="application__form"
+            >
               <Col md="12">
-                <span>Please, create a dForm from scratch or use an existing dForm as a template</span>
-                <div className="application_delimiter" />
-                <div className="d-flex justify-content-between mt-2">
-                  <Button color="primary" onClick={() => setIsDuplicateModalVisible(true)} disabled={!category}>
-                    Duplicate an existing dForm
-                  </Button>
-                  <Button color="primary" onClick={() => setIsCreateModalVisible(true)} disabled={!category}>
-                    Create from scratch
-                  </Button>
-                </div>
+                <Form.Item
+                  label="Select organization"
+                  name="organization"
+                  className="dform-field mb-2"
+                  rules={[{ required: true }]}
+                >
+                  <NmpSelect
+                    id="organization"
+                    options={getOrganizationsAsOptions(allowedOrganizations.data)}
+                    onChange={onOrganizationChange}
+                    isLoading={allowedOrganizations.isLoading}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Select organization category"
+                  name="category"
+                  className="dform-field mb-2"
+                  rules={[{ required: true }]}
+                >
+                  <NmpSelect id="category" options={categoriesOptions} onChange={onCategoryChange} />
+                </Form.Item>
               </Col>
 
-              <CustomModal
-                title="Create a dForm"
-                submitBtnText="Create"
-                isOpen={isCreateModalVisible}
-                onClose={() => setIsCreateModalVisible(false)}
-                onSubmit={onCreateBtnSubmit}
-                isSubmitProceed={createApplicationMutation.isLoading}
-              >
-                <div className="pb-2">
-                  <ApplicationDescriptionFormFields
-                    name={name}
-                    isPrivate={isPrivate}
-                    description={description}
-                    onChange={setApplicationDescriptionValues}
-                    category={category}
-                  />
-                </div>
-              </CustomModal>
+              {organization ? (
+                <>
+                  <Col md="12">
+                    <span>Please, create a dForm from scratch or use an existing dForm as a template</span>
+                    <div className="application_delimiter" />
+                    <div className="d-flex justify-content-between mt-2">
+                      <Button color="primary" onClick={() => setIsDuplicateModalVisible(true)} disabled={!category}>
+                        Duplicate an existing dForm
+                      </Button>
+                      <Button color="primary" onClick={() => setIsCreateModalVisible(true)} disabled={!category}>
+                        Create from scratch
+                      </Button>
+                    </div>
+                  </Col>
 
-              <CustomModal
-                title="Select dForm"
-                submitBtnText="Duplicate"
-                isOpen={isDuplicateModalVisible}
-                onClose={() => setIsDuplicateModalVisible(false)}
-                onSubmit={onDuplicateBtnSubmit}
-                isSubmitProceed={copyApplicationTemplate.isLoading}
-              >
-                <div className="pb-2">
-                  <DFormLabel label="Application template to duplicate from" id="dform-template-source" />
-                  <NmpSelect
-                    id="dform-template-source"
-                    value={applicationTemplate ? getApplicationTemplateAsOption(applicationTemplate) : null}
-                    options={getApplicationsTemplatesAsOptions(applicationsTemplates.data)}
-                    isLoading={applicationsTemplates.isLoading}
-                    placeholder={
-                      applicationsTemplates.data.length === 0
-                        ? `There are no dForm that can be used as a template`
-                        : `Select an Application template to duplicate from`
-                    }
-                    onChange={onApplicationTemplateChange}
+                  <CreateApplicationModal
+                    isOpen={isCreateModalVisible}
+                    onClose={() => setIsCreateModalVisible(false)}
                   />
-                </div>
-              </CustomModal>
-            </>
-          ) : null}
-        </Row>
-      </div>
-    </ApplicationWrapper>
+
+                  <DuplicateApplicationModal
+                    isOpen={isDuplicateModalVisible}
+                    onClose={() => setIsDuplicateModalVisible(false)}
+                    options={getApplicationsTemplatesAsOptions(applicationsTemplates.data)}
+                    onTemplateChange={onApplicationTemplateChange}
+                    onSubmit={onDuplicateBtnSubmit}
+                  />
+                </>
+              ) : null}
+            </Form>
+          </Row>
+        </div>
+      </ApplicationWrapper>
+    </Form.Provider>
   );
 };

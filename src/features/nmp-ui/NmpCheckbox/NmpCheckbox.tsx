@@ -1,13 +1,16 @@
 import "./styles.scss";
 
 import React from "react";
+import type { FC } from "react";
 import { Checkbox, CheckboxProps } from "antd";
 
 import { NmpCheckboxGroup } from "./NmpCheckboxGroup";
 
-type FC = React.FC<CheckboxProps> & { Group: typeof NmpCheckboxGroup };
+export type NmpCheckboxProps = CheckboxProps;
 
-export const NmpCheckbox: FC = (props) => {
+type _FC = FC<NmpCheckboxProps> & { Group: typeof NmpCheckboxGroup };
+
+export const NmpCheckbox: _FC = (props) => {
   return <Checkbox {...props} />;
 };
 

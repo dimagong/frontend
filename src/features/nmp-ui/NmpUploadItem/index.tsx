@@ -1,1 +1,1 @@
-export { NmpUploadItem } from "./NmpUploadItem";
+export { NmpUploadItem, FileStatusTypes } from "./NmpUploadItem";

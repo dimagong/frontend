@@ -3,19 +3,27 @@ import { Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 
 import { TreeHierarchy, useTreeHierarchyExpandable } from "components/TreeHierarchy";
+
 import { AHCreateCategoryForm } from "./ApplicationsHierarchy/AHCreateCategoryForm";
 import { GeneralAHTreeElement } from "./ApplicationsHierarchy/GeneralAHTreeElement";
+import { CreateApplicationForm } from "./ApplicationsHierarchy/CreateApplicationForm";
+
 import appSlice from "app/slices/appSlice";
 import onboardingSlice from "app/slices/onboardingSlice";
-import { Node } from "./models";
 
-import { CreateCategorySubmitProps, Hierarchy, Search } from "./models";
+import { CreateCategorySubmitProps, Hierarchy, Search, Node, ApplicationData } from "./models";
 
 const { setdForm } = onboardingSlice.actions;
 
 const { setContext } = appSlice.actions;
 
-export const CategoryHierarchy: React.FC<Props> = ({ hierarchy, search, onElementCreationSubmit, isLoading }) => {
+export const CategoryHierarchy: React.FC<Props> = ({
+  hierarchy,
+  search,
+  onElementCreationSubmit,
+  onFieldCreatingSubmit,
+  isLoading,
+}) => {
   const expandable = useTreeHierarchyExpandable(hierarchy);
 
   const dispatch = useDispatch();
@@ -48,10 +56,12 @@ export const CategoryHierarchy: React.FC<Props> = ({ hierarchy, search, onElemen
           elementCreationLoading={isLoading}
           onSelect={onSelect}
           onElementCreationSubmit={onElementCreationSubmit}
+          onFieldCreatingSubmit={onFieldCreatingSubmit}
           onFieldCreatorClickProp={(value) => {
             // @ts-ignore
             dispatch(setContext("Create dForm"));
           }}
+          CreateApplicationForm={CreateApplicationForm}
           components={{ Element: GeneralAHTreeElement, CreateElementForm: AHCreateCategoryForm }}
         />
       </Col>
@@ -64,4 +74,5 @@ type Props = {
   search: Search;
   onElementCreationSubmit: ({ type, name, parentId }: CreateCategorySubmitProps) => void;
   isLoading: boolean;
+  onFieldCreatingSubmit: (submitted: ApplicationData) => void;
 };

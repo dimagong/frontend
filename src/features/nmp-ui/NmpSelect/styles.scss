@@ -1,6 +1,18 @@
 .nmp-select {
   .ant-select-selector {
-    height: 42px;
-    padding: 5px 11px;
+    min-height: 32px;
+    padding: 0 11px;
+  }
+}
+
+.nmp-select.ant-select-single {
+  .ant-select-selector {
+    .ant-select-selection-item {
+      line-height: 40px;
+    }
+
+    .ant-select-selection-search {
+      line-height: 40px;
+    }
   }
 }

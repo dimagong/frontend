@@ -1,0 +1,11 @@
+.dform-drag-handle {
+  font-size: 1.1rem;
+
+  &.anticon[tabindex] {
+    cursor: grab;
+  }
+
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+}

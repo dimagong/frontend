@@ -1,0 +1,9 @@
+.dform-help-text {
+  display: flex;
+  min-height: 32px;
+  align-items: center;
+
+  &__content {
+    flex: auto;
+  }
+}

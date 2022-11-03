@@ -6,35 +6,39 @@ import { NmpButton } from "features/nmp-ui";
 
 import ConditionalElementRender from "../../../ConditionalElementRender";
 
-const SectionDynamicRendering = ({
-  data,
-  element: elementProps,
-  onDeleteButtonClick,
-  onElementChangesCancel,
-  onFieldSubmit,
-}) => {
-  const [element, setElement] = useState(elementProps);
+const SectionDynamicRendering = ({ data, element, onDeleteButtonClick, onElementChangesCancel, onFieldSubmit }) => {
+  const [conditions, setConditions] = useState(element.conditions);
+  const [form] = Form.useForm();
+  const [disabled, setDisabled] = useState(true);
 
-  useEffect(() => {
-    setElement(elementProps);
-  }, [elementProps]);
+  const handleFormChange = () => {
+    const formConditions = form.getFieldsValue("conditions").conditions;
 
-  const onChange = (newElement) => {
-    setElement(newElement);
+    // We need to filter array cause antd Form.List remove() sets all fields of the last removed element to undefined
+    const filteredConditions = formConditions.filter((condition) => condition.id !== undefined);
+
+    setDisabled(true);
+    setConditions(filteredConditions);
+
+    if (!_.isEqual(filteredConditions, element.conditions)) {
+      setDisabled(false);
+      return;
+    }
   };
 
+  useEffect(() => {
+    setDisabled(true);
+
+    form.setFieldsValue({ conditions: element.conditions });
+  }, [element]);
+
   const onFinish = (submittedObj) => {
-    onFieldSubmit(element);
+    onFieldSubmit({ ...element, ...submittedObj });
   };
 
   return (
-    <Form layout="vertical" onFinish={onFinish} name="dynamic-rendering">
-      <ConditionalElementRender
-        fields={Object.values(data.fields)}
-        element={element}
-        conditions={element.conditions}
-        onElementChange={onChange}
-      />
+    <Form form={form} layout="vertical" onFinish={onFinish} name="dynamic-rendering" onFieldsChange={handleFormChange}>
+      <ConditionalElementRender fields={Object.values(data.fields)} elementId={element.id} conditions={conditions} />
 
       <div className="application_delimiter" />
 
@@ -52,7 +56,14 @@ const SectionDynamicRendering = ({
             </NmpButton>
           </Form.Item>
           <Form.Item>
-            <NmpButton className="button-success" type="primary" shape="round" size="large" htmlType="submit">
+            <NmpButton
+              className="button-success"
+              type="primary"
+              shape="round"
+              size="large"
+              htmlType="submit"
+              disabled={disabled}
+            >
               Save
             </NmpButton>
           </Form.Item>

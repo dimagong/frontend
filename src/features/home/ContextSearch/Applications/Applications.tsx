@@ -3,16 +3,38 @@ import _ from "lodash";
 import { Scrollbars } from "react-custom-scrollbars";
 import { Row, Col, Card, CardBody } from "reactstrap";
 
-import { NmpInput } from "features/nmp-ui/NmpInput";
+import { NmpSelect, NmpInput } from "features/nmp-ui";
 import WorkFlowsAndNotificationsList from "features/home/ContextSearch/components/WorkFlowsAndNotificationsList";
 
 import { CategoriesHierarchy } from "./CategoriesHierarchy";
+
+import { useDFormTemplateRootCategoriesQuery } from "./categoryQueries";
+import { getRootCategoriesAsOptions } from "./utils/getCategoryAsOption";
 
 import "./styles.scss";
 
 export const Applications = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const [rootCategoryId, setRootCategoryId] = useState();
+
+  const { data: rootCategories } = useDFormTemplateRootCategoriesQuery();
+
+  let rootCategoriesAsOption;
+
+  if (rootCategories) {
+    // Set default category
+    if (!rootCategoryId) {
+      setRootCategoryId(rootCategories[0].id);
+    }
+
+    rootCategoriesAsOption = getRootCategoriesAsOptions(rootCategories);
+  }
+
+  const onRootCategoryChange = (value) => {
+    setRootCategoryId(value);
+  };
 
   const debounceOnChange = useCallback(
     _.debounce((_searchVal) => {
@@ -33,7 +55,7 @@ export const Applications = () => {
           <CardBody className="p-1">
             <Row>
               <Col>
-                <div className="application-search-wrapper">
+                <div className="application-search-wrapper h-100">
                   <NmpInput
                     id={"search-categories"}
                     type="text"
@@ -42,7 +64,18 @@ export const Applications = () => {
                     placeholder={"Search"}
                     onChange={handleSearchOnChange}
                     size="small"
-                    className="application-search"
+                    className="application-search h-100"
+                  />
+                </div>
+              </Col>
+              <Col>
+                <div className="w-100">
+                  <NmpSelect
+                    className="w-100"
+                    id="rootCategory"
+                    options={rootCategoriesAsOption}
+                    value={rootCategoryId}
+                    onChange={onRootCategoryChange}
                   />
                 </div>
               </Col>
@@ -50,9 +83,11 @@ export const Applications = () => {
           </CardBody>
         </Card>
 
-        <Scrollbars autoHeight autoHeightMax={500}>
-          <CategoriesHierarchy search={debouncedSearch} />
-        </Scrollbars>
+        {rootCategoryId ? (
+          <Scrollbars autoHeight autoHeightMax={500}>
+            <CategoriesHierarchy search={debouncedSearch} rootCategoryId={rootCategoryId} />
+          </Scrollbars>
+        ) : null}
       </Col>
 
       <WorkFlowsAndNotificationsList context="dForm" />

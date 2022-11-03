@@ -1,74 +1,35 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { Form } from "antd";
 
 import { NmpCheckbox, NmpInput, NmpSelect } from "features/nmp-ui";
+import { getCategoriesAsOptions } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import { DFormLabel } from "components/DForm/ui/DFormLabel";
 
-import {
-  getCategoriesAsOptions,
-  getCategoryAsOption,
-} from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
-
-export const ApplicationDescriptionFormFields = ({ name, description, isPrivate, onChange, category, categories }) => {
-  const onNameChange = ({ target }) => onChange({ name: target.value, description, isPrivate });
-
-  const onPrivateChange = ({ target }) => onChange({ name, description, isPrivate: target.checked });
-
-  const onDescriptionChange = ({ target }) => onChange({ name, description: target.value, isPrivate });
-
-  const onCategoryChange = (_, _category) => onChange({ name, description, isPrivate, categoryId: _category.value });
-
-  const categoryValue = category ? getCategoryAsOption(category) : null;
-
+export const ApplicationDescriptionFormFields = ({ categories }) => {
   const categoriesOptions = categories ? getCategoriesAsOptions(categories) : null;
 
   return (
     <>
-      <div className="mb-2">
-        <DFormLabel label="Name" id="application-name" />
-        <NmpInput
-          id="application-name"
-          type="text"
-          value={name}
-          placeholder="Enter application name"
-          onChange={onNameChange}
-        />
-      </div>
+      <Form.Item label="Name" name="name" className="dform-field mb-2" rules={[{ required: true }]}>
+        <NmpInput id="name" type="text" placeholder="Enter application name" />
+      </Form.Item>
 
-      <div className="mb-2">
-        <DFormLabel label="Description" id="application-description" />
-        <NmpInput
-          id="application-description"
-          type="text"
-          value={description}
-          placeholder="Enter application description"
-          onChange={onDescriptionChange}
-        />
-      </div>
+      <Form.Item label="Description" name="description" className="dform-field mb-2" rules={[{ required: true }]}>
+        <NmpInput id="description" type="text" placeholder="Enter application description" />
+      </Form.Item>
 
       {categories ? (
-        <div className="mb-2">
-          <DFormLabel label="Select organization category" id="dform-organization-category" />
-          <NmpSelect
-            id="dform-organization-category"
-            value={categoryValue}
-            options={categoriesOptions}
-            onChange={onCategoryChange}
-          />
-        </div>
+        <Form.Item label="Select organization category" name="categoryId" className="dform-field mb-2">
+          <NmpSelect id="categoryId" options={categoriesOptions} />
+        </Form.Item>
       ) : null}
 
-      <NmpCheckbox id="application-private" checked={isPrivate} onChange={onPrivateChange}>
-        <DFormLabel label="Is private" />
-      </NmpCheckbox>
+      <Form.Item name="isPrivate" className="dform-field mb-2" valuePropName="checked">
+        <NmpCheckbox id="isPrivate">
+          <DFormLabel label="Is private" isSmall />
+        </NmpCheckbox>
+      </Form.Item>
     </>
   );
-};
-
-ApplicationDescriptionFormFields.propTypes = {
-  name: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  isPrivate: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired,
 };

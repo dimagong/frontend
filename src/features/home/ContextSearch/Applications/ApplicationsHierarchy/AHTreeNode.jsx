@@ -21,6 +21,7 @@ export const AHTreeNode = (props) => {
     append,
     className: propClassName,
     children,
+    duplicate,
   } = props;
   const className = classNames("tree-hierarchy__node position-relative", propClassName, {
     "tree-hierarchy__node--selected": selected,
@@ -75,6 +76,8 @@ export const AHTreeNode = (props) => {
             </div>
           )}
 
+          {duplicate}
+
           {isLocked ? (
             <div className="tree-hierarchy__icon pr-1 d-flex">
               <Lock fontSize="inherit" />
@@ -113,6 +116,7 @@ AHTreeNode.propTypes = {
 
   prepend: PropTypes.node,
   append: PropTypes.node,
+  duplicate: PropTypes.node,
 
   className: PropTypes.string,
   children: PropTypes.node,

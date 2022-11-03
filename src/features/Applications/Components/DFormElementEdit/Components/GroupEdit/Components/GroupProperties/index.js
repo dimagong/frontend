@@ -3,9 +3,12 @@ import { Form } from "antd";
 import _ from "lodash";
 
 import { NmpButton, NmpInput, NmpCheckbox } from "features/nmp-ui";
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
 
-const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel }) => {
+import { DFormLabel } from "components/DForm/ui/DFormLabel";
+
+import { SectionChanger } from "./SectionChanger";
+
+const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel, data }) => {
   const [form] = Form.useForm();
   const [disabled, setDisabled] = useState(true);
 
@@ -14,6 +17,8 @@ const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElemen
   };
 
   useEffect(() => {
+    setDisabled(true);
+
     form.setFieldsValue(initialValues);
   }, [element]);
 
@@ -44,6 +49,10 @@ const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElemen
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
+      <Form.Item label="Section" name="sectionId" className="dform-field">
+        <SectionChanger id="sectionId" data={data} />
+      </Form.Item>
+
       <Form.Item label="Group name" name="name" className="dform-field mb-2">
         <NmpInput id="name" type="text" placeholder="Enter your answer here" />
       </Form.Item>

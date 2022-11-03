@@ -16,6 +16,29 @@
     font-weight: 300;
     font-size: 0.87rem;
     color: #474747;
-    text-align: left;
+    justify-content: flex-start;
+
+    > span {
+      font-style: inherit;
+    }
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+  }
+
+  &__status-icon {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+  }
+
+  &__progress {
+    margin-right: 0.87rem;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 17px;
   }
 }
