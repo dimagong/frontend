@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
+import { DFormElementTypes } from "components/DForm/types";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 import { DFormContextProvider, BaseDForm, ElementTypes, DformSchemaElementTypes } from "components/DForm";
 
@@ -474,13 +475,13 @@ export const ApplicationPage = ({ applicationId }) => {
 
   const handleReorder = (result) => {
     switch (result.type) {
-      case ElementTypes.Section:
+      case DFormElementTypes.Section:
         handleSectionReorder(result);
         break;
-      case ElementTypes.Group:
+      case DFormElementTypes.Group:
         handleGroupReorder(result);
         break;
-      case ElementTypes.Field:
+      case DFormElementTypes.Block:
         handleFieldReorder(result);
         break;
       default:

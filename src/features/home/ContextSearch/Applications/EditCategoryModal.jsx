@@ -16,7 +16,7 @@ import { parseOrganizationType } from "features/home/ContextSearch/Applications/
 import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
 import { NmpInput, NmpButton } from "features/nmp-ui";
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import { DFormLabel } from "components/DForm/ui/DFormLabel";
 
 export const EditCategoryModal = ({ isOpen, close, group, onSubmit: propOnSubmit, submitting }) => {
   const [name, setName] = useFormField(group.name, [Validators.required]);

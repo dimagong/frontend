@@ -16,7 +16,9 @@ export const DFormEditableSection: FC<Props> = (props) => {
 
   return (
     <DFormDroppable droppableId={sectionId} droppableType={DFormElementTypes.Group} isDraggable={isDraggable}>
-      <DFormBaseSection sectionName={sectionName}>{children}</DFormBaseSection>
+      <DFormBaseSection isThin sectionName={sectionName}>
+        {children}
+      </DFormBaseSection>
     </DFormDroppable>
   );
 };

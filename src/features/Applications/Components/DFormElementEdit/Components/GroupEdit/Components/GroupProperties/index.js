@@ -3,7 +3,7 @@ import { Form } from "antd";
 import _ from "lodash";
 
 import { NmpButton, NmpInput, NmpCheckbox } from "features/nmp-ui";
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import { DFormLabel } from "components/DForm/ui/DFormLabel";
 
 const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel }) => {
   const [form] = Form.useForm();

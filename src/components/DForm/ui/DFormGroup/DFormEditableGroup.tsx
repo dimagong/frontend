@@ -26,21 +26,21 @@ export const DFormEditableGroup: FC<Props> = (props) => {
     <DFormDraggable draggableId={groupId} isDraggable={isDraggable} draggableIndex={groupIndex}>
       {(dragHandle) => (
         <DFormDroppable droppableId={groupId} droppableType={DFormElementTypes.Block} isDraggable={isDraggable}>
-          <DFormAddElement elementType={DFormElementTypes.Group} onGroupAdd={onGroupAdd}>
-            <DFormBaseGroup
-              groupName={groupName}
-              renderTitle={(node) => (
-                <DFormDragHandleBlock dragHandle={dragHandle}>
+          <DFormBaseGroup
+            groupName={groupName}
+            renderTitle={(node) => (
+              <DFormDragHandleBlock dragHandle={dragHandle}>
+                <DFormAddElement elementType={DFormElementTypes.Group} onGroupAdd={onGroupAdd}>
                   <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
                     {node}
                   </DFormSelectable>
-                </DFormDragHandleBlock>
-              )}
-              isEmptyTitleRendered
-            >
-              {children}
-            </DFormBaseGroup>
-          </DFormAddElement>
+                </DFormAddElement>
+              </DFormDragHandleBlock>
+            )}
+            isEmptyTitleRendered
+          >
+            {children}
+          </DFormBaseGroup>
         </DFormDroppable>
       )}
     </DFormDraggable>

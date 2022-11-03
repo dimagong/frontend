@@ -8,7 +8,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import { HolderOutlined } from "@ant-design/icons";
 
 import ProgressBar from "./Components/ProgressBar";
-import { DFormElementTypes } from "components/DForm";
+import { DFormElementTypes } from "components/DForm/types";
 
 const SectionsSideBar = (props) => {
   const {
@@ -82,8 +82,9 @@ const SectionsSideBar = (props) => {
           </div>
         )}
       </Droppable>
+
       {isConfigurable ? (
-        <div className="sections__add" onClick={onSectionCreate}>
+        <div className="sections__add" style={{ cursor: "pointer" }} onClick={onSectionCreate}>
           <div className="sections-nav_item_title">
             <span className="align-middle ml-50">New tab</span>
           </div>

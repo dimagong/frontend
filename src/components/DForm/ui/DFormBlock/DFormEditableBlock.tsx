@@ -80,7 +80,7 @@ export const DFormEditableBlock: FC<Props> = (props) => {
     <DFormBlockSizer blockSize={isDraggable ? DFormBlockSizeTypes.Full : blockSize}>
       <DFormDraggable draggableId={blockId} isDraggable={isDraggable} draggableIndex={blockIndex}>
         {(dragHandle) => (
-          <DFormAddElement elementType={DFormElementTypes.Block} onBlockAdd={onBlockAdd} isHoverable>
+          <DFormAddElement elementType={DFormElementTypes.Block} onBlockAdd={onBlockAdd}>
             <DFormBaseBlock>
               <DFormDragHandleBlock dragHandle={dragHandle}>
                 <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>

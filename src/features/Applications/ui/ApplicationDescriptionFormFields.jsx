@@ -4,7 +4,7 @@ import { Form } from "antd";
 import { NmpCheckbox, NmpInput, NmpSelect } from "features/nmp-ui";
 import { getCategoriesAsOptions } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import { DFormLabel } from "components/DForm/ui/DFormLabel";
 
 export const ApplicationDescriptionFormFields = ({ categories }) => {
   const categoriesOptions = categories ? getCategoriesAsOptions(categories) : null;

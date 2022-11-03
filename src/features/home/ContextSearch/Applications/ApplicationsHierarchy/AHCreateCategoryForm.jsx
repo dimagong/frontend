@@ -7,7 +7,7 @@ import { preventDefault } from "utility/event-decorators";
 import { useFormGroup, useFormField, Validators } from "hooks/use-form";
 
 import { NmpInput, NmpButton } from "features/nmp-ui";
-import { DFormLabel } from "components/DForm/Components/Fields/Components/DFormWidgets/Components/DFormLabel";
+import { DFormLabel } from "components/DForm/ui/DFormLabel";
 
 export const AHCreateCategoryForm = ({ placeholder, submitting, onSubmit: propOnSubmit }) => {
   const [name, setName] = useFormField("", [Validators.required]);
