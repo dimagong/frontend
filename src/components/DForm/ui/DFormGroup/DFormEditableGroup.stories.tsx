@@ -1,6 +1,6 @@
 import React from "react";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { QueryClientProvider, QueryClient } from "react-query";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import { DFormElementTypes } from "../../types";
 import { DFormEditableBlock } from "../DFormBlock";

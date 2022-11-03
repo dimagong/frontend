@@ -1,9 +1,10 @@
 import React from "react";
 import type { FC, ReactNode, MouseEventHandler } from "react";
 
+import { DFormElementTypes } from "../../types";
 import { DFormBaseGroup } from "./DFormBaseGroup";
+import { DFormDroppable } from "../DFormDroppable";
 import { DFormSelectable } from "../DFormSelectable";
-import { DFormDroppableGroup } from "./DFormGroupDroppable";
 import { DFormDraggable, DFormDragHandleBlock } from "../DFormDraggable";
 
 type Props = {
@@ -22,7 +23,7 @@ export const DFormEditableGroup: FC<Props> = (props) => {
   return (
     <DFormDraggable draggableId={groupId} isDraggable={isDraggable} draggableIndex={groupIndex}>
       {(dragHandle) => (
-        <DFormDroppableGroup droppableId={groupId} isDraggable={isDraggable}>
+        <DFormDroppable droppableId={groupId} droppableType={DFormElementTypes.Block} isDraggable={isDraggable}>
           <DFormBaseGroup
             groupName={groupName}
             renderTitle={(node) => (
@@ -36,7 +37,7 @@ export const DFormEditableGroup: FC<Props> = (props) => {
           >
             {children}
           </DFormBaseGroup>
-        </DFormDroppableGroup>
+        </DFormDroppable>
       )}
     </DFormDraggable>
   );
