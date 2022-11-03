@@ -1,17 +1,18 @@
-import React from "react";
 import type { FC, MouseEventHandler } from "react";
+import React from "react";
 
+import type { DFormFieldProps } from "../DFormField";
 import { DFormField } from "../DFormField";
+import type { DFormHelpTextProps } from "../DFormHelpText";
 import { DFormHelpText } from "../DFormHelpText";
+import type { DFormResourceProps } from "../DFormResource";
 import { DFormResource } from "../DFormResource";
 import { DFormBaseBlock } from "./DFormBaseBlock";
-import { DFormDraggable, DFormDragHandleBlock } from "../DFormDraggable";
 import { DFormBlockSizer } from "./DFormBlockSizer";
 import { DFormSelectable } from "../DFormSelectable";
-import type { DFormFieldProps } from "../DFormField";
-import type { DFormResourceProps } from "../DFormResource";
-import type { DFormHelpTextProps } from "../DFormHelpText";
-import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { DFormAddElement } from "../DFormAddElement";
+import { DFormDraggable, DFormDragHandleBlock } from "../DFormDraggable";
+import { DFormBlockSizeTypes, DFormBlockTypes, DFormElementTypes, DFormFieldTypes } from "../../types";
 
 type ToFieldOmit = "id" | "value" | "checked" | "fieldType" | "isDisabled" | "masterSchemaFieldId" | "onChange";
 
@@ -27,12 +28,23 @@ type Props = DFormBlocksProps & {
   blockIndex: number;
   isSelected?: boolean;
   isDraggable?: boolean;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler;
+  onBlockAdd?: MouseEventHandler;
 };
 
 export const DFormEditableBlock: FC<Props> = (props) => {
-  const { blockId, blockType, fieldType, blockSize, blockIndex, isSelected, isDraggable, onClick, ...blockProps } =
-    props;
+  const {
+    blockId,
+    blockType,
+    fieldType,
+    blockSize,
+    blockIndex,
+    isSelected,
+    isDraggable,
+    onClick,
+    onBlockAdd,
+    ...blockProps
+  } = props;
   const { label, uiStyle, options, helpText, dateFormat, isRequired, isLabelShowing } = blockProps;
 
   let Block;
@@ -68,13 +80,15 @@ export const DFormEditableBlock: FC<Props> = (props) => {
     <DFormBlockSizer blockSize={isDraggable ? DFormBlockSizeTypes.Full : blockSize}>
       <DFormDraggable draggableId={blockId} isDraggable={isDraggable} draggableIndex={blockIndex}>
         {(dragHandle) => (
-          <DFormBaseBlock>
-            <DFormDragHandleBlock dragHandle={dragHandle}>
-              <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
-                {Block}
-              </DFormSelectable>
-            </DFormDragHandleBlock>
-          </DFormBaseBlock>
+          <DFormAddElement elementType={DFormElementTypes.Block} onBlockAdd={onBlockAdd} isHoverable>
+            <DFormBaseBlock>
+              <DFormDragHandleBlock dragHandle={dragHandle}>
+                <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
+                  {Block}
+                </DFormSelectable>
+              </DFormDragHandleBlock>
+            </DFormBaseBlock>
+          </DFormAddElement>
         )}
       </DFormDraggable>
     </DFormBlockSizer>

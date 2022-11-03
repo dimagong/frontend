@@ -6,16 +6,18 @@ import type { FC, MouseEventHandler } from "react";
 
 type Props = {
   elementName: string;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler;
 };
 
 export const DFormAddElementButton: FC<Props> = (props) => {
   const { elementName, onClick } = props;
 
   return (
-    <button className="dform-add-element" onClick={onClick}>
-      <PlusOutlined className="dform-add-element__icon" />
-      <div className="dform-add-element__name">{elementName}</div>
-    </button>
+    <div className="dform-add-element">
+      <button className="dform-add-element__button" onClick={onClick}>
+        <PlusOutlined className="dform-add-element__icon" />
+        <div className="dform-add-element__name">{elementName}</div>
+      </button>
+    </div>
   );
 };

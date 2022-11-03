@@ -7,7 +7,7 @@ import type { FC, ReactNode, MouseEventHandler } from "react";
 type Props = {
   isSelected?: boolean;
   isMishandled?: boolean;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler;
   children?: ReactNode;
 };
 
