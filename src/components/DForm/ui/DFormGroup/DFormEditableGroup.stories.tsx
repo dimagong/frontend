@@ -2,10 +2,10 @@ import React from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { QueryClientProvider, QueryClient } from "react-query";
 
-import { DFormEditableBlock } from "../DFormBlock";
-import { DFormEditableGroup } from "./DFormEditableGroup";
-import { MockStoriesBlocks } from "./mockStoriesBlocks";
 import { DFormElementTypes } from "../../types";
+import { DFormEditableBlock } from "../DFormBlock";
+import { mockStoriesBlocks } from "./mockStoriesBlocks";
+import { DFormEditableGroup } from "./DFormEditableGroup";
 
 export default {
   title: "DFormEditableGroup",
@@ -26,7 +26,7 @@ const Template = (props) => {
                 isSelected={props.isSelected}
                 isDraggable={props.isDraggable}
               >
-                {MockStoriesBlocks.map((blockProps, index) => (
+                {mockStoriesBlocks.map((blockProps, index) => (
                   <DFormEditableBlock
                     label={blockProps.label}
                     blockId={blockProps.blockId}

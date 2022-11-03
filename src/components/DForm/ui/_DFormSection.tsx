@@ -2,7 +2,7 @@ import React from "react";
 import { Form, FormProps } from "antd";
 import type { FC, ReactNode } from "react";
 
-import { DFormBaseSection, DFromBaseProps } from "./DFormBaseSection";
+import { DFormBaseSection, DFromBaseProps } from "./_DFormBaseSection";
 
 const validateMessages = {
   required: "Is required!",

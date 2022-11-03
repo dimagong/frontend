@@ -2,7 +2,7 @@ import React from "react";
 import type { FC } from "react";
 import { TabContent, TabPane } from "reactstrap";
 
-import { DFormSection } from "./DFormSection";
+import { DFormSection } from "./_DFormSection";
 import { useDFormContext } from "../DFormContext";
 import { DFormSchema } from "../types/dformSchema";
 
@@ -46,8 +46,7 @@ export const DFormSections: FC<Props> = (props) => {
 
           return (
             <TabPane tabId={id} key={id}>
-              <DFormSection
-                // @ts-ignore
+              {/*<DFormSection
                 id={id}
                 schema={schema}
                 isHidden={isHidden}
@@ -57,7 +56,7 @@ export const DFormSections: FC<Props> = (props) => {
                 onFieldCreate={onFieldCreate}
                 onGroupCreate={onGroupCreate}
                 onElementClick={onElementClick}
-              />
+              />*/}
             </TabPane>
           );
         })}

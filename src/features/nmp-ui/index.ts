@@ -26,6 +26,7 @@ import { NmpCol } from "./NmpCol";
 import { NmpText } from "./NmpText";
 
 export * from "./NmpCheckbox";
+export * from "./NmpScreenReaderOnly";
 
 export {
   NmpRow,

@@ -1,6 +1,6 @@
 import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
 
-export const MockStoriesBlocks = [
+export const mockStoriesBlocks = [
   {
     blockId: "0",
     helpText: "<h2>Help text block</h2>",

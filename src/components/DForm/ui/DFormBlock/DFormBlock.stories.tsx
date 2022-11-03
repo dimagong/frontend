@@ -14,8 +14,8 @@ const Template = (props) => {
   const initialValues = String(props.masterSchemaFieldId) ? { [props.masterSchemaFieldId]: props.value } : {};
 
   return (
-    <Form initialValues={initialValues}>
-      <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={new QueryClient()}>
+      <Form initialValues={initialValues}>
         <DFormBlock
           label={props.label}
           uiStyle={props.uiStyle}
@@ -29,8 +29,8 @@ const Template = (props) => {
           isLabelShowing={props.isLabelShowing}
           masterSchemaFieldId={props.masterSchemaFieldId}
         />
-      </QueryClientProvider>
-    </Form>
+      </Form>
+    </QueryClientProvider>
   );
 };
 

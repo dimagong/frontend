@@ -1,5 +1,3 @@
-import "./styles.scss";
-
 import type { FC } from "react";
 import React, { useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";

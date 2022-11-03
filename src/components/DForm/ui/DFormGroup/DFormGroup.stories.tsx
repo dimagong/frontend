@@ -1,9 +1,10 @@
 import React from "react";
+import { Form } from "antd";
 import { QueryClientProvider, QueryClient } from "react-query";
 
 import { DFormGroup } from "./DFormGroup";
 import { DFormBlock } from "../DFormBlock";
-import { MockStoriesBlocks } from "./mockStoriesBlocks";
+import { mockStoriesBlocks } from "./mockStoriesBlocks";
 
 export default {
   title: "DFormGroup",
@@ -13,22 +14,24 @@ export default {
 const Template = (props) => {
   return (
     <QueryClientProvider client={new QueryClient()}>
-      <DFormGroup groupId={props.groupId} groupName={props.groupName}>
-        {MockStoriesBlocks.map((blockProps) => (
-          <DFormBlock
-            label={blockProps.label}
-            helpText={blockProps.helpText}
-            blockType={blockProps.blockType}
-            fieldType={blockProps.fieldType}
-            blockSize={blockProps.blockSize}
-            isRequired={blockProps.isRequired}
-            isDisabled={blockProps.isDisabled}
-            isLabelShowing={blockProps.isLabelShowing}
-            masterSchemaFieldId={blockProps.masterSchemaFieldId}
-            key={blockProps.blockId}
-          />
-        ))}
-      </DFormGroup>
+      <Form>
+        <DFormGroup groupId={props.groupId} groupName={props.groupName}>
+          {mockStoriesBlocks.map((blockProps) => (
+            <DFormBlock
+              label={blockProps.label}
+              helpText={blockProps.helpText}
+              blockType={blockProps.blockType}
+              fieldType={blockProps.fieldType}
+              blockSize={blockProps.blockSize}
+              isRequired={blockProps.isRequired}
+              isDisabled={blockProps.isDisabled}
+              isLabelShowing={blockProps.isLabelShowing}
+              masterSchemaFieldId={blockProps.masterSchemaFieldId}
+              key={blockProps.blockId}
+            />
+          ))}
+        </DFormGroup>
+      </Form>
     </QueryClientProvider>
   );
 };

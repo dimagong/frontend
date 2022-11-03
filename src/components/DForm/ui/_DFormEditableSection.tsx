@@ -1,8 +1,8 @@
 import React from "react";
 import type { FC } from "react";
 
-import { DFormDroppableSection } from "./DFormDroppableSection";
-import { DFormBaseSection, DFromBaseProps } from "./DFormBaseSection";
+import { DFormDroppableSection } from "./_DFormDroppableSection";
+import { DFormBaseSection, DFromBaseProps } from "./_DFormBaseSection";
 
 type Props = DFromBaseProps;
 
