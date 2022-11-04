@@ -1,18 +1,17 @@
-import "./styles.scss";
-
 import type { FC } from "react";
 import React, { useMemo, useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import type { DragDropContextProps, DropResult } from "react-beautiful-dnd";
 
-import { DFormBlockTypes, DFormElementTypes } from "../types";
+import { NmpCol, NmpRow } from "features/nmp-ui";
+
+import SectionsSideBar from "./SectionsSideBar";
 import { DFormEditableGroup } from "./DFormGroup";
 import { DFormEditableBlock } from "./DFormBlock";
 import { DFormSchema } from "../types/dformSchema";
-import SectionsSideBar from "../Components/SectionsSideBar";
-import { DFormEditableSection } from "./DFormSection/DFormEditableSection";
 import { DFormAddElement } from "./DFormAddElement";
-import { NmpCol, NmpRow } from "../../../features/nmp-ui";
+import { DFormEditableSection } from "./DFormSection";
+import { DFormBlockTypes, DFormElementTypes } from "../types";
 
 const recognizeBlockType = (fieldType: string) => {
   switch (fieldType) {
