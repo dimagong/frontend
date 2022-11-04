@@ -19,7 +19,7 @@ import {
 import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
-import { DFormFieldTypes } from "features/dform/types";
+import { DFormBlockTypes, DFormFieldTypes } from "features/dform/types";
 import { DFormLabel } from "features/dform/ui/DFormLabel";
 import { GroupChanger } from "./GroupChanger";
 
@@ -334,9 +334,9 @@ export const SpecificFieldProperties = ({ element, organization, elementType }) 
       return <FieldSelectEditProperties element={element} />;
     case DFormFieldTypes.Number:
       return <FieldNumberEditProperties />;
-    case DFormFieldTypes.HelpText:
+    case DFormBlockTypes.HelpText:
       return <FieldHelpTextEditProperties />;
-    case DFormFieldTypes.Resource:
+    case DFormBlockTypes.Resource:
       return <FieldResourceEditProperties element={{ ...element, type: elementType }} organization={organization} />;
     case DFormFieldTypes.File:
     case DFormFieldTypes.FileList:
@@ -409,7 +409,9 @@ const FieldProperties = (props) => {
       <Form.Item label="Element type" name="type" className="dform-field mb-2">
         <NmpSelect
           id="type"
-          options={Object.values(DFormFieldTypes).map((type) => ({ value: type, label: type }))}
+          options={[...Object.values(DFormFieldTypes), DFormBlockTypes.HelpText, DFormBlockTypes.Resource].map(
+            (type) => ({ value: type, label: type })
+          )}
           disabled={false}
           placeholder="Select an Element type"
           onChange={onTypeChange}
@@ -427,7 +429,7 @@ const FieldProperties = (props) => {
         />
       </Form.Item> */}
 
-      {FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type) ? null : (
+      {FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(type) ? null : (
         <>
           <div className="mb-2">
             <Form.Item
