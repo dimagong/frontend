@@ -6,8 +6,8 @@ import React, { useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
+import { BaseDForm } from "features/dform";
 import { DFormElementTypes } from "features/dform/types";
-import { BaseDForm, ElementTypes } from "features/dform";
 import { DFormContextProvider } from "features/dform/ui/DFormContext";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
@@ -24,7 +24,6 @@ import {
 import { DFormFieldModel } from "../fieldModel";
 import DFormElementEdit from "../Components/DFormElementEdit";
 import ElementsReorderComponent from "../Components/ElementsReorderComponent";
-import { elementValidationSchemas, MSPropertyValidationSchema } from "../validationSchemas";
 import { useApplicationTemplateQuery, useUpdateApplicationTemplateMutation } from "../data/applicationQueries";
 
 import { ApplicationWrapper } from "./ApplicationWrapper";
@@ -33,9 +32,6 @@ import { ApplicationDescription } from "./ApplicationDescription";
 
 import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
-
-//TODO fix bug with MSProperty select. It doesn't clear it's value when switching to different elements
-// because of internal behavior of component
 
 export const ApplicationPage = ({ applicationId }) => {
   const [applicationData, setApplicationData] = useState(null);
@@ -220,13 +216,13 @@ export const ApplicationPage = ({ applicationId }) => {
     const dataClone = cloneDeep(applicationData);
 
     switch (element.elementType) {
-      case ElementTypes.Section:
+      case DFormElementTypes.Section:
         handleSectionDelete(element, dataClone);
         break;
-      case ElementTypes.Group:
+      case DFormElementTypes.Group:
         handleGroupDelete(element, dataClone);
         break;
-      case ElementTypes.Field:
+      case DFormElementTypes.Block:
         handleFieldDelete(element, dataClone);
         break;
       default:
@@ -283,42 +279,6 @@ export const ApplicationPage = ({ applicationId }) => {
     return data[type];
   };
 
-  const validateElement = (element) => {
-    let elementValidationSchema = elementValidationSchemas[element.elementType];
-
-    if (element.elementType === ElementTypes.Field) {
-      //get validation schema for field depending on type
-      elementValidationSchema = elementValidationSchema[element.type];
-    }
-
-    if (!elementValidationSchema) {
-      throw new Error(`There is no validation schema for ${element.elementType} element`);
-    }
-
-    try {
-      elementValidationSchema.validateSync(element, { context: { application: applicationData } });
-
-      if (element.elementType === ElementTypes.Field && !FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(element.type)) {
-        const masterSchemaUsedPropertiesList = Object.values(applicationData.fields).reduce((acc, curr) => {
-          if (curr.id !== element.id && curr.masterSchemaFieldId) {
-            acc.push(curr.masterSchemaFieldId);
-          }
-
-          return acc;
-        }, []);
-
-        MSPropertyValidationSchema.validateSync(element.masterSchemaFieldId, {
-          context: { masterSchemaUsedPropertiesList },
-        });
-      }
-    } catch (validationError) {
-      console.log("error", validationError);
-      return { isElementValid: false, errors: validationError };
-    }
-
-    return { isElementValid: true };
-  };
-
   const handleElementParentChange = (params) => {
     const { elementId, oldParentId, newParentId, parentCollection, elementIdList, elementParentIdName } = params;
     if (oldParentId === newParentId) return;
@@ -356,32 +316,20 @@ export const ApplicationPage = ({ applicationId }) => {
     });
 
   const handleElementChangesSave = () => {
-    //TODO also add this changes to dform in redux. Local state will be in sync with redux store
-    // with only difference that local changes will have applied suggested changes
+    setIsModuleEditComponentVisible(false);
+    setSelectedElement(null);
 
-    const { isElementValid, errors } = validateElement(selectedElement);
+    let dataToSave;
 
-    if (isElementValid) {
-      // TODO REMOVE ELEMENT ERRORS
-
-      setIsModuleEditComponentVisible(false);
-      setSelectedElement(null);
-
-      let dataToSave;
-
-      if (selectedElement.elementType === ElementTypes.Field) {
-        dataToSave = embedSuggestedChanges(selectedElement);
-      } else {
-        dataToSave = embedSuggestedChanges(selectedElement);
-      }
-
-      setApplicationData(dataToSave);
-
-      mutateApplication(dataToSave, updateApplication);
+    if (selectedElement.elementType === DFormElementTypes.Block) {
+      dataToSave = embedSuggestedChanges(selectedElement);
     } else {
-      //Todo change it in future to displaying errors under the elements where its occur
-      toast.error(errors.message);
+      dataToSave = embedSuggestedChanges(selectedElement);
     }
+
+    setApplicationData(dataToSave);
+
+    mutateApplication(dataToSave, updateApplication);
   };
 
   const changeGroupForField = (selectedElement, submittedElement, application) => {
@@ -415,11 +363,11 @@ export const ApplicationPage = ({ applicationId }) => {
 
   const updateStructureDependencies = (selectedElement, submittedElement, application) => {
     switch (selectedElement.elementType) {
-      case ElementTypes.Section:
+      case DFormElementTypes.Section:
         return application;
-      case ElementTypes.Group:
+      case DFormElementTypes.Group:
         return changeSectionForGroup(selectedElement, submittedElement, application);
-      case ElementTypes.Field:
+      case DFormElementTypes.Block:
         return changeGroupForField(selectedElement, submittedElement, application);
       default:
         return application;
@@ -449,7 +397,7 @@ export const ApplicationPage = ({ applicationId }) => {
   // ToDo: remove edited
   const handleElementChange = (elementData) => {
     let element;
-    if (elementData.elementType === ElementTypes.Field) {
+    if (elementData.elementType === DFormElementTypes.Field) {
       element = DFormFieldModel.from(elementData);
       element.edited = true;
     } else {

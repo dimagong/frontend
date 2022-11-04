@@ -1,7 +1,8 @@
 /* Enums */
 
 export enum DFormElementTypes {
-  Block = "block",
+  // Currently there is no way to migration or fallback
+  Block = "field",
   Group = "group",
   Section = "section",
 }

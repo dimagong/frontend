@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 
-import { ElementTypes, FieldTypes } from "features/dform";
+import { FieldTypes } from "features/dform";
+import { DFormElementTypes } from "features/dform/types";
 
 import { AbstractDFormFieldConditionModel } from "./fieldConditionModel";
 import { DateWidgetFormatTypes, FieldClassTypes, FieldUIStyles, ResourceCompileOptionTypes } from "./constants";
@@ -87,9 +88,9 @@ const deleteUndefinedKeys = <T>(instance: T): T => {
 
 export abstract class AbstractDFormFieldModel implements CommonFieldProperties<any> {
   /**
-   * Indicates a field element type.
+   * Indicates an element type.
    */
-  readonly elementType: ElementTypes = ElementTypes.Field;
+  readonly elementType: DFormElementTypes = DFormElementTypes.Block;
   /**
    * Indicates a unique identifier (ID) of an owning group.
    */
