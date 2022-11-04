@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 export const dformValidationMessages = {
   required: "Is required!",
   string: {
@@ -19,3 +20,4 @@ export const dformValidationMessages = {
     range: "value must be between ${min} and ${max} in length",
   },
 };
+/* eslint-enable no-template-curly-in-string */

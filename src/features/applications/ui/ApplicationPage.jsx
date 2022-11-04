@@ -8,7 +8,7 @@ import { Row, Button, TabContent, TabPane } from "reactstrap";
 import CustomTabs from "components/Tabs";
 import { DFormElementTypes } from "features/dform/types";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-import { DFormContextProvider, BaseDForm, ElementTypes, DformSchemaElementTypes } from "features/dform";
+import { DFormContextProvider, BaseDForm, ElementTypes } from "features/dform";
 
 import { getCategoryAsOption } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
@@ -267,9 +267,9 @@ export const ApplicationPage = ({ applicationId }) => {
       );
     }
 
-    Object.values(DformSchemaElementTypes).forEach((type) => {
-      data[type] = removeConditionsFromElementById(data, type, field.id);
-    });
+    data.fields = removeConditionsFromElementById(data, "fields", field.id);
+    data.groups = removeConditionsFromElementById(data, "groups", field.id);
+    data.sections = removeConditionsFromElementById(data, "sections", field.id);
 
     delete data.fields[field.id];
   };
