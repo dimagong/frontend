@@ -1,19 +1,21 @@
 import type { FC, ReactNode } from "react";
 import React, { createContext, useContext, useMemo } from "react";
 
+import { DFormAccessTypes } from "./types";
 import { DformFileService } from "./data/dformFileService";
-import { isManagerViewDFormAccessible, isMemberViewDFormAccessible, AccessTypes } from "./types/accessTypes";
+import { isMemberDFormAccessible } from "./data/isMemberDFormAccessible";
+import { isManagerDFormAccessible } from "./data/isManagerDFormAccessible";
 
 type ContextValue = {
   dformId?: number;
   dformFileService?: DformFileService;
-  accessType: AccessTypes;
+  accessType: DFormAccessTypes;
   isAccessible: boolean;
   isConfigurable: boolean;
 };
 
 const defaultValue: ContextValue = {
-  accessType: AccessTypes.HardLock,
+  accessType: DFormAccessTypes.HardLock,
   isConfigurable: false,
   isAccessible: false,
 };
@@ -24,7 +26,7 @@ export const useDFormContext = () => useContext(DFormContext);
 
 type Props = {
   id?: number;
-  accessType?: AccessTypes;
+  accessType?: DFormAccessTypes;
   isMemberView?: boolean;
   isConfigurable?: boolean;
   children: ReactNode;
@@ -41,7 +43,7 @@ export const DFormContextProvider: FC<Props> = (props) => {
 
   const isAccessible = isConfigurable
     ? false
-    : (isMemberView ? isMemberViewDFormAccessible : isManagerViewDFormAccessible)(accessType);
+    : (isMemberView ? isMemberDFormAccessible : isManagerDFormAccessible)(accessType);
 
   const dformFileService = useMemo(() => {
     return isMemberView ? DformFileService.member : DformFileService.manager;

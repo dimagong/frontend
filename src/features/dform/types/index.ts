@@ -27,3 +27,10 @@ export enum DFormBlockSizeTypes {
   Half = "col-md-6",
   Full = "col-md-12",
 }
+
+export enum DFormAccessTypes {
+  Allow = "allow",
+  HardLock = "hard-lock",
+  UserLock = "user-lock",
+  UserUnlock = "user-unlock",
+}

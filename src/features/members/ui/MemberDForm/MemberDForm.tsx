@@ -3,17 +3,19 @@ import "./styles.scss";
 import _ from "lodash";
 import type { FC } from "react";
 import { Col, Row, Form } from "antd";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import type { FormProviderProps } from "antd/lib/form/context";
 
 import { NmpStepper, NpmCard } from "features/nmp-ui";
 
+import { DFormAccessTypes } from "features/dform/types";
 // import { DFormSection } from "features/dform/ui/DFormSection";
+import { DFormContextProvider, FieldTypes } from "features/dform";
 import type { DFormSchema } from "features/dform/types/dformSchema";
 import { getValuesBySectionId } from "features/dform/data/getValuesBySectionId";
 import { NormalizedDFormValues } from "features/dform/types/normalizedDFormValues";
+import { isMemberDFormAccessible } from "features/dform/data/isMemberDFormAccessible";
 import { applyDynamicConditionalRender } from "features/dform/data/applyConditionalRender";
-import { AccessTypes, DFormContextProvider, FieldTypes, isMemberViewDFormAccessible } from "features/dform";
 
 import {
   useSubmitDFormMutation,
@@ -33,7 +35,7 @@ type Props = {
   id: number;
   name: string;
   sections: Sections;
-  accessType: AccessTypes;
+  accessType: DFormAccessTypes;
   initialSchema: DFormSchema;
   initialValues: NormalizedDFormValues;
 };
@@ -62,7 +64,7 @@ export const MemberDForm: FC<Props> = (props) => {
   const saveFieldValue = (v) => saveFieldValueRef.current(v);
 
   const isFinalSection = step === sections.length - 1;
-  const isAccessible = isMemberViewDFormAccessible(accessType);
+  const isAccessible = isMemberDFormAccessible(accessType);
   const submitData =
     (submitDFormMutation as any).data?.updated_at ||
     (submitDFormMutation as any).data?.finished_at ||
