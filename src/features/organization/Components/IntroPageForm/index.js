@@ -4,6 +4,7 @@ import Editor from "../../../../components/FormCreate/Custom/WysiwygEditor";
 import FileInput from "../../../../components/formElements/FileInput";
 import { Check } from "react-feather";
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy";
+import { NmpWysiwygEditor } from "../../../nmp-ui";
 
 const IntroPageForm = ({
   data,
@@ -37,7 +38,10 @@ const IntroPageForm = ({
           <div className="label">Intro Text</div>
           <div className="form-element">
             <div className="editor-wrapper">
-              <Editor data={data.intro_text} onChange={(htmlString) => onFieldChange("intro_text", htmlString)} />
+              <NmpWysiwygEditor
+                value={data.intro_text}
+                onChange={(htmlString) => onFieldChange("intro_text", htmlString)}
+              />
             </div>
           </div>
         </div>

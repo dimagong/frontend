@@ -9,14 +9,13 @@ import { DFormFieldModel } from "features/applications/fieldModel";
 
 import { useApplicationResourceManagerFields } from "../../../../../../data/applicationQueries";
 
-import { NmpButton, NmpInput, NmpSelect, NmpCheckbox } from "features/nmp-ui";
+import { NmpButton, NmpInput, NmpSelect, NmpCheckbox, NmpWysiwygEditor } from "features/nmp-ui";
 import {
   DATE_WIDGET_FORMATS,
   ResourceCompileOptionLabel,
   FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
 } from "features/applications/constants";
 
-import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
 import { DFormBlockTypes, DFormFieldTypes } from "features/dform/types";
@@ -235,7 +234,7 @@ export const FieldHelpTextEditProperties = () => {
     <Row>
       <Col md="12" className="mb-2">
         <Form.Item name="helpTextValue" className="dform-field mb-2">
-          <WysiwygEditorWrapper />
+          <NmpWysiwygEditor />
         </Form.Item>
       </Col>
 
@@ -244,10 +243,6 @@ export const FieldHelpTextEditProperties = () => {
       </Col>
     </Row>
   );
-};
-
-const WysiwygEditorWrapper = ({ value, onChange }) => {
-  return <WysiwygEditor data={value} onChange={onChange} />;
 };
 
 const queryConfig = {

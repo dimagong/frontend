@@ -5,11 +5,9 @@ import NpmCard from "./NpmCard";
 import NpmCustomStepperSurvey from "./NpmCustomStepperSurvey";
 import NpmDatePicker from "./NpmDatePicker";
 import { NmpUpload } from "./NmpUpload";
-import NpmEditor from "./NpmEditor";
 import { NmpUploadItem } from "./NmpUploadItem";
 import { NmpInput } from "./NmpInput";
 import { NmpSelect } from "./NmpSelect";
-import { NmpLongText } from "./NmpLongText";
 import { NmpModal } from "./NmpModal";
 import NpmPopover from "./NpmPopover";
 import NpmProgress from "./NpmProgress";
@@ -27,6 +25,8 @@ import { NmpText } from "./NmpText";
 
 export * from "./NmpCheckbox";
 export * from "./NmpCollapse";
+export * from "./NmpLongText";
+export * from "./NmpWysiwygEditor";
 export * from "./NmpScreenReaderOnly";
 
 export {
@@ -39,11 +39,9 @@ export {
   NpmCustomStepperSurvey,
   NpmDatePicker,
   NmpUpload,
-  NpmEditor,
   NmpUploadItem,
   NmpInput,
   NmpSelect,
-  NmpLongText,
   NmpModal,
   NpmPopover,
   NpmProgress,

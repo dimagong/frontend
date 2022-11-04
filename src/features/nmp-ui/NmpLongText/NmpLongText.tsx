@@ -4,9 +4,9 @@ import classnames from "classnames";
 import React, { useRef, useState } from "react";
 import type { FC, CSSProperties, FormEvent } from "react";
 
-import { NmpModal, NpmEditor, NmpButton } from "features/nmp-ui";
+import { NmpModal, NmpWysiwygEditor, NmpButton } from "features/nmp-ui";
 
-type Props = {
+export type NmpLongTextProps = {
   id?: string;
   value?: string;
   isDisabled?: boolean;
@@ -15,27 +15,39 @@ type Props = {
   className?: string;
 };
 
-export const NmpLongText: FC<Props> = (props) => {
+export const NmpLongText: FC<NmpLongTextProps> = (props) => {
   const { id, value, isDisabled, style, className, onChange } = props;
 
   const divRef = useRef<HTMLDivElement>(null);
-  const [innerValue, setInnerValue] = useState(() => value);
+  const [contentValue, setContentValue] = useState(() => value ?? "");
+  const [editorValue, setEditorValue] = useState(() => value ?? "");
 
   const classes = classnames("nmp-long-text__area", { "nmp-long-text__area--disabled": isDisabled }, className);
 
-  const OnEditorChange = (value) => {
+  const onInput = ({ currentTarget }: FormEvent<HTMLDivElement>) => {
+    const value = currentTarget.innerHTML;
+
+    setEditorValue(value);
+
     if (onChange) {
       onChange(value);
     }
-    setInnerValue(value);
+  };
+
+  const onEditorChange = (editorValue: string) => {
+    setContentValue(editorValue);
+
+    if (onChange) {
+      onChange(editorValue);
+    }
   };
 
   const openModal = () => {
     NmpModal.open({
       title: "Extended input",
       content: (
-        <NpmEditor
-          data={value}
+        <NmpWysiwygEditor
+          value={editorValue}
           toolbar={{
             options: ["inline", "list", "textAlign", "link"],
             inline: {
@@ -47,18 +59,12 @@ export const NmpLongText: FC<Props> = (props) => {
               options: ["indent", "outdent"],
             },
           }}
-          onChange={OnEditorChange}
+          onChange={onEditorChange}
           wrapperClassName="nmp-long-text__editor-wrapper"
         />
       ),
       centered: true,
     });
-  };
-
-  const onInput = ({ currentTarget }: FormEvent<HTMLDivElement>) => {
-    if (onChange) {
-      onChange(currentTarget.innerHTML);
-    }
   };
 
   const onInputBlur = () => divRef.current?.blur();
@@ -70,8 +76,8 @@ export const NmpLongText: FC<Props> = (props) => {
       <input
         id={id}
         type="text"
-        value={value}
         readOnly
+        disabled={isDisabled}
         onBlur={onInputBlur}
         onFocus={onInputFocus}
         className="nmp-long-text__input"
@@ -80,7 +86,7 @@ export const NmpLongText: FC<Props> = (props) => {
       <div
         contentEditable={!isDisabled}
         placeholder="Enter your answer here"
-        dangerouslySetInnerHTML={{ __html: innerValue ?? "" }}
+        dangerouslySetInnerHTML={{ __html: contentValue }}
         style={style}
         className={classes}
         onInput={onInput}
