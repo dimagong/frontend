@@ -1,7 +1,6 @@
 import { cloneDeep } from "lodash";
 
-import type { DFormSchema } from "../types";
-import type { NormalizedDFormValues } from "../types/normalizedDFormValues";
+import type { DFormSchema, NormalizedDFormValues } from "../types";
 
 import { checkConditions } from "./checkConditions";
 

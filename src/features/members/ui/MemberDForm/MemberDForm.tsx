@@ -9,14 +9,12 @@ import type { FormProviderProps } from "antd/lib/form/context";
 import { NmpStepper, NpmCard } from "features/nmp-ui";
 
 import { FieldTypes } from "features/dform";
-import { DFormAccessTypes } from "features/dform/types";
-import type { DFormSchema } from "features/dform/types";
 // import { DFormSection } from "features/dform/ui/DFormSection";
 import { DFormContextProvider } from "features/dform/ui/DFormContext";
 import { getValuesBySectionId } from "features/dform/data/getValuesBySectionId";
-import { NormalizedDFormValues } from "features/dform/types/normalizedDFormValues";
 import { isMemberDFormAccessible } from "features/dform/data/isMemberDFormAccessible";
 import { applyDynamicConditionalRender } from "features/dform/data/applyConditionalRender";
+import { DFormAccessTypes, DFormSchema, NormalizedDFormValues } from "features/dform/types";
 
 import {
   useSubmitDFormMutation,
@@ -24,8 +22,8 @@ import {
   useSaveDFormFieldValueMutation,
 } from "api/Onboarding/prospectUserQuery";
 
-import MemberDFormCheckSave from "../MemberDFormCheckSave";
-import MemberDFormNavigation from "../MemberDFormNavigation";
+// import MemberDFormCheckSave from "../MemberDFormCheckSave";
+// import MemberDFormNavigation from "../MemberDFormNavigation";
 import MemberThanksStatusView from "../MemberThanksStatusView";
 import { getFieldByMasterSchemaFieldId } from "features/dform/data/getFieldByMasterSchemaFieldId";
 

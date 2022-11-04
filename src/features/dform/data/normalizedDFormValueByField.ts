@@ -1,6 +1,5 @@
 import { FieldTypes } from "../types/fieldTypes";
-import { DFormValue } from "../types/dformValue";
-import { NormalizedDFormValue } from "../types/normalizedDFormValue";
+import type { DFormValue, NormalizedDFormValue } from "../types";
 
 type Field = {
   type: FieldTypes;

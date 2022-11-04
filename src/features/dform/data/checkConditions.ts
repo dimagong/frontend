@@ -7,7 +7,7 @@ import {
   DCROperatorTypesComparotors,
 } from "features/applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
 
-import { NormalizedDFormValues } from "../types/normalizedDFormValues";
+import type { NormalizedDFormValues } from "../types";
 
 type DFormElements = Record<string, any>;
 

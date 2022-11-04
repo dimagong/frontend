@@ -43,6 +43,18 @@ export type DFormFile = { name: string; file_id: number; custom_filename: string
 
 export type DFormFiles = Array<DFormFile>;
 
+export type DFormValue = {
+  files: DFormFiles | null;
+  value: string | number | boolean | Array<string> | null;
+  master_schema_field_id: number;
+};
+
+export type DFormValues = Record<string, DFormValue>;
+
+export type NormalizedDFormValue = DFormValue["value"] | DFormFile | DFormFiles;
+
+export type NormalizedDFormValues = Record<string, NormalizedDFormValue>;
+
 export type DFormSchema = {
   fields: Record<string, any>;
   groups: Record<string, any>;
