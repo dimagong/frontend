@@ -34,3 +34,7 @@ export enum DFormAccessTypes {
   UserLock = "user-lock",
   UserUnlock = "user-unlock",
 }
+
+export type DFormFile = { name: string; file_id: number; custom_filename: string };
+
+export type DFormFiles = Array<DFormFile>;

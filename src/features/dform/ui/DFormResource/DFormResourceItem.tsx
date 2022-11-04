@@ -5,8 +5,8 @@ import { useMutation } from "react-query";
 import { NmpUpload } from "features/nmp-ui";
 import { triggerFileDownloading, warning } from "features/common";
 
+import type { DFormFile } from "../../types";
 import { useDFormContext } from "../DFormContext";
-import type { DFormFile } from "../../types/dformFile";
 import type { GetDFormFileParams } from "../../data/dformFileService";
 
 type Props = {

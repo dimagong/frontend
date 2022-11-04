@@ -1,8 +1,8 @@
 import React from "react";
 import type { FC } from "react";
 
+import type { DFormFiles } from "../../types";
 import { DFormUploadFile } from "../DFormFile/DFormUploadFile";
-import type { DFormFiles } from "../../types/dformFiles";
 
 export type DFormFileListProps = {
   id?: string;

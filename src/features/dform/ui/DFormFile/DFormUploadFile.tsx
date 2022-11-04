@@ -7,8 +7,7 @@ import { NmpUpload } from "features/nmp-ui";
 import { triggerFileDownloading, warning } from "features/common";
 
 import { useDFormContext } from "../DFormContext";
-import type { DFormFile } from "../../types/dformFile";
-import type { DFormFiles } from "../../types/dformFiles";
+import type { DFormFiles, DFormFile } from "../../types";
 import type { GetDFormFileParams, PostDFormFileParams, DeleteDFormFileParams } from "../../data/dformFileService";
 
 const getUploadFileFromDFormFile = (dformFile: DFormFile): UploadFile => ({

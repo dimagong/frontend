@@ -1,4 +1,4 @@
-import { DFormFiles } from "./dformFiles";
+import type { DFormFiles } from "./index";
 
 export type DFormValue = {
   files: DFormFiles | null;
