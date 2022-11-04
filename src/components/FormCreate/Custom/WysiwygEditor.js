@@ -5,52 +5,37 @@ import classnames from "classnames";
 import htmlToDraft from "html-to-draftjs";
 import draftToHtml from "draftjs-to-html";
 import { Editor } from "react-draft-wysiwyg";
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { ContentState, EditorState, convertToRaw } from "draft-js";
 
-export default function WysiwygEditor({
-  toolbar,
-  orgId = "default",
-  disabled,
-  data,
-  onChange,
-  orgPage = false,
-  wrapperClassName,
-}) {
-  const [editorState, setEditorState] = useState(false);
+const toEditorState = (stringHTML) => {
+  const blocksFromHTML = htmlToDraft(stringHTML || "<div></div>");
 
-  const init = () => {
-    const blocksFromHTML = htmlToDraft(data || "<div></div>");
-    let initValue = EditorState.createEmpty();
-    if (blocksFromHTML) {
-      const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
-      initValue = EditorState.createWithContent(contentState);
-      setEditorState(initValue);
-    }
-  };
+  if (blocksFromHTML) {
+    const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
+    const editorState = EditorState.createWithContent(contentState);
+    return editorState;
+  }
+
+  return EditorState.createEmpty();
+};
+
+export default function WysiwygEditor({ data, toolbar, disabled, onChange, wrapperClassName }) {
+  const previousDataRef = useRef(data);
+  const [editorState, setEditorState] = useState(() => toEditorState(data));
 
   const onEditorStateChange = (editorState) => {
     setEditorState(editorState);
-
-    if (!orgPage) {
-      onChange(draftToHtml(convertToRaw(editorState.getCurrentContent())));
-    } else {
-      // If editor have only whitespaces etc. (empty)
-      if (!!editorState.getCurrentContent().getPlainText().trim()) {
-        onChange({
-          rich: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-          raw: editorState.getCurrentContent().getPlainText().trim(),
-        });
-      }
-    }
+    onChange(draftToHtml(convertToRaw(editorState.getCurrentContent())));
   };
 
+  // Re-initiate state if data was nullable
   useEffect(() => {
-    init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId]);
-
-  if (!orgId || !editorState) return null;
+    if (previousDataRef.current == null) {
+      setEditorState(toEditorState(data));
+    }
+    previousDataRef.current = data;
+  }, [data]);
 
   return (
     <Editor

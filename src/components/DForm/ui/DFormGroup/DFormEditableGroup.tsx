@@ -5,8 +5,8 @@ import { DFormElementTypes } from "../../types";
 import { DFormBaseGroup } from "./DFormBaseGroup";
 import { DFormDroppable } from "../DFormDroppable";
 import { DFormSelectable } from "../DFormSelectable";
-import { DFormDraggable, DFormDragHandleBlock } from "../DFormDraggable";
 import { DFormAddElement } from "../DFormAddElement";
+import { DFormDraggable, DFormDragHandle } from "../DFormDraggable";
 
 type Props = {
   groupId: string;
@@ -24,18 +24,16 @@ export const DFormEditableGroup: FC<Props> = (props) => {
 
   return (
     <DFormDraggable draggableId={groupId} isDraggable={isDraggable} draggableIndex={groupIndex}>
-      {(dragHandle) => (
+      {(dragHandleProps) => (
         <DFormDroppable droppableId={groupId} droppableType={DFormElementTypes.Block} isDraggable={isDraggable}>
           <DFormBaseGroup
             groupName={groupName}
             renderTitle={(node) => (
-              <DFormDragHandleBlock dragHandle={dragHandle}>
-                <DFormAddElement elementType={DFormElementTypes.Group} onGroupAdd={onGroupAdd}>
-                  <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
-                    {node}
-                  </DFormSelectable>
-                </DFormAddElement>
-              </DFormDragHandleBlock>
+              <DFormDragHandle {...dragHandleProps}>
+                <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
+                  {node}
+                </DFormSelectable>
+              </DFormDragHandle>
             )}
             isEmptyTitleRendered
           >

@@ -6,7 +6,7 @@ import { DFormEditableBlock } from "./DFormEditableBlock";
 import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
 
 export default {
-  title: "DFormEditableBlock",
+  title: "DForm/EditableBlock",
   component: DFormEditableBlock,
 };
 

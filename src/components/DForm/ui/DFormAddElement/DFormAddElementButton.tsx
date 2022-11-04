@@ -4,8 +4,6 @@ import React from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import type { FC, MouseEventHandler } from "react";
 
-import { NpmTooltip } from "features/nmp-ui";
-
 type Props = {
   elementName: string;
   onClick?: MouseEventHandler;
@@ -16,11 +14,10 @@ export const DFormAddElementButton: FC<Props> = (props) => {
 
   return (
     <div className="dform-add-element">
-      <NpmTooltip title={elementName}>
-        <button className="dform-add-element__button" onClick={onClick}>
-          <PlusOutlined className="dform-add-element__icon" />
-        </button>
-      </NpmTooltip>
+      <button className="dform-add-element__button" onClick={onClick}>
+        <PlusOutlined className="dform-add-element__icon" />
+        <span className="dform-add-element__name">{elementName}</span>
+      </button>
     </div>
   );
 };

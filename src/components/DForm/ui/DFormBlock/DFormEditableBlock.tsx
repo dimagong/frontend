@@ -11,7 +11,7 @@ import { DFormBaseBlock } from "./DFormBaseBlock";
 import { DFormBlockSizer } from "./DFormBlockSizer";
 import { DFormSelectable } from "../DFormSelectable";
 import { DFormAddElement } from "../DFormAddElement";
-import { DFormDraggable, DFormDragHandleBlock } from "../DFormDraggable";
+import { DFormDraggable, DFormDragHandle } from "../DFormDraggable";
 import { DFormBlockSizeTypes, DFormBlockTypes, DFormElementTypes, DFormFieldTypes } from "../../types";
 
 type ToFieldOmit = "id" | "value" | "checked" | "fieldType" | "isDisabled" | "masterSchemaFieldId" | "onChange";
@@ -79,14 +79,14 @@ export const DFormEditableBlock: FC<Props> = (props) => {
   return (
     <DFormBlockSizer blockSize={isDraggable ? DFormBlockSizeTypes.Full : blockSize}>
       <DFormDraggable draggableId={blockId} isDraggable={isDraggable} draggableIndex={blockIndex}>
-        {(dragHandle) => (
-          <DFormAddElement elementType={DFormElementTypes.Block} onBlockAdd={onBlockAdd}>
+        {(dragHandleProps) => (
+          <DFormAddElement elementType={DFormElementTypes.Block} onBlockAdd={onBlockAdd} isHoverable>
             <DFormBaseBlock>
-              <DFormDragHandleBlock dragHandle={dragHandle}>
+              <DFormDragHandle {...dragHandleProps}>
                 <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
                   {Block}
                 </DFormSelectable>
-              </DFormDragHandleBlock>
+              </DFormDragHandle>
             </DFormBaseBlock>
           </DFormAddElement>
         )}

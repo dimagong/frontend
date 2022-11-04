@@ -1,14 +1,12 @@
 import React from "react";
 import type { FC, ReactNode } from "react";
-import { Draggable } from "react-beautiful-dnd";
-
-import { DFormDragHandle } from "./DFormDragHandle";
+import { Draggable, DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
 type Props = {
   draggableId: string;
   isDraggable?: boolean;
   draggableIndex: number;
-  children?: (dragHandle?: ReactNode) => ReactNode;
+  children?: (dragHandleProps?: DraggableProvidedDragHandleProps) => ReactNode;
 };
 
 export const DFormDraggable: FC<Props> = (props) => {
@@ -22,7 +20,7 @@ export const DFormDraggable: FC<Props> = (props) => {
     <Draggable index={draggableIndex} draggableId={draggableId}>
       {(provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps}>
-          {children ? children(<DFormDragHandle {...provided.dragHandleProps} />) : null}
+          {children ? children(provided.dragHandleProps) : null}
         </div>
       )}
     </Draggable>

@@ -1,17 +1,25 @@
-import "./dform-drag-handle.scss";
+import "./dform-draggable.scss";
 
 import React from "react";
+import classnames from "classnames";
+import type { FC, ReactNode } from "react";
 import { HolderOutlined } from "@ant-design/icons";
-import type { FC, CSSProperties } from "react";
 import type { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
 
 type Props = Partial<DraggableProvidedDragHandleProps> & {
-  style?: CSSProperties;
-  className?: string;
+  isMiddle?: boolean;
+  children?: ReactNode;
 };
 
 export const DFormDragHandle: FC<Props> = (props) => {
-  const { style, className, ...dragHandleProps } = props;
+  const { isMiddle = false, children, ...dragHandleProps } = props;
+  const classes = classnames("dform-draggable", { "dform-draggable--middle": isMiddle });
 
-  return <HolderOutlined {...dragHandleProps} className="dform-drag-handle" />;
+  return (
+    <div className={classes}>
+      <HolderOutlined {...dragHandleProps} className="dform-draggable__handle" />
+
+      {children}
+    </div>
+  );
 };

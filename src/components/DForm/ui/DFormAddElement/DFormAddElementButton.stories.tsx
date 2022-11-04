@@ -3,7 +3,7 @@ import React from "react";
 import { DFormAddElementButton } from "./DFormAddElementButton";
 
 export default {
-  title: "DFormAddElementButton",
+  title: "DForm/AddElementButton",
   component: DFormAddElementButton,
 };
 

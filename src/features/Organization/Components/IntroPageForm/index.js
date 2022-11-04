@@ -37,14 +37,7 @@ const IntroPageForm = ({
           <div className="label">Intro Text</div>
           <div className="form-element">
             <div className="editor-wrapper">
-              <Editor
-                id={`editor`}
-                orgPage
-                type={"text"}
-                orgId={data.id}
-                data={data.intro_text || ""}
-                onChange={({ rich, raw }) => onFieldChange("intro_text", raw === "" ? "" : rich)}
-              />
+              <Editor data={data.intro_text} onChange={(htmlString) => onFieldChange("intro_text", htmlString)} />
             </div>
           </div>
         </div>

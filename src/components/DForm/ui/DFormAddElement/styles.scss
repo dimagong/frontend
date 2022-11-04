@@ -1,34 +1,33 @@
 .dform-add-element {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
 
   &__button {
-    outline: none !important;
     width: 100%;
     cursor: pointer;
-    //background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='%23707070FF' stroke-width='2' stroke-dasharray='8%2c 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='%23707070FF' stroke-width='2' stroke-dasharray='8%2c 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
     background-color: transparent;
 
     border: none;
-    //padding: 30px;
-    //border-radius: 10px;
-    //margin-bottom: 20px;
+    padding: 1.3rem;
+    border-radius: 10px;
 
-    //display: flex;
-    //flex-direction: column;
-    //justify-content: center;
-    //align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
   &__icon {
     padding: 0.2rem;
     font-size: 1.3rem;
     border-radius: 50%;
-    color: white;
+    color: white !important;
     background-color: #7367f0;
   }
 
   &__name {
     margin-top: 0.5rem;
+    color: #474747;
   }
 }
