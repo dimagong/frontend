@@ -1,4 +1,6 @@
-/* Enums */
+/**
+ * Enums
+ */
 
 export enum DFormElementTypes {
   // Currently there is no way to migration or fallback
@@ -38,7 +40,9 @@ export enum DFormAccessTypes {
   UserUnlock = "user-unlock",
 }
 
-/* Types */
+/**
+ * Types
+ */
 
 export type DFormFile = { name: string; file_id: number; custom_filename: string };
 

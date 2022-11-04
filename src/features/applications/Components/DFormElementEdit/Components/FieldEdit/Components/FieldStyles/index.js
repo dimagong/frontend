@@ -5,7 +5,7 @@ import _ from "lodash";
 import { FIELD_STYLES_CLASSES, MULTI_SELECT_UI_STYLES } from "features/applications/constants";
 import { NmpButton, NmpSelect } from "features/nmp-ui";
 
-import { FieldTypes } from "features/dform";
+import { DFormFieldTypes } from "features/dform/types";
 
 const defaultUIStyle = { label: "default", value: null };
 
@@ -22,7 +22,7 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
 
   const renderSpecificStyles = () => {
     switch (element.type) {
-      case FieldTypes.MultiSelect: {
+      case DFormFieldTypes.MultiSelect: {
         return (
           <Form.Item label="UI style" name="uiStyle" className="dform-field mb-2">
             <NmpSelect id="uiStyle" options={uIStylesOptions} placeholder="Select an option" />

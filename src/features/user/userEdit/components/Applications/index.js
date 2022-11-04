@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import React, { useRef, useState } from "react";
 import { Button, Card, Col, Row, Spinner } from "reactstrap";
 
-import { FieldTypes } from "features/dform";
+import { DFormFieldTypes } from "features/dform/types";
 import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
 
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
@@ -74,18 +74,18 @@ const UserEditApplication = ({ isCreate, dformId }) => {
     const currentValue = values[field.masterSchemaFieldId];
 
     switch (field.type) {
-      case FieldTypes.File:
-      case FieldTypes.FileList:
+      case DFormFieldTypes.File:
+      case DFormFieldTypes.FileList:
         newFieldValue = { ...currentValue, files: newValue };
         break;
-      case FieldTypes.Text:
-      case FieldTypes.TextArea:
-      case FieldTypes.LongText:
-      case FieldTypes.Date:
-      case FieldTypes.Number:
-      case FieldTypes.Boolean:
-      case FieldTypes.Select:
-      case FieldTypes.MultiSelect:
+      case DFormFieldTypes.Text:
+      case DFormFieldTypes.TextArea:
+      case DFormFieldTypes.LongText:
+      case DFormFieldTypes.Date:
+      case DFormFieldTypes.Number:
+      case DFormFieldTypes.Boolean:
+      case DFormFieldTypes.Select:
+      case DFormFieldTypes.MultiSelect:
       default:
         newFieldValue = { ...currentValue, value: newValue };
         addFieldToEdited(field);
@@ -119,7 +119,7 @@ const UserEditApplication = ({ isCreate, dformId }) => {
   const submitDForm = (editedFields) => {
     const editedValues = editedFields
       // File and FileList should not be submitted
-      .filter(({ type }) => ![FieldTypes.File, FieldTypes.FileList].includes(type))
+      .filter(({ type }) => ![DFormFieldTypes.File, DFormFieldTypes.FileList].includes(type))
       .reduce((editedValues, { masterSchemaFieldId }) => {
         editedValues[masterSchemaFieldId] = getEditedValue(masterSchemaFieldId, values).value;
         return editedValues;

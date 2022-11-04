@@ -8,13 +8,12 @@ import type { FormProviderProps } from "antd/lib/form/context";
 
 import { NmpStepper, NpmCard } from "features/nmp-ui";
 
-import { FieldTypes } from "features/dform";
 // import { DFormSection } from "features/dform/ui/DFormSection";
 import { DFormContextProvider } from "features/dform/ui/DFormContext";
 import { getValuesBySectionId } from "features/dform/data/getValuesBySectionId";
 import { isMemberDFormAccessible } from "features/dform/data/isMemberDFormAccessible";
 import { applyDynamicConditionalRender } from "features/dform/data/applyConditionalRender";
-import { DFormAccessTypes, DFormSchema, NormalizedDFormValues } from "features/dform/types";
+import { DFormSchema, DFormAccessTypes, DFormFieldTypes, NormalizedDFormValues } from "features/dform/types";
 
 import {
   useSubmitDFormMutation,
@@ -94,7 +93,7 @@ export const MemberDForm: FC<Props> = (props) => {
     const field = getFieldByMasterSchemaFieldId(masterSchemaFieldId, initialSchema);
 
     // Do not save Files. Files save in a different way.
-    if ([FieldTypes.File, FieldTypes.FileList].includes(field.type)) return;
+    if ([DFormFieldTypes.File, DFormFieldTypes.FileList].includes(field.type)) return;
 
     saveFieldValue({ master_schema_field_id: masterSchemaFieldId, value: newValue });
   };

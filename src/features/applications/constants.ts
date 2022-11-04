@@ -1,5 +1,4 @@
-import { FieldTypes } from "features/dform";
-import { DFormElementTypes } from "features/dform/types";
+import { DFormElementTypes, DFormBlockTypes } from "features/dform/types";
 
 export const INITIAL_APPLICATION_DATA = {
   type: "application",
@@ -71,7 +70,7 @@ export type FieldUIStyles = MultiSelectUIStyles;
 
 export const MULTI_SELECT_UI_STYLES = [MultiSelectUIStyles.Checkboxes];
 
-export const FIELDS_NOT_RELATED_TO_MASTER_SCHEMA = [FieldTypes.HelpText];
+export const FIELDS_NOT_RELATED_TO_MASTER_SCHEMA = [DFormBlockTypes.HelpText];
 
 export enum ResourceCompileOptionTypes {
   None,

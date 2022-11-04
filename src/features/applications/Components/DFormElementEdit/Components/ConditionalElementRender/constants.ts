@@ -1,16 +1,16 @@
-import { FieldTypes } from "features/dform";
+import { DFormFieldTypes } from "features/dform/types";
 
 export enum DCRSupportedFieldTypes {
-  Text = FieldTypes.Text,
-  Date = FieldTypes.Date,
-  File = FieldTypes.File,
-  Select = FieldTypes.Select,
-  Number = FieldTypes.Number,
-  Boolean = FieldTypes.Boolean,
-  LongText = FieldTypes.LongText,
-  TextArea = FieldTypes.TextArea,
-  FileList = FieldTypes.FileList,
-  MultiSelect = FieldTypes.MultiSelect,
+  Text = DFormFieldTypes.Text,
+  Date = DFormFieldTypes.Date,
+  File = DFormFieldTypes.File,
+  Select = DFormFieldTypes.Select,
+  Number = DFormFieldTypes.Number,
+  Boolean = DFormFieldTypes.Boolean,
+  LongText = DFormFieldTypes.LongText,
+  TextArea = DFormFieldTypes.TextArea,
+  FileList = DFormFieldTypes.FileList,
+  MultiSelect = DFormFieldTypes.MultiSelect,
 }
 
 // DCR Effects
@@ -62,36 +62,36 @@ export class DCRUnaryOperator implements DCROperator {
   readonly isUnary = true;
   readonly isBinary = false;
 
-  constructor(readonly type: DCRUnaryOperatorTypes, readonly fieldType: FieldTypes) {}
+  constructor(readonly type: DCRUnaryOperatorTypes, readonly fieldType: DFormFieldTypes) {}
 
   get name(): string {
     switch (this.type) {
       case DCROperatorTypes.Exist:
         switch (this.fieldType) {
-          case FieldTypes.Select:
+          case DFormFieldTypes.Select:
             return "Selected";
-          case FieldTypes.Boolean:
+          case DFormFieldTypes.Boolean:
             return "Checked";
-          case FieldTypes.File:
+          case DFormFieldTypes.File:
             return "Uploaded";
-          case FieldTypes.FileList:
+          case DFormFieldTypes.FileList:
             return "At least one uploaded";
-          case FieldTypes.MultiSelect:
+          case DFormFieldTypes.MultiSelect:
             return "At least one selected";
           default:
             return "filled";
         }
       case DCROperatorTypes.NotExist:
         switch (this.fieldType) {
-          case FieldTypes.Select:
+          case DFormFieldTypes.Select:
             return "Unselected";
-          case FieldTypes.Boolean:
+          case DFormFieldTypes.Boolean:
             return "Unchecked";
-          case FieldTypes.File:
+          case DFormFieldTypes.File:
             return "Uploaded";
-          case FieldTypes.FileList:
+          case DFormFieldTypes.FileList:
             return "No one uploaded";
-          case FieldTypes.MultiSelect:
+          case DFormFieldTypes.MultiSelect:
             return "No one selected";
           default:
             return "unfilled";
@@ -154,34 +154,13 @@ export class DCRBinaryOperator implements DCROperator {
 }
 
 export const DCRSupportedOperatorsByFieldTypes = {
-  [FieldTypes.Text]: [
+  [DFormFieldTypes.Text]: [
     DCROperatorTypes.Exist,
     DCROperatorTypes.NotExist,
     DCROperatorTypes.Equal,
     DCROperatorTypes.NotEqual,
   ],
-  [FieldTypes.Date]: [
-    DCROperatorTypes.Exist,
-    DCROperatorTypes.NotExist,
-    DCROperatorTypes.Equal,
-    DCROperatorTypes.NotEqual,
-    DCROperatorTypes.Bigger,
-    DCROperatorTypes.Smaller,
-  ],
-  [FieldTypes.Select]: [
-    DCROperatorTypes.Exist,
-    DCROperatorTypes.NotExist,
-    DCROperatorTypes.Equal,
-    DCROperatorTypes.NotEqual,
-  ],
-  [FieldTypes.LongText]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
-  [FieldTypes.TextArea]: [
-    DCROperatorTypes.Exist,
-    DCROperatorTypes.NotExist,
-    DCROperatorTypes.Equal,
-    DCROperatorTypes.NotEqual,
-  ],
-  [FieldTypes.Number]: [
+  [DFormFieldTypes.Date]: [
     DCROperatorTypes.Exist,
     DCROperatorTypes.NotExist,
     DCROperatorTypes.Equal,
@@ -189,10 +168,31 @@ export const DCRSupportedOperatorsByFieldTypes = {
     DCROperatorTypes.Bigger,
     DCROperatorTypes.Smaller,
   ],
-  [FieldTypes.Boolean]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
-  [FieldTypes.File]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
-  [FieldTypes.FileList]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
-  [FieldTypes.MultiSelect]: [
+  [DFormFieldTypes.Select]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+  ],
+  [DFormFieldTypes.LongText]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [DFormFieldTypes.TextArea]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+  ],
+  [DFormFieldTypes.Number]: [
+    DCROperatorTypes.Exist,
+    DCROperatorTypes.NotExist,
+    DCROperatorTypes.Equal,
+    DCROperatorTypes.NotEqual,
+    DCROperatorTypes.Bigger,
+    DCROperatorTypes.Smaller,
+  ],
+  [DFormFieldTypes.Boolean]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [DFormFieldTypes.File]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [DFormFieldTypes.FileList]: [DCROperatorTypes.Exist, DCROperatorTypes.NotExist],
+  [DFormFieldTypes.MultiSelect]: [
     DCROperatorTypes.Exist,
     DCROperatorTypes.NotExist,
     DCROperatorTypes.Equal,
@@ -201,7 +201,7 @@ export const DCRSupportedOperatorsByFieldTypes = {
 };
 
 export class DCRSupportedFieldOperatorsFactory {
-  static build(fieldType: FieldTypes): DCROperator[] | null {
+  static build(fieldType: DFormFieldTypes): DCROperator[] | null {
     const supportedOperatorTypes: DCROperatorTypes[] = DCRSupportedOperatorsByFieldTypes[fieldType];
 
     if (!supportedOperatorTypes) return null;
@@ -223,28 +223,30 @@ export class DCRSupportedFieldOperatorsFactory {
   }
 }
 
-interface ComparatorArgument<T extends FieldTypes> {
+interface ComparatorArgument<T extends DFormFieldTypes> {
   type: T;
   control:
-    | (T extends FieldTypes.Boolean ? boolean : never)
-    | (T extends FieldTypes.MultiSelect ? Array<string> : never)
-    | (T extends FieldTypes.File | FieldTypes.FileList ? Array<object> : never)
-    | (T extends FieldTypes.Date | FieldTypes.Number ? number : never)
-    | (T extends FieldTypes.Text | FieldTypes.Select | FieldTypes.LongText | FieldTypes.TextArea ? string : never)
+    | (T extends DFormFieldTypes.Boolean ? boolean : never)
+    | (T extends DFormFieldTypes.MultiSelect ? Array<string> : never)
+    | (T extends DFormFieldTypes.File | DFormFieldTypes.FileList ? Array<object> : never)
+    | (T extends DFormFieldTypes.Date | DFormFieldTypes.Number ? number : never)
+    | (T extends DFormFieldTypes.Text | DFormFieldTypes.Select | DFormFieldTypes.LongText | DFormFieldTypes.TextArea
+        ? string
+        : never)
     | null;
-  expected: (T extends FieldTypes.Date | FieldTypes.Number ? number : string) | null;
+  expected: (T extends DFormFieldTypes.Date | DFormFieldTypes.Number ? number : string) | null;
 }
 
-type TextComparatorArgument = ComparatorArgument<FieldTypes.Text>;
-type SelectComparatorArgument = ComparatorArgument<FieldTypes.Select>;
-type LongTextComparatorArgument = ComparatorArgument<FieldTypes.LongText>;
-type TextAreaComparatorArgument = ComparatorArgument<FieldTypes.TextArea>;
-type DateComparatorArgument = ComparatorArgument<FieldTypes.Date>;
-type NumberComparatorArgument = ComparatorArgument<FieldTypes.Number>;
-type FileComparatorArgument = ComparatorArgument<FieldTypes.File>;
-type FileListComparatorArgument = ComparatorArgument<FieldTypes.FileList>;
-type MultiSelectComparatorArgument = ComparatorArgument<FieldTypes.MultiSelect>;
-type BooleanComparatorArgument = ComparatorArgument<FieldTypes.Boolean>;
+type TextComparatorArgument = ComparatorArgument<DFormFieldTypes.Text>;
+type SelectComparatorArgument = ComparatorArgument<DFormFieldTypes.Select>;
+type LongTextComparatorArgument = ComparatorArgument<DFormFieldTypes.LongText>;
+type TextAreaComparatorArgument = ComparatorArgument<DFormFieldTypes.TextArea>;
+type DateComparatorArgument = ComparatorArgument<DFormFieldTypes.Date>;
+type NumberComparatorArgument = ComparatorArgument<DFormFieldTypes.Number>;
+type FileComparatorArgument = ComparatorArgument<DFormFieldTypes.File>;
+type FileListComparatorArgument = ComparatorArgument<DFormFieldTypes.FileList>;
+type MultiSelectComparatorArgument = ComparatorArgument<DFormFieldTypes.MultiSelect>;
+type BooleanComparatorArgument = ComparatorArgument<DFormFieldTypes.Boolean>;
 
 type ExistenceComparatorArgument =
   | TextComparatorArgument
@@ -277,19 +279,19 @@ export const DCROperatorTypesComparotors = {
     }
 
     switch (type) {
-      case FieldTypes.Boolean:
+      case DFormFieldTypes.Boolean:
         return control === true;
-      case FieldTypes.File:
-      case FieldTypes.FileList:
-      case FieldTypes.MultiSelect:
+      case DFormFieldTypes.File:
+      case DFormFieldTypes.FileList:
+      case DFormFieldTypes.MultiSelect:
         return control.length > 0;
-      case FieldTypes.Date:
-      case FieldTypes.Number:
+      case DFormFieldTypes.Date:
+      case DFormFieldTypes.Number:
         return String(control).length > 0;
-      case FieldTypes.Text:
-      case FieldTypes.Select:
-      case FieldTypes.TextArea:
-      case FieldTypes.LongText:
+      case DFormFieldTypes.Text:
+      case DFormFieldTypes.Select:
+      case DFormFieldTypes.TextArea:
+      case DFormFieldTypes.LongText:
         return control.length > 0;
       default:
         throw getOperatorError(type, "Exist");
@@ -302,19 +304,19 @@ export const DCROperatorTypesComparotors = {
     }
 
     switch (type) {
-      case FieldTypes.Boolean:
+      case DFormFieldTypes.Boolean:
         return control === false;
-      case FieldTypes.File:
-      case FieldTypes.FileList:
-      case FieldTypes.MultiSelect:
+      case DFormFieldTypes.File:
+      case DFormFieldTypes.FileList:
+      case DFormFieldTypes.MultiSelect:
         return control.length === 0;
-      case FieldTypes.Date:
-      case FieldTypes.Number:
+      case DFormFieldTypes.Date:
+      case DFormFieldTypes.Number:
         return String(control).length === 0;
-      case FieldTypes.Text:
-      case FieldTypes.Select:
-      case FieldTypes.TextArea:
-      case FieldTypes.LongText:
+      case DFormFieldTypes.Text:
+      case DFormFieldTypes.Select:
+      case DFormFieldTypes.TextArea:
+      case DFormFieldTypes.LongText:
         return control.length === 0;
       default:
         throw getOperatorError(type, "NotExist");
@@ -327,14 +329,14 @@ export const DCROperatorTypesComparotors = {
     }
 
     switch (type) {
-      case FieldTypes.MultiSelect:
+      case DFormFieldTypes.MultiSelect:
         return control.includes(expected);
-      case FieldTypes.Date:
-      case FieldTypes.Number:
+      case DFormFieldTypes.Date:
+      case DFormFieldTypes.Number:
         return control === expected;
-      case FieldTypes.Text:
-      case FieldTypes.Select:
-      case FieldTypes.TextArea:
+      case DFormFieldTypes.Text:
+      case DFormFieldTypes.Select:
+      case DFormFieldTypes.TextArea:
         return control === expected;
       default:
         throw getOperatorError(type, "Equal");
@@ -347,14 +349,14 @@ export const DCROperatorTypesComparotors = {
     }
 
     switch (type) {
-      case FieldTypes.MultiSelect:
+      case DFormFieldTypes.MultiSelect:
         return !control.includes(expected);
-      case FieldTypes.Date:
-      case FieldTypes.Number:
+      case DFormFieldTypes.Date:
+      case DFormFieldTypes.Number:
         return control !== expected;
-      case FieldTypes.Text:
-      case FieldTypes.Select:
-      case FieldTypes.TextArea:
+      case DFormFieldTypes.Text:
+      case DFormFieldTypes.Select:
+      case DFormFieldTypes.TextArea:
         return control !== expected;
       default:
         throw getOperatorError(type, "NotEqual");
@@ -367,8 +369,8 @@ export const DCROperatorTypesComparotors = {
     }
 
     switch (type) {
-      case FieldTypes.Date:
-      case FieldTypes.Number:
+      case DFormFieldTypes.Date:
+      case DFormFieldTypes.Number:
         return control > expected;
       default:
         throw getOperatorError(type, "Bigger");
@@ -381,8 +383,8 @@ export const DCROperatorTypesComparotors = {
     }
 
     switch (type) {
-      case FieldTypes.Date:
-      case FieldTypes.Number:
+      case DFormFieldTypes.Date:
+      case DFormFieldTypes.Number:
         return control < expected;
       default:
         throw getOperatorError(type, "Smaller");
@@ -391,34 +393,34 @@ export const DCROperatorTypesComparotors = {
 };
 
 export const DCRFieldValueConvertors = {
-  [FieldTypes.Text]: (value) => (value == null ? null : String(value)),
+  [DFormFieldTypes.Text]: (value) => (value == null ? null : String(value)),
 
-  [FieldTypes.Date]: (value) => (value == null ? null : new Date(value).valueOf()),
+  [DFormFieldTypes.Date]: (value) => (value == null ? null : new Date(value).valueOf()),
 
-  [FieldTypes.Select]: (value) => (value == null ? null : String(value)),
+  [DFormFieldTypes.Select]: (value) => (value == null ? null : String(value)),
 
-  [FieldTypes.LongText]: (value) => (value == null ? null : String(value)),
+  [DFormFieldTypes.LongText]: (value) => (value == null ? null : String(value)),
 
-  [FieldTypes.TextArea]: (value) => (value == null ? null : String(value)),
+  [DFormFieldTypes.TextArea]: (value) => (value == null ? null : String(value)),
 
-  [FieldTypes.Number]: (value) => (value == null ? null : Number(value)),
+  [DFormFieldTypes.Number]: (value) => (value == null ? null : Number(value)),
 
-  [FieldTypes.Boolean]: (value) => (value == null ? null : Boolean(value)),
+  [DFormFieldTypes.Boolean]: (value) => (value == null ? null : Boolean(value)),
 
-  [FieldTypes.File]: (files) => (Array.isArray(files) ? Array.from(files) : []),
+  [DFormFieldTypes.File]: (files) => (Array.isArray(files) ? Array.from(files) : []),
 
-  [FieldTypes.FileList]: (files) => (Array.isArray(files) ? Array.from(files) : []),
+  [DFormFieldTypes.FileList]: (files) => (Array.isArray(files) ? Array.from(files) : []),
 
-  [FieldTypes.MultiSelect]: (value) => (Array.isArray(value) ? Array.from(value) : []),
+  [DFormFieldTypes.MultiSelect]: (value) => (Array.isArray(value) ? Array.from(value) : []),
 };
 
-export const DCRExpectedValueConvertor = (value: string | null, fieldType: FieldTypes): string | number | null => {
+export const DCRExpectedValueConvertor = (value: string | null, fieldType: DFormFieldTypes): string | number | null => {
   if (value == null) return null;
 
   switch (fieldType) {
-    case FieldTypes.Date:
+    case DFormFieldTypes.Date:
       return new Date(value).valueOf();
-    case FieldTypes.Number:
+    case DFormFieldTypes.Number:
       return Number(value);
     default:
       return String(value);

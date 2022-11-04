@@ -19,7 +19,7 @@ import {
 import WysiwygEditor from "components/FormCreate/Custom/WysiwygEditor";
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
-import { FieldTypes } from "features/dform";
+import { DFormFieldTypes } from "features/dform/types";
 import { DFormLabel } from "features/dform/ui/DFormLabel";
 import { GroupChanger } from "./GroupChanger";
 
@@ -323,24 +323,24 @@ export const FieldResourceEditProperties = ({ element, organization }) => {
 
 export const SpecificFieldProperties = ({ element, organization, elementType }) => {
   switch (elementType) {
-    case FieldTypes.Text:
-    case FieldTypes.LongText:
-    case FieldTypes.TextArea:
+    case DFormFieldTypes.Text:
+    case DFormFieldTypes.LongText:
+    case DFormFieldTypes.TextArea:
       return <FieldStringLikeTextEditProperties />;
-    case FieldTypes.Date:
+    case DFormFieldTypes.Date:
       return <FieldDateEditProperties />;
-    case FieldTypes.Select:
-    case FieldTypes.MultiSelect:
+    case DFormFieldTypes.Select:
+    case DFormFieldTypes.MultiSelect:
       return <FieldSelectEditProperties element={element} />;
-    case FieldTypes.Number:
+    case DFormFieldTypes.Number:
       return <FieldNumberEditProperties />;
-    case FieldTypes.HelpText:
+    case DFormFieldTypes.HelpText:
       return <FieldHelpTextEditProperties />;
-    case FieldTypes.Resource:
+    case DFormFieldTypes.Resource:
       return <FieldResourceEditProperties element={{ ...element, type: elementType }} organization={organization} />;
-    case FieldTypes.File:
-    case FieldTypes.FileList:
-    case FieldTypes.Boolean:
+    case DFormFieldTypes.File:
+    case DFormFieldTypes.FileList:
+    case DFormFieldTypes.Boolean:
     default:
       return <FieldDefaultEditProperties />;
   }
@@ -409,7 +409,7 @@ const FieldProperties = (props) => {
       <Form.Item label="Element type" name="type" className="dform-field mb-2">
         <NmpSelect
           id="type"
-          options={Object.values(FieldTypes).map((type) => ({ value: type, label: type }))}
+          options={Object.values(DFormFieldTypes).map((type) => ({ value: type, label: type }))}
           disabled={false}
           placeholder="Select an Element type"
           onChange={onTypeChange}
