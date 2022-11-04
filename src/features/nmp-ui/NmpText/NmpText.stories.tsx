@@ -3,7 +3,7 @@ import React from "react";
 import { NmpText, NmpTextProps } from "./NmpText";
 
 const storySettings = {
-  title: "NmpText",
+  title: "Nmp/Text",
   component: NmpText,
   argTypes: {
     text: {

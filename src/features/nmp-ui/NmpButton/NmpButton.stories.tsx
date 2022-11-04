@@ -9,7 +9,7 @@ const icons = {
 };
 
 const storySettings = {
-  title: "NpmButton",
+  title: "Nmp/Button",
   component: NmpButton,
   argTypes: {
     type: {
