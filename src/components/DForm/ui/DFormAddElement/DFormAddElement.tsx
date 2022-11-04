@@ -54,11 +54,15 @@ export const DFormAddElement: FC<Props> = (props) => {
   const onClick = elementType === DFormElementTypes.Group ? onGroupAdd : onBlockAdd;
 
   return (
-    <NmpRow onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} align="middle">
-      {children ? <NmpCol span="22">{children}</NmpCol> : null}
+    <NmpRow
+      align="middle"
+      onMouseEnter={isHoverable ? onMouseEnter : undefined}
+      onMouseLeave={isHoverable ? onMouseLeave : undefined}
+    >
+      {children ? <NmpCol span="24">{children}</NmpCol> : null}
 
       {(isHoverable && isHover) || !isHoverable ? (
-        <NmpCol span={children ? 2 : 24}>
+        <NmpCol span="24">
           <DFormAddElementButton elementName={elementNames[elementType]} onClick={onClick} />
         </NmpCol>
       ) : null}

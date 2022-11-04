@@ -27,15 +27,16 @@ const SectionsSideBar = (props) => {
       <Droppable droppableId="Section" type={DFormElementTypes.Section}>
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
-            <Nav tabs className="my-0 sections-nav">
+            <Nav tabs className="my-0 sections-nav" tag="div">
               {sections.map((section, index) => (
                 <Draggable key={section.id} draggableId={section.id} index={index}>
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.draggableProps}>
                       <NavItem
                         style={section.isHidden ? { display: "none" } : {}}
-                        key={section.id}
                         disabled={section.isDisabled}
+                        tag="div"
+                        key={section.id}
                       >
                         <NavLink
                           className={classnames({ active: selectedSection === section.id }, "sections-nav_item")}

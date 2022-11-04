@@ -247,7 +247,7 @@ export const FieldHelpTextEditProperties = () => {
 };
 
 const WysiwygEditorWrapper = ({ value, onChange }) => {
-  return <WysiwygEditor id="helpTextValue" type="text" data={value} placeholder="Description" onChange={onChange} />;
+  return <WysiwygEditor data={value} onChange={onChange} />;
 };
 
 const queryConfig = {

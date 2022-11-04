@@ -1,6 +1,7 @@
 .sections {
   display: flex;
   flex-direction: column;
+  max-width: 100%;
 
   border-right: 2px solid #7367f0 !important;
   -webkit-box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
@@ -37,7 +38,7 @@
       &_title {
         display: flex;
         font-weight: 500;
-        font-size: 16px;
+        font-size: 14px;
         color: #707070;
         padding-right: 7px;
         font-family: Montserrat, sans-serif;

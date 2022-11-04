@@ -6,7 +6,7 @@ import { DFormBlock } from "./DFormBlock";
 import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
 
 export default {
-  title: "DFormBlock",
+  title: "DForm/Block",
   component: DFormBlock,
 };
 
@@ -28,7 +28,7 @@ const Template = (props) => {
           isDisabled={props.isDisabled}
           isLabelShowing={props.isLabelShowing}
           masterSchemaFieldId={props.masterSchemaFieldId}
-        />
+        ></DFormBlock>
       </Form>
     </QueryClientProvider>
   );
