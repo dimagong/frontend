@@ -1,5 +1,5 @@
+import type { DFormSchema } from "../types";
 import { FieldTypes } from "../types/fieldTypes";
-import { DFormSchema } from "../types/dformSchema";
 
 export const getFieldByMasterSchemaFieldId = (masterSchemaFieldId: string | number, schema: DFormSchema) => {
   return Object.values(schema.fields)

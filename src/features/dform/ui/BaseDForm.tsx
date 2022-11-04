@@ -8,10 +8,9 @@ import { NmpCol, NmpRow } from "features/nmp-ui";
 import SectionsSideBar from "./SectionsSideBar";
 import { DFormEditableGroup } from "./DFormGroup";
 import { DFormEditableBlock } from "./DFormBlock";
-import { DFormSchema } from "../types/dformSchema";
 import { DFormAddElement } from "./DFormAddElement";
 import { DFormEditableSection } from "./DFormSection";
-import { DFormBlockTypes, DFormElementTypes } from "../types";
+import { DFormSchema, DFormBlockTypes, DFormElementTypes } from "../types";
 
 const recognizeBlockType = (fieldType: string) => {
   switch (fieldType) {

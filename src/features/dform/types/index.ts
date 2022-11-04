@@ -1,3 +1,5 @@
+/* Enums */
+
 export enum DFormElementTypes {
   Block = "block",
   Group = "group",
@@ -35,6 +37,15 @@ export enum DFormAccessTypes {
   UserUnlock = "user-unlock",
 }
 
+/* Types */
+
 export type DFormFile = { name: string; file_id: number; custom_filename: string };
 
 export type DFormFiles = Array<DFormFile>;
+
+export type DFormSchema = {
+  fields: Record<string, any>;
+  groups: Record<string, any>;
+  sections: Record<string, any>;
+  sectionsOrder: Array<string>;
+};

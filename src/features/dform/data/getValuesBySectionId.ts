@@ -1,5 +1,5 @@
-import { DFormSchema } from "../types/dformSchema";
-import { NormalizedDFormValues } from "../types/normalizedDFormValues";
+import type { DFormSchema } from "../types";
+import type { NormalizedDFormValues } from "../types/normalizedDFormValues";
 
 import { getFieldsBySectionId } from "./getFieldsBySectionId";
 

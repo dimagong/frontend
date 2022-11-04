@@ -1,6 +1,6 @@
-import { DFormSchema } from "../types/dformSchema";
-import { DFormValues } from "../types/dformValues";
-import { NormalizedDFormValues } from "../types/normalizedDFormValues";
+import type { DFormSchema } from "../types";
+import type { DFormValues } from "../types/dformValues";
+import type { NormalizedDFormValues } from "../types/normalizedDFormValues";
 
 import { getFieldByMasterSchemaFieldId } from "./getFieldByMasterSchemaFieldId";
 import { normalizedDFormValueByField } from "./normalizedDFormValueByField";
