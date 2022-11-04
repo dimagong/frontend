@@ -6,7 +6,7 @@ import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { selectChildOrganizations } from "app/selectors/groupSelector";
 import { selectError } from "app/selectors";
 import { usePrevious } from "hooks/common";
-import { Input, Select } from "features/Surveys/Components/SurveyFormComponents";
+import { Input, Select } from "features/surveys/Components/SurveyFormComponents";
 
 import appSlice from "app/slices/appSlice";
 

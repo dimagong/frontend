@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ChevronLeft, ChevronRight, X } from "react-feather";
-import UserEditPreview from "features/user-managment/userEdit/userEditPreview";
+import UserEditPreview from "features/user/userEdit/userEditPreview";
 
 import { Row, Col, Pagination, PaginationItem, PaginationLink, Button } from "reactstrap";
 import useWindowSize from "hooks/windowWidth";

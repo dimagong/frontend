@@ -4,7 +4,7 @@ import { useDFormQuery, useDFormValuesQuery } from "api/Onboarding/prospectUserQ
 
 import { MemberDForm } from "../MemberDForm";
 import { MemberSubmittedStatusView } from "../MemberSumittedStatusView";
-import { normalizeValues } from "../../../../components/DForm/data/normalizeValues";
+import { normalizeValues } from "features/dform/data/normalizeValues";
 
 type Props = {
   dformId: number;

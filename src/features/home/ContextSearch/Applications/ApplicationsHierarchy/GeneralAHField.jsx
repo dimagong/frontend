@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { AHTreeNode } from "./AHTreeNode";
 import { NmpButton } from "features/nmp-ui";
 import { stopPropagation } from "utility/event-decorators";
-import { useCopyApplicationTemplateMutation } from "features/data/applicationQueries";
+import { useCopyApplicationTemplateMutation } from "features/applications/data/applicationQueries";
 
 import appSlice from "app/slices/appSlice";
 import { toast } from "react-toastify";

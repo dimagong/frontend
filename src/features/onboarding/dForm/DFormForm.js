@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectdForms, selectdForm } from "app/selectors/onboardingSelectors";
 import FormCreate from "components/FormCreate/FormCreate";
 import { initDForm } from "./settings";
-import Checkbox from "../../Surveys/Components/SurveyFormComponents/Checkbox";
-import SurveySelectComponent from "../../Surveys/Components/SurveyFormComponents/Select";
+import Checkbox from "../../surveys/Components/SurveyFormComponents/Checkbox";
+import SurveySelectComponent from "../../surveys/Components/SurveyFormComponents/Select";
 import { toast } from "react-toastify";
 
 import onboardingSlice from "app/slices/onboardingSlice";

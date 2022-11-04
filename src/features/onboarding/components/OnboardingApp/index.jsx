@@ -11,7 +11,7 @@ import {
 } from "api/Onboarding/prospectUserQuery";
 
 import LoadingButton from "components/LoadingButton";
-import { BaseDForm, AccessTypes, FieldTypes } from "components/DForm";
+import { BaseDForm, AccessTypes, FieldTypes } from "features/dform";
 
 import Check from "assets/img/icons/check.png";
 

@@ -21,7 +21,7 @@ const OnboardingUser = lazy(() => import("features/onboarding/OnboardingUser"));
 const Invitation = lazy(() => import("features/invitation/Invitation"));
 const Home = lazy(() => import("features/home/Home"));
 const Error404 = lazy(() => import("components/misc/error/404"));
-const UserProfile = lazy(() => import("features/user-managment/userEdit/UserEdit"));
+const UserProfile = lazy(() => import("features/user/userEdit/UserEdit"));
 
 const routes = [
   {

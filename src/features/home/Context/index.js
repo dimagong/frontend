@@ -1,18 +1,18 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import UserEdit from "features/user-managment/userEdit/UserEdit";
-import UserCreate from "features/user-managment/userCreate/UserCreate";
-import UserInvitations from "features/user-managment/userInvitations/UserInvitations";
+import UserEdit from "features/user/userEdit/UserEdit";
+import UserCreate from "features/user/userCreate/UserCreate";
+import UserInvitations from "features/user/userInvitations/UserInvitations";
 import NotificationsForm from "features/onboarding/notifications/NotificationsForm";
 import WorkflowForm from "features/onboarding/workflow/components/WorkflowForm";
-import Organization from "features/Organization";
-import SurveysDesigner from "features/Surveys/SurveysDesigner";
+import Organization from "features/organization";
+import SurveysDesigner from "features/surveys/SurveysDesigner";
 import Dashboard from "../ContextSearch/Dashboard";
 import MemberFirmsContainer from "../ContextSearch/MemberFirms";
-import MasterSchema from "../../MasterSchema";
-import ResourceManager from "../../ResourceManager";
-import { ApplicationsPage, CreateApplicationPage } from "features/Applications";
+import MasterSchema from "../../masterSchema";
+import ResourceManager from "../../resourceManager";
+import { ApplicationsPage, CreateApplicationPage } from "features/applications";
 
 const Context = ({ selectedContext }) => {
   const isCSshown = useSelector((state) => state.app.isContextSearchVisible);

@@ -6,7 +6,7 @@ import groupRelations from "api/groupRelations/groupRelations";
 
 import appSlice from "app/slices/appSlice";
 import { queryClient } from "../../../api/queryClient";
-import { ApplicationQueryKeys } from "../../../features/data/applicationQueries";
+import { ApplicationQueryKeys } from "features/applications/data/applicationQueries";
 
 const {
   getUserOnboardingSuccess,

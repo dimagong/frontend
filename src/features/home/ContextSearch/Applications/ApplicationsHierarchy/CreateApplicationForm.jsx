@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Form } from "antd";
 import _ from "lodash";
 
-import { ApplicationDescriptionFormFields } from "features/Applications/ui/ApplicationDescriptionFormFields";
-import { useAllowedOrganizationsListQuery } from "features/data/applicationQueries";
+import { ApplicationDescriptionFormFields } from "features/applications/ui/ApplicationDescriptionFormFields";
+import { useAllowedOrganizationsListQuery } from "features/applications/data/applicationQueries";
 import { NmpSelect, NmpButton } from "features/nmp-ui";
 
 import { useDFormTemplateCategoriesQuery } from "../categoryQueries";

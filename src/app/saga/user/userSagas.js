@@ -10,7 +10,7 @@ import { selectGroups, selectRoles } from "app/selectors";
 import { loginWithJWT } from "app/actions/vuexy/auth/loginActions";
 
 import { prepareSelectGroups } from "utility/select/prepareSelectData";
-import { UserNotifyEntitiesQueryKeys } from "../../../features/user-managment/userEdit/UserEditContextFeature";
+import { UserNotifyEntitiesQueryKeys } from "../../../features/user/userEdit/UserEditContextFeature";
 
 const {
   getProfileSuccess,

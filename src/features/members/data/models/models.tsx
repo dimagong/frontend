@@ -1,5 +1,5 @@
 import { Status } from "./../constants/statusConstants";
-import { AccessTypes } from "../../../../components/DForm/types/accessTypes";
+import { AccessTypes } from "../../../../features/dform/types/accessTypes";
 
 export interface Profile {
   avatar: null;

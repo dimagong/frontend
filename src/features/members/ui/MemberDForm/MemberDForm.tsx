@@ -8,12 +8,12 @@ import type { FormProviderProps } from "antd/lib/form/context";
 
 import { NmpStepper, NpmCard } from "features/nmp-ui";
 
-// import { DFormSection } from "components/DForm/ui/DFormSection";
-import type { DFormSchema } from "components/DForm/types/dformSchema";
-import { getValuesBySectionId } from "components/DForm/data/getValuesBySectionId";
-import { NormalizedDFormValues } from "components/DForm/types/normalizedDFormValues";
-import { applyDynamicConditionalRender } from "components/DForm/data/applyConditionalRender";
-import { AccessTypes, DFormContextProvider, FieldTypes, isMemberViewDFormAccessible } from "components/DForm";
+// import { DFormSection } from "features/dform/ui/DFormSection";
+import type { DFormSchema } from "features/dform/types/dformSchema";
+import { getValuesBySectionId } from "features/dform/data/getValuesBySectionId";
+import { NormalizedDFormValues } from "features/dform/types/normalizedDFormValues";
+import { applyDynamicConditionalRender } from "features/dform/data/applyConditionalRender";
+import { AccessTypes, DFormContextProvider, FieldTypes, isMemberViewDFormAccessible } from "features/dform";
 
 import {
   useSubmitDFormMutation,
@@ -24,7 +24,7 @@ import {
 import MemberDFormCheckSave from "../MemberDFormCheckSave";
 import MemberDFormNavigation from "../MemberDFormNavigation";
 import MemberThanksStatusView from "../MemberThanksStatusView";
-import { getFieldByMasterSchemaFieldId } from "components/DForm/data/getFieldByMasterSchemaFieldId";
+import { getFieldByMasterSchemaFieldId } from "features/dform/data/getFieldByMasterSchemaFieldId";
 
 type Section = { id: string; name: string };
 type Sections = Array<Section>;

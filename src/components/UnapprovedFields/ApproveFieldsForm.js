@@ -7,7 +7,7 @@ import { useFormField, useFormGroup, Validators } from "hooks/use-form";
 import DeprecatedNmpButton from "components/nmp/DeprecatedNmpButton";
 import DeprecatedSelectField from "components/nmp/DeprecatedSelectField";
 
-import MSEEditorForm from "features/MasterSchema/share/mse-editor-form";
+import MSEEditorForm from "features/masterSchema/share/mse-editor-form";
 
 const customSelectStyles = {
   control: (provided) => ({
