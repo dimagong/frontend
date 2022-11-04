@@ -4,7 +4,7 @@ import React from "react";
 import { NmpUpload } from "./NmpUpload";
 
 const storySettings = {
-  title: "NmpUpload",
+  title: "Nmp/Upload",
   component: NmpUpload,
   argTypes: {
     isRemovable: {

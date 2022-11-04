@@ -166,7 +166,7 @@ TreeHierarchy.propTypes = {
   elementCreationLoading: PropTypes.bool.isRequired,
 
   components: PropTypes.object,
-  CreateApplicationForm: PropTypes.node,
+  CreateApplicationForm: PropTypes.elementType,
   onFieldCreatorClickProp: PropTypes.func,
 };
 

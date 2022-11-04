@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { FieldTypes } from "components/DForm";
+import { FieldTypes } from "features/dform";
 
 const { object, number, string, boolean, date } = yup;
 

@@ -9,7 +9,7 @@ import appSlice from "app/slices/appSlice";
 import { createLoadingSelector } from "app/selectors/loadingSelector";
 import { getSelectedMemberFirm } from "app/selectors/memberFirmsSelector";
 
-import { Input, Select, Checkbox } from "features/Surveys/Components/SurveyFormComponents";
+import { Input, Select, Checkbox } from "features/surveys/Components/SurveyFormComponents";
 
 import getValidationDependingOnComponent from "./validations";
 import CustomModal from "../../../../../../../../../../../../components/CustomModal";

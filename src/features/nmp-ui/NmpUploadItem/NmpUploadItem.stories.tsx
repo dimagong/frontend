@@ -3,7 +3,7 @@ import React from "react";
 import { NmpUploadItem, NmpUploadItemProps, FileStatusTypes } from "./NmpUploadItem";
 
 const storySettings = {
-  title: "NmpUploadItem",
+  title: "Nmp/UploadItem",
   component: NmpUploadItem,
 };
 

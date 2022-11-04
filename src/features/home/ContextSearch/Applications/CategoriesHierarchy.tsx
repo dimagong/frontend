@@ -12,9 +12,9 @@ import { transformCategoriesToHierarchy } from "./utils/categoryHierarchyConvert
 
 import { ApplicationData, CategoryId, CreateCategorySubmitProps, Hierarchy, Search } from "./models";
 
-import { INITIAL_APPLICATION_DATA } from "features/Applications/constants";
-import { mutateApplication } from "features/data/mutateApplication";
-import { useCreateApplicationTemplateMutation } from "features/data/applicationQueries";
+import { INITIAL_APPLICATION_DATA } from "features/applications/constants";
+import { mutateApplication } from "features/applications/data/mutateApplication";
+import { useCreateApplicationTemplateMutation } from "features/applications/data/applicationQueries";
 
 import appSlice from "app/slices/appSlice";
 

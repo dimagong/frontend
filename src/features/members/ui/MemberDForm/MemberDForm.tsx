@@ -3,17 +3,18 @@ import "./styles.scss";
 import _ from "lodash";
 import type { FC } from "react";
 import { Col, Row, Form } from "antd";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import type { FormProviderProps } from "antd/lib/form/context";
 
 import { NmpStepper, NpmCard } from "features/nmp-ui";
 
-// import { DFormSection } from "components/DForm/ui/DFormSection";
-import type { DFormSchema } from "components/DForm/types/dformSchema";
-import { getValuesBySectionId } from "components/DForm/data/getValuesBySectionId";
-import { NormalizedDFormValues } from "components/DForm/types/normalizedDFormValues";
-import { applyDynamicConditionalRender } from "components/DForm/data/applyConditionalRender";
-import { AccessTypes, DFormContextProvider, FieldTypes, isMemberViewDFormAccessible } from "components/DForm";
+import { FieldTypes } from "features/dform";
+// import { DFormSection } from "features/dform/ui/DFormSection";
+import { DFormContextProvider } from "features/dform/ui/DFormContext";
+import { getValuesBySectionId } from "features/dform/data/getValuesBySectionId";
+import { isMemberDFormAccessible } from "features/dform/data/isMemberDFormAccessible";
+import { applyDynamicConditionalRender } from "features/dform/data/applyConditionalRender";
+import { DFormAccessTypes, DFormSchema, NormalizedDFormValues } from "features/dform/types";
 
 import {
   useSubmitDFormMutation,
@@ -21,10 +22,10 @@ import {
   useSaveDFormFieldValueMutation,
 } from "api/Onboarding/prospectUserQuery";
 
-import MemberDFormCheckSave from "../MemberDFormCheckSave";
-import MemberDFormNavigation from "../MemberDFormNavigation";
+// import MemberDFormCheckSave from "../MemberDFormCheckSave";
+// import MemberDFormNavigation from "../MemberDFormNavigation";
 import MemberThanksStatusView from "../MemberThanksStatusView";
-import { getFieldByMasterSchemaFieldId } from "components/DForm/data/getFieldByMasterSchemaFieldId";
+import { getFieldByMasterSchemaFieldId } from "features/dform/data/getFieldByMasterSchemaFieldId";
 
 type Section = { id: string; name: string };
 type Sections = Array<Section>;
@@ -33,7 +34,7 @@ type Props = {
   id: number;
   name: string;
   sections: Sections;
-  accessType: AccessTypes;
+  accessType: DFormAccessTypes;
   initialSchema: DFormSchema;
   initialValues: NormalizedDFormValues;
 };
@@ -62,7 +63,7 @@ export const MemberDForm: FC<Props> = (props) => {
   const saveFieldValue = (v) => saveFieldValueRef.current(v);
 
   const isFinalSection = step === sections.length - 1;
-  const isAccessible = isMemberViewDFormAccessible(accessType);
+  const isAccessible = isMemberDFormAccessible(accessType);
   const submitData =
     (submitDFormMutation as any).data?.updated_at ||
     (submitDFormMutation as any).data?.finished_at ||
