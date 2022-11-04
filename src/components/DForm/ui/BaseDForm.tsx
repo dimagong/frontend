@@ -80,10 +80,6 @@ export const BaseDForm: FC<Props> = (props) => {
     setIsCollapsed(event.target.checked);
   };*/
 
-  if (!selectedSectionId) {
-    return "loading..." as any;
-  }
-
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="d-flex">
@@ -104,66 +100,68 @@ export const BaseDForm: FC<Props> = (props) => {
 
         <NmpRow>
           <NmpCol span="24">
-            <DFormEditableSection
-              sectionId={selectedSectionId}
-              sectionName={selectedSection.name}
-              isDraggable
-              key={selectedSectionId}
-            >
-              {selectedSection.relatedGroups
-                .map((groupId) => schema.groups[groupId])
-                .map((group, groupIndex) => (
-                  <DFormEditableGroup
-                    groupId={group.id}
-                    groupName={group.name}
-                    groupIndex={groupIndex}
-                    isSelected={selectedElement?.id === group.id}
-                    isDraggable
-                    // @ts-ignore
-                    onClick={() => onElementClick(group, "group")}
-                    key={group.id}
-                  >
-                    {group.relatedFields
-                      .map((fieldId) => schema.fields[fieldId])
-                      .map((block, blockIndex) => (
-                        <DFormEditableBlock
-                          label={block.title}
-                          blockId={block.id}
-                          blockIndex={blockIndex}
-                          helpText={block.helpTextValue}
-                          blockType={recognizeBlockType(block.type)}
-                          fieldType={block.type}
-                          blockSize={block.classes}
-                          isRequired={block.isRequired}
-                          isSelected={selectedElement?.id === block.id}
-                          isDraggable
-                          isLabelShowing={block.isLabelShowing}
-                          // @ts-ignore
-                          onClick={() => onElementClick(block, "field")}
-                          // @ts-ignore
-                          onBlockAdd={() => onFieldCreate(group.id, block.id)}
-                          key={block.id}
-                        />
-                      ))}
+            {selectedSectionId ? (
+              <DFormEditableSection
+                sectionId={selectedSectionId}
+                sectionName={selectedSection.name}
+                isDraggable
+                key={selectedSectionId}
+              >
+                {selectedSection.relatedGroups
+                  .map((groupId) => schema.groups[groupId])
+                  .map((group, groupIndex) => (
+                    <DFormEditableGroup
+                      groupId={group.id}
+                      groupName={group.name}
+                      groupIndex={groupIndex}
+                      isSelected={selectedElement?.id === group.id}
+                      isDraggable
+                      // @ts-ignore
+                      onClick={() => onElementClick(group, "group")}
+                      key={group.id}
+                    >
+                      {group.relatedFields
+                        .map((fieldId) => schema.fields[fieldId])
+                        .map((block, blockIndex) => (
+                          <DFormEditableBlock
+                            label={block.title}
+                            blockId={block.id}
+                            blockIndex={blockIndex}
+                            helpText={block.helpTextValue}
+                            blockType={recognizeBlockType(block.type)}
+                            fieldType={block.type}
+                            blockSize={block.classes}
+                            isRequired={block.isRequired}
+                            isSelected={selectedElement?.id === block.id}
+                            isDraggable
+                            isLabelShowing={block.isLabelShowing}
+                            // @ts-ignore
+                            onClick={() => onElementClick(block, "field")}
+                            // @ts-ignore
+                            onBlockAdd={() => onFieldCreate(group.id, block.id)}
+                            key={block.id}
+                          />
+                        ))}
 
-                    {group.relatedFields.length === 0 ? (
-                      <NmpCol span="24">
-                        <DFormAddElement
-                          elementType={DFormElementTypes.Block}
-                          // @ts-ignore
-                          onBlockAdd={() => onFieldCreate(group.id)}
-                        />
-                      </NmpCol>
-                    ) : null}
-                  </DFormEditableGroup>
-                ))}
+                      {group.relatedFields.length === 0 ? (
+                        <NmpCol span="24">
+                          <DFormAddElement
+                            elementType={DFormElementTypes.Block}
+                            // @ts-ignore
+                            onBlockAdd={() => onFieldCreate(group.id)}
+                          />
+                        </NmpCol>
+                      ) : null}
+                    </DFormEditableGroup>
+                  ))}
 
-              <DFormAddElement
-                elementType={DFormElementTypes.Group}
-                // @ts-ignore
-                onGroupAdd={() => onGroupCreate(selectedSectionId)}
-              />
-            </DFormEditableSection>
+                <DFormAddElement
+                  elementType={DFormElementTypes.Group}
+                  // @ts-ignore
+                  onGroupAdd={() => onGroupCreate(selectedSectionId)}
+                />
+              </DFormEditableSection>
+            ) : null}
           </NmpCol>
         </NmpRow>
 
