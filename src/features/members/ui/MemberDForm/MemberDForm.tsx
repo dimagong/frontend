@@ -8,10 +8,11 @@ import type { FormProviderProps } from "antd/lib/form/context";
 
 import { NmpStepper, NpmCard } from "features/nmp-ui";
 
+import { FieldTypes } from "features/dform";
 import { DFormAccessTypes } from "features/dform/types";
 // import { DFormSection } from "features/dform/ui/DFormSection";
-import { DFormContextProvider, FieldTypes } from "features/dform";
 import type { DFormSchema } from "features/dform/types/dformSchema";
+import { DFormContextProvider } from "features/dform/ui/DFormContext";
 import { getValuesBySectionId } from "features/dform/data/getValuesBySectionId";
 import { NormalizedDFormValues } from "features/dform/types/normalizedDFormValues";
 import { isMemberDFormAccessible } from "features/dform/data/isMemberDFormAccessible";

@@ -6,14 +6,10 @@ import type { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
 import { NmpUpload } from "features/nmp-ui";
 import { triggerFileDownloading, warning } from "features/common";
 
-import { useDFormContext } from "features/dform/DFormContext";
-import type { DFormFile } from "features/dform/types/dformFile";
-import type { DFormFiles } from "features/dform/types/dformFiles";
-import type {
-  GetDFormFileParams,
-  PostDFormFileParams,
-  DeleteDFormFileParams,
-} from "features/dform/data/dformFileService";
+import { useDFormContext } from "../DFormContext";
+import type { DFormFile } from "../../types/dformFile";
+import type { DFormFiles } from "../../types/dformFiles";
+import type { GetDFormFileParams, PostDFormFileParams, DeleteDFormFileParams } from "../../data/dformFileService";
 
 const getUploadFileFromDFormFile = (dformFile: DFormFile): UploadFile => ({
   uid: String(dformFile.file_id),

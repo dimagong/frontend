@@ -7,8 +7,9 @@ import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
 import { DFormElementTypes } from "features/dform/types";
+import { BaseDForm, ElementTypes } from "features/dform";
+import { DFormContextProvider } from "features/dform/ui/DFormContext";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-import { DFormContextProvider, BaseDForm, ElementTypes } from "features/dform";
 
 import { getCategoryAsOption } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 

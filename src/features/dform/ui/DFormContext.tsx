@@ -1,10 +1,10 @@
 import type { FC, ReactNode } from "react";
 import React, { createContext, useContext, useMemo } from "react";
 
-import { DFormAccessTypes } from "./types";
-import { DformFileService } from "./data/dformFileService";
-import { isMemberDFormAccessible } from "./data/isMemberDFormAccessible";
-import { isManagerDFormAccessible } from "./data/isManagerDFormAccessible";
+import { DFormAccessTypes } from "../types";
+import { DformFileService } from "../data/dformFileService";
+import { isMemberDFormAccessible } from "../data/isMemberDFormAccessible";
+import { isManagerDFormAccessible } from "../data/isManagerDFormAccessible";
 
 type ContextValue = {
   dformId?: number;
