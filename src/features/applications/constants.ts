@@ -48,13 +48,6 @@ export const INITIAL_GROUP_DATA = {
   conditions: [],
 };
 
-export enum DateWidgetFormatTypes {
-  Date = "date",
-  Time = "date-time",
-}
-
-export const DATE_WIDGET_FORMATS = [DateWidgetFormatTypes.Date, DateWidgetFormatTypes.Time];
-
 export enum FieldClassTypes {
   ColMd6 = "col-md-6",
   ColMd12 = "col-md-12",

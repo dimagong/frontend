@@ -1,9 +1,9 @@
 import { v4 } from "uuid";
 
-import { DFormElementTypes, DFormFieldTypes, DFormBlockTypes } from "features/dform/types";
+import { DFormElementTypes, DFormFieldTypes, DFormBlockTypes, DFormDateFormatTypes } from "features/dform/types";
 
 import { AbstractDFormFieldConditionModel } from "./fieldConditionModel";
-import { DateWidgetFormatTypes, FieldClassTypes, FieldUIStyles, ResourceCompileOptionTypes } from "./constants";
+import { FieldClassTypes, FieldUIStyles, ResourceCompileOptionTypes } from "./constants";
 
 interface CommonFieldProperties<T extends DFormFieldTypes | DFormBlockTypes.HelpText> {
   id: string;
@@ -25,7 +25,7 @@ interface StringFieldProperties<T extends DFormFieldTypes> extends CommonFieldPr
 }
 
 interface DateFieldProperties extends CommonFieldProperties<DFormFieldTypes.Date> {
-  format: DateWidgetFormatTypes;
+  format: DFormDateFormatTypes;
 }
 
 interface NumberFieldProperties extends CommonFieldProperties<DFormFieldTypes.Number> {
@@ -138,7 +138,7 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * For field type DFormFieldTypes.Date
    */
-  format: DateWidgetFormatTypes;
+  format: DFormDateFormatTypes;
   /**
    * For field type DFormFieldTypes.Number
    */
@@ -197,7 +197,7 @@ export class DFormFieldModel extends AbstractDFormFieldModel {
         this.maxLength = properties.maxLength ?? this.maxLength ?? null;
         break;
       case DFormFieldTypes.Date:
-        this.format = properties.format ?? this.format ?? DateWidgetFormatTypes.Date;
+        this.format = properties.format ?? this.format ?? DFormDateFormatTypes.Date;
         break;
       case DFormFieldTypes.Number:
         this.minimum = properties.minimum ?? this.minimum ?? null;

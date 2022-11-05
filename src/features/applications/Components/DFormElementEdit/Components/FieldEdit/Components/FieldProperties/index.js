@@ -6,19 +6,15 @@ import { Button } from "antd";
 import _ from "lodash";
 
 import { DFormFieldModel } from "features/applications/fieldModel";
+import { DFormBlockTypes, DFormDateFormatTypes, DFormFieldTypes } from "features/dform/types";
+import { NmpButton, NmpInput, NmpSelect, NmpCheckbox, NmpWysiwygEditor } from "features/nmp-ui";
 
 import { useApplicationResourceManagerFields } from "../../../../../../data/applicationQueries";
 
-import { NmpButton, NmpInput, NmpSelect, NmpCheckbox, NmpWysiwygEditor } from "features/nmp-ui";
-import {
-  DATE_WIDGET_FORMATS,
-  ResourceCompileOptionLabel,
-  FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
-} from "features/applications/constants";
+import { ResourceCompileOptionLabel, FIELDS_NOT_RELATED_TO_MASTER_SCHEMA } from "features/applications/constants";
 
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
-import { DFormBlockTypes, DFormFieldTypes } from "features/dform/types";
 import { DFormLabel } from "features/dform/ui/DFormLabel";
 import { GroupChanger } from "./GroupChanger";
 
@@ -118,11 +114,7 @@ export const FieldDateEditProperties = () => {
       <Row className="mb-2">
         <Col md="12">
           <Form.Item label="Date format" name="format" className="dform-field mb-2" rules={[{ required: true }]}>
-            <NmpSelect
-              id="format"
-              options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
-              placeholder="Select an date Format"
-            />
+            <NmpSelect id="format" options={Object.values(DFormDateFormatTypes)} placeholder="Select an date Format" />
           </Form.Item>
         </Col>
       </Row>

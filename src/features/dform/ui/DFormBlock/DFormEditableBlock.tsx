@@ -3,7 +3,6 @@ import type { FC, MouseEventHandler } from "react";
 
 import { DFormField } from "../DFormField";
 import { DFormHelpText } from "../DFormHelpText";
-import { DFormResource } from "../DFormResource";
 import { DFormBaseBlock } from "./DFormBaseBlock";
 import { DFormBlockSizer } from "./DFormBlockSizer";
 import { DFormSelectable } from "../DFormSelectable";

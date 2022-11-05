@@ -1,8 +1,9 @@
 import { Form } from "antd";
 import React, { useState, useEffect } from "react";
 
-import { NmpInput, NmpSelect, NpmDatePicker, NpmTimePicker } from "features/nmp-ui";
-import { DATE_WIDGET_FORMATS, DateWidgetFormatTypes } from "../../../../../constants";
+import { NmpInput, NmpSelect } from "features/nmp-ui";
+import { DFormDateFormatTypes } from "features/dform/types";
+import { DFormDatePicker } from "features/dform/ui/DFormDatePicker";
 
 import {
   DCREffectTypes,
@@ -10,17 +11,6 @@ import {
   DCRSupportedFieldTypes,
   DCRSupportedFieldOperatorsFactory,
 } from "../constants";
-
-const getPicker = (dateType) => {
-  switch (dateType) {
-    case DateWidgetFormatTypes.Time:
-      return NpmTimePicker;
-    case DateWidgetFormatTypes.Date:
-      return NpmDatePicker;
-    default:
-      throw new Error(`Unsupported date type: '${dateType}'`);
-  }
-};
 
 const getEffectTypeOption = (effectType) => ({ value: effectType, label: DCREffectLabels[effectType] });
 const effectTypesAsOptions = [DCREffectTypes.Visibility, DCREffectTypes.Availability].map(getEffectTypeOption);
@@ -37,7 +27,7 @@ const getOperatorTypeAsOption = (operatorTemplate) => ({ value: operatorTemplate
 const getOperatorTypesAsOptions = (operatorTemplates) => operatorTemplates.map(getOperatorTypeAsOption);
 
 const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
-  const [format, setFormat] = useState(condition?.format || DateWidgetFormatTypes.Date);
+  const [format, setFormat] = useState(condition?.format || DFormDateFormatTypes.Date);
   const [fieldId, setFieldId] = useState(condition?.fieldId);
   const [operatorType, setOperatorType] = useState(condition?.operatorType);
 
@@ -62,8 +52,6 @@ const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
   const operatorsAsOptions = operators ? getOperatorTypesAsOptions(operators) : null;
   const operator = operators ? operators.find(({ type }) => type === operatorType) : null;
 
-  const Picker = getPicker(format);
-
   const getExpectedValueField = () => {
     if (field.type === DCRSupportedFieldTypes.Date) {
       return (
@@ -75,7 +63,7 @@ const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
             rules={[{ required: true }]}
             {...restField}
           >
-            <Picker id="expectedValue" placeholder="Enter expected value" />
+            <DFormDatePicker id="expectedValue" placeholder="Enter expected value" />
           </Form.Item>
 
           <Form.Item
@@ -87,7 +75,7 @@ const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
           >
             <NmpSelect
               id="format"
-              options={DATE_WIDGET_FORMATS.map((format) => ({ value: format, label: format }))}
+              options={Object.values(DFormDateFormatTypes)}
               placeholder="Select an date Format"
               onChange={onFormatChange}
             />

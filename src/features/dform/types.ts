@@ -28,16 +28,21 @@ export enum DFormFieldTypes {
   TextArea = "textArea",
 }
 
-export enum DFormBlockSizeTypes {
-  Half = "col-md-6",
-  Full = "col-md-12",
-}
-
 export enum DFormAccessTypes {
   Allow = "allow",
   HardLock = "hard-lock",
   UserLock = "user-lock",
   UserUnlock = "user-unlock",
+}
+
+export enum DFormBlockSizeTypes {
+  Half = "col-md-6",
+  Full = "col-md-12",
+}
+
+export enum DFormDateFormatTypes {
+  Date = "date",
+  Time = "date-time",
 }
 
 /**
