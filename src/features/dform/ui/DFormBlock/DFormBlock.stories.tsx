@@ -18,6 +18,7 @@ const Template = (props) => {
       <Form initialValues={initialValues}>
         <DFormBlock
           label={props.label}
+          format={props.format}
           uiStyle={props.uiStyle}
           options={props.options}
           helpText={props.helpText}

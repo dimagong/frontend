@@ -19,6 +19,7 @@ const Template = (props) => {
             <div ref={provided.innerRef} {...provided.droppableProps}>
               <DFormEditableBlock
                 label={props.label}
+                format={props.format}
                 uiStyle={props.uiStyle}
                 options={props.options}
                 blockId={props.blockId}

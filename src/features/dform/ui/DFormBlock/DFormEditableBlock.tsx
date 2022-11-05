@@ -45,7 +45,7 @@ export const DFormEditableBlock: FC<Props> = (props) => {
     onBlockAdd,
     ...blockProps
   } = props;
-  const { label, uiStyle, options, helpText, dateFormat, isRequired, isLabelShowing } = blockProps;
+  const { label, uiStyle, options, helpText, format, isRequired, isLabelShowing } = blockProps;
 
   let Block;
   switch (blockType) {
@@ -53,10 +53,10 @@ export const DFormEditableBlock: FC<Props> = (props) => {
       Block = (
         <DFormField
           label={label}
+          format={format}
           uiStyle={uiStyle}
           options={options}
           fieldType={fieldType}
-          dateFormat={dateFormat}
           isRequired={isRequired}
           isLabelShowing={isLabelShowing}
         />

@@ -20,7 +20,7 @@ export type DFormBlockRendererProps = DFormBlocksProps & {
 
 export const DFormBlockRenderer: FC<DFormBlockRendererProps> = (props) => {
   const { blockType, fieldType, children, ...blockProps } = props;
-  const { label, uiStyle, options, helpText, dateFormat, isDisabled, isRequired, isLabelShowing, masterSchemaFieldId } =
+  const { label, uiStyle, options, helpText, format, isDisabled, isRequired, isLabelShowing, masterSchemaFieldId } =
     blockProps;
 
   switch (blockType) {
@@ -29,10 +29,10 @@ export const DFormBlockRenderer: FC<DFormBlockRendererProps> = (props) => {
         <DFormField
           id={String(masterSchemaFieldId)}
           label={label}
+          format={format}
           options={options}
           uiStyle={uiStyle}
           fieldType={fieldType}
-          dateFormat={dateFormat}
           isRequired={isRequired}
           isDisabled={isDisabled}
           isLabelShowing={isLabelShowing}

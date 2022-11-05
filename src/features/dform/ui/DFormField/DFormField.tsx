@@ -36,7 +36,7 @@ export type DFormFieldProps = DFormBaseFieldsProps & {
 
 export const DFormField: FC<DFormFieldProps> = (props) => {
   const { id, label, fieldType, isRequired, isDisabled, isLabelShowing, masterSchemaFieldId, ...fieldProps } = props;
-  const { value, checked, options, uiStyle, dateFormat, onChange } = fieldProps;
+  const { value, checked, options, uiStyle, format, onChange } = fieldProps;
 
   if (fieldType == null) {
     throw new Error("Invariant Violation: Provide a fieldType to render the <DFormField />");
@@ -48,11 +48,11 @@ export const DFormField: FC<DFormFieldProps> = (props) => {
         id={id}
         label={label}
         value={value}
+        format={format}
         checked={checked}
         options={options}
         uiStyle={uiStyle}
         fieldType={fieldType}
-        dateFormat={dateFormat}
         isDisabled={isDisabled}
         masterSchemaFieldId={masterSchemaFieldId}
         onChange={onChange}

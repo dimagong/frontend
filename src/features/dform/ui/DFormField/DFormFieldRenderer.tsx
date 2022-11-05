@@ -56,8 +56,8 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props) => {
         <DFormDatePicker
           id={props.id}
           value={props.value}
+          format={props.format}
           isDisabled={props.isDisabled}
-          dateFormat={props.dateFormat}
           onChange={props.onChange}
         />
       );

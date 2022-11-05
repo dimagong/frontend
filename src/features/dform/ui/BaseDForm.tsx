@@ -125,6 +125,8 @@ export const BaseDForm: FC<Props> = (props) => {
                             label={block.title}
                             blockId={block.id}
                             blockIndex={blockIndex}
+                            format={block.format}
+                            uiStyle={block.uiStyle}
                             helpText={block.helpTextValue}
                             blockType={recognizeBlockType(block.type)}
                             fieldType={block.type}

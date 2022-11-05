@@ -27,6 +27,7 @@ const Template = (props) => {
           <DFormField
             id={String(props.masterSchemaFieldId)}
             label={props.label}
+            format={props.format}
             options={props.options}
             uiStyle={props.uiStyle}
             fieldType={props.fieldType}
