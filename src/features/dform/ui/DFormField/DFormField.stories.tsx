@@ -108,6 +108,13 @@ NumberField.args = {
   maximum: 879,
 };
 
+export const ResourceField = Template.bind({});
+ResourceField.args = {
+  ...defaultArgs,
+  fieldType: DFormFieldTypes.Resource,
+  value: { custom_filename: "Custom.test", name: "Filename.test", file_id: 0 },
+};
+
 export const SelectField = Template.bind({});
 SelectField.args = {
   ...defaultArgs,

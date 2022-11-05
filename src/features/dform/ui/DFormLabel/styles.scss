@@ -10,6 +10,10 @@
     line-height: 19px;
   }
 
+  > label {
+    cursor: pointer;
+  }
+
   > label,
   > span {
     font-size: inherit;

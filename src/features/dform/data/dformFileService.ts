@@ -1,14 +1,10 @@
-import { warning } from "features/common";
 import { clientAPI } from "api/clientAPI";
+import { invariant } from "features/common";
 import { clientFetch } from "api/clientFetch";
 
+import type { DFormFiles } from "../types";
+
 export type TemporaryFileResponse = { name: string; temporary_public_url: string };
-
-export type GetDFormFileParams = { masterSchemaFieldId: number; dformId: number; fileId: number };
-
-export type PostDFormFileParams = { masterSchemaFieldId: number; dformId: number; files: File[] };
-
-export type DeleteDFormFileParams = { masterSchemaFieldId: number; dformId: number; fileId: number };
 
 export class DformFileService {
   // Temporary solution while there is no DI.
@@ -36,7 +32,7 @@ export class DformFileService {
     return `${this.baseUrl}${url}`;
   }
 
-  get(params: GetDFormFileParams) {
+  get(params: { masterSchemaFieldId: number; dformId: number; fileId: number }) {
     const { masterSchemaFieldId, dformId, fileId } = params;
 
     const searchParams = new URLSearchParams({
@@ -45,11 +41,8 @@ export class DformFileService {
     });
     const url = this.buildUrl(`/dform/${dformId}/user-file-download?${searchParams}`);
 
-    return this.apiClient.get(url).then((response: TemporaryFileResponse) => {
-      if (!response) {
-        warning("Unexpected: The DformFileService got undefined response for a file requesting.");
-        return Promise.reject();
-      }
+    return this.apiClient.get(url).then((response?: TemporaryFileResponse) => {
+      invariant(response, "Got an undefined response for a file requesting.");
 
       return this.httpClient(response.temporary_public_url)
         .then((response) => response.blob())
@@ -57,7 +50,7 @@ export class DformFileService {
     });
   }
 
-  post(params: PostDFormFileParams) {
+  post(params: { masterSchemaFieldId: number; dformId: number; files: File[] }): Promise<DFormFiles> {
     const formData = new FormData();
     const { masterSchemaFieldId, dformId, files } = params;
 
@@ -69,7 +62,7 @@ export class DformFileService {
     return this.apiClient.post(url.toString(), formData);
   }
 
-  delete(params: DeleteDFormFileParams) {
+  delete(params: { masterSchemaFieldId: number; dformId: number; fileId: number }): Promise<void> {
     const { masterSchemaFieldId, dformId, fileId } = params;
 
     const url = this.buildUrl(`/dform/${dformId}/user-file`);

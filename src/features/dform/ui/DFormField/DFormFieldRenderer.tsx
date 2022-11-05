@@ -49,8 +49,8 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props) => {
       return (
         <DFormBoolean
           id={props.id}
+          value={props.value}
           label={props.label}
-          checked={props.checked}
           isDisabled={props.isDisabled}
           onChange={props.onChange}
         />

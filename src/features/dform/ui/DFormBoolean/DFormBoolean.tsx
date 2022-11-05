@@ -1,23 +1,34 @@
 import React from "react";
 import type { FC } from "react";
 
-import { NmpCheckbox, NmpCheckboxProps } from "features/nmp-ui";
+import { NmpCheckbox } from "features/nmp-ui";
 
 import { DFormLabel } from "../DFormLabel";
 
 export type DFormBooleanProps = {
   id?: string;
   label?: string;
-  checked?: NmpCheckboxProps["checked"];
+  value?: boolean;
   isDisabled?: boolean;
-  onChange?: NmpCheckboxProps["onChange"];
+  onChange?: (value: boolean) => void;
 };
 
 export const DFormBoolean: FC<DFormBooleanProps> = (props) => {
-  const { id, label, checked, isDisabled, onChange } = props;
+  const { id, label, value, isDisabled, onChange } = props;
+
+  const onCheckboxChange = (checked: boolean) => {
+    if (onChange) {
+      onChange(checked);
+    }
+  };
 
   return (
-    <NmpCheckbox id={id} disabled={isDisabled} onChange={onChange} checked={checked}>
+    <NmpCheckbox
+      id={id}
+      checked={value}
+      disabled={isDisabled}
+      onChange={({ target }) => onCheckboxChange(target.checked)}
+    >
       <DFormLabel label={label} isSmall />
     </NmpCheckbox>
   );

@@ -52,8 +52,6 @@ export const DFormFieldItem: FC<DFormFieldItemProps> = (props) => {
   };
 
   switch (fieldType) {
-    case DFormFieldTypes.Boolean:
-      return <Form.Item {...defaultProps} valuePropName="checked" />;
     case DFormFieldTypes.Text:
     case DFormFieldTypes.TextArea:
     case DFormFieldTypes.LongText:

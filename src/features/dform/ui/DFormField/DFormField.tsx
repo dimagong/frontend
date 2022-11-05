@@ -4,11 +4,11 @@ import type { FC } from "react";
 import { invariant } from "features/common";
 
 import { DFormLabeledBlock } from "../DFormLabeledBlock";
-import { DFormFieldRenderer, DFormFieldRendererProps } from "./DFormFieldRenderer";
+import { DFormFieldRenderer } from "./DFormFieldRenderer";
 
+import { DFormFieldTypes } from "../../types";
 import type { DFormTextProps } from "../DFormText";
 import type { DFormFileProps } from "../DFormFile";
-import type { DFormFieldTypes } from "../../types";
 import type { DFormSelectProps } from "../DFormSelect";
 import type { DFormNumberProps } from "../DFormNumber";
 import type { DFormBooleanProps } from "../DFormBoolean";
@@ -19,7 +19,7 @@ import type { DFormFileListProps } from "../DFormFileList";
 import type { DFormDatePickerProps } from "../DFormDatePicker";
 import type { DFormMultiSelectProps } from "../DFormMultiSelect";
 
-type DFormFieldsProps = DFormBooleanProps &
+type DFormFieldsProps = Omit<DFormBooleanProps, "value"> &
   Omit<DFormDatePickerProps, "value"> &
   Omit<DFormFileProps, "value"> &
   Omit<DFormFileListProps, "value"> &
@@ -32,6 +32,7 @@ type DFormFieldsProps = DFormBooleanProps &
   Omit<DFormTextAreaProps, "value">;
 
 type DFormFieldsValueProp =
+  | DFormBooleanProps["value"]
   | DFormDatePickerProps["value"]
   | DFormFileProps["value"]
   | DFormFileListProps["value"]
@@ -53,18 +54,22 @@ export type DFormFieldProps = DFormFieldsProps & {
 
 export const DFormField: FC<DFormFieldProps> = (props) => {
   const { id, label, fieldType, isRequired, isDisabled, isLabelShowing, masterSchemaFieldId, ...fieldProps } = props;
-  const { value, checked, options, uiStyle, format, onChange } = fieldProps;
+  const { value, options, uiStyle, format, onChange } = fieldProps;
 
   invariant(fieldType, "Provide a fieldType to render the <DFormField />");
 
   return (
-    <DFormLabeledBlock id={id} label={label} isRequired={isRequired} isLabelShowing={isLabelShowing}>
+    <DFormLabeledBlock
+      id={fieldType === DFormFieldTypes.Boolean ? undefined : id}
+      label={label}
+      isRequired={isRequired}
+      isLabelShowing={isLabelShowing}
+    >
       <DFormFieldRenderer
         id={id}
         label={label}
         value={value as never}
         format={format}
-        checked={checked}
         options={options}
         uiStyle={uiStyle}
         fieldType={fieldType}
