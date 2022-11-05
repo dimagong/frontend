@@ -4,14 +4,13 @@ import type { FC } from "react";
 import { DFormBlockTypes, DFormFieldTypes } from "../../types";
 
 import { DFormField, DFormFieldProps } from "../DFormField";
-import { DFormResource, DFormResourceProps } from "../DFormResource";
 import { DFormHelpText, DFormHelpTextProps } from "../DFormHelpText";
 
 type ToFieldOmit = "id" | "value" | "checked" | "fieldType" | "onChange";
 
 type DFormFieldBlockProps = Omit<DFormFieldProps, ToFieldOmit>;
 
-type DFormBlocksProps = DFormFieldBlockProps & DFormResourceProps & DFormHelpTextProps;
+type DFormBlocksProps = DFormFieldBlockProps & DFormHelpTextProps;
 
 export type DFormBlockRendererProps = DFormBlocksProps & {
   blockType: DFormBlockTypes;
@@ -34,15 +33,6 @@ export const DFormBlockRenderer: FC<DFormBlockRendererProps> = (props) => {
           uiStyle={uiStyle}
           fieldType={fieldType}
           isRequired={isRequired}
-          isDisabled={isDisabled}
-          isLabelShowing={isLabelShowing}
-          masterSchemaFieldId={masterSchemaFieldId}
-        />
-      );
-    case DFormBlockTypes.Resource:
-      return (
-        <DFormResource
-          label={label}
           isDisabled={isDisabled}
           isLabelShowing={isLabelShowing}
           masterSchemaFieldId={masterSchemaFieldId}

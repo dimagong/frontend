@@ -1,14 +1,12 @@
 import React from "react";
 import type { FC } from "react";
 
-import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { DFormBlockTypes, DFormFieldTypes, DFormBlockSizeTypes } from "../../types";
 
-import { DFormResource } from "../DFormResource";
 import { DFormHelpText } from "../DFormHelpText";
 import { DFormBaseBlock } from "./DFormBaseBlock";
 import { DFormBlockSizer } from "./DFormBlockSizer";
 import type { DFormFieldProps } from "../DFormField";
-import type { DFormResourceProps } from "../DFormResource";
 import type { DFormHelpTextProps } from "../DFormHelpText";
 import { DFormField, DFormFieldItem, DFormFieldItemProps } from "../DFormField";
 
@@ -17,7 +15,7 @@ type ToFieldOmit = "id" | "value" | "checked" | "fieldType" | "onChange";
 type DFormFieldBlockProps = Omit<DFormFieldProps, ToFieldOmit> &
   Pick<DFormFieldItemProps, "minimum" | "maximum" | "minLength" | "maxLength">;
 
-type DFormBlocksProps = DFormFieldBlockProps & DFormResourceProps & DFormHelpTextProps;
+type DFormBlocksProps = DFormFieldBlockProps & DFormHelpTextProps;
 
 type Props = DFormBlocksProps & {
   blockType: DFormBlockTypes;
@@ -31,7 +29,6 @@ export const DFormBlock: FC<Props> = (props) => {
     blockProps;
 
   let Block;
-
   switch (blockType) {
     case DFormBlockTypes.Field:
       Block = (
@@ -44,18 +41,6 @@ export const DFormBlock: FC<Props> = (props) => {
             uiStyle={uiStyle}
             fieldType={fieldType}
             isRequired={isRequired}
-            isDisabled={isDisabled}
-            isLabelShowing={isLabelShowing}
-            masterSchemaFieldId={masterSchemaFieldId}
-          />
-        </DFormFieldItem>
-      );
-      break;
-    case DFormBlockTypes.Resource:
-      Block = (
-        <DFormFieldItem isRequired={isRequired} masterSchemaFieldId={masterSchemaFieldId}>
-          <DFormResource
-            label={label}
             isDisabled={isDisabled}
             isLabelShowing={isLabelShowing}
             masterSchemaFieldId={masterSchemaFieldId}

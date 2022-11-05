@@ -1,7 +1,7 @@
-import { DFormValue, DFormFieldTypes, DFormBlockTypes, NormalizedDFormValue } from "../types";
+import { DFormValue, DFormFieldTypes, NormalizedDFormValue } from "../types";
 
 type Field = {
-  type: DFormFieldTypes | DFormBlockTypes.Resource;
+  type: DFormFieldTypes;
   helpTextValue: string;
 };
 
@@ -22,7 +22,7 @@ export const normalizedDFormValueByField = (field: Field, dformValue: DFormValue
     case DFormFieldTypes.File:
     case DFormFieldTypes.FileList:
       return Array.isArray(dformValue.files) ? dformValue.files : [];
-    case DFormBlockTypes.Resource:
+    case DFormFieldTypes.Resource:
       return Array.isArray(dformValue.files) ? dformValue.files[0] : null;
     default:
       throw new Error(`Unexpected field type: ${field.type}`);

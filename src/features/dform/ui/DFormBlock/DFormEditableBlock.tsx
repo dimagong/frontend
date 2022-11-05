@@ -1,24 +1,52 @@
-import type { FC, MouseEventHandler } from "react";
 import React from "react";
+import type { FC, MouseEventHandler } from "react";
 
-import type { DFormFieldProps } from "../DFormField";
 import { DFormField } from "../DFormField";
-import type { DFormHelpTextProps } from "../DFormHelpText";
 import { DFormHelpText } from "../DFormHelpText";
-import type { DFormResourceProps } from "../DFormResource";
 import { DFormResource } from "../DFormResource";
 import { DFormBaseBlock } from "./DFormBaseBlock";
 import { DFormBlockSizer } from "./DFormBlockSizer";
 import { DFormSelectable } from "../DFormSelectable";
 import { DFormAddElement } from "../DFormAddElement";
+import type { DFormFieldProps } from "../DFormField";
+import type { DFormHelpTextProps } from "../DFormHelpText";
 import { DFormDraggable, DFormDragHandle } from "../DFormDraggable";
-import { DFormBlockSizeTypes, DFormBlockTypes, DFormElementTypes, DFormFieldTypes } from "../../types";
+import {
+  DFormBlockSizeTypes,
+  DFormBlockTypes,
+  DFormElementTypes,
+  DFormFieldTypes,
+  DFormFile,
+  DFormFiles,
+} from "../../types";
+
+const getFile = (file_id: number): DFormFile => ({
+  custom_filename: `Custom-${file_id}.filename`,
+  name: `filename-${file_id}.test`,
+  file_id,
+});
+
+const fileValue = getFile(0);
+const filesValue: DFormFiles = Array(3)
+  .fill(null)
+  .map((_, index) => getFile(index));
+
+const getValueByFieldType = (fieldType?: DFormFieldTypes) => {
+  switch (fieldType) {
+    case DFormFieldTypes.File:
+      return [fileValue];
+    case DFormFieldTypes.FileList:
+      return filesValue;
+    case DFormFieldTypes.Resource:
+      return fileValue;
+    default:
+      return undefined;
+  }
+};
 
 type ToFieldOmit = "id" | "value" | "checked" | "fieldType" | "isDisabled" | "masterSchemaFieldId" | "onChange";
 
-type DFormBlocksProps = Omit<DFormFieldProps, ToFieldOmit> &
-  Omit<DFormResourceProps, "isDisabled" | "masterSchemaFieldId"> &
-  DFormHelpTextProps;
+type DFormBlocksProps = Omit<DFormFieldProps, ToFieldOmit> & DFormHelpTextProps;
 
 type Props = DFormBlocksProps & {
   blockId: string;
@@ -52,21 +80,13 @@ export const DFormEditableBlock: FC<Props> = (props) => {
     case DFormBlockTypes.Field:
       Block = (
         <DFormField
+          value={getValueByFieldType(fieldType)}
           label={label}
           format={format}
           uiStyle={uiStyle}
           options={options}
           fieldType={fieldType}
           isRequired={isRequired}
-          isLabelShowing={isLabelShowing}
-        />
-      );
-      break;
-    case DFormBlockTypes.Resource:
-      Block = (
-        <DFormResource
-          value={{ custom_filename: "Custom.filename", name: "filename.test", file_id: 0 }}
-          label={label}
           isLabelShowing={isLabelShowing}
         />
       );

@@ -1,6 +1,9 @@
 import React from "react";
 import type { FC } from "react";
 
+import { unreachable } from "features/common";
+
+import { DFormFieldTypes } from "../../types";
 import { DFormText, DFormTextProps } from "../DFormText";
 import { DFormFile, DFormFileProps } from "../DFormFile";
 import { DFormSelect, DFormSelectProps } from "../DFormSelect";
@@ -9,10 +12,9 @@ import { DFormBoolean, DFormBooleanProps } from "../DFormBoolean";
 import { DFormTextArea, DFormTextAreaProps } from "../DFormTextArea";
 import { DFormFileList, DFormFileListProps } from "../DFormFileList";
 import { DFormLongText, DFormLongTextProps } from "../DFormLongText";
+import { DFormResource, DFormResourceProps } from "../DFormResource";
 import { DFormDatePicker, DFormDatePickerProps } from "../DFormDatePicker";
 import { DFormMultiSelect, DFormMultiSelectProps } from "../DFormMultiSelect";
-
-import { DFormFieldTypes } from "../../types";
 
 type FieldType<T extends DFormFieldTypes> = { fieldType: T };
 
@@ -23,6 +25,7 @@ type FileListType = FieldType<DFormFieldTypes.FileList> & DFormFileListProps;
 type LongTextType = FieldType<DFormFieldTypes.LongText> & DFormLongTextProps;
 type MultiSelectType = FieldType<DFormFieldTypes.MultiSelect> & DFormMultiSelectProps;
 type NumberType = FieldType<DFormFieldTypes.Number> & DFormNumberProps;
+type ResourceType = FieldType<DFormFieldTypes.Resource> & DFormResourceProps;
 type SelectType = FieldType<DFormFieldTypes.Select> & DFormSelectProps;
 type TextType = FieldType<DFormFieldTypes.Text> & DFormTextProps;
 type TextAreaType = FieldType<DFormFieldTypes.TextArea> & DFormTextAreaProps;
@@ -35,6 +38,7 @@ export type DFormFieldRendererProps =
   | LongTextType
   | MultiSelectType
   | NumberType
+  | ResourceType
   | SelectType
   | TextType
   | TextAreaType;
@@ -96,6 +100,14 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props) => {
       );
     case DFormFieldTypes.Number:
       return <DFormNumber id={props.id} value={props.value} isDisabled={props.isDisabled} onChange={props.onChange} />;
+    case DFormFieldTypes.Resource:
+      return (
+        <DFormResource
+          value={props.value}
+          isDisabled={props.isDisabled}
+          masterSchemaFieldId={props.masterSchemaFieldId}
+        />
+      );
     case DFormFieldTypes.Select:
       return (
         <DFormSelect
@@ -113,6 +125,6 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props) => {
         <DFormTextArea id={props.id} value={props.value} isDisabled={props.isDisabled} onChange={props.onChange} />
       );
     default:
-      throw new Error(`Unreachable: A field type is not recognized.`);
+      unreachable(`Field type is not supported.`);
   }
 };

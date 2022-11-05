@@ -12,7 +12,6 @@ export enum DFormElementTypes {
 export enum DFormBlockTypes {
   Field = "field",
   HelpText = "helpText",
-  Resource = "resource",
 }
 
 export enum DFormFieldTypes {
@@ -23,6 +22,7 @@ export enum DFormFieldTypes {
   LongText = "longText",
   MultiSelect = "multiSelect",
   Number = "number",
+  Resource = "resource",
   Select = "select",
   Text = "text",
   TextArea = "textArea",

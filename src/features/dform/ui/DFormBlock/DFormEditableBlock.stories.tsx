@@ -57,12 +57,6 @@ HelpTextBlock.args = {
   blockType: DFormBlockTypes.HelpText,
 };
 
-export const ResourceBlock = Template.bind({});
-ResourceBlock.args = {
-  ...defaultArgs,
-  blockType: DFormBlockTypes.Resource,
-};
-
 export const FieldBlock = Template.bind({});
 FieldBlock.args = {
   ...defaultArgs,

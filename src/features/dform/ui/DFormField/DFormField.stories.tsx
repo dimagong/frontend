@@ -7,7 +7,7 @@ import { DFormFieldTypes } from "../../types";
 import { DFormFieldItem } from "./DFormFieldItem";
 
 export default {
-  title: "DFormField",
+  title: "DForm/Field",
   component: DFormField,
 };
 

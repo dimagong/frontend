@@ -16,8 +16,6 @@ const recognizeBlockType = (fieldType: string) => {
   switch (fieldType) {
     case "helpText":
       return DFormBlockTypes.HelpText;
-    case "resource":
-      return DFormBlockTypes.Resource;
     default:
       return DFormBlockTypes.Field;
   }

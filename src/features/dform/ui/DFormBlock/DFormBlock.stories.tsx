@@ -46,15 +46,6 @@ HelpTextBlock.args = {
   helpText: "<b>Bold+<i>cursive</i></b>",
 };
 
-export const ResourceBlock = Template.bind({});
-ResourceBlock.args = {
-  ...defaultArgs,
-  label: "Label",
-  value: { custom_filename: "Custom.filename", name: "filename.test" },
-  blockType: DFormBlockTypes.Resource,
-  masterSchemaFieldId: 0,
-};
-
 export const FieldBlock = Template.bind({});
 FieldBlock.args = {
   ...defaultArgs,

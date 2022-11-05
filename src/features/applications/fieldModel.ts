@@ -5,7 +5,7 @@ import { DFormElementTypes, DFormFieldTypes, DFormBlockTypes } from "features/df
 import { AbstractDFormFieldConditionModel } from "./fieldConditionModel";
 import { DateWidgetFormatTypes, FieldClassTypes, FieldUIStyles, ResourceCompileOptionTypes } from "./constants";
 
-interface CommonFieldProperties<T extends DFormFieldTypes | DFormBlockTypes.Resource | DFormBlockTypes.HelpText> {
+interface CommonFieldProperties<T extends DFormFieldTypes | DFormBlockTypes.HelpText> {
   id: string;
   type: T;
   title: string;
@@ -53,7 +53,7 @@ type BooleanFieldProperties = CommonFieldProperties<DFormFieldTypes.Boolean>;
 
 type FileListFieldProperties = CommonFieldProperties<DFormFieldTypes.Boolean>;
 
-interface ResourceFieldProperties extends CommonFieldProperties<DFormBlockTypes.Resource> {
+interface ResourceFieldProperties extends CommonFieldProperties<DFormFieldTypes.Resource> {
   resourceCompileOption: ResourceCompileOptionTypes;
   resourceManagerFieldId: string;
 }
@@ -97,7 +97,7 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * Indicates a field type.
    */
-  type: DFormFieldTypes | DFormBlockTypes.Resource | DFormBlockTypes.HelpText = DFormFieldTypes.Text;
+  type: DFormFieldTypes | DFormBlockTypes.HelpText = DFormFieldTypes.Text;
   /**
    * Represents a caption for an item in a user interface.
    */
@@ -213,7 +213,7 @@ export class DFormFieldModel extends AbstractDFormFieldModel {
       case DFormBlockTypes.HelpText:
         this.helpTextValue = properties.helpTextValue ?? this.helpTextValue ?? "New help text";
         break;
-      case DFormBlockTypes.Resource:
+      case DFormFieldTypes.Resource:
         this.resourceCompileOption =
           properties.resourceCompileOption ??
           this.resourceCompileOption ??
