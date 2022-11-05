@@ -7,9 +7,9 @@ import {
   DFormBlockSizeTypes,
   DFormDateFormatTypes,
   DFormMultiSelectUIStyles,
+  DFormResourceCompileOptionTypes,
 } from "features/dform/types";
 
-import { ResourceCompileOptionTypes } from "./constants";
 import { AbstractDFormFieldConditionModel } from "./fieldConditionModel";
 
 interface CommonFieldProperties<T extends DFormFieldTypes | DFormBlockTypes.HelpText> {
@@ -61,7 +61,7 @@ type BooleanFieldProperties = CommonFieldProperties<DFormFieldTypes.Boolean>;
 type FileListFieldProperties = CommonFieldProperties<DFormFieldTypes.Boolean>;
 
 interface ResourceFieldProperties extends CommonFieldProperties<DFormFieldTypes.Resource> {
-  resourceCompileOption: ResourceCompileOptionTypes;
+  resourceCompileOption: DFormResourceCompileOptionTypes;
   resourceManagerFieldId: string;
 }
 
@@ -162,7 +162,7 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * For field type DFormFieldTypes.Resource
    */
-  resourceCompileOption: ResourceCompileOptionTypes;
+  resourceCompileOption: DFormResourceCompileOptionTypes;
   resourceManagerFieldId: string;
   /**
    * For field type DFormFieldTypes.HelpText
@@ -224,7 +224,7 @@ export class DFormFieldModel extends AbstractDFormFieldModel {
         this.resourceCompileOption =
           properties.resourceCompileOption ??
           this.resourceCompileOption ??
-          ResourceCompileOptionTypes.CompileOnOnboardingAssociation;
+          DFormResourceCompileOptionTypes.CompileOnOnboardingAssociation;
         this.resourceManagerFieldId = properties.resourceManagerFieldId ?? this.resourceManagerFieldId ?? null;
         break;
     }

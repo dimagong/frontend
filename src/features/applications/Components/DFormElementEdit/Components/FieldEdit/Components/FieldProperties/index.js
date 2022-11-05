@@ -5,9 +5,13 @@ import { Col, Row } from "reactstrap";
 import { Button } from "antd";
 import _ from "lodash";
 
+import {
+  DFormBlockTypes,
+  DFormFieldTypes,
+  DFormDateFormatTypes,
+  DFormResourceCompileOptionTypes,
+} from "features/dform/types";
 import { DFormFieldModel } from "features/applications/fieldModel";
-import { ResourceCompileOptionLabel } from "features/applications/constants";
-import { DFormBlockTypes, DFormDateFormatTypes, DFormFieldTypes } from "features/dform/types";
 import { NmpButton, NmpInput, NmpSelect, NmpCheckbox, NmpWysiwygEditor } from "features/nmp-ui";
 
 import { useApplicationResourceManagerFields } from "../../../../../../data/applicationQueries";
@@ -246,6 +250,10 @@ const queryConfig = {
       : [],
 };
 
+const resourceCompileOptionLabel = {
+  [DFormResourceCompileOptionTypes.CompileOnOnboardingAssociation]: "Compile on onboarding association",
+};
+
 export const FieldResourceEditProperties = ({ element, organization }) => {
   const queryParams = { organizationId: organization.id, organizationType: organization.type };
   const { isLoading, data: options = [] } = useApplicationResourceManagerFields(queryParams, queryConfig);
@@ -285,7 +293,7 @@ export const FieldResourceEditProperties = ({ element, organization }) => {
               options={[
                 {
                   value: element.resourceCompileOption,
-                  label: ResourceCompileOptionLabel[element.resourceCompileOption],
+                  label: resourceCompileOptionLabel[element.resourceCompileOption],
                 },
               ]}
               isLoading={isLoading}

@@ -47,12 +47,3 @@ export const INITIAL_GROUP_DATA = {
   relatedFields: [],
   conditions: [],
 };
-
-export enum ResourceCompileOptionTypes {
-  None,
-  CompileOnOnboardingAssociation,
-}
-
-export const ResourceCompileOptionLabel = {
-  [ResourceCompileOptionTypes.CompileOnOnboardingAssociation]: "Compile on onboarding association",
-};

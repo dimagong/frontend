@@ -49,6 +49,11 @@ export enum DFormMultiSelectUIStyles {
   Checkboxes = "checkboxes",
 }
 
+export enum DFormResourceCompileOptionTypes {
+  None,
+  CompileOnOnboardingAssociation,
+}
+
 /**
  * Types
  */
