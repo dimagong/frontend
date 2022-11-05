@@ -1,5 +1,3 @@
-import { DFormElementTypes } from "features/dform/types";
-
 export const INITIAL_APPLICATION_DATA = {
   type: "application",
   name: "",
@@ -17,18 +15,6 @@ export const APPLICATION_PAGES = {
   VERSIONING: "Versioning",
   REORDER: "Reorder",
   TEST_MODE: "Test mode",
-};
-
-export const EDIT_OPTIONS = {
-  properties: "Properties",
-  styling: "Styling",
-  dynamicRendering: "Dynamic rendering",
-};
-
-export const ELEMENT_TYPE_SPECIFIC_EDIT_OPTIONS = {
-  [DFormElementTypes.Block]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.styling, EDIT_OPTIONS.dynamicRendering],
-  [DFormElementTypes.Group]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.dynamicRendering],
-  [DFormElementTypes.Section]: [EDIT_OPTIONS.properties, EDIT_OPTIONS.dynamicRendering],
 };
 
 export const INITIAL_SECTION_DATA = {

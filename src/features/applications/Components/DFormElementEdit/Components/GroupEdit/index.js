@@ -1,10 +1,8 @@
 import React from "react";
 
-import { EDIT_OPTIONS } from "../../../../constants";
-
-import GroupDynamicRendering from "./Components/GroupDynamicRendering";
 import GroupStyles from "./Components/GroupStyles";
 import GroupProperties from "./Components/GroupProperties";
+import GroupDynamicRendering from "./Components/GroupDynamicRendering";
 
 const GroupEdit = ({
   element,
@@ -12,6 +10,7 @@ const GroupEdit = ({
   editProperty,
   onGroupSectionChange,
   data,
+  editOptions,
   onFieldSubmit,
   onDeleteButtonClick,
   onElementChangesCancel,
@@ -25,11 +24,11 @@ const GroupEdit = ({
   };
 
   return {
-    [EDIT_OPTIONS.properties]: (
+    [editOptions.properties]: (
       <GroupProperties {...commonProps} onGroupSectionChange={onGroupSectionChange} data={data} />
     ),
-    [EDIT_OPTIONS.styling]: <GroupStyles {...commonProps} />,
-    [EDIT_OPTIONS.dynamicRendering]: <GroupDynamicRendering data={data} {...commonProps} />,
+    [editOptions.styling]: <GroupStyles {...commonProps} />,
+    [editOptions.dynamicRendering]: <GroupDynamicRendering data={data} {...commonProps} />,
   }[editProperty];
 };
 

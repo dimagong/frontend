@@ -1,9 +1,7 @@
 import React from "react";
 
-import { EDIT_OPTIONS } from "../../../../constants";
-
-import SectionProperties from "./Components/SectionProperties";
 import SectionStyles from "./Components/SectionStyles";
+import SectionProperties from "./Components/SectionProperties";
 import SectionDynamicRendering from "./Components/SectionDynamicRendering";
 
 const SectionEdit = ({
@@ -12,6 +10,7 @@ const SectionEdit = ({
   onElementChange,
   data,
   onFieldSubmit,
+  editOptions,
   onDeleteButtonClick,
   onElementChangesCancel,
 }) => {
@@ -24,9 +23,9 @@ const SectionEdit = ({
   };
 
   return {
-    [EDIT_OPTIONS.properties]: <SectionProperties {...commonProps} />,
-    [EDIT_OPTIONS.styling]: <SectionStyles {...commonProps} />,
-    [EDIT_OPTIONS.dynamicRendering]: <SectionDynamicRendering data={data} {...commonProps} />,
+    [editOptions.properties]: <SectionProperties {...commonProps} />,
+    [editOptions.styling]: <SectionStyles {...commonProps} />,
+    [editOptions.dynamicRendering]: <SectionDynamicRendering data={data} {...commonProps} />,
   }[editProperty];
 };
 

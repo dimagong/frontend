@@ -11,6 +11,7 @@ const FieldEdit = ({
   element,
   editProperty,
   organization,
+  editOptions,
   onElementChange,
   onDeleteButtonClick,
   onElementChangesSave,
@@ -27,9 +28,9 @@ const FieldEdit = ({
   };
 
   return {
-    [EDIT_OPTIONS.properties]: <FieldProperties {...commonProps} data={data} organization={organization} />,
-    [EDIT_OPTIONS.styling]: <FieldStyles {...commonProps} />,
-    [EDIT_OPTIONS.dynamicRendering]: <FieldDynamicRendering data={data} {...commonProps} />,
+    [editOptions.properties]: <FieldProperties {...commonProps} data={data} organization={organization} />,
+    [editOptions.styling]: <FieldStyles {...commonProps} />,
+    [editOptions.dynamicRendering]: <FieldDynamicRendering data={data} {...commonProps} />,
   }[editProperty];
 };
 

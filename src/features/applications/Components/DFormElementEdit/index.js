@@ -1,13 +1,25 @@
 import "./styles.scss";
 
-import { Row, Col, Button } from "reactstrap";
+import { Row, Col } from "reactstrap";
 import React, { useState, useEffect } from "react";
+
+import { DFormElementTypes } from "features/dform/types";
 
 import GroupEdit from "./Components/GroupEdit";
 import FieldEdit from "./Components/FieldEdit";
 import SectionEdit from "./Components/SectionEdit";
 
-import { EDIT_OPTIONS, ELEMENT_TYPE_SPECIFIC_EDIT_OPTIONS } from "../../constants";
+const EditOptions = {
+  styling: "Styling",
+  properties: "Properties",
+  dynamicRendering: "Dynamic rendering",
+};
+
+const ElementTypeSpecificEditOptions = {
+  [DFormElementTypes.Block]: [EditOptions.properties, EditOptions.styling, EditOptions.dynamicRendering],
+  [DFormElementTypes.Group]: [EditOptions.properties, EditOptions.dynamicRendering],
+  [DFormElementTypes.Section]: [EditOptions.properties, EditOptions.dynamicRendering],
+};
 
 const DFormElementEdit = (props) => {
   const {
@@ -23,7 +35,7 @@ const DFormElementEdit = (props) => {
     onFieldSubmit,
   } = props;
 
-  const [selectedEditOption, setSelectedEditOption] = useState(EDIT_OPTIONS.properties);
+  const [selectedEditOption, setSelectedEditOption] = useState(EditOptions.properties);
 
   const handleEditOptionSelect = (editOption) => {
     setSelectedEditOption(editOption);
@@ -43,7 +55,7 @@ const DFormElementEdit = (props) => {
   };
 
   useEffect(() => {
-    handleEditOptionSelect(EDIT_OPTIONS.properties);
+    handleEditOptionSelect(EditOptions.properties);
   }, [element.id]);
 
   return (
@@ -52,15 +64,24 @@ const DFormElementEdit = (props) => {
         <div className="pb-2">
           {
             {
-              group: <GroupEdit {...commonProps} onGroupSectionChange={onGroupSectionChange} />,
-              section: <SectionEdit {...commonProps} />,
-              field: <FieldEdit {...commonProps} organization={organization} onFieldGroupChange={onFieldGroupChange} />,
+              group: (
+                <GroupEdit {...commonProps} editOptions={EditOptions} onGroupSectionChange={onGroupSectionChange} />
+              ),
+              section: <SectionEdit {...commonProps} editOptions={EditOptions} />,
+              field: (
+                <FieldEdit
+                  {...commonProps}
+                  organization={organization}
+                  editOptions={EditOptions}
+                  onFieldGroupChange={onFieldGroupChange}
+                />
+              ),
             }[element.elementType]
           }
         </div>
       </Col>
       <Col className="col-4 dform-element-edit_options">
-        {ELEMENT_TYPE_SPECIFIC_EDIT_OPTIONS[element.elementType].map((option) => (
+        {ElementTypeSpecificEditOptions[element.elementType].map((option) => (
           <div
             className={`dform-element-edit_options-option ${option === selectedEditOption ? "selected" : ""}`}
             onClick={() => handleEditOptionSelect(option)}
