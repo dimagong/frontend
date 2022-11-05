@@ -1,3 +1,4 @@
+export { Environment } from "./env";
 export { warning } from "./warning";
 export { invariant } from "./invariant";
 export { unreachable } from "./unreachable";
