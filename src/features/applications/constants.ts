@@ -48,13 +48,6 @@ export const INITIAL_GROUP_DATA = {
   conditions: [],
 };
 
-export enum FieldClassTypes {
-  ColMd6 = "col-md-6",
-  ColMd12 = "col-md-12",
-}
-
-export const FIELD_STYLES_CLASSES = [FieldClassTypes.ColMd6, FieldClassTypes.ColMd12];
-
 export enum MultiSelectUIStyles {
   Checkboxes = "checkboxes",
 }

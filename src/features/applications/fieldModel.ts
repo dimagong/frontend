@@ -1,16 +1,22 @@
 import { v4 } from "uuid";
 
-import { DFormElementTypes, DFormFieldTypes, DFormBlockTypes, DFormDateFormatTypes } from "features/dform/types";
+import {
+  DFormFieldTypes,
+  DFormBlockTypes,
+  DFormElementTypes,
+  DFormBlockSizeTypes,
+  DFormDateFormatTypes,
+} from "features/dform/types";
 
 import { AbstractDFormFieldConditionModel } from "./fieldConditionModel";
-import { FieldClassTypes, FieldUIStyles, ResourceCompileOptionTypes } from "./constants";
+import { FieldUIStyles, ResourceCompileOptionTypes } from "./constants";
 
 interface CommonFieldProperties<T extends DFormFieldTypes | DFormBlockTypes.HelpText> {
   id: string;
   type: T;
   title: string;
   groupId: string;
-  classes: FieldClassTypes;
+  classes: DFormBlockSizeTypes;
   isRequired: boolean;
   isDisabled: boolean;
   isProtected: boolean;
@@ -125,7 +131,7 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * A html class value that will be consumed by field wrapper.
    */
-  classes: FieldClassTypes = FieldClassTypes.ColMd12;
+  classes: DFormBlockSizeTypes = DFormBlockSizeTypes.Full;
   /**
    * Field conditions.
    */

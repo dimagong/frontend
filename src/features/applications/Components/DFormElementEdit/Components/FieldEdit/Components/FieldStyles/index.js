@@ -2,19 +2,23 @@ import React, { useState, useEffect } from "react";
 import { Form } from "antd";
 import _ from "lodash";
 
-import { FIELD_STYLES_CLASSES, MULTI_SELECT_UI_STYLES } from "features/applications/constants";
 import { NmpButton, NmpSelect } from "features/nmp-ui";
-
-import { DFormFieldTypes } from "features/dform/types";
+import { MULTI_SELECT_UI_STYLES } from "features/applications/constants";
+import { DFormBlockSizeTypes, DFormFieldTypes } from "features/dform/types";
 
 const defaultUIStyle = { label: "default", value: null };
 
 const uIStylesOptions = [defaultUIStyle, ...MULTI_SELECT_UI_STYLES.map((value) => ({ label: value, value }))];
 
 const STYLES_CLASSES = {
-  "col-md-6": "half-width",
-  "col-md-12": "full width",
+  [DFormBlockSizeTypes.Half]: "Half width",
+  [DFormBlockSizeTypes.Full]: "Full width",
 };
+
+const classesOptions = Object.values(DFormBlockSizeTypes).map((className) => ({
+  label: STYLES_CLASSES[className],
+  value: className,
+}));
 
 const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementChangesCancel }) => {
   const [form] = Form.useForm();
@@ -39,11 +43,6 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
     masterSchemaFieldId: element.masterSchemaFieldId || null,
     uiStyle: element.uiStyle ? { label: element.uiStyle, value: element.uiStyle } : defaultUIStyle,
   };
-
-  const classesOptions = FIELD_STYLES_CLASSES.map((className) => ({
-    label: STYLES_CLASSES[className],
-    value: className,
-  }));
 
   useEffect(() => {
     setDisabled(true);
