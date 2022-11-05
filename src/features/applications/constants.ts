@@ -1,4 +1,4 @@
-import { DFormElementTypes, DFormBlockTypes } from "features/dform/types";
+import { DFormElementTypes } from "features/dform/types";
 
 export const INITIAL_APPLICATION_DATA = {
   type: "application",
@@ -47,8 +47,6 @@ export const INITIAL_GROUP_DATA = {
   relatedFields: [],
   conditions: [],
 };
-
-export const FIELDS_NOT_RELATED_TO_MASTER_SCHEMA = [DFormBlockTypes.HelpText];
 
 export enum ResourceCompileOptionTypes {
   None,

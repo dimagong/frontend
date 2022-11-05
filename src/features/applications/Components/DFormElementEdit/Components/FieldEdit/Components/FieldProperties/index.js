@@ -6,12 +6,11 @@ import { Button } from "antd";
 import _ from "lodash";
 
 import { DFormFieldModel } from "features/applications/fieldModel";
+import { ResourceCompileOptionLabel } from "features/applications/constants";
 import { DFormBlockTypes, DFormDateFormatTypes, DFormFieldTypes } from "features/dform/types";
 import { NmpButton, NmpInput, NmpSelect, NmpCheckbox, NmpWysiwygEditor } from "features/nmp-ui";
 
 import { useApplicationResourceManagerFields } from "../../../../../../data/applicationQueries";
-
-import { ResourceCompileOptionLabel, FIELDS_NOT_RELATED_TO_MASTER_SCHEMA } from "features/applications/constants";
 
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
@@ -346,7 +345,6 @@ const FieldProperties = (props) => {
     ...element,
     ...elementFieldModel,
     format: element.format ? { value: element.format, label: element.format } : null,
-    // groupId: {value: element.groupId, label: data.groups[element.groupId].name},
     type: element.type,
     masterSchemaFieldId: element.masterSchemaFieldId || null,
   };
@@ -416,7 +414,7 @@ const FieldProperties = (props) => {
         />
       </Form.Item> */}
 
-      {FIELDS_NOT_RELATED_TO_MASTER_SCHEMA.includes(type) ? null : (
+      {type === DFormBlockTypes.HelpText ? null : (
         <>
           <div className="mb-2">
             <Form.Item
@@ -427,20 +425,6 @@ const FieldProperties = (props) => {
             >
               <MasterSchemaProperty id="masterSchemaFieldId" organizations={[organization]} />
             </Form.Item>
-
-            {/* TODO: check if it can be removed
-              <DFormSelectWidget
-                id="field-reference"
-                label="Input name (reference)"
-                value={{ value: element.groupId, label: data.groups[element.groupId].name }}
-                options={Object.values(data.groups).map((group) => ({ value: group.id, label: group.name }))}
-                isError={false}
-                isRequired={true}
-                isDisabled={false}
-                isLabelShowing={true}
-                onChange={onFieldGroupChange}
-                placeholder="Select an Element group"
-              />*/}
           </div>
           <Form.Item label="Title" name="title" className="dform-field mb-2">
             <NmpInput id="title" type="text" placeholder="Enter your answer here" />
