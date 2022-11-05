@@ -48,14 +48,6 @@ export const INITIAL_GROUP_DATA = {
   conditions: [],
 };
 
-export enum MultiSelectUIStyles {
-  Checkboxes = "checkboxes",
-}
-
-export type FieldUIStyles = MultiSelectUIStyles;
-
-export const MULTI_SELECT_UI_STYLES = [MultiSelectUIStyles.Checkboxes];
-
 export const FIELDS_NOT_RELATED_TO_MASTER_SCHEMA = [DFormBlockTypes.HelpText];
 
 export enum ResourceCompileOptionTypes {

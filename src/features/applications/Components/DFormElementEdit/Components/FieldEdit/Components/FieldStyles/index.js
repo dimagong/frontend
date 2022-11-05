@@ -3,12 +3,10 @@ import { Form } from "antd";
 import _ from "lodash";
 
 import { NmpButton, NmpSelect } from "features/nmp-ui";
-import { MULTI_SELECT_UI_STYLES } from "features/applications/constants";
-import { DFormBlockSizeTypes, DFormFieldTypes } from "features/dform/types";
+import { DFormBlockSizeTypes, DFormFieldTypes, DFormMultiSelectUIStyles } from "features/dform/types";
 
-const defaultUIStyle = { label: "default", value: null };
-
-const uIStylesOptions = [defaultUIStyle, ...MULTI_SELECT_UI_STYLES.map((value) => ({ label: value, value }))];
+const defaultUIStyle = "default";
+const uIStylesOptions = [defaultUIStyle, Object.values(DFormMultiSelectUIStyles)];
 
 const STYLES_CLASSES = {
   [DFormBlockSizeTypes.Half]: "Half width",
@@ -41,7 +39,7 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
   const initialValues = {
     ...element,
     masterSchemaFieldId: element.masterSchemaFieldId || null,
-    uiStyle: element.uiStyle ? { label: element.uiStyle, value: element.uiStyle } : defaultUIStyle,
+    uiStyle: element.uiStyle ? element.uiStyle : defaultUIStyle,
   };
 
   useEffect(() => {

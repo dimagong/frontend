@@ -6,10 +6,11 @@ import {
   DFormElementTypes,
   DFormBlockSizeTypes,
   DFormDateFormatTypes,
+  DFormMultiSelectUIStyles,
 } from "features/dform/types";
 
+import { ResourceCompileOptionTypes } from "./constants";
 import { AbstractDFormFieldConditionModel } from "./fieldConditionModel";
-import { FieldUIStyles, ResourceCompileOptionTypes } from "./constants";
 
 interface CommonFieldProperties<T extends DFormFieldTypes | DFormBlockTypes.HelpText> {
   id: string;
@@ -44,7 +45,7 @@ interface SelectFieldProperties<T extends DFormFieldTypes = DFormFieldTypes.Sele
 }
 
 interface MultiSelectFieldProperties extends SelectFieldProperties<DFormFieldTypes.MultiSelect> {
-  uiStyle: FieldUIStyles | null;
+  uiStyle: DFormMultiSelectUIStyles | null;
 }
 
 type TextFieldProperties = StringFieldProperties<DFormFieldTypes.Text>;
@@ -157,7 +158,7 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * For field type DFormFieldTypes.MultiSelect
    */
-  uiStyle: FieldUIStyles | null;
+  uiStyle: DFormMultiSelectUIStyles | null;
   /**
    * For field type DFormFieldTypes.Resource
    */

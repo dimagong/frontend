@@ -45,6 +45,10 @@ export enum DFormDateFormatTypes {
   Time = "date-time",
 }
 
+export enum DFormMultiSelectUIStyles {
+  Checkboxes = "checkboxes",
+}
+
 /**
  * Types
  */
