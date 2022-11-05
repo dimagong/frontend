@@ -8,19 +8,13 @@ import { Row, Button, TabContent, TabPane } from "reactstrap";
 import CustomTabs from "components/Tabs";
 import { BaseDForm } from "features/dform";
 import { DFormElementTypes } from "features/dform/types";
-import { DFormContextProvider } from "features/dform/ui/DFormContext";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
 import { getCategoryAsOption } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
 import { reorderArray } from "utility/reorderArray";
 
-import {
-  APPLICATION_PAGES,
-  INITIAL_GROUP_DATA,
-  INITIAL_SECTION_DATA,
-  FIELDS_NOT_RELATED_TO_MASTER_SCHEMA,
-} from "../constants";
+import { APPLICATION_PAGES, INITIAL_GROUP_DATA, INITIAL_SECTION_DATA } from "../constants";
 import { DFormFieldModel } from "../fieldModel";
 import DFormElementEdit from "../Components/DFormElementEdit";
 import ElementsReorderComponent from "../Components/ElementsReorderComponent";
@@ -547,17 +541,15 @@ export const ApplicationPage = ({ applicationId }) => {
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
-            <DFormContextProvider isConfigurable>
-              <BaseDForm
-                schema={applicationData}
-                selectedElement={selectedElement}
-                onElementClick={handleSelectElementForEdit}
-                onSectionCreate={handleSectionCreate}
-                onGroupCreate={handleGroupCreate}
-                onFieldCreate={handleFieldCreate}
-                onDragEnd={handleReorder}
-              />
-            </DFormContextProvider>
+            <BaseDForm
+              schema={applicationData}
+              selectedElement={selectedElement}
+              onElementClick={handleSelectElementForEdit}
+              onSectionCreate={handleSectionCreate}
+              onGroupCreate={handleGroupCreate}
+              onFieldCreate={handleFieldCreate}
+              onDragEnd={handleReorder}
+            />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>
             <ElementsReorderComponent onReorder={handleReorder} applicationData={applicationData} />

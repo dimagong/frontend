@@ -8,7 +8,7 @@ import { mockStoriesBlocks } from "./mockStoriesBlocks";
 import { DFormEditableGroup } from "./DFormEditableGroup";
 
 export default {
-  title: "DFormEditableGroup",
+  title: "DForm/EditableGroup",
   component: DFormEditableGroup,
 };
 

@@ -8,18 +8,14 @@ export type TemporaryFileResponse = { name: string; temporary_public_url: string
 
 export class DformFileService {
   // Temporary solution while there is no DI.
-  static #instance: { member?: DformFileService; manager?: DformFileService } = {};
-  static get member(): DformFileService {
-    if (!DformFileService.#instance.member) {
-      DformFileService.#instance.member = new DformFileService(clientAPI, clientFetch, "/member-view-api");
+  static create(config?: { isMemberView: boolean }): DformFileService {
+    if (config?.isMemberView === false) {
+      return new DformFileService(clientAPI, clientFetch, "/api");
     }
-    return DformFileService.#instance.member;
-  }
-  static get manager(): DformFileService {
-    if (!DformFileService.#instance.manager) {
-      DformFileService.#instance.manager = new DformFileService(clientAPI, clientFetch, "/api");
+    if (config?.isMemberView === true) {
+      return new DformFileService(clientAPI, clientFetch, "/member-view-api");
     }
-    return DformFileService.#instance.manager;
+    return new DformFileService(clientAPI, clientFetch, "/");
   }
 
   private constructor(

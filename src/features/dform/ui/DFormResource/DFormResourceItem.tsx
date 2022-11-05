@@ -6,7 +6,7 @@ import { NmpUpload } from "features/nmp-ui";
 import { triggerFileDownloading, invariant } from "features/common";
 
 import type { DFormFile } from "../../types";
-import { useDFormContext } from "../DFormContext";
+import { DFormContext } from "../DFormContext";
 
 type Props = {
   value?: DFormFile;
@@ -18,7 +18,7 @@ export const DFormResourceItem: FC<Props> = (props) => {
   const { value, isDisabled, masterSchemaFieldId } = props;
   const filename = value ? value.custom_filename ?? value.name : "noname resource";
 
-  const { dformId, dformFileService } = useDFormContext();
+  const { dformId, dformFileService } = DFormContext.useContext();
 
   const downloadMutation = useMutation({ mutationFn: dformFileService!.get, onSuccess: triggerFileDownloading });
 

@@ -14,19 +14,20 @@ type Props = {
   children: ReactNode;
 };
 
-export const DFormLabeledBlock: FC<Props> = (props) => {
+export const DFormLabeled: FC<Props> = (props) => {
   const { id, label = "", isRequired = false, isLabelShowing = true, children } = props;
+  const classes = classnames("dform-labeled", { "dform-labeled--required": isRequired });
 
   return (
-    <div className="dform-labeled-item">
+    <div className={classes}>
       {label === "" || !isLabelShowing ? null : (
-        <div className={classnames("dform-labeled-item__label", { "dform-labeled-item__label--required": isRequired })}>
+        <div className="dform-labeled__label">
           <DFormLabel id={id} label={label} />
         </div>
       )}
 
-      <div className="dform-labeled-item__control">
-        <div className="dform-labeled-item__control-content">{children}</div>
+      <div className="dform-labeled__control">
+        <div className="dform-labeled__control-content">{children}</div>
       </div>
     </div>
   );

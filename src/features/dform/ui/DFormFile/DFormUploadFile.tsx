@@ -6,7 +6,7 @@ import type { UploadChangeParam, UploadFile } from "antd/lib/upload/interface";
 import { NmpUpload } from "features/nmp-ui";
 import { triggerFileDownloading, invariant } from "features/common";
 
-import { useDFormContext } from "../DFormContext";
+import { DFormContext } from "../DFormContext";
 import type { DFormFiles, DFormFile } from "../../types";
 
 const getUploadFileFromDFormFile = (dformFile: DFormFile): UploadFile => ({
@@ -27,7 +27,7 @@ type Props = {
 export const DFormUploadFile: FC<Props> = (props) => {
   const { id, value = [], isMultiple = false, isDisabled, isRemovable, masterSchemaFieldId, onChange } = props;
 
-  const { dformId, dformFileService } = useDFormContext();
+  const { dformId, dformFileService } = DFormContext.useContext();
 
   const onSuccessUpload = (uploadedData: DFormFiles) => {
     if (onChange) {
@@ -50,7 +50,7 @@ export const DFormUploadFile: FC<Props> = (props) => {
   const uploadMutation = useMutation({ mutationFn: dformFileService!.post, onSuccess: onSuccessUpload });
   const downloadMutation = useMutation({ mutationFn: dformFileService!.get, onSuccess: triggerFileDownloading });
 
-  const fileList = value.map(getUploadFileFromDFormFile);
+  const fileList = Array.isArray(value) ? value.map(getUploadFileFromDFormFile) : [];
 
   const downloadFile = (fileId: number) => {
     invariant(dformId, "Can't download without 'dformId'.");

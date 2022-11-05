@@ -9,9 +9,9 @@ import type { FormProviderProps } from "antd/lib/form/context";
 import { NmpStepper, NpmCard } from "features/nmp-ui";
 
 // import { DFormSection } from "features/dform/ui/DFormSection";
-import { DFormContextProvider } from "features/dform/ui/DFormContext";
+import { DFormContext } from "features/dform/ui/DFormContext";
 import { getValuesBySectionId } from "features/dform/data/getValuesBySectionId";
-import { isMemberDFormAccessible } from "features/dform/data/isMemberDFormAccessible";
+import { isMemberDFormAccessible } from "features/dform/data/isDFormAccessible";
 import { applyDynamicConditionalRender } from "features/dform/data/applyConditionalRender";
 import { DFormSchema, DFormAccessTypes, DFormFieldTypes, NormalizedDFormValues } from "features/dform/types";
 
@@ -160,7 +160,7 @@ export const MemberDForm: FC<Props> = (props) => {
         <Col xl={{ span: 16, push: 4 }} span={12} push={6}>
           <NpmCard title={<strong className="member-dform__section-name">Section {sectionName}</strong>}>
             <Form.Provider onFormFinish={onFormFinish} onFormChange={onFormChange}>
-              <DFormContextProvider id={id} accessType={accessType} isMemberView>
+              <DFormContext.Provider dformId={id} accessType={accessType} isMemberView>
                 {/*<DFormSection
                   schema={schema}
                   actions={
@@ -187,7 +187,7 @@ export const MemberDForm: FC<Props> = (props) => {
                   initialValues={values}
                   key={sectionId}
                 />*/}
-              </DFormContextProvider>
+              </DFormContext.Provider>
             </Form.Provider>
           </NpmCard>
         </Col>

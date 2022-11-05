@@ -8,7 +8,7 @@ import { mockStoriesGroups } from "./mockStoriesGroups";
 import { mockStoriesBlocks } from "../DFormGroup/mockStoriesBlocks";
 
 export default {
-  title: "DFormSection",
+  title: "DForm/Section",
   component: DFormSection,
 };
 

@@ -9,7 +9,7 @@ import { DFormEditableSection } from "./DFormEditableSection";
 import { mockStoriesBlocks } from "../DFormGroup/mockStoriesBlocks";
 
 export default {
-  title: "DFormEditableSection",
+  title: "DForm/EditableSection",
   component: DFormEditableSection,
 };
 

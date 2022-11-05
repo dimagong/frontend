@@ -1,5 +1,5 @@
-import React from "react";
 import { Form } from "antd";
+import React, { useEffect } from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
 
 import { DFormField } from "./DFormField";
@@ -12,9 +12,13 @@ export default {
 };
 
 const Template = (props) => {
+  const [form] = Form.useForm();
+
+  useEffect(() => void form.setFieldValue(props.masterSchemaFieldId, props.value), [props.value]);
+
   return (
-    <Form initialValues={{ [props.masterSchemaFieldId]: props.value }}>
-      <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={new QueryClient()}>
+      <Form form={form} initialValues={{ [props.masterSchemaFieldId]: props.value }}>
         <DFormFieldItem
           minimum={props.minimum}
           maximum={props.maximum}
@@ -38,8 +42,8 @@ const Template = (props) => {
             onChange={props.onChange}
           />
         </DFormFieldItem>
-      </QueryClientProvider>
-    </Form>
+      </Form>
+    </QueryClientProvider>
   );
 };
 

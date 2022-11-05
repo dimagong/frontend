@@ -7,7 +7,7 @@ import { DFormBlock } from "../DFormBlock";
 import { mockStoriesBlocks } from "./mockStoriesBlocks";
 
 export default {
-  title: "DFormGroup",
+  title: "DForm/Group",
   component: DFormGroup,
 };
 

@@ -3,7 +3,7 @@ import type { FC } from "react";
 
 import { invariant } from "features/common";
 
-import { DFormLabeledBlock } from "../DFormLabeledBlock";
+import { DFormLabeled } from "../DFormLabeled";
 import { DFormFieldRenderer } from "./DFormFieldRenderer";
 
 import { DFormFieldTypes } from "../../types";
@@ -59,7 +59,7 @@ export const DFormField: FC<DFormFieldProps> = (props) => {
   invariant(fieldType, "Provide a fieldType to render the <DFormField />");
 
   return (
-    <DFormLabeledBlock
+    <DFormLabeled
       id={fieldType === DFormFieldTypes.Boolean ? undefined : id}
       label={label}
       isRequired={isRequired}
@@ -77,6 +77,6 @@ export const DFormField: FC<DFormFieldProps> = (props) => {
         masterSchemaFieldId={masterSchemaFieldId}
         onChange={onChange}
       />
-    </DFormLabeledBlock>
+    </DFormLabeled>
   );
 };
