@@ -63,7 +63,7 @@ const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
             rules={[{ required: true }]}
             {...restField}
           >
-            <DFormDatePicker id="expectedValue" placeholder="Enter expected value" />
+            <DFormDatePicker format={format} id="expectedValue" placeholder="Enter expected value" />
           </Form.Item>
 
           <Form.Item
