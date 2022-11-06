@@ -335,6 +335,7 @@ export const ApplicationPage = ({ applicationId }) => {
     application.groups[selectedElement.groupId].relatedFields = relatedFields.filter(
       (fieldId) => selectedElement.id !== fieldId
     );
+    // Fixme: When save a styles on a field
     application.groups[submittedElement.groupId].relatedFields.push(selectedElement.id);
 
     return application;

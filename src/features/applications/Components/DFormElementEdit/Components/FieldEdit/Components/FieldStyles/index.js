@@ -6,7 +6,7 @@ import { NmpButton, NmpSelect } from "features/nmp-ui";
 import { DFormBlockSizeTypes, DFormFieldTypes, DFormMultiSelectUIStyles } from "features/dform/types";
 
 const defaultUIStyle = "default";
-const uIStylesOptions = [defaultUIStyle, Object.values(DFormMultiSelectUIStyles)];
+const uIStylesOptions = [defaultUIStyle, ...Object.values(DFormMultiSelectUIStyles)];
 
 const STYLES_CLASSES = {
   [DFormBlockSizeTypes.Half]: "Half width",
@@ -49,12 +49,6 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
   }, [element]);
 
   const onFinish = (submittedObj) => {
-    _.forOwn(submittedObj, (value, key) => {
-      if (value?.value) {
-        submittedObj[key] = value.value;
-      }
-    });
-
     onFieldSubmit(submittedObj);
   };
 
