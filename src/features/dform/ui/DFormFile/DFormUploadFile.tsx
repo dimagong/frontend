@@ -74,9 +74,10 @@ export const DFormUploadFile: FC<Props> = (props) => {
   };
 
   const onUploadChange = (info: UploadChangeParam) => {
-    const files = info.fileList
-      .map(({ originFileObj }) => originFileObj)
-      .map(invariant("The UploadFile.originFileObj is undefined."));
+    const files = info.fileList.map(({ originFileObj }) => {
+      invariant(originFileObj, "The UploadFile.originFileObj is undefined.");
+      return originFileObj;
+    });
 
     uploadFiles(files);
   };

@@ -1,7 +1,7 @@
 import React from "react";
 import type { FunctionComponent, ReactNode, ReactElement } from "react";
 
-import { warning } from "features/common";
+import { unreachable } from "features/common";
 
 interface FC<P> extends FunctionComponent<P> {
   (props: P, context?: any): ReactElement<any, any> | null;
@@ -17,7 +17,7 @@ export const DCRElement: FC<Props> = (props) => {
   const { isHidden, isDisabled, children } = props;
 
   if (!children) {
-    warning("Unreachable: Can not reach a children props.");
+    unreachable("Can not reach a children props.");
     return null;
   }
 

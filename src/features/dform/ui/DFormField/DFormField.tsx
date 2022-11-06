@@ -1,7 +1,7 @@
 import React from "react";
 import type { FC } from "react";
 
-import { invariant } from "features/common";
+import { useDevInvariant } from "features/common";
 
 import { DFormLabeled } from "../DFormLabeled";
 import { DFormFieldRenderer } from "./DFormFieldRenderer";
@@ -56,7 +56,7 @@ export const DFormField: FC<DFormFieldProps> = (props) => {
   const { id, label, fieldType, isRequired, isDisabled, isLabelShowing, masterSchemaFieldId, ...fieldProps } = props;
   const { value, options, uiStyle, format, onChange } = fieldProps;
 
-  invariant(fieldType, "Provide a fieldType to render the <DFormField />");
+  useDevInvariant(fieldType, "Provide a fieldType to render the <DFormField />");
 
   return (
     <DFormLabeled
@@ -68,7 +68,7 @@ export const DFormField: FC<DFormFieldProps> = (props) => {
       <DFormFieldRenderer
         id={id}
         label={label}
-        value={value as never}
+        value={value as any}
         format={format}
         options={options}
         uiStyle={uiStyle}
