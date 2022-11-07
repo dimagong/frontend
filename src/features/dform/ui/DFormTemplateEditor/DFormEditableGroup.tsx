@@ -1,11 +1,10 @@
 import React from "react";
 import type { FC, ReactNode, MouseEventHandler } from "react";
 
+import { DFormGroup } from "../DFormGroup";
 import { DFormElementTypes } from "../../types";
-import { DFormBaseGroup } from "./DFormBaseGroup";
 import { DFormDroppable } from "../DFormDroppable";
 import { DFormSelectable } from "../DFormSelectable";
-import { DFormAddElement } from "../DFormAddElement";
 import { DFormDraggable, DFormDragHandle } from "../DFormDraggable";
 
 type Props = {
@@ -15,21 +14,20 @@ type Props = {
   isSelected?: boolean;
   isDraggable?: boolean;
   onClick?: MouseEventHandler;
-  onGroupAdd?: MouseEventHandler;
   children?: ReactNode;
 };
 
 export const DFormEditableGroup: FC<Props> = (props) => {
-  const { groupId, groupName, groupIndex, isSelected, isDraggable, onClick, onGroupAdd, children } = props;
+  const { groupId, groupName, groupIndex, isSelected, isDraggable, onClick, children } = props;
 
   return (
     <DFormDraggable draggableId={groupId} isDraggable={isDraggable} draggableIndex={groupIndex}>
       {(dragHandleProps) => (
         <DFormDroppable droppableId={groupId} droppableType={DFormElementTypes.Block} isDraggable={isDraggable}>
-          <DFormBaseGroup
+          <DFormGroup
             groupName={groupName}
             renderTitle={(node) => (
-              <DFormDragHandle {...dragHandleProps}>
+              <DFormDragHandle {...dragHandleProps} isDraggable={isDraggable} isMiddle>
                 <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
                   {node}
                 </DFormSelectable>
@@ -38,7 +36,7 @@ export const DFormEditableGroup: FC<Props> = (props) => {
             isEmptyTitleRendered
           >
             {children}
-          </DFormBaseGroup>
+          </DFormGroup>
         </DFormDroppable>
       )}
     </DFormDraggable>

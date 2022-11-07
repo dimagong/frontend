@@ -4,8 +4,8 @@ import { QueryClientProvider, QueryClient } from "react-query";
 import { DFormGroup } from "../DFormGroup";
 import { DFormBlock } from "../DFormBlock";
 import { DFormSection } from "./DFormSection";
-import { mockStoriesGroups } from "./mockStoriesGroups";
-import { mockStoriesBlocks } from "../DFormGroup/mockStoriesBlocks";
+import { mockStoriesGroups } from "../mockStoriesGroups";
+import { mockStoriesBlocks } from "../mockStoriesBlocks";
 
 export default {
   title: "DForm/Section",
@@ -15,15 +15,9 @@ export default {
 const Template = (props) => {
   return (
     <QueryClientProvider client={new QueryClient()}>
-      <DFormSection
-        sectionId={props.sectionId}
-        sectionName={props.sectionName}
-        initialValues={props.initialValues}
-        onFinish={props.onFinish}
-        onFinishFailed={props.onFinishFailed}
-      >
+      <DFormSection sectionName={props.sectionName}>
         {mockStoriesGroups.map((groupProps) => (
-          <DFormGroup groupId={groupProps.groupId} groupName={groupProps.groupName} key={groupProps.groupId}>
+          <DFormGroup groupName={groupProps.groupName} key={groupProps.groupId}>
             {mockStoriesBlocks
               .map((block, blockIndex) => ({
                 ...block,
@@ -55,6 +49,5 @@ const Template = (props) => {
 
 export const Base = Template.bind({});
 Base.args = {
-  sectionId: "sectionId",
   sectionName: "Section name",
 };

@@ -1,35 +1,22 @@
+import "./styles.scss";
+
 import React from "react";
 import { Form } from "antd";
 import type { FC } from "react";
 import type { FormItemProps } from "antd";
-
-import { DFormFieldTypes } from "../../types";
 
 export type DFormFieldItemProps = {
   minimum?: number;
   maximum?: number;
   minLength?: number;
   maxLength?: number;
-  fieldType?: DFormFieldTypes;
   isRequired?: boolean;
-  masterSchemaFieldId?: number;
+  name?: FormItemProps["name"];
   children?: FormItemProps["children"];
 };
 
 export const DFormFieldItem: FC<DFormFieldItemProps> = (props) => {
-  const {
-    minimum,
-    maximum,
-    minLength,
-    maxLength,
-    fieldType,
-    isRequired = false,
-    masterSchemaFieldId,
-    children,
-  } = props;
-
-  const defaultRules = [{ required: isRequired }];
-  const defaultProps = { name: masterSchemaFieldId, required: isRequired, rules: defaultRules, children };
+  const { name, minimum, maximum, minLength, maxLength, isRequired = false, children } = props;
 
   const numberValidator = async (_, value: unknown) => {
     const valueAsNumber = Number(value);
@@ -51,14 +38,15 @@ export const DFormFieldItem: FC<DFormFieldItemProps> = (props) => {
     }
   };
 
-  switch (fieldType) {
-    case DFormFieldTypes.Text:
-    case DFormFieldTypes.TextArea:
-    case DFormFieldTypes.LongText:
-      return <Form.Item {...defaultProps} rules={[...defaultRules, { min: minLength, max: maxLength }]} />;
-    case DFormFieldTypes.Number:
-      return <Form.Item {...defaultProps} rules={[...defaultRules, { validator: numberValidator }]} />;
-    default:
-      return <Form.Item {...defaultProps} />;
+  const rules: FormItemProps["rules"] = [{ required: isRequired }, { min: minLength, max: maxLength }];
+
+  if (minimum !== undefined || maximum !== undefined) {
+    rules.push({ validator: numberValidator });
   }
+
+  return (
+    <Form.Item name={name} rules={rules} required={isRequired} className="dform-field-item">
+      {children}
+    </Form.Item>
+  );
 };

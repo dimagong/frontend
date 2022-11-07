@@ -1,0 +1,157 @@
+.dform-section-steps {
+  $bg-color: #f4f4f4;
+  $main-color: #474747;
+  $white-color: #ffffff;
+  $green-color: #35a046;
+
+  /* Icon */
+
+  &.ant-steps-vertical > .ant-steps-item .ant-steps-item-icon {
+    margin-right: 12px;
+  }
+  // Finish status
+  .ant-steps-item-finish .ant-steps-item-icon {
+    background-color: $green-color;
+    border-color: $green-color;
+  }
+  .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+    color: $white-color;
+  }
+  // Process status
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon {
+    background-color: transparent;
+    border-color: transparent;
+  }
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon .ant-steps-icon {
+    color: $green-color;
+  }
+  .ant-progress-inner:not(.ant-progress-circle-gradient) .ant-progress-circle-path {
+    stroke: $green-color;
+  }
+  &.ant-steps-with-progress .ant-steps-item-icon .ant-progress {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .ant-progress-circle .ant-progress-inner {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  // Wait status
+  .ant-steps-item-wait .ant-steps-item-icon {
+    background-color: transparent;
+    border-color: $bg-color;
+  }
+  .ant-steps-item-wait .ant-steps-item-icon > .ant-steps-icon {
+    color: $main-color;
+  }
+  // Hover - Finish status
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process).ant-steps-item-finish
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-icon {
+    background-color: $green-color;
+    border-color: $green-color;
+
+    > .ant-steps-icon {
+      color: $white-color;
+    }
+  }
+  // Hover - Wait status
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process).ant-steps-item-wait
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-icon {
+    background-color: transparent;
+    border-color: $bg-color;
+
+    > .ant-steps-icon {
+      color: $main-color;
+    }
+  }
+
+  /* Process trail */
+
+  .ant-progress-circle-trail {
+    stroke: $bg-color;
+  }
+
+  /* Tail */
+
+  &.ant-steps-vertical > .ant-steps-item > .ant-steps-item-container > .ant-steps-item-tail::after {
+    width: 2px;
+  }
+  .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
+    background-color: $green-color;
+  }
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-tail::after {
+    background-color: $bg-color;
+  }
+
+  /* Title */
+
+  .ant-steps-item-title {
+    color: $main-color;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+  }
+  // Finish status
+  .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    color: $green-color;
+  }
+  // Process status
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    color: $green-color;
+  }
+  // Wait status
+  .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
+    color: $main-color;
+  }
+  // Hover - Finish status
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-finish
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-title,
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-finish
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-subtitle,
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-finish
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-description {
+    color: $green-color;
+  }
+  // Hover - Process status
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-process
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-title,
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-process
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-subtitle,
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-process
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-description {
+    color: $green-color;
+  }
+  // Hover - Wait status
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-wait
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-title,
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-wait
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-subtitle,
+  &.ant-steps
+    .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-wait
+    > .ant-steps-item-container[role="button"]:hover
+    .ant-steps-item-description {
+    color: $main-color;
+  }
+}

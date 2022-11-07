@@ -74,9 +74,20 @@ export type NormalizedDFormValue = DFormValue["value"] | DFormFile | DFormFiles;
 
 export type NormalizedDFormValues = Record<string, NormalizedDFormValue>;
 
+export type DFormSectionElement = {
+  id: string;
+  name: string;
+  isHidden: boolean;
+  isDisabled: boolean;
+  isProtected: boolean;
+  isAlreadyViewed: boolean;
+  relatedGroups: string[];
+  conditions: any[];
+};
+
 export type DFormSchema = {
   fields: Record<string, any>;
   groups: Record<string, any>;
-  sections: Record<string, any>;
+  sections: Record<string, DFormSectionElement>;
   sectionsOrder: Array<string>;
 };

@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
-import { BaseDForm } from "features/dform";
+// import { BaseDForm } from "features/dform";
 import { DFormElementTypes } from "features/dform/types";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
 
@@ -542,7 +542,7 @@ export const ApplicationPage = ({ applicationId }) => {
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
-            <BaseDForm
+            {/*<BaseDForm
               schema={applicationData}
               selectedElement={selectedElement}
               onElementClick={handleSelectElementForEdit}
@@ -550,7 +550,7 @@ export const ApplicationPage = ({ applicationId }) => {
               onGroupCreate={handleGroupCreate}
               onFieldCreate={handleFieldCreate}
               onDragEnd={handleReorder}
-            />
+            />*/}
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>
             <ElementsReorderComponent onReorder={handleReorder} applicationData={applicationData} />

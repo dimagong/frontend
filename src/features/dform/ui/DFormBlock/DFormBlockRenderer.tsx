@@ -1,46 +1,46 @@
 import React from "react";
 import type { FC } from "react";
 
-import { DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { useDevInvariant } from "features/common";
 
-import { DFormField, DFormFieldProps } from "../DFormField";
-import { DFormHelpText, DFormHelpTextProps } from "../DFormHelpText";
+import { DFormField } from "../DFormField";
+import { DFormBlockTypes } from "../../types";
+import { DFormHelpText } from "../DFormHelpText";
+import type { DFormFieldProps } from "../DFormField";
+import type { DFormHelpTextProps } from "../DFormHelpText";
 
-type ToFieldOmit = "id" | "value" | "checked" | "fieldType" | "onChange";
+type BlockType<T extends DFormBlockTypes> = { blockType: T };
 
-type DFormFieldBlockProps = Omit<DFormFieldProps, ToFieldOmit>;
+type FieldType = DFormFieldProps & BlockType<DFormBlockTypes.Field>;
+type HelpTextType = DFormHelpTextProps & BlockType<DFormBlockTypes.HelpText>;
 
-type DFormBlocksProps = DFormFieldBlockProps & DFormHelpTextProps;
+type PrivateDFormBlocksProps = FieldType | HelpTextType;
 
-export type DFormBlockRendererProps = DFormBlocksProps & {
-  blockType: DFormBlockTypes;
-  fieldType?: DFormFieldTypes;
-};
+export type DFormBlockRendererProps = BlockType<DFormBlockTypes> &
+  PartialKey<DFormFieldProps, "fieldType"> &
+  DFormHelpTextProps;
 
-export const DFormBlockRenderer: FC<DFormBlockRendererProps> = (props) => {
-  const { blockType, fieldType, children, ...blockProps } = props;
-  const { label, uiStyle, options, helpText, format, isDisabled, isRequired, isLabelShowing, masterSchemaFieldId } =
-    blockProps;
-
-  switch (blockType) {
+export const DFormBlockRenderer: FC<DFormBlockRendererProps> = (props: PrivateDFormBlocksProps) => {
+  switch (props.blockType) {
     case DFormBlockTypes.Field:
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useDevInvariant(props.fieldType, "Provide a fieldType to render the <DFormField />");
+
       return (
         <DFormField
-          id={String(masterSchemaFieldId)}
-          label={label}
-          format={format}
-          options={options}
-          uiStyle={uiStyle}
-          fieldType={fieldType}
-          isRequired={isRequired}
-          isDisabled={isDisabled}
-          isLabelShowing={isLabelShowing}
-          masterSchemaFieldId={masterSchemaFieldId}
+          id={props.id}
+          label={props.label}
+          format={props.format}
+          options={props.options}
+          uiStyle={props.uiStyle}
+          fieldType={props.fieldType}
+          isRequired={props.isRequired}
+          isDisabled={props.isDisabled}
+          isLabelShowing={props.isLabelShowing}
+          masterSchemaFieldId={props.masterSchemaFieldId}
         />
       );
     case DFormBlockTypes.HelpText:
-      return <DFormHelpText helpText={helpText} />;
-    default:
-      throw new Error(`Unreachable: A block type is not recognized.`);
+      return <DFormHelpText helpText={props.helpText} />;
   }
 };

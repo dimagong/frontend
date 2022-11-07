@@ -1,62 +1,15 @@
 import React from "react";
 import type { FC } from "react";
 
-import { useDevInvariant } from "features/common";
-
-import { DFormLabeled } from "../DFormLabeled";
-import { DFormFieldRenderer } from "./DFormFieldRenderer";
-
 import { DFormFieldTypes } from "../../types";
-import type { DFormTextProps } from "../DFormText";
-import type { DFormFileProps } from "../DFormFile";
-import type { DFormSelectProps } from "../DFormSelect";
-import type { DFormNumberProps } from "../DFormNumber";
-import type { DFormBooleanProps } from "../DFormBoolean";
-import type { DFormResourceProps } from "../DFormResource";
-import type { DFormTextAreaProps } from "../DFormTextArea";
-import type { DFormLongTextProps } from "../DFormLongText";
-import type { DFormFileListProps } from "../DFormFileList";
-import type { DFormDatePickerProps } from "../DFormDatePicker";
-import type { DFormMultiSelectProps } from "../DFormMultiSelect";
+import { DFormLabeled, DFormLabeledProps } from "../DFormLabeled";
+import { DFormFieldRenderer, DFormFieldRendererProps } from "./DFormFieldRenderer";
 
-type DFormFieldsProps = Omit<DFormBooleanProps, "value"> &
-  Omit<DFormDatePickerProps, "value"> &
-  Omit<DFormFileProps, "value"> &
-  Omit<DFormFileListProps, "value"> &
-  Omit<DFormLongTextProps, "value"> &
-  Omit<DFormMultiSelectProps, "value"> &
-  Omit<DFormNumberProps, "value"> &
-  Omit<DFormResourceProps, "value"> &
-  Omit<DFormSelectProps, "value"> &
-  Omit<DFormTextProps, "value"> &
-  Omit<DFormTextAreaProps, "value">;
-
-type DFormFieldsValueProp =
-  | DFormBooleanProps["value"]
-  | DFormDatePickerProps["value"]
-  | DFormFileProps["value"]
-  | DFormFileListProps["value"]
-  | DFormLongTextProps["value"]
-  | DFormMultiSelectProps["value"]
-  | DFormNumberProps["value"]
-  | DFormResourceProps["value"]
-  | DFormSelectProps["value"]
-  | DFormTextProps["value"]
-  | DFormTextAreaProps["value"];
-
-export type DFormFieldProps = DFormFieldsProps & {
-  label?: string;
-  value?: DFormFieldsValueProp;
-  fieldType?: DFormFieldTypes;
-  isRequired?: boolean;
-  isLabelShowing?: boolean;
-};
+export type DFormFieldProps = DFormFieldRendererProps & Omit<DFormLabeledProps, "children">;
 
 export const DFormField: FC<DFormFieldProps> = (props) => {
-  const { id, label, fieldType, isRequired, isDisabled, isLabelShowing, masterSchemaFieldId, ...fieldProps } = props;
-  const { value, options, uiStyle, format, onChange } = fieldProps;
-
-  useDevInvariant(fieldType, "Provide a fieldType to render the <DFormField />");
+  const { fieldType, isRequired, isLabelShowing, ...fieldsProps } = props;
+  const { id, label, value, format, uiStyle, options, isDisabled, masterSchemaFieldId, onChange } = fieldsProps;
 
   return (
     <DFormLabeled
@@ -68,7 +21,7 @@ export const DFormField: FC<DFormFieldProps> = (props) => {
       <DFormFieldRenderer
         id={id}
         label={label}
-        value={value as any}
+        value={value}
         format={format}
         options={options}
         uiStyle={uiStyle}

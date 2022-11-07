@@ -41,11 +41,9 @@
   max-width: 100%;
 
   border-right: 2px solid #7367f0 !important;
-  -webkit-box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
-  -moz-box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
   box-shadow: 4px 0 3px -2px rgba(0, 0, 0, 0.16) !important;
 
-  align-self: flex-start;
+  //align-self: flex-start;
 
   &-nav {
     display: flex;
@@ -57,8 +55,6 @@
       margin-bottom: 23px;
       display: flex;
       flex-direction: row;
-      //white-space: nowrap;
-      justify-content: flex-end;
 
       // override default styles
       transform: translateY(0) !important;

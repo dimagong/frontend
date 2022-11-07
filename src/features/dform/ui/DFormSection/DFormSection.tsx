@@ -1,43 +1,41 @@
+import "./styles.scss";
+
 import React from "react";
 import type { FC } from "react";
-import { Form, FormProps } from "antd";
+import classnames from "classnames";
 
-import { DFormBaseSection } from "./DFormBaseSection";
-import { dformValidationMessages } from "./dformValidationMessages";
+import { NmpScreenReaderOnly } from "features/nmp-ui";
 
-import { NmpButton } from "features/nmp-ui";
-import MemberDFormCheckSave from "features/members/ui/MemberDFormCheckSave";
-// import MemberDFormNavigation from "../../../../features/members/ui/MemberDFormNavigation";
-
-type Props = Omit<FormProps, "name" | "layout" | "validateMessages"> & {
-  sectionId: string;
+export type DFormSectionProps = {
+  isThin?: boolean;
   sectionName: string;
 };
 
-export const DFormSection: FC<Props> = (props) => {
-  const { sectionId, sectionName, initialValues, children, ...formProps } = props;
+export const DFormSection: FC<DFormSectionProps> = (props) => {
+  const { isThin = false, sectionName = "", children } = props;
+  const classes = classnames("dform-section", { "dform-section--thin": isThin });
 
   return (
-    <Form name={sectionId} layout="vertical" validateMessages={dformValidationMessages} {...formProps}>
-      <DFormBaseSection sectionName={sectionName}>
-        {children}
+    <div className={classes}>
+      <NmpScreenReaderOnly tag="h2">{sectionName}</NmpScreenReaderOnly>
 
-        <div>
-          <MemberDFormCheckSave isSavedDFormFieldLoading={false} />
+      <div className="dform-section__body">{children}</div>
 
-          <NmpButton type="nmp-ghost" disabled={false} loading={false}>
-            Back
-          </NmpButton>
+      {/*<div>
+        <MemberDFormCheckSave isSavedDFormFieldLoading={false} />
 
-          <NmpButton type="nmp-primary" disabled={false} loading={false} htmlType="submit">
-            Next Section
-          </NmpButton>
+        <NmpButton type="nmp-ghost" disabled={false} loading={false}>
+        Back
+        </NmpButton>
 
-          <NmpButton type="nmp-primary" disabled={false} loading={false} htmlType="submit">
-            Submit for review
-          </NmpButton>
-        </div>
-      </DFormBaseSection>
-    </Form>
+        <NmpButton type="nmp-primary" disabled={false} loading={false} htmlType="submit">
+        Next Section
+        </NmpButton>
+
+        <NmpButton type="nmp-primary" disabled={false} loading={false} htmlType="submit">
+        Submit for review
+        </NmpButton>
+        </div>*/}
+    </div>
   );
 };

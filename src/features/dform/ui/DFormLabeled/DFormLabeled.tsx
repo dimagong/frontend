@@ -6,7 +6,7 @@ import type { FC, ReactNode } from "react";
 
 import { DFormLabel } from "../DFormLabel";
 
-type Props = {
+export type DFormLabeledProps = {
   id?: string;
   label?: string;
   isRequired?: boolean;
@@ -14,7 +14,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const DFormLabeled: FC<Props> = (props) => {
+export const DFormLabeled: FC<DFormLabeledProps> = (props) => {
   const { id, label = "", isRequired = false, isLabelShowing = true, children } = props;
   const classes = classnames("dform-labeled", { "dform-labeled--required": isRequired });
 

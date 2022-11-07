@@ -1,12 +1,12 @@
 import React from "react";
 import type { FC, ReactNode } from "react";
-import { Draggable, DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
+import { Draggable, DraggableProvidedDragHandleProps, DraggableStateSnapshot } from "react-beautiful-dnd";
 
 type Props = {
   draggableId: string;
   isDraggable?: boolean;
   draggableIndex: number;
-  children?: (dragHandleProps?: DraggableProvidedDragHandleProps) => ReactNode;
+  children?: (dragHandleProps?: DraggableProvidedDragHandleProps, state?: DraggableStateSnapshot) => ReactNode;
 };
 
 export const DFormDraggable: FC<Props> = (props) => {
@@ -18,9 +18,9 @@ export const DFormDraggable: FC<Props> = (props) => {
 
   return (
     <Draggable index={draggableIndex} draggableId={draggableId}>
-      {(provided) => (
+      {(provided, state) => (
         <div ref={provided.innerRef} {...provided.draggableProps}>
-          {children ? children(provided.dragHandleProps) : null}
+          {children ? children(provided.dragHandleProps, state) : null}
         </div>
       )}
     </Draggable>

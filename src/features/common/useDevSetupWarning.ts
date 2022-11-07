@@ -4,6 +4,7 @@ import { devWarning } from "./devWarning";
 
 export const useDevSetupWarning = (fn: () => void, deps?: any[]) => {
   useDev(() => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
       try {
         fn();

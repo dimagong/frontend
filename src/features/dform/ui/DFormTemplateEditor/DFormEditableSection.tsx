@@ -1,9 +1,9 @@
 import React from "react";
 import type { FC } from "react";
 
+import { DFormSection } from "../DFormSection";
 import { DFormElementTypes } from "../../types";
 import { DFormDroppable } from "../DFormDroppable";
-import { DFormBaseSection } from "./DFormBaseSection";
 
 type Props = {
   sectionId: string;
@@ -16,9 +16,9 @@ export const DFormEditableSection: FC<Props> = (props) => {
 
   return (
     <DFormDroppable droppableId={sectionId} droppableType={DFormElementTypes.Group} isDraggable={isDraggable}>
-      <DFormBaseSection isThin sectionName={sectionName}>
+      <DFormSection isThin sectionName={sectionName}>
         {children}
-      </DFormBaseSection>
+      </DFormSection>
     </DFormDroppable>
   );
 };

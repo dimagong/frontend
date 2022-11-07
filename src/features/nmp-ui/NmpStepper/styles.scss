@@ -30,7 +30,7 @@
     stroke: #35a046;
   }
 
-  @at-root .ant-steps-with-progress .ant-steps-item-icon .ant-progress {
+  .ant-steps-with-progress .ant-steps-item-icon .ant-progress {
     position: absolute;
     top: 2px !important;
     right: -5px;

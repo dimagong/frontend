@@ -30,7 +30,7 @@ type SelectType = FieldType<DFormFieldTypes.Select> & DFormSelectProps;
 type TextType = FieldType<DFormFieldTypes.Text> & DFormTextProps;
 type TextAreaType = FieldType<DFormFieldTypes.TextArea> & DFormTextAreaProps;
 
-export type DFormFieldRendererProps =
+export type PrivateDFormFieldRendererProps =
   | BooleanType
   | DateType
   | FileType
@@ -43,7 +43,20 @@ export type DFormFieldRendererProps =
   | TextType
   | TextAreaType;
 
-export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props) => {
+export type DFormFieldRendererProps = FieldType<DFormFieldTypes> &
+  DFormBooleanProps &
+  DFormDatePickerProps &
+  DFormFileProps &
+  DFormFileListProps &
+  DFormLongTextProps &
+  DFormMultiSelectProps &
+  DFormNumberProps &
+  DFormResourceProps &
+  DFormSelectProps &
+  DFormTextProps &
+  DFormTextAreaProps;
+
+export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props: PrivateDFormFieldRendererProps) => {
   switch (props.fieldType) {
     case DFormFieldTypes.Boolean:
       return (

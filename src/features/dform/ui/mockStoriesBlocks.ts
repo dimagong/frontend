@@ -1,4 +1,4 @@
-import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../types";
 
 export const mockStoriesBlocks = [
   {

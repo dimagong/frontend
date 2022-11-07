@@ -4,7 +4,6 @@ import { QueryClientProvider, QueryClient } from "react-query";
 
 import { DFormField } from "./DFormField";
 import { DFormFieldTypes } from "../../types";
-import { DFormFieldItem } from "./DFormFieldItem";
 
 export default {
   title: "DForm/Field",
@@ -14,22 +13,16 @@ export default {
 const Template = (props) => {
   const [form] = Form.useForm();
 
-  useEffect(() => void form.setFieldValue(props.masterSchemaFieldId, props.value), [props.value]);
+  useEffect(() => {
+    props.value ? form.setFieldValue("field", props.value) : form.resetFields();
+  }, [props.value]);
 
   return (
     <QueryClientProvider client={new QueryClient()}>
-      <Form form={form} initialValues={{ [props.masterSchemaFieldId]: props.value }}>
-        <DFormFieldItem
-          minimum={props.minimum}
-          maximum={props.maximum}
-          minLength={props.minLength}
-          maxLength={props.maxLength}
-          fieldType={props.fieldType}
-          isRequired={props.isRequired}
-          masterSchemaFieldId={props.masterSchemaFieldId}
-        >
+      <Form form={form}>
+        <Form.Item name="field">
           <DFormField
-            id={String(props.masterSchemaFieldId)}
+            id={props.id}
             label={props.label}
             format={props.format}
             options={props.options}
@@ -41,18 +34,18 @@ const Template = (props) => {
             masterSchemaFieldId={props.masterSchemaFieldId}
             onChange={props.onChange}
           />
-        </DFormFieldItem>
+        </Form.Item>
       </Form>
     </QueryClientProvider>
   );
 };
 
 const defaultArgs = {
+  id: "field_id",
   label: "Label",
   isDisabled: false,
   isRequired: false,
   isLabelShowing: true,
-  masterSchemaFieldId: 0,
 };
 
 export const BooleanField = Template.bind({});
@@ -91,8 +84,6 @@ LongTextField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.LongText,
   value: "<b>Bold</b>",
-  minLength: 10,
-  maxLength: 20,
 };
 
 export const MultiSelectField = Template.bind({});
@@ -108,8 +99,6 @@ NumberField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.Number,
   value: 877,
-  minimum: 877,
-  maximum: 879,
 };
 
 export const ResourceField = Template.bind({});
@@ -132,8 +121,6 @@ TextField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.Text,
   value: "text...",
-  minLength: 10,
-  maxLength: 15,
 };
 
 export const TextAreaField = Template.bind({});
@@ -141,6 +128,4 @@ TextAreaField.args = {
   ...defaultArgs,
   fieldType: DFormFieldTypes.TextArea,
   value: "more text...",
-  minLength: 30,
-  maxLength: 35,
 };

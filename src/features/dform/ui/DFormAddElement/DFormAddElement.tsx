@@ -12,46 +12,25 @@ const elementNames = {
 };
 
 type Props = {
+  isVisible?: boolean;
+  isHoverable?: boolean;
   elementType: DFormElementTypes.Block | DFormElementTypes.Group;
   onBlockAdd?: MouseEventHandler;
   onGroupAdd?: MouseEventHandler;
-  isHoverable?: boolean;
   children?: ReactNode;
 };
 
 export const DFormAddElement: FC<Props> = (props) => {
-  const { elementType, onBlockAdd, onGroupAdd, isHoverable = false, children } = props;
+  const { isVisible = true, isHoverable = false, elementType, onBlockAdd, onGroupAdd, children } = props;
 
   const [isHover, setIsHover] = useState(false);
 
   const onMouseEnter = () => setIsHover(true);
   const onMouseLeave = () => setIsHover(false);
 
-  // if (elementType === "both") {
-  //   return (
-  //     <NmpRow
-  //       onMouseEnter={isHoverable ? onMouseEnter : undefined}
-  //       onMouseLeave={isHoverable ? onMouseLeave : undefined}
-  //     >
-  //       {children ? <NmpCol span="24">{children}</NmpCol> : null}
-  //
-  //       {(isHoverable && isHover) || !isHoverable ? (
-  //         <NmpCol span="24">
-  //           <NmpRow gutter={20}>
-  //             <NmpCol span="12">
-  //               <DFormAddElementButton elementName={elementNames[DFormElementTypes.Block]} onClick={onBlockAdd} />
-  //             </NmpCol>
-  //             <NmpCol span="12">
-  //               <DFormAddElementButton elementName={elementNames[DFormElementTypes.Group]} onClick={onGroupAdd} />
-  //             </NmpCol>
-  //           </NmpRow>
-  //         </NmpCol>
-  //       ) : null}
-  //     </NmpRow>
-  //   );
-  // }
-
   const onClick = elementType === DFormElementTypes.Group ? onGroupAdd : onBlockAdd;
+
+  const isButtonVisible = isVisible ? (isHoverable && isHover) || !isHoverable : false;
 
   return (
     <NmpRow
@@ -61,7 +40,7 @@ export const DFormAddElement: FC<Props> = (props) => {
     >
       {children ? <NmpCol span="24">{children}</NmpCol> : null}
 
-      {(isHoverable && isHover) || !isHoverable ? (
+      {isButtonVisible ? (
         <NmpCol span="24">
           <DFormAddElementButton elementName={elementNames[elementType]} onClick={onClick} />
         </NmpCol>
