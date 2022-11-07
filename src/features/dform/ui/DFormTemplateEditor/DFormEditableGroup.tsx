@@ -1,10 +1,13 @@
 import React from "react";
 import type { FC, ReactNode, MouseEventHandler } from "react";
 
+import { NmpCol } from "features/nmp-ui";
+
 import { DFormGroup } from "../DFormGroup";
 import { DFormElementTypes } from "../../types";
 import { DFormDroppable } from "../DFormDroppable";
 import { DFormSelectable } from "../DFormSelectable";
+import { DFormAddElement } from "../DFormAddElement";
 import { DFormDraggable, DFormDragHandle } from "../DFormDraggable";
 
 type Props = {
@@ -13,12 +16,36 @@ type Props = {
   groupIndex: number;
   isSelected?: boolean;
   isDraggable?: boolean;
-  onClick?: MouseEventHandler;
+  relatedBlocks?: string[];
+  onGroupClick?: (groupId: string) => void;
+  onBlockCreate?: (groupId: string) => void;
   children?: ReactNode;
 };
 
 export const DFormEditableGroup: FC<Props> = (props) => {
-  const { groupId, groupName, groupIndex, isSelected, isDraggable, onClick, children } = props;
+  const {
+    groupId,
+    groupName,
+    groupIndex,
+    isSelected,
+    isDraggable,
+    relatedBlocks = [],
+    onGroupClick,
+    onBlockCreate,
+    children,
+  } = props;
+
+  const onBlockAdd = () => {
+    if (onBlockCreate) {
+      onBlockCreate(groupId);
+    }
+  };
+
+  const onSelectableClick = () => {
+    if (onGroupClick) {
+      onGroupClick(groupId);
+    }
+  };
 
   return (
     <DFormDraggable draggableId={groupId} isDraggable={isDraggable} draggableIndex={groupIndex}>
@@ -28,7 +55,7 @@ export const DFormEditableGroup: FC<Props> = (props) => {
             groupName={groupName}
             renderTitle={(node) => (
               <DFormDragHandle {...dragHandleProps} isDraggable={isDraggable} isMiddle>
-                <DFormSelectable isSelected={isSelected} isMishandled onClick={onClick}>
+                <DFormSelectable isSelected={isSelected} isMishandled onClick={onSelectableClick}>
                   {node}
                 </DFormSelectable>
               </DFormDragHandle>
@@ -36,6 +63,12 @@ export const DFormEditableGroup: FC<Props> = (props) => {
             isEmptyTitleRendered
           >
             {children}
+
+            {relatedBlocks.length === 0 ? (
+              <NmpCol span="24">
+                <DFormAddElement elementType={DFormElementTypes.Block} onBlockAdd={onBlockAdd} />
+              </NmpCol>
+            ) : null}
           </DFormGroup>
         </DFormDroppable>
       )}

@@ -11,7 +11,13 @@ export default {
 const Template = (props) => {
   return (
     <DragDropContext onDragEnd={() => {}}>
-      <DFormSectionTabs items={props.sections} isDraggable={props.isDraggable} onCreate={props.onCreate} />
+      <DFormSectionTabs
+        items={props.sections}
+        isDraggable={props.isDraggable}
+        selectedElementId={props.selectedElementId}
+        onTabClick={props.onTabClick}
+        onTabCreate={props.onTabCreate}
+      />
     </DragDropContext>
   );
 };

@@ -5,12 +5,8 @@
   $green-color: #35a046;
 
   $max-width: 150px;
-  $actions-height: 32px;
 
   color: $main-color;
-
-  position: relative;
-  padding-bottom: $actions-height;
 
   &__tab {
     width: 100%;
@@ -18,6 +14,8 @@
     align-items: center;
     white-space: normal;
     position: relative;
+
+    padding-right: 16px;
   }
 
   &__tab:after {
@@ -29,7 +27,7 @@
     top: 50%;
     right: 0;
     position: absolute;
-    transform: translate(100%, -50%);
+    transform: translate(0, -50%);
   }
 
   .ant-tabs-tab-active &__tab:after {
@@ -56,18 +54,6 @@
     background-color: #dcd8f8;
   }
 
-  &__actions {
-    left: 0;
-    bottom: 0;
-    width: $max-width;
-    position: absolute;
-
-    height: $actions-height;
-
-    display: flex;
-    justify-content: flex-end;
-  }
-
   /* Tab */
 
   // Hover,Active,Focus
@@ -85,7 +71,7 @@
   }
   &.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab,
   &.ant-tabs-left > div > .ant-tabs-nav .ant-tabs-tab {
-    padding: 8px 16px 8px 8px;
+    padding: 8px 0 8px 8px;
   }
   &.ant-tabs-left > .ant-tabs-nav .ant-tabs-tab + .ant-tabs-tab {
     margin: 0;

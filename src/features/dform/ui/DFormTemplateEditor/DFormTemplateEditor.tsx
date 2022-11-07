@@ -1,9 +1,8 @@
+import React from "react";
 import type { FC } from "react";
-import React, { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { NmpButton, NmpCol, NmpRow } from "features/nmp-ui";
+import { NmpCol, NmpRow } from "features/nmp-ui";
 
 import { DFormSectionElement } from "../../types";
 import { DFormTemplateSectionEditor } from "./DFormTemplateSectionEditor";
@@ -12,13 +11,33 @@ import { DFormSectionTabs, DFormSectionTabsProps } from "../DFormSectionTabs";
 type Item = Unpack<DFormSectionTabsProps["items"]>;
 
 export type DFormTemplateEditorProps = {
+  blocks: any[];
+  groups: any[];
   sections: DFormSectionElement[];
   isDraggable?: boolean;
+  selectedElementId?: string;
+  onBlockClick?: (blockId: string) => void;
+  onGroupClick?: (groupId: string) => void;
+  onBlockCreate?: (blockId: string) => void;
+  onGroupCreate?: (sectionId: string) => void;
+  onSectionClick?: (sectionId: string) => void;
   onSectionCreate?: () => void;
 };
 
 export const DFormTemplateEditor: FC<DFormTemplateEditorProps> = (props) => {
-  const { sections, isDraggable = false, onSectionCreate } = props;
+  const {
+    blocks,
+    groups,
+    sections,
+    isDraggable = false,
+    selectedElementId,
+    onBlockClick,
+    onGroupClick,
+    onBlockCreate,
+    onGroupCreate,
+    onSectionClick,
+    onSectionCreate,
+  } = props;
 
   return (
     <DragDropContext onDragEnd={() => {}}>
@@ -31,15 +50,25 @@ export const DFormTemplateEditor: FC<DFormTemplateEditorProps> = (props) => {
                 label: section.name,
                 children: (
                   <DFormTemplateSectionEditor
+                    blocks={blocks}
+                    groups={groups}
                     sectionId={section.id}
                     sectionName={section.name}
                     isDraggable={isDraggable}
+                    relatedGroups={section.relatedGroups}
+                    selectedElementId={selectedElementId}
+                    onBlockClick={onBlockClick}
+                    onGroupClick={onGroupClick}
+                    onBlockCreate={onBlockCreate}
+                    onGroupCreate={onGroupCreate}
                   />
                 ),
               })
             )}
             isDraggable={isDraggable}
-            onCreate={onSectionCreate}
+            selectedElementId={selectedElementId}
+            onTabClick={onSectionClick}
+            onTabCreate={onSectionCreate}
           />
         </NmpCol>
       </NmpRow>

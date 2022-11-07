@@ -4,18 +4,30 @@
     background-color: #7367f0;
   }
 
+  &--left &__content {
+    padding-left: 0.5rem;
+  }
+  &:not(&--left) &__content {
+    padding-right: 0.5rem;
+  }
+
   &__content {
+    width: 100%;
     cursor: pointer;
     position: relative;
+  }
 
-    padding-right: 0.5rem;
+  &--left &__content::before {
+    left: 0;
+  }
+  &:not(&--left) &__content::before {
+    right: 0;
   }
 
   &__content::before {
     content: "";
     position: absolute;
     top: 0;
-    right: 0;
     bottom: 0;
 
     width: 2px;
