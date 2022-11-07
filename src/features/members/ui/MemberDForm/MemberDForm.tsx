@@ -1,180 +1,174 @@
 import "./styles.scss";
 
 import _ from "lodash";
-import type { FC } from "react";
-import React, { useMemo, useRef, useState } from "react";
-import type { FormProviderProps } from "antd/lib/form/context";
+import React, { FC, useEffect, useRef, useState } from "react";
 
-import { DFormMemberForm } from "features/dform/ui/DFormMemberForm";
-import { getValuesBySectionId } from "features/dform/data/getValuesBySectionId";
-import { applyDynamicConditionalRender } from "features/dform/data/applyConditionalRender";
-import { getFieldByMasterSchemaFieldId } from "features/dform/data/getFieldByMasterSchemaFieldId";
-import { DFormSchema, DFormAccessTypes, DFormFieldTypes, NormalizedDFormValues } from "features/dform/types";
-
+import { NmpCard, NmpRow, NmpCol, NmpStepper } from "features/nmp-ui";
+import { DForm, AccessTypes, FieldTypes, isMemberViewDFormAccessible } from "components/DForm";
 import {
+  useSaveDFormFieldValueMutation,
   useSubmitDFormMutation,
   useProspectUserProfileQuery,
-  useSaveDFormFieldValueMutation,
 } from "api/Onboarding/prospectUserQuery";
 
+import MemberDFormCheckSave from "../MemberDFormCheckSave";
+import MemberDFormNavigation from "../MemberDFormNavigation";
 import MemberThanksStatusView from "../MemberThanksStatusView";
 
-type Props = {
-  dformId: number;
-  dformName: string;
-  accessType: DFormAccessTypes;
-  initialSchema: DFormSchema;
-  initialValues: NormalizedDFormValues;
-};
+interface Props {
+  id: number;
+  name: string;
+  schema: any;
+  values: any;
+  accessType: AccessTypes;
+  sections: Array<{ id: string; name: string }>;
+}
 
 export const MemberDForm: FC<Props> = (props) => {
-  const { dformId, dformName, accessType, initialSchema, initialValues } = props;
+  const { id, name, schema, values: propValues, accessType, sections } = props;
 
+  const [values, setValues] = useState<any>(() => propValues);
+  const [sectionId, setSectionId] = useState<string>(() => sections[0].id);
   const [successSubmit, onSuccessSubmit] = useState<boolean>(() => false);
 
-  // const [values, setValues] = useState(() => getValuesBySectionId(sectionId, initialSchema, initialValues));
-  // const schema = useMemo(() => applyDynamicConditionalRender(initialSchema, values), [initialSchema, values]);
+  const step = sections.findIndex(({ id }) => id === sectionId) || 0;
+  const sectionName = sections[step]?.name || `${step + 1}`;
+  const stepperStatus = step < sections.length ? "process" : "finish";
+
+  const onFieldValueError = (error: any): void => {
+    console.log({ error });
+  };
 
   // Mutations
-  // const submitDFormMutation = useSubmitDFormMutation({ dformId: id }, { onSuccess: () => onSuccessSubmit(true) });
-  // const saveFieldValueMutation = useSaveDFormFieldValueMutation({ dformId: id });
+  const saveFieldValueMutation = useSaveDFormFieldValueMutation({ dformId: id }, { onError: onFieldValueError });
 
-  // Queries
-  const userDFormProfile = useProspectUserProfileQuery();
+  const submitDFormMutation = useSubmitDFormMutation(
+    { dformId: id },
+    {
+      onSuccess: () => {
+        onSuccessSubmit(true);
+      },
+    }
+  );
 
-  // const saveFieldValueRef = useRef(_.throttle((v) => saveFieldValueMutation.mutate(v), 1500, { leading: false }));
-  // const saveFieldValue = (v) => saveFieldValueRef.current(v);
+  const userDFormProfile = useProspectUserProfileQuery({ staleTime: Infinity });
 
-  // const submitData =
-  //   (submitDFormMutation as any).data?.updated_at ||
-  //   (submitDFormMutation as any).data?.finished_at ||
-  //   new Date().toISOString();
-  // const userName = userDFormProfile.data.first_name;
-  // const organization = userDFormProfile.data.permissions.organization;
+  const saveFieldValueRef = useRef(_.throttle((v) => saveFieldValueMutation.mutate(v), 1500, { leading: false }));
+  const saveFieldValue = (v) => saveFieldValueRef.current(v);
+  const flushFieldValue = () => saveFieldValueRef.current.flush();
 
-  // const changeSection = (sectionId) => {
-  //   setSectionId(sectionId);
-  //   setValues(getValuesBySectionId(sectionId, initialSchema, initialValues));
-  //
-  //   // Scroll to Top
-  //   const scrollable = document.querySelector(".scrollbar-container > :first-child");
-  //   if (scrollable) scrollable.scrollTo({ top: 0, behavior: "smooth" });
-  // };
+  const onFieldChange = (field, newValue) => {
+    let newFieldValue;
+    const currentValue = values[field.masterSchemaFieldId];
 
-  // const onChangeStep = (step) => {
-  //   if (step < sections.length) {
-  //     changeSection(sections[step].id);
-  //   }
-  // };
+    switch (field.type) {
+      case FieldTypes.File:
+      case FieldTypes.FileList:
+        newFieldValue = { ...currentValue, files: newValue };
+        break;
+      case FieldTypes.Text:
+      case FieldTypes.TextArea:
+      case FieldTypes.LongText:
+      case FieldTypes.Date:
+      case FieldTypes.Number:
+      case FieldTypes.Boolean:
+      case FieldTypes.Select:
+      case FieldTypes.MultiSelect:
+      default:
+        newFieldValue = { ...currentValue, value: newValue };
+    }
 
-  // const onPreviousSection = () => changeSection(sections[step - 1].id);
+    const newApplicationValue = { ...values, [field.masterSchemaFieldId]: newFieldValue };
 
-  // Form
+    setValues(newApplicationValue);
 
-  // const onFieldChange = (masterSchemaFieldId, newValue) => {
-  //   const field = getFieldByMasterSchemaFieldId(masterSchemaFieldId, initialSchema);
-  //
-  //   // Do not save Files. Files save in a different way.
-  //   if ([DFormFieldTypes.File, DFormFieldTypes.FileList].includes(field.type)) return;
-  //
-  //   saveFieldValue({ master_schema_field_id: masterSchemaFieldId, value: newValue });
-  // };
+    // Do not save Files. Files save in a different way.
+    if ([FieldTypes.File, FieldTypes.FileList].includes(field.type)) return;
+    saveFieldValue({ master_schema_field_id: field.masterSchemaFieldId, value: newValue });
+  };
 
-  // const onFormFinish: FormProviderProps["onFormFinish"] = (sectionId, { forms }) => {
-  //   const form = forms[sectionId];
-  //
-  //   form.validateFields().then(() => {
-  //     const isLastSection = step === sections.length - 1;
-  //
-  //     if (!isLastSection) {
-  //       const nextSectionId = sections[step + 1].id;
-  //       changeSection(nextSectionId);
-  //     } else {
-  //       submitDFormMutation.mutate();
-  //     }
-  //   });
-  // };
+  const isFinalSection = step === sections.length - 1;
+  const isAccessible = isMemberViewDFormAccessible(accessType);
 
-  // ToDo: Make validation rules for Fields with Form.Item (like min max ...)
-  // ToDo: Next section if all required fields are valid
-  // ToDo: Figure out how to - Watch required fields in section and
-  // ToDo: Implement - Watch required fields in section and
-  // ToDo: Set section if viewed when submitted
-  // ToDo: Apply DCR to NpmStepper (isHidden & isDisabled)
-  /*const onFormChange: FormProviderProps["onFormChange"] = (sectionId, { changedFields, forms }) => {
-    const form = forms[sectionId];
-    const values = form.getFieldsValue();
+  const onNextSection = () => {
+    if (isFinalSection) {
+      return submitDFormMutation.mutate();
+    }
 
-    console.log("Change", { sectionId, changedFields, forms, values });
+    if (step < sections.length - 1) {
+      setSectionId(sections[step + 1].id);
+    }
+  };
+  const onPreviousSection = (): void => {
+    setSectionId(sections[step - 1].id);
+  };
 
-    Object.values(changedFields).forEach((data) => {
-      const masterSchemaFieldId = Number(Array.isArray(data.name) ? data.name.join() : data.name);
+  // Immediately call save on component unmount if any save currently throttled
+  useEffect(() => () => flushFieldValue(), []);
 
-      onFieldChange(masterSchemaFieldId, data.value);
-    });
+  const onChangeStep = (step: number): void => {
+    if (step < sections.length) {
+      setSectionId(sections[step].id);
+    }
+  };
 
-    // Optimizing DCR rendering, cause it leads to whole schema re-render.
-    _.debounce(setValues, 300)(values);
-  };*/
+  const submitData =
+    (submitDFormMutation as any).data?.updated_at || (submitDFormMutation as any).data?.finished_at || new Date();
+  const userName: string = userDFormProfile.data.first_name || "Smiths";
+  const organization: string = userDFormProfile.data.permissions.organization || "The Queen Is Dead";
 
-  // if (successSubmit) {
-  //   return <MemberThanksStatusView data={submitData} organization={organization} surveyName={userName} />;
-  // }
+  if (successSubmit) {
+    return <MemberThanksStatusView data={submitData} organization={organization} surveyName={userName} />;
+  }
 
   return (
     <div className="member-dform member-dform__container">
-      {/*<DFormMemberForm dformId={} />*/}
-      {/*
-      <Row>
-        <Col xl={{ span: 16, push: 4 }} span={12} push={6}>
+      <NmpRow>
+        <NmpCol xl={{ span: 16, push: 4 }} span={12} push={6}>
           <h2 className="member-dform__title">{name}</h2>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm={4} className="member-dform__stepper-sticky">
-          <NmpStepper
-            className="member-dform__scrollbar"
-            status={stepperStatus}
-            current={step}
-            sections={sections}
-            onChange={onChangeStep}
-          />
-        </Col>
+        </NmpCol>
+      </NmpRow>
 
-        <Col xl={{ span: 16, push: 4 }} span={12} push={6}>
-          <NmpCard title={<strong className="member-dform__section-name">Section {sectionName}</strong>} />
-          <Form.Provider onFormFinish={onFormFinish} onFormChange={onFormChange}>
-            <DFormContext.Provider dformId={id} accessType={accessType} isMemberView>
-              <DFormSection
-                  schema={schema}
-                  actions={
-                    <Row justify="space-between" align="middle">
-                      <Col>
-                        <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
-                      </Col>
+      <NmpRow>
+        <NmpCol sm={4} className="member-dform__steps">
+          <div className="member-dform__steps-scroll">
+            <NmpStepper status={stepperStatus} sections={sections} current={step} onChange={onChangeStep} />
+          </div>
+        </NmpCol>
 
-                      <Col>
-                        <MemberDFormNavigation
-                          loading={submitDFormMutation.isLoading || saveFieldValueMutation.isLoading}
-                          disabled={isFinalSection && !isAccessible}
-                          sectionLimit={sections.length - 1}
-                          sectionNumber={step}
-                          handlePreviousSection={onPreviousSection}
-                        />
-                      </Col>
-                    </Row>
-                  }
-                  isHidden={schema.sections[sectionId]?.isHidden ?? false}
-                  sectionId={sectionId}
-                  isDisabled={schema.sections[sectionId]?.isDisabled ?? false}
-                  relatedGroups={schema.sections[sectionId]?.relatedGroups ?? []}
-                  initialValues={values}
-                  key={sectionId}
+        <NmpCol xl={{ span: 16, push: 4 }} span={12} push={6}>
+          <NmpCard>
+            <DForm
+              // @ts-ignore
+              isMemberView
+              schema={schema}
+              values={values}
+              dFormId={id}
+              accessType={accessType}
+              renderSections={false}
+              currentSection={sectionId}
+              onFieldChange={onFieldChange}
+            />
+
+            <NmpRow justify="space-between" align="middle">
+              <NmpCol>
+                <MemberDFormCheckSave isSavedDFormFieldLoading={saveFieldValueMutation.isLoading} />
+              </NmpCol>
+
+              <NmpCol>
+                <MemberDFormNavigation
+                  sectionNumber={step}
+                  sectionLimit={sections.length - 1}
+                  disabled={isFinalSection && !isAccessible}
+                  loading={submitDFormMutation.isLoading}
+                  handleNextSection={onNextSection}
+                  handlePreviousSection={onPreviousSection}
                 />
-            </DFormContext.Provider>
-          </Form.Provider>
-        </Col>
-      </Row>*/}
+              </NmpCol>
+            </NmpRow>
+          </NmpCard>
+        </NmpCol>
+      </NmpRow>
     </div>
   );
 };

@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { RefreshCw } from "react-feather";
 import { Card, CardHeader, CardTitle, CardBody, Col, Spinner } from "reactstrap";
 
+import { DForm } from "components/DForm";
+
 const useEffectBeforeUnmount = (callback, deps = []) => {
   const mounted = React.useRef(null);
 
@@ -54,15 +56,15 @@ const UserOnboardingDForm = (props) => {
             <div className="d-flex justify-content-center align-items-center height-300">
               <Spinner color="primary" size="40" />
             </div>
-          ) : null
-          /*<BaseDForm
+          ) : (
+            <DForm
               dFormId={dFormId}
               schema={schema}
               values={values}
               accessType={accessType}
               onFieldChange={onFieldChange}
-            />*/
-          }
+            />
+          )}
         </CardBody>
       </Card>
     </Col>
