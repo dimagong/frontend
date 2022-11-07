@@ -384,6 +384,10 @@ export const ApplicationPage = ({ applicationId }) => {
   };
 
   const changeGroupForField = (selectedElement, submittedElement, application) => {
+    // submittedElement.groupId exists only if it's changed
+    if (!submittedElement.groupId) {
+      return application;
+    }
     if (selectedElement.groupId === submittedElement.groupId) {
       return application;
     }
@@ -398,6 +402,10 @@ export const ApplicationPage = ({ applicationId }) => {
   };
 
   const changeSectionForGroup = (selectedElement, submittedElement, application) => {
+    // submittedElement.sectionId exists only if it's changed
+    if (!submittedElement.sectionId) {
+      return application;
+    }
     if (selectedElement.sectionId === submittedElement.sectionId) {
       return application;
     }
@@ -502,6 +510,7 @@ export const ApplicationPage = ({ applicationId }) => {
 
     const { droppableId: idGroupFrom, index: indexFieldFrom } = result.source;
     const { droppableId: idGroupTo, index: indexFieldTo } = result.destination;
+    const fieldId = result.draggableId;
 
     if (idGroupFrom === idGroupTo) {
       dataClone.groups[idGroupFrom].relatedFields = reorderArray(
@@ -512,6 +521,7 @@ export const ApplicationPage = ({ applicationId }) => {
     } else {
       const item = dataClone.groups[idGroupFrom].relatedFields.splice(indexFieldFrom, 1)[0];
       dataClone.groups[idGroupTo].relatedFields.splice(indexFieldTo, 0, item);
+      dataClone.fields[fieldId].groupId = idGroupTo;
     }
 
     setApplicationData(dataClone);
