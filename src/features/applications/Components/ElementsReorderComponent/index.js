@@ -37,7 +37,7 @@ const ElementsReorderComponent = ({ applicationData, onReorder }) => {
         >
           <NestedOrderComponent
             onDragEnd={handleDragEnd}
-            type={DFormElementTypes.Field}
+            type={DFormElementTypes.Block}
             isNested
             childItemsSelector={selectGroupFields}
             elementNameSelector={fieldNameSelector}
