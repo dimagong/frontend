@@ -7,13 +7,14 @@ import { NmpButton } from "features/nmp-ui";
 interface IProps {
   sectionNumber: number;
   sectionLimit: number;
-  handlePreviousSection: () => any;
+  handleNextSection: () => void;
+  handlePreviousSection: () => void;
   loading?: boolean | { delay?: number };
   disabled?: boolean;
 }
 
 const MemberDFormNavigation = (props: IProps) => {
-  const { sectionNumber, sectionLimit, disabled, loading, handlePreviousSection } = props;
+  const { sectionNumber, sectionLimit, disabled, loading, handleNextSection, handlePreviousSection } = props;
 
   const isLastSection: boolean = sectionNumber >= sectionLimit;
 
@@ -24,7 +25,7 @@ const MemberDFormNavigation = (props: IProps) => {
           Back
         </NmpButton>
       ) : null}
-      <NmpButton type="nmp-primary" disabled={disabled} loading={loading} htmlType="submit">
+      <NmpButton type="nmp-primary" disabled={disabled} loading={loading} onClick={handleNextSection}>
         {isLastSection ? "Submit for review" : "Next Section"}
       </NmpButton>
     </div>
