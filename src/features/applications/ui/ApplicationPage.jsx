@@ -6,9 +6,9 @@ import React, { useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
 
 import CustomTabs from "components/Tabs";
-// import { BaseDForm } from "features/dform";
-import { DFormElementTypes } from "features/dform/types";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
+import { DFormElementTypes, DFormBlockTypes } from "features/dform/types";
+import { DFormTemplateEditor } from "features/dform/ui/DFormTemplateEditor";
 
 import { getCategoryAsOption } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
@@ -523,6 +523,15 @@ export const ApplicationPage = ({ applicationId }) => {
     );
   };
 
+  const recognizeBlockType = (fieldType) => {
+    switch (fieldType) {
+      case "helpText":
+        return DFormBlockTypes.HelpText;
+      default:
+        return DFormBlockTypes.Field;
+    }
+  };
+
   return (
     <Row>
       <ApplicationWrapper name={`dForm » ${applicationData.name}`}>
@@ -542,15 +551,42 @@ export const ApplicationPage = ({ applicationId }) => {
             />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
-            {/*<BaseDForm
-              schema={applicationData}
-              selectedElement={selectedElement}
-              onElementClick={handleSelectElementForEdit}
-              onSectionCreate={handleSectionCreate}
+            <DFormTemplateEditor
+              blocks={Object.values(applicationData.fields).map((block) => ({
+                id: block.id,
+                label: block.title,
+                helpText: block.helpTextValue,
+                blockType: recognizeBlockType(block.type),
+                fieldType: block.type,
+                blockSize: block.classes,
+                isRequired: block.isRequired,
+                isLabelShowing: block.isLabelShowing,
+              }))}
+              groups={Object.values(applicationData.groups).map((group) => ({
+                id: group.id,
+                name: group.name,
+                relatedBlocks: group.relatedFields,
+              }))}
+              sections={Object.values(applicationData.sections).map((section) => ({
+                id: section.id,
+                name: section.name,
+                relatedGroups: section.relatedGroups,
+              }))}
+              isDraggable={false}
+              selectedElementId={selectedElement?.id}
+              onBlockClick={(blockId) =>
+                handleSelectElementForEdit(applicationData.fields[blockId], DFormElementTypes.Block)
+              }
+              onGroupClick={(groupId) =>
+                handleSelectElementForEdit(applicationData.groups[groupId], DFormElementTypes.Group)
+              }
+              onSectionClick={(sectionId) =>
+                handleSelectElementForEdit(applicationData.sections[sectionId], DFormElementTypes.Section)
+              }
+              onBlockCreate={handleFieldCreate}
               onGroupCreate={handleGroupCreate}
-              onFieldCreate={handleFieldCreate}
-              onDragEnd={handleReorder}
-            />*/}
+              onSectionCreate={handleSectionCreate}
+            />
           </TabPane>
           <TabPane tabId={APPLICATION_PAGES.REORDER}>
             <ElementsReorderComponent onReorder={handleReorder} applicationData={applicationData} />

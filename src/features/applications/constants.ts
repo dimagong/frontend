@@ -12,9 +12,9 @@ export const INITIAL_APPLICATION_DATA = {
 export const APPLICATION_PAGES = {
   DESCRIPTION: "Description",
   DESIGN: "Design mode",
-  VERSIONING: "Versioning",
+  // VERSIONING: "Versioning",
   REORDER: "Reorder",
-  TEST_MODE: "Test mode",
+  // TEST_MODE: "Test mode",
 };
 
 export const INITIAL_SECTION_DATA = {

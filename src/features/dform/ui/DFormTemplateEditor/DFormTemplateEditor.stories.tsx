@@ -18,6 +18,7 @@ const Template = (props) => {
         sections={props.sections}
         isDraggable={props.isDraggable}
         selectedElementId={props.selectedElementId}
+        onDragEnd={props.onDragEnd}
         onBlockClick={props.onBlockClick}
         onGroupClick={props.onGroupClick}
         onBlockCreate={props.onBlockCreate}

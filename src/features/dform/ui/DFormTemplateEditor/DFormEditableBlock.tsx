@@ -49,7 +49,7 @@ type Props = Pick<
   isSelected?: boolean;
   isDraggable?: boolean;
   onBlockClick?: (blockId: string) => void;
-  onBlockCreate?: () => void;
+  onBlockCreate?: (blockId: string) => void;
 };
 
 export const DFormEditableBlock: FC<Props> = (props) => {
@@ -73,6 +73,12 @@ export const DFormEditableBlock: FC<Props> = (props) => {
     }
   };
 
+  const onBlockAdd = () => {
+    if (onBlockCreate) {
+      onBlockCreate(blockId);
+    }
+  };
+
   return (
     <DFormDraggable draggableId={blockId} isDraggable={isDraggable} draggableIndex={blockIndex}>
       {(dragHandleProps) => (
@@ -80,7 +86,7 @@ export const DFormEditableBlock: FC<Props> = (props) => {
           isVisible={!isDraggable}
           isHoverable
           elementType={DFormElementTypes.Block}
-          onBlockAdd={onBlockCreate}
+          onBlockAdd={onBlockAdd}
         >
           <DFormDragHandle {...dragHandleProps} isDraggable={isDraggable} isMiddle>
             <DFormSelectable isSelected={isSelected} isMishandled onClick={onSelectableClick}>

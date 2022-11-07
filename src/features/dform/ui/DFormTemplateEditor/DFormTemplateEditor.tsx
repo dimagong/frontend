@@ -1,6 +1,6 @@
 import React from "react";
 import type { FC } from "react";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, DragDropContextProps } from "react-beautiful-dnd";
 
 import { NmpCol, NmpRow } from "features/nmp-ui";
 
@@ -16,9 +16,10 @@ export type DFormTemplateEditorProps = {
   sections: DFormSectionElement[];
   isDraggable?: boolean;
   selectedElementId?: string;
+  onDragEnd?: DragDropContextProps["onDragEnd"];
   onBlockClick?: (blockId: string) => void;
   onGroupClick?: (groupId: string) => void;
-  onBlockCreate?: (blockId: string) => void;
+  onBlockCreate?: (groupId: string, blockId?: string) => void;
   onGroupCreate?: (sectionId: string) => void;
   onSectionClick?: (sectionId: string) => void;
   onSectionCreate?: () => void;
@@ -31,6 +32,7 @@ export const DFormTemplateEditor: FC<DFormTemplateEditorProps> = (props) => {
     sections,
     isDraggable = false,
     selectedElementId,
+    onDragEnd = () => {},
     onBlockClick,
     onGroupClick,
     onBlockCreate,
@@ -40,7 +42,7 @@ export const DFormTemplateEditor: FC<DFormTemplateEditorProps> = (props) => {
   } = props;
 
   return (
-    <DragDropContext onDragEnd={() => {}}>
+    <DragDropContext onDragEnd={onDragEnd}>
       <NmpRow>
         <NmpCol span="24">
           <DFormSectionTabs

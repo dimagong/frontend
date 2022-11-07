@@ -19,7 +19,7 @@ export type DFormTemplateEditorProps = {
   selectedElementId?: string;
   onBlockClick?: (blockId: string) => void;
   onGroupClick?: (groupId: string) => void;
-  onBlockCreate?: (groupId: string) => void;
+  onBlockCreate?: (groupId: string, blockId?: string) => void;
   onGroupCreate?: (sectionId: string) => void;
 };
 
@@ -44,9 +44,10 @@ export const DFormTemplateSectionEditor: FC<DFormTemplateEditorProps> = (props) 
     }
   };
 
-  const onBlockCreateBlock = (groupId: string) => {
+  const onBlockCreateBlock = (blockId: string) => {
+    const groupId = groups.find((group) => group.relatedBlocks.find((id) => id === blockId))?.id;
     if (onBlockCreate) {
-      onBlockCreate(groupId);
+      onBlockCreate(groupId, blockId);
     }
   };
 
@@ -82,7 +83,7 @@ export const DFormTemplateSectionEditor: FC<DFormTemplateEditorProps> = (props) 
                   isDraggable={isDraggable}
                   isLabelShowing={block.isLabelShowing}
                   onBlockClick={onBlockClick}
-                  onBlockCreate={() => onBlockCreateBlock(group.id)}
+                  onBlockCreate={onBlockCreateBlock}
                   key={block.id}
                 />
               ))}
