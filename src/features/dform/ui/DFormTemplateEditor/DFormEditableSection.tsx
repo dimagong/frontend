@@ -1,5 +1,5 @@
 import React from "react";
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 
 import { DFormSection } from "../DFormSection";
 import { DFormElementTypes } from "../../types";
@@ -9,6 +9,7 @@ type Props = {
   sectionId: string;
   sectionName: string;
   isDraggable?: boolean;
+  children?: ReactNode;
 };
 
 export const DFormEditableSection: FC<Props> = (props) => {

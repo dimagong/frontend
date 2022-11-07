@@ -6,8 +6,6 @@ import classnames from "classnames";
 import { Tabs, TabsProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
-import { Droppable } from "react-beautiful-dnd";
-
 import { NmpButton } from "features/nmp-ui";
 
 import { DFormElementTypes } from "../../types";
