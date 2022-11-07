@@ -2,9 +2,9 @@ import "./styles.scss";
 
 import React, { useEffect } from "react";
 
+import { NmpCard } from "../../../nmp-ui";
 import MemberSurveyNavigations from "../MemberSurveyNavigations";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
-import NpmCard from "../../../nmp-ui/NpmCard";
 import MemberSurveyAdditionalInfo from "../MemberSurveyAdditionalInfo";
 
 const MemberSurveyStartView = (props) => {
@@ -35,7 +35,7 @@ const MemberSurveyStartView = (props) => {
 
   return (
     <div>
-      <NpmCard title="Surveys">
+      <NmpCard title="Surveys">
         <div className="survey-start">
           <div className="content_question">
             <div className="question-title">{title}</div>
@@ -52,7 +52,7 @@ const MemberSurveyStartView = (props) => {
             />
           </div>
         </div>
-      </NpmCard>
+      </NmpCard>
       <div style={{ with: "100%", marginTop: "20px" }}>
         <MemberSurveyAdditionalInfo title={"Guidance"} text={description} />
       </div>

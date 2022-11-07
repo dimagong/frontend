@@ -1,21 +1,23 @@
-.site-card-border-less-wrapper {
-  & > * {
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
-  }
-  .ant-card {
+.nmp-card {
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+
+  &.ant-card {
     display: flex;
     flex-direction: column;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
   }
+
   .ant-card-head {
     border-bottom: none;
   }
+
   .ant-card-head-title {
-    font-weight: 500;
-    font-size: 42px;
     color: #4b484d;
+    font-size: 42px;
+    font-weight: 500;
   }
+
   .ant-card-body {
     height: 100%;
     width: 100%;

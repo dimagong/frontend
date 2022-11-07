@@ -1,0 +1,29 @@
+.dform-member-form {
+  &__title {
+    color: #474747;
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 45px;
+    padding-bottom: 34px;
+    margin-bottom: 0;
+  }
+
+  &__steps {
+    position: fixed;
+  }
+
+  &__steps-scroll {
+    width: 100%;
+    max-height: 100%;
+    overflow: auto;
+    position: relative;
+  }
+
+  &__card .ant-card-body {
+    padding: 0;
+  }
+
+  &__actions {
+    padding-top: 2rem;
+  }
+}

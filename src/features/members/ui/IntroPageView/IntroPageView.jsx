@@ -5,7 +5,7 @@ import React from "react";
 import { Layout } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 
-import { NpmCard, NmpButton } from "features/nmp-ui";
+import { NmpCard, NmpButton } from "features/nmp-ui";
 
 import memberviewIntro from "../../../../assets/img/pages/memberview-intro.png";
 
@@ -27,7 +27,7 @@ const IntroPageView = ({
       <Layout className="intropage">
         <Content style={{ backgroundColor: "#F8F8F8" }}>
           <div className="intropage-component">
-            <NpmCard>
+            <NmpCard>
               <div className="intropage-block">
                 <div className="intropage-block_content">
                   <div className="intropage-block_content_title">{introTitle}</div>
@@ -57,7 +57,7 @@ const IntroPageView = ({
                   <img src={memberviewIntro} alt="memberview-intro" />
                 </div>
               </div>
-            </NpmCard>
+            </NmpCard>
           </div>
         </Content>
       </Layout>

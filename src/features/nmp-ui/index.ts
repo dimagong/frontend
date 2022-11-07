@@ -1,7 +1,6 @@
 import { NmpTag } from "./NmpTag";
 import NpmBadge from "./NpmBadge";
 import { NmpButton } from "./NmpButton";
-import NpmCard from "./NpmCard";
 import NpmCustomStepperSurvey from "./NpmCustomStepperSurvey";
 import NpmDatePicker from "./NpmDatePicker";
 import { NmpUpload } from "./NmpUpload";
@@ -23,6 +22,7 @@ import { NmpRow } from "./NmpRow";
 import { NmpCol } from "./NmpCol";
 import { NmpText } from "./NmpText";
 
+export * from "./NmpCard";
 export * from "./NmpCheckbox";
 export * from "./NmpCollapse";
 export * from "./NmpLongText";
@@ -35,7 +35,6 @@ export {
   NmpTag,
   NpmBadge,
   NmpButton,
-  NpmCard,
   NpmCustomStepperSurvey,
   NpmDatePicker,
   NmpUpload,

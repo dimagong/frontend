@@ -30,7 +30,6 @@ const MemberDFormView: FC<Props> = ({ dformId, status, organization }) => {
   const { data: dform } = dformQuery;
   const { data: values } = valuesQuery;
   const { name, schema, access_type } = dform;
-  const sections = schema.sectionsOrder.map((id) => schema.sections[id]);
   const initialValues = normalizeValues(values, schema);
 
   if (status === "submitted" && showDForm === false) {
@@ -39,9 +38,8 @@ const MemberDFormView: FC<Props> = ({ dformId, status, organization }) => {
 
   return (
     <MemberDForm
-      id={dformId}
-      name={name}
-      sections={sections}
+      dformId={dformId}
+      dformName={name}
       accessType={access_type}
       initialSchema={schema}
       initialValues={initialValues}

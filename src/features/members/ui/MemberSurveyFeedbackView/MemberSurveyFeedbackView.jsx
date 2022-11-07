@@ -2,7 +2,7 @@ import "./styles.scss";
 
 import React, { useState } from "react";
 
-import NpmCard from "../../../nmp-ui/NpmCard";
+import { NmpCard } from "../../../nmp-ui";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
 import MemberSurveyQuestion from "../MemberSurveyQuestion";
 import MemberSurveyNavigations from "../MemberSurveyNavigations";
@@ -47,14 +47,14 @@ const MemberSurveyFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedba
   return (
     <div className="membercard-feedback">
       <div className="feedback-info">
-        <NpmCard style={{ height: "76px", maxWidth: "783px", width: "57vw" }}>
+        <NmpCard style={{ height: "76px", maxWidth: "783px", width: "57vw" }}>
           <div className="feedback-info_context">
             <div className="context-title">Feedback</div>
             <div className="context-subtitle">{currentFeedback}</div>
           </div>
-        </NpmCard>
+        </NmpCard>
       </div>
-      <NpmCard style={{ maxHeight: "500px", maxWidth: "783px", width: "57vw" }}>
+      <NmpCard style={{ maxHeight: "500px", maxWidth: "783px", width: "57vw" }}>
         <div className="feedback-content">
           <div className="feedback-question">
             <div className="feedback-title">Question {currQuestionIndex + 1}</div>
@@ -80,7 +80,7 @@ const MemberSurveyFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedba
             />
           </div>
         </div>
-      </NpmCard>
+      </NmpCard>
     </div>
   );
 };

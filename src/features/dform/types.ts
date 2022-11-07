@@ -85,9 +85,105 @@ export type DFormSectionElement = {
   conditions: any[];
 };
 
+export type DFormGroupElement = {
+  id: string;
+  name: string;
+  isHidden: boolean;
+  isDisabled: boolean;
+  isProtected: boolean;
+  relatedFields: string[];
+  conditions: any[];
+};
+
+export type DFormFieldElement = {
+  id: string;
+  type: DFormFieldTypes | DFormBlockTypes.HelpText;
+  title: string;
+  format: DFormDateFormatTypes;
+  groupId: string;
+  options: string[];
+  uiStyle: DFormMultiSelectUIStyles | null;
+  classes: DFormBlockSizeTypes;
+  isHidden: boolean;
+  isRequired: boolean;
+  isDisabled: boolean;
+  isProtected: boolean;
+  isLabelShowing: boolean;
+  masterSchemaFieldId: number;
+
+  resourceCompileOption: DFormResourceCompileOptionTypes;
+  resourceManagerFieldId: string;
+
+  helpTextValue: string;
+
+  minLength: number | null;
+  maxLength: number | null;
+  minimum: number | null;
+  maximum: number | null;
+  conditions: any[];
+};
+
 export type DFormSchema = {
-  fields: Record<string, any>;
-  groups: Record<string, any>;
+  fields: Record<string, DFormFieldElement>;
+  groups: Record<string, DFormGroupElement>;
   sections: Record<string, DFormSectionElement>;
   sectionsOrder: Array<string>;
+};
+
+// Normalized schema
+
+export type NormalizedDFormSectionElement = {
+  id: string;
+  name: string;
+  isHidden: boolean;
+  isDisabled: boolean;
+  isProtected: boolean;
+  isAlreadyViewed: boolean;
+  relatedGroups: string[];
+  conditions: any[];
+};
+
+export type NormalizedDFormGroupElement = {
+  id: string;
+  name: string;
+  isHidden: boolean;
+  isDisabled: boolean;
+  isProtected: boolean;
+  relatedBlocks: string[];
+  conditions: any[];
+};
+
+export type NormalizedDFormBlockElement = {
+  id: string;
+  label?: string;
+  format?: DFormDateFormatTypes;
+  groupId: string;
+  options?: string[];
+  uiStyle?: DFormMultiSelectUIStyles | null;
+  isHidden?: boolean;
+  fieldType?: DFormFieldTypes;
+  blockType: DFormBlockTypes;
+  blockSize?: DFormBlockSizeTypes;
+  isRequired?: boolean;
+  isDisabled?: boolean;
+  isProtected?: boolean;
+  isLabelShowing?: boolean;
+  masterSchemaFieldId?: number;
+
+  resourceCompileOption?: DFormResourceCompileOptionTypes;
+  resourceManagerFieldId?: string;
+
+  helpText?: string;
+
+  minLength?: number | null;
+  maxLength?: number | null;
+  minimum?: number | null;
+  maximum?: number | null;
+  conditions?: any[];
+};
+
+export type NormalizedDFormSchema = {
+  blocks: NormalizedDFormBlockElement[];
+  groups: NormalizedDFormGroupElement[];
+  sections: NormalizedDFormSectionElement[];
 };

@@ -3,7 +3,7 @@ import "./styles.scss";
 import React from "react";
 import moment from "moment";
 
-import NpmCard from "../../../nmp-ui/NpmCard";
+import { NmpCard } from "../../../nmp-ui";
 import Envelop from "./../icons/Envelop.svg";
 
 const cardStyle = {
@@ -15,7 +15,7 @@ const cardStyle = {
 const MemberSubmittedView = ({ data, organization, surveyName }) => {
   return (
     <div className="membercard-submitted">
-      <NpmCard style={cardStyle}>
+      <NmpCard style={cardStyle}>
         <div className="card-submitted">
           <div className="card-submitted_content">
             <div className="cs-header">
@@ -41,7 +41,7 @@ const MemberSubmittedView = ({ data, organization, surveyName }) => {
             <div className="cs-figure"></div>
           </div>
         </div>
-      </NpmCard>
+      </NmpCard>
     </div>
   );
 };

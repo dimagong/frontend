@@ -20,22 +20,6 @@ export const DFormSection: FC<DFormSectionProps> = (props) => {
       <NmpScreenReaderOnly tag="h2">{sectionName}</NmpScreenReaderOnly>
 
       <div className="dform-section__body">{children}</div>
-
-      {/*<div>
-        <MemberDFormCheckSave isSavedDFormFieldLoading={false} />
-
-        <NmpButton type="nmp-ghost" disabled={false} loading={false}>
-        Back
-        </NmpButton>
-
-        <NmpButton type="nmp-primary" disabled={false} loading={false} htmlType="submit">
-        Next Section
-        </NmpButton>
-
-        <NmpButton type="nmp-primary" disabled={false} loading={false} htmlType="submit">
-        Submit for review
-        </NmpButton>
-        </div>*/}
     </div>
   );
 };

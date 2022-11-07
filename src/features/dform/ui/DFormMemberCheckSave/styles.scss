@@ -1,0 +1,17 @@
+.dform-member-check-save {
+  display: flex;
+  align-items: center;
+
+  &__box {
+    display: flex;
+    align-items: center;
+  }
+
+  &__label {
+    margin-left: 15px;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.18rem;
+    color: #35a046;
+  }
+}

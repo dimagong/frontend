@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import MemberSurveyQuestion from "../MemberSurveyQuestion";
 import MemberSurveyNavigations from "../MemberSurveyNavigations";
 import NpmSpin from "../../../nmp-ui/NpmSpin";
-import NpmCard from "../../../nmp-ui/NpmCard";
+import { NmpCard } from "../../../nmp-ui";
 import NpmCustomStepperSurvey from "../../../nmp-ui/NpmCustomStepperSurvey";
 
 const MemberSurveyPassView = (props) => {
@@ -40,7 +40,7 @@ const MemberSurveyPassView = (props) => {
   }
 
   return (
-    <NpmCard title="Surveys">
+    <NmpCard title="Surveys">
       <div className="surveys-content">
         <div className="content_stepper">
           <NpmCustomStepperSurvey currentStrep={currentIndex + 1} totalSteps={count} />
@@ -70,7 +70,7 @@ const MemberSurveyPassView = (props) => {
           />
         </div>
       </div>
-    </NpmCard>
+    </NmpCard>
   );
 };
 

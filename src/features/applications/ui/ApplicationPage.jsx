@@ -567,11 +567,13 @@ export const ApplicationPage = ({ applicationId }) => {
                 name: group.name,
                 relatedBlocks: group.relatedFields,
               }))}
-              sections={Object.values(applicationData.sections).map((section) => ({
-                id: section.id,
-                name: section.name,
-                relatedGroups: section.relatedGroups,
-              }))}
+              sections={applicationData.sectionsOrder
+                .map((sectionId) => applicationData.sections[sectionId])
+                .map((section) => ({
+                  id: section.id,
+                  name: section.name,
+                  relatedGroups: section.relatedGroups,
+                }))}
               isDraggable={false}
               selectedElementId={selectedElement?.id}
               onBlockClick={(blockId) =>

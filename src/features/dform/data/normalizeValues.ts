@@ -12,6 +12,7 @@ export const normalizeValues = (values: DFormValues, schema: DFormSchema): Norma
       })
       .filter(({ field }) => field !== undefined)
       .map(({ id, dformValue, field }) => {
+        // @ts-ignore
         const normalizedValue = normalizedDFormValueByField(field, dformValue);
 
         return [id, normalizedValue];

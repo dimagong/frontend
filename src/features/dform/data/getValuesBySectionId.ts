@@ -10,7 +10,7 @@ export const getValuesBySectionId = (
   const fields = getFieldsBySectionId(sectionId, schema);
   return Object.fromEntries(
     Object.entries(values).filter(([id]) => {
-      return fields.find(({ masterSchemaFieldId }) => masterSchemaFieldId === id) !== null;
+      return fields.find(({ masterSchemaFieldId }) => masterSchemaFieldId === Number(id)) !== null;
     })
   );
 };
