@@ -1,4 +1,4 @@
-.ant-btn {
+.ant-btn.ant-btn-nmp {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -88,7 +88,7 @@
     }
 
     > .anticon + span,
-    .ant-btn > span + .anticon {
+    &.ant-btn > span + .anticon {
       margin-left: 0;
       margin-right: 8px;
     }
