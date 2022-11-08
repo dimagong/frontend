@@ -43,7 +43,7 @@ export const useDFormTemplateRootCategoriesQuery = (options?: QueryOptions) => {
   return useGenericQuery(
     {
       url: `api/dform-template/categories/root`,
-      queryKey: DFormTemplateCategoryQueryKeys.all,
+      queryKey: DFormTemplateCategoryQueryKeys.all(),
     },
     options
   );

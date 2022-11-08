@@ -13,7 +13,12 @@ export const mutateApplication = (applicationData, mutation) => {
       is_private: isPrivate,
       category_id: categoryId,
       groups: [{ group_id: organization.id, type: organization.type }],
-      schema,
+      schema: {
+        fields: schema.fields,
+        groups: schema.groups,
+        sections: schema.sections,
+        sectionsOrder: schema.sectionsOrder,
+      },
     });
   } else {
     toast.error(errValidation.message);
