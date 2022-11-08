@@ -30,7 +30,7 @@ export const DFormTemplateEditor: FC<DFormTemplateEditorProps> = (props) => {
     blocks,
     groups,
     sections,
-    isDraggable = false,
+    isDraggable,
     selectedElementId,
     onDragEnd = () => {},
     onBlockClick,
@@ -41,39 +41,43 @@ export const DFormTemplateEditor: FC<DFormTemplateEditorProps> = (props) => {
     onSectionCreate,
   } = props;
 
-  return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <NmpRow>
-        <NmpCol span="24">
-          <DFormSectionTabs
-            items={sections.map(
-              (section: DFormSectionElement): Item => ({
-                key: section.id,
-                label: section.name,
-                children: (
-                  <DFormTemplateSectionEditor
-                    blocks={blocks}
-                    groups={groups}
-                    sectionId={section.id}
-                    sectionName={section.name}
-                    isDraggable={isDraggable}
-                    relatedGroups={section.relatedGroups}
-                    selectedElementId={selectedElementId}
-                    onBlockClick={onBlockClick}
-                    onGroupClick={onGroupClick}
-                    onBlockCreate={onBlockCreate}
-                    onGroupCreate={onGroupCreate}
-                  />
-                ),
-              })
-            )}
-            isDraggable={isDraggable}
-            selectedElementId={selectedElementId}
-            onTabClick={onSectionClick}
-            onTabCreate={onSectionCreate}
-          />
-        </NmpCol>
-      </NmpRow>
-    </DragDropContext>
+  const node = (
+    <NmpRow>
+      <NmpCol span="24">
+        <DFormSectionTabs
+          items={sections.map(
+            (section: DFormSectionElement): Item => ({
+              key: section.id,
+              label: section.name,
+              children: (
+                <DFormTemplateSectionEditor
+                  blocks={blocks}
+                  groups={groups}
+                  sectionId={section.id}
+                  sectionName={section.name}
+                  isDraggable={isDraggable}
+                  relatedGroups={section.relatedGroups}
+                  selectedElementId={selectedElementId}
+                  onBlockClick={onBlockClick}
+                  onGroupClick={onGroupClick}
+                  onBlockCreate={onBlockCreate}
+                  onGroupCreate={onGroupCreate}
+                />
+              ),
+            })
+          )}
+          isDraggable={isDraggable}
+          selectedElementId={selectedElementId}
+          onTabClick={onSectionClick}
+          onTabCreate={onSectionCreate}
+        />
+      </NmpCol>
+    </NmpRow>
   );
+
+  if (isDraggable) {
+    return <DragDropContext onDragEnd={onDragEnd} children={node} />;
+  }
+
+  return node;
 };

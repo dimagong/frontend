@@ -29,7 +29,7 @@ export const DFormTemplateSectionEditor: FC<DFormTemplateEditorProps> = (props) 
     groups,
     sectionId,
     sectionName,
-    isDraggable = false,
+    isDraggable,
     selectedElementId,
     relatedGroups,
     onBlockClick,
@@ -38,16 +38,9 @@ export const DFormTemplateSectionEditor: FC<DFormTemplateEditorProps> = (props) 
     onGroupCreate,
   } = props;
 
-  const onGroupAdd = () => {
+  const onAddElementClick = () => {
     if (onGroupCreate) {
       onGroupCreate(sectionId);
-    }
-  };
-
-  const onBlockCreateBlock = (blockId: string) => {
-    const groupId = groups.find((group) => group.relatedBlocks.find((id) => id === blockId))?.id;
-    if (onBlockCreate) {
-      onBlockCreate(groupId, blockId);
     }
   };
 
@@ -67,32 +60,34 @@ export const DFormTemplateSectionEditor: FC<DFormTemplateEditorProps> = (props) 
             onBlockCreate={onBlockCreate}
             key={group.id}
           >
-            {blocks
-              .filter(({ id }) => group.relatedBlocks.includes(id))
-              .map((block, index) => (
-                <DFormEditableBlock
-                  label={block.label}
-                  blockId={block.id}
-                  blockIndex={index}
-                  helpText={block.helpText}
-                  blockType={block.blockType}
-                  fieldType={block.fieldType}
-                  blockSize={block.blockSize}
-                  isRequired={block.isRequired}
-                  isSelected={selectedElementId === block.id}
-                  isDraggable={isDraggable}
-                  isLabelShowing={block.isLabelShowing}
-                  onBlockClick={onBlockClick}
-                  onBlockCreate={onBlockCreateBlock}
-                  key={block.id}
-                />
-              ))}
+            {
+              // blocks.filter(({ id }) => group.relatedBlocks.includes(id))
+              group.relatedBlocks
+                .map((blockId) => blocks.find((block) => block.id === blockId))
+                .map((block, index) => (
+                  <DFormEditableBlock
+                    label={block.label}
+                    blockId={block.id}
+                    groupId={group.id}
+                    blockIndex={index}
+                    helpText={block.helpText}
+                    blockType={block.blockType}
+                    fieldType={block.fieldType}
+                    blockSize={block.blockSize}
+                    isRequired={block.isRequired}
+                    isSelected={selectedElementId === block.id}
+                    isDraggable={isDraggable}
+                    isLabelShowing={block.isLabelShowing}
+                    onBlockClick={onBlockClick}
+                    onBlockCreate={onBlockCreate}
+                    key={block.id}
+                  />
+                ))
+            }
           </DFormEditableGroup>
         ))}
 
-      <NmpCol span="24">
-        <DFormAddElement elementType={DFormElementTypes.Group} onGroupAdd={onGroupAdd} />
-      </NmpCol>
+      <DFormAddElement elementType={DFormElementTypes.Group} onClick={onAddElementClick} />
     </DFormEditableSection>
   );
 };
