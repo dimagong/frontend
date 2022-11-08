@@ -125,7 +125,7 @@ export const MemberDForm: FC<Props> = (props) => {
   return (
     <div className="member-dform member-dform__container">
       <NmpRow>
-        <NmpCol xl={{ span: 16, push: 4 }} span={12} push={6}>
+        <NmpCol span={16} push={4}>
           <h2 className="member-dform__title">{name}</h2>
         </NmpCol>
       </NmpRow>
@@ -137,7 +137,7 @@ export const MemberDForm: FC<Props> = (props) => {
           </div>
         </NmpCol>
 
-        <NmpCol xl={{ span: 16, push: 4 }} span={12} push={6}>
+        <NmpCol span={16} push={4}>
           <NmpCard>
             <DForm
               // @ts-ignore
