@@ -3,6 +3,7 @@ export { Environment } from "./env";
 export { asserts } from "./asserts";
 export { invariant } from "./invariant";
 export { devWarning } from "./devWarning";
+export { unexpected } from "./unexpected";
 export { unreachable } from "./unreachable";
 export { useDevInvariant } from "./useDevInvariant";
 export { useDevSetupWarning } from "./useDevSetupWarning";
