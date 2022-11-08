@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 import { clientAPI } from "api/clientAPI";
 import { createQueryKey } from "api/createQueryKey";
@@ -177,6 +177,7 @@ export const MVABeginSurveyQueryKeys = {
 
 export const useGetBeginSurveyQuery = (payload, options = {}) => {
   const { id } = payload;
+  const queryClient = useQueryClient();
 
   const dispatch = useDispatch();
   return useGenericQuery(
@@ -186,7 +187,10 @@ export const useGetBeginSurveyQuery = (payload, options = {}) => {
     },
     {
       onError: (error) => dispatch(beginSurveyError(error.message)),
-      onSuccess: (data) => dispatch(beginSurveySuccess(data)),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(MVASurveyPassingQueryKeys.all());
+        dispatch(beginSurveySuccess(data));
+      },
       ...options,
     }
   );
@@ -225,6 +229,10 @@ export const MVACurrentQuestionQueryKeys = {
 
 export const useGetCurrentQuestionForAssignedSurveyQuery = (payload, options = {}) => {
   const { id } = payload;
+  console.log("enabled", options.enabled);
+  // if (options.enabled === true) {
+  //   debugger;
+  // }
 
   const dispatch = useDispatch();
   return useGenericQuery(
@@ -257,13 +265,17 @@ export const useSwitchToPreviousQuestionMutation = (payload, options = {}) => {
   );
 };
 
-export const usePushAnswerMutation = (options = {}) => {
+export const usePushAnswerMutation = ({ id }, options = {}) => {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload) => clientAPI["put"](`/member-view-api/survey-passing/${payload.surveyId}`, payload.data),
     onError: (error) => dispatch(pushAnswerError(error.message)),
-    onSuccess: (data) => dispatch(pushAnswerSuccess()),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(MVASurveyPassingQueryKeys.all(id));
+      dispatch(pushAnswerSuccess());
+    },
     ...options,
   });
 };
