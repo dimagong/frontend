@@ -1,8 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import { NmpSelect } from "features/nmp-ui";
-import { IdType, OptionsType, OptionType } from "utility/prop-types";
 
 import { DFormFieldContainer } from "../DFormFieldContainer";
 
@@ -48,21 +46,6 @@ export const DFormSelectWidget = (props) => {
       />
     </DFormFieldContainer>
   );
-};
-
-DFormSelectWidget.propTypes = {
-  id: IdType.isRequired,
-  value: OptionType,
-  label: PropTypes.string,
-  error: PropTypes.string,
-  options: OptionsType.isRequired,
-  placeholder: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
-  isLoading: PropTypes.bool,
-  isRequired: PropTypes.bool.isRequired,
-  isDisabled: PropTypes.bool.isRequired,
-  isLabelShowing: PropTypes.bool.isRequired,
-  onChange: PropTypes.func,
 };
 
 DFormSelectWidget.validationSchema = selectValidationSchema;

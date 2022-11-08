@@ -22,13 +22,11 @@ const NpmRadioCardGroup = ({ options = [], handleAnswerSelect, selectedAnswer, c
         <div className="radio-group">
           {options.map((question) => {
             return (
-              <div>
-                <Card key={question.id}>
-                  <Radio className={correctAnswerStyle} value={question.id}>
-                    {question.text}
-                  </Radio>
-                </Card>
-              </div>
+              <Card key={question.id}>
+                <Radio className={correctAnswerStyle} value={question.id}>
+                  {question.text}
+                </Radio>
+              </Card>
             );
           })}
         </div>

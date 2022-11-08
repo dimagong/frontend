@@ -54,7 +54,7 @@ const MemberComponentView = (props) => {
         className="member-block"
         align={activeOnboarding.type === TypeConstants.SURVEY ? "middle" : "top"}
       >
-        <Col span={23}>
+        <Col span={23} xxl={17}>
           {activeOnboarding.type === TypeConstants.SURVEY && (
             <MemberSurveyView
               selectedSurveyId={activeOnboarding.id}

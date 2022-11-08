@@ -303,11 +303,11 @@ export const FieldResourceEditProperties = ({ element, organization }) => {
         </Col>
       </Row>
 
-      <Row className="mb-2">
-        <Col md="12" className="mb-2">
+      <Row>
+        <Col md="12" className="dform-field__checkbox-default">
           <FieldLabelShowingEditProperty />
         </Col>
-        <Col md="12">
+        <Col md="12" className="dform-field__checkbox-default">
           <FieldProtectedEditProperty />
         </Col>
       </Row>
@@ -330,7 +330,7 @@ export const SpecificFieldProperties = ({ element, organization, elementType }) 
       return <FieldNumberEditProperties />;
     case DFormBlockTypes.HelpText:
       return <FieldHelpTextEditProperties />;
-    case DFormBlockTypes.Resource:
+    case DFormFieldTypes.Resource:
       return <FieldResourceEditProperties element={{ ...element, type: elementType }} organization={organization} />;
     case DFormFieldTypes.File:
     case DFormFieldTypes.FileList:

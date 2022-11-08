@@ -8,12 +8,14 @@ import {
   useGetCurrentQuestionForAssignedSurveyQuery,
   useSurveyByIdQuery,
   useGetAllSurveyQuestionsQuery,
+  usePushAnswerMutation,
+  useGetBeginSurveyQuery,
 } from "api/Onboarding/prospectUserQuery";
 
 import {
   useMVASurveyPassingInvalidate,
-  useMVApushAnswer,
-  useMVAgetBeginSurvey,
+  // useMVApushAnswer,
+  // useMVAgetBeginSurvey,
   useMVAswitchToPrevious,
 } from "../../data/hooks";
 
@@ -47,23 +49,38 @@ const MemberSurvey = ({ selectedSurveyId, isRecentlySubmitted, organization }) =
 
   const { data: surveyInteraction } = useGetAllSurveyQuestionsQuery({ id }, { enabled: !!graded_at });
 
+  // const {
+  //   mutatePushAnswer,
+  //   currentQuestionPushAnswer,
+  //   isSurveyLoadingPushAnswer,
+  //   isAnswerPushProceed,
+  //   isPushAnswerSuccess,
+  // } = useMVApushAnswer(id);
+
+  // if (isPushAnswerSuccess && currentQuestionPushAnswer) {
+  //   [currentQuestion, isSurveyLoading] = [currentQuestionPushAnswer, isSurveyLoadingPushAnswer];
+  // }
+
   const {
-    mutatePushAnswer,
-    currentQuestionPushAnswer,
-    isSurveyLoadingPushAnswer,
-    isAnswerPushProceed,
-    isPushAnswerSuccess,
-  } = useMVApushAnswer(id);
+    isSuccess: isPushAnswerSuccess,
+    isLoading: isAnswerPushProceed,
+    mutate: mutatePushAnswer,
+  } = usePushAnswerMutation({ id });
 
-  if (isPushAnswerSuccess && currentQuestionPushAnswer) {
-    [currentQuestion, isSurveyLoading] = [currentQuestionPushAnswer, isSurveyLoadingPushAnswer];
-  }
+  // const { refetch, currentQuestionBegin, isSurveyLoadingBegin, isSuccessGetBeginSurvay } = useMVAgetBeginSurvey(id, {
+  //   started_at,
+  //   finished_at,
+  // });
 
-  const { refetch, currentQuestionBegin, isSurveyLoadingBegin, isSuccessGetBeginSurvay } = useMVAgetBeginSurvey(id);
+  const {
+    refetch,
+    isSuccess: isSuccessGetBeginSurvay,
+    isLoading: isSurveyBeginProceed,
+  } = useGetBeginSurveyQuery({ id }, { refetchOnWindowFocus: false, enabled: false });
 
-  if (currentQuestionBegin && isSuccessGetBeginSurvay) {
-    [currentQuestion, isSurveyLoading] = [currentQuestionBegin, isSurveyLoadingBegin];
-  }
+  // if (currentQuestionBegin && isSuccessGetBeginSurvay) {
+  //   [currentQuestion, isSurveyLoading] = [currentQuestionBegin, isSurveyLoadingBegin];
+  // }
 
   const {
     mutateSwitchToPreviousQuestion,

@@ -21,42 +21,44 @@ export const useMVASurveyPassingInvalidate = (questionStatus, surveyStatus, id) 
   }
 };
 
-export const useMVARecentSubmited = (questionStatus, surveyStatus, setRecentlySubmitted) => {
-  useEffect(() => {
-    if (questionStatus === "done" && surveyStatus === "started") {
-      setRecentlySubmitted(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [questionStatus, surveyStatus]);
-};
+// export const useMVARecentSubmited = (questionStatus, surveyStatus, setRecentlySubmitted) => {
+//   useEffect(() => {
+//     if (questionStatus === "done" && surveyStatus === "started") {
+//       setRecentlySubmitted(true);
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [questionStatus, surveyStatus]);
+// };
 
-export const useMVApushAnswer = (id) => {
-  const {
-    isSuccess: isPushAnswerSuccess,
-    isLoading: isAnswerPushProceed,
-    mutate: mutatePushAnswer,
-  } = usePushAnswerMutation();
+// export const useMVApushAnswer = (id) => {
+//   const {
+//     isSuccess: isPushAnswerSuccess,
+//     isLoading: isAnswerPushProceed,
+//     mutate: mutatePushAnswer,
+//   } = usePushAnswerMutation();
+//
+//   let { data: currentQuestionPushAnswer, isLoading: isSurveyLoadingPushAnswer } =
+//     useGetCurrentQuestionForAssignedSurveyQuery({ id }, { enabled: isPushAnswerSuccess && !isAnswerPushProceed });
+//
+//   return { mutatePushAnswer, currentQuestionPushAnswer, isSurveyLoadingPushAnswer, isAnswerPushProceed };
+// };
 
-  let { data: currentQuestionPushAnswer, isLoading: isSurveyLoadingPushAnswer } =
-    useGetCurrentQuestionForAssignedSurveyQuery({ id }, { enabled: isPushAnswerSuccess });
-
-  return { mutatePushAnswer, currentQuestionPushAnswer, isSurveyLoadingPushAnswer, isAnswerPushProceed };
-};
-
-export const useMVAgetBeginSurvey = (id) => {
-  const {
-    refetch,
-    isSuccess: isSuccessGetBeginSurvay,
-    isLoading: isSurveyBeginProceed,
-  } = useGetBeginSurveyQuery({ id }, { refetchOnWindowFocus: false, enabled: false });
-
-  let { data: currentQuestionBegin, isLoading: isSurveyLoadingBegin } = useGetCurrentQuestionForAssignedSurveyQuery(
-    { id },
-    { enabled: isSuccessGetBeginSurvay }
-  );
-
-  return { refetch, currentQuestionBegin, isSurveyLoadingBegin, isSurveyBeginProceed, isSuccessGetBeginSurvay };
-};
+// export const useMVAgetBeginSurvey = (id) => {
+//   const {
+//     refetch,
+//     isSuccess: isSuccessGetBeginSurvay,
+//     isLoading: isSurveyBeginProceed,
+//   } = useGetBeginSurveyQuery({ id }, { refetchOnWindowFocus: false, enabled: false });
+//
+//   let { data: currentQuestionBegin, isLoading: isSurveyLoadingBegin } = useGetCurrentQuestionForAssignedSurveyQuery(
+//     { id },
+//     {
+//       enabled: isSuccessGetBeginSurvay && !isSurveyBeginProceed,
+//     }
+//   );
+//
+//   return { refetch, currentQuestionBegin, isSurveyLoadingBegin, isSurveyBeginProceed, isSuccessGetBeginSurvay };
+// };
 
 export const useMVAswitchToPrevious = (id) => {
   let {

@@ -1,9 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import { NmpSelect, NmpCheckbox, NmpRow, NmpCol } from "features/nmp-ui";
-
-import { IdType, OptionsType } from "utility/prop-types";
 
 import multiSelectValidationSchema from "./validationSchema";
 
@@ -70,18 +67,3 @@ export const DFormMultiSelectWidget = (props) => {
 };
 
 DFormMultiSelectWidget.validationSchema = multiSelectValidationSchema;
-
-DFormMultiSelectWidget.propTypes = {
-  id: IdType.isRequired,
-  value: OptionsType,
-  label: PropTypes.string,
-  error: PropTypes.string,
-  options: OptionsType.isRequired,
-  uiStyle: PropTypes.string,
-  placeholder: PropTypes.string,
-  isError: PropTypes.bool.isRequired,
-  isRequired: PropTypes.bool.isRequired,
-  isDisabled: PropTypes.bool.isRequired,
-  isLabelShowing: PropTypes.bool.isRequired,
-  onChange: PropTypes.func,
-};
