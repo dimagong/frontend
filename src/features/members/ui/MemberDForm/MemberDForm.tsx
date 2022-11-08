@@ -21,18 +21,18 @@ interface Props {
   schema: any;
   values: any;
   accessType: AccessTypes;
-  sections: Array<{ id: string; name: string }>;
+  sections: any[];
 }
 
 export const MemberDForm: FC<Props> = (props) => {
   const { id, name, schema, values: propValues, accessType, sections } = props;
 
   const [values, setValues] = useState<any>(() => propValues);
-  const [sectionId, setSectionId] = useState<string>(() => sections[0].id);
   const [successSubmit, onSuccessSubmit] = useState<boolean>(() => false);
 
+  const [sectionId, setSectionId] = useState<string>(() => sections[0].id);
+
   const step = sections.findIndex(({ id }) => id === sectionId) || 0;
-  const sectionName = sections[step]?.name || `${step + 1}`;
   const stepperStatus = step < sections.length ? "process" : "finish";
 
   const onFieldValueError = (error: any): void => {
@@ -99,6 +99,7 @@ export const MemberDForm: FC<Props> = (props) => {
       setSectionId(sections[step + 1].id);
     }
   };
+
   const onPreviousSection = (): void => {
     setSectionId(sections[step - 1].id);
   };
