@@ -7,21 +7,21 @@ import { NmpUpload } from "features/nmp-ui";
 import { triggerFileDownloading, invariant } from "features/common";
 
 import { DFormContext } from "../DFormContext";
-import type { DFormFiles, DFormFile } from "../../types";
+import type { DformFileValueType, DformFileListValueType } from "../../data/models";
 
-const getUploadFileFromDFormFile = (dformFile: DFormFile): UploadFile => ({
+const getUploadFileFromDFormFile = (dformFile: DformFileValueType): UploadFile => ({
   uid: String(dformFile.file_id),
   name: dformFile.name,
 });
 
 type Props = {
   id?: string;
-  value?: DFormFiles;
+  value?: DformFileListValueType;
   isDisabled?: boolean;
   isMultiple?: boolean;
   isRemovable?: boolean;
   masterSchemaFieldId?: number;
-  onChange?: (value: DFormFiles) => void;
+  onChange?: (value: DformFileListValueType) => void;
 };
 
 export const DFormUploadFile: FC<Props> = (props) => {
@@ -29,7 +29,7 @@ export const DFormUploadFile: FC<Props> = (props) => {
 
   const { dformId, dformFileService } = DFormContext.useContext();
 
-  const onSuccessUpload = (uploadedData: DFormFiles) => {
+  const onSuccessUpload = (uploadedData: DformFileListValueType) => {
     if (onChange) {
       onChange(uploadedData);
     }

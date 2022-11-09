@@ -1,31 +1,35 @@
-import { DFormAccessTypes } from "../types";
+import { unexpected } from "features/common";
 
-export const isMemberDFormAccessible = (accessType: DFormAccessTypes) => {
+import { DformAccessTypes } from "../types";
+
+const unexpectedAccessTypeMsg = "DForm access type.";
+
+export const isMemberDFormAccessible = (accessType: DformAccessTypes): boolean => {
   switch (accessType) {
-    case DFormAccessTypes.UserLock:
-    case DFormAccessTypes.HardLock:
+    case DformAccessTypes.UserLock:
+    case DformAccessTypes.HardLock:
       return false;
-    case DFormAccessTypes.Allow:
-    case DFormAccessTypes.UserUnlock:
+    case DformAccessTypes.Allow:
+    case DformAccessTypes.UserUnlock:
       return true;
     default:
-      throw new Error(`Unexpected: DForm access type "${accessType}".`);
+      unexpected(unexpectedAccessTypeMsg);
   }
 };
 
-export const isManagerDFormAccessible = (accessType: DFormAccessTypes) => {
+export const isManagerDFormAccessible = (accessType: DformAccessTypes) => {
   switch (accessType) {
-    case DFormAccessTypes.HardLock:
+    case DformAccessTypes.HardLock:
       return false;
-    case DFormAccessTypes.Allow:
-    case DFormAccessTypes.UserLock:
-    case DFormAccessTypes.UserUnlock:
+    case DformAccessTypes.Allow:
+    case DformAccessTypes.UserLock:
+    case DformAccessTypes.UserUnlock:
       return true;
     default:
-      throw new Error(`Unexpected: DForm access type "${accessType}".`);
+      unexpected(unexpectedAccessTypeMsg);
   }
 };
 
-export const isDFormAccessible = (accessType: DFormAccessTypes, isMemberView: boolean) => {
+export const isDFormAccessible = (accessType: DformAccessTypes, isMemberView: boolean) => {
   return (isMemberView ? isMemberDFormAccessible : isManagerDFormAccessible)(accessType);
 };

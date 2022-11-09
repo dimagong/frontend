@@ -3,16 +3,16 @@ import React, { useMemo, useState, useContext, useCallback, createContext } from
 
 import { devWarning } from "features/common";
 
-import { DFormBlockSizeTypes } from "../../types";
+import { DformBlockSizeTypes } from "../../data/models";
 import { DFormSizingPrivateBlock } from "./DFormSizingPrivateBlock";
 
-type DFormSizingBlockData = { blockSize?: DFormBlockSizeTypes };
+type DformSizingBlockData = { blockSize?: DformBlockSizeTypes };
 
-type DFormSizingBlockContext = {
-  registerBlock: (blockData: DFormSizingBlockData) => void;
+type DformSizingBlockContextValue = {
+  registerBlock: (blockData: DformSizingBlockData) => void;
 };
 
-const dformSizingBlockContext = createContext<DFormSizingBlockContext>({
+const context = createContext<DformSizingBlockContextValue>({
   registerBlock: () => devWarning("Can't reach required context."),
 });
 
@@ -21,23 +21,23 @@ type DFormSizingBlockProps = {
 };
 
 const Provider: FC<DFormSizingBlockProps> = (props) => {
-  const [blockSize, setBlockSize] = useState(() => DFormBlockSizeTypes.Full);
+  const [blockSize, setBlockSize] = useState(() => DformBlockSizeTypes.Full);
 
-  const registerBlock = useCallback((blockData: DFormSizingBlockData) => {
-    setBlockSize(blockData.blockSize ?? DFormBlockSizeTypes.Full);
+  const registerBlock = useCallback((blockData: DformSizingBlockData) => {
+    setBlockSize(blockData.blockSize ?? DformBlockSizeTypes.Full);
   }, []);
 
-  const value: DFormSizingBlockContext = useMemo(() => ({ registerBlock }), [registerBlock]);
+  const value: DformSizingBlockContextValue = useMemo(() => ({ registerBlock }), [registerBlock]);
 
   return (
-    <dformSizingBlockContext.Provider value={value}>
+    <context.Provider value={value}>
       <DFormSizingPrivateBlock blockSize={blockSize}>{props.children}</DFormSizingPrivateBlock>
-    </dformSizingBlockContext.Provider>
+    </context.Provider>
   );
 };
 
 export const DFormSizingBlockContext = {
   Provider,
-  useContext: () => useContext(dformSizingBlockContext),
-  Consumer: dformSizingBlockContext.Consumer,
+  useContext: () => useContext(context),
+  Consumer: context.Consumer,
 };

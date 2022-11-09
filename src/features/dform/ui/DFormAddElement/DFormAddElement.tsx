@@ -3,18 +3,18 @@ import type { FC, MouseEventHandler, ReactNode } from "react";
 
 import { NmpCol, NmpRow } from "features/nmp-ui";
 
-import { DFormElementTypes } from "../../types";
+import { DformElementTypes } from "../../data/models";
 import { DFormAddElementButton } from "./DFormAddElementButton";
 
 const elementNames = {
-  [DFormElementTypes.Block]: "Add new element",
-  [DFormElementTypes.Group]: "Add new group",
+  [DformElementTypes.Block]: "Add new element",
+  [DformElementTypes.Group]: "Add new group",
 };
 
 type Props = {
   isVisible?: boolean;
   isHoverable?: boolean;
-  elementType: DFormElementTypes.Block | DFormElementTypes.Group;
+  elementType: DformElementTypes.Block | DformElementTypes.Group;
   onClick?: MouseEventHandler;
   children?: ReactNode;
 };

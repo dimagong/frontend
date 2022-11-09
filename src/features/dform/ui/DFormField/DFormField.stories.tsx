@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
 
 import { DFormField } from "./DFormField";
-import { DFormFieldTypes } from "../../types";
+import { DformFieldTypes } from "../../data/models";
 
 export default {
   title: "DForm/Field",
@@ -51,28 +51,28 @@ const defaultArgs = {
 export const BooleanField = Template.bind({});
 BooleanField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.Boolean,
+  fieldType: DformFieldTypes.Boolean,
   value: true,
 };
 
 export const DateField = Template.bind({});
 DateField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.Date,
+  fieldType: DformFieldTypes.Date,
   value: new Date().toISOString(),
 };
 
 export const FileField = Template.bind({});
 FileField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.File,
+  fieldType: DformFieldTypes.File,
   value: [{ name: "Filename.test", file_id: 0 }],
 };
 
 export const FileListField = Template.bind({});
 FileListField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.FileList,
+  fieldType: DformFieldTypes.FileList,
   value: [
     { name: "Filename.test", file_id: 0 },
     { name: "test.file", file_id: 1 },
@@ -82,14 +82,14 @@ FileListField.args = {
 export const LongTextField = Template.bind({});
 LongTextField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.LongText,
+  fieldType: DformFieldTypes.LongText,
   value: "<b>Bold</b>",
 };
 
 export const MultiSelectField = Template.bind({});
 MultiSelectField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.MultiSelect,
+  fieldType: DformFieldTypes.MultiSelect,
   value: ["option 1", "option 2"],
   options: ["option 1", "option 2", "option 3", "option 4"],
 };
@@ -97,21 +97,21 @@ MultiSelectField.args = {
 export const NumberField = Template.bind({});
 NumberField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.Number,
+  fieldType: DformFieldTypes.Number,
   value: 877,
 };
 
 export const ResourceField = Template.bind({});
 ResourceField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.Resource,
+  fieldType: DformFieldTypes.Resource,
   value: { custom_filename: "Custom.test", name: "Filename.test", file_id: 0 },
 };
 
 export const SelectField = Template.bind({});
 SelectField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.Select,
+  fieldType: DformFieldTypes.Select,
   value: "option 1",
   options: ["option 1", "option 2", "option 3", "option 4"],
 };
@@ -119,13 +119,13 @@ SelectField.args = {
 export const TextField = Template.bind({});
 TextField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.Text,
+  fieldType: DformFieldTypes.Text,
   value: "text...",
 };
 
 export const TextAreaField = Template.bind({});
 TextAreaField.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.TextArea,
+  fieldType: DformFieldTypes.TextArea,
   value: "more text...",
 };

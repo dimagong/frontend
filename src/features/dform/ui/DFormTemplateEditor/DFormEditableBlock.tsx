@@ -1,73 +1,66 @@
+import type { FC } from "react";
 import React from "react";
-import type { FC, MouseEventHandler } from "react";
 
+import { DFormBlock } from "../DFormBlock";
 import { DFormSelectable } from "../DFormSelectable";
 import { DFormAddElement } from "../DFormAddElement";
-import { DFormBlock, DFormBlockProps } from "../DFormBlock";
+import { DformSchemaContext } from "../DformSchemaContext";
 import { DFormDraggable, DFormDragHandle } from "../DFormDraggable";
-import { DFormFile, DFormFiles, DFormFieldTypes, DFormElementTypes } from "../../types";
+import {
+  DformBlockId,
+  DformBlockModel,
+  DformBlockSizeTypes,
+  DformBlockTypes,
+  DformElementTypes,
+  DformFieldTypes,
+  DformFileValueType,
+  DformGroupId,
+} from "../../data/models";
 
-const getFile = (file_id: number): DFormFile => ({
+const getFile = (file_id: number): DformFileValueType => ({
   custom_filename: `Custom-${file_id}.filename`,
   name: `filename-${file_id}.test`,
   file_id,
 });
 
 const fileValue = getFile(0);
-const filesValue: DFormFiles = Array(3)
+const filesValue: DformFileValueType[] = Array(3)
   .fill(null)
   .map((_, index) => getFile(index));
 
-const getValueByFieldType = (fieldType?: DFormFieldTypes) => {
-  switch (fieldType) {
-    case DFormFieldTypes.File:
+const getValueByBlock = (block: DformBlockModel) => {
+  if (block.blockType !== DformBlockTypes.Field) {
+    return undefined;
+  }
+
+  switch (block.fieldType) {
+    case DformFieldTypes.File:
       return [fileValue];
-    case DFormFieldTypes.FileList:
+    case DformFieldTypes.FileList:
       return filesValue;
-    case DFormFieldTypes.Resource:
+    case DformFieldTypes.Resource:
       return fileValue;
     default:
       return undefined;
   }
 };
 
-type Props = Pick<
-  DFormBlockProps,
-  | "label"
-  | "format"
-  | "uiStyle"
-  | "options"
-  | "helpText"
-  | "blockType"
-  | "fieldType"
-  | "blockSize"
-  | "isRequired"
-  | "isLabelShowing"
-> & {
-  blockId: string;
-  groupId: string;
+export type DFormEditableBlockProps = {
+  groupId: DformGroupId;
+  blockId: DformBlockId;
+  blockSize: DformBlockSizeTypes;
   blockIndex: number;
   isSelected?: boolean;
   isDraggable?: boolean;
-  onBlockClick?: (blockId: string) => void;
-  onBlockCreate?: (groupId: string, blockId: string) => void;
+  onBlockClick?: (blockId: DformBlockId) => void;
+  onBlockCreate?: (groupId: DformGroupId, blockId: DformBlockId) => void;
 };
 
-export const DFormEditableBlock: FC<Props> = (props) => {
-  const {
-    blockId,
-    groupId,
-    blockType,
-    fieldType,
-    blockSize,
-    blockIndex,
-    isSelected,
-    isDraggable,
-    onBlockClick,
-    onBlockCreate,
-    ...blockProps
-  } = props;
-  const { label, uiStyle, options, helpText, format, isRequired, isLabelShowing } = blockProps;
+export const DFormEditableBlock: FC<DFormEditableBlockProps> = (props) => {
+  const { groupId, blockId, blockSize, blockIndex, isSelected, isDraggable, onBlockClick, onBlockCreate } = props;
+
+  const { dformSchema } = DformSchemaContext.useContext();
+  const block = dformSchema.getBlockById(blockId);
 
   const onSelectableClick = () => {
     if (onBlockClick) {
@@ -87,23 +80,15 @@ export const DFormEditableBlock: FC<Props> = (props) => {
         <DFormAddElement
           isVisible={!isDraggable}
           isHoverable
-          elementType={DFormElementTypes.Block}
+          elementType={DformElementTypes.Block}
           onClick={onAddElementClick}
         >
           <DFormDragHandle {...dragHandleProps} isDraggable={isDraggable} isMiddle>
             <DFormSelectable isSelected={isSelected} isMishandled onClick={onSelectableClick}>
               <DFormBlock
-                value={getValueByFieldType(fieldType) as any}
-                label={label}
-                format={format}
-                uiStyle={uiStyle}
-                options={options}
-                helpText={helpText}
-                blockType={blockType}
+                {...block}
+                value={getValueByBlock(block) as any}
                 blockSize={isDraggable ? undefined : blockSize}
-                fieldType={fieldType}
-                isRequired={isRequired}
-                isLabelShowing={isLabelShowing}
               />
             </DFormSelectable>
           </DFormDragHandle>

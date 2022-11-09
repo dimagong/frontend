@@ -1,8 +1,9 @@
 import React from "react";
 import type { FC, ReactNode } from "react";
+
 import { DFormSelectable } from "../DFormSelectable";
 
-export type DFormSectionTabProps = {
+export type DFormTabProps = {
   tabId: string;
   tabIndex: number;
   isSelected?: boolean;
@@ -10,7 +11,7 @@ export type DFormSectionTabProps = {
   children?: ReactNode;
 };
 
-export const DFormSectionTab: FC<DFormSectionTabProps> = (props) => {
+export const DFormTab: FC<DFormTabProps> = (props) => {
   const { tabId, tabIndex, isSelected, children, onClick } = props;
 
   const onTabClick = () => {
@@ -20,9 +21,9 @@ export const DFormSectionTab: FC<DFormSectionTabProps> = (props) => {
   };
 
   return (
-    <DFormSelectable isLeft isSelected={isSelected} onClick={onTabClick} className="dform-section-tabs__tab">
-      <span className="dform-section-tabs__tab-label">{children}</span>
-      <span className="dform-section-tabs__tab-icon">{tabIndex}</span>
+    <DFormSelectable isLeft isSelected={isSelected} onClick={onTabClick} className="dform-tabs__tab">
+      <span className="dform-tabs__tab-label">{children}</span>
+      <span className="dform-tabs__tab-icon">{tabIndex}</span>
     </DFormSelectable>
   );
 };

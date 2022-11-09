@@ -4,24 +4,33 @@ import { DragDropContext, DragDropContextProps } from "react-beautiful-dnd";
 
 import { NmpCol, NmpRow } from "features/nmp-ui";
 
-import { DFormSectionElement } from "../../types";
-import { DFormTemplateSectionEditor } from "./DFormTemplateSectionEditor";
-import { DFormSectionTabs, DFormSectionTabsProps } from "../DFormSectionTabs";
+import {
+  DformBlockId,
+  DformBlockModel,
+  DformElementId,
+  DformGroupId,
+  DformGroupModel,
+  DformSectionId,
+  DformSectionModel,
+} from "../../data/models";
 
-type Item = Unpack<DFormSectionTabsProps["items"]>;
+import { DformSchemaContext } from "../DformSchemaContext";
+import { DFormEditableSectionTabs } from "./DFormEditableSectionTabs";
+import { DFormTemplateSectionEditor } from "./DFormTemplateSectionEditor";
 
 export type DFormTemplateEditorProps = {
-  blocks: any[];
-  groups: any[];
-  sections: DFormSectionElement[];
+  blocks: DformBlockModel[];
+  groups: DformGroupModel[];
+  sections: DformSectionModel[];
   isDraggable?: boolean;
-  selectedElementId?: string;
+  selectedElementId?: DformElementId;
+  relatedSectionsIds: DformSectionId[];
   onDragEnd?: DragDropContextProps["onDragEnd"];
-  onBlockClick?: (blockId: string) => void;
-  onGroupClick?: (groupId: string) => void;
-  onBlockCreate?: (groupId: string, blockId?: string) => void;
-  onGroupCreate?: (sectionId: string) => void;
-  onSectionClick?: (sectionId: string) => void;
+  onBlockClick?: (blockId: DformBlockId) => void;
+  onGroupClick?: (groupId: DformGroupId) => void;
+  onBlockCreate?: (groupId: DformGroupId, blockId?: DformBlockId) => void;
+  onGroupCreate?: (sectionId: DformSectionId) => void;
+  onSectionClick?: (sectionId: DformSectionId) => void;
   onSectionCreate?: () => void;
 };
 
@@ -32,6 +41,7 @@ export const DFormTemplateEditor: FC<DFormTemplateEditorProps> = (props) => {
     sections,
     isDraggable,
     selectedElementId,
+    relatedSectionsIds,
     onDragEnd = () => {},
     onBlockClick,
     onGroupClick,
@@ -42,37 +52,36 @@ export const DFormTemplateEditor: FC<DFormTemplateEditorProps> = (props) => {
   } = props;
 
   const node = (
-    <NmpRow>
-      <NmpCol span="24">
-        <DFormSectionTabs
-          items={sections.map(
-            (section: DFormSectionElement): Item => ({
-              key: section.id,
-              label: section.name,
-              children: (
-                <DFormTemplateSectionEditor
-                  blocks={blocks}
-                  groups={groups}
-                  sectionId={section.id}
-                  sectionName={section.name}
-                  isDraggable={isDraggable}
-                  relatedGroups={section.relatedGroups}
-                  selectedElementId={selectedElementId}
-                  onBlockClick={onBlockClick}
-                  onGroupClick={onGroupClick}
-                  onBlockCreate={onBlockCreate}
-                  onGroupCreate={onGroupCreate}
-                />
-              ),
-            })
-          )}
-          isDraggable={isDraggable}
-          selectedElementId={selectedElementId}
-          onTabClick={onSectionClick}
-          onTabCreate={onSectionCreate}
-        />
-      </NmpCol>
-    </NmpRow>
+    <DformSchemaContext.Provider
+      blocks={blocks}
+      groups={groups}
+      sections={sections}
+      relatedSectionsIds={relatedSectionsIds}
+    >
+      <NmpRow>
+        <NmpCol span="24">
+          <DFormEditableSectionTabs
+            isDraggable={isDraggable}
+            selectedElementId={selectedElementId}
+            relatedSectionsIds={relatedSectionsIds}
+            onSectionClick={onSectionClick}
+            onSectionCreate={onSectionCreate}
+          >
+            {(sectionId) => (
+              <DFormTemplateSectionEditor
+                sectionId={sectionId}
+                isDraggable={isDraggable}
+                selectedElementId={selectedElementId}
+                onBlockClick={onBlockClick}
+                onGroupClick={onGroupClick}
+                onBlockCreate={onBlockCreate}
+                onGroupCreate={onGroupCreate}
+              />
+            )}
+          </DFormEditableSectionTabs>
+        </NmpCol>
+      </NmpRow>
+    </DformSchemaContext.Provider>
   );
 
   if (isDraggable) {

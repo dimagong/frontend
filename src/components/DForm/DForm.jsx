@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { cloneDeep } from "lodash";
 import PropTypes from "prop-types";
 
-import { DFormFieldTypes } from "features/dform/types";
+import { DformFieldTypes } from "features/dform/data/models";
+
 import { DFormContextProvider } from "./DFormContext";
 
 import SectionsComponent from "./Components/Sections";
@@ -19,8 +20,8 @@ import {
 
 const extractValue = (controlValue, fieldType) => {
   switch (fieldType) {
-    case DFormFieldTypes.File:
-    case DFormFieldTypes.FileList:
+    case DformFieldTypes.File:
+    case DformFieldTypes.FileList:
       return controlValue.files;
     default:
       return controlValue.value;

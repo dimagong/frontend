@@ -2,7 +2,7 @@ import React from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
 
 import { DFormBlock } from "./DFormBlock";
-import { DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { DformBlockTypes, DformFieldTypes } from "../../data/models";
 
 export default {
   title: "DForm/Block",
@@ -34,14 +34,15 @@ const Template = (props) => {
 
 export const HelpTextBlock = Template.bind({});
 HelpTextBlock.args = {
-  blockType: DFormBlockTypes.HelpText,
+  blockType: DformBlockTypes.HelpText,
   helpText: "<b>Bold+<i>cursive</i></b>",
 };
 
 export const FieldBlock = Template.bind({});
 FieldBlock.args = {
+  id: "field",
   label: "Label",
   value: "Text...",
-  fieldType: DFormFieldTypes.Text,
-  blockType: DFormBlockTypes.Field,
+  fieldType: DformFieldTypes.Text,
+  blockType: DformBlockTypes.Field,
 };

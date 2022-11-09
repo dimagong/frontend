@@ -3,7 +3,7 @@ import "./styles.scss";
 import { Row, Col } from "reactstrap";
 import React, { useState, useEffect } from "react";
 
-import { DFormElementTypes } from "features/dform/types";
+import { DformElementTypes } from "features/dform/data/models";
 
 import GroupEdit from "./Components/GroupEdit";
 import FieldEdit from "./Components/FieldEdit";
@@ -16,9 +16,9 @@ const EditOptions = {
 };
 
 const ElementTypeSpecificEditOptions = {
-  [DFormElementTypes.Block]: [EditOptions.properties, EditOptions.styling, EditOptions.dynamicRendering],
-  [DFormElementTypes.Group]: [EditOptions.properties, EditOptions.dynamicRendering],
-  [DFormElementTypes.Section]: [EditOptions.properties, EditOptions.dynamicRendering],
+  [DformElementTypes.Block]: [EditOptions.properties, EditOptions.styling, EditOptions.dynamicRendering],
+  [DformElementTypes.Group]: [EditOptions.properties, EditOptions.dynamicRendering],
+  [DformElementTypes.Section]: [EditOptions.properties, EditOptions.dynamicRendering],
 };
 
 const DFormElementEdit = (props) => {

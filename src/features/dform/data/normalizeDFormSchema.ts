@@ -1,31 +1,21 @@
-import {
-  DFormSchema,
-  DFormBlockTypes,
-  DFormFieldTypes,
-  NormalizedDFormSchema,
-  NormalizedDFormGroupElement,
-  NormalizedDFormBlockElement,
-  NormalizedDFormSectionElement,
-} from "../types";
+import { DformBlockTypes } from "./models";
 
 const recognizeBlockType = (fieldType) => {
   switch (fieldType) {
     case "helpText":
-      return DFormBlockTypes.HelpText;
+      return DformBlockTypes.HelpText;
     default:
-      return DFormBlockTypes.Field;
+      return DformBlockTypes.Field;
   }
 };
 
-export const normalizeDFormSchema = (dformSchema: DFormSchema): NormalizedDFormSchema => {
-  const sections: NormalizedDFormSectionElement[] = dformSchema.sectionsOrder.map(
-    (sectionId) => dformSchema.sections[sectionId]
-  );
-  const groups: NormalizedDFormGroupElement[] = Object.values(dformSchema.groups).map((group) => ({
+export const normalizeDFormSchema = (dformSchema: any): any => {
+  const sections = dformSchema.sectionsOrder.map((sectionId) => dformSchema.sections[sectionId]);
+  const groups = Object.values(dformSchema.groups).map((group: any) => ({
     ...group,
     relatedBlocks: group.relatedFields,
   }));
-  const blocks: NormalizedDFormBlockElement[] = Object.values(dformSchema.fields).map((field) => ({
+  const blocks = Object.values(dformSchema.fields).map((field: any) => ({
     id: field.id,
     label: field.title,
     format: field.format,
@@ -33,7 +23,7 @@ export const normalizeDFormSchema = (dformSchema: DFormSchema): NormalizedDFormS
     options: field.options,
     uiStyle: field.uiStyle,
     isHidden: field.isHidden,
-    ...(field.type === DFormBlockTypes.HelpText ? {} : { fieldType: field.type }),
+    ...(field.type === DformBlockTypes.HelpText ? {} : { fieldType: field.type }),
     blockType: recognizeBlockType(field.type),
     blockSize: field.classes,
     isRequired: field.isRequired,

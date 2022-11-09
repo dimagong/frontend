@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
 
+import { DformAccessTypes } from "../../types";
 import { DFormMemberForm } from "./DFormMemberForm";
-import { DFormBlockSizeTypes, DFormBlockTypes, DFormFieldTypes } from "../../types";
+import { DformBlockSizeTypes, DformBlockTypes, DformFieldTypes } from "../../data/models";
 
 export default {
   title: "DForm/MemberForm",
@@ -28,15 +29,15 @@ const blockTemplate = [
   {
     id: "0",
     helpText: "<h2>Help text block</h2>",
-    blockType: DFormBlockTypes.HelpText,
-    blockSize: DFormBlockSizeTypes.Full,
+    blockType: DformBlockTypes.HelpText,
+    blockSize: DformBlockSizeTypes.Full,
   },
   {
     id: "1",
     label: "Text field",
-    blockType: DFormBlockTypes.Field,
-    fieldType: DFormFieldTypes.Text,
-    blockSize: DFormBlockSizeTypes.Half,
+    blockType: DformBlockTypes.Field,
+    fieldType: DformFieldTypes.Text,
+    blockSize: DformBlockSizeTypes.Half,
     isRequired: true,
     isDisabled: false,
     isLabelShowing: true,
@@ -45,9 +46,9 @@ const blockTemplate = [
   {
     id: "2",
     label: "File field",
-    blockType: DFormBlockTypes.Field,
-    fieldType: DFormFieldTypes.File,
-    blockSize: DFormBlockSizeTypes.Half,
+    blockType: DformBlockTypes.Field,
+    fieldType: DformFieldTypes.File,
+    blockSize: DformBlockSizeTypes.Half,
     isRequired: true,
     isDisabled: false,
     isLabelShowing: true,
@@ -89,4 +90,5 @@ Base.args = {
   ...defaultArgs,
   dformId: 0,
   dformName: "Succession Feasibility",
+  accessType: DformAccessTypes.HardLock,
 };

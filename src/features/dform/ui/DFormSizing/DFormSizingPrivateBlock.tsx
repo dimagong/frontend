@@ -2,11 +2,12 @@ import React from "react";
 import type { FC, ReactNode } from "react";
 
 import { NmpCol } from "features/nmp-ui";
-import { DFormBlockSizeTypes } from "../../types";
+
+import { DformBlockSizeTypes } from "../../data/models";
 import { getColSpanByBlockSizeType } from "./getColSpanByBlockSizeType";
 
 type DFormSizingPrivateBlock = {
-  blockSize: DFormBlockSizeTypes;
+  blockSize: DformBlockSizeTypes;
   children?: ReactNode;
 };
 

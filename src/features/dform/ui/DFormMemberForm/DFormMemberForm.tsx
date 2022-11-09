@@ -10,12 +10,13 @@ import { DFormGroup } from "../DFormGroup";
 import { DFormBlock } from "../DFormBlock";
 import { DFormContext } from "../DFormContext";
 import { DFormSection } from "../DFormSection";
-import { DFormAccessTypes, DFormSectionElement } from "../../types";
+import { DformAccessTypes } from "../../types";
 import { DFormFieldItem } from "../DFormFieldItem";
+import { DformSectionModel } from "../../data/models";
 import { DFormMemberCheckSave } from "../DFormMemberCheckSave";
 import { DFormSectionSteps, DFormSectionStepsProps } from "../DFormSectionSteps";
 
-const sectionsToSteps = (sections: DFormSectionElement[]): DFormSectionStepsProps["items"] => {
+const sectionsToSteps = (sections: DformSectionModel[]): DFormSectionStepsProps["items"] => {
   return sections.map((section, index) => {
     if (index === 0) {
       return { title: section.name, status: "process", disabled: false };
@@ -29,8 +30,8 @@ export type DFormMemberFormProps = {
   groups: any[];
   dformId: number;
   dformName: string;
-  sections: DFormSectionElement[];
-  accessType: DFormAccessTypes;
+  sections: DformSectionModel[];
+  accessType: DformAccessTypes;
 };
 
 export const DFormMemberForm: FC<DFormMemberFormProps> = (props) => {
@@ -82,7 +83,7 @@ export const DFormMemberForm: FC<DFormMemberFormProps> = (props) => {
             <DFormContext.Provider dformId={dformId} accessType={accessType} isMemberView>
               <DFormSection sectionName={section.name}>
                 {groups
-                  .filter(({ id }) => section.relatedGroups.includes(id))
+                  .filter(({ id }) => section.relatedGroupsIds.includes(id))
                   .map((group) => (
                     <DFormGroup groupName={group.name} key={group.id}>
                       {blocks

@@ -5,11 +5,11 @@ import { useMutation } from "react-query";
 import { NmpUpload } from "features/nmp-ui";
 import { triggerFileDownloading, invariant } from "features/common";
 
-import type { DFormFile } from "../../types";
 import { DFormContext } from "../DFormContext";
+import type { DformFileValueType } from "../../data/models";
 
 type Props = {
-  value?: DFormFile;
+  value?: DformFileValueType;
   isDisabled?: boolean;
   masterSchemaFieldId?: number;
 };

@@ -1,23 +1,23 @@
 import { v4 } from "uuid";
 
 import {
-  DFormFieldTypes,
-  DFormBlockTypes,
-  DFormElementTypes,
-  DFormBlockSizeTypes,
-  DFormDateFormatTypes,
-  DFormMultiSelectUIStyles,
-  DFormResourceCompileOptionTypes,
-} from "features/dform/types";
+  DformFieldTypes,
+  DformBlockTypes,
+  DformElementTypes,
+  DformBlockSizeTypes,
+  DformDateFormatTypes,
+  DformMultiSelectUIStyles,
+  DformResourceCompileOptionTypes,
+} from "features/dform/data/models";
 
 import { AbstractDFormFieldConditionModel } from "./fieldConditionModel";
 
-interface CommonFieldProperties<T extends DFormFieldTypes | DFormBlockTypes.HelpText> {
+interface CommonFieldProperties<T extends DformFieldTypes | DformBlockTypes.HelpText> {
   id: string;
   type: T;
   title: string;
   groupId: string;
-  classes: DFormBlockSizeTypes;
+  classes: DformBlockSizeTypes;
   isRequired: boolean;
   isDisabled: boolean;
   isProtected: boolean;
@@ -26,46 +26,46 @@ interface CommonFieldProperties<T extends DFormFieldTypes | DFormBlockTypes.Help
   conditions: AbstractDFormFieldConditionModel[];
 }
 
-interface StringFieldProperties<T extends DFormFieldTypes> extends CommonFieldProperties<T> {
+interface StringFieldProperties<T extends DformFieldTypes> extends CommonFieldProperties<T> {
   minLength: number | null;
   maxLength: number | null;
 }
 
-interface DateFieldProperties extends CommonFieldProperties<DFormFieldTypes.Date> {
-  format: DFormDateFormatTypes;
+interface DateFieldProperties extends CommonFieldProperties<DformFieldTypes.Date> {
+  format: DformDateFormatTypes;
 }
 
-interface NumberFieldProperties extends CommonFieldProperties<DFormFieldTypes.Number> {
+interface NumberFieldProperties extends CommonFieldProperties<DformFieldTypes.Number> {
   minimum: number | null;
   maximum: number | null;
 }
 
-interface SelectFieldProperties<T extends DFormFieldTypes = DFormFieldTypes.Select> extends CommonFieldProperties<T> {
+interface SelectFieldProperties<T extends DformFieldTypes = DformFieldTypes.Select> extends CommonFieldProperties<T> {
   options: string[];
 }
 
-interface MultiSelectFieldProperties extends SelectFieldProperties<DFormFieldTypes.MultiSelect> {
-  uiStyle: DFormMultiSelectUIStyles | null;
+interface MultiSelectFieldProperties extends SelectFieldProperties<DformFieldTypes.MultiSelect> {
+  uiStyle: DformMultiSelectUIStyles | null;
 }
 
-type TextFieldProperties = StringFieldProperties<DFormFieldTypes.Text>;
+type TextFieldProperties = StringFieldProperties<DformFieldTypes.Text>;
 
-type TextAreaFieldProperties = StringFieldProperties<DFormFieldTypes.TextArea>;
+type TextAreaFieldProperties = StringFieldProperties<DformFieldTypes.TextArea>;
 
-type LongTextFieldProperties = StringFieldProperties<DFormFieldTypes.LongText>;
+type LongTextFieldProperties = StringFieldProperties<DformFieldTypes.LongText>;
 
-type FileFieldProperties = CommonFieldProperties<DFormFieldTypes.File>;
+type FileFieldProperties = CommonFieldProperties<DformFieldTypes.File>;
 
-type BooleanFieldProperties = CommonFieldProperties<DFormFieldTypes.Boolean>;
+type BooleanFieldProperties = CommonFieldProperties<DformFieldTypes.Boolean>;
 
-type FileListFieldProperties = CommonFieldProperties<DFormFieldTypes.Boolean>;
+type FileListFieldProperties = CommonFieldProperties<DformFieldTypes.Boolean>;
 
-interface ResourceFieldProperties extends CommonFieldProperties<DFormFieldTypes.Resource> {
-  resourceCompileOption: DFormResourceCompileOptionTypes;
+interface ResourceFieldProperties extends CommonFieldProperties<DformFieldTypes.Resource> {
+  resourceCompileOption: DformResourceCompileOptionTypes;
   resourceManagerFieldId: string;
 }
 
-interface HelpTextProperties extends CommonFieldProperties<DFormBlockTypes.HelpText> {
+interface HelpTextProperties extends CommonFieldProperties<DformBlockTypes.HelpText> {
   helpTextValue: string;
 }
 
@@ -96,7 +96,7 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * Indicates an element type.
    */
-  readonly elementType: DFormElementTypes = DFormElementTypes.Block;
+  readonly elementType: DformElementTypes = DformElementTypes.Block;
   /**
    * Indicates a unique identifier (ID) of an owning group.
    */
@@ -104,7 +104,7 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * Indicates a field type.
    */
-  type: DFormFieldTypes | DFormBlockTypes.HelpText = DFormFieldTypes.Text;
+  type: DformFieldTypes | DformBlockTypes.HelpText = DformFieldTypes.Text;
   /**
    * Represents a caption for an item in a user interface.
    */
@@ -132,7 +132,7 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * A html class value that will be consumed by field wrapper.
    */
-  classes: DFormBlockSizeTypes = DFormBlockSizeTypes.Full;
+  classes: DformBlockSizeTypes = DformBlockSizeTypes.Full;
   /**
    * Field conditions.
    */
@@ -145,7 +145,7 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * For field type DFormFieldTypes.Date
    */
-  format: DFormDateFormatTypes;
+  format: DformDateFormatTypes;
   /**
    * For field type DFormFieldTypes.Number
    */
@@ -158,11 +158,11 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
   /**
    * For field type DFormFieldTypes.MultiSelect
    */
-  uiStyle: DFormMultiSelectUIStyles | null;
+  uiStyle: DformMultiSelectUIStyles | null;
   /**
    * For field type DFormFieldTypes.Resource
    */
-  resourceCompileOption: DFormResourceCompileOptionTypes;
+  resourceCompileOption: DformResourceCompileOptionTypes;
   resourceManagerFieldId: string;
   /**
    * For field type DFormFieldTypes.HelpText
@@ -197,34 +197,34 @@ export class DFormFieldModel extends AbstractDFormFieldModel {
     this.conditions = properties.conditions ?? this.conditions;
 
     switch (properties.type) {
-      case DFormFieldTypes.Text:
-      case DFormFieldTypes.TextArea:
-      case DFormFieldTypes.LongText:
+      case DformFieldTypes.Text:
+      case DformFieldTypes.TextArea:
+      case DformFieldTypes.LongText:
         this.minLength = properties.minLength ?? this.minLength ?? null;
         this.maxLength = properties.maxLength ?? this.maxLength ?? null;
         break;
-      case DFormFieldTypes.Date:
-        this.format = properties.format ?? this.format ?? DFormDateFormatTypes.Date;
+      case DformFieldTypes.Date:
+        this.format = properties.format ?? this.format ?? DformDateFormatTypes.Date;
         break;
-      case DFormFieldTypes.Number:
+      case DformFieldTypes.Number:
         this.minimum = properties.minimum ?? this.minimum ?? null;
         this.maximum = properties.maximum ?? this.maximum ?? null;
         break;
-      case DFormFieldTypes.Select:
+      case DformFieldTypes.Select:
         this.options = properties.options ?? this.options ?? [];
         break;
-      case DFormFieldTypes.MultiSelect:
+      case DformFieldTypes.MultiSelect:
         this.options = properties.options ?? this.options ?? [];
         this.uiStyle = properties.uiStyle ?? this.uiStyle ?? null;
         break;
-      case DFormBlockTypes.HelpText:
+      case DformBlockTypes.HelpText:
         this.helpTextValue = properties.helpTextValue ?? this.helpTextValue ?? "New help text";
         break;
-      case DFormFieldTypes.Resource:
+      case DformFieldTypes.Resource:
         this.resourceCompileOption =
           properties.resourceCompileOption ??
           this.resourceCompileOption ??
-          DFormResourceCompileOptionTypes.CompileOnOnboardingAssociation;
+          DformResourceCompileOptionTypes.CompileOnOnboardingAssociation;
         this.resourceManagerFieldId = properties.resourceManagerFieldId ?? this.resourceManagerFieldId ?? null;
         break;
     }

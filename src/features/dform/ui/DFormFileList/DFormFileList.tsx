@@ -1,15 +1,15 @@
 import React from "react";
 import type { FC } from "react";
 
-import type { DFormFiles } from "../../types";
 import { DFormUploadFile } from "../DFormFile/DFormUploadFile";
+import type { DformFileListValueType } from "../../data/models";
 
 export type DFormFileListProps = {
   id?: string;
-  value?: DFormFiles;
+  value?: DformFileListValueType;
   isDisabled?: boolean;
   masterSchemaFieldId?: number;
-  onChange?: (files: DFormFiles) => void;
+  onChange?: (files: DformFileListValueType) => void;
 };
 
 export const DFormFileList: FC<DFormFileListProps> = (props) => {

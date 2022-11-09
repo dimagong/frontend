@@ -1,20 +1,18 @@
 import { cloneDeep } from "lodash";
 
-import type { DFormSchema, NormalizedDFormValues } from "../types";
-
 import { checkConditions } from "./checkConditions";
 
-export const applyDynamicConditionalRender = (schema: DFormSchema, values: NormalizedDFormValues): DFormSchema => {
+export const applyDynamicConditionalRender = (schema, normalizedValues) => {
   // Do not apply conditions on empty values
-  if (Object.keys(values).length === 0) return schema;
+  if (Object.keys(normalizedValues).length === 0) return schema;
 
   const schemaCopy = cloneDeep(schema);
 
   const { fields, sections, groups } = schemaCopy;
 
-  schemaCopy.fields = checkConditions(fields, values, fields);
-  schemaCopy.groups = checkConditions(groups, values, fields);
-  schemaCopy.sections = checkConditions(sections, values, fields);
+  schemaCopy.fields = checkConditions(fields, normalizedValues, fields);
+  schemaCopy.groups = checkConditions(groups, normalizedValues, fields);
+  schemaCopy.sections = checkConditions(sections, normalizedValues, fields);
 
   return schemaCopy;
 };

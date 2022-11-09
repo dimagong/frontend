@@ -4,8 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import { DFormGroup } from "./DFormGroup";
 import { DFormBlock } from "../DFormBlock";
-import { mockStoriesBlocks } from "../mockStoriesBlocks";
-import { DFormBlockSizeTypes, DFormBlockTypes } from "../../types";
+import { mockBlocks } from "../../data/models/mockSchema";
 
 export default {
   title: "DForm/Group",
@@ -17,36 +16,9 @@ const Template = (props) => {
     <QueryClientProvider client={new QueryClient()}>
       <Form>
         <DFormGroup groupName={props.groupName}>
-          {mockStoriesBlocks.map((blockProps) => (
-            <DFormBlock
-              id={blockProps.blockId}
-              label={blockProps.label}
-              helpText={blockProps.helpText}
-              blockType={blockProps.blockType}
-              blockSize={blockProps.blockSize}
-              fieldType={blockProps.fieldType}
-              isRequired={blockProps.isRequired}
-              isDisabled={blockProps.isDisabled}
-              isLabelShowing={blockProps.isLabelShowing}
-              masterSchemaFieldId={blockProps.masterSchemaFieldId}
-              key={blockProps.blockId}
-            />
+          {mockBlocks.map((block) => (
+            <DFormBlock {...block} key={block.id} />
           ))}
-
-          <DFormBlock
-            id="123"
-            label="asd"
-            helpText="<b>Hello bolding</b>"
-            blockType={DFormBlockTypes.HelpText}
-            blockSize={DFormBlockSizeTypes.Half}
-          />
-          <DFormBlock
-            id="1234"
-            label="asd"
-            helpText="<b>Hello bolding</b>"
-            blockType={DFormBlockTypes.HelpText}
-            blockSize={DFormBlockSizeTypes.Half}
-          />
         </DFormGroup>
       </Form>
     </QueryClientProvider>

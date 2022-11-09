@@ -3,8 +3,8 @@ import React, { useEffect } from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
 
 import { DFormField } from "../DFormField";
-import { DFormFieldTypes } from "../../types";
 import { DFormFieldItem } from "./DFormFieldItem";
+import { DformFieldTypes } from "../../data/models";
 
 export default {
   title: "DForm/FieldItem",
@@ -53,14 +53,14 @@ export const Required = Template.bind({});
 Required.args = {
   ...defaultArgs,
   isRequired: true,
-  fieldType: DFormFieldTypes.Text,
+  fieldType: DformFieldTypes.Text,
   value: "text...",
 };
 
 export const MinimumMaximum = Template.bind({});
 MinimumMaximum.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.Number,
+  fieldType: DformFieldTypes.Number,
   value: 877,
   minimum: 876,
   maximum: 879,
@@ -69,7 +69,7 @@ MinimumMaximum.args = {
 export const MinMaxLength = Template.bind({});
 MinMaxLength.args = {
   ...defaultArgs,
-  fieldType: DFormFieldTypes.Text,
+  fieldType: DformFieldTypes.Text,
   value: "text...",
   minLength: 10,
   maxLength: 20,

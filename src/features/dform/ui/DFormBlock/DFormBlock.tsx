@@ -3,12 +3,12 @@ import "./style.scss";
 import React from "react";
 import type { FC } from "react";
 
-import { DFormBlockSizeTypes } from "../../types";
 import { DFormSizingBlock } from "../DFormSizing";
+import { DformBlockSizeTypes } from "../../data/models";
 import { DFormBlockRenderer, DFormBlockRendererProps } from "./DFormBlockRenderer";
 
 export type DFormBlockProps = DFormBlockRendererProps & {
-  blockSize?: DFormBlockSizeTypes;
+  blockSize?: DformBlockSizeTypes;
 };
 
 export const DFormBlock: FC<DFormBlockProps> = (props) => {

@@ -1,11 +1,11 @@
 import React from "react";
 import type { FC } from "react";
 
-import type { DFormFile } from "../../types";
 import { DFormResourceItem } from "./DFormResourceItem";
+import type { DformFileValueType } from "../../data/models";
 
 export type DFormResourceProps = {
-  value?: DFormFile;
+  value?: DformFileValueType;
   isDisabled?: boolean;
   masterSchemaFieldId?: number;
 };

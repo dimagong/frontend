@@ -1,10 +1,10 @@
-import { DFormBlockSizeTypes } from "../../types";
+import { DformBlockSizeTypes } from "../../data/models";
 
-export const getColSpanByBlockSizeType = (sizeType: DFormBlockSizeTypes) => {
+export const getColSpanByBlockSizeType = (sizeType: DformBlockSizeTypes) => {
   switch (sizeType) {
-    case DFormBlockSizeTypes.Full:
+    case DformBlockSizeTypes.Full:
       return 24;
-    case DFormBlockSizeTypes.Half:
+    case DformBlockSizeTypes.Half:
       return 12;
   }
 };

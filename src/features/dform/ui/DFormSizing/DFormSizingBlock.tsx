@@ -1,11 +1,11 @@
 import type { FC, ReactNode } from "react";
 import React, { useLayoutEffect } from "react";
 
-import { DFormBlockSizeTypes } from "../../types";
+import { DformBlockSizeTypes } from "../../data/models";
 import { DFormSizingBlockContext } from "./DFormSizingBlockContext";
 
 type DFormSizerBlockProps = {
-  blockSize?: DFormBlockSizeTypes;
+  blockSize?: DformBlockSizeTypes;
   children?: ReactNode;
 };
 

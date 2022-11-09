@@ -1,7 +1,7 @@
 import React from "react";
 import type { FC } from "react";
 
-import { DFormFieldTypes } from "../../types";
+import { DformFieldTypes } from "../../data/models";
 import { DFormLabeled, DFormLabeledProps } from "../DFormLabeled";
 import { DFormFieldRenderer, DFormFieldRendererProps } from "./DFormFieldRenderer";
 
@@ -13,7 +13,7 @@ export const DFormField: FC<DFormFieldProps> = (props) => {
 
   return (
     <DFormLabeled
-      id={fieldType === DFormFieldTypes.Boolean ? undefined : id}
+      id={fieldType === DformFieldTypes.Boolean ? undefined : id}
       label={label}
       isRequired={isRequired}
       isLabelShowing={isLabelShowing}

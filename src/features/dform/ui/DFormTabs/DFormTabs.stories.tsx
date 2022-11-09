@@ -1,17 +1,17 @@
 import React from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { DFormSectionTabs } from "./DFormSectionTabs";
+import { DFormTabs } from "./DFormTabs";
 
 export default {
-  title: "DForm/SectionTabs",
-  component: DFormSectionTabs,
+  title: "DForm/Tabs",
+  component: DFormTabs,
 };
 
 const Template = (props) => {
   return (
     <DragDropContext onDragEnd={() => {}}>
-      <DFormSectionTabs
+      <DFormTabs
         items={props.sections}
         isDraggable={props.isDraggable}
         selectedElementId={props.selectedElementId}

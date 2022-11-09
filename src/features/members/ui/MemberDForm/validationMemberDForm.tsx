@@ -5,11 +5,12 @@ import type { FC } from "react";
 import React, { useMemo, useRef, useState } from "react";
 import type { FormProviderProps } from "antd/lib/form/context";
 
+import { DformAccessTypes } from "features/dform/types";
+import { DformFieldValueType, DformSchemaModel } from "features/dform/data/models";
 import { DFormMemberForm } from "features/dform/ui/DFormMemberForm";
 import { getValuesBySectionId } from "features/dform/data/getValuesBySectionId";
 import { applyDynamicConditionalRender } from "features/dform/data/applyConditionalRender";
 import { getFieldByMasterSchemaFieldId } from "features/dform/data/getFieldByMasterSchemaFieldId";
-import { DFormSchema, DFormAccessTypes, DFormFieldTypes, NormalizedDFormValues } from "features/dform/types";
 
 import {
   useSubmitDFormMutation,
@@ -22,9 +23,9 @@ import MemberThanksStatusView from "../MemberThanksStatusView";
 type Props = {
   dformId: number;
   dformName: string;
-  accessType: DFormAccessTypes;
-  initialSchema: DFormSchema;
-  initialValues: NormalizedDFormValues;
+  accessType: DformAccessTypes;
+  initialSchema: DformSchemaModel;
+  initialValues: Record<string, DformFieldValueType>;
 };
 
 export const MemberDForm: FC<Props> = (props) => {

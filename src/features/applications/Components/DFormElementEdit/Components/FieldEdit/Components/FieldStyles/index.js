@@ -3,17 +3,17 @@ import { Form } from "antd";
 import _ from "lodash";
 
 import { NmpButton, NmpSelect } from "features/nmp-ui";
-import { DFormBlockSizeTypes, DFormFieldTypes, DFormMultiSelectUIStyles } from "features/dform/types";
+import { DformBlockSizeTypes, DformFieldTypes, DformMultiSelectUIStyles } from "features/dform/data/models";
 
-const defaultUIStyle = "default";
-const uIStylesOptions = [defaultUIStyle, ...Object.values(DFormMultiSelectUIStyles)];
+const defaultUIStyle = DformMultiSelectUIStyles.None;
+const uIStylesOptions = [defaultUIStyle, ...Object.values(DformMultiSelectUIStyles)];
 
 const STYLES_CLASSES = {
-  [DFormBlockSizeTypes.Half]: "Half width",
-  [DFormBlockSizeTypes.Full]: "Full width",
+  [DformBlockSizeTypes.Half]: "Half width",
+  [DformBlockSizeTypes.Full]: "Full width",
 };
 
-const classesOptions = Object.values(DFormBlockSizeTypes).map((className) => ({
+const classesOptions = Object.values(DformBlockSizeTypes).map((className) => ({
   label: STYLES_CLASSES[className],
   value: className,
 }));
@@ -24,7 +24,7 @@ const FieldStyles = ({ element, onDeleteButtonClick, onFieldSubmit, onElementCha
 
   const renderSpecificStyles = () => {
     switch (element.type) {
-      case DFormFieldTypes.MultiSelect: {
+      case DformFieldTypes.MultiSelect: {
         return (
           <Form.Item label="UI style" name="uiStyle" className="dform-field mb-2">
             <NmpSelect id="uiStyle" options={uIStylesOptions} placeholder="Select an option" />

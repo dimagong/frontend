@@ -1,16 +1,16 @@
 import React from "react";
 import type { FC } from "react";
 
-import { DFormMultiSelectUIStyles } from "../../types";
 import { NmpSelect, NmpCheckbox, NmpRow, NmpCol } from "features/nmp-ui";
 
 import { DFormLabel } from "../DFormLabel";
+import { DformMultiSelectUIStyles } from "../../data/models";
 
 export type DFormMultiSelectProps = {
   id?: string;
   value?: Array<string>;
   options?: Array<string>;
-  uiStyle?: DFormMultiSelectUIStyles;
+  uiStyle?: DformMultiSelectUIStyles;
   isDisabled?: boolean;
   onChange?: (value: Array<string>) => void;
 };
@@ -18,7 +18,7 @@ export type DFormMultiSelectProps = {
 export const DFormMultiSelect: FC<DFormMultiSelectProps> = (props) => {
   const { id, value, options = [], uiStyle, isDisabled, onChange } = props;
 
-  if (uiStyle === DFormMultiSelectUIStyles.Checkboxes) {
+  if (uiStyle === DformMultiSelectUIStyles.Checkboxes) {
     return (
       <NmpCheckbox.Group value={value} disabled={isDisabled} onChange={onChange}>
         {options.map((option, index) => (

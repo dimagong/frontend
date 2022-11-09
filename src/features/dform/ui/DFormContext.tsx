@@ -1,21 +1,21 @@
 import type { FC, ReactNode } from "react";
 import React, { createContext, useContext } from "react";
 
-import { DFormAccessTypes } from "../types";
-import { DformFileService } from "../data/dformFileService";
+import { DformAccessTypes } from "../types";
 import { isDFormAccessible } from "../data/isDFormAccessible";
+import { DformFileService } from "../data/services/dformFileService";
 
 type DFormContextValue = {
   dformId?: number;
   dformFileService: DformFileService;
-  accessType: DFormAccessTypes;
+  accessType: DformAccessTypes;
   isAccessible: boolean;
 };
 
 const defaultValue: DFormContextValue = {
-  accessType: DFormAccessTypes.HardLock,
+  accessType: DformAccessTypes.HardLock,
   isAccessible: false,
-  dformFileService: DformFileService.create(),
+  dformFileService: new DformFileService("/api"),
 };
 
 const dformContext = createContext(defaultValue);
@@ -25,20 +25,20 @@ let managerDFormFileService: DformFileService;
 const getDFormFileService = (isMemberView: boolean): DformFileService => {
   if (isMemberView) {
     if (!memberDFormFileService) {
-      memberDFormFileService = DformFileService.create({ isMemberView });
+      memberDFormFileService = new DformFileService("/member-view-api");
     }
     return memberDFormFileService;
   }
 
   if (!managerDFormFileService) {
-    managerDFormFileService = DformFileService.create({ isMemberView });
+    managerDFormFileService = new DformFileService("/api");
   }
   return managerDFormFileService;
 };
 
 type Props = {
   dformId?: number;
-  accessType?: DFormAccessTypes;
+  accessType?: DformAccessTypes;
   isMemberView?: boolean;
   children: ReactNode;
 };
