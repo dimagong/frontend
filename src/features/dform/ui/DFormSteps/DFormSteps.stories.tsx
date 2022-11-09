@@ -19,13 +19,13 @@ const Template = (props) => {
       disabled: false,
     },
     {
-      title: "Section 2",
+      title: "Long name section 2",
       status: "wait",
       percent: 0,
       disabled: true,
     },
     {
-      title: "Section 3",
+      title: "Really long name of the section number two.",
       status: "wait",
       percent: 0,
       disabled: true,
@@ -86,15 +86,17 @@ const Template = (props) => {
   };
 
   return (
-    <>
+    <div style={{ width: `${props.width}px` }}>
       <DFormSteps {...props} items={items} current={current} percent={items[current].percent} onChange={onChange} />
 
       <NmpButton type="nmp-ghost" onClick={onNextButtonClick}>
         {items[current].percent < 100 ? "Add progress" : "Next"}
       </NmpButton>
-    </>
+    </div>
   );
 };
 
 export const Base = Template.bind({});
-Base.args = {};
+Base.args = {
+  width: 150,
+};
