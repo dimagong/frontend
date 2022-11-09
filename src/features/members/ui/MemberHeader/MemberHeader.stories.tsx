@@ -27,7 +27,9 @@ const storySettings = {
       type: { name: "string", required: false },
       defaultValue: "https://picsum.photos/200/300",
     },
-    onLogout: { action: "Logout" },
+    onLogoutClick: { action: "Logout" },
+    onHomeClick: { action: "Home" },
+    onSurveyClick: { action: "Survey" },
     children: {
       name: "children",
       defaultValue: "children",

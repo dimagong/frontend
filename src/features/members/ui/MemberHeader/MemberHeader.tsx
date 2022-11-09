@@ -5,7 +5,16 @@ import React, { FC } from "react";
 import { UserInfo } from "./components/UserInfo";
 import { Logo } from "./components/Logo/Logo";
 
-export const MemberHeader: FC<Props> = ({ userName, organizationName, onLogout, logoSrc, avatarSrc, children }) => {
+export const MemberHeader: FC<Props> = ({
+  userName,
+  organizationName,
+  onLogoutClick,
+  onHomeClick,
+  onSurveyClick,
+  logoSrc,
+  avatarSrc,
+  children,
+}) => {
   return (
     <header className="member-header">
       <div className="member-header__logo-wrapper">
@@ -14,7 +23,14 @@ export const MemberHeader: FC<Props> = ({ userName, organizationName, onLogout, 
 
       {children}
 
-      <UserInfo userName={userName} organizationName={organizationName} onLogout={onLogout} avatarSrc={avatarSrc} />
+      <UserInfo
+        userName={userName}
+        organizationName={organizationName}
+        onLogoutClick={onLogoutClick}
+        onHomeClick={onHomeClick}
+        onSurveyClick={onSurveyClick}
+        avatarSrc={avatarSrc}
+      />
     </header>
   );
 };
@@ -22,7 +38,9 @@ export const MemberHeader: FC<Props> = ({ userName, organizationName, onLogout, 
 export type Props = {
   userName: string;
   organizationName: string;
-  onLogout: () => void;
+  onLogoutClick: () => void;
+  onHomeClick: () => void;
+  onSurveyClick: () => void;
   logoSrc: string;
   avatarSrc: string;
 };
