@@ -15,20 +15,17 @@ type Props = {
   isVisible?: boolean;
   isHoverable?: boolean;
   elementType: DFormElementTypes.Block | DFormElementTypes.Group;
-  onBlockAdd?: MouseEventHandler;
-  onGroupAdd?: MouseEventHandler;
+  onClick?: MouseEventHandler;
   children?: ReactNode;
 };
 
 export const DFormAddElement: FC<Props> = (props) => {
-  const { isVisible = true, isHoverable = false, elementType, onBlockAdd, onGroupAdd, children } = props;
+  const { isVisible = true, isHoverable = false, elementType, onClick, children } = props;
 
   const [isHover, setIsHover] = useState(false);
 
   const onMouseEnter = () => setIsHover(true);
   const onMouseLeave = () => setIsHover(false);
-
-  const onClick = elementType === DFormElementTypes.Group ? onGroupAdd : onBlockAdd;
 
   const isButtonVisible = isVisible ? (isHoverable && isHover) || !isHoverable : false;
 

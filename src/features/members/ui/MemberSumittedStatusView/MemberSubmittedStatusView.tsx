@@ -17,32 +17,34 @@ export const MemberSubmittedStatusView = ({ organization, onShowDForm }) => {
   };
   return (
     <div className="submitted-dform">
-      <NmpCard style={cardStyle}>
-        <div className="card-submitted">
-          <div className="card-submitted_content">
-            <div className="cs-title">Submitted</div>
-            <div className="cs-content">
-              <div>Thank you.</div>
-              <div>Your information has been submitted.</div>
-              <div>We will review your application and get back shortly.</div>
-              <div>
-                Sincerely, <br />
-                The {organization} Team
+      <div>
+        <NmpCard style={cardStyle}>
+          <div className="card-submitted">
+            <div className="card-submitted_content">
+              <div className="cs-title">Submitted</div>
+              <div className="cs-content">
+                <div>Thank you.</div>
+                <div>Your information has been submitted.</div>
+                <div>We will review your application and get back shortly.</div>
+                <div>
+                  Sincerely, <br />
+                  The {organization} Team
+                </div>
+              </div>
+              <div className="cs-button">
+                <NmpButton onClick={handleShowDForm} type={"nmp-primary"}>
+                  <span>View application</span>
+                  <i className="arrow right"></i>
+                </NmpButton>
               </div>
             </div>
-            <div className="cs-button">
-              <NmpButton onClick={handleShowDForm} type={"nmp-primary"}>
-                <span>View application</span>
-                <i className="arrow right"></i>
-              </NmpButton>
+            <div className="card-submitted_img">
+              <img className="cs-img" src={Submit} alt="submit" />
+              <div className="cs-figure"></div>
             </div>
           </div>
-          <div className="card-submitted_img">
-            <img className="cs-img" src={Submit} alt="submit" />
-            <div className="cs-figure"></div>
-          </div>
-        </div>
-      </NmpCard>
+        </NmpCard>
+      </div>
     </div>
   );
 };

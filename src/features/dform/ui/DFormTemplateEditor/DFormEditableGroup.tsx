@@ -35,7 +35,7 @@ export const DFormEditableGroup: FC<Props> = (props) => {
     children,
   } = props;
 
-  const onBlockAdd = () => {
+  const onAddElementClick = () => {
     if (onBlockCreate) {
       onBlockCreate(groupId);
     }
@@ -65,9 +65,7 @@ export const DFormEditableGroup: FC<Props> = (props) => {
             {children}
 
             {relatedBlocks.length === 0 ? (
-              <NmpCol span="24">
-                <DFormAddElement elementType={DFormElementTypes.Block} onBlockAdd={onBlockAdd} />
-              </NmpCol>
+              <DFormAddElement elementType={DFormElementTypes.Block} onClick={onAddElementClick} />
             ) : null}
           </DFormGroup>
         </DFormDroppable>

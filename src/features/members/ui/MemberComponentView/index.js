@@ -25,7 +25,9 @@ const MemberComponentView = (props) => {
     }
   });
 
-  const onMenuChange = (onboarding) => setActiveOnboarding(onboarding);
+  const onMenuChange = (onboarding) => {
+    setActiveOnboarding(onboarding);
+  };
 
   if (!activeOnboarding) {
     return <NpmSpin size={60} />;
@@ -35,7 +37,7 @@ const MemberComponentView = (props) => {
 
   return (
     <>
-      <div className="member-menu">
+      <div className="member-menu" key={activeOnboarding.type}>
         <div className="member-menu-wrapper">
           <MemberMenuView
             dforms={dForms}

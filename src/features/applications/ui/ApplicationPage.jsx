@@ -89,18 +89,11 @@ export const ApplicationPage = ({ applicationId }) => {
     return elementCollectionName;
   };
 
-  const handleSelectElementForEdit = (element, elementType) => {
-    if (selectedElement?.edited) {
-      if (!window.confirm(`Are you sure you want to select another element for edit without saving?`)) {
-        return;
-      }
-    }
-    //TODO update local state with data from redux
-
+  const handleSelectElementForEdit = (element, elementType, data = applicationData) => {
     // We take element from "backend" data, but also spread element that we receive
     // to save some system information that we pass to element in onClick handler such as groupId or sectionId, etc.
     const collectionName = getElementCollectionName(element);
-    const newSelectedElement = { ...element, ...applicationData[collectionName][element.id] };
+    const newSelectedElement = { ...element, ...data[collectionName][element.id] };
 
     setSelectedElement({ ...newSelectedElement, elementType });
     setIsModuleEditComponentVisible(true);
@@ -157,24 +150,14 @@ export const ApplicationPage = ({ applicationId }) => {
 
   const handleFieldCreate = (groupId, fieldId = undefined) => {
     const newField = DFormFieldModel.create(groupId);
-    // const newFieldData = {
-    //   ...INITIAL_FIELD_DATA,
-    //   id: v4(),
-    //   // ToDo: Handle refactoring situation with isNew
-    //   // isNew: true,
-    // };
-
     const dataToSave = embedSuggestedChanges(newField, true);
 
     // Add field to group where it was created
-    if (fieldId) {
-      const fieldIndex = dataToSave.groups[groupId].relatedFields.indexOf(fieldId);
-      dataToSave.groups[groupId].relatedFields.splice(fieldIndex + 1, 0, newField.id);
-    } else {
-      dataToSave.groups[groupId].relatedFields = [...dataToSave.groups[groupId].relatedFields, newField.id];
-    }
+    const fieldIndex = dataToSave.groups[groupId].relatedFields.indexOf(fieldId);
+    dataToSave.groups[groupId].relatedFields.splice(fieldIndex + 1, 0, newField.id);
 
     setApplicationData(dataToSave);
+    handleSelectElementForEdit(newField, DFormElementTypes.Block, dataToSave);
   };
 
   // While we aim for using old API and redux that handle it, we can't save parts of data separately
@@ -188,7 +171,7 @@ export const ApplicationPage = ({ applicationId }) => {
       // Founds collection (fields, sections, groups) and embed new element to the end
       dataClone[collectionName] = { ...dataClone[collectionName], [id]: element };
     } else {
-      dataClone[collectionName][id] = { ...element, edited: false };
+      dataClone[collectionName][id] = element;
     }
 
     return dataClone;

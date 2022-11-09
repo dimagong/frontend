@@ -13,7 +13,7 @@ type Props = Partial<DraggableProvidedDragHandleProps> & {
 };
 
 export const DFormDragHandle: FC<Props> = (props) => {
-  const { isMiddle = false, isDraggable = false, children, ...dragHandleProps } = props;
+  const { isMiddle = false, isDraggable = true, children, ...dragHandleProps } = props;
   const classes = classnames("dform-draggable", { "dform-draggable--middle": isMiddle });
 
   if (!isDraggable) {
