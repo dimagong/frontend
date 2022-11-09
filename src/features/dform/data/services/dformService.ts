@@ -94,8 +94,8 @@ export class DformService extends AbstractService {
           field.title,
           field.isRequired,
           field.isLabelShowing,
-          field.minLength,
-          field.maxLength,
+          field.minLength === null ? undefined : field.minLength,
+          field.maxLength === null ? undefined : field.maxLength,
           field.masterSchemaFieldId
         );
       case DformFieldTypes.MultiSelect:
@@ -122,8 +122,8 @@ export class DformService extends AbstractService {
           field.title,
           field.isRequired,
           field.isLabelShowing,
-          field.minimum,
-          field.maximum,
+          field.minimum === null ? undefined : field.minimum,
+          field.maximum === null ? undefined : field.maximum,
           field.masterSchemaFieldId
         );
       case DformFieldTypes.Resource:
@@ -163,8 +163,8 @@ export class DformService extends AbstractService {
           field.title,
           field.isRequired,
           field.isLabelShowing,
-          field.minLength,
-          field.maxLength,
+          field.minLength === null ? undefined : field.minLength,
+          field.maxLength === null ? undefined : field.maxLength,
           field.masterSchemaFieldId
         );
       case DformFieldTypes.TextArea:
@@ -177,8 +177,8 @@ export class DformService extends AbstractService {
           field.title,
           field.isRequired,
           field.isLabelShowing,
-          field.minLength,
-          field.maxLength,
+          field.minLength === null ? undefined : field.minLength,
+          field.maxLength === null ? undefined : field.maxLength,
           field.masterSchemaFieldId
         );
     }

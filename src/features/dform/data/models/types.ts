@@ -1,10 +1,12 @@
 import { Opaque } from "features/common";
 
+import { DformModel } from "./dformModel";
 import { DformBlockModel } from "./dformBlockModel";
 import { DformGroupModel } from "./dformGroupModel";
 import { DformSectionModel } from "./dformSectionModel";
 import { DformElementModel } from "./dformElementModel";
 
+export type DformId = Opaque<string, DformModel>;
 export type DformBlockId = Opaque<string, DformBlockModel>;
 export type DformGroupId = Opaque<string, DformGroupModel>;
 export type DformSectionId = Opaque<string, DformSectionModel>;

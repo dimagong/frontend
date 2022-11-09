@@ -6,17 +6,15 @@ import React, { useState } from "react";
 
 import { NmpCol, NmpRow, NmpCard, NmpButton } from "features/nmp-ui";
 
-import { DFormGroup } from "../DFormGroup";
-import { DFormBlock } from "../DFormBlock";
 import { DFormContext } from "../DFormContext";
-import { DFormSection } from "../DFormSection";
 import { DformAccessTypes } from "../../types";
-import { DFormFieldItem } from "../DFormFieldItem";
-import { DformSectionModel } from "../../data/models";
+import { DFormMemberSection } from "./DFormMemberSection";
+import { DformSchemaContext } from "../DformSchemaContext";
+import { DFormSteps, DFormStepsProps } from "../DFormSteps";
 import { DFormMemberCheckSave } from "../DFormMemberCheckSave";
-import { DFormSectionSteps, DFormSectionStepsProps } from "../DFormSectionSteps";
+import { DformBlockModel, DformGroupModel, DformId, DformSectionId, DformSectionModel } from "../../data/models";
 
-const sectionsToSteps = (sections: DformSectionModel[]): DFormSectionStepsProps["items"] => {
+const sectionsToSteps = (sections: DformSectionModel[]): DFormStepsProps["items"] => {
   return sections.map((section, index) => {
     if (index === 0) {
       return { title: section.name, status: "process", disabled: false };
@@ -26,16 +24,17 @@ const sectionsToSteps = (sections: DformSectionModel[]): DFormSectionStepsProps[
 };
 
 export type DFormMemberFormProps = {
-  blocks: any[];
-  groups: any[];
-  dformId: number;
+  blocks: DformBlockModel[];
+  groups: DformGroupModel[];
+  dformId: DformId;
   dformName: string;
   sections: DformSectionModel[];
   accessType: DformAccessTypes;
+  relatedSectionsIds: DformSectionId[];
 };
 
 export const DFormMemberForm: FC<DFormMemberFormProps> = (props) => {
-  const { blocks, groups, dformId, dformName, sections, accessType } = props;
+  const { blocks, groups, dformId, dformName, sections, accessType, relatedSectionsIds } = props;
 
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [sectionSteps, setSectionSteps] = useState(() => sectionsToSteps(sections));
@@ -74,65 +73,41 @@ export const DFormMemberForm: FC<DFormMemberFormProps> = (props) => {
       <NmpRow>
         <NmpCol sm={4} className="dform-member-form__steps">
           <div className="dform-member-form__steps-scroll">
-            <DFormSectionSteps items={sectionSteps} current={currentSectionIndex} percent={percent} />
+            <DFormSteps items={sectionSteps} current={currentSectionIndex} percent={percent} />
           </div>
         </NmpCol>
 
         <NmpCol xl={{ span: 12, push: 6 }} span={16} push={4}>
           <NmpCard className="dform-member-form__card">
             <DFormContext.Provider dformId={dformId} accessType={accessType} isMemberView>
-              <DFormSection sectionName={section.name}>
-                {groups
-                  .filter(({ id }) => section.relatedGroupsIds.includes(id))
-                  .map((group) => (
-                    <DFormGroup groupName={group.name} key={group.id}>
-                      {blocks
-                        .filter(({ id }) => group.relatedBlocks.includes(id))
-                        .map((block) => (
-                          <DFormFieldItem
-                            name={block.id}
-                            minimum={block.minimum}
-                            maximum={block.maximum}
-                            maxLength={block.maxLength}
-                            minLength={block.minLength}
-                            isRequired={block.isRequired}
-                            key={block.id}
-                          >
-                            <DFormBlock
-                              id={block.id}
-                              label={block.label}
-                              helpText={block.helpText}
-                              blockSize={block.blockSize}
-                              blockType={block.blockType}
-                              fieldType={block.fieldType}
-                              isRequired={block.isRequired}
-                              isLabelShowing={block.isLabelShowing}
-                            />
-                          </DFormFieldItem>
-                        ))}
-                    </DFormGroup>
-                  ))}
+              <DformSchemaContext.Provider
+                blocks={blocks}
+                groups={groups}
+                sections={sections}
+                relatedSectionsIds={relatedSectionsIds}
+              >
+                <DFormMemberSection sectionId={section.id} />
+              </DformSchemaContext.Provider>
+            </DFormContext.Provider>
 
-                <NmpRow justify="space-between" align="middle" className="dform-member-form__actions">
-                  <NmpCol>
-                    <DFormMemberCheckSave isLoading={false} />
-                  </NmpCol>
+            <NmpRow justify="space-between" align="middle" className="dform-member-form__actions">
+              <NmpCol>
+                <DFormMemberCheckSave isLoading={false} />
+              </NmpCol>
 
-                  {/* ToDo: Implement Back button */}
-                  {/*{isFirstSection ? null : (
+              {/* ToDo: Implement Back button */}
+              {/*{isFirstSection ? null : (
                     <NmpCol>
                       <NmpButton type="nmp-ghost">Back</NmpButton>
                     </NmpCol>
                   )}*/}
 
-                  <NmpCol>
-                    <NmpButton type="nmp-primary" onClick={onNextButtonClick}>
-                      {isLastSection ? "Submit for review" : "Next Section"}
-                    </NmpButton>
-                  </NmpCol>
-                </NmpRow>
-              </DFormSection>
-            </DFormContext.Provider>
+              <NmpCol>
+                <NmpButton type="nmp-primary" onClick={onNextButtonClick}>
+                  {isLastSection ? "Submit for review" : "Next Section"}
+                </NmpButton>
+              </NmpCol>
+            </NmpRow>
           </NmpCard>
         </NmpCol>
       </NmpRow>

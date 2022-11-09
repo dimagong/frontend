@@ -80,8 +80,8 @@ abstract class DformTextValidationFieldModel extends AbstractDformFieldModel {
     label: string,
     isRequired: boolean,
     isLabelShowing: boolean,
-    public minLength: number | null,
-    public maxLength: number | null,
+    public minLength: number | undefined,
+    public maxLength: number | undefined,
     masterSchemaFieldId?: number
   ) {
     super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
@@ -157,8 +157,8 @@ export class DformNumberFieldModel extends AbstractDformFieldModel {
     label: string,
     isRequired: boolean,
     isLabelShowing: boolean,
-    public minimum: number | null,
-    public maximum: number | null,
+    public minimum: number | undefined,
+    public maximum: number | undefined,
     masterSchemaFieldId?: number
   ) {
     super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);

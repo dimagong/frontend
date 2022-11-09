@@ -2,11 +2,11 @@ import React, { useState } from "react";
 
 import { NmpButton } from "features/nmp-ui";
 
-import { DFormSectionSteps } from "./DFormSectionSteps";
+import { DFormSteps } from "./DFormSteps";
 
 export default {
-  title: "DForm/SectionSteps",
-  component: DFormSectionSteps,
+  title: "DForm/Steps",
+  component: DFormSteps,
 };
 
 const Template = (props) => {
@@ -87,13 +87,7 @@ const Template = (props) => {
 
   return (
     <>
-      <DFormSectionSteps
-        {...props}
-        items={items}
-        current={current}
-        percent={items[current].percent}
-        onChange={onChange}
-      />
+      <DFormSteps {...props} items={items} current={current} percent={items[current].percent} onChange={onChange} />
 
       <NmpButton type="nmp-ghost" onClick={onNextButtonClick}>
         {items[current].percent < 100 ? "Add progress" : "Next"}

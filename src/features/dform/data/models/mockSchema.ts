@@ -132,7 +132,7 @@ export const mockBlocks = Array(SECTIONS_QUANTITY * GROUPS_QUANTITY)
       true,
       true,
       15,
-      null,
+      undefined,
       4
     ),
     new DformMultiSelectFieldModel(
@@ -159,7 +159,7 @@ export const mockBlocks = Array(SECTIONS_QUANTITY * GROUPS_QUANTITY)
       "Number field (max 30)",
       true,
       true,
-      null,
+      undefined,
       30,
       6
     ),

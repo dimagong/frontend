@@ -4,15 +4,17 @@ import React, { createContext, useContext } from "react";
 import { DformAccessTypes } from "../types";
 import { isDFormAccessible } from "../data/isDFormAccessible";
 import { DformFileService } from "../data/services/dformFileService";
+import { DformId } from "../data/models";
 
 type DFormContextValue = {
-  dformId?: number;
+  dformId: DformId;
   dformFileService: DformFileService;
   accessType: DformAccessTypes;
   isAccessible: boolean;
 };
 
 const defaultValue: DFormContextValue = {
+  dformId: -1 as unknown as DformId,
   accessType: DformAccessTypes.HardLock,
   isAccessible: false,
   dformFileService: new DformFileService("/api"),
@@ -37,7 +39,7 @@ const getDFormFileService = (isMemberView: boolean): DformFileService => {
 };
 
 type Props = {
-  dformId?: number;
+  dformId: DformId;
   accessType?: DformAccessTypes;
   isMemberView?: boolean;
   children: ReactNode;

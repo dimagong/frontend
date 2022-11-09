@@ -1,7 +1,7 @@
 import { invariant } from "features/common";
 
-import { DformFileListValueType } from "../models";
 import { AbstractService } from "./abstractService";
+import { DformFileListValueType, DformId } from "../models";
 
 export type TemporaryFileResponse = { name: string; temporary_public_url: string };
 
@@ -10,7 +10,7 @@ export class DformFileService extends AbstractService {
     super();
   }
 
-  get(params: { masterSchemaFieldId: number; dformId: number; fileId: number }) {
+  get(params: { masterSchemaFieldId: number; dformId: DformId; fileId: number }) {
     const { masterSchemaFieldId, dformId, fileId } = params;
 
     const searchParams = new URLSearchParams({
@@ -28,7 +28,7 @@ export class DformFileService extends AbstractService {
     });
   }
 
-  post(params: { masterSchemaFieldId: number; dformId: number; files: File[] }): Promise<DformFileListValueType> {
+  post(params: { masterSchemaFieldId: number; dformId: DformId; files: File[] }): Promise<DformFileListValueType> {
     const formData = new FormData();
     const { masterSchemaFieldId, dformId, files } = params;
 
@@ -40,7 +40,7 @@ export class DformFileService extends AbstractService {
     return this.apiClient.post(url.toString(), formData);
   }
 
-  delete(params: { masterSchemaFieldId: number; dformId: number; fileId: number }): Promise<void> {
+  delete(params: { masterSchemaFieldId: number; dformId: DformId; fileId: number }): Promise<void> {
     const { masterSchemaFieldId, dformId, fileId } = params;
 
     const url = this.getUrl(`/dform/${dformId}/user-file`);
