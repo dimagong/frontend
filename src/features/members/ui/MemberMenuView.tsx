@@ -177,20 +177,22 @@ const makeCategoryHierarchy = (dFormsCategories) => {
 };
 
 const makeViewHierarchy = (topLevelCategory) => {
-  let viewHierarchy = [
-    {
-      className: "member-menu__category",
-      label: menuCategoryTitle("Forms", topLevelCategory.forms.length),
-      key: "default-zero-forms",
-      type: "group",
-      children: topLevelCategory.forms.map((form) => {
-        return {
-          label: menuBaseItem(form.dform_name, form.dform_status, selectStatusColor(form.dform_status)),
-          key: getKey(OnboardingsTypes.DForm, form.dform_id),
-        };
-      }),
-    },
-  ];
+  let viewHierarchy = topLevelCategory.forms.length
+    ? [
+        {
+          className: "member-menu__category",
+          label: menuCategoryTitle("Forms", topLevelCategory.forms.length),
+          key: "default-zero-forms",
+          type: "group",
+          children: topLevelCategory.forms.map((form) => {
+            return {
+              label: menuBaseItem(form.dform_name, form.dform_status, selectStatusColor(form.dform_status)),
+              key: getKey(OnboardingsTypes.DForm, form.dform_id),
+            };
+          }),
+        },
+      ]
+    : [];
 
   const makeViewHierarchy = (topLevelCategory, viewHierarchy) => {
     if (!topLevelCategory.categories.length) {
