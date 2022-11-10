@@ -189,7 +189,7 @@ const UserEditApplication = ({ isCreate, dformId }) => {
             schema={dform?.schema}
             values={values}
             accessType={dform?.access_type}
-            isLoading={dformQuery.isLoading || valuesQuery.isLoading}
+            isLoading={dformQuery.isLoading || dformQuery.isFetching || valuesQuery.isLoading}
             isManualSave
             onRefetch={onRefetch}
             onFieldChange={onFieldChange}

@@ -4,7 +4,7 @@ import React from "react";
 import type { FC } from "react";
 import { useQuery } from "react-query";
 
-import { NmpCol, NmpRow } from "features/nmp-ui";
+import { NmpCol, NmpRow, NpmSpin } from "features/nmp-ui";
 
 import { DformId } from "../../data/models";
 import { DFormMemberProvider } from "./DFormMemberProvider";
@@ -13,19 +13,25 @@ import { MemberDFormService } from "../../data/services/memberDformService";
 
 export type DFormMemberFormProps = {
   dformId: DformId;
+  onStatusChange?: (status: string) => void;
 };
 
 export const DFormMemberForm: FC<DFormMemberFormProps> = (props) => {
-  const { dformId } = props;
+  const { dformId, onStatusChange } = props;
 
   const dformQuery = useQuery({
     queryFn: () => MemberDFormService.instance.getDform({ dformId }),
     queryKey: MemberDFormService.queryKeys.byId(dformId),
     refetchOnWindowFocus: false,
+    onSuccess: ({ dform }) => {
+      if (onStatusChange) {
+        onStatusChange(dform.status);
+      }
+    },
   });
 
   if (!dformQuery.data) {
-    return <p>Loading...</p>;
+    return <NpmSpin size={60} />;
   }
 
   const { dform, values } = dformQuery.data;

@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 
 import { DformId } from "features/dform/data/models";
 import { DFormMemberForm } from "features/dform/ui/DFormMemberForm";
@@ -13,19 +13,27 @@ type Props = {
   userFirstName: string;
 };
 
-const MemberDFormView: FC<Props> = ({ status, dformId, organization, userFirstName }) => {
+const MemberDFormView: FC<Props> = ({ status: initialStatus, dformId, organization, userFirstName }) => {
+  // const actualUpdateRef = useRef(false);
   const [showDForm, onShowDForm] = useState<boolean>(false);
+  const [status, setStatus] = useState(() => initialStatus);
 
-  if (status === "submitted") {
-    // Change new Date to real submit date later
-    return <MemberThanksStatusView data={new Date()} organization={organization} surveyName={userFirstName} />;
-  }
+  const onStatusChange = (status) => {
+    setStatus(status);
+    // actualUpdateRef.current = true;
+  };
 
   if (status === "submitted" && showDForm === false) {
     return <MemberSubmittedStatusView organization={organization} onShowDForm={onShowDForm} />;
   }
 
-  return <DFormMemberForm dformId={dformId as unknown as DformId} />;
+  // if (status === "submitted" && actualUpdateRef.current === true) {
+  //   // Change new Date to real submit date later
+  //   actualUpdateRef.current = false;
+  //   return <MemberThanksStatusView data={new Date()} organization={organization} surveyName={userFirstName} />;
+  // }
+
+  return <DFormMemberForm dformId={dformId as unknown as DformId} onStatusChange={onStatusChange} />;
 };
 
 export default MemberDFormView;
