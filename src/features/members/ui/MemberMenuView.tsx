@@ -177,7 +177,7 @@ const makeCategoryHierarchy = (dFormsCategories) => {
 };
 
 const makeViewHierarchy = (topLevelCategory) => {
-  let viewHierarchy = topLevelCategory.forms.length
+  let viewHierarchy = topLevelCategory?.forms?.length
     ? [
         {
           className: "member-menu__category",
@@ -195,7 +195,7 @@ const makeViewHierarchy = (topLevelCategory) => {
     : [];
 
   const makeViewHierarchy = (topLevelCategory, viewHierarchy) => {
-    if (!topLevelCategory.categories.length) {
+    if (!topLevelCategory?.categories?.length) {
       return [];
     }
     let infoCategories: any = {
