@@ -111,55 +111,169 @@ const menuSurveysGroup = (surveys: Survey[]) => {
   ];
 };
 
-export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
-  const selectDFormsCategory = (categories: DFormCategory[]): Partial<DFormCategory>[] => {
-    const dformsList: Partial<DFormCategory>[] = [];
-    categories.forEach(({ dform_id, dform_name, dform_status }) => {
-      if (!dformsList.find((el) => el.dform_id === dform_id) && dform_id) {
-        dformsList.push({
-          dform_id,
-          dform_name: dform_name || "no application name",
-          dform_status: dform_status || Status.NO_STATUS,
-        });
+const makeCategoryHierarchy = (dFormsCategories) => {
+  const topLevel = dFormsCategories.find((category) => category.category_parent === null);
+  topLevel.forms = [];
+
+  for (let childForm of dFormsCategories) {
+    if (!childForm.dform_id) {
+      continue;
+    }
+    if (childForm.category_id === topLevel.category_id) {
+      topLevel.forms.push({
+        dform_id: childForm.dform_id,
+        dform_name: childForm.dform_name,
+        dform_description: childForm.dform_description,
+        dform_status: childForm.dform_status,
+        dform_access_type: childForm.dform_access_type,
+        category_parent: childForm.category_parent,
+        dform_created_at: childForm.dform_created_at,
+        dform_updated_at: childForm.dform_updated_at,
+      });
+    }
+  }
+
+  const hierarchyRecursion = (category, categories) => {
+    for (let childCategory of categories) {
+      if (childCategory.category_parent === category.category_id) {
+        category.categories = [];
+        let forms: any[] = [];
+
+        for (let childForm of categories) {
+          if (!childForm.dform_id) {
+            continue;
+          }
+          if (childForm.category_id === childCategory.category_id) {
+            forms.push({
+              dform_id: childForm.dform_id,
+              dform_name: childForm.dform_name,
+              dform_description: childForm.dform_description,
+              dform_status: childForm.dform_status,
+              dform_access_type: childForm.dform_access_type,
+              category_parent: childForm.category_parent,
+              dform_created_at: childForm.dform_created_at,
+              dform_updated_at: childForm.dform_updated_at,
+            });
+          }
+        }
+        let tempCategory = {
+          category_id: childCategory.category_id,
+          category_name: childCategory.category_name,
+          category_parent: childCategory.category_parent,
+          forms: forms,
+          categories: [],
+        };
+
+        category.categories.push(tempCategory);
+
+        hierarchyRecursion(tempCategory, categories);
       }
-    });
-    return dformsList;
+    }
   };
 
-  const categoriesList: Partial<DFormCategory>[] = [];
-  if (dFormsCategories) {
-    dFormsCategories.forEach(({ category_id, category_name }) => {
-      if (!categoriesList.find((el) => el.category_id === category_id) && category_id) {
-        categoriesList.push({ category_id, category_name: category_name || "no category name" });
-      }
-    });
+  hierarchyRecursion(topLevel, dFormsCategories);
+
+  return topLevel;
+};
+
+const makeViewHierarchy = (topLevelCategory) => {
+  let viewHierarchy = topLevelCategory?.forms?.length
+    ? [
+        {
+          className: "member-menu__category",
+          label: menuCategoryTitle("Forms", topLevelCategory.forms.length),
+          key: "default-zero-forms",
+          type: "group",
+          children: topLevelCategory.forms.map((form) => {
+            return {
+              label: menuBaseItem(form.dform_name, form.dform_status, selectStatusColor(form.dform_status)),
+              key: getKey(OnboardingsTypes.DForm, form.dform_id),
+            };
+          }),
+        },
+      ]
+    : [];
+
+  const makeViewHierarchy = (topLevelCategory, viewHierarchy) => {
+    if (!topLevelCategory?.categories?.length) {
+      return [];
+    }
+    let infoCategories: any = {
+      className: "member-menu__category",
+      label: menuCategoryTitle("Categories", topLevelCategory.categories.length),
+      key: topLevelCategory.id + "-categories",
+      type: "group",
+      children: [],
+    };
+    viewHierarchy.unshift(infoCategories);
+
+    for (let category of topLevelCategory.categories) {
+      let temp = {
+        className: "member-menu__group-items",
+        label: menuCategoryItem(category.category_name),
+        key: category.category_id,
+        children: [
+          {
+            className: "member-menu__category",
+            label: menuCategoryTitle("Forms", category.forms.length),
+            key: topLevelCategory.id + "-form",
+            type: "group",
+            children: [],
+          },
+        ].concat(
+          category.forms.map((form) => {
+            return {
+              label: menuBaseItem(form.dform_name, form.dform_status, selectStatusColor(form.dform_status)),
+              key: getKey(OnboardingsTypes.DForm, form.dform_id),
+            };
+          })
+        ),
+      };
+
+      infoCategories.children.push(temp);
+      makeViewHierarchy(category, temp.children);
+    }
+  };
+
+  makeViewHierarchy(topLevelCategory, viewHierarchy);
+
+  return viewHierarchy;
+};
+
+export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
+  // const selectDFormsCategory = (categories: DFormCategory[]): Partial<DFormCategory>[] => {
+  //   const dformsList: Partial<DFormCategory>[] = [];
+  //   categories.forEach(({ dform_id, dform_name, dform_status }) => {
+  //     if (!dformsList.find((el) => el.dform_id === dform_id) && dform_id) {
+  //       dformsList.push({
+  //         dform_id,
+  //         dform_name: dform_name || "no application name",
+  //         dform_status: dform_status || Status.NO_STATUS,
+  //       });
+  //     }
+  //   });
+  //   return dformsList;
+  // };
+  let categorizeDForms: any = [
+    {
+      className: "member-menu__category",
+      label: menuCategoryTitle("Forms", 0),
+      key: "default-zero-forms",
+      type: "group",
+      children: [],
+    },
+  ];
+
+  if (dFormsCategories.length) {
+    categorizeDForms = makeViewHierarchy(makeCategoryHierarchy(dFormsCategories));
   }
 
   const items = [
     {
-      key: "applications",
-      label: "Applications",
-      children: !dFormsCategories?.length
-        ? menuDFormsGroup(dforms)
-        : [
-            {
-              label: menuCategoryTitle("Categories", dFormsCategories.length),
-              type: "group",
-              className: "member-menu__category",
-              children: categoriesList.map(({ category_id, category_name }) => {
-                const findCategories = dFormsCategories.filter(
-                  (category: DFormCategory) => category.category_id === category_id
-                );
-                return {
-                  label: menuCategoryItem(category_name),
-                  key: `${category_id}-${category_name}`,
-                  children: findCategories.length ? menuDFormsGroup(selectDFormsCategory(findCategories)) : [],
-                };
-              }),
-            },
-          ],
-
+      label: "Forms",
+      key: `1`,
       className: "member-menu__item",
+      children: categorizeDForms,
     },
     {
       key: "surveys",
@@ -168,6 +282,49 @@ export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings,
       className: "member-menu__item survey-item",
     },
   ];
+
+  // const categoriesList: Partial<DFormCategory>[] = [];
+  // if (dFormsCategories) {
+  //   dFormsCategories.forEach(({ category_id, category_name }) => {
+  //     if (!categoriesList.find((el) => el.category_id === category_id) && category_id) {
+  //       categoriesList.push({ category_id, category_name: category_name || "no category name" });
+  //     }
+  //   });
+  // }
+  //
+  // const oldItems = [
+  //   {
+  //     key: "applications",
+  //     label: "Applications",
+  //     children: !dFormsCategories?.length
+  //       ? menuDFormsGroup(dforms)
+  //       : [
+  //           {
+  //             label: menuCategoryTitle("Categories", dFormsCategories.length),
+  //             type: "group",
+  //             className: "member-menu__category",
+  //             children: categoriesList.map(({ category_id, category_name }) => {
+  //               const findCategories = dFormsCategories.filter(
+  //                 (category: DFormCategory) => category.category_id === category_id
+  //               );
+  //               return {
+  //                 label: menuCategoryItem(category_name),
+  //                 key: `${category_id}-${category_name}`,
+  //                 children: findCategories.length ? menuDFormsGroup(selectDFormsCategory(findCategories)) : [],
+  //               };
+  //             }),
+  //           },
+  //         ],
+  //
+  //     className: "member-menu__item",
+  //   },
+  //   {
+  //     key: "surveys",
+  //     label: "Surveys",
+  //     children: menuSurveysGroup(surveys),
+  //     className: "member-menu__item survey-item",
+  //   },
+  // ];
 
   const selectedKeys = [getKey(activeOnboarding.type, activeOnboarding.id)];
 
