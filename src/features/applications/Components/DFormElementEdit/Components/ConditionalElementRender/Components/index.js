@@ -2,7 +2,7 @@ import { Form } from "antd";
 import React, { useState, useEffect } from "react";
 
 import { NmpInput, NmpSelect } from "features/nmp-ui";
-import { DFormDateFormatTypes } from "features/dform/types";
+import { DformDateFormatTypes } from "features/dform/data/models";
 import { DFormDatePicker } from "features/dform/ui/DFormDatePicker";
 
 import {
@@ -27,7 +27,7 @@ const getOperatorTypeAsOption = (operatorTemplate) => ({ value: operatorTemplate
 const getOperatorTypesAsOptions = (operatorTemplates) => operatorTemplates.map(getOperatorTypeAsOption);
 
 const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
-  const [format, setFormat] = useState(condition?.format || DFormDateFormatTypes.Date);
+  const [format, setFormat] = useState(condition?.format || DformDateFormatTypes.Date);
   const [fieldId, setFieldId] = useState(condition?.fieldId);
   const [operatorType, setOperatorType] = useState(condition?.operatorType);
 
@@ -75,7 +75,7 @@ const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
           >
             <NmpSelect
               id="format"
-              options={Object.values(DFormDateFormatTypes)}
+              options={Object.values(DformDateFormatTypes)}
               placeholder="Select an date Format"
               onChange={onFormatChange}
             />

@@ -177,7 +177,7 @@ const makeCategoryHierarchy = (dFormsCategories) => {
 };
 
 const makeViewHierarchy = (topLevelCategory) => {
-  let viewHierarchy = topLevelCategory.forms.length
+  let viewHierarchy = topLevelCategory?.forms?.length
     ? [
         {
           className: "member-menu__category",
@@ -195,7 +195,7 @@ const makeViewHierarchy = (topLevelCategory) => {
     : [];
 
   const makeViewHierarchy = (topLevelCategory, viewHierarchy) => {
-    if (!topLevelCategory.categories.length) {
+    if (!topLevelCategory?.categories?.length) {
       return [];
     }
     let infoCategories: any = {
@@ -283,14 +283,14 @@ export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings,
     },
   ];
 
-  const categoriesList: Partial<DFormCategory>[] = [];
-  if (dFormsCategories) {
-    dFormsCategories.forEach(({ category_id, category_name }) => {
-      if (!categoriesList.find((el) => el.category_id === category_id) && category_id) {
-        categoriesList.push({ category_id, category_name: category_name || "no category name" });
-      }
-    });
-  }
+  // const categoriesList: Partial<DFormCategory>[] = [];
+  // if (dFormsCategories) {
+  //   dFormsCategories.forEach(({ category_id, category_name }) => {
+  //     if (!categoriesList.find((el) => el.category_id === category_id) && category_id) {
+  //       categoriesList.push({ category_id, category_name: category_name || "no category name" });
+  //     }
+  //   });
+  // }
   //
   // const oldItems = [
   //   {

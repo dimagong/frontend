@@ -3,7 +3,7 @@ import type { FC } from "react";
 
 import { unreachable } from "features/common";
 
-import { DFormFieldTypes } from "../../types";
+import { DformFieldTypes } from "../../data/models";
 import { DFormText, DFormTextProps } from "../DFormText";
 import { DFormFile, DFormFileProps } from "../DFormFile";
 import { DFormSelect, DFormSelectProps } from "../DFormSelect";
@@ -16,19 +16,19 @@ import { DFormResource, DFormResourceProps } from "../DFormResource";
 import { DFormDatePicker, DFormDatePickerProps } from "../DFormDatePicker";
 import { DFormMultiSelect, DFormMultiSelectProps } from "../DFormMultiSelect";
 
-type FieldType<T extends DFormFieldTypes> = { fieldType: T };
+type FieldType<T extends DformFieldTypes> = { fieldType: T };
 
-type BooleanType = FieldType<DFormFieldTypes.Boolean> & DFormBooleanProps;
-type DateType = FieldType<DFormFieldTypes.Date> & DFormDatePickerProps;
-type FileType = FieldType<DFormFieldTypes.File> & DFormFileProps;
-type FileListType = FieldType<DFormFieldTypes.FileList> & DFormFileListProps;
-type LongTextType = FieldType<DFormFieldTypes.LongText> & DFormLongTextProps;
-type MultiSelectType = FieldType<DFormFieldTypes.MultiSelect> & DFormMultiSelectProps;
-type NumberType = FieldType<DFormFieldTypes.Number> & DFormNumberProps;
-type ResourceType = FieldType<DFormFieldTypes.Resource> & DFormResourceProps;
-type SelectType = FieldType<DFormFieldTypes.Select> & DFormSelectProps;
-type TextType = FieldType<DFormFieldTypes.Text> & DFormTextProps;
-type TextAreaType = FieldType<DFormFieldTypes.TextArea> & DFormTextAreaProps;
+type BooleanType = FieldType<DformFieldTypes.Boolean> & DFormBooleanProps;
+type DateType = FieldType<DformFieldTypes.Date> & DFormDatePickerProps;
+type FileType = FieldType<DformFieldTypes.File> & DFormFileProps;
+type FileListType = FieldType<DformFieldTypes.FileList> & DFormFileListProps;
+type LongTextType = FieldType<DformFieldTypes.LongText> & DFormLongTextProps;
+type MultiSelectType = FieldType<DformFieldTypes.MultiSelect> & DFormMultiSelectProps;
+type NumberType = FieldType<DformFieldTypes.Number> & DFormNumberProps;
+type ResourceType = FieldType<DformFieldTypes.Resource> & DFormResourceProps;
+type SelectType = FieldType<DformFieldTypes.Select> & DFormSelectProps;
+type TextType = FieldType<DformFieldTypes.Text> & DFormTextProps;
+type TextAreaType = FieldType<DformFieldTypes.TextArea> & DFormTextAreaProps;
 
 export type PrivateDFormFieldRendererProps =
   | BooleanType
@@ -43,7 +43,7 @@ export type PrivateDFormFieldRendererProps =
   | TextType
   | TextAreaType;
 
-export type DFormFieldRendererProps = FieldType<DFormFieldTypes> &
+export type DFormFieldRendererProps = FieldType<DformFieldTypes> &
   DFormBooleanProps &
   DFormDatePickerProps &
   DFormFileProps &
@@ -58,7 +58,7 @@ export type DFormFieldRendererProps = FieldType<DFormFieldTypes> &
 
 export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props: PrivateDFormFieldRendererProps) => {
   switch (props.fieldType) {
-    case DFormFieldTypes.Boolean:
+    case DformFieldTypes.Boolean:
       return (
         <DFormBoolean
           id={props.id}
@@ -68,7 +68,7 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props: PrivateDF
           onChange={props.onChange}
         />
       );
-    case DFormFieldTypes.Date:
+    case DformFieldTypes.Date:
       return (
         <DFormDatePicker
           id={props.id}
@@ -78,7 +78,7 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props: PrivateDF
           onChange={props.onChange}
         />
       );
-    case DFormFieldTypes.File:
+    case DformFieldTypes.File:
       return (
         <DFormFile
           id={props.id}
@@ -88,7 +88,7 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props: PrivateDF
           onChange={props.onChange}
         />
       );
-    case DFormFieldTypes.FileList:
+    case DformFieldTypes.FileList:
       return (
         <DFormFileList
           id={props.id}
@@ -98,9 +98,9 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props: PrivateDF
           onChange={props.onChange}
         />
       );
-    case DFormFieldTypes.LongText:
+    case DformFieldTypes.LongText:
       return <DFormLongText value={props.value} isDisabled={props.isDisabled} onChange={props.onChange} />;
-    case DFormFieldTypes.MultiSelect:
+    case DformFieldTypes.MultiSelect:
       return (
         <DFormMultiSelect
           id={props.id}
@@ -111,9 +111,9 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props: PrivateDF
           onChange={props.onChange}
         />
       );
-    case DFormFieldTypes.Number:
+    case DformFieldTypes.Number:
       return <DFormNumber id={props.id} value={props.value} isDisabled={props.isDisabled} onChange={props.onChange} />;
-    case DFormFieldTypes.Resource:
+    case DformFieldTypes.Resource:
       return (
         <DFormResource
           value={props.value}
@@ -121,7 +121,7 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props: PrivateDF
           masterSchemaFieldId={props.masterSchemaFieldId}
         />
       );
-    case DFormFieldTypes.Select:
+    case DformFieldTypes.Select:
       return (
         <DFormSelect
           id={props.id}
@@ -131,9 +131,9 @@ export const DFormFieldRenderer: FC<DFormFieldRendererProps> = (props: PrivateDF
           onChange={props.onChange}
         />
       );
-    case DFormFieldTypes.Text:
+    case DformFieldTypes.Text:
       return <DFormText id={props.id} value={props.value} isDisabled={props.isDisabled} onChange={props.onChange} />;
-    case DFormFieldTypes.TextArea:
+    case DformFieldTypes.TextArea:
       return (
         <DFormTextArea id={props.id} value={props.value} isDisabled={props.isDisabled} onChange={props.onChange} />
       );

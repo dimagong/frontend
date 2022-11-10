@@ -5,6 +5,9 @@ import { Form } from "antd";
 import type { FC } from "react";
 import type { FormItemProps } from "antd";
 
+import { DformNumberFieldModel } from "../../data/models";
+import { AbstractDformFieldModel, DformTextValidationFieldModel } from "../../data/models/dformFieldModel";
+
 export type DFormFieldItemProps = {
   minimum?: number;
   maximum?: number;
@@ -18,27 +21,27 @@ export type DFormFieldItemProps = {
 export const DFormFieldItem: FC<DFormFieldItemProps> = (props) => {
   const { name, minimum, maximum, minLength, maxLength, isRequired = false, children } = props;
 
-  const numberValidator = async (_, value: unknown) => {
-    const valueAsNumber = Number(value);
-
-    if (Number.isNaN(valueAsNumber)) {
-      return Promise.reject(`value must be numeric!`);
-    }
-
-    if (minimum !== undefined && maximum !== undefined) {
-      return valueAsNumber >= minimum && valueAsNumber <= maximum
-        ? Promise.resolve()
-        : Promise.reject(`value must be between ${minimum} and ${maximum}!`);
-    }
-    if (minimum !== undefined) {
-      valueAsNumber >= minimum ? Promise.resolve() : Promise.reject(`value must be at least ${minimum}!`);
-    }
-    if (maximum !== undefined) {
-      valueAsNumber <= maximum ? Promise.resolve() : Promise.reject(`value cannot be longer than ${maximum}!`);
-    }
+  const requiredValidator = (_, value) => {
+    const isValid = AbstractDformFieldModel.fieldValidator(value, isRequired);
+    return isValid ? Promise.resolve() : Promise.reject("field is required!");
+  };
+  const numberValidator = (_, value) => {
+    const { isValid, message } = DformNumberFieldModel.numberValidator(value, minimum, maximum);
+    return isValid ? Promise.resolve() : Promise.reject(message);
+  };
+  const stringValidator = (_, value) => {
+    const { isValid, message } = DformTextValidationFieldModel.stringValidator(value, minLength, maxLength);
+    return isValid ? Promise.resolve() : Promise.reject(message);
   };
 
-  const rules: FormItemProps["rules"] = [{ required: isRequired }, { min: minLength, max: maxLength }];
+  const rules: FormItemProps["rules"] = [];
+
+  if (isRequired) {
+    rules.push({ validator: requiredValidator });
+  }
+  if (minLength !== undefined || maxLength !== undefined) {
+    rules.push({ validator: stringValidator });
+  }
 
   if (minimum !== undefined || maximum !== undefined) {
     rules.push({ validator: numberValidator });

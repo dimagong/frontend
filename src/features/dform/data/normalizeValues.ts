@@ -1,9 +1,11 @@
-import type { NormalizedDFormValues, DFormSchema, DFormValues } from "../types";
-
-import { getFieldByMasterSchemaFieldId } from "./getFieldByMasterSchemaFieldId";
+import { DformFieldValueType } from "./models";
 import { normalizedDFormValueByField } from "./normalizedDFormValueByField";
+import { getFieldByMasterSchemaFieldId } from "./getFieldByMasterSchemaFieldId";
 
-export const normalizeValues = (values: DFormValues, schema: DFormSchema): NormalizedDFormValues => {
+export const normalizeValues = (
+  values: Record<string, unknown>,
+  schema: unknown
+): Record<string, DformFieldValueType> => {
   return Object.fromEntries(
     Object.entries(values)
       .map(([id, dformValue]) => {
@@ -12,7 +14,6 @@ export const normalizeValues = (values: DFormValues, schema: DFormSchema): Norma
       })
       .filter(({ field }) => field !== undefined)
       .map(({ id, dformValue, field }) => {
-        // @ts-ignore
         const normalizedValue = normalizedDFormValueByField(field, dformValue);
 
         return [id, normalizedValue];

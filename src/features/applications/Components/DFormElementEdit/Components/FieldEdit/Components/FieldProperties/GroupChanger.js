@@ -28,7 +28,5 @@ export const GroupChanger = (props) => {
   const groups = useMemo(() => getGroupIds(data), [data]);
   const groupsAsOptions = groups.map((group) => optionHandler(group));
 
-  return (
-    <NmpSelect id={id} isSearchable={true} options={groupsAsOptions} placeholder="Select an option" {...otherProps} />
-  );
+  return <NmpSelect id={id} options={groupsAsOptions} placeholder="Select an option" {...otherProps} />;
 };

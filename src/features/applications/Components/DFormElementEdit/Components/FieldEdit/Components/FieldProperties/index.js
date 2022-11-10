@@ -6,11 +6,11 @@ import { Button } from "antd";
 import _ from "lodash";
 
 import {
-  DFormBlockTypes,
-  DFormFieldTypes,
-  DFormDateFormatTypes,
-  DFormResourceCompileOptionTypes,
-} from "features/dform/types";
+  DformBlockTypes,
+  DformFieldTypes,
+  DformDateFormatTypes,
+  DformResourceCompileOptionTypes,
+} from "features/dform/data/models";
 import { DFormFieldModel } from "features/applications/fieldModel";
 import { NmpButton, NmpInput, NmpSelect, NmpCheckbox, NmpWysiwygEditor } from "features/nmp-ui";
 
@@ -117,7 +117,7 @@ export const FieldDateEditProperties = () => {
       <Row className="mb-2">
         <Col md="12">
           <Form.Item label="Date format" name="format" className="dform-field mb-2" rules={[{ required: true }]}>
-            <NmpSelect id="format" options={Object.values(DFormDateFormatTypes)} placeholder="Select an date Format" />
+            <NmpSelect id="format" options={Object.values(DformDateFormatTypes)} placeholder="Select an date Format" />
           </Form.Item>
         </Col>
       </Row>
@@ -251,7 +251,7 @@ const queryConfig = {
 };
 
 const resourceCompileOptionLabel = {
-  [DFormResourceCompileOptionTypes.CompileOnOnboardingAssociation]: "Compile on onboarding association",
+  [DformResourceCompileOptionTypes.CompileOnOnboardingAssociation]: "Compile on onboarding association",
 };
 
 export const FieldResourceEditProperties = ({ element, organization }) => {
@@ -317,24 +317,24 @@ export const FieldResourceEditProperties = ({ element, organization }) => {
 
 export const SpecificFieldProperties = ({ element, organization, elementType }) => {
   switch (elementType) {
-    case DFormFieldTypes.Text:
-    case DFormFieldTypes.LongText:
-    case DFormFieldTypes.TextArea:
+    case DformFieldTypes.Text:
+    case DformFieldTypes.LongText:
+    case DformFieldTypes.TextArea:
       return <FieldStringLikeTextEditProperties />;
-    case DFormFieldTypes.Date:
+    case DformFieldTypes.Date:
       return <FieldDateEditProperties />;
-    case DFormFieldTypes.Select:
-    case DFormFieldTypes.MultiSelect:
+    case DformFieldTypes.Select:
+    case DformFieldTypes.MultiSelect:
       return <FieldSelectEditProperties element={element} />;
-    case DFormFieldTypes.Number:
+    case DformFieldTypes.Number:
       return <FieldNumberEditProperties />;
-    case DFormBlockTypes.HelpText:
+    case DformBlockTypes.HelpText:
       return <FieldHelpTextEditProperties />;
-    case DFormFieldTypes.Resource:
+    case DformFieldTypes.Resource:
       return <FieldResourceEditProperties element={{ ...element, type: elementType }} organization={organization} />;
-    case DFormFieldTypes.File:
-    case DFormFieldTypes.FileList:
-    case DFormFieldTypes.Boolean:
+    case DformFieldTypes.File:
+    case DformFieldTypes.FileList:
+    case DformFieldTypes.Boolean:
     default:
       return <FieldDefaultEditProperties />;
   }
@@ -402,9 +402,10 @@ const FieldProperties = (props) => {
       <Form.Item label="Element type" name="type" className="dform-field mb-2">
         <NmpSelect
           id="type"
-          options={[...Object.values(DFormFieldTypes), DFormBlockTypes.HelpText, DFormBlockTypes.Resource].map(
-            (type) => ({ value: type, label: type })
-          )}
+          options={[...Object.values(DformFieldTypes), DformBlockTypes.HelpText].map((type) => ({
+            value: type,
+            label: type,
+          }))}
           disabled={false}
           placeholder="Select an Element type"
           onChange={onTypeChange}
@@ -422,7 +423,7 @@ const FieldProperties = (props) => {
         />
       </Form.Item> */}
 
-      {type === DFormBlockTypes.HelpText ? null : (
+      {type === DformBlockTypes.HelpText ? null : (
         <>
           <div className="mb-2">
             <Form.Item

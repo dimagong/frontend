@@ -1,28 +1,23 @@
-import { DFormValue, DFormFieldTypes, NormalizedDFormValue } from "../types";
+import { DformFieldTypes } from "./models";
 
-type Field = {
-  type: DFormFieldTypes;
-  helpTextValue: string;
-};
-
-export const normalizedDFormValueByField = (field: Field, dformValue: DFormValue): NormalizedDFormValue => {
+export const normalizedDFormValueByField = (field: any, dformValue: any): any => {
   switch (field.type) {
-    case DFormFieldTypes.Text:
-    case DFormFieldTypes.Date:
-    case DFormFieldTypes.Number:
-    case DFormFieldTypes.TextArea:
-    case DFormFieldTypes.LongText:
+    case DformFieldTypes.Text:
+    case DformFieldTypes.Date:
+    case DformFieldTypes.Number:
+    case DformFieldTypes.TextArea:
+    case DformFieldTypes.LongText:
       return dformValue.value ?? "";
-    case DFormFieldTypes.Boolean:
+    case DformFieldTypes.Boolean:
       return dformValue.value ?? null;
-    case DFormFieldTypes.Select:
+    case DformFieldTypes.Select:
       return dformValue.value ?? null;
-    case DFormFieldTypes.MultiSelect:
+    case DformFieldTypes.MultiSelect:
       return Array.isArray(dformValue.value) ? dformValue.value : [];
-    case DFormFieldTypes.File:
-    case DFormFieldTypes.FileList:
+    case DformFieldTypes.File:
+    case DformFieldTypes.FileList:
       return Array.isArray(dformValue.files) ? dformValue.files : [];
-    case DFormFieldTypes.Resource:
+    case DformFieldTypes.Resource:
       return Array.isArray(dformValue.files) ? dformValue.files[0] : null;
     default:
       throw new Error(`Unexpected field type: ${field.type}`);

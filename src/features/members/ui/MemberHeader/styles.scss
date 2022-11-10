@@ -1,0 +1,24 @@
+.member-header {
+  padding: 25px 60px;
+  background-color: white;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__logo-wrapper {
+    max-width: 135px;
+    width: 135px;
+    height: 30px;
+  }
+
+  &__menu-wrapper {
+    width: 100%;
+    max-width: 400px;
+
+    & > .npm-menu {
+      justify-content: center;
+      border-bottom: none;
+    }
+  }
+}

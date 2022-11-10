@@ -2,13 +2,15 @@ import _ from "lodash";
 import { v4 } from "uuid";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Row, Button, TabContent, TabPane } from "reactstrap";
+
+import { DformElementTypes } from "features/dform/data/models";
+import { DformService } from "features/dform/data/services/dformService";
+import { DFormTemplateEditor } from "features/dform/ui/DFormTemplateEditor";
 
 import CustomTabs from "components/Tabs";
 import ContextFeatureTemplate from "components/ContextFeatureTemplate";
-import { DFormElementTypes, DFormBlockTypes } from "features/dform/types";
-import { DFormTemplateEditor } from "features/dform/ui/DFormTemplateEditor";
 
 import { getCategoryAsOption } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
 
@@ -157,7 +159,7 @@ export const ApplicationPage = ({ applicationId }) => {
     dataToSave.groups[groupId].relatedFields.splice(fieldIndex + 1, 0, newField.id);
 
     setApplicationData(dataToSave);
-    handleSelectElementForEdit(newField, DFormElementTypes.Block, dataToSave);
+    handleSelectElementForEdit(newField, DformElementTypes.Block, dataToSave);
   };
 
   // While we aim for using old API and redux that handle it, we can't save parts of data separately
@@ -193,13 +195,13 @@ export const ApplicationPage = ({ applicationId }) => {
     const dataClone = cloneDeep(applicationData);
 
     switch (element.elementType) {
-      case DFormElementTypes.Section:
+      case DformElementTypes.Section:
         handleSectionDelete(element, dataClone);
         break;
-      case DFormElementTypes.Group:
+      case DformElementTypes.Group:
         handleGroupDelete(element, dataClone);
         break;
-      case DFormElementTypes.Block:
+      case DformElementTypes.Block:
         handleFieldDelete(element, dataClone);
         break;
       default:
@@ -298,7 +300,7 @@ export const ApplicationPage = ({ applicationId }) => {
 
     let dataToSave;
 
-    if (selectedElement.elementType === DFormElementTypes.Block) {
+    if (selectedElement.elementType === DformElementTypes.Block) {
       dataToSave = embedSuggestedChanges(selectedElement);
     } else {
       dataToSave = embedSuggestedChanges(selectedElement);
@@ -349,11 +351,11 @@ export const ApplicationPage = ({ applicationId }) => {
 
   const updateStructureDependencies = (selectedElement, submittedElement, application) => {
     switch (selectedElement.elementType) {
-      case DFormElementTypes.Section:
+      case DformElementTypes.Section:
         return application;
-      case DFormElementTypes.Group:
+      case DformElementTypes.Group:
         return changeSectionForGroup(selectedElement, submittedElement, application);
-      case DFormElementTypes.Block:
+      case DformElementTypes.Block:
         return changeGroupForField(selectedElement, submittedElement, application);
       default:
         return application;
@@ -383,7 +385,7 @@ export const ApplicationPage = ({ applicationId }) => {
   // ToDo: remove edited
   const handleElementChange = (elementData) => {
     let element;
-    if (elementData.elementType === DFormElementTypes.Field) {
+    if (elementData.elementType === DformElementTypes.Field) {
       element = DFormFieldModel.from(elementData);
       element.edited = true;
     } else {
@@ -456,13 +458,13 @@ export const ApplicationPage = ({ applicationId }) => {
 
   const handleReorder = (result) => {
     switch (result.type) {
-      case DFormElementTypes.Section:
+      case DformElementTypes.Section:
         handleSectionReorder(result);
         break;
-      case DFormElementTypes.Group:
+      case DformElementTypes.Group:
         handleGroupReorder(result);
         break;
-      case DFormElementTypes.Block:
+      case DformElementTypes.Block:
         handleFieldReorder(result);
         break;
       default:
@@ -496,10 +498,6 @@ export const ApplicationPage = ({ applicationId }) => {
     categoryId: category ? getCategoryAsOption(category) : null,
   };
 
-  if (application.isLoading || !applicationData) {
-    return <div>Loading...</div>;
-  }
-
   const getFeatureTitle = () => {
     if (process.env.NODE_ENV === "production") return "dForm";
     if (selectedElement?.conditions?.length === 0) return "dForm";
@@ -516,14 +514,41 @@ export const ApplicationPage = ({ applicationId }) => {
     );
   };
 
-  const recognizeBlockType = (fieldType) => {
-    switch (fieldType) {
-      case "helpText":
-        return DFormBlockTypes.HelpText;
-      default:
-        return DFormBlockTypes.Field;
-    }
+  /* The DFormTemplateEditor use-case [START] */
+
+  const blocks = useMemo(() => {
+    return applicationData ? Object.values(applicationData.fields).map(DformService.parseBlock) : [];
+  }, [applicationData?.fields]);
+
+  const groups = useMemo(() => {
+    return applicationData ? Object.values(applicationData.groups).map(DformService.parseGroup) : [];
+  }, [applicationData?.groups]);
+
+  const sections = useMemo(() => {
+    return applicationData ? Object.values(applicationData.sections).map(DformService.parseSection) : [];
+  }, [applicationData?.sections]);
+
+  const relatedSectionsIds = useMemo(() => {
+    return applicationData ? applicationData.sectionsOrder : [];
+  }, [applicationData?.sectionsOrder]);
+
+  const onBlockClick = (blockId) => {
+    handleSelectElementForEdit(applicationData.fields[blockId], DformElementTypes.Block);
   };
+
+  const onGroupClick = (groupId) => {
+    handleSelectElementForEdit(applicationData.groups[groupId], DformElementTypes.Group);
+  };
+
+  const onSectionClick = (sectionId) => {
+    handleSelectElementForEdit(applicationData.sections[sectionId], DformElementTypes.Section);
+  };
+
+  /* The DFormTemplateEditor use-case [END] */
+
+  if (application.isLoading || !applicationData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Row>
@@ -543,46 +568,24 @@ export const ApplicationPage = ({ applicationId }) => {
               onSubmit={handleApplicationMutation}
             />
           </TabPane>
+
           <TabPane tabId={APPLICATION_PAGES.DESIGN}>
             <DFormTemplateEditor
-              blocks={Object.values(applicationData.fields).map((block) => ({
-                id: block.id,
-                label: block.title,
-                helpText: block.helpTextValue,
-                blockType: recognizeBlockType(block.type),
-                fieldType: block.type,
-                blockSize: block.classes,
-                isRequired: block.isRequired,
-                isLabelShowing: block.isLabelShowing,
-              }))}
-              groups={Object.values(applicationData.groups).map((group) => ({
-                id: group.id,
-                name: group.name,
-                relatedBlocks: group.relatedFields,
-              }))}
-              sections={applicationData.sectionsOrder
-                .map((sectionId) => applicationData.sections[sectionId])
-                .map((section) => ({
-                  id: section.id,
-                  name: section.name,
-                  relatedGroups: section.relatedGroups,
-                }))}
+              blocks={blocks}
+              groups={groups}
+              sections={sections}
               isDraggable={false}
               selectedElementId={selectedElement?.id}
-              onBlockClick={(blockId) =>
-                handleSelectElementForEdit(applicationData.fields[blockId], DFormElementTypes.Block)
-              }
-              onGroupClick={(groupId) =>
-                handleSelectElementForEdit(applicationData.groups[groupId], DFormElementTypes.Group)
-              }
-              onSectionClick={(sectionId) =>
-                handleSelectElementForEdit(applicationData.sections[sectionId], DFormElementTypes.Section)
-              }
+              relatedSectionsIds={relatedSectionsIds}
+              onBlockClick={onBlockClick}
+              onGroupClick={onGroupClick}
+              onSectionClick={onSectionClick}
               onBlockCreate={handleFieldCreate}
               onGroupCreate={handleGroupCreate}
               onSectionCreate={handleSectionCreate}
             />
           </TabPane>
+
           <TabPane tabId={APPLICATION_PAGES.REORDER}>
             <ElementsReorderComponent onReorder={handleReorder} applicationData={applicationData} />
           </TabPane>

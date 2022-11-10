@@ -1,5 +1,5 @@
 import { Status } from "../constants/statusConstants";
-import { DFormAccessTypes } from "features/dform/types";
+import { DformAccessTypes } from "features/dform/types";
 
 export interface Profile {
   avatar: null;
@@ -74,7 +74,7 @@ export interface ILogo {
 }
 
 export interface IForm {
-  access_type: Record<DFormAccessTypes, string>;
+  access_type: Record<DformAccessTypes, string>;
   id: number;
   name: string;
   status: string;
@@ -82,7 +82,7 @@ export interface IForm {
 }
 
 export type DForm = {
-  access_type: Record<DFormAccessTypes, string>;
+  access_type: Record<DformAccessTypes, string>;
   id: number;
   name: string;
   status: Record<Status, string>;
@@ -110,7 +110,7 @@ export type DFormCategory = {
   dform_id: number;
   dform_name: string;
   dform_status: Record<Status, string>;
-  dform_access_type: Record<DFormAccessTypes, string>;
+  dform_access_type: Record<DformAccessTypes, string>;
   category_id: number;
   category_parent: number;
   category_name: string;

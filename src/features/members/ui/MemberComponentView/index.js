@@ -69,6 +69,7 @@ const MemberComponentView = (props) => {
               dformId={activeOnboarding.id}
               status={activeOnboarding.status}
               organization={profile.permissions.organization}
+              userFirstName={profile.first_name}
             />
           )}
         </Col>

@@ -4,13 +4,13 @@ import type { FC } from "react";
 import { unreachable } from "features/common";
 import { NpmDatePicker, NpmTimePicker } from "features/nmp-ui";
 
-import { DFormDateFormatTypes } from "../../types";
+import { DformDateFormatTypes } from "../../data/models";
 
-const getPicker = (format: DFormDateFormatTypes) => {
+const getPicker = (format: DformDateFormatTypes) => {
   switch (format) {
-    case DFormDateFormatTypes.Time:
+    case DformDateFormatTypes.Time:
       return NpmTimePicker;
-    case DFormDateFormatTypes.Date:
+    case DformDateFormatTypes.Date:
       return NpmDatePicker;
     default:
       unreachable(`DForm date format "${format}" is not supported.`);
@@ -20,14 +20,14 @@ const getPicker = (format: DFormDateFormatTypes) => {
 export type DFormDatePickerProps = {
   id?: string;
   value?: string;
-  format?: DFormDateFormatTypes;
+  format?: DformDateFormatTypes;
   isDisabled?: boolean;
   placeholder?: string;
   onChange?: (iso: string) => void;
 };
 
 export const DFormDatePicker: FC<DFormDatePickerProps> = (props) => {
-  const { id, value, format = DFormDateFormatTypes.Date, isDisabled, placeholder, onChange } = props;
+  const { id, value, format = DformDateFormatTypes.Date, isDisabled, placeholder, onChange } = props;
 
   const Picker = getPicker(format);
 

@@ -7,7 +7,7 @@ import { getCategoriesAsOptions } from "features/home/ContextSearch/Applications
 import { DFormLabel } from "features/dform/ui/DFormLabel";
 
 export const ApplicationDescriptionFormFields = ({ categories }) => {
-  const categoriesOptions = categories ? getCategoriesAsOptions(categories) : null;
+  const categoriesOptions = categories ? getCategoriesAsOptions(categories) : [];
 
   return (
     <>

@@ -7,8 +7,6 @@ import {
   DCROperatorTypesComparotors,
 } from "features/applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
 
-import type { NormalizedDFormValues } from "../types";
-
 type DFormElements = Record<string, any>;
 
 type DFormCondition = {
@@ -22,7 +20,7 @@ type DFormConditions = Array<DFormCondition>;
 
 export const checkConditions = (
   elements: DFormElements,
-  values: NormalizedDFormValues,
+  normalizedValues: any,
   fields: DFormElements
 ): DFormElements => {
   for (const elementId in elements) {
@@ -35,7 +33,7 @@ export const checkConditions = (
 
       const field = fields[fieldId];
       const convertor = DCRFieldValueConvertors[field.type];
-      const controlValue = values[field.masterSchemaFieldId];
+      const controlValue = normalizedValues[field.masterSchemaFieldId];
       const operatorComparator = DCROperatorTypesComparotors[operatorType];
 
       const isApplicable = operatorComparator({

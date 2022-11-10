@@ -3,18 +3,19 @@ import "./style.scss";
 import React from "react";
 import type { FC } from "react";
 
-import { DFormBlockSizeTypes } from "../../types";
 import { DFormSizingBlock } from "../DFormSizing";
+import { DformBlockSizeTypes } from "../../data/models";
 import { DFormBlockRenderer, DFormBlockRendererProps } from "./DFormBlockRenderer";
 
 export type DFormBlockProps = DFormBlockRendererProps & {
-  blockSize?: DFormBlockSizeTypes;
+  blockSize?: DformBlockSizeTypes;
 };
 
 export const DFormBlock: FC<DFormBlockProps> = (props) => {
   const { blockSize, ...blockProps } = props;
   const {
     id,
+    value,
     label,
     format,
     uiStyle,
@@ -26,6 +27,7 @@ export const DFormBlock: FC<DFormBlockProps> = (props) => {
     isRequired,
     isLabelShowing,
     masterSchemaFieldId,
+    onChange,
   } = blockProps;
 
   return (
@@ -33,6 +35,7 @@ export const DFormBlock: FC<DFormBlockProps> = (props) => {
       <div className="dform-block">
         <DFormBlockRenderer
           id={id}
+          value={value}
           label={label}
           format={format}
           options={options}
@@ -44,6 +47,7 @@ export const DFormBlock: FC<DFormBlockProps> = (props) => {
           isDisabled={isDisabled}
           isLabelShowing={isLabelShowing}
           masterSchemaFieldId={masterSchemaFieldId}
+          onChange={onChange}
         />
       </div>
     </DFormSizingBlock>

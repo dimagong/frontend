@@ -7,7 +7,7 @@ import classnames from "classnames";
 import { IdType } from "utility/prop-types";
 
 import { NpmDatePicker, NpmTimePicker } from "features/nmp-ui";
-import { DFormDateFormatTypes } from "features/dform/types";
+import { DformDateFormatTypes } from "features/dform/data/models";
 
 import dateValidationSchema from "./validationSchema";
 
@@ -27,11 +27,11 @@ export const DFormDateWidget = (props) => {
       isLabelShowing={isLabelShowing}
       className={classnames(className)}
     >
-      {format === DFormDateFormatTypes.Time ? (
+      {format === DformDateFormatTypes.Time ? (
         <NpmTimePicker id={id} value={value} disabled={isDisabled} onChange={onChange} />
       ) : null}
 
-      {format === DFormDateFormatTypes.Date ? (
+      {format === DformDateFormatTypes.Date ? (
         <NpmDatePicker id={id} value={value} disabled={isDisabled} onChange={onChange} />
       ) : null}
     </DFormFieldContainer>

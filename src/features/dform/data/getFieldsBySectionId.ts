@@ -1,6 +1,4 @@
-import type { DFormSchema } from "../types";
-
-export const getFieldsBySectionId = (sectionId: string, { sections, groups, fields }: DFormSchema) => {
+export const getFieldsBySectionId = (sectionId: string, { sections, groups, fields }) => {
   return sections[sectionId].relatedGroups
     .map((groupId) => groups[groupId].relatedFields)
     .flat()
