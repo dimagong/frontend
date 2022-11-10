@@ -54,6 +54,4 @@ const Provider: FC<Props> = (props) => {
   return <dformContext.Provider value={{ dformId, dformFileService, accessType, isAccessible }} children={children} />;
 };
 
-const useDFormContext = () => useContext(dformContext);
-
-export const DFormContext = { Provider, Consumer: dformContext.Consumer, useContext: useDFormContext };
+export const DFormContext = { Provider, Consumer: dformContext.Consumer, useContext: () => useContext(dformContext) };

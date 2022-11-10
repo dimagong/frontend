@@ -1,11 +1,14 @@
-import type { DformId } from "./types";
+import { DformAccessTypes } from "../../types";
 import { DformSchemaModel } from "./dformSchemaModel";
+import type { DformId, DformSectionId } from "./types";
 
 export class DformModel {
   constructor(
-    // not finished!
     readonly id: DformId,
     readonly name: string,
-    readonly schema: DformSchemaModel
+    readonly status: string,
+    readonly schema: DformSchemaModel,
+    readonly accessType: DformAccessTypes,
+    readonly viewedSections: DformSectionId[]
   ) {}
 }

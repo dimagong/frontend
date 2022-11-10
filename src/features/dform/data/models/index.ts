@@ -27,3 +27,4 @@ export {
 } from "./dformFieldModel";
 // Schema
 export { DformSchemaModel } from "./dformSchemaModel";
+export { DformModel } from "./dformModel";

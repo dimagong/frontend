@@ -1,5 +1,5 @@
 import React from "react";
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 
 import { DFormSection } from "../DFormSection";
 import { DformSectionId } from "../../data/models";
@@ -9,10 +9,11 @@ import { DformSchemaContext } from "../DformSchemaContext";
 
 export type DFormMemberSectionProps = {
   sectionId: DformSectionId;
+  children?: ReactNode;
 };
 
 export const DFormMemberSection: FC<DFormMemberSectionProps> = (props) => {
-  const { sectionId } = props;
+  const { sectionId, children } = props;
   const { dformSchema } = DformSchemaContext.useContext();
   const section = dformSchema.getSectionById(sectionId);
 
@@ -23,10 +24,12 @@ export const DFormMemberSection: FC<DFormMemberSectionProps> = (props) => {
       {orderedGroups.map((group) => (
         <DFormMemberGroup groupId={group.id} key={group.id}>
           {group.relatedBlocksIds.map((blockId) => (
-            <DFormMemberBlock blockId={blockId} />
+            <DFormMemberBlock blockId={blockId} key={blockId} />
           ))}
         </DFormMemberGroup>
       ))}
+
+      {children}
     </DFormSection>
   );
 };

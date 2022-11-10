@@ -15,6 +15,7 @@ export const DFormBlock: FC<DFormBlockProps> = (props) => {
   const { blockSize, ...blockProps } = props;
   const {
     id,
+    value,
     label,
     format,
     uiStyle,
@@ -26,6 +27,7 @@ export const DFormBlock: FC<DFormBlockProps> = (props) => {
     isRequired,
     isLabelShowing,
     masterSchemaFieldId,
+    onChange,
   } = blockProps;
 
   return (
@@ -33,6 +35,7 @@ export const DFormBlock: FC<DFormBlockProps> = (props) => {
       <div className="dform-block">
         <DFormBlockRenderer
           id={id}
+          value={value}
           label={label}
           format={format}
           options={options}
@@ -44,6 +47,7 @@ export const DFormBlock: FC<DFormBlockProps> = (props) => {
           isDisabled={isDisabled}
           isLabelShowing={isLabelShowing}
           masterSchemaFieldId={masterSchemaFieldId}
+          onChange={onChange}
         />
       </div>
     </DFormSizingBlock>

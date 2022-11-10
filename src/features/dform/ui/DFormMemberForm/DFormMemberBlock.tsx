@@ -1,10 +1,12 @@
-import type { FC } from "react";
 import React from "react";
+import { Form } from "antd";
+import type { FC } from "react";
 
 import { DFormBlock } from "../DFormBlock";
 import { DFormFieldItem } from "../DFormFieldItem";
 import { DformSchemaContext } from "../DformSchemaContext";
 import { DformBlockId, DformBlockTypes } from "../../data/models";
+import { DFormContext } from "../DFormContext";
 
 export type DFormMemberBlockProps = {
   blockId: DformBlockId;
@@ -12,8 +14,13 @@ export type DFormMemberBlockProps = {
 
 export const DFormMemberBlock: FC<DFormMemberBlockProps> = (props) => {
   const { blockId } = props;
+  const { isAccessible } = DFormContext.useContext();
   const { dformSchema } = DformSchemaContext.useContext();
   const block = dformSchema.getBlockById(blockId);
+
+  // ToDo: DCR
+  // const form = Form.useFormInstance();
+  // form.getFieldValue();
 
   switch (block.blockType) {
     case DformBlockTypes.Field:
@@ -35,7 +42,7 @@ export const DFormMemberBlock: FC<DFormMemberBlockProps> = (props) => {
             blockType={block.blockType}
             fieldType={block.fieldType}
             // ToDo DCR
-            isDisabled={false}
+            isDisabled={!isAccessible}
             isRequired={block.isRequired}
             isLabelShowing={block.isLabelShowing}
             masterSchemaFieldId={block.masterSchemaFieldId}

@@ -1,4 +1,4 @@
-import { invariant } from "features/common";
+import { devWarning } from "features/common";
 
 import { AbstractService } from "./abstractService";
 import {
@@ -16,8 +16,11 @@ import {
   DformSelectFieldModel,
   DformTextFieldModel,
   DformTextAreaFieldModel,
+  DformSchemaModel,
+  DformFieldValueType,
 } from "../models";
 import { DformBlockModel, DformFieldModel, DformFieldTypes, DformHelpTextModel } from "../models";
+import { DformModel } from "../models";
 
 export class DformService extends AbstractService {
   readonly prefix = "/api";
@@ -45,7 +48,7 @@ export class DformService extends AbstractService {
           field.title,
           field.isRequired,
           field.isLabelShowing,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.Date:
         return new DformDateFieldModel(
@@ -58,7 +61,7 @@ export class DformService extends AbstractService {
           field.isRequired,
           field.isLabelShowing,
           field.format,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.File:
         return new DformFileFieldModel(
@@ -70,7 +73,7 @@ export class DformService extends AbstractService {
           field.title,
           field.isRequired,
           field.isLabelShowing,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.FileList:
         return new DformFileListFieldModel(
@@ -82,7 +85,7 @@ export class DformService extends AbstractService {
           field.title,
           field.isRequired,
           field.isLabelShowing,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.LongText:
         return new DformLongTextFieldModel(
@@ -96,7 +99,7 @@ export class DformService extends AbstractService {
           field.isLabelShowing,
           field.minLength === null ? undefined : field.minLength,
           field.maxLength === null ? undefined : field.maxLength,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.MultiSelect:
         return new DformMultiSelectFieldModel(
@@ -110,7 +113,7 @@ export class DformService extends AbstractService {
           field.isLabelShowing,
           field.uiStyle,
           field.options,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.Number:
         return new DformNumberFieldModel(
@@ -124,7 +127,7 @@ export class DformService extends AbstractService {
           field.isLabelShowing,
           field.minimum === null ? undefined : field.minimum,
           field.maximum === null ? undefined : field.maximum,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.Resource:
         return new DformResourceFieldModel(
@@ -138,7 +141,7 @@ export class DformService extends AbstractService {
           field.isLabelShowing,
           field.resourceCompileOption,
           field.resourceManagerFieldId,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.Select:
         return new DformSelectFieldModel(
@@ -151,7 +154,7 @@ export class DformService extends AbstractService {
           field.isRequired,
           field.isLabelShowing,
           field.options,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.Text:
         return new DformTextFieldModel(
@@ -165,7 +168,7 @@ export class DformService extends AbstractService {
           field.isLabelShowing,
           field.minLength === null ? undefined : field.minLength,
           field.maxLength === null ? undefined : field.maxLength,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.TextArea:
         return new DformTextAreaFieldModel(
@@ -179,7 +182,7 @@ export class DformService extends AbstractService {
           field.isLabelShowing,
           field.minLength === null ? undefined : field.minLength,
           field.maxLength === null ? undefined : field.maxLength,
-          field.masterSchemaFieldId
+          Number(field.masterSchemaFieldId)
         );
     }
   }
@@ -214,6 +217,64 @@ export class DformService extends AbstractService {
       section.name,
       section.isAlreadyViewed,
       section.relatedGroups
+    );
+  }
+
+  static parseSchema(schema: any): DformSchemaModel {
+    return new DformSchemaModel(
+      Object.values(schema.fields).map(DformService.parseBlock),
+      Object.values(schema.groups).map(DformService.parseGroup),
+      Object.values(schema.sections).map(DformService.parseSection),
+      schema.sectionsOrder
+    );
+  }
+
+  static parseDform(dform: any): DformModel {
+    return new DformModel(
+      dform.id,
+      dform.name,
+      dform.status,
+      DformService.parseSchema(dform.schema),
+      dform.access_type,
+      dform.is_viewed_sections
+    );
+  }
+
+  static parseValue(value: any, fieldType: DformFieldTypes): DformFieldValueType {
+    switch (fieldType) {
+      case DformFieldTypes.Boolean:
+        return typeof value.value === "boolean" ? value.value : undefined;
+      case DformFieldTypes.Date:
+      case DformFieldTypes.Text:
+      case DformFieldTypes.Select:
+      case DformFieldTypes.TextArea:
+      case DformFieldTypes.LongText:
+        return typeof value.value === "string" ? value.value : undefined;
+      case DformFieldTypes.File:
+      case DformFieldTypes.FileList:
+      case DformFieldTypes.Resource:
+        return value.files;
+      case DformFieldTypes.MultiSelect:
+        return Array.isArray(value.value) ? value.value : [];
+      case DformFieldTypes.Number:
+        return Number.isNaN(Number(value.value)) ? undefined : (Number(value.value) as any);
+      default:
+        return value.value;
+    }
+  }
+
+  static parseValues(values: any, schema: DformSchemaModel): Record<string, DformFieldValueType> {
+    if (!values) return {};
+    return Object.fromEntries(
+      Object.entries(values).map(([id, value]) => {
+        const masterSchemaFieldId = Number(id);
+        const field = schema.getFieldByMasterSchemaFieldId(masterSchemaFieldId);
+        if (!field) {
+          devWarning("Could not find field by value master schema field id.");
+          return [undefined, undefined as unknown as DformFieldValueType];
+        }
+        return [field.id, DformService.parseValue(value, field.fieldType)];
+      })
     );
   }
 }

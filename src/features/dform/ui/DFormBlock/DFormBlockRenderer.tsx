@@ -29,6 +29,7 @@ export const DFormBlockRenderer: FC<DFormBlockRendererProps> = (props: PrivateDF
       return (
         <DFormField
           id={props.id}
+          value={props.value}
           label={props.label}
           format={props.format}
           options={props.options}
@@ -38,6 +39,7 @@ export const DFormBlockRenderer: FC<DFormBlockRendererProps> = (props: PrivateDF
           isDisabled={props.isDisabled}
           isLabelShowing={props.isLabelShowing}
           masterSchemaFieldId={props.masterSchemaFieldId}
+          onChange={props.onChange}
         />
       );
     case DformBlockTypes.HelpText:

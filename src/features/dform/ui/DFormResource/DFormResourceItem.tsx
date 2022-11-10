@@ -15,12 +15,16 @@ type Props = {
 };
 
 export const DFormResourceItem: FC<Props> = (props) => {
-  const { value, isDisabled, masterSchemaFieldId } = props;
+  const { value: propValue, isDisabled, masterSchemaFieldId } = props;
+  const value = Array.isArray(propValue) ? propValue[0] : propValue;
   const filename = value ? value.custom_filename ?? value.name : "noname resource";
 
   const { dformId, dformFileService } = DFormContext.useContext();
 
-  const downloadMutation = useMutation({ mutationFn: dformFileService!.get, onSuccess: triggerFileDownloading });
+  const downloadMutation = useMutation({
+    mutationFn: dformFileService!.get.bind(dformFileService),
+    onSuccess: triggerFileDownloading,
+  });
 
   const downloadFile = () => {
     const fileId = value?.file_id;
@@ -29,6 +33,7 @@ export const DFormResourceItem: FC<Props> = (props) => {
     invariant(dformId, "Can't download without 'dformId'.");
     invariant(masterSchemaFieldId, "Can't download without 'masterSchemaFieldId'.");
 
+    // @ts-ignore
     downloadMutation.mutate({ masterSchemaFieldId, dformId, fileId });
   };
 

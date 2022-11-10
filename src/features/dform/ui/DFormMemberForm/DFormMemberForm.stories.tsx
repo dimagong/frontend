@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import { QueryClientProvider, QueryClient } from "react-query";
 
 import { DformAccessTypes } from "../../types";
-import { DFormMemberForm } from "./DFormMemberForm";
+import { DFormMemberProvider } from "./DFormMemberProvider";
+import { DFormPrivateMemberForm } from "./DFormPrivateMemberForm";
 import { mockBlocks, mockGroups, mockSections } from "../../data/models/mockSchema";
 
 export default {
   title: "DForm/MemberForm",
-  component: DFormMemberForm,
+  component: DFormPrivateMemberForm,
 };
 
 const Template = (props) => {
@@ -20,15 +21,16 @@ const Template = (props) => {
 
   return (
     <QueryClientProvider client={new QueryClient()}>
-      <DFormMemberForm
+      <DFormMemberProvider
         blocks={props.blocks}
         groups={props.groups}
         dformId={props.dformId}
         sections={props.sections}
-        dformName={props.dformName}
         accessType={props.accessType}
         relatedSectionsIds={props.sections.map(({ id }) => id)}
-      />
+      >
+        <DFormPrivateMemberForm dformId={props.dformId} />
+      </DFormMemberProvider>
     </QueryClientProvider>
   );
 };

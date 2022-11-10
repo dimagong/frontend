@@ -44,11 +44,19 @@ export const DFormUploadFile: FC<Props> = (props) => {
   };
 
   const deleteMutation = useMutation({
-    mutationFn: dformFileService!.delete,
+    mutationFn: dformFileService!.delete.bind(dformFileService),
+    // ToDo: resolve that
+    // @ts-ignore
     onSuccess: (_, { fileId }) => onSuccessDelete(fileId),
   });
-  const uploadMutation = useMutation({ mutationFn: dformFileService!.post, onSuccess: onSuccessUpload });
-  const downloadMutation = useMutation({ mutationFn: dformFileService!.get, onSuccess: triggerFileDownloading });
+  const uploadMutation = useMutation({
+    mutationFn: dformFileService!.post.bind(dformFileService),
+    onSuccess: onSuccessUpload,
+  });
+  const downloadMutation = useMutation({
+    mutationFn: dformFileService!.get.bind(dformFileService),
+    onSuccess: triggerFileDownloading,
+  });
 
   const fileList = Array.isArray(value) ? value.map(getUploadFileFromDFormFile) : [];
 
@@ -56,6 +64,8 @@ export const DFormUploadFile: FC<Props> = (props) => {
     invariant(dformId, "Can't download without 'dformId'.");
     invariant(masterSchemaFieldId, "Can't download without 'masterSchemaFieldId'.");
 
+    // ToDo: resolve that
+    // @ts-ignore
     downloadMutation.mutate({ masterSchemaFieldId, dformId, fileId });
   };
 
@@ -63,6 +73,8 @@ export const DFormUploadFile: FC<Props> = (props) => {
     invariant(dformId, "Can't download upload 'dformId'.");
     invariant(masterSchemaFieldId, "Can't download upload 'masterSchemaFieldId'.");
 
+    // ToDo: resolve that
+    // @ts-ignore
     uploadMutation.mutate({ dformId, masterSchemaFieldId, files });
   };
 
@@ -70,6 +82,7 @@ export const DFormUploadFile: FC<Props> = (props) => {
     invariant(dformId, "Can't delete without 'dformId'.");
     invariant(masterSchemaFieldId, "Can't delete without 'masterSchemaFieldId'.");
 
+    // @ts-ignore
     deleteMutation.mutate({ masterSchemaFieldId, dformId, fileId });
   };
 

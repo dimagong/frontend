@@ -9,7 +9,7 @@ export class DformSectionModel extends DformElementModel<DformSectionId> {
     conditions: unknown[],
     isProtected: boolean,
     public name: string,
-    public isCompleted: boolean,
+    public isViewed: boolean,
     public relatedGroupsIds: DformGroupId[]
   ) {
     super(id, conditions, isProtected);

@@ -1,4 +1,4 @@
-import type { DformBlockId, DformGroupId } from "./types";
+import type { DformBlockId, DformFieldValueType, DformGroupId } from "./types";
 import { AbstractDformBlockModel, DformBlockSizeTypes, DformBlockTypes } from "./dformBlockModel";
 
 export enum DformFieldTypes {
@@ -16,6 +16,24 @@ export enum DformFieldTypes {
 }
 
 export abstract class AbstractDformFieldModel extends AbstractDformBlockModel {
+  static fieldValidator(value: DformFieldValueType, isRequired: boolean): boolean {
+    if (isRequired) {
+      if (value === null) {
+        return false;
+      }
+      if (value === undefined) {
+        return false;
+      }
+      if (value === "") {
+        return false;
+      }
+      if (Array.isArray(value)) {
+        return value.length !== 0;
+      }
+    }
+    return true;
+  }
+
   readonly blockType = DformBlockTypes.Field;
   abstract readonly fieldType: DformFieldTypes;
 
@@ -28,9 +46,13 @@ export abstract class AbstractDformFieldModel extends AbstractDformBlockModel {
     public label: string,
     public isRequired: boolean,
     public isLabelShowing: boolean,
-    public masterSchemaFieldId?: number
+    public masterSchemaFieldId: number
   ) {
     super(id, conditions, isProtected, groupId, blockSize);
+  }
+
+  isValid(value: DformFieldValueType): boolean {
+    return AbstractDformFieldModel.fieldValidator(value, this.isRequired);
   }
 }
 
@@ -56,7 +78,7 @@ export class DformDateFieldModel extends AbstractDformFieldModel {
     isRequired: boolean,
     isLabelShowing: boolean,
     public format: DformDateFormatTypes,
-    masterSchemaFieldId?: number
+    masterSchemaFieldId: number
   ) {
     super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
   }
@@ -70,7 +92,33 @@ export class DformFileListFieldModel extends AbstractDformFieldModel {
   readonly fieldType = DformFieldTypes.FileList;
 }
 
-abstract class DformTextValidationFieldModel extends AbstractDformFieldModel {
+export abstract class DformTextValidationFieldModel extends AbstractDformFieldModel {
+  static stringValidator(value: unknown, minLength: number | undefined, maxLength: number | undefined) {
+    const valueAsString = String(value);
+
+    if (Number.isNaN(valueAsString)) {
+      return { isValid: false, message: "value must be string!" };
+    }
+
+    if (minLength !== undefined && maxLength !== undefined) {
+      return valueAsString.length >= minLength && valueAsString.length <= maxLength
+        ? { isValid: true }
+        : { isValid: false, message: `value length must be between ${minLength} and ${maxLength}!` };
+    }
+    if (minLength !== undefined) {
+      return valueAsString.length >= minLength
+        ? { isValid: true }
+        : { isValid: false, message: `value must be at least ${minLength}!` };
+    }
+    if (maxLength !== undefined) {
+      return valueAsString.length <= maxLength
+        ? { isValid: true }
+        : { isValid: false, message: `value cannot be longer than ${maxLength}!` };
+    }
+
+    return { isValid: true };
+  }
+
   constructor(
     id: DformBlockId,
     groupId: DformGroupId,
@@ -82,9 +130,16 @@ abstract class DformTextValidationFieldModel extends AbstractDformFieldModel {
     isLabelShowing: boolean,
     public minLength: number | undefined,
     public maxLength: number | undefined,
-    masterSchemaFieldId?: number
+    masterSchemaFieldId: number
   ) {
     super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
+  }
+
+  isValid(value: DformFieldValueType): boolean {
+    return (
+      DformTextValidationFieldModel.stringValidator(value, this.minLength, this.maxLength).isValid &&
+      AbstractDformFieldModel.fieldValidator(value, this.isRequired)
+    );
   }
 }
 
@@ -103,7 +158,7 @@ abstract class DformOptionsFieldModel extends AbstractDformFieldModel {
     isRequired: boolean,
     isLabelShowing: boolean,
     public options: string[],
-    masterSchemaFieldId?: number
+    masterSchemaFieldId: number
   ) {
     super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
   }
@@ -128,7 +183,7 @@ export class DformMultiSelectFieldModel extends DformOptionsFieldModel {
     isLabelShowing: boolean,
     public uiStyle: DformMultiSelectUIStyles,
     options: string[],
-    masterSchemaFieldId?: number
+    masterSchemaFieldId: number
   ) {
     super(
       id,
@@ -146,6 +201,32 @@ export class DformMultiSelectFieldModel extends DformOptionsFieldModel {
 }
 
 export class DformNumberFieldModel extends AbstractDformFieldModel {
+  static numberValidator(value: unknown, minimum: number | undefined, maximum: number | undefined) {
+    const valueAsNumber = Number(value);
+
+    if (Number.isNaN(valueAsNumber)) {
+      return { isValid: false, message: "value must be numeric!" };
+    }
+
+    if (minimum !== undefined && maximum !== undefined) {
+      return valueAsNumber >= minimum && valueAsNumber <= maximum
+        ? { isValid: true }
+        : { isValid: false, message: `value must be between ${minimum} and ${maximum}!` };
+    }
+    if (minimum !== undefined) {
+      return valueAsNumber >= minimum
+        ? { isValid: true }
+        : { isValid: false, message: `value must be at least ${minimum}!` };
+    }
+    if (maximum !== undefined) {
+      return valueAsNumber <= maximum
+        ? { isValid: true }
+        : { isValid: false, message: `value cannot be longer than ${maximum}!` };
+    }
+
+    return { isValid: true };
+  }
+
   readonly fieldType = DformFieldTypes.Number;
 
   constructor(
@@ -159,9 +240,16 @@ export class DformNumberFieldModel extends AbstractDformFieldModel {
     isLabelShowing: boolean,
     public minimum: number | undefined,
     public maximum: number | undefined,
-    masterSchemaFieldId?: number
+    masterSchemaFieldId: number
   ) {
     super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
+  }
+
+  isValid(value: DformFieldValueType): boolean {
+    return (
+      DformNumberFieldModel.numberValidator(value, this.minimum, this.maximum).isValid &&
+      AbstractDformFieldModel.fieldValidator(value, this.isRequired)
+    );
   }
 }
 
@@ -184,7 +272,7 @@ export class DformResourceFieldModel extends AbstractDformFieldModel {
     isLabelShowing: boolean,
     public resourceCompileOption: DformResourceCompileOptionTypes,
     public resourceManagerFieldId: number,
-    masterSchemaFieldId?: number
+    masterSchemaFieldId: number
   ) {
     super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
   }
