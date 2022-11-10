@@ -48,39 +48,8 @@ const MemberSurvey = ({ selectedSurveyId, isRecentlySubmitted, organization }) =
   );
 
   const { data: surveyInteraction } = useGetAllSurveyQuestionsQuery({ id }, { enabled: !!graded_at });
-
-  // const {
-  //   mutatePushAnswer,
-  //   currentQuestionPushAnswer,
-  //   isSurveyLoadingPushAnswer,
-  //   isAnswerPushProceed,
-  //   isPushAnswerSuccess,
-  // } = useMVApushAnswer(id);
-
-  // if (isPushAnswerSuccess && currentQuestionPushAnswer) {
-  //   [currentQuestion, isSurveyLoading] = [currentQuestionPushAnswer, isSurveyLoadingPushAnswer];
-  // }
-
-  const {
-    isSuccess: isPushAnswerSuccess,
-    isLoading: isAnswerPushProceed,
-    mutate: mutatePushAnswer,
-  } = usePushAnswerMutation({ id });
-
-  // const { refetch, currentQuestionBegin, isSurveyLoadingBegin, isSuccessGetBeginSurvay } = useMVAgetBeginSurvey(id, {
-  //   started_at,
-  //   finished_at,
-  // });
-
-  const {
-    refetch,
-    isSuccess: isSuccessGetBeginSurvay,
-    isLoading: isSurveyBeginProceed,
-  } = useGetBeginSurveyQuery({ id }, { refetchOnWindowFocus: false, enabled: false });
-
-  // if (currentQuestionBegin && isSuccessGetBeginSurvay) {
-  //   [currentQuestion, isSurveyLoading] = [currentQuestionBegin, isSurveyLoadingBegin];
-  // }
+  const { isLoading: isAnswerPushProceed, mutate: mutatePushAnswer } = usePushAnswerMutation({ id });
+  const { refetch } = useGetBeginSurveyQuery({ id }, { refetchOnWindowFocus: false, enabled: false });
 
   const {
     mutateSwitchToPreviousQuestion,

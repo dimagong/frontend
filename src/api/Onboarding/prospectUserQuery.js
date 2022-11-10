@@ -229,10 +229,6 @@ export const MVACurrentQuestionQueryKeys = {
 
 export const useGetCurrentQuestionForAssignedSurveyQuery = (payload, options = {}) => {
   const { id } = payload;
-  console.log("enabled", options.enabled);
-  // if (options.enabled === true) {
-  //   debugger;
-  // }
 
   const dispatch = useDispatch();
   return useGenericQuery(
@@ -273,7 +269,7 @@ export const usePushAnswerMutation = ({ id }, options = {}) => {
     mutationFn: (payload) => clientAPI["put"](`/member-view-api/survey-passing/${payload.surveyId}`, payload.data),
     onError: (error) => dispatch(pushAnswerError(error.message)),
     onSuccess: (data) => {
-      queryClient.invalidateQueries(MVASurveyPassingQueryKeys.all(id));
+      queryClient.invalidateQueries(MVACurrentQuestionQueryKeys.byId(id));
       dispatch(pushAnswerSuccess());
     },
     ...options,
