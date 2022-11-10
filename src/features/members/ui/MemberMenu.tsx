@@ -240,7 +240,7 @@ const makeViewHierarchy = (topLevelCategory) => {
   return viewHierarchy;
 };
 
-export const MemberMenuView = ({ dforms, dFormsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
+export const MemberMenu = ({ dforms, dFormsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
   // const selectDFormsCategory = (categories: DFormCategory[]): Partial<DFormCategory>[] => {
   //   const dformsList: Partial<DFormCategory>[] = [];
   //   categories.forEach(({ dform_id, dform_name, dform_status }) => {

@@ -10,7 +10,16 @@ import HomeIcon from "assets/img/icons/home.png";
 import SurveyIcon from "assets/img/icons/survey.png";
 import DefaultUser from "assets/img/icons/default-user.png";
 
-export const UserInfo: FC<Props> = ({
+export type UserInfoProps = {
+  userName: string;
+  avatarSrc: string;
+  organizationName: string;
+  onHomeClick?: () => void;
+  onLogoutClick?: () => void;
+  onSurveyClick?: () => void;
+};
+
+export const UserInfo: FC<UserInfoProps> = ({
   userName,
   organizationName,
   onLogoutClick,
@@ -21,7 +30,7 @@ export const UserInfo: FC<Props> = ({
   const items = [
     {
       label: (
-        <div onClick={() => onHomeClick()}>
+        <div onClick={onHomeClick}>
           <img className="user-info__drop-down-icon" src={HomeIcon} alt="HomeIcon" />
           <span className="align-middle">Home</span>
         </div>
@@ -30,7 +39,7 @@ export const UserInfo: FC<Props> = ({
     },
     {
       label: (
-        <div onClick={() => onSurveyClick()}>
+        <div onClick={onSurveyClick}>
           <img className="user-info__drop-down-icon" src={SurveyIcon} alt="SurveyIcon" />
           <span className="align-middle">Survey</span>
         </div>
@@ -39,7 +48,7 @@ export const UserInfo: FC<Props> = ({
     },
     {
       label: (
-        <div onClick={() => onLogoutClick()}>
+        <div onClick={onLogoutClick}>
           <img className="user-info__drop-down-icon" src={LogoutIcon} alt="LogoutIcon" />
           <span className="align-middle">Logout</span>
         </div>
@@ -64,13 +73,4 @@ export const UserInfo: FC<Props> = ({
       </Dropdown>
     </div>
   );
-};
-
-export type Props = {
-  userName: string;
-  organizationName: string;
-  onLogoutClick: () => void;
-  onHomeClick: () => void;
-  onSurveyClick: () => void;
-  avatarSrc: string;
 };

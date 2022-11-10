@@ -17,7 +17,7 @@ const ForgotPassword = lazy(() => import("features/auth/forgotPassword/ForgotPas
 const Notifications = lazy(() => import("features/onboarding/notifications/Notifications"));
 const DForm = lazy(() => import("features/onboarding/dForm/DForm"));
 const Workflow = lazy(() => import("features/onboarding/workflow/Workflow"));
-const OnboardingUser = lazy(() => import("features/onboarding/OnboardingUser"));
+const MemberPage = lazy(() => import("features/members/ui/MemberPage").then((m) => ({ ...m, default: m.MemberPage })));
 const Invitation = lazy(() => import("features/invitation/Invitation"));
 const Home = lazy(() => import("features/home/Home"));
 const Error404 = lazy(() => import("components/misc/error/404"));
@@ -83,7 +83,7 @@ const routes = [
   },
   {
     path: onboardingProcessPath,
-    Component: OnboardingUser,
+    Component: MemberPage,
     isPrivate: true,
     redirect: loginPath,
     exact: true,

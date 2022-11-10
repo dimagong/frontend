@@ -52,7 +52,11 @@ export const PrivateRoute = ({ Component, redirect, isAuth, fullLayout, isOnboar
               />
             );
           } else {
-            return renderDefault({ fullLayout, Component })(props);
+            if (props.location.pathname === onboardingProcessPath) {
+              return <Component />;
+            } else {
+              return renderDefault({ fullLayout, Component })(props);
+            }
           }
         } else {
           return (

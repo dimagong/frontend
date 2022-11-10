@@ -29,7 +29,7 @@ import NpmSpin from "../../../nmp-ui/NpmSpin";
 import { findStatusSurvey } from "../../data/helpers/findStatusSurvey";
 import { Status } from "features/members/data/constants/statusConstants";
 
-const MemberSurvey = ({ selectedSurveyId, isRecentlySubmitted, organization }) => {
+const MemberSurvey = ({ selectedSurveyId, organization }) => {
   const [answer, setAnswer] = useState("");
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
@@ -40,7 +40,7 @@ const MemberSurvey = ({ selectedSurveyId, isRecentlySubmitted, organization }) =
 
   const { id, started_at, finished_at, graded_at, title } = survey || {};
 
-  const surveyStatus = findStatusSurvey(started_at, finished_at, graded_at, isRecentlySubmitted);
+  const surveyStatus = findStatusSurvey(started_at, finished_at, graded_at);
 
   let { data: currentQuestion, isLoading: isSurveyLoading } = useGetCurrentQuestionForAssignedSurveyQuery(
     { id },

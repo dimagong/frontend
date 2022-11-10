@@ -1,6 +1,6 @@
 import { Status } from "features/members/data/constants/statusConstants";
 
-const findStatusSurvey = (startedAt, finishedAt, gradedAt, isRecentlySubmitted) => {
+const findStatusSurvey = (startedAt, finishedAt, gradedAt, isRecentlySubmitted = false) => {
   let result = "";
   switch (true) {
     case Boolean(gradedAt) === true:

@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { Router } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { QueryClientProvider } from "react-query";
-import { Scrollbars } from "react-custom-scrollbars";
 import { ConnectedRouter } from "connected-react-router";
 import { ReactQueryDevtools } from "react-query/devtools";
 
@@ -30,9 +29,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ConnectedRouter history={history}>
         <Router history={history}>
-          <Scrollbars className={"scrollbar-container"}>
-            <Routes />
-          </Scrollbars>
+          <Routes />
         </Router>
         <ToastContainer />
       </ConnectedRouter>

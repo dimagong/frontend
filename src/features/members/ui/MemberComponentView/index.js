@@ -5,9 +5,9 @@ import React, { useState } from "react";
 
 import { NpmSpin } from "features/nmp-ui";
 
+import { MemberMenu } from "../MemberMenu";
 import MemberDFormView from "../MemberDFormView";
 import MemberSurveyView from "../MemberSurveyView";
-import { MemberMenuView } from "../MemberMenuView";
 
 import { TypeConstants } from "../../data/constants/typeApplication";
 
@@ -39,7 +39,7 @@ const MemberComponentView = (props) => {
     <>
       <div className="member-menu" key={activeOnboarding.type}>
         <div className="member-menu-wrapper">
-          <MemberMenuView
+          <MemberMenu
             dforms={dForms}
             dFormsCategories={dFormsCategories}
             surveys={surveys}
