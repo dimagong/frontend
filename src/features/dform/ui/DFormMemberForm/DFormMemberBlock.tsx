@@ -2,6 +2,7 @@ import React from "react";
 import { Form } from "antd";
 import type { FC } from "react";
 
+import { DCRElement } from "../DCR";
 import { DFormBlock } from "../DFormBlock";
 import { DFormFieldItem } from "../DFormFieldItem";
 import { DformSchemaContext } from "../DformSchemaContext";
@@ -18,36 +19,35 @@ export const DFormMemberBlock: FC<DFormMemberBlockProps> = (props) => {
   const { dformSchema } = DformSchemaContext.useContext();
   const block = dformSchema.getBlockById(blockId);
 
-  // ToDo: DCR
-  // const form = Form.useFormInstance();
-  // form.getFieldValue();
-
   switch (block.blockType) {
     case DformBlockTypes.Field:
       return (
-        <DFormFieldItem
-          name={block.id}
-          minimum={block["minimum"]}
-          maximum={block["maximum"]}
-          minLength={block["minLength"]}
-          maxLength={block["maxLength"]}
-          isRequired={block.isRequired}
-          key={block.id}
-        >
-          <DFormBlock
-            {...block}
-            id={block.id}
-            label={block.label}
-            blockSize={block.blockSize}
-            blockType={block.blockType}
-            fieldType={block.fieldType}
-            // ToDo DCR
-            isDisabled={!isAccessible}
-            isRequired={block.isRequired}
-            isLabelShowing={block.isLabelShowing}
-            masterSchemaFieldId={block.masterSchemaFieldId}
-          />
-        </DFormFieldItem>
+        <DCRElement conditions={block.conditions}>
+          {({ isDisabled }) => (
+            <DFormFieldItem
+              name={block.id}
+              minimum={block["minimum"]}
+              maximum={block["maximum"]}
+              minLength={block["minLength"]}
+              maxLength={block["maxLength"]}
+              isRequired={block.isRequired}
+              key={block.id}
+            >
+              <DFormBlock
+                {...block}
+                id={block.id}
+                label={block.label}
+                blockSize={block.blockSize}
+                blockType={block.blockType}
+                fieldType={block.fieldType}
+                isDisabled={!isAccessible || isDisabled}
+                isRequired={block.isRequired}
+                isLabelShowing={block.isLabelShowing}
+                masterSchemaFieldId={block.masterSchemaFieldId}
+              />
+            </DFormFieldItem>
+          )}
+        </DCRElement>
       );
     case DformBlockTypes.HelpText:
       return (

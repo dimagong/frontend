@@ -1,6 +1,7 @@
 import React from "react";
 import type { FC, ReactNode } from "react";
 
+import { DCRElement } from "../DCR";
 import { DFormSection } from "../DFormSection";
 import { DformSectionId } from "../../data/models";
 import { DFormMemberBlock } from "./DFormMemberBlock";
@@ -20,16 +21,20 @@ export const DFormMemberSection: FC<DFormMemberSectionProps> = (props) => {
   const orderedGroups = section.relatedGroupsIds.map((groupId) => dformSchema.getGroupById(groupId));
 
   return (
-    <DFormSection sectionName={section.name}>
-      {orderedGroups.map((group) => (
-        <DFormMemberGroup groupId={group.id} key={group.id}>
-          {group.relatedBlocksIds.map((blockId) => (
-            <DFormMemberBlock blockId={blockId} key={blockId} />
+    <DCRElement conditions={section.conditions}>
+      {() => (
+        <DFormSection sectionName={section.name}>
+          {orderedGroups.map((group) => (
+            <DFormMemberGroup groupId={group.id} key={group.id}>
+              {group.relatedBlocksIds.map((blockId) => (
+                <DFormMemberBlock blockId={blockId} key={blockId} />
+              ))}
+            </DFormMemberGroup>
           ))}
-        </DFormMemberGroup>
-      ))}
 
-      {children}
-    </DFormSection>
+          {children}
+        </DFormSection>
+      )}
+    </DCRElement>
   );
 };
