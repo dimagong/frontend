@@ -1,47 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Card, CardHeader, CardTitle, Row, Col } from "reactstrap";
-import { selectError, selectInvitation } from "app/selectors";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "hooks/useRouter";
-import { useInvitationAcceptQuery, useLoginQuery } from "api/Auth/authQuery";
-import SecretCode from "../auth/SecretCode";
-import InvitationForm from "./InvitationForm";
-import appSlice from "app/slices/appSlice";
-import authService from "../../services/auth";
 
-const { getInvitationRequest, loginRequest } = appSlice.actions;
+import appSlice from "app/slices/appSlice";
+
+import { useRouter } from "hooks/useRouter";
+import { useInvitationAcceptMutation } from "api/Auth/authQuery";
+
+import InvitationForm from "./InvitationForm";
+
+const { getInvitationRequest } = appSlice.actions;
 
 const Invitation = () => {
-  const errors = useSelector(selectError) || {};
-  const invitation = useSelector(selectInvitation);
-  const [isSecretCodeRequested, setIsSecretCodeRequested] = useState(false);
   const dispatch = useDispatch();
+
   const { query } = useRouter();
   const { invitationId } = query;
 
-  const login = useLoginQuery({
-    onSuccess: (response) => {
-      if (response.needs_2fa) {
-        localStorage.setItem("tmp_token", response.tmp_token);
-        setIsSecretCodeRequested(true);
-      } else {
-        authService.setToken(response.token);
-        // login request needed because we have profile fetch in redux-saga that currently not refactored to react-query
-        dispatch(loginRequest());
-      }
-    },
-  });
-
-  const invitationAcceptMutation = useInvitationAcceptQuery({
-    onSuccess: (_, payload) => {
-      login.mutate({
-        password: payload.password,
-        remember_me: false,
-        device_name: "browser",
-        email: invitation.invitedUser.email,
-      });
-    },
-  });
+  const invitationAcceptMutation = useInvitationAcceptMutation();
 
   useEffect(() => {
     dispatch(getInvitationRequest({ invitationId }));
@@ -68,7 +44,7 @@ const Invitation = () => {
                     <h4 className="mb-0">Welcome to ValidPath Portal</h4>
                   </CardTitle>
                 </CardHeader>
-                {isSecretCodeRequested ? <SecretCode /> : <InvitationForm onInvitationAccept={acceptInvitation} />}
+                <InvitationForm onInvitationAccept={acceptInvitation} />
               </Card>
             </Col>
           </Row>

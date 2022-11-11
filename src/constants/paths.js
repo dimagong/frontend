@@ -1,4 +1,5 @@
 export const loginPath = "/login";
+export const twoFactorAuthPath = "/2fa";
 export const homePath = "/";
 export const forgotPasswordPath = "/forgot-password";
 export const notificationsPath = "/onboarding/notifications";

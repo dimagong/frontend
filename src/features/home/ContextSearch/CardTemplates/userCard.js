@@ -7,12 +7,24 @@ import { Card, CardBody, CardText, CardTitle } from "reactstrap";
 
 import appSlice from "app/slices/appSlice";
 import { capitalizeAll } from "utility/common";
+import { useGenericMutation } from "api/useGenericMutation";
 import DeprecatedNmpUserAvatar from "components/nmp/DeprecatedNmpUserAvatar";
 
 const { setContext, setSelectedMemberFirmId } = appSlice.actions;
 
+const useReset2FAMutation = ({ userId }) => {
+  return useGenericMutation({
+    url: `api/user/${userId}/reset-fingerprint`,
+    method: "patch",
+    queryKey: ["2FA"],
+  });
+};
+
 const UserCardTemplate = ({ className, oneColumn, onClick, editable = false, onEdit = () => {}, ...manager }) => {
   const dispatch = useDispatch();
+  const reset2FAMutation = useReset2FAMutation({ userId: manager.id });
+
+  const reset2FA = () => reset2FAMutation.mutate();
 
   const handleNavigateToMemberFirm = (e, memberFirmId) => {
     e.stopPropagation();
@@ -78,6 +90,11 @@ const UserCardTemplate = ({ className, oneColumn, onClick, editable = false, onE
                 </span>
               )}
             </CardText>
+            {/* ToDo: ONLY FOR DEV */}
+            <Button color="primary" onClick={reset2FA}>
+              Reset 2FA
+            </Button>
+
             <CardText className="user-card-body_last-seen">{/*Last seen 3 days ago*/}</CardText>
           </div>
         </CardBody>
