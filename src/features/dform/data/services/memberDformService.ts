@@ -1,5 +1,9 @@
 import { queryClient } from "api/queryClient";
-import { MVADFormCategoryQueryKeys, MVADFormQueryKeys } from "api/Onboarding/prospectUserQuery";
+import {
+  MVADFormCategoryQueryKeys,
+  MVADFormCategoryRegisterQueryKeys,
+  MVADFormQueryKeys,
+} from "api/Onboarding/prospectUserQuery";
 
 import { DformModel } from "../models";
 import { DformService } from "./dformService";
@@ -56,6 +60,7 @@ export class MemberDFormService extends AbstractService {
     return this.apiClient.post(url).then(() => {
       queryClient.invalidateQueries(MVADFormQueryKeys.all());
       queryClient.invalidateQueries(MVADFormCategoryQueryKeys.all());
+      queryClient.invalidateQueries(MVADFormCategoryRegisterQueryKeys.all());
     });
   }
 }
