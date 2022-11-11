@@ -9,14 +9,27 @@ import { capitalizeAll } from "../../../../utility/common";
 import { selectLoading } from "app/selectors";
 
 import appSlice from "app/slices/appSlice";
+import { useGenericMutation } from "../../../../api/useGenericMutation";
 
 const { deleteUserAvatarRequest, getUserAvatarRequest, updateUserAvatarRequest, setContext, setSelectedMemberFirmId } =
   appSlice.actions;
+
+const useReset2FAMutation = ({ userId }) => {
+  return useGenericMutation({
+    url: `api/user/${userId}/reset-fingerprint`,
+    method: "patch",
+    queryKey: ["2FA"],
+  });
+};
 
 const UserCardTemplate = ({ className, oneColumn, onClick, editable = false, onEdit = () => {}, ...manager }) => {
   const isLoading = useSelector(selectLoading);
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
+
+  const reset2FAMutation = useReset2FAMutation({ userId: manager.id });
+
+  const reset2FA = () => reset2FAMutation.mutate();
 
   useEffect(() => {
     manager.avatar && dispatch(getUserAvatarRequest({ managerId: manager.id }));
@@ -128,6 +141,9 @@ const UserCardTemplate = ({ className, oneColumn, onClick, editable = false, onE
                 </span>
               )}
             </CardText>
+            <Button color="primary" onClick={reset2FA}>
+              Reset 2FA
+            </Button>
             <CardText className="user-card-body_last-seen">{/*Last seen 3 days ago*/}</CardText>
           </div>
         </CardBody>

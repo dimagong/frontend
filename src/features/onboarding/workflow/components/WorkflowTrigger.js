@@ -17,6 +17,7 @@ import { triggerTypes as allTriggerTypes, types, triggerByTriggerType, triggerTy
 
 import onboardingSlice from "app/slices/onboardingSlice";
 import { selectSurveyTriggers } from "../../../../app/selectors/onboardingSelectors";
+import { toast } from "react-toastify";
 
 const { setWorkflowTriggers } = onboardingSlice.actions;
 
@@ -101,6 +102,10 @@ const WorkflowTrigger = ({ keyTrigger, trigger, context }) => {
   };
 
   const createAction = () => {
+    if (!workflow.triggers.find((item) => item.id === trigger.id).hasOwnProperty("trigger_type")) {
+      toast.error("Please select trigger type before adding an action");
+      return;
+    }
     dispatch(
       setWorkflowTriggers(
         workflow.triggers.map((element) =>

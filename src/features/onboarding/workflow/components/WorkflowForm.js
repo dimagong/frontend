@@ -25,6 +25,7 @@ import { initWorkflow } from "./constants";
 
 import onboardingSlice from "app/slices/onboardingSlice";
 import appSlice from "app/slices/appSlice";
+import { toast } from "react-toastify";
 
 const { setWorkflow, setWorkflowGroups } = onboardingSlice.actions;
 
@@ -53,6 +54,10 @@ const WorkflowForm = ({ workflowModalType }) => {
 
         break;
       case "Create":
+        if (workflow.triggers.length === 0) {
+          toast.error("Cannot create a workflow without any triggers");
+          break;
+        }
         dispatch(createWorkflowRequest({ ...workflow, context }));
         break;
       default:

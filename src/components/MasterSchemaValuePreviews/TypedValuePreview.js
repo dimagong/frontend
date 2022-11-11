@@ -18,9 +18,11 @@ const TypedValuePreview = ({ type, value, isVertical }) => {
     const normalizedValue = value ? "Yes" : "No";
 
     return (
-      <div className={wrapperClassname}>
-        <div style={{ paddingRight: "0.5rem" }}>{`${capitalizedType}:`}</div>
-        <ValuePreview value={normalizedValue} length={3} />
+      <div style={{ width: "max-content" }}>
+        <div className={wrapperClassname}>
+          <div style={{ paddingRight: "0.5rem" }}>{`${capitalizedType}:`}</div>
+          <ValuePreview value={normalizedValue} length={3} />
+        </div>
       </div>
     );
   }
@@ -31,18 +33,22 @@ const TypedValuePreview = ({ type, value, isVertical }) => {
     const normalizedValue = <FilesValuePreview files={files} />;
 
     return (
-      <div className={wrapperClassname}>
-        <div style={{ paddingRight: "0.5rem" }}>{`${capitalizedType}:`}</div>
-        <ValuePreview value={normalizedValue} length={length} />
+      <div style={{ width: "max-content" }}>
+        <div className={wrapperClassname}>
+          <div style={{ paddingRight: "0.5rem" }}>{`${capitalizedType}:`}</div>
+          <ValuePreview value={normalizedValue} length={length} />
+        </div>
       </div>
     );
   }
 
   if (type === "html" || type === "text" || type === "string") {
     return (
-      <div className={wrapperClassname}>
-        <div style={{ paddingRight: "0.5rem" }}>{`${capitalizedType}:`}</div>
-        <ValuePreview value={<div dangerouslySetInnerHTML={{ __html: `"${value}"` }} />} length={value.length} />
+      <div style={{ width: "max-content" }}>
+        <div className={wrapperClassname}>
+          <div style={{ paddingRight: "0.5rem" }}>{`${capitalizedType}:`}</div>
+          <ValuePreview value={<div dangerouslySetInnerHTML={{ __html: `"${value}"` }} />} length={value.length} />
+        </div>
       </div>
     );
   }
@@ -50,9 +56,11 @@ const TypedValuePreview = ({ type, value, isVertical }) => {
   const valueAsString = `"${value}"`;
 
   return (
-    <div className={wrapperClassname}>
-      {type && <div style={{ paddingRight: "0.5rem" }}>{`${capitalizedType}:`}</div>}
-      <ValuePreview value={valueAsString} length={valueAsString.length} />
+    <div style={{ width: "max-content" }}>
+      <div className={wrapperClassname}>
+        {type && <div style={{ paddingRight: "0.5rem" }}>{`${capitalizedType}:`}</div>}
+        <ValuePreview value={valueAsString} length={valueAsString.length} />
+      </div>
     </div>
   );
 };

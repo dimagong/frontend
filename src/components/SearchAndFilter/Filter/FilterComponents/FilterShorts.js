@@ -2,7 +2,6 @@ import { Button } from "reactstrap";
 import CloseIcon from "../../../../assets/img/svg/circle-with-cross.svg";
 import React, { useEffect, useState } from "react";
 import { filterOptionsToText } from "../FilterHelper";
-import Filter from "../Filter";
 import PropTypes from "prop-types";
 
 const FILTER_DESCRIPTION_SIZE = 40;
