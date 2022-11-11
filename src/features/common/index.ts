@@ -1,7 +1,8 @@
 export { useDev } from "./useDev";
-export { Environment } from "./env";
 export { asserts } from "./asserts";
+export { Environment } from "./env";
 export { invariant } from "./invariant";
+export { noop, noopAsync } from "./noop";
 export { devWarning } from "./devWarning";
 export { unexpected } from "./unexpected";
 export { unreachable } from "./unreachable";
