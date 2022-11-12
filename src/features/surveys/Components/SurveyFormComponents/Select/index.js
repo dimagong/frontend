@@ -14,7 +14,6 @@ const defaultStyles = {
     cursor: "pointer",
     padding: "0 15px 0 7px",
     fontSize: "16px",
-    fontFamily: "Montserrat",
   }),
   placeholder: (styles) => ({
     ...styles,
@@ -41,7 +40,6 @@ const versionSelectStyles = {
     cursor: "pointer",
     padding: "0 15px 0 7px",
     fontSize: "11px",
-    fontFamily: "Montserrat",
   }),
   placeholder: (styles) => ({
     ...styles,

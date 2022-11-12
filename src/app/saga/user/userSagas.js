@@ -115,10 +115,9 @@ const {
   updateApllicationsOrderRequest,
 } = appSlice.actions;
 
-function* getProfile() {
+export function* getProfile() {
   try {
     const response = yield call(userApi.getProfile);
-
     yield put(getProfileSuccess(response));
     yield put(loginWithJWT(response));
   } catch (error) {

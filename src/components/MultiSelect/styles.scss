@@ -1,0 +1,15 @@
+.user-managment {
+  .plus-select {
+    &:hover {
+      color: #7367f0;
+    }
+    color: #007bffa8;
+    stroke-width: 5;
+    cursor: pointer;
+  }
+
+  .column-sizing {
+    min-width: 120px;
+    min-height: 25px;
+  }
+}

@@ -2,7 +2,7 @@ import React from "react";
 
 import { NpmMenu, NmpTag } from "features/nmp-ui";
 
-import { OnboardingsTypes } from "../../onboarding/utils/collectApplicationsUser";
+import { OnboardingsTypes } from "../utils/collectApplicationsUser";
 
 import { findStatusSurvey } from "../data/helpers/findStatusSurvey";
 

@@ -5,14 +5,16 @@ import authApi from "api/Auth/auth";
 import appSlice from "app/slices/appSlice";
 import onboardingSlice from "app/slices/onboardingSlice";
 
+import { getProfile } from "../user/userSagas";
+
 const { resetOnboardingSlice } = onboardingSlice.actions;
 
-const { loginSuccess, loginRequest, loginError, getProfileRequest, logout, resetAppSlice } = appSlice.actions;
+const { loginSuccess, loginRequest, loginError, logout, resetAppSlice } = appSlice.actions;
 
 function* login() {
   try {
+    yield call(getProfile);
     yield put(loginSuccess());
-    yield put(getProfileRequest());
   } catch (error) {
     yield put(loginError(error));
   }

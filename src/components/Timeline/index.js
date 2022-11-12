@@ -94,9 +94,8 @@ export const getEditMessage = (editData) => {
         addBreaker = ", ";
     }
     newMessage.push(
-      <span>
+      <span key={changedOptions[i].type}>
         <OverlayTrigger
-          key={"top"}
           placement={"top"}
           overlay={
             <Tooltip id={`tooltip-top`}>

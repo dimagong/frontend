@@ -11,7 +11,6 @@
 
   .question-form {
     padding-bottom: 32px;
-    font-family: Montserrat;
 
     &_version-select {
       position: absolute;
@@ -42,7 +41,6 @@
     }
 
     &_question-types {
-      font-family: Montserrat;
       display: flex;
       padding-bottom: 25px;
 
@@ -89,7 +87,6 @@
     }
 
     &_question-answers {
-      font-family: Montserrat;
       .multiple-choice-answers {
         padding-top: 13px;
         padding-bottom: 38px;

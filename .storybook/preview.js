@@ -1,4 +1,4 @@
-import "antd/dist/antd.css";
+import "../src/assets/styles/new_index.scss";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },

@@ -1,14 +1,6 @@
+export const homePath = "/";
 export const loginPath = "/login";
 export const twoFactorAuthPath = "/2fa";
-export const homePath = "/";
 export const forgotPasswordPath = "/forgot-password";
-export const notificationsPath = "/onboarding/notifications";
-export const dformsPath = "/onboarding/dforms";
-export const workflowsPath = "/onboarding/workflows";
-export const userManagmentPath = "/user-management";
-export const userManagmentOptionsPath = (id) => `${userManagmentPath}?${new URLSearchParams({ user_id: id })}`;
+export const memberPath = "/onboarding-process";
 export const invitationPath = "/invitation-accept/:invitationId";
-export const onboardingProcessPath = "/onboarding-process";
-export const surveysDesignerExplore = "/surveys/:id";
-export const surveysDesignerCreate = "/surveys/create";
-export const userProfilePath = `/user-profile/:id`;

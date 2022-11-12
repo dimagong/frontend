@@ -1,13 +1,13 @@
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
-import appSlice from "./slices/appSlice";
-import onboardingSlice from "./slices/onboardingSlice";
 import createSagaMiddleware from "redux-saga";
-import rootSaga from "app/saga";
-import vuexyReducer from "app/reducers/vuexy/rootReducer";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { connectRouter, routerMiddleware } from "connected-react-router";
-import { history } from "../history";
 
+import rootSaga from "app/saga";
+
+import { history } from "../history";
+import appSlice from "./slices/appSlice";
 import loadingReducer from "./loadingReducer.js";
+import onboardingSlice from "./slices/onboardingSlice";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -21,7 +21,6 @@ const store = configureStore({
   reducer: {
     app: appSlice.reducer,
     onboarding: onboardingSlice.reducer,
-    vuexy: vuexyReducer,
     router: connectRouter(history),
     loading: loadingReducer,
   },

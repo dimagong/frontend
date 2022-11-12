@@ -1,7 +1,7 @@
 import React from "react";
 
 import { NpmMenu, NmpTag } from "features/nmp-ui";
-import { OnboardingsTypes } from "features/onboarding/utils/collectApplicationsUser";
+import { OnboardingsTypes } from "../../../../utils/collectApplicationsUser";
 import { findStatusSurvey } from "features/members/data/helpers/findStatusSurvey";
 import { Status } from "features/members/data/constants/statusConstants";
 import { Survey, DForm, DFormCategory } from "features/members/data/models/models";

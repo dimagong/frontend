@@ -1,51 +1,64 @@
-import React from "react";
-import routes from "./routes";
-import { v4 } from "uuid";
-import { Switch } from "react-router-dom";
-import { PrivateRoute, PublicRoute } from "./RouteProvider";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { Switch, Route } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import appSlice from "app/slices/appSlice";
 import { selectAuth } from "app/selectors/authSelectors";
-import { selectUserAbility } from "../app/selectors/userSelectors";
+import { selectProfile } from "app/selectors/userSelectors";
+
+import routes from "./routes";
+import authService from "../services/auth";
+import { UserService } from "../services/user";
+import { RouteProvider } from "./RouteProvider";
+
+const { getProfileRequest } = appSlice.actions;
 
 const Routes = () => {
-  const isAuth = useSelector(selectAuth);
-  const userRole = useSelector(selectUserAbility);
+  const dispatch = useDispatch();
 
-  const isOnboarding = ["prospect", "member"].indexOf(userRole) !== -1;
+  const isAuth = useSelector(selectAuth);
+  const profile = useSelector(selectProfile);
+
+  const token = authService.getToken();
+  const isMember = profile ? UserService.isMember(profile) : false;
+  const isManager = profile ? UserService.isManager(profile) : false;
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getProfileRequest());
+    }
+  }, []);
 
   return (
     <Switch>
-      {routes.map((route) => {
-        const { path, Component, exact, isPrivate, redirect, ...rest } = route;
-
-        if (isPrivate) {
-          return (
-            <PrivateRoute
-              isOnboarding={isOnboarding}
-              path={path}
-              exact={exact}
-              key={v4()}
-              redirect={redirect}
-              isAuth={isAuth}
-              Component={Component}
-              {...rest}
-            />
-          );
-        }
-
-        return (
-          <PublicRoute
-            path={path}
-            exact={exact}
-            key={v4()}
-            redirect={redirect}
-            isAuth={isAuth}
-            Component={Component}
-            {...rest}
-          />
-        );
-      })}
+      {routes.map((route) => (
+        <Route path={route.path} exact={route.exact} key={route.path}>
+          {(routeProps) =>
+            route.isPrivate ? (
+              <RouteProvider.Private
+                path={route.path}
+                isAuth={isAuth}
+                redirect={route.redirect}
+                location={routeProps.location}
+                Component={route.Component}
+                isFullLayout={route.isFullLayout}
+                isMember={isMember}
+                isManager={isManager}
+              />
+            ) : (
+              <RouteProvider.Public
+                isAuth={isAuth}
+                redirect={route.redirect}
+                location={routeProps.location}
+                Component={route.Component}
+                isFullLayout={route.isFullLayout}
+              />
+            )
+          }
+        </Route>
+      ))}
     </Switch>
   );
 };
+
 export default Routes;
