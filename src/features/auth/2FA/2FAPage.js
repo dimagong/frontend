@@ -3,6 +3,7 @@ import "../../../old-styles";
 import React, { useState } from "react";
 import { CardBody, Form, FormGroup, Input, Label } from "reactstrap";
 
+import { Layout } from "utility/context/Layout";
 import { use2FALoginMutation } from "api/Auth/authQuery";
 
 import AuthButton from "../AuthButton";
@@ -29,24 +30,26 @@ const TwoFactorAuthenticator = () => {
   };
 
   return (
-    <LoginTemplate>
-      <p className="px-2 auth-title">Please enter secret code</p>
-      <CardBody className="pt-1">
-        <Form>
-          <FormGroup className="form-label-group position-relative">
-            <Input
-              type="text"
-              placeholder="Enter secret code"
-              value={secretCode}
-              onChange={handleSecretCode}
-              required
-            />
-            <Label>Enter Secret Code</Label>
-          </FormGroup>
-          <AuthButton value="Submit" onClick={handleSecretCodeSend} />
-        </Form>
-      </CardBody>
-    </LoginTemplate>
+    <Layout type="full">
+      <LoginTemplate>
+        <p className="px-2 auth-title">Please enter secret code</p>
+        <CardBody className="pt-1">
+          <Form>
+            <FormGroup className="form-label-group position-relative">
+              <Input
+                type="text"
+                placeholder="Enter secret code"
+                value={secretCode}
+                onChange={handleSecretCode}
+                required
+              />
+              <Label>Enter Secret Code</Label>
+            </FormGroup>
+            <AuthButton value="Submit" onClick={handleSecretCodeSend} />
+          </Form>
+        </CardBody>
+      </LoginTemplate>
+    </Layout>
   );
 };
 

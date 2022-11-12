@@ -6,6 +6,7 @@ import { selectContext } from "app/selectors";
 import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
+import { Layout } from "utility/context/Layout";
 import { selectUserAbility } from "app/selectors/userSelectors";
 
 import Context from "./Context";
@@ -25,7 +26,11 @@ const HomePage = () => {
     }
   }, [userRole]);
 
-  return <Context selectedContext={selectedContext} />;
+  return (
+    <Layout type="vertical">
+      <Context selectedContext={selectedContext} />
+    </Layout>
+  );
 };
 
 export default HomePage;

@@ -2,7 +2,6 @@ import React from "react";
 
 import UserEdit from "features/user/userEdit/UserEdit";
 import UserCreate from "features/user/userCreate/UserCreate";
-import UserInvitations from "features/user/userInvitations/UserInvitations";
 import NotificationsForm from "features/notification/NotificationsForm";
 import WorkflowForm from "features/workflow/WorkflowForm";
 import Organization from "features/organization";
@@ -19,7 +18,6 @@ const Context = ({ selectedContext }) => {
   return {
     User: <UserEdit />,
     "Create user": <UserCreate />,
-    Invitations: <UserInvitations />,
     "Create notification": <NotificationsForm isCreate={true} />,
     Notification: <NotificationsForm isCreate={false} />,
     "Create dForm": <CreateApplicationPage />,

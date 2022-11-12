@@ -2,6 +2,7 @@ import "../../../old-styles";
 
 import React from "react";
 
+import { Layout } from "utility/context/Layout";
 import { useLoginMutation } from "api/Auth/authQuery";
 
 import LoginForm from "./LoginForm";
@@ -20,9 +21,11 @@ const LoginPage = () => {
   };
 
   return (
-    <LoginTemplate>
-      <LoginForm onLogin={handleLogin} />
-    </LoginTemplate>
+    <Layout type="full">
+      <LoginTemplate>
+        <LoginForm onLogin={handleLogin} />
+      </LoginTemplate>
+    </Layout>
   );
 };
 

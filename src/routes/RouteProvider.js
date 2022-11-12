@@ -1,54 +1,38 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { ContextLayout } from "utility/context/Layout";
 import { homePath, memberPath } from "constants/paths";
 
-const DefaultLayout = ({ isFullLayout, Component }) => {
-  return (
-    <ContextLayout.Consumer>
-      {(context) => {
-        const LayoutTag = isFullLayout ? context.fullLayout : context.VerticalLayout;
-        return <LayoutTag children={<Component />} />;
-      }}
-    </ContextLayout.Consumer>
-  );
-};
-
 const Private = (props) => {
-  const { isAuth, redirect, location, Component, isFullLayout, isManager, isMember } = props;
+  const { isAuth, redirect, location, Component, isManager, isMember } = props;
 
   if (!isAuth) {
     return <Redirect to={{ pathname: redirect, state: { from: location } }} />;
   }
 
-  if (location.pathname !== memberPath && isMember === true) {
+  if (location.pathname !== memberPath && isMember) {
     return <Redirect to={{ pathname: memberPath }} />;
   }
 
-  if (location.pathname === memberPath && isMember === false) {
+  if (location.pathname === memberPath && isManager) {
     return <Redirect to={{ pathname: homePath }} />;
   }
 
-  if (location.pathname === memberPath && isMember) {
+  if (isManager || isMember) {
     return <Component />;
-  }
-
-  if (isManager) {
-    return <DefaultLayout isFullLayout={isFullLayout} Component={Component} />;
   }
 
   return null;
 };
 
 const Public = (props) => {
-  const { isAuth, redirect, location, Component, isFullLayout } = props;
+  const { isAuth, redirect, location, Component } = props;
 
   if (isAuth) {
     return <Redirect to={{ pathname: redirect, state: { from: location } }} />;
   }
 
-  return <DefaultLayout isFullLayout={isFullLayout} Component={Component} />;
+  return <Component />;
 };
 
 export const RouteProvider = { Public, Private };

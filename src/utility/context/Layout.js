@@ -3,18 +3,9 @@ import React from "react";
 import FullLayout from "layouts/FullpageLayout";
 import VerticalLayout from "layouts/VerticalLayout";
 
-const ContextLayout = React.createContext();
+export const Layout = () => {
+  const { type, children } = this.props;
+  const LayoutComponent = type === "full" ? FullLayout : type === "vertical" ? VerticalLayout : React.Fragment;
 
-class Layout extends React.Component {
-  render() {
-    const { children } = this.props;
-
-    return (
-      <ContextLayout.Provider value={{ fullLayout: FullLayout, VerticalLayout: VerticalLayout }}>
-        {children}
-      </ContextLayout.Provider>
-    );
-  }
-}
-
-export { Layout, ContextLayout };
+  return <LayoutComponent>{children}</LayoutComponent>;
+};

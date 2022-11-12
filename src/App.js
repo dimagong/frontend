@@ -7,7 +7,6 @@ import Routes from "routes";
 
 import store from "./app/store";
 import { history } from "./history";
-import { Layout } from "./utility/context/Layout";
 import Spinner from "./components/@vuexy/spinner/Fallback-spinner";
 
 function App() {
@@ -16,9 +15,7 @@ function App() {
       <ConnectedRouter history={history}>
         <Router history={history}>
           <Suspense fallback={<Spinner />}>
-            <Layout>
-              <Routes />
-            </Layout>
+            <Routes />
           </Suspense>
         </Router>
       </ConnectedRouter>

@@ -41,7 +41,6 @@ const Routes = () => {
                 redirect={route.redirect}
                 location={routeProps.location}
                 Component={route.Component}
-                isFullLayout={route.isFullLayout}
                 isMember={isMember}
                 isManager={isManager}
               />
@@ -51,7 +50,6 @@ const Routes = () => {
                 redirect={route.redirect}
                 location={routeProps.location}
                 Component={route.Component}
-                isFullLayout={route.isFullLayout}
               />
             )
           }

@@ -15,7 +15,6 @@ const homeRoute = {
   redirect: loginPath,
   isPrivate: true,
   Component: lazy(() => import("../features/home/HomePage")),
-  isFullLayout: false,
 };
 
 const loginRoute = {
@@ -24,7 +23,6 @@ const loginRoute = {
   redirect: homePath,
   isPrivate: false,
   Component: lazy(() => import("../features/auth/login/LoginPage")),
-  isFullLayout: true,
 };
 
 const twoFactorAuthRoute = {
@@ -33,7 +31,6 @@ const twoFactorAuthRoute = {
   redirect: homePath,
   isPrivate: false,
   Component: lazy(() => import("features/auth/2FA/2FAPage")),
-  isFullLayout: true,
 };
 
 const forgotPasswordRoute = {
@@ -42,7 +39,6 @@ const forgotPasswordRoute = {
   redirect: homePath,
   isPrivate: false,
   Component: lazy(() => import("../features/auth/forgotPassword/ForgotPasswordPage")),
-  isFullLayout: true,
 };
 
 const membersRoute = {
@@ -51,7 +47,6 @@ const membersRoute = {
   redirect: loginPath,
   isPrivate: true,
   Component: lazy(() => import("features/members/ui/MemberPage").then((m) => ({ ...m, default: m.MemberPage }))),
-  isFullLayout: false,
 };
 
 const invitationRoute = {
@@ -60,7 +55,6 @@ const invitationRoute = {
   redirect: loginPath,
   isPrivate: false,
   Component: lazy(() => import("../features/invitation/InvitationPage")),
-  isFullLayout: true,
 };
 
 const notFoundRoute = {
@@ -68,7 +62,6 @@ const notFoundRoute = {
   exact: true,
   isPrivate: false,
   Component: lazy(() => import("components/misc/error/404Page")),
-  isFullLayout: true,
 };
 
 const routes = [
