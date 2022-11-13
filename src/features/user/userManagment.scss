@@ -1,21 +1,9 @@
 .user-managment {
-  .plus-select {
-    &:hover {
-      color: $cyan;
-    }
-    color: #007bffa8;
-    stroke-width: 5;
-    cursor: pointer;
-  }
   .ag-row-selected {
     background-color: rgba(0, 123, 255, 0.2) !important;
   }
   .ag-row-hover {
     background-color: rgba(0, 123, 255, 0.1) !important;
-  }
-  .column-sizing {
-    min-width: 120px;
-    min-height: 25px;
   }
   .ag-overlay-loading-cell {
     border: 0;
@@ -23,8 +11,10 @@
   }
   .ag-overlay-loading-center {
     border: 0;
+
     box-shadow: none !important;
   }
+
   &__edit {
     &_header {
       height: 68px;

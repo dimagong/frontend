@@ -8,7 +8,7 @@ import "./styles.scss";
 const MemberFirmUsersList = ({ className, label, users = [], titleForEmpty, isLoading, isSearch, onUserClick }) => {
   const Loader = () => (
     <div className="member-firm-users-list_list_loader">
-      <Spinner color="primary" size={40} />
+      <Spinner color="primary" size="40" />
     </div>
   );
 
@@ -22,6 +22,7 @@ const MemberFirmUsersList = ({ className, label, users = [], titleForEmpty, isLo
             onUserClick(user);
           }}
           {...user}
+          key={user.id}
         />
       ))
     ) : (

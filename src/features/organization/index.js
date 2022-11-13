@@ -20,10 +20,10 @@ import { selectOrganizations, selectSelectedOrganizationIdAndType } from "app/se
 import { createQueryKey } from "api/createQueryKey";
 import { useGenericQuery } from "api/useGenericQuery";
 import { useGenericMutation } from "api/useGenericMutation";
+import { MemberIntroductionTemplate } from "features/members/ui/MemberIntroductionTemplate";
 import { useOrganizationLogoQuery, useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 
 import IntroPageForm from "./Components/IntroPageForm";
-import WelcomePageComponent from "../onboarding/components/WeclomePage";
 
 const { createOrganizationRequest, updateOrganizationRequest } = appSlice.actions;
 
@@ -39,7 +39,6 @@ const selectStyles = {
     cursor: "pointer",
     padding: "0 0 0 7px",
     fontSize: "11px",
-    fontFamily: "Montserrat",
   }),
   placeholder: (styles) => ({
     ...styles,
@@ -416,7 +415,9 @@ const Organization = ({ create = false }) => {
               <div className="survey-assign_body_reviewers-select_container">
                 <div className="survey-assign_body_reviewers-select_container_select">
                   <DeprecatedNmpSelect
-                    value={{ value: selectedIntroPage, label: selectedIntroPage?.intro_title }}
+                    value={
+                      selectedIntroPage ? { value: selectedIntroPage, label: selectedIntroPage.intro_title } : null
+                    }
                     styles={selectStyles}
                     options={introPages.map((introPage) => ({ value: introPage, label: introPage.intro_title })) || []}
                     noOptionsMessage={() => "There are no created intro pages"}
@@ -447,16 +448,11 @@ const Organization = ({ create = false }) => {
 
       {!create && selectedIntroPage ? (
         <ContextFeatureTemplate contextFeatureTitle="Intro page preview">
-          <WelcomePageComponent
-            onSubmit={() => {}}
+          <MemberIntroductionTemplate
             introText={selectedIntroPage.intro_text}
             introTitle={selectedIntroPage.intro_title}
-            downloadText={selectedIntroPage.download_text}
-            isOnboardingExist={true}
-            brochureUrl={selectedIntroPage.brochure.url}
             brochureName={selectedIntroPage.brochure?.file?.name}
-            organization={organizationData}
-            preview
+            downloadText={selectedIntroPage.download_text}
           />
         </ContextFeatureTemplate>
       ) : null}

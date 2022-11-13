@@ -67,7 +67,20 @@ export default storySettings;
 
 const Template = (props: any) => <NmpButton {...props} />;
 
-export const Types = Template.bind({});
+export const Default = Template.bind({});
+Default.args = {
+  type: "nmp-default",
+};
+
+export const Primary = Template.bind({});
+Primary.args = {
+  type: "nmp-primary",
+};
+
+export const Ghost = Template.bind({});
+Ghost.args = {
+  type: "nmp-ghost",
+};
 
 export const RightIcon = Template.bind({});
 

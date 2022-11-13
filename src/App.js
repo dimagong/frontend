@@ -1,43 +1,25 @@
-import "react-toastify/dist/ReactToastify.css";
-import "assets/scss/plugins/extensions/toastr.scss";
-
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { Provider } from "react-redux";
+import React, { Suspense } from "react";
 import { Router } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import { QueryClientProvider } from "react-query";
-import { Scrollbars } from "react-custom-scrollbars";
 import { ConnectedRouter } from "connected-react-router";
-import { ReactQueryDevtools } from "react-query/devtools";
 
 import Routes from "routes";
-import authService from "services/auth";
-import appSlice from "app/slices/appSlice";
-import { queryClient } from "api/queryClient";
 
+import store from "./app/store";
 import { history } from "./history";
-
-const { getProfileRequest } = appSlice.actions;
+import Spinner from "./components/@vuexy/spinner/Fallback-spinner";
 
 function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    authService.getToken() && dispatch(getProfileRequest());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
-    <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
       <ConnectedRouter history={history}>
         <Router history={history}>
-          <Scrollbars className={"scrollbar-container"}>
+          <Suspense fallback={<Spinner />}>
             <Routes />
-          </Scrollbars>
+          </Suspense>
         </Router>
-        <ToastContainer />
       </ConnectedRouter>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    </Provider>
   );
 }
 

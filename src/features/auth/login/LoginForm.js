@@ -1,8 +1,12 @@
-import React, { useState } from "react";
-import { Button, CardBody, Form, FormFeedback, FormGroup, Input, Label } from "reactstrap";
-import { Check, Lock, Mail } from "react-feather";
-import Checkbox from "components/@vuexy/checkbox/CheckboxesVuexy";
+import "./styles.scss";
+
 import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Lock, Mail } from "react-feather";
+import { CardBody, Form, FormFeedback, FormGroup, Input, Label } from "reactstrap";
+
+import { NmpCheckbox } from "features/nmp-ui";
+
 import AuthButton from "../AuthButton";
 
 const loginFormInitialData = {
@@ -24,7 +28,8 @@ const LoginForm = ({ onLogin }) => {
 
   return (
     <>
-      <p className="px-2 auth-title">Please login to proceed.</p>
+      <p className="px-2 login__title">Please login to proceed.</p>
+
       <CardBody className="pt-1">
         <Form>
           <FormGroup className="form-label-group position-relative has-icon-left">
@@ -55,18 +60,18 @@ const LoginForm = ({ onLogin }) => {
             <Label>Password</Label>
           </FormGroup>
           <FormGroup className="d-flex justify-content-between align-items-center">
-            <Checkbox
-              color="primary"
-              icon={<Check className="vx-icon" size={16} />}
-              label="Remember me"
+            <NmpCheckbox
               checked={formData.isRememberMe}
-              onClick={(e) => handleFormDataChange("isRememberMe", e.target.checked)}
-            />
+              onChange={(e) => handleFormDataChange("isRememberMe", e.target.checked)}
+            >
+              Remember me
+            </NmpCheckbox>
+
             <div className="float-right">
               <Link to="/forgot-password">Forgot Password?</Link>
             </div>
           </FormGroup>
-          <AuthButton value={"Login"} onClick={handleLogin} />
+          <AuthButton value="Login" onClick={handleLogin} />
         </Form>
       </CardBody>
     </>

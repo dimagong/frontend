@@ -8,11 +8,13 @@ import { Card, CardBody, CardText, CardTitle } from "reactstrap";
 import appSlice from "app/slices/appSlice";
 import { capitalizeAll } from "utility/common";
 import DeprecatedNmpUserAvatar from "components/nmp/DeprecatedNmpUserAvatar";
+import { useDevReset2FAButton } from "features/auth/useDevReset2FAButton";
 
 const { setContext, setSelectedMemberFirmId } = appSlice.actions;
 
 const UserCardTemplate = ({ className, oneColumn, onClick, editable = false, onEdit = () => {}, ...manager }) => {
   const dispatch = useDispatch();
+  const DevReset2FAButton = useDevReset2FAButton();
 
   const handleNavigateToMemberFirm = (e, memberFirmId) => {
     e.stopPropagation();
@@ -78,6 +80,9 @@ const UserCardTemplate = ({ className, oneColumn, onClick, editable = false, onE
                 </span>
               )}
             </CardText>
+
+            <DevReset2FAButton />
+
             <CardText className="user-card-body_last-seen">{/*Last seen 3 days ago*/}</CardText>
           </div>
         </CardBody>

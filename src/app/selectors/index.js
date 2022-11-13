@@ -20,7 +20,6 @@ import {
   selectInvitations,
   selectInvitation,
   selectProfile,
-  selectVuexyUser,
 } from "./userSelectors";
 
 import { selectContextSearchVisibility, selectContext } from "./layoutSelector";
@@ -49,7 +48,6 @@ export {
   selectInvitations,
   selectInvitation,
   selectProfile,
-  selectVuexyUser,
   selectContextSearchVisibility,
   selectContext,
   selectMasterSchemaFields,

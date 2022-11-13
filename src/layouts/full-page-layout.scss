@@ -1,0 +1,15 @@
+.full-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100vh;
+  overflow: hidden;
+
+  background-size: cover;
+  background: url("../assets/img/pages/vuesax-login-bg.jpg") no-repeat 50%;
+
+  &__content {
+    width: 100%;
+  }
+}

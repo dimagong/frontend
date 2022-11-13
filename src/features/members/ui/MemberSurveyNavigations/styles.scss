@@ -9,6 +9,10 @@
     display: flex;
 
     & + & {
+      margin-left: auto;
+    }
+
+    &:last-child {
       margin-left: 30px;
     }
   }

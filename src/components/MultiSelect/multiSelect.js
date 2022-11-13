@@ -1,3 +1,5 @@
+import "./styles.scss";
+
 import chroma from "chroma-js";
 import { Plus } from "react-feather";
 import React, { useEffect } from "react";

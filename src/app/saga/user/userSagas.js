@@ -1,21 +1,13 @@
 import { all, put, call, takeLatest, select, takeEvery } from "redux-saga/effects";
 
 import userApi from "api/User/user";
+import appSlice from "app/slices/appSlice";
 import { queryClient } from "api/queryClient";
-import organizationApi from "api/organizations";
+import { selectGroups, selectRoles } from "app/selectors";
+import { prepareSelectGroups } from "utility/select/prepareSelectData";
 import { MasterSchemaHierarchyQueryKeys } from "api/masterSchema/hierarchy/masterSchemaHierarchyQueries";
 
-import appSlice from "app/slices/appSlice";
-import { selectGroups, selectRoles } from "app/selectors";
-import { loginWithJWT } from "app/actions/vuexy/auth/loginActions";
-
-import { prepareSelectGroups } from "utility/select/prepareSelectData";
-import { UserNotifyEntitiesQueryKeys } from "../../../features/user/userEdit/UserEditContextFeature";
-
 const {
-  getProfileSuccess,
-  getProfileRequest,
-  getProfileError,
   getUsersSuccess,
   getActivitiesSuccess,
   getActivitiesRequest,
@@ -114,18 +106,6 @@ const {
   updateApllicationsOrderError,
   updateApllicationsOrderRequest,
 } = appSlice.actions;
-
-function* getProfile() {
-  try {
-    const response = yield call(userApi.getProfile);
-
-    yield put(getProfileSuccess(response));
-    yield put(loginWithJWT(response));
-  } catch (error) {
-    console.log(error);
-    yield put(getProfileError(error));
-  }
-}
 
 function* getUsers() {
   const response = yield call(userApi.getUsers);
@@ -399,7 +379,6 @@ export default function* () {
   yield all([
     yield takeLatest(updateApllicationsOrderRequest.type, updateApllicationsOrder),
     yield takeLatest(getOnboardingsByUserRequest.type, getOnboardingsByUser),
-    yield takeLatest(getProfileRequest.type, getProfile),
     yield takeLatest(getUsersRequest.type, getUsers),
     yield takeLatest(getFilterRequest.type, getFilter),
     yield takeLatest(getSettingsRequest.type, getSettings),

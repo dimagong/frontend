@@ -67,10 +67,6 @@ export class DformSchemaModel {
     return this.getFieldsBySectionId(sectionId).map(({ id }) => id);
   }
 
-  getFieldsMasterSchemaFieldIdsBySectionId(sectionId: DformSectionId): number[] {
-    return this.getFieldsBySectionId(sectionId).map(({ masterSchemaFieldId }) => masterSchemaFieldId!);
-  }
-
   getRequiredFieldsBySectionId(sectionId: DformSectionId): DformFieldModel[] {
     return this.getFieldsBySectionId(sectionId).filter(({ isRequired }) => isRequired);
   }

@@ -1,19 +1,24 @@
-import React, { useState, useCallback } from "react";
+import "./styles.scss";
+
 import _ from "lodash";
+import { useDispatch } from "react-redux";
 import { Scrollbars } from "react-custom-scrollbars";
 import { Row, Col, Card, CardBody } from "reactstrap";
+import React, { useState, useCallback, useEffect } from "react";
 
+import appSlice from "app/slices/appSlice";
 import { NmpSelect, NmpInput } from "features/nmp-ui";
 import WorkFlowsAndNotificationsList from "features/home/ContextSearch/components/WorkFlowsAndNotificationsList";
 
 import { CategoriesHierarchy } from "./CategoriesHierarchy";
-
 import { useDFormTemplateRootCategoriesQuery } from "./categoryQueries";
 import { getRootCategoriesAsOptions } from "./utils/getCategoryAsOption";
 
-import "./styles.scss";
+const { getWorkflowsRequest, getNotificationsRequest } = appSlice.actions;
 
 export const Applications = () => {
+  const dispatch = useDispatch();
+
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
@@ -47,6 +52,13 @@ export const Applications = () => {
     setSearch(event.target.value);
     debounceOnChange(event.target.value);
   };
+
+  useEffect(() => {
+    // @ts-ignore
+    dispatch(getWorkflowsRequest());
+    // @ts-ignore
+    dispatch(getNotificationsRequest());
+  }, []);
 
   return (
     <Row style={{ marginBottom: "40px" }}>

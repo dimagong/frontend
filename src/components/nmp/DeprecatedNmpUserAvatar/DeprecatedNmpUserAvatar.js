@@ -11,7 +11,16 @@ import NoneAvatar from "assets/img/portrait/none-avatar.png";
 
 import DeprecatedNmpManageableImage from "../DeprecatedNmpManageableImage";
 
-const DeprecatedNmpUserAvatar = ({ fileId, userId, isOnboarding, isEditable = false, ...attrs }) => {
+const DeprecatedNmpUserAvatar = ({
+  fileId,
+  userId,
+  isOnboarding,
+  isEditable = false,
+  width,
+  height,
+  style,
+  className,
+}) => {
   const updateMutation = useUpdateUserAvatarMutation({ userId });
   const onChange = useCallback((file) => updateMutation.mutate({ file }), [updateMutation]);
 
@@ -30,7 +39,10 @@ const DeprecatedNmpUserAvatar = ({ fileId, userId, isOnboarding, isEditable = fa
       isEditable={isEditable}
       isRemovable={Boolean(fileId)}
       isLoading={avatarQuery.isLoading || updateMutation.isLoading || deleteMutation.isLoading}
-      {...attrs}
+      width={width}
+      height={height}
+      style={style}
+      className={className}
     />
   );
 };

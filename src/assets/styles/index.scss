@@ -2,23 +2,3 @@
 @import "variables";
 @import "typography";
 @import "../scss/app.scss";
-
-// components
-@import "../../templates/pageTemplate/pageTemplate.scss";
-@import "../../layouts/components/navbar/navBar.scss";
-
-// pages
-@import "../../features/auth/login/login.scss";
-@import "../../features/auth/forgotPassword/forgotPassword.scss";
-@import "../../features/onboarding/notifications/notifications.scss";
-@import "../../features/onboarding/workflow/workflow.scss";
-@import "../../features/onboarding/dForm/dForm.scss";
-@import "../../features/user/userManagment.scss";
-@import "../../features/user/userEdit/userEdit.scss";
-@import "../../features/home/home.scss";
-@import "../scss/components/custom-scroll.scss";
-
-// REDESIGN REFACTOR STARTS HERE
-html body {
-  font-family: "Inter", Helvetica, Arial, sans-serif;
-}

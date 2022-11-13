@@ -29,7 +29,7 @@ const Template = (props) => {
         accessType={props.accessType}
         relatedSectionsIds={props.sections.map(({ id }) => id)}
       >
-        <DFormPrivateMemberForm dformId={props.dformId} />
+        <DFormPrivateMemberForm dformName={props.dformName} dformId={props.dformId} />
       </DFormMemberProvider>
     </QueryClientProvider>
   );

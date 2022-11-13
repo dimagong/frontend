@@ -1,9 +1,20 @@
 .membercard-approved {
   width: 100%;
   height: 100%;
+  max-width: 620px;
+  padding-bottom: 70px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .ant-card {
+    width: 100%;
+    height: 100%;
+  }
+  .ant-card-body {
+    height: 100%;
+  }
 
   .cardApproved {
     display: flex;

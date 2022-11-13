@@ -1,15 +1,26 @@
 .submitted-dform {
-  width: 100%;
-  height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: calc(100vh - 80px);
+  padding: 52px 60px 117px;
+
+  .ant-card {
+    height: 100%;
+  }
+
   .ant-card-body {
+    height: 100%;
     padding: 0;
   }
+
   .card-submitted {
+    height: 100%;
     display: grid;
     grid-template: 1fr/3fr 2fr;
+
     &_content {
       padding: 32px;
       grid-column: 1/2;
@@ -20,7 +31,7 @@
         font-weight: 500;
         font-size: 42px;
         line-height: 51px;
-        color: #35a046;
+        color: #7267e5;
       }
       .cs-content {
         & > * {
@@ -50,12 +61,12 @@
         }
       }
     }
+
     &_img {
       grid-column: 2/3;
       background: #efefef;
       width: 100%;
       height: 100%;
-      max-height: 600px;
       display: flex;
       position: relative;
       align-items: center;

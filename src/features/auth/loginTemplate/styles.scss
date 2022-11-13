@@ -1,0 +1,20 @@
+.login-template {
+  margin: 0;
+  justify-content: center;
+
+  &__col {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__card {
+    width: 100%;
+    border-radius: 0;
+    margin-bottom: 0;
+    background-color: #eff2f7;
+  }
+
+  &__tabs-container {
+    min-height: auto;
+  }
+}

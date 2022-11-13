@@ -1,37 +1,30 @@
-import React, { Suspense, lazy } from "react";
-import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import { IntlProviderWrapper } from "./utility/context/Internationalization";
-import { Layout } from "./utility/context/Layout";
-import store from "./app/store";
-import Spinner from "./components/@vuexy/spinner/Fallback-spinner";
-import "assets/styles/index.scss";
+import "assets/styles/new_index.scss";
 import "react-toastify/dist/ReactToastify.css";
-import "assets/scss/plugins/extensions/toastr.scss";
-import "assets/scss/pages/authentication.scss";
-import "assets/scss/plugins/tables/_agGridStyleOverride.scss";
-import "flatpickr/dist/themes/light.css";
-import "assets/scss/plugins/forms/flatpickr/flatpickr.scss";
-import "assets/scss/pages/users.scss";
-import "assets/scss/pages/coming-soon.scss";
-import "./components/@vuexy/rippleButton/RippleButton";
-import "react-perfect-scrollbar/dist/css/styles.css";
-// import * as serviceWorker from './serviceWorker';
-import "antd/dist/antd.css";
 
-const LazyApp = lazy(() => import("./App"));
+import React from "react";
+import ReactDOM from "react-dom";
+import { ConfigProvider } from "antd";
+import { ToastContainer } from "react-toastify";
+import { QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+
+import App from "./App";
+import { queryClient } from "./api/queryClient";
+
+ConfigProvider.config({
+  theme: {
+    primaryColor: "#7267E5",
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <Suspense fallback={<Spinner />}>
-        <Layout>
-          <IntlProviderWrapper>
-            <LazyApp />
-          </IntlProviderWrapper>
-        </Layout>
-      </Suspense>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <App />
+
+      <ToastContainer />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

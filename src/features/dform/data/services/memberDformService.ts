@@ -1,17 +1,18 @@
-import { queryClient } from "api/queryClient";
 import {
+  MVADFormQueryKeys,
   MVADFormCategoryQueryKeys,
   MVADFormCategoryRegisterQueryKeys,
-  MVADFormQueryKeys,
 } from "api/Onboarding/prospectUserQuery";
+import { queryClient } from "api/queryClient";
+import { AbstractService } from "features/common";
+import type { API_PREFIX_TYPE } from "features/common";
 
 import { DformModel } from "../models";
 import { DformService } from "./dformService";
-import { AbstractService } from "./abstractService";
 import { DformFieldModel, DformFieldTypes, DformFieldValueType, DformId, DformSchemaModel } from "../models";
 
 export class MemberDFormService extends AbstractService {
-  readonly prefix = "/member-view-api";
+  readonly prefix: API_PREFIX_TYPE = "/member-view-api";
 
   static instance = new MemberDFormService();
 

@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import { Card, CardBody, Row, Col, CardTitle, CardHeader } from "reactstrap";
-import { ContextLayout } from "utility/context/Layout";
 import { AgGridReact } from "ag-grid-react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -68,30 +67,25 @@ const UserInvitations = ({ activeTab }) => {
           </CardHeader>
           <CardBody>
             <div className="ag-theme-material ag-grid-table">
-              <ContextLayout.Consumer>
-                {(context) => (
-                  <AgGridReact
-                    gridOptions={{}}
-                    rowSelection="multiple"
-                    defaultColDef={{
-                      sortable: true,
-                      resizable: true,
-                      suppressSizeToFit: false,
-                    }}
-                    columnDefs={columnDefs({ onCopy, revokeInvitation })}
-                    rowData={invitations}
-                    onGridReady={onGridReady}
-                    colResizeDefault={"shift"}
-                    animateRows={true}
-                    floatingFilter={false}
-                    pagination={true}
-                    pivotPanelShow="always"
-                    paginationPageSize={20}
-                    resizable={true}
-                    enableRtl={context.state.direction === "rtl"}
-                  />
-                )}
-              </ContextLayout.Consumer>
+              <AgGridReact
+                gridOptions={{}}
+                rowSelection="multiple"
+                defaultColDef={{
+                  sortable: true,
+                  resizable: true,
+                  suppressSizeToFit: false,
+                }}
+                columnDefs={columnDefs({ onCopy, revokeInvitation })}
+                rowData={invitations}
+                onGridReady={onGridReady}
+                colResizeDefault={"shift"}
+                animateRows={true}
+                floatingFilter={false}
+                pagination={true}
+                pivotPanelShow="always"
+                paginationPageSize={20}
+                resizable={true}
+              />
             </div>
           </CardBody>
         </Card>
