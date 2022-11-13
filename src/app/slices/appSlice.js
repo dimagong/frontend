@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+
+import authService from "services/auth";
 import appReducer from "app/reducers/app/appReducer";
 import { generateRequestAndErrorActions } from "utility/store";
 
-const token = localStorage.getItem("token");
+const token = authService.getToken();
 
 export const initUser = {
   first_name: "",
