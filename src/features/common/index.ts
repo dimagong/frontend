@@ -1,3 +1,4 @@
+export * from "./abstractService";
 export { useDev } from "./useDev";
 export { asserts } from "./asserts";
 export { Environment } from "./env";
