@@ -1,33 +1,21 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Switch, Route } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import appSlice from "app/slices/appSlice";
-import { selectAuth } from "app/selectors/authSelectors";
-import { selectProfile } from "app/selectors/userSelectors";
+import { UserService } from "features/user/services/userService";
+import { useProfileQuery } from "features/user/queries/useProfileQuery";
 
 import routes from "./routes";
-import authService from "../services/auth";
-import { UserService } from "../services/user";
+import { selectAuth } from "../app/selectors";
 import { RouteProvider } from "./RouteProvider";
 
-const { getProfileRequest } = appSlice.actions;
-
 const Routes = () => {
-  const dispatch = useDispatch();
+  const profileQuery = useProfileQuery();
+  const { data: profile } = profileQuery;
 
   const isAuth = useSelector(selectAuth);
-  const profile = useSelector(selectProfile);
-
-  const token = authService.getToken();
-  const isMember = profile ? UserService.isMember(profile) : false;
-  const isManager = profile ? UserService.isManager(profile) : false;
-
-  useEffect(() => {
-    if (token) {
-      dispatch(getProfileRequest());
-    }
-  }, []);
+  const isMember = profile ? UserService.isProfileMember(profile) : false;
+  const isManager = profile ? UserService.isProfileManager(profile) : false;
 
   return (
     <Switch>

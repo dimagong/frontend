@@ -9,6 +9,7 @@ const loginRequest = (state) => {
   state.isLoading = true;
   state.isError = null;
 };
+
 const loginError = (state, { payload }) => {
   state.isAuth = false;
   state.isLoading = false;

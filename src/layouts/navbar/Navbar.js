@@ -2,15 +2,12 @@ import "./navBar.scss";
 
 import React from "react";
 import { Navbar } from "reactstrap";
-import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { bindActionCreators } from "redux";
-import { connect, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ChevronDown, ChevronUp } from "react-feather";
 
 import appSlice from "app/slices/appSlice";
 import { getMemberFirms } from "app/selectors/memberFirmsSelector";
-import { logoutWithJWT } from "app/actions/vuexy/auth/loginActions";
 import DeprecatedNmpOrganizationLogo from "components/nmp/DeprecatedNmpOrganizationLogo";
 import { selectProfile, selectManagers, selectContextSearchVisibility } from "app/selectors";
 
@@ -99,11 +96,4 @@ const ThemeNavbar = () => {
   );
 };
 
-const mapActionsToProps = (dispatch) => {
-  return {
-    logoutWithJWT: bindActionCreators(logoutWithJWT, dispatch),
-    logout: bindActionCreators(logout, dispatch),
-  };
-};
-
-export default connect(() => ({}), mapActionsToProps)(ThemeNavbar);
+export default ThemeNavbar;

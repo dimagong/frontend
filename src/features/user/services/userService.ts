@@ -1,9 +1,9 @@
 export class UserService {
-  static isMember(profile) {
+  static isProfileMember(profile) {
     return ["prospect", "member"].indexOf(profile.permissions.ability) !== -1;
   }
 
-  static isManager(profile) {
+  static isProfileManager(profile) {
     return ["prospect", "member"].indexOf(profile.permissions.ability) === -1;
   }
 }

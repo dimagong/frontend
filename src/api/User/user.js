@@ -1,7 +1,6 @@
 import instance, { requestLayout } from "api";
 import qs from "qs";
 import {
-  getProfilePath,
   getUsersPath,
   getUserByIdPath,
   getUsersDataPath,
@@ -162,18 +161,6 @@ const userApi = {
         method: "GET",
       });
       return result.data.data;
-    } catch (err) {
-      throw err.response.data.error.errors;
-    }
-  },
-  async getProfile() {
-    try {
-      const result = await instance({
-        url: getProfilePath,
-        method: "GET",
-      });
-
-      return result ? result.data.data : result;
     } catch (err) {
       throw err.response.data.error.errors;
     }
