@@ -56,11 +56,9 @@ const MemberSurveyNavigations = ({
 
       {surveyStatus === Status.APPROVED && (
         <div className="approved-navigation">
-          <div className="close-button">
-            <NmpButton onClick={() => handleClose()} className="membercard-navigations__btn">
-              Close
-            </NmpButton>
-          </div>
+          <NmpButton onClick={() => handleClose()} className="membercard-navigations__btn">
+            Close
+          </NmpButton>
 
           {!!currentIndex && (
             <NmpButton

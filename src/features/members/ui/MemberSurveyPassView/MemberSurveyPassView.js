@@ -14,7 +14,6 @@ const MemberSurveyPassView = (props) => {
     handleSurveyStart,
     currentIndex,
     count,
-    title,
     question,
     handleAnswerSelect,
     selectedAnswer,
@@ -40,16 +39,15 @@ const MemberSurveyPassView = (props) => {
   }
 
   return (
-    <NmpCard title="Surveys">
-      <div className="surveys-content">
-        <div className="content_stepper">
-          <NpmCustomStepperSurvey currentStrep={currentIndex + 1} totalSteps={count} />
-        </div>
+    <div className="surveys-content">
+      <NmpCard title="Surveys">
+        <NpmCustomStepperSurvey currentStrep={currentIndex + 1} totalSteps={count} />
 
         <div className="content_question">
           <div className="question-title">{question && `Question ${currentIndex + 1}`}</div>
           <div className="question-subtitle">{question?.body}</div>
         </div>
+
         <div className="content_answer">
           <MemberSurveyQuestion
             structureType={structureType}
@@ -59,6 +57,7 @@ const MemberSurveyPassView = (props) => {
             hint={hint}
           />
         </div>
+
         <div className="content_buttons">
           <MemberSurveyNavigations
             surveyStatus={surveyStatus}
@@ -69,8 +68,8 @@ const MemberSurveyPassView = (props) => {
             count={count}
           />
         </div>
-      </div>
-    </NmpCard>
+      </NmpCard>
+    </div>
   );
 };
 

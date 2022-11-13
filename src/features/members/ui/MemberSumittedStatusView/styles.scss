@@ -5,7 +5,7 @@
 
   width: 100%;
   height: calc(100vh - 80px);
-  padding: 52px 0 117px;
+  padding: 52px 60px 117px;
 
   .ant-card {
     height: 100%;
@@ -61,6 +61,7 @@
         }
       }
     }
+
     &_img {
       grid-column: 2/3;
       background: #efefef;

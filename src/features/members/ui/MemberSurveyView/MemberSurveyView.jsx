@@ -1,33 +1,25 @@
-import { toast } from "react-toastify";
+import "./styles.scss";
 
+import { toast } from "react-toastify";
 import React, { useState } from "react";
 
-import { Col, Row } from "antd";
-
 import {
-  useGetCurrentQuestionForAssignedSurveyQuery,
   useSurveyByIdQuery,
-  useGetAllSurveyQuestionsQuery,
   usePushAnswerMutation,
   useGetBeginSurveyQuery,
+  useGetAllSurveyQuestionsQuery,
+  useGetCurrentQuestionForAssignedSurveyQuery,
 } from "api/Onboarding/prospectUserQuery";
+import NpmSpin from "features/nmp-ui/NpmSpin";
 
-import {
-  useMVASurveyPassingInvalidate,
-  // useMVApushAnswer,
-  // useMVAgetBeginSurvey,
-  useMVAswitchToPrevious,
-} from "../../data/hooks";
-
+import MemberSurveyStartView from "../MemberSurveyStartView";
+import { Status } from "../../data/constants/statusConstants";
 import MemberCardPassSurveyView from "../MemberSurveyPassView";
 import MemberThanksStatusView from "../MemberThanksStatusView";
 import MemberSurveyReportView from "../MemberSurveyReportView";
 import MemberSurveyFeedbackView from "../MemberSurveyFeedbackView";
-import MemberSurveyStartView from "../MemberSurveyStartView";
-import NpmSpin from "../../../nmp-ui/NpmSpin";
-
 import { findStatusSurvey } from "../../data/helpers/findStatusSurvey";
-import { Status } from "features/members/data/constants/statusConstants";
+import { useMVAswitchToPrevious, useMVASurveyPassingInvalidate } from "../../data/hooks";
 
 const MemberSurvey = ({ selectedSurveyId, organization }) => {
   const [answer, setAnswer] = useState("");
@@ -65,9 +57,6 @@ const MemberSurvey = ({ selectedSurveyId, organization }) => {
 
   useMVASurveyPassingInvalidate(currentQuestion?.status, surveyStatus, id);
 
-  //? deactivated recentSubmited status
-  //useMVARecentSubmited(currentQuestion?.status, surveyStatus, setRecentlySubmitted);
-
   const handleSurveyStart = () => {
     refetch();
   };
@@ -101,7 +90,6 @@ const MemberSurvey = ({ selectedSurveyId, organization }) => {
 
   const isSurveyPassed = survey && survey.stats?.total >= survey.stats?.min_percent_pass;
   const totalTime = survey?.stats?.totalTime ?? "00-00-00";
-  const isFeedbackExist = !!survey?.passedSurveyData?.answers.find((answer) => !!answer.feedback);
   const isShowResult = survey?.is_show_result;
   const description = survey?.interaction_version?.description || "No description";
 
@@ -110,9 +98,9 @@ const MemberSurvey = ({ selectedSurveyId, organization }) => {
   }
 
   return (
-    <Row justify="center" align="middle">
-      <Col span={14}>
-        {surveyStatus === Status.NOT_STARTED && (
+    <div className="member-survey">
+      {surveyStatus === Status.NOT_STARTED && (
+        <div className="member-survey__container">
           <MemberSurveyStartView
             isLoadingData={isLoadingData}
             title={title}
@@ -128,8 +116,10 @@ const MemberSurvey = ({ selectedSurveyId, organization }) => {
             handleAnswerSubmit={handleAnswerSubmit}
             description={description}
           />
-        )}
-        {surveyStatus === Status.STARTED && (
+        </div>
+      )}
+      {surveyStatus === Status.STARTED && (
+        <div className="member-survey__container">
           <MemberCardPassSurveyView
             isLoadingData={isLoadingData}
             title={title}
@@ -144,29 +134,28 @@ const MemberSurvey = ({ selectedSurveyId, organization }) => {
             handleSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
             handleAnswerSubmit={handleAnswerSubmit}
           />
-        )}
-        {surveyStatus === Status.SUBMITTED && (
-          <MemberThanksStatusView data={finished_at} organization={organization} surveyName={title} />
-        )}
-        {surveyStatus === Status.APPROVED && !isFeedbackView && (
-          <MemberSurveyReportView
-            data={graded_at}
-            isSurveyPassed={isSurveyPassed}
-            totalTime={totalTime}
-            isShowResult={isShowResult}
-            setIsFeedbackView={setIsFeedbackView}
-          />
-        )}
-        {surveyStatus === Status.APPROVED && isFeedbackView && (
-          <MemberSurveyFeedbackView
-            surveyInteraction={surveyInteraction}
-            surveyStatus={surveyStatus}
-            setIsFeedbackView={setIsFeedbackView}
-          />
-        )}
-      </Col>
-    </Row>
-    // </div>
+        </div>
+      )}
+      {surveyStatus === Status.SUBMITTED && (
+        <MemberThanksStatusView data={finished_at} organization={organization} surveyName={title} />
+      )}
+      {surveyStatus === Status.APPROVED && !isFeedbackView && (
+        <MemberSurveyReportView
+          data={graded_at}
+          isSurveyPassed={isSurveyPassed}
+          totalTime={totalTime}
+          isShowResult={isShowResult}
+          setIsFeedbackView={setIsFeedbackView}
+        />
+      )}
+      {surveyStatus === Status.APPROVED && isFeedbackView && (
+        <MemberSurveyFeedbackView
+          surveyInteraction={surveyInteraction}
+          surveyStatus={surveyStatus}
+          setIsFeedbackView={setIsFeedbackView}
+        />
+      )}
+    </div>
   );
 };
 

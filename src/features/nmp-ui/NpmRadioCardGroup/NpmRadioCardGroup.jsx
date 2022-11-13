@@ -10,6 +10,7 @@ const NpmRadioCardGroup = ({ options = [], handleAnswerSelect, selectedAnswer, c
 
     handleAnswerSelect(e.target.value);
   };
+
   const correctAnswerStyle = correctAnswer
     ? correctAnswer === selectedAnswer
       ? "correctAnswerStyle"
@@ -23,7 +24,7 @@ const NpmRadioCardGroup = ({ options = [], handleAnswerSelect, selectedAnswer, c
           {options.map((question) => {
             return (
               <Card key={question.id}>
-                <Radio className={correctAnswerStyle} value={question.id}>
+                <Radio className={question.id === selectedAnswer ? correctAnswerStyle : ""} value={question.id}>
                   {question.text}
                 </Radio>
               </Card>
