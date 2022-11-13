@@ -1,8 +1,12 @@
 .survey-additional {
-  background: #ffffff;
-  border-radius: 5px;
+  width: 100%;
+
+  margin-top: 20px;
   padding: 14px 30px;
+  border-radius: 5px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+
   &_header {
     display: flex;
     justify-content: space-between;
@@ -10,15 +14,19 @@
       font-weight: 400;
       font-size: 16px;
       line-height: 19px;
-      line-height: 19px;
       color: #474747;
     }
   }
+
   &_info {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
+    overflow-y: auto;
+    max-height: 100px;
     margin-top: 10px;
+
     color: #474747;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    word-break: break-all;
   }
 }

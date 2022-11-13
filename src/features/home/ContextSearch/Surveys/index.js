@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row } from "reactstrap";
 import { Scrollbars } from "react-custom-scrollbars";
 
@@ -10,7 +10,7 @@ import WorkFlowsAndNotificationsList from "features/home/ContextSearch/component
 
 import appSlice from "app/slices/appSlice";
 
-const { setContext, getSurveyRequest } = appSlice.actions;
+const { setContext, getSurveyRequest, getSurveysRequest } = appSlice.actions;
 
 const Surveys = () => {
   const dispatch = useDispatch();
@@ -31,6 +31,10 @@ const Surveys = () => {
     setSelectedItemId(selectedSurveyId);
     dispatch(setContext("Survey"));
   };
+
+  useEffect(() => {
+    dispatch(getSurveysRequest());
+  }, []);
 
   return (
     <Row style={{ marginBottom: "40px" }}>

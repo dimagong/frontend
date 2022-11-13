@@ -8,13 +8,14 @@ import { NpmTooltip } from "../NpmTooltip";
 
 export type NmpTextProps = {
   text?: string;
+  isTipShow?: boolean;
   style?: CSSProperties;
   className?: string;
 };
 
-export const NmpText: FC<NmpTextProps> = ({ text = "", style, className }) => {
+export const NmpText: FC<NmpTextProps> = ({ text = "", isTipShow = false, style, className }) => {
   const textRef = useRef<HTMLSpanElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const onMouseOver = () => {
     if (!textRef.current) return;
@@ -23,19 +24,19 @@ export const NmpText: FC<NmpTextProps> = ({ text = "", style, className }) => {
     const diffWidth = scrollWidth - clientWidth;
 
     if (diffWidth > 0) {
-      setIsVisible(true);
+      setIsOpen(true);
     }
   };
 
-  const onMouseOut = () => setIsVisible(false);
+  const onMouseOut = () => setIsOpen(false);
 
   return (
-    <div className={classnames("nmp-text", className)} style={style}>
-      <NpmTooltip title={text} visible={isVisible}>
+    <span className={classnames("nmp-text", className)} style={style}>
+      <NpmTooltip title={text} open={isOpen && isTipShow}>
         <span className="nmp-text__line" ref={textRef} onMouseOver={onMouseOver} onMouseOut={onMouseOut}>
           {text}
         </span>
       </NpmTooltip>
-    </div>
+    </span>
   );
 };

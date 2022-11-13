@@ -1,4 +1,8 @@
 const layoutReducer = {
+  toggleContextSearch: (state) => {
+    state.isContextSearchVisible = !state.isContextSearchVisible;
+  },
+
   showContextSearch: (state) => {
     state.isContextSearchVisible = true;
   },

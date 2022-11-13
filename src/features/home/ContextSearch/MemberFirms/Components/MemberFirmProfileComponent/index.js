@@ -67,6 +67,7 @@ const MemberFirmProfileComponent = (props) => {
               className="member-firm-profile_tabs_tab"
               color={selectedTab === tab ? "primary" : "default"}
               onClick={() => setSelectedTab(tab)}
+              key={tab}
             >
               {tab}
             </Button>

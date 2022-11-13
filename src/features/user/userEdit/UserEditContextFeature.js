@@ -325,9 +325,9 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
                 )}
               </Col>
               <Col sm="6" md="3" className="d-flex justify-content-end align-items-end">
-                <Button.Ripple className="m-0" color="primary" type="submit">
+                <Button className="m-0" color="primary" type="submit">
                   Save
-                </Button.Ripple>
+                </Button>
               </Col>
             </Row>
           </Form>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardBody, FormGroup, Form, Input, Button, Label } from "reactstrap";
+
 import { useRouter } from "hooks/useRouter";
 import { loginPath } from "constants/paths";
 import { STEP_FORGOT, STEP_FORGOT_SUCCESS, STEP_VERYFI, STEP_VERYFI_SUCCESS } from "constants/resetPasswordSteps";
@@ -18,6 +19,7 @@ const ForgotPasswordFactory = ({
   const { push } = useRouter();
 
   const goToLogin = () => push(loginPath);
+
   switch (step) {
     case STEP_FORGOT_SUCCESS:
       return (
@@ -59,7 +61,7 @@ const ForgotPasswordFactory = ({
           </CardHeader>
           <p className="px-2 auth-title">Please enter your new password</p>
           <CardBody className="pt-1 pb-0">
-            <Form>
+            <Form onSubmit={recoveryPasswordSubmit}>
               <FormGroup className="form-label-group">
                 <Input type="text" placeholder="Email" required value={email} disabled onChange={changeEmail} />
                 <Label>Email</Label>
@@ -84,7 +86,7 @@ const ForgotPasswordFactory = ({
                 </Button>
               </div>
               <div className="float-md-right d-block mb-1">
-                <Button color="primary" type="submit" className="px-75 btn-block" onClick={recoveryPasswordSubmit}>
+                <Button color="primary" type="submit" className="px-75 btn-block">
                   Change password
                 </Button>
               </div>
@@ -104,7 +106,7 @@ const ForgotPasswordFactory = ({
             Please enter your email address and we'll send you instructions on how to reset your password.
           </p>
           <CardBody className="pt-1 pb-0">
-            <Form>
+            <Form onSubmit={forgotPasswordSubmit}>
               <FormGroup className="form-label-group">
                 <Input type="text" placeholder="Email" required value={email} onChange={changeEmail} />
                 <Label>Email</Label>
@@ -115,7 +117,7 @@ const ForgotPasswordFactory = ({
                 </Button>
               </div>
               <div className="float-md-right d-block mb-1">
-                <Button color="primary" type="submit" className="px-75 btn-block" onClick={forgotPasswordSubmit}>
+                <Button color="primary" type="submit" className="px-75 btn-block">
                   Recover Password
                 </Button>
               </div>
@@ -125,7 +127,7 @@ const ForgotPasswordFactory = ({
       );
 
     default:
-      return <></>;
+      return null;
   }
 };
 

@@ -35,21 +35,29 @@
       }
     }
   }
+}
 
-  .correctAnswerStyle {
-    .ant-radio-checked .ant-radio-inner {
-      border-color: #35a046 !important ;
-    }
+.correctAnswerStyle {
+  > span {
+    color: #7267e5 !important;
+  }
 
-    .ant-radio-checked .ant-radio-inner:after {
-      background-color: #35a046;
-    }
+  .ant-radio-checked .ant-radio-inner {
+    border-color: #7267e5 !important ;
+  }
+
+  .ant-radio-checked .ant-radio-inner:after {
+    background-color: #7267e5;
   }
 }
 
 .incorrectAnswerStyle {
+  > span {
+    color: #c70000 !important;
+  }
+
   .ant-radio-checked .ant-radio-inner {
-    border-color: #c70000 !important ;
+    border-color: #c70000 !important;
   }
 
   .ant-radio-checked .ant-radio-inner:after {

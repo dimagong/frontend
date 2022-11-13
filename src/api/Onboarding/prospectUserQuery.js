@@ -2,18 +2,15 @@ import { useDispatch } from "react-redux";
 import { useMutation, useQueryClient } from "react-query";
 
 import { clientAPI } from "api/clientAPI";
+import appSlice from "app/slices/appSlice";
 import { createQueryKey } from "api/createQueryKey";
 import { useGenericQuery } from "api/useGenericQuery";
 import { useGenericMutation } from "api/useGenericMutation";
-
-import appSlice from "app/slices/appSlice";
-import { useFileQuery } from "../file/useFileQueries";
-import { toast } from "react-toastify";
+import { ProfileQueryKeys } from "features/user/queries/useProfileQuery";
 
 const {
   getAssignedSurveysForOnboardingSuccess,
   getAssignedSurveysForOnboardingError,
-  removeUserNotifyError,
   getCurrentQuestionForAssignedSurveyError,
   getProfileError,
   beginSurveyError,
@@ -118,9 +115,13 @@ export const useSubmitDFormMutation = ({ dformId }, options) => {
 // MVA DForm Categories' Queries/Mutations
 
 const MVADFormCategoryQueryKey = createQueryKey("MVA DForm category");
+const MVADFormCategoryRegisterQueryKey = createQueryKey("MVA DForm category register");
 
 export const MVADFormCategoryQueryKeys = {
   all: () => [MVADFormCategoryQueryKey],
+};
+export const MVADFormCategoryRegisterQueryKeys = {
+  all: () => [MVADFormCategoryRegisterQueryKey],
 };
 
 export const useMVADFormsCategoriesQuery = (options) => {
@@ -128,6 +129,16 @@ export const useMVADFormsCategoriesQuery = (options) => {
     {
       url: `/member-view-api/dform/category`,
       queryKey: MVADFormCategoryQueryKeys.all(),
+    },
+    options
+  );
+};
+
+export const useMVADFormsCategoriesRegisterQuery = (options) => {
+  return useGenericQuery(
+    {
+      url: `/member-view-api/dform/category/register`,
+      queryKey: MVADFormCategoryRegisterQueryKeys.all(),
     },
     options
   );
@@ -196,29 +207,14 @@ export const useGetBeginSurveyQuery = (payload, options = {}) => {
   );
 };
 
-export const MVANotifyIntroductionPageQueryKey = createQueryKey("MVA Notify Introduction Page");
-
-export const MVANotifyIntroductionPageQueryKeys = {
-  all: () => [MVANotifyIntroductionPageQueryKey],
-  notifyIntroductionPageBuId: (id) => [...MVANotifyIntroductionPageQueryKeys.all(), id],
-};
-
-export const useNotifyIntroductionPageSeeingMutation = (payload, options = {}) => {
-  const dispatch = useDispatch();
-
+export const useNotifyIntroductionPageSeeingMutation = (payload) => {
   const { userId, userNotifyEntryId } = payload;
 
-  return useGenericMutation(
-    {
-      url: `/member-view-api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`,
-      method: "patch",
-      queryKey: MVANotifyIntroductionPageQueryKeys.notifyIntroductionPageBuId(userNotifyEntryId),
-    },
-    {
-      onError: (error) => dispatch(removeUserNotifyError(error.message)),
-      ...options,
-    }
-  );
+  return useGenericMutation({
+    url: `/member-view-api/user/${userId}/notify-entries/${userNotifyEntryId}/notified`,
+    method: "patch",
+    queryKey: ProfileQueryKeys.all(),
+  });
 };
 
 export const MVACurrentQuestionQueryKey = createQueryKey("MVA Current Question");

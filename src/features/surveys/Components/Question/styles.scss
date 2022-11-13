@@ -20,7 +20,6 @@
     font-weight: bold;
     color: #4b484d;
     font-size: 22px;
-    font-family: Montserrat;
     margin-bottom: 21px;
   }
 
@@ -58,13 +57,11 @@
   &-description {
     color: #4b484d;
     font-size: 20px;
-    font-family: Montserrat;
     font-weight: 300;
   }
 
   &-points {
     font-weight: 500;
-    font-family: Montserrat;
     color: #4b484d;
     font-size: 20px;
     text-align: right;
@@ -75,7 +72,6 @@
     margin-top: 77px;
     .title {
       font-weight: 400;
-      font-family: Montserrat;
       font-size: 15px;
       padding-bottom: 20px;
       color: #4b484d;
@@ -113,7 +109,6 @@
         color: #4b484d;
         font-size: 16px;
         font-weight: 300;
-        font-family: Montserrat;
         display: flex;
         &-circle {
           border-radius: 100px;
@@ -281,7 +276,6 @@
 .survey_feedback_modal {
   &-body {
     padding-bottom: 15px;
-    font-family: Montserrat;
     &-label {
       font-size: 16px;
       margin-bottom: 10px;

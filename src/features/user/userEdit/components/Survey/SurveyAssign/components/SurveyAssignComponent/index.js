@@ -32,7 +32,6 @@ const selectStyles = {
     cursor: "pointer",
     padding: "0 0 0 7px",
     fontSize: "11px",
-    fontFamily: "Montserrat",
   }),
   placeholder: (styles) => ({
     ...styles,

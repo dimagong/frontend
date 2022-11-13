@@ -1,100 +1,77 @@
 import { lazy } from "react";
 
 import {
-  loginPath,
   homePath,
-  forgotPasswordPath,
-  notificationsPath,
-  dformsPath,
-  workflowsPath,
+  loginPath,
+  memberPath,
   invitationPath,
-  onboardingProcessPath,
-  userProfilePath,
+  twoFactorAuthPath,
+  forgotPasswordPath,
 } from "constants/paths";
 
-const Login = lazy(() => import("features/auth/login/Login"));
-const ForgotPassword = lazy(() => import("features/auth/forgotPassword/ForgotPassword"));
-const Notifications = lazy(() => import("features/onboarding/notifications/Notifications"));
-const DForm = lazy(() => import("features/onboarding/dForm/DForm"));
-const Workflow = lazy(() => import("features/onboarding/workflow/Workflow"));
-const OnboardingUser = lazy(() => import("features/onboarding/OnboardingUser"));
-const Invitation = lazy(() => import("features/invitation/Invitation"));
-const Home = lazy(() => import("features/home/Home"));
-const Error404 = lazy(() => import("components/misc/error/404"));
-const UserProfile = lazy(() => import("features/user/userEdit/UserEdit"));
+const homeRoute = {
+  path: homePath,
+  exact: true,
+  redirect: loginPath,
+  isPrivate: true,
+  Component: lazy(() => import("../features/home/HomePage")),
+};
+
+const loginRoute = {
+  path: loginPath,
+  exact: true,
+  redirect: homePath,
+  isPrivate: false,
+  Component: lazy(() => import("../features/auth/login/LoginPage")),
+};
+
+const twoFactorAuthRoute = {
+  path: twoFactorAuthPath,
+  exact: true,
+  redirect: homePath,
+  isPrivate: false,
+  Component: lazy(() => import("features/auth/2FA/2FAPage")),
+};
+
+const forgotPasswordRoute = {
+  path: forgotPasswordPath,
+  exact: true,
+  redirect: homePath,
+  isPrivate: false,
+  Component: lazy(() => import("../features/auth/forgotPassword/ForgotPasswordPage")),
+};
+
+const membersRoute = {
+  path: memberPath,
+  exact: true,
+  redirect: loginPath,
+  isPrivate: true,
+  Component: lazy(() => import("features/members/ui/MemberPage").then((m) => ({ ...m, default: m.MemberPage }))),
+};
+
+const invitationRoute = {
+  path: invitationPath,
+  exact: true,
+  redirect: loginPath,
+  isPrivate: false,
+  Component: lazy(() => import("../features/invitation/InvitationPage")),
+};
+
+const notFoundRoute = {
+  path: "*",
+  exact: true,
+  isPrivate: false,
+  Component: lazy(() => import("components/misc/error/404Page")),
+};
 
 const routes = [
-  {
-    path: userProfilePath,
-    Component: UserProfile,
-    isPrivate: true,
-    redirect: loginPath,
-  },
-  {
-    path: loginPath,
-    Component: Login,
-    isPrivate: false,
-    exact: true,
-    redirect: homePath,
-    fullLayout: true,
-  },
-  {
-    path: forgotPasswordPath,
-    Component: ForgotPassword,
-    isPrivate: false,
-    exact: true,
-    redirect: homePath,
-  },
-  {
-    path: notificationsPath,
-    Component: Notifications,
-    isPrivate: true,
-    exact: false,
-    redirect: loginPath,
-  },
-  {
-    path: dformsPath,
-    Component: DForm,
-    isPrivate: true,
-    exact: false,
-    redirect: loginPath,
-  },
-  {
-    path: workflowsPath,
-    Component: Workflow,
-    isPrivate: true,
-    exact: false,
-    redirect: loginPath,
-  },
-  {
-    path: invitationPath,
-    Component: Invitation,
-    isPrivate: false,
-    exact: true,
-    redirect: loginPath,
-    fullLayout: true,
-  },
-  {
-    path: homePath,
-    Component: Home,
-    isPrivate: true,
-    redirect: loginPath,
-    exact: true,
-  },
-  {
-    path: onboardingProcessPath,
-    Component: OnboardingUser,
-    isPrivate: true,
-    redirect: loginPath,
-    exact: true,
-  },
-  {
-    path: "*",
-    Component: Error404,
-    isPrivate: false,
-    exact: true,
-    fullLayout: true,
-  },
+  homeRoute,
+  membersRoute,
+  loginRoute,
+  twoFactorAuthRoute,
+  forgotPasswordRoute,
+  invitationRoute,
+  notFoundRoute,
 ];
 
 export default routes;

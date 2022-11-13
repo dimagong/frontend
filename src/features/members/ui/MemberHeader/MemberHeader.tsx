@@ -2,10 +2,20 @@ import "./styles.scss";
 
 import React, { FC } from "react";
 
-import { UserInfo } from "./components/UserInfo";
-import { Logo } from "./components/Logo/Logo";
+import { Logo } from "./components/Logo";
+// import { UserInfo } from "./components/UserInfo";
 
-export const MemberHeader: FC<Props> = ({
+export type MemberHeaderProps = {
+  logoSrc: string;
+  userName: string;
+  avatarSrc: string;
+  organizationName: string;
+  onHomeClick?: () => void;
+  onSurveyClick?: () => void;
+  onLogoutClick?: () => void;
+};
+
+export const MemberHeader: FC<MemberHeaderProps> = ({
   userName,
   organizationName,
   onLogoutClick,
@@ -23,24 +33,14 @@ export const MemberHeader: FC<Props> = ({
 
       {children}
 
-      <UserInfo
+      {/*<UserInfo
         userName={userName}
         organizationName={organizationName}
         onLogoutClick={onLogoutClick}
         onHomeClick={onHomeClick}
         onSurveyClick={onSurveyClick}
         avatarSrc={avatarSrc}
-      />
+      />*/}
     </header>
   );
-};
-
-export type Props = {
-  userName: string;
-  organizationName: string;
-  onLogoutClick: () => void;
-  onHomeClick: () => void;
-  onSurveyClick: () => void;
-  logoSrc: string;
-  avatarSrc: string;
 };

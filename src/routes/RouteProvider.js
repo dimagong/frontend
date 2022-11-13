@@ -1,102 +1,38 @@
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
-import { ContextLayout } from "utility/context/Layout";
-import { homePath, loginPath, onboardingProcessPath, userManagmentPath } from "constants/paths";
+import { Redirect } from "react-router-dom";
 
-const renderDefault =
-  ({ fullLayout, Component }) =>
-  (props) => {
-    return (
-      <ContextLayout.Consumer>
-        {(context) => {
-          let LayoutTag =
-            fullLayout === true
-              ? context.fullLayout
-              : context.state.activeLayout === "horizontal"
-              ? context.horizontalLayout
-              : context.VerticalLayout;
+import { homePath, memberPath } from "constants/paths";
 
-          if (props.location.pathname === "/forgot-password") {
-            return <Component {...props} />;
-          }
-          return (
-            <LayoutTag {...props} permission={props.user}>
-              <Component {...props} />
-            </LayoutTag>
-          );
-        }}
-      </ContextLayout.Consumer>
-    );
-  };
+const Private = (props) => {
+  const { isAuth, redirect, location, Component, isManager, isMember } = props;
 
-export const PrivateRoute = ({ Component, redirect, isAuth, fullLayout, isOnboarding, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={(props) => {
-        if (isAuth) {
-          if (props.location.pathname === onboardingProcessPath && isOnboarding === false) {
-            return (
-              <Redirect
-                to={{
-                  pathname: homePath,
-                }}
-              />
-            );
-          } else if (props.location.pathname !== onboardingProcessPath && isOnboarding === true) {
-            return (
-              <Redirect
-                to={{
-                  pathname: onboardingProcessPath,
-                }}
-              />
-            );
-          } else {
-            return renderDefault({ fullLayout, Component })(props);
-          }
-        } else {
-          return (
-            <Redirect
-              to={{
-                pathname: redirect,
-                state: { from: props.location },
-              }}
-            />
-          );
-        }
-      }}
-    />
-  );
+  if (!isAuth) {
+    return <Redirect to={{ pathname: redirect, state: { from: location } }} />;
+  }
+
+  if (location.pathname !== memberPath && isMember) {
+    return <Redirect to={{ pathname: memberPath }} />;
+  }
+
+  if (location.pathname === memberPath && isManager) {
+    return <Redirect to={{ pathname: homePath }} />;
+  }
+
+  if (isManager || isMember) {
+    return <Component />;
+  }
+
+  return null;
 };
 
-export const PublicRoute = ({ Component, redirect, isAuth, fullLayout, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={(props) => {
-        if (!Component) {
-          return (
-            <Redirect
-              to={{
-                pathname: isAuth ? userManagmentPath : loginPath,
-                state: { from: props.location },
-              }}
-            />
-          );
-        }
-        if (isAuth && redirect)
-          return (
-            <Redirect
-              to={{
-                pathname: redirect,
-                state: { from: props.location },
-              }}
-            />
-          );
-        else {
-          return renderDefault({ fullLayout, Component })(props);
-        }
-      }}
-    />
-  );
+const Public = (props) => {
+  const { isAuth, redirect, location, Component } = props;
+
+  if (isAuth) {
+    return <Redirect to={{ pathname: redirect, state: { from: location } }} />;
+  }
+
+  return <Component />;
 };
+
+export const RouteProvider = { Public, Private };

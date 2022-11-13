@@ -7,7 +7,7 @@ import { CloseCircleFilled } from "@ant-design/icons";
 import { NmpButton } from "../NmpButton";
 import { NpmTooltip } from "../NpmTooltip";
 
-import { FileLoadingIcon } from "../icons/FileLoadingIcon";
+import { NmpFileLoadingIcon } from "../icons";
 
 export enum FileStatusTypes {
   Done = "done",
@@ -47,7 +47,7 @@ export const NmpUploadItem: FC<NmpUploadItemProps> = (props) => {
         {status === FileStatusTypes.Uploading ? (
           <NpmTooltip title="Uploading">
             <span className="nmp-upload-item__status-icon">
-              <FileLoadingIcon style={{ fontSize: 21 }} />
+              <NmpFileLoadingIcon style={{ fontSize: 21, color: "#35A046" }} />
             </span>
           </NpmTooltip>
         ) : null}

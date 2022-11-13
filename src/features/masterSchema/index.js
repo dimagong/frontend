@@ -8,16 +8,21 @@ import { useMasterSchemaSelectable } from "./hooks/useMasterSchemaSelectable";
 
 import MasterSchemaContext from "./containers/MasterSchemaContext";
 import MasterSchemaContextFeature from "./containers/MasterSchemaContextFeature";
+import { useMasterSchemas } from "../home/ContextSearch/MasterSchema/useMasterSchemas";
 
 const MasterSchema = () => {
   const masterSchema = useSelector(selectSelectedMasterSchema);
 
+  const [, { reset }] = useMasterSchemas();
   const [selectedNodes, { select, clear }] = useMasterSchemaSelectable(
     useMasterSchemaSelectable.Stratagy.SingleGroupAndMultipleFields
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => void clear(), [masterSchema?.id]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => () => reset(), []);
 
   if (!masterSchema) {
     return null;

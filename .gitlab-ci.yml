@@ -28,7 +28,6 @@ deploy to dev:
     - git checkout dev
     - cat .ebenviroments/https.dev.conf >> .platform/nginx/conf.d/https.conf
     - npm i
-    - npm rebuild node-sass
     - CI=false npm run build-dev
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build
@@ -59,7 +58,6 @@ deploy to staging:
     - git checkout staging
     - cat .ebenviroments/https.staging.conf >> .platform/nginx/conf.d/https.conf
     - npm i
-    - npm rebuild node-sass
     - CI=false npm run build-stage
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build
@@ -90,7 +88,6 @@ deploy to production:
     - git checkout master
     - cat .ebenviroments/https.production.conf >> .platform/nginx/conf.d/https.conf
     - npm i
-    - npm rebuild node-sass
     - CI=false npm run build-prod
     - cp -avr .platform build
     - cp -avr .elasticbeanstalk build

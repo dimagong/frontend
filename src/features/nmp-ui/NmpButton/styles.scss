@@ -3,6 +3,35 @@
   align-items: center;
   justify-content: center;
 
+  height: 36px;
+  font-size: 16px;
+  line-height: 20px;
+  padding: 8px 15px;
+
+  &.ant-btn-sm {
+    height: 24px;
+    padding: 0 7px;
+    font-size: 14px;
+    border-radius: 2px;
+  }
+
+  &.ant-btn-lg {
+    height: 40px;
+    padding: 10px 15px;
+    font-size: 18px;
+    border-radius: 2px;
+  }
+
+  @at-root a.ant-btn.ant-btn-nmp:not(.ant-btn-text) {
+    padding-top: 8px !important;
+  }
+  @at-root a.ant-btn.ant-btn-nmp:not(.ant-btn-text).ant-btn-sm {
+    padding-top: 0 !important;
+  }
+  @at-root a.ant-btn.ant-btn-nmp:not(.ant-btn-text).ant-btn-lg {
+    padding-top: 10px !important;
+  }
+
   &.ant-btn-nmp-default {
     color: #434343;
     border-color: #f3f3f3;
@@ -23,38 +52,38 @@
   }
   &.ant-btn-nmp-ghost {
     color: #474747;
-    border-color: #22776d;
+    border-color: #4e7aff;
     background-color: transparent;
 
     &:hover,
     &:focus {
-      color: #139b8b;
-      border-color: #139b8b;
+      color: #2f5ce3;
+      border-color: #2f5ce3;
       background-color: transparent;
     }
 
     &:active {
       color: #474747;
-      border-color: #22776d;
+      border-color: #4e7aff;
       background-color: transparent;
     }
   }
   &.ant-btn-nmp-primary {
     color: white;
-    border-color: #22776d;
-    background-color: #22776d;
+    border-color: #4e7aff;
+    background-color: #4e7aff;
 
     &:hover,
     &:focus {
       color: white;
-      border-color: #139b8b;
-      background-color: #139b8b;
+      border-color: #2f5ce3;
+      background-color: #2f5ce3;
     }
 
     &:active {
       color: white;
-      border-color: #22776d;
-      background-color: #22776d;
+      border-color: #4e7aff;
+      background-color: #4e7aff;
     }
   }
 

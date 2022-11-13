@@ -12,10 +12,7 @@ const { getMasterSchemasRequest } = appSlice.actions;
 
 const MasterSchemaContextSearch = () => {
   const masterSchemas = useStoreQuery(getMasterSchemasRequest, selectMasterSchemas);
-  const [selectedId, { select, reset }] = useMasterSchemas();
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  React.useEffect(() => () => reset(), []);
+  const [selectedId, { select }] = useMasterSchemas();
 
   return (
     <React.Profiler

@@ -19,7 +19,6 @@ export const selectUser = (state) => state?.app?.user?.user;
 export const selectInvitations = (state) => state?.app?.user?.invitations;
 export const selectInvitation = (state) => state?.app?.user?.invitation;
 export const selectProfile = (state) => state?.app?.user?.profile;
-export const selectVuexyUser = (state) => state?.vuexy?.auth?.login?.values?.user;
 export const selectUserOrganizations = (userId) => (state) => {
   const user = state.app.user.managers.filter(({ id }) => id === userId)[0];
   return [

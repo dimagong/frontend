@@ -2,8 +2,8 @@ import "./styles.scss";
 
 import React, { useState } from "react";
 
-import { NmpCard } from "../../../nmp-ui";
-import NpmSpin from "../../../nmp-ui/NpmSpin";
+import { NmpCard, NpmSpin } from "features/nmp-ui";
+
 import MemberSurveyQuestion from "../MemberSurveyQuestion";
 import MemberSurveyNavigations from "../MemberSurveyNavigations";
 
@@ -31,7 +31,6 @@ const MemberSurveyFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedba
   };
 
   const currentQuestion = questions[currQuestionIndex]?.body ?? "";
-  const currentAnswer = answers[currQuestionIndex]?.feedback ?? "";
 
   const structureType = questions[currQuestionIndex]?.answer_structure.type;
   const selectedAnswer = answers[currQuestionIndex]?.answer ?? "";
@@ -44,17 +43,19 @@ const MemberSurveyFeedbackView = ({ surveyInteraction, surveyStatus, setIsFeedba
   if (!surveyInteraction) {
     return <NpmSpin size={60} />;
   }
+
   return (
     <div className="membercard-feedback">
       <div className="feedback-info">
-        <NmpCard style={{ height: "76px", maxWidth: "783px", width: "57vw" }}>
+        <NmpCard>
           <div className="feedback-info_context">
             <div className="context-title">Feedback</div>
             <div className="context-subtitle">{currentFeedback}</div>
           </div>
         </NmpCard>
       </div>
-      <NmpCard style={{ maxHeight: "500px", maxWidth: "783px", width: "57vw" }}>
+
+      <NmpCard>
         <div className="feedback-content">
           <div className="feedback-question">
             <div className="feedback-title">Question {currQuestionIndex + 1}</div>

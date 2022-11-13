@@ -2,9 +2,9 @@ import "./styles.scss";
 
 import React, { useEffect } from "react";
 
-import { NmpCard } from "../../../nmp-ui";
+import { NmpCard, NpmSpin } from "features/nmp-ui";
+
 import MemberSurveyNavigations from "../MemberSurveyNavigations";
-import NpmSpin from "../../../nmp-ui/NpmSpin";
 import MemberSurveyAdditionalInfo from "../MemberSurveyAdditionalInfo";
 
 const MemberSurveyStartView = (props) => {
@@ -34,28 +34,26 @@ const MemberSurveyStartView = (props) => {
   }
 
   return (
-    <div>
+    <div className="survey-start">
       <NmpCard title="Surveys">
-        <div className="survey-start">
-          <div className="content_question">
-            <div className="question-title">{title}</div>
-            <div className="question-subtitle">Click the button to get started.</div>
-          </div>
-          <div className="content_buttons">
-            <MemberSurveyNavigations
-              surveyStatus={surveyStatus}
-              handleSurveyStart={handleSurveyStart}
-              handleSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
-              handleAnswerSubmit={handleAnswerSubmit}
-              currentIndex={currentIndex}
-              count={count}
-            />
-          </div>
+        <div className="content_question">
+          <div className="question-title">{title}</div>
+          <div className="question-subtitle">Click the button to get started.</div>
+        </div>
+
+        <div className="content_buttons">
+          <MemberSurveyNavigations
+            surveyStatus={surveyStatus}
+            handleSurveyStart={handleSurveyStart}
+            handleSwitchToPreviousQuestion={handleSwitchToPreviousQuestion}
+            handleAnswerSubmit={handleAnswerSubmit}
+            currentIndex={currentIndex}
+            count={count}
+          />
         </div>
       </NmpCard>
-      <div style={{ with: "100%", marginTop: "20px" }}>
-        <MemberSurveyAdditionalInfo title={"Guidance"} text={description} />
-      </div>
+
+      <MemberSurveyAdditionalInfo title="Guidance" text={description} />
     </div>
   );
 };

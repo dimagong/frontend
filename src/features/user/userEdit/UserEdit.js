@@ -1,3 +1,5 @@
+import "./userEdit.scss";
+
 import _ from "lodash";
 import { map } from "rxjs";
 import { Plus } from "react-feather";
@@ -58,7 +60,6 @@ const selectStyles = {
     cursor: "pointer",
     padding: "0 0 0 7px",
     fontSize: "11px",
-    fontFamily: "Montserrat",
   }),
   menu: (provided) => ({ ...provided, zIndex: 9999 }),
   placeholder: (styles) => ({

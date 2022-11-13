@@ -1,0 +1,14 @@
+.member-survey {
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+  height: calc(100vh - 80px);
+  padding: 32px 0 71px;
+
+  &__container {
+    height: 100%;
+    width: 100%;
+    max-width: 780px;
+  }
+}

@@ -1,0 +1,41 @@
+.nmp-member {
+  --npm-member-header-height: 80px;
+
+  &__layout {
+    flex: auto;
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    background-color: #f4f4f4;
+  }
+
+  &__container {
+    margin: 0 auto;
+    padding: 0 28px;
+
+    @media (min-width: 1200px) {
+      padding: 0 60px;
+    }
+
+    @media (min-width: 1600px) {
+      max-width: 1320px;
+    }
+  }
+
+  &__header {
+    flex: 0 0 auto;
+    height: var(--npm-member-header-height, 80px);
+    line-height: var(--npm-member-header-height, 80px);
+    background-color: #fff;
+  }
+
+  &__logo {
+    max-height: 40px;
+    max-width: 140px;
+  }
+
+  &__content {
+    flex: auto;
+    min-height: 0;
+  }
+}

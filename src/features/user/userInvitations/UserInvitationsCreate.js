@@ -90,7 +90,7 @@ const UserInvitationsCreate = ({ resend }) => {
           color="primary"
           className="mr-1 btn-icon"
           size="sm"
-          style={{ "font-size": "14px" }}
+          style={{ fontSize: "14px" }}
           id="trash-invitation-btn"
           icon={<Trash />}
         />
@@ -122,7 +122,7 @@ const UserInvitationsCreate = ({ resend }) => {
           color="primary"
           className="mr-1"
           size="sm"
-          style={{ "font-size": "14px" }}
+          style={{ fontSize: "14px" }}
           id="send-invitation-btn"
           loading={sendEmailUser.isLoading}
         >
@@ -141,7 +141,7 @@ const UserInvitationsCreate = ({ resend }) => {
           className="mr-1"
           onClick={formSubmit}
           id="send-invitation-btn"
-          style={{ "font-size": "14px" }}
+          style={{ fontSize: "14px" }}
           loading={useCreateInvitations.isLoading}
         >
           Create invitation link
