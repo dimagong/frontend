@@ -47,7 +47,6 @@ export const MemberComponentView = (props) => {
           dformId={activeApplication.id}
           status={activeApplication.status}
           organization={organizationName}
-          userFirstName={username}
         />
       )}
     </>

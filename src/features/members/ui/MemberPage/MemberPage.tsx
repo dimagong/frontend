@@ -56,19 +56,22 @@ export const MemberPage: FC = () => {
   const dformsCategories = dformsCategoriesQuery.data ?? [];
   const dformsCategoriesRegister = dformsCategoriesRegisterQuery.data ?? [];
 
+  const isDataAble =
+    dformsQuery.data &&
+    !dformsQuery.isLoading &&
+    surveysQuery.data &&
+    !surveysQuery.isLoading &&
+    dformsCategoriesQuery.data &&
+    dformsCategoriesRegisterQuery.data;
+
   const applications = collectApplicationsUser(dforms, surveys);
   // This shit possible false
-  const initialApplication = initialAppOnboarding(profile, applications);
+  const initialApplication = initialAppOnboarding(profile, isDataAble ? applications : []);
 
   const [activeApplicationId, setActiveApplicationId] = useState<number>();
   const activeApplication = applications.find(({ id }) => id === activeApplicationId);
 
-  const isApplicationDataAble =
-    activeApplication &&
-    dformsQuery.data &&
-    surveysQuery.data &&
-    dformsCategoriesQuery.data &&
-    dformsCategoriesRegisterQuery.data;
+  const isApplicationDataAble = activeApplication && isDataAble;
 
   useEffect(() => {
     if (initialApplication?.id) {

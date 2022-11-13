@@ -16,11 +16,12 @@ import { MemberDFormService } from "../../data/services/memberDformService";
 
 export type DFormPrivateMemberFormProps = {
   dformId: DformId;
+  dformName: string;
   initialValues?: Record<number, DformFieldValueType>;
 };
 
 export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) => {
-  const { dformId, initialValues = {} } = props;
+  const { dformId, dformName, initialValues = {} } = props;
 
   const [form] = Form.useForm();
   const [values, setValues] = useState(() => initialValues);
@@ -97,7 +98,7 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
 
   return (
     <NmpRow>
-      <NmpCol sm={4} className="dform-member-form__steps">
+      <NmpCol sm={5} className="dform-member-form__steps">
         <div className="dform-member-form__steps-scroll">
           <DFormSteps
             items={sections.map((section) => ({ title: section.name }))}
@@ -108,7 +109,9 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
         </div>
       </NmpCol>
 
-      <NmpCol xl={{ span: 12, push: 6 }} span={16} push={4}>
+      <NmpCol span={14}>
+        <h2 className="dform-member-form__title">{dformName}</h2>
+
         <NmpCard className="dform-member-form__card">
           <Form
             form={form}

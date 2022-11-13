@@ -2,7 +2,7 @@
   $bg-color: #f4f4f4;
   $main-color: #474747;
   $white-color: #ffffff;
-  $green-color: #35a046;
+  $dform-steps-color: #7267e5;
 
   /* Icon */
 
@@ -11,8 +11,8 @@
   }
   // Finish status
   .ant-steps-item-finish .ant-steps-item-icon {
-    background-color: $green-color;
-    border-color: $green-color;
+    background-color: $dform-steps-color;
+    border-color: $dform-steps-color;
   }
   .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
     color: $white-color;
@@ -23,10 +23,10 @@
     border-color: transparent;
   }
   .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon .ant-steps-icon {
-    color: $green-color;
+    color: $dform-steps-color;
   }
   .ant-progress-inner:not(.ant-progress-circle-gradient) .ant-progress-circle-path {
-    stroke: $green-color;
+    stroke: $dform-steps-color;
   }
   &.ant-steps-with-progress .ant-steps-item-icon .ant-progress {
     top: 0;
@@ -51,8 +51,8 @@
     .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process).ant-steps-item-finish
     > .ant-steps-item-container[role="button"]:hover
     .ant-steps-item-icon {
-    background-color: $green-color;
-    border-color: $green-color;
+    background-color: $dform-steps-color;
+    border-color: $dform-steps-color;
 
     > .ant-steps-icon {
       color: $white-color;
@@ -83,7 +83,7 @@
     width: 2px;
   }
   .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
-    background-color: $green-color;
+    background-color: $dform-steps-color;
   }
   .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-tail::after {
     background-color: $bg-color;
@@ -91,19 +91,25 @@
 
   /* Title */
 
-  .ant-steps-item-title {
+  &.ant-steps-vertical > .ant-steps-item .ant-steps-item-title {
     color: $main-color;
+    min-height: 32px;
+
+    display: flex;
+    align-items: center;
+
     font-size: 16px;
-    font-weight: 400;
     font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
   }
   // Finish status
   .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
-    color: $green-color;
+    color: $dform-steps-color;
   }
   // Process status
   .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
-    color: $green-color;
+    color: $dform-steps-color;
   }
   // Wait status
   .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
@@ -122,7 +128,7 @@
     .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-finish
     > .ant-steps-item-container[role="button"]:hover
     .ant-steps-item-description {
-    color: $green-color;
+    color: $dform-steps-color;
   }
   // Hover - Process status
   &.ant-steps
@@ -137,7 +143,7 @@
     .ant-steps-item:not(.ant-steps-item-active).ant-steps-item-process
     > .ant-steps-item-container[role="button"]:hover
     .ant-steps-item-description {
-    color: $green-color;
+    color: $dform-steps-color;
   }
   // Hover - Wait status
   &.ant-steps

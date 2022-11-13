@@ -17,7 +17,7 @@ export const DFormMemberCheckSave: FC<DFormMemberCheckSaveProps> = (props) => {
         <span className="dform-member-check-save__label">Saving</span>
       ) : (
         <div className="dform-member-check-save__box">
-          <CheckOutlined style={{ color: "#35A046" }} /> <span className="dform-member-check-save__label">Saved</span>
+          <CheckOutlined /> <span className="dform-member-check-save__label">Saved</span>
         </div>
       )}
     </div>

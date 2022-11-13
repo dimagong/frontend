@@ -1,0 +1,9 @@
+.member-dform {
+  display: flex;
+  justify-content: center;
+  padding: 46px 0 125px;
+
+  &__container {
+    max-width: 1260px;
+  }
+}
