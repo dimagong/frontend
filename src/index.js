@@ -1,3 +1,4 @@
+import "assets/styles/new_index.scss";
 import "react-toastify/dist/ReactToastify.css";
 
 import React from "react";
