@@ -118,9 +118,13 @@ export const useSubmitDFormMutation = ({ dformId }, options) => {
 // MVA DForm Categories' Queries/Mutations
 
 const MVADFormCategoryQueryKey = createQueryKey("MVA DForm category");
+const MVADFormCategoryRegisterQueryKey = createQueryKey("MVA DForm category register");
 
 export const MVADFormCategoryQueryKeys = {
   all: () => [MVADFormCategoryQueryKey],
+};
+export const MVADFormCategoryRegisterQueryKeys = {
+  all: () => [MVADFormCategoryRegisterQueryKey],
 };
 
 export const useMVADFormsCategoriesQuery = (options) => {
@@ -128,6 +132,16 @@ export const useMVADFormsCategoriesQuery = (options) => {
     {
       url: `/member-view-api/dform/category`,
       queryKey: MVADFormCategoryQueryKeys.all(),
+    },
+    options
+  );
+};
+
+export const useMVADFormsCategoriesRegisterQuery = (options) => {
+  return useGenericQuery(
+    {
+      url: `/member-view-api/dform/category/register`,
+      queryKey: MVADFormCategoryRegisterQueryKeys.all(),
     },
     options
   );

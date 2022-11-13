@@ -112,7 +112,12 @@ const menuSurveysGroup = (surveys: Survey[]) => {
 };
 
 const makeCategoryHierarchy = (dFormsCategories) => {
-  const topLevel = dFormsCategories.find((category) => category.category_parent === null);
+  let topLevel = dFormsCategories.find((category) => category.category_parent === null);
+
+  if (!topLevel) {
+    return [];
+  }
+
   topLevel.forms = [];
 
   for (let childForm of dFormsCategories) {
@@ -240,21 +245,16 @@ const makeViewHierarchy = (topLevelCategory) => {
   return viewHierarchy;
 };
 
-export const MemberMenu = ({ dforms, dFormsCategories, surveys, onboardings, activeOnboarding, onMenuChange }) => {
-  // const selectDFormsCategory = (categories: DFormCategory[]): Partial<DFormCategory>[] => {
-  //   const dformsList: Partial<DFormCategory>[] = [];
-  //   categories.forEach(({ dform_id, dform_name, dform_status }) => {
-  //     if (!dformsList.find((el) => el.dform_id === dform_id) && dform_id) {
-  //       dformsList.push({
-  //         dform_id,
-  //         dform_name: dform_name || "no application name",
-  //         dform_status: dform_status || Status.NO_STATUS,
-  //       });
-  //     }
-  //   });
-  //   return dformsList;
-  // };
-  let categorizeDForms: any = [
+export const MemberMenuView = ({
+  dforms,
+  dFormsCategories,
+  dFormsCategoriesRegister,
+  surveys,
+  onboardings,
+  activeOnboarding,
+  onMenuChange,
+}) => {
+  let zeroCategory: any = [
     {
       className: "member-menu__category",
       label: menuCategoryTitle("Forms", 0),
@@ -264,16 +264,23 @@ export const MemberMenu = ({ dforms, dFormsCategories, surveys, onboardings, act
     },
   ];
 
+  let commonCategory: any = [];
+  let registerCategory: any = [];
+
   if (dFormsCategories.length) {
-    categorizeDForms = makeViewHierarchy(makeCategoryHierarchy(dFormsCategories));
+    commonCategory = makeViewHierarchy(makeCategoryHierarchy(dFormsCategories));
+  }
+
+  if (dFormsCategoriesRegister.length) {
+    registerCategory = makeViewHierarchy(makeCategoryHierarchy(dFormsCategoriesRegister));
   }
 
   const items = [
     {
       label: "Forms",
-      key: `1`,
+      key: "Forms",
       className: "member-menu__item",
-      children: categorizeDForms,
+      children: commonCategory.length ? commonCategory : zeroCategory,
     },
     {
       key: "surveys",
@@ -281,50 +288,13 @@ export const MemberMenu = ({ dforms, dFormsCategories, surveys, onboardings, act
       children: menuSurveysGroup(surveys),
       className: "member-menu__item survey-item",
     },
+    {
+      label: "Register",
+      key: `Register`,
+      className: "member-menu__item",
+      children: registerCategory.length ? registerCategory : zeroCategory,
+    },
   ];
-
-  // const categoriesList: Partial<DFormCategory>[] = [];
-  // if (dFormsCategories) {
-  //   dFormsCategories.forEach(({ category_id, category_name }) => {
-  //     if (!categoriesList.find((el) => el.category_id === category_id) && category_id) {
-  //       categoriesList.push({ category_id, category_name: category_name || "no category name" });
-  //     }
-  //   });
-  // }
-  //
-  // const oldItems = [
-  //   {
-  //     key: "applications",
-  //     label: "Applications",
-  //     children: !dFormsCategories?.length
-  //       ? menuDFormsGroup(dforms)
-  //       : [
-  //           {
-  //             label: menuCategoryTitle("Categories", dFormsCategories.length),
-  //             type: "group",
-  //             className: "member-menu__category",
-  //             children: categoriesList.map(({ category_id, category_name }) => {
-  //               const findCategories = dFormsCategories.filter(
-  //                 (category: DFormCategory) => category.category_id === category_id
-  //               );
-  //               return {
-  //                 label: menuCategoryItem(category_name),
-  //                 key: `${category_id}-${category_name}`,
-  //                 children: findCategories.length ? menuDFormsGroup(selectDFormsCategory(findCategories)) : [],
-  //               };
-  //             }),
-  //           },
-  //         ],
-  //
-  //     className: "member-menu__item",
-  //   },
-  //   {
-  //     key: "surveys",
-  //     label: "Surveys",
-  //     children: menuSurveysGroup(surveys),
-  //     className: "member-menu__item survey-item",
-  //   },
-  // ];
 
   const selectedKeys = [getKey(activeOnboarding.type, activeOnboarding.id)];
 

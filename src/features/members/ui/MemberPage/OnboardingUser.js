@@ -10,6 +10,7 @@ import {
   useProspectUserProfileQuery,
   useNotifyIntroductionPageSeeingMutation,
   useMVADFormsCategoriesQuery,
+  useMVADFormsCategoriesRegisterQuery,
 } from "api/Onboarding/prospectUserQuery";
 import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 import { initialAppOnboarding } from "features/onboarding/utils/findActiveAppOnboarding";
@@ -24,17 +25,20 @@ const useCallCollectQuery = () => {
   const userSurveyPassing = useSurveyPassingQuery();
   const useDForms = useMVADFormsQuery();
   const useDFormsCategories = useMVADFormsCategoriesQuery();
-  return { userProspectProfile, userSurveyPassing, useDForms, useDFormsCategories };
+  const useDFormsCategoriesRegister = useMVADFormsCategoriesRegisterQuery();
+  return { userProspectProfile, userSurveyPassing, useDForms, useDFormsCategories, useDFormsCategoriesRegister };
 };
 
 const OnboardingUser = () => {
-  const { userProspectProfile, userSurveyPassing, useDForms, useDFormsCategories } = useCallCollectQuery();
+  const { userProspectProfile, userSurveyPassing, useDForms, useDFormsCategories, useDFormsCategoriesRegister } =
+    useCallCollectQuery();
   const queryClient = useQueryClient();
 
   const dForms = useDForms.data;
   const profile = userProspectProfile.data;
   const onboardingSurveys = userSurveyPassing.data;
   const dFormsCategories = useDFormsCategories.data;
+  const dFormsCategoriesRegister = useDFormsCategoriesRegister.data;
 
   const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation({
     userId: profile?.id,
@@ -57,7 +61,8 @@ const OnboardingUser = () => {
     userSurveyPassing.isLoading ||
     useDForms.isLoading ||
     userProspectProfile.isLoading ||
-    useDFormsCategories.isLoading
+    useDFormsCategories.isLoading ||
+    useDFormsCategoriesRegister.isLoading
   ) {
     return (
       <div className="d-flex justify-content-center pt-5">
@@ -93,6 +98,7 @@ const OnboardingUser = () => {
       userApplications={userApplications}
       initialOnboarding={initialOnboarding}
       dFormsCategories={dFormsCategories}
+      dFormsCategoriesRegister={dFormsCategoriesRegister}
     />
   );
 };

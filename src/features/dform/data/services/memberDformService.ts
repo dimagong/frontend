@@ -1,10 +1,14 @@
+import {
+  MVADFormQueryKeys,
+  MVADFormCategoryQueryKeys,
+  MVADFormCategoryRegisterQueryKeys,
+} from "api/Onboarding/prospectUserQuery";
 import { queryClient } from "api/queryClient";
 import { AbstractService } from "features/common";
 import type { API_PREFIX_TYPE } from "features/common";
-import { MVADFormQueryKeys } from "api/Onboarding/prospectUserQuery";
 
+import { DformModel } from "../models";
 import { DformService } from "./dformService";
-import { DformModel } from "../models/dformModel";
 import { DformFieldModel, DformFieldTypes, DformFieldValueType, DformId, DformSchemaModel } from "../models";
 
 export class MemberDFormService extends AbstractService {
@@ -55,7 +59,9 @@ export class MemberDFormService extends AbstractService {
     const url = this.getUrl(`/dform/${dformId}/new-version`);
 
     return this.apiClient.post(url).then(() => {
-      queryClient.invalidateQueries(MemberDFormService.queryKeys.all());
+      queryClient.invalidateQueries(MVADFormQueryKeys.all());
+      queryClient.invalidateQueries(MVADFormCategoryQueryKeys.all());
+      queryClient.invalidateQueries(MVADFormCategoryRegisterQueryKeys.all());
     });
   }
 }
