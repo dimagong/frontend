@@ -22,7 +22,9 @@ import { NmpRow } from "./NmpRow";
 import { NmpCol } from "./NmpCol";
 import { NmpText } from "./NmpText";
 
+export * from "./icons";
 export * from "./NmpCard";
+export * from "./NmpUserInfo";
 export * from "./NmpCheckbox";
 export * from "./NmpCollapse";
 export * from "./NmpLongText";

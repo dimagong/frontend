@@ -1,0 +1,63 @@
+.nmp-user-info {
+  $grey-text: #a8a8a8;
+  $main-color: #474747;
+
+  $nmp-user-info-arrow-gap: 10px;
+  $nmp-user-info-arrow-size: 11px;
+  $nmp-user-info-avatar-size: 30px;
+
+  color: $main-color;
+  max-width: 100%;
+
+  &__content {
+    display: flex;
+    align-items: center;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    width: calc(100% - #{$nmp-user-info-avatar-size} - #{$nmp-user-info-arrow-size} - #{$nmp-user-info-arrow-gap});
+    max-width: calc(100% - #{$nmp-user-info-avatar-size} - #{$nmp-user-info-arrow-size} - #{$nmp-user-info-arrow-gap});
+
+    padding-right: 7px;
+    line-height: 22px;
+  }
+
+  &__username {
+    color: $main-color;
+    font-size: 16px;
+  }
+
+  &__organization-name {
+    color: $grey-text;
+    font-size: 14px;
+  }
+
+  &__avatar-icon {
+    max-width: $nmp-user-info-avatar-size;
+    max-height: $nmp-user-info-avatar-size;
+    font-size: $nmp-user-info-avatar-size;
+  }
+
+  &__dropdown-arrow-icon {
+    font-size: $nmp-user-info-arrow-size;
+    padding-left: $nmp-user-info-arrow-gap;
+  }
+
+  &__dropdown-item {
+    color: $main-color;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+  }
+  &__dropdown-item-label {
+    margin-left: 8px;
+  }
+
+  &__overlay {
+    min-width: 0 !important;
+  }
+}

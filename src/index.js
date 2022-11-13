@@ -3,12 +3,19 @@ import "react-toastify/dist/ReactToastify.css";
 
 import React from "react";
 import ReactDOM from "react-dom";
+import { ConfigProvider } from "antd";
 import { ToastContainer } from "react-toastify";
 import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 import App from "./App";
 import { queryClient } from "./api/queryClient";
+
+ConfigProvider.config({
+  theme: {
+    primaryColor: "#7267E5",
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>

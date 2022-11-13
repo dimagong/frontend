@@ -2,11 +2,15 @@
   display: block;
   max-width: 100%;
 
+  font-size: inherit;
+  line-height: inherit;
+
   &__line {
     display: inline-block;
     max-width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    vertical-align: middle;
   }
 }

@@ -20,10 +20,10 @@ import { selectOrganizations, selectSelectedOrganizationIdAndType } from "app/se
 import { createQueryKey } from "api/createQueryKey";
 import { useGenericQuery } from "api/useGenericQuery";
 import { useGenericMutation } from "api/useGenericMutation";
+import { MemberIntroductionTemplate } from "features/members/ui/MemberIntroductionTemplate";
 import { useOrganizationLogoQuery, useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 
 import IntroPageForm from "./Components/IntroPageForm";
-import IntroPageView from "../members/ui/IntroPageView";
 
 const { createOrganizationRequest, updateOrganizationRequest } = appSlice.actions;
 
@@ -448,14 +448,11 @@ const Organization = ({ create = false }) => {
 
       {!create && selectedIntroPage ? (
         <ContextFeatureTemplate contextFeatureTitle="Intro page preview">
-          <IntroPageView
-            userName="{{Username}}"
-            introText={selectedIntroPage.intro_text || "{{introText}}"}
-            introTitle={selectedIntroPage.intro_title || "{{introTitle}}"}
-            brochureUrl={selectedIntroPage.brochure.url}
-            brochureName={selectedIntroPage.brochure?.file?.name || "{{brochureName}}"}
-            downloadText={selectedIntroPage.download_text || "{{downloadText}}"}
-            isOnboardingExist
+          <MemberIntroductionTemplate
+            introText={selectedIntroPage.intro_text}
+            introTitle={selectedIntroPage.intro_title}
+            brochureName={selectedIntroPage.brochure?.file?.name}
+            downloadText={selectedIntroPage.download_text}
           />
         </ContextFeatureTemplate>
       ) : null}

@@ -1,14 +1,13 @@
+import "./styles.scss";
+
 import React from "react";
 
 import { NpmMenu, NmpTag } from "features/nmp-ui";
 
-import { OnboardingsTypes } from "../utils/collectApplicationsUser";
-
-import { findStatusSurvey } from "../data/helpers/findStatusSurvey";
-
-import { Status } from "features/members/data/constants/statusConstants";
-
-import { Survey, DForm, DFormCategory } from "../data/models/models";
+import { Status } from "../../data/constants/statusConstants";
+import { OnboardingsTypes } from "../../utils/collectApplicationsUser";
+import { findStatusSurvey } from "../../data/helpers/findStatusSurvey";
+import { Survey, DForm, DFormCategory } from "../../data/models/models";
 
 const getKey = (type: string, id: number) => `${type}-${id}`;
 
@@ -245,15 +244,10 @@ const makeViewHierarchy = (topLevelCategory) => {
   return viewHierarchy;
 };
 
-export const MemberMenuView = ({
-  dforms,
-  dFormsCategories,
-  dFormsCategoriesRegister,
-  surveys,
-  onboardings,
-  activeOnboarding,
-  onMenuChange,
-}) => {
+export const MemberMenu = (props) => {
+  const { dforms, dFormsCategories, dFormsCategoriesRegister, surveys, onboardings, activeOnboarding, onMenuChange } =
+    props;
+
   let zeroCategory: any = [
     {
       className: "member-menu__category",
@@ -305,5 +299,9 @@ export const MemberMenuView = ({
     onMenuChange(onboarding);
   };
 
-  return <NpmMenu mode="horizontal" items={items} selectedKeys={selectedKeys} onSelect={onSelect}></NpmMenu>;
+  return (
+    <div className="member-menu">
+      <NpmMenu mode="horizontal" items={items} selectedKeys={selectedKeys} onSelect={onSelect} />
+    </div>
+  );
 };

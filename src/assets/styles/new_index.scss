@@ -2,9 +2,14 @@
  * This style is created for redesign reasons and legacy UI library.
 */
 
-@import "~antd/dist/antd.css";
+@import "~antd/dist/antd.variable.min.css";
+
 @import "./custom-scroll.scss";
 
 body {
   font-family: "Inter", Helvetica, Arial, sans-serif;
+}
+
+body #root {
+  height: 100%;
 }

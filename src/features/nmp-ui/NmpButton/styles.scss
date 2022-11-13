@@ -22,6 +22,16 @@
     border-radius: 2px;
   }
 
+  @at-root a.ant-btn.ant-btn-nmp:not(.ant-btn-text) {
+    padding-top: 8px !important;
+  }
+  @at-root a.ant-btn.ant-btn-nmp:not(.ant-btn-text).ant-btn-sm {
+    padding-top: 0 !important;
+  }
+  @at-root a.ant-btn.ant-btn-nmp:not(.ant-btn-text).ant-btn-lg {
+    padding-top: 10px !important;
+  }
+
   &.ant-btn-nmp-default {
     color: #434343;
     border-color: #f3f3f3;

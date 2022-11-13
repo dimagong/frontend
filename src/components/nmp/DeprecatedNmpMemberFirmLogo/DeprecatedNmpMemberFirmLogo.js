@@ -11,7 +11,7 @@ import {
 
 import DeprecatedNmpManageableImage from "../DeprecatedNmpManageableImage";
 
-const DeprecatedNmpMemberFirmLogo = ({ fileId, memberFirmId, isEditable = false, ...attrs }) => {
+const DeprecatedNmpMemberFirmLogo = ({ fileId, memberFirmId, isEditable = false, width, height, style, className }) => {
   const updateMutation = useUpdateMemberFirmLogoMutation({ memberFirmId });
   const onChange = useCallback((file) => updateMutation.mutate({ file }), [updateMutation]);
 
@@ -30,7 +30,10 @@ const DeprecatedNmpMemberFirmLogo = ({ fileId, memberFirmId, isEditable = false,
       isEditable={isEditable}
       isRemovable={Boolean(fileId)}
       isLoading={logoQuery.isLoading || updateMutation.isLoading || deleteMutation.isLoading}
-      {...attrs}
+      width={width}
+      height={height}
+      style={style}
+      className={className}
     />
   );
 };

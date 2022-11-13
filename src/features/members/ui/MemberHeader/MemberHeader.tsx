@@ -3,7 +3,7 @@ import "./styles.scss";
 import React, { FC } from "react";
 
 import { Logo } from "./components/Logo";
-import { UserInfo } from "./components/UserInfo";
+// import { UserInfo } from "./components/UserInfo";
 
 export type MemberHeaderProps = {
   logoSrc: string;
@@ -33,14 +33,14 @@ export const MemberHeader: FC<MemberHeaderProps> = ({
 
       {children}
 
-      <UserInfo
+      {/*<UserInfo
         userName={userName}
         organizationName={organizationName}
         onLogoutClick={onLogoutClick}
         onHomeClick={onHomeClick}
         onSurveyClick={onSurveyClick}
         avatarSrc={avatarSrc}
-      />
+      />*/}
     </header>
   );
 };
