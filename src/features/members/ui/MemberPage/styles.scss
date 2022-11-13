@@ -1,0 +1,20 @@
+.nmp-member {
+  --npm-member-logo-width: 135px;
+  --npm-member-logo-height: 40px;
+
+  &__layout {
+    flex: auto;
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    background-color: #f4f4f4;
+  }
+
+  &__header {
+    flex: 0 0 auto;
+    height: 80px;
+    padding: 0 60px;
+    line-height: 80px;
+    background-color: #fff;
+  }
+}
