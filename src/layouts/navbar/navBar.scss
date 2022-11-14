@@ -1,8 +1,11 @@
 .header-navbar {
+  background: #fff;
+
   .search-input_container {
     width: 40%;
     position: relative;
     padding-right: 30px;
+
     .autocomplete-expand-icon {
       position: absolute;
       right: -2px;
@@ -10,6 +13,7 @@
       cursor: pointer;
     }
   }
+
   &.simplified-navbar {
     transition: 0s;
     background: transparent;
@@ -19,6 +23,7 @@
     position: unset;
     margin: 0 auto !important;
   }
+
   .burger-menu {
     padding: 0;
     background: white;
@@ -26,6 +31,10 @@
     -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16) !important;
     -moz-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16) !important;
     box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16) !important;
+  }
+
+  .navbar-brand {
+    cursor: pointer;
   }
 }
 

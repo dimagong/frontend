@@ -53,17 +53,16 @@ const ThemeNavbar = () => {
         <div className="navbar-container content">
           <div className="navbar-collapse d-flex justify-content-between align-items-center" id="navbar-mobile">
             <div className="bookmark-wrapper">
-              <NavLink to="/" className="navbar-brand logo d-flex align-items-center">
+              <span className="navbar-brand logo d-flex align-items-center" onClick={handleOrgPictureClick}>
                 <DeprecatedNmpOrganizationLogo
                   fileId={userProfile.permissions.logo?.id}
                   isOnboarding={false}
                   organizationId={userProfile.permissions.organization_id}
                   organizationType={userProfile.permissions.organization_type}
                   organizationName={userProfile.permissions.organization}
-                  onClick={handleOrgPictureClick}
                   className="brand-logo"
                 />
-              </NavLink>
+              </span>
             </div>
 
             <div className="search-input_container">
