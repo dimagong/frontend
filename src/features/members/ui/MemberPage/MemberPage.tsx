@@ -32,7 +32,7 @@ export const MemberPage: FC = () => {
 
   const profile = profileQuery.data as any;
   const userId = profile.id as number;
-  const avatarId = profile.avatar.id as number;
+  const avatarId = profile.avatar?.id as number;
   const logoId = profile.permissions.logo.id as number;
   const username = profile.first_name as string;
   const organizationId = profile.permissions.organization_id as number;
