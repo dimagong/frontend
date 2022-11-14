@@ -68,16 +68,18 @@ export const MemberPage: FC = () => {
   // This shit possible false
   const initialApplication = initialAppOnboarding(profile, isDataAble ? applications : []);
 
-  const [activeApplicationId, setActiveApplicationId] = useState<number>();
-  const activeApplication = applications.find(({ id }) => id === activeApplicationId);
+  const [activeApplicationMeta, setActiveApplicationMeta] = useState<{ id: number; type: string }>();
+  const activeApplication = applications.find(({ id, type }) => {
+    return id === activeApplicationMeta?.id && type === activeApplicationMeta?.type;
+  });
 
   const isApplicationDataAble = activeApplication && isDataAble;
 
   useEffect(() => {
-    if (initialApplication?.id) {
-      setActiveApplicationId(initialApplication.id);
+    if (initialApplication?.id && initialApplication?.type) {
+      setActiveApplicationMeta({ id: initialApplication?.id, type: initialApplication?.type });
     }
-  }, [initialApplication?.id]);
+  }, [initialApplication?.id, initialApplication?.type]);
 
   const onLogout = () => {
     // @ts-ignore
@@ -85,7 +87,7 @@ export const MemberPage: FC = () => {
     history.push("/login");
   };
 
-  const onMenuChange = (application) => setActiveApplicationId(application.id);
+  const onMenuChange = (application) => setActiveApplicationMeta({ id: application.id, type: application.type });
 
   return (
     <Layout className="nmp-member__layout">
@@ -136,7 +138,7 @@ export const MemberPage: FC = () => {
               <MemberComponentView
                 profile={profile}
                 applications={applications}
-                activeApplicationId={activeApplicationId}
+                activeApplicationMeta={activeApplicationMeta}
               />
             ) : (
               <NpmSpin size={60} />

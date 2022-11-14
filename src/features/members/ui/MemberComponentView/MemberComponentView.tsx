@@ -8,14 +8,16 @@ import { TypeConstants } from "../../data/constants/typeApplication";
 import { MemberIntroductionTemplate } from "../MemberIntroductionTemplate";
 
 export const MemberComponentView = (props) => {
-  const { profile, applications, activeApplicationId } = props;
+  const { profile, applications, activeApplicationMeta } = props;
 
   const userId = profile.id as number;
   const username = profile.first_name as string;
   const notifyEntry = profile.notify_entries.length > 0 ? profile.notify_entries[0] : null;
   const organizationName = profile.permissions.organization as string;
 
-  const activeApplication = applications.find(({ id }) => id === activeApplicationId);
+  const activeApplication = applications.find(({ id, type }) => {
+    return id === activeApplicationMeta?.id && type === activeApplicationMeta?.type;
+  });
 
   const useRemoveUserNotify = useNotifyIntroductionPageSeeingMutation({ userId, userNotifyEntryId: notifyEntry?.id });
 
@@ -39,10 +41,10 @@ export const MemberComponentView = (props) => {
 
   return (
     <>
-      {activeApplication.type === TypeConstants.SURVEY && (
-        <MemberSurveyView organization={organizationName} selectedSurveyId={activeApplicationId} />
+      {activeApplication?.type === TypeConstants.SURVEY && (
+        <MemberSurveyView organization={organizationName} selectedSurveyId={activeApplication.id} />
       )}
-      {activeApplication.type === TypeConstants.DFORM && (
+      {activeApplication?.type === TypeConstants.DFORM && (
         <MemberDFormView
           dformId={activeApplication.id}
           status={activeApplication.status}
