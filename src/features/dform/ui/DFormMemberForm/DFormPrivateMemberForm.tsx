@@ -122,8 +122,8 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
             onValuesChange={onValuesChange}
           >
             <DFormMemberSection sectionId={section.id}>
-              <NmpRow justify="space-between" align="middle" className="dform-member-form__actions">
-                <NmpCol>
+              <NmpRow justify="space-between" align="middle" className="dform-member-form__actions" gutter={24}>
+                <NmpCol flex="1">
                   <DFormMemberCheckSave isLoading={false} />
                 </NmpCol>
 
