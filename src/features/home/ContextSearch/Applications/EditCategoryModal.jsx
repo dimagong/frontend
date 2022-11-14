@@ -74,11 +74,21 @@ export const EditCategoryModal = ({ isOpen, onCancel, group, onSubmit, submittin
     return object;
   };
 
+  const onFinish = (submittedObj) => {
+    _.forOwn(submittedObj, (value, key) => {
+      if (value?.value) {
+        submittedObj[key] = value.value;
+      }
+    });
+
+    onSubmit(submittedObj);
+  };
+
   return (
     <NmpModal visible={isOpen} title={"Edit category"} onCancel={onCancel} footer={null} onClick={stopPropagation}>
       <Form
         form={form}
-        onFinish={onSubmit}
+        onFinish={onFinish}
         layout="vertical"
         name="duplicateForm"
         onFieldsChange={handleFormChange}
