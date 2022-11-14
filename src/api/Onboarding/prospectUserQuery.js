@@ -264,7 +264,8 @@ export const usePushAnswerMutation = ({ id }, options = {}) => {
   return useMutation({
     mutationFn: (payload) => clientAPI["put"](`/member-view-api/survey-passing/${payload.surveyId}`, payload.data),
     onError: (error) => dispatch(pushAnswerError(error.message)),
-    onSuccess: (data) => {
+    onSuccess: () => {
+      queryClient.invalidateQueries(MVASurveyPassingQueryKeys.all());
       queryClient.invalidateQueries(MVACurrentQuestionQueryKeys.byId(id));
       dispatch(pushAnswerSuccess());
     },
