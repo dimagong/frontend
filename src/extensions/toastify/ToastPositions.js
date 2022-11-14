@@ -38,37 +38,37 @@ class ToastrPositions extends React.Component {
         <CardBody>
           <h5 className="my-1">Top Positions</h5>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="primary" outline onClick={this.notifyTopLeft}>
+            <Button color="primary" outline onClick={this.notifyTopLeft}>
               Top Left
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="primary" outline onClick={this.notifyTopCenter}>
+            <Button color="primary" outline onClick={this.notifyTopCenter}>
               Top Center
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mb-1">
-            <Button.Ripple color="primary" outline onClick={this.notifyTopRight}>
+            <Button color="primary" outline onClick={this.notifyTopRight}>
               Top Right
-            </Button.Ripple>
+            </Button>
           </div>
 
           <h5 className="my-1">Bottom Positions</h5>
 
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="success" outline onClick={this.notifyBottomLeft}>
+            <Button color="success" outline onClick={this.notifyBottomLeft}>
               Bottom Left
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="success" outline onClick={this.notifyBottomCenter}>
+            <Button color="success" outline onClick={this.notifyBottomCenter}>
               Bottom Center
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mb-1">
-            <Button.Ripple color="success" outline onClick={this.notifyBottomRight}>
+            <Button color="success" outline onClick={this.notifyBottomRight}>
               Bottom Right
-            </Button.Ripple>
+            </Button>
           </div>
         </CardBody>
       </Card>

@@ -52,9 +52,9 @@ const ComingSoon = () => {
                 <Label>Email</Label>
               </FormGroup>
             </Form>
-            <Button.Ripple block color="primary" className="btn-block">
+            <Button block color="primary" className="btn-block">
               Subscribe
-            </Button.Ripple>
+            </Button>
           </CardBody>
         </Card>
       </Col>

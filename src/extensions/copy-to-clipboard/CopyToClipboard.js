@@ -45,7 +45,7 @@ class Clipboard extends React.Component {
                   </Col>
                   <Col md="2" sm="12" className="mb-1">
                     <CopyToClipboard onCopy={this.onCopy} text={this.state.value}>
-                      <Button.Ripple color="primary">Copy!</Button.Ripple>
+                      <Button color="primary">Copy!</Button>
                     </CopyToClipboard>
                   </Col>
                 </Row>

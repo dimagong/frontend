@@ -16,24 +16,24 @@ class Toastr extends React.Component {
         </CardHeader>
         <CardBody>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="success" outline onClick={this.notifyBounce}>
+            <Button color="success" outline onClick={this.notifyBounce}>
               Bounce
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="success" outline onClick={this.notifyFlip}>
+            <Button color="success" outline onClick={this.notifyFlip}>
               Flip
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="success" outline onClick={this.notifyZoom}>
+            <Button color="success" outline onClick={this.notifyZoom}>
               Zoom
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mb-1">
-            <Button.Ripple color="success" outline onClick={this.notifySlide}>
+            <Button color="success" outline onClick={this.notifySlide}>
               Slide
-            </Button.Ripple>
+            </Button>
           </div>
         </CardBody>
       </Card>

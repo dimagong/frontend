@@ -115,7 +115,7 @@ class UserAvatar extends React.Component {
         />
 
         <div style={{ "margin-top": "5px" }} className="d-flex justify-content-center">
-          <Button.Ripple
+          <Button
             disabled={this.state.isLoading}
             onClick={(event) => this.changeAvatar(event)}
             outline
@@ -123,7 +123,7 @@ class UserAvatar extends React.Component {
             color="primary"
           >
             Change
-          </Button.Ripple>
+          </Button>
           <input id="input-user-edit-avatar" type="file" hidden onChange={(event) => this.onChangeAvatar(event)} />
         </div>
 

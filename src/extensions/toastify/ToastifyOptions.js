@@ -17,14 +17,14 @@ class Toastr extends React.Component {
         </CardHeader>
         <CardBody>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="success" outline onClick={this.notifyDelay}>
+            <Button color="success" outline onClick={this.notifyDelay}>
               Delay
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mb-1">
-            <Button.Ripple color="success" outline onClick={this.notifyAutoClose}>
+            <Button color="success" outline onClick={this.notifyAutoClose}>
               AutoClose
-            </Button.Ripple>
+            </Button>
           </div>
         </CardBody>
       </Card>

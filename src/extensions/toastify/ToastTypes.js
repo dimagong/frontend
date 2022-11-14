@@ -17,30 +17,30 @@ class Toastr extends React.Component {
         </CardHeader>
         <CardBody>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="primary" onClick={this.notifyDefault} outline>
+            <Button color="primary" onClick={this.notifyDefault} outline>
               Default
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="success" onClick={this.notifySuccess} outline>
+            <Button color="success" onClick={this.notifySuccess} outline>
               Success
-            </Button.Ripple>
+            </Button>
           </div>
           <div className="d-inline-block mr-1 mb-1">
             {" "}
-            <Button.Ripple color="info" onClick={this.notifyError} outline>
+            <Button color="info" onClick={this.notifyError} outline>
               Danger
-            </Button.Ripple>{" "}
+            </Button>{" "}
           </div>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="warning" onClick={this.notifyInfo} outline>
+            <Button color="warning" onClick={this.notifyInfo} outline>
               Info
-            </Button.Ripple>{" "}
+            </Button>{" "}
           </div>
           <div className="d-inline-block mr-1 mb-1">
-            <Button.Ripple color="danger" onClick={this.notifyWarning} outline>
+            <Button color="danger" onClick={this.notifyWarning} outline>
               Warning
-            </Button.Ripple>
+            </Button>
           </div>
         </CardBody>
       </Card>

@@ -15,9 +15,9 @@ const Error500 = () => {
               encrustment portia myelination
             </p>
             <p className="pb-2">lachrymatory bestain hoople piscator pyramidoidal parter clipt.</p>
-            <Button.Ripple tag="a" href="/" color="primary" size="lg" className="mt-2">
+            <Button tag="a" href="/" color="primary" size="lg" className="mt-2">
               Back to Home
-            </Button.Ripple>
+            </Button>
           </CardBody>
         </Card>
       </Col>

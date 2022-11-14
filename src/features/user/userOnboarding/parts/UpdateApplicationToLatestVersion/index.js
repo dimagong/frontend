@@ -36,13 +36,13 @@ export default function UpdateApplicationToLatestVersion({ application }) {
   }, [isLoading]);
 
   return (
-    <Button.Ripple outline color="primary" className={"update-application-component bg-white"} onClick={onRefresh}>
+    <Button outline color="primary" className={"update-application-component bg-white"} onClick={onRefresh}>
       <RefreshCw
         size={15}
         className={`update-application-component_refresh-button ${
           isLoading && isCurrentApplicationUpdateStarted ? "processing" : ""
         }`}
       />
-    </Button.Ripple>
+    </Button>
   );
 }
