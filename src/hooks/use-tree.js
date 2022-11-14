@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import _ from "lodash";
 
 // :: <T>(node: T): string
 const defaultGetKey = (node) => node.id ?? node.key;
@@ -15,7 +16,8 @@ export const useTreeData = ({ items: initialItems = [], getKey = defaultGetKey, 
         children: null,
       };
 
-      node.children = buildTree(getChildren(item), node.key);
+      node.children = _.orderBy(buildTree(getChildren(item), node.key), ["key"], ["desc"]);
+
       map.set(node.key, node);
 
       return node;
