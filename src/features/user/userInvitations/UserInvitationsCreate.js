@@ -113,7 +113,7 @@ const UserInvitationsCreate = ({ resend }) => {
           onCopy={onCopy}
           text={window.location.origin + "/invitation-accept/" + manager.invited.invitation_token}
         >
-          <Button color="primary" className="mr-1" size="sm" style={{ "font-size": "14px" }}>
+          <Button color="primary" className="mr-1" size="sm" style={{ fontSize: "14px" }}>
             Copy link
           </Button>
         </CopyToClipboard>

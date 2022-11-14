@@ -141,7 +141,7 @@ const UserProfileEdit = ({ manager, onEditClose }) => {
     }
   );
 
-  const [notifyEntityOption, setNotifyEntityOption] = useState(null);
+  const [notifyEntityOption, setNotifyEntityOption] = useState();
   const [notifyEntitiesOptions, setNotifyEntitiesOptions] = useState([]);
 
   const addUserNotifyEntity = useAddUserNotifyEntityMutation(
