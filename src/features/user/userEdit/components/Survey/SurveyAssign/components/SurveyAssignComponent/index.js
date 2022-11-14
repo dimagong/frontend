@@ -172,7 +172,7 @@ const SurveyAssignComponent = ({ workFlows, reviewers, surveys, isLoading, onSur
                   <Col>
                     <div className="survey-assign_body_reviewers">
                       {selectedReviewers.map((reviewer) => (
-                        <div className="reviewer-tile">
+                        <div className="reviewer-tile" key={reviewer.id}>
                           <div className="reviewer-tile_name">{`${reviewer.first_name} ${reviewer.last_name}`}</div>
                           <div
                             className="reviewer-tile_cross"
