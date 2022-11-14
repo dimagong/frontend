@@ -132,7 +132,7 @@ export const MemberPage: FC = () => {
       <Layout>
         <Layout.Content prefixCls="nmp-member__content">
           <div className="nmp-member__container">
-            {isApplicationDataAble ? (
+            {isDataAble ? (
               <MemberComponentView
                 profile={profile}
                 applications={applications}
