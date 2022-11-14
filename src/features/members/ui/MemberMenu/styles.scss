@@ -6,7 +6,6 @@ $member-menu-active-color: #7267e5;
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
 
   color: $member-menu-color;
 
@@ -87,7 +86,13 @@ $member-menu-active-color: #7267e5;
 
   // Customizations
 
-  > .ant-menu-horizontal {
+  .npm-menu {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .ant-menu-horizontal {
     border-bottom: none;
   }
 
