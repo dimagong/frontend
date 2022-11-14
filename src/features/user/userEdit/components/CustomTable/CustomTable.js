@@ -40,6 +40,7 @@ export const CustomTable = ({ handleRowClick, selectedManager, selectedAssignedS
       const onVisibilityChange = (event) => {
         if (!document.hidden) {
           dispatch(getOnboardingsByUserRequest(manager));
+          dispatch(getAssignedSurveysRequest(manager.id));
         }
       };
 
