@@ -1,8 +1,6 @@
 import React from "react";
 import { MemberHeader } from "./MemberHeader";
 
-import "assets/styles/index.scss";
-
 const storySettings = {
   title: "MemberView/Header",
   component: MemberHeader,
