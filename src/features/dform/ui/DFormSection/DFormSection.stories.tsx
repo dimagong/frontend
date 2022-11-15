@@ -17,9 +17,12 @@ const Template = (props) => {
       <DFormSection sectionName={props.sectionName}>
         {mockGroups.map((group) => (
           <DFormGroup groupName={group.name} key={group.id}>
-            {mockBlocks.map((block) => (
-              <DFormBlock {...block} key={block.id} />
-            ))}
+            {group.relatedBlocksIds
+              .slice(0, group.relatedBlocksIds.length / 3)
+              .map((blockId) => mockBlocks.find((block) => block.id === blockId)!)
+              .map((block) => (
+                <DFormBlock {...block} key={block.id} />
+              ))}
           </DFormGroup>
         ))}
       </DFormSection>
