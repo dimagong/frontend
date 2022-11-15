@@ -23,7 +23,7 @@ export const makeGroup = (category: CategoryHierarchy, fields: Field[]): Group =
     organizationType: category.categoryOrganizationType,
     fields: groupsNodeIds,
     groups: [],
-    isSystem: false,
+    isSystem: category.categoryIsSystem,
     createdAt: category.categoryCreatedAt,
     breadcrumbs: category.breadcrumbs,
     path: category.breadcrumbs.split("."),

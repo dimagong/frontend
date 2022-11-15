@@ -60,6 +60,7 @@ export type CategoryHierarchy = {
   dformTemplateId: number | null;
   dformTemplateName: string | null;
   categoryId: number;
+  categoryIsSystem: boolean;
   categoryParent: number | null;
   categoryName: CategoryName | null;
   categoryOrganizationId: OrganizationId | null;
