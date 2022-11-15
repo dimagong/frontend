@@ -1,3 +1,4 @@
+import "../src/antConfig";
 import "../src/assets/styles/new_index.scss";
 
 export const parameters = {
