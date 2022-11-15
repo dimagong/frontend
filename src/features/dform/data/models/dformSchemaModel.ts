@@ -72,7 +72,7 @@ export class DformSchemaModel {
   }
 
   isFieldValid(field: DformFieldModel, values: Record<number, DformFieldValueType>): boolean {
-    const value = values[field.masterSchemaFieldId];
+    const value = values[field.id];
 
     return field.isValid(value);
   }
