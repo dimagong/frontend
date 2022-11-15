@@ -11,3 +11,9 @@
 ::-webkit-scrollbar {
   height: 6px;
 }
+
+// Set scrollbar styles for Firefox browser
+:root {
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-width: thin;
+}
