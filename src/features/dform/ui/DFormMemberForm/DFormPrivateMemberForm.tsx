@@ -83,7 +83,7 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
   };
 
   const onSectionChange = (index: number) => {
-    validateSection().then(() => setCurrentSectionIndex(index));
+    setCurrentSectionIndex(index);
   };
 
   const onNextButtonClick = () => {
