@@ -16,7 +16,11 @@ export const useTreeData = ({ items: initialItems = [], getKey = defaultGetKey, 
         children: null,
       };
 
-      node.children = _.orderBy(buildTree(getChildren(item), node.key), ["key"], ["desc"]);
+      node.children = _.orderBy(
+        buildTree(getChildren(item), node.key),
+        [(item) => item.value.isContainable, (item) => item.value.name],
+        ["desc", "asc"]
+      );
 
       map.set(node.key, node);
 
