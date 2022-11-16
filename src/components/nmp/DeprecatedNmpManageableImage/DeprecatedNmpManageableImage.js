@@ -2,7 +2,6 @@ import "./styles.scss";
 
 import { X } from "react-feather";
 import PropTypes from "prop-types";
-import classnames from "classnames";
 import { Button } from "reactstrap";
 import React, { useRef } from "react";
 
@@ -64,24 +63,26 @@ const DeprecatedNmpManageableImage = (props) => {
   } = props;
 
   return (
-    <DeprecatedNmpImage
-      src={src}
-      alt={alt}
-      isLoading={isLoading}
-      width={width}
-      height={height}
-      style={style}
-      className={classnames("manageable-image", className)}
-    >
-      {isEditable ? (
-        <NmpManageableImageControls
-          onChange={onChange}
-          onDelete={onDelete}
-          isLoading={isLoading}
-          isRemovable={isRemovable}
-        />
-      ) : null}
-    </DeprecatedNmpImage>
+    <div className="manageable-image">
+      <DeprecatedNmpImage
+        src={src}
+        alt={alt}
+        isLoading={isLoading}
+        width={width}
+        height={height}
+        style={style}
+        className={className}
+      >
+        {isEditable ? (
+          <NmpManageableImageControls
+            onChange={onChange}
+            onDelete={onDelete}
+            isLoading={isLoading}
+            isRemovable={isRemovable}
+          />
+        ) : null}
+      </DeprecatedNmpImage>
+    </div>
   );
 };
 
