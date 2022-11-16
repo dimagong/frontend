@@ -2,7 +2,7 @@ import React from "react";
 import { Form } from "antd";
 import type { FunctionComponent, ReactNode, ReactElement } from "react";
 
-import { invariant } from "features/common";
+import { devWarning, invariant } from "features/common";
 
 import { DformSchemaContext } from "../DformSchemaContext";
 import { DformBlockId, DformFieldValueType } from "../../data/models";
@@ -36,20 +36,24 @@ export const DCRElement: FC<DCRElementProps> = (props) => {
   conditions.forEach((condition) => {
     const { operatorType, effectType, fieldId, expectedValue } = condition;
 
-    const field = dformSchema.getFieldById(fieldId);
-    const convertor = DCRFieldValueConvertors[field.fieldType];
-    const fieldValue = form.getFieldValue(fieldId) as DformFieldValueType;
-    const operatorComparator = DCROperatorTypesComparotors[operatorType];
+    try {
+      const field = dformSchema.getFieldById(fieldId);
+      const convertor = DCRFieldValueConvertors[field.fieldType];
+      const fieldValue = form.getFieldValue(fieldId) as DformFieldValueType;
+      const operatorComparator = DCROperatorTypesComparotors[operatorType];
 
-    const isApplicable = operatorComparator({
-      type: field.fieldType,
-      control: convertor(fieldValue),
-      expected: DCRExpectedValueConvertor(expectedValue, field.fieldType),
-    });
+      const isApplicable = operatorComparator({
+        type: field.fieldType,
+        control: convertor(fieldValue),
+        expected: DCRExpectedValueConvertor(expectedValue, field.fieldType),
+      });
 
-    if (isApplicable) {
-      const effectKey = DCREffectProps[effectType];
-      effects[effectKey] = isApplicable;
+      if (isApplicable) {
+        const effectKey = DCREffectProps[effectType];
+        effects[effectKey] = isApplicable;
+      }
+    } catch (error) {
+      devWarning(error);
     }
   });
 

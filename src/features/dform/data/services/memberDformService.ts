@@ -7,9 +7,16 @@ import { queryClient } from "api/queryClient";
 import { AbstractService } from "features/common";
 import type { API_PREFIX_TYPE } from "features/common";
 
-import { DformModel } from "../models";
+import {
+  DformId,
+  DformModel,
+  DformBlockId,
+  DformFieldModel,
+  DformFieldTypes,
+  DformSchemaModel,
+  DformFieldValueType,
+} from "../models";
 import { DformService } from "./dformService";
-import { DformFieldModel, DformFieldTypes, DformFieldValueType, DformId, DformSchemaModel } from "../models";
 
 export class MemberDFormService extends AbstractService {
   readonly prefix: API_PREFIX_TYPE = "/member-view-api";
@@ -23,7 +30,9 @@ export class MemberDFormService extends AbstractService {
     valuesById: MVADFormQueryKeys.valuesById,
   };
 
-  getDform(data: { dformId: DformId }): Promise<{ dform: DformModel; values: Record<number, DformFieldValueType> }> {
+  getDform(data: {
+    dformId: DformId;
+  }): Promise<{ dform: DformModel; values: Record<DformBlockId, DformFieldValueType> }> {
     const { dformId } = data;
     const url = this.getUrl(`/dform/${dformId}`);
 
