@@ -10,7 +10,8 @@ import { useDFormTemplateCategoriesQuery } from "../categoryQueries";
 
 import { parseSelectCategory } from "../utils/categoryConverter";
 import { getCategoriesAsOptions, getCategoryAsOption } from "../utils/getCategoryAsOption";
-import { parseOrganizationType } from "../utils/organizationTypeConverter";
+
+import { getOrganizationType } from "constants/organization";
 
 const getOrganizationUniqueId = ({ id, type }) => `${type}/${id}`;
 
@@ -34,7 +35,7 @@ export const CreateApplicationForm = ({ onSubmit, parent }) => {
   const [categoriesOptions, setCategoriesOptions] = useState(null);
   const [organization, setOrganization] = useState({
     id: parent.organizationId,
-    type: parseOrganizationType(parent.organizationType),
+    type: getOrganizationType(parent.organizationType),
   });
 
   const { data: organizations, isLoading } = useAllowedOrganizationsListQuery({ initialData: [] });
@@ -47,7 +48,7 @@ export const CreateApplicationForm = ({ onSubmit, parent }) => {
   useEffect(() => {
     const updatedOrganization = {
       id: parent.organizationId,
-      type: parseOrganizationType(parent.organizationType),
+      type: getOrganizationType(parent.organizationType),
     };
     setOrganization(updatedOrganization);
 

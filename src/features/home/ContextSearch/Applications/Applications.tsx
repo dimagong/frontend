@@ -11,33 +11,47 @@ import { NmpSelect, NmpInput } from "features/nmp-ui";
 import WorkFlowsAndNotificationsList from "features/home/ContextSearch/components/WorkFlowsAndNotificationsList";
 
 import { CategoriesHierarchy } from "./CategoriesHierarchy";
+
 import { useDFormTemplateRootCategoriesQuery } from "./categoryQueries";
+
 import { getRootCategoriesAsOptions } from "./utils/getCategoryAsOption";
+import { camelize } from "utility/camelize";
+
+import { getOrganizationType, OrganizationTypes } from "constants/organization";
 
 const { getWorkflowsRequest, getNotificationsRequest } = appSlice.actions;
 
 export const Applications = () => {
   const dispatch = useDispatch();
 
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("");
 
-  const [rootCategoryId, setRootCategoryId] = useState();
+  const [rootCategoryId, setRootCategoryId] = useState<number>();
 
   const { data: rootCategories } = useDFormTemplateRootCategoriesQuery();
 
   let rootCategoriesAsOption;
 
-  if (rootCategories) {
+  if (rootCategories?.length > 0) {
+    const camelizedRootCategories = rootCategories.map((category) => camelize(category));
+
+    camelizedRootCategories.sort((a, b) => a.id - b.id);
+
     // Set default category
     if (!rootCategoryId) {
-      setRootCategoryId(rootCategories[0].id);
+      const rootCategory =
+        camelizedRootCategories.find(
+          (category) => getOrganizationType(category.categorizableType) === OrganizationTypes.network
+        ) || camelizedRootCategories[0];
+
+      setRootCategoryId(rootCategory.id);
     }
 
-    rootCategoriesAsOption = getRootCategoriesAsOptions(rootCategories);
+    rootCategoriesAsOption = getRootCategoriesAsOptions(camelizedRootCategories);
   }
 
-  const onRootCategoryChange = (value) => {
+  const onRootCategoryChange = (value: number) => {
     setRootCategoryId(value);
   };
 
