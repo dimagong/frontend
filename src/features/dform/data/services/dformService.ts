@@ -127,6 +127,8 @@ export class DformService extends AbstractService {
           field.isLabelShowing,
           field.minimum === null ? undefined : field.minimum,
           field.maximum === null ? undefined : field.maximum,
+          field.minLength === null ? undefined : field.minLength,
+          field.maxLength === null ? undefined : field.maxLength,
           Number(field.masterSchemaFieldId)
         );
       case DformFieldTypes.Resource:

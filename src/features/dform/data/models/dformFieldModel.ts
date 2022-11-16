@@ -240,6 +240,8 @@ export class DformNumberFieldModel extends AbstractDformFieldModel {
     isLabelShowing: boolean,
     public minimum: number | undefined,
     public maximum: number | undefined,
+    public minLength: number | undefined,
+    public maxLength: number | undefined,
     masterSchemaFieldId: number
   ) {
     super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
@@ -248,7 +250,8 @@ export class DformNumberFieldModel extends AbstractDformFieldModel {
   isValid(value: DformFieldValueType): boolean {
     return (
       DformNumberFieldModel.numberValidator(value, this.minimum, this.maximum).isValid &&
-      AbstractDformFieldModel.fieldValidator(value, this.isRequired)
+      AbstractDformFieldModel.fieldValidator(value, this.isRequired) &&
+      DformTextValidationFieldModel.stringValidator(value, this.minLength, this.maxLength).isValid
     );
   }
 }

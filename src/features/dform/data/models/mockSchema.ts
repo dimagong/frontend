@@ -161,6 +161,8 @@ export const mockBlocks = Array(SECTIONS_QUANTITY * GROUPS_QUANTITY)
       true,
       undefined,
       30,
+      undefined,
+      undefined,
       6
     ),
     new DformResourceFieldModel(
