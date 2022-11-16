@@ -2,7 +2,6 @@ import "./styles.scss";
 
 import type { FC } from "react";
 import { Progress } from "antd";
-import classnames from "classnames";
 import React, { CSSProperties } from "react";
 
 type Props = {
