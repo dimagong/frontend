@@ -219,6 +219,7 @@ export const FieldNumberEditProperties = () => {
   return (
     <>
       <FieldMinMaxEditProperty />
+      <FieldMinMaxLengthEditProperty />
       <FieldDefaultEditProperties />
     </>
   );
