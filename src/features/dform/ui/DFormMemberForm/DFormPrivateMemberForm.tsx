@@ -5,19 +5,19 @@ import React, { useState, useMemo } from "react";
 
 import { NmpCol, NmpRow, NmpCard, NmpButton } from "features/nmp-ui";
 
-import { DFormSteps } from "../DFormSteps";
 import { DFormContext } from "../DFormContext";
+import { DFormMemberTabs } from "../DFormMemberTabs";
 import { DFormMemberSection } from "./DFormMemberSection";
 import { DformSchemaContext } from "../DformSchemaContext";
 import { DFormMemberCheckSave } from "../DFormMemberCheckSave";
-import { DformBlockId, DformFieldValueType, DformId } from "../../data/models";
 import { dformValidationMessages } from "../../dformValidationMessages";
 import { MemberDFormService } from "../../data/services/memberDformService";
+import { DformBlockId, DformFieldValueType, DformId, DformSectionId } from "../../data/models";
 
 export type DFormPrivateMemberFormProps = {
   dformId: DformId;
   dformName: string;
-  initialValues?: Record<number, DformFieldValueType>;
+  initialValues?: Record<DformBlockId, DformFieldValueType>;
 };
 
 export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) => {
@@ -28,26 +28,21 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
 
   const { isAccessible } = DFormContext.useContext();
   const { dformSchema } = DformSchemaContext.useContext();
-  const sections = dformSchema.orderedSections;
 
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const sections = useMemo(() => dformSchema.orderedSections, []);
 
-  const section = sections[currentSectionIndex];
-  const isLastSection = currentSectionIndex === sections.length - 1;
-  const isFirstSection = currentSectionIndex === 0;
+  const [activeSectionId, setActiveSectionId] = useState(() => sections[0].id);
 
-  const percent = useMemo(() => {
-    const requiredFields = dformSchema.getRequiredFieldsBySectionId(section.id);
+  const progresses = useMemo(() => {
+    return sections.map(({ id }) => {
+      return dformSchema.getQuantityOfValidFieldInSectionById(id, values);
+    });
+  }, [sections, values]);
 
-    if (requiredFields.length === 0) {
-      return 0;
-    }
-
-    const validRequiredFields = dformSchema.getValidRequiredFieldsBySectionId(section.id, values);
-    const percent = Math.round((validRequiredFields.length / requiredFields.length) * 100);
-
-    return percent;
-  }, [values, section.id]);
+  const section = dformSchema.getSectionById(activeSectionId);
+  const activeSectionIndex = sections.findIndex((section) => section.id === activeSectionId);
+  const isLastSection = activeSectionIndex === sections.length - 1;
+  const isFirstSection = activeSectionIndex === 0;
 
   const submitMutation = useMutation({
     mutationFn: () => MemberDFormService.instance.submit({ dformId }),
@@ -59,14 +54,27 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
 
   const onFinish = () => submitMutation.mutate();
 
-  const onValuesChange = (changedValues, values) => {
-    Object.entries(changedValues).forEach(([id, value]) => {
-      const fieldId = id as DformBlockId;
+  const onValuesChange = (changedValues: Record<DformBlockId, DformFieldValueType>) => {
+    const changedValuesEntries = Object.entries(changedValues) as [DformBlockId, DformFieldValueType][];
+
+    if (changedValuesEntries.length === 0) {
+      return;
+    }
+
+    changedValuesEntries.forEach(([fieldId, value]) => {
       const field = dformSchema.getFieldById(fieldId);
       saveFieldValueMutation.mutate({ dformId, field, value });
     });
 
-    setValues(values);
+    setValues((prevValues) => {
+      return changedValuesEntries.reduce(
+        (values, [fieldId, value]) => {
+          values[fieldId] = value;
+          return values;
+        },
+        { ...prevValues }
+      );
+    });
   };
 
   const validateSection = () => {
@@ -74,17 +82,24 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
     return form.validateFields(nameList);
   };
 
+  // Need to cover cases when section is hidden/disabled by DCR
   const tryMoveToNextSection = () => {
-    validateSection().then(() => setCurrentSectionIndex((index) => index + 1));
+    validateSection().then(() =>
+      setActiveSectionId((sectionId) => {
+        const activeSectionIndex = sections.findIndex((section) => section.id === sectionId);
+        const nextSectionId = sections[activeSectionIndex + 1].id;
+
+        return nextSectionId;
+      })
+    );
   };
 
   const trySubmitDform = () => {
     validateSection().then(() => form.submit());
   };
 
-  const onSectionChange = (index: number) => {
-    setCurrentSectionIndex(index);
-  };
+  // Need to cover cases when section is hidden/disabled by DCR
+  const onSectionTabClick = (sectionId: DformSectionId) => setActiveSectionId(sectionId);
 
   const onNextButtonClick = () => {
     if (isLastSection) {
@@ -94,61 +109,72 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
     }
   };
 
-  const onPrevButtonClick = () => setCurrentSectionIndex((index) => (index > 0 ? index - 1 : index));
+  const onPrevButtonClick = () => {
+    setActiveSectionId((sectionId) => {
+      const activeSectionIndex = sections.findIndex((section) => section.id === sectionId);
+      const nextSectionId = sections[activeSectionIndex - 1].id;
+
+      return nextSectionId;
+    });
+  };
 
   return (
     <NmpRow>
-      <NmpCol sm={5} className="dform-member-form__steps">
-        <div className="dform-member-form__steps-scroll">
-          <DFormSteps
-            items={sections.map((section) => ({ title: section.name }))}
-            percent={percent}
-            current={currentSectionIndex}
-            onChange={onSectionChange}
-          />
-        </div>
-      </NmpCol>
+      <NmpCol span="20">
+        <DFormMemberTabs
+          items={sections.map((section, index) => ({
+            key: section.id,
+            label: section.name,
+            isViewed: section.isViewed,
+            progress: progresses[index],
+            children: (
+              <>
+                <h2 className="dform-member-form__title">{dformName}</h2>
 
-      <NmpCol span={14}>
-        <h2 className="dform-member-form__title">{dformName}</h2>
-
-        <NmpCard className="dform-member-form__card">
-          <Form
-            form={form}
-            name={section.id}
-            initialValues={initialValues}
-            validateMessages={dformValidationMessages}
-            onFinish={onFinish}
-            onValuesChange={onValuesChange}
-          >
-            <DFormMemberSection sectionId={section.id}>
-              <NmpRow justify="space-between" align="middle" className="dform-member-form__actions" gutter={24}>
-                <NmpCol flex="1">
-                  <DFormMemberCheckSave isLoading={false} />
-                </NmpCol>
-
-                {isFirstSection ? null : (
-                  <NmpCol>
-                    <NmpButton type="nmp-ghost" onClick={onPrevButtonClick}>
-                      Back
-                    </NmpButton>
-                  </NmpCol>
-                )}
-
-                <NmpCol>
-                  <NmpButton
-                    type="nmp-primary"
-                    onClick={onNextButtonClick}
-                    loading={submitMutation.isLoading || saveFieldValueMutation.isLoading}
-                    disabled={!isAccessible && isLastSection}
+                <NmpCard className="dform-member-form__card">
+                  <Form
+                    form={form}
+                    name={section.id}
+                    initialValues={initialValues}
+                    validateMessages={dformValidationMessages}
+                    onFinish={onFinish}
+                    onValuesChange={onValuesChange}
                   >
-                    {isLastSection ? "Submit for review" : "Next Section"}
-                  </NmpButton>
-                </NmpCol>
-              </NmpRow>
-            </DFormMemberSection>
-          </Form>
-        </NmpCard>
+                    <DFormMemberSection sectionId={section.id}>
+                      <NmpRow justify="space-between" align="middle" className="dform-member-form__actions" gutter={24}>
+                        <NmpCol flex="1">
+                          <DFormMemberCheckSave isLoading={false} />
+                        </NmpCol>
+
+                        {isFirstSection ? null : (
+                          <NmpCol>
+                            <NmpButton type="nmp-ghost" onClick={onPrevButtonClick}>
+                              Back
+                            </NmpButton>
+                          </NmpCol>
+                        )}
+
+                        <NmpCol>
+                          <NmpButton
+                            type="nmp-primary"
+                            onClick={onNextButtonClick}
+                            loading={submitMutation.isLoading || saveFieldValueMutation.isLoading}
+                            disabled={!isAccessible && isLastSection}
+                          >
+                            {isLastSection ? "Submit for review" : "Next Section"}
+                          </NmpButton>
+                        </NmpCol>
+                      </NmpRow>
+                    </DFormMemberSection>
+                  </Form>
+                </NmpCard>
+              </>
+            ),
+          }))}
+          activeKey={activeSectionId}
+          onTabClick={onSectionTabClick}
+          className="dform-member-form__tabs"
+        />
       </NmpCol>
     </NmpRow>
   );

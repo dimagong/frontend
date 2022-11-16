@@ -71,13 +71,29 @@ export class DformSchemaModel {
     return this.getFieldsBySectionId(sectionId).filter(({ isRequired }) => isRequired);
   }
 
-  isFieldValid(field: DformFieldModel, values: Record<number, DformFieldValueType>): boolean {
+  isFieldValid(field: DformFieldModel, values: Record<DformBlockId, DformFieldValueType>): boolean {
     const value = values[field.id];
 
     return field.isValid(value);
   }
 
-  getValidRequiredFieldsBySectionId(sectionId: DformSectionId, values: Record<number, DformFieldValueType>) {
+  getQuantityOfValidFieldInSectionById(
+    sectionId: DformSectionId,
+    values: Record<DformBlockId, DformFieldValueType>
+  ): number {
+    const requiredFields = this.getRequiredFieldsBySectionId(sectionId);
+
+    if (requiredFields.length === 0) {
+      return 0;
+    }
+
+    const validRequiredFields = this.getValidRequiredFieldsBySectionId(sectionId, values);
+    const percent = Math.round((validRequiredFields.length / requiredFields.length) * 100);
+
+    return percent;
+  }
+
+  getValidRequiredFieldsBySectionId(sectionId: DformSectionId, values: Record<DformBlockId, DformFieldValueType>) {
     return this.getRequiredFieldsBySectionId(sectionId).filter((field) => this.isFieldValid(field, values));
   }
 }
