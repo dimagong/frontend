@@ -3,7 +3,6 @@ import { Form } from "antd";
 import _ from "lodash";
 
 import { NmpModal, NmpSelect } from "features/nmp-ui";
-import { parseOrganizationType } from "features/home/ContextSearch/Applications/utils/organizationTypeConverter";
 import { useDFormTemplateCategoriesQuery } from "features/home/ContextSearch/Applications/categoryQueries";
 import { parseSelectCategory } from "features/home/ContextSearch/Applications/utils/categoryConverter";
 import { NmpInput, NmpButton } from "features/nmp-ui";
@@ -11,6 +10,8 @@ import {
   getCategoriesAsOptions,
   getCategoryAsOption,
 } from "features/home/ContextSearch/Applications/utils/getCategoryAsOption";
+
+import { getOrganizationType } from "constants/organization";
 
 export const EditCategoryModal = ({ isOpen, onCancel, group, onSubmit, submitting }) => {
   const [form] = Form.useForm();
@@ -25,7 +26,7 @@ export const EditCategoryModal = ({ isOpen, onCancel, group, onSubmit, submittin
 
   let { data: categories } = useDFormTemplateCategoriesQuery({
     organizationId: group.organizationId,
-    organizationType: parseOrganizationType(group.organizationType),
+    organizationType: getOrganizationType(group.organizationType),
   });
 
   useEffect(() => {
