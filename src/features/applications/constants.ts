@@ -21,6 +21,7 @@ export const INITIAL_SECTION_DATA = {
   isHidden: false,
   isDisabled: false,
   isProtected: false,
+  isVisibleNonManagers: false,
   isAlreadyViewed: false,
   relatedGroups: [],
   conditions: [],
@@ -30,6 +31,7 @@ export const INITIAL_GROUP_DATA = {
   isHidden: false,
   isDisabled: false,
   isProtected: false,
+  isVisibleNonManagers: false,
   relatedFields: [],
   conditions: [],
 };

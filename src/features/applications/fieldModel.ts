@@ -21,6 +21,7 @@ interface CommonFieldProperties<T extends DformFieldTypes | DformBlockTypes.Help
   isRequired: boolean;
   isDisabled: boolean;
   isProtected: boolean;
+  isVisibleNonManagers: boolean;
   isLabelShowing: boolean;
   masterSchemaFieldId: string | number;
   conditions: AbstractDFormFieldConditionModel[];
@@ -118,9 +119,13 @@ export abstract class AbstractDFormFieldModel implements CommonFieldProperties<a
    */
   isDisabled: boolean = false;
   /**
-   * Indicates that the field is not yet, or no longer, relevant for users who are filling out the owning form.
+   * Indicates that the field is not relevant or not to users who are non-managers.
    */
   isProtected: boolean = false;
+  /**
+   * Indicates that the field is visible or not to users who are non-managers.
+   */
+  isVisibleNonManagers: boolean = false;
   /**
    * Indicates that a field title is shown/hidden.
    */
@@ -191,6 +196,7 @@ export class DFormFieldModel extends AbstractDFormFieldModel {
     this.isRequired = properties.isRequired ?? this.isRequired;
     this.isDisabled = properties.isDisabled ?? this.isDisabled;
     this.isProtected = properties.isProtected ?? this.isProtected;
+    this.isVisibleNonManagers = properties.isVisibleNonManagers ?? this.isVisibleNonManagers;
     this.isLabelShowing = properties.isLabelShowing ?? this.isLabelShowing;
     this.masterSchemaFieldId = properties.masterSchemaFieldId ?? this.masterSchemaFieldId;
     this.classes = properties.classes ?? this.classes;

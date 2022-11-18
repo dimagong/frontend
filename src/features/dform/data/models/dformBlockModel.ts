@@ -24,9 +24,10 @@ export abstract class AbstractDformBlockModel extends DformElementModel<DformBlo
     id: DformBlockId,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     readonly groupId: DformGroupId,
     public blockSize: DformBlockSizeTypes = DformBlockSizeTypes.Full
   ) {
-    super(id, conditions, isProtected);
+    super(id, conditions, isProtected, isVisibleNonManagers);
   }
 }

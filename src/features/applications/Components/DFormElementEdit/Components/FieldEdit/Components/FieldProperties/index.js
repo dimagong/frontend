@@ -31,11 +31,21 @@ export const FieldRequiredEditProperty = () => {
   );
 };
 
-export const FieldProtectedEditProperty = () => {
+export const FieldProtectedEditProperty = ({ onChange }) => {
   return (
     <Form.Item name="isProtected" className="dform-field" valuePropName="checked">
-      <NmpCheckbox id="isProtected">
+      <NmpCheckbox id="isProtected" onChange={onChange}>
         <DFormLabel label="Is protected" isSmall />
+      </NmpCheckbox>
+    </Form.Item>
+  );
+};
+
+export const FieldVisibleNonManagersEditProperty = () => {
+  return (
+    <Form.Item name="isVisibleNonManagers" className="dform-field" valuePropName="checked">
+      <NmpCheckbox id="isVisibleNonManagers">
+        <DFormLabel label="Is visible to non-managers" isSmall />
       </NmpCheckbox>
     </Form.Item>
   );
@@ -51,7 +61,11 @@ export const FieldLabelShowingEditProperty = () => {
   );
 };
 
-export const FieldDefaultEditProperties = () => {
+export const FieldDefaultEditProperties = ({ element }) => {
+  const [isProtected, setIsProtected] = useState(() => element.isProtected);
+
+  useEffect(() => void setIsProtected(element.isProtected), [element.isProtected]);
+
   return (
     <Row className="mb-2">
       <Col md="12" className="dform-field__checkbox-default">
@@ -61,8 +75,13 @@ export const FieldDefaultEditProperties = () => {
         <FieldLabelShowingEditProperty />
       </Col>
       <Col md="12" className="dform-field__checkbox-default">
-        <FieldProtectedEditProperty />
+        <FieldProtectedEditProperty onChange={({ target }) => setIsProtected(target.checked)} />
       </Col>
+      {isProtected ? (
+        <Col md="12" className="dform-field__checkbox-default">
+          <FieldVisibleNonManagersEditProperty />
+        </Col>
+      ) : null}
     </Row>
   );
 };
@@ -102,16 +121,16 @@ export const FieldMinMaxLengthEditProperty = () => {
   );
 };
 
-export const FieldStringLikeTextEditProperties = () => {
+export const FieldStringLikeTextEditProperties = ({ element }) => {
   return (
     <>
       <FieldMinMaxLengthEditProperty />
-      <FieldDefaultEditProperties />
+      <FieldDefaultEditProperties element={element} />
     </>
   );
 };
 
-export const FieldDateEditProperties = () => {
+export const FieldDateEditProperties = ({ element }) => {
   return (
     <>
       <Row className="mb-2">
@@ -122,7 +141,7 @@ export const FieldDateEditProperties = () => {
         </Col>
       </Row>
 
-      <FieldDefaultEditProperties />
+      <FieldDefaultEditProperties element={element} />
     </>
   );
 };
@@ -210,17 +229,17 @@ export const FieldSelectEditProperties = ({ element }) => {
   return (
     <>
       <FieldSelectOptionsEditProperty element={element} />
-      <FieldDefaultEditProperties />
+      <FieldDefaultEditProperties element={element} />
     </>
   );
 };
 
-export const FieldNumberEditProperties = () => {
+export const FieldNumberEditProperties = ({ element }) => {
   return (
     <>
       <FieldMinMaxEditProperty />
       <FieldMinMaxLengthEditProperty />
-      <FieldDefaultEditProperties />
+      <FieldDefaultEditProperties element={element} />
     </>
   );
 };
@@ -321,9 +340,9 @@ export const SpecificFieldProperties = ({ element, organization, elementType }) 
     case DformFieldTypes.Text:
     case DformFieldTypes.LongText:
     case DformFieldTypes.TextArea:
-      return <FieldStringLikeTextEditProperties />;
+      return <FieldStringLikeTextEditProperties element={element} />;
     case DformFieldTypes.Date:
-      return <FieldDateEditProperties />;
+      return <FieldDateEditProperties element={element} />;
     case DformFieldTypes.Select:
     case DformFieldTypes.MultiSelect:
       return <FieldSelectEditProperties element={element} />;
@@ -337,7 +356,7 @@ export const SpecificFieldProperties = ({ element, organization, elementType }) 
     case DformFieldTypes.FileList:
     case DformFieldTypes.Boolean:
     default:
-      return <FieldDefaultEditProperties />;
+      return <FieldDefaultEditProperties element={element} />;
   }
 };
 
