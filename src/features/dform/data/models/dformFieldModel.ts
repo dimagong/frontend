@@ -43,12 +43,13 @@ export abstract class AbstractDformFieldModel extends AbstractDformBlockModel {
     blockSize: DformBlockSizeTypes,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     public label: string,
     public isRequired: boolean,
     public isLabelShowing: boolean,
     public masterSchemaFieldId: number
   ) {
-    super(id, conditions, isProtected, groupId, blockSize);
+    super(id, conditions, isProtected, isVisibleNonManagers, groupId, blockSize);
   }
 
   isValid(value: DformFieldValueType): boolean {
@@ -74,13 +75,25 @@ export class DformDateFieldModel extends AbstractDformFieldModel {
     blockSize: DformBlockSizeTypes,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     label: string,
     isRequired: boolean,
     isLabelShowing: boolean,
     public format: DformDateFormatTypes,
     masterSchemaFieldId: number
   ) {
-    super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
+    super(
+      id,
+      groupId,
+      blockSize,
+      conditions,
+      isProtected,
+      isVisibleNonManagers,
+      label,
+      isRequired,
+      isLabelShowing,
+      masterSchemaFieldId
+    );
   }
 }
 
@@ -125,6 +138,7 @@ export abstract class DformTextValidationFieldModel extends AbstractDformFieldMo
     blockSize: DformBlockSizeTypes,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     label: string,
     isRequired: boolean,
     isLabelShowing: boolean,
@@ -132,7 +146,18 @@ export abstract class DformTextValidationFieldModel extends AbstractDformFieldMo
     public maxLength: number | undefined,
     masterSchemaFieldId: number
   ) {
-    super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
+    super(
+      id,
+      groupId,
+      blockSize,
+      conditions,
+      isProtected,
+      isVisibleNonManagers,
+      label,
+      isRequired,
+      isLabelShowing,
+      masterSchemaFieldId
+    );
   }
 
   isValid(value: DformFieldValueType): boolean {
@@ -154,13 +179,25 @@ abstract class DformOptionsFieldModel extends AbstractDformFieldModel {
     blockSize: DformBlockSizeTypes,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     label: string,
     isRequired: boolean,
     isLabelShowing: boolean,
     public options: string[],
     masterSchemaFieldId: number
   ) {
-    super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
+    super(
+      id,
+      groupId,
+      blockSize,
+      conditions,
+      isProtected,
+      isVisibleNonManagers,
+      label,
+      isRequired,
+      isLabelShowing,
+      masterSchemaFieldId
+    );
   }
 }
 
@@ -178,6 +215,7 @@ export class DformMultiSelectFieldModel extends DformOptionsFieldModel {
     blockSize: DformBlockSizeTypes,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     label: string,
     isRequired: boolean,
     isLabelShowing: boolean,
@@ -191,6 +229,7 @@ export class DformMultiSelectFieldModel extends DformOptionsFieldModel {
       blockSize,
       conditions,
       isProtected,
+      isVisibleNonManagers,
       label,
       isRequired,
       isLabelShowing,
@@ -235,6 +274,7 @@ export class DformNumberFieldModel extends AbstractDformFieldModel {
     blockSize: DformBlockSizeTypes,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     label: string,
     isRequired: boolean,
     isLabelShowing: boolean,
@@ -244,7 +284,18 @@ export class DformNumberFieldModel extends AbstractDformFieldModel {
     public maxLength: number | undefined,
     masterSchemaFieldId: number
   ) {
-    super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
+    super(
+      id,
+      groupId,
+      blockSize,
+      conditions,
+      isProtected,
+      isVisibleNonManagers,
+      label,
+      isRequired,
+      isLabelShowing,
+      masterSchemaFieldId
+    );
   }
 
   isValid(value: DformFieldValueType): boolean {
@@ -270,6 +321,7 @@ export class DformResourceFieldModel extends AbstractDformFieldModel {
     blockSize: DformBlockSizeTypes,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     label: string,
     isRequired: boolean,
     isLabelShowing: boolean,
@@ -277,7 +329,18 @@ export class DformResourceFieldModel extends AbstractDformFieldModel {
     public resourceManagerFieldId: number,
     masterSchemaFieldId: number
   ) {
-    super(id, groupId, blockSize, conditions, isProtected, label, isRequired, isLabelShowing, masterSchemaFieldId);
+    super(
+      id,
+      groupId,
+      blockSize,
+      conditions,
+      isProtected,
+      isVisibleNonManagers,
+      label,
+      isRequired,
+      isLabelShowing,
+      masterSchemaFieldId
+    );
   }
 }
 

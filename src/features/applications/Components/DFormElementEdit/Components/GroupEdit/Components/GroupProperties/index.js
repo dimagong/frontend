@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
 import { Form } from "antd";
-import _ from "lodash";
+import { isEqual, forOwn } from "lodash";
+import React, { useState, useEffect } from "react";
 
 import { NmpButton, NmpInput, NmpCheckbox } from "features/nmp-ui";
 
@@ -11,6 +11,7 @@ import { SectionChanger } from "./SectionChanger";
 const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel, data }) => {
   const [form] = Form.useForm();
   const [disabled, setDisabled] = useState(true);
+  const [isProtected, setIsProtected] = useState(() => element.isProtected);
 
   const initialValues = {
     ...element,
@@ -18,12 +19,13 @@ const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElemen
 
   useEffect(() => {
     setDisabled(true);
+    setIsProtected(element.isProtected);
 
     form.setFieldsValue(initialValues);
   }, [element]);
 
   const onFinish = (submittedObj) => {
-    _.forOwn(submittedObj, (value, key) => {
+    forOwn(submittedObj, (value, key) => {
       if (value?.value) {
         submittedObj[key] = value.value;
       }
@@ -32,23 +34,19 @@ const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElemen
     onFieldSubmit(submittedObj);
   };
 
-  const handleFormChange = () => {
-    const fieldsValue = form.getFieldsValue();
-
-    const fieldsKeys = Object.keys(fieldsValue);
-
+  const onValuesChange = (_, values) => {
     setDisabled(true);
+    setIsProtected(values.isProtected);
 
-    fieldsKeys.forEach((key) => {
-      if (!_.isEqual(fieldsValue[key], initialValues[key])) {
+    Object.entries(values).forEach(([key, value]) => {
+      if (!isEqual(value, initialValues[key])) {
         setDisabled(false);
-        return;
       }
     });
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onFieldsChange={handleFormChange}>
+    <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onValuesChange={onValuesChange}>
       <Form.Item label="Section" name="sectionId" className="dform-field">
         <SectionChanger id="sectionId" data={data} />
       </Form.Item>
@@ -57,11 +55,19 @@ const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElemen
         <NmpInput id="name" type="text" placeholder="Enter your answer here" />
       </Form.Item>
 
-      <Form.Item name="isProtected" className="dform-field mb-2" valuePropName="checked">
+      <Form.Item name="isProtected" className="dform-field mb-0" valuePropName="checked">
         <NmpCheckbox id="isProtected">
           <DFormLabel label="Is protected" isSmall />
         </NmpCheckbox>
       </Form.Item>
+
+      {isProtected ? (
+        <Form.Item name="isVisibleNonManagers" className="dform-field" valuePropName="checked">
+          <NmpCheckbox id="isVisibleNonManagers">
+            <DFormLabel label="Is visible to non-managers" isSmall />
+          </NmpCheckbox>
+        </Form.Item>
+      ) : null}
 
       <div className="application_delimiter" />
 

@@ -8,9 +8,10 @@ export class DformGroupModel extends DformElementModel<DformGroupId> {
     id: DformGroupId,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     public name: string,
     public relatedBlocksIds: DformBlockId[]
   ) {
-    super(id, conditions, isProtected);
+    super(id, conditions, isProtected, isVisibleNonManagers);
   }
 }

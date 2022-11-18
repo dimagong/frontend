@@ -45,6 +45,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -57,6 +58,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -70,6 +72,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -82,6 +85,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -94,6 +98,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -108,6 +113,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -122,6 +128,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -138,6 +145,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -152,6 +160,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -165,6 +174,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -179,6 +189,7 @@ export class DformService extends AbstractService {
           field.classes,
           field.conditions,
           field.isProtected,
+          field.isVisibleNonManagers,
           field.title,
           field.isRequired,
           field.isLabelShowing,
@@ -202,13 +213,21 @@ export class DformService extends AbstractService {
           block.classes,
           block.conditions,
           block.isProtected,
+          block.isVisibleNonManagers,
           block.helpTextValue
         );
     }
   }
 
   static parseGroup(group: any): DformGroupModel {
-    return new DformGroupModel(group.id, group.conditions, group.isProtected, group.name, group.relatedFields);
+    return new DformGroupModel(
+      group.id,
+      group.conditions,
+      group.isProtected,
+      group.isVisibleNonManagers,
+      group.name,
+      group.relatedFields
+    );
   }
 
   static parseSection(section: any): DformSectionModel {
@@ -216,6 +235,7 @@ export class DformService extends AbstractService {
       section.id,
       section.conditions,
       section.isProtected,
+      section.isVisibleNonManagers,
       section.name,
       section.isAlreadyViewed,
       section.relatedGroups

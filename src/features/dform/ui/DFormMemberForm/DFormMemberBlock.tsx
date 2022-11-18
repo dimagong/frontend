@@ -21,9 +21,12 @@ export const DFormMemberBlock: FC<DFormMemberBlockProps> = (props) => {
 
   switch (block.blockType) {
     case DformBlockTypes.Field:
+      const isFieldProtected = dformSchema.isFieldProtected(block.id);
+      const isDisabled = !isAccessible || isFieldProtected;
+
       return (
         <DCRElement conditions={block.conditions}>
-          {({ isDisabled }) => (
+          {({ isDisabled: dcrIsDisabled }) => (
             <DFormFieldItem
               name={block.id}
               minimum={block["minimum"]}
@@ -40,7 +43,7 @@ export const DFormMemberBlock: FC<DFormMemberBlockProps> = (props) => {
                 blockSize={block.blockSize}
                 blockType={block.blockType}
                 fieldType={block.fieldType}
-                isDisabled={!isAccessible || isDisabled}
+                isDisabled={dcrIsDisabled || isDisabled}
                 isRequired={block.isRequired}
                 isLabelShowing={block.isLabelShowing}
                 masterSchemaFieldId={block.masterSchemaFieldId}

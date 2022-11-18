@@ -10,8 +10,9 @@ export class DformHelpTextModel extends AbstractDformBlockModel {
     blockSize: DformBlockSizeTypes,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     public helpText: string
   ) {
-    super(id, conditions, isProtected, groupId, blockSize);
+    super(id, conditions, isProtected, isVisibleNonManagers, groupId, blockSize);
   }
 }

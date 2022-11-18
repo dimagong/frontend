@@ -8,10 +8,11 @@ export class DformSectionModel extends DformElementModel<DformSectionId> {
     id: DformSectionId,
     conditions: unknown[],
     isProtected: boolean,
+    isVisibleNonManagers: boolean,
     public name: string,
     public isViewed: boolean,
     public relatedGroupsIds: DformGroupId[]
   ) {
-    super(id, conditions, isProtected);
+    super(id, conditions, isProtected, isVisibleNonManagers);
   }
 }

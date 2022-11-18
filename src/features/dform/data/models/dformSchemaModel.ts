@@ -1,4 +1,5 @@
 import { unexpected } from "features/common";
+import { devError } from "features/common/devWarning";
 
 import { DformBlockTypes } from "./dformBlockModel";
 import { DformGroupModel } from "./dformGroupModel";
@@ -25,10 +26,20 @@ export class DformSchemaModel {
   }
 
   private getElementById<T extends DformElementModel<unknown>>(list: T[], id: InferDformElementId<T>) {
+    if (list.length === 0) {
+      unexpected(`Can not find dform element by id: "${id}", list is empty.`);
+    }
+
+    if (!id) {
+      const elementType = list[0].elementType;
+      unexpected(`Can not find dform ${elementType}, id is nullable.`);
+    }
+
     const element = list.find((element) => element.id === id);
 
     if (!element) {
-      unexpected(`Can not find dform element by id: "${id}"`);
+      const elementType = list[0].elementType;
+      unexpected(`Can not find dform ${elementType} by id: "${id}"`);
     }
 
     return element;
@@ -48,6 +59,28 @@ export class DformSchemaModel {
 
   getSectionById(id: DformSectionId): DformSectionModel {
     return this.getElementById(this.sections, id);
+  }
+
+  getSectionByGroupId(id: DformGroupId): DformSectionModel {
+    const group = this.getGroupById(id);
+    return this.sections.find(({ relatedGroupsIds }) => relatedGroupsIds.find((groupId) => groupId === group.id)!)!;
+  }
+
+  isFieldProtected(id: DformBlockId): boolean {
+    try {
+      const field = this.getFieldById(id);
+      const group = this.getGroupById(field.groupId);
+      const section = this.getSectionByGroupId(group.id);
+
+      const isFieldProtected = field.isProtected && field.isVisibleNonManagers;
+      const isGroupProtected = group.isProtected && group.isVisibleNonManagers;
+      const isSectionProtected = section.isProtected && section.isVisibleNonManagers;
+
+      return isFieldProtected || isGroupProtected || isSectionProtected;
+    } catch (error) {
+      devError(error);
+      return false;
+    }
   }
 
   getFieldsBySectionId(sectionId: DformSectionId): DformFieldModel[] {

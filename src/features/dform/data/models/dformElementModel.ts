@@ -8,5 +8,10 @@ export enum DformElementTypes {
 export abstract class DformElementModel<IdType> {
   abstract readonly elementType: DformElementTypes;
 
-  constructor(readonly id: IdType, public conditions: unknown[], public isProtected: boolean) {}
+  constructor(
+    readonly id: IdType,
+    public conditions: unknown[],
+    public isProtected: boolean,
+    public isVisibleNonManagers: boolean
+  ) {}
 }
