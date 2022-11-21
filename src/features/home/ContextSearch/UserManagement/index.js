@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ChevronLeft, ChevronRight, X } from "react-feather";
-import UserEditPreview from "features/user/userEdit/userEditPreview";
+import { X } from "react-feather";
 
-import { Row, Col, Pagination, PaginationItem, PaginationLink, Button } from "reactstrap";
+import UserEditPreview from "features/user/userEdit/userEditPreview";
+import { NmpPagination } from "features/nmp-ui";
+
+import { Row, Col, Button } from "reactstrap";
 import useWindowSize from "hooks/windowWidth";
 import UserCardTemplate from "../CardTemplates/userCard";
 import { selectPreview } from "app/selectors/layoutSelector";
@@ -15,11 +17,11 @@ const { setManager, setPreview } = appSlice.actions;
 const UserManagement = ({ allManagers, managers, handleContextChange }) => {
   const dispatch = useDispatch();
   const preview = useSelector(selectPreview);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const closePreview = () => {
     dispatch(setPreview(null));
-    setPage(0);
+    setPage(1);
   };
 
   const width = useWindowSize();
@@ -27,6 +29,7 @@ const UserManagement = ({ allManagers, managers, handleContextChange }) => {
   let itemsPerPage = width <= 1400 ? 6 : 9;
 
   itemsPerPage = preview ? 3 : itemsPerPage;
+
   const oneColumn = !!preview;
 
   const renderContent = (data, page) => {
@@ -34,7 +37,8 @@ const UserManagement = ({ allManagers, managers, handleContextChange }) => {
       return <h1 className={"no-managers"}>There are no such managers</h1>;
     }
 
-    const pageData = data.slice(itemsPerPage * page, itemsPerPage * (page + 1));
+    const pageData = data.slice(itemsPerPage * (page - 1), itemsPerPage * page);
+
     return pageData.map((elData, idx) => (
       <UserCardTemplate
         className="cursor-pointer"
@@ -53,14 +57,14 @@ const UserManagement = ({ allManagers, managers, handleContextChange }) => {
     ));
   };
 
-  const getPagination = () => {
-    return Array.from(Array(Math.ceil(managers.length / itemsPerPage)));
-  };
-
   const onPreviewExpand = () => {
     const previewedManager = managers.filter(({ id }) => id === preview.id)[0];
     dispatch(setManager(previewedManager));
     handleContextChange("User");
+  };
+
+  const onPaginationChange = (page) => {
+    setPage(page);
   };
 
   return (
@@ -69,40 +73,20 @@ const UserManagement = ({ allManagers, managers, handleContextChange }) => {
         className={`home__card-wrapper ${preview ? "preview-visible" : ""}`}
         sm={preview ? (oneColumn ? "5" : "8") : "12"}
       >
-        {managers && renderContent(managers, page)}
-        {managers && getPagination().length > 1 && (
-          <div className="search-context-pagination">
-            <Button
-              className="pagination-arrow"
-              onClick={() => {
-                if (page !== 0) setPage(page - 1);
-              }}
-            >
-              <ChevronLeft size={28} color="#707070" />
-            </Button>
-            <Pagination aria-label="Page navigation">
-              {getPagination().map((_, index) => (
-                <PaginationItem key={index} active={page === index}>
-                  <PaginationLink
-                    onClick={() => {
-                      setPage(index);
-                    }}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-            </Pagination>
-            <Button
-              className="pagination-arrow"
-              onClick={() => {
-                if (page !== getPagination().length - 1) setPage(page + 1);
-              }}
-            >
-              <ChevronRight size={28} color="#707070" />
-            </Button>
-          </div>
-        )}
+        {managers ? (
+          <>
+            {renderContent(managers, page)}
+            <NmpPagination
+              current={page}
+              total={managers.length}
+              pageSize={itemsPerPage}
+              onChange={onPaginationChange}
+              showSizeChanger={false}
+              hideOnSinglePage
+              className="search-context-pagination"
+            />
+          </>
+        ) : null}
       </Col>
       {preview && (
         <Col sm={oneColumn ? "7" : "4"} className="preview">
