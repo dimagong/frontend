@@ -30,6 +30,7 @@ export * from "./NmpCollapse";
 export * from "./NmpLongText";
 export * from "./NmpWysiwygEditor";
 export * from "./NmpScreenReaderOnly";
+export * from "./NmpPagination";
 
 export {
   NmpRow,
