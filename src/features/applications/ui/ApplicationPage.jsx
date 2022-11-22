@@ -372,8 +372,6 @@ export const ApplicationPage = ({ applicationId }) => {
 
     dataToSave = updateStructureDependencies(selectedElement, submittedElement, dataToSave);
 
-    setApplicationData(dataToSave);
-
     mutateApplication(dataToSave, updateApplication);
   };
 
@@ -532,12 +530,28 @@ export const ApplicationPage = ({ applicationId }) => {
     return applicationData ? applicationData.sectionsOrder : [];
   }, [applicationData?.sectionsOrder]);
 
+  const getSectionIdByGroupId = (sections, groupId) => {
+    let sectionId;
+
+    _.forEach(sections, (value) => {
+      const isIncludes = value.relatedGroups.includes(groupId);
+      if (isIncludes) {
+        sectionId = value.id;
+        return;
+      }
+    });
+
+    return sectionId;
+  };
+
   const onBlockClick = (blockId) => {
     handleSelectElementForEdit(applicationData.fields[blockId], DformElementTypes.Block);
   };
 
   const onGroupClick = (groupId) => {
-    handleSelectElementForEdit(applicationData.groups[groupId], DformElementTypes.Group);
+    const sectionId = getSectionIdByGroupId(applicationData.sections, groupId);
+
+    handleSelectElementForEdit({ ...applicationData.groups[groupId], sectionId }, DformElementTypes.Group);
   };
 
   const onSectionClick = (sectionId) => {
