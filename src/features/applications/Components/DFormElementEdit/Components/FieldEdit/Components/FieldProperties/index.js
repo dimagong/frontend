@@ -19,6 +19,7 @@ import { useApplicationResourceManagerFields } from "../../../../../../data/appl
 import MasterSchemaProperty from "components/FormCreate/Fields/MasterSchemaProperty";
 
 import { DFormLabel } from "features/dform/ui/DFormLabel";
+import { nameValidator } from "features/dform/data/validators";
 import { GroupChanger } from "./GroupChanger";
 
 export const FieldRequiredEditProperty = () => {
@@ -455,7 +456,12 @@ const FieldProperties = (props) => {
               <MasterSchemaProperty id="masterSchemaFieldId" organizations={[organization]} />
             </Form.Item>
           </div>
-          <Form.Item label="Title" name="title" className="dform-field mb-2">
+          <Form.Item
+            label="Title"
+            name="title"
+            className="dform-field mb-2"
+            rules={[{ required: true }, { validator: nameValidator }]}
+          >
             <NmpInput id="title" type="text" placeholder="Enter your answer here" />
           </Form.Item>
         </>

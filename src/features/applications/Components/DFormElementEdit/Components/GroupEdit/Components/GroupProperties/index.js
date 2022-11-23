@@ -1,12 +1,15 @@
 import { Form } from "antd";
 import { isEqual, forOwn } from "lodash";
 import React, { useState, useEffect } from "react";
+import _ from "lodash";
 
 import { NmpButton, NmpInput, NmpCheckbox } from "features/nmp-ui";
 
 import { DFormLabel } from "features/dform/ui/DFormLabel";
 
 import { SectionChanger } from "./SectionChanger";
+
+import { nameValidator } from "features/dform/data/validators";
 
 const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel, data }) => {
   const [form] = Form.useForm();
@@ -51,7 +54,12 @@ const GroupProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElemen
         <SectionChanger id="sectionId" data={data} />
       </Form.Item>
 
-      <Form.Item label="Group name" name="name" className="dform-field mb-2">
+      <Form.Item
+        label="Group name"
+        name="name"
+        className="dform-field mb-2"
+        rules={[{ required: true }, { validator: nameValidator }]}
+      >
         <NmpInput id="name" type="text" placeholder="Enter your answer here" />
       </Form.Item>
 

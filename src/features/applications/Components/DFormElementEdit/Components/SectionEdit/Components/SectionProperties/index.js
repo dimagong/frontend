@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 
 import { DFormLabel } from "features/dform/ui/DFormLabel";
 import { NmpButton, NmpInput, NmpCheckbox } from "features/nmp-ui";
+import { nameValidator } from "features/dform/data/validators";
 
 const SectionProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElementChangesCancel }) => {
   const [form] = Form.useForm();
@@ -44,7 +45,12 @@ const SectionProperties = ({ element, onFieldSubmit, onDeleteButtonClick, onElem
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="properties" onValuesChange={onValuesChange}>
-      <Form.Item label="Section name" name="name" className="dform-field mb-2">
+      <Form.Item
+        label="Section name"
+        name="name"
+        className="dform-field mb-2"
+        rules={[{ required: true }, { validator: nameValidator }]}
+      >
         <NmpInput id="name" type="text" placeholder="Section name" />
       </Form.Item>
 
