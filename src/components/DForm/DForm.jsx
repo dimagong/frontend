@@ -41,7 +41,7 @@ const checkConditions = (elements, values, fields) => {
 
       const convertor = DCRFieldValueConvertors[field.type];
       const controlValue = values[field.masterSchemaFieldId];
-      const directValue = extractValue(controlValue, field.type);
+      const directValue = controlValue ? extractValue(controlValue, field.type) : null;
       const operatorComparator = DCROperatorTypesComparotors[operatorType];
 
       const isApplicable = operatorComparator({

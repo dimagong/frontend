@@ -11,10 +11,11 @@ import { DFormContext } from "../DFormContext";
 
 export type DFormMemberBlockProps = {
   blockId: DformBlockId;
+  isDisabled: boolean;
 };
 
 export const DFormMemberBlock: FC<DFormMemberBlockProps> = (props) => {
-  const { blockId } = props;
+  const { blockId, isDisabled = false } = props;
   const { isAccessible } = DFormContext.useContext();
   const { dformSchema } = DformSchemaContext.useContext();
   const block = dformSchema.getBlockById(blockId);
@@ -22,7 +23,7 @@ export const DFormMemberBlock: FC<DFormMemberBlockProps> = (props) => {
   switch (block.blockType) {
     case DformBlockTypes.Field:
       const isFieldProtected = dformSchema.isFieldProtected(block.id);
-      const isDisabled = !isAccessible || isFieldProtected;
+      const isFieldDisabled = !isAccessible || isFieldProtected || isDisabled;
 
       return (
         <DCRElement conditions={block.conditions}>
@@ -43,7 +44,7 @@ export const DFormMemberBlock: FC<DFormMemberBlockProps> = (props) => {
                 blockSize={block.blockSize}
                 blockType={block.blockType}
                 fieldType={block.fieldType}
-                isDisabled={dcrIsDisabled || isDisabled}
+                isDisabled={dcrIsDisabled || isFieldDisabled}
                 isRequired={block.isRequired}
                 isLabelShowing={block.isLabelShowing}
                 masterSchemaFieldId={block.masterSchemaFieldId}

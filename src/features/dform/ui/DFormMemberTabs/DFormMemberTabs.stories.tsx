@@ -1,6 +1,7 @@
 import React from "react";
 
 import { DFormMemberTabs } from "./DFormMemberTabs";
+import { DformSectionId } from "../../data/models";
 
 export default {
   title: "DForm/MemberTabs",

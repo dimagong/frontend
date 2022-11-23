@@ -1,67 +1,44 @@
-import React from "react";
 import { Form } from "antd";
+import React, { useMemo } from "react";
 import type { FunctionComponent, ReactNode, ReactElement } from "react";
 
-import { devWarning, invariant } from "features/common";
+import { invariant } from "features/common";
 
+import { DCREffect, getDCREffect } from "./getDCREffect";
 import { DformSchemaContext } from "../DformSchemaContext";
-import { DformBlockId, DformFieldValueType } from "../../data/models";
-
-import {
-  DCREffectProps,
-  DCRExpectedValueConvertor,
-  DCRFieldValueConvertors,
-  DCROperatorTypesComparotors,
-} from "../../../applications/Components/DFormElementEdit/Components/ConditionalElementRender/constants";
-
-export type DCRProps = { isDisabled: boolean };
 
 interface FC<P> extends FunctionComponent<P> {
   (props: P, context?: any): ReactElement;
 }
 
 export type DCRElementProps = {
-  conditions: any[];
-  children?: (dcrProps: DCRProps) => ReactNode;
+  conditions: unknown[];
+  isHiddenRendered?: boolean;
+  children?: (dcrEffect: DCREffect) => ReactNode;
 };
 
 export const DCRElement: FC<DCRElementProps> = (props) => {
-  const { conditions = [], children } = props;
-
-  const form = Form.useFormInstance();
-  const { dformSchema } = DformSchemaContext.useContext();
-
-  const effects = { isDisabled: false, isHidden: false };
-
-  conditions.forEach((condition) => {
-    const { operatorType, effectType, fieldId, expectedValue } = condition;
-
-    try {
-      const field = dformSchema.getFieldById(fieldId);
-      const convertor = DCRFieldValueConvertors[field.fieldType];
-      const fieldValue = form.getFieldValue(fieldId) as DformFieldValueType;
-      const operatorComparator = DCROperatorTypesComparotors[operatorType];
-
-      const isApplicable = operatorComparator({
-        type: field.fieldType,
-        control: convertor(fieldValue),
-        expected: DCRExpectedValueConvertor(expectedValue, field.fieldType),
-      });
-
-      if (isApplicable) {
-        const effectKey = DCREffectProps[effectType];
-        effects[effectKey] = isApplicable;
-      }
-    } catch (error) {
-      devWarning(error);
-    }
-  });
+  const { conditions = [], isHiddenRendered = true, children } = props;
 
   invariant(children, "Can not reach a children in the props.");
 
-  if (effects.isHidden) {
+  const form = Form.useFormInstance();
+  // const values = form.getFieldsValue();
+  const { dformSchema } = DformSchemaContext.useContext();
+
+  const effect = useMemo(
+    () =>
+      getDCREffect({
+        conditions,
+        getFieldById: (id) => dformSchema.getFieldById(id),
+        getFieldValue: (id) => form.getFieldValue(id),
+      }),
+    [conditions]
+  );
+
+  if (effect.isHidden && isHiddenRendered) {
     return null;
   }
 
-  return children(effects);
+  return children(effect);
 };

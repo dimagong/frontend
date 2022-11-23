@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import { Tabs } from "antd";
+import { Form, Tabs } from "antd";
 import classnames from "classnames";
 import type { TabsProps } from "antd";
 import React, { useState } from "react";
@@ -9,11 +9,18 @@ import type { FC, Key, CSSProperties } from "react";
 import { DFormMemberTab } from "./DFormMemberTab";
 import type { DFormMemberTabProps } from "./DFormMemberTab";
 import { DFormMemberTabLabel } from "./DFormMemberTabLabel";
+import { DCRElement } from "../DCR";
+import { DformSectionId } from "../../data/models";
+import { getDCREffect } from "../DCR/getDCREffect";
+import { DformSchemaContext } from "../DformSchemaContext";
 
-type TabProps = Unpack<TabsProps["items"]> & Omit<DFormMemberTabProps, "children" | "isActive">;
+type TabProps = Unpack<TabsProps["items"]> &
+  Omit<DFormMemberTabProps, "children" | "isActive"> & {
+    isHidden?: boolean;
+  };
 
 const getTabPropsByNodeKey = (items: TabProps[] = [], key: Key | null) => {
-  return items.find((item) => item.key === key);
+  return items.find((item) => item.key === key)!;
 };
 
 export type DFormMemberTabsProps = {
@@ -66,13 +73,12 @@ export const DFormMemberTabs: FC<DFormMemberTabsProps> = (props) => {
             const isActive = node.key === activeKey;
             const props = getTabPropsByNodeKey(items, node.key);
 
+            if (props.isHidden) {
+              return null as any;
+            }
+
             return (
-              <DFormMemberTab
-                isActive={isActive}
-                isViewed={props?.isViewed}
-                progress={props?.progress}
-                children={node}
-              />
+              <DFormMemberTab isActive={isActive} isViewed={props.isViewed} progress={props.progress} children={node} />
             );
           }}
         </DefaultTabBar>

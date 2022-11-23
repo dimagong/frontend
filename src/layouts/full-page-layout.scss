@@ -7,7 +7,9 @@
   overflow: hidden;
 
   background-size: cover;
-  background: url("../assets/img/pages/vuesax-login-bg.jpg") no-repeat 50%;
+  background-image: url("../assets/img/pages/vuesax-login-bg.jpg");
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
 
   &__content {
     width: 100%;

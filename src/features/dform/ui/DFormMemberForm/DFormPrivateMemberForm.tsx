@@ -13,6 +13,7 @@ import { DFormMemberCheckSave } from "../DFormMemberCheckSave";
 import { dformValidationMessages } from "../../dformValidationMessages";
 import { MemberDFormService } from "../../data/services/memberDformService";
 import { DformBlockId, DformFieldValueType, DformId, DformSectionId } from "../../data/models";
+import { getDCREffect } from "../DCR/getDCREffect";
 
 export type DFormPrivateMemberFormProps = {
   dformId: DformId;
@@ -38,6 +39,18 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
       return dformSchema.getQuantityOfValidFieldInSectionById(id, values);
     });
   }, [sections, values]);
+
+  const effects = useMemo(() => {
+    return sections.map((section) =>
+      getDCREffect({
+        conditions: section.conditions,
+        getFieldById: (id) => dformSchema.getFieldById(id),
+        getFieldValue: (id) => values[id],
+      })
+    );
+  }, [sections, values]);
+
+  console.log("asd", { effect: effects[sections.findIndex(({ id }) => activeSectionId == id)] });
 
   const section = dformSchema.getSectionById(activeSectionId);
   const activeSectionIndex = sections.findIndex((section) => section.id === activeSectionId);
@@ -127,6 +140,8 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
             label: section.name,
             isViewed: section.isViewed,
             progress: progresses[index],
+            disabled: effects[index].isDisabled,
+            isHidden: effects[index].isHidden,
             children: (
               <>
                 <h2 className="dform-member-form__title">{dformName}</h2>

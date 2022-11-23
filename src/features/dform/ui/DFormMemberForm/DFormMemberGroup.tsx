@@ -1,7 +1,6 @@
 import React from "react";
 import type { FC, ReactNode } from "react";
 
-import { DCRElement } from "../DCR";
 import { DFormGroup } from "../DFormGroup";
 import { DformGroupId } from "../../data/models";
 import { DformSchemaContext } from "../DformSchemaContext";
@@ -17,12 +16,8 @@ export const DFormMemberGroup: FC<DFormMemberGroupProps> = (props) => {
   const group = dformSchema.getGroupById(groupId);
 
   return (
-    <DCRElement conditions={group.conditions}>
-      {() => (
-        <DFormGroup groupName={group.name} key={group.id}>
-          {children}
-        </DFormGroup>
-      )}
-    </DCRElement>
+    <DFormGroup groupName={group.name} key={group.id}>
+      {children}
+    </DFormGroup>
   );
 };

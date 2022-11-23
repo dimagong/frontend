@@ -21,20 +21,20 @@ export const DFormMemberSection: FC<DFormMemberSectionProps> = (props) => {
   const orderedGroups = section.relatedGroupsIds.map((groupId) => dformSchema.getGroupById(groupId));
 
   return (
-    <DCRElement conditions={section.conditions}>
-      {() => (
-        <DFormSection sectionName={section.name}>
-          {orderedGroups.map((group) => (
+    <DFormSection sectionName={section.name}>
+      {orderedGroups.map((group) => (
+        <DCRElement conditions={group.conditions}>
+          {({ isDisabled }) => (
             <DFormMemberGroup groupId={group.id} key={group.id}>
               {group.relatedBlocksIds.map((blockId) => (
-                <DFormMemberBlock blockId={blockId} key={blockId} />
+                <DFormMemberBlock blockId={blockId} isDisabled={isDisabled} key={blockId} />
               ))}
             </DFormMemberGroup>
-          ))}
+          )}
+        </DCRElement>
+      ))}
 
-          {children}
-        </DFormSection>
-      )}
-    </DCRElement>
+      {children}
+    </DFormSection>
   );
 };

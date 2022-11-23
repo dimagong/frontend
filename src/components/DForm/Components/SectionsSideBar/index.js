@@ -23,10 +23,11 @@ const SectionsSideBar = (props) => {
     <div className="sections">
       <Nav tabs className="my-0 sections-nav">
         {sections.map((section, index) => (
-          <NavItem style={section.isHidden ? { display: "none" } : {}} key={section.id} disabled={section.isDisabled}>
+          <NavItem style={section.isHidden ? { display: "none" } : {}} key={section.id}>
             <NavLink
               className={classnames({ active: selectedSection === section.id }, "sections-nav_item")}
               onClick={() => onSectionSelect(section.id)}
+              disabled={section.isDisabled}
             >
               <div className={`sections-nav_item_title ${errors[section.id] ? "with-errors" : ""}`}>
                 <span className="align-middle ml-50">{section.name}</span>
