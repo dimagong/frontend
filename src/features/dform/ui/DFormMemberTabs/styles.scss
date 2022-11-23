@@ -28,14 +28,10 @@ $dform-member-tabs-icon-size: 34px;
     position: relative;
 
     margin: 0;
-    padding-top: 0;
     padding-left: 0;
     padding-right: 0;
-    padding-bottom: #{$dform-member-tabs-tab-gap / 2};
-  }
-
-  & > .ant-tabs-nav &__tab.ant-tabs-tab:not(:first-child) {
     padding-top: #{$dform-member-tabs-tab-gap / 2};
+    padding-bottom: #{$dform-member-tabs-tab-gap / 2};
   }
 
   &__tab:not(&__tab--viewed):not(:hover) {
