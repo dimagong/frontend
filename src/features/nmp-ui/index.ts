@@ -1,5 +1,5 @@
 import { NmpTag } from "./NmpTag";
-import NpmBadge from "./NpmBadge";
+
 import { NmpButton } from "./NmpButton";
 import NpmCustomStepperSurvey from "./NpmCustomStepperSurvey";
 import NpmDatePicker from "./NpmDatePicker";
@@ -31,12 +31,12 @@ export * from "./NmpLongText";
 export * from "./NmpWysiwygEditor";
 export * from "./NmpScreenReaderOnly";
 export * from "./NmpPagination";
+export * from "./NmpBadge";
 
 export {
   NmpRow,
   NmpCol,
   NmpTag,
-  NpmBadge,
   NmpButton,
   NpmCustomStepperSurvey,
   NpmDatePicker,
