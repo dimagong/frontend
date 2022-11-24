@@ -38,6 +38,10 @@
       color: #707070;
     }
   }
+
+  &__content {
+    padding-right: 20px;
+  }
 }
 
 @media screen and (max-width: 1200px) {

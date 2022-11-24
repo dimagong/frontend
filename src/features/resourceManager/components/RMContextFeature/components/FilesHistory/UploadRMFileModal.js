@@ -33,7 +33,7 @@ const UploadRMFileModal = ({ fieldId }) => {
 
   return (
     <>
-      <div className="d-flex justify-content-end py-2">
+      <div className="d-flex justify-content-end py-2 upload-button">
         <AddButton onClick={openModal} />
       </div>
 

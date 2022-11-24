@@ -32,8 +32,7 @@ const ContextFeatureTemplate = ({
               </div>
             ) : null}
           </div>
-
-          {children}
+          <div className="context-feature-template__content">{children}</div>
         </div>
       </Scrollbars>
     </Col>

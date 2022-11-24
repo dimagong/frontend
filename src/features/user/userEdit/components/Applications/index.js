@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { Button, Card, Col, Row, Spinner } from "reactstrap";
 
 import { FieldTypes } from "components/DForm";
-import DeprecatedNmpSelect from "components/nmp/DeprecatedNmpSelect";
+import { NmpSelect } from "features/nmp-ui";
 
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
@@ -152,7 +152,7 @@ const UserEditApplication = ({ isCreate, dformId }) => {
     }
   };
 
-  const onDFormStatusChange = ({ value: status }) => changeDFormStatusMutation.mutate({ status });
+  const onDFormStatusChange = (status) => changeDFormStatusMutation.mutate({ status });
 
   const onRefetch = () => dformQuery.refetch();
 
@@ -173,12 +173,12 @@ const UserEditApplication = ({ isCreate, dformId }) => {
   }
 
   return (
-    <div className="onboarding-create-feature mb-4 pb-4">
+    <div className="onboarding-create-feature">
       <div className="onboarding-create-feature_header">
         <div className="onboarding-create-feature_header_title">Application</div>
         <div className="onboarding-create-feature_header_name">{dform?.name ?? "Loading..."}</div>
       </div>
-      <Card className="px-1" style={{ position: "relative" }}>
+      <Card className="px-1 mb-0" style={{ position: "relative" }}>
         <Row>
           <UserOnboardingForm isCreate={false} />
         </Row>
@@ -203,11 +203,14 @@ const UserEditApplication = ({ isCreate, dformId }) => {
         >
           <Col md="3" className="d-flex justify-content-center">
             <div style={{ width: "100%" }}>
-              <DeprecatedNmpSelect
+              <NmpSelect
                 value={dform ? { value: dform.status, label: dform.status } : null}
                 options={STATUSES}
                 loading={changeDFormStatusMutation.isLoading}
                 onChange={onDFormStatusChange}
+                className="w-100"
+                placeholder="Select an option"
+                placement="topLeft"
               />
             </div>
           </Col>
