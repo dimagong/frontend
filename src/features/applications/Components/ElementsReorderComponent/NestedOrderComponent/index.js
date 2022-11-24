@@ -30,10 +30,12 @@ const NestedOrderComponent = ({
     onDragEnd({ ...props, parentItem });
   };
 
+  const droppableId = parentItem ? parentItem.id : "sections";
+
   return (
     <div className="nested-draggable-list">
       <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="droppable" type={type}>
+        <Droppable droppableId={droppableId} type={type}>
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {itemsToRender.map((item, index) => (
