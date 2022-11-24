@@ -382,6 +382,7 @@ const FieldProperties = (props) => {
     setDisabled(true);
     setType(element.type);
 
+    form.resetFields();
     form.setFieldsValue(initialValues);
   }, [element]);
 

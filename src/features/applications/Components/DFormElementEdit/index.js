@@ -56,7 +56,7 @@ const DFormElementEdit = (props) => {
 
   useEffect(() => {
     handleEditOptionSelect(EditOptions.properties);
-  }, [element.id]);
+  }, [element?.id]);
 
   return (
     <Row className="dform-element-edit">
