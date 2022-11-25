@@ -1,6 +1,5 @@
 .member-firm-profile {
   background: white;
-  margin-top: 70px;
   border-radius: 10px;
 
   &__header {
@@ -35,16 +34,11 @@
 
     &-info {
       &-name {
-        font-size: 40px;
+        font-size: 32px;
         color: #444444;
-        padding: 0 27px;
-        position: absolute;
-        top: -73px;
+        padding-left: 230px;
         p {
-          line-height: normal;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
+          overflow-wrap: break-word;
         }
       }
 
@@ -129,8 +123,7 @@
       &-info {
         max-width: calc(100% - 150px);
         &-name {
-          font-size: 32px;
-          top: -63px;
+          padding-left: 180px;
         }
         &-contact_data {
           padding-top: 10px;
