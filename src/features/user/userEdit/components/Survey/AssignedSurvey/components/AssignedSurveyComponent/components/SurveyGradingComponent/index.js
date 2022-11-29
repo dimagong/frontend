@@ -41,6 +41,7 @@ const SurveyGradingComponent = ({
           onGradingAnswerSave={handleGradingAnswerSave}
           onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
           isGradingReview={isGradingReview}
+          key={question.id}
         />
       ))}
       <div className="survey-grading-component_action-buttons">

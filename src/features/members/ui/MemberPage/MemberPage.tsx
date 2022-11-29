@@ -30,15 +30,15 @@ export const MemberPage: FC = () => {
   const dispatch = useDispatch();
   const profileQuery = useProfileQuery();
 
-  const profile = profileQuery.data as any;
+  const profile = (profileQuery.data ?? {}) as any;
   const userId = profile.id as number;
   const avatarId = profile.avatar?.id as number;
-  const logoId = profile.permissions.logo.id as number;
+  const logoId = profile.permissions?.logo?.id as number;
   const username = profile.first_name as string;
   const organizationId = profile.permissions.organization_id as number;
   const organizationType = profile.permissions.organization_type as string;
   const organizationName = profile.permissions.organization as string;
-  const notifyEntry = profile.notify_entries.length > 0 ? profile.notify_entries[0] : null;
+  const notifyEntry = profile?.notify_entries?.length > 0 ? profile.notify_entries[0] : null;
 
   const avatarQuery = useUserAvatarQuery(
     // @ts-ignore

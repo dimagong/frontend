@@ -50,8 +50,6 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
     );
   }, [sections, values]);
 
-  console.log("asd", { effect: effects[sections.findIndex(({ id }) => activeSectionId == id)] });
-
   const section = dformSchema.getSectionById(activeSectionId);
   const activeSectionIndex = sections.findIndex((section) => section.id === activeSectionId);
   const isLastSection = activeSectionIndex === sections.length - 1;

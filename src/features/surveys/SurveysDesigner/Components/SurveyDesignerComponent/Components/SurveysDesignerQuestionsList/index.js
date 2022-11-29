@@ -82,34 +82,64 @@ const SurveysDesignerQuestionsList = ({
 }) => {
   const questionListRef = useRef(null);
 
-  const [breakPoints, setBreakPoints] = useState([]);
+  // const [breakPoints, setBreakPoints] = useState([]);
 
   const [insertButtonPosition, setInsertButtonPosition] = useState(-1);
 
   // Return distance between top edge of questions list and top edge of app
   const getListTopOffset = () => {
-    const contentWrapper = document.getElementsByClassName("content-wrapper")[0];
-    const wrapperStyles = contentWrapper.currentStyle || window.getComputedStyle(contentWrapper);
-    const wrapperTopMargin = wrapperStyles.marginTop;
+    // const contentWrapper = document.getElementsByClassName("content-wrapper")[0];
+    // const wrapperStyles = contentWrapper.currentStyle || window.getComputedStyle(contentWrapper);
+    // const wrapperTopMargin = wrapperStyles.marginTop;
+    // const containerTopOffset = contentWrapper.getBoundingClientRect().top;
+    // let listOffsetTop;
+    //
+    // if (listTop < 0) {
+    //   listOffsetTop = Math.abs(containerTopOffset) + parseInt(wrapperTopMargin, 10) + listTop;
+    // } else {
+    //   listOffsetTop = parseInt(wrapperTopMargin, 10) - Math.abs(containerTopOffset) + listTop;
+    // }
+    //
+    // return Math.round(listOffsetTop);
+  };
 
-    const containerTopOffset = contentWrapper.getBoundingClientRect().top;
-    const listTop = ReactDOM.findDOMNode(questionListRef.current).getBoundingClientRect().top;
+  const getBreakpointsForInsertButton = () => {
+    const elements = ReactDOM.findDOMNode(questionListRef.current).getElementsByClassName(
+      "survey-designer_question-list_item"
+    );
 
-    let listOffsetTop;
+    const result = [];
 
-    if (listTop < 0) {
-      listOffsetTop = Math.abs(containerTopOffset) + parseInt(wrapperTopMargin, 10) + listTop;
-    } else {
-      listOffsetTop = parseInt(wrapperTopMargin, 10) - Math.abs(containerTopOffset) + listTop;
+    const listTopOffset = ~~ReactDOM.findDOMNode(questionListRef.current).getBoundingClientRect().top;
+
+    // First point is the top edge of our list
+    result.push(listTopOffset);
+
+    for (let i = 0; i < elements.length; i++) {
+      let el = elements[i];
+      const height = el.offsetHeight; // height without margin
+
+      // For some reason offsetTop get offset to wrong parent and return 100 for the first item
+      const elementOffsetFromPageTopEdge = el.offsetTop; // distance between page top edge and element top edge
+
+      // Get middle of the question item
+      const breakPoint = height / 2 + elementOffsetFromPageTopEdge + listTopOffset;
+      result.push(breakPoint);
     }
 
-    return Math.round(listOffsetTop);
+    // Last point is the bottom edge of our list
+    result.push(ReactDOM.findDOMNode(questionListRef.current).offsetHeight + listTopOffset);
+
+    return result;
   };
 
   const handleInsertButtonAppearance = (e) => {
-    const pageScrollY = document.getElementsByClassName("scrollbar-container")[0].firstChild.scrollTop;
+    const pageScrollY = window.scrollY ?? 0;
+    const breakPoints = getBreakpointsForInsertButton();
 
     const y = e.pageY + pageScrollY;
+
+    console.log({ y }, breakPoints);
 
     if (breakPoints.length) {
       for (let i = 0; i < breakPoints.length; i++) {
@@ -129,7 +159,7 @@ const SurveysDesignerQuestionsList = ({
     }
   };
 
-  const debouncedMouseMoveHandler = _.debounce(handleInsertButtonAppearance, 10);
+  const debouncedMouseMoveHandler = _.debounce(handleInsertButtonAppearance, 0);
 
   const handleQuestionInsert = () => {
     onQuestionInsert(questions && !questions.length ? 0 : insertButtonPosition);
@@ -141,40 +171,6 @@ const SurveysDesignerQuestionsList = ({
     //sort changes the original array, so we make copy to prevent state mutation;
     return [...questions].sort((a, b) => _.get(a, orderPath) - _.get(b, orderPath));
   };
-
-  const getBreakpointsForInsertButton = (elements) => {
-    const result = [];
-
-    const listTopOffset = getListTopOffset();
-
-    // First point is the top edge of our list
-    result.push(listTopOffset);
-
-    for (let i = 0; i < elements.length; i++) {
-      let el = elements[i];
-      const height = el.offsetHeight; // height without margin
-
-      // For some reason offsetTop get offset to wrong parent and return 100 for the first item
-      const elementOffsetFromPageTopEdge = el.offsetTop - 100; // distance between page top edge and element top edge
-
-      // Get middle of the question item
-      const breakPoint = height / 2 + elementOffsetFromPageTopEdge + listTopOffset;
-      result.push(breakPoint);
-    }
-
-    // Last point is the bottom edge of our list
-    result.push(ReactDOM.findDOMNode(questionListRef.current).offsetHeight + listTopOffset);
-
-    setBreakPoints(result);
-  };
-
-  useEffect(() => {
-    const elements = ReactDOM.findDOMNode(questionListRef.current).getElementsByClassName(
-      "survey-designer_question-list_item"
-    );
-    getBreakpointsForInsertButton(elements);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [questions, isQuestionSelected]);
 
   return (
     <div
@@ -197,7 +193,7 @@ const SurveysDesignerQuestionsList = ({
       ) : (
         <>
           {sortQuestions(questions).map((question, index) => (
-            <>
+            <React.Fragment key={question.id}>
               {index === insertButtonPosition && isQuestionSelected && (
                 <div className="question-insert-button">
                   <Button color="primary" className="px-5" onClick={handleQuestionInsert}>
@@ -211,8 +207,9 @@ const SurveysDesignerQuestionsList = ({
                 questionsCount={questions.length}
                 handleRemoveQuestionFromSurvey={handleRemoveQuestionFromSurvey}
               />
-            </>
+            </React.Fragment>
           ))}
+
           {isQuestionSelected && questions.length <= insertButtonPosition && (
             <div className="question-insert-button mb-0">
               <Button color="primary" className="px-5" onClick={handleQuestionInsert}>

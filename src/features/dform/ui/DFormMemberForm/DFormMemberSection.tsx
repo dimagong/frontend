@@ -23,9 +23,9 @@ export const DFormMemberSection: FC<DFormMemberSectionProps> = (props) => {
   return (
     <DFormSection sectionName={section.name}>
       {orderedGroups.map((group) => (
-        <DCRElement conditions={group.conditions}>
+        <DCRElement conditions={group.conditions} key={group.id}>
           {({ isDisabled }) => (
-            <DFormMemberGroup groupId={group.id} key={group.id}>
+            <DFormMemberGroup groupId={group.id}>
               {group.relatedBlocksIds.map((blockId) => (
                 <DFormMemberBlock blockId={blockId} isDisabled={isDisabled} key={blockId} />
               ))}

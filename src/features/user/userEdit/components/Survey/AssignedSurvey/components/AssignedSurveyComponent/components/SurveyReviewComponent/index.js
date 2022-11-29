@@ -11,7 +11,13 @@ const SurveyReviewComponent = ({ surveyData, onAssignedSurveyDelete, isSurveyDel
       {surveyData.questions.map((question, index) => {
         let ans = surveyData.answers.find((item) => item.question_id === question.id)?.answer;
         return (
-          <Question displayType="review" question={question} questionNumber={index + 1} currAnswer={ans ? ans : "-1"} />
+          <Question
+            displayType="review"
+            question={question}
+            questionNumber={index + 1}
+            currAnswer={ans ? ans : "-1"}
+            key={question.id}
+          />
         );
       })}
       <LoadingButton

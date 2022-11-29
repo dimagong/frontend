@@ -10,7 +10,7 @@ import WorkFlowsAndNotificationsList from "features/home/ContextSearch/component
 
 import appSlice from "app/slices/appSlice";
 
-const { setContext, getSurveyRequest, getSurveysRequest } = appSlice.actions;
+const { setContext, getSurveyRequest, getSurveysRequest, getOrganizationsRequest } = appSlice.actions;
 
 const Surveys = () => {
   const dispatch = useDispatch();
@@ -34,6 +34,7 @@ const Surveys = () => {
 
   useEffect(() => {
     dispatch(getSurveysRequest());
+    dispatch(getOrganizationsRequest());
   }, []);
 
   return (
