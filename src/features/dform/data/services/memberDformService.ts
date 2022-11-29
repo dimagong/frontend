@@ -15,6 +15,7 @@ import {
   DformFieldTypes,
   DformSchemaModel,
   DformFieldValueType,
+  DformSectionId,
 } from "../models";
 import { DformService } from "./dformService";
 
@@ -61,6 +62,14 @@ export class MemberDFormService extends AbstractService {
     const url = this.getUrl(`/dform/${dformId}/user-value`);
 
     return this.apiClient.put(url, { master_schema_field_id: field.masterSchemaFieldId, value });
+  }
+
+  viewSections(data: { dformId: DformId; viewedSections: DformSectionId[] }) {
+    const { dformId, viewedSections } = data;
+    const endpoint = this.getUrl(`/dform/${dformId}/viewed-sections`);
+    const body = { is_viewed_sections: viewedSections };
+
+    return this.apiClient.put(endpoint, body);
   }
 
   submit(data: { dformId: DformId }) {

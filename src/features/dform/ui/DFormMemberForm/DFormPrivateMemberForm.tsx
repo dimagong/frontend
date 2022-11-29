@@ -30,7 +30,7 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
   const { isAccessible } = DFormContext.useContext();
   const { dformSchema } = DformSchemaContext.useContext();
 
-  const sections = useMemo(() => dformSchema.orderedSections, []);
+  const sections = dformSchema.orderedSections;
 
   const [activeSectionId, setActiveSectionId] = useState(() => sections[0].id);
 
