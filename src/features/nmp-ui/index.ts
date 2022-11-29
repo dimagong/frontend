@@ -1,7 +1,6 @@
 import { NmpTag } from "./NmpTag";
 
 import { NmpButton } from "./NmpButton";
-import NpmCustomStepperSurvey from "./NpmCustomStepperSurvey";
 import NpmDatePicker from "./NpmDatePicker";
 import { NmpUpload } from "./NmpUpload";
 import { NmpUploadItem } from "./NmpUploadItem";
@@ -32,13 +31,13 @@ export * from "./NmpWysiwygEditor";
 export * from "./NmpScreenReaderOnly";
 export * from "./NmpPagination";
 export * from "./NmpBadge";
+export * from "./NmpStepperProgress";
 
 export {
   NmpRow,
   NmpCol,
   NmpTag,
   NmpButton,
-  NpmCustomStepperSurvey,
   NpmDatePicker,
   NmpUpload,
   NmpUploadItem,
