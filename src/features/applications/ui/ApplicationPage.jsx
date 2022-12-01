@@ -523,7 +523,9 @@ export const ApplicationPage = ({ applicationId }) => {
   }, [applicationData?.groups]);
 
   const sections = useMemo(() => {
-    return applicationData ? Object.values(applicationData.sections).map(DformService.parseSection) : [];
+    return applicationData
+      ? Object.values(applicationData.sections).map((section) => DformService.parseSection(section))
+      : [];
   }, [applicationData?.sections]);
 
   const relatedSectionsIds = useMemo(() => {

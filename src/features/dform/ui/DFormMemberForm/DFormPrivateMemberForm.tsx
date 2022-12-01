@@ -2,6 +2,7 @@ import { Form } from "antd";
 import type { FC } from "react";
 import { useMutation } from "react-query";
 import React, { useState, useMemo } from "react";
+import { toast } from "react-toastify";
 
 import { NmpCol, NmpRow, NmpCard, NmpButton } from "features/nmp-ui";
 
@@ -30,6 +31,8 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
   const { isAccessible } = DFormContext.useContext();
   const { dformSchema } = DformSchemaContext.useContext();
 
+  const [errorSectionsId, setErrorSectionsId] = useState<string[]>([]);
+
   const sections = dformSchema.orderedSections;
 
   const [activeSectionId, setActiveSectionId] = useState(() => sections[0].id);
@@ -57,6 +60,9 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
 
   const submitMutation = useMutation({
     mutationFn: () => MemberDFormService.instance.submit({ dformId }),
+    onSuccess: () => {
+      toast.success("Form submitted successfully");
+    },
   });
 
   const saveFieldValueMutation = useMutation({
@@ -72,6 +78,10 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
       return;
     }
 
+    // if errors appear in the section, section will be placed in the errorSectionId.
+    // if there are no errors it will be removed from the errorSectionId.
+    checkSectionErrors();
+
     changedValuesEntries.forEach(([fieldId, value]) => {
       const field = dformSchema.getFieldById(fieldId);
       saveFieldValueMutation.mutate({ dformId, field, value });
@@ -86,6 +96,46 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
         { ...prevValues }
       );
     });
+  };
+
+  const checkSectionErrors = () => {
+    return validateSection()
+      .then(() => {
+        removeSectionIdFromErrorList(section.id);
+      })
+      .catch(({ errorFields }) => {
+        if (errorFields.length > 0) {
+          setSectionIdToErrorList(section.id);
+        } else {
+          removeSectionIdFromErrorList(section.id);
+        }
+      });
+  };
+
+  const checkAllErrors = () => {
+    return generalValidation().catch(({ errorFields: errorFormFields }) => {
+      const errorFieldsId = errorFormFields.map((formField) => formField.name).flat();
+      const errorFields = errorFieldsId.map((errorFieldId) => dformSchema.getFieldById(errorFieldId));
+
+      const errorSections = errorFields.map((errorField) => dformSchema.getSectionByGroupId(errorField.groupId));
+      const errorSectionsId = errorSections.map((errorSection) => errorSection.id);
+
+      setErrorSectionsId(errorSectionsId);
+
+      toast.error("Fill required fields in sections");
+    });
+  };
+
+  const removeSectionIdFromErrorList = (sectionId) => {
+    if (errorSectionsId.includes(sectionId)) {
+      setErrorSectionsId(errorSectionsId.filter((errorSection) => errorSection !== sectionId));
+    }
+  };
+
+  const setSectionIdToErrorList = (sectionId) => {
+    if (!errorSectionsId.includes(sectionId)) {
+      setErrorSectionsId([...errorSectionsId, section.id]);
+    }
   };
 
   const validateSection = () => {
@@ -106,7 +156,11 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
   };
 
   const trySubmitDform = () => {
-    validateSection().then(() => form.submit());
+    checkAllErrors().then(() => form.submit());
+  };
+
+  const generalValidation = () => {
+    return form.validateFields();
   };
 
   // Need to cover cases when section is hidden/disabled by DCR
@@ -132,27 +186,29 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
   return (
     <NmpRow>
       <NmpCol span="20">
-        <DFormMemberTabs
-          items={sections.map((section, index) => ({
-            key: section.id,
-            label: section.name,
-            isViewed: section.isViewed,
-            progress: progresses[index],
-            disabled: effects[index].isDisabled,
-            isHidden: effects[index].isHidden,
-            children: (
-              <>
-                <h2 className="dform-member-form__title">{dformName}</h2>
+        <Form
+          form={form}
+          name={section.id}
+          initialValues={initialValues}
+          validateMessages={dformValidationMessages}
+          onFinish={onFinish}
+          onValuesChange={onValuesChange}
+        >
+          <DFormMemberTabs
+            items={sections.map((section, index) => ({
+              key: section.id,
+              label: section.name,
+              isViewed: section.isViewed,
+              progress: progresses[index],
+              disabled: effects[index].isDisabled,
+              isHidden: effects[index].isHidden,
+              isRequired: errorSectionsId.includes(section.id),
+              forceRender: true,
+              children: (
+                <>
+                  <h2 className="dform-member-form__title">{dformName}</h2>
 
-                <NmpCard className="dform-member-form__card">
-                  <Form
-                    form={form}
-                    name={section.id}
-                    initialValues={initialValues}
-                    validateMessages={dformValidationMessages}
-                    onFinish={onFinish}
-                    onValuesChange={onValuesChange}
-                  >
+                  <NmpCard className="dform-member-form__card">
                     <DFormMemberSection sectionId={section.id}>
                       <NmpRow justify="space-between" align="middle" className="dform-member-form__actions" gutter={24}>
                         <NmpCol flex="1">
@@ -179,15 +235,15 @@ export const DFormPrivateMemberForm: FC<DFormPrivateMemberFormProps> = (props) =
                         </NmpCol>
                       </NmpRow>
                     </DFormMemberSection>
-                  </Form>
-                </NmpCard>
-              </>
-            ),
-          }))}
-          activeKey={activeSectionId}
-          onTabClick={onSectionTabClick}
-          className="dform-member-form__tabs"
-        />
+                  </NmpCard>
+                </>
+              ),
+            }))}
+            activeKey={activeSectionId}
+            onTabClick={onSectionTabClick}
+            className="dform-member-form__tabs"
+          />
+        </Form>
       </NmpCol>
     </NmpRow>
   );

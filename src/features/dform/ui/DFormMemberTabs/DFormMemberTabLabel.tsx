@@ -5,12 +5,13 @@ import { CheckOutlined } from "@ant-design/icons";
 
 export type DFormMemberTabLabelProps = {
   isActive?: boolean;
+  isRequired?: boolean;
   progress?: number;
   children?: ReactNode;
 };
 
 export const DFormMemberTabLabel: FC<DFormMemberTabLabelProps> = (props) => {
-  const { progress = 0, isActive = false, children } = props;
+  const { progress = 0, isActive = false, isRequired = false, children } = props;
 
   return (
     <>
@@ -24,7 +25,7 @@ export const DFormMemberTabLabel: FC<DFormMemberTabLabelProps> = (props) => {
             <Progress
               type="circle"
               width={34}
-              status="normal"
+              status={isRequired ? "exception" : "normal"}
               percent={progress}
               showInfo={false}
               trailColor="transparent"

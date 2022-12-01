@@ -1,14 +1,13 @@
 import React from "react";
 
 import { DFormMemberTabs } from "./DFormMemberTabs";
-import { DformSectionId } from "../../data/models";
 
 export default {
   title: "DForm/MemberTabs",
   component: DFormMemberTabs,
 };
 
-const items = [
+const defaultItems = [
   {
     key: "0",
     label: "Finished + viewed",
@@ -72,27 +71,37 @@ const items = [
   },
 ];
 
+const requiredItems = defaultItems.map((item) => {
+  if (item.progress === 100) {
+    return item;
+  }
+
+  return { ...item, isRequired: true };
+});
+
+const itemsRender = (items) =>
+  items.map((item) => ({
+    ...item,
+    children: (
+      <div>
+        <h3>Content from tab labeled as "{item.label}"</h3>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium amet autem consequatur deserunt dolorum
+          eaque, eligendi eos, esse eum impedit iusto labore laborum minus molestias necessitatibus nihil provident
+          quidem reiciendis similique sunt ullam ut vero. Animi cupiditate dolorum eos eum facere magnam nesciunt non
+          officia perspiciatis? Accusantium adipisci architecto, aspernatur eaque fugit in labore laborum nesciunt
+          numquam officiis quas quibusdam, ratione reprehenderit, repudiandae rerum? Accusamus amet, animi, assumenda,
+          at autem cupiditate dolor eaque enim eveniet excepturi expedita hic illum in inventore labore laborum maxime
+          mollitia natus neque nisi nostrum odit pariatur quae quo ratione rerum sapiente sequi suscipit tempora totam!
+        </p>
+      </div>
+    ),
+  }));
+
 const Template = (props) => {
   return (
     <DFormMemberTabs
-      items={items.map((item) => ({
-        ...item,
-        children: (
-          <div>
-            <h3>Content from tab labeled as "{item.label}"</h3>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium amet autem consequatur deserunt
-              dolorum eaque, eligendi eos, esse eum impedit iusto labore laborum minus molestias necessitatibus nihil
-              provident quidem reiciendis similique sunt ullam ut vero. Animi cupiditate dolorum eos eum facere magnam
-              nesciunt non officia perspiciatis? Accusantium adipisci architecto, aspernatur eaque fugit in labore
-              laborum nesciunt numquam officiis quas quibusdam, ratione reprehenderit, repudiandae rerum? Accusamus
-              amet, animi, assumenda, at autem cupiditate dolor eaque enim eveniet excepturi expedita hic illum in
-              inventore labore laborum maxime mollitia natus neque nisi nostrum odit pariatur quae quo ratione rerum
-              sapiente sequi suscipit tempora totam!
-            </p>
-          </div>
-        ),
-      }))}
+      items={itemsRender(props.items)}
       activeKey={props.activeKey}
       defaultActiveKey={props.defaultActiveKey}
       onTabClick={props.onTabClick}
@@ -102,6 +111,13 @@ const Template = (props) => {
 
 export const Base = Template.bind({});
 Base.args = {
+  items: defaultItems,
   activeKey: undefined,
+  defaultActiveKey: "3",
+};
+
+export const Required = Template.bind({});
+Required.args = {
+  items: requiredItems,
   defaultActiveKey: "3",
 };

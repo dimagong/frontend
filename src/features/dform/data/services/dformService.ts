@@ -230,7 +230,7 @@ export class DformService extends AbstractService {
     );
   }
 
-  static parseSection(section: any, viewedSectionsIds: string[]): DformSectionModel {
+  static parseSection(section: any, viewedSectionsIds: string[] = []): DformSectionModel {
     return new DformSectionModel(
       section.id,
       section.conditions,
@@ -242,7 +242,7 @@ export class DformService extends AbstractService {
     );
   }
 
-  static parseSchema(schema: any, viewedSectionsIds: string[]): DformSchemaModel {
+  static parseSchema(schema: any, viewedSectionsIds: string[] = []): DformSchemaModel {
     return new DformSchemaModel(
       Object.values(schema.fields).map(DformService.parseBlock),
       Object.values(schema.groups).map(DformService.parseGroup),
@@ -256,7 +256,7 @@ export class DformService extends AbstractService {
       dform.id,
       dform.name,
       dform.status,
-      DformService.parseSchema(dform.schema, dform.is_viewed_sections),
+      DformService.parseSchema(dform.schema, Array.isArray(dform.is_viewed_sections) ? dform.is_viewed_sections : []),
       dform.access_type,
       dform.is_viewed_sections
     );

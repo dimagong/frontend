@@ -14,6 +14,7 @@ $dform-member-tabs-icon-size: 34px;
   --dform-member-tab-text-color: #474747;
   --dform-member-tab-accent-color: #a8a8a8;
   --dform-member-tab-primary-color: var(--ant-primary-color);
+  --dform-member-tab-error-color: var(--ant-error-color);
 
   counter-reset: $dform-member-tabs-counter;
 
@@ -36,6 +37,22 @@ $dform-member-tabs-icon-size: 34px;
 
   &__tab:not(&__tab--viewed):not(:hover) {
     color: var(--dform-member-tab-accent-color);
+  }
+
+  &__tab--required {
+    --ant-primary-color: var(--dform-member-tab-error-color);
+    --ant-primary-7: var(--ant-error-color-active);
+    --ant-primary-5: var(--ant-error-color-hover);
+
+    color: var(--dform-member-tab-error-color);
+
+    &:not(&__tab--viewed):not(:hover) {
+      color: var(--dform-member-tab-error-color);
+    }
+
+    &.ant-tabs-tab-active {
+      --ant-primary-color: var(--ant-error-color-active);
+    }
   }
 
   &__tab--completed {

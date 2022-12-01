@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import { Form, Tabs } from "antd";
+import { Tabs } from "antd";
 import classnames from "classnames";
 import type { TabsProps } from "antd";
 import React, { useState } from "react";
@@ -9,10 +9,6 @@ import type { FC, Key, CSSProperties } from "react";
 import { DFormMemberTab } from "./DFormMemberTab";
 import type { DFormMemberTabProps } from "./DFormMemberTab";
 import { DFormMemberTabLabel } from "./DFormMemberTabLabel";
-import { DCRElement } from "../DCR";
-import { DformSectionId } from "../../data/models";
-import { getDCREffect } from "../DCR/getDCREffect";
-import { DformSchemaContext } from "../DformSchemaContext";
 
 type TabProps = Unpack<TabsProps["items"]> &
   Omit<DFormMemberTabProps, "children" | "isActive"> & {
@@ -64,7 +60,14 @@ export const DFormMemberTabs: FC<DFormMemberTabsProps> = (props) => {
     <Tabs
       items={items.map((item) => ({
         ...item,
-        label: <DFormMemberTabLabel progress={item.progress} isActive={item.key === activeKey} children={item.label} />,
+        label: (
+          <DFormMemberTabLabel
+            progress={item.progress}
+            isActive={item.key === activeKey}
+            isRequired={item.isRequired}
+            children={item.label}
+          />
+        ),
       }))}
       activeKey={activeKey}
       renderTabBar={(tabBarProps, DefaultTabBar) => (
@@ -78,13 +81,18 @@ export const DFormMemberTabs: FC<DFormMemberTabsProps> = (props) => {
             }
 
             return (
-              <DFormMemberTab isActive={isActive} isViewed={props.isViewed} progress={props.progress} children={node} />
+              <DFormMemberTab
+                isActive={isActive}
+                isRequired={props.isRequired}
+                isViewed={props.isViewed}
+                progress={props.progress}
+                children={node}
+              />
             );
           }}
         </DefaultTabBar>
       )}
       tabPosition="left"
-      destroyInactiveTabPane
       onTabClick={onTabClick}
       style={style}
       className={classnames("dform-member-tabs", className)}
