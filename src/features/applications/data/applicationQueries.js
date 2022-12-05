@@ -1,10 +1,9 @@
 import { createQueryKey } from "api/createQueryKey";
 import { useGenericQuery } from "api/useGenericQuery";
 import { useGenericMutation } from "api/useGenericMutation";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import onboardingSlice from "app/slices/onboardingSlice";
 import appSlice from "app/slices/appSlice";
-import { selectProfile } from "app/selectors";
 import { DFormTemplateCategoryQueryKeys } from "features/home/ContextSearch/Applications/categoryQueries";
 
 // ToDo: Move it to organization queries scope.
@@ -14,21 +13,16 @@ export const OrganizationsListQuery = createQueryKey("Organizations in dform");
 
 export const OrganizationsQueryKeys = {
   all: () => [OrganizationsListQuery],
-  byUserId: (userId) => [...OrganizationsQueryKeys.all(), { userId }],
 };
 
-export const useAllowedOrganizationsListQuery = (options) => {
-  const userProfile = useSelector(selectProfile);
-  const userId = userProfile?.id;
-
+export const useOrganizationsListQuery = (options) => {
   return useGenericQuery(
     {
-      url: `/api/organization/user/${userId}`,
-      queryKey: OrganizationsQueryKeys.byUserId(userId),
+      url: `/api/organization`,
+      queryKey: OrganizationsQueryKeys.all(),
     },
     {
       ...options,
-      enabled: Boolean(userId),
     }
   );
 };

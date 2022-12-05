@@ -3,7 +3,7 @@ import { Form } from "antd";
 import _ from "lodash";
 
 import { ApplicationDescriptionFormFields } from "features/applications/ui/ApplicationDescriptionFormFields";
-import { useAllowedOrganizationsListQuery } from "features/applications/data/applicationQueries";
+import { useOrganizationsListQuery } from "features/applications/data/applicationQueries";
 import { NmpSelect, NmpButton } from "features/nmp-ui";
 
 import { useDFormTemplateCategoriesQuery } from "../categoryQueries";
@@ -38,7 +38,7 @@ export const CreateApplicationForm = ({ onSubmit, parent }) => {
     type: getOrganizationType(parent.organizationType),
   });
 
-  const { data: organizations, isLoading } = useAllowedOrganizationsListQuery({ initialData: [] });
+  const { data: organizations, isLoading } = useOrganizationsListQuery({ initialData: [] });
 
   const { data: categories } = useDFormTemplateCategoriesQuery({
     organizationId: organization?.id,

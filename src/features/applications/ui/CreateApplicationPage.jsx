@@ -8,7 +8,7 @@ import appSlice from "app/slices/appSlice";
 
 import {
   useApplicationsTemplatesQuery,
-  useAllowedOrganizationsListQuery,
+  useOrganizationsListQuery,
   useCopyApplicationTemplateMutation,
   useCreateApplicationTemplateMutation,
 } from "../data/applicationQueries";
@@ -53,7 +53,7 @@ export const CreateApplicationPage = () => {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isDuplicateModalVisible, setIsDuplicateModalVisible] = useState(false);
 
-  const allowedOrganizations = useAllowedOrganizationsListQuery({ initialData: [] });
+  const allowedOrganizations = useOrganizationsListQuery({ initialData: [] });
   const applicationsTemplates = useApplicationsTemplatesQuery({ initialData: [], enabled: Boolean(organization) });
 
   const templates = applicationsTemplates.data;
