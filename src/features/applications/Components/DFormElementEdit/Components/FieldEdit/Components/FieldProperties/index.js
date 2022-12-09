@@ -348,7 +348,7 @@ export const SpecificFieldProperties = ({ element, organization, elementType }) 
     case DformFieldTypes.MultiSelect:
       return <FieldSelectEditProperties element={element} />;
     case DformFieldTypes.Number:
-      return <FieldNumberEditProperties />;
+      return <FieldNumberEditProperties element={element} />;
     case DformBlockTypes.HelpText:
       return <FieldHelpTextEditProperties />;
     case DformFieldTypes.Resource:
