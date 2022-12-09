@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import React, { useRef, useState } from "react";
 import { Button, Card, Col, Row, Spinner } from "reactstrap";
+import _ from "lodash";
 
 import { FieldTypes } from "components/DForm";
 import { NmpSelect } from "features/nmp-ui";
@@ -38,10 +39,15 @@ const UserEditApplication = ({ isCreate, dformId }) => {
   const [dform, setDForm] = useState(null);
   const [values, setValues] = useState(null);
 
+  const [isSaveDisabled, setIsSaveDisabled] = useState(true);
+
   const dformQuery = useDFormQuery(
     { dformId },
     {
-      onSuccess: (data) => setDForm(data),
+      onSuccess: (data) => {
+        setDForm(data);
+        setIsSaveDisabled(true);
+      },
       enabled: !isCreate && dformId != null,
       refetchOnWindowFocus: false,
     }
@@ -92,6 +98,12 @@ const UserEditApplication = ({ isCreate, dformId }) => {
     }
 
     const newApplicationValue = { ...values, [field.masterSchemaFieldId]: newFieldValue };
+
+    setIsSaveDisabled(true);
+
+    if (!_.isEqual(newApplicationValue, valuesQuery.data)) {
+      setIsSaveDisabled(false);
+    }
 
     setValues(newApplicationValue);
   };
@@ -220,7 +232,7 @@ const UserEditApplication = ({ isCreate, dformId }) => {
           </Col>
 
           <Col md="3" className="d-flex justify-content-end">
-            <Button color="primary" onClick={onSubmit}>
+            <Button color="primary" onClick={onSubmit} disabled={isSaveDisabled}>
               Save
             </Button>
           </Col>
