@@ -11,6 +11,12 @@ const SectionDynamicRendering = ({ data, element, onDeleteButtonClick, onElement
   const [form] = Form.useForm();
   const [disabled, setDisabled] = useState(true);
 
+  const sectionRelatedFields = element.relatedGroups
+    .map((groupId) => data.groups[groupId])
+    .reduce((accumulator, currentValue) => {
+      return [...accumulator, ...currentValue.relatedFields];
+    }, []);
+
   const handleFormChange = () => {
     const formConditions = form.getFieldsValue("conditions").conditions;
 
@@ -38,7 +44,13 @@ const SectionDynamicRendering = ({ data, element, onDeleteButtonClick, onElement
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="dynamic-rendering" onFieldsChange={handleFormChange}>
-      <ConditionalElementRender fields={Object.values(data.fields)} elementId={element.id} conditions={conditions} />
+      <ConditionalElementRender
+        fields={Object.values(data.fields)}
+        elementType={element.elementType}
+        relatedFields={sectionRelatedFields}
+        elementId={element.id}
+        conditions={conditions}
+      />
 
       <div className="application_delimiter" />
 

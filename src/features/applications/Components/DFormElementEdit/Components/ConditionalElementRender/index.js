@@ -12,7 +12,7 @@ import { DFormFieldConditionModel } from "../../../../fieldConditionModel";
 import ConditionForm from "./Components";
 import { DCRSupportedFieldTypes } from "./constants";
 
-const ConditionItem = ({ condition, fields, onDelete, name, ...restField }) => {
+const ConditionItem = ({ condition, fields, onDelete, name, relatedFields, elementType, ...restField }) => {
   return (
     <div className="mb-1">
       <div className="conditional-element-render_condition-title">
@@ -21,12 +21,19 @@ const ConditionItem = ({ condition, fields, onDelete, name, ...restField }) => {
           <X size={22} />
         </button>
       </div>
-      <ConditionForm condition={condition} fields={fields} name={name} {...restField} />
+      <ConditionForm
+        condition={condition}
+        elementType={elementType}
+        relatedFields={relatedFields}
+        fields={fields}
+        name={name}
+        {...restField}
+      />
     </div>
   );
 };
 
-const ConditionalElementRender = ({ fields: propFields = [], elementId, conditions }) => {
+const ConditionalElementRender = ({ fields: propFields = [], elementType, relatedFields, elementId, conditions }) => {
   // When a field's condition effects on itself, it might lead to recursion.
   // So, to prevent condition creation on itself, in case when element type is
   // field filter the element from fields. Also filter only supported DCR fields.
@@ -50,6 +57,8 @@ const ConditionalElementRender = ({ fields: propFields = [], elementId, conditio
           {fields.length > 0 ? (
             fields.map(({ key, name, ...restField }, index) => (
               <ConditionItem
+                elementType={elementType}
+                relatedFields={relatedFields}
                 fields={filteredFields}
                 condition={conditions?.[name]}
                 index={index}

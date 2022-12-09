@@ -38,7 +38,13 @@ const GroupDynamicRendering = ({ data, element, onDeleteButtonClick, onElementCh
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} name="dynamic-rendering" onFieldsChange={handleFormChange}>
-      <ConditionalElementRender fields={Object.values(data.fields)} elementId={element.id} conditions={conditions} />
+      <ConditionalElementRender
+        fields={Object.values(data.fields)}
+        elementType={element.elementType}
+        elementId={element.id}
+        relatedFields={element.relatedFields}
+        conditions={conditions}
+      />
 
       <div className="application_delimiter" />
 

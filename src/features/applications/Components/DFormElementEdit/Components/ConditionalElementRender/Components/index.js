@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { NmpInput, NmpSelect } from "features/nmp-ui";
 import { DformDateFormatTypes } from "features/dform/data/models";
 import { DFormDatePicker } from "features/dform/ui/DFormDatePicker";
+import { DCRFieldValidator } from "features/dform/data/validators";
 
 import {
   DCREffectTypes,
@@ -26,7 +27,7 @@ const getFieldIdAsOptions = (fields) => fields.map(getFieldIdAsOption);
 const getOperatorTypeAsOption = (operatorTemplate) => ({ value: operatorTemplate.type, label: operatorTemplate.name });
 const getOperatorTypesAsOptions = (operatorTemplates) => operatorTemplates.map(getOperatorTypeAsOption);
 
-const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
+const ConditionForm = ({ form, condition, fields, elementType, relatedFields, name, ...restField }) => {
   const [format, setFormat] = useState(condition?.format || DformDateFormatTypes.Date);
   const [fieldId, setFieldId] = useState(condition?.fieldId);
   const [operatorType, setOperatorType] = useState(condition?.operatorType);
@@ -51,6 +52,8 @@ const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
   const operators = field ? DCRSupportedFieldOperatorsFactory.build(field.type) : null;
   const operatorsAsOptions = operators ? getOperatorTypesAsOptions(operators) : null;
   const operator = operators ? operators.find(({ type }) => type === operatorType) : null;
+
+  const fieldValidator = DCRFieldValidator.bind(null, elementType, relatedFields);
 
   const getExpectedValueField = () => {
     if (field.type === DCRSupportedFieldTypes.Date) {
@@ -118,7 +121,7 @@ const ConditionForm = ({ form, condition, fields, name, ...restField }) => {
         className="mb-2"
         label="If value of field"
         name={[name, "fieldId"]}
-        rules={[{ required: true }]}
+        rules={[{ required: true }, { validator: fieldValidator }]}
         {...restField}
       >
         <NmpSelect id="fieldId" options={fieldsIdsAsOptions} onChange={onFieldIdChange} placeholder="Select field" />
