@@ -60,10 +60,20 @@ export const useChangeDFormStatusMutation = ({ dformId }, options) => {
   );
 };
 
+export const useSaveUserValueDFormMutation = ({ dformId }, options) => {
+  return useGenericMutation(
+    {
+      url: `/api/dform/${dformId}/user-value`,
+      method: "put",
+    },
+    options
+  );
+};
+
 export const useSubmitDFormMutation = ({ dformId }, options) => {
   return useGenericMutation(
     {
-      url: `/api/dform/${dformId}/new-version-by-data`,
+      url: `/api/dform/${dformId}/new-version`,
       method: "post",
       queryKey: DFormQueryKeys.byId(dformId),
     },

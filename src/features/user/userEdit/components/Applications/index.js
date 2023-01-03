@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { Button, Card, Col, Row, Spinner } from "reactstrap";
 import _ from "lodash";
 
@@ -9,7 +9,13 @@ import { NmpSelect } from "features/nmp-ui";
 import UserOnboardingDForm from "../../../userOnboarding/UserOnboardingDForm";
 import UserOnboardingForm from "../../../userOnboarding/UserOnboardingForm";
 
-import { useDFormQuery, useDFormValues, useSubmitDFormMutation, useChangeDFormStatusMutation } from "../../userQueries";
+import {
+  useDFormQuery,
+  useDFormValues,
+  useSubmitDFormMutation,
+  useChangeDFormStatusMutation,
+  useSaveUserValueDFormMutation,
+} from "../../userQueries";
 
 const STATUSES = [
   { value: "submitted", label: "submitted" },
@@ -34,20 +40,15 @@ const UpdatedAt = ({ isUpdating, updatedAt }) => {
 };
 
 const UserEditApplication = ({ isCreate, dformId }) => {
-  const editedFieldMasterSchemaFieldIdsRef = useRef([]);
+  const prevValuesRef = useRef({});
 
   const [dform, setDForm] = useState(null);
   const [values, setValues] = useState(null);
 
-  const [isSaveDisabled, setIsSaveDisabled] = useState(true);
-
   const dformQuery = useDFormQuery(
     { dformId },
     {
-      onSuccess: (data) => {
-        setDForm(data);
-        setIsSaveDisabled(true);
-      },
+      onSuccess: (data) => setDForm(data),
       enabled: !isCreate && dformId != null,
       refetchOnWindowFocus: false,
     }
@@ -58,15 +59,17 @@ const UserEditApplication = ({ isCreate, dformId }) => {
     {
       onSuccess: (data) => {
         // When there are no values it returns empty object
-        const values = typeof data === "object" ? data : {};
+        const values = typeof data === "object" && data !== null ? data : {};
         setValues(values);
-        // reset edited values
-        clearEditedValues();
+        prevValuesRef.current = values;
       },
+      select: (data) => (typeof data === "object" && data !== null ? data : {}),
       enabled: !isCreate && dformId != null,
       refetchOnWindowFocus: false,
     }
   );
+
+  const isEdited = useMemo(() => !_.isEqual(values, valuesQuery.data), [valuesQuery.data, values]);
 
   const changeDFormStatusMutation = useChangeDFormStatusMutation(
     { dformId },
@@ -75,6 +78,22 @@ const UserEditApplication = ({ isCreate, dformId }) => {
 
   const submitDFormMutation = useSubmitDFormMutation({ dformId }, { onSuccess: () => toast.success("Saved") });
 
+  const saveValueMutation = useSaveUserValueDFormMutation(
+    { dformId },
+    {
+      onError: (error, vars) => {
+        const masterSchemaFieldId = vars.master_schema_field_id;
+        const prevValue = { ...prevValuesRef.current[masterSchemaFieldId] };
+        setValues((prev) => ({ ...prev, [masterSchemaFieldId]: prevValue }));
+      },
+    }
+  );
+
+  const isSaveDisabled =
+    [dformQuery, valuesQuery, changeDFormStatusMutation, submitDFormMutation, saveValueMutation].every(
+      ({ isLoading }) => isLoading
+    ) || !isEdited;
+
   const onFieldChange = (field, newValue) => {
     let newFieldValue;
     const currentValue = values[field.masterSchemaFieldId];
@@ -82,7 +101,8 @@ const UserEditApplication = ({ isCreate, dformId }) => {
     switch (field.type) {
       case FieldTypes.File:
       case FieldTypes.FileList:
-        newFieldValue = { ...currentValue, files: newValue };
+        const newFiles = Array.isArray(newValue) ? newValue : [];
+        newFieldValue = { ...currentValue, files: newFiles };
         break;
       case FieldTypes.Text:
       case FieldTypes.TextArea:
@@ -94,77 +114,52 @@ const UserEditApplication = ({ isCreate, dformId }) => {
       case FieldTypes.MultiSelect:
       default:
         newFieldValue = { ...currentValue, value: newValue };
-        addFieldToEdited(field);
     }
 
     const newApplicationValue = { ...values, [field.masterSchemaFieldId]: newFieldValue };
 
-    setIsSaveDisabled(true);
-
-    if (!_.isEqual(newApplicationValue, valuesQuery.data)) {
-      setIsSaveDisabled(false);
-    }
-
+    prevValuesRef.current = values;
     setValues(newApplicationValue);
-  };
 
-  const addFieldToEdited = ({ masterSchemaFieldId }) => {
-    const edited = editedFieldMasterSchemaFieldIdsRef.current;
-    if (!edited.includes(masterSchemaFieldId)) {
-      editedFieldMasterSchemaFieldIdsRef.current.push(masterSchemaFieldId);
+    // File and FileList should not be saved here.
+    if ([FieldTypes.File, FieldTypes.FileList].includes(field.type)) {
+      return;
     }
-  };
 
-  const getFieldByMasterSchemaFieldId = (masterSchemaFieldId) => {
-    const fields = Object.values(dform.schema.fields);
-    return fields.find((field) => Number(field.masterSchemaFieldId) === Number(masterSchemaFieldId));
-  };
-
-  const getEditedFields = () => {
-    return editedFieldMasterSchemaFieldIdsRef.current.map(getFieldByMasterSchemaFieldId);
-  };
-
-  const getEditedValue = (masterSchemaFieldId, values) => values[masterSchemaFieldId];
-
-  const clearEditedValues = () => void (editedFieldMasterSchemaFieldIdsRef.current = []);
-
-  const submitDForm = (editedFields) => {
-    const editedValues = editedFields
-      // File and FileList should not be submitted
-      .filter(({ type }) => ![FieldTypes.File, FieldTypes.FileList].includes(type))
-      .reduce((editedValues, { masterSchemaFieldId }) => {
-        editedValues[masterSchemaFieldId] = getEditedValue(masterSchemaFieldId, values).value;
-        return editedValues;
-      }, {});
-
-    submitDFormMutation.mutate({ values: editedValues });
+    saveValueMutation.mutate({
+      master_schema_field_id: field.masterSchemaFieldId,
+      value: newFieldValue.value,
+    });
   };
 
   const onSubmit = () => {
-    const editedFields = getEditedFields();
-
-    if (editedFields.length === 0) {
+    if (!isEdited) {
       toast.success("Form values up to date");
       return;
     }
 
-    submitDForm(editedFields);
+    submitDFormMutation.mutate();
   };
 
   const onBeforeUnmount = () => {
-    const editedFields = getEditedFields();
-
-    if (editedFields.length > 0) {
+    if (isEdited) {
       // Ask user if he wants to save changes before leave.
       const needSaveChanges = window.confirm("Save changes before leave?");
 
       if (needSaveChanges) {
-        submitDForm(editedFields);
+        submitDFormMutation.mutate();
       }
     }
   };
 
-  const onDFormStatusChange = (status) => changeDFormStatusMutation.mutate({ status });
+  const onDFormStatusChange = (status) => {
+    if (isEdited) {
+      toast.warn("Please save your changes.");
+      return;
+    }
+
+    changeDFormStatusMutation.mutate({ status });
+  };
 
   const onRefetch = () => dformQuery.refetch();
 
