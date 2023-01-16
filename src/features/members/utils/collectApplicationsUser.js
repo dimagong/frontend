@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 export const OnboardingsTypes = {
-  DForm: "dform",
+  DForm: "form",
   Survey: "survey",
 };
 

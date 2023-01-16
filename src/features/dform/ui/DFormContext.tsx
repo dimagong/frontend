@@ -5,6 +5,7 @@ import { DformAccessTypes } from "../types";
 import { isDFormAccessible } from "../data/isDFormAccessible";
 import { DformFileService } from "../data/services/dformFileService";
 import { DformId } from "../data/models";
+import { APIPrefix } from "../../common";
 
 type DFormContextValue = {
   dformId: DformId;
@@ -17,7 +18,7 @@ const defaultValue: DFormContextValue = {
   dformId: -1 as unknown as DformId,
   accessType: DformAccessTypes.HardLock,
   isAccessible: false,
-  dformFileService: new DformFileService("/api"),
+  dformFileService: new DformFileService(APIPrefix.API),
 };
 
 const dformContext = createContext(defaultValue);
@@ -27,13 +28,13 @@ let managerDFormFileService: DformFileService;
 const getDFormFileService = (isMemberView: boolean): DformFileService => {
   if (isMemberView) {
     if (!memberDFormFileService) {
-      memberDFormFileService = new DformFileService("/member-view-api");
+      memberDFormFileService = new DformFileService(APIPrefix.Member);
     }
     return memberDFormFileService;
   }
 
   if (!managerDFormFileService) {
-    managerDFormFileService = new DformFileService("/api");
+    managerDFormFileService = new DformFileService(APIPrefix.API);
   }
   return managerDFormFileService;
 };

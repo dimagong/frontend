@@ -31,6 +31,7 @@ const Routes = () => {
                 Component={route.Component}
                 isMember={isMember}
                 isManager={isManager}
+                isLoading={profileQuery.isLoading || profileQuery.data === undefined}
               />
             ) : (
               <RouteProvider.Public

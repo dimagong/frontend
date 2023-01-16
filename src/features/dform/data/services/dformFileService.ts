@@ -1,12 +1,11 @@
-import type { API_PREFIX_TYPE } from "features/common";
-import { invariant, AbstractService } from "features/common";
+import { invariant, AbstractService, APIPrefix } from "features/common";
 
 import { DformFileListValueType, DformId } from "../models";
 
 export type TemporaryFileResponse = { name: string; temporary_public_url: string };
 
 export class DformFileService extends AbstractService {
-  constructor(readonly prefix: API_PREFIX_TYPE) {
+  constructor(readonly prefix: APIPrefix) {
     super();
   }
 

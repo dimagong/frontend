@@ -4,8 +4,7 @@ import {
   MVADFormCategoryRegisterQueryKeys,
 } from "api/Onboarding/prospectUserQuery";
 import { queryClient } from "api/queryClient";
-import { AbstractService } from "features/common";
-import type { API_PREFIX_TYPE } from "features/common";
+import { AbstractService, APIPrefix } from "features/common";
 
 import {
   DformId,
@@ -20,7 +19,7 @@ import {
 import { DformService } from "./dformService";
 
 export class MemberDFormService extends AbstractService {
-  readonly prefix: API_PREFIX_TYPE = "/member-view-api";
+  readonly prefix = APIPrefix.Member;
 
   static instance = new MemberDFormService();
 

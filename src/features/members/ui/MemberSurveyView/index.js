@@ -1,1 +1,1 @@
-export { default } from "./MemberSurveyView";
+export * from "./MemberSurveyView";

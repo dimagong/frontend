@@ -3,16 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 import appSlice from "app/slices/appSlice";
 import { selectAuth } from "app/selectors";
-import { createQueryKey } from "api/createQueryKey";
 
-import { ManagerProfileService } from "../services/profileService";
+import { ProfileService } from "../services/profileService";
 
-const { getProfileSuccess, getProfileError } = appSlice.actions;
-
-const ProfileQueryKey = createQueryKey("Profile");
+const { getProfileError } = appSlice.actions as any;
+const { getProfileSuccess } = appSlice.actions as any;
 
 export const ProfileQueryKeys = {
-  all: () => [ProfileQueryKey],
+  all: () => ["Profile"],
 };
 
 export const useProfileQuery = () => {
@@ -22,14 +20,13 @@ export const useProfileQuery = () => {
   return useQuery({
     enabled: isAuth,
     queryKey: ProfileQueryKeys.all(),
-    queryFn: () => ManagerProfileService.instance.get(),
+    queryFn: ({ signal }) => ProfileService.get(),
     onSuccess: (data) => {
-      const rawData: unknown = data;
-      // @ts-ignore
-      dispatch(getProfileSuccess(rawData));
+      // The `getProfileSuccess` reducer set a payload's data into state.user.profile with onboarding: []
+      // in the src/app/reducers/app/user/userReducers.js line=6
+      dispatch(getProfileSuccess(data));
     },
     onError: (error) => {
-      // @ts-ignore
       dispatch(getProfileError(error));
     },
   });

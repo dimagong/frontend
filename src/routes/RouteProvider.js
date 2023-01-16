@@ -1,16 +1,21 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
+import { NpmSpin } from "features/nmp-ui";
 import { homePath, memberPath } from "constants/paths";
 
 const Private = (props) => {
-  const { isAuth, redirect, location, Component, isManager, isMember } = props;
+  const { isAuth, redirect, location, Component, isManager, isMember, isLoading } = props;
 
   if (!isAuth) {
     return <Redirect to={{ pathname: redirect, state: { from: location } }} />;
   }
 
-  if (location.pathname !== memberPath && isMember) {
+  if (isLoading) {
+    return <NpmSpin size={60} />;
+  }
+
+  if (!location.pathname.includes(memberPath) && isMember) {
     return <Redirect to={{ pathname: memberPath }} />;
   }
 

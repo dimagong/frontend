@@ -3,8 +3,8 @@ import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 
 import rootSaga from "app/saga";
+import { history } from "routes/history";
 
-import { history } from "../history";
 import appSlice from "./slices/appSlice";
 import loadingReducer from "./loadingReducer.js";
 import onboardingSlice from "./slices/onboardingSlice";

@@ -1,1 +1,1 @@
-export const createQueryKey = (description) => `[QueryKey] ${description}`;
+export const createQueryKey = (description) => description;

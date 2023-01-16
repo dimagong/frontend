@@ -1,5 +1,4 @@
-import type { API_PREFIX_TYPE } from "features/common";
-import { devWarning, AbstractService } from "features/common";
+import { devWarning, AbstractService, APIPrefix } from "features/common";
 
 import {
   DformBlockTypes,
@@ -23,7 +22,7 @@ import { DformBlockModel, DformFieldModel, DformFieldTypes, DformHelpTextModel }
 import { DformModel } from "../models";
 
 export class DformService extends AbstractService {
-  readonly prefix: API_PREFIX_TYPE = "/api";
+  readonly prefix = APIPrefix.API;
 
   private static recognizeBlockType(type: string): DformBlockTypes {
     switch (type) {

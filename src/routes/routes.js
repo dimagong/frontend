@@ -43,7 +43,6 @@ const forgotPasswordRoute = {
 
 const membersRoute = {
   path: memberPath,
-  exact: true,
   redirect: loginPath,
   isPrivate: true,
   Component: lazy(() => import("features/members/ui/MemberPage").then((m) => ({ ...m, default: m.MemberPage }))),

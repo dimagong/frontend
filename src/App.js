@@ -6,7 +6,7 @@ import { ConnectedRouter } from "connected-react-router";
 import Routes from "routes";
 
 import store from "./app/store";
-import { history } from "./history";
+import { history } from "./routes/history";
 import Spinner from "./components/@vuexy/spinner/Fallback-spinner";
 
 function App() {

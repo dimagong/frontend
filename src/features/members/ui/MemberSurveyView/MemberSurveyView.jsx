@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import React, { useState } from "react";
 
 import {
-  useSurveyByIdQuery,
   usePushAnswerMutation,
   useGetBeginSurveyQuery,
   useGetAllSurveyQuestionsQuery,
@@ -21,16 +20,13 @@ import MemberSurveyFeedbackView from "../MemberSurveyFeedbackView";
 import { findStatusSurvey } from "../../data/helpers/findStatusSurvey";
 import { useMVAswitchToPrevious, useMVASurveyPassingInvalidate } from "../../data/hooks";
 
-const MemberSurvey = ({ selectedSurveyId, organization }) => {
+export const MemberSurveyView = (props) => {
+  const { survey, organization } = props;
+
   const [answer, setAnswer] = useState("");
   const [isFeedbackView, setIsFeedbackView] = useState(false);
 
-  const { data: survey, isLoading: isLoadingSurvey } = useSurveyByIdQuery(
-    { id: selectedSurveyId },
-    { enabled: !!selectedSurveyId }
-  );
-
-  const { id, started_at, finished_at, graded_at, title } = survey || {};
+  const { id, started_at, finished_at, graded_at, title } = survey;
 
   const surveyStatus = findStatusSurvey(started_at, finished_at, graded_at);
 
@@ -88,12 +84,12 @@ const MemberSurvey = ({ selectedSurveyId, organization }) => {
   const isLoadingData = (started_at && isSurveyLoading) || (started_at && !question) || isAnswerPushProceed;
   const currentQuestionAnswer = answers && !isNaN(currentIndex) ? answers[currentIndex] : null;
 
-  const isSurveyPassed = survey && survey.stats?.total >= survey.stats?.min_percent_pass;
-  const totalTime = survey?.stats?.totalTime ?? "00-00-00";
-  const isShowResult = survey?.is_show_result;
-  const description = survey?.interaction_version?.description || "No description";
+  const isSurveyPassed = survey.stats?.total >= survey.stats?.min_percent_pass;
+  const totalTime = survey.stats?.totalTime ?? "00-00-00";
+  const isShowResult = survey.is_show_result;
+  const description = survey.interaction_version?.description || "No description";
 
-  if (!survey && isSurveyLoading && isLoadingSurvey) {
+  if (isSurveyLoading) {
     return <NpmSpin size={60} />;
   }
 
@@ -158,5 +154,3 @@ const MemberSurvey = ({ selectedSurveyId, organization }) => {
     </div>
   );
 };
-
-export default MemberSurvey;

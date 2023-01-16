@@ -1,28 +1,41 @@
-import { AbstractService, API_PREFIX_TYPE } from "features/common";
+import { APIService } from "features/common";
 
-abstract class ProfileService extends AbstractService {
-  get(): Promise<unknown> {
-    const url = this.getUrl("/user/profile");
-
-    return this.apiClient.get(url);
-  }
+interface NotifyEntry<TNotify> {
+  id: number;
+  notify: TNotify;
 }
 
-/**
- * Currently there is no api to distinguish which is profile need to use.
- */
-// export class MemberProfileService extends ProfileService {
-//   static get instance() {
-//     return new MemberProfileService();
-//   }
-//
-//   readonly prefix: API_PREFIX_TYPE = "/member-view-api";
-// }
+type IntroductionNotify = {
+  id: number;
+  intro_text: string;
+  intro_title: string;
+  download_text: string;
+};
 
-export class ManagerProfileService extends ProfileService {
-  static get instance() {
-    return new ManagerProfileService();
+type IntroductionNotifyEntry = NotifyEntry<IntroductionNotify>;
+
+type NotifyEntries = IntroductionNotifyEntry;
+
+export type ProfileResponse = {
+  id: number;
+  name: string;
+  first_name: string;
+  avatar: {
+    id: number;
+  } | null;
+  permissions: {
+    logo: { id: number } | null;
+    organization: string;
+    organization_id: number;
+    organization_type: string;
+  };
+  notify_entries: NotifyEntries[];
+};
+
+export class ProfileService {
+  static get(): Promise<ProfileResponse> {
+    const url = `${APIService.prefix}/user/profile`;
+
+    return APIService.apiClient.get(url);
   }
-
-  readonly prefix: API_PREFIX_TYPE = "/api";
 }

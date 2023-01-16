@@ -2,10 +2,10 @@ import "./navBar.scss";
 
 import React from "react";
 import { Navbar } from "reactstrap";
-import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ChevronDown, ChevronUp } from "react-feather";
 
+import { history } from "routes/history";
 import appSlice from "app/slices/appSlice";
 import { getMemberFirms } from "app/selectors/memberFirmsSelector";
 import DeprecatedNmpOrganizationLogo from "components/nmp/DeprecatedNmpOrganizationLogo";
@@ -13,7 +13,6 @@ import { selectProfile, selectManagers, selectContextSearchVisibility } from "ap
 
 import NavbarUser from "./NavbarUser";
 import SearchInput from "./SearchInput";
-import { history } from "../../history";
 
 const { logout, toggleContextSearch, setContext } = appSlice.actions;
 

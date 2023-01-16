@@ -1,27 +1,26 @@
-export const findActiveAppOnboarding = (applications) => {
-  if (applications.length) {
-    let activeOnboarding = applications.find((onboarding) => {
-      if (onboarding.type === "dform") {
-        return onboarding.status === "in-progress" || onboarding.status === "unsubmitted";
-      } else {
-        return !onboarding.finished_at;
-      }
-    });
-    if (!activeOnboarding) {
-      activeOnboarding = applications[0];
-    }
-    return activeOnboarding;
+export const findActiveOnboarding = (applications) => {
+  if (applications.length === 0) {
+    return null;
   }
-  return false;
+
+  let activeOnboarding = applications.find((onboarding) => {
+    if (onboarding.type === "dform") {
+      return onboarding.status === "in-progress" || onboarding.status === "unsubmitted";
+    } else {
+      return !onboarding.finished_at;
+    }
+  });
+
+  if (!activeOnboarding) {
+    activeOnboarding = applications[0];
+  }
+  return activeOnboarding;
 };
 
-export const initialAppOnboarding = (profile, userApplications) => {
-  let appOnboardingInitial = [];
-
-  if (profile && !profile.onboarding?.id) {
-    appOnboardingInitial = findActiveAppOnboarding(userApplications) ?? [];
+export const getInitialOnboarding = (profile, userApplications) => {
+  if (!profile.onboarding?.id) {
+    return findActiveOnboarding(userApplications);
   } else if (profile?.onboarding?.id) {
-    appOnboardingInitial = { ...profile.onboarding };
+    return { ...profile.onboarding };
   }
-  return appOnboardingInitial;
 };

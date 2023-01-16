@@ -4,8 +4,8 @@ import React from "react";
 import type { FC } from "react";
 import { DownloadOutlined } from "@ant-design/icons";
 
+import { useOrganizationBrochureQuery } from "api/file/useOrganizationFileQueries";
 import { NmpCard, NmpButton, NmpRow, NmpCol, NmpArrowRightIcon } from "features/nmp-ui";
-import { useOrganizationBrochureQuery } from "../../../../api/file/useOrganizationFileQueries";
 
 type Props = {
   username?: string;

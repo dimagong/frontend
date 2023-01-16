@@ -1,15 +1,20 @@
 import "./styles.scss";
 
 import React from "react";
+import type { FC } from "react";
+import type { Location } from "history";
+import { useRouteMatch, useLocation } from "react-router-dom";
 
+import { history } from "routes/history";
+import { memberPath } from "constants/paths";
 import { NpmMenu, NmpTag } from "features/nmp-ui";
 
+import { Survey } from "../../data/models/models";
 import { Status } from "../../data/constants/statusConstants";
-import { OnboardingsTypes } from "../../utils/collectApplicationsUser";
 import { findStatusSurvey } from "../../data/helpers/findStatusSurvey";
-import { Survey, DForm, DFormCategory } from "../../data/models/models";
+import { OnboardingsTypes } from "../../utils/collectApplicationsUser";
 
-const getKey = (type: string, id: number) => `${type}-${id}`;
+const getKey = (type: string, id: string) => `${type}-${id}`;
 
 const parseKey = (key: string) => {
   const [type, id] = key.split("-");
@@ -64,19 +69,6 @@ const menuCategoryTitle = (name: string, count: number): JSX.Element => (
   </span>
 );
 
-const menuDFormItems = (dforms: Partial<DFormCategory>[] | Partial<DForm>[]) => {
-  return dforms.map((dform) => {
-    const id = dform.dform_id ?? dform.id;
-    const name = dform.dform_name ?? dform.name;
-    const status = dform.dform_status ?? dform.status;
-    const statusColor = selectStatusColor(status);
-    return {
-      label: menuBaseItem(name, status, statusColor),
-      key: getKey(OnboardingsTypes.DForm, id),
-    };
-  });
-};
-
 const menuSurveysItems = (surveys) => {
   return surveys.map(({ id, title, started_at, finished_at, graded_at }) => {
     const status = findStatusSurvey(started_at, finished_at, graded_at, false);
@@ -86,17 +78,6 @@ const menuSurveysItems = (surveys) => {
       key: getKey(OnboardingsTypes.Survey, id),
     };
   });
-};
-
-const menuDFormsGroup = (dforms: Partial<DFormCategory>[] | Partial<DForm>[]) => {
-  return [
-    {
-      className: "member-menu__group-items",
-      label: menuCategoryTitle(`Applications`, dforms.length),
-      type: "group",
-      children: menuDFormItems(dforms),
-    },
-  ];
 };
 
 const menuSurveysGroup = (surveys: Survey[]) => {
@@ -244,9 +225,33 @@ const makeViewHierarchy = (topLevelCategory) => {
   return viewHierarchy;
 };
 
-export const MemberMenu = (props) => {
-  const { dforms, dFormsCategories, dFormsCategoriesRegister, surveys, onboardings, activeOnboarding, onMenuChange } =
-    props;
+type RouteParams = { formId: string; surveyId: string };
+
+const getActiveOnboardingByLocation = (location: Location<unknown>) => {
+  if (location.pathname.includes(OnboardingsTypes.DForm)) {
+    const id = location.pathname.replace(`${memberPath}/${OnboardingsTypes.DForm}/`, "");
+
+    return { type: OnboardingsTypes.DForm, id };
+  } else if (location.pathname.includes(OnboardingsTypes.Survey)) {
+    const id = location.pathname.replace(`${memberPath}/${OnboardingsTypes.Survey}/`, "");
+
+    return { type: OnboardingsTypes.Survey, id };
+  }
+
+  return null;
+};
+
+type MemberMenuProps = {
+  surveys: any[];
+  dFormsCategories: any[];
+  dFormsCategoriesRegister: any[];
+};
+
+export const MemberMenu: FC<MemberMenuProps> = (props) => {
+  const { surveys, dFormsCategories, dFormsCategoriesRegister } = props;
+
+  const location = useLocation();
+  const { path } = useRouteMatch<RouteParams>();
 
   let zeroCategory: any = [
     {
@@ -290,13 +295,13 @@ export const MemberMenu = (props) => {
     },
   ];
 
-  const selectedKeys = [getKey(activeOnboarding.type, activeOnboarding.id)];
+  const activeOnboarding = getActiveOnboardingByLocation(location);
+  const selectedKeys = activeOnboarding ? [getKey(activeOnboarding.type, activeOnboarding.id)] : [];
 
-  const onSelect = ({ key }) => {
+  const onSelect = ({ key }: { key: string }) => {
     const { type, id } = parseKey(key);
-    const onboarding = onboardings.find((onboarding) => onboarding.id === Number(id) && onboarding.type === type);
 
-    onMenuChange(onboarding);
+    history.push(`${path}/${type}/${id}`);
   };
 
   return (

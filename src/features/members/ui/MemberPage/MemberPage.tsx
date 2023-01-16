@@ -1,62 +1,35 @@
-import "./styles.scss";
-
-import { Layout } from "antd";
+import React from "react";
 import type { FC } from "react";
-import { useDispatch } from "react-redux";
-import React, { useEffect, useState } from "react";
+import { Switch, Redirect, Route, useRouteMatch } from "react-router-dom";
 
 import {
   useMVADFormsQuery,
   useSurveyPassingQuery,
   useMVADFormsCategoriesQuery,
   useMVADFormsCategoriesRegisterQuery,
+  useNotifyIntroductionPageSeeingMutation,
 } from "api/Onboarding/prospectUserQuery";
-import appSlice from "app/slices/appSlice";
-import { history } from "../../../../history";
-import { useUserAvatarQuery } from "api/file/useUserAvatarQueries";
-import { NmpCol, NmpRow, NmpUserInfo, NpmSpin } from "features/nmp-ui";
+import { NmpCol, NmpRow } from "features/nmp-ui";
 import { useProfileQuery } from "features/user/queries/useProfileQuery";
-import DeprecatedNmpOrganizationLogo from "components/nmp/DeprecatedNmpOrganizationLogo";
 
 import { MemberMenu } from "../MemberMenu";
-import { MemberComponentView } from "../MemberComponentView";
-
-import { initialAppOnboarding } from "../../utils/findActiveAppOnboarding";
+import { MemberFormPage } from "../MemberFormPage";
+import { MemberSurveyPage } from "../MemberSurveyPage";
+import { MemberPageTemplate } from "../MemberPageTemplate";
 import { collectApplicationsUser } from "../../utils/collectApplicationsUser";
-
-const { logout } = appSlice.actions;
+import { MemberIntroductionTemplate } from "../MemberIntroductionTemplate";
 
 export const MemberPage: FC = () => {
-  const dispatch = useDispatch();
+  const { path } = useRouteMatch();
   const profileQuery = useProfileQuery();
-
-  const profile = (profileQuery.data ?? {}) as any;
-  const userId = profile.id as number;
-  const avatarId = profile.avatar?.id as number;
-  const logoId = profile.permissions?.logo?.id as number;
-  const username = profile.first_name as string;
-  const organizationId = profile.permissions.organization_id as number;
-  const organizationType = profile.permissions.organization_type as string;
-  const organizationName = profile.permissions.organization as string;
-  const notifyEntry = profile?.notify_entries?.length > 0 ? profile.notify_entries[0] : null;
-
-  const avatarQuery = useUserAvatarQuery(
-    // @ts-ignore
-    { userId, fileId: avatarId, isOnboarding: true },
-    { enabled: Boolean(avatarId) }
-  );
+  const profile = profileQuery.data!;
 
   const dformsQuery = useMVADFormsQuery();
   const surveysQuery = useSurveyPassingQuery();
   const dformsCategoriesQuery = useMVADFormsCategoriesQuery();
   const dformsCategoriesRegisterQuery = useMVADFormsCategoriesRegisterQuery();
 
-  const dforms = dformsQuery.data ?? [];
-  const surveys = surveysQuery.data ?? [];
-  const dformsCategories = dformsCategoriesQuery.data ?? [];
-  const dformsCategoriesRegister = dformsCategoriesRegisterQuery.data ?? [];
-
-  const isDataAble =
+  const isLoaded =
     dformsQuery.data &&
     !dformsQuery.isLoading &&
     surveysQuery.data &&
@@ -64,88 +37,73 @@ export const MemberPage: FC = () => {
     dformsCategoriesQuery.data &&
     dformsCategoriesRegisterQuery.data;
 
+  const dforms = dformsQuery.data ?? [];
+  const surveys = surveysQuery.data ?? [];
+  const dformsCategories = dformsCategoriesQuery.data ?? [];
+  const dformsCategoriesRegister = dformsCategoriesRegisterQuery.data ?? [];
   const applications = collectApplicationsUser(dforms, surveys);
-  // This shit possible false
-  const initialApplication = initialAppOnboarding(profile, isDataAble ? applications : []);
 
-  const [activeApplicationMeta, setActiveApplicationMeta] = useState<{ id: number; type: string }>();
-  const activeApplication = applications.find(({ id, type }) => {
-    return id === activeApplicationMeta?.id && type === activeApplicationMeta?.type;
+  const passIntroduction = useNotifyIntroductionPageSeeingMutation({
+    userId: profile.id,
+    userNotifyEntryId: profile.notify_entries.length > 0 ? profile.notify_entries[0].id : null,
   });
 
-  const isApplicationDataAble = activeApplication && isDataAble;
+  const onIntroductionStart = () => passIntroduction.mutate();
 
-  useEffect(() => {
-    if (initialApplication?.id && initialApplication?.type) {
-      setActiveApplicationMeta({ id: initialApplication?.id, type: initialApplication?.type });
-    }
-  }, [initialApplication?.id, initialApplication?.type]);
+  const isThereIntroduction = profile.notify_entries.length > 0;
 
-  const onLogout = () => {
-    // @ts-ignore
-    dispatch(logout());
-    history.push("/login");
-  };
+  if (!isLoaded) {
+    return <MemberPageTemplate isLoading />;
+  }
 
-  const onMenuChange = (application) => setActiveApplicationMeta({ id: application.id, type: application.type });
+  if (isThereIntroduction) {
+    const { id, intro_text, intro_title, download_text } = profile.notify_entries[0].notify;
+    return (
+      <MemberPageTemplate>
+        <MemberIntroductionTemplate
+          username={profile.first_name}
+          introText={intro_text}
+          introTitle={intro_title}
+          brochureId={id}
+          downloadText={download_text}
+          onStartClick={onIntroductionStart}
+          isOnboardingExist={applications.length > 0}
+        />
+      </MemberPageTemplate>
+    );
+  }
 
   return (
-    <Layout className="nmp-member__layout">
-      <Layout.Header prefixCls="nmp-member__header">
-        <div className="nmp-member__container">
-          <NmpRow>
-            <NmpCol span="4">
-              <DeprecatedNmpOrganizationLogo
-                fileId={logoId}
-                isOnboarding={true}
-                organizationId={organizationId}
-                organizationName={organizationName}
-                organizationType={organizationType}
-                className="nmp-member__logo"
-              />
-            </NmpCol>
-
-            <NmpCol span="16">
-              {isApplicationDataAble && !notifyEntry ? (
-                <MemberMenu
-                  dforms={dforms}
-                  surveys={surveys}
-                  onboardings={applications}
-                  activeOnboarding={activeApplication}
-                  dFormsCategories={dformsCategories}
-                  dFormsCategoriesRegister={dformsCategoriesRegister}
-                  onMenuChange={onMenuChange}
-                />
-              ) : null}
-            </NmpCol>
-
-            <NmpCol span="4">
-              <NmpUserInfo
-                username={username}
-                avatarSrc={avatarQuery.data.url}
-                organizationName={organizationName}
-                onLogout={onLogout}
-              />
+    <MemberPageTemplate
+      menu={
+        <MemberMenu
+          surveys={surveys}
+          dFormsCategories={dformsCategories}
+          dFormsCategoriesRegister={dformsCategoriesRegister}
+        />
+      }
+    >
+      <Switch>
+        <Route exact path={path}>
+          <NmpRow justify="center">
+            <NmpCol>
+              <h2>Dashboard</h2>
             </NmpCol>
           </NmpRow>
-        </div>
-      </Layout.Header>
+        </Route>
 
-      <Layout>
-        <Layout.Content prefixCls="nmp-member__content">
-          <div className="nmp-member__container">
-            {isDataAble ? (
-              <MemberComponentView
-                profile={profile}
-                applications={applications}
-                activeApplicationMeta={activeApplicationMeta}
-              />
-            ) : (
-              <NpmSpin size={60} />
-            )}
-          </div>
-        </Layout.Content>
-      </Layout>
-    </Layout>
+        <Route exact path={`${path}/form`}>
+          <Redirect to={path} />
+        </Route>
+
+        <Route path={`${path}/form/:formId`} component={MemberFormPage} />
+
+        <Route exact path={`${path}/survey`}>
+          <Redirect to={path} />
+        </Route>
+
+        <Route path={`${path}/survey/:surveyId`} component={MemberSurveyPage} />
+      </Switch>
+    </MemberPageTemplate>
   );
 };
