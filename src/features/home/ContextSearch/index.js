@@ -22,7 +22,7 @@ import { NAV_OPTIONS } from "./ContextSearchNav/constants";
 import MemberFirmCreateModal from "./MemberFirmCreateModal";
 import MemberFirmsList from "./MemberFirms/MemberFirmsList";
 
-const { setContext, getFilterRequest, getUserManagment, getdFormsRequest, hideContextSearch } = appSlice.actions;
+const { setContext, hideContextSearch, getUserManagment, getdFormsRequest } = appSlice.actions;
 
 const ContextSearch = () => {
   const dispatch = useDispatch();
@@ -104,7 +104,6 @@ const ContextSearch = () => {
   const handleFilter = (filteredManagers) => setShowManagers([...filteredManagers]);
 
   useEffect(() => {
-    dispatch(getFilterRequest());
     dispatch(getUserManagment());
     dispatch(getdFormsRequest());
     // eslint-disable-next-line react-hooks/exhaustive-deps

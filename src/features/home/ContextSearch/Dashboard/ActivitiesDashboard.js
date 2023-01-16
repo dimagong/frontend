@@ -294,7 +294,7 @@ const ActivitiesDashboard = ({
                         <img src={manager.url ? manager.url : noneAvatar} alt="" className={"action-user-avatar"} />
                         <span className={"action-user-name"}>{manager.first_name + " " + manager.last_name}</span>
                         <span className={"action-user-org"}>{manager?.permissions?.organization}</span>
-                        <span style={{ width: window.innerWidth * 0.43 - 370 }} className={"action-user-description"}>
+                        <span style={{ width: window.innerWidth * 0.43 - 420 }} className={"action-user-description"}>
                           {description}
                         </span>
                         <span className={"action-user-time"}>

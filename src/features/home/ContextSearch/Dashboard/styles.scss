@@ -259,14 +259,14 @@
   cursor: pointer;
   height: 40px;
   line-height: 40px;
-  margin: 10px 21px 10px 0;
+  margin: 10px 14px 10px 0;
   //box-shadow: 0 2px 5px #dfdfdf;
   border: none;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   border-right: #9aa9b7 solid 3px;
   display: grid;
   grid-template-columns: 170px 100px auto auto;
-  gap: 16px;
+  gap: 12px;
 
   .action-user-avatar {
     width: 40px;

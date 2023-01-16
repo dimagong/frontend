@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import {
   Row,
@@ -16,7 +17,18 @@ import {
 import "./styles.scss";
 import UserFilter from "./Filters/UserFilter";
 
+import appSlice from "app/slices/appSlice";
+
+const { getFilterRequest } = appSlice.actions;
+
 const ContextSearchNav = ({ onChange, selectedNavItem, navOptions, handleFilter, managers }) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getFilterRequest());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleNavItemSelect = (navItem) => {
     onChange(navItem);
   };
