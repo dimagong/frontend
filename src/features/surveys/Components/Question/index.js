@@ -22,7 +22,6 @@ const Question = ({
   selectedAnswer,
   answer,
   onGradingAnswerSave,
-  onFinishButtonDisableStateChange,
   isGradingReview,
   currAnswer,
   initAnswer,
@@ -64,7 +63,6 @@ const Question = ({
         answer={answer}
         isFeedbackSubmitProceeding={isFeedbackSubmitProceeding}
         onGradingAnswerSave={onGradingAnswerSave}
-        onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
         isGradingReview={isGradingReview}
         onFeedbackSubmit={onFeedbackSubmit}
       />

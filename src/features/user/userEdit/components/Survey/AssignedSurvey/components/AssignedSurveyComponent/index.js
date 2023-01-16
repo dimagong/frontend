@@ -11,7 +11,6 @@ const AssignedSurveyComponent = ({
   status,
   onQuestionAnswerGradingSave,
   onFinishGrading,
-  onFinishButtonDisableStateChange,
   isGradingReview,
   onForceSurveyReviewShow,
   onForceSurveyReviewHide,
@@ -20,6 +19,7 @@ const AssignedSurveyComponent = ({
   onFeedbackSubmit,
   isFeedbackSubmitProceeding,
   isFinishButtonDisabled,
+  isLoadingGradeSurveyQuestion,
 }) => {
   const commonAssignedSurveyComponentsProps = {
     isSurveyDeleteProceeding,
@@ -48,9 +48,9 @@ const AssignedSurveyComponent = ({
                 isGradingReview={isGradingReview}
                 onQuestionAnswerGradingSave={onQuestionAnswerGradingSave}
                 onFinishGrading={onFinishGrading}
-                onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
                 onForceSurveyReviewHide={onForceSurveyReviewHide}
                 isFinishButtonDisabled={isFinishButtonDisabled}
+                isLoadingGradeSurveyQuestion={isLoadingGradeSurveyQuestion}
                 {...commonAssignedSurveyComponentsProps}
               />
             ),

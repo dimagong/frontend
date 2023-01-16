@@ -83,7 +83,6 @@ const GradingQuestion = ({
   questionData,
   answer,
   onGradingAnswerSave,
-  onFinishButtonDisableStateChange,
   isGradingReview,
   onFeedbackSubmit,
   isFeedbackSubmitProceeding,
@@ -108,7 +107,6 @@ const GradingQuestion = ({
       ],
     };
 
-    onFinishButtonDisableStateChange(false);
     onGradingAnswerSave(gradingData);
   };
 
@@ -126,13 +124,11 @@ const GradingQuestion = ({
       points = null;
     }
 
-    onFinishButtonDisableStateChange(true);
     setGradingPoints(points);
     debouncedGradingSave(reviewerNotes, points);
   };
 
   const handleReviewerNotesChange = (e) => {
-    onFinishButtonDisableStateChange(true);
     setReviewerNotes(e.target.value);
     debouncedGradingSave(e.target.value, gradingPoints);
   };

@@ -11,12 +11,23 @@ import { toast } from "react-toastify";
 
 import { appSlice } from "app/slices/appSlice";
 
-const {
-  gradeSurveyQuestionAnswerRequest,
-  finishGradingRequest,
-  deleteAssignedSurveyRequest,
-  addFeedbackToQuestionRequest,
-} = appSlice.actions;
+import { useGradeSurveyQuestionMutation } from "./components/AssignedSurveyComponent/hooks/useGradeSurveyQuestionMutation";
+
+const { finishGradingRequest, deleteAssignedSurveyRequest, addFeedbackToQuestionRequest } = appSlice.actions;
+
+const checkGradeFields = (surveyData) => {
+  const questionsWithTextType = surveyData.questions.filter((question) => question.answer_structure.type === "text");
+
+  const answersWithoutGrade = questionsWithTextType.filter((question) => {
+    const isGraded = surveyData.answers.some((answer) => {
+      if (!answer.grade_structure) return false;
+
+      return answer.question_id === question.id && answer.grade_structure.grade !== null;
+    });
+    return !isGraded;
+  });
+  return !(answersWithoutGrade.length > 0);
+};
 
 const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
   const dispatch = useDispatch();
@@ -31,31 +42,23 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
 
   useCallbackOnLoad([finishGradingRequest.type], () => setIsFinishButtonBlocked(false), true);
 
+  useEffect(() => {
+    const isGradedAllAnswers = surveyData ? checkGradeFields(surveyData) : false;
+    setIsFinishButtonBlocked(!isGradedAllAnswers);
+  }, [surveyData]);
+
   const prevSurveyDeleteLoadingState = usePrevious(isSurveyDeleteProceeding);
 
+  const { isLoading: isLoadingGradeSurveyQuestion, mutate: mutateGradeSurveyQuestion } = useGradeSurveyQuestionMutation(
+    { surveyId: surveyData?.id }
+  );
+
   const handleQuestionAnswerGradingSave = (data) => {
-    dispatch(gradeSurveyQuestionAnswerRequest({ surveyId: surveyData.id, data }));
+    mutateGradeSurveyQuestion(data);
   };
 
   const handleFinishGrading = () => {
-    const questionsWithTextType = surveyData.questions.filter((question) => question.answer_structure.type === "text");
-
-    const answersWithoutGrade = questionsWithTextType.filter((question) => {
-      const isGraded = surveyData.answers.some((answer) => {
-        if (!answer.grade_structure) return false;
-
-        return answer.question_id === question.id && answer.grade_structure.grade !== null;
-      });
-
-      return !isGraded;
-    });
-
-    if (answersWithoutGrade.length) {
-      toast.error("Please, grade all text answers");
-    } else {
-      setIsFinishButtonBlocked(true);
-      dispatch(finishGradingRequest(surveyData.id));
-    }
+    dispatch(finishGradingRequest(surveyData.id));
   };
 
   const handleFeedbackSubmit = (feedback, questionId) => {
@@ -68,11 +71,6 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
         },
       })
     );
-  };
-
-  // Disabling of finish button doesn't work correctly
-  const handleFinishButtonDisableStateChange = (newState) => {
-    setIsFinishButtonBlocked(newState);
   };
 
   const handleForceSurveyReviewShow = () => {
@@ -124,11 +122,11 @@ const AssignedSurvey = ({ selectedSurveyId, onSurveyClose }) => {
       onQuestionAnswerGradingSave={handleQuestionAnswerGradingSave}
       onFinishGrading={handleFinishGrading}
       isFinishButtonDisabled={isFinishButtonBlocked}
-      onFinishButtonDisableStateChange={handleFinishButtonDisableStateChange}
       onForceSurveyReviewShow={handleForceSurveyReviewShow}
       onForceSurveyReviewHide={handleForceSurveyReviewHide}
       onAssignedSurveyDelete={handleAssignedSurveyDelete}
       isSurveyDeleteProceeding={isSurveyDeleteProceeding}
+      isLoadingGradeSurveyQuestion={isLoadingGradeSurveyQuestion}
     />
   );
 };

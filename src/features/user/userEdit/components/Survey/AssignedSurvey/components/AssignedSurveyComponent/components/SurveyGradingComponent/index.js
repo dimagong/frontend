@@ -9,7 +9,6 @@ const SurveyGradingComponent = ({
   surveyData,
   onQuestionAnswerGradingSave,
   onFinishGrading,
-  onFinishButtonDisableStateChange,
   isFinishButtonDisabled,
   isGradingReview,
   onForceSurveyReviewHide,
@@ -17,6 +16,7 @@ const SurveyGradingComponent = ({
   isSurveyDeleteProceeding,
   onFeedbackSubmit,
   isFeedbackSubmitProceeding,
+  isLoadingGradeSurveyQuestion,
 }) => {
   const handleFinishGrading = () => {
     if (!surveyData.graded_at) {
@@ -39,7 +39,6 @@ const SurveyGradingComponent = ({
           questionNumber={index + 1}
           answer={surveyData.answers[index]}
           onGradingAnswerSave={handleGradingAnswerSave}
-          onFinishButtonDisableStateChange={onFinishButtonDisableStateChange}
           isGradingReview={isGradingReview}
           key={question.id}
         />
@@ -59,6 +58,7 @@ const SurveyGradingComponent = ({
             color="primary"
             onClick={handleFinishGrading}
             disabled={isFinishButtonDisabled}
+            isLoading={isLoadingGradeSurveyQuestion}
           />
         ) : (
           <LoadingButton
