@@ -23,6 +23,7 @@ export const INITIAL_SECTION_DATA = {
   isProtected: false,
   isVisibleNonManagers: false,
   isAlreadyViewed: false,
+  elementType: "section",
   relatedGroups: [],
   conditions: [],
 };
@@ -32,6 +33,7 @@ export const INITIAL_GROUP_DATA = {
   isDisabled: false,
   isProtected: false,
   isVisibleNonManagers: false,
+  elementType: "group",
   relatedFields: [],
   conditions: [],
 };

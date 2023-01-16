@@ -119,7 +119,6 @@ export const ApplicationPage = ({ applicationId }) => {
       ...INITIAL_SECTION_DATA,
       id: v4(),
       name: sectionName,
-      elementType: "section",
       // ToDo: Handle refactoring situation with isNew
       // isNew: true,
     };
