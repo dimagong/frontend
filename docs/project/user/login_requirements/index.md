@@ -76,4 +76,4 @@ Corporation has many networks, networks have many member firms:
 | manager      | Used in some parts of the application to restrict access, currently used by “bdm” role. “bdm” role is restricted to a scope of what it has access via “manage” role |
 | owner        | Used in some parts of the application for detection who is owner                                                                                                    |
 
-[Next: Permissions](./permissions/index.md)
+[Next: Permissions](./../permissions/index.md)
