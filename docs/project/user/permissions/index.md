@@ -90,5 +90,4 @@ Access rights that Network manager can grant to users:
 | :---------- | :-------- | :-----------------: | :-----------------------------------: | :-------------: | :-----------------------------------------------------: |
 | Permissions | get       |          -          |                   +                   |        +        |                            +                            |
 
-Creation
 [Next: Creation](../creation/index.md)
