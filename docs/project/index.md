@@ -41,3 +41,5 @@ Roles:
 ![Proper description what the image is about](./img/members.png)
 
 [Next page. Go to user documentation](./user/index.md)
+
+[Here's a style guide to creating documentation.](../index.md)
