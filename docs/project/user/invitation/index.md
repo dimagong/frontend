@@ -2,6 +2,8 @@
 
 #### Description
 
+Guest invite will allow Managers to temporarily invite a guest into the system to provide specific data to supplement a Members profile. An example of this would be a reference provider providing specific information about a Members past experience. This ‘Reference Provider’ would be granted access to the system as a Guest, and will have temporary, limited access in which they submit the requested information.
+
 In order to grant access to the system, you must invite the user
 
 1. Open “User management” and click on a user card
