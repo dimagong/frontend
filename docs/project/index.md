@@ -29,7 +29,7 @@ Roles:
 - Network manager
 - BDM
 
-![Proper description what the image is about](./img/managers.png)
+![Roles for manager view case ](./img/managers.png)
 
 ### Member view
 
@@ -38,7 +38,7 @@ Roles:
 - Prospect
 - Member
 
-![Proper description what the image is about](./img/members.png)
+![Roles for member view case](./img/members.png)
 
 [Next page. Go to user documentation](./user/index.md)
 
