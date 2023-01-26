@@ -9,3 +9,7 @@
 7. Use on state UI only primitive data, not objects
 8. Don`t try to use elements from DOM directrly. Work only with vitrual DOM and react tools.
 9. ...
+
+Useful link
+
+- [Refactoring](https://refactoring.guru/design-patterns/)
