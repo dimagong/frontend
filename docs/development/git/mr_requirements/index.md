@@ -1,8 +1,6 @@
-## Requirements for create MR
+# Requirements for creating Merge Requests (MR)
 
-# Requirements for creating MR
-
-Here is base structure of MR
+### Here is base structure of MR
 
 **[Asana task](url) (optional)**
 
@@ -18,3 +16,11 @@ Here is base structure of MR
 **3. Which issue this PR fixes (optional)**
 
 **4. CHANGELOG/Release Notes (optional)**
+
+### Labels
+
+All MR need to use particular labels. It needed for more simple keep tracking merge requests.
+
+[The list of prioritized labels](https://gitlab.com/RS_NMP/frontend/-/labels)
+
+[more info about labels](https://docs.gitlab.com/ee/user/project/labels.html)
