@@ -1,12 +1,16 @@
 ## Requirements for create MR
 
+# Requirements for creating MR
+
+Here is base structure of MR
+
 **[Asana task](url) (optional)**
 
 **Dependent MRs - #000 (optional)**
 
-## **1. What this MR does / why we need it:**
+**1. What this MR does / why we need it:**
 
-- **2. Make sure that you’ve checked the boxes below before you submit MR:**
+**2. Make sure that you’ve checked the boxes below before you submit MR:**
 
 - [ ] I have run `tests` locally and there is no error.
 - [ ] no conflict with %{target_branch} branch.
