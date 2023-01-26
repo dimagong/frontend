@@ -99,3 +99,49 @@ This is a setting of some conditions for a field under which another field, grou
 ### How is data saved?
 
 **Member view**
+
+![Member view save data](../img/member-save-data.png)
+
+**Manager view**
+
+![Manager view save data](../img/manager-save-data.png)
+
+### Behaviors of saving for different interfaces
+
+|                                                                                                     | Member view |         Manager view          |
+| :-------------------------------------------------------------------------------------------------- | :---------: | :---------------------------: |
+| Autosave on every change, per field. No new version of value is created, data is simply overwritten |      +      |               -               |
+| For each field value, a new value version will be created after submit/save is clicked              |      +      |               +               |
+| Fields validation                                                                                   |      +      | - (only sensitive validation) |
+
+### Access types
+
+These types are affixed to the Workflow depending on how the Workflow is configured by the manager.
+
+**Member view**
+| | |
+| :---- | :---------: |
+|user-lock|disable all field on edit|
+|user-unlock|enable all fields on edit|
+|hard-lock|disable all field on edit|
+|allow|enable all fields on edit|
+
+**Manager view**
+| | |
+| :---- | :---------: |
+|user-lock|enable all fields on edit|
+|user-unlock|enable all fields on edit|
+|hard-lock|enable all fields (now all managers can edit) (It is necessary to clarify with Brad which roles of managers can edit hard lock, and which cannot)|
+|allow|enable all fields on edit|
+
+### Additional info
+
+You can check value versioning for master schema fields in this section
+
+![Check value versioning for master schema](../img/additional-info-dfrorm.png)
+
+### Onboarding
+
+This is the dForm/Application assigned to the user, also with selected workflow and reviewers
+
+![Form/Application assigned to the user](../img/onboarding-dform.png)
