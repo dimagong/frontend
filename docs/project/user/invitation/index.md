@@ -37,5 +37,3 @@ What roles can invite?
 The form that the user sees by clicking on the invitation link
 
 ![5 step for invitation ](../../img/invitation_step-5.png)
-
-[Next: Member firm](../../member_firm/index.md)
