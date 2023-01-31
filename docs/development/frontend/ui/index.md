@@ -35,7 +35,7 @@
 
 ### Pictures
 
-1. Do not use png in case if you need alpha channel, use webp.
+1. Do not use png in case if you need alpha channel, use webp. More info [here](./image_types/index.md)
 2. Take a read to get differences when to use html `<img />` and css `backgorund`
    - [here is explanation](https://maheshkonne.medium.com/html-img-tag-vs-css-background-image-23f9e2e9c8aa)
 3. Use [this tools](https://squoosh.app/) for image croping/converting/optimizing.
