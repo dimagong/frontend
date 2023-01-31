@@ -35,15 +35,11 @@
 
 ### Pictures
 
-1. Do not use png in case if you need alpha channel, use webp. More info [here](./image_types/index.md)
-2. Take a read to get differences when to use html `<img />` and css `backgorund`
-   - [here is explanation](https://maheshkonne.medium.com/html-img-tag-vs-css-background-image-23f9e2e9c8aa)
-3. Use [this tools](https://squoosh.app/) for image croping/converting/optimizing.
+- Do not use png in case if you need alpha channel, use webp. More info [here](./image_types/index.md)
 
 ### Icons
 
-1. Do not use `svg` directly. Try to find similar `icon` in Ant Design icons library. If Ant Design do not have such `icon`, add it directly to nmp-ui/icons by Ant Design [specification](https://ant.design/components/icon#components-icon-demo-custom). When adding a custom-icon as `svg`, use `viewBox`, `fill`, `width`, and `height` correctly. Note that `width` and `height` must be `1em`, the `fill` or `stroke` can be used as `currentColor`.
-2. Before adding some svg as custom-icon, optimize it with this [recourse](https://jakearchibald.github.io/svgomg/)
+- Do not use `svg` directly. Try to find similar `icon` in Ant Design icons library. More info how to add icon to project [here](./icon/index.md)
 
 **The useful links**
 
