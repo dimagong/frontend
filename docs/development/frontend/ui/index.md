@@ -35,7 +35,7 @@
 
 ### Pictures
 
-- Do not use png in case if you need alpha channel, use webp. More info [here](./image_types/index.md)
+- Do not use png in case if you need alpha channel, use webp. More info [here](./image/index.md)
 
 ### Icons
 
