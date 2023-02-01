@@ -67,3 +67,5 @@
 
 > **Note:**
 > The current version of Asana does not allow you to create a due date estimate for a task. Only start date and end date.
+
+[Here is communication flow (issues - MR - Asana)](../index.md)
