@@ -8,7 +8,8 @@
 6. Client data it is data which using into ui componnts and saving on client side.
 7. Use on state UI only primitive data, not objects
 8. Don`t try to use elements from DOM directrly. Work only with vitrual DOM and react tools.
-9. ...
+9. Use a ternary operator for conditional render in react. Don`t use logical &&.
+10. ...
 
 Useful link
 
