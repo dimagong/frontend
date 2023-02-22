@@ -6,28 +6,49 @@
 
   - create/delete/update project
   - create/delete/update task
+  - create/delete/update subtask
+  - create task mode/state ("In progress", 'Review", "Staging", "Prod", etc.)
+  - assign a person to a task
   - task due date estimate
   - update/change timeline
   - invite/remove teammates
-  - create task mode/state ("In progress", 'Review", "Staging", "Prod", etc.)
-
-- Maintainer
-
-  - create/delete/update task
-  - create/delete/update subtask
-  - assign a person to a task
   - review task
   - set the task dependencies
   - set tags for task
 
 - Developer
 
+  - create/delete/update task
+  - create/delete/update subtask
+  - task due date estimate (if developer is assignee)
+  - change estimate task (if developer is assignee)
+  - review task
+  - change task mode/state (for example, from "In progress" to "Complete" or "Review/Testing" mode on the board) (if developer is assignee)
+  - set tags for task (if developer is assignee)
+  - mark task as complete (if developer is assignee)
+
+- Assignee
+
   - task due date estimate
   - change estimate task
-  - review task
+    > **Note:** Only who assignee of a task can change due date
   - change task mode/state (for example, from "In progress" to "Complete" or "Review/Testing" mode on the board)
   - set tags for task
   - mark task as complete
+
+  > **Note:** Every Friday if task is still in stage "In Progress", needs to leave a comment with the progress of that task, including any delays, blockers, etc. Need to set @Brad Powar on this comment so Brad get notification.
+
+- Collaborator
+
+  - subtask due date estimate
+  - change estimate subtask
+
+    > **Note:** When some collaborator of a task run into delay(which does not fit in main task deadline) of this subtask, the collaborator need to ask assignee of the task to change due date.
+
+  - set tags for subtask
+  - mark subtask as complete
+
+> **Note:** If you know that you completed your task and you are not responsible just assign someone else who do you think is responsible.
 
 ### Requirements for create task
 
