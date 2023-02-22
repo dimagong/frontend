@@ -9,7 +9,7 @@
 7. Use on state UI only primitive data, not objects
 8. Don`t try to use elements from DOM directrly. Work only with vitrual DOM and react tools.
 9. Use a ternary operator for conditional render in react. Don`t use logical &&.
-10. ...
+10. Use import type not components if you only need types. [Here is more info](./import_type/index.md)
 
 Useful link
 
