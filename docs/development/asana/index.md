@@ -36,15 +36,13 @@
   - set tags for task
   - mark task as complete
 
-  > **Note:** Every Friday if task is still in stage "In Progress", needs to leave a comment with the progress of that task, including any delays, blockers, etc. Need to set @Brad Powar on this comment so Brad get notification.
+  > **Note:** Every Friday if task is still in stage "In Progress", needs to leave a comment with the progress of that task, including any delays, blockers, etc. Need to set `@Brad Powar` on this comment so Brad get notification.
 
 - Collaborator
 
   - subtask due date estimate
   - change estimate subtask
-
     > **Note:** When some collaborator of a task run into delay(which does not fit in main task deadline) of this subtask, the collaborator need to ask assignee of the task to change due date.
-
   - set tags for subtask
   - mark subtask as complete
 
